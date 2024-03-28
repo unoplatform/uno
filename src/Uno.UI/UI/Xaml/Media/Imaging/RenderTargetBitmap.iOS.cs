@@ -11,7 +11,7 @@ using UIKit;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{

@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.UI;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageBrush : Brush
 	{

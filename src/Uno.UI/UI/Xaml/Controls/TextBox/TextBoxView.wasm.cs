@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : FrameworkElement
 	{

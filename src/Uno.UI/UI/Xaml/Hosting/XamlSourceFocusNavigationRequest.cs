@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Hosting;
+namespace Windows.UI.Xaml.Hosting;
 
 /// <summary>
 /// Provides information about a request to give focus to a DesktopWindowXamlSource object.

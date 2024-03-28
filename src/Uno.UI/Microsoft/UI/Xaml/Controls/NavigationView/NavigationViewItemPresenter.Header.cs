@@ -3,8 +3,8 @@
 // MUX Reference NavigationViewItemPresenter.h, commit d3fef08
 
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 

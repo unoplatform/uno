@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Hosting;
 
 namespace Uno.UI.XamlHost.Extensions;
 

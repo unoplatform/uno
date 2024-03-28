@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 

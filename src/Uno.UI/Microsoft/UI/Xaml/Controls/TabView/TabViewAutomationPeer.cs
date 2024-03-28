@@ -2,8 +2,8 @@
 
 using System;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {

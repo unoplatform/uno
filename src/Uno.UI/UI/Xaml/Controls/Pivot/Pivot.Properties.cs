@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Pivot : ItemsControl
 	{
@@ -124,19 +124,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"HeaderTemplate", typeof(DataTemplate),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty IsLockedProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsLocked", typeof(bool),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(default(bool)));
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"SelectedIndex", typeof(int),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(
@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml.Controls
 		);
 
 		public static DependencyProperty SelectedItemProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"SelectedItem", typeof(object),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(
@@ -157,7 +157,7 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 
 		public static DependencyProperty TitleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Title", typeof(object),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(
@@ -168,31 +168,31 @@ namespace Microsoft.UI.Xaml.Controls
 		);
 
 		public static DependencyProperty TitleTemplateProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TitleTemplate", typeof(DataTemplate),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty LeftHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"LeftHeader", typeof(object),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(default(object)));
 
 		public static DependencyProperty LeftHeaderTemplateProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"LeftHeaderTemplate", typeof(DataTemplate),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty RightHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"RightHeader", typeof(object),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(default(object)));
 
 		public static DependencyProperty RightHeaderTemplateProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"RightHeaderTemplate", typeof(DataTemplate),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(default(DataTemplate), options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));

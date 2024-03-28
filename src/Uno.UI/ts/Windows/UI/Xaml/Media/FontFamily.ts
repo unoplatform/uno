@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Media {
+﻿namespace Windows.UI.Xaml.Media {
 
 	export class FontFamily {
 
@@ -50,10 +50,10 @@
 
 			if (!FontFamily.managedNotifyFontLoaded) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
-					FontFamily.managedNotifyFontLoaded = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoaded;
+					FontFamily.managedNotifyFontLoaded = (<any>globalThis).DotnetExports.UnoUI.Windows.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoaded;
 				} else {
 					FontFamily.managedNotifyFontLoaded =
-						(<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
+						(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
 				}
 			}
 
@@ -64,10 +64,10 @@
 
 			if (!FontFamily.managedNotifyFontLoadFailed) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
-					FontFamily.managedNotifyFontLoadFailed = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoadFailed;
+					FontFamily.managedNotifyFontLoadFailed = (<any>globalThis).DotnetExports.UnoUI.Windows.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoadFailed;
 				} else {
 					FontFamily.managedNotifyFontLoadFailed =
-						(<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+						(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
 				}
 			}
 

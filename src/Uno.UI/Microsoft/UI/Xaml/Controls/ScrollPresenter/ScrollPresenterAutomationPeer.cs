@@ -2,11 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 internal partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationPeer
 {

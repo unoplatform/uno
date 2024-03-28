@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
-	public partial class AppBarElementContainer : global::Microsoft.UI.Xaml.Controls.ContentControl, ICommandBarElement, ICommandBarElement2, ICommandBarOverflowElement, ICommandBarElement3
+	public partial class AppBarElementContainer : global::Windows.UI.Xaml.Controls.ContentControl, ICommandBarElement, ICommandBarElement2, ICommandBarOverflowElement, ICommandBarElement3
 	{
 	}
 }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using static Uno.UI.Tests.Helpers.MuxVerify;
 using static Uno.UI.Xaml.Input.XYFocusAlgorithmHelper;
 

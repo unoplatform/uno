@@ -11,9 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -34,7 +34,7 @@ using Uno.UI.RuntimeTests;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	using ElementFactoryGetArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryGetArgs;
 	using ElementFactoryRecycleArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryRecycleArgs;

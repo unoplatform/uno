@@ -3,12 +3,12 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO_WINUI

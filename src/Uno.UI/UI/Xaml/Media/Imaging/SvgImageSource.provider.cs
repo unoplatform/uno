@@ -10,7 +10,7 @@ using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {

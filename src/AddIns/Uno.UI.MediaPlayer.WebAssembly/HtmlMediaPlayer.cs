@@ -6,11 +6,11 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Windows.Media.Playback;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using System.Globalization;
-using Microsoft.UI.Xaml.Controls.Maps;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Notifications;
 using System.Numerics;
 

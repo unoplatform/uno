@@ -9,7 +9,7 @@ using Uno.UI.Extensions;
 using Windows.UI.Composition;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Represents a tree of XAML content and information about the context in which it is hosted.
@@ -104,7 +104,7 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	internal Microsoft.UI.Composition.Compositor Compositor => Microsoft.UI.Composition.Compositor.GetSharedCompositor();
+	internal Windows.UI.Composition.Compositor Compositor => Windows.UI.Composition.Compositor.GetSharedCompositor();
 
 	/// <summary>
 	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
@@ -161,7 +161,7 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	internal IDisposable OpenPopup(Microsoft.UI.Xaml.Controls.Primitives.Popup popup)
+	internal IDisposable OpenPopup(Windows.UI.Xaml.Controls.Primitives.Popup popup)
 	{
 		if (VisualTree.PopupRoot == null)
 		{

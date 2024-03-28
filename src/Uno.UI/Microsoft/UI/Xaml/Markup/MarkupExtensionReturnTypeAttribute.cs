@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Markup
+namespace Windows.UI.Xaml.Markup
 {
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	[WebHostHidden]

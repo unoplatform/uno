@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System;
 using DisplayInfo = Windows.Graphics.Display.DisplayInformation;
@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_Graphics_Display
 				if (DataContext is DisplayInformationTestsViewModel vm)
 				{
 #if HAS_UNO
-					vm.SetDisplayInformation(Microsoft.UI.Xaml.XamlRoot.GetDisplayInformation(XamlRoot));
+					vm.SetDisplayInformation(Windows.UI.Xaml.XamlRoot.GetDisplayInformation(XamlRoot));
 #else
 					vm.SetDisplayInformation(DisplayInformation.GetForCurrentView());
 #endif

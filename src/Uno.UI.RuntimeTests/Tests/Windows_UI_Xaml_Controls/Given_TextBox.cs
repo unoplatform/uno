@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;

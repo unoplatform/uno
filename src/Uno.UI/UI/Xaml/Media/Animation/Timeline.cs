@@ -4,15 +4,15 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial class Timeline : DependencyObject, ITimeline, IThemeChangeAware
 	{
@@ -395,8 +395,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 					if (boundProperty.PropertyName.EndsWith("Opacity", StringComparison.Ordinal)
 						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color", StringComparison.Ordinal))
-						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Top", StringComparison.Ordinal)
-						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Left", StringComparison.Ordinal)
+						|| boundProperty.PropertyName.Equals("Windows.UI.Xaml.Controls:Canvas.Top", StringComparison.Ordinal)
+						|| boundProperty.PropertyName.Equals("Windows.UI.Xaml.Controls:Canvas.Left", StringComparison.Ordinal)
 						|| (boundProperty.DataContext is Transform transform)
 					)
 					{

@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Disposables;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Core;
 

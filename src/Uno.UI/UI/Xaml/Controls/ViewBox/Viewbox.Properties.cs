@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 #if __ANDROID__
 #elif __IOS__
@@ -10,7 +10,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Viewbox
 	{
@@ -26,8 +26,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(StretchProperty, value);
 		}
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty StretchDirectionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty StretchDirectionProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
 			name: nameof(StretchDirection),
 			propertyType: typeof(StretchDirection),
 			ownerType: typeof(Viewbox),
@@ -37,8 +37,8 @@ namespace Microsoft.UI.Xaml.Controls
 			)
 		);
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty StretchProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
 			name: nameof(Stretch),
 			propertyType: typeof(Stretch),
 			ownerType: typeof(Viewbox),

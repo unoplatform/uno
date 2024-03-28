@@ -3,11 +3,11 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
@@ -141,10 +141,10 @@ namespace MUXControlsTestApp
 			var centerColor = GetPixelAtPoint(new Point(rtb.PixelWidth / 2, rtb.PixelHeight / 2), rtb, pixelArray);
 			var outerColor = GetPixelAtPoint(new Point(0, 0), rtb, pixelArray);
 
-			if (ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionRadialGradientBrush"))
+			if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionRadialGradientBrush"))
 			{
 				// If CompositionRadialGradientBrush is available then should be rendering a gradient.
-				if (centerColor == Microsoft.UI.Colors.Orange && outerColor == Microsoft.UI.Colors.Green)
+				if (centerColor == Windows.UI.Colors.Orange && outerColor == Windows.UI.Colors.Green)
 				{
 					ColorMatchTestResult.Text = "Passed";
 				}
@@ -155,7 +155,7 @@ namespace MUXControlsTestApp
 			}
 			else
 			{
-				if (centerColor == Microsoft.UI.Colors.Red && outerColor == Microsoft.UI.Colors.Red)
+				if (centerColor == Windows.UI.Colors.Red && outerColor == Windows.UI.Colors.Red)
 				{
 					ColorMatchTestResult.Text = "Passed";
 				}

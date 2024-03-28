@@ -57,7 +57,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		}
 		catch (Exception e)
 		{
-			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
@@ -87,7 +87,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		}
 		catch (Exception e)
 		{
-			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 

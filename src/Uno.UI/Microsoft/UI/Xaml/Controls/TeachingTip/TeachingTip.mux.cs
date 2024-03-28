@@ -17,17 +17,17 @@ using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
-using CompositionTarget = Microsoft.UI.Xaml.Media.CompositionTarget;
-using Microsoft.UI.Composition;
+using CompositionTarget = Windows.UI.Xaml.Media.CompositionTarget;
+using Windows.UI.Composition;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml.Automation.Peers;
@@ -976,7 +976,7 @@ public partial class TeachingTip : ContentControl
 					popup.IsOpen = true;
 					if (SharedHelpers.IsAnimationsEnabled()
 #if HAS_UNO // Uno specific: Make sure we skip animation when the required API is not supported
-						&& ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionScopedBatch")
+						&& ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionScopedBatch")
 #endif
 						)
 					{
@@ -1495,7 +1495,7 @@ public partial class TeachingTip : ContentControl
 			// Contract animation
 			if (SharedHelpers.IsAnimationsEnabled()
 #if HAS_UNO // Uno specific: Make sure we skip animation when the required API is not supported
-				&& ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionScopedBatch")
+				&& ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionScopedBatch")
 #endif
 				)
 			{
@@ -1695,14 +1695,14 @@ public partial class TeachingTip : ContentControl
 	private void CreateExpandAnimation()
 	{
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
-		if (!ApiInformation.IsMethodPresent("Microsoft.UI.Composition.Compositor", "CreateCubicBezierEasingFunction"))
+		if (!ApiInformation.IsMethodPresent("Windows.UI.Composition.Compositor", "CreateCubicBezierEasingFunction"))
 		{
 			return;
 		}
 
 		var compositor = CompositionTarget.GetCompositorForCurrentThread();
 
-		CompositionEasingFunction GetExpandEasingFunction(Microsoft.UI.Composition.Compositor compositor)
+		CompositionEasingFunction GetExpandEasingFunction(Windows.UI.Composition.Compositor compositor)
 		{
 			if (m_expandEasingFunction == null)
 			{
@@ -1758,7 +1758,7 @@ public partial class TeachingTip : ContentControl
 	private void CreateContractAnimation()
 	{
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
-		if (!ApiInformation.IsMethodPresent("Microsoft.UI.Composition.Compositor", "CreateCubicBezierEasingFunction"))
+		if (!ApiInformation.IsMethodPresent("Windows.UI.Composition.Compositor", "CreateCubicBezierEasingFunction"))
 		{
 			return;
 		}

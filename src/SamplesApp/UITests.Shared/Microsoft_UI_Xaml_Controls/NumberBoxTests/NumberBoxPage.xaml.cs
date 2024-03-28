@@ -6,11 +6,11 @@ using System.ComponentModel;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.Globalization.NumberFormatting;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
@@ -74,15 +74,15 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 #if !WINAPPSDK
 				if (TextAlignmentComboBox.SelectedIndex == 0)
 				{
-					TestNumberBox.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Left;
+					TestNumberBox.TextAlignment = Windows.UI.Xaml.TextAlignment.Left;
 				}
 				else if (TextAlignmentComboBox.SelectedIndex == 1)
 				{
-					TestNumberBox.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center;
+					TestNumberBox.TextAlignment = Windows.UI.Xaml.TextAlignment.Center;
 				}
 				else if (TextAlignmentComboBox.SelectedIndex == 2)
 				{
-					TestNumberBox.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Right;
+					TestNumberBox.TextAlignment = Windows.UI.Xaml.TextAlignment.Right;
 				}
 #endif
 			}
@@ -226,7 +226,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		private void ScrollviewerWithScroll_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
 		{
-			VerticalOffsetDisplayBlock.Text = (sender as Microsoft.UI.Xaml.Controls.ScrollViewer).VerticalOffset.ToString();
+			VerticalOffsetDisplayBlock.Text = (sender as Windows.UI.Xaml.Controls.ScrollViewer).VerticalOffset.ToString();
 		}
 	}
 

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Interop;
+using Windows.UI.Xaml.Interop;
 using _IBindableIterable = System.Collections.IEnumerable;
 // WinRT types that have a different name in .net
 using _IBindableVector = System.Collections.IList;

@@ -6,7 +6,7 @@
 using System;
 using System.Linq;
 using Uno.UI.Xaml.Core;
-using WUX = Microsoft.UI.Xaml;
+using WUX = Windows.UI.Xaml;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Windows.ApplicationModel.Core;
 

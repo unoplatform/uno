@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CommandBar
 	{

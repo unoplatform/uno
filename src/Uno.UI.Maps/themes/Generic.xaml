@@ -3,11 +3,11 @@
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:converters="using:Uno.UI.Converters"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:maps="using:Microsoft.UI.Xaml.Controls.Maps"
-					xmlns:mapsPresenter="using:Microsoft.UI.Xaml.Controls.Maps.Presenters"
+					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
+					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps.Presenters"
 					mc:Ignorable="d">
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.Maps.MapControl -->
+	<!-- Default style for Windows.UI.Xaml.Controls.Maps.MapControl -->
 	<Style TargetType="maps:MapControl"
 		   x:Key="DefaultMapControlStyle">
 		<Setter Property="Template">

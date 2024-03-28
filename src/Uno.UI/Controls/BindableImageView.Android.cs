@@ -34,7 +34,7 @@ using Uno.Helpers;
 
 namespace Uno.UI.Controls
 {
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	public class BindableImageView : ImageView, View.IOnTouchListener
 	{
 		private string _uriSource;

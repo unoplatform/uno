@@ -6,7 +6,7 @@ using System.Text;
 using Uno.Extensions;
 using System.Globalization;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial class KeySpline : DependencyObject
 	{

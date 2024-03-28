@@ -1,8 +1,8 @@
 ﻿using Uno;
 using Uno.UI.Samples.Controls;
 using System.Linq;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using Private.Infrastructure;
 

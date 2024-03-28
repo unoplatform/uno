@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 		// Skipping already declared property Markers
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.AnimatedSettingsVisualSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.AnimatedSettingsVisualSource()
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.TryCreateAnimatedVisual(Microsoft.UI.Composition.Compositor, out object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.TryCreateAnimatedVisual(Windows.UI.Composition.Compositor, out object)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.Markers.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.SetColorProperty(string, Windows.UI.Color)
 		// Processing: Microsoft.UI.Xaml.Controls.IAnimatedVisualSource

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 #if __IOS__
 using _Color = UIKit.UIColor;

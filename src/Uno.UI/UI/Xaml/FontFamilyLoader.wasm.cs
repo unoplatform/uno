@@ -9,9 +9,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.Storage.Helpers;
 
-using NativeMethods = __Microsoft.UI.Xaml.Media.FontFamilyLoader.NativeMethods;
+using NativeMethods = __Windows.UI.Xaml.Media.FontFamilyLoader.NativeMethods;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 /// <summary>
 /// WebAssembly-specific asynchronous font loader

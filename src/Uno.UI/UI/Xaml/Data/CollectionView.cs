@@ -10,7 +10,7 @@ using Uno.Extensions.Specialized;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	internal partial class CollectionView : ICollectionView
 	{

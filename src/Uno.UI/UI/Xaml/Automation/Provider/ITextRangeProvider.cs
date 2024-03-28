@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Automation.Text;
+﻿using Windows.UI.Xaml.Automation.Text;
 
-namespace Microsoft.UI.Xaml.Automation.Provider;
+namespace Windows.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Exposes methods and properties to support Microsoft UI Automation client access

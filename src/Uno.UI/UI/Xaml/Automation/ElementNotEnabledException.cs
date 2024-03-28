@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.UI.Xaml.Automation
+namespace Windows.UI.Xaml.Automation
 {
 	public class ElementNotEnabledException : Exception
 	{

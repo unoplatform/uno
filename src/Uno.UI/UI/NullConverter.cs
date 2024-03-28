@@ -2,7 +2,7 @@
 using System.Globalization;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Converters
 {

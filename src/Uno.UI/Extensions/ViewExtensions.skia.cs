@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI
 {

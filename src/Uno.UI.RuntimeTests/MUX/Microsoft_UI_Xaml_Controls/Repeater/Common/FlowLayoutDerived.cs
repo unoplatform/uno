@@ -3,8 +3,8 @@
 
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
 using FlowLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FlowLayout;
@@ -12,7 +12,7 @@ using FlowLayoutAnchorInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Fl
 using NonVirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NonVirtualizingLayoutContext;
 using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public class FlowLayoutDerived : FlowLayout
 	{

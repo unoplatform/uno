@@ -10,16 +10,16 @@
 using System;
 using System.Threading;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using Uno.Disposables;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Windows.System;
 using System.Diagnostics;
 using SkiaSharp.SceneGraph;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using System.Text;
 using System.IO;
 

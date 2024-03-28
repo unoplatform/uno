@@ -4,7 +4,7 @@ using CoreLocation;
 using MapKit;
 using Windows.Devices.Geolocation;
 
-namespace Microsoft.UI.Xaml.Controls.Maps
+namespace Windows.UI.Xaml.Controls.Maps
 {
 	internal static class MapHelper
 	{

@@ -1,13 +1,13 @@
 ﻿using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.Data.Pdf;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.Storage;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Shared.Windows_Data_Pdf
 {
@@ -105,7 +105,7 @@ namespace UITests.Shared.Windows_Data_Pdf
 					// View half size on beige background.
 					case 2:
 						var options1 = new PdfPageRenderOptions();
-						options1.BackgroundColor = Microsoft.UI.Colors.Beige;
+						options1.BackgroundColor = Windows.UI.Colors.Beige;
 						options1.DestinationHeight = (uint)(page.Size.Height / 2);
 						options1.DestinationWidth = (uint)(page.Size.Width / 2);
 						await page.RenderToStreamAsync(stream, options1);

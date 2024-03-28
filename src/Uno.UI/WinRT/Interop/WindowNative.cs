@@ -1,6 +1,6 @@
 ﻿#if HAS_UNO_WINUI
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace WinRT.Interop;
 

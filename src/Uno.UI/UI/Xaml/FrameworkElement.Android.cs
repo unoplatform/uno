@@ -10,11 +10,11 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Services;
 using Uno.Diagnostics.Eventing;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

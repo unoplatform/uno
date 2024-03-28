@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -19,17 +19,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Unloaded += OnUnloaded;
 		}
 
-		private void OnUnloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private void OnUnloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			Application.Current.UnhandledException -= OnUnhandledException;
 		}
 
-		private void OnLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private void OnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			Application.Current.UnhandledException += OnUnhandledException;
 		}
 
-		private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+		private void OnUnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
 		{
 			Exception ??= e.Exception;
 		}

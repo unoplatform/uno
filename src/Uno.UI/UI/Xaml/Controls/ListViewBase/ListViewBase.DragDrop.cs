@@ -12,12 +12,12 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using _DragEventArgs = global::Microsoft.UI.Xaml.DragEventArgs;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media.Imaging;
+using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media.Imaging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class ListViewBase
 	{

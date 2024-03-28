@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
 
 using Uno.UI.Xaml;
 using System.Numerics;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 

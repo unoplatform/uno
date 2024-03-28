@@ -1,7 +1,7 @@
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+﻿using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Common;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;

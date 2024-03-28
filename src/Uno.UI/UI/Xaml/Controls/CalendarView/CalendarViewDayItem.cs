@@ -4,15 +4,15 @@
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Printing;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Printing;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
-using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
+using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class CalendarViewDayItem : CalendarViewBaseItem
 	{

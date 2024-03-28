@@ -8,7 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using System.Diagnostics;
 using System.ComponentModel;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 #if __IOS__
 using UIKit;
@@ -22,8 +22,8 @@ using _NativeView = AppKit.NSView;
 using _NativeReference = Android.Views.View;
 using _NativeView = Android.Views.View;
 #else
-using _NativeReference = Microsoft.UI.Xaml.UIElement;
-using _NativeView = Microsoft.UI.Xaml.UIElement;
+using _NativeReference = Windows.UI.Xaml.UIElement;
+using _NativeView = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -188,7 +188,7 @@ namespace Uno.UI.DataBinding
 				var q = from r in _holders.Concat(_nativeHolders.Values)
 						let holder = r.Target as BinderReferenceHolder
 						where holder != null
-						where holder._type == typeof(Microsoft.UI.Xaml.Controls.Grid)
+						where holder._type == typeof(Windows.UI.Xaml.Controls.Grid)
 						group holder by holder._type into types
 						let count = types.Count()
 						let parents = (

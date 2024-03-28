@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 #if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
@@ -10,7 +10,7 @@ using _View = UIKit.UIView;
 using _View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public static class UIElementCollectionExtensions
 	{

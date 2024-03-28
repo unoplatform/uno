@@ -6,7 +6,7 @@ using UIKit;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class SinglelineTextBoxDelegate : UITextFieldDelegate
 	{

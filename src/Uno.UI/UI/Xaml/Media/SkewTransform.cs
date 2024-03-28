@@ -6,7 +6,7 @@ using Windows.Foundation;
 using Uno.Extensions;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// ScaleTransform :  Based on the WinRT ScaleTransform

@@ -52,9 +52,6 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		AllProfile = 16384,
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ServiceWorkers = 32768,
-#endif
 	}
 #endif
 }

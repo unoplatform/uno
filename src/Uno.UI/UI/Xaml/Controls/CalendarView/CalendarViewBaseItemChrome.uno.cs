@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{

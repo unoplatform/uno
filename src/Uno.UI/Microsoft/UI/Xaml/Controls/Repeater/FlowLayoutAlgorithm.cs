@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Specialized;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 

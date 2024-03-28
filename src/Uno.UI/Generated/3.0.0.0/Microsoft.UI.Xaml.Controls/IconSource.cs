@@ -3,18 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
+	[global::Windows.UI.Xaml.Data.BindableAttribute]
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class IconSource : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class IconSource : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Foreground
 		// Skipping already declared property ForegroundProperty
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.CreateIconElement()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.CreateIconElement()
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.CreateIconElementCore()
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.GetIconElementPropertyCore(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.ForegroundProperty.get
 	}
 }

@@ -2,8 +2,8 @@
 using Uno.UI.Samples.Controls;
 using Windows.UI.Core.Preview;
 using Windows.UI.Popups;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Core
 {

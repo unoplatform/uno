@@ -15,23 +15,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeepInteriorCornersSquareProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+		public static global::Windows.UI.Xaml.DependencyProperty KeepInteriorCornersSquareProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"KeepInteriorCornersSquare", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.KeepInteriorCornersSquareProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox, bool value)
+		public static void SetKeepInteriorCornersSquare(global::Windows.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox, bool value)
 		{
 			autoSuggestBox.SetValue(KeepInteriorCornersSquareProperty, value);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox)
+		public static bool GetKeepInteriorCornersSquare(global::Windows.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox)
 		{
 			return (bool)autoSuggestBox.GetValue(KeepInteriorCornersSquareProperty);
 		}

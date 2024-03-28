@@ -3,7 +3,7 @@ using Uno;
 using Windows.System;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal static class PlatformHelpers
 {

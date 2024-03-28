@@ -4,8 +4,8 @@ using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml.FocusTests
 {
@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 
 		public Focus_FocusVisualViewModel ViewModel { get; private set; }
 
-		private void Focus_FocusVisual_DataContextChanged(DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+		private void Focus_FocusVisual_DataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as Focus_FocusVisualViewModel;
 		}

@@ -25,16 +25,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string FailureReportFolderPath
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Environment.FailureReportFolderPath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Environment.FailureReportFolderPath");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string UserDataFolder
 		{
 			get
@@ -48,21 +38,6 @@ namespace Microsoft.Web.WebView2.Core
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions CreateCoreWebView2ControllerOptions()
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2ControllerOptions CoreWebView2Environment.CreateCoreWebView2ControllerOptions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerOptions%20CoreWebView2Environment.CreateCoreWebView2ControllerOptions%28%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.FailureReportFolderPath.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer CreateSharedBuffer(ulong Size)
-		{
-			throw new global::System.NotImplementedException("The member CoreWebView2SharedBuffer CoreWebView2Environment.CreateSharedBuffer(ulong Size) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2SharedBuffer%20CoreWebView2Environment.CreateSharedBuffer%28ulong%20Size%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo>> GetProcessExtendedInfosAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<CoreWebView2ProcessExtendedInfo>> CoreWebView2Environment.GetProcessExtendedInfosAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CCoreWebView2ProcessExtendedInfo%3E%3E%20CoreWebView2Environment.GetProcessExtendedInfosAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

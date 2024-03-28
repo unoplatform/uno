@@ -3,8 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 

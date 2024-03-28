@@ -15,7 +15,7 @@ using ObjCRuntime;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 #elif __MACOS__
 using AppKit;
 using _View = AppKit.NSView;

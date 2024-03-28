@@ -1,7 +1,7 @@
 ﻿//#define USE_CUSTOM_LAYOUT_ATTRIBUTES // Use this to debug the frame of the attributes (This also has to be set in the ListViewBaseSource.iOS.cs and ItemsStackPanaleLayout.iOS.cs)
 using System;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Disposables;
@@ -16,7 +16,7 @@ using Uno.Foundation.Logging;
 
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
 using ObjCRuntime;
@@ -30,7 +30,7 @@ using LayoutInfoDictionary = System.Collections.Generic.Dictionary<Foundation.NS
 #endif
 
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 #if USE_CUSTOM_LAYOUT_ATTRIBUTES
 	public class UnoUICollectionViewLayoutAttributes : UICollectionViewLayoutAttributes

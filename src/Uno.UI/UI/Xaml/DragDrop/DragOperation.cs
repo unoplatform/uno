@@ -13,9 +13,9 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal class DragOperation
 	{

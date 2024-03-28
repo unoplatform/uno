@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses an IconSource as its content.

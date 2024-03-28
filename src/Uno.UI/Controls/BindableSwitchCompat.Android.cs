@@ -9,8 +9,8 @@ using Android.Text;
 using Android.Util;
 using Android.Widget;
 using AndroidX.Core.Graphics;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {

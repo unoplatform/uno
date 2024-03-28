@@ -10,7 +10,7 @@ namespace Uno.UI.Controls
 {
 	public partial class ManagedItemsStackPanel
 #else
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsStackPanel
 #endif

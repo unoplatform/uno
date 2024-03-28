@@ -19,17 +19,6 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property WebMessageAsJson
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<object> AdditionalObjects
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.Source.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WebMessageAsJson.get
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.TryGetWebMessageAsString()

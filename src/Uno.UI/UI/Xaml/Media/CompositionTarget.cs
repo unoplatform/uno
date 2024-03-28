@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
+﻿using System.Collections.Generic;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
 using Uno.UI.Composition;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Input;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 public partial class CompositionTarget : ICompositionTarget
 {

@@ -4,7 +4,7 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Uno.UI.Xaml.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System;
 using System.Drawing;
@@ -17,13 +17,13 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window)
+	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window)
 	{
 		NativeWindowWrapper.Instance.MainController.View = rootElement;
 		rootElement.Frame = NativeWindowWrapper.Instance.NativeWindow.Frame;

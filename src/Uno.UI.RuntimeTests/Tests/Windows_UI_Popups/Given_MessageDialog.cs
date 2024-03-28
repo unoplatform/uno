@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Popups;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Linq;
 using Private.Infrastructure;
@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 				return;
 			}
 
-			var button = new Microsoft.UI.Xaml.Controls.Button();
+			var button = new Windows.UI.Xaml.Controls.Button();
 			var flyout = new Flyout();
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			WindowHelper.WindowContent = button;

@@ -4,7 +4,7 @@
 
 
   <StaticResource x:Key="LoopingSelectorButtonBackground" ResourceKey="SystemControlBackgroundChromeMediumBrush" />
-  <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem -->
+  <!-- Resources for Windows.UI.Xaml.Controls.Primitives.LoopingSelectorItem -->
   <StaticResource x:Key="LoopingSelectorItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
   <StaticResource x:Key="LoopingSelectorItemForegroundSelected" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
   <StaticResource x:Key="LoopingSelectorItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
@@ -13,7 +13,7 @@
   <StaticResource x:Key="LoopingSelectorItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
 
 
-  <!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector -->
+  <!-- Default style for Windows.UI.Xaml.Controls.Primitives.LoopingSelector -->
   <Style TargetType="LoopingSelector">
 	<Setter Property="ShouldLoop" Value="True" />
 	<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
@@ -88,7 +88,7 @@
 	  </Setter.Value>
 	</Setter>
   </Style>
-  <!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem -->
+  <!-- Default style for Windows.UI.Xaml.Controls.Primitives.LoopingSelectorItem -->
   <Style TargetType="LoopingSelectorItem">
 	<Setter Property="HorizontalAlignment" Value="Stretch" />
 	<Setter Property="VerticalAlignment" Value="Stretch" />

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Uno.Xaml;
 
-namespace Microsoft.UI.Xaml.Markup.Reader
+namespace Windows.UI.Xaml.Markup.Reader
 {
 #if DEBUG
 	[DebuggerDisplay("Type: {_xamlMember.Name} = {Value}")]

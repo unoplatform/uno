@@ -8,10 +8,10 @@ using System;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class HyperlinkButton : ButtonBase
 	{

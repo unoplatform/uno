@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 
 namespace UITests.Windows_ApplicationModel.DataTransfer
@@ -23,7 +23,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 
 		internal DataTransferManagerTestsViewModel ViewModel { get; private set; }
 
-		private void DataTransferManagerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+		private void DataTransferManagerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as DataTransferManagerTestsViewModel;
 		}

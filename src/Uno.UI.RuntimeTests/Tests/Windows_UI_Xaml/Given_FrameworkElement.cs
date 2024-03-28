@@ -8,20 +8,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
 
 
@@ -40,7 +40,7 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -185,7 +185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Alignment_Changes_During_Measure()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -327,7 +327,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sut = new Grid
 			{
 				Margin = new Thickness(0, 100, 0, 0),
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.DeepPink),
 				BorderThickness = new Thickness(5),
 				MinWidth = 100,
 				MinHeight = 100,
@@ -345,14 +345,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							ItemsSource="0123456789",
 							ItemTemplate = new DataTemplate(() => new Border
 							{
-								BorderBrush= new SolidColorBrush(Microsoft.UI.Colors.Red),
+								BorderBrush= new SolidColorBrush(Windows.UI.Colors.Red),
 								Margin= new Thickness(5),
 								BorderThickness=new Thickness(5),
 								Width=300,
 								Child = new TextBlock
 								{
 									TextWrapping= TextWrapping.Wrap,
-									Foreground = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse)
+									Foreground = new SolidColorBrush(Windows.UI.Colors.Chartreuse)
 								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
 							}),
 							Layout = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}

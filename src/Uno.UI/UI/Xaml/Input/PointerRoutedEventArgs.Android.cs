@@ -5,7 +5,7 @@ using Android.Views;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Extensions;
+using Windows.UI.Xaml.Extensions;
 using Android.OS;
 using Uno.Extensions;
 
@@ -16,7 +16,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{

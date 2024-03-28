@@ -14,7 +14,7 @@ using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Rect = Android.Graphics.Rect;
 
 namespace Uno.UI

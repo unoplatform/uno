@@ -37,13 +37,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void DragLeave()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "void CoreWebView2CompositionController.DragLeave()");
-		}
-#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.CursorChanged.add
@@ -63,27 +56,6 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Cursor.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation DragEnter(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo, global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride dragUIOverride)
-		{
-			throw new global::System.NotImplementedException("The member DataPackageOperation CoreWebView2CompositionController.DragEnter(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreWebView2CompositionController.DragEnter%28CoreDragInfo%20dragInfo%2C%20CoreDragUIOverride%20dragUIOverride%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation DragOver(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo, global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride dragUIOverride)
-		{
-			throw new global::System.NotImplementedException("The member DataPackageOperation CoreWebView2CompositionController.DragOver(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreWebView2CompositionController.DragOver%28CoreDragInfo%20dragInfo%2C%20CoreDragUIOverride%20dragUIOverride%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation Drop(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo)
-		{
-			throw new global::System.NotImplementedException("The member DataPackageOperation CoreWebView2CompositionController.Drop(CoreDragInfo dragInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreWebView2CompositionController.Drop%28CoreDragInfo%20dragInfo%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController, object> CursorChanged

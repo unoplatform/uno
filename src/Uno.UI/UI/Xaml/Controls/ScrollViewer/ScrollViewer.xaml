@@ -14,7 +14,7 @@
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
 	mc:Ignorable="d ios android wasm netstdref macos skia">
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.ScrollViewer -->
+	<!-- Default style for Windows.UI.Xaml.Controls.ScrollViewer -->
 	<Style TargetType="ScrollViewer"
 				   x:Key="DefaultScrollViewerStyle">
 		<Setter Property="HorizontalScrollMode"

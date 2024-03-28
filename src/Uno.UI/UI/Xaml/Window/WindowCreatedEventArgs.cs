@@ -5,7 +5,7 @@ using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Provides data for the OnWindowCreated method.

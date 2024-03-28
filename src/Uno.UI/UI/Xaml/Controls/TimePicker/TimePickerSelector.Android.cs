@@ -4,9 +4,9 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector : ContentControl
 	{

@@ -10,8 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -27,7 +27,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.SetBinding(
 				MyControl.MyPropertyProperty,
-				new Microsoft.UI.Xaml.Data.Binding()
+				new Windows.UI.Xaml.Data.Binding()
 				{
 					Path = new PropertyPath("."),
 					Converter = myTestConverter,

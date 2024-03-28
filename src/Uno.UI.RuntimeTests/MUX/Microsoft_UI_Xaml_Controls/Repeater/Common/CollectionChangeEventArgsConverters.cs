@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public static class CollectionChangeEventArgsConverters
 	{

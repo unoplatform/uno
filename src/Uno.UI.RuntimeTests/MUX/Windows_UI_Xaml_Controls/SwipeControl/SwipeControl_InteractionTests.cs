@@ -4,8 +4,8 @@
 //// Imported in uno on 2021/03/21 from commit 307bd99682cccaa128483036b764c0b7c862d666
 //// https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeControl_InteractionTests/SwipeControlTests.cs
 
-//using Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests.Infra;
-//using Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests.Common;
+//using Windows.UI.Xaml.Tests.MUXControls.InteractionTests.Infra;
+//using Windows.UI.Xaml.Tests.MUXControls.InteractionTests.Common;
 //using Windows.System.Threading;
 //using Windows.Foundation;
 //using Windows.Foundation.Metadata;
@@ -30,7 +30,7 @@
 //using Microsoft.Windows.Apps.Test.Foundation.Patterns;
 //using Microsoft.Windows.Apps.Test.Foundation.Waiters;
 
-//namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
+//namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 //{
 //    using Window = Microsoft.Windows.Apps.Test.Foundation.Controls.Window;
 
@@ -1600,7 +1600,7 @@
 //        {
 //            using (var setup = new TestSetupHelper("SwipeControl Tests"))
 //            {
-//                if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand"))
+//                if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand"))
 //                {
 //                    Log.Warning("Test is disabled because UICommand doesn't exist as a type on this build.");
 //                    return;
@@ -1645,7 +1645,7 @@
 //        {
 //            using (var setup = new TestSetupHelper("SwipeControl Tests"))
 //            {
-//                if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand"))
+//                if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand"))
 //                {
 //                    Log.Warning("Test is disabled because UICommand doesn't exist as a type on this build.");
 //                    return;
@@ -1711,7 +1711,7 @@
 //        {
 //            using (var setup = new TestSetupHelper("SwipeControl Tests"))
 //            {
-//                if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand"))
+//                if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand"))
 //                {
 //                    Log.Warning("Test is disabled because UICommand doesn't exist as a type on this build.");
 //                    return;
@@ -1791,7 +1791,7 @@
 //        {
 //            using (var setup = new TestSetupHelper("SwipeControl Tests"))
 //            {
-//                if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand"))
+//                if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand"))
 //                {
 //                    Log.Warning("Test is disabled because UICommand doesn't exist as a type on this build.");
 //                    return;

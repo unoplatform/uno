@@ -14,7 +14,7 @@ using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A generic control layouter, to apply size, alignment and margins to a single child.

@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using DirectUI;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 //  Abstract:
 //      ListViewBase displays a rich, interactive collection of items.

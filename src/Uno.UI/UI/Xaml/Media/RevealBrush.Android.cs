@@ -1,7 +1,7 @@
 ﻿using Android.Graphics;
 using Rect = Windows.Foundation.Rect;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 partial class RevealBrush
 {

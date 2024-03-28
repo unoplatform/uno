@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Markup
+namespace Windows.UI.Xaml.Markup
 {
 	public sealed partial class ProvideValueTargetProperty
 	{

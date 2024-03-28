@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System;
 using System.Linq;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Private.Infrastructure;
 

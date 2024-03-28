@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Extensions;
 

@@ -2,7 +2,7 @@
 
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal interface IDatePickerFlyoutPresenter
 	{

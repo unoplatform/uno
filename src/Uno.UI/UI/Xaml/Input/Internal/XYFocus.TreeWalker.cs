@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Input
 {

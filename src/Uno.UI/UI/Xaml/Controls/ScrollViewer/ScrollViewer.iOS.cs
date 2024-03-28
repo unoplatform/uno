@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +17,7 @@ using UIKit;
 using CoreGraphics;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, ICustomClippingElement
 	{

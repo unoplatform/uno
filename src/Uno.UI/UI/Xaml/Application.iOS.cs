@@ -20,7 +20,7 @@ using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchA
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
 	public partial class Application : UIApplicationDelegate

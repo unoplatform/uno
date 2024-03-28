@@ -16,10 +16,10 @@ using ObjCRuntime;
 using _View = AppKit.NSView;
 using ObjCRuntime;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Canvas
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS

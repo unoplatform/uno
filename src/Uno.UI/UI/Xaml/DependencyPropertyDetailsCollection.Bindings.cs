@@ -5,9 +5,9 @@ using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection

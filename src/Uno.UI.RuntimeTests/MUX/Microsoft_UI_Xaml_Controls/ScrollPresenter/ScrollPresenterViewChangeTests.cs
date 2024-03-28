@@ -7,11 +7,11 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
 using Common;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Windows.Foundation;
 
@@ -21,7 +21,7 @@ using Windows.Foundation;
 
 using Windows.UI.ViewManagement;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 partial class ScrollPresenterTests : MUXApiTestBase
 {

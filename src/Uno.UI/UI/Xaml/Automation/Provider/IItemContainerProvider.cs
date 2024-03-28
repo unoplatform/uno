@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Provider;
+﻿namespace Windows.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Exposes a Microsoft UI Automation method to enable applications to find an element 

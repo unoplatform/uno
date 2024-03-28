@@ -12,9 +12,9 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	//  Abstract:
 	//      ListViewBase displays a rich, interactive collection of items.

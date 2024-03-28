@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
 namespace FrameworkPoolEditorRecycling.Editors;
 
@@ -12,7 +12,7 @@ public sealed partial class EditorBindingPropertyChangedView : Page
 		this.DataContextChanged += EditorBindingPropertyChangedView_DataContextChanged;
 	}
 
-	private void EditorBindingPropertyChangedView_DataContextChanged(Microsoft.UI.Xaml.FrameworkElement sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+	private void EditorBindingPropertyChangedView_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 	{
 		if (DataContext is EditorViewModel editor)
 		{

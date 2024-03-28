@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// A border layouter, to apply Padding to the border.

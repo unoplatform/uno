@@ -6,7 +6,7 @@ using System.Linq;
 using UIKit;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class NativePivotPresenter
 	{

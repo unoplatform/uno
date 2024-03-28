@@ -4,9 +4,9 @@
 
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
@@ -74,7 +74,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		internal void RaiseValueChangedEvent(double oldValue, double newValue)
 		{
-			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers", nameof(RangeValuePatternIdentifiers.ValueProperty)))
+			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Automation.RangeValuePatternIdentifiers", nameof(RangeValuePatternIdentifiers.ValueProperty)))
 			{
 				RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty,
 							   oldValue,

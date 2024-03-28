@@ -6,16 +6,16 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
 using Common;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Windows.Foundation;
 using Windows.UI;
@@ -24,7 +24,7 @@ using Windows.UI;
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
 #if !__SKIA__
@@ -654,7 +654,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 				@"<Grid Width='600' Height='600' 
 						xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
 						xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-						xmlns:controlsPrimitives='using:Microsoft.UI.Xaml.Controls.Primitives'>
+						xmlns:controlsPrimitives='using:Windows.UI.Xaml.Controls.Primitives'>
 						<Button Content='Outer Left Button' HorizontalAlignment='Left' VerticalAlignment='Center' />
 						<Button Content='Outer Top Button' HorizontalAlignment='Center' VerticalAlignment='Top' />
 						<Button Content='Outer Right Button' HorizontalAlignment='Right' VerticalAlignment='Center' />
@@ -744,10 +744,10 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		{
 			LinearGradientBrush twoColorLGB = new LinearGradientBrush() { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
 
-			GradientStop brownGS = new GradientStop() { Color = Microsoft.UI.Colors.Brown, Offset = 0.0 };
+			GradientStop brownGS = new GradientStop() { Color = Windows.UI.Colors.Brown, Offset = 0.0 };
 			twoColorLGB.GradientStops.Add(brownGS);
 
-			GradientStop orangeGS = new GradientStop() { Color = Microsoft.UI.Colors.Orange, Offset = 1.0 };
+			GradientStop orangeGS = new GradientStop() { Color = Windows.UI.Colors.Orange, Offset = 1.0 };
 			twoColorLGB.GradientStops.Add(orangeGS);
 
 			rectangleScrollPresenterContent.Width = c_defaultUIScrollPresenterContentWidth;

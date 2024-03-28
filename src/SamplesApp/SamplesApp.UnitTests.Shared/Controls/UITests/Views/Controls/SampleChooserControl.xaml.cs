@@ -5,18 +5,18 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using SampleControl.Presentation;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 #if WINAPPSDK
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 #elif XAMARIN || UNO_REFERENCE_API
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Globalization;
 #endif
 

@@ -6,10 +6,10 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class Image
 {

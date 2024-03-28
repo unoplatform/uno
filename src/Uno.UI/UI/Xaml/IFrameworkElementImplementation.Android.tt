@@ -22,14 +22,14 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using global::Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using global::Windows.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
 using Action = global::System.Action;
 using Uno.UI.Xaml;
@@ -398,7 +398,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 

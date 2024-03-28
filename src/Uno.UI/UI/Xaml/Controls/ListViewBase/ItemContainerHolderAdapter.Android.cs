@@ -1,17 +1,17 @@
 ﻿using System;
 using Android.Views;
 using Android.Widget;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Android.Runtime;
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
 	public abstract class ItemContainerHolderAdapter : BaseAdapter
 	{
-		public Microsoft.UI.Xaml.Controls.Orientation? ItemContainerHolderStretchOrientation { get; set; }
+		public Windows.UI.Xaml.Controls.Orientation? ItemContainerHolderStretchOrientation { get; set; }
 
 		/// <summary>
 		/// An optional secondary view pool that can handle control reloads.
@@ -55,7 +55,7 @@ namespace Uno.UI.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 
 				return new Grid();
 			}

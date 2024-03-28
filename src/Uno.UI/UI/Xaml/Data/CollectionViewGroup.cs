@@ -4,7 +4,7 @@ using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	internal class CollectionViewGroup : ICollectionViewGroup
 	{

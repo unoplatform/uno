@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Extensions
 {

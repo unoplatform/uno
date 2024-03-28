@@ -12,6 +12,6 @@ internal class FramebufferHostBuilder : IPlatformHostBuilder
 	public bool IsSupported
 		=> OperatingSystem.IsLinux();
 
-	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public SkiaHost Create(Func<Windows.UI.Xaml.Application> appBuilder)
 		=> new FrameBufferHost(appBuilder);
 }

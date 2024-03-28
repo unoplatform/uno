@@ -10,7 +10,7 @@ using System;
 using Windows.Foundation;
 using DirectUI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarLayoutStrategyImpl
 	{

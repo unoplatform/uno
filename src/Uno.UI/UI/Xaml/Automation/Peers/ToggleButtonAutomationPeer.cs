@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+﻿using Windows.UI.Xaml.Controls.Primitives;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IToggleProvider
 	{

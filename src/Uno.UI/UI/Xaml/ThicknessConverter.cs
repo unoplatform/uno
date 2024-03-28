@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public class ThicknessConverter : TypeConverter
 	{

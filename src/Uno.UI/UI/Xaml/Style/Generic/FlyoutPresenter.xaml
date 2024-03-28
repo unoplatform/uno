@@ -10,7 +10,7 @@
 	xmlns:not_win="http://uno.ui/not_win"
 	mc:Ignorable="d not_win ios android">
 	
-	<!-- Resources for Microsoft.UI.Xaml.Controls.FlyoutPresenter -->
+	<!-- Resources for Windows.UI.Xaml.Controls.FlyoutPresenter -->
 	<StaticResource x:Key="FlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
 	<StaticResource x:Key="FlyoutBorderThemeBrush" ResourceKey="SystemControlTransientBorderBrush" />
 	<Thickness x:Key="FlyoutBorderThemeThickness">1</Thickness>
@@ -23,7 +23,7 @@
 	<x:Double x:Key="FlyoutThemeMinWidth">96</x:Double>
 	<x:Double x:Key="FlyoutThemeTouchMinWidth">240</x:Double>
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.FlyoutPresenter -->
+	<!-- Default style for Windows.UI.Xaml.Controls.FlyoutPresenter -->
 	<Style x:Key="DefaultFlyoutPresenter"  TargetType="FlyoutPresenter">
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Stretch" />

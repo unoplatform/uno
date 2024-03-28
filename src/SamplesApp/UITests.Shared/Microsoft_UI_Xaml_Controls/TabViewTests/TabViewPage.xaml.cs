@@ -2,14 +2,14 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Markup;
 using Windows.UI;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation;
 
 using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
@@ -74,7 +74,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 #if HAS_UNO
 			internal
 #endif
-			async override void OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs args)
+			async override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs args)
 		{
 			NotCloseableTab.Visibility = Visibility.Collapsed;
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
@@ -287,7 +287,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			e.Data.RequestedOperation = DataPackageOperation.Move;
 		}
 
-		private void OnTabStripDragOver(object sender, Microsoft.UI.Xaml.DragEventArgs e)
+		private void OnTabStripDragOver(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			if (e.DataView.Properties.ContainsKey(DataIdentifier))
 			{
@@ -295,7 +295,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			}
 		}
 
-		private void OnTabStripDrop(object sender, Microsoft.UI.Xaml.DragEventArgs e)
+		private void OnTabStripDrop(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			// This event is called when we're dragging between different TabViews
 			// It is responsible for handling the drop of the item into the second TabView

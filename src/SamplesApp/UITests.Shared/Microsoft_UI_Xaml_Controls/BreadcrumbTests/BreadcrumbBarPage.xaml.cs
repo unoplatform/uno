@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 using BreadcrumbBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar;
 using Breadcrumb_TestUI;

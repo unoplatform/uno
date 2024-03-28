@@ -1586,7 +1586,7 @@
 
     <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemRevealStyle}" />
 
-    <!-- Style for Microsoft.UI.Xaml.Controls.ListViewItem -->
+    <!-- Style for Windows.UI.Xaml.Controls.ListViewItem -->
     <!-- This style is identifical to ListViewItemRevealStyle, except that the reveal effects is above the content-->
     <Style TargetType="ListViewItem" x:Key="ListViewItemRevealBackgroundShowsAboveContentStyle">
         <Setter Property="Template">
@@ -1679,7 +1679,7 @@
         </Setter>
     </Style>
 
-    <!-- Style for Microsoft.UI.Xaml.Controls.GridViewItem -->
+    <!-- Style for Windows.UI.Xaml.Controls.GridViewItem -->
     <!-- This style is identifical to GridViewItemRevealStyle, except that the reveal effects is above the content-->
     <Style TargetType="GridViewItem" x:Key="GridViewItemRevealBackgroundShowsAboveContentStyle">
         <Setter Property="Template">

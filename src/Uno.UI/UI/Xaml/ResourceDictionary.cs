@@ -10,12 +10,12 @@ using System.Linq;
 using System.Diagnostics;
 using Windows.UI.Input.Spatial;
 
-using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
+using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse, IDictionary<object, object>
 	{

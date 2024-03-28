@@ -2,8 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ScrollViewerIRefreshInfoProviderAdapter.idl, commit c6174f1
 
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Xaml;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Private.Controls;
 

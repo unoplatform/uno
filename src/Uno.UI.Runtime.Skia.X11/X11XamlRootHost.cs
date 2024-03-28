@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
@@ -137,7 +137,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 				SetIconFromFile(iconPath);
 			}
-			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{

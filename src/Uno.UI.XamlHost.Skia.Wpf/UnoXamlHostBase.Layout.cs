@@ -6,7 +6,7 @@
 using System;
 using System.Windows;
 using Uno.UI.XamlHost.Extensions;
-using WUX = Microsoft.UI.Xaml;
+using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {

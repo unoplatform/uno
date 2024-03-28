@@ -4,8 +4,8 @@ using System;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 

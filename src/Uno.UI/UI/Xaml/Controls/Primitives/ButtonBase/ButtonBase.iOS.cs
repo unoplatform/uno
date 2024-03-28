@@ -3,10 +3,10 @@ using System.Linq;
 using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using UIKit;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{

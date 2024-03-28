@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.ComboBoxTests;
 
@@ -32,7 +32,7 @@ public partial class PopupPlacementComboBox : ComboBox
 		}
 	}
 
-	private void MyComboBox_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+	private void MyComboBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
 	{
 		ApplyPlacement();
 	}

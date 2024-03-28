@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Uno.UI.Controls;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 partial class Window
 {

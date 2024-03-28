@@ -6,13 +6,13 @@ using System;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation.Peers;
 using TreeViewItemAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
 using Microsoft.UI.Input;
 
@@ -87,7 +87,7 @@ public partial class TreeViewItem : ListViewItem
 		base.OnKeyDown(e);
 	}
 
-	protected override void OnDrop(Microsoft.UI.Xaml.DragEventArgs args)
+	protected override void OnDrop(Windows.UI.Xaml.DragEventArgs args)
 	{
 		if (!args.Handled && args.AcceptedOperation == DataPackageOperation.Move)
 		{
@@ -145,7 +145,7 @@ public partial class TreeViewItem : ListViewItem
 		base.OnDrop(args);
 	}
 
-	protected override void OnDragOver(Microsoft.UI.Xaml.DragEventArgs args)
+	protected override void OnDragOver(Windows.UI.Xaml.DragEventArgs args)
 	{
 		var treeView = AncestorTreeView;
 		if (treeView != null && !args.Handled)
@@ -193,7 +193,7 @@ public partial class TreeViewItem : ListViewItem
 		base.OnDragOver(args);
 	}
 
-	protected override void OnDragEnter(Microsoft.UI.Xaml.DragEventArgs args)
+	protected override void OnDragEnter(Windows.UI.Xaml.DragEventArgs args)
 	{
 		TreeViewItem draggedOverItem = this;
 
@@ -250,7 +250,7 @@ public partial class TreeViewItem : ListViewItem
 		base.OnDragEnter(args);
 	}
 
-	protected override void OnDragLeave(Microsoft.UI.Xaml.DragEventArgs args)
+	protected override void OnDragLeave(Windows.UI.Xaml.DragEventArgs args)
 	{
 		if (!args.Handled)
 		{

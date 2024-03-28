@@ -2,7 +2,7 @@
 using System.Linq;
 using Uno.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 internal struct HtmlEventDispatchResultHelper
 {

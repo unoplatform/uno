@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Items")]
 	public partial class NativePivotPresenter : Control

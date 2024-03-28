@@ -5,11 +5,11 @@
 
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 
 #pragma warning disable 105 // Required for the WinUI replace pass
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 #pragma warning restore 105
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls

@@ -10,7 +10,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
+using WinUIApplication = Windows.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 

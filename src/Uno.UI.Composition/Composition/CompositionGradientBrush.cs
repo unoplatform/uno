@@ -5,7 +5,7 @@ using System.Numerics;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionGradientBrush : CompositionBrush, I2DTransformableObject
 	{

@@ -10,7 +10,7 @@ using Microsoft.UI.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	[ContractVersion(typeof(UniversalApiContract), 65536U)]
 	[Flags]

@@ -5,7 +5,7 @@
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeTestHooks.h
 
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

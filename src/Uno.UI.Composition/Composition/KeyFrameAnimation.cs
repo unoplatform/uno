@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class KeyFrameAnimation : CompositionAnimation
 	{

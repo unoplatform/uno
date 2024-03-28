@@ -5,7 +5,7 @@
 //      Contains common logic between the stacking and wrapping layout
 //      strategies.
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class LayoutStrategyBase
 	{

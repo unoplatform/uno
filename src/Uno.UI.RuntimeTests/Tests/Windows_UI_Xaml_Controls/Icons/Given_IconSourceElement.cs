@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 

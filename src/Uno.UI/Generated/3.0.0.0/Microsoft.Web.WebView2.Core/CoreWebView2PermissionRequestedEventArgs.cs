@@ -71,24 +71,8 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool SavesInProfile
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2PermissionRequestedEventArgs.SavesInProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2PermissionRequestedEventArgs.SavesInProfile");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.SavesInProfile");
-			}
-		}
-#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.SavesInProfile.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.SavesInProfile.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.Uri.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.PermissionKind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.IsUserInitiated.get

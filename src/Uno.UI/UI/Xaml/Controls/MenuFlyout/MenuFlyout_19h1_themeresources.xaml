@@ -264,7 +264,7 @@
         </Setter>
     </Style>
     
-    <!-- Default style for Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter -->
+    <!-- Default style for Windows.UI.Xaml.Controls.MenuFlyoutPresenter -->
     <Style TargetType="MenuFlyoutPresenter" BasedOn="{StaticResource DefaultMenuFlyoutPresenterStyle}" />
 </ResourceDictionary>
 

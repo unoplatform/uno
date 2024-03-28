@@ -12,12 +12,12 @@ using Uno.Diagnostics.Eventing;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Xaml.Media;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Image
 	{

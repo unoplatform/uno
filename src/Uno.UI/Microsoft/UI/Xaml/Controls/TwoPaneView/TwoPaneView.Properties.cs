@@ -3,11 +3,11 @@
 // MUX Reference TwoPaneView.properties.cpp, commit de78834
 
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
+public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
 {
 	/// <summary>
 	/// Gets or sets the minimum height at which panes are shown in tall mode.

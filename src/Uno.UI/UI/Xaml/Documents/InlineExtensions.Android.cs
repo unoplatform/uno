@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Android.Text;
 using Android.Text.Style;
 using System.Collections.Generic;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Android.Graphics;
 using Uno.UI.Extensions;
@@ -14,7 +14,7 @@ using Windows.Foundation;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	internal static partial class InlineExtensions
 	{

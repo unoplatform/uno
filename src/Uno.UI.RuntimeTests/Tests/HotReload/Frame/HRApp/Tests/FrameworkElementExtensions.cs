@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Reflection;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using System.Collections.Generic;
 
 using Foundation;

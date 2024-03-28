@@ -8,9 +8,9 @@ using Windows.UI.Core;
 using Private.Infrastructure;
 
 #if XAMARIN
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #else
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.Samples.Presentation.SamplePages.GridView

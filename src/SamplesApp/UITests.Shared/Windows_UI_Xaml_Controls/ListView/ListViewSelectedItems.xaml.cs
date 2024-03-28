@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 using Uno.Logging;
 #endif
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {

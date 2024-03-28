@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation;
 using System.Linq;
 
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
 
@@ -16,7 +16,7 @@ using Uno.UI.Xaml;
 using Microsoft/* UWP don't rename */.UI.Xaml.Media;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement
 	{

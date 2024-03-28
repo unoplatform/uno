@@ -3,18 +3,18 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
-using ScrollPresenter = Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter;
-using ScrollView = Microsoft.UI.Xaml.Controls.ScrollView;
-using ScrollingScrollAnimationStartingEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs;
-using ScrollingZoomAnimationStartingEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs;
-using ScrollingScrollCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
-using ScrollingZoomCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
-using ScrollingBringingIntoViewEventArgs = Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs;
+using ScrollPresenter = Windows.UI.Xaml.Controls.Primitives.ScrollPresenter;
+using ScrollView = Windows.UI.Xaml.Controls.ScrollView;
+using ScrollingScrollAnimationStartingEventArgs = Windows.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs;
+using ScrollingZoomAnimationStartingEventArgs = Windows.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs;
+using ScrollingScrollCompletedEventArgs = Windows.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
+using ScrollingZoomCompletedEventArgs = Windows.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
+using ScrollingBringingIntoViewEventArgs = Windows.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs;
 //using MUXControlsTestHooks = Microsoft.UI.Private.Controls.MUXControlsTestHooks;
 //using MUXControlsTestHooksLoggingMessageEventArgs = Microsoft.UI.Private.Controls.MUXControlsTestHooksLoggingMessageEventArgs;
 using ScrollViewTestHooks = Microsoft.UI.Private.Controls.ScrollViewTestHooks;
@@ -152,7 +152,7 @@ public sealed partial class ScrollViewBringIntoViewPage : TestPage
 		LogScrollViewInfo();
 	}
 
-	private void ScrollView_GettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
+	private void ScrollView_GettingFocus(UIElement sender, Windows.UI.Xaml.Input.GettingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;
@@ -167,7 +167,7 @@ public sealed partial class ScrollViewBringIntoViewPage : TestPage
 		AppendAsyncEventMessage("ScrollView.LostFocus");
 	}
 
-	private void ScrollView_LosingFocus(UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
+	private void ScrollView_LosingFocus(UIElement sender, Windows.UI.Xaml.Input.LosingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;

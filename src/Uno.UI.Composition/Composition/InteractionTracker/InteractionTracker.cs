@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -6,9 +6,9 @@ using System.Threading;
 using Uno.UI.Dispatching;
 using Windows.Foundation;
 
-using static Microsoft.UI.Composition.SubPropertyHelpers;
+using static Windows.UI.Composition.SubPropertyHelpers;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 public partial class InteractionTracker : CompositionObject
 {

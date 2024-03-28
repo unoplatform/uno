@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.Media.Core;
 using Windows.Media.Playback;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
 using SamplesApp.UITests.TestFramework;

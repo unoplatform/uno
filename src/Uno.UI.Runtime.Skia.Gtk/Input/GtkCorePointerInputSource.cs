@@ -15,10 +15,10 @@ using static Windows.UI.Input.PointerUpdateKind;
 using Exception = System.Exception;
 using Windows.Foundation;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Hosting;
 using Windows.Graphics.Display;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Window = Gdk.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk;

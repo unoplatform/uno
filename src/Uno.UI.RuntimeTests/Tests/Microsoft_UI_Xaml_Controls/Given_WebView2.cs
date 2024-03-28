@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
 using FluentAssertions;

@@ -4,7 +4,7 @@
 
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Private.Controls;
 

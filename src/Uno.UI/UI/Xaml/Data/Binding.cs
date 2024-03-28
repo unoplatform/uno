@@ -13,7 +13,7 @@ using _NativeObject = Foundation.NSObject;
 using _NativeObject = System.Object;
 #endif
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 
 	public partial class Binding : BindingBase

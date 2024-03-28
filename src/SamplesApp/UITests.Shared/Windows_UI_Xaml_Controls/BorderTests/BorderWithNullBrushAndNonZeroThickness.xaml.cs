@@ -1,8 +1,8 @@
 ﻿using Uno.UI.Samples.Controls;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace UITests.Windows_UI_Xaml_Controls.BorderTests;
 
@@ -17,7 +17,7 @@ public sealed partial class BorderWithNullBrushAndNonZeroThickness : Page
 		this.InitializeComponent();
 	}
 
-	private void Button_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	private void Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		if (_stateBrush)
 		{
@@ -37,7 +37,7 @@ public sealed partial class BorderWithNullBrushAndNonZeroThickness : Page
 		_stateBrush = !_stateBrush;
 	}
 
-	private void Button2_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	private void Button2_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		if (_stateThickness)
 		{

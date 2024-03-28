@@ -21,7 +21,7 @@ using Font = UIKit.UIFont;
 #else
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class StackPanel
 {
@@ -31,7 +31,7 @@ partial class StackPanel
 		availableSize = availableSize.Subtract(borderAndPaddingSize);
 
 		var desiredSize = default(Size);
-		var isHorizontal = Orientation == Microsoft.UI.Xaml.Controls.Orientation.Horizontal;
+		var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
 		var slotSize = availableSize;
 
 		if (isHorizontal)
@@ -90,7 +90,7 @@ partial class StackPanel
 
 		var childRectangle = new Rect(BorderThickness.Left + Padding.Left, BorderThickness.Top + Padding.Top, arrangeSize.Width, arrangeSize.Height);
 
-		var isHorizontal = Orientation == Microsoft.UI.Xaml.Controls.Orientation.Horizontal;
+		var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
 		var previousChildSize = 0.0;
 
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

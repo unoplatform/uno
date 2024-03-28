@@ -8,10 +8,10 @@ using Windows.Foundation;
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

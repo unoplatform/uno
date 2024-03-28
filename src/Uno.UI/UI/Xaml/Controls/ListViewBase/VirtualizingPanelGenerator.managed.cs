@@ -10,12 +10,12 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 #if __ANDROID__ || __IOS__
-using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
+using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
 #else
-using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout;
+using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.VirtualizingPanelLayout;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Handles creation, recycling and binding of items for an <see cref="IVirtualizingPanel"/>.

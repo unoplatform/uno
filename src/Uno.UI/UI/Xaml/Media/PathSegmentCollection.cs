@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class PathSegmentCollection : DependencyObjectCollection<PathSegment>
 	{

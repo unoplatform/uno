@@ -3,7 +3,7 @@
 using System;
 using System.Windows.Input;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentDialog : Controls.ContentControl
 	{
@@ -116,7 +116,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FullSizeDesiredProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"FullSizeDesired", typeof(bool),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(bool), UpdateVisualState));
@@ -125,31 +125,31 @@ namespace Microsoft.UI.Xaml.Controls
 			=> (dependencyObject as ContentDialog).UpdateVisualState();
 
 		public static DependencyProperty IsPrimaryButtonEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsPrimaryButtonEnabled", typeof(bool),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(true));
 
 		public static DependencyProperty IsSecondaryButtonEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsSecondaryButtonEnabled", typeof(bool),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(true));
 
 		public static DependencyProperty PrimaryButtonCommandParameterProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"PrimaryButtonCommandParameter", typeof(object),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(object)));
 
 		public static DependencyProperty PrimaryButtonCommandProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"PrimaryButtonCommand", typeof(ICommand),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(ICommand)));
 
 		public static DependencyProperty PrimaryButtonTextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"PrimaryButtonText", typeof(string),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
@@ -157,19 +157,19 @@ namespace Microsoft.UI.Xaml.Controls
 				propertyChangedCallback: UpdateVisualState));
 
 		public static DependencyProperty SecondaryButtonCommandParameterProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"SecondaryButtonCommandParameter", typeof(object),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(object)));
 
 		public static DependencyProperty SecondaryButtonCommandProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"SecondaryButtonCommand", typeof(ICommand),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(ICommand)));
 
 		public static DependencyProperty SecondaryButtonTextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"SecondaryButtonText", typeof(string),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
@@ -177,13 +177,13 @@ namespace Microsoft.UI.Xaml.Controls
 				propertyChangedCallback: UpdateVisualState));
 
 		public static DependencyProperty TitleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Title", typeof(object),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(object), (PropertyChangedCallback)((o, e) => ((ContentDialog)o).UpdateTitleSpaceVisibility())));
 
 		public static DependencyProperty TitleTemplateProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TitleTemplate", typeof(DataTemplate),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(DataTemplate),
@@ -192,25 +192,25 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 
 		public static DependencyProperty CloseButtonCommandParameterProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"CloseButtonCommandParameter", typeof(object),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(object)));
 
 		public static DependencyProperty CloseButtonCommandProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"CloseButtonCommand", typeof(ICommand),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(ICommand)));
 
 		public static DependencyProperty CloseButtonStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"CloseButtonStyle", typeof(Style),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty CloseButtonTextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"CloseButtonText", typeof(string),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
@@ -219,7 +219,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 		public static DependencyProperty DefaultButtonProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"DefaultButton", typeof(Controls.ContentDialogButton),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(
@@ -227,13 +227,13 @@ namespace Microsoft.UI.Xaml.Controls
 				propertyChangedCallback: UpdateVisualState));
 
 		public static DependencyProperty PrimaryButtonStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"PrimaryButtonStyle", typeof(Style),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty SecondaryButtonStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"SecondaryButtonStyle", typeof(Style),
 			typeof(Controls.ContentDialog),
 			new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));

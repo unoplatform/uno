@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 

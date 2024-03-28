@@ -135,7 +135,7 @@
   <data name="TestEmptyResource" xml:space="preserve">
     <value />
   </data>
-  <data name="OpenVideosButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Localized value</value>
   </data>
   <data name="button2Convert.[using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XUidTests.Controls]When_XUid_And_AttachedProperty_And_Conversion_KeyboardShortcutManager.VirtualKey" xml:space="preserve">

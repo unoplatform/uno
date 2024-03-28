@@ -1,11 +1,11 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using NotImplementedException = System.NotImplementedException;
 
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 #if __ANDROID__ || __IOS__
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class NativeDatePickerFlyoutPresenter : FlyoutPresenter, IDatePickerFlyoutPresenter
 	{

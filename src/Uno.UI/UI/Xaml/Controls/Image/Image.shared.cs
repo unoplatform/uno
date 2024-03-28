@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+﻿using Windows.UI.Xaml.Automation.Peers;
 using Color = Windows.UI.Color;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Image
 {

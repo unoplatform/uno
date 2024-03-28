@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>Specifies when the Click event should be raised for a control.</summary>
 	[WebHostHidden]

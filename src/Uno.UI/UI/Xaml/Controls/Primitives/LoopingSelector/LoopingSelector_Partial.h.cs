@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 
 	public partial class LoopingSelector : Control

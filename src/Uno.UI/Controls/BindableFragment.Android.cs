@@ -12,9 +12,9 @@ using Android.Widget;
 using AndroidX.Fragment.App;
 using Uno.Extensions;
 using Fragment = AndroidX.Fragment.App.Fragment;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls
 {

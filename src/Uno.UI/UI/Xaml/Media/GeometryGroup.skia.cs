@@ -1,7 +1,7 @@
 ﻿using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	partial class GeometryGroup
 	{

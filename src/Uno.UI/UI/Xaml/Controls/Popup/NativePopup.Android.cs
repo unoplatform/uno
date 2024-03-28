@@ -4,12 +4,12 @@ using Uno.Disposables;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls.Primitives;
 using Android.Views;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 [ContentProperty(Name = "Child")]
 public partial class NativePopup : NativePopupBase

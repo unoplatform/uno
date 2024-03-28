@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls
 {
@@ -15,15 +15,15 @@ namespace Uno.UI.Xaml.Controls
 		public static readonly DependencyProperty IsPointerWheelReversedProperty = DependencyProperty.RegisterAttached(
 			"IsPointerWheelReversed",
 			typeof(bool),
-			typeof(Microsoft.UI.Xaml.Controls.ScrollContentPresenter),
-			new FrameworkPropertyMetadata((snd, e) => ((Microsoft.UI.Xaml.Controls.ScrollContentPresenter)snd).IsPointerWheelReversed = (bool)e.NewValue));
+			typeof(Windows.UI.Xaml.Controls.ScrollContentPresenter),
+			new FrameworkPropertyMetadata((snd, e) => ((Windows.UI.Xaml.Controls.ScrollContentPresenter)snd).IsPointerWheelReversed = (bool)e.NewValue));
 
 		/// <summary>
 		/// Gets a boolean which indicates if the pointer wheel should be reversed or not for the <paramref name="scrollViewer"/>.
 		/// </summary>
 		/// <param name="scrollViewer"></param>
 		/// <returns></returns>
-		public static bool GetIsPointerWheelReversed(Microsoft.UI.Xaml.Controls.ScrollContentPresenter scrollViewer)
+		public static bool GetIsPointerWheelReversed(Windows.UI.Xaml.Controls.ScrollContentPresenter scrollViewer)
 			=> (bool)scrollViewer.GetValue(IsPointerWheelReversedProperty);
 
 		/// <summary>
@@ -31,13 +31,13 @@ namespace Uno.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="scrollViewer">The target ScrollViewer to configure</param>
 		/// <param name="isReversed">A boolean which indicates if the wheel should be reversed of not.</param>
-		public static void SetIsPointerWheelReversed(Microsoft.UI.Xaml.Controls.ScrollContentPresenter scrollViewer, bool isReversed)
+		public static void SetIsPointerWheelReversed(Windows.UI.Xaml.Controls.ScrollContentPresenter scrollViewer, bool isReversed)
 			=> scrollViewer.SetValue(IsPointerWheelReversedProperty, isReversed);
 
 	}
 }
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollContentPresenter
 	{

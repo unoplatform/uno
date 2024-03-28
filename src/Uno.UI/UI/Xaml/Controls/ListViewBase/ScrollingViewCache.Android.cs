@@ -7,7 +7,7 @@ using Android.Views;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A <see cref="RecyclerView.ViewCacheExtension"/> implementation which temporarily 'detaches' views from the parent rather than removing them completely,

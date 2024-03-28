@@ -5,8 +5,8 @@ using System.Windows;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Xaml.Controls.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfElement = System.Windows.FrameworkElement;
@@ -35,10 +35,10 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	/// </summary>
 	protected abstract WpfElement RootElement { get; }
 
-	public event Microsoft.UI.Xaml.Controls.TextControlPasteEventHandler? Paste;
+	public event Windows.UI.Xaml.Controls.TextControlPasteEventHandler? Paste;
 
-	public static IOverlayTextBoxView Create(Microsoft.UI.Xaml.Controls.TextBox textBox) =>
-		textBox is not Microsoft.UI.Xaml.Controls.PasswordBox ?
+	public static IOverlayTextBoxView Create(Windows.UI.Xaml.Controls.TextBox textBox) =>
+		textBox is not Windows.UI.Xaml.Controls.PasswordBox ?
 			new TextTextBoxView() :
 			new PasswordTextBoxView();
 
@@ -70,11 +70,11 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		}
 	}
 
-	public abstract bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox);
+	public abstract bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox);
 
 	public abstract IDisposable ObserveTextChanges(EventHandler onChanged);
 
-	public abstract void UpdateProperties(Microsoft.UI.Xaml.Controls.TextBox textBox);
+	public abstract void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox);
 
 	public abstract void SetFocus();
 
@@ -90,12 +90,12 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		WpfCanvas.SetTop(RootElement, y);
 	}
 
-	public virtual void SetPasswordRevealState(Microsoft.UI.Xaml.Controls.PasswordRevealState passwordRevealState) { }
+	public virtual void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState) { }
 
 	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
 		WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
-	protected void SetFont(WpfControl wpfControl, Microsoft.UI.Xaml.Controls.TextBox source)
+	protected void SetFont(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfControl.FontSize = source.FontSize;
 		wpfControl.FontWeight = WpfFontWeight.FromOpenTypeWeight(source.FontWeight.Weight);
@@ -104,7 +104,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		wpfControl.FontFamily = source.FontFamily.ToWpfFontFamily();
 	}
 
-	protected void SetForegroundAndHighlightColor(WpfControl wpfControl, Microsoft.UI.Xaml.Controls.TextBox source)
+	protected void SetForegroundAndHighlightColor(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		var foregroundBrush = source.Foreground.ToWpfBrush();
 		var selectionHighlightBrush = source.SelectionHighlightColor.ToWpfBrush();
@@ -121,36 +121,36 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		}
 	}
 
-	protected void SetControlProperties(WpfControl wpfControl, Microsoft.UI.Xaml.Controls.TextBox source)
+	protected void SetControlProperties(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfControl.Opacity = source.Opacity;
 		SetFont(wpfControl, source);
 		SetForegroundAndHighlightColor(wpfControl, source);
 	}
 
-	protected void SetTextBoxProperties(WpfTextBox wpfTextBox, Microsoft.UI.Xaml.Controls.TextBox source)
+	protected void SetTextBoxProperties(WpfTextBox wpfTextBox, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfTextBox.IsReadOnly = source.IsReadOnly || !source.IsTabStop;
 		wpfTextBox.MaxLength = source.MaxLength;
 		wpfTextBox.AcceptsReturn = source.AcceptsReturn;
 		wpfTextBox.TextAlignment = source.TextAlignment switch
 		{
-			Microsoft.UI.Xaml.TextAlignment.Center => System.Windows.TextAlignment.Center,
-			Microsoft.UI.Xaml.TextAlignment.Left => System.Windows.TextAlignment.Left,
-			Microsoft.UI.Xaml.TextAlignment.Right => System.Windows.TextAlignment.Right,
-			Microsoft.UI.Xaml.TextAlignment.Justify => System.Windows.TextAlignment.Justify,
+			Windows.UI.Xaml.TextAlignment.Center => System.Windows.TextAlignment.Center,
+			Windows.UI.Xaml.TextAlignment.Left => System.Windows.TextAlignment.Left,
+			Windows.UI.Xaml.TextAlignment.Right => System.Windows.TextAlignment.Right,
+			Windows.UI.Xaml.TextAlignment.Justify => System.Windows.TextAlignment.Justify,
 			_ => System.Windows.TextAlignment.Left
 		};
 		wpfTextBox.TextWrapping = source.TextWrapping switch
 		{
-			Microsoft.UI.Xaml.TextWrapping.NoWrap => System.Windows.TextWrapping.NoWrap,
-			Microsoft.UI.Xaml.TextWrapping.Wrap => System.Windows.TextWrapping.Wrap,
-			Microsoft.UI.Xaml.TextWrapping.WrapWholeWords => System.Windows.TextWrapping.WrapWithOverflow,
+			Windows.UI.Xaml.TextWrapping.NoWrap => System.Windows.TextWrapping.NoWrap,
+			Windows.UI.Xaml.TextWrapping.Wrap => System.Windows.TextWrapping.Wrap,
+			Windows.UI.Xaml.TextWrapping.WrapWholeWords => System.Windows.TextWrapping.WrapWithOverflow,
 			_ => System.Windows.TextWrapping.NoWrap
 		};
 	}
 
-	protected void SetPasswordBoxProperties(WpfPasswordBox wpfPasswordBox, Microsoft.UI.Xaml.Controls.TextBox source)
+	protected void SetPasswordBoxProperties(WpfPasswordBox wpfPasswordBox, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfPasswordBox.IsTabStop = source.IsReadOnly || !source.IsTabStop;
 		wpfPasswordBox.MaxLength = source.MaxLength;

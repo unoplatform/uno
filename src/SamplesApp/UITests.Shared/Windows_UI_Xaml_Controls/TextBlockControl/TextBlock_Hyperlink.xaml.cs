@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
@@ -23,7 +23,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 			MyTextBlock.Inlines.Add(run3);
 		}
 
-		private void Hyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+		private void Hyperlink_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
 		{
 			var t = new Windows.UI.Popups.MessageDialog("Hyperlink clicked!").ShowAsync();
 		}

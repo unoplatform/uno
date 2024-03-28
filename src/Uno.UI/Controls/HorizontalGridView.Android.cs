@@ -20,7 +20,7 @@ namespace Uno.UI.Controls
 			: base(ContextHelper.Current, null, new GridViewAdapter(ContextHelper.Current))
 		{
 			BindableAdapter.Background = Background;
-			BindableAdapter.Orientation = Microsoft.UI.Xaml.Controls.Orientation.Horizontal;
+			BindableAdapter.Orientation = Windows.UI.Xaml.Controls.Orientation.Horizontal;
 		}
 
 		protected override void SetupItemClickListeners()

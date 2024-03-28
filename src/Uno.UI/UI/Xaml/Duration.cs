@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial struct Duration : IEquatable<Duration>, IComparable<Duration>
 	{

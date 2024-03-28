@@ -4,11 +4,11 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
@@ -20,7 +20,7 @@ using __View = UIKit.UIView;
 using __View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 [Markup.ContentProperty(Name = "Children")]
 public partial class Panel : FrameworkElement, IPanel

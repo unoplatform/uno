@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Numerics;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public sealed partial class ScrollingScrollAnimationStartingEventArgs
 {

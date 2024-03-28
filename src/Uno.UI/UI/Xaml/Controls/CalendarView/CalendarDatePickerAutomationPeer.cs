@@ -3,14 +3,14 @@
 
 using System;
 using DirectUI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 //CalendarDatePickerAutomationPeerFactory.CreateInstanceWithOwnerImpl
 //IMPLEMENT_CONTROL_AUTOMATIONPEERFACTORY_CREATEINSTANCE(CalendarDatePicker)
 
 // Initializes a new instance of the CalendarDatePickerAutomationPeer class.
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Windows.UI.Xaml.Automation.Peers
 {
 
 	partial class CalendarDatePickerAutomationPeer : FrameworkElementAutomationPeer

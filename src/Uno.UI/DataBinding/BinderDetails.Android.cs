@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.Controls;
 using Java.Lang.Reflect;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.DataBinding
 {

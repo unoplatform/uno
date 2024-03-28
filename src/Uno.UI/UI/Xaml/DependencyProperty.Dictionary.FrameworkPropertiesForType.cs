@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -12,10 +12,10 @@ using Uno;
 using System.Threading;
 using Uno.Collections;
 
-using _Key = Uno.CachedTuple<System.Type, Microsoft.UI.Xaml.FrameworkPropertyMetadataOptions>;
+using _Key = Uno.CachedTuple<System.Type, Windows.UI.Xaml.FrameworkPropertyMetadataOptions>;
 using System.Collections;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{

@@ -10,11 +10,11 @@ using Foundation;
 using AppKit;
 using CoreGraphics;
 using Uno.Collections;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using WebKit;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
 using Uno.UI.Controls;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
@@ -368,12 +368,12 @@ namespace Uno.UI.Controls
 			{
 				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
 				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
-				Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
+				Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
 			}
 
 			public override void DidDeminiaturize(NSNotification notification)
 			{
-				Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
+				Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
 				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
 				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}

@@ -8,9 +8,9 @@ using System;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Xaml.Input.FocusConversionFunctions;
 

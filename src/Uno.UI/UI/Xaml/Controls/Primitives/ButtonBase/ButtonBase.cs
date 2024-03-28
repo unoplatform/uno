@@ -7,11 +7,11 @@ using Uno.Disposables;
 using System.Text;
 using System.Windows.Input;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.System;
 #if __IOS__
 using View = UIKit.UIView;
@@ -20,10 +20,10 @@ using View = AppKit.NSView;
 #elif __ANDROID__
 using View = Android.Views.View;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{

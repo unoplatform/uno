@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 

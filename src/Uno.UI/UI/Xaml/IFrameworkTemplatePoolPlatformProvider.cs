@@ -3,7 +3,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 internal interface IFrameworkTemplatePoolPlatformProvider
 {

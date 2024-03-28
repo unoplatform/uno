@@ -16,7 +16,7 @@ using View = UIKit.UIView;
 using Font = UIKit.UIFont;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>
 		, IShareableDependencyObject //TODO: should be implemented on Brush

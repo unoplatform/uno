@@ -1,9 +1,9 @@
 ﻿using Windows.UI.Text;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
-public partial class FontIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
+public partial class FontIconSource : global::Windows.UI.Xaml.Controls.IconSource
 {
 	public bool MirroredWhenRightToLeft
 	{

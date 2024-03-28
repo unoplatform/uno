@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 
 namespace MUXControlsTestApp.Utilities
 {
@@ -317,7 +317,7 @@ namespace MUXControlsTestApp.Utilities
 			{
 				RunOnUIThread.Execute(() =>
 				{
-					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+					Windows.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 				});
 
 				s_tickEvent.WaitOne();
@@ -326,7 +326,7 @@ namespace MUXControlsTestApp.Utilities
 
 		private static void CompositionTarget_Rendering(object sender, object e)
 		{
-			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+			Windows.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
 			s_tickEvent.Set();
 		}
 

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Uno.UI
 {
 	/// <summary>
-	/// Extension methods for classes in the Microsoft.UI.Xaml.Media.Animation namespace.
+	/// Extension methods for classes in the Windows.UI.Xaml.Media.Animation namespace.
 	/// </summary>
 	internal static class StoryboardExtensions
 	{

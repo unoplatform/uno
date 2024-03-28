@@ -12,7 +12,7 @@
 					xmlns:wasm="http://uno.ui/wasm"
 					mc:Ignorable="d not_win ios android not_wasm wasm">
 	
-	<!-- Resources for Microsoft.UI.Xaml.Controls.ContentDialog -->
+	<!-- Resources for Windows.UI.Xaml.Controls.ContentDialog -->
 	<StaticResource x:Key="ContentDialogForeground" ResourceKey="SystemControlPageTextBaseHighBrush" />
 	<StaticResource x:Key="ContentDialogBackground" ResourceKey="SystemControlPageBackgroundAltHighBrush" />
 	<StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -20,7 +20,7 @@
 	<Thickness x:Key="ContentDialogCommandSpaceMargin">0,24,0,0</Thickness>
 	<Thickness x:Key="ContentDialogPadding">24,18,24,24</Thickness>
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.ContentDialog -->
+	<!-- Default style for Windows.UI.Xaml.Controls.ContentDialog -->
   <Style TargetType="ContentDialog">
 	<Setter Property="Foreground" Value="{ThemeResource ContentDialogForeground}" />
 	<Setter Property="Background" Value="{ThemeResource ContentDialogBackground}" />

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 partial class XamlRoot
 {

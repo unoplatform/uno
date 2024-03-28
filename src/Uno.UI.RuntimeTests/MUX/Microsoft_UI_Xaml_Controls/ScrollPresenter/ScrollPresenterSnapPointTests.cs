@@ -6,16 +6,16 @@ using System.Numerics;
 using System.Threading;
 using Common;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 partial class ScrollPresenterTests : MUXApiTestBase
 {

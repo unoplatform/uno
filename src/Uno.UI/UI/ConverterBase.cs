@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 using GenericCulture = System.String;
 

@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +14,10 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.ManualPropagation
@@ -351,7 +351,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 		{
 			var grid = new Grid();
 
-			var brush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+			var brush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
 
 			object brushDataContextValue = null;
 			brush.DataContextChanged += (_, e) =>
@@ -363,10 +363,10 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 			grid.DataContext = new { a = "#FF00ff00" };
 
-			brush.SetBinding(Microsoft.UI.Xaml.Media.SolidColorBrush.ColorProperty, new Binding { Path = "a" });
+			brush.SetBinding(Windows.UI.Xaml.Media.SolidColorBrush.ColorProperty, new Binding { Path = "a" });
 
 			Assert.IsNotNull(brushDataContextValue);
-			Assert.AreEqual(Microsoft.UI.Colors.Lime, brush.Color);
+			Assert.AreEqual(Windows.UI.Colors.Lime, brush.Color);
 		}
 	}
 

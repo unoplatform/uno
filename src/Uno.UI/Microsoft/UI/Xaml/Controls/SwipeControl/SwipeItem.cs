@@ -9,10 +9,10 @@
 
 using System;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;

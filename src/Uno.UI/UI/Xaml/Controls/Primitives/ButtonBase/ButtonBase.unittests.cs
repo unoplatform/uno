@@ -3,7 +3,7 @@ using Uno.Client;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +11,9 @@ using Uno.Disposables;
 using System.Text;
 using System.Threading;
 
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{

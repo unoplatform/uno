@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class NativePopupBase : Primitives.Popup
 {

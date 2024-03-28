@@ -1,8 +1,8 @@
 ﻿#if UNO_ISLANDS
 using System;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
 using Uno.UI.XamlHost;
 
 namespace SamplesApp;

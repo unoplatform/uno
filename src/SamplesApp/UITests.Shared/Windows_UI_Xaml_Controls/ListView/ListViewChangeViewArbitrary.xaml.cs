@@ -2,8 +2,8 @@
 using System.Text;
 using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
@@ -25,13 +25,13 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			//Workaround for bug on Android that TargetListView's template is not materialized yet when Loaded gets called
 			TargetListView.ApplyTemplate();
 
-			var scrollViewer = TargetListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var scrollViewer = TargetListView.FindFirstChild<Windows.UI.Xaml.Controls.ScrollViewer>();
 			scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
 		}
 
 		private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
 		{
-			_scrollStates.Enqueue(new ScrollState { VerticalOffset = (sender as Microsoft.UI.Xaml.Controls.ScrollViewer).VerticalOffset, IsIntermediate = e.IsIntermediate });
+			_scrollStates.Enqueue(new ScrollState { VerticalOffset = (sender as Windows.UI.Xaml.Controls.ScrollViewer).VerticalOffset, IsIntermediate = e.IsIntermediate });
 			if (_scrollStates.Count > MaximumScrollStates)
 			{
 				_scrollStates.Dequeue();
@@ -48,7 +48,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void ApplyOffsetDefault(object sender, RoutedEventArgs e)
 		{
-			var scrollViewer = TargetListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var scrollViewer = TargetListView.FindFirstChild<Windows.UI.Xaml.Controls.ScrollViewer>();
 			float offset;
 			if (float.TryParse(OffsetTextBox.Text, out offset))
 			{
@@ -58,7 +58,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void ApplyOffsetChooseAnimate(object sender, RoutedEventArgs e)
 		{
-			var scrollViewer = TargetListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var scrollViewer = TargetListView.FindFirstChild<Windows.UI.Xaml.Controls.ScrollViewer>();
 			float offset;
 			if (float.TryParse(OffsetTextBox.Text, out offset))
 			{

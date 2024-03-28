@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Numerics;
 
-using static Microsoft.UI.Composition.SubPropertyHelpers;
+using static Windows.UI.Composition.SubPropertyHelpers;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 {

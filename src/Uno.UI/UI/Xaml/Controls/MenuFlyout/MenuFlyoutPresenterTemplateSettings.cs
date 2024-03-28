@@ -3,9 +3,9 @@
 
 using Uno;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public partial class MenuFlyoutPresenterTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class MenuFlyoutPresenterTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		public double FlyoutContentMinWidth
 		{

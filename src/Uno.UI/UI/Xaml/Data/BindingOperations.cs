@@ -4,7 +4,7 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	/// <summary>
 	/// Provides the static <see cref="SetBinding" /> method.

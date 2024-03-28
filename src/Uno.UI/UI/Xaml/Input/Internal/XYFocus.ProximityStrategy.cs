@@ -5,7 +5,7 @@
 #nullable enable
 
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using static Uno.UI.Xaml.Input.XYFocusAlgorithmHelper;
 
 namespace Uno.UI.Xaml.Input

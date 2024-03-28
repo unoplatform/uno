@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>Defines the radius of a rectangle's corners. </summary>
 	public class CornerRadiusConverter : TypeConverter

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.Helpers;
 

@@ -1,5 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
+﻿using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 
 namespace XamlGenerationTests.Shared
 {
@@ -18,10 +18,10 @@ namespace XamlGenerationTests.Shared
 
 		protected override object ProvideValue()
 		{
-			return new Microsoft.UI.Xaml.Controls.FontIcon()
+			return new Windows.UI.Xaml.Controls.FontIcon()
 			{
 				Glyph = Glyph,
-				FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI")
+				FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe UI")
 			};
 		}
 	}

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -10,10 +10,10 @@
 using System;
 using System.Threading.Tasks;
 using DirectUI;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
@@ -24,7 +24,7 @@ using Windows.System;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using CultureInfo = System.Globalization.CultureInfo;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class TimePicker
 {

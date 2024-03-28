@@ -4,9 +4,9 @@
 using System.Numerics;
 using System;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
-	public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
+	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
 	}
 }

@@ -3,10 +3,10 @@
 // MUX reference Slider_Partial.h
 
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class Slider
 {

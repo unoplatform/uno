@@ -109,7 +109,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		try
 		{
 			// Make sure WPF doesn't override our own SynchronizationContext.
-			if (Microsoft.UI.Xaml.Application.ApplicationSynchronizationContext is { } syncContext)
+			if (Windows.UI.Xaml.Application.ApplicationSynchronizationContext is { } syncContext)
 			{
 				SynchronizationContext.SetSynchronizationContext(syncContext);
 			}

@@ -3,9 +3,9 @@
 
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Samples.Controls;
@@ -170,29 +170,29 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 			}
 		}
 
-		private void AddMarginCheckBox_Checked(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private void AddMarginCheckBox_Checked(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			TwoPaneView.Margin = c_controlMargin;
 		}
 
-		private void AddMarginCheckBox_Unchecked(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private void AddMarginCheckBox_Unchecked(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			TwoPaneView.Margin = new Thickness(0);
 		}
 
-		private void OneSideCheckBox_Checked(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private void OneSideCheckBox_Checked(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			TwoPaneView.HorizontalAlignment = HorizontalAlignment.Left;
 			TwoPaneView.Width = c_simulatedPaneWidth;
 		}
 
-		private void OneSideCheckBox_Unchecked(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private void OneSideCheckBox_Unchecked(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			TwoPaneView.HorizontalAlignment = HorizontalAlignment.Stretch;
 			TwoPaneView.Width = double.NaN;
 		}
 
-		private void PaneSizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs e)
+		private void PaneSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs e)
 		{
 			TextBlock widthTextBlock = (sender == Pane1Content) ? WidthText1 : WidthText2;
 			TextBlock heightTextBlock = (sender == Pane1Content) ? HeightText1 : HeightText2;
@@ -222,7 +222,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 			}
 		}
 
-		private void TwoPaneView_SizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs e)
+		private void TwoPaneView_SizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs e)
 		{
 			ControlWidthText.Text = ((int)e.NewSize.Width).ToString();
 			ControlHeightText.Text = ((int)e.NewSize.Height).ToString();

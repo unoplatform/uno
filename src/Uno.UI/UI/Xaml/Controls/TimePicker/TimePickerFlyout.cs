@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control that allows a user to pick a time value.

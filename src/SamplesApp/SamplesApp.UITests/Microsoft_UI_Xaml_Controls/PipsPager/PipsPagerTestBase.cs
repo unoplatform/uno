@@ -5,7 +5,7 @@ using SamplesApp.UITests;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
+namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {
 	public partial class PipsPagerTestBase : SampleControlUITestBase
 	{

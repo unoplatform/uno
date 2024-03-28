@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 internal sealed partial class InteractionTrackerActiveInputInertiaHandler : IInteractionTrackerInertiaHandler
 {

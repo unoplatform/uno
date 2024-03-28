@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionCapabilities
 	{

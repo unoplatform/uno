@@ -7,19 +7,19 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Core;
 
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif

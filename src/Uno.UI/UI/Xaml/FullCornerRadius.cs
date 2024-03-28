@@ -1,6 +1,6 @@
 ﻿using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 internal partial record struct FullCornerRadius
 (

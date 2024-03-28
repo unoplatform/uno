@@ -58,7 +58,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 		protected set => (_selectionBeforeKeyDown.start, _selectionBeforeKeyDown.length) = value;
 	}
 
-	public override bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => textBox is Microsoft.UI.Xaml.Controls.PasswordBox;
+	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => textBox is Windows.UI.Xaml.Controls.PasswordBox;
 
 	public override void SetFocus() => GetDisplayedElement().Focus();
 
@@ -68,7 +68,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 		return Disposable.Create(() => _textChangedWatcher = null);
 	}
 
-	public override void UpdateProperties(Microsoft.UI.Xaml.Controls.TextBox textBox)
+	public override void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox)
 	{
 		SetControlProperties(_textBox, textBox);
 		SetControlProperties(_passwordBox, textBox);
@@ -76,7 +76,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 		SetPasswordBoxProperties(_passwordBox, textBox);
 	}
 
-	public override void SetPasswordRevealState(Microsoft.UI.Xaml.Controls.PasswordRevealState passwordRevealState)
+	public override void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState)
 	{
 		// Sync current text between controls.
 		if (_textBox.Visibility == Visibility.Visible)
@@ -88,7 +88,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 			_textBox.Text = _passwordBox.Password;
 		}
 
-		if (passwordRevealState == Microsoft.UI.Xaml.Controls.PasswordRevealState.Revealed)
+		if (passwordRevealState == Windows.UI.Xaml.Controls.PasswordRevealState.Revealed)
 		{
 			_textBox.Visibility = Visibility.Visible;
 			_passwordBox.Visibility = Visibility.Collapsed;

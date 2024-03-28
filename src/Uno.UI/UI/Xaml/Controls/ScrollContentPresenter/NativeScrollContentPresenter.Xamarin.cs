@@ -2,7 +2,7 @@
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,11 +21,11 @@ using ObjCRuntime;
 using AppKit;
 using View = AppKit.NSView;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 using ObjCRuntime;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class NativeScrollContentPresenter : IScrollContentPresenter, INativeScrollContentPresenter
 	{

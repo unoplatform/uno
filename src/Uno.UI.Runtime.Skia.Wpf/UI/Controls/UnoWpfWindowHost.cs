@@ -10,7 +10,7 @@ using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using Uno.UI.Xaml.Core;
-using WinUI = Microsoft.UI.Xaml;
+using WinUI = Windows.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfControl = System.Windows.Controls.Control;

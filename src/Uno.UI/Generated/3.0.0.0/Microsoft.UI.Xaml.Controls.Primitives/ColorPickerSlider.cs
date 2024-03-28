@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ColorPickerSlider : global::Microsoft.UI.Xaml.Controls.Slider
+	public partial class ColorPickerSlider : global::Windows.UI.Xaml.Controls.Slider
 	{
 		// Skipping already declared property ColorChannel
 		// Skipping already declared property ColorChannelProperty

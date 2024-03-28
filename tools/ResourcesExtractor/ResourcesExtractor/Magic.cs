@@ -102,7 +102,7 @@ public static class Magic
 		{
 			IntPtr block = MAKEINTRESOURCEW(resourceId / 16 + 1);
 			int offset = resourceId % 16;
-			IntPtr hModule = NativeMethods.GetModuleHandle("Microsoft.UI.Xaml.dll");
+			IntPtr hModule = NativeMethods.GetModuleHandle("Windows.UI.Xaml.dll");
 
 
 			// Find and load the string resource

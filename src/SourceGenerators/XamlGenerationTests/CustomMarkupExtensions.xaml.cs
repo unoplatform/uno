@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
 
 namespace XamlGenerationTests.Shared
 {
@@ -117,7 +117,7 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 		public int IntProp { get; set; }
 	}
 
-	public class NoReturnTypeMarkupExt : Microsoft.UI.Xaml.Markup.MarkupExtension
+	public class NoReturnTypeMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
 	{
 		public Values UseValue { get; set; }
 

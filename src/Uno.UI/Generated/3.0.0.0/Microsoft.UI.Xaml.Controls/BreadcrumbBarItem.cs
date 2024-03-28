@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BreadcrumbBarItem : global::Microsoft.UI.Xaml.Controls.ContentControl
+	public partial class BreadcrumbBarItem : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.BreadcrumbBarItem.BreadcrumbBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItem.BreadcrumbBarItem()

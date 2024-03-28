@@ -12,10 +12,10 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class FocusManager
 	{

@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 {

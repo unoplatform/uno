@@ -2,11 +2,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Private.Infrastructure
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
+			public static Windows.UI.Xaml.Window CurrentTestWindow { get; set; }
 
 			public static bool UseActualWindowRoot { get; set; }
 

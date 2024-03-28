@@ -3,12 +3,12 @@
 
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
 using Uno.Disposables;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 public partial class ScrollPresenter : FrameworkElement
 {

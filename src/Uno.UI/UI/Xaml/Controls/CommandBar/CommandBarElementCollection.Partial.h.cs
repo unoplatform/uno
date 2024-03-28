@@ -7,9 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using DirectUI;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class CommandBarElementCollection : IObservableVector<ICommandBarElement>, IVector<ICommandBarElement>
 	{

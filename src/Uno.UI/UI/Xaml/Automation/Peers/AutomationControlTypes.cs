@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Peers;
+﻿namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Specifies the control type that is exposed to the Microsoft UI Automation client. Used by GetAutomationControlType.

@@ -6,7 +6,7 @@
 
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 
 namespace Microsoft.UI.Private.Controls;
 

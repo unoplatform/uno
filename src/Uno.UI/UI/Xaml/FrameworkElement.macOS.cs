@@ -10,7 +10,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using AppKit;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	[ContentProperty(Name = nameof(Inlines))]
 	public partial class Span : Inline

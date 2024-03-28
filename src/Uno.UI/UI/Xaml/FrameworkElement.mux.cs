@@ -4,9 +4,9 @@
 
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

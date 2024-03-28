@@ -4,7 +4,7 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Win32.UI.XamlApplication/XamlApplication.idl
 
 using System.Collections.Generic;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.XamlHost;
 

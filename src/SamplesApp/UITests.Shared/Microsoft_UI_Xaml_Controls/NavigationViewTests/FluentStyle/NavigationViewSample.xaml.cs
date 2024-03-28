@@ -6,13 +6,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 namespace SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.FluentStyle
 {
@@ -20,9 +20,9 @@ namespace SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.Flue
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
 	[SampleControlInfo("NavigationView", "FluentStyle_NavigationViewSample")]
-#pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+#pragma warning disable UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class FluentStyle_NavigationViewSample
-#pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+#pragma warning restore UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 	{
 		public FluentStyle_NavigationViewSample()
 		{

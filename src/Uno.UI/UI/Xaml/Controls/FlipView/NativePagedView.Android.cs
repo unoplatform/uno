@@ -4,13 +4,13 @@ using System.Text;
 using AndroidX.ViewPager.Widget;
 using Android.Views;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class NativePagedView : ViewPager, DependencyObject, ILayoutConstraints, ILayouterElement
 	{

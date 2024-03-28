@@ -6,11 +6,11 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Tests.Common;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Tests.Common;
+using Windows.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;

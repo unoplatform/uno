@@ -7,25 +7,25 @@ using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 #if WINAPPSDK
 using Uno.UI.Extensions;
-using _NativeType = Microsoft.UI.Xaml.Controls.Grid;
+using _NativeType = Windows.UI.Xaml.Controls.Grid;
 #elif __ANDROID__
 using Uno.UI;
-using _NativeType = Microsoft.UI.Xaml.Controls.BindableButtonEx;
+using _NativeType = Windows.UI.Xaml.Controls.BindableButtonEx;
 #elif __IOS__
 using UIKit;
 using Uno.UI;
 using _NativeType = Uno.UI.Views.Controls.BindableUIButton;
 #else
-using _NativeType = Microsoft.UI.Xaml.Controls.Grid; // We use a 'fake' native style on WASM
+using _NativeType = Windows.UI.Xaml.Controls.Grid; // We use a 'fake' native style on WASM
 #endif
 #if UNO_REFERENCE_API
 using Uno.UI;
@@ -53,7 +53,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 			Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = false;
 #endif
 
-			var button = new Microsoft.UI.Xaml.Controls.Button() { Content = "Native button" };
+			var button = new Windows.UI.Xaml.Controls.Button() { Content = "Native button" };
 			RootPanel.Children.Add(button);
 			await Task.Yield();
 			var nativeView = button.FindFirstChild<_NativeType>();

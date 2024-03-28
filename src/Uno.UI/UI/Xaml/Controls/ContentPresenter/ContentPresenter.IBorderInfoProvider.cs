@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using Uno.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ContentPresenter : IBorderInfoProvider
 {

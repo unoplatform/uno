@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class WriteableBitmap
 	{

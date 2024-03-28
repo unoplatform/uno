@@ -2,7 +2,7 @@
 
 using System.Numerics;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 /// <summary>
 /// Represents a rectangle with optional rounded corners that clips a portion of a visual.

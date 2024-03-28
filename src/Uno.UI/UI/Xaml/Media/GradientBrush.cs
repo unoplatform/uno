@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
 #if HAS_UNO_WINUI
 using Windows.UI;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	[ContentProperty(Name = "GradientStops")]
 	public abstract partial class GradientBrush : Brush

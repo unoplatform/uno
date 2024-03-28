@@ -1,5 +1,5 @@
-using System.Collections.Generic;
-using Microsoft.UI.Composition.Interactions;
+﻿using System.Collections.Generic;
+using Windows.UI.Composition.Interactions;
 
 namespace Uno.UI.Composition;
 

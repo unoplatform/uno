@@ -2,10 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using Uno.UI.Samples.Controls;
@@ -62,7 +62,7 @@ public sealed partial class ScrollViewKeyboardAndGamepadNavigationPage : TestPag
 		AppendAsyncEventMessage("ScrollPresenter.ZoomAnimationStarting ZoomFactorChangeCorrelationId=" + args.CorrelationId + ", CenterPoint=" + args.CenterPoint + ", SZF=" + args.StartZoomFactor + ", EZF=" + args.EndZoomFactor);
 	}
 
-	private void ScrollView_GettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
+	private void ScrollView_GettingFocus(UIElement sender, Windows.UI.Xaml.Input.GettingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;
@@ -77,7 +77,7 @@ public sealed partial class ScrollViewKeyboardAndGamepadNavigationPage : TestPag
 		AppendAsyncEventMessage("ScrollView.LostFocus");
 	}
 
-	private void ScrollView_LosingFocus(UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
+	private void ScrollView_LosingFocus(UIElement sender, Windows.UI.Xaml.Input.LosingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;

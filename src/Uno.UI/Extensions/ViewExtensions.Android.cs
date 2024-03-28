@@ -13,13 +13,13 @@ using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Extensions;
 using System.Drawing;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 using Android.Views.Animations;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Controls;
 
 namespace Uno.UI

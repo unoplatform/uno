@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Windows.Security.Credentials;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using System.IO;

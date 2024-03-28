@@ -1,6 +1,6 @@
 ﻿using System;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI
 {

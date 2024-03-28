@@ -2,7 +2,7 @@
 
 using Uno.UI.Xaml.Controls.TestHooks;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class TimePicker : IDateTimePickerTestHooks
 {

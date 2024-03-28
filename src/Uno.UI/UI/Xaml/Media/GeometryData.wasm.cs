@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Wasm;
+using Windows.UI.Xaml.Wasm;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public class GeometryData : Geometry
 	{

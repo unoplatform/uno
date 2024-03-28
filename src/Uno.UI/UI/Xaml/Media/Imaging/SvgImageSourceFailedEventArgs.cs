@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Media.Imaging;
+﻿namespace Windows.UI.Xaml.Media.Imaging;
 
 /// <summary>
 /// Provides event data for the SvgImageSource.OpenFailed event.

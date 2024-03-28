@@ -14,9 +14,9 @@ using Java.Lang.Reflect;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : EditText, DependencyObject
 	{

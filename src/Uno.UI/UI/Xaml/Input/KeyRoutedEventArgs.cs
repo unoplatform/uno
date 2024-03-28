@@ -3,7 +3,7 @@ using Uno.UI.Xaml.Input;
 using Windows.UI.Core;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public partial class KeyRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Input
 			{
 				if (_keyStatus == null)
 				{
-					ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.KeyRoutedEventArgs", "KeyStatus");
+					ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.KeyRoutedEventArgs", "KeyStatus");
 					return default;
 				}
 				else

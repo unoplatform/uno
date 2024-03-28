@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Markup;
+﻿using Windows.UI.Xaml.Markup;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public enum ScrollingScrollBarVisibility
 {

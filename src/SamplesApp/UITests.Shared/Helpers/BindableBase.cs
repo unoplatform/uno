@@ -6,7 +6,7 @@ using System.Text;
 
 namespace UITests.Shared.Helpers
 {
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	public class BindableBase : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;

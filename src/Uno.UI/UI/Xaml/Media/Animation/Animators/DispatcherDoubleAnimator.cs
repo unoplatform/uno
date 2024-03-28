@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	internal sealed class DispatcherDoubleAnimator : CPUBoundAnimator<double>
 	{

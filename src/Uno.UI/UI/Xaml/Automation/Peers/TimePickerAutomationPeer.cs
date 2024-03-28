@@ -1,7 +1,7 @@
-using Uno.UI.Helpers.WinUI;
-using Microsoft.UI.Xaml.Controls;
+﻿using Uno.UI.Helpers.WinUI;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 public partial class TimePickerAutomationPeer : FrameworkElementAutomationPeer
 {

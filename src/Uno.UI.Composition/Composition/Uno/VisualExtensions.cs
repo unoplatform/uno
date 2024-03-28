@@ -1,6 +1,6 @@
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal static class VisualExtensions
 {

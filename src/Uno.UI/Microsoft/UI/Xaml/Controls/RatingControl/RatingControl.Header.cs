@@ -6,8 +6,8 @@
 
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

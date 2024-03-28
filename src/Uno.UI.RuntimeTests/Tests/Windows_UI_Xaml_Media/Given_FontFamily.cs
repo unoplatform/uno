@@ -1,6 +1,6 @@
 ﻿#if __WASM__
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {

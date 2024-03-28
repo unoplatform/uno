@@ -13,13 +13,13 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.Sockets;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuFlyout : FlyoutBase, IMenu

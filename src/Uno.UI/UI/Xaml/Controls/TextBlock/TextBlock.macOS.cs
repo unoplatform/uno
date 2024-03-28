@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Foundation;
 using CoreGraphics;
 using Windows.UI.Text;
@@ -13,7 +13,7 @@ using Uno.UI;
 using Windows.UI;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
 	{

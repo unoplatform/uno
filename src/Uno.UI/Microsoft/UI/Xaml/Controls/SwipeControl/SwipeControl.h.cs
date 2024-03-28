@@ -5,11 +5,11 @@
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeControl.h
 
 using System;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

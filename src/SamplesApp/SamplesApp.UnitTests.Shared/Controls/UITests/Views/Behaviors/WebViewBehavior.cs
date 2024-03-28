@@ -1,6 +1,6 @@
 ﻿#if XAMARIN || __WASM__
-using Microsoft.UI.Xaml;
-using _WebView = Microsoft.UI.Xaml.Controls.WebView;
+using Windows.UI.Xaml;
+using _WebView = Windows.UI.Xaml.Controls.WebView;
 
 namespace Uno.UI.Samples.Behaviors
 {

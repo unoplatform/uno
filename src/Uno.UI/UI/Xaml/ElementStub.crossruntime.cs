@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class ElementStub
 	{

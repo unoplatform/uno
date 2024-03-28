@@ -55,30 +55,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string FaviconUri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2.FaviconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2.FaviconUri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2MemoryUsageTargetLevel MemoryUsageTargetLevel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2MemoryUsageTargetLevel CoreWebView2.MemoryUsageTargetLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2MemoryUsageTargetLevel%20CoreWebView2.MemoryUsageTargetLevel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2MemoryUsageTargetLevel CoreWebView2.MemoryUsageTargetLevel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2CookieManager CookieManager
 		{
 			get
@@ -94,16 +70,6 @@ namespace Microsoft.Web.WebView2.Core
 			get
 			{
 				throw new global::System.NotImplementedException("The member CoreWebView2Environment CoreWebView2.Environment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2Environment%20CoreWebView2.Environment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public uint FrameId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2.FrameId");
 			}
 		}
 #endif
@@ -203,48 +169,6 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2.ClearServerCertificateErrorActionsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2.ClearServerCertificateErrorActionsAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FaviconUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FaviconChanged.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FaviconChanged.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetFaviconAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2FaviconImageFormat format)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> CoreWebView2.GetFaviconAsync(CoreWebView2FaviconImageFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20CoreWebView2.GetFaviconAsync%28CoreWebView2FaviconImageFormat%20format%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2PrintStatus> PrintAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2PrintStatus> CoreWebView2.PrintAsync(CoreWebView2PrintSettings printSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2PrintStatus%3E%20CoreWebView2.PrintAsync%28CoreWebView2PrintSettings%20printSettings%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ShowPrintUI(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintDialogKind printDialogKind)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind printDialogKind)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> PrintToPdfStreamAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> CoreWebView2.PrintToPdfStreamAsync(CoreWebView2PrintSettings printSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20CoreWebView2.PrintToPdfStreamAsync%28CoreWebView2PrintSettings%20printSettings%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void PostSharedBufferToScript(global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer sharedBuffer, global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBufferAccess access, string additionalDataAsJson)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.PostSharedBufferToScript(CoreWebView2SharedBuffer sharedBuffer, CoreWebView2SharedBufferAccess access, string additionalDataAsJson)");
-		}
-#endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.LaunchingExternalUriScheme.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.LaunchingExternalUriScheme.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.MemoryUsageTargetLevel.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.MemoryUsageTargetLevel.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.CookieManager.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.Environment.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceResponseReceived.add
@@ -258,7 +182,6 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.NavigateWithWebResourceRequest(CoreWebView2WebResourceRequest Request)");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FrameId.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsSuspended.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -515,38 +438,6 @@ namespace Microsoft.Web.WebView2.Core
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2ServerCertificateErrorDetectedEventArgs> CoreWebView2.ServerCertificateErrorDetected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> FaviconChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, object> CoreWebView2.FaviconChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, object> CoreWebView2.FaviconChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs> LaunchingExternalUriScheme
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2LaunchingExternalUriSchemeEventArgs> CoreWebView2.LaunchingExternalUriScheme");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2LaunchingExternalUriSchemeEventArgs> CoreWebView2.LaunchingExternalUriScheme");
 			}
 		}
 #endif

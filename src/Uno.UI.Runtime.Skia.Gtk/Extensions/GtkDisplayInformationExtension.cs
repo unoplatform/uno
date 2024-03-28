@@ -38,7 +38,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 		// TODO: this is a ridiculous amount of indirection, find something better
 		if (AppWindow.GetFromWindowId(_displayInformation.WindowId) is not { } appWindow ||
-			Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
+			Windows.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
 			UnoGtkWindow.GetGtkWindowFromWindow(window) is not { } gtkWindow)
 		{
 			throw new InvalidOperationException($"{nameof(GtkDisplayInformationExtension)} couldn't find a GTK window.");

@@ -19,7 +19,7 @@ using View = AppKit.NSView;
 using View = System.Object;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 
 	/// <summary>

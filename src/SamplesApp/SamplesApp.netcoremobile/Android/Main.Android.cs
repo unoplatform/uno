@@ -9,7 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Com.Nostra13.Universalimageloader.Core;
 
 [assembly: UsesPermission("android.permission.ACCESS_COARSE_LOCATION")]
@@ -33,7 +33,7 @@ namespace SamplesApp.Droid
 		HardwareAccelerated = true,
 		Theme = "@style/AppTheme"
 	)]
-	public class Application : Microsoft.UI.Xaml.NativeApplication
+	public class Application : Windows.UI.Xaml.NativeApplication
 	{
 		public Application(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(() => new App(), javaReference, transfer)

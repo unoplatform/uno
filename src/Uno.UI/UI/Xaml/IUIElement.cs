@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal interface IUIElement
 	{
@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// The 'return' size produced by the last Measure
 		/// </summary>
-		/// <remarks>This is the backing flied for the **internal** <see cref="LayoutInformation.GetDesiredSize(Microsoft.UI.Xaml.UIElement)"/></remarks>
+		/// <remarks>This is the backing flied for the **internal** <see cref="LayoutInformation.GetDesiredSize(Windows.UI.Xaml.UIElement)"/></remarks>
 		Size DesiredSize { get; set; }
 
 		/// <summary>

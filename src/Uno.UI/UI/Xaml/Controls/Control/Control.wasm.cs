@@ -3,17 +3,17 @@ using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Drawing;
 using System.Linq;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI;
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control
 	{

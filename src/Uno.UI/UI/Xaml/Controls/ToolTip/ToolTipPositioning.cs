@@ -6,9 +6,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal static class ToolTipPositioning
 	{

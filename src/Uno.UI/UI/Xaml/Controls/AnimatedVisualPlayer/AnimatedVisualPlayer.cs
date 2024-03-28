@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

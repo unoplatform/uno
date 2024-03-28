@@ -13,7 +13,7 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Helpers;
 

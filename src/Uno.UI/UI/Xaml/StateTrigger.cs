@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml
+﻿namespace Windows.UI.Xaml
 {
 	public partial class StateTrigger : StateTriggerBase
 	{
@@ -9,7 +9,7 @@
 		}
 
 		public static DependencyProperty IsActiveProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
+			Windows.UI.Xaml.DependencyProperty.Register(
 				"IsActive", typeof(bool),
 				typeof(StateTrigger),
 				new FrameworkPropertyMetadata(

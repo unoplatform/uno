@@ -2,7 +2,7 @@
 using System;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class VirtualizingPanel : Panel, IVirtualizingPanel
 	{

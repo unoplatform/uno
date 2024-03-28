@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PipsPager : global::Microsoft.UI.Xaml.Controls.Control
+	public partial class PipsPager : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property SelectedPipStyle
 		// Skipping already declared property SelectedPageIndex

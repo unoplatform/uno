@@ -10,7 +10,7 @@ using Uno.UI.Controls;
 using Uno.Extensions.Specialized;
 using AndroidX.ViewPager.Widget;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public class FlipViewAdapter : PagerAdapter
 	{

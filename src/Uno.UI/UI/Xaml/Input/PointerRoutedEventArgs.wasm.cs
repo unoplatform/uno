@@ -14,7 +14,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs : IHtmlHandleableRoutedEventArgs
 	{

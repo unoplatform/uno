@@ -7,7 +7,7 @@ using Uno.Extensions;
 using System.Xml.Xsl;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class ShapeVisual
 {

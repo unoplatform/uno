@@ -1,7 +1,7 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using Windows.Web;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal static class WebViewExtensions
 {

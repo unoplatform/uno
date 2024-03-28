@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class ContainerVisual : Visual
 {

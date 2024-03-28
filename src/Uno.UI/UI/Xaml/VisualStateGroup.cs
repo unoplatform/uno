@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +6,12 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
 
-using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
+using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
 #if __IOS__
 using UIKit;
@@ -19,7 +19,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[ContentProperty(Name = "States")]
 	public sealed partial class VisualStateGroup : DependencyObject

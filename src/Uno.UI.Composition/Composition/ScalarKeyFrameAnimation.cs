@@ -3,9 +3,9 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
-	public partial class ScalarKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
+	public partial class ScalarKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
 	{
 		internal ImmutableArray<KeyFrame> Keys { get; private set; } = ImmutableArray<KeyFrame>.Empty;
 
@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		[global::Uno.NotImplemented]
-		public void InsertKeyFrame(float normalizedProgressKey, float value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
+		public void InsertKeyFrame(float normalizedProgressKey, float value, global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 		{
 
 		}

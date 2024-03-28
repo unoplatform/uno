@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
 
@@ -20,7 +20,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{

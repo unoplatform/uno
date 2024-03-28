@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -20,13 +20,13 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		private void ButtonButton_Click(object sender, RoutedEventArgs e)
 		{
-			Microsoft.UI.Xaml.Controls.Flyout flyout = new Microsoft.UI.Xaml.Controls.Flyout();
+			Windows.UI.Xaml.Controls.Flyout flyout = new Windows.UI.Xaml.Controls.Flyout();
 			flyout.Content =
 				new Border()
 				{
 					Width = 300,
 					Height = 300,
-					Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					Background = new SolidColorBrush(Windows.UI.Colors.Red),
 				};
 
 			flyout.ShowAt((Button)sender);
@@ -34,13 +34,13 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		private void WindowButton_Click(object sender, RoutedEventArgs e)
 		{
-			Microsoft.UI.Xaml.Controls.Flyout flyout = new Microsoft.UI.Xaml.Controls.Flyout();
+			Windows.UI.Xaml.Controls.Flyout flyout = new Windows.UI.Xaml.Controls.Flyout();
 			flyout.Content =
 				new Border()
 				{
 					Width = 300,
 					Height = 300,
-					Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					Background = new SolidColorBrush(Windows.UI.Colors.Red),
 				};
 
 			flyout.ShowAt(XamlRoot?.Content as FrameworkElement);

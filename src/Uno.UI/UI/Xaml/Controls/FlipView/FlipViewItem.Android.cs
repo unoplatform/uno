@@ -3,10 +3,10 @@ using System.Linq;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipViewItem : SelectorItem
 	{

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NavigationViewItemAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+	public partial class NavigationViewItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.NavigationViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.NavigationViewItem)
@@ -14,6 +14,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Expand()
-		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+		// Processing: Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Input {
+﻿namespace Windows.UI.Xaml.Input {
 
 	export class FocusVisual {
 

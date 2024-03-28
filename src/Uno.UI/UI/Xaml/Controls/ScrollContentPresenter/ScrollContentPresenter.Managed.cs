@@ -1,7 +1,7 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,11 +11,11 @@ using Windows.Foundation;
 using System.IO;
 using Windows.Devices.Input;
 using Windows.System;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS

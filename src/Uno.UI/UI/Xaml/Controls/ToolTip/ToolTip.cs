@@ -2,10 +2,10 @@
 
 using System;
 using DirectUI;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -14,7 +14,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using _Debug = System.Diagnostics.Debug;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ToolTip : ContentControl
 	{

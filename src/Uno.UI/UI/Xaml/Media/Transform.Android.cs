@@ -3,7 +3,7 @@ using System.Numerics;
 using Uno.UI;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// Transform: Android part

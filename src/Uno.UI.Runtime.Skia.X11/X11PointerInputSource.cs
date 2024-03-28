@@ -4,7 +4,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 

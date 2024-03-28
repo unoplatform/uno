@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 
 using ICommand = System.Windows.Input.ICommand;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public class CommandingHelpers
 	{

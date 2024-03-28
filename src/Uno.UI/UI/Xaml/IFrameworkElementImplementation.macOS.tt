@@ -14,17 +14,17 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Helpers;
 using Uno.UI.Media;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 using AppKit;
 using CoreGraphics;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.UI.Extensions;
 using ObjCRuntime;
@@ -227,7 +227,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 
@@ -884,7 +884,7 @@ namespace <#= mixin.NamespaceName #>
 			//If IsHitTestVisible is false, ignore children
 			if (!IsHitTestVisible ||
 #if <#= mixin.IsFrameworkElement #> //IsFrameworkElement
-				this is Microsoft.UI.Xaml.Controls.Control { IsEnabled: false }
+				this is Windows.UI.Xaml.Controls.Control { IsEnabled: false }
 #else
 				!IsEnabled
 #endif

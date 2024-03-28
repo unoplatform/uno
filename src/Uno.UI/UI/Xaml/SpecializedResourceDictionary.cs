@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Uno.Foundation;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Specialized Dictionary for ResourceDictionary values backing, using <see cref="ResourceKey"/> for the dictionary key.

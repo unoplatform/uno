@@ -2,10 +2,10 @@
 using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter : Border
 	{

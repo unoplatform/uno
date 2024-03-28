@@ -1,13 +1,13 @@
 ﻿using System;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Represents a switch that can be toggled between two states.

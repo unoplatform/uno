@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BreadcrumbBar : global::Microsoft.UI.Xaml.Controls.Control
+	public partial class BreadcrumbBar : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property ItemsSource
 		// Skipping already declared property ItemTemplate

@@ -4,12 +4,12 @@
 using System;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 internal partial interface ILayouterElement
 {

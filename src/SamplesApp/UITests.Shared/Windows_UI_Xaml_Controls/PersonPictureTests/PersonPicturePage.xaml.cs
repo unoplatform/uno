@@ -7,21 +7,21 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel.Contacts;
 using Windows.Storage;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 
 namespace MUXControlsTestApp
 {
 	[Sample("MUX", "PersonPicture")]
-#pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+#pragma warning disable UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class PersonPicturePage
-#pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+#pragma warning restore UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 	{
 		private Uri imageUri = new Uri("ms-appx:///Assets/ingredient2.png");
 		private bool primaryEllipseLoaded = false;

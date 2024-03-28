@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{

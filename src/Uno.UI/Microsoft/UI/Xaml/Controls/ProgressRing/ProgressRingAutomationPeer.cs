@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+﻿using Windows.UI.Xaml.Automation.Peers;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

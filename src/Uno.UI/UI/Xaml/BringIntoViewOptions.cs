@@ -2,7 +2,7 @@
 using Uno.Extensions;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Represents the options that can be applied when an element is brought into view.

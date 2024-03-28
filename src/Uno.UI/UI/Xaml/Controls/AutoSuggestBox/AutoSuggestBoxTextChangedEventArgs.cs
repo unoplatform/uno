@@ -1,8 +1,8 @@
 ﻿#pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
-	public partial class AutoSuggestBoxTextChangedEventArgs : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class AutoSuggestBoxTextChangedEventArgs : global::Windows.UI.Xaml.DependencyObject
 	{
 		private AutoSuggestBox _owner;
 		private string _originalText;
@@ -13,10 +13,10 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ReasonProperty, value);
 		}
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty ReasonProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty ReasonProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Reason", typeof(AutoSuggestionBoxTextChangeReason),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs),
+			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs),
 			new FrameworkPropertyMetadata(default(AutoSuggestionBoxTextChangeReason)));
 
 		internal AutoSuggestBox Owner

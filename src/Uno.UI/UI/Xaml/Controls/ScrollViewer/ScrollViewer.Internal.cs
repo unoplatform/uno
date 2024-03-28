@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{

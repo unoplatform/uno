@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Content.UITests.GridView

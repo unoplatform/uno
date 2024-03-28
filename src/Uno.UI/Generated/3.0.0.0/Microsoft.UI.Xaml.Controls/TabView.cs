@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TabView : global::Microsoft.UI.Xaml.Controls.Control
+	public partial class TabView : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property TabWidthMode
 		// Skipping already declared property TabStripHeaderTemplate

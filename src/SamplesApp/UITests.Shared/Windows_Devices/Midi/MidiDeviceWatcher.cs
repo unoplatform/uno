@@ -14,7 +14,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices.Midi

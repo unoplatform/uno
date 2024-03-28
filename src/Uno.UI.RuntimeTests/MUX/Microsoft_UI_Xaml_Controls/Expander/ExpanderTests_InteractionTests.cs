@@ -5,8 +5,8 @@
 
 // using System;
 // using Common;
-// using Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests.Infra;
-// using Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests.Common;
+// using Windows.UI.Xaml.Tests.MUXControls.InteractionTests.Infra;
+// using Windows.UI.Xaml.Tests.MUXControls.InteractionTests.Common;
 // using System.Collections.Generic;
 // using Windows.Foundation.Metadata;
 //
@@ -26,7 +26,7 @@
 // using Microsoft.Windows.Apps.Test.Foundation.Waiters;
 // using MUXTestInfra.Shared.Infra;
 //
-// namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
+// namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 // {
 //     public class Expander : UIObject, IExpandCollapse
 //     {

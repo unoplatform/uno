@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Peers;
+﻿namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Specifies the event that is raised by the element through the associated AutomationPeer. Used by RaiseAutomationEvent.

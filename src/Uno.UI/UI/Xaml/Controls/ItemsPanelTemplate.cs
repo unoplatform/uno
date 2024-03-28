@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 
 #if __ANDROID__
@@ -15,10 +15,10 @@ using Font = UIKit.UIFont;
 using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPanelTemplate : FrameworkTemplate
 	{

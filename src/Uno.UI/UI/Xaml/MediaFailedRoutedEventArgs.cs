@@ -1,10 +1,10 @@
 ﻿using System;
 using Uno;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[NotImplemented]
-	public partial class MediaFailedRoutedEventArgs : global::Microsoft.UI.Xaml.ExceptionRoutedEventArgs
+	public partial class MediaFailedRoutedEventArgs : global::Windows.UI.Xaml.ExceptionRoutedEventArgs
 	{
 		[NotImplemented]
 		internal MediaFailedRoutedEventArgs(object originalSource)

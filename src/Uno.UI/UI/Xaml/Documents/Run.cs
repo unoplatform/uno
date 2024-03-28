@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	[ContentProperty(Name = nameof(Text))]
 	public partial class Run : Inline

@@ -20,7 +20,7 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS

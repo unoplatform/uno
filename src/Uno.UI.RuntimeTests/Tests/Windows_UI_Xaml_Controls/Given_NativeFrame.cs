@@ -7,15 +7,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Uno.UI.RuntimeTests.Extensions;
 using SamplesApp.UITests.TestFramework;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Markup;
 using Uno.UI.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_NavigateForward()
 		{
-			var style = Microsoft.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
+			var style = Windows.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
 			Assert.IsNotNull(style);
 
 			var SUT = new Frame()
@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_NavigateBackSkipingPages()
 		{
-			var style = Microsoft.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
+			var style = Windows.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
 			Assert.IsNotNull(style);
 
 			var SUT = new Frame()

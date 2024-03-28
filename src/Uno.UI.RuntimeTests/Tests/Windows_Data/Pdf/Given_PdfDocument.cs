@@ -9,8 +9,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Data.Pdf;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Data.Pdf;
 
@@ -80,14 +80,14 @@ public class Given_PdfDocument
 		await pdfImageSource.SetSourceAsync(pageStream);
 		var pdfImageHost = new Image()
 		{
-			Stretch = Microsoft.UI.Xaml.Media.Stretch.None,
+			Stretch = Windows.UI.Xaml.Media.Stretch.None,
 			Source = pdfImageSource,
 		};
 		var refImageSource = new BitmapImage();
 		await refImageSource.SetSourceAsync(GetSreamFromResource(referencePageImage)?.AsRandomAccessStream());
 		var refImageHost = new Image()
 		{
-			Stretch = Microsoft.UI.Xaml.Media.Stretch.None,
+			Stretch = Windows.UI.Xaml.Media.Stretch.None,
 			Source = refImageSource,
 		};
 
@@ -214,7 +214,7 @@ public class Given_PdfDocument
 		PdfDocument? pdfDocument = await PdfDocument.LoadFromStreamAsync(stream);
 		await CheckDocumentAsync(pdfDocument, "UnoA4_Crop.png", new PdfPageRenderOptions()
 		{
-			BackgroundColor = Microsoft.UI.Colors.Beige,
+			BackgroundColor = Windows.UI.Colors.Beige,
 			SourceRect = new Windows.Foundation.Rect(20, 16, 135, 48),
 		});
 	}

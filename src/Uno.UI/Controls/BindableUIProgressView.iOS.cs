@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UIKit;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Views.Controls
 {

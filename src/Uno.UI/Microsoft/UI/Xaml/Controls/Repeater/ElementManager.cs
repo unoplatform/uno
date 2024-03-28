@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls

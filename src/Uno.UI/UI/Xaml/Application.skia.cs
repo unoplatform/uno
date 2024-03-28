@@ -8,11 +8,11 @@ using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
 using Windows.ApplicationModel.Core;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
 	{
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml
 
 			if (!_startInvoked)
 			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
 
 			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal static void StartWithArguments(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
+		internal static void StartWithArguments(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{
 			_arguments = GetCommandLineArgsWithoutExecutable();
 			Start(callback);

@@ -4,7 +4,7 @@ using System.Text;
 using BenchmarkDotNet.Attributes;
 using Benchmarks.Shared.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 {

@@ -12,7 +12,7 @@ using Uno.UI.Dispatching;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using CoreFoundation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Shapes;
 
 #if __IOS__
 using UIKit;
@@ -20,7 +20,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {

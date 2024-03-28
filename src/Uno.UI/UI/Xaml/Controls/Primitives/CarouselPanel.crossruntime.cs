@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class CarouselPanel : VirtualizingPanel
 	{

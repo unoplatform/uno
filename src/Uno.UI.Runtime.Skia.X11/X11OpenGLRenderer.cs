@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;

@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// Represents a control that a user can select (check) or clear (uncheck).

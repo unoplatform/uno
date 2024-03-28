@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 using DirectUI;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{

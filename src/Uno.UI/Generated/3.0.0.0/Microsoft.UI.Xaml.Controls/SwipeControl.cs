@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SwipeControl : global::Microsoft.UI.Xaml.Controls.ContentControl
+	public partial class SwipeControl : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property TopItems
 		// Skipping already declared property RightItems

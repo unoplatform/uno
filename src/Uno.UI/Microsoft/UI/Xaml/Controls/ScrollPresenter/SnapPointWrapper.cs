@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal partial class SnapPointWrapper<T> where T : SnapPointBase
 {

@@ -6,7 +6,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Input;
 using Windows.ApplicationModel.Appointments;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.DataBinding
 {

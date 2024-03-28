@@ -10,7 +10,7 @@ using Windows.ApplicationModel;
 using Windows.UI.Text;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Documents.TextFormatting;
+namespace Windows.UI.Xaml.Documents.TextFormatting;
 
 internal static class FontDetailsCache
 {

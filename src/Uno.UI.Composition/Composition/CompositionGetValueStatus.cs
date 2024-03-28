@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Composition;
+﻿namespace Windows.UI.Composition;
 
 /// <summary>
 /// Indicates the outcome of an attempt to retrieve the value of a key-value pair.

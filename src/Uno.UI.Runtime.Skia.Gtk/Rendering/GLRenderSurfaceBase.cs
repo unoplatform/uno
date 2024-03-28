@@ -4,14 +4,14 @@ using System;
 using System.IO;
 using SkiaSharp;
 using Uno.UI.Xaml.Core;
-using Microsoft.UI.Xaml.Input;
-using WUX = Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Input;
+using WUX = Windows.UI.Xaml;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk

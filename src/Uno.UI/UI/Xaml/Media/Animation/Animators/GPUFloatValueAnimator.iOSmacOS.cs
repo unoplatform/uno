@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Windows.UI.Core;
 using CoreAnimation;
 using CoreGraphics;
@@ -23,7 +23,7 @@ using AppKit;
 using _View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// Animates a float property using a native <see cref="CoreAnimation"/>.
@@ -47,37 +47,37 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		#region PropertyNameConstants
 		private const string TranslateTransformX = "TranslateTransform.X";
-		private const string TranslateTransformXWithNamespace = "Microsoft.UI.Xaml.Media:TranslateTransform.X";
+		private const string TranslateTransformXWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.X";
 		private const string TranslateTransformY = "TranslateTransform.Y";
-		private const string TranslateTransformYWithNamespace = "Microsoft.UI.Xaml.Media:TranslateTransform.Y";
+		private const string TranslateTransformYWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.Y";
 		private const string RotateTransformAngle = "RotateTransform.Angle";
-		private const string RotateTransformAngleWithNamespace = "Microsoft.UI.Xaml.Media:RotateTransform.Angle";
+		private const string RotateTransformAngleWithNamespace = "Windows.UI.Xaml.Media:RotateTransform.Angle";
 		private const string ScaleTransformX = "ScaleTransform.ScaleX";
-		private const string ScaleTransformXWithNamespace = "Microsoft.UI.Xaml.Media:ScaleTransform.ScaleX";
+		private const string ScaleTransformXWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.ScaleX";
 		private const string ScaleTransformY = "ScaleTransform.ScaleY";
-		private const string ScaleTransformYWithNamespace = "Microsoft.UI.Xaml.Media:ScaleTransform.ScaleY";
+		private const string ScaleTransformYWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.ScaleY";
 		private const string SkewTransformAngleX = "SkewTransform.AngleX";
-		private const string SkewTransformAngleXWithNamespace = "Microsoft.UI.Xaml.Media:SkewTransform.AngleX";
+		private const string SkewTransformAngleXWithNamespace = "Windows.UI.Xaml.Media:SkewTransform.AngleX";
 		private const string SkewTransformAngleY = "SkewTransform.AngleY";
-		private const string SkewTransformAngleYWithNamespace = "Microsoft.UI.Xaml.Media:SkewTransform.AngleY";
+		private const string SkewTransformAngleYWithNamespace = "Windows.UI.Xaml.Media:SkewTransform.AngleY";
 		private const string CompositeTransformCenterX = "CompositeTransform.CenterX";
-		private const string CompositeTransformCenterXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.CenterX";
+		private const string CompositeTransformCenterXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.CenterX";
 		private const string CompositeTransformCenterY = "CompositeTransform.CenterY";
-		private const string CompositeTransformCenterYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.CenterY";
+		private const string CompositeTransformCenterYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.CenterY";
 		private const string CompositeTransformTranslateX = "CompositeTransform.TranslateX";
-		private const string CompositeTransformTranslateXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.TranslateX";
+		private const string CompositeTransformTranslateXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.TranslateX";
 		private const string CompositeTransformTranslateY = "CompositeTransform.TranslateY";
-		private const string CompositeTransformTranslateYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.TranslateY";
+		private const string CompositeTransformTranslateYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.TranslateY";
 		private const string CompositeTransformRotation = "CompositeTransform.Rotation";
-		private const string CompositeTransformRotationWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.Rotation";
+		private const string CompositeTransformRotationWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.Rotation";
 		private const string CompositeTransformScaleX = "CompositeTransform.ScaleX";
-		private const string CompositeTransformScaleXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.ScaleX";
+		private const string CompositeTransformScaleXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.ScaleX";
 		private const string CompositeTransformScaleY = "CompositeTransform.ScaleY";
-		private const string CompositeTransformScaleYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.ScaleY";
+		private const string CompositeTransformScaleYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.ScaleY";
 		private const string CompositeTransformSkewX = "CompositeTransform.SkewX";
-		private const string CompositeTransformSkewXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.SkewX";
+		private const string CompositeTransformSkewXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewX";
 		private const string CompositeTransformSkewY = "CompositeTransform.SkewY";
-		private const string CompositeTransformSkewYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.SkewY";
+		private const string CompositeTransformSkewYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewY";
 		#endregion
 
 		internal static Point GetAnchorForAnimation(Transform transform, Point relativeOrigin, Size viewSize)

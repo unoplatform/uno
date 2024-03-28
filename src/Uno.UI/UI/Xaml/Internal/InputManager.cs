@@ -5,8 +5,8 @@
 #nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;

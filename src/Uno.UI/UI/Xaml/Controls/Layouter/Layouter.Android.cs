@@ -13,7 +13,7 @@ using Font = Android.Graphics.Typeface;
 using System.Linq.Expressions;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	abstract partial class Layouter
 	{

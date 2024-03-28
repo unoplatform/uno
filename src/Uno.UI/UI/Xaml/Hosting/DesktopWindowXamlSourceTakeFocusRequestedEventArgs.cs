@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Hosting;
+﻿namespace Windows.UI.Xaml.Hosting;
 
 /// <summary>
 /// Provides event data for the TakeFocusRequested event.

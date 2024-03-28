@@ -15,23 +15,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeepInteriorCornersSquareProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+		public static global::Windows.UI.Xaml.DependencyProperty KeepInteriorCornersSquareProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"KeepInteriorCornersSquare", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.KeepInteriorCornersSquareProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.ComboBox comboBox, bool value)
+		public static void SetKeepInteriorCornersSquare(global::Windows.UI.Xaml.Controls.ComboBox comboBox, bool value)
 		{
 			comboBox.SetValue(KeepInteriorCornersSquareProperty, value);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.ComboBox comboBox)
+		public static bool GetKeepInteriorCornersSquare(global::Windows.UI.Xaml.Controls.ComboBox comboBox)
 		{
 			return (bool)comboBox.GetValue(KeepInteriorCornersSquareProperty);
 		}

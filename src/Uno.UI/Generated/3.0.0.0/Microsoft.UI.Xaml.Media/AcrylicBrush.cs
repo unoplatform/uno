@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AcrylicBrush : global::Microsoft.UI.Xaml.Media.XamlCompositionBrushBase
+	public partial class AcrylicBrush : global::Windows.UI.Xaml.Media.XamlCompositionBrushBase
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -22,24 +22,134 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 #endif
-		// Skipping already declared property TintOpacity
-		// Skipping already declared property TintColor
-		// Skipping already declared property AlwaysUseFallback
-		// Skipping already declared property TintLuminosityOpacity
-		// Skipping already declared property AlwaysUseFallbackProperty
-		// Skipping already declared property TintColorProperty
-		// Skipping already declared property TintOpacityProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TintTransitionDurationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		public double TintOpacity
+		{
+			get
+			{
+				return (double)this.GetValue(TintOpacityProperty);
+			}
+			set
+			{
+				this.SetValue(TintOpacityProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Windows.UI.Color TintColor
+		{
+			get
+			{
+				return (global::Windows.UI.Color)this.GetValue(TintColorProperty);
+			}
+			set
+			{
+				this.SetValue(TintColorProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Media.AcrylicBackgroundSource BackgroundSource
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.AcrylicBackgroundSource)this.GetValue(BackgroundSourceProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundSourceProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool AlwaysUseFallback
+		{
+			get
+			{
+				return (bool)this.GetValue(AlwaysUseFallbackProperty);
+			}
+			set
+			{
+				this.SetValue(AlwaysUseFallbackProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public double? TintLuminosityOpacity
+		{
+			get
+			{
+				return (double?)this.GetValue(TintLuminosityOpacityProperty);
+			}
+			set
+			{
+				this.SetValue(TintLuminosityOpacityProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty AlwaysUseFallbackProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(AlwaysUseFallback), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSourceProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(BackgroundSource), typeof(global::Microsoft.UI.Xaml.Media.AcrylicBackgroundSource),
+			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.AcrylicBackgroundSource)));
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TintColorProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TintColor), typeof(global::Windows.UI.Color),
+			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TintOpacityProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TintOpacity), typeof(double),
+			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TintTransitionDurationProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TintTransitionDuration), typeof(global::System.TimeSpan),
 			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 #endif
-		// Skipping already declared property TintLuminosityOpacityProperty
-		// Skipping already declared method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush()
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TintLuminosityOpacityProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TintLuminosityOpacity), typeof(double?),
+			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double?)));
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public AcrylicBrush() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.AcrylicBrush", "AcrylicBrush.AcrylicBrush()");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.BackgroundSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.BackgroundSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacity.get
@@ -51,6 +161,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacityProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.BackgroundSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDurationProperty.get

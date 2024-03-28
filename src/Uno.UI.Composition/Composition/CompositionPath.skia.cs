@@ -3,7 +3,7 @@
 using SkiaSharp;
 using System;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionPath
 	{

@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.System;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{

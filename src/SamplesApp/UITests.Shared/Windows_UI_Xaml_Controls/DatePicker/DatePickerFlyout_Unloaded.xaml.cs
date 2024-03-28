@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker

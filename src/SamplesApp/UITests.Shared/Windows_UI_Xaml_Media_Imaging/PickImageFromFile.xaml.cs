@@ -2,15 +2,15 @@
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.UITests.Helpers;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 namespace UITests.Windows_UI_Xaml_Media_Imaging;
 
-[Sample("Microsoft.UI.Xaml.Media", ViewModelType = typeof(PickImageFromFileViewModel), IsManualTest = true,
+[Sample("Windows.UI.Xaml.Media", ViewModelType = typeof(PickImageFromFileViewModel), IsManualTest = true,
 	Description = "Allows for selecting .jpg image from storage and displaying it. Not selecting an image should not cause an exception.")]
 public sealed partial class PickImageFromFile : Page
 {

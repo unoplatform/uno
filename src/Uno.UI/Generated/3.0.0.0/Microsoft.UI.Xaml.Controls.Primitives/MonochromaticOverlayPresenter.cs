@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MonochromaticOverlayPresenter : global::Microsoft.UI.Xaml.Controls.Grid
+	public partial class MonochromaticOverlayPresenter : global::Windows.UI.Xaml.Controls.Grid
 	{
 		// Skipping already declared property SourceElement
 		// Skipping already declared property ReplacementColor

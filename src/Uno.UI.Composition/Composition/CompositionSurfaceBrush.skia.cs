@@ -7,7 +7,7 @@ using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{

@@ -5,10 +5,10 @@ using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// PopupPanel implementation for <see cref="FlyoutBase"/>.
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_flyout._popup.AssociatedFlyout = flyout;
 			// Required for the dismiss handling
 			// This should however be customized depending of the Popup.DismissMode
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+			Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
 		}
 
 		protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;

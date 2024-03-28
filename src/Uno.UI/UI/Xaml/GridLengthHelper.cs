@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public sealed partial class GridLengthHelper
 	{

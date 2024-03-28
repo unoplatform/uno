@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Input
+﻿namespace Windows.UI.Xaml.Input
 {
 	/// <summary>
 	/// Data for event which occurs when access keys should no longer be displayed.

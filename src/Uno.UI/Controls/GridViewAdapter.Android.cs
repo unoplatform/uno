@@ -16,7 +16,7 @@ using Android.Graphics.Drawables;
 using Android.Graphics;
 using System.Globalization;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions.Specialized;
 
 namespace Uno.UI.Controls
@@ -32,7 +32,7 @@ namespace Uno.UI.Controls
 			: base(context)
 		{
 			_columnOrRowCount = 1;
-			Orientation = Microsoft.UI.Xaml.Controls.Orientation.Vertical;
+			Orientation = Windows.UI.Xaml.Controls.Orientation.Vertical;
 		}
 
 		private int _columnOrRowCount;
@@ -47,7 +47,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		public Microsoft.UI.Xaml.Controls.Orientation Orientation { get; set; }
+		public Windows.UI.Xaml.Controls.Orientation Orientation { get; set; }
 
 		public int VerticalSpacing { get; set; }
 		public int HorizontalSpacing { get; set; }
@@ -99,10 +99,10 @@ namespace Uno.UI.Controls
 
 			switch (Orientation)
 			{
-				case Microsoft.UI.Xaml.Controls.Orientation.Vertical:
+				case Windows.UI.Xaml.Controls.Orientation.Vertical:
 					rowView.SetPadding(0, position == 0 ? 0 : VerticalSpacing, 0, 0);
 					break;
-				case Microsoft.UI.Xaml.Controls.Orientation.Horizontal:
+				case Windows.UI.Xaml.Controls.Orientation.Horizontal:
 					rowView.SetPadding(position == 0 ? 0 : HorizontalSpacing, 0, 0, 0);
 					break;
 			}
@@ -114,7 +114,7 @@ namespace Uno.UI.Controls
 		{
 			var rowLayout = new LinearLayout(Context)
 			{
-				Orientation = Orientation == Microsoft.UI.Xaml.Controls.Orientation.Horizontal
+				Orientation = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal
 					? Android.Widget.Orientation.Vertical
 					: Android.Widget.Orientation.Horizontal,
 				WeightSum = ColumnOrRowCount,
@@ -176,7 +176,7 @@ namespace Uno.UI.Controls
 
 				if (view == null)
 				{
-					var template = Microsoft.UI.Xaml.DataTemplateHelper.ResolveTemplate(
+					var template = Windows.UI.Xaml.DataTemplateHelper.ResolveTemplate(
 						this.ItemTemplate,
 						this.ItemTemplateSelector,
 						source,
@@ -246,11 +246,11 @@ namespace Uno.UI.Controls
 
 				switch (Orientation)
 				{
-					case Microsoft.UI.Xaml.Controls.Orientation.Vertical:
+					case Windows.UI.Xaml.Controls.Orientation.Vertical:
 						layoutParameters = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MatchParent, 1);
 						layoutParameters.SetMargins(0, 0, isLastColumnOrRow ? 0 : VerticalSpacing, 0);
 						break;
-					case Microsoft.UI.Xaml.Controls.Orientation.Horizontal:
+					case Windows.UI.Xaml.Controls.Orientation.Horizontal:
 						layoutParameters = new LinearLayout.LayoutParams(0, 1, LinearLayout.LayoutParams.MatchParent);
 						layoutParameters.SetMargins(0, 0, 0, isLastColumnOrRow ? 0 : HorizontalSpacing);
 						break;

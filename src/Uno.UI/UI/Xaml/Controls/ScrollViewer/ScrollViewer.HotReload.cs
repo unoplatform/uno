@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
-[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.ScrollViewer), typeof(Microsoft.UI.Xaml.Controls.ScrollViewerMetadataUpdateHandler))]
+[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Windows.UI.Xaml.Controls.ScrollViewer), typeof(Windows.UI.Xaml.Controls.ScrollViewerMetadataUpdateHandler))]
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal static partial class ScrollViewerMetadataUpdateHandler
 {

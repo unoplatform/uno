@@ -3,11 +3,11 @@
 
 using MUXControlsTestApp.Utilities;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using DisplayInformation = Windows.Graphics.Display.DisplayInformation;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public class OrientationBasedMeasures
 	{

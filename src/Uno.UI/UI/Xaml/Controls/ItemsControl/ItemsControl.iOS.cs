@@ -9,7 +9,7 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsControl : Control
 	{

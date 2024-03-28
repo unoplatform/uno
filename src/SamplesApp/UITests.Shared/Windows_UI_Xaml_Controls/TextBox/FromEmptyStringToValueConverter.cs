@@ -5,7 +5,7 @@ using System.Text;
 #if WinUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Data;
 #else
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 #endif
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox

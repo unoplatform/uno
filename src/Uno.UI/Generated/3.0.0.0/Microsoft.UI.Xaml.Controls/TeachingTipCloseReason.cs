@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum TeachingTipCloseReason
 	{
-#if false
-		CloseButton = 0,
-#endif
-#if false
-		LightDismiss = 1,
-#endif
-#if false
-		Programmatic = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipCloseReason.CloseButton
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipCloseReason.LightDismiss
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipCloseReason.Programmatic
 	}
 #endif
 }

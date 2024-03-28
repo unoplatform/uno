@@ -16,10 +16,10 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Color = Windows.UI.Color;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{

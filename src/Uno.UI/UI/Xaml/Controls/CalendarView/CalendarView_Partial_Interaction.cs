@@ -3,12 +3,12 @@
 
 using System;
 using Windows.System;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Uno.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{

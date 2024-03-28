@@ -3,9 +3,9 @@
 public static class SkiaHostBuilderExtensions
 {
 	/// <summary>
-	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
+	/// Provides an <see cref="Windows.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
-	public static ISkiaHostBuilder App(this ISkiaHostBuilder builder, Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public static ISkiaHostBuilder App(this ISkiaHostBuilder builder, Func<Windows.UI.Xaml.Application> appBuilder)
 	{
 		builder.AppBuilder = appBuilder;
 		return builder;

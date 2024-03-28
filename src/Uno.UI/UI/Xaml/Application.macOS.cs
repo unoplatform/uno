@@ -22,7 +22,7 @@ using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActiv
 
 using NativeHandle = ObjCRuntime.NativeHandle;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate

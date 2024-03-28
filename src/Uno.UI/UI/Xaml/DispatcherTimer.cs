@@ -7,7 +7,7 @@ using DispatcherQueueTimer = Microsoft.UI.Dispatching.DispatcherQueueTimer;
 using DispatcherQueueTimer = Windows.System.DispatcherQueueTimer;
 #endif
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Provides a timer that is integrated into the Dispatcher queue, which is processed at a specified interval of time and at a specified priority.

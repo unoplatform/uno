@@ -3,12 +3,12 @@
 
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 internal interface IScrollPresenter
 {

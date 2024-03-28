@@ -238,7 +238,7 @@
 			<FontWeight x:Key="HubSectionHeaderThemeFontWeight">Normal</FontWeight>
 			<x:Boolean x:Key="IsApplicationFocusVisualKindReveal">False</x:Boolean>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Slider -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Slider -->
 			<StaticResource x:Key="SliderContainerBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="SystemControlTransparentBrush" />
@@ -262,7 +262,7 @@
 			<StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="SystemControlBackgroundAltHighBrush" />
 
 
-            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.ScrollBar -->
+            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.ScrollBar -->
             <StaticResource x:Key="ScrollBarBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ScrollBarBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ScrollBarBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
@@ -483,7 +483,7 @@
 			<SolidColorBrush x:Key="CheckBoxPressedBorderThemeBrush" Color="#FFFFFFFF" />
 			<SolidColorBrush x:Key="CheckBoxPressedForegroundThemeBrush" Color="#FF000000" />
 
-		    <!-- Resources for Microsoft.UI.Xaml.Controls.Button -->
+		    <!-- Resources for Windows.UI.Xaml.Controls.Button -->
 			<StaticResource x:Key="ButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
@@ -497,7 +497,7 @@
 			<StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="ButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CheckBox -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CheckBox -->
 			<StaticResource x:Key="CheckBoxForegroundUnchecked" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="CheckBoxForegroundUncheckedPressed" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -713,7 +713,7 @@
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
 
-            <!-- Resources for Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
+            <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
             <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -748,7 +748,7 @@
 			<StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
 			<StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.DatePicker -->
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePicker -->
 			<StaticResource x:Key="DatePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="DatePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
 			<StaticResource x:Key="DatePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -768,13 +768,13 @@
 			<StaticResource x:Key="DatePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="DatePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
 			<StaticResource x:Key="DatePickerFlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.TimePicker -->
+			<!-- Resources for Windows.UI.Xaml.Controls.TimePicker -->
 			<StaticResource x:Key="TimePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
 			<StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -794,13 +794,13 @@
 			<StaticResource x:Key="TimePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="TimePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter -->
 			<StaticResource x:Key="TimePickerFlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Pivot -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Pivot -->
 			<SolidColorBrush x:Key="PivotBackground" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderBackground" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotNextButtonBackground" Color="{StaticResource SystemBaseMediumLowColor}" />
@@ -822,10 +822,10 @@
 			<SolidColorBrush x:Key="PivotPreviousButtonForegroundPointerOver" Color="{StaticResource SystemAltMediumHighColor}" />
 			<SolidColorBrush x:Key="PivotPreviousButtonForegroundPressed" Color="{StaticResource SystemAltMediumHighColor}" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.PivotItem -->
+			<!-- Resources for Windows.UI.Xaml.Controls.PivotItem -->
 			<SolidColorBrush x:Key="PivotItemBackground" Color="Transparent" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselected" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPointerOver" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPressed" Color="Transparent" />
@@ -1028,9 +1028,9 @@
 			<!--
         Resources for:
 
-        Microsoft.UI.Xaml.Controls.TextBox
-        Microsoft.UI.Xaml.Controls.PasswordBox
-        Microsoft.UI.Xaml.Controls.RichEditBox
+        Windows.UI.Xaml.Controls.TextBox
+        Windows.UI.Xaml.Controls.PasswordBox
+        Windows.UI.Xaml.Controls.RichEditBox
         AutoSuggestTextBoxStyle
     -->
 			<SolidColorBrush x:Key="TextControlForeground"  Color="{StaticResource SystemBaseHighColor}" />
@@ -1117,7 +1117,7 @@
 			<not_win:Thickness x:Key="SearchBoxBorderThickness">0</not_win:Thickness>
 			<not_win:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.HyperlinkButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<not_win:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
@@ -1131,7 +1131,7 @@
 			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
-            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
+            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
             <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
             <StaticResource x:Key="RepeatButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
             <StaticResource x:Key="RepeatButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
@@ -1298,7 +1298,7 @@
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.Thumb -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.Thumb -->
 			<StaticResource x:Key="ThumbBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
 			<StaticResource x:Key="ThumbBackgroundPressed" ResourceKey="SystemControlHighlightBaseMediumBrush" />
@@ -1544,7 +1544,7 @@
 			<FontWeight x:Key="HubSectionHeaderThemeFontWeight">Normal</FontWeight>
 			<x:Boolean x:Key="IsApplicationFocusVisualKindReveal">False</x:Boolean>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Slider -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Slider -->
 			<StaticResource x:Key="SliderContainerBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="SystemControlTransparentBrush" />
@@ -1567,7 +1567,7 @@
 			<StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="SystemControlBackgroundAltHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.ScrollBar -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.ScrollBar -->
             <StaticResource x:Key="ScrollBarBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ScrollBarBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ScrollBarBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
@@ -1787,7 +1787,7 @@
 			<SolidColorBrush x:Key="CheckBoxPressedBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="CheckBoxPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 
-		    <!-- Resources for Microsoft.UI.Xaml.Controls.Button -->
+		    <!-- Resources for Windows.UI.Xaml.Controls.Button -->
 			<StaticResource x:Key="ButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
@@ -1801,7 +1801,7 @@
 			<StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="ButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CheckBox -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CheckBox -->
 			<StaticResource x:Key="CheckBoxForegroundUnchecked" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="CheckBoxForegroundUncheckedPressed" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -2018,7 +2018,7 @@
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
 
 
-            <!-- Resources for Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
+            <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
             <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -2053,7 +2053,7 @@
 			<StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
 			<StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.DatePicker -->
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePicker -->
 			<StaticResource x:Key="DatePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="DatePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
 			<StaticResource x:Key="DatePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -2073,13 +2073,13 @@
 			<StaticResource x:Key="DatePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="DatePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
 			<StaticResource x:Key="DatePickerFlyoutPresenterBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.TimePicker -->
+			<!-- Resources for Windows.UI.Xaml.Controls.TimePicker -->
 			<StaticResource x:Key="TimePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
 			<StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -2099,13 +2099,13 @@
 			<StaticResource x:Key="TimePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="TimePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter -->
 			<StaticResource x:Key="TimePickerFlyoutPresenterBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Pivot -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Pivot -->
             <SolidColorBrush x:Key="PivotBackground" Color="Transparent" />
             <SolidColorBrush x:Key="PivotHeaderBackground" Color="Transparent" />
             <SolidColorBrush x:Key="PivotNextButtonBackground" Color="{StaticResource SystemBaseMediumLowColor}" />
@@ -2127,10 +2127,10 @@
 			<SolidColorBrush x:Key="PivotPreviousButtonForegroundPointerOver" Color="{StaticResource SystemAltMediumHighColor}" />
 			<SolidColorBrush x:Key="PivotPreviousButtonForegroundPressed" Color="{StaticResource SystemAltMediumHighColor}" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.PivotItem -->
+			<!-- Resources for Windows.UI.Xaml.Controls.PivotItem -->
 			<SolidColorBrush x:Key="PivotItemBackground" Color="Transparent" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselected" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPointerOver" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPressed" Color="Transparent" />
@@ -2333,9 +2333,9 @@
 			<!--
         Resources for:
 
-        Microsoft.UI.Xaml.Controls.TextBox
-        Microsoft.UI.Xaml.Controls.PasswordBox
-        Microsoft.UI.Xaml.Controls.RichEditBox
+        Windows.UI.Xaml.Controls.TextBox
+        Windows.UI.Xaml.Controls.PasswordBox
+        Windows.UI.Xaml.Controls.RichEditBox
         AutoSuggestTextBoxStyle
     -->
 			<SolidColorBrush x:Key="TextControlForeground" Color="{StaticResource SystemBaseHighColor}" />
@@ -2410,7 +2410,7 @@
 			<not_win:Thickness x:Key="SearchBoxBorderThickness">0</not_win:Thickness>
 			<not_win:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></not_win:SolidColorBrush> <!-- TODO: Uno specific - should fall back to SystemColorWindowColor in HighContrast-->
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.HyperlinkButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<not_win:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
@@ -2424,7 +2424,7 @@
 			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
 			<StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="RepeatButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="RepeatButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
@@ -2592,7 +2592,7 @@
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.Thumb -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.Thumb -->
 			<StaticResource x:Key="ThumbBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
 			<StaticResource x:Key="ThumbBackgroundPressed" ResourceKey="SystemControlHighlightBaseMediumBrush" />
@@ -2838,7 +2838,7 @@
 			<FontWeight x:Key="HubSectionHeaderThemeFontWeight">Normal</FontWeight>
 			<x:Boolean x:Key="IsApplicationFocusVisualKindReveal">False</x:Boolean>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Slider -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Slider -->
 			<StaticResource x:Key="SliderContainerBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="SystemControlTransparentBrush" />
@@ -2861,7 +2861,7 @@
 			<StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="SystemControlBackgroundAltHighBrush" />
 
-			            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.ScrollBar -->
+			            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.ScrollBar -->
             <StaticResource x:Key="ScrollBarBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ScrollBarBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ScrollBarBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
@@ -3080,7 +3080,7 @@
 			<SolidColorBrush x:Key="CheckBoxPressedBorderThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="CheckBoxPressedForegroundThemeBrush" Color="#FFFFFFFF" />
 
-		    <!-- Resources for Microsoft.UI.Xaml.Controls.Button -->
+		    <!-- Resources for Windows.UI.Xaml.Controls.Button -->
 			<StaticResource x:Key="ButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
@@ -3094,7 +3094,7 @@
 			<StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="ButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CheckBox -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CheckBox -->
 			<StaticResource x:Key="CheckBoxForegroundUnchecked" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="CheckBoxForegroundUncheckedPressed" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -3310,7 +3310,7 @@
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FFFFFFFF" />
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
 
-            <!-- Resources for Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
+            <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
             <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -3345,7 +3345,7 @@
 			<StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
 			<StaticResource x:Key="DateTimePickerFlyoutButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.DatePicker -->
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePicker -->
 			<StaticResource x:Key="DatePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="DatePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
 			<StaticResource x:Key="DatePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -3365,13 +3365,13 @@
 			<StaticResource x:Key="DatePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="DatePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
 			<StaticResource x:Key="DatePickerFlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="DatePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.TimePicker -->
+			<!-- Resources for Windows.UI.Xaml.Controls.TimePicker -->
 			<StaticResource x:Key="TimePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
 			<StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -3391,13 +3391,13 @@
 			<StaticResource x:Key="TimePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="TimePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter -->
 			<StaticResource x:Key="TimePickerFlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
 			<StaticResource x:Key="TimePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Pivot -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Pivot -->
 			<SolidColorBrush x:Key="PivotBackground" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderBackground" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotNextButtonBackground" Color="{StaticResource SystemBaseMediumLowColor}" />
@@ -3419,10 +3419,10 @@
 			<SolidColorBrush x:Key="PivotPreviousButtonForegroundPointerOver" Color="{StaticResource SystemAltMediumHighColor}" />
 			<SolidColorBrush x:Key="PivotPreviousButtonForegroundPressed" Color="{StaticResource SystemAltMediumHighColor}" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.PivotItem -->
+			<!-- Resources for Windows.UI.Xaml.Controls.PivotItem -->
 			<SolidColorBrush x:Key="PivotItemBackground" Color="Transparent" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselected" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPointerOver" Color="Transparent" />
 			<SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPressed" Color="Transparent" />
@@ -3624,9 +3624,9 @@
 			<!--
         Resources for:
 
-        Microsoft.UI.Xaml.Controls.TextBox
-        Microsoft.UI.Xaml.Controls.PasswordBox
-        Microsoft.UI.Xaml.Controls.RichEditBox
+        Windows.UI.Xaml.Controls.TextBox
+        Windows.UI.Xaml.Controls.PasswordBox
+        Windows.UI.Xaml.Controls.RichEditBox
         AutoSuggestTextBoxStyle
     -->
 			<SolidColorBrush x:Key="TextControlForeground"  Color="{StaticResource SystemBaseHighColor}" />
@@ -3713,7 +3713,7 @@
 			<not_win:Thickness x:Key="SearchBoxBorderThickness">0</not_win:Thickness>
 			<not_win:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></not_win:SolidColorBrush>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.HyperlinkButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 			<not_win:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
@@ -3727,7 +3727,7 @@
 			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
 			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
 			<StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="RepeatButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="RepeatButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
@@ -3895,7 +3895,7 @@
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="CalendarViewNavigationButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.Thumb -->
+			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.Thumb -->
 			<StaticResource x:Key="ThumbBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="ThumbBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
 			<StaticResource x:Key="ThumbBackgroundPressed" ResourceKey="SystemControlHighlightBaseMediumBrush" />

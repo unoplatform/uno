@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[TemplatePart(Name = "PART_HeaderBackground", Type = typeof(Microsoft.UI.Xaml.Controls.ScrollViewer))]
-	[TemplatePart(Name = "PART_HeaderForeground", Type = typeof(Microsoft.UI.Xaml.Controls.ScrollViewer))]
-	[TemplatePart(Name = "PART_ListView", Type = typeof(Microsoft.UI.Xaml.Controls.ListView))]
-	[TemplatePart(Name = "PART_CommandBar", Type = typeof(Microsoft.UI.Xaml.Controls.CommandBar))]
+	[TemplatePart(Name = "PART_HeaderBackground", Type = typeof(Windows.UI.Xaml.Controls.ScrollViewer))]
+	[TemplatePart(Name = "PART_HeaderForeground", Type = typeof(Windows.UI.Xaml.Controls.ScrollViewer))]
+	[TemplatePart(Name = "PART_ListView", Type = typeof(Windows.UI.Xaml.Controls.ListView))]
+	[TemplatePart(Name = "PART_CommandBar", Type = typeof(Windows.UI.Xaml.Controls.CommandBar))]
 	public partial class ParallaxListView : Control
 	{
 		private const int CommandBarHeight = 48;
@@ -22,11 +22,11 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		private const string ScrollViewerName = "PART_ListView";
 		private const string CommandBarName = "PART_CommandBar";
 
-		private Microsoft.UI.Xaml.Controls.ScrollViewer _headerBackground;
-		private Microsoft.UI.Xaml.Controls.ScrollViewer _headerForeground;
-		private Microsoft.UI.Xaml.Controls.ListView _mainListview;
-		private Microsoft.UI.Xaml.Controls.ScrollViewer _mainScrollViewer;
-		private Microsoft.UI.Xaml.Controls.CommandBar _commandBar;
+		private Windows.UI.Xaml.Controls.ScrollViewer _headerBackground;
+		private Windows.UI.Xaml.Controls.ScrollViewer _headerForeground;
+		private Windows.UI.Xaml.Controls.ListView _mainListview;
+		private Windows.UI.Xaml.Controls.ScrollViewer _mainScrollViewer;
+		private Windows.UI.Xaml.Controls.CommandBar _commandBar;
 
 		private double _screenHeight;
 
@@ -142,15 +142,15 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			_screenHeight = Microsoft.UI.Xaml.Window.Current is not null ?
-				Microsoft.UI.Xaml.Window.Current.Bounds.Height :
+			_screenHeight = Windows.UI.Xaml.Window.Current is not null ?
+				Windows.UI.Xaml.Window.Current.Bounds.Height :
 				XamlRoot.Size.Height;
 
 			var applied = _mainListview.ApplyTemplate();
-			_mainScrollViewer = _mainListview.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
-			var headerForegroundListView = this.GetTemplateChild(HeaderForegroundName) as Microsoft.UI.Xaml.Controls.ListView;
+			_mainScrollViewer = _mainListview.FindFirstChild<Windows.UI.Xaml.Controls.ScrollViewer>();
+			var headerForegroundListView = this.GetTemplateChild(HeaderForegroundName) as Windows.UI.Xaml.Controls.ListView;
 			var applied2 = headerForegroundListView.ApplyTemplate();
-			_headerForeground = _headerForeground ?? headerForegroundListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			_headerForeground = _headerForeground ?? headerForegroundListView.FindFirstChild<Windows.UI.Xaml.Controls.ScrollViewer>();
 
 			_mainScrollViewer.ViewChanged -= UpdateHeaderPosition;
 			_mainScrollViewer.ViewChanged += UpdateHeaderPosition;
@@ -166,9 +166,9 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		{
 			base.OnApplyTemplate();
 
-			_headerBackground = this.GetTemplateChild(HeaderBackgroundName) as Microsoft.UI.Xaml.Controls.ScrollViewer;
-			_mainListview = this.GetTemplateChild(ScrollViewerName) as Microsoft.UI.Xaml.Controls.ListView;
-			_commandBar = this.GetTemplateChild(CommandBarName) as Microsoft.UI.Xaml.Controls.CommandBar;
+			_headerBackground = this.GetTemplateChild(HeaderBackgroundName) as Windows.UI.Xaml.Controls.ScrollViewer;
+			_mainListview = this.GetTemplateChild(ScrollViewerName) as Windows.UI.Xaml.Controls.ListView;
+			_commandBar = this.GetTemplateChild(CommandBarName) as Windows.UI.Xaml.Controls.CommandBar;
 		}
 
 		private const bool DisableAnimation = true;

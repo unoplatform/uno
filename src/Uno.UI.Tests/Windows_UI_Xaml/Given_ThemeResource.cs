@@ -9,12 +9,12 @@ using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {

@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using System;
 using System.ComponentModel;
 using Uno.Media;
@@ -22,7 +22,7 @@ using Path = AppKit.NSBezierPath;
 using Android.Graphics;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	[TypeConverter(typeof(GeometryConverter))]
 	public partial class Geometry : DependencyObject, IDisposable

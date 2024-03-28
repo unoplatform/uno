@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 /// <summary>
 /// Provides a base class for defining the command behavior of an interactive

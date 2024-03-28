@@ -31,7 +31,7 @@ namespace SamplesApp.Droid
 			Android.Content.Intent.CategoryBrowsable,
 		},
 		DataScheme = "uno-samples-test")]
-	public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
+	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
 		private HandlerThread _pixelCopyHandlerThread;
 

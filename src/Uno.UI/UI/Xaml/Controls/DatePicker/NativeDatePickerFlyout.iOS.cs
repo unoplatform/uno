@@ -10,11 +10,11 @@ using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	//TODO#2780: support Day/Month/YearVisible
 	public partial class NativeDatePickerFlyout : DatePickerFlyout

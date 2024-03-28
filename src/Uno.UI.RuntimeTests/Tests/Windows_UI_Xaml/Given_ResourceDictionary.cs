@@ -1,11 +1,11 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 
 
@@ -228,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				// set active theme and update the copy res-dict
 				ResourceDictionary.SetActiveTheme(Dark);
-				copy.UpdateThemeBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
+				copy.UpdateThemeBindings(Windows.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
 
 				// retrieve the "TestBrush" again from each res-dict
 				var materialized3 = (SolidColorBrush)source[TestBrush];

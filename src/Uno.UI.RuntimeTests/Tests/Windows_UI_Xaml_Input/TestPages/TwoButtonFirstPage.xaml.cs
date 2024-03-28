@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages
 {
@@ -13,6 +13,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages
 		private void GoForward() => Frame.Navigate(typeof(TwoButtonFirstPage));
 
 		public void FocusFirst() =>
-			FirstPageFirstButton.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
+			FirstPageFirstButton.Focus(Windows.UI.Xaml.FocusState.Programmatic);
 	}
 }

@@ -10,7 +10,7 @@ using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

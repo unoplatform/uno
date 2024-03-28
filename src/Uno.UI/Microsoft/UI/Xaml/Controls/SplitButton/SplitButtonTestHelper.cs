@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Documents;
 
 namespace Microsoft.UI.Private.Controls
 {

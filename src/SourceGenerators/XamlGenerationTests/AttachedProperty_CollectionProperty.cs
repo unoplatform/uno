@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 #if XAMARIN
 using NativeDependencyObject = System.Object;
 #else
-using NativeDependencyObject = Microsoft.UI.Xaml.DependencyObject;
+using NativeDependencyObject = Windows.UI.Xaml.DependencyObject;
 #endif
 
 namespace XamlGenerationTests.Shared
@@ -19,7 +19,7 @@ namespace XamlGenerationTests.Shared
 			return (UIElementCollection)obj.GetValue(MyPropertyProperty);
 		}
 
-		public static void SetMyProperty(NativeDependencyObject obj, Microsoft.UI.Xaml.Controls.UIElementCollection value)
+		public static void SetMyProperty(NativeDependencyObject obj, Windows.UI.Xaml.Controls.UIElementCollection value)
 		{
 			obj.SetValue(MyPropertyProperty, value);
 		}

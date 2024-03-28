@@ -15,9 +15,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
 		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
-		public const string RootMUINamespace = "Microsoft.UI";
-		public const string BaseXamlNamespace = "Microsoft.UI.Xaml";
-		public const string UnoXamlNamespace = "Microsoft.UI.Xaml";
+		public const string RootMUINamespace = "Windows.UI";
+		public const string BaseXamlNamespace = "Windows.UI.Xaml";
+		public const string UnoXamlNamespace = "Windows.UI.Xaml";
 
 		public const int MaxFluentResourcesVersion = 2;
 
@@ -40,7 +40,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				Controls,
 #if HAS_UNO_WINUI
-				RootWUINamespace + ".Xaml.Controls", // NavigationViewList is in Microsoft.UI.Xaml.Controls even in WinUI tree
+				RootWUINamespace + ".Xaml.Controls", // NavigationViewList is in Windows.UI.Xaml.Controls even in WinUI tree
 #endif
 				Primitives,
 				Shapes,

@@ -8,17 +8,17 @@ using System;
 using System.Numerics;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Extensions;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using Windows.UI;
 
 #if HAS_UNO_WINUI
@@ -1157,7 +1157,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			float width = (float)(ActualWidth);
 			float height = (float)(ActualHeight);
 			Rect rect = new Rect(0.0f, 0.0f, width, height);
-			Microsoft.UI.Xaml.Media.RectangleGeometry rectangleGeometry = new RectangleGeometry();
+			Windows.UI.Xaml.Media.RectangleGeometry rectangleGeometry = new RectangleGeometry();
 			rectangleGeometry.Rect = rect;
 			Clip = rectangleGeometry;
 		}

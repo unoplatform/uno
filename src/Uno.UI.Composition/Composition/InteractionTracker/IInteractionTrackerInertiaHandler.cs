@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 internal interface IInteractionTrackerInertiaHandler
 {

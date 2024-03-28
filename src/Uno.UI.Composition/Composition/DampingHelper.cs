@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 // Equations from https://docs.google.com/presentation/d/152lQqvO6ImEGW2k98w-E5Dh8stBeRxBd/edit#slide=id.p51
 

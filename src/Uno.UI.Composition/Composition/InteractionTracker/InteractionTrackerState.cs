@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
 using Uno.UI.Dispatching;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 internal abstract class InteractionTrackerState : IDisposable
 {

@@ -1,12 +1,12 @@
 ﻿#if WINAPPSDK
 using Windows.ApplicationModel.Store;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 #elif HAS_UNO || UNO_REFERENCE_API
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 #else
 using System.Windows.Controls;
 using System.Windows.Markup;

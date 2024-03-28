@@ -3,11 +3,11 @@ using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{

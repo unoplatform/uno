@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {

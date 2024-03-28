@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial struct GridLength : IEquatable<GridLength>

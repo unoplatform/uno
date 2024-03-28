@@ -1,13 +1,13 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{

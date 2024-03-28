@@ -7,14 +7,14 @@
 
 using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Common;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Media;
 using MUXControlsTestApp;
 using Uno.Disposables;
 using Uno.Extensions;

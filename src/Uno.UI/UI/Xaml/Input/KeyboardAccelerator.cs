@@ -2,7 +2,7 @@
 using System.Globalization;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public partial class KeyboardAccelerator : DependencyObject
 	{

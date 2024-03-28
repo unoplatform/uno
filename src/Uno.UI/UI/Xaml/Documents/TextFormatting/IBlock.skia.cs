@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Documents.TextFormatting
+namespace Windows.UI.Xaml.Documents.TextFormatting
 {
 	// TODO: Apply interface to Xaml.Documents.Block when that is implemented to enable the text engine to render Paragraph elements.
 

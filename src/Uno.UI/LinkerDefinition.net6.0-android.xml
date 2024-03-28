@@ -1,9 +1,9 @@
 ﻿<linker>
   <assembly fullname="Uno.UI">
-	<type fullname="Microsoft.UI.Xaml.ApplicationActivity">
+	<type fullname="Windows.UI.Xaml.ApplicationActivity">
 	  <method name="GetTypeAssemblyFullName" />
 	</type>
-	<type fullname="Microsoft.UI.Xaml.NativeApplication">
+	<type fullname="Windows.UI.Xaml.NativeApplication">
 	  <method name="GetTypeAssemblyFullName" />
 	</type>
   </assembly>

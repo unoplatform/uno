@@ -3,7 +3,7 @@
 using System;
 using System.Numerics;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 {

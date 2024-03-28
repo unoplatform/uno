@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 
 // Keep this using in place until UWP support is dropped.
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

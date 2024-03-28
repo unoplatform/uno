@@ -7,11 +7,11 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal sealed class DragDropManager : CoreDragDropManager.IDragDropManager
 	{

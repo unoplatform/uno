@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace SamplesApp.Wasm
 {
@@ -18,7 +18,7 @@ namespace SamplesApp.Wasm
 			Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties = true;
 #endif
 
-			Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
+			Windows.UI.Xaml.Application.Start(_ => _app = new App());
 		}
 	}
 }

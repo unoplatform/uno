@@ -3,7 +3,7 @@
 
 using Microsoft.UI.Private.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public sealed partial class ScrollingScrollCompletedEventArgs
 {

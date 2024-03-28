@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
+using Windows.UI.Xaml;
+using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {

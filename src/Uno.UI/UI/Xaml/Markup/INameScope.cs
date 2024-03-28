@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Markup
+namespace Windows.UI.Xaml.Markup
 {
 	/// <summary>
 	/// Defines a contract for how names of elements should be accessed within a particular XAML namescope, and how to enforce uniqueness of names within that XAML namescope.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	public partial class BlockCollection : DependencyObjectCollection<Block>, IList<Block>, IEnumerable<Block>
 	{

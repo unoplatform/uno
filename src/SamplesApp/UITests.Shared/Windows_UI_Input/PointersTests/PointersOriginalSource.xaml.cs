@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 using System.Collections.Generic;
 

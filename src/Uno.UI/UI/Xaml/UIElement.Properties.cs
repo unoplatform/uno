@@ -3,8 +3,8 @@
 #endif
 
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -12,7 +12,7 @@ using Uno.Disposables;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.System;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
@@ -20,9 +20,9 @@ using Uno.UI.Media;
 using System;
 using System.Numerics;
 using System.Reflection;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using Microsoft.UI.Input;
 using Uno.UI.Xaml;
@@ -31,7 +31,7 @@ using Uno.UI.Xaml;
 using UIKit;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{

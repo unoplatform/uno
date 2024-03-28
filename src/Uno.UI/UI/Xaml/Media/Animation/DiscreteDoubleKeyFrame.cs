@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// Discrete key frames like DiscreteDoubleKeyFrame create sudden "jumps" between values (no Interpolation). 

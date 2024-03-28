@@ -2,9 +2,9 @@
 
 using System;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
-	public partial class VisualCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Visual>
+	public partial class VisualCollection : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Visual>
 	{
 		partial void InsertAbovePartial(Visual newChild, Visual sibling)
 		{

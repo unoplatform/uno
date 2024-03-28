@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI.Xaml.Media;
@@ -19,7 +19,7 @@ using AppKit;
 using _Image = AppKit.NSImage;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageBrush
 	{

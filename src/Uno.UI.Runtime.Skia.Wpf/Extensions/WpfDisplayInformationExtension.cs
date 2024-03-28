@@ -37,7 +37,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 			// TODO: this is a ridiculous amount of indirection, find something better
 			if (AppWindow.GetFromWindowId(_displayInformation.WindowId) is not { } appWindow ||
-				Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
+				Windows.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
 				UnoWpfWindow.GetGtkWindowFromWindow(window) is not { } gtkWindow)
 			{
 				throw new InvalidOperationException($"{nameof(WpfDisplayInformationExtension)} couldn't find a GTK window.");

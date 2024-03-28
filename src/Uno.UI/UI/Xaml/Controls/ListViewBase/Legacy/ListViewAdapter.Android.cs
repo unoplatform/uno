@@ -14,17 +14,17 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Diagnostics;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Android.Util;
 using Java.Interop;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Android.Views.Accessibility;
 using System.Collections.ObjectModel;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls.Legacy
 {

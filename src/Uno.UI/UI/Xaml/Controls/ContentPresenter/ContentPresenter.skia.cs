@@ -7,11 +7,11 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {

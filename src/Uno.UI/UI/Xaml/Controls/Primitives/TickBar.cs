@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
+﻿namespace Windows.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Represents a tick mark on a Slider control. Not intended for general use.

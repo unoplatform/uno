@@ -1,6 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Wasm;
+using Windows.UI.Xaml.Wasm;
 using Uno.Disposables;
 using System.Threading.Tasks;
 using System.Globalization;
@@ -11,7 +11,7 @@ using Uno.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Collections.Concurrent;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	partial class ImageBrush
 	{

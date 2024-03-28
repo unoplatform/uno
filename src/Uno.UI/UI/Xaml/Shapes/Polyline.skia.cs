@@ -1,9 +1,9 @@
 ﻿using System;
 using Uno.Media;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Polyline : Shape
 	{

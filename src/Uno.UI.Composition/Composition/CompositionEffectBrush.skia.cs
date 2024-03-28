@@ -11,7 +11,7 @@ using Windows.Graphics.Effects.Interop;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class CompositionEffectBrush : CompositionBrush
 {

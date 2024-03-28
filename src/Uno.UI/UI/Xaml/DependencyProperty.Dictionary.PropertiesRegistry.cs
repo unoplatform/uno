@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -14,7 +14,7 @@ using Uno.Collections;
 using Uno.UI.Helpers;
 using System.Collections;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{

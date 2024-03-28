@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class DragItemsStartingEventArgs
 	{

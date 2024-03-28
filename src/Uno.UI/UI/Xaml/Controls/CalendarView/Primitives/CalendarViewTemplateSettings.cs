@@ -4,7 +4,7 @@ using System.Text;
 using Windows.Foundation;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public sealed partial class CalendarViewTemplateSettings : DependencyObject
 	{

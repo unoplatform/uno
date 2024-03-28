@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 
-namespace Microsoft.UI.Composition.Effects;
+namespace Windows.UI.Composition.Effects;
 
 [Guid("6152DFC6-9FBA-4810-8CBA-B280AA27BFF6")]
 internal class WhiteNoiseEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop

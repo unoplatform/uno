@@ -2,7 +2,7 @@
 
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	/// <summary>
 	/// Provides options to help identify the next element that can programmatically receive navigation focus.

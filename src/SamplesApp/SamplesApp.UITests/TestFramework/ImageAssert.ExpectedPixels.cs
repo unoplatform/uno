@@ -12,7 +12,7 @@ using Windows.UI;
 
 using Rectangle = System.Drawing.Rectangle;
 using Point = System.Drawing.Point;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using _Bitmap = Uno.UI.RuntimeTests.Helpers.RawBitmap;
 
 namespace Uno.UI.RuntimeTests.Helpers;

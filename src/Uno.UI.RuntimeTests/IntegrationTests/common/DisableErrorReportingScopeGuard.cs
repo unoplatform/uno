@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Tests.Common
+﻿namespace Windows.UI.Xaml.Tests.Common
 {
 	public struct DisableErrorReportingScopeGuard { }
 }

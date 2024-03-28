@@ -7,12 +7,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;

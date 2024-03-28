@@ -3,7 +3,7 @@
 
 using DirectUI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class CalendarViewGeneratorMonthViewHost : CalendarViewGeneratorHost
 	{

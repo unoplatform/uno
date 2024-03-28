@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Hosting;
+﻿namespace Windows.UI.Xaml.Hosting;
 
 /// <summary>
 /// Provides data for a request to navigate focus to

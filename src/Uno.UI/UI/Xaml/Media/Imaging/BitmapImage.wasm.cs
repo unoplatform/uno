@@ -15,7 +15,7 @@ using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
 using Path = global::System.IO.Path;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{

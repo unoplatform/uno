@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	abstract partial class Inline
 	{

@@ -2,11 +2,11 @@
 using Uno.UI;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{

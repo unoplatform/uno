@@ -9,13 +9,13 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 using ICommand = System.Windows.Input.ICommand;
 
@@ -43,7 +43,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls
 		{
 			switch (sender)
 			{
-				case Microsoft.UI.Xaml.Controls.Button b:
+				case Windows.UI.Xaml.Controls.Button b:
 					result.Text = $"Button {b.Name} Clicked ({++clickActionsCounter})";
 					return;
 			}
@@ -53,7 +53,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls
 		{
 			switch (sender)
 			{
-				case Microsoft.UI.Xaml.Controls.Button b:
+				case Windows.UI.Xaml.Controls.Button b:
 					resultTapped.Text = $"Button {b.Name} Tapped ({++tappedActionsCounter})";
 					return;
 			}
@@ -63,7 +63,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls
 		{
 			switch (sender)
 			{
-				case Microsoft.UI.Xaml.Controls.ToggleSwitch ts:
+				case Windows.UI.Xaml.Controls.ToggleSwitch ts:
 					result.Text = $"ToggleSwitch {ts.Name} Toggled {ts.IsOn} ({++toggleActionsCounter})";
 					return;
 			}

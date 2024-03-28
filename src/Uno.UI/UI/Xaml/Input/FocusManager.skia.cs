@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
