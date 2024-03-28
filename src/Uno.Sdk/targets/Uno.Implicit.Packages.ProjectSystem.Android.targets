@@ -1,0 +1,19 @@
+<Project>
+	<!--
+		Include all required PackageReference to be available before any target is executed
+		in order for VS and C# Dev Kit to show nuget references in their respective solution explorers.
+		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
+	-->
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
+
+	<ItemGroup Condition="$(_IsExecutable) == 'true'">
+		<PackageReference Include="Uno.UniversalImageLoader" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.Google.Android.Material" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.Activity" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" ProjectSystem="true" />
+	</ItemGroup>
+</Project>

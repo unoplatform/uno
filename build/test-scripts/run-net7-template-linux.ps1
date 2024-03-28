@@ -53,7 +53,13 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", ""),
 
     # 5.2 Blank
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "")
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", ""),
+
+    # 5.2 Uno Lib
+    @("5.2/uno52Lib/uno52Lib.csproj", ""),
+
+    # 5.2 Uno SingleProject Lib
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", "")
 
     ## Note for contributors
     ##
