@@ -495,6 +495,21 @@ namespace Uno.UI
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
 		}
 
+		public static class PasswordBox
+		{
+#if __IOS__
+			/// <summary>
+			/// Forces the secure UITextField to maintain its current value upon regaining focus
+			/// </summary>
+			public static bool PreventPasswordClearOnFocus { get; set; } = true;
+
+			/// <summary>
+			/// Special character used to limit the PasswordChanged event triggering.
+			/// </summary>
+			public static char PasswordControlChar { get; set; } = 'ς';
+#endif
+		}
+
 		public static class TextBox
 		{
 
