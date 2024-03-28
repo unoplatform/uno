@@ -4,6 +4,7 @@ using System.Threading;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
@@ -57,7 +58,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		{
 			StartConsoleInterception();
 
-			_eventLoop.Schedule(InnerInitialize);
+			_eventLoop.Schedule(InnerInitialize, NativeDispatcherPriority.Normal);
 		}
 
 		protected override Task RunLoop()
@@ -107,8 +108,8 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
-			void Dispatch(System.Action d)
-				=> _eventLoop.Schedule(() => d());
+			void Dispatch(System.Action d, NativeDispatcherPriority p)
+				=> _eventLoop.Schedule(() => d(), p);
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{

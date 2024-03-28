@@ -170,6 +170,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			OnUnloadedPartial();
+		}
+
+		partial void OnUnloadedPartial();
+
 		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)

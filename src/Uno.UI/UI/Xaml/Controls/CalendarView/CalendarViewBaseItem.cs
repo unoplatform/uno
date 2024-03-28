@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -154,13 +155,17 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
+#if !__NETSTD_REFERENCE__
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void Enter(EnterParams @params, int depth)
+		{
+			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
+			base.Enter(@params, depth);
+#else
 		private void EnterImpl()
 		{
-			//TODO:Uno Specific: This should be called by the base class each time the element enters the visual tree.
-			//For now we call it on Loaded.
-
-			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
-
+#endif
 			// In case any of the TextBlock properties have been updated while
 			// we were out of the visual tree, we should update them in order to ensure
 			// that we always have the most up-to-date values.
@@ -175,6 +180,7 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateRender();
 		}
 
+#endif
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private protected CCalendarViewBaseItemChrome GetHandle() => this;
 

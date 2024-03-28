@@ -6,7 +6,7 @@ namespace Uno.UI.Dispatching
 	{
 		private CoreFoundation.DispatchQueue _mainQueue = CoreFoundation.DispatchQueue.MainQueue;
 
-		partial void EnqueueNative()
+		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
 			_mainQueue.DispatchAsync(DispatchItems);
 		}

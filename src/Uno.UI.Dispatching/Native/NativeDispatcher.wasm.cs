@@ -19,7 +19,7 @@ namespace Uno.UI.Dispatching
 				typeof(NativeDispatcher).Log().Trace($"[tid:{Environment.CurrentManagedThreadId}]: NativeDispatcher.DispatcherCallback()");
 			}
 
-			Main.DispatchItems();
+			DispatchItems();
 		}
 
 		partial void Initialize()
@@ -49,9 +49,9 @@ namespace Uno.UI.Dispatching
 		/// Provide an action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal static Action<Action> DispatchOverride;
+		internal static Action<Action, NativeDispatcherPriority> DispatchOverride;
 
-		partial void EnqueueNative()
+		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
 			if (typeof(NativeDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -77,7 +77,7 @@ namespace Uno.UI.Dispatching
 			}
 			else
 			{
-				DispatchOverride(() => DispatchItems());
+				DispatchOverride(static () => DispatchItems(), priority);
 			}
 		}
 

@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -109,11 +110,12 @@ public partial class Popup
 
 		if (newIsOpen)
 		{
-			Opened?.Invoke(this, newIsOpen);
+			// TODO: Add EventManager.RaiseEvent method and use it here.
+			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, newIsOpen), NativeDispatcherPriority.Idle);
 		}
 		else
 		{
-			Closed?.Invoke(this, newIsOpen);
+			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, newIsOpen), NativeDispatcherPriority.Idle);
 		}
 	}
 

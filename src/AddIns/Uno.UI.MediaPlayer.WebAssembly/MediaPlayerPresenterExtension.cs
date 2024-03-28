@@ -33,7 +33,6 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		_owner.Child = _htmlPlayer = new HtmlMediaPlayer();
 	}
 
-
 	public void MediaPlayerChanged()
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))

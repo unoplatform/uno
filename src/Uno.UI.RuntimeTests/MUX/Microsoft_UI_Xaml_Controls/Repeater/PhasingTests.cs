@@ -45,7 +45,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class PhasingTests : MUXApiTestBase
 	{
 		const int expectedLastRealizedIndex = 8;

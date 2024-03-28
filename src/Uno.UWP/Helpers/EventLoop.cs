@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Uno.UI.Dispatching;
 
 namespace Uno.Helpers
 {
@@ -73,7 +74,7 @@ namespace Uno.Helpers
 			_readyList = new Queue<Action>();
 		}
 
-		public void Schedule(Action action)
+		public void Schedule(Action action, NativeDispatcherPriority p)
 		{
 			if (action == null)
 			{

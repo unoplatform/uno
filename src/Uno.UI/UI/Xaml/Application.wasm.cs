@@ -87,9 +87,7 @@ namespace Microsoft.UI.Xaml
 					new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 				);
 
-				var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
-
-				await WindowManagerInterop.InitAsync(isLoadEventsEnabled);
+				await WindowManagerInterop.InitAsync();
 
 				global::Windows.Storage.ApplicationData.Init();
 

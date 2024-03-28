@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -22,6 +24,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var border = new Border();
 			var completionSource = new TaskCompletionSource<XamlRoot>();
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => completionSource.TrySetException(new TimeoutException()));
 			border.Loaded += (s, e) =>
 			{
 				completionSource.SetResult(border.XamlRoot);

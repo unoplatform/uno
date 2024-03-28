@@ -42,7 +42,7 @@ internal static class GtkRendererProvider
 			host.RootContainer.Add(validationSurface);
 			host.RootContainer.ShowAll();
 
-			GtkDispatch.DispatchNativeSingle(ValidateSurface);
+			GtkDispatch.DispatchNativeSingle(ValidateSurface, Dispatching.NativeDispatcherPriority.Normal);
 
 			renderSurfaceType = await validationCompletionSource.Task;
 
@@ -69,7 +69,7 @@ internal static class GtkRendererProvider
 						host.RootContainer.Remove(validationSurface);
 
 						validationCompletionSource.TrySetResult(validatedRenderSurfaceType);
-					});
+					}, Dispatching.NativeDispatcherPriority.Normal);
 				}
 				catch (Exception e)
 				{

@@ -34,7 +34,6 @@ using AnimationContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Animat
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class ElementAnimatorTests : MUXApiTestBase
 	{
 		[TestMethod]

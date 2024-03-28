@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
@@ -554,6 +555,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private async Task FocusTextBoxWithSoftKeyboard(TextBox textBox)
 		{
 			var tcs = new TaskCompletionSource<bool>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => tcs.TrySetException(new TimeoutException()));
+
 			var inputPane = InputPane.GetForCurrentView();
 			void OnShowing(InputPane sender, InputPaneVisibilityEventArgs args)
 			{

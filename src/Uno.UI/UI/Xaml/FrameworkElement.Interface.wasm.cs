@@ -53,13 +53,6 @@ namespace Microsoft.UI.Xaml
 		{
 			Initialize();
 
-			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-			{
-				Loading += NativeOnLoading;
-				Loaded += NativeOnLoaded;
-				Unloaded += NativeOnUnloaded;
-			}
-
 			_log = this.Log();
 			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		}

@@ -207,12 +207,14 @@ namespace Microsoft.UI.Xaml
 			return current as FrameworkElement;
 		}
 
-		internal View[] GetAllAncestorsDebug()
+		internal View[] GetAllAncestorsDebug(bool includeSelf = false)
 		{
 			return GetInner().ToArray();
 
 			IEnumerable<View> GetInner()
 			{
+				yield return this;
+
 				var current = this.GetVisualTreeParent();
 				while (current != null)
 				{
@@ -222,16 +224,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal string[] GetAllAncestorsAsStrings()
+		internal string[] GetAllAncestorsAsStrings(bool includeSelf = false)
 		{
-			return GetAllAncestorsDebug().Select(v =>
+			return GetAllAncestorsDebug(includeSelf).Select(v =>
+			{
+				if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
 				{
-					if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
-					{
-						return $"{fe.Name}({fe.GetType().Name})";
-					}
-					return v.GetType().Name;
-				})
+					return $"{fe.Name}({fe.GetType().Name})";
+				}
+				return v.GetType().Name;
+			})
 				.ToArray();
 		}
 
