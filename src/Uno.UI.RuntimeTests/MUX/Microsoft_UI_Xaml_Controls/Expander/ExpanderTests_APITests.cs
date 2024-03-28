@@ -25,9 +25,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				// Uno specific: the control is fluent only
-				using var _ = StyleHelper.UseFluentStyles();
-
 				var root = (StackPanel)XamlReader.Load(
 					@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                              xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'

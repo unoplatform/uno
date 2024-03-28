@@ -2,18 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI;
+using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using FluentAssertions;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests
 {
@@ -25,25 +22,22 @@ namespace Uno.UI.RuntimeTests
 		[TestMethod]
 		public async Task When_Theme_Changed_Animated_Value()
 		{
-			using (UseFluentStyles())
+			var checkBox = new MyCheckBox() { Content = "CheckBox", IsEnabled = false };
+			TestServices.WindowHelper.WindowContent = checkBox;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(checkBox.ContentPresenter);
+
+			var lightThemeForeground = TestsColorHelper.ToColor("#5C000000");
+			var darkThemeForeground = TestsColorHelper.ToColor("#5DFFFFFF");
+
+			Assert.AreEqual(lightThemeForeground, (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
+
+			using (UseDarkTheme())
 			{
-				var checkBox = new MyCheckBox() { Content = "CheckBox", IsEnabled = false };
-				TestServices.WindowHelper.WindowContent = checkBox;
 				await TestServices.WindowHelper.WaitForIdle();
 
-				Assert.IsNotNull(checkBox.ContentPresenter);
-
-				var lightThemeForeground = TestsColorHelper.ToColor("#5C000000");
-				var darkThemeForeground = TestsColorHelper.ToColor("#5DFFFFFF");
-
-				Assert.AreEqual(lightThemeForeground, (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
-
-				using (UseDarkTheme())
-				{
-					await TestServices.WindowHelper.WaitForIdle();
-
-					Assert.AreEqual(darkThemeForeground, (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
-				}
+				Assert.AreEqual(darkThemeForeground, (checkBox.ContentPresenter.Foreground as SolidColorBrush).Color);
 			}
 		}
 
@@ -333,11 +327,6 @@ namespace Uno.UI.RuntimeTests
 		/// Ensure dark theme is applied for the course of a single test.
 		/// </summary>
 		private IDisposable UseDarkTheme() => ThemeHelper.UseDarkTheme();
-
-		/// <summary>
-		/// Ensure Fluent styles are available for the course of a single test.
-		/// </summary>
-		private IDisposable UseFluentStyles() => StyleHelper.UseFluentStyles();
 
 		// Intentionally nested to test NativeCtorsGenerator handling of nested classes.
 		public partial class MyCheckBox : CheckBox

@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using static Private.Infrastructure.TestServices;
+using Uno.Disposables;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents;
 
@@ -29,7 +30,7 @@ public class Given_Hyperlink
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);
 		using (useDark ? ThemeHelper.UseDarkTheme() : null)
 		{
-			using (useFluent ? StyleHelper.UseFluentStyles() : null)
+			using (useFluent ? Disposable.Empty : StyleHelper.UseUwpStyles())
 			{
 				var tb = (TextBlock)XamlReader.Load("""
 				<TextBlock xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -61,7 +62,7 @@ public class Given_Hyperlink
 		var expectedHoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedHoveredColorCode);
 		using (useDark ? ThemeHelper.UseDarkTheme() : null)
 		{
-			using (useFluent ? StyleHelper.UseFluentStyles() : null)
+			using (useFluent ? Disposable.Empty : StyleHelper.UseUwpStyles())
 			{
 				var stackPanel = (StackPanel)XamlReader.Load("""
 				<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -114,7 +115,7 @@ public class Given_Hyperlink
 
 		using (useDark ? ThemeHelper.UseDarkTheme() : null)
 		{
-			using (useFluent ? StyleHelper.UseFluentStyles() : null)
+			using (useFluent ? Disposable.Empty : StyleHelper.UseUwpStyles())
 			{
 				var stackPanel = (StackPanel)XamlReader.Load("""
 					<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -164,7 +165,7 @@ public class Given_Hyperlink
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);
 		using (useDark ? ThemeHelper.UseDarkTheme() : null)
 		{
-			using (useFluent ? StyleHelper.UseFluentStyles() : null)
+			using (useFluent ? Disposable.Empty : StyleHelper.UseUwpStyles())
 			{
 				var tb = (TextBlock)XamlReader.Load("""
 					<TextBlock TextDecorations='Strikethrough' Foreground='Red' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>

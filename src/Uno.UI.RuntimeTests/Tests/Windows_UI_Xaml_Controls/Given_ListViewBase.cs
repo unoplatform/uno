@@ -19,14 +19,12 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
-using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 #if !WINAPPSDK
 using Uno.UI;
@@ -39,6 +37,7 @@ using Foundation;
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
 using Point = Windows.Foundation.Point;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1981,10 +1980,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// since this is originally a virtualization issue and references
 			// could be to different things than those shown on the screen.
 			var si = await UITestHelper.ScreenShot(list, true);
-			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#66AEE7")); // selected
+			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#1A69A6")); // selected
 
 			// check starting from below the second item that nothing looks selected or hovered
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#66AEE7")); // selected
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#1A69A6")); // selected
 			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#FFE6E6E6")); // hovered
 		}
 
@@ -2920,12 +2919,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemTemplateSelector_Set_And_Fluent()
+		public async Task When_ItemTemplateSelector_Set_And_Uwp()
 		{
-			using (StyleHelper.UseFluentStyles())
-			{
-				await When_ItemTemplateSelector_Set();
-			}
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_ItemTemplateSelector_Set();
 		}
 
 		[TestMethod]

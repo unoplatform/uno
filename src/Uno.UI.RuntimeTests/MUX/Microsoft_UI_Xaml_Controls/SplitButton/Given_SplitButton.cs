@@ -1,10 +1,9 @@
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Common;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
-using Uno.UI.RuntimeTests.Helpers;
 using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
@@ -20,14 +19,11 @@ public class Given_SplitButton
 #endif
 	public void VerifyFontFamilyForChevron()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			var splitButton = new SplitButton();
-			TestServices.WindowHelper.WindowContent = splitButton;
+		var splitButton = new SplitButton();
+		TestServices.WindowHelper.WindowContent = splitButton;
 
-			var secondayButton = splitButton.GetTemplateChild("SecondaryButton");
-			var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
-			Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
-		}
+		var secondayButton = splitButton.GetTemplateChild("SecondaryButton");
+		var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
+		Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
 	}
 }
