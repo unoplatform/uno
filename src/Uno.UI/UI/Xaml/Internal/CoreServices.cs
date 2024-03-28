@@ -5,7 +5,6 @@
 #nullable enable
 
 using System;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -72,6 +71,12 @@ namespace Uno.UI.Xaml.Core
 			//{
 			//	m_isMainTreeLoading = TRUE;
 			//}
+		}
+
+		internal bool IsXamlVisible()
+		{
+			// TODO Uno: This is currently highly simplified, adjust when all islands are rooted under main tree.
+			return ContentRootCoordinator.CoreWindowContentRoot?.CompositionContent.IsSiteVisible ?? false;
 		}
 
 		[NotImplemented]

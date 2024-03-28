@@ -887,7 +887,7 @@ namespace Uno.UI.Xaml.Core
 				}
 				else if (RootElement is RootVisual rootVisual)
 				{
-					return true;// TODO: MZ: FIX IN THIS PR //xamlIslandRoot.IsVisible; rootVisual.IsXamlVisible;
+					return CoreServices.Instance.IsXamlVisible();
 				}
 				else
 				{

@@ -133,8 +133,7 @@ internal partial class ContentRoot
 				XamlIslandRoot?.OnStateChanged();
 				break;
 			case ContentRootType.CoreWindow:
-				// TODO MZ: Implement this path!
-				//FxCallbacks::DxamlCore_OnCompositionContentStateChangedForUWP());
+				FxCallbacks.DxamlCore_OnCompositionContentStateChangedForUWP();
 				break;
 			default:
 				throw new InvalidOperationException("Unknown ContentRootType");
