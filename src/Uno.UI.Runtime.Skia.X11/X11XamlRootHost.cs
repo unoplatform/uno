@@ -35,6 +35,14 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		(IntPtr)EventMask.VisibilityChangeMask |
 		(IntPtr)EventMask.NoEventMask;
 
+	// We only use XI2 for pointer stuff. We use the core protocol events for everything else.
+	private const IntPtr EventsHandledByXI2Mask =
+		(IntPtr)EventMask.ButtonPressMask |
+		(IntPtr)EventMask.PointerMotionMask |
+		(IntPtr)EventMask.EnterWindowMask |
+		(IntPtr)EventMask.LeaveWindowMask |
+		(IntPtr)EventMask.NoEventMask;
+
 	private static bool _firstWindowCreated;
 	private static object _x11WindowToXamlRootHostMutex = new();
 	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
@@ -303,6 +311,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			size = new Size(InitialWidth, InitialHeight);
 		}
 
+		var usingXi2 = GetXI2Details(display).version is not XIVersion.Unsupported;
+
 		IntPtr window;
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
@@ -321,8 +331,14 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				0,
 				XLib.XBlackPixel(display, screen),
 				XLib.XWhitePixel(display, screen));
-			XLib.XSelectInput(display, window, EventsMask);
+			// We make sure not to select events that will be handled by a corresponding XI2 event
+			XLib.XSelectInput(display, window, usingXi2 ? EventsMask & ~EventsHandledByXI2Mask : EventsMask);
 			_x11Window = new X11Window(display, window);
+		}
+
+		if (usingXi2)
+		{
+			SetXIEventMask();
 		}
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing

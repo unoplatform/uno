@@ -39,6 +39,7 @@ internal static class X11Helper
 {
 	private const string libX11 = "libX11.so.6";
 	private const string libX11Randr = "libXrandr.so.2";
+	private const string libXInput = "libXi.so.6";
 
 	public static readonly IntPtr CurrentTime = IntPtr.Zero;
 	public static readonly IntPtr None = IntPtr.Zero;
@@ -334,6 +335,12 @@ internal static class X11Helper
 	[DllImport(libX11)]
 	public static extern int XHeightOfScreen(IntPtr screen);
 
+	[DllImport(libXInput)]
+	public unsafe static extern XExtensionVersion* XGetExtensionVersion(IntPtr display, string name);
+
+	[DllImport(libXInput)]
+	public unsafe static extern IntPtr* XIListProperties(IntPtr display, int deviceid, out int num_props_return);
+
 	[DllImport(libX11Randr)]
 	public unsafe static extern XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
 
@@ -474,5 +481,15 @@ internal static class X11Helper
 	private struct LockDisposable(object @lock) : IDisposable
 	{
 		public void Dispose() => Monitor.Exit(@lock);
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+	public struct XExtensionVersion
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+	{
+		public int present;
+		public short major_version;
+		public short minor_version;
 	}
 }
