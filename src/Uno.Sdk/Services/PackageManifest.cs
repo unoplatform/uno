@@ -40,7 +40,7 @@ internal class PackageManifest
 		Manifest = new List<ManifestGroup>(_defaultManifest);
 
 		var unoVersion = GetGroupVersion(Group.Core);
-		if (string.IsNullOrEmpty(unoVersion))
+		if (unoVersion is null || string.IsNullOrEmpty(unoVersion))
 		{
 			// This should never happen.
 			throw new InvalidOperationException("No Uno Version was set.");
