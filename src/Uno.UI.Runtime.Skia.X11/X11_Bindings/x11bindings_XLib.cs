@@ -40,10 +40,11 @@ using System.Runtime.InteropServices;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	public unsafe static class XLib
+	internal static class XLib
 	{
 		private const string libX11 = "libX11.so.6";
 		private const string libX11Randr = "libXrandr.so.2";
+		private const string libXInput = "libXi.so.6";
 
 		[DllImport(libX11)]
 		public static extern IntPtr XOpenDisplay(IntPtr display);
@@ -70,6 +71,36 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		[DllImport(libX11)]
 		public static extern int XPending(IntPtr diplay);
+
+		[DllImport(libX11)]
+		public static extern bool XQueryExtension(IntPtr display, [MarshalAs(UnmanagedType.LPStr)] string name,
+			out int majorOpcode, out int firstEvent, out int firstError);
+
+		[DllImport(libXInput)]
+		public static extern int XIQueryVersion(IntPtr dpy, ref int major, ref int minor);
+
+		[DllImport(libXInput)]
+		public unsafe static extern XIDeviceInfo* XIQueryDevice(IntPtr dpy, int deviceid, out int ndevices_return);
+
+		[DllImport(libXInput)]
+		public unsafe static extern void XIFreeDeviceInfo(XIDeviceInfo* info);
+
+		public unsafe static bool XIMaskIsSet(void* ptr, int shift) =>
+			(((byte*)ptr)[shift >> 3] & (1 << (shift & 7))) != 0;
+
+		[DllImport(libXInput)]
+		public unsafe static extern int XISelectEvents(
+			IntPtr dpy,
+			IntPtr win,
+			XIEventMask* masks,
+			int num_masks
+		);
+
+		[DllImport(libX11)]
+		public unsafe static extern bool XGetEventData(IntPtr display, XGenericEventCookie* cookie);
+
+		[DllImport(libX11)]
+		public unsafe static extern void XFreeEventData(IntPtr display, void* cookie);
 
 		[DllImport(libX11)]
 		public static extern IntPtr XSelectInput(IntPtr display, IntPtr window, IntPtr mask);
@@ -208,7 +239,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static extern IntPtr XCreateColormap(IntPtr display, IntPtr window, IntPtr visual, int create);
 
 		[DllImport(libX11)]
-		public static extern int XLookupString(ref XKeyEvent xevent, byte* buffer, int num_bytes, out nint keysym, IntPtr composeStatus);
+		public unsafe static extern int XLookupString(ref XKeyEvent xevent, byte* buffer, int num_bytes, out nint keysym, IntPtr composeStatus);
 
 		[DllImport(libX11)]
 		public static extern IntPtr XSetLocaleModifiers(string modifiers);
@@ -224,11 +255,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			out int minor_version_return);
 
 		[DllImport(libX11Randr)]
-		public static extern XRRMonitorInfo*
+		public unsafe static extern XRRMonitorInfo*
 			XRRGetMonitors(IntPtr dpy, IntPtr window, bool get_active, out int nmonitors);
 
 		[DllImport(libX11Randr)]
-		public static extern IntPtr* XRRListOutputProperties(IntPtr dpy, IntPtr output, out int count);
+		public unsafe static extern IntPtr* XRRListOutputProperties(IntPtr dpy, IntPtr output, out int count);
 
 		[DllImport(libX11Randr)]
 		public static extern int XRRGetOutputProperty(IntPtr dpy, IntPtr output, IntPtr atom, int offset, int length, bool _delete, bool pending, IntPtr req_type, out IntPtr actual_type, out int actual_format, out int nitems, out long bytes_after, out IntPtr prop);
