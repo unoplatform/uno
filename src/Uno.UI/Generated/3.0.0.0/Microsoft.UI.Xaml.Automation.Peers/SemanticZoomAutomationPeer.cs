@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SemanticZoomAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IToggleProvider
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Automation.ToggleState ToggleState
 		{
@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public SemanticZoomAutomationPeer(global::Microsoft.UI.Xaml.Controls.SemanticZoom owner) : base(owner)
 		{
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(Microsoft.UI.Xaml.Controls.SemanticZoom)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.ToggleState.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Toggle()
 		{

@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class CalendarDatePickerAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider, global::Microsoft.UI.Xaml.Automation.Provider.IValueProvider
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsReadOnly
 		{
@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string Value
 		{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Invoke()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Value.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetValue(string value)
 		{
