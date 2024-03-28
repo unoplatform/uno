@@ -3,11 +3,11 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
-using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
@@ -19,7 +19,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	private readonly UnoWpfWindow _wpfWindow;
 	private bool _isFullScreen;
 
-	public WpfWindowWrapper(UnoWpfWindow wpfWindow)
+	public WpfWindowWrapper(UnoWpfWindow wpfWindow, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
 		_wpfWindow.Host.SizeChanged += OnHostSizeChanged;
@@ -28,7 +28,15 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
 		_wpfWindow.Closing += OnNativeClosing;
 		_wpfWindow.Closed += OnNativeClosed;
+		_wpfWindow.DpiChanged += OnDpiChanged;
+		_wpfWindow.SizeChanged += OnWindowSizeChanged;
 	}
+
+	private void OnWindowSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) =>
+		_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
+
+	private void OnDpiChanged(object sender, DpiChangedEventArgs e) =>
+		_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
 
 	public override string Title
 	{
@@ -99,6 +107,8 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 			Visible = isVisible;
 			WinUIApplication.Current?.RaiseEnteredBackground(null);
 		}
+
+		_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.SiteVisibleChange);
 	}
 
 	protected override IDisposable ApplyFullScreenPresenter()
