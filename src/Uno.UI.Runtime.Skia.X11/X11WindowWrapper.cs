@@ -18,7 +18,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	private readonly X11XamlRootHost _host;
 	private readonly XamlRoot _xamlRoot;
 
-	internal X11WindowWrapper(Window window, XamlRoot xamlRoot)
+	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
 

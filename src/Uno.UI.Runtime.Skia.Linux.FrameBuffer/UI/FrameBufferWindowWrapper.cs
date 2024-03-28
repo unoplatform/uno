@@ -16,8 +16,6 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	internal Window? Window { get; private set; }
 
-	internal XamlRoot? XamlRoot { get; private set; }
-
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
 		Bounds = new Rect(default, newWindowSize);
@@ -33,6 +31,6 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
 		Window = window;
-		XamlRoot = xamlRoot;
+		SetXamlRoot(xamlRoot);
 	}
 }
