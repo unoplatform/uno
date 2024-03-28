@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Windows.System;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -168,11 +169,26 @@ namespace Microsoft.UI.Xaml.Controls
 			var textBox = _textBox?.GetTarget();
 			if (textBox != null)
 			{
-				var text = textBox.ProcessTextInput(newText);
-				SetDisplayBlockText(text);
-				if (text != newText)
+				var oldText = textBox.Text; // preexisting text
+				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
+				var modifiedText = textBox.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				SetDisplayBlockText(modifiedText);
+				if (modifiedText != newText)
 				{
-					SetTextNative(text);
+					SetTextNative(modifiedText);
+					if (modifiedText == oldText)
+					{
+						// The native textbox received new input -> sent it to uno -> uno changed it back to the original value
+						// In that case, SetTextNative will reset the selection and we need to reapply it.
+						// You would think that this would break the selection direction (i.e. start to end or end to start), but in fact
+						// the direction also breaks on WinUI itself (i.e. the new direction will always be start to end).
+						DispatcherQueue.Main.TryEnqueue(() =>
+						{
+							// Enqueuing instead of synchronously selecting is problematic on Gtk, which fires the Changed event and then
+							// changes the selection later. This will still fail (on Gtk) when pasting text or selecting some text then typing (replacing).
+							Select(oldSelection.start, oldSelection.length);
+						});
+					}
 				}
 			}
 		}
