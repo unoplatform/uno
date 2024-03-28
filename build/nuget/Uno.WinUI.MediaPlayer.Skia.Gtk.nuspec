@@ -31,6 +31,8 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
+		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\buildTransitive\*" target="buildTransitive" />
+
 		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\bin\Uno.UI.MediaPlayer.Skia.Gtk\Release\net8.0\Uno.UI.MediaPlayer.Skia.Gtk.*" target="lib\net8.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\bin\Uno.UI.MediaPlayer.Skia.Gtk\Release\net7.0\Uno.UI.MediaPlayer.Skia.Gtk.*" target="lib\net7.0" />
 	</files>
