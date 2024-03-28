@@ -1010,7 +1010,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDrop(global::Microsoft.UI.Xaml.DragEventArgs e) { }
-#if __WASM__
+#if __WASM__ || __SKIA__
 		protected virtual void OnPreviewKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
 #endif
@@ -1081,7 +1081,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static readonly DragEventHandler OnDropHandler =
 			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
-#if __WASM__
+#if __WASM__ || __SKIA__
 		private static readonly KeyEventHandler OnPreviewKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyDown(args);
 
@@ -1223,7 +1223,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				result |= RoutedEventFlag.Drop;
 			}
-#if __WASM__
+#if __WASM__ || __SKIA__
 			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyDown), _keyArgsType))
 			{
 				result |= RoutedEventFlag.PreviewKeyDown;

@@ -36,7 +36,7 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 				global::System.Diagnostics.Debug.WriteLine($"{elt.Name} - [KEYUP] {e.Key}");
 				_output.Text += $"{elt.Name} - [KEYUP] {e.Key}\r\n";
 			};
-#if __WASM__
+#if __WASM__ || __SKIA__
 			elt.PreviewKeyDown += (snd, e) =>
 			{
 				Console.WriteLine($"{elt.Name} - [PREVIEWKEYDOWN] {e.Key}");

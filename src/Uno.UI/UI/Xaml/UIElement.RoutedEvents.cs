@@ -148,7 +148,8 @@ namespace Microsoft.UI.Xaml
 
 		/* ** */
 		internal /* ** */  static RoutedEvent DropCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.DropCompleted);
-#if __WASM__
+
+#if __WASM__ || __SKIA__
 		public static RoutedEvent PreviewKeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyDown);
 
 		public static RoutedEvent PreviewKeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyUp);
@@ -183,78 +184,6 @@ namespace Microsoft.UI.Xaml
 			internal object Handler { get; }
 
 			internal bool HandledEventsToo { get; }
-		}
-
-		#region EventsBubblingInManagedCode DependencyProperty
-
-		public static DependencyProperty EventsBubblingInManagedCodeProperty { get; } = DependencyProperty.Register(
-			"EventsBubblingInManagedCode",
-			typeof(RoutedEventFlag),
-			typeof(UIElement),
-			new FrameworkPropertyMetadata(
-				RoutedEventFlag.None,
-				FrameworkPropertyMetadataOptions.Inherits)
-			{
-				CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
-			}
-		);
-
-		public RoutedEventFlag EventsBubblingInManagedCode
-		{
-			get => (RoutedEventFlag)GetValue(EventsBubblingInManagedCodeProperty);
-			set => SetValue(EventsBubblingInManagedCodeProperty, value);
-		}
-
-		#endregion
-
-		#region SubscribedToHandledEventsToo DependencyProperty
-
-		private static DependencyProperty SubscribedToHandledEventsTooProperty { get; } =
-			DependencyProperty.Register(
-				"SubscribedToHandledEventsToo",
-				typeof(RoutedEventFlag),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					RoutedEventFlag.None,
-					FrameworkPropertyMetadataOptions.Inherits)
-				{
-					CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
-				}
-			);
-
-		private RoutedEventFlag SubscribedToHandledEventsToo
-		{
-			get => (RoutedEventFlag)GetValue(SubscribedToHandledEventsTooProperty);
-			set => SetValue(SubscribedToHandledEventsTooProperty, value);
-		}
-
-		#endregion
-
-		private static object CoerceRoutedEventFlag(DependencyObject dependencyObject, object baseValue)
-		{
-			// This is a Coerce method for both EventsBubblingInManagedCodeProperty and SubscribedToHandledEventsTooProperty
-
-			var @this = (UIElement)dependencyObject;
-
-			var localValue = @this.GetPrecedenceSpecificValue(
-				SubscribedToHandledEventsTooProperty,
-				DependencyPropertyValuePrecedences.Local); // should be the same than localValue on first assignment
-
-			if (!(localValue is RoutedEventFlag local))
-			{
-				return baseValue; // local not set, no coerced value to set
-			}
-
-			var inheritedValue = @this.GetPrecedenceSpecificValue(
-				SubscribedToHandledEventsTooProperty,
-				DependencyPropertyValuePrecedences.Inheritance);
-
-			if (inheritedValue is RoutedEventFlag inherited)
-			{
-				return local | inherited; // coerced value is a merge between local and inherited
-			}
-
-			return baseValue; // no inherited value, nothing to do
 		}
 
 		private readonly Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>> _eventHandlerStore
@@ -440,7 +369,7 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(DropCompletedEvent, value);
 		}
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 		public event KeyEventHandler PreviewKeyDown
 		{
 			add => AddHandler(PreviewKeyDownEvent, value, false);
@@ -492,12 +421,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
-
-			if (handledEventsToo
-				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
-			{
-				UpdateSubscribedToHandledEventsToo();
-			}
 		}
 
 		public void AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)
@@ -506,12 +429,6 @@ namespace Microsoft.UI.Xaml
 			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
-
-			if (handledEventsToo
-				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
-			{
-				UpdateSubscribedToHandledEventsToo();
-			}
 		}
 
 		private void AddHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
@@ -558,12 +475,6 @@ namespace Microsoft.UI.Xaml
 				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
 				{
 					handlers.Remove(matchingHandler);
-
-					if (matchingHandler.HandledEventsToo
-						&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no need to update the flag
-					{
-						UpdateSubscribedToHandledEventsToo();
-					}
 				}
 
 				RemoveHandler(routedEvent, handlers.Count, handler);
@@ -614,31 +525,6 @@ namespace Microsoft.UI.Xaml
 				? handlers.Count
 				: 0;
 
-		private void UpdateSubscribedToHandledEventsToo()
-		{
-			var subscribedToHandledEventsToo = RoutedEventFlag.None;
-
-			foreach (var eventHandlers in _eventHandlerStore)
-			{
-				if (eventHandlers.Key.IsAlwaysBubbled)
-				{
-					// This event is always bubbled, no need to include it in the SubscribedToHandledEventsToo
-					continue;
-				}
-
-				foreach (var handler in eventHandlers.Value)
-				{
-					if (handler.HandledEventsToo)
-					{
-						subscribedToHandledEventsToo |= eventHandlers.Key.Flag;
-						break;
-					}
-				}
-			}
-
-			SubscribedToHandledEventsToo = subscribedToHandledEventsToo;
-		}
-
 		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingContext ctx = default)
 		{
 			try
@@ -674,6 +560,13 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException($"Flag not defined for routed event {routedEvent.Name}.");
 			}
 
+#if !__WASM__
+			if (routedEvent.IsTunnelingEvent)
+			{
+				throw new InvalidOperationException($"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");
+			}
+#endif
+
 			// TODO: This is just temporary workaround before proper
 			// keyboard event infrastructure is implemented everywhere
 			// (issue #6074)
@@ -702,14 +595,6 @@ namespace Microsoft.UI.Xaml
 				// [5] Event handled by local handlers?
 				if (isHandled)
 				{
-					// [9] Any parent interested ?
-					var anyParentInterested = AnyParentInterested(routedEvent);
-					if (!anyParentInterested)
-					{
-						// [12] Event processing finished
-						return true; // reported has handled in managed
-					}
-
 					// Make sure the event is marked as not bubbling natively anymore
 					// --> [10]
 					if (args != null)
@@ -725,7 +610,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// [6] & [7] Will the event bubbling natively or in managed code?
-			var isBubblingInManagedCode = IsBubblingInManagedCode(routedEvent, args);
+			var isBubblingInManagedCode = args == null || !args.CanBubbleNatively;
 			if (!isBubblingInManagedCode)
 			{
 				return false; // [8] Return for native bubbling
@@ -763,23 +648,57 @@ namespace Microsoft.UI.Xaml
 			return RaiseOnParent(routedEvent, args, parent, ctx);
 		}
 
+		/// <summary>
+		/// Raise a tunneling routed event starting from the root and tunneling down to this element.
+		/// </summary>
+		internal void RaiseTunnelingEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if (!routedEvent.Flag.IsTunnelingEvent())
+			{
+				throw new InvalidOperationException($"Event {routedEvent.Name} is not marked as a tunneling event.");
+			}
+
+			// TODO: This is just temporary workaround before proper
+			// keyboard event infrastructure is implemented everywhere
+			// (issue #6074)
+			// The key states will be tracked again in an accompanying bubbling event (e.g. KeyDown for PreviewKeyDown),
+			// but this is fine, since it's idempotent.
+			if (routedEvent.IsKeyEvent)
+			{
+				TrackKeyState(routedEvent, args);
+			}
+
+			// On WinUI, if one of the event handlers reparents this element, the tunneling still goes through the
+			// original path.
+			foreach (var p in this.GetAllParents().Reverse())
+			{
+				if (p is not UIElement parent)
+				{
+					break;
+				}
+
+				if (parent._eventHandlerStore.TryGetValue(routedEvent, out var handlers))
+				{
+					foreach (var handler in handlers.ToArray())
+					{
+						if (!IsHandled(args) || handler.HandledEventsToo)
+						{
+							parent.InvokeHandler(handler.Handler, args);
+						}
+					}
+				}
+			}
+		}
+
 		private static void TrackKeyState(RoutedEvent routedEvent, RoutedEventArgs args)
 		{
 			if (args is KeyRoutedEventArgs keyArgs)
 			{
-				if (routedEvent == KeyDownEvent)
+				if (routedEvent == KeyDownEvent || routedEvent == PreviewKeyDownEvent)
 				{
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
 				}
-				else if (routedEvent == KeyUpEvent)
-				{
-					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
-				}
-				else if (routedEvent == PreviewKeyDownEvent)
-				{
-					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
-				}
-				else if (routedEvent == PreviewKeyUpEvent)
+				else if (routedEvent == KeyUpEvent || routedEvent == PreviewKeyUpEvent)
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}
@@ -931,38 +850,6 @@ namespace Microsoft.UI.Xaml
 		private static bool IsHandled(RoutedEventArgs args)
 		{
 			return args is IHandleableRoutedEventArgs cancellable && cancellable.Handled;
-		}
-
-		private bool IsBubblingInManagedCode(RoutedEvent routedEvent, RoutedEventArgs args)
-		{
-			if (args == null || !args.CanBubbleNatively) // [6] From platform?
-			{
-				// Not from platform
-
-				return true; // -> [10] bubble in managed to parents
-			}
-
-			// [7] Event set to bubble in managed code?
-			var eventsBubblingInManagedCode = EventsBubblingInManagedCode;
-			var flag = routedEvent.Flag;
-
-			return eventsBubblingInManagedCode.HasFlag(flag);
-		}
-
-		private bool AnyParentInterested(RoutedEvent routedEvent)
-		{
-			// Pointer events must always be dispatched to all parents in order to update visual states,
-			// update manipulation, detect gestures, etc.
-			// (They are then interpreted by each parent in the PrepareManagedPointerEventBubbling)
-			if (routedEvent.IsAlwaysBubbled)
-			{
-				return true;
-			}
-
-			// [9] Any parent interested?
-			var subscribedToHandledEventsToo = SubscribedToHandledEventsToo;
-			var flag = routedEvent.Flag;
-			return subscribedToHandledEventsToo.HasFlag(flag);
 		}
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)
