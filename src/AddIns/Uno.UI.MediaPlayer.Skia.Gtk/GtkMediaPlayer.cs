@@ -295,10 +295,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 				videoWidth = videoTrack.Value.Width;
 				videoHeight = videoTrack.Value.Height;
 
-				if (videoTrack.Value.SarDen != 0)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 
@@ -323,7 +320,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 				if (TryGetVideoDetails(out var videoWidth, out var videoHeight, out var videoSettings))
 				{
 					// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
-					videoWidth = videoWidth * videoSettings.Value.SarNum / videoSettings.Value.SarDen;
+					if (videoSettings.Value.SarDen != 0) // SarNum and SarDen might be supplied layer even though the video details are present
+					{
+						videoWidth = videoWidth * videoSettings.Value.SarNum / videoSettings.Value.SarDen;
+					}
 
 					// Update video ratio first, so that the cover can be
 					// removed properly without the mediaplayerpresenter to be
@@ -345,18 +345,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 					}
 
 					var currentSize = new Size(ActualWidth, ActualHeight);
-
-					// If the control is not visible, or not sized properly
-					// we cannot display the video window.
-					if (currentSize.Height <= 0 || currentSize.Width <= 0)
-					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Skipping layout update for empty layout slot");
-						}
-
-						return;
-					}
 
 					var playerHeight = (double)currentSize.Height - _transportControlsBounds.Height;
 					var playerWidth = (double)currentSize.Width;
