@@ -34,6 +34,7 @@ using Microsoft.UI.Xaml.Documents;
 using Windows.ApplicationModel.Core;
 using Microsoft.UI.Input;
 using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Core.Scaling;
 
 #if __IOS__
 using UIKit;
@@ -1236,11 +1237,7 @@ namespace Microsoft.UI.Xaml
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
-		internal double GetScaleFactorForLayoutRounding()
-		{
-			// TODO use actual scaling based on current transforms.
-			return XamlRoot.GetDisplayInformation(XamlRoot).LogicalDpi / DisplayInformation.BaseDpi; // 100%
-		}
+		internal double GetScaleFactorForLayoutRounding() => RootScale.GetRasterizationScaleForElement(this);
 
 		private static double XcpRound(double x)
 		{

@@ -883,11 +883,11 @@ namespace Uno.UI.Xaml.Core
 			{
 				if (RootElement is XamlIsland xamlIslandRoot)
 				{
-					return true; // TODO: MZ: FIX IN THIS PR //xamlIslandRoot.IsVisible;
+					return xamlIslandRoot.IsVisible();
 				}
 				else if (RootElement is RootVisual rootVisual)
 				{
-					return true;  // TODO: MZ: FIX IN THIS PR //xamlIslandRoot.IsVisible; rootVisual.IsXamlVisible;
+					return true;// TODO: MZ: FIX IN THIS PR //xamlIslandRoot.IsVisible; rootVisual.IsXamlVisible;
 				}
 				else
 				{
