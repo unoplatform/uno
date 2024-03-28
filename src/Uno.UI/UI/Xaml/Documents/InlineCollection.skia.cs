@@ -16,8 +16,8 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
-		// This is a randomly chosen number that looks clean enough.
-		internal const float CaretThicknessAsRatioOfLineHeight = 0.05f;
+		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
+		internal const float CaretThickness = 1;
 
 		// This is safe as a static field.
 		// 1) It's only accessed from UI thread.
@@ -457,7 +457,7 @@ namespace Microsoft.UI.Xaml.Documents
 		internal void Draw(in DrawingSession session)
 		{
 			var newDrawingState = (_selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
-			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && !_lastDrawingState.Equals(newDrawingState);
+			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } || !_lastDrawingState.Equals(newDrawingState);
 			var fireEvents = FireDrawingEventsOnEveryRedraw || somethingChanged;
 			_drawingValid.wentThroughDraw = true;
 			_lastDrawingState = newDrawingState;
@@ -475,7 +475,7 @@ namespace Microsoft.UI.Xaml.Documents
 					// empty, so caret is at the beginning
 					if (RenderCaret)
 					{
-						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(_lastDefaultLineHeight * CaretThicknessAsRatioOfLineHeight, _lastDefaultLineHeight)));
+						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)));
 					}
 					DrawingFinished?.Invoke();
 				}
@@ -825,7 +825,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 				if (caretLocation != float.MinValue && fireEvents)
 				{
-					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y)));
+					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)));
 				}
 			}
 		}

@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-using System;
-using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -14,18 +12,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
-		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 		public TextBoxView(TextBox textBox)
 		{
+			TextBox = textBox;
+			_isPasswordBox = textBox is PasswordBox;
+
 			DisplayBlock = new TextBlock();
 			SetFlowDirectionAndTextAlignment();
 
-			_textBox = new WeakReference<TextBox>(textBox);
-			_isPasswordBox = textBox is PasswordBox;
 			if (!_isSkiaTextBox && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -42,17 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
-		public TextBox? TextBox
-		{
-			get
-			{
-				if (_textBox.TryGetTarget(out var target))
-				{
-					return target;
-				}
-				return null;
-			}
-		}
+		public TextBox? TextBox { get; private set; }
 
 		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
 
@@ -62,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetTextNative(string text)
 		{
-			SetDisplayBlockText(text);
+			UpdateDisplayBlockText(text);
 
 			_textBoxExtension?.SetText(text);
 		}
@@ -74,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetFlowDirectionAndTextAlignment()
 		{
-			if (_textBox?.GetTarget() is not { } textBox)
+			if (TextBox is not { } textBox)
 			{
 				return;
 			}
@@ -97,7 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetWrapping()
 		{
-			if (_textBox?.GetTarget() is { } textBox)
+			if (TextBox is { } textBox)
 			{
 				DisplayBlock.TextWrapping = textBox.TextWrapping;
 			}
@@ -145,8 +133,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UpdateFont()
 		{
-			var textBox = _textBox?.GetTarget();
-			if (textBox != null)
+			if (TextBox is { } textBox)
 			{
 				DisplayBlock.FontFamily = textBox.FontFamily;
 				DisplayBlock.FontSize = textBox.FontSize;
@@ -161,15 +148,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
 			_textBoxExtension?.SetPasswordRevealState(revealState);
+			if (TextBox is { } textBox)
+			{
+				UpdateDisplayBlockText(textBox.Text);
+			}
 		}
 
 		internal void UpdateTextFromNative(string newText)
 		{
-			var textBox = _textBox?.GetTarget();
-			if (textBox != null)
+			if (TextBox is { } textBox)
 			{
 				var text = textBox.ProcessTextInput(newText);
-				SetDisplayBlockText(text);
+				UpdateDisplayBlockText(text);
 				if (text != newText)
 				{
 					SetTextNative(text);
@@ -179,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
 
-		private void SetDisplayBlockText(string text)
+		private void UpdateDisplayBlockText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
