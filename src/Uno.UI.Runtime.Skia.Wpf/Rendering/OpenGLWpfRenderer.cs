@@ -23,7 +23,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
-	private DisplayInformation? _displayInformation;
+	private readonly WinUI.XamlRoot _xamlRoot;
 	private nint _hwnd;
 	private nint _hdc;
 	private nint _glContext;
@@ -36,6 +36,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
+		_xamlRoot = WpfManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 	}
 
 	public SKColor BackgroundColor { get; set; }
@@ -152,10 +153,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		int width, height;
 
-		var xamlRoot = WpfManager.XamlRootMap.GetRootForHost(_host);
-		_displayInformation ??= WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
-
-		var dpi = _displayInformation.RawPixelsPerViewPixel;
+		var dpi = _xamlRoot.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
 		if (_host.IgnorePixelScaling)
