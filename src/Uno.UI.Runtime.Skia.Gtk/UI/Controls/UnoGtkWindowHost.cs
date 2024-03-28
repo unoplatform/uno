@@ -54,6 +54,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	public async Task InitializeAsync()
 	{
 		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
+		UpdateRendererBackground();
 
 		var overlay = new Overlay();
 
