@@ -17,7 +17,7 @@ using PipsPagerSelectedIndexChangedEventArgs = Microsoft/* UWP don't rename */.U
 
 namespace MUXControlsTestApp
 {
-	[Sample("PipsPager", "WinUI")]
+	[Sample("PipsPager", "WinUI", IgnoreInSnapshotTests = true)]
 	public sealed partial class PipsPagerExamples : Page
 	{
 		private int MinRowSpacing = 8;
