@@ -87,12 +87,33 @@ namespace Windows.Storage.Pickers
 			}
 
 			public override void WasCancelled(UIDocumentPickerViewController controller)
-				=> _taskCompletionSource.SetResult(null);
+			{
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("FolderPickerDelegate.WasCancelled");
+				}
+
+				_taskCompletionSource.SetResult(null);
+			}
 
 			public override void DidPickDocument(UIDocumentPickerViewController controller, NSUrl url)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"FolderPickerDelegate.DidPickDocument {url}");
+				}
+
+				_taskCompletionSource.SetResult(url);
+			}
+
 			public override void DidPickDocument(UIDocumentPickerViewController controller, NSUrl[] urls)
 			{
-				=> _taskCompletionSource.SetResult(url);
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"FolderPickerDelegate.DidPickDocument(s) {urls} Size: {urls?.Length}");
+				}
+
 				_taskCompletionSource.SetResult(urls?.FirstOrDefault());
 			}
 		}
@@ -107,7 +128,14 @@ namespace Windows.Storage.Pickers
 			}
 
 			public override void DidDismiss(UIPresentationController controller)
-				=> _taskCompletionSource.SetResult(null);
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"FolderPickerPresentationControllerDelegate.DidDismiss");
+				}
+
+				_taskCompletionSource.SetResult(null);
+			}
 		}
 	}
 }
