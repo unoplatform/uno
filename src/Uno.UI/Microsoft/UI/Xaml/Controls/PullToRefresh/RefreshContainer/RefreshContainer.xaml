@@ -25,7 +25,7 @@
 								ContentTemplate="{TemplateBinding ContentTemplate}"
 								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 								Background="Transparent"/>
-				<Grid x:Name="RefreshVisualizerPresenter"/>
+					<Grid x:Name="RefreshVisualizerPresenter"/>
 				</Grid>
 			</ControlTemplate>
 			</Setter.Value>
