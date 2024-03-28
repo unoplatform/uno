@@ -353,6 +353,19 @@ namespace SampleControl.Presentation
 								CreationCollisionOption.ReplaceExisting
 								).AsTask(ct);
 							await GenerateBitmap(ct, target, file, content);
+
+							try
+							{
+								UseDarkTheme = true;
+								file = await rootFolder.CreateFileAsync(fileName + "-dark.png",
+									CreationCollisionOption.ReplaceExisting
+									).AsTask(ct);
+								await GenerateBitmap(ct, target, file, content);
+							}
+							finally
+							{
+								UseDarkTheme = false;
+							}
 						}
 						catch (Exception e)
 						{
