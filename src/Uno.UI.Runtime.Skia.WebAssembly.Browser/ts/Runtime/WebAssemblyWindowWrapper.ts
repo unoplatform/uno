@@ -92,20 +92,21 @@ namespace Uno.UI.Runtime.Skia {
 			this.managedEnableA11y(this.owner);
 		}
 
-		private static createAccessibilityElement(x: Number, y: Number, width: Number, height: Number, hashCode: Number) {
+		private static createAccessibilityElement(x: Number, y: Number, width: Number, height: Number, handle: Number, isFocusable: boolean) {
 			let element = document.createElement("div");
 			element.style.position = "absolute";
-			element.tabIndex = 0;
+			element.tabIndex = isFocusable ? 0 : -1;
+			element.style.pointerEvents = isFocusable ? "all" : "none";
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
 			element.style.width = `${width}px`;
 			element.style.height = `${height}px`;
-			element.id = `uno-semantics-${hashCode}`;
+			element.id = `uno-semantics-${handle}`;
 			return element;
 		}
 
-		public static addRootElementToSemanticsRoot(owner: any, rootHashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
-			let element = this.createAccessibilityElement(x, y, width, height, rootHashCode);
+		public static addRootElementToSemanticsRoot(owner: any, rootHandle: Number, width: Number, height: Number, x: Number, y: Number, isFocusable: boolean): void {
+			let element = this.createAccessibilityElement(x, y, width, height, rootHandle, isFocusable);
 			let semanticsRoot = WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot;
 
 			// For now, we re-create the whole tree every time.
@@ -117,8 +118,8 @@ namespace Uno.UI.Runtime.Skia {
 			semanticsRoot.appendChild(element);
 		}
 
-		public static addSemanticElement(owner: any, parentHashCode: Number, hashCode: Number, width: Number, height: Number, x: Number, y: Number, role: string, automationId: string): void {
-			let element = this.createAccessibilityElement(x, y, width, height, hashCode);
+		public static addSemanticElement(owner: any, parentHandle: Number, handle: Number, width: Number, height: Number, x: Number, y: Number, role: string, automationId: string, isFocusable: boolean): void {
+			let element = this.createAccessibilityElement(x, y, width, height, handle, isFocusable);
 			if (role) {
 				element.setAttribute("role", role);
 			}
@@ -127,11 +128,11 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute("aria-label", automationId);
 			}
 
-			document.getElementById(`uno-semantics-${parentHashCode}`).appendChild(element);
+			document.getElementById(`uno-semantics-${parentHandle}`).appendChild(element);
 		}
 
-		public static updateAriaLabel(owner: any, hashCode: Number, automationId: string): void {
-			document.getElementById(`uno-semantics-${hashCode}`).setAttribute("aria-label", automationId);
+		public static updateAriaLabel(owner: any, handle: Number, automationId: string): void {
+			document.getElementById(`uno-semantics-${handle}`).setAttribute("aria-label", automationId);
 		}
 
 		private removeLoading() {

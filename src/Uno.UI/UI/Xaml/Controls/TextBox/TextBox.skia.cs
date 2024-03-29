@@ -1415,6 +1415,9 @@ public partial class TextBox
 		UpdateCanUndoRedo();
 	}
 
+	private protected override bool IsDelegatingFocusToTemplateChild()
+		=> OperatingSystem.IsBrowser();
+
 	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);
 
 	private abstract record TextBoxAction;

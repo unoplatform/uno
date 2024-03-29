@@ -25,6 +25,7 @@ using System.Numerics;
 using Microsoft.UI.Composition;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -81,6 +82,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		set => NativeMethods.SetWindowTitle(value);
 	}
 
+	internal bool IsAccessibilityEnabled => _compositionListener is not null;
+
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -117,6 +120,12 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		AutomationProperties.OnAutomationIdChangedCallback = OnAutomationIdChanged;
 		_compositionListener = new CompositionListener(this, rootElement);
 		CreateAOM(rootElement);
+		Control.OnIsFocusableChangedCallback = UpdateIsFocusable;
+	}
+
+	private void UpdateIsFocusable(Control control, bool isFocusable)
+	{
+		// TODO: Update pointer-events and tab index.
 	}
 
 	internal void CreateAOM(UIElement rootElement)
@@ -125,23 +134,23 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
-		var rootHashCode = rootElement.Visual.GetHashCode();
+		var rootHandle = rootElement.Visual.Handle;
 		rootElement.Visual.RemoveContext(_compositionListener, null);
 		rootElement.Visual.AddContext(_compositionListener, null);
 
 		var totalOffset = rootElement.Visual.GetTotalOffset();
-		NativeMethods.AddRootElementToSemanticsRoot(this, rootHashCode, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y);
+		NativeMethods.AddRootElementToSemanticsRoot(this, rootHandle, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y, rootElement.IsFocusable);
 		foreach (var child in rootElement.GetChildren())
 		{
-			BuildSemanticsTreeRecursive(rootHashCode, child);
+			BuildSemanticsTreeRecursive(rootHandle, child);
 		}
 	}
 
-	internal void BuildSemanticsTreeRecursive(int parentHashCode, UIElement child)
+	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child)
 	{
 		Debug.Assert(_compositionListener is not null);
 
-		var hashCode = child.Visual.GetHashCode();
+		var handle = child.Visual.Handle;
 		child.Visual.RemoveContext(_compositionListener, null);
 		child.Visual.AddContext(_compositionListener, null);
 
@@ -150,16 +159,22 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		var role = AutomationProperties.FindHtmlRole(child);
 		var automationId = AutomationProperties.GetAutomationId(child);
 
-		NativeMethods.AddSemanticElement(this, parentHashCode, hashCode, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId);
+		// TODO: Verify if this is the right behavior.
+		if (string.IsNullOrEmpty(automationId) && child.OnCreateAutomationPeerInternal() is { } automationPeer)
+		{
+			automationId = automationPeer.GetName();
+		}
+
+		NativeMethods.AddSemanticElement(this, parentHandle, handle, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, child.IsFocusable);
 		foreach (var childChild in child.GetChildren())
 		{
-			BuildSemanticsTreeRecursive(hashCode, childChild);
+			BuildSemanticsTreeRecursive(handle, childChild);
 		}
 	}
 
 	internal void OnAutomationIdChanged(UIElement element, string automationId)
 	{
-		NativeMethods.UpdateAriaLabel(this, element.Visual.GetHashCode(), automationId);
+		NativeMethods.UpdateAriaLabel(this, element.Visual.Handle, automationId);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
@@ -215,13 +230,13 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		public static partial string GetCanvasId([JSMarshalAs<JSType.Any>] object owner);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.addRootElementToSemanticsRoot")]
-		internal static partial void AddRootElementToSemanticsRoot([JSMarshalAs<JSType.Any>] object owner, int rootHashCode, float width, float height, float x, float y);
+		internal static partial void AddRootElementToSemanticsRoot([JSMarshalAs<JSType.Any>] object owner, IntPtr rootHandle, float width, float height, float x, float y, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.addSemanticElement")]
-		internal static partial void AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, int parentHashCode, int hashCode, float width, float height, float x, float y, string role, string automationId);
+		internal static partial void AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, IntPtr parentHandle, IntPtr handle, float width, float height, float x, float y, string role, string automationId, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.updateAriaLabel")]
-		internal static partial void UpdateAriaLabel([JSMarshalAs<JSType.Any>] object owner, int hashCode, string automationId);
+		internal static partial void UpdateAriaLabel([JSMarshalAs<JSType.Any>] object owner, IntPtr handle, string automationId);
 
 		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
 		internal static partial string GetWindowTitle();

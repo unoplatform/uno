@@ -82,7 +82,8 @@
 		}
 
 		private onPointerEventReceived(evt: PointerEvent): void {
-			if ((evt.target as HTMLElement)?.id != "uno-canvas") {
+			let id = (evt.target as HTMLElement)?.id;
+			if (id != "uno-canvas" && !id.startsWith("uno-semantics-")) {
 				// We have a div to enable accessibility (see enableA11y in WebAssemblyWindowWrapper).
 				// Pressing space on keyboard to click it will trigger pointer event which we want to ignore.
 				// So, we only care about events that come from uno-canvas.

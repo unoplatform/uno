@@ -38,9 +38,16 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 			_log.Debug($"Native Keyboard Event: down={down}, ctrl={ctrl}, shift={shift}, meta={meta}, code={code}, key=${key}");
 		}
 
+		var virtualKey = BrowserVirtualKeyHelper.FromCode(code);
+		if (down && !ctrl && !shift && !alt && !meta && virtualKey == VirtualKey.Tab && WebAssemblyWindowWrapper.Instance.IsAccessibilityEnabled)
+		{
+			// Let the browser manages tab navigation for accessibility.
+			return false;
+		}
+
 		var args = new KeyEventArgs(
 			"keyboard",
-			BrowserVirtualKeyHelper.FromCode(code),
+			virtualKey,
 			(shift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None) | (ctrl ? VirtualKeyModifiers.Control : VirtualKeyModifiers.None) | (meta ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.None) | (alt ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.None),
 			new CorePhysicalKeyStatus
 			{

@@ -17,7 +17,5 @@ namespace Microsoft.UI.Xaml.Controls
 
 			WindowManagerInterop.SetIsFocusable(HtmlId, isFocusable);
 		}
-
-		private protected virtual bool IsDelegatingFocusToTemplateChild() => false;
 	}
 }

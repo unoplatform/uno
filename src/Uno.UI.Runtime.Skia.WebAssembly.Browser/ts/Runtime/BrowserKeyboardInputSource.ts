@@ -42,7 +42,8 @@
 			);
 
 			if (isHandled) {
-				//evt.preventDefault();
+				console.log("Preventing default!!");
+				evt.preventDefault();
 			}
 		}
 	}
