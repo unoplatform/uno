@@ -381,14 +381,14 @@ public abstract class ImplicitPackagesResolverBase : Task
 	protected void AddPackage(string packageId, string? version, string? excludeAssets = null)
 	{
 		// 1) Remove ProjectSystem Reference. This was only added to help Visual Studio
-		var sdkReference = PackageReferences.SingleOrDefault(x => !string.IsNullOrEmpty(x.GetMetadata("ProjectSystem")));
+		var sdkReference = PackageReferences.SingleOrDefault(x => x.ItemSpec == packageId && !x.HasMetadata("ProjectSystem"));
 		if (sdkReference is not null && !_removePackageReference.Contains(sdkReference))
 		{
 			_removePackageReference.Add(sdkReference);
 		}
 
 		// 2) Check for Existing References
-		var existingReference = PackageReferences.SingleOrDefault(x => string.IsNullOrEmpty(x.GetMetadata("ProjectSystem")));
+		var existingReference = PackageReferences.SingleOrDefault(x => x.ItemSpec == packageId && x.HasMetadata("ProjectSystem"));
 		if (existingReference is not null)
 		{
 			// 2.1) Validate it has a version available
