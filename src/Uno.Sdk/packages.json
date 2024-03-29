@@ -11,6 +11,7 @@
 			"Uno.WinUI.Svg",
 			"Uno.WinUI.Lottie",
 			"Uno.WinUI.DevServer",
+			"Uno.WinUI.Skia.Gtk",
 			"Uno.WinUI.Skia.Linux.FrameBuffer",
 			"Uno.WinUI.Skia.MacOS",
 			"Uno.WinUI.Skia.Wpf",
@@ -72,7 +73,10 @@
 		"version": "2.88.7",
 		"packages": [
 			"SkiaSharp.Skottie",
-			"SkiaSharp.Views.Uno.WinUI"
+			"SkiaSharp.Views.Uno.WinUI",
+			"SkiaSharp.NativeAssets.Linux",
+			"SkiaSharp.NativeAssets.macOS",
+			"SkiaSharp.NativeAssets.Win32"
 		]
 	},
 	{

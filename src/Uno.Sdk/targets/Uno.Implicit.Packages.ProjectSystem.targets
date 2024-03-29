@@ -73,4 +73,6 @@
 		Condition=" '$(IsBrowserWasm)' == 'true' " />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.WinAppSdk.targets"
 		Condition="$(TargetFramework.Contains('windows10'))" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Legacy.targets"
+		Condition="($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' AND $(TargetFramework) != '') OR ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND !$(TargetFramework.Contains('windows10')))" />
 </Project>

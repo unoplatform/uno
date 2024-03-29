@@ -85,6 +85,22 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 			AddPackage("Uno.WinUI.Skia.Wpf", null);
 			AddPackage("Uno.WinUI.Skia.X11", null);
 		}
+		else if (TargetRuntime == UnoTarget.SkiaGtk)
+		{
+			AddPackage("Uno.WinUI.Skia.Gtk", null);
+			AddPackage("SkiaSharp.NativeAssets.Linux", SkiaSharpVersion);
+			AddPackage("SkiaSharp.NativeAssets.macOS", SkiaSharpVersion);
+		}
+		else if (TargetRuntime == UnoTarget.SkiaLinuxFramebuffer)
+		{
+			AddPackage("Uno.WinUI.Skia.Linux.FrameBuffer", null);
+			AddPackage("SkiaSharp.NativeAssets.Linux", SkiaSharpVersion);
+		}
+		else if (TargetRuntime == UnoTarget.SkiaWpf)
+		{
+			AddPackage("Uno.WinUI.Skia.Wpf", null);
+			AddPackage("SkiaSharp.NativeAssets.Win32", SkiaSharpVersion);
+		}
 		else if (TargetRuntime == UnoTarget.Wasm || IsLegacyWasmHead())
 		{
 			AddPackage("Uno.WinUI.WebAssembly", null);

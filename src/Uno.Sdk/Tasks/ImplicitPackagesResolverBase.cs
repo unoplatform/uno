@@ -134,12 +134,32 @@ public abstract class ImplicitPackagesResolverBase : Task
 			{
 				var frameworkParts = TargetFramework.Split('-');
 				TargetFrameworkVersion = frameworkParts[0];
-				TargetRuntime = frameworkParts[1].StartsWith(UnoTarget.Windows, StringComparison.InvariantCultureIgnoreCase) ? UnoTarget.Windows : frameworkParts[1].ToLower(CultureInfo.InvariantCulture);
+				var runtime = frameworkParts[1].ToLowerInvariant();
+				if (runtime.Contains("windows"))
+				{
+					TargetRuntime = runtime.StartsWith(UnoTarget.Windows, StringComparison.InvariantCultureIgnoreCase) ? UnoTarget.Windows : UnoTarget.SkiaWpf;
+				}
+				else
+				{
+					TargetRuntime = runtime;
+				}
 			}
 			else
 			{
 				TargetFrameworkVersion = TargetFramework;
 				TargetRuntime = UnoTarget.Reference;
+				if (ProjectName.EndsWith("Skia.Gtk", StringComparison.InvariantCultureIgnoreCase))
+				{
+					TargetRuntime = UnoTarget.SkiaGtk;
+				}
+				else if (ProjectName.EndsWith("Skia.WPF", StringComparison.InvariantCultureIgnoreCase))
+				{
+					TargetRuntime = UnoTarget.SkiaWpf;
+				}
+				else if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
+				{
+					TargetRuntime = UnoTarget.SkiaLinuxFramebuffer;
+				}
 			}
 
 			_unoFeatures = GetFeatures();
