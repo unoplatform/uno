@@ -397,7 +397,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 	protected void AddPackage(string packageId, string? version, string? excludeAssets = null)
 	{
 		// 1) Check for Existing References
-		var existingReference = PackageReferences.SingleOrDefault(x => x.ItemSpec == packageId && x.HasMetadata("ProjectSystem"));
+		var existingReference = PackageReferences.SingleOrDefault(x => x.ItemSpec == packageId);
 		if (existingReference is not null)
 		{
 			// 1.1) Validate it has a version available
