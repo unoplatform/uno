@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -166,6 +166,11 @@ public abstract class ImplicitPackagesResolverBase : Task
 		catch (Exception ex)
 		{
 			Log.LogErrorFromException(ex);
+
+			if (SdkDebugging)
+			{
+				Log.LogMessage(MessageImportance.High, ex.ToString());
+			}
 		}
 
 		if (_existingReferences.Count > 0)

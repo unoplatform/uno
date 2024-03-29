@@ -6,6 +6,7 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<UnoSdkDebugging>true</UnoSdkDebugging>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
