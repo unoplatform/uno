@@ -21,6 +21,16 @@
 			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
 		</PropertyGroup>
 
+		<!--
+			Remove all placeholder references so that implicit references can be created with
+			actual versions using the `UnoImplicitPackages` target.
+		-->
+		<ItemGroup>
+			<PackageReference Remove="@(PackageReference)"
+				Condition="%(PackageReference.ProjectSystem) != ''" />
+			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference" />
+		</ItemGroup>
+
 		<ImplicitPackagesResolver_V0
 				IntermediateOutput="$(_UnoCacheFolder)"
 				SdkDebugging="$(UnoSdkDebugging)"
@@ -66,18 +76,7 @@
 					TaskParameter="ImplicitPackages" />
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
-			<Output ItemName="_UnoImplicitRemovePackageReference"
-					TaskParameter="RemovePackageReferences" />
 		</ImplicitPackagesResolver_V0>
-
-		<!--
-			Remove all placeholder references so that implicit references can be created with
-			actual versions using the `UnoImplicitPackages` target.
-		-->
-		<ItemGroup>
-			<PackageReference Remove="@(_UnoImplicitRemovePackageReference)" />
-			<_UnoImplicitRemovePackageReference Remove="@(_UnoImplicitRemovePackageReference)" />
-		</ItemGroup>
 
 		<ItemGroup>
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />

@@ -5,57 +5,57 @@
 		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
 	-->
 	<ItemGroup>
-		<PackageReference Include="Uno.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsPackable) != 'true'">
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" ProjectSystem="true" />
-		<PackageReference Include="Uno.Resizetizer" ProjectSystem="true" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Extensions.Logging.Console" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Maps;'))">
-		<PackageReference Include="Uno.WinUI.Maps" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Maps" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Foldable;'))">
-		<PackageReference Include="Uno.WinUI.Foldable" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Foldable" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))">
-		<PackageReference Include="Uno.WinUI.Markup" ProjectSystem="true" />
-		<PackageReference Include="Uno.Extensions.Markup.Generators" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Markup" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Markup.Generators" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Toolkit;'))">
-		<PackageReference Include="Uno.Toolkit.WinUI" ProjectSystem="true" />
-		<PackageReference Include="Uno.Toolkit.WinUI.Cupertino" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Cupertino;'))" />
-		<PackageReference Include="Uno.Toolkit.WinUI.Material" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Material;'))" />
-		<PackageReference Include="Uno.Toolkit.WinUI.Material.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Material;')) AND $(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Cupertino" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Cupertino;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Material;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Material;')) AND $(UnoFeatures.Contains(';CSharpMarkup;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Material;'))">
-		<PackageReference Include="Uno.Material.WinUI" ProjectSystem="true" />
-		<PackageReference Include="Uno.Material.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
-		<PackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Material.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Material.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Cupertino;'))">
-		<PackageReference Include="Uno.Cupertino.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Cupertino.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Prism;'))">
-		<PackageReference Include="Prism.Uno.WinUI" ProjectSystem="true" Condition="!$(_IsExecutable)" />
-		<PackageReference Include="Prism.DryIoc.Uno.WinUI" ProjectSystem="true" Condition="$(_IsExecutable)" />
-		<PackageReference Include="Prism.Uno.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI" ProjectSystem="true" Condition="!$(_IsExecutable)" />
+		<_UnoProjectSystemPackageReference Include="Prism.DryIoc.Uno.WinUI" ProjectSystem="true" Condition="$(_IsExecutable)" />
+		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
-		<PackageReference Include="Uno.Dsp.Tasks" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Dsp.Tasks" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Mvvm;'))">
-		<PackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Extensions.Implicit.Packages.ProjectSystem.targets" />
@@ -75,4 +75,8 @@
 		Condition="$(TargetFramework.Contains('windows10'))" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Legacy.targets"
 		Condition="($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' AND $(TargetFramework) != '') OR ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND !$(TargetFramework.Contains('windows10')))" />
+
+	<ItemGroup>
+		<PackageReference Include="@(_UnoProjectSystemPackageReference)" Exclude="@(PackageReference)" />
+	</ItemGroup>
 </Project>

@@ -7,11 +7,11 @@
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
 
 	<ItemGroup Condition="$(_IsExecutable) == 'true'">
-		<PackageReference Include="Uno.WinUI.WebAssembly" ProjectSystem="true" />
-		<PackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';MediaElement;'))"/>
-		<PackageReference Include="Microsoft.Windows.Compatibility" ProjectSystem="true" />
-		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" ProjectSystem="true" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" ProjectSystem="true" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebAssembly" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';MediaElement;'))"/>
+		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.Compatibility" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap.DevServer" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

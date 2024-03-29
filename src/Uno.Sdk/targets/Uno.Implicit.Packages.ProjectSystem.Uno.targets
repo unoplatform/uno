@@ -5,15 +5,15 @@
 		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
 	-->
 	<ItemGroup Condition="$(Optimize) != 'true'">
-		<PackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsPackable) != 'true'">
-		<PackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND '$(IsPackable)' != 'true'">
-		<PackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

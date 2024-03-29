@@ -5,8 +5,8 @@
 		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
 	-->
 	<ItemGroup>
-		<PackageReference Include="Microsoft.WindowsAppSDK" ProjectSystem="true" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" ProjectSystem="true" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" ProjectSystem="true" Condition="$(_IsExecutable) == 'true'"/>
+		<_UnoProjectSystemPackageReference Include="Microsoft.WindowsAppSDK" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.SDK.BuildTools" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Core.Extensions.Logging.Singleton" ProjectSystem="true" Condition="$(_IsExecutable) == 'true'"/>
 	</ItemGroup>
 </Project>
