@@ -45,7 +45,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
-			_owner.CreateAOM(_rootElement);
+			//_owner.CreateAOM(_rootElement); // TODO
 		}
 	}
 

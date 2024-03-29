@@ -92,6 +92,14 @@ namespace Uno.UI.Runtime.Skia {
 			this.managedEnableA11y(this.owner);
 		}
 
+		public static focusSemanticElement(handle: Number) {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			if (element) {
+				console.log("Focus!!" + element);
+				element.focus();
+			}
+		}
+
 		private static createAccessibilityElement(x: Number, y: Number, width: Number, height: Number, handle: Number, isFocusable: boolean) {
 			let element = document.createElement("div");
 			element.style.position = "absolute";

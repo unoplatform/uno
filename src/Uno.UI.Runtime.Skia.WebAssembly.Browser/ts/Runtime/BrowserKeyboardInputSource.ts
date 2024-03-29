@@ -29,7 +29,6 @@
 		}
 
 		private onKeyboardEvent(evt: KeyboardEvent): void {
-			console.log(`Keyboard event target: ${evt.target}`);
 			let isHandled = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
 				this._source,
 				evt.type == "keydown",
@@ -41,8 +40,7 @@
 				evt.key
 			);
 
-			if (isHandled) {
-				console.log("Preventing default!!");
+			if (isHandled || evt.code == "Tab") {
 				evt.preventDefault();
 			}
 		}

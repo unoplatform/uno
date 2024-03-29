@@ -39,11 +39,11 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 		}
 
 		var virtualKey = BrowserVirtualKeyHelper.FromCode(code);
-		if (down && !ctrl && !shift && !alt && !meta && virtualKey == VirtualKey.Tab && WebAssemblyWindowWrapper.Instance.IsAccessibilityEnabled)
-		{
-			// Let the browser manages tab navigation for accessibility.
-			return false;
-		}
+		//if (down && !ctrl && !shift && !alt && !meta && virtualKey == VirtualKey.Tab && WebAssemblyWindowWrapper.Instance.IsAccessibilityEnabled)
+		//{
+		//	// Let the browser manages tab navigation for accessibility.
+		//	return false;
+		//}
 
 		var args = new KeyEventArgs(
 			"keyboard",
