@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
-		private readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser();
+		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser();
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// the password manager autocompletion button appear.
 				if (focusState != FocusState.Unfocused)
 				{
-					_textBoxExtension?.StartEntry();
+					_textBoxExtension?.StartEntry(IsPasswordBox, this);
 				}
 				else
 				{
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (focusState != FocusState.Unfocused)
 				{
 					DisplayBlock.Opacity = 0;
-					_textBoxExtension?.StartEntry();
+					_textBoxExtension?.StartEntry(IsPasswordBox, this);
 
 					var selectionStart = this.GetSelectionStart();
 

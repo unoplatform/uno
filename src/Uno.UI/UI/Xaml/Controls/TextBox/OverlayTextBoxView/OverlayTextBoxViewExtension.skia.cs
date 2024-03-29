@@ -36,7 +36,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public abstract bool IsOverlayLayerInitialized(XamlRoot xamlRoot);
 
-	public void StartEntry()
+	public void StartEntry(bool isPasswordBox, TextBoxView view)
 	{
 		if (_owner.TextBox is not { XamlRoot: { } xamlRoot } textBox)
 		{

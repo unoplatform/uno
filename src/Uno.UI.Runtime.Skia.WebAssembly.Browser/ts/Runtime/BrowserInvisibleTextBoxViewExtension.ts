@@ -1,9 +1,8 @@
 ﻿namespace Uno.UI.Runtime.Skia {
 	export class BrowserInvisibleTextBoxViewExtension {
-		private static _inputIdPrefix: string = "UnoInvisibleTextBoxViewInput"
-		private static _inputIdSuffix: number = 1;
-
 		private static _exports: any;
+		private static readonly inputElementId = "uno-input";
+		private static inputElement: HTMLInputElement;
 
 		public static async initialize(): Promise<any> {
 			const module = <any>window.Module;
@@ -15,7 +14,7 @@
 			}
 		}
 
-		public static createInput(instance: any, isPasswordBox: boolean): string {
+		private static createInput(isPasswordBox: boolean, text: string) {
 			const input = document.createElement("input");
 			if (isPasswordBox) {
 				input.type = "password";
@@ -24,9 +23,8 @@
 				input.type = "text";
 			}
 
-			input.id = BrowserInvisibleTextBoxViewExtension._inputIdPrefix + String(BrowserInvisibleTextBoxViewExtension._inputIdSuffix);
-			BrowserInvisibleTextBoxViewExtension._inputIdSuffix++;
-
+			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
+			input.spellcheck = false;
 			input.style.whiteSpace = "pre-wrap";
 			input.style.position = "absolute";
 			input.style.padding = "0px";
@@ -43,48 +41,45 @@
 			input.style.zIndex = "99";
 			input.style.top = "0px";
 			input.style.left = "0px";
+			input.value = text;
 
 			input.oninput = ev => {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(instance, (ev.target as HTMLInputElement).value)
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged((ev.target as HTMLInputElement).value)
 			};
 
-			// bubble the key events up to be handled in uno without actually inserting any character
-			input.onkeydown = ev => ev.preventDefault();
-
 			document.body.appendChild(input);
-
-			return input.id;
+			BrowserInvisibleTextBoxViewExtension.inputElement = input;
 		}
 
-		public static focus(id: string, focused: boolean) {
+		public static focus(focused: boolean, isPassword: boolean, text: string) {
 			if (focused) {
+				this.createInput(isPassword, text);
+
 				// It's necessary to actually focus the native input, not just make it visible. This is particularly
-				// important to mobile browsers (to open the software keyboard) and
-				document.getElementById(id).focus();
+				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
+				// events and properly recognize password inputs to not read it.
+				BrowserInvisibleTextBoxViewExtension.inputElement.focus();
 			} else {
 				// reset focus
 				(document.activeElement as HTMLElement)?.blur();
+				BrowserInvisibleTextBoxViewExtension.inputElement.remove();
 			}
 		}
 
-		public static setText(id: string, text: string) {
-			(document.getElementById(id) as HTMLInputElement).textContent = text;
+		public static setText(text: string) {
+			BrowserInvisibleTextBoxViewExtension.inputElement.textContent = text;
 		}
 
-		public static updateSize(id: string, width: number, height: number) {
-			const input = (document.getElementById(id) as HTMLInputElement);
+		public static updateSize(width: number, height: number) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			input.width = width;
 			input.height = height;
 		}
 
-		public static updatePosition(id: string, x: number, y: number) {
-			const input = (document.getElementById(id) as HTMLInputElement);
+		public static updatePosition(x: number, y: number) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			input.style.top = `${Math.round(y)}px`;
 			input.style.left = `${Math.round(x)}px`;
-		}
-
-		public static disposeInput(id: string) {
-			document.getElementById(id).remove();
 		}
 	}
 }
