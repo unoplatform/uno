@@ -81,15 +81,20 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static announceA11y(owner: any, text: string) {
 			const instance = this.getInstance(owner);
+			instance.announceA11y(text);
+		}
+
+		private announceA11y(text: string) {
 			let child = document.createElement("div");
 			child.innerText = text;
-			instance.a11yElement.appendChild(child);
-			setTimeout(() => instance.a11yElement.removeChild(child), 300);
+			this.a11yElement.appendChild(child);
+			setTimeout(() => this.a11yElement.removeChild(child), 300);
 		}
 
 		private onEnableA11yClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableA11y);
 			this.managedEnableA11y(this.owner);
+			this.announceA11y("Accessibility enabled successfullly.");
 		}
 
 		public static focusSemanticElement(handle: Number) {
