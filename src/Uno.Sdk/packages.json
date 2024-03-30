@@ -145,42 +145,42 @@
 	},
 	{
 		"group": "AndroidXLegacySupportV4",
-		"version": "1.0.0.22",
+		"version": "1.0.0.23",
 		"packages": [
 			"Xamarin.AndroidX.Legacy.Support.V4"
 		]
 	},
 	{
 		"group": "AndroidXAppCompat",
-		"version": "1.6.1.6",
+		"version": "1.6.1.7",
 		"packages": [
 			"Xamarin.AndroidX.AppCompat"
 		]
 	},
 	{
 		"group": "AndroidXRecyclerView",
-		"version": "1.3.2.1",
+		"version": "1.3.2.2",
 		"packages": [
 			"Xamarin.AndroidX.RecyclerView"
 		]
 	},
 	{
 		"group": "AndroidXActivity",
-		"version": "1.8.1.1",
+		"version": "1.8.2.1",
 		"packages": [
 			"Xamarin.AndroidX.Activity"
 		]
 	},
 	{
 		"group": "AndroidXBrowser",
-		"version": "1.7.0.1",
+		"version": "1.8.0",
 		"packages": [
 			"Xamarin.AndroidX.Browser"
 		]
 	},
 	{
 		"group": "AndroidXSwipeRefreshLayout",
-		"version": "1.1.0.17",
+		"version": "1.1.0.18",
 		"packages": [
 			"Xamarin.AndroidX.SwipeRefreshLayout"
 		]
