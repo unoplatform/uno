@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RichTextBlockAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference RichTextBlockAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
 using System;
 using DirectUI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
@@ -14,7 +13,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPeer
 {
-	public RichTextBlockAutomationPeer(RichTextBlock owner) : base(owner)
+	public RichTextBlockAutomationPeer(Controls.RichTextBlock owner) : base(owner)
 	{
 	}
 
@@ -30,6 +29,10 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 			//	IFC(get_Owner(&spOwner));
 			//	IFCPTR(spOwner.Get());
 
+			//ActivateAutomationInstance
+
+			return null;
+
 			//	IFC(ActivationAPI::ActivateAutomationInstance(KnownTypeIndex::TextAdapter, static_cast<RichTextBlock*>(spOwner.Get())->GetHandle(), spTextAdapter.GetAddressOf()));
 
 			//	m_pTextPattern = spTextAdapter.Detach();
@@ -44,7 +47,7 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 		}
 	}
 
-	protected override string GetClassNameCore() => nameof(RichTextBlock);
+	protected override string GetClassNameCore() => nameof(Controls.RichTextBlock);
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Text;
@@ -90,7 +93,6 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 				}
 			}
 
-			//UNO TODO: AppendAutomationPeerChildren
 			returnValue = spBlock.AppendAutomationPeerChildren(posContentStart, posOverflowStart);
 		}
 

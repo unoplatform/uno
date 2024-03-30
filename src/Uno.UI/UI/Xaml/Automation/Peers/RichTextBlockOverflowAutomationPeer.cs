@@ -10,6 +10,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutomationPeer
 {
+	private object m_textPattern;
+
 	public RichTextBlockOverflowAutomationPeer(Controls.RichTextBlockOverflow owner) : base(owner)
 	{
 	}
@@ -18,26 +20,25 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 	{
 		if (patternInterface == PatternInterface.Text)
 		{
-			//if (m_pTextPattern == nullptr)
-			//{
-			//	ctl::ComPtr<IUIElement> spOwner;
-			//	ctl::ComPtr<TextAdapter> spTextAdapter;
-			//	IFC(get_Owner(&spOwner));
-			//	IFCPTR(spOwner.Get());
+			if (m_textPattern is not { })
+			{
+				//UNO TODO:
 
-			//	// RichTextBlockOverflows that don't have a master RichTextBlock don't have a text pattern, and should return nullptr.
-			//	if (static_cast<CRichTextBlockOverflow*>((static_cast<RichTextBlockOverflow*>(spOwner.Get())->GetHandle()))->m_pMaster != nullptr)
-			//	{
-			//		IFC(ActivationAPI::ActivateAutomationInstance(KnownTypeIndex::TextAdapter, static_cast<RichTextBlockOverflow*>(spOwner.Get())->GetHandle(), spTextAdapter.GetAddressOf()));
+				//	// RichTextBlockOverflows that don't have a master RichTextBlock don't have a text pattern, and should return nullptr.
+				//	if (static_cast<CRichTextBlockOverflow*>((static_cast<RichTextBlockOverflow*>(spOwner.Get())->GetHandle()))->m_pMaster != nullptr)
+				//	{
+				//		IFC(ActivationAPI::ActivateAutomationInstance(KnownTypeIndex::TextAdapter, static_cast<RichTextBlockOverflow*>(spOwner.Get())->GetHandle(), spTextAdapter.GetAddressOf()));
 
-			//		IFCPTR(spTextAdapter.Get());
+				//		IFCPTR(spTextAdapter.Get());
 
-			//		m_pTextPattern = spTextAdapter.Detach();
-			//		IFC(m_pTextPattern->put_Owner(spOwner.Get()));
-			//	}
-			//}
-			//*ppReturnValue = ctl::as_iinspectable((m_pTextPattern));
-			//ctl::addref_interface(m_pTextPattern);
+				//		m_pTextPattern = spTextAdapter.Detach();
+				//		IFC(m_pTextPattern->put_Owner(spOwner.Get()));
+				//	}
+
+				m_textPattern = Owner;
+			}
+
+			return m_textPattern;
 		}
 		else
 		{

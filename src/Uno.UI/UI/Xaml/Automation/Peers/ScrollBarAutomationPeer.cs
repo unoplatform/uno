@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollBarAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference ScrollBarAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
 using DirectUI;
 using Windows.Foundation;
 
@@ -50,11 +50,7 @@ public partial class ScrollBarAutomationPeer : RangeBaseAutomationPeer
 		{
 			var owner = Owner as Controls.Primitives.ScrollBar;
 
-			//UNO TODO: ElementHorizontalTemplate and ElementVerticalTemplate on ScrollBar
-			var elementHorizontalTemplate = owner.ElementHorizontalTemplate;
-			var elementVerticalTemplate = owner.ElementVerticalTemplate;
-
-			if (element == elementHorizontalTemplate || element == elementVerticalTemplate)
+			if (element == owner.ElementHorizontalTemplate || element == owner.ElementVerticalTemplate)
 			{
 				return element.Visibility == Visibility.Visible;
 			}

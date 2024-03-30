@@ -8,6 +8,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class ListPickerFlyoutPresenterAutomationPeer : FrameworkElementAutomationPeer
 {
+	private const string UIA_AP_LISTPICKERFLYOUT_NAME = nameof(UIA_AP_LISTPICKERFLYOUT_NAME);
+
 	internal ListPickerFlyoutPresenterAutomationPeer()
 	{
 
@@ -18,12 +20,11 @@ public partial class ListPickerFlyoutPresenterAutomationPeer : FrameworkElementA
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Pane;
 
-	protected override string GetNameCore() 
+	protected override string GetNameCore()
 	{
-		//UNO TODO: FindStringResource
-		//IFC(Private::FindStringResource(
-		//UIA_AP_LISTPICKERFLYOUT_NAME,
-		//returnValue));
+		//UNO TODO: Private.FindStringResource
+		//return Private.FindStringResource(UIA_AP_LISTPICKERFLYOUT_NAME);
+
 		return base.GetNameCore();
 	}
 }

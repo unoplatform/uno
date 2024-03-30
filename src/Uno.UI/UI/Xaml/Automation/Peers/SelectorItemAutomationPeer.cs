@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference SelectorItemAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
@@ -23,13 +26,25 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 		if (patternInterface == PatternInterface.SelectionItem)
 		{
-			bool selectionPatternApplicable = true;
+			var selectionPatternApplicable = true;
 
-			if (Parent)
+			if (ItemsControlAutomationPeer is { } parent)
 			{
-				(Owner
+				selectionPatternApplicable = (parent.Owner as Selector).IsSelectionPatternApplicable();
+			}
+
+			if (selectionPatternApplicable)
+			{
+				return this;
 			}
 		}
+		else
+		if (patternInterface == PatternInterface.ScrollItem)
+		{
+			return this;
+		}
+
+		return spPatternProvider;
 	}
 
 	/// <summary>
@@ -37,7 +52,21 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	/// </summary>
 	public void Select()
 	{
+		if (!IsEnabled())
+		{
+			throw new System.Exception("Element is not enabled.");
+		}
 
+		if (ItemsControlAutomationPeer is { } parent)
+		{
+			if (parent.Owner is not ISelector selector)
+			{
+				throw new System.Exception("Operation cannot be performed.");
+			}
+
+			var index = (selector as Selector).Items.IndexOf(Item);
+			(selector as Selector).MakeSingleSelection(index, false /*animateIfBringIntoView*/, Item, default);
+		}
 	}
 
 	/// <summary>
@@ -45,7 +74,21 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	/// </summary>
 	public void AddToSelection()
 	{
+		if (!IsEnabled())
+		{
+			throw new System.Exception("Element is not enabled.");
+		}
 
+		if (ItemsControlAutomationPeer is { } parent)
+		{
+			if (parent.Owner is not ISelector selector)
+			{
+				throw new System.Exception("Operation cannot be performed.");
+			}
+
+			var index = (selector as Selector).Items.IndexOf(Item);
+			(selector as Selector).AutomationPeerAddToSelection(index, Item);
+		}
 	}
 
 	/// <summary>
@@ -53,7 +96,21 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	/// </summary>
 	public void RemoveFromSelection()
 	{
+		if (!IsEnabled())
+		{
+			throw new System.Exception("Element is not enabled.");
+		}
 
+		if (ItemsControlAutomationPeer is { } parent)
+		{
+			if (parent.Owner is not ISelector selector)
+			{
+				throw new System.Exception("Operation cannot be performed.");
+			}
+
+			var index = (selector as Selector).Items.IndexOf(Item);
+			(selector as Selector).AutomationPeerRemoveFromSelection(index, Item);
+		}
 	}
 
 	/// <summary>
@@ -63,7 +120,20 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		get
 		{
+			if (!IsEnabled())
+			{
+				throw new System.Exception("Element is not enabled.");
+			}
 
+			if (ItemsControlAutomationPeer is { } parent)
+			{
+				if (parent.Owner is ISelector selector)
+				{
+					return (selector as Selector).AutomationPeerIsSelected(Item);
+				}
+			}
+
+			return false;
 		}
 	}
 
@@ -74,12 +144,20 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		get
 		{
+			if (ItemsControlAutomationPeer is { } parent)
+			{
+				return ProviderFromPeer(parent);
+			}
 
+			return null;
 		}
 	}
 
 	internal void ScrollIntoView()
 	{
-
+		if (ItemsControlAutomationPeer is { } parent)
+		{
+			(parent.Owner as Selector).ScrollIntoViewInternal(Item, /*isHeader*/ false, /*isFooter*/ false, /*isFromPublicAPI*/ true, ScrollIntoViewAlignment.Default, default, default);
+		}
 	}
 }

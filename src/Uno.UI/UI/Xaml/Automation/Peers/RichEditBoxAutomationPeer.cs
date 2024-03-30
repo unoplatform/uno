@@ -25,6 +25,7 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer
 		var owner = Owner as Controls.RichEditBox;
 		TextBoxPlaceholderTextHelper.SetupPlaceholderTextBlockDescribedBy(owner);
 
-		return GetAutomationPeerCollection(AutomationProperties.DescribedByProperty);
+		return null; //DT TODO: This will be fixed with FrameworkAP
+		//GetAutomationPeerCollection(AutomationProperties.DescribedByProperty);
 	}
 }

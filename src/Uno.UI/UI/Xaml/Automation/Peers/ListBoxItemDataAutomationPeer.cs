@@ -19,8 +19,5 @@ public partial class ListBoxItemDataAutomationPeer : SelectorItemAutomationPeer,
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.ListItem;
 
-	public void ScrollIntoView()
-	{
-		ScrollIntoView();
-	}
+	public new void ScrollIntoView() => base.ScrollIntoView();
 }

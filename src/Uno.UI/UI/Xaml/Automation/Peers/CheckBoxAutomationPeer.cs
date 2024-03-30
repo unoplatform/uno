@@ -18,6 +18,6 @@ public partial class CheckBoxAutomationPeer : ToggleButtonAutomationPeer
 
 	protected override string GetClassNameCore() => nameof(CheckBox);
 
-	protected override AutomationControlType GetAutomationControlTypeCore() 
+	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.CheckBox;
 }
