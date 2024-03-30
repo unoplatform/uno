@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (TextBlockMeasureCache.Instance.FindMeasuredSize(this, availableSize) is Size desiredSize)
 				{
 					UnoMetrics.TextBlock.MeasureCacheHits++;
-					return desiredSize;
+					_textDesiredSize = desiredSize;
 				}
 				else
 				{
@@ -120,15 +120,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 					TextBlockMeasureCache.Instance.CacheMeasure(this, availableSize, desiredSize);
 
-					return desiredSize;
+					_textDesiredSize = desiredSize;
 				}
 			}
 			else
 			{
-				var desizedSize = MeasureView(availableSize);
+				var desiredSize = MeasureView(availableSize);
 
-				return desizedSize;
+				_textDesiredSize = desiredSize;
 			}
+
+			return _textDesiredSize.Value;
 		}
 
 		/// <summary>

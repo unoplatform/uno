@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets the size that this UIElement computed during the arrange pass of the layout process.
 		/// </summary>
-		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+		public Vector2 ActualSize => new Vector2((float)AssignedActualSize.Width, (float)AssignedActualSize.Height);
 
 		/// <summary>
 		/// Gets the position of this UIElement, relative to its parent, computed during the arrange pass of the layout process.

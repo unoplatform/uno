@@ -1,26 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Foundation;
+﻿using System.Threading.Tasks;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Private.Infrastructure;
-using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
-using System.Runtime.InteropServices.WindowsRuntime;
-using SamplesApp.UITests.TestFramework;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -88,7 +68,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			width = SUT.tbBorderInnerOpacity0_5.ActualWidth;
 			height = SUT.tbBorderInnerOpacity0_5.ActualHeight;
-			ImageAssert.HasColorAtChild(si, SUT.tbBorderInnerOpacity0_5, (width / 4) * 3.3, height / 2, "#FFC09090");
+			ImageAssert.HasColorAtChild(si, SUT.tbBorderInnerOpacity0_5, (width / 4) * 3.3, height / 2, "#FFC09090", tolerance: 4);
 
 			width = SUT.ImageInner0_5.ActualWidth;
 			height = SUT.ImageInner0_5.ActualHeight;

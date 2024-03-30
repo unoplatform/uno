@@ -38,6 +38,8 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Inlines))]
 	public partial class TextBlock : DependencyObject
 	{
+		private Size? _textDesiredSize;
+
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
 
@@ -1212,9 +1214,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override string GetAccessibilityInnerText() => Text;
 
-		// This approximates UWP behavior
-		private protected override double GetActualWidth() => DesiredSize.Width;
-		private protected override double GetActualHeight() => DesiredSize.Height;
+		// On UWP, ActualSize is immediately available after the TextBlock is measured, even if the TextBlock
+		// is never added to the visual tree. In Uno, we just return a best effort size until the TextBlock is
+		// attached to the visual tree and then we can depend on the layout cycle to return the proper ActualSize
+		private protected override double GetActualWidth() => _textDesiredSize is not null ? _textDesiredSize.Value.Width : Padding.Left + Padding.Right;
+
+		private protected override double GetActualHeight() => _textDesiredSize is not null ? _textDesiredSize.Value.Height : Padding.Top + Padding.Bottom;
 
 		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
