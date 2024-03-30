@@ -843,6 +843,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_dragValue = Value;
 		}
 
+		// NOTE: Currently only used internally for Automation
+		internal UIElement ElementHorizontalTemplate => m_tpElementHorizontalTemplate;
+
+		internal UIElement ElementVerticalTemplate => m_tpElementVerticalTemplate;
+
 		// Whenever the thumb gets dragged, we handle the event through this function to
 		// update the current value depending upon the thumb drag delta.
 		private void OnThumbDragDelta(
