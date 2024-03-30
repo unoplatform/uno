@@ -73,9 +73,4 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<ItemGroup>
 		<FrameworkReference Remove="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-
-	<PropertyGroup>
-		<_IsUnoSingleProjectAndLegacy>false</_IsUnoSingleProjectAndLegacy>
-		<_IsUnoSingleProjectAndLegacy Condition=" $(SingleProject) == 'true' OR $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProjectAndLegacy>
-	</PropertyGroup>
 </Project>

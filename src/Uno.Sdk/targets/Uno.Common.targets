@@ -1,6 +1,9 @@
 <Project>
 
 	<PropertyGroup>
+		<_IsUnoSingleProjectAndLegacy>false</_IsUnoSingleProjectAndLegacy>
+		<_IsUnoSingleProjectAndLegacy Condition=" $(SingleProject) == 'true' OR $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProjectAndLegacy>
+
 		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
 		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
 		<_IsExecutable>false</_IsExecutable>
