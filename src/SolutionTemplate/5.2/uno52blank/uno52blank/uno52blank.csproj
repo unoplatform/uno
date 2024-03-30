@@ -6,7 +6,7 @@
     <TargetFrameworks Condition="'$(OverrideTargetFramework)'!=''">$(OverrideTargetFramework)</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
-    <SingleProject>true</SingleProject>
+    <UnoSingleProject>true</UnoSingleProject>
 
     <!-- Display name -->
     <ApplicationTitle>uno52blank</ApplicationTitle>

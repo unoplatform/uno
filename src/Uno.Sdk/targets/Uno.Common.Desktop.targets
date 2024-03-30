@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Desktop.targets"
-			Condition=" $(SingleProject) == 'true' " />
+			Condition=" $(UnoSingleProject) == 'true' " />
 
 	<Target Name="RemoveTransitiveWindowsDesktopDependencies"
 		AfterTargets="ResolvePackageAssets"

@@ -16,7 +16,7 @@
 		<ImplicitPackagesResolver
 				IntermediateOutput="$(_UnoCacheFolder)"
 				SdkDebugging="$(UnoSdkDebugging)"
-				SingleProject="$(SingleProject)"
+				SingleProject="$(_IsUnoSingleProjectAndLegacy)"
 				Optimize="$(Optimize)"
 				OutputType="$(OutputType)"
 				UnoFeatures="$(UnoFeatures)"

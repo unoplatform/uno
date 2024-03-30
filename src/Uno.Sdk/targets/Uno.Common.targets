@@ -1,6 +1,9 @@
 <Project>
 
 	<PropertyGroup>
+		<_IsUnoSingleProjectAndLegacy>false</_IsUnoSingleProjectAndLegacy>
+		<_IsUnoSingleProjectAndLegacy Condition=" $(SingleProject) == 'true' OR $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProjectAndLegacy>
+
 		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
 		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
 		<_IsExecutable>false</_IsExecutable>
@@ -22,7 +25,7 @@
 		<PlatformsProjectFolder Condition=" '$(PlatformsProjectFolder)' == '' ">Platforms\</PlatformsProjectFolder>
 		<PlatformsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(PlatformsProjectFolder)'))</PlatformsProjectFolder>
 		<PlatformsProjectFolder Condition=" !Exists('$(PlatformsProjectFolder)') "></PlatformsProjectFolder>
-		<IsUnoHead Condition="$(SingleProject) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
+		<IsUnoHead Condition="$(_IsUnoSingleProjectAndLegacy) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -81,7 +84,7 @@
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
 
-	<PropertyGroup Condition="$(SingleProject) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
+	<PropertyGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
