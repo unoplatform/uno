@@ -62,6 +62,8 @@ jobs:
       cp global-net8.json global.json
     displayName: Replace global.json with .NET 8
 
+  - template: templates/dotnet-mobile-install-linux.yml
+
   - template: templates/gitversion.yml
   
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
