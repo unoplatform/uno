@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 

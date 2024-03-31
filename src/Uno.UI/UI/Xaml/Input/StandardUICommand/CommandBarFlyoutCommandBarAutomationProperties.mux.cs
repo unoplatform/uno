@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference CommandBarFlyoutCommandBarAutomationProperties.cpp, commit d2e60f8
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 

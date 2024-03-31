@@ -3,17 +3,17 @@
 using System.Collections.Generic;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal enum CommandBarFlyoutOpenCloseAnimationKind
 {
 	Opacity,
-    Clip
+	Clip
 }
 
 partial class CommandBarFlyoutCommandBar
