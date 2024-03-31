@@ -19,7 +19,8 @@ steps:
 
   - bash: |
       dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      uno-check --ci --non-interactive --fix --skip gtk3 --manifest ${{ parameters.UnoCheck_Manifest }}
+      # androidsdk disabled for https://github.com/unoplatform/uno.check/issues/241
+      uno-check --ci --non-interactive --fix --skip androidsdk --skip gtk3 --manifest ${{ parameters.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
     condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
     retryCountOnTaskFailure: 3
