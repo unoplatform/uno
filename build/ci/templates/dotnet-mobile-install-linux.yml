@@ -7,8 +7,19 @@ steps:
   - template: dotnet-install.yml
 
   - bash: |
+      ubuntu_release=`lsb_release -rs`
+      wget https://packages.microsoft.com/config/ubuntu/${ubuntu_release}/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+      sudo dpkg -i packages-microsoft-prod.deb
+      sudo apt-get install apt-transport-https
+      sudo apt-get update
+      sudo apt-get install msopenjdk-11
+    displayName: Install OpenJDK 11
+    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
+    retryCountOnTaskFailure: 3
+
+  - bash: |
       dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      uno-check --ci --non-interactive --fix --skip openjdk --skip gtk3 --manifest ${{ parameters.UnoCheck_Manifest }}
+      uno-check --ci --non-interactive --fix --skip gtk3 --manifest ${{ parameters.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
     condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
     retryCountOnTaskFailure: 3
