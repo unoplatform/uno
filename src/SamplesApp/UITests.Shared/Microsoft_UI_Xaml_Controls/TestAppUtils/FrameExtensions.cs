@@ -4,35 +4,34 @@
 
 using System;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace MUXControlsTestApp
+namespace MUXControlsTestApp;
+
+static class FrameExtensions
 {
-	static class FrameExtensions
+	public static void NavigateWithoutAnimation(this Frame frame, Type sourcePageType)
 	{
-		public static void NavigateWithoutAnimation(this Frame frame, Type sourcePageType)
+		if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo"))
 		{
-			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo"))
-			{
-				frame.Navigate(sourcePageType, new SuppressNavigationTransitionInfo());
-			}
-			else
-			{
-				frame.Navigate(sourcePageType);
-			}
+			frame.Navigate(sourcePageType, new SuppressNavigationTransitionInfo());
 		}
-
-		public static void NavigateWithoutAnimation(this Frame frame, Type sourcePageType, object parameter)
+		else
 		{
-			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo"))
-			{
-				frame.Navigate(sourcePageType, parameter, new SuppressNavigationTransitionInfo());
-			}
-			else
-			{
-				frame.Navigate(sourcePageType, parameter);
-			}
+			frame.Navigate(sourcePageType);
+		}
+	}
+
+	public static void NavigateWithoutAnimation(this Frame frame, Type sourcePageType, object parameter)
+	{
+		if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo"))
+		{
+			frame.Navigate(sourcePageType, parameter, new SuppressNavigationTransitionInfo());
+		}
+		else
+		{
+			frame.Navigate(sourcePageType, parameter);
 		}
 	}
 }
