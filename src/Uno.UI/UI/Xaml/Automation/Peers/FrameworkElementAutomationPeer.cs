@@ -14,7 +14,8 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using static Uno.FoundationFeatureConfiguration;
 using Uno.UI.Xaml.Core;
 using System.Collections;
-using Uno.UI.DirectUI;
+using Rect = Windows.Foundation.Rect;
+
 
 
 #if __ANDROID__
@@ -94,84 +95,65 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return automationId;
 	}
 
-	protected override AutomationControlType GetAutomationControlType()
+	//UNO TODO: GetAutomationControlType should be protected override
+	public new AutomationControlType GetAutomationControlType()
 	{
 		// If AutomationProperties.AutomationControlType is set, we'll return that value.
 		// Otherwise, we'll fall back to the GetAutomationControlTypeCore override.
 
-		DependencyProperty automationControlTypeProperty = MetadataAPI.GetDependencyPropertyByIndex(KnownPropertyIndex.AutomationProperties_AutomationControlType);
-
-		if (!Owner.Handle.IsPropertyDefault(automationControlTypeProperty))
+		// UNO TODO: Use IsPropertyDefault instead of GetCurrentHighestValuePrecedence
+		if (Owner.GetCurrentHighestValuePrecedence(AutomationProperties.AutomationControlTypeProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 		{
-			return AutomationProperties.GetAutomationControlType(Owner as UIElement);
+			return AutomationProperties.GetAutomationControlType(Owner);
 		}
 		else
 		{
 			return base.GetAutomationControlType();
 		}
-
 	}
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> m_ControlType;
 
-	//protected override Rect GetBoundingRectangleCore()
-	//{
-	//XRECTF rect = { };
-	//BOOLEAN isOffscreen = true;
-	//ctl::ComPtr<IUIElement> spOwner;
+	protected override Rect GetBoundingRectangleCore()
+	{
+		Rect rect = null;
 
-	//const bool isOneCoreTransforms = XamlOneCoreTransforms::IsEnabled();
+		var isOneCoreTransforms = IsEnabled();
 
-	//// In OneCoreTransforms mode, we ignore the clip on the all CScrollContentPresenters for the magnifier. This is
-	//// needed because Santorini's Magnifier places a RenderTransform on itself to do the magnification, which will
-	//// push parts of the shell (which lives underneath the Magnifier in the tree) beyond the bounds of the window.
-	//// Those parts still need to report bounds in order to be accessed by UIA and be scrolled back into view by the
-	//// shell.
-	////
-	//// Note that ignoring the root CScrollContentPresenter clip alone does not guarantee non-zero bounds to be
-	//// returned. The window size could have been given to layout and could have caused layout clips to be applied
-	//// in the tree. This works for Magnifier because the Magnifier control uses only a RenderTransform for
-	//// magnification, which does not affect layout at all.
-	////
-	//// Also note that we still respect the root CScrollContentPresenter clip for IsOffscreen (see IsOffscreenCore).
-	//// GetBoundingRectangle is not required to clip the bounds to the window, but IsOffscreen needs to remain accurate.
-	//// https://docs.microsoft.com/en-us/windows/desktop/api/uiautomationcore/nf-uiautomationcore-irawelementproviderfragment-get_boundingrectangle
-	//const bool ignoreClippingOnScrollContentPresenters = isOneCoreTransforms;
+		// In OneCoreTransforms mode, we ignore the clip on the all CScrollContentPresenters for the magnifier. This is
+		// needed because Santorini's Magnifier places a RenderTransform on itself to do the magnification, which will
+		// push parts of the shell (which lives underneath the Magnifier in the tree) beyond the bounds of the window.
+		// Those parts still need to report bounds in order to be accessed by UIA and be scrolled back into view by the
+		// shell.
+		//
+		// Note that ignoring the root CScrollContentPresenter clip alone does not guarantee non-zero bounds to be
+		// returned. The window size could have been given to layout and could have caused layout clips to be applied
+		// in the tree. This works for Magnifier because the Magnifier control uses only a RenderTransform for
+		// magnification, which does not affect layout at all.
+		//
+		// Also note that we still respect the root CScrollContentPresenter clip for IsOffscreen (see IsOffscreenCore).
+		// GetBoundingRectangle is not required to clip the bounds to the window, but IsOffscreen needs to remain accurate.
+		// https://docs.microsoft.com/en-us/windows/desktop/api/uiautomationcore/nf-uiautomationcore-irawelementproviderfragment-get_boundingrectangle
+		if (!IsOffscreenHelper(isOneCoreTransforms))
+		{
+			var bounds = Owner.GetGlobalBoundsWithOptions(
+				false /* ignoreClipping */,
+				isOneCoreTransforms,
+				false /* useTargetInformation */);
 
-	//IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
+			rect = new Rect(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+		}
 
-	//IFC_RETURN(static_cast<CAutomationPeer*>(GetHandle())->IsOffscreenHelper(ignoreClippingOnScrollContentPresenters, &isOffscreen));
+		if (isOneCoreTransforms)
+		{
+			// In OneCoreTransforms mode, GetGlobalBounds returns logical pixels so we must convert to RasterizedClient
+			var scale = RootScale.GetRasterizationScaleForElement(GetRootNoRef());
+			return new Rect(rect.X * scale, rect.Y * scale, rect.Width * scale, rect.Height * scale);
+		}
 
-	//if (!isOffscreen)
-	//{
-	//	XRECTF_RB bounds = { };
-
-	//	IFC_RETURN(static_cast<CUIElement*>(spOwner.Cast<UIElement>()->GetHandle())->GetGlobalBoundsWithOptions(
-	//		&bounds,
-	//		false /* ignoreClipping */,
-	//		ignoreClippingOnScrollContentPresenters,
-	//		false /* useTargetInformation */));
-
-	//	rect = ToXRectF(bounds);
-	//}
-
-	//if (isOneCoreTransforms)
-	//{
-	//	// In OneCoreTransforms mode, GetGlobalBounds returns logical pixels so we must convert to RasterizedClient
-	//	const float scale = RootScale::GetRasterizationScaleForElement(static_cast<CAutomationPeer*>(GetHandle())->GetRootNoRef());
-	//	const auto logicalRect = rect;
-	//	const auto physicalRect = logicalRect * scale;
-	//	rect = physicalRect;
-	//}
-
-	//returnValue->X = rect.X;
-	//returnValue->Y = rect.Y;
-	//returnValue->Width = rect.Width;
-	//returnValue->Height = rect.Height;
-
-	//return S_OK;
-	//}
+		return rect;
+	}
 
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
@@ -241,11 +223,14 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return base.GetLabeledByCore();
 	}
 
-	protected override string GetLocalizedControlType()
+	//UNO TODO: GetLocalizedControlType should be protected override
+	public new string GetLocalizedControlType()
 	{
 		//If AutomationProperties.LocalizedControlType is set, we'll return that value.
 		//Otherwise, we'll fall back to the GetLocalizedControlTypeCore override.
-		if (!Owner.IsPropertyDefault(MetadataAPI.GetDependencyPropertyByIndex(KnownPropertyIndex.AutomationProperties_LocalizedControlType)))
+
+		// UNO TODO: Use IsPropertyDefault instead of GetCurrentHighestValuePrecedence
+		if (Owner.GetCurrentHighestValuePrecedence(AutomationProperties.LocalizedControlTypeProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 		{
 			// If set, return the value from AutomationProperties
 			return AutomationProperties.GetLocalizedControlType(Owner);
@@ -299,13 +284,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
 		if (patternInterface == PatternInterface.ScrollItem)
 		{
-			if (m_spScrollItemAdapter == null)
-			{
-				m_spScrollItemAdapter = new ScrollItemAdapter();
-				m_spScrollItemAdapter.Owner = this;
-			}
-
-			return m_spScrollItemAdapter;
+			return m_spScrollItemAdapter ??= new ScrollItemAdapter(this);
 		}
 
 		return null;
@@ -351,10 +330,10 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	}
 
 	protected override bool IsKeyboardFocusableCore()
-		=> Owner.IsKeyboardFocusable;
+		=> IsKeyboardFocusableHelper();
 
 	protected override bool IsOffscreenCore()
-		=> Owner.IsOffScreen(false /* ignoreClippingOnScrollContentPresenters */);
+		=> IsOffscreenHelper(false /* ignoreClippingOnScrollContentPresenters */);
 
 	protected override void SetFocusCore()
 	{
@@ -499,7 +478,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private static AutomationPeer CreatePeerForIFrameworkElement(IFrameworkElement element)
 	{
-		if (element == null)
+		if (element is not { })
 		{
 			throw new ArgumentNullException(nameof(element));
 		}
@@ -509,7 +488,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private static AutomationPeer FromIFrameworkElement(IFrameworkElement element)
 	{
-		if (element == null)
+		if (element is not { })
 		{
 			throw new ArgumentNullException(nameof(element));
 		}
@@ -534,7 +513,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
 		var childIsAcceptable = element != null;
 
-		if (element != null)
+		if (element is { })
 		{
 			var isPopupOpen = true;
 
@@ -555,7 +534,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
 		var peers = new List<AutomationPeer>();
 
-		if (Owner != null)
+		if (Owner is { })
 		{
 			IList<DependencyObject> elements = null;
 
@@ -572,21 +551,12 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 				elements = AutomationProperties.GetFlowsFrom(Owner);
 			}
 
-			if (elements != null)
+			if (elements.Count > 0)
 			{
-				if (elements.Count > 0)
+				for (var i = 0; i < elements.Count; ++i)
 				{
-					for (var i = 0; i < elements.Count; ++i)
-					{
-						if (elements[i] != null)
-						{
-							AutomationPeer ap = elements[i].GetOrCreateAutomationPeer();
-							if (ap != null)
-							{
-								peers.Add(ap);
-							}
-						}
-					}
+					var ap = (elements[i] as UIElement).GetOrCreateAutomationPeer();
+					peers.Add(ap);
 				}
 			}
 		}
@@ -598,7 +568,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
 		if (FeatureConfiguration.AutomationPeer.UseSimpleAccessibility
 		&& Owner is View view
-		&& AutomationProperties.GetAccessibilityView(Owner) != AccessibilityView.Raw)
+		&& AutomationProperties.GetAccessibilityView(Owner) is not AccessibilityView.Raw)
 		{
 			/// We get our name by aggregating the name of all our children.
 			/// See <see cref="FeatureConfiguration.AutomationPeer.UseSimpleAccessibility" /> for details.

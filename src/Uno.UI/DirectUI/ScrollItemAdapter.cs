@@ -10,9 +10,7 @@ namespace Uno.UI.DirectUI;
 internal class ScrollItemAdapter
 {
 	private FrameworkElementAutomationPeer m_automationPeer;
-
-	// Set the owner of Adapter
-	public void PutOwner(FrameworkElementAutomationPeer automationPeer)
+	public ScrollItemAdapter(FrameworkElementAutomationPeer automationPeer)
 	{
 		m_automationPeer = automationPeer;
 	}
@@ -24,9 +22,8 @@ internal class ScrollItemAdapter
 			if (automationPeer.Owner is UIElement owner)
 			{
 				var rect = new Windows.Foundation.Rect();
-				var size = new Windows.Foundation.Size();
 
-				owner.GetRenderSize(out size);
+				size = owner.GetRenderSize();
 
 				rect.X = 0;
 				rect.Y = 0;

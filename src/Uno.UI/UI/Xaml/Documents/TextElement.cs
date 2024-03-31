@@ -32,6 +32,8 @@ using View = Microsoft.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
+using Microsoft.UI.Xaml.Automation.Peers;
+
 #endif
 
 #if __WASM__
@@ -307,6 +309,18 @@ namespace Microsoft.UI.Xaml.Documents
 					OnNameChangedPartial(value);
 				}
 			}
+		}
+
+		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
+		internal AutomationPeer GetOrCreateAutomationPeer()
+		{
+			return null;
+		}
+
+		//UNO TODO: Implement GetAccessKeyScopeOwner on TextElement
+		internal DependencyObject GetAccessKeyScopeOwner()
+		{
+			return null;
 		}
 
 		partial void OnNameChangedPartial(string newValue);

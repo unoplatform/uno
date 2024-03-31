@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml
 			return true;
 		}
 
-		private protected AutomationPeer? GetOrCreateAutomationPeer()
+		internal protected AutomationPeer? GetOrCreateAutomationPeer()
 		{
 			bool isPopupOpen = true;
 
@@ -160,6 +160,12 @@ namespace Microsoft.UI.Xaml
 				//}
 				//RRETURN(S_FALSE);
 			}
+		}
+
+		//UNO TODO: Implement GetClickablePointRasterizedClient on UIElement
+		internal Point GetClickablePointRasterizedClient()
+		{
+			return new Point();
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)
@@ -473,10 +479,16 @@ namespace Microsoft.UI.Xaml
 			//return pParent;
 		}
 
+		//UNO TODO: Implement GetUIElementParentInternal on UIElement
+		internal DependencyObject GetAccessKeyScopeOwner()
+		{
+			throw new NotImplementedException("GetUIElementParentInternal is not implemented on UIElement");
+		}
+
 		/// <summary>
 		/// Override this method and return TRUE in order to navigate among automation children in reverse order.
 		/// </summary>
-		internal virtual bool AreAutomationPeerChildrenReversed() => false
+		internal virtual bool AreAutomationPeerChildrenReversed() => false;
 
 		/// <summary>
 		/// Default to FALSE and expose as needed.  Elements that don't support having children will never
@@ -595,5 +607,11 @@ namespace Microsoft.UI.Xaml
 		/// <param name="uiElement">UIElement.</param>
 		/// <returns>True if the element is a ScrollViewer.</returns>
 		internal bool IsScroller() => this is ScrollViewer;
+
+		//UNO TODO: Implement GetGlobalBoundsWithOptions on UIElement
+		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
+		{
+			return new Rect();
+		}
 	}
 }

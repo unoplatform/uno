@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference AccessKeyStringBuilder_Partial.cpp, tag winui3/release/1.5-stable
+// MUX Reference AccessKeyStringBuilder.cpp, tag winui3/release/1.5-stable
 
 using System;
 using Microsoft.UI.Xaml;
@@ -11,7 +11,7 @@ namespace Uno.UI.DirectUI;
 
 internal class AccessKeyStringBuilder
 {
-	static void InterleaveStringWithDelimiters(string toInterleave, int length, out string interleavedString)
+	static string InterleaveStringWithDelimiters(string toInterleave, int length)
 	{
 		if (length > 3)
 		{
@@ -29,7 +29,7 @@ internal class AccessKeyStringBuilder
 			accessKeyInterleaved[(3 * i) + 2] = toInterleave[i];
 		}
 
-		interleavedString = new string(accessKeyInterleaved, 0, length * 3);
+		return new string(accessKeyInterleaved, 0, length * 3);
 	}
 
 	static void GetAccessKeyFromOwner(DependencyObject spOwner, out string accessKey, out DependencyObject scopeOwner)
@@ -37,12 +37,12 @@ internal class AccessKeyStringBuilder
 		if (spOwner is FrameworkElement ownerAsFrameworkElement)
 		{
 			accessKey = (string)ownerAsFrameworkElement.GetValue(UIElement.AccessKeyProperty);
-			ownerAsFrameworkElement.GetAccessKeyScopeOwner(out scopeOwner);
+			scopeOwner = ownerAsFrameworkElement.GetAccessKeyScopeOwner();
 		}
 		else if (spOwner is TextElement ownerAsTextElement)
 		{
 			accessKey = (string)ownerAsTextElement.GetValue(TextElement.AccessKeyProperty);
-			ownerAsTextElement.GetAccessKeyScopeOwner(out scopeOwner);
+			scopeOwner = ownerAsTextElement.GetAccessKeyScopeOwner();
 		}
 		else
 		{
@@ -52,13 +52,7 @@ internal class AccessKeyStringBuilder
 
 	public static string GetAccessKeyMessageFromElement(DependencyObject spOwner)
 	{
-		string prefix;
-		string accessKey;
-		string messageWithoutPrefix;
-
-		DependencyObject akScopeOwner;
-
-		GetAccessKeyFromOwner(spOwner, out accessKey, out akScopeOwner);
+		GetAccessKeyFromOwner(spOwner, out var accessKey, out var akScopeOwner);
 
 		// If no AccessKey was set, return an empty String
 		if (string.IsNullOrEmpty(accessKey))
@@ -68,7 +62,7 @@ internal class AccessKeyStringBuilder
 
 		// If the scope owner exists, grab its sequence and add access keys.
 		AutomationPeer automationPeer = null;
-		if (akScopeOwner != null)
+		if (akScopeOwner is { })
 		{
 			if (akScopeOwner is FrameworkElement akScopeOwnerAsFrameworkElement)
 			{
@@ -84,11 +78,10 @@ internal class AccessKeyStringBuilder
 			}
 		}
 
-		prefix = automationPeer?.GetAccessKey() ?? "Alt";
+		var prefix = automationPeer?.GetAccessKey() ?? "Alt";
 
-		InterleaveStringWithDelimiters(accessKey, accessKey.Length, out messageWithoutPrefix);
+		var messageWithoutPrefix = InterleaveStringWithDelimiters(accessKey, accessKey.Length);
 
 		return prefix + messageWithoutPrefix;
 	}
-}
 }
