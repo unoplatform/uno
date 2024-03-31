@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -38,7 +38,6 @@ partial class CommandBarFlyout
 	public IObservableVector<ICommandBarElement> SecondaryCommands => m_secondaryCommands;
 
 	private const int s_commandBarElementDependencyPropertiesCount = 3;
-	private const int s_commandBarElementDependencyPropertiesCountRS3 = 2;
 
 	private bool m_alwaysExpanded;
 
