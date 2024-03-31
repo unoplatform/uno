@@ -6,7 +6,8 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<SingleProject>true</SingleProject>
+		<UnoSingleProject>true</UnoSingleProject>
+		<OutputType>Library</OutputType>
 		<UnoSdkDebugging>true</UnoSdkDebugging>
 	</PropertyGroup>
 
