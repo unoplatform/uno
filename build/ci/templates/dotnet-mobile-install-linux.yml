@@ -12,7 +12,7 @@ steps:
       sudo dpkg -i packages-microsoft-prod.deb
       sudo apt-get install apt-transport-https
       sudo apt-get update
-      sudo apt-get install msopenjdk-11
+      sudo apt-get install -y msopenjdk-11
     displayName: Install OpenJDK 11
     condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
     retryCountOnTaskFailure: 3
