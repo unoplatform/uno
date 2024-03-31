@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.cpp, commit 3d10001ba
 
 using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -7,17 +8,17 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using CommandBarFlyoutCommandBar = Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar;
+using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class CommandBarFlyout : FlyoutBase
+partial class CommandBarFlyout
 {
 	// Change to 'true' to turn on debugging outputs in Output window
 	private const bool s_IsDebugOutputEnabled = false;
@@ -43,11 +44,8 @@ public partial class CommandBarFlyout : FlyoutBase
 			s_appBarToggleButtonDependencyProperties[0] = AppBarToggleButton.IconProperty;
 			s_appBarToggleButtonDependencyProperties[1] = AppBarToggleButton.LabelProperty;
 
-			if (SharedHelpers.IsRS4OrHigher())
-			{
-				s_appBarButtonDependencyProperties[s_commandBarElementDependencyPropertiesCount - 1] = AppBarButton.KeyboardAcceleratorTextOverrideProperty;
-				s_appBarToggleButtonDependencyProperties[s_commandBarElementDependencyPropertiesCount - 1] = AppBarToggleButton.KeyboardAcceleratorTextOverrideProperty;
-			}
+			s_appBarButtonDependencyProperties[s_commandBarElementDependencyPropertiesCount - 1] = AppBarButton.KeyboardAcceleratorTextOverrideProperty;
+			s_appBarToggleButtonDependencyProperties[s_commandBarElementDependencyPropertiesCount - 1] = AppBarToggleButton.KeyboardAcceleratorTextOverrideProperty;
 		}
 
 		ShouldConstrainToRootBounds = false;
@@ -268,7 +266,7 @@ public partial class CommandBarFlyout : FlyoutBase
 				}
 
 				//Drop shadows do not play nicely with clip animations, if we are using both, clear the shadow
-				if (SharedHelpers.Is21H1OrHigher() && commandBar.OpenAnimationKind == CommandBarFlyoutOpenCloseAnimationKind.Clip)
+				if (commandBar.OpenAnimationKind == CommandBarFlyoutOpenCloseAnimationKind.Clip)
 				{
 					commandBar.ClearShadow();
 				}
@@ -306,6 +304,15 @@ public partial class CommandBarFlyout : FlyoutBase
 	{
 		var commandBar = new CommandBarFlyoutCommandBar();
 
+		// Localized string resource lookup is more expensive on MRTCore. Do the lookup ahead of time and reuse it for all
+		// the CommandBarFlyoutCommandBar::EnsureLocalizedControlTypes calls in response to PrimaryCommands/SecondCommands
+		// changed events.
+		commandBar.CacheLocalizedStringResources();
+		using var scopeGuard = Disposable.Create(() =>
+		{
+			commandBar.ClearLocalizedStringResourceCache();
+		});
+
 		SharedHelpers.CopyVector(m_primaryCommands, commandBar.PrimaryCommands);
 		SharedHelpers.CopyVector(m_secondaryCommands, commandBar.SecondaryCommands);
 
@@ -323,16 +330,12 @@ public partial class CommandBarFlyout : FlyoutBase
 		presenter.BorderThickness = ThicknessHelper.FromUniformLength(0);
 		presenter.Padding = ThicknessHelper.FromUniformLength(0);
 		presenter.Content = commandBar;
-		if (SharedHelpers.IsRS5OrHigher())
-		{
-			presenter.Translation = new System.Numerics.Vector3(0.0f, 0.0f, 32.0f);
-		}
+		// Clear the default CornerRadius(4) on FlyoutPresenter, CommandBarFlyout will do its own handling.
+		presenter.CornerRadius = default;
+		presenter.Translation = new Vector3(0.0f, 0.0f, 32.0f);
 
 		// Disable the default shadow, as we'll be providing our own shadow.
-		if (presenter is { } presenter2)
-		{
-			presenter2.IsDefaultShadowEnabled = false;
-		}
+		presenter.IsDefaultShadowEnabled = false;
 
 		m_presenter = presenter;
 
@@ -346,47 +349,44 @@ public partial class CommandBarFlyout : FlyoutBase
 		commandBar.Opened += onOpenedHandler;
 		m_commandBarOpenedRevoker.Disposable = Disposable.Create(() => commandBar.Opened -= onOpenedHandler);
 
-		if (SharedHelpers.Is21H1OrHigher())
+		commandBar.SetPresenter(presenter);
+
+		// We'll need to remove the presenter's drop shadow on the commandBar's Opening/Closing
+		// because we need it to disappear during its expand/shrink animation when the Overflow is opened.
+		// It will be re-added once the storyboard for the overflow animations are completed.
+		// That code can be found inside CommandBarFlyoutCommandBar.
+		void onCommandBarOpening(object sender, object args)
 		{
-			commandBar.SetPresenter(presenter);
-
-			// We'll need to remove the presenter's drop shadow on the commandBar's Opening/Closing
-			// because we need it to disappear during its expand/shrink animation when the Overflow is opened.
-			// It will be re-added once the storyboard for the overflow animations are completed.
-			// That code can be found inside CommandBarFlyoutCommandBar.
-			void onCommandBarOpening(object sender, object args)
+			if (m_commandBar is { } commandBar)
 			{
-				if (m_commandBar is { } commandBar)
+				if (commandBar.HasSecondaryOpenCloseAnimations())
 				{
-					if (commandBar.HasSecondaryOpenCloseAnimations())
-					{
-						// We'll only need to do the mid-animation remove/add when the "..." button is
-						// pressed to open/close the overflow. This means we shouldn't do it for AlwaysExpanded
-						// and if there's nothing in the overflow.
-						if (m_secondaryCommands.Count > 0)
-						{
-							RemoveDropShadow();
-						}
-					}
-				}
-			}
-
-			commandBar.Opening += onCommandBarOpening;
-			m_commandBarOpeningRevoker.Disposable = Disposable.Create(() => commandBar.Opening -= onCommandBarOpening);
-
-			void onCommandBarClosing(object sender, object args)
-			{
-				if (m_commandBar is { } commandBar)
-				{
-					if (commandBar.HasSecondaryOpenCloseAnimations())
+					// We'll only need to do the mid-animation remove/add when the "..." button is
+					// pressed to open/close the overflow. This means we shouldn't do it for AlwaysExpanded
+					// and if there's nothing in the overflow.
+					if (m_secondaryCommands.Count > 0)
 					{
 						RemoveDropShadow();
 					}
 				}
 			}
-			commandBar.Closing += onCommandBarClosing;
-			m_commandBarClosingRevoker.Disposable = Disposable.Create(() => commandBar.Closing -= onCommandBarClosing);
 		}
+
+		commandBar.Opening += onCommandBarOpening;
+		m_commandBarOpeningRevoker.Disposable = Disposable.Create(() => commandBar.Opening -= onCommandBarOpening);
+
+		void onCommandBarClosing(object sender, object args)
+		{
+			if (m_commandBar is { } commandBar)
+			{
+				if (commandBar.HasSecondaryOpenCloseAnimations())
+				{
+					RemoveDropShadow();
+				}
+			}
+		}
+		commandBar.Closing += onCommandBarClosing;
+		m_commandBarClosingRevoker.Disposable = Disposable.Create(() => commandBar.Closing -= onCommandBarClosing);
 
 		commandBar.SetOwningFlyout(this);
 
@@ -434,24 +434,18 @@ public partial class CommandBarFlyout : FlyoutBase
 
 	internal void AddDropShadow()
 	{
-		if (SharedHelpers.Is21H1OrHigher())
+		if (m_presenter is { } presenter)
 		{
-			if (m_presenter is { } presenter)
-			{
-				ThemeShadow shadow = new();
-				presenter.Shadow = shadow;
-			}
+			ThemeShadow shadow = new();
+			presenter.Shadow = shadow;
 		}
 	}
 
 	internal void RemoveDropShadow()
 	{
-		if (SharedHelpers.Is21H1OrHigher())
+		if (m_presenter is { } presenter)
 		{
-			if (m_presenter is { } presenter)
-			{
-				presenter.Shadow = null;
-			}
+			presenter.Shadow = null;
 		}
 	}
 
@@ -459,11 +453,11 @@ public partial class CommandBarFlyout : FlyoutBase
 
 	private void HookAppBarButtonDependencyPropertyChanges(AppBarButton appBarButton, int index)
 	{
-		var commandBarElementDependencyPropertiesCount = SharedHelpers.IsRS4OrHigher() ? s_commandBarElementDependencyPropertiesCount : s_commandBarElementDependencyPropertiesCountRS3;
+		var commandBarElementDependencyPropertiesCount = s_commandBarElementDependencyPropertiesCount;
 
 		var revokers = new IDisposable[commandBarElementDependencyPropertiesCount];
 		m_propertyChangedRevokersByIndexMap[index] = revokers;
-		
+
 		for (int commandBarElementDependencyPropertyIndex = 0; commandBarElementDependencyPropertyIndex < commandBarElementDependencyPropertiesCount; commandBarElementDependencyPropertyIndex++)
 		{
 			var token = appBarButton.RegisterDisposablePropertyChangedCallback(
@@ -476,7 +470,7 @@ public partial class CommandBarFlyout : FlyoutBase
 
 	private void HookAppBarToggleButtonDependencyPropertyChanges(AppBarToggleButton appBarToggleButton, int index)
 	{
-		var commandBarElementDependencyPropertiesCount = SharedHelpers.IsRS4OrHigher() ? s_commandBarElementDependencyPropertiesCount : s_commandBarElementDependencyPropertiesCountRS3;
+		var commandBarElementDependencyPropertiesCount = s_commandBarElementDependencyPropertiesCount;
 
 		var revokers = new IDisposable[commandBarElementDependencyPropertiesCount];
 		m_propertyChangedRevokersByIndexMap[index] = revokers;
@@ -513,7 +507,7 @@ public partial class CommandBarFlyout : FlyoutBase
 	{
 		if (m_propertyChangedRevokersByIndexMap.TryGetValue(index, out var revokers))
 		{
-			var commandBarElementDependencyPropertiesCount = SharedHelpers.IsRS4OrHigher() ? s_commandBarElementDependencyPropertiesCount : s_commandBarElementDependencyPropertiesCountRS3;
+			var commandBarElementDependencyPropertiesCount = s_commandBarElementDependencyPropertiesCount;
 
 			for (int commandBarElementDependencyPropertyIndex = 0; commandBarElementDependencyPropertyIndex < commandBarElementDependencyPropertiesCount; commandBarElementDependencyPropertyIndex++)
 			{
