@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<UseWinUI>true</UseWinUI>
-		<OutputType>WinExe</OutputType>
+		<OutputType Condition=" $(OutputType) == 'Exe' ">WinExe</OutputType>
 		<!-- Bundles the WinAppSDK binaries -->
 		<WindowsAppSDKSelfContained Condition="$(WindowsAppSDKSelfContained) == ''">true</WindowsAppSDKSelfContained>
 	</PropertyGroup>

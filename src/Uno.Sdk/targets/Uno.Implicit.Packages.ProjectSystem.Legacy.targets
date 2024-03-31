@@ -1,0 +1,15 @@
+<Project>
+	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.WPF'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Wpf" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Win32" ProjectSystem="true" />
+	</ItemGroup>
+	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.Linux.FrameBuffer'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" />
+	</ItemGroup>
+	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.Gtk'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Gtk" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.macOS" ProjectSystem="true" />
+	</ItemGroup>
+</Project>

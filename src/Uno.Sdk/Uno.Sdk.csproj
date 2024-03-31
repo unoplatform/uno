@@ -11,9 +11,16 @@
 		<Description>Provides a base SDK for Uno Platform projects.</Description>
 		<PackageIcon>uno.png</PackageIcon>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<UnoSdkVersionSuffix>_v0</UnoSdkVersionSuffix>
+		<!-- This is better but Jerome made me take it out -->
+		<!-- <UnoSdkVersionSuffix Condition="$(GitVersion_Sha) != ''">_v$(GitVersion_Sha)</UnoSdkVersionSuffix> -->
+		<!-- Use the VersionSource SHA to avoid conflicts for PR builds that span merges on master -->
+		<!-- <UnoSdkVersionSuffix Condition="$(GITVERSION_INFORMATIONALVERSION.Contains('PullRequest'))">$(GITVERSION_VersionSourceSha)</UnoSdkVersionSuffix> -->
+		<AssemblyName>$(PackageId)$(UnoSdkVersionSuffix)</AssemblyName>
 
 		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
 		<GeneratePackageOnBuild Condition=" '$(UNO_UWP_BUILD)' != 'true' ">true</GeneratePackageOnBuild>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -36,13 +43,25 @@
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
 		<ItemGroup>
 			<_ExistingSdkFile Include="$(IntermediateOutputPath)targets\**;$(IntermediateOutputPath)Sdk\**" />
+			<_ExistingCodeFile Include="@(Compile)" TemporaryCode="$(IntermediateOutputPath)code\%(RecursiveDir)%(Filename)%(Extension)" Exclude="$(IntermediateOutputPath)**" />
+			<Compile Remove="@(_ExistingCodeFile)" />
+			<_PackageManifestSource Include="packages.json" BuildOutput="$(IntermediateOutputPath)packages\packages.json" />
 		</ItemGroup>
-		<Delete Files="@(_ExistingSdkFile)" />
+		<Delete Files="@(_ExistingSdkFile);$(IntermediateOutputPath)code\**\*;$(IntermediateOutputPath)packages\packages.json" />
 		<Copy SourceFiles="@(SdkFile)" DestinationFolder="$(IntermediateOutputPath)Sdk" SkipUnchangedFiles="true" />
 		<Copy SourceFiles="@(TargetFile)" DestinationFolder="$(IntermediateOutputPath)targets" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(_ExistingCodeFile)" DestinationFiles="%(_ExistingCodeFile.TemporaryCode)" SkipUnchangedFiles="false" />
+		<Copy SourceFiles="@(_PackageManifestSource)" DestinationFiles="%(_PackageManifestSource.BuildOutput)" SkipUnchangedFiles="false" />
+
+		<ItemGroup>
+			<_PackageManifestPackFile Include="%(_PackageManifestSource.BuildOutput)" />
+			<_PackageManifestSource Remove="@(_PackageManifestSource)" />
+			<_TemporaryCodeFile Include="$(IntermediateOutputPath)code\**\*.cs" />
+			<_ExistingCodeFile Remove="@(_ExistingCodeFile)" />
+		</ItemGroup>
 	</Target>
 
-	<Target Name="ReplacePackageVersion" BeforeTargets="Pack;_IntermediatePack" AfterTargets="CopySdkFiles">
+	<Target Name="ReplacePackageVersion" BeforeTargets="CoreCompile" AfterTargets="CopySdkFiles">
 		<ItemGroup>
 			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
 			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.props;$(IntermediateOutputPath)targets\*.targets" />
@@ -58,9 +77,36 @@
 			MatchExpression="DefaultUnoVersion"
 			ReplacementText="$(PackageVersion)" />
 
+		<ReplaceFileText
+			Filename="%(_PackageManifestPackFile.Identity)"
+			MatchExpression="DefaultUnoVersion"
+			ReplacementText="$(PackageVersion)" />
+
+		<ReplaceFileText
+			Filename="%(_TemporaryCodeFile.Identity)"
+			MatchExpression="DefaultUnoVersion"
+			ReplacementText="$(PackageVersion)" />
+
+		<!-- This is better but Jerome made me take it out -->
+		<!-- <ReplaceFileText
+			Filename="%(_IntermediateTargetFile.Identity)"
+			MatchExpression="_v0"
+			ReplacementText="$(UnoSdkVersionSuffix)" />
+
+		<ReplaceFileText
+			Filename="%(_TemporaryCodeFile.Identity)"
+			MatchExpression="_v0"
+			ReplacementText="$(UnoSdkVersionSuffix)" /> -->
+
 		<ItemGroup>
+			<None Include="@(_PackageManifestPackFile)" Pack="true" PackagePath="targets\$(TargetFramework)\%(Filename)%(Extension)" />
 			<None Include="%(_IntermediateSdkFile.Identity)" Pack="true" PackagePath="Sdk\%(_IntermediateSdkFile.Filename)%(_IntermediateSdkFile.Extension)" />
 			<None Include="%(_IntermediateTargetFile.Identity)" Pack="true" PackagePath="targets\%(_IntermediateTargetFile.Filename)%(_IntermediateTargetFile.Extension)" />
+			<Compile Include="@(_TemporaryCodeFile)" />
+			<_TemporaryCodeFile Remove="@(_TemporaryCodeFile)" />
+			<_PackageManifestPackFile Remove="@(_PackageManifestPackFile)" />
+			<_IntermediateSdkFile Remove="@(_IntermediateSdkFile)" />
+			<_IntermediateTargetFile Remove="@(_IntermediateTargetFile)" />
 		</ItemGroup>
 	</Target>
 
@@ -84,7 +130,6 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- Using Regex Replace prevents XmlPoke from replacing Tabs with Spaces -->
 	<UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<Filename ParameterType="System.String" Required="true" />

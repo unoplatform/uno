@@ -1,50 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Permissions;
+namespace Uno.Sdk.Tasks;
 
-namespace Uno.Sdk;
-
-public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
+public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 {
-	public string MauiVersion { get; set; }
-
-	public string SkiaSharpVersion { get; set; }
-
-	public string UnoLoggingVersion { get; set; }
-
-	public string WindowsCompatibilityVersion { get; set; }
-
-	public string UnoWasmBootstrapVersion { get; set; }
-
-	public string UnoUniversalImageLoaderVersion { get; set; }
-
-	public string AndroidMaterialVersion { get; set; }
-
-	public string UnoResizetizerVersion { get; set; }
-
-	public string MicrosoftLoggingVersion { get; set; }
-
-	public string WinAppSdkVersion { get; set; }
-
-	public string WinAppSdkBuildToolsVersion { get; set; }
-
-	public string UnoCoreLoggingSingletonVersion { get; set; }
-
-	public string UnoDspTasksVersion { get; set; }
-
-	public string CommunityToolkitMvvmVersion { get; set; }
-
-	public string PrismVersion { get; set; }
-
-	public string AndroidXNavigationVersion { get; set; }
-
-	public string AndroidXCollectionVersion { get; set; }
-
-	public string MicrosoftIdentityClientVersion { get; set; }
-
 	protected override void ExecuteInternal()
 	{
 		AddUnoCorePackages();
@@ -59,68 +16,100 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 
 	private void AddUnoCorePackages()
 	{
-		AddPackage("Uno.WinUI", UnoVersion);
-		AddPackage("Uno.UI.Adapter.Microsoft.Extensions.Logging", UnoVersion);
-		AddPackage("Uno.Resizetizer", UnoResizetizerVersion);
-		AddPackage("Microsoft.Extensions.Logging.Console", MicrosoftLoggingVersion);
+		AddPackage("Uno.WinUI", null);
 
-		AddPackageForFeature(UnoFeature.Maps, "Uno.WinUI.Maps", UnoVersion);
-		AddPackageForFeature(UnoFeature.Foldable, "Uno.WinUI.Foldable", UnoVersion);
-
-		if (TargetFrameworkIdentifier != UnoTarget.Windows)
+		if (!IsPackable)
 		{
-			AddPackage("Uno.WinUI.Lottie", UnoVersion);
-			if (!Optimize)
-			{
-				// Included for Debug Builds
-				AddPackage("Uno.WinUI.DevServer", UnoVersion);
-			}
+			AddPackage("Uno.UI.Adapter.Microsoft.Extensions.Logging", null);
+			AddPackage("Uno.Resizetizer", UnoResizetizerVersion);
+			AddPackage("Microsoft.Extensions.Logging.Console", MicrosoftLoggingVersion);
+		}
 
-			if (TargetFrameworkIdentifier != UnoTarget.Wasm && !IsLegacyWasmHead())
+		AddPackageForFeature(UnoFeature.Maps, "Uno.WinUI.Maps", null);
+		AddPackageForFeature(UnoFeature.Foldable, "Uno.WinUI.Foldable", null);
+
+		if (TargetRuntime != UnoTarget.Windows)
+		{
+			AddPackageWhen(!IsPackable, "Uno.WinUI.Lottie", null);
+
+			// Included for Debug Builds
+			AddPackageWhen(!Optimize, "Uno.WinUI.DevServer", null);
+
+			if (TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead() && !IsPackable)
 			{
 				AddPackage("SkiaSharp.Skottie", SkiaSharpVersion);
 				AddPackage("SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
 			}
 
-			if (TargetFrameworkIdentifier == UnoTarget.Android)
-			{
-				AddPackage("Uno.UniversalImageLoader", UnoUniversalImageLoaderVersion);
-				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
-			}
-			else if (TargetFrameworkIdentifier == UnoTarget.iOS)
-			{
-				AddPackage("Uno.Extensions.Logging.OSLog", UnoLoggingVersion);
-			}
-			else if (TargetFrameworkIdentifier == UnoTarget.MacCatalyst)
-			{
-				AddPackage("Uno.Extensions.Logging.OSLog", UnoLoggingVersion);
-			}
-			else if (TargetFrameworkIdentifier == UnoTarget.SkiaDesktop)
-			{
-				AddPackage("Uno.WinUI.Skia.Linux.FrameBuffer", UnoVersion);
-				AddPackage("Uno.WinUI.Skia.MacOS", UnoVersion);
-				AddPackage("Uno.WinUI.Skia.Wpf", UnoVersion);
-				AddPackage("Uno.WinUI.Skia.X11", UnoVersion);
-			}
-			else if (TargetFrameworkIdentifier == UnoTarget.Wasm || IsLegacyWasmHead())
-			{
-				AddPackage("Uno.WinUI.WebAssembly", UnoVersion);
-				AddPackage("Uno.Extensions.Logging.WebAssembly.Console", UnoLoggingVersion);
-				AddPackageForFeature(UnoFeature.MediaElement, "Uno.WinUI.MediaPlayer.WebAssembly", UnoVersion);
-				AddPackage("Microsoft.Windows.Compatibility", WindowsCompatibilityVersion);
-
-				if (IsExecutable && (SingleProject || IsLegacyWasmHead()))
-				{
-					AddPackage("Uno.Wasm.Bootstrap", UnoWasmBootstrapVersion);
-					AddPackage("Uno.Wasm.Bootstrap.DevServer", UnoWasmBootstrapVersion);
-				}
-			}
+			AddCorePackagesForExecutable();
 		}
 		else
 		{
 			AddPackage("Microsoft.WindowsAppSDK", WinAppSdkVersion);
 			AddPackage("Microsoft.Windows.SDK.BuildTools", WinAppSdkBuildToolsVersion);
-			AddPackage("Uno.Core.Extensions.Logging.Singleton", UnoCoreLoggingSingletonVersion);
+			AddPackageWhen(IsExecutable, "Uno.Core.Extensions.Logging.Singleton", UnoCoreLoggingSingletonVersion);
+		}
+	}
+
+	private void AddCorePackagesForExecutable()
+	{
+		if (!IsExecutable)
+		{
+			Debug("Skipping Core packages for Library build.");
+			return;
+		}
+
+		if (TargetRuntime == UnoTarget.Android)
+		{
+			AddPackage("Uno.UniversalImageLoader", UnoUniversalImageLoaderVersion);
+			AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
+			AddPackage("Xamarin.AndroidX.Legacy.Support.V4", AndroidXLegacySupportV4Version);
+			AddPackage("Xamarin.AndroidX.AppCompat", AndroidXAppCompatVersion);
+			AddPackage("Xamarin.AndroidX.RecyclerView", AndroidXRecyclerViewVersion);
+			AddPackage("Xamarin.AndroidX.Activity", AndroidXActivityVersion);
+			AddPackage("Xamarin.AndroidX.Browser", AndroidXBrowserVersion);
+			AddPackage("Xamarin.AndroidX.SwipeRefreshLayout", AndroidXSwipeRefreshLayoutVersion);
+		}
+		else if (TargetRuntime == UnoTarget.iOS)
+		{
+			AddPackage("Uno.Extensions.Logging.OSLog", UnoLoggingVersion);
+		}
+		else if (TargetRuntime == UnoTarget.MacCatalyst)
+		{
+			AddPackage("Uno.Extensions.Logging.OSLog", UnoLoggingVersion);
+		}
+		else if (TargetRuntime == UnoTarget.SkiaDesktop)
+		{
+			AddPackage("Uno.WinUI.Skia.Linux.FrameBuffer", null);
+			AddPackage("Uno.WinUI.Skia.MacOS", null);
+			AddPackage("Uno.WinUI.Skia.Wpf", null);
+			AddPackage("Uno.WinUI.Skia.X11", null);
+		}
+		else if (TargetRuntime == UnoTarget.SkiaGtk)
+		{
+			AddPackage("Uno.WinUI.Skia.Gtk", null);
+			AddPackage("SkiaSharp.NativeAssets.Linux", SkiaSharpVersion);
+			AddPackage("SkiaSharp.NativeAssets.macOS", SkiaSharpVersion);
+		}
+		else if (TargetRuntime == UnoTarget.SkiaLinuxFramebuffer)
+		{
+			AddPackage("Uno.WinUI.Skia.Linux.FrameBuffer", null);
+			AddPackage("SkiaSharp.NativeAssets.Linux", SkiaSharpVersion);
+		}
+		else if (TargetRuntime == UnoTarget.SkiaWpf)
+		{
+			AddPackage("Uno.WinUI.Skia.Wpf", null);
+			AddPackage("SkiaSharp.NativeAssets.Win32", SkiaSharpVersion);
+		}
+		else if (TargetRuntime == UnoTarget.Wasm || IsLegacyWasmHead())
+		{
+			AddPackage("Uno.WinUI.WebAssembly", null);
+			AddPackageForFeature(UnoFeature.MediaElement, "Uno.WinUI.MediaPlayer.WebAssembly", null);
+			AddPackage("Microsoft.Windows.Compatibility", WindowsCompatibilityVersion);
+
+			AddPackage("Uno.Extensions.Logging.WebAssembly.Console", UnoLoggingVersion);
+			AddPackage("Uno.Wasm.Bootstrap", UnoWasmBootstrapVersion);
+			AddPackage("Uno.Wasm.Bootstrap.DevServer", UnoWasmBootstrapVersion);
 		}
 	}
 
@@ -144,11 +133,13 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			AddPackage("Uno.Extensions.Authentication.MSAL.WinUI", UnoExtensionsVersion);
 			AddPackage("Uno.Extensions.Authentication.Oidc.WinUI", UnoExtensionsVersion);
 			AddPackage("Microsoft.Identity.Client", MicrosoftIdentityClientVersion);
+			AddPackage("Uno.WinUI.MSAL", null);
 		}
 		else if (HasFeature(UnoFeature.AuthenticationMsal))
 		{
 			AddPackage("Uno.Extensions.Authentication.MSAL.WinUI", UnoExtensionsVersion);
 			AddPackage("Microsoft.Identity.Client", MicrosoftIdentityClientVersion);
+			AddPackage("Uno.WinUI.MSAL", null);
 		}
 		else if (HasFeature(UnoFeature.AuthenticationOidc))
 		{
@@ -200,7 +191,7 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 				AddPackage("Microsoft.Maui.Controls.Build.Tasks", MauiVersion, "all");
 			}
 
-			if (TargetFrameworkIdentifier == UnoTarget.Android)
+			if (TargetRuntime == UnoTarget.Android)
 			{
 				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
 				AddPackage("Xamarin.AndroidX.Navigation.UI", AndroidXNavigationVersion);
@@ -284,8 +275,8 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			return;
 		}
 
-		var prismPackage = IsExecutable ? "Prism.DryIoc.Uno.WinUI" : "Prism.Uno.WinUI";
-		AddPackage(prismPackage, PrismVersion);
+		AddPackageWhen(!IsExecutable, "Prism.Uno.WinUI", PrismVersion);
+		AddPackageWhen(IsExecutable, "Prism.DryIoc.Uno.WinUI", PrismVersion);
 		AddPackageForFeature(UnoFeature.CSharpMarkup, "Prism.Uno.WinUI.Markup", PrismVersion);
 	}
 }

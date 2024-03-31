@@ -1,30 +1,48 @@
 <Project>
-	<Import Project="$(MSBuildThisFileDirectory)Uno.Default.PackageVersions.targets" />
-	<UsingTask TaskName="Uno.Sdk.ImplicitPackagesResolver"
-		AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk.dll" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.targets" Condition=" '$(TargetFramework)' != '' " />
+
+	<UsingTask TaskName="Uno.Sdk.Tasks.ImplicitPackagesResolver_v0"
+		AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk_v0.dll" />
 	<PropertyGroup>
 		<UnoTarget>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</UnoTarget>
 		<UnoTarget Condition="$(TargetFramework.Contains('windows10'))">windows10</UnoTarget>
 		<UnoTarget Condition="$(UnoTarget) == ''">reference</UnoTarget>
+		<UnoImplicitPackages_BeforeTargets>
+			ResolveFrameworkReferencesDesignTime;
+			ResolveProjectReferencesDesignTime2;
+			ResolvePackageDependencies;
+			CollectPackageReferences;
+			ProcessFrameworkReferences;
+		</UnoImplicitPackages_BeforeTargets>
 	</PropertyGroup>
 
-	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies;CollectPackageReferences;ProcessFrameworkReferences">
+	<Target Name="UnoImplicitPackages" BeforeTargets="$(UnoImplicitPackages_BeforeTargets)" Condition=" '$(TargetFramework)' != '' ">
 		<PropertyGroup>
 			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
 		</PropertyGroup>
 
-		<ImplicitPackagesResolver
+		<!--
+			Remove all placeholder references so that implicit references can be created with
+			actual versions using the `UnoImplicitPackages` target.
+		-->
+		<ItemGroup>
+			<PackageReference Remove="@(PackageReference)"
+				Condition="%(PackageReference.ProjectSystem) != ''" />
+			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference" />
+		</ItemGroup>
+
+		<ImplicitPackagesResolver_V0
 				IntermediateOutput="$(_UnoCacheFolder)"
 				SdkDebugging="$(UnoSdkDebugging)"
 				SingleProject="$(_IsUnoSingleProjectAndLegacy)"
 				Optimize="$(Optimize)"
-				OutputType="$(OutputType)"
+				OutputType="$(_InitialOutputType)"
 				UnoFeatures="$(UnoFeatures)"
-				TargetFrameworkIdentifier="$(UnoTarget)"
+				IsPackable="$(IsPackable)"
+				TargetFramework="$(TargetFramework)"
 				ProjectName="$(MSBuildProjectName)"
 				PackageReferences="@(PackageReference)"
 				PackageVersions="@(PackageVersion)"
-				UnoVersion="$(UnoVersion)"
 				MauiVersion="$(MauiVersion)"
 				UnoExtensionsVersion="$(UnoExtensionsVersion)"
 				UnoToolkitVersion="$(UnoToolkitVersion)"
@@ -36,6 +54,12 @@
 				UnoWasmBootstrapVersion="$(UnoWasmBootstrapVersion)"
 				UnoUniversalImageLoaderVersion="$(UnoUniversalImageLoaderVersion)"
 				AndroidMaterialVersion="$(AndroidMaterialVersion)"
+				AndroidXLegacySupportV4Version="@(AndroidXLegacySupportV4Version)"
+				AndroidXAppCompatVersion="@(AndroidXAppCompatVersion)"
+				AndroidXRecyclerViewVersion="@(AndroidXRecyclerViewVersion)"
+				AndroidXActivityVersion="@(AndroidXActivityVersion)"
+				AndroidXBrowserVersion="@(AndroidXBrowserVersion)"
+				AndroidXSwipeRefreshLayoutVersion="@(AndroidXSwipeRefreshLayoutVersion)"
 				UnoResizetizerVersion="$(UnoResizetizerVersion)"
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
@@ -52,11 +76,13 @@
 					TaskParameter="ImplicitPackages" />
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
-		</ImplicitPackagesResolver>
+		</ImplicitPackagesResolver_V0>
 
-		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
+		<ItemGroup>
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
+			<_UnoImplicitPackageReference Remove="@(_UnoImplicitPackageReference)" />
+			<_UnoRemovePackageVersions Remove="@(_UnoRemovePackageVersions)" />
 		</ItemGroup>
 	</Target>
 

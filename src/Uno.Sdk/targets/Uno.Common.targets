@@ -4,6 +4,8 @@
 		<_IsUnoSingleProjectAndLegacy>false</_IsUnoSingleProjectAndLegacy>
 		<_IsUnoSingleProjectAndLegacy Condition=" $(SingleProject) == 'true' OR $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProjectAndLegacy>
 
+		<_InitialOutputType>$([MSBuild]::ValueOrDefault('$(OutputType)', 'Library'))</_InitialOutputType>
+		<_InitialOutputType Condition="$(TargetFramework) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">Library</_InitialOutputType>
 		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
 		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
 		<_IsExecutable>false</_IsExecutable>
@@ -58,9 +60,6 @@
 		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
 	</PropertyGroup>
 
-	<Import Project="Uno.Implicit.Packages.targets"
-		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
-
 	<Import Project="Uno.Implicit.Namespaces.targets"
 		Condition=" $(DisableImplicitUnoNamespaces) != 'true' " />
 
@@ -83,6 +82,9 @@
 
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
+
+	<Import Project="Uno.Implicit.Packages.targets"
+		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
 
 	<PropertyGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
 		<OutputType>Library</OutputType>

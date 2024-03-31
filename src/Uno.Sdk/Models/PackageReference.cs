@@ -2,7 +2,7 @@
 using Microsoft.Build.Utilities;
 
 #nullable enable
-namespace Uno.Sdk;
+namespace Uno.Sdk.Models;
 
 internal record PackageReference(string PackageId, string Version, string? ExcludeAssets = null)
 {

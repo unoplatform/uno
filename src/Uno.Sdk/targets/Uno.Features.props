@@ -9,9 +9,6 @@
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';MauiEmbedding;'))">
 		<UseMaui>true</UseMaui>
-		<!-- This is only used for .NET MAUI Embedding -->
-		<AndroidXNavigationVersion Condition=" '$(AndroidXNavigationVersion)' == '' ">2.7.7.1</AndroidXNavigationVersion>
-		<AndroidXCollectionVersion Condition=" '$(AndroidXCollectionVersion)' == '' ">1.4.0.1</AndroidXCollectionVersion>
 	</PropertyGroup>
 
 </Project>

@@ -1,0 +1,101 @@
+<Project>
+	<!--
+		Include all required PackageReference to be available before any target is executed
+		in order for VS and C# Dev Kit to show nuget references in their respective solution explorers.
+		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
+	-->
+	<PropertyGroup>
+		<_UseUnoExtensions>$(UnoFeatures.Contains(';Extensions;'))</_UseUnoExtensions>
+	</PropertyGroup>
+
+	<Choose>
+		<When Condition="!$(_UseUnoExtensions) AND $(UnoFeatures.Contains(';AuthenticationMsal;'))">
+			<ItemGroup>
+				<PackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
+				<PackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
+				<PackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="!$(_UseUnoExtensions) AND $(UnoFeatures.Contains(';AuthenticationOidc;'))">
+			<ItemGroup>
+				<PackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Authentication;'))">
+			<ItemGroup>
+				<PackageReference Include="Uno.Extensions.Authentication.WinUI" ProjectSystem="true" />
+				<PackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
+				<PackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
+				<PackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
+				<PackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
+			</ItemGroup>
+		</When>
+	</Choose>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Configuration;'))">
+		<PackageReference Include="Uno.Extensions.Configuration" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';ExtensionsCore;'))">
+		<PackageReference Include="Uno.Extensions.Core.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Hosting;'))">
+		<PackageReference Include="Uno.Extensions.Hosting.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Http;'))">
+		<PackageReference Include="Uno.Extensions.Http.WinUI" ProjectSystem="true" />
+		<PackageReference Include="Uno.Extensions.Http.Refit" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Localization;'))">
+		<PackageReference Include="Uno.Extensions.Localization.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Logging;'))">
+		<PackageReference Include="Uno.Extensions.Logging.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';MauiEmbedding;'))">
+		<PackageReference Include="Uno.Extensions.Maui.WinUI" ProjectSystem="true" />
+		<PackageReference Include="Uno.Extensions.Maui.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains('CSharpMarkup'))" />
+		<PackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" ProjectSystem="true" />
+		<PackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
+		<PackageReference Include="Microsoft.Maui.Controls.Build.Tasks" ProjectSystem="true" Condition="$(SingleProject) == 'true'"/>
+
+		<PackageReference Include="Xamarin.AndroidX.Navigation.UI" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+		<PackageReference Include="Xamarin.AndroidX.Navigation.Fragment" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+		<PackageReference Include="Xamarin.AndroidX.Navigation.Runtime" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+		<PackageReference Include="Xamarin.AndroidX.Navigation.Common" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+		<PackageReference Include="Xamarin.AndroidX.Collection" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+		<PackageReference Include="Xamarin.AndroidX.Collection.Ktx" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
+	</ItemGroup>
+
+	<ItemGroup Condition="($(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Navigation;'))) AND !$(UnoFeatures.Contains(';Prism;'))">
+		<PackageReference Include="Uno.Extensions.Navigation.WinUI" ProjectSystem="true" />
+		<PackageReference Include="Uno.Extensions.Navigation.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains('CSharpMarkup'))"/>
+		<PackageReference Include="Uno.Extensions.Navigation..Toolkit.WinUI" ProjectSystem="true" Condition="$(UnoFeatures.Contains('Toolkit'))"/>
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Mvux;'))">
+		<PackageReference Include="Uno.Extensions.Reactive.WinUI" ProjectSystem="true" />
+		<PackageReference Include="Uno.Extensions.Reactive.Messaging" ProjectSystem="true" />
+		<PackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains('CSharpMarkup'))" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Serialization;'))">
+		<PackageReference Include="Uno.Extensions.Serialization.Http" ProjectSystem="true" />
+		<PackageReference Include="Uno.Extensions.Serialization.Refit" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Serilog;'))">
+		<PackageReference Include="Uno.Extensions.Logging.Serilog" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Storage;'))">
+		<PackageReference Include="Uno.Extensions.Storage.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+
+</Project>

@@ -6,11 +6,11 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.Sdk.Models;
 
-namespace Uno.Sdk;
+namespace Uno.Sdk.Services;
 
-#nullable enable
-public class NuGetClient : IDisposable
+public class NuGetApiClient : IDisposable
 {
 	private HttpClient Client { get; } = new HttpClient
 	{

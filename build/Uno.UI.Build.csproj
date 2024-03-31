@@ -50,6 +50,7 @@
 			<_Sha1Replace Include="..\build\nuget\uno.winui.runtime-replace.targets" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
+			<_Sha1Replace Include="..\src\Uno.Sdk\**\*" />
 		</ItemGroup>
 
 		<PropertyGroup>

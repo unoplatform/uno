@@ -1,0 +1,19 @@
+<Project>
+	<!--
+		Include all required PackageReference to be available before any target is executed
+		in order for VS and C# Dev Kit to show nuget references in their respective solution explorers.
+		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
+	-->
+	<ItemGroup Condition="$(Optimize) != 'true'">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsPackable) != 'true'">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND '$(IsPackable)' != 'true'">
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+</Project>

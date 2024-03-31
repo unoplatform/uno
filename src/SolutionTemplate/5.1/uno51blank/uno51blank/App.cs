@@ -6,11 +6,7 @@ public class App : Application
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
         MainWindow = new Window();
-#else
-        MainWindow = Microsoft.UI.Xaml.Window.Current;
-#endif
 
 #if DEBUG
         MainWindow.EnableHotReload();

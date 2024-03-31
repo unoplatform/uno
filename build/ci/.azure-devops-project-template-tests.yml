@@ -60,7 +60,10 @@ jobs:
   - script: |
       cp global.json global-net7.json
       cp global-net8.json global.json
-    displayName: Replace global.json with .NET 8
+      sed -i 's/8.0.100/8.0.200/g' global.json
+    displayName: Replace global.json with .NET 8.0.200
+
+  - template: templates/dotnet-mobile-install-linux.yml
 
   - template: templates/gitversion.yml
   
