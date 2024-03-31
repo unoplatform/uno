@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference SelectorItemAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference SelectorItemAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
+
+using System;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -54,14 +56,14 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new System.Exception("Element is not enabled.");
+			throw new Exception("Element is not enabled.");
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
 			if (parent.Owner is not ISelector selector)
 			{
-				throw new System.Exception("Operation cannot be performed.");
+				throw new Exception("Operation cannot be performed.");
 			}
 
 			var index = (selector as Selector).Items.IndexOf(Item);
@@ -76,14 +78,14 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new System.Exception("Element is not enabled.");
+			throw new Exception("Element is not enabled.");
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
 			if (parent.Owner is not ISelector selector)
 			{
-				throw new System.Exception("Operation cannot be performed.");
+				throw new Exception("Operation cannot be performed.");
 			}
 
 			var index = (selector as Selector).Items.IndexOf(Item);
@@ -98,14 +100,14 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new System.Exception("Element is not enabled.");
+			throw new Exception("Element is not enabled.");
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
 			if (parent.Owner is not ISelector selector)
 			{
-				throw new System.Exception("Operation cannot be performed.");
+				throw new Exception("Operation cannot be performed.");
 			}
 
 			var index = (selector as Selector).Items.IndexOf(Item);
@@ -122,7 +124,7 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 		{
 			if (!IsEnabled())
 			{
-				throw new System.Exception("Element is not enabled.");
+				throw new Exception("Element is not enabled.");
 			}
 
 			if (ItemsControlAutomationPeer is { } parent)
