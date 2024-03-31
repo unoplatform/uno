@@ -2,48 +2,47 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 #if false
 using MUXControlsTestHooks = Microsoft.UI.Private.Controls.MUXControlsTestHooks;
 #endif
 
-namespace MUXControlsTestApp
+namespace MUXControlsTestApp;
+
+[Sample("CommandBarFlyout", "WinUI")]
+public sealed partial class CommandBarFlyoutMainPage : TestPage
 {
-	[Sample("CommandBarFlyout", "WinUI")]
-	public sealed partial class CommandBarFlyoutMainPage : TestPage
-    {
-        public CommandBarFlyoutMainPage()
-        {
-            this.InitializeComponent();
-        }
+	public CommandBarFlyoutMainPage()
+	{
+		this.InitializeComponent();
+	}
 
-        public void OnCommandBarFlyoutTestsClicked(object sender, object args)
-        {
-            var rootFrame = Window.Current.Content as Frame;
-            rootFrame.NavigateWithoutAnimation(typeof(CommandBarFlyoutPage), "CommandBarFlyout Tests");
-        }
+	public void OnCommandBarFlyoutTestsClicked(object sender, object args)
+	{
+		var rootFrame = Window.Current.Content as Frame;
+		rootFrame.NavigateWithoutAnimation(typeof(CommandBarFlyoutPage), "CommandBarFlyout Tests");
+	}
 
-        public void OnTextCommandBarFlyoutTestsClicked(object sender, object args)
-        {
-            var rootFrame = Window.Current.Content as Frame;
-            rootFrame.NavigateWithoutAnimation(typeof(TextCommandBarFlyoutPage), "TextCommandBarFlyout Tests");
-        }
+	public void OnTextCommandBarFlyoutTestsClicked(object sender, object args)
+	{
+		var rootFrame = Window.Current.Content as Frame;
+		rootFrame.NavigateWithoutAnimation(typeof(TextCommandBarFlyoutPage), "TextCommandBarFlyout Tests");
+	}
 
-        public void OnExtraCommandBarFlyoutTestsClicked(object sender, object args)
-        {
-            var rootFrame = Window.Current.Content as Frame;
-            rootFrame.NavigateWithoutAnimation(typeof(ExtraCommandBarFlyoutPage), "Extra CommandBarFlyout Tests");
-        }
-        private void CmbCommandBarFlyoutOutputDebugStringLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+	public void OnExtraCommandBarFlyoutTestsClicked(object sender, object args)
+	{
+		var rootFrame = Window.Current.Content as Frame;
+		rootFrame.NavigateWithoutAnimation(typeof(ExtraCommandBarFlyoutPage), "Extra CommandBarFlyout Tests");
+	}
+	private void CmbCommandBarFlyoutOutputDebugStringLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+	{
 #if false
-			MUXControlsTestHooks.SetOutputDebugStringLevelForType(
-                "CommandBarFlyout",
-                cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 1 || cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 2,
-                cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 2);
+		MUXControlsTestHooks.SetOutputDebugStringLevelForType(
+            "CommandBarFlyout",
+            cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 1 || cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 2,
+            cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 2);
 #endif
-        }
-    }
+	}
 }
