@@ -4,8 +4,6 @@ using System.Numerics;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.UI.Composition;
-using System.Runtime.InteropServices;
-using System;
 
 namespace Microsoft.UI.Composition;
 

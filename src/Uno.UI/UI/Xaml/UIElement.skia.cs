@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
@@ -36,10 +37,14 @@ namespace Microsoft.UI.Xaml
 		private protected ShapeVisual _visual;
 		private Rect _lastFinalRect;
 		private Rect? _lastClippedFrame;
+		private GCHandle _gcHandle;
 
 		public UIElement()
 		{
 			_isFrameworkElement = this is FrameworkElement;
+
+			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+			Handle = GCHandle.ToIntPtr(_gcHandle);
 
 			Initialize();
 			InitializePointers();

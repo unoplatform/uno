@@ -10,10 +10,7 @@ public partial class ShapeVisual : ContainerVisual
 	public ShapeVisual(Compositor compositor)
 		: base(compositor)
 	{
-		InitializePartial();
 	}
-
-	partial void InitializePartial();
 
 	public CompositionViewBox? ViewBox
 	{

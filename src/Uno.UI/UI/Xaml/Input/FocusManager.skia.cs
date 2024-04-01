@@ -11,8 +11,8 @@ public partial class FocusManager
 	{
 		if (OperatingSystem.IsBrowser() && control is not null)
 		{
-			Console.WriteLine($"Focusing {control.Visual.Comment},{control},{control.Visual.Handle}");
-			NativeMethods.FocusSemanticElement(control.Visual.Handle);
+			Console.WriteLine($"Focusing {control.Visual.Comment},{control},{control.Handle}");
+			NativeMethods.FocusSemanticElement(control.Handle);
 		}
 	}
 

@@ -134,7 +134,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
-		var rootHandle = rootElement.Visual.Handle;
+		var rootHandle = rootElement.Handle;
 		rootElement.Visual.RemoveContext(_compositionListener, null);
 		rootElement.Visual.AddContext(_compositionListener, null);
 
@@ -150,7 +150,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	{
 		Debug.Assert(_compositionListener is not null);
 
-		var handle = child.Visual.Handle;
+		var handle = child.Handle;
 		child.Visual.RemoveContext(_compositionListener, null);
 		child.Visual.AddContext(_compositionListener, null);
 
@@ -196,7 +196,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty)
 		{
 			var ariaChecked = ConvertToAriaChecked((ToggleState)value);
-			NativeMethods.UpdateAriaChecked(Instance, element.Visual.Handle, ariaChecked);
+			NativeMethods.UpdateAriaChecked(Instance, element.Handle, ariaChecked);
 		}
 	}
 
@@ -223,7 +223,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnAutomationIdChanged(UIElement element, string automationId)
 	{
-		NativeMethods.UpdateAriaLabel(this, element.Visual.Handle, automationId);
+		NativeMethods.UpdateAriaLabel(this, element.Handle, automationId);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
