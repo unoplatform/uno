@@ -98,7 +98,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static focusSemanticElement(handle: number) {
-			const element = document.getElementById(`uno-semantics-${handle}`);
+			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
 			if (element) {
 				console.log("Focus!!" + element);
 				element.focus();
@@ -135,7 +135,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static addSemanticElement(owner: any, parentHandle: number, handle: number, index: number, width: number, height: number, x: number, y: number, role: string, automationId: string, isFocusable: boolean, ariaChecked: string): boolean {
-			const parent = document.getElementById(`uno-semantics-${parentHandle}`);
+			const parent = WebAssemblyWindowWrapper.getSemanticElementByHandle(parentHandle);
 			if (!parent) {
 				return false;
 			}
@@ -164,27 +164,31 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static removeSemanticElement(owner: any, parentHandle: number, childHandle: number): void {
-			const parent = document.getElementById(`uno-semantics-${parentHandle}`);
+			const parent = WebAssemblyWindowWrapper.getSemanticElementByHandle(parentHandle);
 			if (parent) {
-				const child = document.getElementById(`uno-semantics-${childHandle}`);
+				const child = WebAssemblyWindowWrapper.getSemanticElementByHandle(childHandle);
 				parent.removeChild(child);
 			}
 		}
 
 		public static updateAriaLabel(owner: any, handle: number, automationId: string): void {
-			document.getElementById(`uno-semantics-${handle}`).setAttribute("aria-label", automationId);
+			WebAssemblyWindowWrapper.getSemanticElementByHandle(handle).setAttribute("aria-label", automationId);
 		}
 
 		public static updateAriaChecked(owner: any, handle: number, ariaChecked: string): void {
-			document.getElementById(`uno-semantics-${handle}`).setAttribute("aria-checked", ariaChecked);
+			WebAssemblyWindowWrapper.getSemanticElementByHandle(handle).setAttribute("aria-checked", ariaChecked);
 		}
 
 		public static updateSemanticElementPositioning(owner: any, handle: number, width: number, height: number, x: number, y: number) {
-			const element = document.getElementById(`uno-semantics-${handle}`);
+			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
 			element.style.width = `${width}px`;
 			element.style.height = `${height}px`;
+		}
+
+		private static getSemanticElementByHandle(handle: number) : HTMLElement {
+			return document.getElementById(`uno-semantics-${handle}`)
 		}
 
 		private removeLoading() {
