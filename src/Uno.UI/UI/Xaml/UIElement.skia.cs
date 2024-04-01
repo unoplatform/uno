@@ -173,7 +173,19 @@ namespace Microsoft.UI.Xaml
 
 		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
-			ApiInformation.TryRaiseNotImplemented("UIElement", "MoveChildTo");
+			var view = _children[oldIndex];
+
+			_children.RemoveAt(oldIndex);
+			if (newIndex == _children.Count)
+			{
+				_children.Add(view);
+			}
+			else
+			{
+				_children.Insert(newIndex, view);
+			}
+
+			InvalidateMeasure();
 		}
 
 		internal bool RemoveChild(UIElement child)
