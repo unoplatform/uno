@@ -37,6 +37,8 @@ public partial class TextBox
 	private bool _selectionEndsAtTheStart;
 	private bool _showCaret = true;
 
+	private bool _inSelectInternal;
+
 	private (int start, int length)? _pendingSelection;
 
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
@@ -319,8 +321,13 @@ public partial class TextBox
 
 	partial void SelectPartial(int start, int length)
 	{
+		_pendingSelection = null;
 		TrySetCurrentlyTyping(false);
-		_selectionEndsAtTheStart = false;
+		if (!_inSelectInternal)
+		{
+			// SelectInternal sets _selectionEndsAtTheStart on its own
+			_selectionEndsAtTheStart = false;
+		}
 		_selection = (start, length);
 		if (!_isSkiaTextBox)
 		{
@@ -818,10 +825,10 @@ public partial class TextBox
 	/// </summary>
 	private void SelectInternal(int selectionStart, int selectionLength)
 	{
+		_inSelectInternal = true;
+		_selectionEndsAtTheStart = selectionLength < 0;
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
-		_selectionEndsAtTheStart = selectionLength < 0; // set here because Select clears it
-		_pendingSelection = null;
-		UpdateScrolling();
+		_inSelectInternal = false;
 	}
 
 	private void TimerOnTick(object sender, object e)
