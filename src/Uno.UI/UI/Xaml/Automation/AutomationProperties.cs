@@ -235,6 +235,21 @@ namespace Microsoft.UI.Xaml.Automation
 				return "slider";
 			}
 
+			var peer = uIElement.GetOrCreateAutomationPeer();
+			if (peer?.GetAutomationControlType() is { } type)
+			{
+				return type switch
+				{
+					AutomationControlType.Button => "button",
+					AutomationControlType.RadioButton => "radio",
+					AutomationControlType.CheckBox => "checkbox",
+					AutomationControlType.Text => "label",
+					AutomationControlType.Edit => "label",
+					AutomationControlType.Slider => "slider",
+					_ => null,
+				};
+			}
+
 			return null;
 		}
 #endif

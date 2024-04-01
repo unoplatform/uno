@@ -45,11 +45,7 @@ public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Prov
 	internal void RaiseToggleStatePropertyChangedEvent(object pOldValue, object pNewValue)
 	{
 		var oldValue = ConvertToToggleState(pOldValue);
-
 		var newValue = ConvertToToggleState(pNewValue);
-
-		MUX_ASSERT(oldValue != ToggleState.Indeterminate);
-		MUX_ASSERT(newValue != ToggleState.Indeterminate);
 
 		if (oldValue != newValue)
 		{

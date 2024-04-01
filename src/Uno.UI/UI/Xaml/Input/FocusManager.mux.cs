@@ -88,12 +88,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// "first" tab.  This is deemed better than getting stuck at the end.
 		/// (Reverse "first" and "last" for Shift-Tab.)
 		/// </summary>
-		private const bool _canTabOutOfPlugin =
-#if !__WASM__
-				false;
-#else
-				true; // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
-#endif
+		private static readonly bool _canTabOutOfPlugin =
+				OperatingSystem.IsBrowser(); // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
 
 		private bool _isPrevFocusTextControl;
 

@@ -158,18 +158,67 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		var role = AutomationProperties.FindHtmlRole(child);
 		var automationId = AutomationProperties.GetAutomationId(child);
+		var automationPeer = child.GetOrCreateAutomationPeer();
 
-		// TODO: Verify if this is the right behavior.
-		if (string.IsNullOrEmpty(automationId) && child.OnCreateAutomationPeerInternal() is { } automationPeer)
+		if (automationPeer is not null)
 		{
-			automationId = automationPeer.GetName();
+			automationPeer.OnPropertyChanged += AutomationPeer_OnPropertyChanged;
+
+			// TODO: Verify if this is the right behavior.
+			if (string.IsNullOrEmpty(automationId))
+			{
+				automationId = automationPeer.GetName();
+			}
 		}
 
-		NativeMethods.AddSemanticElement(this, parentHandle, handle, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, child.IsFocusable);
+		string? ariaChecked = null;
+		if (child is CheckBox checkBox)
+		{
+			ariaChecked = ConvertToAriaChecked(checkBox.IsChecked);
+		}
+		else if (child is RadioButton radioButton)
+		{
+			ariaChecked = ConvertToAriaChecked(radioButton.IsChecked);
+		}
+		// TODO: aria-valuenow, aria-valuemin, aria-valuemax for Slider
+
+		NativeMethods.AddSemanticElement(this, parentHandle, handle, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, child.IsFocusable, ariaChecked);
 		foreach (var childChild in child.GetChildren())
 		{
 			BuildSemanticsTreeRecursive(handle, childChild);
 		}
+	}
+
+	// Important to keep this static to avoid memory leaks.
+	// Otherwise, proper event un-subscription will be needed.
+	private static void AutomationPeer_OnPropertyChanged(UIElement element, AutomationProperty automationProperty, object value)
+	{
+		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty)
+		{
+			var ariaChecked = ConvertToAriaChecked((ToggleState)value);
+			NativeMethods.UpdateAriaChecked(Instance, element.Visual.Handle, ariaChecked);
+		}
+	}
+
+	private static string? ConvertToAriaChecked(ToggleState isChecked)
+	{
+		return isChecked switch
+		{
+			ToggleState.On => "true",
+			ToggleState.Off => "false",
+			ToggleState.Indeterminate => "mixed",
+			_ => null,
+		};
+	}
+
+	private static string? ConvertToAriaChecked(bool? isChecked)
+	{
+		return isChecked switch
+		{
+			true => "true",
+			false => "false",
+			null => "mixed",
+		};
 	}
 
 	internal void OnAutomationIdChanged(UIElement element, string automationId)
@@ -233,10 +282,13 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		internal static partial void AddRootElementToSemanticsRoot([JSMarshalAs<JSType.Any>] object owner, IntPtr rootHandle, float width, float height, float x, float y, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.addSemanticElement")]
-		internal static partial void AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, IntPtr parentHandle, IntPtr handle, float width, float height, float x, float y, string role, string automationId, bool isFocusable);
+		internal static partial void AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, IntPtr parentHandle, IntPtr handle, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.updateAriaLabel")]
 		internal static partial void UpdateAriaLabel([JSMarshalAs<JSType.Any>] object owner, IntPtr handle, string automationId);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.updateAriaChecked")]
+		internal static partial void UpdateAriaChecked([JSMarshalAs<JSType.Any>] object owner, IntPtr handle, string? ariaChecked);
 
 		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
 		internal static partial string GetWindowTitle();

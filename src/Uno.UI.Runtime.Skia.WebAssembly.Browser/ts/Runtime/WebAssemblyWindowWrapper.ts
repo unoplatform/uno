@@ -131,10 +131,14 @@ namespace Uno.UI.Runtime.Skia {
 			semanticsRoot.appendChild(element);
 		}
 
-		public static addSemanticElement(owner: any, parentHandle: Number, handle: Number, width: Number, height: Number, x: Number, y: Number, role: string, automationId: string, isFocusable: boolean): void {
+		public static addSemanticElement(owner: any, parentHandle: Number, handle: Number, width: Number, height: Number, x: Number, y: Number, role: string, automationId: string, isFocusable: boolean, ariaChecked: string): void {
 			let element = this.createAccessibilityElement(x, y, width, height, handle, isFocusable);
 			if (role) {
 				element.setAttribute("role", role);
+			}
+
+			if (ariaChecked) {
+				element.setAttribute("aria-checked", ariaChecked);
 			}
 
 			if (automationId) {
@@ -146,6 +150,10 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static updateAriaLabel(owner: any, handle: Number, automationId: string): void {
 			document.getElementById(`uno-semantics-${handle}`).setAttribute("aria-label", automationId);
+		}
+
+		public static updateAriaChecked(owner: any, handle: Number, ariaChecked: string): void {
+			document.getElementById(`uno-semantics-${handle}`).setAttribute("aria-checked", ariaChecked);
 		}
 
 		private removeLoading() {
