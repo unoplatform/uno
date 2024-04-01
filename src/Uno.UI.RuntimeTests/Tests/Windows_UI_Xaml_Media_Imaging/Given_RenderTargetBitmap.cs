@@ -13,6 +13,8 @@ using Windows.Graphics.Display;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
+using Microsoft.UI.Xaml.Data;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
@@ -164,5 +166,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			ImageAssert.HasColorAt(result, 5, 5, nonOpaqueColor, tolerance: 1);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("The behaviour is only correct on skia due to the changes in https://github.com/unoplatform/uno/pull/15875")]
+#endif
+		public async Task When_ScrollViewer_Scrolled()
+		{
+			ItemsRepeater ir;
+			var sv = new ScrollViewer
+			{
+				Width = 100,
+				Height = 500,
+				Content = ir = new ItemsRepeater
+				{
+					ItemTemplate = new DataTemplate(() => new Border
+					{
+						Height = 100,
+						Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+					}),
+					ItemsSource = "0123456789"
+				}
+			};
+
+			await UITestHelper.Load(sv);
+
+			var irRTB1 = new RenderTargetBitmap();
+			await irRTB1.RenderAsync(ir);
+			var irBitmap1 = await RawBitmap.From(irRTB1, ir);
+			var svRTB1 = new RenderTargetBitmap();
+			await svRTB1.RenderAsync(sv);
+			var svBitmap1 = await RawBitmap.From(svRTB1, sv);
+
+			sv.ScrollToVerticalOffset(100);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var irRTB2 = new RenderTargetBitmap();
+			await irRTB2.RenderAsync(ir);
+			var irBitmap2 = await RawBitmap.From(irRTB2, ir);
+			var svRTB2 = new RenderTargetBitmap();
+			await svRTB2.RenderAsync(sv);
+			var svBitmap2 = await RawBitmap.From(svRTB2, sv);
+
+			await ImageAssert.AreEqualAsync(irBitmap1, irBitmap2, comparisonHeight: (int)sv.ViewportHeight);
+			await ImageAssert.AreNotEqualAsync(svBitmap1, svBitmap2, comparisonHeight: (int)sv.ViewportHeight);
+		}
+#endif
 	}
 }
