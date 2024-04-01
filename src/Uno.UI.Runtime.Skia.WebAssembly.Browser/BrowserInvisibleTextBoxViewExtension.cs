@@ -8,11 +8,15 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
-	private TextBoxView _view;
+	private readonly TextBoxView _view;
 
 	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
 	{
 		_view = view;
+	}
+
+	static BrowserInvisibleTextBoxViewExtension()
+	{
 		NativeMethods.Initialize();
 	}
 

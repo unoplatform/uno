@@ -70,7 +70,7 @@
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
 				// input could be null beccause we could call setText without focusing first
-				input.textContent = text;
+				input.value = text;
 			}
 		}
 
