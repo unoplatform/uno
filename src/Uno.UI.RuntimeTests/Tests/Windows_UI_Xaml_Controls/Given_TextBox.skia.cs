@@ -207,6 +207,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Keyboard_Selection_Backwards_ScrollViewer_Offset()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Width = 150 };
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var c in "some text that is longer than the width of the text box")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+			}
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreNotEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+
+			for (int i = 0; i < 5; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+				await WindowHelper.WaitForIdle();
+			}
+
+			// The ScrollViewer shouldn't move as long as the caret is still in view.
+			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_A()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
