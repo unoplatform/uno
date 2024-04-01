@@ -40,7 +40,7 @@
 				evt.key
 			);
 
-			if (isHandled || evt.code == "Tab") {
+			if (isHandled) {
 				evt.preventDefault();
 			}
 		}
