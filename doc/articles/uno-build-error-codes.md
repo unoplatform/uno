@@ -83,7 +83,7 @@ This warning can be disabled by adding the following to your `.csproj`:
 
 ### UNOB00011: The desktop TargetFramework must be placed first in the TargetFrameworks property
 
-In Visual Studio 2022, an issue prevents debugging WSL debugging from working properly when the `net8.0-desktop` TargetFramework is not placed first in the `TargetFrameworks` property.
+In Visual Studio 2022, an issue prevents WSL debugging from working properly when the `net8.0-desktop` TargetFramework is not placed first in the `TargetFrameworks` property.
 
 Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
 
