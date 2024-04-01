@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Input;
 
@@ -9,10 +10,10 @@ public partial class FocusManager
 {
 	private static void FocusNative(UIElement? control)
 	{
-		if (OperatingSystem.IsBrowser() && control is not null)
+		if (OperatingSystem.IsBrowser() && control is not null && (control as Control)?.IsDelegatingFocusToTemplateChild() != true)
 		{
-			Console.WriteLine($"Focusing {control.Visual.Comment},{control},{control.Handle}");
-			NativeMethods.FocusSemanticElement(control.Handle);
+			Console.WriteLine($"Focusing {control.Visual.Comment},{control},{control.Visual.Handle}");
+			NativeMethods.FocusSemanticElement(control.Visual.Handle);
 		}
 	}
 

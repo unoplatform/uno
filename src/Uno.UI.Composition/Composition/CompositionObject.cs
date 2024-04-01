@@ -156,16 +156,17 @@ namespace Microsoft.UI.Composition
 			=> false;
 #endif
 
-		private protected void SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
+		private protected bool SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field == value)
 			{
-				return;
+				return false;
 			}
 
 			field = value;
 
 			OnPropertyChanged(propertyName, false);
+			return true;
 		}
 
 		private protected void SetProperty(ref int field, int value, [CallerMemberName] string? propertyName = null)
@@ -216,28 +217,30 @@ namespace Microsoft.UI.Composition
 			OnPropertyChanged(propertyName, false);
 		}
 
-		private protected void SetProperty(ref Vector2 field, Vector2 value, [CallerMemberName] string? propertyName = null)
+		private protected bool SetProperty(ref Vector2 field, Vector2 value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field.Equals(value))
 			{
-				return;
+				return false;
 			}
 
 			field = value;
 
 			OnPropertyChanged(propertyName, false);
+			return true;
 		}
 
-		private protected void SetProperty(ref Vector3 field, Vector3 value, [CallerMemberName] string? propertyName = null)
+		private protected bool SetProperty(ref Vector3 field, Vector3 value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field.Equals(value))
 			{
-				return;
+				return false;
 			}
 
 			field = value;
 
 			OnPropertyChanged(propertyName, false);
+			return true;
 		}
 
 		private protected void SetProperty(ref Quaternion field, Quaternion value, [CallerMemberName] string? propertyName = null)

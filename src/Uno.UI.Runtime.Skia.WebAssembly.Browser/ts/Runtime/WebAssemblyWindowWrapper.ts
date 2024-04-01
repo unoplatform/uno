@@ -134,13 +134,17 @@ namespace Uno.UI.Runtime.Skia {
 			semanticsRoot.appendChild(element);
 		}
 
-		public static addSemanticElement(owner: any, parentHandle: number, handle: number, index: number, width: number, height: number, x: number, y: number, role: string, automationId: string, isFocusable: boolean, ariaChecked: string): boolean {
+		public static addSemanticElement(owner: any, parentHandle: number, handle: number, index: number, width: number, height: number, x: number, y: number, role: string, automationId: string, isFocusable: boolean, ariaChecked: string, isVisible: boolean): boolean {
 			const parent = WebAssemblyWindowWrapper.getSemanticElementByHandle(parentHandle);
 			if (!parent) {
 				return false;
 			}
 
 			let element = this.createAccessibilityElement(x, y, width, height, handle, isFocusable);
+
+			if (!isVisible) {
+				element.hidden = true;
+			}
 
 			if (role) {
 				element.setAttribute("role", role);
@@ -167,24 +171,52 @@ namespace Uno.UI.Runtime.Skia {
 			const parent = WebAssemblyWindowWrapper.getSemanticElementByHandle(parentHandle);
 			if (parent) {
 				const child = WebAssemblyWindowWrapper.getSemanticElementByHandle(childHandle);
-				parent.removeChild(child);
+				if (parent.removeChild(child)) {
+					console.log(`Child ${childHandle} removed from ${parentHandle}.`);
+				} else {
+					console.log(`Failed to remove child ${childHandle} from ${parentHandle}.`);
+				}
+			}
+		}
+
+		public static updateIsFocusable(owner: any, handle: number, isFocusable: boolean): void {
+			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
+			if (element) {
+				element.tabIndex = isFocusable ? 0 : -1;
+				element.style.pointerEvents = isFocusable ? "all" : "none";
 			}
 		}
 
 		public static updateAriaLabel(owner: any, handle: number, automationId: string): void {
-			WebAssemblyWindowWrapper.getSemanticElementByHandle(handle).setAttribute("aria-label", automationId);
+			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-label", automationId);
+			}
 		}
 
 		public static updateAriaChecked(owner: any, handle: number, ariaChecked: string): void {
-			WebAssemblyWindowWrapper.getSemanticElementByHandle(handle).setAttribute("aria-checked", ariaChecked);
+			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-checked", ariaChecked);
+			}
 		}
 
 		public static updateSemanticElementPositioning(owner: any, handle: number, width: number, height: number, x: number, y: number) {
 			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
-			element.style.left = `${x}px`;
-			element.style.top = `${y}px`;
-			element.style.width = `${width}px`;
-			element.style.height = `${height}px`;
+			if (element) {
+				element.hidden = false;
+				element.style.left = `${x}px`;
+				element.style.top = `${y}px`;
+				element.style.width = `${width}px`;
+				element.style.height = `${height}px`;
+			}
+		}
+
+		public static hideSemanticElement(owner: any, handle: number) {
+			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
+			if (element) {
+				element.hidden = true;
+			}
 		}
 
 		private static getSemanticElementByHandle(handle: number) : HTMLElement {

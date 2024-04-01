@@ -31,28 +31,8 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 {
-	private sealed class CompositionListener : CompositionObject
-	{
-		private readonly WebAssemblyWindowWrapper _owner;
-		private readonly UIElement _rootElement;
-
-		public CompositionListener(WebAssemblyWindowWrapper owner, UIElement rootElement) : base(rootElement.Visual.Compositor)
-		{
-			_owner = owner;
-			_rootElement = rootElement;
-		}
-
-		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
-		{
-			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
-			var totalOffset = _rootElement.Visual.GetTotalOffset();
-			NativeMethods.UpdateSemanticElementPositioning(_owner, _rootElement.Handle, _rootElement.Visual.Size.X, _rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y);
-		}
-	}
-
 	private static readonly Lazy<WebAssemblyWindowWrapper> _instance = new Lazy<WebAssemblyWindowWrapper>(() => new());
 	private DisplayInformation _displayInformation;
-	private CompositionListener? _compositionListener;
 
 	internal static WebAssemblyWindowWrapper Instance => _instance.Value;
 
@@ -66,6 +46,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		AccessibilityAnnouncer.WindowWrapper = this;
 		UIElement.ExternalOnChildAdded = OnChildAdded;
 		UIElement.ExternalOnChildRemoved = OnChildRemoved;
+		Visual.ExternalOnVisualOffsetOrSizeChanged = OnSizeOrOffsetChanged;
 		NativeMethods.Initialize(this);
 
 		_displayInformation = DisplayInformation.GetForCurrentView();
@@ -77,9 +58,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	{
 		if (IsAccessibilityEnabled)
 		{
-			if (AddSemanticElement(parent.Handle, child, index))
+			if (AddSemanticElement(parent.Visual.Handle, child, index))
 			{
-				child.Visual.AddContext(_compositionListener, null);
 				foreach (var childChild in child._children)
 				{
 					OnChildAdded(child, childChild, null);
@@ -97,7 +77,24 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 				automationPeer.OnPropertyChanged -= AutomationPeer_OnPropertyChanged;
 			}
 
-			RemoveSemanticElement(parent.Handle, child.Handle);
+			RemoveSemanticElement(parent.Visual.Handle, child.Visual.Handle);
+		}
+	}
+
+	private void OnSizeOrOffsetChanged(Visual visual)
+	{
+		// TODO: transformations (e.g, RenderTransform) are not yet handled :/
+		if (IsAccessibilityEnabled && visual is ShapeVisual shapeVisual)
+		{
+			if (!visual.IsVisible)
+			{
+				NativeMethods.HideSemanticElement(this, shapeVisual.Handle);
+			}
+			else
+			{
+				var totalOffset = visual.GetTotalOffset();
+				NativeMethods.UpdateSemanticElementPositioning(this, shapeVisual.Handle, shapeVisual.Size.X, shapeVisual.Size.Y, totalOffset.X, totalOffset.Y);
+			}
 		}
 	}
 
@@ -113,8 +110,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		set => NativeMethods.SetWindowTitle(value);
 	}
 
-	[MemberNotNullWhen(true, nameof(_compositionListener))]
-	internal bool IsAccessibilityEnabled => _compositionListener is not null;
+	internal bool IsAccessibilityEnabled { get; private set; }
 
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
@@ -129,7 +125,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal void EnableA11y()
 	{
-		if (_compositionListener is not null)
+		if (IsAccessibilityEnabled)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -150,25 +146,23 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 
 		AutomationProperties.OnAutomationIdChangedCallback = OnAutomationIdChanged;
-		_compositionListener = new CompositionListener(this, rootElement);
+		IsAccessibilityEnabled = true;
 		CreateAOM(rootElement);
 		Control.OnIsFocusableChangedCallback = UpdateIsFocusable;
 	}
 
 	private void UpdateIsFocusable(Control control, bool isFocusable)
 	{
-		// TODO: Update pointer-events and tab index.
+		NativeMethods.UpdateIsFocusable(this, control.Visual.Handle, isFocusable);
 	}
 
 	internal void CreateAOM(UIElement rootElement)
 	{
-		Debug.Assert(_compositionListener is not null);
+		Debug.Assert(IsAccessibilityEnabled);
 
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
-		var rootHandle = rootElement.Handle;
-		rootElement.Visual.RemoveContext(_compositionListener, null);
-		rootElement.Visual.AddContext(_compositionListener, null);
+		var rootHandle = rootElement.Visual.Handle;
 
 		var totalOffset = rootElement.Visual.GetTotalOffset();
 		NativeMethods.AddRootElementToSemanticsRoot(this, rootHandle, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y, rootElement.IsFocusable);
@@ -180,11 +174,9 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child)
 	{
-		Debug.Assert(_compositionListener is not null);
+		Debug.Assert(IsAccessibilityEnabled);
 
-		var handle = child.Handle;
-		child.Visual.RemoveContext(_compositionListener, null);
-		child.Visual.AddContext(_compositionListener, null);
+		var handle = child.Visual.Handle;
 
 		AddSemanticElement(parentHandle, child, null);
 		foreach (var childChild in child.GetChildren())
@@ -222,7 +214,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 		// TODO: aria-valuenow, aria-valuemin, aria-valuemax for Slider
 
-		return NativeMethods.AddSemanticElement(this, parentHandle, child.Handle, index, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, child.IsFocusable, ariaChecked);
+		return NativeMethods.AddSemanticElement(this, parentHandle, child.Visual.Handle, index, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, child.IsFocusable, ariaChecked, child.Visual.IsVisible);
 	}
 
 	private void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle)
@@ -237,7 +229,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty)
 		{
 			var ariaChecked = ConvertToAriaChecked((ToggleState)value);
-			NativeMethods.UpdateAriaChecked(Instance, element.Handle, ariaChecked);
+			NativeMethods.UpdateAriaChecked(Instance, element.Visual.Handle, ariaChecked);
 		}
 	}
 
@@ -264,7 +256,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnAutomationIdChanged(UIElement element, string automationId)
 	{
-		NativeMethods.UpdateAriaLabel(this, element.Handle, automationId);
+		Debug.Assert(IsAccessibilityEnabled);
+		NativeMethods.UpdateAriaLabel(this, element.Visual.Handle, automationId);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
@@ -323,7 +316,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		internal static partial void AddRootElementToSemanticsRoot([JSMarshalAs<JSType.Any>] object owner, IntPtr rootHandle, float width, float height, float x, float y, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.addSemanticElement")]
-		internal static partial bool AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, IntPtr parentHandle, IntPtr handle, int? index, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked);
+		internal static partial bool AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, IntPtr parentHandle, IntPtr handle, int? index, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked, bool isVisible);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.removeSemanticElement")]
 		internal static partial void RemoveSemanticElement([JSMarshalAs<JSType.Any>] object owner, IntPtr parentHandle, IntPtr childHandle);
@@ -336,6 +329,12 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.updateSemanticElementPositioning")]
 		internal static partial void UpdateSemanticElementPositioning([JSMarshalAs<JSType.Any>] object owner, IntPtr handle, float width, float height, float x, float y);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.updateIsFocusable")]
+		internal static partial void UpdateIsFocusable([JSMarshalAs<JSType.Any>] object owner, IntPtr handle, bool isFocusable);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.hideSemanticElement")]
+		internal static partial void HideSemanticElement([JSMarshalAs<JSType.Any>] object owner, IntPtr handle);
 
 		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
 		internal static partial string GetWindowTitle();

@@ -37,14 +37,10 @@ namespace Microsoft.UI.Xaml
 		private protected ShapeVisual _visual;
 		private Rect _lastFinalRect;
 		private Rect? _lastClippedFrame;
-		private GCHandle _gcHandle;
 
 		public UIElement()
 		{
 			_isFrameworkElement = this is FrameworkElement;
-
-			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
-			Handle = GCHandle.ToIntPtr(_gcHandle);
 
 			Initialize();
 			InitializePointers();

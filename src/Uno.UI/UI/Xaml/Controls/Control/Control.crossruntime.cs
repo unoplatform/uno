@@ -26,5 +26,5 @@ public partial class Control
 		return this.GetChildren()?.FirstOrDefault() as IFrameworkElement;
 	}
 
-	private protected virtual bool IsDelegatingFocusToTemplateChild() => false;
+	internal virtual bool IsDelegatingFocusToTemplateChild() => false;
 }

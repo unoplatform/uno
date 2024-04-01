@@ -46,7 +46,13 @@ namespace Microsoft.UI.Composition
 		public Vector3 Offset
 		{
 			get => _offset;
-			set { SetProperty(ref _offset, value); OnOffsetChanged(value); }
+			set
+			{
+				if (SetProperty(ref _offset, value))
+				{
+					OnOffsetChanged(value);
+				}
+			}
 		}
 
 		partial void OnOffsetChanged(Vector3 value);
@@ -54,8 +60,16 @@ namespace Microsoft.UI.Composition
 		public bool IsVisible
 		{
 			get => _isVisible;
-			set => SetProperty(ref _isVisible, value);
+			set
+			{
+				if (SetProperty(ref _isVisible, value))
+				{
+					OnIsVisibleChanged(value);
+				}
+			}
 		}
+
+		partial void OnIsVisibleChanged(bool value);
 
 		public CompositionCompositeMode CompositeMode
 		{
@@ -104,7 +118,13 @@ namespace Microsoft.UI.Composition
 		public Vector2 Size
 		{
 			get => _size;
-			set { SetProperty(ref _size, value); OnSizeChanged(value); }
+			set
+			{
+				if (SetProperty(ref _size, value))
+				{
+					OnSizeChanged(value);
+				}
+			}
 		}
 
 		partial void OnSizeChanged(Vector2 value);
