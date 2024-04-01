@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,10 +11,10 @@ using System.Threading;
 using Windows.Graphics.Display;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 using Microsoft.UI.Xaml.Data;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {

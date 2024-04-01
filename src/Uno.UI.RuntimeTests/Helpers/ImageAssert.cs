@@ -230,7 +230,7 @@ public static partial class ImageAssert
 	{
 		if (bitmap1.PixelWidth != bitmap2.PixelWidth ||
 			(comparisonHeight is null && bitmap1.PixelWidth != bitmap2.PixelWidth) ||
-			(comparisonHeight is not null && (bitmap1.PixelWidth < comparisonHeight || bitmap1.PixelHeight < comparisonHeight)))
+			(comparisonHeight is not null && (bitmap1.PixelHeight < comparisonHeight || bitmap1.PixelHeight < comparisonHeight)))
 		{
 			return false;
 		}
