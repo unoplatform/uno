@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<Target Name="_UnoFilterWebSdkGlobalUsings"
-			Condition=" '$(UnoDisableFilterWebSdkGlobalUsings)' != 'true' "
+			Condition=" '$(Optimize)' == 'true' AND '$(UnoDisableFilterWebSdkGlobalUsings)' != 'true' "
 			BeforeTargets="BeforeBuild">
 		<ItemGroup>
 			<!-- 
