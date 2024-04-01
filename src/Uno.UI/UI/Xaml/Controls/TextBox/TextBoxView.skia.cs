@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// the password manager autocompletion button appear.
 				if (focusState != FocusState.Unfocused)
 				{
-					_textBoxExtension?.StartEntry(IsPasswordBox, this);
+					_textBoxExtension?.StartEntry();
 				}
 				else
 				{
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (focusState != FocusState.Unfocused)
 				{
 					DisplayBlock.Opacity = 0;
-					_textBoxExtension?.StartEntry(IsPasswordBox, this);
+					_textBoxExtension?.StartEntry();
 
 					var selectionStart = this.GetSelectionStart();
 

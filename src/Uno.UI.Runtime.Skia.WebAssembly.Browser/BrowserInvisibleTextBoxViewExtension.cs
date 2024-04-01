@@ -1,80 +1,41 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.Foundation.Logging;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Controls.Extensions;
-using Windows.Foundation;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
-	private static TextBoxView? _view;
-	private static BrowserInvisibleTextBoxViewExtension? _instance;
+	private TextBoxView _view;
 
-	private BrowserInvisibleTextBoxViewExtension()
+	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
 	{
+		_view = view;
 		NativeMethods.Initialize();
-	}
-
-	public static BrowserInvisibleTextBoxViewExtension Instance => _instance ??= new();
-
-	[MemberNotNullWhen(returnValue: false, nameof(_view))]
-	private static bool WarnOnNullView()
-	{
-		if (_view is null)
-		{
-			if (typeof(BrowserInvisibleTextBoxViewExtension).Log().IsEnabled(LogLevel.Warning))
-			{
-				typeof(BrowserInvisibleTextBoxViewExtension).Log().LogWarning("UpdatePosition is called while _view is null.");
-			}
-
-			return true;
-		}
-
-		return false;
 	}
 
 	[JSExport]
 	private static void OnInputTextChanged(string text)
-		=> _view?.UpdateTextFromNative(text);
+	{
+		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+		// This only fires from password manager autocompletion, which is only available when the TextBox is focused
+		var focusedElement = FocusManager.GetFocusedElement(xamlRoot!) as TextBox;
+		focusedElement?.TextBoxView.UpdateTextFromNative(text);
+	}
 
 	// The "overlay layer" is the DOM, which is always present.
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
-	public void StartEntry(bool isPasswordBox, TextBoxView view)
-	{
-		_view = view;
-		NativeMethods.Focus(true, isPasswordBox, view.TextBox?.Text);
-	}
+	public void StartEntry() => NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text);
 
-	public void EndEntry()
-	{
-		if (_view is not null)
-		{
-			_view = null;
-			NativeMethods.Focus(false, default, default);
-		}
-	}
+	public void EndEntry() => NativeMethods.Focus(false, _view.IsPasswordBox, _view.TextBox?.Text);
 
-	public void UpdateSize()
-	{
-		if (WarnOnNullView())
-		{
-			return;
-		}
-
-		NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
-	}
+	public void UpdateSize() => NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
 
 	public void UpdatePosition()
 	{
-		if (WarnOnNullView())
-		{
-			return;
-		}
-
 		var p = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
 		NativeMethods.UpdatePosition(p.X, p.Y);
 	}
@@ -85,13 +46,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		UpdatePosition();
 	}
 
-	public void SetText(string text)
-	{
-		if (_view is not null)
-		{
-			NativeMethods.SetText(text);
-		}
-	}
+	public void SetText(string text) => NativeMethods.SetText(text);
 
 	// Since we don't actually use the <input /> visually, do we don't need to take care of any of the visual aspects
 	public void UpdateNativeView() { }

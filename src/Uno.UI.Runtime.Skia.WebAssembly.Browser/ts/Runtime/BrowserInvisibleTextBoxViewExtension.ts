@@ -62,12 +62,16 @@
 			} else {
 				// reset focus
 				(document.activeElement as HTMLElement)?.blur();
-				BrowserInvisibleTextBoxViewExtension.inputElement.remove();
+				BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 			}
 		}
 
 		public static setText(text: string) {
-			BrowserInvisibleTextBoxViewExtension.inputElement.textContent = text;
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input != null) {
+				// input could be null beccause we could call setText without focusing first
+				input.textContent = text;
+			}
 		}
 
 		public static updateSize(width: number, height: number) {

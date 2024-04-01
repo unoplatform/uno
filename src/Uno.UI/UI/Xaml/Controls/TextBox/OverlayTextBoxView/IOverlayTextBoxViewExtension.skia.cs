@@ -7,7 +7,7 @@ internal interface IOverlayTextBoxViewExtension
 {
 	bool IsOverlayLayerInitialized(XamlRoot xamlRoot);
 
-	void StartEntry(bool isPasswordBox, TextBoxView view);
+	void StartEntry();
 
 	void EndEntry();
 
