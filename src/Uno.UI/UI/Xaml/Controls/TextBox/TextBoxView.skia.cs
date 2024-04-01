@@ -8,6 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -15,13 +16,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
+		private readonly ManagedWeakReference _textBox;
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 		public TextBoxView(TextBox textBox)
 		{
-			TextBox = textBox;
+			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
 			_isPasswordBox = textBox is PasswordBox;
 
 			DisplayBlock = new TextBlock();
@@ -43,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
-		public TextBox? TextBox { get; private set; }
+		public TextBox? TextBox => !_textBox.IsDisposed ? _textBox.Target as TextBox : null;
 
 		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
 
