@@ -13,10 +13,6 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
 	{
 		_view = view;
-	}
-
-	static BrowserInvisibleTextBoxViewExtension()
-	{
 		NativeMethods.Initialize();
 	}
 
@@ -32,7 +28,11 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	// The "overlay layer" is the DOM, which is always present.
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
-	public void StartEntry() => NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text);
+	public void StartEntry()
+	{
+		NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text);
+		NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0);
+	}
 
 	public void EndEntry() => NativeMethods.Focus(false, _view.IsPasswordBox, _view.TextBox?.Text);
 

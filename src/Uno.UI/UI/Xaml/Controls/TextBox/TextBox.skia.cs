@@ -334,11 +334,12 @@ public partial class TextBox
 			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
 		_selection = (start, length);
-		if (!_isSkiaTextBox)
-		{
-			TextBoxView?.Select(start, length);
-		}
-		else
+
+		// Even when using Skia TextBox, we may need to call Select,
+		// which will update the native input in case of Wasm Skia for example.
+		TextBoxView?.Select(start, length);
+
+		if (_isSkiaTextBox)
 		{
 			_timer.Stop();
 			_showCaret = true;

@@ -28,7 +28,7 @@
 			input.style.whiteSpace = "pre-wrap";
 			input.style.position = "absolute";
 			input.style.padding = "0px";
-			input.style.opacity = "1";
+			input.style.opacity = "0";
 			input.style.color = "transparent";
 			input.style.background = "transparent";
 			input.style.caretColor = "transparent";
@@ -53,6 +53,11 @@
 
 		public static focus(focused: boolean, isPassword: boolean, text: string) {
 			if (focused) {
+				// NOTE: We can get focused as true while we have inputElement.
+				// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
+				// For such case, we do call StartEntry twice without any EndEntry in between.
+				// So, cleanup the existing inputElement and create a new one.
+				BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 				this.createInput(isPassword, text);
 
 				// It's necessary to actually focus the native input, not just make it visible. This is particularly
