@@ -85,5 +85,10 @@
 			input.style.top = `${Math.round(y)}px`;
 			input.style.left = `${Math.round(x)}px`;
 		}
+
+		public static updateSelection(start: number, length: number) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			input.setSelectionRange(start, start + length);
+		}
 	}
 }

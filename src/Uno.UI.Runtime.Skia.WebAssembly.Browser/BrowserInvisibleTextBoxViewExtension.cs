@@ -48,10 +48,11 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void SetText(string text) => NativeMethods.SetText(text);
 
+	public void Select(int start, int length) => NativeMethods.UpdateSelection(start, length);
+
 	// Since we don't actually use the <input /> visually, do we don't need to take care of any of the visual aspects
 	public void UpdateNativeView() { }
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
-	public void Select(int start, int length) { }
 	public void UpdateProperties() { }
 	public int GetSelectionStart() => 0;
 	public int GetSelectionLength() => 0;
@@ -74,5 +75,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.updatePosition")]
 		public static partial void UpdatePosition(double x, double y);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.updateSelection")]
+		public static partial void UpdateSelection(int start, int length);
 	}
 }
