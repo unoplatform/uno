@@ -67,7 +67,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
-			this.semanticsRoot.style.filter = "opacity(0%)";
+			this.semanticsRoot.style.filter = "opacity(30%)"; // TODO: This should be 0%. Using 30% for debugging puprposes.
 			this.semanticsRoot.style.pointerEvents = "none";
 			this.containerElement.appendChild(this.semanticsRoot);
 
@@ -97,7 +97,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.announceA11y("Accessibility enabled successfullly.");
 		}
 
-		public static focusSemanticElement(handle: Number) {
+		public static focusSemanticElement(handle: number) {
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
 				console.log("Focus!!" + element);
@@ -105,7 +105,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		private static createAccessibilityElement(x: Number, y: Number, width: Number, height: Number, handle: Number, isFocusable: boolean) {
+		private static createAccessibilityElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
 			let element = document.createElement("div");
 			element.style.position = "absolute";
 			element.tabIndex = isFocusable ? 0 : -1;
@@ -114,11 +114,14 @@ namespace Uno.UI.Runtime.Skia {
 			element.style.top = `${y}px`;
 			element.style.width = `${width}px`;
 			element.style.height = `${height}px`;
+			element.style.boxShadow = "inset 0px 0px 5px 0px red";
+			//element.style.border = "1px red solid"; // FOR DEBUGGING ONLY. IT SHOULD BE REMOVED.
+			//element.style.boxSizing = "border-box";
 			element.id = `uno-semantics-${handle}`;
 			return element;
 		}
 
-		public static addRootElementToSemanticsRoot(owner: any, rootHandle: Number, width: Number, height: Number, x: Number, y: Number, isFocusable: boolean): void {
+		public static addRootElementToSemanticsRoot(owner: any, rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
 			let element = this.createAccessibilityElement(x, y, width, height, rootHandle, isFocusable);
 			let semanticsRoot = WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot;
 
@@ -131,8 +134,14 @@ namespace Uno.UI.Runtime.Skia {
 			semanticsRoot.appendChild(element);
 		}
 
-		public static addSemanticElement(owner: any, parentHandle: Number, handle: Number, width: Number, height: Number, x: Number, y: Number, role: string, automationId: string, isFocusable: boolean, ariaChecked: string): void {
+		public static addSemanticElement(owner: any, parentHandle: number, handle: number, index: number, width: number, height: number, x: number, y: number, role: string, automationId: string, isFocusable: boolean, ariaChecked: string): boolean {
+			const parent = document.getElementById(`uno-semantics-${parentHandle}`);
+			if (!parent) {
+				return false;
+			}
+
 			let element = this.createAccessibilityElement(x, y, width, height, handle, isFocusable);
+
 			if (role) {
 				element.setAttribute("role", role);
 			}
@@ -145,15 +154,37 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute("aria-label", automationId);
 			}
 
-			document.getElementById(`uno-semantics-${parentHandle}`).appendChild(element);
+			if (index != null && index < parent.childElementCount) {
+				parent.insertBefore(element, parent.children[index]);
+			} else {
+				parent.appendChild(element);
+			}
+
+			return true;
 		}
 
-		public static updateAriaLabel(owner: any, handle: Number, automationId: string): void {
+		public static removeSemanticElement(owner: any, parentHandle: number, childHandle: number): void {
+			const parent = document.getElementById(`uno-semantics-${parentHandle}`);
+			if (parent) {
+				const child = document.getElementById(`uno-semantics-${childHandle}`);
+				parent.removeChild(child);
+			}
+		}
+
+		public static updateAriaLabel(owner: any, handle: number, automationId: string): void {
 			document.getElementById(`uno-semantics-${handle}`).setAttribute("aria-label", automationId);
 		}
 
-		public static updateAriaChecked(owner: any, handle: Number, ariaChecked: string): void {
+		public static updateAriaChecked(owner: any, handle: number, ariaChecked: string): void {
 			document.getElementById(`uno-semantics-${handle}`).setAttribute("aria-checked", ariaChecked);
+		}
+
+		public static updateSemanticElementPositioning(owner: any, handle: number, width: number, height: number, x: number, y: number) {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			element.style.left = `${x}px`;
+			element.style.top = `${y}px`;
+			element.style.width = `${width}px`;
+			element.style.height = `${height}px`;
 		}
 
 		private removeLoading() {
