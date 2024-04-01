@@ -94,13 +94,12 @@ namespace Uno.UI.Runtime.Skia {
 		private onEnableA11yClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableA11y);
 			this.managedEnableA11y(this.owner);
-			this.announceA11y("Accessibility enabled successfullly.");
+			this.announceA11y("Accessibility enabled successfully.");
 		}
 
 		public static focusSemanticElement(handle: number) {
 			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
 			if (element) {
-				console.log("Focus!!" + element);
 				element.focus();
 			}
 		}
@@ -108,15 +107,22 @@ namespace Uno.UI.Runtime.Skia {
 		private static createAccessibilityElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
 			let element = document.createElement("div");
 			element.style.position = "absolute";
-			element.tabIndex = isFocusable ? 0 : -1;
-			element.style.pointerEvents = isFocusable ? "all" : "none";
+
+			if (isFocusable) {
+				element.tabIndex = 0;
+				element.style.pointerEvents = "all";
+				element.setAttribute("aria-hidden", "true");
+			} else {
+				element.tabIndex = -1;
+				element.style.pointerEvents = "none";
+				element.removeAttribute("aria-hidden");
+			}
+
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
 			element.style.width = `${width}px`;
 			element.style.height = `${height}px`;
-			element.style.boxShadow = "inset 0px 0px 5px 0px red";
-			//element.style.border = "1px red solid"; // FOR DEBUGGING ONLY. IT SHOULD BE REMOVED.
-			//element.style.boxSizing = "border-box";
+			//element.style.boxShadow = "inset 0px 0px 5px 0px red"; // FOR DEBUGGING ONLY.
 			element.id = `uno-semantics-${handle}`;
 			return element;
 		}
@@ -124,12 +130,6 @@ namespace Uno.UI.Runtime.Skia {
 		public static addRootElementToSemanticsRoot(owner: any, rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
 			let element = this.createAccessibilityElement(x, y, width, height, rootHandle, isFocusable);
 			let semanticsRoot = WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot;
-
-			// For now, we re-create the whole tree every time.
-			// TODO: Optimize this for better perf.
-			if (semanticsRoot.childNodes.length === 1) {
-				semanticsRoot.removeChild(semanticsRoot.childNodes[0]);
-			}
 
 			semanticsRoot.appendChild(element);
 		}
@@ -171,19 +171,22 @@ namespace Uno.UI.Runtime.Skia {
 			const parent = WebAssemblyWindowWrapper.getSemanticElementByHandle(parentHandle);
 			if (parent) {
 				const child = WebAssemblyWindowWrapper.getSemanticElementByHandle(childHandle);
-				if (parent.removeChild(child)) {
-					console.log(`Child ${childHandle} removed from ${parentHandle}.`);
-				} else {
-					console.log(`Failed to remove child ${childHandle} from ${parentHandle}.`);
-				}
+				parent.removeChild(child)
 			}
 		}
 
 		public static updateIsFocusable(owner: any, handle: number, isFocusable: boolean): void {
 			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
 			if (element) {
-				element.tabIndex = isFocusable ? 0 : -1;
-				element.style.pointerEvents = isFocusable ? "all" : "none";
+				if (isFocusable) {
+					element.tabIndex = 0;
+					element.style.pointerEvents = "all";
+					element.setAttribute("aria-hidden", "true");
+				} else {
+					element.tabIndex = -1;
+					element.style.pointerEvents = "none";
+					element.removeAttribute("aria-hidden");
+				}
 			}
 		}
 

@@ -14,7 +14,6 @@
 			if (OperatingSystem.IsBrowser())
 			{
 				var isFocusable = IsFocusable && !IsDelegatingFocusToTemplateChild();
-				Console.WriteLine($"Calling is focusable changed callback of {Visual.Handle} with {isFocusable}");
 				OnIsFocusableChangedCallback?.Invoke(this, isFocusable);
 			}
 		}

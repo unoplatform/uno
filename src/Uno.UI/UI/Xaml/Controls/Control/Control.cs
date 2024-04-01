@@ -572,7 +572,6 @@ namespace Microsoft.UI.Xaml.Controls
 				SetUpdateControlTemplate();
 			}
 
-			Console.WriteLine($"Visibility of {Visual.Handle} changed to {newValue}");
 			OnIsFocusableChanged();
 		}
 
