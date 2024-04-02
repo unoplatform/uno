@@ -77,21 +77,21 @@ This warning can be disabled by adding the following to your `.csproj`:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSWarnBrowserNotFirst>true</UnoDisableVSWarnBrowserNotFirst>
+  <UnoDisableVSWarnBrowserIsFirst>true</UnoDisableVSWarnBrowserIsFirst>
 </PropertyGroup>
 ```
 
-### UNOB00011: The desktop TargetFramework must be placed first in the TargetFrameworks property
+### UNOB00011: The desktop TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022, an issue prevents WSL debugging from working properly when the `net8.0-desktop` TargetFramework is not placed first in the `TargetFrameworks` property.
+In Visual Studio 2022, an issue prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
+Make sure that `net8.0-desktop` is not first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSWarnDesktopNotFirst>true</UnoDisableVSWarnDesktopNotFirst>
+  <UnoDisableVSWarnDesktopIsFirst>true</UnoDisableVSWarnDesktopIsFirst>
 </PropertyGroup>
 ```
 
