@@ -416,38 +416,7 @@
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'==''">
-		<PropertyGroup>
-			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>
-			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
-			<ArtifactsPlatformName>WinUI</ArtifactsPlatformName>
-			<ArtifactsPlatformName Condition="'$(UNO_UWP_BUILD)'=='true'">UWP</ArtifactsPlatformName>
-		</PropertyGroup>
-
-		<ItemGroup>
-			<_diffPackage Include="$(PackageNamePrefix)" Other="$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Foldable.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Maps.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Svg" Other="$(PackageNamePrefix).Svg.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Skia.Gtk" Other="$(PackageNamePrefix).Skia.Gtk.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Gtk" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Gtk.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Skia.Linux.FrameBuffer" Other="$(PackageNamePrefix).Skia.Linux.FrameBuffer.$(GITVERSION_SemVer).nupkg" />
-			<!-- <_diffPackage Include="$(PackageNamePrefix).Skia.MacOS" Other="$(PackageNamePrefix).Skia.MacOS.$(GITVERSION_SemVer).nupkg" /> -->
-			<_diffPackage Include="$(PackageNamePrefix).Skia.Wpf" Other="$(PackageNamePrefix).Skia.Wpf.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Wpf" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Wpf.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).XamlHost" Other="$(PackageNamePrefix).XamlHost.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).XamlHost.Skia.Wpf" Other="$(PackageNamePrefix).XamlHost.Skia.Wpf.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).WebAssembly" Other="$(PackageNamePrefix).WebAssembly.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.WebAssembly" Other="..\..\..\NugetPackages-Artifacts-wasm-$(ArtifactsPlatformName)\vslatest-wasm\$(PackageNamePrefix).Runtime.WebAssembly.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="Uno.Foundation.Logging" Other="Uno.Foundation.Logging.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="..\..\..\NugetPackages-Artifacts-wasm-$(ArtifactsPlatformName)\vslatest-wasm\Uno.Foundation.Runtime.WebAssembly.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="Uno.UI.Adapter.Microsoft.Extensions.Logging.$(GITVERSION_SemVer).nupkg" />
-		</ItemGroup>
-
-		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.25" IgnoreExitCode="true" />
-		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=%(_diffPackage.Identity) --other=%(_diffPackage.Other) --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.%(_diffPackage.Identity).$(GITVERSION_SemVer).md" />
+		<!-- Disable diff for release branch -->
 	</Target>
 
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
