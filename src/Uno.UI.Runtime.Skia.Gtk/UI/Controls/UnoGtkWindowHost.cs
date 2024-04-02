@@ -63,19 +63,17 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_displayInformation = WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
 		_displayInformation.DpiChanged += OnDpiChanged;
 
-		UpdateWindowSize(_gtkWindow.Allocation.Width, _gtkWindow.Allocation.Height);
-
-		// Subcribing to _area or _gtkWindow should yield similar results, except that
-		// we explicitly set the DefaultSize on the window not the area, so the area
-		// will start out with size 1x1 and then after layouting is finished, will end up
-		// with the correct size. To avoid triggering multiple window size updates, we
-		// specifically choose to subscribe to the _gtkWindow not the _area
-		_gtkWindow.Realized += (s, e) =>
+		// Subcribing to _area or _gtkWindow should yield similar results, except on WSL,
+		// where _gtkWindow.AllocatedHeight is a lot bigger than it actually is for some reason.
+		// Either way, make sure to match the subscription with the size, i.e. either use
+		// _area.Realized/SizeAllocated and _area.AllocatedXX or _gtkWindow.Realized/SizeAllocation
+		// and _gtkWindow.AllocatedXX
+		_area.Realized += (s, e) =>
 		{
-			UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
+			UpdateWindowSize(_area.AllocatedWidth, _area.AllocatedHeight);
 		};
 
-		_gtkWindow.SizeAllocated += (s, e) =>
+		_area.SizeAllocated += (s, e) =>
 		{
 			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
 		};
