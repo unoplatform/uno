@@ -36,7 +36,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<_UnoSdkTargetsDirectory>$([MSBuild]::EnsureTrailingSlash($(_UnoSdkTargetsDirectory)))</_UnoSdkTargetsDirectory>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Import.SolutionConfig.props</CustomAfterDirectoryBuildProps>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.IsPlatform.props</CustomAfterDirectoryBuildProps>
-		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Features.props</CustomAfterDirectoryBuildProps>
 
 		<!-- We do this to make sure that we include Resizetizer by default. Libraries using Uno.Sdk should have this set to true -->
 		<IsPackable Condition=" '$(IsPackable)' == '' ">false</IsPackable>
