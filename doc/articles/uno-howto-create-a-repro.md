@@ -33,10 +33,10 @@ Some steps and questions to answer:
   - Add an event handler to `DataContextChanged` in the code behind to see if and when the `DataContext` changed.
 - Analyze device and app logs for clues about the control's behavior.
   - You may enable [the controls debug logs](https://github.com/unoplatform/uno/blob/master/doc/articles/logging.md), if any.
-  - To validate that logs are enabled and in Debug, those starting with `Windows`, `Microsoft` or `Uno` should be visible in the apps output. If not, make sure to [setup the logging properly](/articles/migrating-from-previous-releases.md).
+  - To validate that logs are enabled and in Debug, those starting with `Windows`, `Microsoft`, or `Uno` should be visible in the app's output. If not, make sure to [setup the logging properly](/articles/migrating-from-previous-releases.md).
   - Logs on iOS may need to have the [OSLog logger](https://github.com/unoplatform/uno.extensions.logging) enabled when running on production devices.
 - Try on different versions of Visual Studio, iOS, Android, Linux, or browsers
-- If available, try the API on Windows (UWP or WinUI) and see if it behaves differently that what Uno Platform is doing
+- If available, try the API on Windows (UWP or WinUI) and see if it behaves differently than what Uno Platform is doing
 - When issues occur, try breaking on all exceptions to check if an exception may be hidden and not reported.
 - Update Uno.WinUI or other dependencies to previous or later versions, using a [bisection technique](https://git-scm.com/docs/git-bisect). Knowing which version of a package introduced an issue can help orienting the investigations.
 

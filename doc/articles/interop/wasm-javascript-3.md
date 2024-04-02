@@ -14,7 +14,7 @@ Let's create an application illustrating how to use this feature.
 
 ### 0. Before starting
 
-📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](/articles/get-started.md).
+📝 To reproduce the code in this article, you must [prepare a development environment using Uno's _Getting Started_ article](/articles/get-started.md).
 
 ### 1. Create the solution in Visual Studio
 
