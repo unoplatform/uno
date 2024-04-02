@@ -96,7 +96,7 @@ internal abstract partial class RootScale
 		return newRootVisualScale;
 	}
 
-	private void SetTestOverride(float scale) => SetScale(scale, ScaleKind.Test);
+	internal void SetTestOverride(float scale) => SetScale(scale, ScaleKind.Test);
 
 	private void SetSystemScale(float scale) => SetScale(scale, ScaleKind.System);
 
@@ -128,7 +128,7 @@ internal abstract partial class RootScale
 		_initialized = true;
 	}
 
-	private void ApplyScale() => ApplyScale(false);
+	internal void ApplyScale() => ApplyScale(false);
 
 	private void ApplyScale(bool scaleChanged)
 	{
