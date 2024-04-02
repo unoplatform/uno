@@ -67,6 +67,34 @@ Alternatively you may disable the Implicit Package References
 </PropertyGroup>
 ```
 
+### UNOB00010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, an issue prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
+
+Make sure to place `net8.0-browserwasm` last in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnBrowserNotFirst>true</UnoDisableVSWarnBrowserNotFirst>
+</PropertyGroup>
+```
+
+### UNOB00011: The desktop TargetFramework must be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, an issue prevents WSL debugging from working properly when the `net8.0-desktop` TargetFramework is not placed first in the `TargetFrameworks` property.
+
+Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnDesktopNotFirst>true</UnoDisableVSWarnDesktopNotFirst>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001

@@ -49,6 +49,19 @@
 				 Text="The browserwasm TargetFramework must not be placed first in the TargetFrameworks property in order for HotReload to work properly. (See https://aka.platform.uno/UNOB0010)" />
 	</Target>
 
+	<Target Name="_UnoVSWarnDesktopNotFirst"
+				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+				Condition="
+				'$(UnoDisableVSWarnDesktopNotFirst)' != 'true'
+				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND $(ActiveDebugProfile.Contains('WSL'))
+				AND $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'desktop'
+				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) != 'desktop'">
+
+		<Warning Code="UNOB0011"
+					Text="The desktop TargetFramework must be placed first in the TargetFrameworks property in order for WSL debugging to work properly. (See https://aka.platform.uno/UNOB0011)" />
+	</Target>
+
 	<!-- Include any additional targets that packages defined by other packages -->
 	<Import Project="$(AfterUnoSdkTargets)" Condition="'$(AfterUnoSdkTargets)' != ''"/>
 
