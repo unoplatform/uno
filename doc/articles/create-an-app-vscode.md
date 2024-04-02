@@ -29,6 +29,9 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 1. In your terminal, navigate to the folder that will contain your new app.
 1. Create a new project by pasting and executing the command that was previously generated in the Live Wizard.
 
+> [!IMPORTANT]
+> Apple targets are automatically disabled under Linux.
+
 Next, open the project using Visual Studio Code:
 
 * In the terminal type the following:
@@ -42,43 +45,43 @@ Next, open the project using Visual Studio Code:
 
 ## Debug the App
 
-Uno Platform provides integrated support for debugging your app on Windows, macOS and Linux.
+Uno Platform provides integrated support for debugging your app on Windows, macOS, and Linux.
 
 ### [**WebAssembly**](#tab/Wasm)
 
-In VS Code
+In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
 1. Set the debugger launch to `Debug (Chrome, WebAssembly)`
 
 ![VS Code UI](Assets/quick-start/vs-code-chrome-debug.png)
 
-In the status bar
+In the status bar :
 
-1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net8.0-browserwasm | Debug`
+1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
+1. Next, click on the target framework to select `net8.0-browserwasm | Debug`
 
 ![status bar](Assets/quick-start/vs-code-browserwasm-project.png)
 
-Finally press `F5` to start the debugging session.
+Finally, press `F5` to start the debugging session.
 
 ### [**Desktop / Skia**](#tab/skia)
 
-In VS Code
+In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
 1. Set the debugger launch to `Uno Platform Mobile` or `Uno Platform Desktop (Debug)`
 
 ![VS Code UI](Assets/quick-start/vs-code-mobile-debug.png)
 
-In the status bar
+In the status bar :
 
-1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
+1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
 1. Next click on the target framework to select `net8.0-desktop | Debug`
 
 ![status bar](Assets/quick-start/vs-code-desktop-project.png)
 
-Finally press `F5` to start the debugging session.
+Finally, press `F5` to start the debugging session.
 
 Note that C# Hot Reload is not available when running with the debugger. In order to use C# Hot Reload, run the app using the following:
 
@@ -98,14 +101,14 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 
 ### [**Android**](#tab/androiddebug)
 
-In VS Code
+In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
 1. Set the debugger launch to `Uno Platform Mobile`
 
 ![VS Code UI](Assets/quick-start/vs-code-mobile-debug.png)
 
-In the status bar
+In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
 1. Next click on the target framework to select `net8.0-android | Debug`
@@ -113,21 +116,21 @@ In the status bar
 
 ![status bar](Assets/quick-start/vs-code-android-project.png)
 
-Finally press `F5` to start the debugging session.
+Finally, press `F5` to start the debugging session.
 
 ### [**iOS**](#tab/iosdebug)
 
 > [!NOTE]
 > Debugging for iOS is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a macOS machine.
 
-In VS Code
+In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
 1. Set the debugger launch to `Uno Platform Mobile`
 
 ![VS Code UI](Assets/quick-start/vs-code-mobile-debug.png)
 
-In the status bar
+In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
 1. Next click on the target framework to select `net8.0-ios | Debug`
@@ -135,7 +138,7 @@ In the status bar
 
 ![status bar](Assets/quick-start/vs-code-ios-project.png)
 
-Finally press `F5` to start the debugging session.
+Finally, press `F5` to start the debugging session.
 
 > [!TIP]
 > When deploying to an iOS device, you may encounter the following error: `errSecInternalComponent`. In such case, you'll need to unlock your keychain from a terminal inside VS Code by running the following command: `security unlock-keychain`
@@ -145,14 +148,14 @@ Finally press `F5` to start the debugging session.
 > [!NOTE]
 > Debugging for Mac Catalyst is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a macOS machine.
 
-In VS Code
+In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
 1. Set the debugger launch to `Uno Platform Mobile`
 
 ![VS Code UI](Assets/quick-start/vs-code-mobile-debug.png)
 
-In the status bar
+In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
 1. Next click on the target framework to select `net8.0-maccatalyst | Debug`
@@ -160,25 +163,25 @@ In the status bar
 
 ![status bar](Assets/quick-start/vs-code-maccatalyst-project.png)
 
-Finally press `F5` to start the debugging session.
+Finally, press `F5` to start the debugging session.
 
 ### [**Windows**](#tab/windowsdebug)
 
 > [!NOTE]
 > Debugging for Windows is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a Windows computer.
 
-In VS Code
+In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
 1. Set the debugger launch to `Uno Platform Mobile`
 
 ![VS Code UI](Assets/quick-start/vs-code-mobile-debug.png)
 
-In the status bar
+In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
 1. Next click on the target framework to select `net8.0-windows10.0.xxxxx | Debug`
-1. The `This Computer` device will be pre-selected. On ARM64-based computers you will have the option to use `This Computer using emulation` to debug `x64` applications
+1. The `This Computer` device will be pre-selected. On ARM64-based computers, you will have the option to use `This Computer using emulation` to debug `x64` applications
 
 ![status bar](Assets/quick-start/vs-code-windows-project.png)
 
