@@ -125,12 +125,25 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// The extent (parallel to scroll direction) of the scroll viewport.
 		/// </summary>
-		private double ViewportExtent => (ScrollOrientation == Orientation.Horizontal
-			// note: the ViewportSize from above does not reflect the actual size of viewport.
-			// The measure/layout value is different than the actual value we need for calculation.
-			? ScrollViewer?.ViewportWidth
-			: ScrollViewer?.ViewportHeight)
-			?? double.MaxValue / 1000;
+		private double ViewportExtent
+		{
+			get
+			{
+				if (ScrollViewer is null)
+				{
+					return double.MaxValue / 1000;
+				}
+
+				return IsHorizontal
+					// note: the ViewportSize from above does not reflect the actual size of viewport.
+					// The measure/layout value is different than the actual value we need for calculation.
+					// However, we need the ViewportSize as a fallback, since the former is not yet assigned during 1st layout phase.
+					? NotZero(ScrollViewer.ViewportWidth, ViewportSize.Width)
+					: NotZero(ScrollViewer.ViewportHeight, ViewportSize.Height);
+
+				double NotZero(double value, double fallback) => value != 0 ? value : fallback;
+			}
+		}
 
 		/// <summary>
 		/// The start of the visible viewport, relative to the start of the panel.

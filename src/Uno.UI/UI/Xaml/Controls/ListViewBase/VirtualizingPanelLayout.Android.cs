@@ -816,7 +816,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			if (FirstVisibleIndex == 0 &&
-				LastVisibleIndex + 1 != ItemViewCount)
+				LastVisibleIndex + 1 != ItemCount)
 			{
 				// If first item is in view, we can set ContentOffset exactly,
 				// unless the entire list is visible (non-virtualized).

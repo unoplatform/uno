@@ -196,6 +196,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
+#if !IS_UNIT_TESTS
 			if (newIndex != -1 && IsInLiveTree)
 			{
 				if (this is ListViewBase lvb)
@@ -209,6 +210,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 				}
 			}
+#endif
 
 			_isUpdatingSelection = false;
 
