@@ -34,12 +34,13 @@ namespace Uno.UI.Runtime.Skia {
 				this.containerElement.id = "uno-root";
 				this.containerElement.style.overflow = "hidden";
 
+				document.body.style.overflow = "hidden";
 				document.body.appendChild(this.containerElement);
 			}
 
 			this.canvasElement = document.createElement("canvas");
 			this.canvasElement.id = "uno-canvas";
-			this.canvasElement.style.position = "absolute";
+			this.canvasElement.style.position = "fixed";
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
@@ -111,11 +112,11 @@ namespace Uno.UI.Runtime.Skia {
 			if (isFocusable) {
 				element.tabIndex = 0;
 				element.style.pointerEvents = "all";
-				element.setAttribute("aria-hidden", "true");
+				element.removeAttribute("aria-hidden");
 			} else {
 				element.tabIndex = -1;
 				element.style.pointerEvents = "none";
-				element.removeAttribute("aria-hidden");
+				element.setAttribute("aria-hidden", "true");
 			}
 
 			element.style.left = `${x}px`;
@@ -181,11 +182,11 @@ namespace Uno.UI.Runtime.Skia {
 				if (isFocusable) {
 					element.tabIndex = 0;
 					element.style.pointerEvents = "all";
-					element.setAttribute("aria-hidden", "true");
+					element.removeAttribute("aria-hidden");
 				} else {
 					element.tabIndex = -1;
 					element.style.pointerEvents = "none";
-					element.removeAttribute("aria-hidden");
+					element.setAttribute("aria-hidden", "true");
 				}
 			}
 		}
