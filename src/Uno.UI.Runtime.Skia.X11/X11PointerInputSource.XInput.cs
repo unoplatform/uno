@@ -90,6 +90,7 @@ internal partial class X11PointerInputSource
 {
 	private readonly Dictionary<int, double> _lastHorizontalTouchpadWheelPosition = new();
 	private readonly Dictionary<int, double> _lastVerticalTouchpadWheelPosition = new();
+	private readonly Dictionary<int, DeviceInfo> _deviceInfoCache = new();
 
 	public unsafe PointerEventArgs CreatePointerEventArgsFromDeviceEvent(XIDeviceEvent data)
 	{
@@ -125,6 +126,8 @@ internal partial class X11PointerInputSource
 			};
 		}
 
+		var info = GetDevicePropertiesFromId(data.sourceid);
+
 		// Touchpad scrolling manifests in a Motion event where the current scrolling "position" is recorded in the
 		// valuator. There is no direct way to get the delta, so we have to record the old position and diff it
 		// with the new position. This also means that the first "tick" will not result in a WheelChanged event,
@@ -133,7 +136,7 @@ internal partial class X11PointerInputSource
 		// Our PointerEventArgs don't support this, so we arbitrarily choose to make diagonal scrolling
 		// result in a vertical scroll.
 		// IMPORTANT: DO NOT FORGET TO RESET POSITIONS ON LEAVE.
-		if (data.evtype is XiEventType.XI_Motion)
+		if (data.evtype is XiEventType.XI_Motion && info is { } info_)
 		{
 			var valuators = data.valuators;
 			var values = valuators.Values;
@@ -142,12 +145,15 @@ internal partial class X11PointerInputSource
 				if (XLib.XIMaskIsSet(valuators.Mask, i))
 				{
 					var (valuator, value) = (i, *values++);
-					if (valuator is 2 or 3)
+					if (valuator == info_.HorizontalValuator || valuator == info_.VerticalValuator)
 					{
-						var dict = valuator == 2 ? _lastHorizontalTouchpadWheelPosition : _lastVerticalTouchpadWheelPosition;
+						isHorizontalMouseWheel = valuator == info_.HorizontalValuator;
+						var (dict, increment) = isHorizontalMouseWheel ?
+							(_lastHorizontalTouchpadWheelPosition, info_.HorizontalIncrement!.Value) :
+							(_lastVerticalTouchpadWheelPosition, info_.VerticalIncrement!.Value);
 						if (dict.TryGetValue(data.sourceid, out var oldValue))
 						{
-							(wheelDelta, isHorizontalMouseWheel) = (oldValue - value, valuator == 2);
+							wheelDelta = (oldValue - value) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta / increment;
 						}
 						dict[data.sourceid] = value;
 					}
@@ -165,12 +171,11 @@ internal partial class X11PointerInputSource
 			IsXButton2Pressed = (mask & (1 << XButton2)) != 0,
 			IsHorizontalMouseWheel = isHorizontalMouseWheel,
 			IsInRange = true,
-			IsTouchPad = IsTouchpad(data.sourceid),
+			IsTouchPad = info is { } && IsTouchpad(info.Value.Properties),
 			MouseWheelDelta = (int)Math.Round(wheelDelta)
 			// TODO: PointerUpdateKind is currently not used for anything, so we can leave it blank
 			// for now, but ideally we should probably be diffing the previous and new button states
-			// and computing an update kind from that. For now, we keep the really nice quality of
-			// keeping the XI2 implementation completely stateless
+			// and computing an update kind from that.
 		};
 
 		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
@@ -213,7 +218,7 @@ internal partial class X11PointerInputSource
 			IsXButton1Pressed = (mask & (1 << XButton1)) != 0,
 			IsXButton2Pressed = (mask & (1 << XButton2)) != 0,
 			IsInRange = true,
-			IsTouchPad = IsTouchpad(data.sourceid),
+			IsTouchPad = GetDevicePropertiesFromId(data.sourceid) is { } info && IsTouchpad(info.Properties),
 			IsHorizontalMouseWheel = false,
 		};
 
@@ -325,6 +330,12 @@ internal partial class X11PointerInputSource
 					}
 				}
 				break;
+			case XiEventType.XI_DeviceChanged:
+				{
+					var data = ev.GenericEventCookie.GetEvent<XIDeviceEvent>();
+					_deviceInfoCache.Remove(data.sourceid);
+					break;
+				}
 			default:
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -338,10 +349,8 @@ internal partial class X11PointerInputSource
 	// the original device is unplugged. For example, if device D1 is assigned device id 1
 	// but is then unplugged, another device D2 can be assigned id 1. This means that we
 	// can't cache the lookups, and instead are forced to make this call every single time :(
-	private bool IsTouchpad(int id)
+	private bool IsTouchpad(IEnumerable<string> props)
 	{
-		var props = GetDevicePropertiesFromId(id);
-
 		// X Input cannot distinguish between trackpads and mice. We do this
 		// by testing for properties that should be available on trackpads.
 		//
@@ -440,8 +449,12 @@ internal partial class X11PointerInputSource
 		return props.Any(p => p is "Synaptics Tap Time" or "libinput Tapping Enabled");
 	}
 
-	private unsafe XIDeviceInfo? GetDeviceInfoFromId(int id)
+	private unsafe DeviceInfo? GetDevicePropertiesFromId(int id)
 	{
+		if (_deviceInfoCache.TryGetValue(id, out var result))
+		{
+			return result;
+		}
 		var display = _host.X11Window.Display;
 		var infos = XLib.XIQueryDevice(display, (int)XiPredefinedDeviceId.XIAllDevices, out var ndevices);
 		using var _ = Disposable.Create(() => XLib.XIFreeDeviceInfo(infos));
@@ -450,35 +463,51 @@ internal partial class X11PointerInputSource
 		{
 			if (infos[i].Deviceid == id)
 			{
-				return infos[i];
+				var info = infos[i];
+
+				IntPtr* props = X11Helper.XIListProperties(_host.X11Window.Display, info.Deviceid, out var nprops);
+				using var _1 = Disposable.Create(() =>
+				{
+					var _ = XLib.XFree((IntPtr)props);
+				});
+				var propsResult = new List<string>();
+				for (var index = 0; index < nprops; index++)
+				{
+					var name = XLib.GetAtomName(_host.X11Window.Display, props[index]);
+					if (name is { })
+					{
+						propsResult.Add(name);
+					}
+				}
+
+				int? horizontalValuator = null;
+				double? horizontalIncrement = null;
+				int? verticalValuator = null;
+				double? verticalIncrement = null;
+				for (var index = 0; index < info.NumClasses; index++)
+				{
+					if (info.Classes[index]->Type == XiDeviceClass.XIScrollClass)
+					{
+						var classInfo = (XIScrollClassInfo*)info.Classes[index];
+						if (classInfo->ScrollType == XiScrollType.Horizontal)
+						{
+							(horizontalValuator, horizontalIncrement) = (classInfo->Number, classInfo->Increment);
+						}
+						else
+						{
+							(verticalValuator, verticalIncrement) = (classInfo->Number, classInfo->Increment);
+						}
+					}
+				}
+
+				var @out = new DeviceInfo(new ImmutableList<string>(propsResult), horizontalValuator, horizontalIncrement, verticalValuator, verticalIncrement);
+				_deviceInfoCache[id] = @out;
+				return @out;
 			}
 		}
 
 		return null;
 	}
 
-	private unsafe ImmutableList<string> GetDevicePropertiesFromId(int id)
-	{
-		if (GetDeviceInfoFromId(id) is not { } info)
-		{
-			return ImmutableList<string>.Empty;
-		}
-
-		IntPtr* props = X11Helper.XIListProperties(_host.X11Window.Display, info.Deviceid, out var nprops);
-		using var _1 = Disposable.Create(() =>
-		{
-			var _ = XLib.XFree((IntPtr)props);
-		});
-		var result = new List<string>();
-		for (var index = 0; index < nprops; index++)
-		{
-			var name = XLib.GetAtomName(_host.X11Window.Display, props[index]);
-			if (name is { })
-			{
-				result.Add(name);
-			}
-		}
-
-		return new ImmutableList<string>(result);
-	}
+	private record struct DeviceInfo(ImmutableList<string> Properties, int? HorizontalValuator, double? HorizontalIncrement, int? VerticalValuator, double? VerticalIncrement);
 }

@@ -98,7 +98,8 @@ internal partial class X11XamlRootHost
 		(1 << (int)XiEventType.XI_ButtonRelease) |
 		(1 << (int)XiEventType.XI_Motion) |
 		(1 << (int)XiEventType.XI_Enter) |
-		(1 << (int)XiEventType.XI_Leave);
+		(1 << (int)XiEventType.XI_Leave) |
+		(1 << (int)XiEventType.XI_DeviceChanged);
 
 	private const int XI2_2Mask =
 		(1 << (int)XiEventType.XI_TouchBegin) |
