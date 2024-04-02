@@ -22,6 +22,7 @@ namespace Microsoft.UI.Xaml
 	{
 		private static readonly TimeSpan _deferralTimeout = TimeSpan.FromSeconds(30); // Random value!
 
+		private readonly InputManager _inputManager;
 		private readonly IDragDropExtension? _extension;
 		private readonly ICoreDropOperationTarget _target;
 		private readonly DragView _view;
@@ -46,10 +47,11 @@ namespace Microsoft.UI.Xaml
 
 		public DragOperation(InputManager inputManager, IDragDropExtension? extension, CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
+			_inputManager = inputManager;
 			_extension = extension;
 			Info = info;
 
-			_target = target ?? new DropUITarget(); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
+			_target = target ?? new DropUITarget(inputManager.ContentRoot.XamlRoot!); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
 			_view = new DragView(info.DragUI as DragUI);
 			_viewHandle = inputManager.OpenDragAndDrop(_view);
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
@@ -66,8 +68,7 @@ namespace Microsoft.UI.Xaml
 
 			var wasOverWindow = _isOverWindow;
 
-			//TODO: Multi-window support #13982
-			_isOverWindow = Window.CurrentSafe?.Bounds.Contains(src.GetPosition(null)) ?? false;
+			_isOverWindow = _inputManager.ContentRoot.XamlRoot?.Bounds.Contains(src.GetPosition(null)) ?? false;
 
 			Update(src); // It's required to do that as soon as possible in order to update the view's location
 
