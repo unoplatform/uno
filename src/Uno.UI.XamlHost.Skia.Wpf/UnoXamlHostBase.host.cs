@@ -10,6 +10,7 @@ using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf;
+using Microsoft.UI.Content;
 
 namespace Uno.UI.XamlHost.Skia.Wpf;
 

@@ -62,6 +62,12 @@ namespace Uno.UI.Samples.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			Assert.IsTrue(IsLoaded, "The control should be loaded before the first measure.");
+			Assert.IsNotNull(XamlRoot, "Child should not be null.");
+#if HAS_UNO
+			Assert.IsNotNull(XamlRoot?.VisualTree.ContentRoot.CompositionContent, "ContentIsland of the ContentRoot should have been set by now.");
+#endif
+
 			if (_initialMeasure && availableSize == default)
 			{
 				_initialMeasure = false;
