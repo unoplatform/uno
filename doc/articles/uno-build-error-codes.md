@@ -120,6 +120,6 @@ Building for the specified target framework is not supported on the current plat
 
 ### UVSC0002
 
-Building WinUI application requires the use of `msbuild` and the extension must be able to find it. This is done by using the `vswhere` utility.
+Building WinUI applications requires the use of `msbuild` and the extension must be able to find it. This is done by using the `vswhere` utility.
 
 Installing the latest stable Visual Studio release should provide both tools.
