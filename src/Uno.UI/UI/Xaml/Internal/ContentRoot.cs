@@ -66,16 +66,8 @@ internal partial class ContentRoot
 	{
 		_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 		Type = type;
-		//TODO Uno: Does not match WinUI exactly, additional logic can be ported later.
-		VisualTree = new VisualTree(coreServices, backgroundColor, rootElement, this);
-		InputManager = new InputManager(this);
-		_contentRootEventListener = new ContentRootEventListener(this);
+
 		FocusManager = new FocusManager(this);
-
-		CompositionTarget = new CompositionTarget(this);
-		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
-		CompositionTarget.Root.CompositionTarget = CompositionTarget;
-
 		switch (type)
 		{
 			case ContentRootType.CoreWindow:
@@ -92,6 +84,15 @@ internal partial class ContentRoot
 			default:
 				throw new InvalidOperationException("Unknown content root type.");
 		}
+
+		//TODO Uno: Does not match WinUI exactly, additional logic can be ported later.
+		VisualTree = new VisualTree(coreServices, backgroundColor, rootElement, this);
+		InputManager = new InputManager(this);
+		_contentRootEventListener = new ContentRootEventListener(this);
+
+		CompositionTarget = new CompositionTarget(this);
+		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
+		CompositionTarget.Root.CompositionTarget = CompositionTarget;
 	}
 
 	internal CompositionTarget CompositionTarget { get; }
