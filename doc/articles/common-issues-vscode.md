@@ -36,5 +36,5 @@ You can report issues directly from VS Code by either:
 - using the Uno logo status bar (see screenshot above); or
 - pressing `F1` and selecting `Uno Platform: Report Issue...`
 
-The form is already pre-filled with some useful information to help diagnosing issues.
+The form is already pre-filled with some useful information to help diagnose issues.
 Follow the comments to complete the report.
