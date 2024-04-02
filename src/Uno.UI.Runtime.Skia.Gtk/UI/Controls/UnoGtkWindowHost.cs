@@ -27,7 +27,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	private DisplayInformation? _displayInformation;
 	private Widget? _area;
 	private IGtkRenderer? _renderer;
-	private bool _firstSizeAllocated;
 
 	public UnoGtkWindowHost(Window gtkWindow, WinUIWindow winUIWindow)
 	{
@@ -79,10 +78,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_gtkWindow.SizeAllocated += (s, e) =>
 		{
 			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
-			if (!_firstSizeAllocated)
-			{
-				_firstSizeAllocated = true;
-			}
 		};
 
 		overlay.Add(_area);
