@@ -7,6 +7,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
@@ -69,7 +70,7 @@ public class Given_FlowDirection
 		Assert.AreEqual(rect1.Height, rect2.Height, delta: 2);
 	}
 
-	private static Rect GetWindowBounds() => TestServices.WindowHelper.XamlRoot.Content.LayoutSlot;
+	private static Rect GetWindowBounds() => LayoutInformation.GetLayoutSlot((FrameworkElement)TestServices.WindowHelper.XamlRoot.Content);
 
 	private static Rect Get100x100RectAt(double x, double y) => new Rect(new Point(x, y), new Size(100, 100));
 	private static Rect Get50x50RectAt(double x, double y) => new Rect(new Point(x, y), new Size(50, 50));

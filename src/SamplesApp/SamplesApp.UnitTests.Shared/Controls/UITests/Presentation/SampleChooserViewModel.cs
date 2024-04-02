@@ -497,7 +497,7 @@ namespace SampleControl.Presentation
 						return;
 					}
 					_ = UnitTestDispatcherCompat
-						.From(Owner.XamlRoot.Content)
+						.From(Owner)
 						.RunAsync(
 						async () =>
 						{
