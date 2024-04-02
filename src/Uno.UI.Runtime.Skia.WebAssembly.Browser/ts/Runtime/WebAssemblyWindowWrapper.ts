@@ -68,7 +68,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
-			this.semanticsRoot.style.filter = "opacity(30%)"; // TODO: This should be 0%. Using 30% for debugging puprposes.
+			this.semanticsRoot.style.filter = "opacity(0%)";
 			this.semanticsRoot.style.pointerEvents = "none";
 			this.containerElement.appendChild(this.semanticsRoot);
 
@@ -105,10 +105,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		private static createAccessibilityElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
-			let element = document.createElement("div");
-			element.style.position = "absolute";
-
+		private static updateElementFocusability(element: HTMLElement, isFocusable: boolean) {
 			if (isFocusable) {
 				element.tabIndex = 0;
 				element.style.pointerEvents = "all";
@@ -116,6 +113,13 @@ namespace Uno.UI.Runtime.Skia {
 				element.removeAttribute("tabIndex");
 				element.style.pointerEvents = "none";
 			}
+		}
+
+		private static createAccessibilityElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
+			let element = document.createElement("div");
+			element.style.position = "absolute";
+
+			WebAssemblyWindowWrapper.updateElementFocusability(element, isFocusable);
 
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
@@ -177,15 +181,7 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateIsFocusable(owner: any, handle: number, isFocusable: boolean): void {
 			const element = WebAssemblyWindowWrapper.getSemanticElementByHandle(handle);
 			if (element) {
-				if (isFocusable) {
-					element.tabIndex = 0;
-					element.style.pointerEvents = "all";
-					element.removeAttribute("aria-hidden");
-				} else {
-					element.tabIndex = -1;
-					element.style.pointerEvents = "none";
-					element.setAttribute("aria-hidden", "true");
-				}
+				WebAssemblyWindowWrapper.updateElementFocusability(element, isFocusable);
 			}
 		}
 
