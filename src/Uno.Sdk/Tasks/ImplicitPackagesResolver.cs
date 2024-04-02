@@ -41,6 +41,11 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 				AddPackage("SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
 			}
 
+			if (TargetRuntime == UnoTarget.Wasm || IsLegacyWasmHead())
+			{
+				AddPackage("Uno.WinUI.WebAssembly", null);
+			}
+
 			AddCorePackagesForExecutable();
 		}
 		else
@@ -103,7 +108,6 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 		}
 		else if (TargetRuntime == UnoTarget.Wasm || IsLegacyWasmHead())
 		{
-			AddPackage("Uno.WinUI.WebAssembly", null);
 			AddPackageForFeature(UnoFeature.MediaElement, "Uno.WinUI.MediaPlayer.WebAssembly", null);
 			AddPackage("Microsoft.Windows.Compatibility", WindowsCompatibilityVersion);
 
