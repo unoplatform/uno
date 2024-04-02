@@ -18,19 +18,11 @@ public class Given_UIElementCollection
 	[DataRow(2, 2)]
 	[DataRow(2, 3)]
 	[DataRow(2, 4)]
-	public async Task When_Move_To_Valid(uint from, uint to)
+	public async Task When_Move_To_Valid(int from, int to)
 	{
-		var panel = new StackPanel();
-		panel.Children.Add(new TextBlock());
-		panel.Children.Add(new TextBlock());
-		panel.Children.Add(new Button());
-		panel.Children.Add(new TextBlock());
-		panel.Children.Add(new TextBlock());
+		var panel = await LoadTestPanelAsync();
 
-		TestServices.WindowHelper.WindowContent = panel;
-		await TestServices.WindowHelper.WaitForLoaded(panel);
-
-		panel.Children.Move(from, to);
+		panel.Children.Move((uint)from, (uint)to);
 
 		Assert.AreEqual(5, panel.Children.Count);
 		for (var i = 0; i < panel.Children.Count; i++)
@@ -51,19 +43,26 @@ public class Given_UIElementCollection
 	[DataRow(10, 10)]
 	[DataRow(2, 5)]
 	[DataRow(5, 2)]
-	public async Task When_Move_To_Invalid(uint from, uint to)
+	public async Task When_Move_To_Invalid(int from, int to)
+	{
+		var panel = await LoadTestPanelAsync();
+
+		var act = () => panel.Children.Move((uint)from, (uint)to);
+		act.Should().Throw<ArgumentOutOfRangeException>();
+	}
+
+	private async Task<StackPanel> LoadTestPanelAsync()
 	{
 		var panel = new StackPanel();
-		panel.Children.Add(new TextBlock());
-		panel.Children.Add(new Button());
-		panel.Children.Add(new TextBlock());
-		panel.Children.Add(new TextBlock());
-		panel.Children.Add(new TextBlock());
+		panel.Children.Add(new TextBlock() { Text = "0" });
+		panel.Children.Add(new TextBlock() { Text = "1" });
+		panel.Children.Add(new Button() { Content = "2" });
+		panel.Children.Add(new TextBlock() { Text = "3" });
+		panel.Children.Add(new TextBlock() { Text = "4" });
 
 		TestServices.WindowHelper.WindowContent = panel;
 		await TestServices.WindowHelper.WaitForLoaded(panel);
 
-		var act = () => panel.Children.Move(from, to);
-		act.Should().Throw<ArgumentOutOfRangeException>();
+		return panel;
 	}
 }
