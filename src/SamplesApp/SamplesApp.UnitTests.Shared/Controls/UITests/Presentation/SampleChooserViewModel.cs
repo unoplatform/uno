@@ -809,7 +809,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task UpdateFavorites(CancellationToken ct, bool getAllSamples = false, List<SampleChooserContent> favoriteSamples = null)
+		private void UpdateFavorites(bool getAllSamples = false, List<SampleChooserContent> favoriteSamples = null)
 		{
 			// If true, load all samples and not just those of a selected category
 			var samples = getAllSamples
@@ -822,7 +822,7 @@ namespace SampleControl.Presentation
 
 			foreach (var sample in samples)
 			{
-				await UpdateFavoriteForSample(ct, sample, favorites.Contains(sample));
+				UpdateFavoriteForSample(sample, favorites.Contains(sample));
 			}
 
 			SampleContents = samples;
@@ -838,7 +838,7 @@ namespace SampleControl.Presentation
 			}
 			else
 			{
-				await UpdateFavoriteForSample(ct, sample, true);
+				UpdateFavoriteForSample(sample, true);
 				favorites.Add(sample);
 			}
 
@@ -846,7 +846,7 @@ namespace SampleControl.Presentation
 
 			FavoriteSamples = favorites;
 
-			await UpdateFavorites(ct);
+			UpdateFavorites();
 		}
 
 		private async Task LoadPreviousTest(CancellationToken ct)
@@ -873,14 +873,10 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
+		private void UpdateFavoriteForSample(SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
-			_ = UnitTestDispatcherCompat
-				.From(Owner.XamlRoot.Content)
-				.RunAsync(() => sample.IsFavorite = isFavorite);
-
-			await Task.Yield();
+			sample.IsFavorite = isFavorite;
 		}
 
 		/// <summary>
@@ -896,7 +892,7 @@ namespace SampleControl.Presentation
 				var favoriteSamples = await GetFile(SampleChooserFavoriteConstant, () => new List<SampleChooserContent>());
 
 				// Update the Sample List to set the IsFavorite to True
-				await UpdateFavorites(ct, getAllSamples, favoriteSamples);
+				UpdateFavorites(getAllSamples, favoriteSamples);
 
 				return favoriteSamples;
 			}
