@@ -742,11 +742,19 @@ namespace Microsoft.UI.Xaml
 		{
 			if (args is KeyRoutedEventArgs keyArgs)
 			{
-				if (routedEvent == KeyDownEvent || routedEvent == PreviewKeyDownEvent)
+				if (routedEvent == KeyDownEvent
+#if __WASM__ || __SKIA__
+					|| routedEvent == PreviewKeyDownEvent
+#endif
+					)
 				{
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
 				}
-				else if (routedEvent == KeyUpEvent || routedEvent == PreviewKeyUpEvent)
+				else if (routedEvent == KeyUpEvent
+#if __WASM__ || __SKIA__
+					|| routedEvent == PreviewKeyUpEvent
+#endif
+					)
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}
