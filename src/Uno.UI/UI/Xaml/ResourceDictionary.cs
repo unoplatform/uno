@@ -201,11 +201,7 @@ namespace Microsoft.UI.Xaml
 			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem) =>
-			TryGetValue(resourceKey, ResourceKey.Empty, out value, shouldCheckSystem);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool TryGetValue(in ResourceKey resourceKey, ResourceKey activeTheme, out object value, bool shouldCheckSystem)
+		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem)
 		{
 			if (_values.TryGetValue(resourceKey, out value))
 			{
@@ -226,12 +222,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (activeTheme.IsEmpty)
-			{
-				activeTheme = Themes.Active;
-			}
-
-			if (GetFromTheme(resourceKey, activeTheme, out value))
+			if (GetFromTheme(resourceKey, GetActiveThemeDictionary(Themes.Active), out value))
 			{
 				return true;
 			}
@@ -434,25 +425,23 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		private bool GetFromTheme(in ResourceKey resourceKey, in ResourceKey activeTheme, out object value)
+		private bool GetFromTheme(in ResourceKey resourceKey, ResourceDictionary activeThemeDictionary, out object value)
 		{
-			var dict = GetActiveThemeDictionary(activeTheme);
-
-			if (dict != null && dict.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+			if (activeThemeDictionary != null && activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				return true;
 			}
 
-			return GetFromThemeMerged(resourceKey, activeTheme, out value);
+			return GetFromThemeMerged(resourceKey, activeThemeDictionary, out value);
 		}
 
-		private bool GetFromThemeMerged(in ResourceKey resourceKey, in ResourceKey activeTheme, out object value)
+		private bool GetFromThemeMerged(in ResourceKey resourceKey, ResourceDictionary activeThemeDictionary, out object value)
 		{
 			var count = _mergedDictionaries.Count;
 
 			for (int i = count - 1; i >= 0; i--)
 			{
-				if (_mergedDictionaries[i].GetFromTheme(resourceKey, activeTheme, out value))
+				if (_mergedDictionaries[i].GetFromTheme(resourceKey, activeThemeDictionary, out value))
 				{
 					return true;
 				}
