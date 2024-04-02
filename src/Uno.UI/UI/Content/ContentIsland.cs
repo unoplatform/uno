@@ -11,7 +11,10 @@ namespace Microsoft.UI.Content;
 /// <summary>
 /// A self-contained piece of content with independent input, output, layout, and accessibility that is connected to a parent ContentSite.
 /// </summary>
-public partial class ContentIsland : IDisposable, IClosableNotifier, ICompositionSupportsSystemBackdrop
+public partial class ContentIsland
+#if HAS_UNO_WINUI // These interfaces are not currently implemented and the Generated partial does not exist in UWP build.
+	: IDisposable, IClosableNotifier, ICompositionSupportsSystemBackdrop
+#endif
 {
 	private readonly INativeWindowWrapper _nativeWindowWrapper;
 
@@ -43,8 +46,5 @@ public partial class ContentIsland : IDisposable, IClosableNotifier, ICompositio
 	public event TypedEventHandler<ContentIsland, ContentIslandAutomationProviderRequestedEventArgs> AutomationProviderRequested;
 #pragma warning restore CS0067
 
-	internal void RaiseStateChanged(ContentIslandStateChangedEventArgs stateChangedEventArgs)
-	{
-		StateChanged?.Invoke(this, stateChangedEventArgs);
-	}
+	internal void RaiseStateChanged(ContentIslandStateChangedEventArgs stateChangedEventArgs) => StateChanged?.Invoke(this, stateChangedEventArgs);
 }

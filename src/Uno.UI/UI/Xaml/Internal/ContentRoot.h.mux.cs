@@ -12,7 +12,7 @@ partial class ContentRoot
 		IsVisible,
 		Content
 	};
-	
+
 	internal ContentIsland CompositionContent => _compositionContent;
 
 	internal void AddPendingXamlRootChangedEvent(ContentRoot.ChangeType _/*ignored for now*/) => _hasPendingChangedEvent = true;
