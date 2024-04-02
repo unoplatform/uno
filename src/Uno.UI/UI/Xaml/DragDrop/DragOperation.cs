@@ -167,7 +167,7 @@ namespace Microsoft.UI.Xaml
 
 			// When the pointer goes out of the window, we hide our internal control and,
 			// if supported by the OS, we request a Drag and Drop operation with the native UI.
-			_view.Hide();
+			_viewHandle.Dispose();
 			if (!_hasRequestedNativeDrag)
 			{
 				_extension?.StartNativeDrag(Info);
