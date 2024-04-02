@@ -73,8 +73,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Note: the timing of XamlRootMap.Register is very fragile. It needs to be early enough
 		// so things like UpdateWindowPropertiesFromPackage can read the DPI, but also late enough so that
 		// the X11Window is "initialized".
-		X11Manager.XamlRootMap.Register(xamlRoot, this);
 		_windowToHost[winUIWindow] = this;
+		X11Manager.XamlRootMap.Register(xamlRoot, this);
 
 		Closed.ContinueWith(_ =>
 		{
