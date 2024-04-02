@@ -23,6 +23,7 @@ internal partial class X11XamlRootHost
 	private Thread? _eventsThread;
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
+	private X11DragDropExtension? _dragDrop;
 	private X11DisplayInformationExtension? _displayInformationExtension;
 
 	private void InitializeX11EventsThread()
@@ -52,6 +53,15 @@ internal partial class X11XamlRootHost
 			throw new InvalidOperationException($"{nameof(X11KeyboardInputSource)} is set twice.");
 		}
 		_keyboardSource = keyboardSource;
+	}
+
+	public void SetDragDropExtension(X11DragDropExtension dragDrop)
+	{
+		if (_dragDrop is not null)
+		{
+			throw new InvalidOperationException($"{nameof(X11DragDropExtension)} is set twice.");
+		}
+		_dragDrop = dragDrop;
 	}
 
 	public void SetDisplayInformationExtension(X11DisplayInformationExtension extension)
@@ -133,15 +143,21 @@ internal partial class X11XamlRootHost
 				switch (@event.type)
 				{
 					case XEventName.ClientMessage:
-						// no locking needed, WM_DELETE_WINDOW is already cached
-						IntPtr deleteWindow = X11Helper.GetAtom(X11Window.Display, X11Helper.WM_DELETE_WINDOW);
-						if (@event.ClientMessageEvent.ptr1 == deleteWindow)
+						if (@event.ClientMessageEvent.ptr1 == X11Helper.GetAtom(X11Window.Display, X11Helper.WM_DELETE_WINDOW))
 						{
 							// This happens when we click the titlebar X, not like xkill,
 							// which, according to the source code, just calls XKillClient
 							// https://gitlab.freedesktop.org/xorg/app/xkill/-/blob/a5f704e4cd30f03859f66bafd609a75aae27cc8c/xkill.c#L234
 							// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
 							QueueAction(this, _closingCallback);
+						}
+						else if (@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndEnter) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndPosition) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndPosition) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndLeave) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndDrop))
+						{
+							QueueAction(this, () => _dragDrop?.ProcessXdndMessage(@event.ClientMessageEvent));
 						}
 						break;
 					case XEventName.ConfigureNotify:
