@@ -123,22 +123,20 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
-			_ = UnitTestDispatcherCompat
-				.From(SamplesApp.App.MainWindow.Content)
-				.RunAsync(
-				async () =>
-				{
-					// Initialize favorites and recents list as soon as possible.
-					if (FavoriteSamples == null || !FavoriteSamples.Any())
+			_ = _dispatcher.RunAsync(
+					async () =>
 					{
-						FavoriteSamples = await GetFavoriteSamples(CancellationToken.None, true);
+						// Initialize favorites and recents list as soon as possible.
+						if (FavoriteSamples == null || !FavoriteSamples.Any())
+						{
+							FavoriteSamples = await GetFavoriteSamples(CancellationToken.None, true);
+						}
+						if (RecentSamples == null || !RecentSamples.Any())
+						{
+							RecentSamples = await GetRecentSamples(CancellationToken.None);
+						}
 					}
-					if (RecentSamples == null || !RecentSamples.Any())
-					{
-						RecentSamples = await GetRecentSamples(CancellationToken.None);
-					}
-				}
-			);
+				);
 		}
 
 		public event EventHandler SampleChanging;
@@ -519,7 +517,7 @@ namespace SampleControl.Presentation
 						return;
 					}
 					_ = UnitTestDispatcherCompat
-						.From(SamplesApp.App.MainWindow.Content)
+						.From(Owner)
 						.RunAsync(
 						async () =>
 						{
@@ -879,7 +877,7 @@ namespace SampleControl.Presentation
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
 			_ = UnitTestDispatcherCompat
-				.From(SamplesApp.App.MainWindow.Content)
+				.From(Owner.XamlRoot.Content)
 				.RunAsync(() => sample.IsFavorite = isFavorite);
 
 			await Task.Yield();
@@ -1217,7 +1215,7 @@ namespace SampleControl.Presentation
 #if __WASM__
 			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
 #else
-			var element = SamplesApp.App.MainWindow.Content;
+			var element = Owner.XamlRoot.Content;
 
 			try
 			{

@@ -77,17 +77,17 @@ namespace Windows.Graphics.Display
 		{
 			lock (_windowIdMapLock)
 			{
-				if (!_windowIdMap.TryGetValue(windowId, out var appView))
+				if (!_windowIdMap.TryGetValue(windowId, out var displayInformation))
 				{
-					appView = new(
+					displayInformation = new(
 #if !ANDROID
 						windowId
 #endif
 					);
-					_windowIdMap[windowId] = appView;
+					_windowIdMap[windowId] = displayInformation;
 				}
 
-				return appView;
+				return displayInformation;
 			}
 		}
 
