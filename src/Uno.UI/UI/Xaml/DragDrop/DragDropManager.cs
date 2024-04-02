@@ -36,6 +36,8 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+		internal ContentRoot ContentRoot => _inputManager.ContentRoot;
+
 		/// <inheritdoc />
 		public bool AreConcurrentOperationsEnabled { get; set; }
 

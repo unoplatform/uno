@@ -775,7 +775,7 @@ namespace Microsoft.UI.Xaml
 				asyncResult.SetResult(result);
 			});
 
-			CoreDragDropManager.GetForCurrentView()!.DragStarted(dragInfo);
+			XamlRoot.GetCoreDragDropManager(XamlRoot).DragStarted(dragInfo);
 
 			var result = await asyncResult.Task;
 
