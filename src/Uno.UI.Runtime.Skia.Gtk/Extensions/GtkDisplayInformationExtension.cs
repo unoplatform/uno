@@ -106,20 +106,5 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 		_displayInformation.NotifyDpiChanged();
 	}
 
-	private float GetNativeDpi()
-	{
-		var dpi = _dpiHelper.GetNativeDpi();
-
-		if (GtkHost.Current?.RenderSurfaceType == RenderSurfaceType.Software)
-		{
-			// Software rendering is not affected by fractional DPI.
-			return dpi;
-		}
-
-		// We need to make sure that in case of fractional DPI, we use the nearest whole DPI instead,
-		// otherwise we get GuardBand related rendering issues.
-		var fractionalDpi = dpi / DisplayInformation.BaseDpi;
-		var wholeDpi = Math.Max(1.0f, float.Floor(fractionalDpi));
-		return wholeDpi * DisplayInformation.BaseDpi;
-	}
+	private float GetNativeDpi() => _dpiHelper.GetNativeDpi();
 }
