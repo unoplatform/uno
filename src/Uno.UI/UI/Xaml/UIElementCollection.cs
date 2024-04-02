@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Collections;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -157,6 +157,16 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="newIndex">The zero-based index specifying the new location of the item.</param>
 		public void Move(uint oldIndex, uint newIndex)
 		{
+			if (oldIndex >= Count)
+			{
+				throw new ArgumentOutOfRangeException(nameof(oldIndex));
+			}
+
+			if (newIndex >= Count)
+			{
+				throw new ArgumentOutOfRangeException(nameof(newIndex));
+			}
+
 			if (oldIndex == newIndex)
 			{
 				return;
