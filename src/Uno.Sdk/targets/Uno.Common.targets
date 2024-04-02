@@ -60,6 +60,8 @@
 		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
 	</PropertyGroup>
 
+	<Import Project="Uno.Features.targets" />
+
 	<Import Project="Uno.Implicit.Namespaces.targets"
 		Condition=" $(DisableImplicitUnoNamespaces) != 'true' " />
 
