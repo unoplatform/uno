@@ -63,7 +63,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_displayInformation = WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
 		_displayInformation.DpiChanged += OnDpiChanged;
 
-		// Subcribing to _area or _gtkWindow should yield similar results, except on WSL,
+		// Subscribing to _area or _gtkWindow should yield similar results, except on WSL,
 		// where _gtkWindow.AllocatedHeight is a lot bigger than it actually is for some reason.
 		// Either way, make sure to match the subscription with the size, i.e. either use
 		// _area.Realized/SizeAllocated and _area.AllocatedXX or _gtkWindow.Realized/SizeAllocation
