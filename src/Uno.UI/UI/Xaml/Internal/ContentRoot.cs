@@ -80,6 +80,7 @@ internal partial class ContentRoot
 			case ContentRootType.XamlIslandRoot:
 				FocusAdapter = new FocusManagerXamlIslandAdapter(this);
 				FocusManager.SetFocusObserver(new FocusObserver(this));
+				XamlIslandRoot = (XamlIsland)rootElement!;
 				break;
 			default:
 				throw new InvalidOperationException("Unknown content root type.");
