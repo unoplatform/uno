@@ -155,7 +155,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public int Mode;
 	};
 
-/* new in XI 2.1 */
+	/* new in XI 2.1 */
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct XIScrollClassInfo
 	{
