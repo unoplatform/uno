@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.RoutedEventTests
 {
@@ -295,6 +296,47 @@ namespace Uno.UI.Tests.RoutedEventTests
 			// Here the "platform" is eating the native bubbling event, so no handlers should receive it.
 
 			events.Should().HaveCount(0);
+		}
+
+		[TestMethod]
+		public void When_SubscribingUsingAddHandler_WithHandlesToo_And_BubblingInNativeCode_SetToBubbleInManaged_EatenByPlatform()
+		{
+			var events = new List<(object sender, TappedRoutedEventArgs args)>();
+
+			var child2 = new Border
+			{
+				Name = "child2"
+			};
+			var child1 = new Border
+			{
+				Child = child2,
+				Name = "child1"
+			};
+			var root = new Border
+			{
+				Child = child1,
+				Name = "root",
+				EventsBubblingInManagedCode = RoutedEventFlag.Tapped
+			};
+
+			void OnTapped(object snd, TappedRoutedEventArgs evt)
+			{
+				events.Add((snd, evt));
+				evt.Handled = true;
+			}
+
+			root.AddHandler(UIElement.TappedEvent, (TappedEventHandler)OnTapped, true);
+			child1.AddHandler(UIElement.TappedEvent, (TappedEventHandler)OnTapped, true);
+
+			root.Measure(new Size(1, 1));
+
+			var evt1 = new TappedRoutedEventArgs()
+			{
+				CanBubbleNatively = true
+			};
+			child2.RaiseEvent(UIElement.TappedEvent, evt1).Should().BeTrue();
+
+			events.Should().HaveCount(2); // bubbling in managed code
 		}
 	}
 }
