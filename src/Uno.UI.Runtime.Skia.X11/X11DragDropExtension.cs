@@ -268,8 +268,8 @@ internal class X11DragDropExtension : IDragDropExtension
 	public void StartNativeDrag(CoreDragInfo info) => throw new System.NotImplementedException();
 
 	private class DragEventSource(int x, int y) : IDragEventSource
-    {
-    	private static long _nextFrameId;
+	{
+		private static long _nextFrameId;
 		private readonly Point _location = new Point(x, y);
 
 		public long Id => _fakePointerId;
@@ -279,25 +279,25 @@ internal class X11DragDropExtension : IDragDropExtension
 		/// <inheritdoc />
 		public (Point location, DragDropModifiers modifier) GetState() => (_location, DragDropModifiers.None);
 
-    	/// <inheritdoc />
-    	public Point GetPosition(object? relativeTo)
-    	{
+		/// <inheritdoc />
+		public Point GetPosition(object? relativeTo)
+		{
 			if (relativeTo is null)
 			{
 				return _location;
 			}
 
-    		if (relativeTo is UIElement elt)
-    		{
-    			var eltToRoot = UIElement.GetTransform(elt, null);
-    			var rootToElt = eltToRoot.Inverse();
+			if (relativeTo is UIElement elt)
+			{
+				var eltToRoot = UIElement.GetTransform(elt, null);
+				var rootToElt = eltToRoot.Inverse();
 
-    			return rootToElt.Transform(_location);
-    		}
+				return rootToElt.Transform(_location);
+			}
 
-    		throw new InvalidOperationException("The relative to must be a UIElement.");
-    	}
-    }
+			throw new InvalidOperationException("The relative to must be a UIElement.");
+		}
+	}
 
 	// From the spec: "If (the target window) retrieved the data, it should cache it so it does not need to be retrieved again when the actual drop occurs.
 	// XdndEnter doesn't provide pointer coords, so we fire DragEntered with the first XdndPosition that comes after XdndEnter
