@@ -112,11 +112,9 @@ namespace Uno.UI.Runtime.Skia {
 			if (isFocusable) {
 				element.tabIndex = 0;
 				element.style.pointerEvents = "all";
-				element.removeAttribute("aria-hidden");
 			} else {
-				element.tabIndex = -1;
+				element.removeAttribute("tabIndex");
 				element.style.pointerEvents = "none";
-				element.setAttribute("aria-hidden", "true");
 			}
 
 			element.style.left = `${x}px`;
