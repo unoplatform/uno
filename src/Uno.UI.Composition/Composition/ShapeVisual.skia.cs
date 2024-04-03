@@ -74,10 +74,7 @@ public partial class ShapeVisual
 			}
 			else
 			{
-				var shape = new SKPath();
-				shape.AddRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
-				shape.Transform(transform);
-				parentSession.Canvas.ClipPath(shape, antialias: true);
+				parentSession.Canvas.ClipRect(transform.MapRect(viewBox.GetRect()), antialias: true);
 			}
 		}
 
