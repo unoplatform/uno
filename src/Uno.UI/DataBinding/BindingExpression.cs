@@ -747,7 +747,12 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				_IsCurrentlyPushing = true;
 				// Get the source value and place it in the target property
-				var convertedValue = ConvertValue(v);
+
+				// Only call the converted with null if the final segment (i.e. the tail of the chain) is null
+				// In other words, if Path == "Outer.Inner" and Outer is null, don't call the converter.
+				// Only call the converter with null if Outer is not null and Inner is null.
+				// https://github.com/unoplatform/uno/issues/16016
+				var convertedValue = v is { } || _bindingPath.OnlyFinalSegmentNull() ? ConvertValue(v) : DependencyProperty.UnsetValue;
 
 				if (convertedValue == DependencyProperty.UnsetValue)
 				{

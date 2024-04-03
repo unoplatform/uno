@@ -22,7 +22,7 @@ using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
-	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
+	[DebuggerDisplay("Path={_path} DataContext={_dataContextWeakStorage?.Target}")]
 	internal partial class BindingPath : IDisposable, IValueChangedListener, IEquatable<BindingPath>
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
@@ -537,8 +537,18 @@ namespace Uno.UI.DataBinding
 
 			return null;
 		}
-		#endregion
 
+		internal bool OnlyFinalSegmentNull()
+		{
+			var tail = _chain;
+			while (tail?.Value != null)
+			{
+				tail = tail.Next;
+			}
+
+			return tail?.Value is null &&  tail?.Next == null;
+		}
+		#endregion
 	}
 }
 #endif
