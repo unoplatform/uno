@@ -14,191 +14,235 @@ using Microsoft.UI.Xaml.Input;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Xaml.Input.FocusConversionFunctions;
 
-namespace Uno.UI.Xaml.Input
+namespace Uno.UI.Xaml.Input;
+
+internal class FocusObserver
 {
-	internal class FocusObserver
+	private readonly ContentRoot _contentRoot;
+
+	private XamlSourceFocusNavigationRequest? _currentInteraction;
+
+	internal FocusObserver(ContentRoot contentRoot)
 	{
-		private readonly ContentRoot _contentRoot;
+		_contentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
+	}
 
-		private XamlSourceFocusNavigationRequest? _currentInteraction;
+	private Rect GetOriginToComponent(DependencyObject? pOldFocusedElement)
+	{
+		Rect focusedElementBounds = new Rect();
 
-		internal FocusObserver(ContentRoot contentRoot)
+		//Transform the bounding rect of currently focused element to Component's co-ordinate space
+		if (pOldFocusedElement != null)
 		{
-			_contentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
+			if (FocusableHelper.GetIFocusableForDO(pOldFocusedElement) is { } focusable)
+			{
+				//TODO Uno: Implement support for HyperLink focus
+				//DependencyObject depObj = focusable.GetDOForIFocusable();
+				//IFC_RETURN(do_pointer_cast<CTextElement>(depObj).GetContainingFrameworkElement().GetGlobalBounds(&focusedElementBounds, true));
+			}
+			else
+			{
+				UIElement? pUIElement = pOldFocusedElement as UIElement;
+				if (pUIElement != null)
+				{
+					focusedElementBounds = pUIElement.GetGlobalBounds(true);
+				}
+			}
 		}
 
-		private Rect GetOriginToComponent(DependencyObject? pOldFocusedElement)
-		{
-			Rect focusedElementBounds = new Rect();
+		var origin = new Rect();
+		origin.X = focusedElementBounds.Left;
+		origin.Y = focusedElementBounds.Top;
+		origin.Width = focusedElementBounds.Right - focusedElementBounds.Left;
+		origin.Height = focusedElementBounds.Bottom - focusedElementBounds.Top;
 
-			//Transform the bounding rect of currently focused element to Component's co-ordinate space
-			if (pOldFocusedElement != null)
+		return origin;
+	}
+
+	private Rect GetOriginFromInteraction()
+	{
+		var rectRB = new Rect();
+
+		if (_currentInteraction != null)
+		{
+			var origin = _currentInteraction.HintRect;
+
+			rectRB = new Rect(
+				new Point(origin.X, origin.Y),
+				new Point(origin.X + origin.Width, origin.Y + origin.Height));
+		}
+
+		return rectRB;
+	}
+
+	private FocusMovementResult NavigateFocusXY(
+		DependencyObject pComponent,
+		FocusNavigationDirection direction,
+		Rect origin)
+	{
+		Rect rect = origin;
+		XYFocusOptions xyFocusOptions = new XYFocusOptions();
+		xyFocusOptions.FocusHintRectangle = rect;
+
+		// Any value of the manifold is meaning less when Navigating or Departing into or from a component.
+		// The current manifold needs to be updated from the Origin given.
+		xyFocusOptions.UpdateManifoldsFromFocusHintRectangle = true;
+
+		FocusMovement movement = new FocusMovement(xyFocusOptions, direction, pComponent);
+
+		// We dont handle cancellation of a focus request from a host:
+		//   We could support this by calling DepartFocus from the component
+		//   if the component returns result.WasCanceled()
+		//   We choose to not support it.
+		movement.CanCancel = false;
+
+		// Do not allow DepartFocus to be called, CoreWindowsFocusAdapter will handle it.
+		movement.CanDepartFocus = false;
+
+		movement.ShouldCompleteAsyncOperation = true;
+
+		return _contentRoot.FocusManager.FindAndSetNextFocus(movement);
+	}
+
+	private Rect CalculateNewOrigin(FocusNavigationDirection direction, Rect currentOrigin)
+	{
+		var pFocusedElement = _contentRoot.VisualTree.ActiveRootVisual;
+		var windowBounds = GetOriginToComponent(pFocusedElement);
+
+		var newOrigin = currentOrigin;
+		switch (direction)
+		{
+			case FocusNavigationDirection.Left:
+			case FocusNavigationDirection.Right:
+				newOrigin.X = windowBounds.X;
+				newOrigin.Width = windowBounds.Width;
+				break;
+			case FocusNavigationDirection.Up:
+			case FocusNavigationDirection.Down:
+				newOrigin.Y = windowBounds.Y;
+				newOrigin.Height = windowBounds.Height;
+				break;
+		}
+
+		return newOrigin;
+	}
+
+	internal bool ProcessNavigateFocusRequest(XamlSourceFocusNavigationRequest focusNavigationRequest)
+	{
+		var pHandled = false;
+
+		UpdateCurrentInteraction(focusNavigationRequest);
+
+		var reason = focusNavigationRequest.Reason;
+
+		DependencyObject? pRoot = null;
+
+		pRoot = _contentRoot.Type switch
+		{
+			ContentRootType.XamlIsland => _contentRoot.VisualTree.RootScrollViewer ?? _contentRoot.VisualTree.ActiveRootVisual,
+			_ => _contentRoot.VisualTree.ActiveRootVisual,
+		};
+
+		FocusNavigationDirection direction = GetFocusNavigationDirectionFromReason(reason);
+
+		if (reason == XamlSourceFocusNavigationReason.First ||
+			reason == XamlSourceFocusNavigationReason.Last)
+		{
+			_contentRoot.InputManager.LastInputDeviceType = GetInputDeviceTypeFromDirection(direction);
+			bool bReverse = (reason == XamlSourceFocusNavigationReason.Last);
+
+			if (pRoot == null)
 			{
-				if (FocusableHelper.GetIFocusableForDO(pOldFocusedElement) is { } focusable)
+				// No content has been loaded, bail out
+				return false;
+			}
+
+			DependencyObject? pCandidateElement = null;
+			if (bReverse)
+			{
+				pCandidateElement = _contentRoot.FocusManager.GetLastFocusableElement(pRoot);
+			}
+			else
+			{
+				pCandidateElement = _contentRoot.FocusManager.GetFirstFocusableElement(pRoot);
+			}
+
+			bool retryWithPopupRoot = (pCandidateElement == null);
+			if (retryWithPopupRoot)
+			{
+				var popupRoot = _contentRoot.VisualTree.PopupRoot;
+				if (popupRoot != null)
 				{
-					//TODO Uno: Implement support for HyperLink focus
-					//DependencyObject depObj = focusable.GetDOForIFocusable();
-					//IFC_RETURN(do_pointer_cast<CTextElement>(depObj).GetContainingFrameworkElement().GetGlobalBounds(&focusedElementBounds, true));
-				}
-				else
-				{
-					UIElement? pUIElement = pOldFocusedElement as UIElement;
-					if (pUIElement != null)
+					if (bReverse)
 					{
-						focusedElementBounds = pUIElement.GetGlobalBounds(true);
+						pCandidateElement = _contentRoot.FocusManager.GetLastFocusableElement(popupRoot);
+					}
+					else
+					{
+						pCandidateElement = _contentRoot.FocusManager.GetFirstFocusableElement(popupRoot);
 					}
 				}
 			}
 
-			var origin = new Rect();
-			origin.X = focusedElementBounds.Left;
-			origin.Y = focusedElementBounds.Top;
-			origin.Width = focusedElementBounds.Right - focusedElementBounds.Left;
-			origin.Height = focusedElementBounds.Bottom - focusedElementBounds.Top;
-
-			return origin;
-		}
-
-		private Rect GetOriginFromInteraction()
-		{
-			var rectRB = new Rect();
-
-			if (_currentInteraction != null)
+			if (pCandidateElement != null)
 			{
-				var origin = _currentInteraction.HintRect;
+				// When we move focus into XAML with tab, we first call ClearFocus to mimic desktop behavior.
+				// On desktop, we call ClearFocus during a tab cycle in CJupiterWindow.AcceleratorKeyActivated, but when
+				// running as a component (e.g. in c-shell) the way XAML loses focus when the user tabs away is different
+				// (we call DepartFocus) and if we call ClearFocus at the same time as we do on desktop, we'll end up
+				// firing the LostFocus for the previously-focused before calling GettingFocus for the newly focused element.
+				// So instead, we call ClearFocus as we tab *in* to XAML content.  This preserves the focus event ordering on
+				// tab cycles.
+				_contentRoot.FocusManager.ClearFocus();
 
-				rectRB = new Rect(
-					new Point(origin.X, origin.Y),
-					new Point(origin.X + origin.Width, origin.Y + origin.Height));
+				FocusMovement movement = new FocusMovement(
+					pCandidateElement,
+					bReverse ? FocusNavigationDirection.Previous : FocusNavigationDirection.Next,
+					FocusState.Keyboard);
+
+				// We dont handle cancellation of a focus request from a host:
+				//   We could support this by calling DepartFocus from the component
+				//   if the component returns result.WasCanceled()
+				//   We choose to not support it.
+				movement.CanCancel = false;
+
+				FocusMovementResult result = _contentRoot.FocusManager.SetFocusedElement(movement);
+				if (result.WasMoved)
+				{
+					pHandled = StopInteraction();
+				}
 			}
-
-			return rectRB;
-		}
-
-		private FocusMovementResult NavigateFocusXY(
-			DependencyObject pComponent,
-			FocusNavigationDirection direction,
-			Rect origin)
-		{
-			Rect rect = origin;
-			XYFocusOptions xyFocusOptions = new XYFocusOptions();
-			xyFocusOptions.FocusHintRectangle = rect;
-
-			// Any value of the manifold is meaning less when Navigating or Departing into or from a component.
-			// The current manifold needs to be updated from the Origin given.
-			xyFocusOptions.UpdateManifoldsFromFocusHintRectangle = true;
-
-			FocusMovement movement = new FocusMovement(xyFocusOptions, direction, pComponent);
-
-			// We dont handle cancellation of a focus request from a host:
-			//   We could support this by calling DepartFocus from the component
-			//   if the component returns result.WasCanceled()
-			//   We choose to not support it.
-			movement.CanCancel = false;
-
-			// Do not allow DepartFocus to be called, CoreWindowsFocusAdapter will handle it.
-			movement.CanDepartFocus = false;
-
-			movement.ShouldCompleteAsyncOperation = true;
-
-			return _contentRoot.FocusManager.FindAndSetNextFocus(movement);
-		}
-
-		private Rect CalculateNewOrigin(FocusNavigationDirection direction, Rect currentOrigin)
-		{
-			var pFocusedElement = _contentRoot.VisualTree.ActiveRootVisual;
-			var windowBounds = GetOriginToComponent(pFocusedElement);
-
-			var newOrigin = currentOrigin;
-			switch (direction)
+			else
 			{
-				case FocusNavigationDirection.Left:
-				case FocusNavigationDirection.Right:
-					newOrigin.X = windowBounds.X;
-					newOrigin.Width = windowBounds.Width;
-					break;
-				case FocusNavigationDirection.Up:
-				case FocusNavigationDirection.Down:
-					newOrigin.Y = windowBounds.Y;
-					newOrigin.Height = windowBounds.Height;
-					break;
+				Guid correlationId = focusNavigationRequest.CorrelationId;
+
+				DepartFocus(direction, correlationId, ref pHandled);
 			}
-
-			return newOrigin;
 		}
-
-		internal bool ProcessNavigateFocusRequest(XamlSourceFocusNavigationRequest focusNavigationRequest)
+		else if (reason == XamlSourceFocusNavigationReason.Restore ||
+				 reason == XamlSourceFocusNavigationReason.Programmatic)
 		{
-			var pHandled = false;
-
-			UpdateCurrentInteraction(focusNavigationRequest);
-
-			var reason = focusNavigationRequest.Reason;
-
-			DependencyObject? pRoot = null;
-
-			pRoot = _contentRoot.Type switch
+			var pFocusedElement = _contentRoot.FocusManager.FocusedElement;
+			if (pFocusedElement != null)
 			{
-				ContentRootType.XamlIsland => _contentRoot.VisualTree.RootScrollViewer ?? _contentRoot.VisualTree.ActiveRootVisual,
-				_ => _contentRoot.VisualTree.ActiveRootVisual,
-			};
-
-			FocusNavigationDirection direction = GetFocusNavigationDirectionFromReason(reason);
-
-			if (reason == XamlSourceFocusNavigationReason.First ||
-				reason == XamlSourceFocusNavigationReason.Last)
+				pHandled = StopInteraction();
+			}
+			else if (pFocusedElement == null && reason == XamlSourceFocusNavigationReason.Programmatic)
 			{
-				_contentRoot.InputManager.LastInputDeviceType = GetInputDeviceTypeFromDirection(direction);
-				bool bReverse = (reason == XamlSourceFocusNavigationReason.Last);
-
 				if (pRoot == null)
 				{
 					// No content has been loaded, bail out
 					return false;
 				}
 
-				DependencyObject? pCandidateElement = null;
-				if (bReverse)
+				var pCandidateElement = _contentRoot.FocusManager.GetFirstFocusableElement(pRoot);
+				if (pCandidateElement == null)
 				{
-					pCandidateElement = _contentRoot.FocusManager.GetLastFocusableElement(pRoot);
+					pCandidateElement = pRoot;
 				}
-				else
-				{
-					pCandidateElement = _contentRoot.FocusManager.GetFirstFocusableElement(pRoot);
-				}
-
-				bool retryWithPopupRoot = (pCandidateElement == null);
-				if (retryWithPopupRoot)
-				{
-					var popupRoot = _contentRoot.VisualTree.PopupRoot;
-					if (popupRoot != null)
-					{
-						if (bReverse)
-						{
-							pCandidateElement = _contentRoot.FocusManager.GetLastFocusableElement(popupRoot);
-						}
-						else
-						{
-							pCandidateElement = _contentRoot.FocusManager.GetFirstFocusableElement(popupRoot);
-						}
-					}
-				}
-
 				if (pCandidateElement != null)
 				{
-					// When we move focus into XAML with tab, we first call ClearFocus to mimic desktop behavior.
-					// On desktop, we call ClearFocus during a tab cycle in CJupiterWindow.AcceleratorKeyActivated, but when
-					// running as a component (e.g. in c-shell) the way XAML loses focus when the user tabs away is different
-					// (we call DepartFocus) and if we call ClearFocus at the same time as we do on desktop, we'll end up
-					// firing the LostFocus for the previously-focused before calling GettingFocus for the newly focused element.
-					// So instead, we call ClearFocus as we tab *in* to XAML content.  This preserves the focus event ordering on
-					// tab cycles.
-					_contentRoot.FocusManager.ClearFocus();
-
-					FocusMovement movement = new FocusMovement(
-						pCandidateElement,
-						bReverse ? FocusNavigationDirection.Previous : FocusNavigationDirection.Next,
-						FocusState.Keyboard);
+					FocusMovement movement = new FocusMovement(pCandidateElement, FocusNavigationDirection.None, FocusState.Programmatic);
 
 					// We dont handle cancellation of a focus request from a host:
 					//   We could support this by calling DepartFocus from the component
@@ -212,160 +256,115 @@ namespace Uno.UI.Xaml.Input
 						pHandled = StopInteraction();
 					}
 				}
-				else
-				{
-					Guid correlationId = focusNavigationRequest.CorrelationId;
-
-					DepartFocus(direction, correlationId, ref pHandled);
-				}
 			}
-			else if (reason == XamlSourceFocusNavigationReason.Restore ||
-					 reason == XamlSourceFocusNavigationReason.Programmatic)
+		}
+		else if (reason == XamlSourceFocusNavigationReason.Left ||
+				 reason == XamlSourceFocusNavigationReason.Right ||
+				 reason == XamlSourceFocusNavigationReason.Up ||
+				 reason == XamlSourceFocusNavigationReason.Down)
+		{
+			if (pRoot == null)
 			{
-				var pFocusedElement = _contentRoot.FocusManager.FocusedElement;
-				if (pFocusedElement != null)
-				{
-					pHandled = StopInteraction();
-				}
-				else if (pFocusedElement == null && reason == XamlSourceFocusNavigationReason.Programmatic)
-				{
-					if (pRoot == null)
-					{
-						// No content has been loaded, bail out
-						return false;
-					}
-
-					var pCandidateElement = _contentRoot.FocusManager.GetFirstFocusableElement(pRoot);
-					if (pCandidateElement == null)
-					{
-						pCandidateElement = pRoot;
-					}
-					if (pCandidateElement != null)
-					{
-						FocusMovement movement = new FocusMovement(pCandidateElement, FocusNavigationDirection.None, FocusState.Programmatic);
-
-						// We dont handle cancellation of a focus request from a host:
-						//   We could support this by calling DepartFocus from the component
-						//   if the component returns result.WasCanceled()
-						//   We choose to not support it.
-						movement.CanCancel = false;
-
-						FocusMovementResult result = _contentRoot.FocusManager.SetFocusedElement(movement);
-						if (result.WasMoved)
-						{
-							pHandled = StopInteraction();
-						}
-					}
-				}
+				// No content has been loaded, bail out
+				return false;
 			}
-			else if (reason == XamlSourceFocusNavigationReason.Left ||
-					 reason == XamlSourceFocusNavigationReason.Right ||
-					 reason == XamlSourceFocusNavigationReason.Up ||
-					 reason == XamlSourceFocusNavigationReason.Down)
+
+			_contentRoot.InputManager.LastInputDeviceType = GetInputDeviceTypeFromDirection(direction);
+
+			Rect rect = GetOriginFromInteraction();
+
+			FocusMovementResult result = NavigateFocusXY(pRoot, direction, rect);
+			//IFC_RETURN(result.GetHResult());
+			if (result.WasMoved)
 			{
-				if (pRoot == null)
-				{
-					// No content has been loaded, bail out
-					return false;
-				}
-
-				_contentRoot.InputManager.LastInputDeviceType = GetInputDeviceTypeFromDirection(direction);
-
-				Rect rect = GetOriginFromInteraction();
-
-				FocusMovementResult result = NavigateFocusXY(pRoot, direction, rect);
-				//IFC_RETURN(result.GetHResult());
-				if (result.WasMoved)
-				{
-					pHandled = StopInteraction();
-				}
-				else
-				{
-					//
-					// If we could not find a target via XY then we need to depart focus again
-					// But this time from an orgin inside of the component
-					//
-					//                             ┌────────────────────────────────┐
-					//                             │        CoreWindow              │
-					//                             │                                │
-					//                             │                                │
-					//   ┌──────────┐ Direction    ├────────────────────────────────┤
-					//   │  origin  │ ─────────>   │      New Origin:               │ Depart Focus from new origin
-					//   │          │              │ Calculated as the intersertion │  ─────────>
-					//   │          │              │ from the direction             │
-					//   └──────────┘              ├────────────────────────────────┤
-					//                             │                                │
-					//                             │                                │
-					//                             │                                │
-					//                             └────────────────────────────────┘
-
-					Rect origin = focusNavigationRequest.HintRect;
-					Rect newOrigin = CalculateNewOrigin(direction, origin);
-					Guid correlationId = focusNavigationRequest.CorrelationId;
-
-					DepartFocus(direction, newOrigin, correlationId, ref pHandled);
-				}
+				pHandled = StopInteraction();
 			}
-
-			return pHandled;
-		}
-
-		internal void DepartFocus(
-			FocusNavigationDirection direction,
-			Guid correlationId,
-			ref bool handled)
-		{
-			var pFocusedElement = _contentRoot.FocusManager.FocusedElement;
-			var origin = GetOriginToComponent(pFocusedElement);
-
-			DepartFocus(direction, origin, correlationId, ref handled);
-		}
-
-		private void DepartFocus(
-			FocusNavigationDirection direction,
-			Rect origin,
-			Guid correlationId,
-			ref bool handled)
-		{
-			if (handled) //|| _focusController == null)
+			else
 			{
-				return;
+				//
+				// If we could not find a target via XY then we need to depart focus again
+				// But this time from an orgin inside of the component
+				//
+				//                             ┌────────────────────────────────┐
+				//                             │        CoreWindow              │
+				//                             │                                │
+				//                             │                                │
+				//   ┌──────────┐ Direction    ├────────────────────────────────┤
+				//   │  origin  │ ─────────>   │      New Origin:               │ Depart Focus from new origin
+				//   │          │              │ Calculated as the intersertion │  ─────────>
+				//   │          │              │ from the direction             │
+				//   └──────────┘              ├────────────────────────────────┤
+				//                             │                                │
+				//                             │                                │
+				//                             │                                │
+				//                             └────────────────────────────────┘
+
+				Rect origin = focusNavigationRequest.HintRect;
+				Rect newOrigin = CalculateNewOrigin(direction, origin);
+				Guid correlationId = focusNavigationRequest.CorrelationId;
+
+				DepartFocus(direction, newOrigin, correlationId, ref pHandled);
 			}
-
-			var reason = GetFocusNavigationReasonFromDirection(direction);
-			if (reason == null)
-			{
-				// Do nothing if we dont support this navigation
-				return;
-			}
-
-			StartInteraction(reason.Value, origin, correlationId);
-
-			//_focusController.DepartFocus(_currentInteraction);
-			handled = true;
 		}
 
-		private void StartInteraction(
-			XamlSourceFocusNavigationReason reason,
-			Rect origin,
-			Guid correlationId)
+		return pHandled;
+	}
+
+	internal void DepartFocus(
+		FocusNavigationDirection direction,
+		Guid correlationId,
+		ref bool handled)
+	{
+		var pFocusedElement = _contentRoot.FocusManager.FocusedElement;
+		var origin = GetOriginToComponent(pFocusedElement);
+
+		DepartFocus(direction, origin, correlationId, ref handled);
+	}
+
+	private void DepartFocus(
+		FocusNavigationDirection direction,
+		Rect origin,
+		Guid correlationId,
+		ref bool handled)
+	{
+		if (handled) //|| _focusController == null)
 		{
-			var request = new XamlSourceFocusNavigationRequest(reason, origin, correlationId);
-			_currentInteraction = request;
+			return;
 		}
 
-		private bool StopInteraction()
+		var reason = GetFocusNavigationReasonFromDirection(direction);
+		if (reason == null)
 		{
-			MUX_ASSERT(_currentInteraction != null);
-			_currentInteraction = null;
-			return true;
+			// Do nothing if we dont support this navigation
+			return;
 		}
 
-		protected virtual CoreWindowActivationMode GetActivationMode() => CoreWindowActivationMode.None;
+		StartInteraction(reason.Value, origin, correlationId);
 
-		private void UpdateCurrentInteraction(XamlSourceFocusNavigationRequest? pRequest)
-		{
-			_currentInteraction = pRequest;
-		}
+		//_focusController.DepartFocus(_currentInteraction);
+		handled = true;
+	}
+
+	private void StartInteraction(
+		XamlSourceFocusNavigationReason reason,
+		Rect origin,
+		Guid correlationId)
+	{
+		var request = new XamlSourceFocusNavigationRequest(reason, origin, correlationId);
+		_currentInteraction = request;
+	}
+
+	private bool StopInteraction()
+	{
+		MUX_ASSERT(_currentInteraction != null);
+		_currentInteraction = null;
+		return true;
+	}
+
+	protected virtual CoreWindowActivationMode GetActivationMode() => CoreWindowActivationMode.None;
+
+	private void UpdateCurrentInteraction(XamlSourceFocusNavigationRequest? pRequest)
+	{
+		_currentInteraction = pRequest;
 	}
 }
