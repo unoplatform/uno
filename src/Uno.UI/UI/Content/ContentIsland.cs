@@ -2,6 +2,7 @@
 using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Uno;
+using Uno.UI.Content;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -16,22 +17,22 @@ public partial class ContentIsland
 	: IDisposable, IClosableNotifier, ICompositionSupportsSystemBackdrop
 #endif
 {
-	private readonly INativeWindowWrapper _nativeWindowWrapper;
+	private readonly ContentSiteView _contentSiteView;
 
-	internal ContentIsland(INativeWindowWrapper nativeWindowWrapper)
+	internal ContentIsland(ContentSiteView contentSiteView)
 	{
-		_nativeWindowWrapper = nativeWindowWrapper;
+		_contentSiteView = contentSiteView ?? throw new ArgumentNullException(nameof(contentSiteView));
 	}
 
 	/// <summary>
 	/// Gets the local dots per inch (dpi) of a Microsoft.UI.Composition.ICompositionSurface.
 	/// </summary>
-	public float RasterizationScale => _nativeWindowWrapper.RasterizationScale;
+	public float RasterizationScale => _contentSiteView.RasterizationScale;
 
 	/// <summary>
 	/// Gets whether the associated ContentSite is visible.
 	/// </summary>
-	public bool IsSiteVisible => _nativeWindowWrapper.Visible;
+	public bool IsSiteVisible => _contentSiteView.IsSiteVisible;
 
 	/// <summary>
 	/// Occurs when a state property for this ContentIsland changes.
