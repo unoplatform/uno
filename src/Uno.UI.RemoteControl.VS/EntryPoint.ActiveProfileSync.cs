@@ -128,7 +128,7 @@ public partial class EntryPoint : IDisposable
 			if (profile.LaunchBrowser
 				&& FindTargetFramework(WasmTargetFrameworkIdentifier) is { } targetFramework)
 			{
-				_errorAction?.Invoke($"Setting framework {targetFramework}");
+				_debugAction?.Invoke($"Setting framework {targetFramework}");
 
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(targetFramework);
 			}
@@ -136,7 +136,7 @@ public partial class EntryPoint : IDisposable
 				&& compatibleTargetObject is string compatibleTarget
 				&& FindTargetFramework(compatibleTarget) is { } compatibleTargetFramework)
 			{
-				_errorAction?.Invoke($"Setting framework {compatibleTarget}");
+				_debugAction?.Invoke($"Setting framework {compatibleTarget}");
 
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(compatibleTargetFramework);
 			}
