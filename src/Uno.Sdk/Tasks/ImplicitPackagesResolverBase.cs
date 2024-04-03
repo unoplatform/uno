@@ -125,16 +125,6 @@ public abstract class ImplicitPackagesResolverBase : Task
 	{
 		try
 		{
-			_manifest = new PackageManifest(Log);
-			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))
-			{
-				_unoVersion = unoVersion;
-			}
-			else
-			{
-				throw new InvalidOperationException("Unable to parse UnoVersion from the Package Manifest.");
-			}
-
 			if (TargetFramework.Contains('-'))
 			{
 				var frameworkParts = TargetFramework.Split('-');
@@ -165,6 +155,16 @@ public abstract class ImplicitPackagesResolverBase : Task
 				{
 					TargetRuntime = UnoTarget.SkiaLinuxFramebuffer;
 				}
+			}
+
+			_manifest = new PackageManifest(Log, TargetFrameworkVersion);
+			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))
+			{
+				_unoVersion = unoVersion;
+			}
+			else
+			{
+				throw new InvalidOperationException("Unable to parse UnoVersion from the Package Manifest.");
 			}
 
 			_unoFeatures = GetFeatures();
@@ -423,7 +423,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 
 		// 2) Load the Version from the PackageManifest. This will get the version whether it was set through MSBuild or the bundled packages.json
-		version = _manifest!.GetPackageVersion(packageId, TargetFrameworkVersion, version);
+		version = _manifest!.GetPackageVersion(packageId, version);
 
 		// 3) Validate the version has a value. If not attempt to get the latest version from NuGet.org
 		if (string.IsNullOrEmpty(version))
