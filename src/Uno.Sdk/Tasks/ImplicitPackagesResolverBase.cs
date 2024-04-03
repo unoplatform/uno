@@ -18,6 +18,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 	private static readonly string[] _legacyWasmProjectSuffix = [".Wasm", ".WebAssembly"];
 	private readonly List<string> _existingReferences = [];
 	private PackageManifest? _manifest;
+	private NuGetVersion? _unoVersion;
 
 	public bool SdkDebugging { get; set; }
 
@@ -125,6 +126,14 @@ public abstract class ImplicitPackagesResolverBase : Task
 		try
 		{
 			_manifest = new PackageManifest(Log);
+			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))
+			{
+				_unoVersion = unoVersion;
+			}
+			else
+			{
+				throw new InvalidOperationException("Unable to parse UnoVersion from the Package Manifest.");
+			}
 
 			if (TargetFramework.Contains('-'))
 			{
@@ -421,7 +430,8 @@ public abstract class ImplicitPackagesResolverBase : Task
 		{
 			Log.LogWarning("The package '{0}' has no available version.", packageId);
 			using var client = new NuGetApiClient();
-			var preview = packageId.StartsWith("Uno.", StringComparison.InvariantCulture) && new NuGetVersion(_manifest.UnoVersion).IsPreview;
+			var isUnoPreview = _unoVersion?.IsPreview ?? false;
+			var preview = packageId.StartsWith("Uno.", StringComparison.InvariantCulture) && isUnoPreview;
 			version = client.GetVersion(packageId, preview);
 			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
 		}
