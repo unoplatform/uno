@@ -32,10 +32,12 @@ internal class PackageManifest
 	}
 
 	private readonly TaskLoggingHelper _log;
+	private readonly string _targetFrameworkVersion;
 
-	public PackageManifest(TaskLoggingHelper log)
+	public PackageManifest(TaskLoggingHelper log, string targetFrameworkVersion)
 	{
 		_log = log;
+		_targetFrameworkVersion = targetFrameworkVersion;
 
 		Manifest = new List<ManifestGroup>(_defaultManifest);
 
@@ -53,7 +55,7 @@ internal class PackageManifest
 
 	public List<ManifestGroup> Manifest { get; private set; }
 
-	public string? GetPackageVersion(string packageId, string targetFrameworkVersion, string? userSpecifiedVersion)
+	public string? GetPackageVersion(string packageId, string? userSpecifiedVersion)
 	{
 		if (!string.IsNullOrEmpty(userSpecifiedVersion))
 		{
@@ -68,7 +70,17 @@ internal class PackageManifest
 			return null;
 		}
 
-		return group.VersionOverride is not null && group.VersionOverride.TryGetValue(targetFrameworkVersion, out var versionOverride) ? versionOverride : group.Version;
+		return GetGroupVersion(group);
+	}
+
+	private string GetGroupVersion(ManifestGroup group)
+	{
+		if (group.VersionOverride is not null && group.VersionOverride.TryGetValue(_targetFrameworkVersion, out var versionOverride))
+		{
+			return versionOverride;
+		}
+
+		return group.Version;
 	}
 
 	public PackageManifest UpdateManifest(string groupName, string? version)
@@ -119,7 +131,7 @@ internal class PackageManifest
 	private string? GetGroupVersion(string groupName)
 	{
 		var group = Manifest.SingleOrDefault(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
-		return group?.Group;
+		return GetGroupVersion(group);
 	}
 
 	public class Group

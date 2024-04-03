@@ -197,7 +197,7 @@
 	},
 	{
 		"group": "AndroidXCollection",
-		"version": "1.4.0.2",
+		"version": "1.4.0.1",
 		"packages": [
 			"Xamarin.AndroidX.Collection",
 			"Xamarin.AndroidX.Collection.Ktx"
