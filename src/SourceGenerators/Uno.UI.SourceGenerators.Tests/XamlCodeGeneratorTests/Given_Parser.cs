@@ -90,7 +90,7 @@ public class Given_Parser
 
 					<Grid>
 
-						<local:MyStackPanel xmlns:SUT="NamespaceUnderTest" Source="SUT:C" />
+						<local:MyStackPanel xmlns:SUT="using:NamespaceUnderTest" Source="SUT:C" />
 
 					</Grid>
 				</Page>

@@ -558,7 +558,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (ns.Equals(@namespace.Prefix.AsSpan(), StringComparison.Ordinal))
 						{
-							if (_metadataHelper.FindTypeByFullName($"{@namespace.Namespace}.{name.Substring(indexOfColon + 1)}") is INamedTypeSymbol namedType)
+							if (_metadataHelper.FindTypeByFullName($"{GetTrimmedNamespace(@namespace.Namespace)}.{name.Substring(indexOfColon + 1)}") is INamedTypeSymbol namedType)
 							{
 								return namedType;
 							}
