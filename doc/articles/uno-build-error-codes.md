@@ -108,3 +108,18 @@ A member is not implemented, see [this page](xref:Uno.Development.NotImplemented
 On iOS and Catalyst, calling `Dispose()` or `Dispose(bool)` on a type inheriting directly from `UIKit.UIView` can lead to unstable results. It is not needed to call `Dispose` as the runtime will do so automatically during garbage collection.
 
 Invocations to `Dispose` can cause the application to crash in `__NSObject_Disposer drain`, cause `ObjectDisposedException` exception to be thrown. More information can be found in [xamarin/xamarin-macios#19493](https://github.com/xamarin/xamarin-macios/issues/19493).
+
+## VS Code Errors
+
+### UVSC0001
+
+Building for the specified target framework is not supported on the current platform or architecture. For examples:
+
+- a Mac computer is required to build iOS, Mac Catalyst and macOS applications
+- a Windows computer is required to build WinUI applications
+
+### UVSC0002
+
+Building WinUI applications requires the use of `msbuild` and the extension must be able to find it. This is done by using the `vswhere` utility.
+
+Installing the latest stable Visual Studio release should provide both tools.
