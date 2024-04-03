@@ -56,11 +56,16 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				ValidateIsSealed();
+				if (!IsMutable)
+				{
+					ValidateIsSealed();
+				}
 
 				_value = value;
 			}
 		}
+
+		internal bool IsMutable { get; set; }
 
 		private void ValidateIsSealed()
 		{
