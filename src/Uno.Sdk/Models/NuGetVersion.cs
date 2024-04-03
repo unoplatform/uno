@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace Uno.Sdk.Models;
 
 #nullable enable
-internal readonly partial struct NuGetVersion : IComparable<NuGetVersion>
+internal readonly struct NuGetVersion : IComparable<NuGetVersion>
 {
 	private NuGetVersion(string originalVersion, Version version)
 	{
@@ -32,7 +32,7 @@ internal readonly partial struct NuGetVersion : IComparable<NuGetVersion>
 
 		try
 		{
-			var match = VersionExpression().Match(originalVersion);
+			var match = Regex.Match(originalVersion, @"^(\d+\.\d+(\.\d+)?(\.\d+)?)");
 			if (!(match.Success && match.Groups.Count > 0))
 			{
 				return false;
@@ -76,7 +76,4 @@ internal readonly partial struct NuGetVersion : IComparable<NuGetVersion>
 		// If both are previews or both are stable, maintain their order (consider them equal in terms of sorting)
 		return 0;
 	}
-
-	[GeneratedRegex(@"^(\d+\.\d+(\.\d+)?(\.\d+)?)")]
-	private static partial Regex VersionExpression();
 }
