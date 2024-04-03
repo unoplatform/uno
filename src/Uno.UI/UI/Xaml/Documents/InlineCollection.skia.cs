@@ -4,6 +4,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
@@ -108,7 +109,7 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				var parent = ((IBlock)_collection.GetParent());
 				var text = parent.GetText();
-				var unadjustedValue = (start: text[..value.start].EnumerateRunes().Count(), end: text[..value.end].EnumerateRunes().Count()); // unadjust for surrogate pairs
+				var unadjustedValue = (start: CountRunes(text[..value.start]), end: CountRunes(text[..value.end])); // unadjust for surrogate pairs
 
 				// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
 				if (_selection is null || (unadjustedValue.start, unadjustedValue.end) != (_selection.StartIndex, _selection.EndIndex))
@@ -118,6 +119,19 @@ namespace Microsoft.UI.Xaml.Documents
 					var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
 					_selection = new SelectionDetails(startLine, unadjustedValue.start, endLine, unadjustedValue.end);
 					parent.Invalidate(false);
+				}
+
+				static int CountRunes(string s)
+				{
+					var enumerator = s.EnumerateRunes();
+					int count = 0;
+					// Avoid LINQ's Count() because it will box the enumerator.
+					while (enumerator.MoveNext())
+					{
+						count++;
+					}
+
+					return count;
 				}
 			}
 		}
