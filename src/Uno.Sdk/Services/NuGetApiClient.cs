@@ -32,7 +32,7 @@ public class NuGetApiClient : IDisposable
 		var versions = response?.Versions ?? [];
 
 		var output = new List<NuGetVersion>();
-		foreach(var version in versions)
+		foreach (var version in versions)
 		{
 			if (NuGetVersion.TryParse(version, out var nugetVersion))
 			{
