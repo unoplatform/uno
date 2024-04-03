@@ -32,7 +32,7 @@ public sealed partial class XamlRoot_Properties : UserControl
 
 	public ObservableCollection<string> ChangeLog { get; } = new();
 
-	private void XamlRoot_Changed(Microsoft.UI.Xaml.XamlRoot sender, XamlRootChangedEventArgs args) => 
+	private void XamlRoot_Changed(Microsoft.UI.Xaml.XamlRoot sender, XamlRootChangedEventArgs args) =>
 		UpdateProperties();
 
 	private void UpdateProperties()
