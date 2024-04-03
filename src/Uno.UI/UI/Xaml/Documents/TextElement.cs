@@ -32,7 +32,6 @@ using View = Microsoft.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
-using Microsoft.UI.Xaml.Automation.Peers;
 
 #endif
 
@@ -312,7 +311,7 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
-		internal AutomationPeer GetOrCreateAutomationPeer()
+		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
 		{
 			return null;
 		}

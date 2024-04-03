@@ -21,16 +21,17 @@ internal class ScrollItemAdapter
 		{
 			if (automationPeer.Owner is UIElement owner)
 			{
-				var rect = new Windows.Foundation.Rect();
+				//UNO TODO: Properly implement ScrollIntoView on ScrollItemAdapter
 
-				size = owner.GetRenderSize();
+				//var rect = new Windows.Foundation.Rect();
+				//var size = owner.GetRenderSize();
 
-				rect.X = 0;
-				rect.Y = 0;
-				rect.Width = size.Width;
-				rect.Height = size.Height;
+				//rect.X = 0;
+				//rect.Y = 0;
+				//rect.Width = size.Width;
+				//rect.Height = size.Height;
 
-				owner.BringIntoView(rect, true /*forceIntoView*/, false /*useAnimation*/, false /*skipDuringManipulation*/);
+				//owner.BringIntoView(rect, true /*forceIntoView*/, false /*useAnimation*/, false /*skipDuringManipulation*/);
 			}
 		}
 	}
