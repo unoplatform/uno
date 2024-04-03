@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -125,3 +126,4 @@ public class NestedItem : INotifyPropertyChanged
 
 	public event PropertyChangedEventHandler PropertyChanged;
 }
+#endif
