@@ -5,24 +5,16 @@ using System.Text.RegularExpressions;
 namespace Uno.Sdk.Models;
 
 #nullable enable
-internal readonly struct NuGetVersion
+internal readonly struct NuGetVersion : IComparable<NuGetVersion>
 {
-	public NuGetVersion(string version)
+	private NuGetVersion(string originalVersion, Version version)
 	{
-		OriginalVersion = version;
-		var match = Regex.Match(version, @"^(\d+\.\d+(\.\d+)?(\.\d+)?)");
-		if (match.Success)
-		{
-			var versionString = match.Groups[0].Value;
-			Version = new Version(versionString);
-		}
-		else
-		{
-			Version = new Version();
-		}
+		OriginalVersion = originalVersion;
+		IsPreview = originalVersion.Contains('-');
+		Version = version;
 	}
 
-	public bool IsPreview => OriginalVersion.Contains('-');
+	public bool IsPreview { get; }
 
 	public Version Version { get; }
 
@@ -30,23 +22,58 @@ internal readonly struct NuGetVersion
 
 	public override string ToString() => OriginalVersion;
 
-	public static bool TryParse(string? version, out NuGetVersion nugetVersion)
+	public static bool TryParse(string? originalVersion, out NuGetVersion nugetVersion)
 	{
 		nugetVersion = default;
-		if (string.IsNullOrEmpty(version))
+		if (originalVersion is null || string.IsNullOrEmpty(originalVersion))
 		{
 			return false;
 		}
 
 		try
 		{
-			nugetVersion = new NuGetVersion(version!);
+			var match = Regex.Match(originalVersion, @"^(\d+\.\d+(\.\d+)?(\.\d+)?)");
+			if (!(match.Success && match.Groups.Count > 0))
+			{
+				return false;
+			}
+
+			var versionString = match.Groups[0].Value;
+			if (!string.IsNullOrEmpty(versionString))
+			{
+				nugetVersion = new NuGetVersion(originalVersion, new Version(versionString));
+				return true;
+			}
 		}
 		catch
 		{
-			return false;
+			// Suppress any exceptions
 		}
 
-		return true;
+		return false;
+	}
+
+	public int CompareTo(NuGetVersion other)
+	{
+		var versionComparison = Version.CompareTo(other.Version);
+		if (versionComparison != 0)
+		{
+			return versionComparison;
+		}
+
+		// If the numeric parts are equal, non-preview versions should come before preview versions
+		var thisIsPreview = IsPreview;
+		var otherIsPreview = other.IsPreview;
+		if (thisIsPreview && !otherIsPreview)
+		{
+			return 1; // This instance is a preview, and should come after
+		}
+		else if (!thisIsPreview && otherIsPreview)
+		{
+			return -1; // The other instance is a preview, and should come after
+		}
+
+		// If both are previews or both are stable, maintain their order (consider them equal in terms of sorting)
+		return 0;
 	}
 }

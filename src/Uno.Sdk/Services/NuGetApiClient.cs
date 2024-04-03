@@ -29,7 +29,18 @@ public class NuGetApiClient : IDisposable
 	private async Task<IEnumerable<NuGetVersion>> GetPackageVersions(string packageId)
 	{
 		var response = await Client.GetFromJsonAsync<VersionsResponse>($"/v3-flatcontainer/{packageId.ToLower(CultureInfo.InvariantCulture)}/index.json");
-		return response?.Versions.Select(x => new NuGetVersion(x)) ?? [];
+		var versions = response?.Versions ?? [];
+
+		var output = new List<NuGetVersion>();
+		foreach (var version in versions)
+		{
+			if (NuGetVersion.TryParse(version, out var nugetVersion))
+			{
+				output.Add(nugetVersion);
+			}
+		}
+
+		return output;
 	}
 
 	private async Task<string> GetVersionAsync(string packageId, bool preview, string? minimumVersionString = null)
@@ -39,7 +50,7 @@ public class NuGetApiClient : IDisposable
 
 		if (NuGetVersion.TryParse(minimumVersionString, out var minimumVersion))
 		{
-			versions = versions.Where(x => x.Version <= x.Version);
+			versions = versions.Where(x => minimumVersion.Version <= x.Version);
 		}
 
 		if (!versions.Any())
@@ -47,7 +58,7 @@ public class NuGetApiClient : IDisposable
 			return string.Empty;
 		}
 
-		return versions.OrderByDescending(x => x.OriginalVersion).First().OriginalVersion;
+		return versions.OrderByDescending(x => x).First().OriginalVersion;
 	}
 
 	public void Dispose()
