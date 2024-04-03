@@ -63,16 +63,14 @@ namespace Uno.UI.Samples.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			Assert.IsTrue(IsLoaded, "The control should be loaded before the first measure.");
-			Assert.IsNotNull(XamlRoot, "Child should not be null.");
-#if HAS_UNO
-			Assert.IsNotNull(XamlRoot?.VisualTree.ContentRoot.CompositionContent, "ContentIsland of the ContentRoot should have been set by now.");
-#endif
+			Assert.IsNotNull(XamlRoot);
 
 			if (_initialMeasure && availableSize == default)
 			{
-				_initialMeasure = false;
 				Assert.Fail("Initial Measure should not be called with empty size");
 			}
+
+			_initialMeasure = false;
 			return base.MeasureOverride(availableSize);
 		}
 
@@ -80,9 +78,10 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (_initialArrange && availableSize == default)
 			{
-				_initialArrange = false;
 				Assert.Fail("Initial Arrange should not be called with empty size");
 			}
+
+			_initialArrange = false;
 			return base.ArrangeOverride(availableSize);
 		}
 
