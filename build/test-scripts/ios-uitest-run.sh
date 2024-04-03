@@ -126,8 +126,8 @@ then
 	brew install pipx
 	# # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
 	brew tap facebook/fb
-	brew install idb-companion
-	pipx install fb-idb
+	brew install idb-companion@1.1.7
+	pipx install fb-idb@1.1.7
 else
 	echo "Using idb from:" `command -v idb`
 fi
