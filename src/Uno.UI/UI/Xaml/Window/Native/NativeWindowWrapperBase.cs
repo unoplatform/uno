@@ -13,7 +13,7 @@ namespace Uno.UI.Xaml.Controls;
 
 internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
-	protected readonly ContentIsland _contentIsland;
+	protected readonly ContentSite _contentSite = new();
 	private Rect _bounds;
 	private Rect _visibleBounds;
 	private bool _visible;
@@ -30,16 +30,13 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	protected NativeWindowWrapperBase()
 	{
-		_contentIsland = new ContentIsland(this);
 	}
+
+	public ContentSiteView ContentSiteView => _contentSite.View;
 
 	protected XamlRoot? XamlRoot => _xamlRoot;
 
-	internal void SetXamlRoot(XamlRoot xamlRoot)
-	{
-		_xamlRoot = xamlRoot;
-		xamlRoot.VisualTree.ContentRoot.SetContentIsland(_contentIsland);
-	}
+	internal void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
 	public abstract object? NativeWindow { get; }
 
@@ -53,7 +50,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 				_bounds = value;
 				SizeChanged?.Invoke(this, value.Size);
 
-				_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
+				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
 			}
 		}
 	}
@@ -94,7 +91,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 				_visible = value;
 				VisibilityChanged?.Invoke(this, value);
 
-				_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.SiteVisibleChange);
+				_contentSite.IsSiteVisible = value;
+				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.SiteVisibleChange);
 			}
 		}
 	}
@@ -108,7 +106,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			{
 				_rasterizationScale = value;
 
-				_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
+				_contentSite.ParentScale = value;
+				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
 			}
 		}
 	}
@@ -181,4 +180,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	protected virtual IDisposable ApplyFullScreenPresenter() => Disposable.Empty;
 
 	protected virtual IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter) => Disposable.Empty;
+
+	private void RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs args)
+	{
+		XamlRoot?.VisualTree.ContentRoot.CompositionContent.RaiseStateChanged(args);
+	}
 }

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
@@ -21,12 +22,21 @@ internal partial class NativeWindowFactory
 
 		var windowWrapper = CreateWindowPlatform(window, xamlRoot);
 
-		if (xamlRoot.VisualTree.ContentRoot.CompositionContent is null)
+		if (windowWrapper is null)
+		{
+			// It was not possible to create a new window, just return.
+			return null;
+		}
+
+		if (windowWrapper.ContentSiteView is null)
 		{
 			throw new InvalidOperationException(
-				"ContentRoot.CompositionContent must be initialized along with the native window!" +
+				"ContentSiteView must be initialized along with the native window!" +
 				"Use either the base ctor which takes XamlRoot or set ContentIsland within your factory manually.");
 		}
+
+		var contentIsland = new ContentIsland(windowWrapper.ContentSiteView);
+		xamlRoot.VisualTree.ContentRoot.SetContentIsland(contentIsland);
 
 		return windowWrapper;
 	}
