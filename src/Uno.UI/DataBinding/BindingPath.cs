@@ -546,7 +546,7 @@ namespace Uno.UI.DataBinding
 				tail = tail.Next;
 			}
 
-			return tail?.Value is null &&  tail?.Next == null;
+			return tail?.Value is null && tail?.Next == null;
 		}
 		#endregion
 	}
