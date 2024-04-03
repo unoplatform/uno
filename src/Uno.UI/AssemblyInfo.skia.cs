@@ -8,3 +8,4 @@ using global::System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp.Skia.Gtk")]
+[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia.Wpf")]
