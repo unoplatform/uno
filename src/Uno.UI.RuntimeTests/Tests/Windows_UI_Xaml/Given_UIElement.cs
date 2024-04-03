@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
@@ -986,6 +987,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		}
 #endif
+#endif
+
+#if HAS_UNO && HAS_INPUT_INJECTOR
+		#region Drag and Drop
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_DragOver_Fires_Along_DragEnter_Drop()
+		{
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(Windows.Foundation.Point.Zero); // anywhere away from SUT
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var SUT = new Button { Content = "test", AllowDrop = true };
+			var dragEnterCount = 0;
+			var dragOverCount = 0;
+			var dropCount = 0;
+			SUT.DragEnter += (_, args) =>
+			{
+				args.AcceptedOperation = DataPackageOperation.None; // this shouldn't do anything
+				dragEnterCount++;
+			};
+			SUT.DragOver += (_, args) =>
+			{
+				args.AcceptedOperation = DataPackageOperation.Move; // this one wins
+				dragOverCount++;
+			};
+			SUT.Drop += (_, _) => dropCount++;
+
+			var lv = new ListView
+			{
+				CanDragItems = true, ItemsSource = "12"
+			};
+
+			lv.DragItemsStarting += (_, e) =>
+			{
+				if (e.Items.Count > 0)
+				{
+					e.Data.RequestedOperation = DataPackageOperation.Move;
+					e.Data.SetText(e.Items.First().ToString()!);
+				}
+			};
+
+			await UITestHelper.Load(new StackPanel
+			{
+				Children =
+				{
+					lv,
+					SUT
+				}
+			});
+
+			mouse.MoveTo(lv.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Press();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, dragEnterCount);
+			Assert.AreEqual(0, dragOverCount);
+			Assert.AreEqual(0, dropCount);
+
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, dragEnterCount);
+			Assert.AreEqual(1, dragOverCount);
+			Assert.AreEqual(0, dropCount);
+
+			mouse.Release();
+
+			Assert.AreEqual(1, dragEnterCount);
+			Assert.AreEqual(2, dragOverCount);
+			Assert.AreEqual(1, dropCount);
+		}
+
+		#endregion
 #endif
 	}
 
