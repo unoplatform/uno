@@ -66,8 +66,12 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 
 		if (TargetRuntime == UnoTarget.Android)
 		{
+			if (!HasFeature(UnoFeature.MauiEmbedding))
+			{
+				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
+			}
+
 			AddPackage("Uno.UniversalImageLoader", UnoUniversalImageLoaderVersion);
-			AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
 			AddPackage("Xamarin.AndroidX.Legacy.Support.V4", AndroidXLegacySupportV4Version);
 			AddPackage("Xamarin.AndroidX.AppCompat", AndroidXAppCompatVersion);
 			AddPackage("Xamarin.AndroidX.RecyclerView", AndroidXRecyclerViewVersion);
@@ -197,7 +201,6 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 
 			if (TargetRuntime == UnoTarget.Android)
 			{
-				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
 				AddPackage("Xamarin.AndroidX.Navigation.UI", AndroidXNavigationVersion);
 				AddPackage("Xamarin.AndroidX.Navigation.Fragment", AndroidXNavigationVersion);
 				AddPackage("Xamarin.AndroidX.Navigation.Runtime", AndroidXNavigationVersion);
