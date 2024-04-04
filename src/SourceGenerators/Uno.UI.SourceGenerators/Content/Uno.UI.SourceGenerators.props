@@ -64,6 +64,7 @@
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
+		<CompilerVisibleProperty Include="UnoPlatformIDE" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
 		<CompilerVisibleProperty Include="UnoForceHotReloadCodeGen" />
 		<CompilerVisibleProperty Include="UnoForceIncludeProjectConfiguration" />
