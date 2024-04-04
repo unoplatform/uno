@@ -103,7 +103,7 @@ public partial class EntryPoint : IDisposable
 				}
 			}
 
-			await TryReloadWebAssemblyOrDesktopTargetAsync(previousFramework, newFramework, targetFrameworkIdentifier);
+			await TryReloadTargetAsync(previousFramework, newFramework, targetFrameworkIdentifier);
 		}
 	}
 
@@ -128,7 +128,7 @@ public partial class EntryPoint : IDisposable
 			if (profile.LaunchBrowser
 				&& FindTargetFramework(WasmTargetFrameworkIdentifier) is { } targetFramework)
 			{
-				_errorAction?.Invoke($"Setting framework {targetFramework}");
+				_debugAction?.Invoke($"Setting framework {targetFramework}");
 
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(targetFramework);
 			}
@@ -136,7 +136,7 @@ public partial class EntryPoint : IDisposable
 				&& compatibleTargetObject is string compatibleTarget
 				&& FindTargetFramework(compatibleTarget) is { } compatibleTargetFramework)
 			{
-				_errorAction?.Invoke($"Setting framework {compatibleTarget}");
+				_debugAction?.Invoke($"Setting framework {compatibleTarget}");
 
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(compatibleTargetFramework);
 			}
@@ -146,7 +146,7 @@ public partial class EntryPoint : IDisposable
 			=> targetFrameworks.FirstOrDefault(f => f.IndexOf("-" + identifier, StringComparison.OrdinalIgnoreCase) != -1);
 	}
 
-	private async Task TryReloadWebAssemblyOrDesktopTargetAsync(string? previousFramework, string newFramework, string targetFrameworkIdentifier)
+	private async Task TryReloadTargetAsync(string? previousFramework, string newFramework, string targetFrameworkIdentifier)
 	{
 		if (_wasmProjectReloadTask is not null)
 		{
@@ -160,8 +160,8 @@ public partial class EntryPoint : IDisposable
 			if (previousFramework is not null
 				&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
 				&& (
-					previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier
-					|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier)
+					previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
+					|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier)
 				&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
 			)
 			{
@@ -192,7 +192,7 @@ public partial class EntryPoint : IDisposable
 					return;
 				}
 
-				_warningAction?.Invoke($"Detected that the active framework was changed from/to WebAssembly/Desktop, reloading the project (See https://aka.platform.uno/singleproject-vs-reload)");
+				_warningAction?.Invoke($"Detected that the active framework was changed from/to WebAssembly/Desktop/Windows, reloading the project (See https://aka.platform.uno/singleproject-vs-reload)");
 
 				// In this context, in order to work around the fact that VS does not handle Wasm
 				// to be in the same project as other target framework, we're using the `_SelectedTargetFramework`
