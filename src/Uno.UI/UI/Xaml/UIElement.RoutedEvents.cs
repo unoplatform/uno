@@ -47,10 +47,10 @@ namespace Microsoft.UI.Xaml
 	[1]---------------------+
 	| An event is fired     |
 	+--------+--------------+
-	         |
-	[2]------v--------------+
-	| Event is dispatched   |
-	| to corresponding      |                    [12]
+	         |                            [12]--------------------+
+	[2]------v--------------+             | Processing finished   |
+	| Event is dispatched   |             | for this event.       |
+	| to corresponding      |             +--------+--------------+
 	| element               |                      ^
 	+-------yes-------------+                      |
 	         |                             [11]---no--------------+
@@ -69,15 +69,15 @@ namespace Microsoft.UI.Xaml
 	| by local handlers?    no------------>| Event is coming from |  |
 	+-------yes-------------+              | platform?            |  |
 	         |                             +------yes-------------+  |
-	[9]------v--------------+                      |                 |
-	| Any parent interested |              [7]-----v--------------+  |
-	| by this event?        yes-+          | Is the event         |  |
-	+-------no--------------+   |          | bubbling natively?   no-+
-	         |                  |          +------yes-------------+
-	[12]-----v--------------+   |                  |
-	| Processing finished   |   v          [8]-----v--------------+
-	| for this event.       |  [10]        | Event is returned    |
-	+-----------------------+              | for native           |
+	         v                                     |                 |
+	        [10]                           [7]-----v--------------+  |
+	                                       | Is the event         |  |
+	                                       | bubbling natively?   no-+
+	                                       +------yes-------------+
+	                                               |
+	                                       [8]-----v--------------+
+	                                       | Event is returned    |
+	                                       | for native           |
 	                                       | bubbling in platform |
 	                                       +----------------------+
 
