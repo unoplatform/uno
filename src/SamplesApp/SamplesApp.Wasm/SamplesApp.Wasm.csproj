@@ -14,6 +14,13 @@
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
+
+		<!-- To build with AOT, uncomment these two lines -->
+		<!--<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
+		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>-->
+
+		<!-- For faster AOT build, uncomment this line -->
+		<!--<WasmShellEmccLinkOptimization>false</WasmShellEmccLinkOptimization>-->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -47,8 +54,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Required to enable IDBFS (https://github.com/emscripten-core/emscripten/blob/d2148d096e2b5f3ec4886f93e24312ef88976020/ChangeLog.md#v1391-10302019) -->
-		<WasmShellExtraEmccFlags Include="-lidbfs.js" />
+		<WasmShellExtraEmccFlags Include="-s INITIAL_MEMORY=64MB" />
 	</ItemGroup>
 
 	<ItemGroup>
