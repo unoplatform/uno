@@ -185,6 +185,6 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	private void RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs args)
 	{
-		XamlRoot?.VisualTree.ContentRoot.CompositionContent.RaiseStateChanged(args);
+		XamlRoot?.VisualTree.ContentRoot.CompositionContent?.RaiseStateChanged(args);
 	}
 }
