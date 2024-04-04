@@ -18,7 +18,7 @@ public partial class FocusManager
 
 	private static partial class NativeMethods
 	{
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.focusSemanticElement")]
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.focusSemanticElement")]
 		public static partial void FocusSemanticElement(IntPtr handle);
 	}
 }

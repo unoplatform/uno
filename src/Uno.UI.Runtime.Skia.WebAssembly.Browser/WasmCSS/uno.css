@@ -25,6 +25,10 @@ body {
   bottom: 0;
 }
 
+#uno-root {
+    overflow: hidden;
+}
+
 #uno-loading {
   position: fixed;
   width: 100%;
@@ -42,4 +46,30 @@ body {
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
+}
+
+.uno-aria-live {
+  position: fixed;
+  overflow: hidden;
+  transform: translate(-99999px, -99999px);
+  width: 1px;
+  height: 1px;
+}
+
+#uno-enable-accessibility {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: 1px;
+  height: 1px;
+}
+
+#uno-semantics-root {
+  filter: opacity(0%);
+  pointer-events: none;
+}
+
+#uno-canvas {
+    position: fixed;
+
 }
