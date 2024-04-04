@@ -14,8 +14,8 @@
 	</ItemGroup>
 
 	<!--
-		Adjust the first target framework to be browserwasm or desktop, if the current debugging
-		target is browserwasm. This portion is linked to the TryReloadWebAssemblyOrDesktopTargetAsync in
+		Adjust the first target framework to be browserwasm or desktop or windows, if the current debugging
+		target is either of those. This portion is linked to the TryReloadTargetAsync in
 		the Uno.UI.RemoteControl.VS project.
 	
 		This is required by a WebAssembly/Desktop support issue in VS, where both Publishing/Debugging and other 
@@ -31,6 +31,7 @@
 			(
 				$([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'browserwasm'
 				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'desktop'
+				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'windows'
 			)
 			AND '$(TargetFrameworks)' != ''
 			AND !$(TargetFrameworks.StartsWith($(ActiveDebugFramework)))
@@ -67,6 +68,18 @@
 					Text="The desktop TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0011)" />
 	</Target>
 
+	<Target Name="_UnoVSWarnWindowsIsFirst"
+				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+				Condition="
+				'$(UnoDisableVSWarnWindowsIsFirst)' != 'true'
+				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(_UnoTargetFrameworkCount)' != ''
+				AND $(_UnoTargetFrameworkCount) &gt; 1
+				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'windows'">
+
+		<Warning Code="UNOB0012"
+					Text="The windows TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0012)" />
+	</Target>
 
 	<!-- Include any additional targets that packages defined by other packages -->
 	<Import Project="$(AfterUnoSdkTargets)" Condition="'$(AfterUnoSdkTargets)' != ''"/>
