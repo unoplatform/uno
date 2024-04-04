@@ -14,6 +14,7 @@ internal static partial class AccessibilityAnnouncer
 	public static void Announce(string text)
 	{
 #if __WASM__
+		// TODO: Do nothing if IsAccessibilityEnabled is false.
 		if (WindowWrapper is not null)
 		{
 			AnnounceA11y(WindowWrapper, text);
