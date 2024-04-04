@@ -129,5 +129,10 @@ namespace Microsoft.UI.Xaml
 
 		private protected override double GetActualWidth() => ActualWidth;
 		private protected override double GetActualHeight() => ActualHeight;
+
+#pragma warning disable 67
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
+		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged;
+#pragma warning restore 67
 	}
 }

@@ -50,9 +50,14 @@ namespace Microsoft.UI.Xaml
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		private event RoutedEventHandler _loaded;
 		private event RoutedEventHandler _unloaded;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<FrameworkElement, object> Loading;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Loaded;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Unloaded;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
+		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged;
 #pragma warning restore 67
 	}
 }

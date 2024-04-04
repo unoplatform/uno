@@ -419,22 +419,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loaded
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loading
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "event SizeChangedEventHandler FrameworkElement.SizeChanged");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "event SizeChangedEventHandler FrameworkElement.SizeChanged");
-			}
-		}
-#endif
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Unloaded
 	}
 }

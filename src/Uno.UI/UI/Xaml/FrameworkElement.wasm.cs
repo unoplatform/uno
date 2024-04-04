@@ -117,9 +117,12 @@ namespace Microsoft.UI.Xaml
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event SizeChangedEventHandler SizeChanged;
 
 		private event TypedEventHandler<FrameworkElement, object> _loading;
+
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
 			add
@@ -147,6 +150,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private event RoutedEventHandler _loaded;
+
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Loaded
 		{
 			add
@@ -174,6 +179,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private event RoutedEventHandler _unloaded;
+
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Unloaded
 		{
 			add

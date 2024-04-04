@@ -48,12 +48,16 @@ namespace <#= mixin.NamespaceName #>
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 #endif
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<FrameworkElement, object> Loading;
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Loaded;
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Unloaded;
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event SizeChangedEventHandler SizeChanged;
 
 		string IXUidProvider.Uid { get; set; }
