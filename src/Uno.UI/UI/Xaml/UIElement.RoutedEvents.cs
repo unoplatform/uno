@@ -812,7 +812,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 #nullable enable
-		// WARNING: When implementing one of those methods to maintain a local state, you should also opt-in for RoutedEvent.IsAlwaysBubbled
 		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
 		partial void PrepareManagedKeyEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
 		partial void PrepareManagedFocusEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
@@ -875,7 +874,6 @@ namespace Microsoft.UI.Xaml
 		/// Defines the mode used to bubble an event.
 		/// </summary>
 		/// <remarks>
-		/// This takes priority over the <see cref="RoutedEvent.IsAlwaysBubbled"/>.
 		/// Preventing default bubble behavior of an event is meant to be used only when the event has already been raised/bubbled,
 		/// but we need to sent it also to some specific elements (e.g. implicit captures).
 		/// </remarks>
