@@ -44,7 +44,7 @@ Before completing the wizard, take a look through each of the sections and see w
 
 - Click **Create** to complete the wizard
 
-The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
+The template will create a new solution with a number of projects. The main project is called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
 
 ## [Command Line](#tab/cli)
 

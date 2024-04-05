@@ -8,20 +8,20 @@ See [Microsoft API reference for MediaPlayerElement](https://learn.microsoft.com
 
 ## Media formats
 
-| Supported Formats          | iOS | Android | Wasm | Skia GTK | Remarks                                                                      |
-|----------------------------|:---:|:-------:|:----:|:--------:|------------------------------------------------------------------------------|
-| Local/Remote MP3 Support   |  ✅  |    ✅    |  ✅   |    ✅     |                                                                              |
-| Local/Remote MPEG4 Support |  ✅  |    ✅    |  ✅   |    ✅     |                                                                              |
-| HLSv3 Support              |  ✅  |    ✅    |  ✅   |    ✅     |                                                                              |
-| HLSv4 Support              |  ✅  |    ✅    |  ✅   |    ✅     |                                                                              |
-| 3GP Support                |  ✅  |    ✅    |  ✅   |    ✅     | 3GP with AMR Narrow Band (SAMR) audio codec does not work on iOS (See notes) |
-| FLV Support                |  -  |    ✅    |  ✅   |    ✅     |                                                                              |
-| MOV Support                |  ✅  |    -    |  -   |    -     |                                                                              |
-| MKV Support                |  -  |    ✅    |  ✅   |    ✅     |                                                                              |
-| AVI Support                |  -  |    ✅    |  ✅   |    ✅     |                                                                              |
-| OGG Support                |  -  |    -    |  ✅   |    ✅     |                                                                              |
-| MPEG-Dash Support          |  -  |    -    |  -   |    -     |                                                                              |
-| Smooth Streaming Support   |  -  |    -    |  -   |    -     |                                                                              |
+| Supported Formats          | iOS | Android | Wasm | Skia GTK | Skia Desktop | Remarks                                              |
+|----------------------------|:----:|:---------:|:------:|:---------:|:---------:|------------------------------------------------------------------------------|
+| Local/Remote MP3 Support   |  ✅  |    ✅    |  ✅   |    ✅     | ❌ |                                                                             |
+| Local/Remote MPEG4 Support |  ✅  |    ✅    |  ✅   |    ✅     | ❌  |                                                                            |
+| HLSv3 Support              |  ✅  |    ✅    |  ✅   |    ✅     | ❌  |                                                                            |
+| HLSv4 Support              |  ✅  |    ✅    |  ✅   |    ✅     | ❌  |                                                                            |
+| 3GP Support                |  ✅  |    ✅    |  ✅   |    ✅     | ❌  |3GP with AMR Narrow Band (SAMR) audio codec does not work on iOS (See notes) |
+| FLV Support                |  -    |    ✅   |  ✅   |    ✅     | ❌  |                                                                            |
+| MOV Support                |  ✅  |    -     |  -     |    -      | ❌  |                                                                           |
+| MKV Support                |  -    |    ✅   |  ✅   |    ✅     | ❌  |                                                                            |
+| AVI Support                |  -    |    ✅   |  ✅   |    ✅     | ❌  |                                                                             |
+| OGG Support                |  -    |    -    |  ✅   |    ✅      | ❌  |                                                                            |
+| MPEG-Dash Support          |  -    |    -    |  -     |    -       | ❌  |                                                                           |
+| Smooth Streaming Support   |  -    |    -    |  -     |    -       | ❌  |                                                                           |
 
 ### Notes
 
@@ -30,35 +30,35 @@ See [Microsoft API reference for MediaPlayerElement](https://learn.microsoft.com
 
 ## Features
 
-| Section            | Feature                                        | iOS | Android | Wasm | Skia GTK | Remarks                                      |
-|--------------------|------------------------------------------------|:---:|:-------:|:----:|:--------:|----------------------------------------------|
-| MediaPlayerElement | AutoPlay                                       |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Poster image                                   |  ✅  |    ✅    |  ✅   |    ✅     | Does not show when playing music             |
-|                    | Enable/Disable MediaTransportControls          |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Stretch                                        |  ✅  |    ✅    |  ✅   |    ✅     | Stretch.None behave like Stretch.Fill on iOS |
-|                    | Pause media when headphones unplugged          |  ✅  |    ✅    |  -   |    -     |                                              |
-| TransportControls  | Transport controls custom style                |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Play/Pause                                     |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Stop                                           |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Seek                                           |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Volume change                                  |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Mute                                           |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show elapsed time                              |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show remaining time                            |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show/Hide MediaTransportControls automatically |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | MediaTransportControls compact mode            |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show/Hide MediaTransportControls commands      |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Enable/Disable MediaTransportControls commands |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Skip forward                                   |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Skip backward                                  |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show buffering progress                        |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Zoom mode                                      |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Full-screen mode                               |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Playlists support                              |  ✅  |    ✅    |  -   |    -     |                                              |
-|                    | Change playback rate                           |  -  |    -    |  ✅   |    ✅     |                                              |
-|                    | Player controls on locked screen support       |  -  |    -    |  -   |    -     |                                              |
-|                    | Subtitles support                              |  -  |    -    |  -   |    -     |                                              |
-|                    | Languages support                              |  -  |    -    |  -   |    -     |                                              |
+| Section            | Feature                                        | iOS | Android | Wasm | Skia GTK | Skia Desktop | Remarks                                      |
+|--------------------|------------------------------------------------|:---:|:-------:|:----:|:--------:|:--------:|------------------------------------------------|
+| MediaPlayerElement | AutoPlay                                       |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Poster image                                   |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ | Does not show when playing music             |
+|                    | Enable/Disable MediaTransportControls          |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Stretch                                        |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ | Stretch.None behave like Stretch.Fill on iOS |
+|                    | Pause media when headphones unplugged          |  ✅  |    ✅    |  -     |    -      | ❌ |                                               |
+| TransportControls  | Transport controls custom style                |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Play/Pause                                     |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Stop                                           |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Seek                                           |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Volume change                                  |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Mute                                           |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Show elapsed time                              |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Show remaining time                            |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Show/Hide MediaTransportControls automatically |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | MediaTransportControls compact mode            |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Show/Hide MediaTransportControls commands      |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Enable/Disable MediaTransportControls commands |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Skip forward                                   |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Skip backward                                  |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Show buffering progress                        |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Zoom mode                                      |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Full-screen mode                               |  ✅  |    ✅    |  ✅   |    ✅     |  ❌ |                                              |
+|                    | Playlists support                              |  ✅  |    ✅    |  -     |    -     |    ❌ |                                          |
+|                    | Change playback rate                           |  -    |    -     |  ✅   |    ✅     |   ❌ |                                           |
+|                    | Player controls on locked screen support       |  -    |    -     |  -     |    -     |   ❌ |                                           |
+|                    | Subtitles support                              |  -    |    -     |  -     |    -     |   ❌ |                                           |
+|                    | Languages support                              |  -    |    -     |  -     |    -     |   ❌ |                                           |
 
 ## Requirement
 
@@ -125,6 +125,7 @@ Running the `MediaPlayerElement` requires adding the [`VideoLAN.LibVLC.Windows`]
 
 ## Future improvement
 
+- Support for Skia Desktop `net8.0-desktop`
 - React to audio focus changes (pause/stop playback or reduce audio volume)
 - Subtitles support
 - Languages support

@@ -121,7 +121,7 @@ Once the templates are installed, you can scroll back up and see the list of Uno
 Now we have the moving parts installed on our Pi, we can spin up a brand new Uno solution with the following command;
 
 ```dotnetcli
-dotnet new unoapp -o HelloPi --preset=blank --platforms=gtk --platforms="linux-fb" && cd HelloPi
+dotnet new unoapp -o HelloPi && cd HelloPi
 ```
 
 You should now find yourself in the solution directory for your new Uno App. If we have a look at the folder contents with;
@@ -132,15 +132,7 @@ dir
 
 ![Uno Templates Installed](images/07_uno-app-directory.png)
 
-In the solution we've just created, we have the following directories:
-
-| Directory | Purpose |
-| :--- | :--- |
-| `HelloPi` | Contains the main XAML page  |
-| `HelloPi.Skia.Gtk` | Contains the Linux / Raspberry Pi Version |
-| `HelloPi.Skia.Linux.FrameBuffer` | Provides Access to a Window Manager and the Cursor  |
-
-The directory we're interested in is the `HelloPi.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
+The directory we're interested in is the `HelloPi` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 
 ## Give the SSH Session access to use the display
 
@@ -151,7 +143,7 @@ If we don't do this, we'll get an error like;
 ```console
 Unable to init server: Could not connect: Connection refused
 
-(HelloPi.Skia.Gtk:18530): Gtk-WARNING **: 19:40:51.384: cannot open display:
+(HelloPi:18530): cannot open display:
 ```
 
 We can sort this out using the following command:
@@ -168,16 +160,16 @@ You'll need to remember do this every time you launch a new SSH session currentl
 
 We're now ready to run our application.
 
-Firstly, we need to navigate to the HelloPi.Skia.Gtk directory;
+Firstly, we need to navigate to the HelloPi directory;
 
 ```bash
-cd HelloPi.Skia.Gtk
+cd HelloPi
 ```
 
 We can now run our application with;
 
 ```dotnetcli
-dotnet run
+dotnet run -f net8.0-desktop
 ```
 
 This will take quite some time to run this command the first time as the Pi isn't as powerful as a desktop PC of course.
@@ -201,7 +193,7 @@ You can copy the contents of the `bin\linux-arm\publish` directory to your Pi in
 You then need to navigate to the directory where you've copied the files and make the main application executable with;
 
 ```bash
-chmod +x HelloPi.Skia.Gtk
+chmod +x HelloPi
 ```
 
 Don't forget that, if you've just dialled in you'll need to give access to the Display;
@@ -220,7 +212,7 @@ sudo apt-get install ia32-libs
 You can then run the application with;
 
 ```bash
-./HelloPi.Skia.Gtk
+./HelloPi
 ```
 
 See [Developing UWP Apps for the Raspberry Pi with Uno Platform](https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) blog post for how you can actually automate Building, Deploying, and even debugging from your Windows machine using VS Code.

@@ -50,7 +50,7 @@ If you want to start from an empty repository, follow these steps:
 
 1. Using the Gitpod top left menu, open the `MyApp` folder
 
-You're ready to develop for WebAssembly or the Linux desktop (Skia+Gtk).
+You're ready to develop for WebAssembly or the Linux desktop (Skia Desktop).
 
 ## Contributing to Uno using Gitpod
 

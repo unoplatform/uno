@@ -8,41 +8,41 @@ uid: Uno.Features.UserInputs
 
 User inputs are usually propagated using `RoutedEvents`. See Uno's [routed events documentation](routed-events.md) to better understand their implementation on Uno.
 
-| Routed Event                  | Android | iOS     | Wasm    | macOS | Skia WPF | Skia GtK | Tizen |     |
-| ----------------------------- | ------- | ------- | ------- | ----- | -------- | -------- | ----- | --- |
+| Routed Event                  | Android | iOS/Catalyst     | Wasm    | Skia Desktop |     |
+| ----------------------------- | ------- | ---------------- | ------- | ------------ | --- |
 | **_focus events_**
-| `GotFocus`                    | Yes     | Yes (1) | Yes (1) | ?     | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.gotfocus) |
-| `LostFocus`                   | Yes     | Yes (1) | Yes (1) | ?     | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.lostfocus) |
+| `GotFocus`                    | Yes     | Yes (1)          | Yes (1) | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.gotfocus) |
+| `LostFocus`                   | Yes     | Yes (1)          | Yes (1) | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.lostfocus) |
 | **_keyboard events_**
-| `KeyDown`           | Hardware Only (2) | Yes (2) | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.keydown) |
-| `KeyUp`             | Hardware Only (2) | Yes (2) | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.keyup) |
+| `KeyDown`           | Hardware Only (2) | Yes (2)          | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.keydown) |
+| `KeyUp`             | Hardware Only (2) | Yes (2)          | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.keyup) |
 | **_pointer events_**
-| `PointerCanceled`             | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointercanceled) |
-| `PointerCaptureLost`          | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointercapturelost) |
-| `PointerEntered`              | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerentered) |
-| `PointerExited`               | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerexited) |
-| `PointerMoved`                | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointermoved) |
-| `PointerPressed`              | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerpressed) |
-| `PointerReleased`             | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerreleased) |
-| `PointerWheelChanged`         | No      | No      | Yes     | Yes   | Yes      | Yes      | No    | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerwheelchanged) |
+| `PointerCanceled`             | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointercanceled) |
+| `PointerCaptureLost`          | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointercapturelost) |
+| `PointerEntered`              | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerentered) |
+| `PointerExited`               | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerexited) |
+| `PointerMoved`                | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointermoved) |
+| `PointerPressed`              | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerpressed) |
+| `PointerReleased`             | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerreleased) |
+| `PointerWheelChanged`         | No      | No               | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.pointerwheelchanged) |
 | **_manipulation events_**
-| `ManipulationStarting`        | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationstarting) |
-| `ManipulationStarted`         | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationstarted) |
-| `ManipulationDelta`           | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationedelta) |
-| `ManipulationInertiaStarting` | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationinertiastarting) |
-| `ManipulationCompleted`       | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationcompleted) |
+| `ManipulationStarting`        | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationstarting) |
+| `ManipulationStarted`         | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationstarted) |
+| `ManipulationDelta`           | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationedelta) |
+| `ManipulationInertiaStarting` | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationinertiastarting) |
+| `ManipulationCompleted`       | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationcompleted) |
 | **_gesture events_**
-| `Tapped`                      | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.tapped) |
-| `DoubleTapped`                | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.doubletapped) |
-| `RightTapped`                 | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.righttapped) |
-| `Holding`                     | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.holding) |
+| `Tapped`                      | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.tapped) |
+| `DoubleTapped`                | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.doubletapped) |
+| `RightTapped`                 | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.righttapped) |
+| `Holding`                     | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.holding) |
 | **_drag and drop_**
-| `DragStarting`                | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragstarting) |
-| `DragEnter`                   | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragenter) |
-| `DragOver`                    | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragover) |
-| `DragLeave`                   | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragleave) |
-| `Drop`                        | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.drop) |
-| `DropCompleted`               | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dropcompleted) |
+| `DragStarting`                | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragstarting) |
+| `DragEnter`                   | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragenter) |
+| `DragOver`                    | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragover) |
+| `DragLeave`                   | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dragleave) |
+| `Drop`                        | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.drop) |
+| `DropCompleted`               | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.dropcompleted) |
 
 Notes:
 
@@ -58,7 +58,7 @@ Notes:
      > won't work for keyboard events. **They won't bubble in managed code**.
    * **iOS**: `KeyDown` & `KeyUp` routed events are generated from only a `TextBox`. Only character-related keyboard events are generated.
      They are implemented as _Routed Events_ and they are **always bubbling in managed code**.
-   * **Skia**: Keyboard events are supported from `CoreWindow.KeyUp` and `CoreWindow.KeyDown` events, as well as `UIElement.KeyUp` and `UIElement.KeyDown` events for GTK, WPF, and Tizen.
+   * **Skia**: Keyboard events are supported from `CoreWindow.KeyUp` and `CoreWindow.KeyDown` events, as well as `UIElement.KeyUp` and `UIElement.KeyDown` events for Skia Desktop.
 
 ## Pointer Events
 
@@ -183,14 +183,14 @@ A _drag and drop_ operation can be used to move content within an app, but it ca
 While intra-app _drag and drop_ is supported on all platforms without limitations, inter-app _drag and drop_ requires platform-specific support.
 The table and sections below describe supported functionality and limitations for each platform.
 
-|          | From uno app to external                         | From external app to uno                        |
-| -------- | ------------------------------------------------ | ------------------------                        |
-| Android  | No                                               | No                                              |
-| iOS      | No                                               | No                                              |
-| Wasm     | No                                               | Yes (Text, Link, Image, File, Html, Rtf)        |
-| macOS    | Yes (Text, Link, Image, Html, Rtf)               | Yes (Text, Link, Image, File, Html, Rtf)        |
-| Skia WPF | Yes (Text, Link, Image, File, Html, Rtf)         | Yes (Text, Link, Image, File, Html, Rtf)        |
-| Skia GTK | No                                               | No                                              |
+|                       | From uno app to external                         | From external app to uno                        |
+| --------------------- | ------------------------------------------------ | ------------------------                        |
+| Android               | No                                               | No                                              |
+| iOS                   | No                                               | No                                              |
+| Wasm                  | No                                               | Yes (Text, Link, Image, File, Html, Rtf)        |
+| macOS                 | Yes (Text, Link, Image, Html, Rtf)               | Yes (Text, Link, Image, File, Html, Rtf)        |
+| Skia Desktop (Windows) | Yes (Text, Link, Image, File, Html, Rtf)         | Yes (Text, Link, Image, File, Html, Rtf)        |
+| Skia Linux            | No                                               | No                                              |
 
 * "Link" may refer to WebLink, ApplicationLink, or Uri formats
 

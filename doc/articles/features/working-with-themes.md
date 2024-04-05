@@ -53,7 +53,6 @@ When you change the theme mode on your device, the system will send a notificati
 
 - `App` constructor
 - `App.xaml`
-- `AppResources.xaml`
 - The `RequestedTheme` property of a parent `FrameworkElement`
 
 However, your app can still react manually to changes in the theme mode. To do so, you can use the [Uno.CommunityToolkit.WinUI.UI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI) NuGet package. This package is not required to change the app color theme, but it contains a `ThemeListener` class that can be used to listen for OS theme changes. To actually change the app color theme at runtime, you need to install the [Uno.Toolkit.WinUI](https://www.nuget.org/packages/Uno.Toolkit.WinUI) NuGet package which contains a `SystemThemeHelper` class.

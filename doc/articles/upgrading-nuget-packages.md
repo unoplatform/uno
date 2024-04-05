@@ -5,7 +5,7 @@ uid: Uno.Development.UpgradeUnoNuget
 
 Upgrading packages in your applications is done differently, depending on how your solution has created.
 
-- If your Uno Platform `.csproj` files start with `<Project Sdk="Uno.Sdk"`, your are using the [Uno.Sdk](https://www.nuget.org/packages/uno.sdk) structure introduced in Uno Platform 5.1.
+- If your Uno Platform `.csproj` files start with `<Project Sdk="Uno.Sdk"`, your are using the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) structure introduced in Uno Platform 5.1.
 - If not, you are using the original project structure provided before Uno Platform 5.1.
 
 Choose one of the sections below depending on your situation.

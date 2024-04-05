@@ -37,7 +37,7 @@ _There are a few known issues associated with the used of the compositor thread,
 
 ## Brush Anti-aliasing [Skia Backends]
 
-On Skia targets (GTK and WPF), anti-aliasing is disabled by default for brushes, You can request it to be anti-aliased by setting this in your application's constructor:
+On Skia Desktop targets (X11, Framebuffer, macOS, and Windows), anti-aliasing is disabled by default for brushes, You can request it to be anti-aliased by setting this in your application's constructor:
 
 ```csharp
 #if HAS_UNO

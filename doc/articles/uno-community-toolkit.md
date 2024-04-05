@@ -62,7 +62,7 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
 
 ## Referencing the Windows Community Toolkit
 
-When using the default Uno Platform solution templates, in your shared class library, add the following:
+When using the default Uno Platform solution templates, add the following to your application:
 
 ### [WinUI / WinAppSDK](#tab/tabid-winui)
 
