@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Extensions;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -18,6 +19,10 @@ public partial class TreeView : Control
 	private TreeViewList m_listControl;
 	private TreeViewNode m_rootNode;
 	private IList<TreeViewNode> m_pendingSelectedNodes;
+
+#if HAS_UNO
+	internal object PendingSelectedItem { get; set; }
+#endif
 
 	/// <summary>
 	/// Initializes a new instance of the TreeView control.
@@ -258,10 +263,27 @@ public partial class TreeView : Control
 		{
 			var items = SelectedItems;
 			var selected = items?.Count > 0 ? items[0] : null;
+#if !HAS_UNO
 			if (args.NewValue != selected)
 			{
 				ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
 			}
+#else // #15214: workaround for initial selection being lost
+			PendingSelectedItem = null;
+			if (args.NewValue != selected)
+			{
+				ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
+				// ^ the vm can fail to select the item for two reasons:
+				// 1. OnApplyTemplate was not yet called
+				// 2. the item is a descendant of a collapsed node
+				// in these cases, we should mark the item pending for selection.
+				// so it can be later picked up by TreeViewList::OnContainerContentChanging when it becomes materialized
+				if (items == null || (items is [var selected2] && args.NewValue != selected2))
+				{
+					PendingSelectedItem = args.NewValue;
+				}
+			}
+#endif
 		}
 	}
 

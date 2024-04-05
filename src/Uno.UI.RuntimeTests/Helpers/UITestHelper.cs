@@ -40,6 +40,8 @@ public static class UITestHelper
 		return element.GetAbsoluteBounds();
 	}
 
+	public static Task WaitForIdle() => TestServices.WindowHelper.WaitForIdle();
+
 	/// <summary>
 	/// Takes a screen-shot of the given element.
 	/// </summary>
