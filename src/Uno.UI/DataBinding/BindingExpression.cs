@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml.Data
 				path: ParentBinding.Path,
 				fallbackValue: ParentBinding.FallbackValue,
 				precedence: null,
-				allowPrivateMembers: ParentBinding.CompiledSource != null
+				allowPrivateMembers: ParentBinding.IsXBind
 			);
 			_boundPropertyType = targetPropertyDetails.Property.Type;
 
