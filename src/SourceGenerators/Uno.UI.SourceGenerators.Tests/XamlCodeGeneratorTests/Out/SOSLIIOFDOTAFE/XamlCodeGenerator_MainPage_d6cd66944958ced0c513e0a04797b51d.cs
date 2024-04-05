@@ -200,7 +200,7 @@ namespace TestRepro
 										new global::Microsoft.UI.Xaml.Setter
 										{
 											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
-											Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
+											Value = @"Red",
 											// Source 0\MainPage.xaml (Line 27:12)
 										}
 									);
@@ -242,7 +242,7 @@ namespace TestRepro
 										new global::Microsoft.UI.Xaml.Setter
 										{
 											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
-											Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Green),
+											Value = @"Green",
 											// Source 0\MainPage.xaml (Line 35:12)
 										}
 									);

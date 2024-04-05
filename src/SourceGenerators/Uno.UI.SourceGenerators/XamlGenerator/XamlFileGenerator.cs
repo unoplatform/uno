@@ -5097,32 +5097,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _metadataHelper.FindPropertyTypeByOwnerSymbol(_currentStyleTargetType, property);
 		}
 
-		private INamedTypeSymbol? GetTypeForSetterTarget(string target, XamlMemberDefinition? owner)
-		{
-			var ownerControl = GetControlOwner(owner?.Owner);
-			if (ownerControl != null)
-			{
-				// This builds property setters for specified member setter.
-				var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
-				var elementName = target.Substring(0, separatorIndex);
-				var targetElement = FindSubElementByName(ownerControl, elementName);
-				if (targetElement != null)
-				{
-					var propertyName = target.Substring(separatorIndex + 1);
-					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
-					// performed at runtime at a higher cost.
-					propertyName = RewriteAttachedPropertyPath(propertyName);
-					return _metadataHelper.FindPropertyTypeByOwnerSymbol(FindType(targetElement.Type), propertyName);
-				}
-				else
-				{
-					return null;
-				}
-			}
-
-			throw new InvalidOperationException("GetControlOwner returned null.");
-		}
-
 		private string BuildDependencyProperty(string property)
 		{
 			property = property.Trim('(', ')');
@@ -5529,9 +5503,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										setterPropertyType = GetDependencyPropertyTypeForSetter(setterPropertyName);
 									}
-									else if (GetMember(member.Owner, "Target") is { Value: string setterTarget })
+									else if (_currentStyleTargetType is not null && GetMember(member.Owner, "Target") is { Value: string setterTarget })
 									{
-										setterPropertyType = _currentStyleTargetType is null ? GetTypeForSetterTarget(setterTarget, member) : GetDependencyPropertyTypeForSetter(setterTarget);
+										// TODO: Confirm if (or not) we need to find the type even if we are not in a Style.
+										setterPropertyType = GetDependencyPropertyTypeForSetter(setterTarget);
 									}
 								}
 								else if (member.Owner?.Type.Name == "Setter" && member.Member.Name == "Target" && _currentStyleTargetType is not null)
