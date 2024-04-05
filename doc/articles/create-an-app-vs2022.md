@@ -101,14 +101,14 @@ To debug your Uno Platform **Desktop** target:
 - Directly on Windows:
   - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop)`
 
-        ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-debug-windows.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-debug-windows.png)
 
   - Press `F5` to debug.
 
 - Using WSL with X11:
   - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop WSL2)`
 
-        ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-wsl2-debug-windows.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-wsl2-debug-windows.png)
 
   - Then press `F5` or the green arrow to start debugging the app
 

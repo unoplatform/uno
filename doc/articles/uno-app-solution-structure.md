@@ -14,13 +14,11 @@ After creating a new solution called `MyApp`, it will contain the following proj
 
 The `MyApp.csproj` project supports the Mobile (iOS/Android/Mac Catalyst), WebAssembly, Desktop (native macOS, Linux X11/Framebuffer, Windows 7+), and Windows App SDK.
 
-    This project contains all the code for your application, alongside platform-specific code found in the `Platforms` folder. Each of these folders is only processed as part of their target environment.
+This project contains all the code for your application, alongside platform-specific code found in the `Platforms` folder. Each of these folders is only processed as part of their target environment.
 
 ## Further information
 
 See additional guides on handling platform-specific [C# code](platform-specific-csharp.md) and [XAML markup](platform-specific-xaml.md) in an Uno Platform project.
-
-The Uno Platform solution also [can be further optimized](xref:Build.Solution.TargetFramework-override) to build larger projects with Visual Studio 2022.
 
 ## Next Steps
 
