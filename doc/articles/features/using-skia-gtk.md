@@ -105,7 +105,7 @@ VS Code can [connect to a remote computer](https://code.visualstudio.com/docs/re
 
 To debug the application remotely, it's necessary to modify the launch.json file and add the DISPLAY variable in the env section:
 
-```
+```json
 "env": {
         "DOTNET_MODIFIABLE_ASSEMBLIES": "debug",
         "DISPLAY": ":0"
