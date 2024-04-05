@@ -25,7 +25,7 @@ internal class FocusManagerCoreWindowAdapter : FocusAdapter
 #if __WASM__ // In case of WASM we want to depart focus when tabbing out of the root visual.
 		bool isTabbingDirection = direction == FocusNavigationDirection.Next || direction == FocusNavigationDirection.Previous;
 
-		return isTabbingDirection && focusScopeIsIsland;
+		return isTabbingDirection;
 #else
 		return base.ShouldDepartFocus(direction);
 #endif

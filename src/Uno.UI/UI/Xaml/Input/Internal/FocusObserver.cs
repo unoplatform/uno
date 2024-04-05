@@ -327,22 +327,23 @@ internal class FocusObserver
 		Guid correlationId,
 		ref bool handled)
 	{
-		if (handled) //|| _focusController == null)
-		{
-			return;
-		}
+		return;
+		//if (handled || _focusController == null)
+		//{
+		//	return;
+		//}
 
-		var reason = GetFocusNavigationReasonFromDirection(direction);
-		if (reason == null)
-		{
-			// Do nothing if we dont support this navigation
-			return;
-		}
+		//var reason = GetFocusNavigationReasonFromDirection(direction);
+		//if (reason == null)
+		//{
+		//	// Do nothing if we dont support this navigation
+		//	return;
+		//}
 
-		StartInteraction(reason.Value, origin, correlationId);
+		//StartInteraction(reason.Value, origin, correlationId);
 
-		//_focusController.DepartFocus(_currentInteraction);
-		handled = true;
+		////_focusController.DepartFocus(_currentInteraction);
+		//handled = true;
 	}
 
 	private void StartInteraction(
