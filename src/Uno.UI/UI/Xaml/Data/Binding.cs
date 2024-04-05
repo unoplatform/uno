@@ -45,11 +45,6 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		private object _fallbackValue;
 
-		/// <summary>
-		/// A set of flags for this instance
-		/// </summary>
-		private BindingFlags _flags;
-
 		public Binding()
 		{
 
@@ -113,14 +108,7 @@ namespace Microsoft.UI.Xaml.Data
 		public object FallbackValue
 		{
 			get => _fallbackValue;
-			set
-			{
-				_fallbackValue = value;
-
-				// Mark the value as set, regardless of the value itself
-				// so x:Bind can set that value to the target.
-				_flags |= BindingFlags.FallbackValueSet;
-			}
+			set => _fallbackValue = value;
 		}
 
 		internal string FallbackValueThemeResource { get; set; }
@@ -231,24 +219,6 @@ namespace Microsoft.UI.Xaml.Data
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
 			XBindBack = xBindBack;
-		}
-
-		/// <summary>
-		/// Determines if the FallbackValue has been set
-		/// </summary>
-		/// <remarks>To be used for x:Bind only</remarks>
-		internal bool IsFallbackValueSet
-			=> _flags.HasFlag(BindingFlags.FallbackValueSet);
-
-		[Flags]
-		private enum BindingFlags
-		{
-			None = 0,
-
-			/// <summary>
-			/// Determines if the FallbackValue has been set.
-			/// </summary>
-			FallbackValueSet = 1,
 		}
 	}
 }
