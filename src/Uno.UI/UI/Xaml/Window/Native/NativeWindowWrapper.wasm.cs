@@ -33,7 +33,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 	}
 
-	private void DispatchDpiChanged() => 
+	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	internal void OnNativeClosed() => RaiseClosed();
