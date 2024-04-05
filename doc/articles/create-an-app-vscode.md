@@ -89,14 +89,14 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 
     ```bash
     $env:DOTNET_MODIFIABLE_ASSEMBLIES="debug"
-    dotnet run
+    dotnet run -f net8.0-desktop
     ```
 
 * On Linux or macOS:
 
     ```bash
     export DOTNET_MODIFIABLE_ASSEMBLIES=debug
-    dotnet run
+    dotnet run -f net8.0-desktop
     ```
 
 ### [**Android**](#tab/androiddebug)

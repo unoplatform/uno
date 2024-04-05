@@ -77,21 +77,21 @@ This warning can be disabled by adding the following to your `.csproj`:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSWarnBrowserIsFirst>true</UnoDisableVSWarnBrowserIsFirst>
+  <UnoDisableVSWarnBrowserNotFirst>true</UnoDisableVSWarnBrowserNotFirst>
 </PropertyGroup>
 ```
 
-### UNOB00011: The desktop TargetFramework must not be placed first in the TargetFrameworks property
+### UNOB00011: The desktop TargetFramework must be placed first in the TargetFrameworks property
 
 In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
 
-Make sure that `net8.0-desktop` is not first in your `<TargetFrameworks>` property.
+Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
 
 This warning can be disabled by adding the following to your `.csproj`:
 
 ```xml
 <PropertyGroup>
-  <UnoDisableVSWarnDesktopIsFirst>true</UnoDisableVSWarnDesktopIsFirst>
+  <UnoDisableVSWarnDesktopNotFirst>true</UnoDisableVSWarnDesktopNotFirst>
 </PropertyGroup>
 ```
 

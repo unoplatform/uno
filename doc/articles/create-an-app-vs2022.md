@@ -19,9 +19,9 @@ To create an Uno Platform app:
 
     ![Visual Studio - Configure project name and location](Assets/tutorial01/configure-new-unoplatform-app.PNG)
 
-1. Choose a template to build your application
+1. Choose a template preset to build your application
 
-    ![Visual Studio - Configure your new project](getting-started/wizard/assets/intro.jpg)
+    ![Visual Studio - Configure your new project](getting-started/wizard/assets/intro.png)
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project template wizard and all its options, see [this](xref:Uno.GettingStarted.UsingWizard).
@@ -39,95 +39,82 @@ To create an Uno Platform app:
 
 To run the **Windows** (WinAppSDK) head:
 
-- Right-click on the `MyApp.Windows` project, select **Set as startup project**
-- Select the `Debug|x86` configuration
-- Press the `MyApp.Windows` button to deploy the app
+- In the debugger toolbar, click the down arrow to select **MyApp (WinAppSDK Unpackaged)**
+
+    ![Visual Studio - Select the WinappSDK profile](getting-started/wizard/assets/winappsdk-debugger-dropdown.png)
+
+- Press the `MyApp (WinAppSDK Unpackaged)` button to deploy the app
 - If you've not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
 
 ### [**WebAssembly**](#tab/wasm)
 
 To run the **WebAssembly** (Wasm) head:
 
-- Right click on the `MyApp.Wasm` project, select **Set as startup project**
-- Press the `MyApp.Wasm` button to deploy the app
+- In the debugger toolbar, click the down arrow to select **MyApp (WebAssembly)**
+
+    ![Visual Studio - Select the Wasm profile](getting-started/wizard/assets/wasm-debugger-dropdown.png)
+
+- Press the `MyApp (WebAssembly)` button to deploy the app
 - To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 (see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started)
 
 ### [**ASP.NET Hosted WebAssembly**](#tab/wasm-hosted)
 
-To run the ASP.NET Hosted **WebAssembly** (Server) head:
+To run the ASP.NET Hosted **WebAssembly** (Server) head, if you've selected the option in the Wizard:
 
-- Right click on the `MyApp.Server` project, select **Set as startup project**
+- Right-click on the `MyApp.Server` project, select **Set as startup project**
 - Press the `MyApp.Server` button to deploy the app
 
 ### [**iOS**](#tab/iOS)
 
 To debug for **iOS**:
 
-- Right-click on the `MyApp.Mobile` project, select **Set as startup project**
-    > [!NOTE]
-    > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://learn.microsoft.com/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
+> [!NOTE]
+> For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://learn.microsoft.com/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
 
-- In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
+- In the "Debug toolbar" drop-down, select framework `net8.0-ios`:
 
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-ios" framework](Assets/quick-start/net8-ios-debug.png)
 
 - Select:
   - An active device, if your IDE is connected to a macOS Host
   - A [local device using Hot Restart](https://learn.microsoft.com/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
 
     > [!NOTE]
-    > If no iOS devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
+    > If no iOS devices are available, a Visual Studio 17.7+ issue may require unloading/reloading the project. Right-click on the `MyApp` project and select **Unload Project** then **Load project**.
 
 ### [**Android**](#tab/Android)
 
 To debug the **Android** platform:
 
-- Right click on the `MyApp.Mobile` project, select **Set as startup project**
-- In the **Debug toolbar** drop down, select framework `net7.0-android`
+- In the **Debug toolbar** drop-down, select framework `net8.0-android`
+
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-android" framework](Assets/quick-start/net8-android-debug.png)
+
 - Select an active device in the "Device" sub-menu
     > [!NOTE]
-    > If no android devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
+    > If no android devices are available, a Visual Studio 17.7+ issue may require unloading/reloading the project. Right-click on the `MyApp` project and select **Unload Project** then **Load project**.
 
-### [**Skia+GTK**](#tab/skiagtk)
+### [**Desktop**](#tab/desktop)
 
-To debug your **Skia+GTK** head:
+To debug your Uno Platform **Desktop** target:
 
 - Directly on Windows:
-  - Right-click the `MyApp.Skia.Gtk` project, select **Set as startup project**
-  - In the debug toolbar, next to the green arrow, select `MyApp.Skia.Gtk`, then press `F5`.
-- Using WSL:
-  - In the debugger menu, next to the green arrow, press the drop down to select **WSL**
-  - If this is the first time debugging the app:
-    - Locate and open the `Properties/launchSettings.json` file
-    - In the "WSL" section, add the following:
+  - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop)`
 
-            ```json
-            "environmentVariables": {
-                "DISPLAY": ":0",
-                "GDK_GL": "gles"
-            },
-            ```
+        ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-debug-windows.png)
 
-            The section should look then like this:
+  - Press `F5` to debug.
 
-            ```json
-            "WSL": {
-                "commandName": "WSL2",
-                "distributionName": "",
-                "environmentVariables": {
-                    "DISPLAY": ":0",
-                    "GDK_GL": "gles"
-                }
-            }
-            ```
+- Using WSL with X11:
+  - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop WSL2)`
+
+        ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-wsl2-debug-windows.png)
+
   - Then press `F5` or the green arrow to start debugging the app
 
 ***
 
 You're all set!
-
-> [!IMPORTANT]
-> Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
 ## Next Steps
 

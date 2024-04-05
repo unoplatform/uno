@@ -23,9 +23,9 @@ This feature can help blend the background of the window with the background of 
 
 ### Supported platforms
 
-|                            | Skia+GTK | Skia+WPF | iOS   | Android | macOS | Catalyst | WebAssembly |
-| -------------------------- | :------: | :------: | :---: | :-----: | :---: | :------: | :---------: |
-| `WindowHelper.SetBackground` |   ✔️     |    ✔️    | ❌    |  ❌     |  ❌  |   ❌     |  ❌         |
+|                            | Skia Desktop | iOS   | Android | macOS | Catalyst | WebAssembly |
+| -------------------------- | :------: | :---: | :-----: | :---: | :------: | :---------: |
+| `WindowHelper.SetBackground` |   ✔️     | ❌    |  ❌     |  ❌  |   ❌     |  ❌         |
 
 ## Retrieving the native window
 

@@ -31,14 +31,13 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 | Windows 10/11 (UWP/WinUI)         | ✔️                                              | ❌                                         | ❌                                                   | ✔️                                              |
 | Android                           | ✔️                                              | ✔️                                         | ❌                                                   | ✔️                                              |
 | iOS                               | ✔️†                                             | ✔️††                                       | ❌                                                   | ✔️†                                             |
-| Web (WebAssembly)                 | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
-| mac Catalyst                      | ❌                                              | ✔️††                                       | ❌                                                   | ❌                                              |
-| macOS (Skia-Gtk)                  | ✔️                                              | ✔️††                                       | ✔️                                                   | ✔️                                              |
-| Linux (Skia-Gtk)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
-| Windows 7+ (Skia-WPF)             | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
+| Web (WebAssembly)                 | ✔️                                              | ✔️                                         | ✔️                                                   | ❌†††                                           |
+| mac Catalyst                      | ❌                                              | ✔️††                                       | ❌                                                   | ❌†††                                           |
+| Skia Desktop                      | ✔️                                              | ✔️                                         | ✔️                                                   | ❌†††                                           |
 
 - † You will need to be connected to a Mac to run and debug iOS apps from Windows.
 - †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
+- ††† `net8.0-browserwasm` and `net8.0-desktop` is not available in Rider yet (Please [upvote this issue](https://aka.platform.uno/rider-desktop-wasm-support))
 
 # [**macOS**](#tab/macos)
 
@@ -58,11 +57,11 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 | iOS                               | ✔️                                       | ❌                                                   | ✔️                                               |
 | Web (WebAssembly)                 | ✔️                                       | ✔️                                                   | ✔️                                               |
 | mac Catalyst                      | ✔️                                       | ❌                                                   | ✔️                                               |
-| macOS (Skia-Gtk)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
-| Linux (Skia-Gtk)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
-| Windows 7+ (Skia-WPF)             | ❌                                       | ✔️                                                   | ❌                                               |
+| Skia Desktop                      | ✔️                                       | ✔️                                                   | ❌†                                              |
 
 The latest macOS release and Xcode version are required to develop with Uno Platform for iOS and Mac Catalyst targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.IosCatalyst#developing-on-older-mac-hardware).
+
+- † `net8.0-browserwasm` and `net8.0-desktop` are not available in Rider yet (Please [upvote this issue](https://aka.platform.uno/rider-desktop-wasm-support))
 
 # [**Linux**](#tab/linux)
 
@@ -77,18 +76,17 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 |                                   | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
 |-----------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)         | ❌                                        | ❌                                                     | ❌                                                |
-| Android                           | ✔️                                        | ❌                                                     | ❌†                                               |
-| iOS                               | ❌                                        | ❌                                                     | ❌                                                |
-| Web (WebAssembly)                 | ✔️                                        | ✔️                                                     | ✔️                                                |
-| mac Catalyst                      | ❌                                        | ❌                                                     | ❌                                                |
-| macOS (Skia-Gtk)                  | ✔️                                        | ✔️                                                     | ✔️                                                |
-| Linux (Skia-Gtk)                  | ✔️                                        | ✔️                                                     | ✔️                                                |
-| Windows 7+ (Skia-WPF)             | ❌                                        | ❌                                                     | ❌                                                |
+| Windows 10/11 (UWP/WinUI)         | ❌                                        | ❌                                                     | ❌                                            |
+| Android                           | ✔️                                        | ❌                                                     | ❌†                                           |
+| iOS                               | ❌                                        | ❌                                                     | ❌                                            |
+| Web (WebAssembly)                 | ✔️                                        | ✔️                                                     | ❌                                            |
+| mac Catalyst                      | ❌                                        | ❌                                                     | ❌                                            |
+| Skia Desktop                      | ✔️                                        | ✔️                                                     | ❌††                                          |
 
 **Notes:**
 
-† Rider [does not support .NET Android](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) on Linux at this time.
+- † Rider [does not support .NET Android](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) on Linux at this time.
+- †† `net8.0-browserwasm` and `net8.0-desktop` are not available in Rider yet (Please [upvote this issue](https://aka.platform.uno/rider-desktop-wasm-support)).
 
 ***
 

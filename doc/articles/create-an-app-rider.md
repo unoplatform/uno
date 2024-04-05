@@ -17,9 +17,6 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 > [!NOTE]
 > Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.Rider).
->
-> [!IMPORTANT]
-> As of Rider 2023.1, .NET 8 for mobile targets is not supported. To build and run mobile apps, use .NET 7 in your `TargetFrameworks`. See [this JetBrains article](https://rider-support.jetbrains.com/hc/en-us/articles/13244959138834) for more details.
 
 ## Create the App
 
@@ -42,6 +39,11 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
     ![A screen showing the dotnet new command to create the new app](Assets/quick-start/live-wizard-03-create-app.png)
 
 1. In your terminal, navigate to the folder that will contain your new app.
+
+    > [!IMPORTANT]
+    > As of Rider 2023.3, the Uno Platform 5.2 `net8.0-browserwasm` and `net8.0-desktop` TargetFrameworks are not supported. See [this JetBrains article](https://aka.platform.uno/rider-desktop-wasm-support) for more details.
+    > To build an app using Uno Platform 5.1 templates that are compatible with Rider, run `dotnet new uninstall uno.templates` then `dotnet new install uno.templates::5.1.25`.
+
 1. Create a new project by pasting the command that was previously generated in the Live Wizard.
 1. Open the solution in Rider, you should now have a folder structure that looks like this:
 
@@ -85,16 +87,9 @@ You will be able to build the Windows project.
 
 ![run-winappsdk-rider](Assets/quick-start/run-winappsdk-rider.png)  
 
-### [**Skia Gtk**](#tab/gtk)
+### [**Desktop**](#tab/desktop)
 
-Select the Skia.Gtk project, then Run.
-
-### [**Skia WPF**](#tab/wpf)
-
-Select the Skia.WPF project, then Run.
-
-> [!NOTE]
-> The WPF project can only be run under Windows.
+Select the `net8.0-desktop` target framework, then Run.
 
 ***
 

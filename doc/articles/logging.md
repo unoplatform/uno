@@ -6,7 +6,7 @@ uid: Uno.Development.Logging
 
 Virtually every production level application should utilize some form of logging. During development, especially when developing WASM applications where using a debugger can be more challenging, diagnostic logs can be invaluable for identifying issues. Once in production, capturing information about critical failures can be invaluable.
 
-## Logging in Uno
+## Logging in Uno Platform
 
 The Uno platform makes use of the Microsoft logging NuGet packages to provide comprehensive logging support.
 
