@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		private const bool _canTabOutOfPlugin =
 #if !__WASM__
-				false;
+				true;
 #else
 				true; // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
 #endif

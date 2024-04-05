@@ -10,8 +10,6 @@ namespace SamplesApp
 		public MainPage()
 		{
 			this.InitializeComponent();
-
-			sampleControl.DataContext = new SampleChooserViewModel(sampleControl);
 		}
 	}
 }
