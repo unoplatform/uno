@@ -12,7 +12,7 @@ public sealed partial class XamlRoot
 	/// <summary>
 	/// Gets the width and height of the content area.
 	/// </summary>
-	internal Size Size => VisualTree.Size;
+	public Size Size => VisualTree.Size;
 
 	/// <summary>
 	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
