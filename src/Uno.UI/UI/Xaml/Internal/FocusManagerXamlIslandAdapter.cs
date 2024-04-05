@@ -26,7 +26,7 @@ internal class FocusManagerXamlIslandAdapter : FocusAdapter
 	internal override bool ShouldDepartFocus(FocusNavigationDirection direction)
 	{
 		bool isTabbingDirection = direction == FocusNavigationDirection.Next || direction == FocusNavigationDirection.Previous;
-		bool focusScopeIsIsland = _contentRoot.XamlIslandRoot!.IsActive();
+		bool focusScopeIsIsland = _contentRoot.XamlIslandRoot?.IsLoaded == true; // TODO Uno: Should ideally be _contentRoot.XamlIslandRoot!.IsActive();
 
 		return isTabbingDirection && focusScopeIsIsland;
 	}
