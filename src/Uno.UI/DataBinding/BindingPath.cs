@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 namespace Uno.UI.DataBinding
 {
 	[DebuggerDisplay("Path={_path} DataContext={_dataContextWeakStorage?.Target}")]
-	internal partial class BindingPath : IDisposable, IValueChangedListener, IEquatable<BindingPath>
+	internal partial class BindingPath : IDisposable, IEquatable<BindingPath>
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
 		private readonly string _path;
@@ -84,13 +84,7 @@ namespace Uno.UI.DataBinding
 			void NewValue();
 		}
 
-		/// <summary>
-		/// Provides the new values for the current binding.
-		/// </summary>
-		/// <remarks>
-		/// This event is not a generic type for performance constraints on Mono's Full-AOT
-		/// </remarks>
-		public IValueChangedListener? ValueChangedListener { get; set; }
+		public BindingExpression? Expression { get; set; }
 
 		static BindingPath()
 		{
@@ -122,7 +116,7 @@ namespace Uno.UI.DataBinding
 
 			if (_value != null)
 			{
-				_value.ValueChangedListener = this;
+				_value.Path = this;
 			}
 		}
 
@@ -309,13 +303,13 @@ namespace Uno.UI.DataBinding
 			else
 			{
 				// This is an empty path binding, raise the current value as changed.
-				ValueChangedListener?.OnValueChanged(Value);
+				Expression?.OnValueChanged(Value);
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object o)
+		internal void OnValueChanged(object? o)
 		{
-			ValueChangedListener?.OnValueChanged(o);
+			Expression?.OnValueChanged(o);
 		}
 
 		~BindingPath()
@@ -472,7 +466,7 @@ namespace Uno.UI.DataBinding
 				{
 					tail = tail.Next;
 				}
-				tail.ValueChangedListener?.OnValueChanged(bindingItem.Value);
+				tail.Path?.OnValueChanged(bindingItem.Value);
 			};
 
 			notify.CollectionChanged += handler;

@@ -20,7 +20,7 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Xaml.Data
 {
-	public partial class BindingExpression : IDisposable, IValueChangedListener
+	public partial class BindingExpression : IDisposable
 	{
 		private readonly Type _boundPropertyType;
 		private readonly ManagedWeakReference _view;
@@ -295,7 +295,7 @@ namespace Microsoft.UI.Xaml.Data
 
 			if (
 				// If a listener is set, ApplyBindings has been invoked
-				_bindingPath.ValueChangedListener is not null
+				_bindingPath.Expression is not null
 
 				// If this is not an x:Bind
 				&& _updateSources is null
@@ -514,7 +514,7 @@ namespace Microsoft.UI.Xaml.Data
 				{
 					foreach (var bindingPath in _updateSources)
 					{
-						bindingPath.ValueChangedListener = this;
+						bindingPath.Expression = this;
 
 						if (ParentBinding.CompiledSource != null)
 						{
@@ -530,16 +530,16 @@ namespace Microsoft.UI.Xaml.Data
 					{
 						foreach (var bindingPath in _updateSources)
 						{
-							bindingPath.ValueChangedListener = null;
+							bindingPath.Expression = null;
 						}
 					});
 
 				}
 				else
 				{
-					_bindingPath.ValueChangedListener = this;
+					_bindingPath.Expression = this;
 					_bindingPath.SetWeakDataContext(weakDataContext);
-					_subscription.Disposable = new DisposableAction(() => _bindingPath.ValueChangedListener = null);
+					_subscription.Disposable = new DisposableAction(() => _bindingPath.Expression = null);
 				}
 			}
 			else
@@ -569,7 +569,7 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object o)
+		internal void OnValueChanged(object o)
 		{
 			if (ParentBinding.XBindSelector != null)
 			{

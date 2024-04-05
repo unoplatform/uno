@@ -92,7 +92,7 @@ namespace Uno.UI.DataBinding
 			public BindingItem? Next { get; }
 			public string PropertyName { get; }
 
-			public IValueChangedListener? ValueChangedListener { get; set; }
+			public BindingPath? Path { get; set; }
 
 			public object? Value
 			{
@@ -392,7 +392,7 @@ namespace Uno.UI.DataBinding
 
 			private void RaiseValueChanged(object? newValue)
 			{
-				ValueChangedListener?.OnValueChanged(newValue);
+				Path?.OnValueChanged(newValue);
 			}
 
 			/// <summary>
