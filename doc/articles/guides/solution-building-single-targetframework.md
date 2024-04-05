@@ -3,7 +3,10 @@ uid: Build.Solution.TargetFramework-override
 ---
 # Improve Build Times with Visual Studio 2022
 
-The Uno Platform template provides a cross-targeted Class library that includes multiple target frameworks, and your application may contain your own cross-targeted projects as well. This document explains how to make your builds faster.
+The Uno Platform template **prior to Uno Platform 5.2** provides a cross-targeted Class library that includes multiple target frameworks, and your application may contain your own cross-targeted projects as well. This document explains how to make your builds faster.
+
+> [!NOTE]
+> For projects created with Uno Platform 5.2 or later, the Uno.Sdk takes care of building appropriate target frameworks for the selected debugger target. Optionally, you can follow [our migration guide](xref:Uno.Development.MigratingToSingleProject) to use the new project structure.
 
 ## Cross-targeted library builds in Visual Studio
 

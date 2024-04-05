@@ -9,15 +9,13 @@ Uno Platform currently supports targeting the following operating systems:
   - WebAssembly (wasm)
 - Desktop
   - Mac (Mac Catalyst)
-  - Windows
-  - GTK
-  - WPF
-  - Linux FrameBuffer (linux-fb)
+  - Windows App SDK
+  - Skia Desktop (Linux X11, Linux Framebuffer, Windows, macOS)
 
 > [!NOTE]
-> For most platforms the name of the command line argument is just the platform name (eg windows or ios). However, for WebAssembly, Mac and Linux Framebuffer, use the abbreviation in braces in the above list (ie wasm, maccatalyst or linux-fb).
+> For most platforms the name of the command line argument is just the platform name (eg windows or ios). However, for WebAssembly, Mac, and Linux FrameBuffer, use the abbreviation in braces in the above list (ie wasm, maccatalyst).
 
-By default, when you create a new Uno Platform app, it will target the following platforms: Windows, iOS, Android, Mac Catalyst, Gtk and Wasm.
+By default, when you create a new Uno Platform app, it will target the following platforms: Windows App SDK, iOS, Android, Mac Catalyst, and Skia Desktop.
 
 The following command only selects the Windows platform:
 

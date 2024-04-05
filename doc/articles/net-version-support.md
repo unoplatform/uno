@@ -15,7 +15,7 @@ This page lists supported .NET versions and [C# language versions](https://learn
 | Platform                                   | Default .NET version | Default C# version |  Max .NET version | Max C# version |
 |--------------------------------------------|:--------------------:|:------------------:|:-----------------:|:--------------:|
 | WebAssembly                                | .NET 7               | 11                 | .NET 8            | 12             |
-| Skia (Gtk, Framebufffer, WPF)              | .NET 7               | 11                 | .NET 8            | 12             |
+| Skia Desktop                               | .NET 7               | 11                 | .NET 8            | 12             |
 | WinAppSDK                                  | .NET 7               | 11                 | .NET 8            | 12             |
 | iOS, macOS, Android, Catalyst (.NET Core)  | .NET 7               | 11                 | .NET 8            | 12             |
 | UWP                                        | .NET Standard 2.0    | 7.3                | .NET Standard 2.0 | 7.3            |
