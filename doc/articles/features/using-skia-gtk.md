@@ -99,6 +99,19 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 </ItemGroup>
 ```
 
+### Remote debuging 
+
+VS Code can [connect to a remote computer](https://code.visualstudio.com/docs/remote/ssh) (using ssh) to develop and debug projects. Note that all the sources, build and debugging are done on the remote computer, where the Uno Platform extension is being executed.
+
+To debug the application remotely, it's necessary to modify the launch.json file and add the DISPLAY variable in the env section:
+
+```
+"env": {
+        "DOTNET_MODIFIABLE_ASSEMBLIES": "debug",
+        "DISPLAY": ":0"
+      },
+```
+
 ### .NET Native AOT support
 
 Building an Uno Platform Skia+GTK app with .NET (7+) Native AOT requires, GtkSharp 3.24.24.38 (or later), or Uno Platform 4.7 (or later).
