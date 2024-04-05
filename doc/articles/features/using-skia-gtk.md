@@ -103,7 +103,7 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 
 VS Code can [connect to a remote computer](https://code.visualstudio.com/docs/remote/ssh) (using SSH) to develop and debug projects. Note that all the sources, build and debugging are done on the remote computer, where the Uno Platform extension is being executed.
 
-To debug the application remotely, it's necessary to modify the launch.json file and add the DISPLAY variable in the env section:
+To debug the application remotely, it's necessary to modify the `launch.json` file and add the `DISPLAY` variable in the `env` section:
 
 ```json
 {
