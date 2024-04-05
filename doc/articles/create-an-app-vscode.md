@@ -125,7 +125,6 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
     dotnet run -f net8.0-desktop
     ```
 
-
 ### [**Android**](#tab/androiddebug)
 
 In VS Code :
