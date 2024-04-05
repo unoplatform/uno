@@ -1,25 +1,29 @@
 ﻿<Page
-	x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_IsPlaying"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_IsPlaying"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<StackPanel Spacing="10">
-		<TextBlock FontSize="15">Animated GIF</TextBlock>
-		<Image Width="150" Height="150">
-			<Image.Source>
-				<BitmapImage
-					UriSource="ms-appx:///Assets/Formats/animated.gif"
-					x:Name="image" />
-			</Image.Source>
-		</Image>
+    <StackPanel Spacing="10">
+        <TextBlock FontSize="15">Animated GIF</TextBlock>
+        <Image Width="150" Height="150">
+            <Image.Source>
+                <BitmapImage x:Name="image" UriSource="ms-appx:///Assets/Formats/animated.gif" />
+            </Image.Source>
+        </Image>
 
-		<TextBlock>IsPlaying: <Run Text="{Binding IsPlaying, ElementName=image}" /></TextBlock>
-		<Button Click="PlayClicked">PLAY</Button>
-		<Button Click="StopClicked">STOP</Button>
-
-	</StackPanel>
+        <TextBlock>
+            <Run Text="IsAnimatedBitmap:" />
+            <Run Text="{x:Bind IsAnimatedBitmap, Mode=OneWay}" />
+        </TextBlock>
+        <TextBlock>
+            <Run Text="IsPlaying:" />
+            <Run Text="{x:Bind IsPlaying, Mode=OneWay}" />
+        </TextBlock>
+        <Button Click="PlayClicked">PLAY</Button>
+        <Button Click="StopClicked">STOP</Button>
+    </StackPanel>
 </Page>
