@@ -350,6 +350,8 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 	internal TreeViewList ListControl => m_TreeViewList;
 
+	internal TreeView TreeView => m_TreeView;
+
 	private bool IsInSingleSelectionMode()
 	{
 		return m_TreeViewList.SelectionMode == ListViewSelectionMode.Single;
