@@ -751,8 +751,9 @@ namespace Microsoft.UI.Xaml.Data
 				// Only call the converted with null if the final segment (i.e. the tail of the chain) is null
 				// In other words, if Path == "Outer.Inner" and Outer is null, don't call the converter.
 				// Only call the converter with null if Outer is not null and Inner is null.
+				// If the Binding path is empty and DataContext is null, the converter is still NOT called
 				// https://github.com/unoplatform/uno/issues/16016
-				var convertedValue = v is { } || _bindingPath.OnlyFinalSegmentNull() ? ConvertValue(v) : DependencyProperty.UnsetValue;
+				var convertedValue = DataContext is { } && (v is { } || _bindingPath.OnlyLeafNodeNull()) ? ConvertValue(v) : DependencyProperty.UnsetValue;
 
 				if (convertedValue == DependencyProperty.UnsetValue)
 				{
@@ -760,6 +761,10 @@ namespace Microsoft.UI.Xaml.Data
 				}
 				else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
 				{
+					// The TargetNullValue is only used when the "leaf node" is null. Meaning
+					// 1. binding to anything with a null DataContext does NOT use TargetNullValue
+					// 2. binding to OuterNode.LeafNode with DC != null && DC.OuterNode == null does NOT use TargetNullValue
+					// 3. binding to OuterNode.LeafNode with DC.OuterNode != null && DC.OuterNode.LeafNode == null will use TargetNullValue
 					SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
 				}
 				else
