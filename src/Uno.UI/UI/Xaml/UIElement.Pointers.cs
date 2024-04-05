@@ -798,7 +798,7 @@ namespace Microsoft.UI.Xaml
 
 			if (!wasDragOver)
 			{
-				var args2 = new DragEventArgs(args);
+				var args2 = new global::Microsoft.UI.Xaml.DragEventArgs(args);
 				SafeRaiseEvent(DragEnterEvent, args);
 				args.AcceptedOperation = args2.AcceptedOperation;
 			}
@@ -818,7 +818,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{
-				var args2 = new DragEventArgs(args);
+				var args2 = new global::Microsoft.UI.Xaml.DragEventArgs(args);
 				SafeRaiseEvent(DragOverEvent, args2);
 				args.AcceptedOperation = args2.AcceptedOperation;
 				// On WinUI, if the final DragOver event sets AcceptedOperation to None, the DropEvent won't fire

@@ -1020,7 +1020,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var lv = new ListView
 			{
-				CanDragItems = true, ItemsSource = "12"
+				CanDragItems = true,
+				ItemsSource = "12"
 			};
 
 			lv.DragItemsStarting += (_, e) =>
