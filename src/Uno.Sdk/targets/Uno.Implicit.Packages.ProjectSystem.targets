@@ -8,6 +8,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(_IsExecutable) == 'true'">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(IsPackable) != 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" />
