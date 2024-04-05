@@ -8,10 +8,10 @@ This setting lets you choose the .NET version to target. The default is .NET 8.0
     dotnet new unoapp -tfm 8.0
     ```
 
-- #### .NET 7.0
+- #### .NET 9.0 Preview
 
-    [.NET 7.0](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-7) is provided as an STS (Standard Term Support) version. This option should only be used in scenarios where .NET 8.0 cannot be used.  
+    [.NET 9.0](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/overview) is provided as an STS (Standard Term Support) version. This is a preview version to be released at the end of 2024.
 
     ```dotnetcli
-    dotnet new unoapp -tfm 7.0
+    dotnet new unoapp -tfm 9.0
     ```

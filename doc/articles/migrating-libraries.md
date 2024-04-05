@@ -38,11 +38,7 @@ Adding Uno Platform support to an existing class library entails changing the co
 
 ## Adding dependencies
 
-If your class library had additional dependencies, you will need to restore them. See [here](migrating-before-you-start.md) for tips on finding compatible dependency versions for each target. See the [working with cross-targeted libraries article](cross-targeted-libraries.md) for how to add dependencies to your project.
-
-## Working with cross-targeted libraries
-
-At present, there are a number of limitations related to Visual Studio when working with cross-targeted library projects. [This article](cross-targeted-libraries.md) explains how to perform common operations when working with cross-targeted projects.
+If your class library had additional dependencies, you will need to restore them. See [here](migrating-before-you-start.md) for tips on finding compatible dependency versions for each target. See the [working with Control libraries article](xref:Guide.HowTo.Create-Control-Library) for how to add dependencies to your project.
 
 ## Adjusting code for Uno compatibility
 

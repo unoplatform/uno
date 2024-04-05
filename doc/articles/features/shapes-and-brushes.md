@@ -47,7 +47,7 @@ Notes:
 
 ## Implemented Brushes / Properties
 
-| Brush                              | Android | iOS     | macOS | Wasm | GTK/WPF |                                                             |
+| Brush                              | Android | iOS     | macOS | Wasm | Skia Desktop |                                                             |
 | ---------------------------------- | ------- | ------- | ---- | ------------------------------------------------------------ | ---------------------------------- |
 | `AcrylicBrush`                     | Yes (3) | Yes (3) | Yes (3) | Yes   | Yes | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.media.acrylicbrush) |
 | `ImageBrush`                       | Yes (1) | Yes (1) |  | No   | Yes | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.media.imagebrush) |

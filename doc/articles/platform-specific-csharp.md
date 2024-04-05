@@ -2,9 +2,9 @@
 uid: Uno.Development.PlatformSpecificCSharp
 ---
 
-# Platform-specific C# code in Uno
+# Platform-specific C# code
 
-Uno allows you to reuse views and business logic across platforms. Sometimes though, you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform.
+Uno Platform allows you to reuse views and business logic across platforms. Sometimes though, you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform.
 
 <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
     <iframe
@@ -17,7 +17,7 @@ Uno allows you to reuse views and business logic across platforms. Sometimes tho
     </iframe>
 </div>
 
-This guide covers multiple approaches to managing per-platform code in C#. See [this guide for managing per-platform XAML](platform-specific-xaml.md).
+This guide covers multiple approaches to managing per-platform code in C#. See [this guide for managing per-platform XAML](xref:Uno.Development.PlatformSpecificXaml).
 
 ## Project structure
 
@@ -50,8 +50,8 @@ The following conditional symbols are predefined for each Uno platform:
 | iOS             | `__IOS__`          | |
 | Catalyst        | `__MACCATALYST__`  | |
 | macOS           | `__MACOS__`        | |
-| WebAssembly     | `__WASM__`         | Only available in the `MyApp.WebAssembly` head, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-and-considerations) |
-| Skia            | `HAS_UNO_SKIA`     | Only available in the Skia head, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-and-considerations) |
+| WebAssembly     | `__WASM__`         | Only available in the `net8.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
+| Skia            | `HAS_UNO_SKIA`     | Only available in the `net8.0-desktop` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
 | _Non-Windows_   | `HAS_UNO`          | To learn about symbols available when `HAS_UNO` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
 
 > [!TIP]
@@ -59,7 +59,7 @@ The following conditional symbols are predefined for each Uno platform:
 
 ### Windows-specific code
 
-On Windows (the Windows head project), an Uno Platform application isn't using Uno.UI at all. It's compiled just like a single-platform desktop application, using Microsoft's own tooling. For that reason, the `HAS_UNO` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
+On `net8.0-windows10` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `HAS_UNO` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
 
 Apps generated with the default `unoapp` solution template use **Windows App SDK** when targeting Windows. While this is the recommended path for new Windows apps, some solutions instead use **UWP** to target Windows. Both app models define a different conditional symbol:
 
@@ -68,14 +68,12 @@ Apps generated with the default `unoapp` solution template use **Windows App SDK
 | Windows App SDK | `WINDOWS10_0_18362_0_OR_GREATER`  | Depending on the `TargetFramework` value, the _18362_ part may need adjustment |
 | Universal Windows Platform         | `NETFX_CORE`  | No longer defined in new apps by default |
 
-### WebAssembly and Skia considerations
+### WebAssembly considerations
 
-The Uno Platform templates use a separate project library to share code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework`, and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_SKIA` are not available in this project, but are available in C# code specified directly in the individual heads.
-
-In order to execute platform-specific code for WebAssembly, a runtime check needs to be included:
+The Uno Platform templates differentiate platforms using the target framework, yet it's possible to determine the WebAssembly platform at runtime using:
 
 ```csharp
-if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+if (OperatingSystem.IsBrowser())
 {
    // Do something WebAssembly specific
 }
@@ -83,8 +81,6 @@ if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
 
 > [!NOTE]
 > [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) are available on all platforms targeting .NET 7 and later, and this code does not need to be conditionally excluded.
-
-WebAssembly is currently a `net7.0` target, and cannot yet be discriminated at compile time until a new TargetFramework for WebAssembly is included. This was [proposed](https://github.com/dotnet/designs/pull/289) as `net8.0-browser` in .NET 8, but it didn't yet happen.
 
 ## Type aliases
 
@@ -106,7 +102,19 @@ public IEnumerable<_View> FindDescendants(FrameworkElement parent) => ...
 
 ## Partial class definitions
 
-Heavy usage of `#if` conditionals in shared code makes it hard to read and comprehend. A better approach is to use [partial class definitions](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) to split shared and platform-specific code. These partial classes need to exist in the shared project as it's compiled separately from each project head. This method still requires `#if` conditionals.
+Heavy usage of `#if` conditionals in shared code makes it hard to read and comprehend. A better approach is to use [partial class definitions](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) to split shared and platform-specific code.
+
+Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk`, a set of implicit file name conventions can be used to target specific platforms:
+
+* `*.wasm.cs` is built only for `net8.0-browserwasm`
+* `*.skia.cs` is built only for `net8.0-desktop`
+* `*.reference.cs` is built only for `net8.0-desktop`
+* `*.iOS.cs` is built only for `net8.0-ios` and `net8.0-maccatalyst`
+* `*.macOS.cs` is built only for `net8.0-macos`
+* `*.iOSmacOS.cs` is built only for `net8.0-ios` and `net8.0-macos`
+* `*.Android.cs` is built only for `net8.0-android`
+
+Using file name conventions allows for reducing the use of `#if` compiler directives.
 
 ### A simple example
 

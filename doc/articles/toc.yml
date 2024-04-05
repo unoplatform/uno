@@ -125,7 +125,6 @@
 - name: Overview
   items:
     - name: Architecture
-      topicHref: xref:Uno.Development.About
       items:
         - name: Intro
           href: xref:Uno.Documentation.Intro
@@ -134,10 +133,8 @@
           items:
           - name: .NET Versions
             href: net-version-support.md
-          - name: Working with Skia+GTK
-            href: features/using-skia-gtk.md
-          - name: Working with Skia+WPF
-            href: features/using-skia-wpf.md
+          - name: Working with Skia Desktop
+            href: xref:Uno.Skia.Desktop
           - name: Working with the Linux Framebuffer
             href: features/using-linux-framebuffer.md
         - name: Philosophy
@@ -172,10 +169,13 @@
         href: logging.md
       - name: AppManifest (WebAssembly)
         href: wasm-appmanifest.md
-      - name: Creating a cross-targeted library
-        href: cross-targeted-libraries.md
       - name: Hosting a WebAssembly app
         href: xref:Uno.Development.HostWebAssemblyApp
+      - name: Legacy Topics
+        items:
+        - name: Working with Skia+GTK
+          href: features/using-skia-gtk.md
+
 
     - name: Embedding
       items:
@@ -192,10 +192,10 @@
         href: xref:Uno.Development.UpgradeUnoNuget
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
+      - name: Upgrading to Single Project
+        href: xref:Uno.Development.MigratingToSingleProject
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
-      - name: Upgrading to Uno.Sdk
-        href: xref:Uno.Development.MigratingToUnoSdk
       - name: Upgrading from .NET 7 to .NET 8
         href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
@@ -348,8 +348,9 @@
 - name: Reference
   items:
     - name: Overview
-      href: using-uno-ui.md
       items:
+      - name: Developing with Uno Platform
+        href: xref:Uno.Development.Overview
       - name: Features List
         href: supported-features.md
       - name: Feature Flags

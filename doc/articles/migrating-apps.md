@@ -4,11 +4,11 @@ uid: Uno.Development.MigratingApps
 
 # Migrating a UWP-only application codebase to an Uno Platform application
 
-This article describes how to migrate a C# and XAML application targeting only UWP to one targeting multiple platforms using Uno Platform. The final application codebase will share 99% of the same code with the original, but the solution structure will be different.
+This article describes how to migrate a C# and XAML application targeting only UWP to one targeting multiple platforms using Uno Platform. The final application codebase will share 99% of the same code as the original, but the solution structure will be different.
 
-It assumes you're using Visual Studio for Windows, but the steps are similar if you're using VS Code or another IDE. The basic principle is to create an empty Uno Platform app with the same name as your UWP-only app, and to copy the contents of the old app into the shared project of the new app.
+It assumes you're using Visual Studio for Windows, but the steps are similar if you're using VS Code or another IDE. The basic principle is to create an empty Uno Platform app with the same name as your UWP-only app and to copy the contents of the old app into the main project of the new app.
 
-After you've migrated the files and dependencies, the general [migration guidance article](migrating-guidance.md) will take you through the final steps to adjust your code to be Uno compatible.
+After you've migrated the files and dependencies, the general [migration guidance article](migrating-guidance.md) will take you through the final steps to adjust your code to be Uno-compatible.
 
 ## Prerequisites
 
@@ -30,13 +30,13 @@ Note: these steps will **destructively modify** your existing UWP-only solution.
  Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker_OLD", "BugTracker_OLD\BugTracker_OLD.csproj", "{92E4C60C-336D-4DFB-B08D-80489617C1F2}"
  ```
 
-1. Open the solution. Right-click on the solution and choose 'Add > New Project'. Search for the 'Uno Platform App' template. Enter the desired name (eg `BugTracker` in our fictional example). Hit 'Create'. You should now have a set of platform 'head' projects (`BugTracker.iOS`, `BugTracker.Windows`, etc), under the `Platforms` folder, and a Shared project (`BugTracker.Shared`).
+1. Open the solution. Right-click on the solution and choose 'Add > New Project'. Search for the 'Uno Platform App' template. Enter the desired name (eg `BugTracker` in our fictional example). Hit 'Create'. You should now have a project named `BugTracker`.
 
-1. Delete `MainPage.xaml` from the new Shared project - you will replace these with your existing files.
+1. Delete `MainPage.xaml` from the new project - you will replace these with your existing files.
 
 1. Replace `App.cs` contents with everything from your existing `App.xaml.cs` except the `InitializeComponent` call in the constructor.
 
-1. Transfer all code files (C# and XAML) and assets from your old UWP-only project to the new Shared project.  
+1. Transfer all code files (C# and XAML) and assets from your old UWP-only project to the new project.
 
 *Note: you can safely delete 'head' projects for platforms that you're sure you don't want to target.*
 
@@ -60,4 +60,4 @@ For UWP, the `Package.appxmanifest` file can be copied directly from your old UW
 
 ## What if my existing app targets WinUI 3?
 
-The basic idea is the same, however, you'll use the [`dotnet new` templates](get-started-dotnet-new.md) to create a WinUI 3-compatible Uno Platform app, into which you can transfer files and dependencies in a similar manner.
+The basic idea is the same, however, you'll use the [`dotnet new` templates](xref:Uno.GetStarted.dotnet-new) to create a WinUI 3-compatible Uno Platform app, into which you can transfer files and dependencies in a similar manner.

@@ -154,7 +154,7 @@ Uno.Extensions Authentication is a provider-based authentication service that ca
 
 ## Skia drawing
 
-The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support to fine grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for GTK, WPF, and FrameBuffer apps.
+The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support for fine-grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for X11, FrameBuffer, macOS, and Windows 7+ apps.
 
 ## Animations: Beyond storyboards, access to Lottie and Rive
 

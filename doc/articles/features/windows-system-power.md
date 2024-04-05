@@ -16,18 +16,18 @@ uid: Uno.Features.WSPower
 * ✔  Supported
 * ✖ Not supported
 
-| Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ | ✖ ️  |
-| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ | ✖ ️  |
+| Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | Skia Desktop |
+|----------------|-------|-------------|---------|-------|-------|-----|
+| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ |
+| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ |
+| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ |
+| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ |
+| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ |
 
 ### Usage
 

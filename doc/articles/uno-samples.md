@@ -50,7 +50,7 @@ Demonstrates the use of [SignalR](https://learn.microsoft.com/aspnet/core/signal
 
 ### Control Library
 
-An example of creating a custom control library and calling a control from your shared project.
+An example of creating a custom control library and calling a control from your app project.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/ControlLibrary)
 

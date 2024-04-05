@@ -4,7 +4,10 @@ uid: Uno.Skia.Gtk
 
 # Using the Skia+GTK head
 
-Uno supports running applications using Gtk+3 shell, using a Skia backend rendering. Gtk3+ is used to create a shell for the application to be used on various operating systems, such as Linux, Windows and macOS.
+> [!IMPORTANT]
+> The Skia+Gtk support is being retired as of Uno Platform 5.2. The package will continue to be available until further notice and the latest apps should be moving to the [Skia Desktop support](xref:Uno.Skia.Desktop).
+
+Uno supports running applications using Gtk+3 shell, using a Skia backend rendering. Gtk3+ is used to create a shell for the application to be used on various operating systems, such as Linux, Windows, and macOS.
 
 Depending on the target platform, the UI rendering may be using OpenGL or software rendering.
 
@@ -12,7 +15,7 @@ Note that for Linux, the [FrameBuffer rendering](using-linux-framebuffer.md) hea
 
 ## Get started with the Skia+GTK head
 
-Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [Visual Studio 2022](xref:Uno.GetStarted.vs2022).
+Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [Visual Studio 2022](xref:Uno.GetStarted.vs2022), make sure to use Uno Platform 5.1 templates to get it.
 
 ### Additional setup
 

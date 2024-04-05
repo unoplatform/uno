@@ -86,7 +86,7 @@ There are a few steps to adding WinUI 2.5 to the Uno project:
     > [!NOTE]
     > The [Uno.UI](https://www.nuget.org/packages/Uno.UI) NuGet package already includes the WinUI 2.x bits so there are no changes for the WASM head.
 
-1. To add the WinUI resources to the app, open the `AppResources.xaml` or `App.xaml` file and add the following:
+1. To add the WinUI resources to the app, open the `App.xaml` file and add the following:
 
     ```xml
     <Application.Resources>

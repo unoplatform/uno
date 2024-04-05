@@ -117,11 +117,11 @@ dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
 
 ### Adjust your application to enable profiling
 
-Profiling has to first be enabled in the application. Some additional properties need to be added in the `MyApp.Mobile` project :
+Profiling has to first be enabled in the application. Some additional properties need to be added to the `MyApp` project :
 
 ```xml
 <PropertyGroup>
-    <RuntimeIdentifier Condition="'$(TargetFramework)' == 'net7.0-android'">android-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(TargetFramework)' == 'net8.0-android'">android-x64</RuntimeIdentifier>
 </PropertyGroup>
 
 <PropertyGroup Condition="'$(AndroidEnableProfiler)'=='true'">
@@ -130,12 +130,12 @@ Profiling has to first be enabled in the application. Some additional properties
 </PropertyGroup>
 
 <ItemGroup Condition="'$(AndroidEnableProfiler)'=='true'">
-    <AndroidEnvironment Condition="'$(IsEmulator)' == 'true'" Include="Android\environment.emulator.txt" />
-    <AndroidEnvironment Condition="'$(IsEmulator)' != 'true'" Include="Android\environment.device.txt" />
+    <AndroidEnvironment Condition="'$(IsEmulator)' == 'true'" Include="Platforms/Android/environment.emulator.txt" />
+    <AndroidEnvironment Condition="'$(IsEmulator)' != 'true'" Include="Platforms/Android/environment.device.txt" />
 </ItemGroup>
 ```
 
-Then in the `Android` application folder, add the following two files:
+Then in the `Platforms/Android` application folder, add the following two files:
 
 - `environment.device.txt`
 
@@ -182,12 +182,12 @@ Note that the `suspend` directive means that if `dotnet-trace` is not running, t
 This section provides insights into what to look for when analyzing flame charts.
 
 - When building without AOT, a lot of the startup traces will show time spent in `System.Private.CoreLib!System.Runtime.CompilerServices.RuntimeHelpers.CompileMethod(object)`, indicating that that the JIT is doing a lot of work. This can make performance improvements harder to find.
-- When building with AOT, most of the IL is compiled to native code with some exceptions. You may still find `RuntimeHelpers.CompileMethod` invocations. In such cases, you may need to find what is causing the AOT compiler to skip IL portions. If the JIT still impacts cold paths of your application, you may still need to adjust your code to avoid the JIT. For instance, some generics constructs force the AOT compiler to still use JITing. In other cases, it could be accessing static type members. The JIT conditions are runtime version dependent, and [looking at the runtime code](https://github.com/dotnet/runtime/blob/9703660baa08914773b26e413e361c8ce04e6d94/src/mono/mono/mini/aot-compiler.c) can help finding out which ones.
-- Some of the time is spent in the .NET Android binding framework (e.g. `Android.Runtime.JNIEnv` or `Java.Interop.TypeManager`), operations that cannot be adjusted by the application. One change to consider is to reduce the native code invocations to the strict minimum, where impactful.
+- When building with AOT, most of the IL is compiled to native code with some exceptions. You may still find `RuntimeHelpers.CompileMethod` invocations. In such cases, you may need to find what is causing the AOT compiler to skip IL portions. If the JIT still impacts cold paths of your application, you may still need to adjust your code to avoid the JIT. For instance, some generics constructs force the AOT compiler to still use JITing. In other cases, it could be accessing static-type members. The JIT conditions are runtime version dependent, and [looking at the runtime code](https://github.com/dotnet/runtime/blob/9703660baa08914773b26e413e361c8ce04e6d94/src/mono/mono/mini/aot-compiler.c) can help to find out which ones.
+- Some of the time is spent in the .NET Android binding framework (e.g. `Android.Runtime.JNIEnv` or `Java.Interop.TypeManager`), operations that cannot be adjusted by the application. One change to consider is to reduce the native code invocations to a strict minimum, where impactful.
 
-## Profiling Skia/GTK and Skia/WPF applications
+## Profiling Skia Desktop applications
 
-Profiling Skia based Uno Platform targets can be done on Windows in Visual Studio 2019 and 2022 using [time and memory profilers](https://learn.microsoft.com/visualstudio/profiling/profiling-feature-tour?view=vs-2019).
+Profiling Skia-based Uno Platform targets can be done on Windows in Visual Studio 2019 and 2022 using [time and memory profilers](https://learn.microsoft.com/visualstudio/profiling/profiling-feature-tour?view=vs-2019).
 
 ## Profiling WebAssembly applications
 

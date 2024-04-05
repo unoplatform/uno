@@ -18,7 +18,7 @@ C# Hot Reload is provided by Visual Studio 2022, and there may be occasions wher
 
 If that is the case:
 
-- Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging the Skia.Gtk, select the Skia.Gtk project.
+- Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging with `net8.0-desktop`, select the `net8.0-desktop` project.
 - WebAssembly does not support C# hot reload when debugging the application. You can start the app without the debugger instead.
 - Try recompiling the application completely (with the `Rebuild` command)
 

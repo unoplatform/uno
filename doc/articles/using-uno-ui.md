@@ -8,10 +8,10 @@ Write applications once in XAML and/or C# and deploy them to [any target platfor
 
 ## About Uno
 
-* [What is Uno Platform?](what-is-uno.md)
-* [How does Uno Platform work?](how-uno-works.md)
-* [Supported target platforms](getting-started/requirements.md)
-* [Supported .NET versions by platform](net-version-support.md)
+* [What is Uno Platform?](xref:Uno.Documentation.Intro)
+* [How does Uno Platform work?](xref:Uno.Development.HowItWorks)
+* [Supported target platforms](xref:Uno.GettingStarted.Requirements)
+* [Supported .NET versions by platform](xref:Uno.Development.NetVersionSupport)
 
 ## Mastering the basics
 
@@ -66,6 +66,6 @@ Uno Platform supports a number of non-visual APIs from Windows Runtime namespace
 
 ## Debugging Uno Platform applications
 
+* [Hot Reload](xref:Uno.Features.HotReload)
 * [Troubleshooting build errors](uno-builds-troubleshooting.md)
 * [Debugging C# on WASM](debugging-wasm.md)
-* [XAML Hot Reload on non-Windows targets](features/working-with-xaml-hot-reload.md)

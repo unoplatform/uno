@@ -104,6 +104,8 @@ Considering the example above:
     > [!NOTE]
     > The path to `MyControlStyles.xaml` in `Generic.xaml` is containing the current project's assembly name. If you rename your project, you'll also need to change the path in the `Generic.xaml` file.
 
+In a Control Class Library, [conditional XAML](xref:Uno.Development.PlatformSpecificXaml) and [platform-specific C#](xref:Uno.Development.PlatformSpecificCSharp) can be used.
+
 ## Library assets
 
 WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of content assets to be used with [`StorageFile.GetFileFromApplicationUriAsync`](../features/file-management.md#support-for-storagefilegetfilefromapplicationuriasync), as well as with the `ms-appx:///[libraryname]/[assetname_file_name]` format.
