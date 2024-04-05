@@ -28,6 +28,8 @@
 					Value="Black" />
 			<Setter Property="BorderThickness"
 					Value="0" />
+			<Setter Property="IsPopupFullscreen"
+					Value="True" />
 			<Setter Property="HorizontalContentAlignment"
 					Value="Stretch" />
 			<Setter Property="Template">
