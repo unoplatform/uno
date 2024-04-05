@@ -7,23 +7,25 @@ using System.Threading.Tasks;
 
 namespace Uno.Helpers;
 
+interface IUnoAccessibility
+{
+	bool IsAccessibilityEnabled { get; }
+
+	// For now we only have "polite", but not "assertive"
+	// See live regions documentation for more information
+	// https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#live_regions
+	void AnnouncePolite(string text);
+}
+
 internal static partial class AccessibilityAnnouncer
 {
-	internal static object WindowWrapper { get; set; }
+	internal static IUnoAccessibility AccessibilityImpl { get; set; }
 
 	public static void Announce(string text)
 	{
-#if __WASM__
-		// TODO: Do nothing if IsAccessibilityEnabled is false.
-		if (WindowWrapper is not null)
+		if (AccessibilityImpl?.IsAccessibilityEnabled == true)
 		{
-			AnnounceA11y(WindowWrapper, text);
+			AccessibilityImpl.AnnouncePolite(text);
 		}
-#endif
 	}
-
-#if __WASM__
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.announceA11y")]
-	private static partial void AnnounceA11y([JSMarshalAs<JSType.Any>] object owner, string text);
-#endif
 }

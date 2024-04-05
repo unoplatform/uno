@@ -29,6 +29,7 @@ using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
 using Uno.UI.Xaml.Controls;
+using Uno.Helpers;
 
 namespace Microsoft.UI.Xaml
 {
@@ -197,7 +198,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_children.Remove(child))
 			{
-				ExternalOnChildRemoved?.Invoke(this, child);
+				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
 				InnerRemoveChild(child);
 
 				// Force a new measure of this element
@@ -231,7 +232,7 @@ namespace Microsoft.UI.Xaml
 
 			foreach (var child in _children.ToArray())
 			{
-				ExternalOnChildRemoved?.Invoke(this, child);
+				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
 				InnerRemoveChild(child);
 			}
 

@@ -1,43 +1,45 @@
 namespace Uno.UI.Runtime.Skia {
 
 	export class Accessibility {
-		private politeElement: HTMLDivElement;
-		private enableA11y: HTMLDivElement;
-		private semanticsRoot: HTMLDivElement;
-		private managedEnableA11y: any;
-		private containerElement: HTMLDivElement;
+		private static politeElement: HTMLDivElement;
+		private static enableAccessibilityButton: HTMLDivElement;
+		private static semanticsRoot: HTMLDivElement;
+		private static managedEnableAccessibility: any;
+		private static containerElement: HTMLElement;
 
-		async buildImports() {
+		private constructor() {
+		}
+
+		private static async buildImports() {
 			let anyModule = <any>window.Module;
 
 			if (anyModule.getAssemblyExports !== undefined) {
 				const browserExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
-				this.managedEnableA11y = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.EnableA11y;
+				this.managedEnableAccessibility = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.EnableAccessibility;
 			}
 		}
 
-		public async initialize(containerElement: HTMLDivElement) {
+		public static async setup() {
 			await this.buildImports();
-
-			this.containerElement = containerElement;
+			this.containerElement = document.getElementById("uno-body");
 			this.politeElement = document.createElement("div");
 			this.politeElement.classList.add("uno-aria-live");
 			this.politeElement.setAttribute("aria-live", "polite");
-			containerElement.appendChild(this.politeElement);
+			this.containerElement.appendChild(this.politeElement);
 
-			this.enableA11y = document.createElement("div");
-			this.enableA11y.id = "uno-enable-accessibility";
-			this.enableA11y.setAttribute("aria-live", "polite");
-			this.enableA11y.setAttribute("role", "button");
-			this.enableA11y.setAttribute("tabindex", "0");
-			this.enableA11y.setAttribute("aria-label", "Enable accessibility");
-			this.enableA11y.addEventListener("click", this.onEnableA11yClicked.bind(this));
-			containerElement.appendChild(this.enableA11y);
+			this.enableAccessibilityButton = document.createElement("div");
+			this.enableAccessibilityButton.id = "uno-enable-accessibility";
+			this.enableAccessibilityButton.setAttribute("aria-live", "polite");
+			this.enableAccessibilityButton.setAttribute("role", "button");
+			this.enableAccessibilityButton.setAttribute("tabindex", "0");
+			this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
+			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
+			this.containerElement.appendChild(this.enableAccessibilityButton);
 
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
-			containerElement.appendChild(this.semanticsRoot);
+			this.containerElement.appendChild(this.semanticsRoot);
 		}
 
 		public static createSemanticElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
@@ -69,17 +71,17 @@ namespace Uno.UI.Runtime.Skia {
 			return document.getElementById(`uno-semantics-${handle}`)
 		}
 
-		public announceA11y(text: string) {
+		public static announcePolite(text: string) {
 			let child = document.createElement("div");
 			child.innerText = text;
 			this.politeElement.appendChild(child);
 			setTimeout(() => this.politeElement.removeChild(child), 300);
 		}
 
-		private onEnableA11yClicked(evt: MouseEvent) {
-			this.containerElement.removeChild(this.enableA11y);
-			this.managedEnableA11y();
-			this.announceA11y("Accessibility enabled successfully.");
+		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
+			this.containerElement.removeChild(this.enableAccessibilityButton);
+			this.managedEnableAccessibility();
+			this.announcePolite("Accessibility enabled successfully.");
 		}
 
 		public static focusSemanticElement(handle: number) {
@@ -89,7 +91,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		public addRootElementToSemanticsRoot(rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
+		public static addRootElementToSemanticsRoot(rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
 			let element = Accessibility.createSemanticElement(x, y, width, height, rootHandle, isFocusable);
 			this.semanticsRoot.appendChild(element);
 		}

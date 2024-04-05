@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.Helpers;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
@@ -190,16 +191,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal ShadowState? ShadowState { get; set; }
 
-	internal static Action<Visual>? ExternalOnVisualOffsetOrSizeChanged { get; set; }
 
 	partial void OnOffsetChanged(Vector3 value)
-		=> ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
 	partial void OnSizeChanged(Vector2 value)
-		=> ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
 	partial void OnIsVisibleChanged(bool value)
-		=> ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
 	/// <summary>
 	/// Render a visual as if it's the root visual.

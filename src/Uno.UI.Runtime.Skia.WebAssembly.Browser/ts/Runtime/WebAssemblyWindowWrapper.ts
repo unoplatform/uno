@@ -3,7 +3,6 @@ namespace Uno.UI.Runtime.Skia {
 	export class WebAssemblyWindowWrapper {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
-		private accessibility: Accessibility;
 		private onResize: any;
 		private owner: any;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
@@ -13,7 +12,6 @@ namespace Uno.UI.Runtime.Skia {
 
 		private constructor(owner: any) {
 			this.owner = owner;
-			this.accessibility = new Accessibility();
 			this.build();
 		}
 
@@ -39,7 +37,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
-			await this.accessibility.initialize(this.containerElement);
+			await Accessibility.setup();
 
 			document.body.addEventListener("focusin", this.onfocusin);
 			window.addEventListener("resize", x => this.resize());
@@ -47,16 +45,6 @@ namespace Uno.UI.Runtime.Skia {
 			this.resize();
 
 			this.removeLoading();
-		}
-
-		public static announceA11y(owner: any, text: string) {
-			const instance = this.getInstance(owner);
-			instance.accessibility.announceA11y(text);
-		}
-
-		public static addRootElementToSemanticsRoot(owner: any, rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
-			WebAssemblyWindowWrapper.getInstance(owner).accessibility.addRootElementToSemanticsRoot(
-				rootHandle, width, height, x, y, isFocusable);
 		}
 
 		private removeLoading() {
