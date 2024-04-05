@@ -363,6 +363,12 @@ namespace Microsoft.UI.Xaml.Data
 
 		private void ApplyFallbackValue(bool useTypeDefaultValue = true)
 		{
+			if (ParentBinding.IsXBind && DataContext is null)
+			{
+				// On WinUI, the generated code for x:Bind doesn't do anything if the DC is null.
+				// It doesn't even set the fallback value.
+				return;
+			}
 			if (ParentBinding.FallbackValue != null)
 			{
 				SetTargetValue(ConvertToBoundPropertyType(ParentBinding.FallbackValue));
@@ -590,6 +596,13 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			void SetTargetValue()
 			{
+				if (DataContext is null)
+				{
+					// On WinUI, the generated code for x:Bind doesn't do anything if the DC is null.
+					// It doesn't even set the fallback value.
+					return;
+				}
+
 				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
 				if (canSetTarget)
 				{
