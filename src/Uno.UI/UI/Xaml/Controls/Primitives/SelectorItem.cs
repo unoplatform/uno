@@ -317,7 +317,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		};
 
 		private static readonly PointerEventHandler _onPointerReleased = (snd, e) => ((SelectorItem)snd).OnPointerReleasedPrivate(e);
-		private static readonly PointerEventHandler _onPointerExitedOrCanceled = (snd, e) => ((SelectorItem)snd).CleanUpState(e);
+		private static readonly PointerEventHandler _onPointerExitedOrCanceled = (snd, e) => ((SelectorItem)snd).CleanUpPointerState(e);
 
 		/// <inheritdoc />
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
@@ -351,7 +351,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (args.Handled)
 			{
-				CleanUpState(args);
+				CleanUpPointerState(args);
 			}
 			else
 			{
@@ -373,7 +373,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		/// <inheritdoc />
-		private void CleanUpState(PointerRoutedEventArgs args)
+		private void CleanUpPointerState(PointerRoutedEventArgs args)
 		{
 			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
 			_canRaiseClickOnPointerRelease = false;
