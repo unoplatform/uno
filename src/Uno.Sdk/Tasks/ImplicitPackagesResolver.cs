@@ -28,12 +28,12 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 		AddPackageForFeature(UnoFeature.Maps, "Uno.WinUI.Maps", null);
 		AddPackageForFeature(UnoFeature.Foldable, "Uno.WinUI.Foldable", null);
 
+		var devServerExcludes = TargetRuntime == UnoTarget.Windows || Optimize ? "all" : null;
+		AddPackageWhen(IsExecutable, "Uno.WinUI.DevServer", null, devServerExcludes);
+
 		if (TargetRuntime != UnoTarget.Windows)
 		{
 			AddPackageWhen(!IsPackable, "Uno.WinUI.Lottie", null);
-
-			// Included for Debug Builds
-			AddPackageWhen(!Optimize, "Uno.WinUI.DevServer", null);
 
 			if (TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead() && !IsPackable)
 			{
