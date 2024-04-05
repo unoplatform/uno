@@ -623,36 +623,27 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
-		if (oldValue != null && newValue == null)
-		{
-			// The content is being reset, remove the existing content properly.
-			ContentTemplateRoot = null;
-		}
-		else if (oldValue is View || newValue is View)
+		if (oldValue is View || newValue is View)
 		{
 			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
 		}
 
-		if (newValue is not null)
-		{
-			TryRegisterNativeElement(newValue);
+		TryRegisterNativeElement(newValue);
 
-			TrySetDataContextFromContent(newValue);
+		TrySetDataContextFromContent(newValue);
 
-			SetUpdateTemplate();
-		}
-		else
-		{
-			// Restore the inherited data context as it may have been overridden by TrySetDataContextFromContent
-			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
-		}
+		SetUpdateTemplate();
 	}
 
 	private void TrySetDataContextFromContent(object value)
 	{
-		if (value != null)
+		if (value == null)
+		{
+			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
+		}
+		else
 		{
 			if (!(value is View))
 			{
