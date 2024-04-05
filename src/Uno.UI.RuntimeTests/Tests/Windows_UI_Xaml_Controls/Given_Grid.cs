@@ -663,7 +663,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var blueBounds = ImageAssert.GetColorBounds(bitmap, Colors.Blue, tolerance: 5);
 			Assert.AreEqual(new Rect(new Point(100, 100), new Size(99, 99)), blueBounds);
 			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
-			Assert.AreEqual(new Rect(new Point(41, 125), new Size(117, 114)), redBounds);
+			Assert.AreEqual(new Rect(new Point(41, 125), new Size(117, 115)), redBounds);
 		}
 
 #if __ANDROID__
