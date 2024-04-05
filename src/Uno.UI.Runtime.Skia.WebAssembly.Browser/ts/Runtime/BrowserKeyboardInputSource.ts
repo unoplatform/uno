@@ -29,7 +29,7 @@
 		}
 
 		private onKeyboardEvent(evt: KeyboardEvent): void {
-			let isHandled = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
+			let result = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
 				this._source,
 				evt.type == "keydown",
 				evt.ctrlKey,
@@ -40,7 +40,7 @@
 				evt.key
 			);
 
-			if (isHandled) {
+			if (result == HtmlEventDispatchResult.PreventDefault) {
 				evt.preventDefault();
 			}
 		}
