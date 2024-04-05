@@ -6507,7 +6507,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var isDouble = IsDouble(name);
 
-			if (memberValue.EndsWith("nan", StringComparison.OrdinalIgnoreCase) || memberValue.Equals("auto", StringComparison.OrdinalIgnoreCase))
+			if (memberValue.Equals("Infinity", StringComparison.Ordinal))
+			{
+				// WinUI is case sensitive here.
+				return isDouble ? "double.PositiveInfinity" : "float.PositiveInfinity";
+			}
+			else if (memberValue.Equals("-Infinity", StringComparison.Ordinal))
+			{
+				// WinUI is case sensitive here.
+				return isDouble ? "double.NegativeInfinity" : "float.NegativeInfinity";
+			}
+			else if (memberValue.EndsWith("nan", StringComparison.OrdinalIgnoreCase) || memberValue.Equals("auto", StringComparison.OrdinalIgnoreCase))
 			{
 				return "{0}.NaN".InvariantCultureFormat(isDouble ? "double" : "float");
 			}
