@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<BuildOutputTargetFolder>targets</BuildOutputTargetFolder>
@@ -40,6 +40,14 @@
 		<PackageReference Include="System.Text.Json" Version="8.0.2" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(DocsGeneration)'=='' and $([MSBuild]::IsOsPlatform('Windows'))">
+		<ProjectReference Include="..\Uno.UI.RemoteControl.VS\Uno.UI.RemoteControl.VS.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
 		<ItemGroup>
 			<_ExistingSdkFile Include="$(IntermediateOutputPath)targets\**;$(IntermediateOutputPath)Sdk\**" />
@@ -58,6 +66,13 @@
 			<_PackageManifestSource Remove="@(_PackageManifestSource)" />
 			<_TemporaryCodeFile Include="$(IntermediateOutputPath)code\**\*.cs" />
 			<_ExistingCodeFile Remove="@(_ExistingCodeFile)" />
+		</ItemGroup>
+
+		<ItemGroup>
+
+			<None Include="..\..\src\Uno.UI.RemoteControl.VS\bin\$(Configuration)\net48\*.dll" Pack="true" PackagePath="tools\rc\17.0" />
+			<None Include="..\..\src\Uno.UI.RemoteControl.VS\bin\$(Configuration)\net48\*.pdb" Pack="true" PackagePath="tools\rc\17.0" />
+
 		</ItemGroup>
 	</Target>
 

@@ -168,10 +168,6 @@
 		<!-- Remote Control host and integration -->
 		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net8.0\*.*" target="tools\rc\host\net8.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net7.0\*.*" target="tools\rc\host\net7.0" />
-		
-		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\Newtonsoft.Json.dll" target="tools\rc\17.0" />
 
 		<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 		<file src="_._" target="build\uap10.0.16299" />
