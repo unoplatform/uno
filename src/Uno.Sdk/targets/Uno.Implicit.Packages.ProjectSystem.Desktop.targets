@@ -12,7 +12,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Wpf" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.X11" ProjectSystem="true" />
 
-		<!-- Enable WPF Hardware accelerarion over RDP, only if not specified by the project -->
+		<!-- Enable WPF Hardware acceleration over RDP, only if not specified by the project -->
     	<RuntimeHostConfigurationOption 
 				Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" 
 				Value="true" 
