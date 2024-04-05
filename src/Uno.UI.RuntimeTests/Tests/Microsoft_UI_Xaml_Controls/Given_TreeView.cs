@@ -33,6 +33,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
 using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
+using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {
