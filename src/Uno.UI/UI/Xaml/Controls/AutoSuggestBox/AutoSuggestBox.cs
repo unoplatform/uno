@@ -13,6 +13,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
@@ -23,7 +24,7 @@ using AppKit;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class AutoSuggestBox : ItemsControl, IValueChangedListener
+	public partial class AutoSuggestBox : ItemsControl
 	{
 		private TextBox _textBox;
 		private Popup _popup;
@@ -32,8 +33,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private Button _queryButton;
 		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		private string userInput;
-		private BindingPath _textBoxBinding;
 		private FrameworkElement _suggestionsContainer;
+		private IDisposable _textChangedDisposable;
 
 		public AutoSuggestBox() : base()
 		{
@@ -75,7 +76,12 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);
 
-			_textBoxBinding = new BindingPath("Text", null) { DataContext = _textBox, ValueChangedListener = this };
+			_textChangedDisposable?.Dispose();
+			if (_textBox is { })
+			{
+				_textBox.TextChanged += OnTextBoxTextChanged;
+				_textChangedDisposable = Disposable.Create(() => _textBox.TextChanged -= OnTextBoxTextChanged);
+			}
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -86,13 +92,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object value)
+		private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
 		{
-			if (value is string str)
-			{
-				// If TextBox's Text value is null, we ignore it.
-				Text = str;
-			}
+			Text = _textBox.Text;
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -287,6 +289,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void UnregisterEvents()
 		{
+			_textChangedDisposable?.Dispose();
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
@@ -306,6 +309,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_popup.Closed -= OnPopupClosed;
 			}
+
+			_textChangedDisposable?.Dispose();
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
