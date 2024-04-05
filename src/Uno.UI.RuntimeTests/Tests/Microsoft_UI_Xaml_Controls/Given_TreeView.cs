@@ -28,6 +28,7 @@ using FluentAssertions.Execution;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.ComponentModel;
+using Windows.UI.Input.Preview.Injection;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
@@ -48,6 +49,49 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		{
 			_testsResources = new TestsResources();
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_TreeViewItem_Dragged_Near_the_Edge()
+		{
+			TreeViewNode node;
+			var treeView = new TreeView
+			{
+				RootNodes =
+				{
+					(node = new TreeViewNode
+					{
+						Content = "drag me"
+					})
+				}
+			};
+
+			await UITestHelper.Load(treeView);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var tvi = (TreeViewItem)treeView.ContainerFromNode(node);
+			var dragStartingCount = 0;
+			tvi.AddHandler(UIElement.DragStartingEvent, new RoutedEventHandler((_, _) => dragStartingCount++), true);
+
+			// The important part here is to start the press and move out without moving more than TapMaxXDelta or TapMaxYDelta,
+			// so that dragging starts after the pointer is outside the item
+			mouse.Press(tvi.GetAbsoluteBoundsRect().GetMidX(), tvi.GetAbsoluteBoundsRect().Bottom - 3);
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(0, 1);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(dragStartingCount, 0);
+
+			mouse.MoveBy(0, 15); // move out of the tvi
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(dragStartingCount, 1);
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_Setting_SelectedItem_DoesNotTakeEffect()
