@@ -80,11 +80,25 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 </ItemGroup>
 ```
 
+## Windows Specifics
+
+### RDP Hardware Acceleration
+
+The Uno Platform Skia Desktop runtime on Windows uses a WPF shell internally. By default, Uno Platform enables RDP hardware acceleration in order to get good performance, yet this feature is disabled by default in standard WPF apps with .NET 8.
+
+If you're having issues with the Windows support for Skia Desktop over RDP, add the following to your project:
+
+```xml
+<ItemGroup>
+    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" Value="false" />
+</ItemGroup>
+```
+
 ## X11 Specifics
 
-When running using X11 Wayland compatibility, DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
+When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
 
-The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus installed.
+The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus is installed.
 
 ## .NET Native AOT support
 
