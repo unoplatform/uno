@@ -85,7 +85,7 @@ Finally, press `F5` to start the debugging session.
 
 #### Debugging using WSL 2 on Windows
 
-VS Code supports debugging Uno Platform Desktop apps though the WSL Extension:
+VS Code supports debugging Uno Platform Desktop apps through the WSL Extension:
 
 1. Install the [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)
 1. In the control palette, select **WSL: Connect to WSL**
@@ -105,7 +105,7 @@ When connecting to a remote Linux machine using the [SSH Extension](https://mark
     },
     ```
 
-This will allow for the application to build on the remote machine, then show on the main display.
+This will allow the application to build on the remote machine and then show on the main display.
 
 #### Considerations for Hot Reload
 
