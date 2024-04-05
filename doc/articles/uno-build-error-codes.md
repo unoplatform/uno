@@ -69,7 +69,7 @@ Alternatively you may disable the Implicit Package References
 
 ### UNOB00010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022, an issue prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
 
 Make sure to place `net8.0-browserwasm` last in your `<TargetFrameworks>` property.
 
@@ -83,7 +83,7 @@ This warning can be disabled by adding the following to your `.csproj`:
 
 ### UNOB00011: The desktop TargetFramework must not be placed first in the TargetFrameworks property
 
-In Visual Studio 2022, an issue prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
 
 Make sure that `net8.0-desktop` is not first in your `<TargetFrameworks>` property.
 
@@ -92,6 +92,20 @@ This warning can be disabled by adding the following to your `.csproj`:
 ```xml
 <PropertyGroup>
   <UnoDisableVSWarnDesktopIsFirst>true</UnoDisableVSWarnDesktopIsFirst>
+</PropertyGroup>
+```
+
+### UNOB00012: The windows TargetFramework must not be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
+
+Make sure that `net8.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnWindowsIsFirst>true</UnoDisableVSWarnWindowsIsFirst>
 </PropertyGroup>
 ```
 
