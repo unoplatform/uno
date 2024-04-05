@@ -99,7 +99,7 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 </ItemGroup>
 ```
 
-### Remote debuging 
+### Remote debugging
 
 VS Code can [connect to a remote computer](https://code.visualstudio.com/docs/remote/ssh) (using ssh) to develop and debug projects. Note that all the sources, build and debugging are done on the remote computer, where the Uno Platform extension is being executed.
 
