@@ -491,7 +491,7 @@ public class Given_BindingExpression
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var cp = (ContentPresenter)root.FindName("cp1");
-		
+
 		cp.Content = new TestItem();
 		await TestServices.WindowHelper.WaitForIdle();
 		await Task.Delay(100); // WaitForIdle is not enough on WinUI
@@ -516,7 +516,7 @@ public class Given_BindingExpression
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
 		BoolToVisibilityConverter.CanReturnNull = canReturnNull;
-		
+
 		using var _ = Disposable.Create(() =>
 		{
 			BoolToVisibilityConverter.ReceivedNull = false;
