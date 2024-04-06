@@ -100,8 +100,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-		internal bool ClippingIsSetByCornerRadius { get; set; }
-
 		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
@@ -344,11 +342,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void ApplyNativeClip(Rect rect)
 		{
-			if (ClippingIsSetByCornerRadius)
-			{
-				return; // already applied
-			}
-
 			if (rect.IsEmpty)
 			{
 				Visual.Clip = null;

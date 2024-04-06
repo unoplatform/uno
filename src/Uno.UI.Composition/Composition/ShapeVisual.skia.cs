@@ -84,9 +84,7 @@ public partial class ShapeVisual
 			parentSession.Canvas.Concat(ref transform);
 		}
 
-		// Note: We don't apply the clip here, as it is already applied on the shapes (i.e. CornerRadius)
-		//		 The Clip property is only used to apply the clip on the children (i.e. the UIElement's content)
-		// Clip?.Apply(parentSession.Surface);
+		Clip?.Apply(parentSession.Canvas, this);
 
 		var session = parentSession; // Creates a new session (clone the struct)
 

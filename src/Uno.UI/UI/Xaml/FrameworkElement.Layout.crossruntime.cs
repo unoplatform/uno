@@ -727,16 +727,29 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException($"{FormatDebugName()}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 			}
 
+#if __SKIA__
+			// clippedFrame here is the one calculated by FrameworkElement.GetClipRect
+			// which propagates to ShapeVisual.ViewBox.
+			// The UIElement.Clip public property isn't considered here on Skia because
+			// it's propagated to Visual.Clip and is set when UIElement.Clip changes.
+			ArrangeVisual(newRect, clippedFrame);
+#else
 			var clip = Clip;
-			var clipRect = clip?.Rect ?? clippedFrame;
+			var clipRect = clip?.Rect;
 			if (clipRect.HasValue && clip?.Transform is { } transform)
 			{
 				clipRect = transform.TransformBounds(clipRect.Value);
 			}
 
+			if (clipRect.HasValue || clippedFrame.HasValue)
+			{
+				clipRect = (clipRect ?? Rect.Infinite).IntersectWith(clippedFrame ?? Rect.Infinite);
+			}
+
 			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.ArrangeElementNative({newRect}, clip={clipRect} (NeedsClipToSlot={NeedsClipToSlot})");
 
 			ArrangeVisual(newRect, clipRect);
+#endif
 		}
 	}
 }

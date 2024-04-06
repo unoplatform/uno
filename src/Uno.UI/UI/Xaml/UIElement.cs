@@ -844,7 +844,30 @@ namespace Microsoft.UI.Xaml
 
 		internal void ApplyClip()
 		{
-#if __CROSSRUNTIME__
+#if __SKIA__
+			// On Skia specifically, we separate the two types of clipping.
+			// First, from Clip DP (handled in this code path)
+			// That clipping propagates to Visual.Clip through ApplyNativeClip.
+			// Second is clipping calculated from FrameworkElement.GetClipRect during arrange.
+			// That clipping propagates to ViewBox during arrange.
+			var clip = Clip;
+			if (clip is null)
+			{
+				ApplyNativeClip(Rect.Empty);
+				OnViewportUpdated(Rect.Empty);
+			}
+			else
+			{
+				var rect = clip.Rect;
+				if (clip.Transform is { } clipTransform)
+				{
+					rect = clipTransform.TransformBounds(rect);
+				}
+
+				ApplyNativeClip(rect);
+				OnViewportUpdated(rect);
+			}
+#elif __WASM__
 			InvalidateArrange();
 #else
 			Rect rect;

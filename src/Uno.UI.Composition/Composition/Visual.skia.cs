@@ -13,6 +13,7 @@ namespace Microsoft.UI.Composition;
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
 	private CompositionClip? _clip;
+	private RectangleClip? _cornerRadiusClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private bool _matrixDirty = true;
@@ -74,7 +75,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	public CompositionClip? Clip
 	{
 		get => _clip;
-		set => SetProperty(ref _clip, value);
+		set
+		{
+			SetProperty(ref _clip, value);
+			Compositor.InvalidateRender(this);
+		}
+	}
+
+	public RectangleClip? CornerRadiusClip
+	{
+		get => _cornerRadiusClip;
+		set
+		{
+			SetProperty(ref _cornerRadiusClip, value);
+			Compositor.InvalidateRender(this);
+		}
 	}
 
 	public Vector2 AnchorPoint
@@ -204,6 +219,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
 		Clip?.Apply(canvas, this);
+
+		// CornerRadiusClip applies to the children only.
+		CornerRadiusClip?.Apply(canvas, this);
 
 		var session = new DrawingSession(surface, canvas, in filters, in initialTransform);
 
