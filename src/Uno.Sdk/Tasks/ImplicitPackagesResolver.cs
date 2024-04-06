@@ -28,7 +28,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 		AddPackageForFeature(UnoFeature.Maps, "Uno.WinUI.Maps", null);
 		AddPackageForFeature(UnoFeature.Foldable, "Uno.WinUI.Foldable", null);
 
-		var devServerExcludes = TargetRuntime == UnoTarget.Windows || Optimize ? "all" : null;
+		var devServerExcludes = Optimize ? "all" : null;
 		AddPackageWhen(IsExecutable, "Uno.WinUI.DevServer", null, devServerExcludes);
 
 		if (TargetRuntime != UnoTarget.Windows)
