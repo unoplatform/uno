@@ -369,7 +369,8 @@ namespace Microsoft.UI.Xaml.Data
 				// It doesn't even set the fallback value.
 				return;
 			}
-			if (ParentBinding.FallbackValue != null)
+			if (ParentBinding.FallbackValue != null
+				|| (ParentBinding.CompiledSource != null && ParentBinding.IsFallbackValueSet))
 			{
 				SetTargetValue(ConvertToBoundPropertyType(ParentBinding.FallbackValue));
 			}
