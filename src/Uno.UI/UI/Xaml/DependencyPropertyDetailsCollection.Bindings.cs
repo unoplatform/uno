@@ -223,7 +223,17 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
-			=> _templateBindings.Where(e => e.TargetPropertyDetails.Property == dependencyProperty).Any();
+		{
+			foreach (var templateBinding in _templateBindings)
+			{
+				if (templateBinding.TargetPropertyDetails.Property == dependencyProperty)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 
 		internal void UpdateBindingExpressions()
 		{
