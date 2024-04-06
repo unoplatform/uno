@@ -74,8 +74,9 @@ partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
+				var methodName = down ? "CoreWindow_KeyDown" : "CoreWindow_KeyUp";
 				this.Log().Trace(
-					$"CoreWindow_KeyDown(vk: {args.VirtualKey}, " +
+					$"{methodName}(vk: {args.VirtualKey}, " +
 					$"IsExtendedKey: {args.KeyStatus.IsExtendedKey}, " +
 					$"IsKeyReleased: {args.KeyStatus.IsKeyReleased}, " +
 					$"IsMenuKeyDown: {args.KeyStatus.IsMenuKeyDown}, " +
