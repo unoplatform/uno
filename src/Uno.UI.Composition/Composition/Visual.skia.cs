@@ -75,21 +75,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	public CompositionClip? Clip
 	{
 		get => _clip;
-		set
-		{
-			SetProperty(ref _clip, value);
-			Compositor.InvalidateRender(this);
-		}
+		set => SetProperty(ref _clip, value);
 	}
 
 	public RectangleClip? CornerRadiusClip
 	{
 		get => _cornerRadiusClip;
-		set
-		{
-			SetProperty(ref _cornerRadiusClip, value);
-			Compositor.InvalidateRender(this);
-		}
+		set => SetProperty(ref _cornerRadiusClip, value);
 	}
 
 	public Vector2 AnchorPoint
