@@ -1,23 +1,17 @@
-# Gtk-less Uno for macOS
+# Skia Host for macOS
 
 ## Requirements
 
-* Minimum: macOS 10.14
+* Minimum OS version: same as the [dotnet version used](https://learn.microsoft.com/en-us/dotnet/core/install/macos)
 
 ## Pros
 
-* Less dependencies
+* Faster startup: Less dependencies
   * Removing GTK3+ (native, requires separate installation)
-  * Removing GtkSharp (no release supports arm64 correctly)
   * Removing Silk.NET on macOS (not needed for Metal)
 
-* Reduced number of managed<->native transitions
+* Faster execution: Reduced number of managed<->native transitions
 
-* No dependency on Xamarin/Microsoft macOS SDK and toolchain
+* Faster builds: No dependency on the Xamarin/Microsoft macOS SDK and toolchain
 
-* Use Metal (not OpenGL, which was disabled for Gtk/Skia/macOS)
-
-## Cons
-
-* Some older Mac (before 2012) might not support Metal. Metal is required for macOS 10.14 (Mojave) and more recent versions.
-  * add a software fallback ?
+* Faster rendering: Use Metal (not OpenGL, which was disabled for Gtk/Skia/macOS) by default. Software rendering is used as a fallback.
