@@ -48,6 +48,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(10)]
 		public async Task When_Both_Layouting_Clip_And_Clip_DP(double newClipValue)
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var SUT = new Rectangle()
 			{
 				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
@@ -73,10 +78,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var screenshot = await UITestHelper.ScreenShot(grid);
 
 			var greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
-			Assert.AreEqual(new Size(199, 74), greenBounds.Size);
+			Assert.AreEqual(new Size(199, 74), new Size(greenBounds.Width, greenBounds.Height));
 
 			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
-			Assert.AreEqual(new Size(99, 74), redBounds.Size);
+			Assert.AreEqual(new Size(99, 74), new Size(redBounds.Width, redBounds.Height));
 
 			SUT.Clip = new RectangleGeometry()
 			{
@@ -87,16 +92,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			screenshot = await UITestHelper.ScreenShot(grid);
 			greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
-			Assert.AreEqual(new Size(199, 74), greenBounds.Size);
+			Assert.AreEqual(new Size(199, 74), new Size(greenBounds.Width, greenBounds.Height));
 
 			redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
-			Assert.AreEqual(new Size(Math.Min(100, newClipValue) - 1, Math.Min(75, newClipValue) - 1), redBounds.Size);
+			Assert.AreEqual(new Size(Math.Min(100, newClipValue) - 1, Math.Min(75, newClipValue) - 1), new Size(redBounds.Width, redBounds.Height));
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_TranslateTransform_And_Clip()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var grid = new Grid()
 			{
 				Width = 100,

@@ -125,6 +125,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Clip_And_CornerRadius()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var SUT = new Border()
 			{
 				Width = 300,
@@ -140,7 +145,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 			var screenshot = await UITestHelper.ScreenShot(SUT);
 			var redBounds = ImageAssert.GetColorBounds(screenshot, Colors.Red, 10);
-			Assert.AreEqual(new Size(149, 149), redBounds.Size);
+			Assert.AreEqual(new Size(149, 149), new Size(redBounds.Width, redBounds.Height));
 			ImageAssert.DoesNotHaveColorAt(screenshot, 10, 10, Microsoft.UI.Colors.Red, tolerance: 10);
 			ImageAssert.HasColorAt(screenshot, 20, 20, Microsoft.UI.Colors.Red, tolerance: 10);
 			ImageAssert.HasColorAt(screenshot, 10, 148, Microsoft.UI.Colors.Red, tolerance: 10);
