@@ -42,6 +42,107 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_UIElement
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(200)]
+		[DataRow(10)]
+		public async Task When_Both_Layouting_Clip_And_Clip_DP(double newClipValue)
+		{
+			var SUT = new Rectangle()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 100,
+				Height = 100,
+			};
+
+			var grid = new Grid()
+			{
+				Width = 200,
+				Height = 75,
+				Children =
+				{
+					new Rectangle()
+					{
+						Fill = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					SUT,
+				},
+			};
+
+			await UITestHelper.Load(grid);
+			var screenshot = await UITestHelper.ScreenShot(grid);
+
+			var greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
+			Assert.AreEqual(new Size(199, 74), greenBounds.Size);
+
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Size(99, 74), redBounds.Size);
+
+			SUT.Clip = new RectangleGeometry()
+			{
+				Rect = new(0, 0, newClipValue, newClipValue),
+			};
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			screenshot = await UITestHelper.ScreenShot(grid);
+			greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
+			Assert.AreEqual(new Size(199, 74), greenBounds.Size);
+
+			redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Size(Math.Min(100, newClipValue) - 1, Math.Min(75, newClipValue) - 1), redBounds.Size);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TranslateTransform_And_Clip()
+		{
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse),
+				Children =
+				{
+					new Grid()
+					{
+						Width = 50,
+						Height = 50,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
+						Children =
+						{
+							new Grid()
+							{
+								Width = 100,
+								Height = 100,
+								HorizontalAlignment = HorizontalAlignment.Center,
+								VerticalAlignment = VerticalAlignment.Center,
+								Background = new SolidColorBrush(Microsoft.UI.Colors.DeepSkyBlue),
+								Clip = new RectangleGeometry()
+								{
+									Rect = new Rect(0, 0, 5, 50),
+								},
+								RenderTransform = new TranslateTransform()
+								{
+									X = 65,
+								},
+							},
+						},
+					},
+				},
+			};
+
+			await UITestHelper.Load(grid);
+			var screenshot = await UITestHelper.ScreenShot(grid);
+			var chartreuseBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Chartreuse);
+			var deepPinkBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.DeepPink);
+			var deepSkyBlueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.DeepSkyBlue);
+
+			Assert.AreEqual(new Rect(0, 0, 99, 99), chartreuseBounds);
+			Assert.AreEqual(new Rect(25, 25, 49, 49), deepPinkBounds);
+			Assert.AreEqual(new Rect(65, 25, 4, 24), deepSkyBlueBounds);
+		}
+
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
 		[TestMethod]
 		[RunsOnUIThread]

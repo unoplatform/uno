@@ -123,6 +123,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Clip_And_CornerRadius()
+		{
+			var SUT = new Border()
+			{
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				CornerRadius = new CornerRadius(50),
+				Clip = new RectangleGeometry()
+				{
+					Rect = new Rect(0, 0, 150, 150),
+				},
+			};
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Colors.Red, 10);
+			Assert.AreEqual(new Size(149, 149), redBounds.Size);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 10, 10, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 20, 20, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 10, 148, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 148, 148, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 5, 148, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 155, 155, Microsoft.UI.Colors.Red, tolerance: 10);
+		}
+
+		[TestMethod]
 		public async Task Check_DataContext_Propagation()
 		{
 			var tb = new TextBlock();
@@ -420,7 +447,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__ || __IOS__ || __WASM__
 		[Ignore("Not supported yet")]
 #endif
-		public async Task Border_CornerRadiusAndClip_Clipping()
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task Border_CornerRadiusAndClip_Clipping(bool useNullBackground)
 		{
 			var sut = new Border
 			{
@@ -430,7 +459,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CornerRadius = new CornerRadius(50),
 				BorderBrush = new SolidColorBrush(Colors.Red),
 				BorderThickness = new Thickness(20),
-				Background = new SolidColorBrush(Colors.Blue),
+				Background = useNullBackground ? null : new SolidColorBrush(Colors.Blue),
 				Clip = new RectangleGeometry
 				{
 					Rect = new Rect(10, 10, 130, 130)
