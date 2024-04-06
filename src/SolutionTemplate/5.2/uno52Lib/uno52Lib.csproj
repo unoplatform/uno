@@ -11,7 +11,7 @@
 		<Nullable>enable</Nullable>
 		<UnoSdkDebugging>true</UnoSdkDebugging>
 		<OutputType>Library</OutputType>
-		<WarningsAsErrors>true</WarningsAsErrors>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
