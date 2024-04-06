@@ -19,7 +19,7 @@ using FluentAssertions;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
 #endif
 

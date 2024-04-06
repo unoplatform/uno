@@ -147,7 +147,7 @@ namespace UITests.Windows_UI_Core
 		}
 
 		private void WindowActivated(object sender,
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 			Microsoft/* UWP don't rename */.UI.Xaml.WindowActivatedEventArgs e
 #else
 			Windows.UI.Core.WindowActivatedEventArgs e
