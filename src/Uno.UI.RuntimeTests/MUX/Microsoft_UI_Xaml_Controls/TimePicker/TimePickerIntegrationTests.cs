@@ -276,7 +276,7 @@ public class TimePickerIntegrationTests
 #if __ANDROID__ || __IOS__
 	[Ignore("This is only relevant for managed implementation")]
 #elif __WASM__
-	[Ignored("https://github.com/unoplatform/uno/issues/16167")]
+	[Ignore("https://github.com/unoplatform/uno/issues/16167")]
 #endif
 	public async Task SelectingTimeSetsSelectedTime()
 	{
