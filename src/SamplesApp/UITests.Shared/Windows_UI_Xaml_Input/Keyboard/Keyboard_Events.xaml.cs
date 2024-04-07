@@ -36,21 +36,19 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 				global::System.Diagnostics.Debug.WriteLine($"{elt.Name} - [KEYUP] {e.Key}");
 				_output.Text += $"{elt.Name} - [KEYUP] {e.Key}\r\n";
 			};
-#if __WASM__ || __SKIA__
+
 			elt.PreviewKeyDown += (snd, e) =>
 			{
 				Console.WriteLine($"{elt.Name} - [PREVIEWKEYDOWN] {e.Key}");
 				global::System.Diagnostics.Debug.WriteLine($"{elt.Name} - [PREVIEWKEYDOWN] {e.Key}");
 				_output.Text += $"{elt.Name} - [PREVIEWKEYDOWN] {e.Key}\r\n";
 			};
-
 			elt.PreviewKeyUp += (snd, e) =>
 			{
 				Console.WriteLine($"{elt.Name} - [PREVIEWKEYUP] {e.Key}");
 				global::System.Diagnostics.Debug.WriteLine($"{elt.Name} - [PREVIEWKEYUP] {e.Key}");
 				_output.Text += $"{elt.Name} - [PREVIEWKEYUP] {e.Key}\r\n";
 			};
-#endif
 		}
 
 		private void SetupEvent(CoreWindow window)
