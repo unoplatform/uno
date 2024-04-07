@@ -19,8 +19,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property MinHeight
 		// Skipping already declared property MaxWidth
 		// Skipping already declared property MaxHeight
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Microsoft.UI.Xaml.Thickness Margin
 		{
 			get
@@ -115,8 +115,8 @@ namespace Microsoft.UI.Xaml
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty MarginProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Margin), typeof(global::Microsoft.UI.Xaml.Thickness),

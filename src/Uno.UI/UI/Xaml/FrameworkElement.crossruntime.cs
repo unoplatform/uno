@@ -166,6 +166,23 @@ namespace Microsoft.UI.Xaml
 		}
 		#endregion
 
+		#region Margin Dependency Property
+		[GeneratedDependencyProperty(
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
+#endif
+		)]
+		public static DependencyProperty MarginProperty { get; } = CreateMarginProperty();
+
+		public Thickness Margin
+		{
+			get => GetMarginValue();
+			set => SetMarginValue(value);
+		}
+		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
+		#endregion
+
 		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
 		private protected sealed override void OnFwEltLoading()
