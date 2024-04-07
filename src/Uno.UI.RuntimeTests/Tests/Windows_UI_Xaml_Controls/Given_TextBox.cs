@@ -897,7 +897,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(VerticalAlignment.Center, textBox.VerticalContentAlignment);
 			textBox.VerticalContentAlignment = VerticalAlignment.Bottom;
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 			var getTemplateChild = typeof(Control).GetMethod("GetTemplateChild", BindingFlags.Instance | BindingFlags.NonPublic);
 			var placeHolder = (ContentControl)getTemplateChild.Invoke(textBox, new object[] { "PlaceholderTextContentPresenter" });
 			var contentElement = (ContentControl)getTemplateChild.Invoke(textBox, new object[] { "ContentElement" });
