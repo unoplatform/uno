@@ -22,6 +22,8 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
+		public event SizeChangedEventHandler SizeChanged;
+
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 

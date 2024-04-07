@@ -419,8 +419,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loaded
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loading
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
