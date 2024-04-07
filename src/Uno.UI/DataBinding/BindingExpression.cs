@@ -739,7 +739,7 @@ namespace Microsoft.UI.Xaml.Data
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InnerSetTargetValueSafe(object v, bool useTargetNullValue)
 		{
-			if (v is UnsetValue)
+			if (v == DependencyProperty.UnsetValue)
 			{
 				ApplyFallbackValue();
 			}
