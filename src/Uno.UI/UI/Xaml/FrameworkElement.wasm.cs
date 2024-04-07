@@ -114,9 +114,6 @@ namespace Microsoft.UI.Xaml
 		internal bool HasParent()
 			=> Parent != null;
 
-		public double ActualWidth => GetActualWidth();
-		public double ActualHeight => GetActualHeight();
-
 		public event SizeChangedEventHandler SizeChanged;
 
 		private event TypedEventHandler<FrameworkElement, object> _loading;

@@ -22,6 +22,9 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
+
 		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
 		private protected sealed override void OnFwEltLoading()

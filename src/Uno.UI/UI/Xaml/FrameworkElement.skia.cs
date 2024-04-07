@@ -35,10 +35,6 @@ namespace Microsoft.UI.Xaml
 			return Parent != null;
 		}
 
-		public double ActualWidth => GetActualWidth();
-
-		public double ActualHeight => GetActualHeight();
-
 		private bool IsTopLevelXamlView() => false;
 
 		internal void SuspendRendering() => throw new NotSupportedException();
