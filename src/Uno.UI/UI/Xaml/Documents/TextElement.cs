@@ -310,6 +310,9 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
+		// WASM specific as on WASM BaseClass is UIElement
+
+#if !__WASM__
 		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
 		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
 		{
@@ -321,6 +324,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			return null;
 		}
+#endif
 
 		partial void OnNameChangedPartial(string newValue);
 

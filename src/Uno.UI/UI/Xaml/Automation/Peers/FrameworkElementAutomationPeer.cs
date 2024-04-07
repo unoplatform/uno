@@ -117,7 +117,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	protected override Rect GetBoundingRectangleCore()
 	{
-		Rect rect = null;
+		Rect rect = default;
 
 		var isOneCoreTransforms = IsEnabled();
 
@@ -164,13 +164,17 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children)
 	{
-		var childCount = element.GetChildren().Count;
+		var childCount = element.GetChildren().Count();
 		if (childCount > 0)
 		{
 			var reverseOrder = element.AreAutomationPeerChildrenReversed();
 			for (var nIndex = reverseOrder ? childCount - 1 : 0; reverseOrder ? nIndex >= 0 : nIndex < childCount; nIndex += reverseOrder ? -1 : 1)
 			{
-				var spChild = element.GetChildren()[nIndex];
+				//UNO TODO: Properly implement GetAutomationPeerChildren on FrameworkElementAutomationPeer
+				//Temporarily disabled as android, ios, macos doesn't use UIElement
+
+#if !__ANDROID__ && !__IOS__ && !__MACOS__
+				var spChild = element.GetChildAt(nIndex);
 				var childIsAcceptable = ChildIsAcceptable(spChild);
 
 				if (childIsAcceptable)
@@ -185,6 +189,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 						GetAutomationPeerChildren(spChild, children);
 					}
 				}
+#endif
 			}
 		}
 	}
