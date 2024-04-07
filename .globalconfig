@@ -14,10 +14,6 @@ dotnet_diagnostic.CA1304.severity = error
 
 # CA1305: Specify IFormatProvider
 dotnet_diagnostic.CA1305.severity = error
-# When we have interpolated string handlers (.NET 6+), there is an overload that accepts IFormatProvider.
-# However, the same code is targeting older versions that only have `Append(string)` and no overload accepting IFormatProvider.
-# Fixing the warning in this case will require noisy `#if` directives. We exclude this overload for now and get no warning at all.
-dotnet_code_quality.CA1305.excluded_symbol_names = M:System.Text.StringBuilder.Append(System.Text.StringBuilder.AppendInterpolatedStringHandler@)|M:System.Text.StringBuilder.AppendLine(System.Text.StringBuilder.AppendInterpolatedStringHandler@)
 
 # CA1805: Do not initialize unnecessarily
 dotnet_diagnostic.CA1805.severity = error
