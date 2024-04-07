@@ -27,6 +27,40 @@ namespace Microsoft.UI.Xaml
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 
+		#region HorizontalAlignment Dependency Property
+		[GeneratedDependencyProperty(
+			DefaultValue = Xaml.HorizontalAlignment.Stretch,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
+#endif
+		)]
+		public static DependencyProperty HorizontalAlignmentProperty { get; } = CreateHorizontalAlignmentProperty();
+
+		public HorizontalAlignment HorizontalAlignment
+		{
+			get => GetHorizontalAlignmentValue();
+			set => SetHorizontalAlignmentValue(value);
+		}
+		#endregion
+
+		#region VerticalAlignment Dependency Property
+		[GeneratedDependencyProperty(
+			DefaultValue = Xaml.VerticalAlignment.Stretch,
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
+#endif
+		)]
+		public static DependencyProperty VerticalAlignmentProperty { get; } = CreateVerticalAlignmentProperty();
+
+		public VerticalAlignment VerticalAlignment
+		{
+			get => GetVerticalAlignmentValue();
+			set => SetVerticalAlignmentValue(value);
+		}
+		#endregion
+
 		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
 		private protected sealed override void OnFwEltLoading()

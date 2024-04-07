@@ -22,20 +22,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.VerticalAlignment VerticalAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.VerticalAlignment)this.GetValue(VerticalAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalAlignmentProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property VerticalAlignment
 		// Skipping already declared property Tag
 		// Skipping already declared property Style
 		// Skipping already declared property Resources
@@ -125,20 +112,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.HorizontalAlignment HorizontalAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalAlignmentProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property HorizontalAlignment
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public double Height
@@ -217,14 +191,7 @@ namespace Microsoft.UI.Xaml
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalAlignmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalAlignment), typeof(global::Microsoft.UI.Xaml.HorizontalAlignment),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.HorizontalAlignment)));
-#endif
+		// Skipping already declared property HorizontalAlignmentProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LanguageProperty { get; } =
@@ -284,14 +251,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property RequestedThemeProperty
 		// Skipping already declared property StyleProperty
 		// Skipping already declared property TagProperty
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalAlignmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalAlignment), typeof(global::Microsoft.UI.Xaml.VerticalAlignment),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.VerticalAlignment)));
-#endif
+		// Skipping already declared property VerticalAlignmentProperty
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty WidthProperty { get; } =

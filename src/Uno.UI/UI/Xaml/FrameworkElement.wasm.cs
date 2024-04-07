@@ -246,40 +246,6 @@ namespace Microsoft.UI.Xaml
 		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
 
-		#region HorizontalAlignment Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = Xaml.HorizontalAlignment.Stretch,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty HorizontalAlignmentProperty { get; } = CreateHorizontalAlignmentProperty();
-
-		public HorizontalAlignment HorizontalAlignment
-		{
-			get => GetHorizontalAlignmentValue();
-			set => SetHorizontalAlignmentValue(value);
-		}
-		#endregion
-
-		#region HorizontalAlignment Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = Xaml.HorizontalAlignment.Stretch,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty VerticalAlignmentProperty { get; } = CreateVerticalAlignmentProperty();
-
-		public VerticalAlignment VerticalAlignment
-		{
-			get => GetVerticalAlignmentValue();
-			set => SetVerticalAlignmentValue(value);
-		}
-		#endregion
-
 		#region Width Dependency Property
 		[GeneratedDependencyProperty(
 			DefaultValue = double.NaN,
