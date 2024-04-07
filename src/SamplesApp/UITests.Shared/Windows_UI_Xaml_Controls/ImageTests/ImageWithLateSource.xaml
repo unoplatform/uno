@@ -16,21 +16,15 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-    <controls:SampleControl SampleDescription="ImageWithLateSource - source is set after the image is loaded and visible.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-                <StackPanel>
-                    <Button Content="Set image source" 
-                            Command="{Binding [SetSource]}"/>
-                    <Border Background="Firebrick"
-                            BorderThickness="2"
-                            BorderBrush="Azure">
-                        <Image Source="{Binding [SourceUri]}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<Button Content="Set image source" 
+            Command="{Binding [SetSource]}"/>
+		<Border Background="Firebrick"
+            BorderThickness="2"
+            BorderBrush="Azure">
+			<Image Source="{Binding [SourceUri]}"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+		</Border>
+	</StackPanel>
 </UserControl>

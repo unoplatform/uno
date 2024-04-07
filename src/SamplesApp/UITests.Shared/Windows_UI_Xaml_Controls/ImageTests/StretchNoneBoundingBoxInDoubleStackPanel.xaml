@@ -15,28 +15,22 @@
 			 d:DesignHeight="500"
 			 d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="StretchNoneBoundingBoxInDoubleStackPanel">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel
-                    Orientation="Horizontal"
-                    Background="Blue">
-					<TextBlock>
-                        <Run Text="Outer"/><LineBreak/><Run Text="StackPanel"/>
-					</TextBlock>
-					<StackPanel Background="Red"
-                            Orientation="Vertical">
-						<TextBlock Text="Inner StackPanel"/>
-						<TextBlock Text="This image has Stretch set to None and The Bounding Box should be clipped to the image boundaries"/>
+	<StackPanel
+    Orientation="Horizontal"
+    Background="Blue">
+		<TextBlock>
+        <Run Text="Outer"/><LineBreak/><Run Text="StackPanel"/>
+		</TextBlock>
+		<StackPanel Background="Red"
+            Orientation="Vertical">
+			<TextBlock Text="Inner StackPanel"/>
+			<TextBlock Text="This image has Stretch set to None and The Bounding Box should be clipped to the image boundaries"/>
 
-						<Image Source="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" 
-						   Stretch="None"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+			<Image Source="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" 
+					   Stretch="None"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"/>
 
-					</StackPanel>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+		</StackPanel>
+	</StackPanel>
 </UserControl>
