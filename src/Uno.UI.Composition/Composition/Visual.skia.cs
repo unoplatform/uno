@@ -78,7 +78,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		set => SetProperty(ref _clip, value);
 	}
 
-	public RectangleClip? CornerRadiusClip
+	internal RectangleClip? CornerRadiusClip
 	{
 		get => _cornerRadiusClip;
 		set => SetProperty(ref _cornerRadiusClip, value);

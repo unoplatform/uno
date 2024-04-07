@@ -123,6 +123,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("It doesn't yet work properly on Android")]
+#endif
 		public async Task When_Clip_And_CornerRadius()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

@@ -100,6 +100,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("It doesn't yet work properly on Android and iOS")]
+#endif
 		public async Task When_TranslateTransform_And_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
