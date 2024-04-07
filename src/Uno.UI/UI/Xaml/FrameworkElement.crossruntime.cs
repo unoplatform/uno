@@ -22,7 +22,9 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
+#pragma warning disable CS0067 // Unused only in reference API.
 		public event SizeChangedEventHandler SizeChanged;
+#pragma warning restore CS0067
 
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
