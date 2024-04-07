@@ -19,45 +19,39 @@
 		<uc:FromNullableBoolToVisibilityConverter x:Key="FromNullableBoolToVisibilityConverter"
 												  VisibilityIfTrue="Visible"/>
 	</UserControl.Resources>
-	<controls:SampleControl SampleDescription="Validate FocusManager.GetFocusedElement()">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<TextBlock Text="The currently focused control is :"/>
-					<TextBlock x:Name="TxtCurrentFocused"
-							   FontWeight="Bold"
-							   Text="{Binding [FocusedElement]}"/>
-					<TextBox x:Name="TextBoxWithMultiline"
-							 AcceptsReturn="True"
-							 TextWrapping="Wrap"
-							 Visibility="{Binding IsChecked, ElementName=ChkShowMulti, Converter={StaticResource FromNullableBoolToVisibilityConverter}}">
-						<TextBox.Text>
-							This is a text
-							on multiple
-							lines.
-						</TextBox.Text>
-					</TextBox>
-					<TextBox x:Name="SingleLineTextBox"
-							 Text="This a single line textbox"
-							 Visibility="{Binding IsChecked, ElementName=ChkShowSingle, Converter={StaticResource FromNullableBoolToVisibilityConverter}}"/>
-					<TextBox x:Name="AutofocusMultilineTextBox"
-							 AcceptsReturn="True"
-							 TextWrapping="Wrap"
-							 Visibility="{Binding IsChecked, ElementName=ChkShowMultiAutofocus, Converter={StaticResource FromNullableBoolToVisibilityConverter}}"/>
-					<!-- UNO TODO not_win:TextBoxAutoFocusBehavior.IsAutoFocus="True"-->
-					<Button x:Name="MyButton"
-							Content="MyButton"/>
-					<CheckBox x:Name="ChkShowMulti"
-							  Content="Show multiline textbox"
-							  IsChecked="True"/>
-					<CheckBox x:Name="ChkShowSingle"
-							  Content="Show single line textbox"
-							  IsChecked="True"/>
-					<CheckBox x:Name="ChkShowMultiAutofocus"
-							  Content="Show multiline autofocus textbox"
-							  IsChecked="False"/>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<TextBlock Text="The currently focused control is :"/>
+		<TextBlock x:Name="TxtCurrentFocused"
+						   FontWeight="Bold"
+						   Text="{Binding [FocusedElement]}"/>
+		<TextBox x:Name="TextBoxWithMultiline"
+						 AcceptsReturn="True"
+						 TextWrapping="Wrap"
+						 Visibility="{Binding IsChecked, ElementName=ChkShowMulti, Converter={StaticResource FromNullableBoolToVisibilityConverter}}">
+			<TextBox.Text>
+				This is a text
+						on multiple
+						lines.
+			</TextBox.Text>
+		</TextBox>
+		<TextBox x:Name="SingleLineTextBox"
+						 Text="This a single line textbox"
+						 Visibility="{Binding IsChecked, ElementName=ChkShowSingle, Converter={StaticResource FromNullableBoolToVisibilityConverter}}"/>
+		<TextBox x:Name="AutofocusMultilineTextBox"
+						 AcceptsReturn="True"
+						 TextWrapping="Wrap"
+						 Visibility="{Binding IsChecked, ElementName=ChkShowMultiAutofocus, Converter={StaticResource FromNullableBoolToVisibilityConverter}}"/>
+		<!-- UNO TODO not_win:TextBoxAutoFocusBehavior.IsAutoFocus="True"-->
+		<Button x:Name="MyButton"
+						Content="MyButton"/>
+		<CheckBox x:Name="ChkShowMulti"
+						  Content="Show multiline textbox"
+						  IsChecked="True"/>
+		<CheckBox x:Name="ChkShowSingle"
+						  Content="Show single line textbox"
+						  IsChecked="True"/>
+		<CheckBox x:Name="ChkShowMultiAutofocus"
+						  Content="Show multiline autofocus textbox"
+						  IsChecked="False"/>
+	</StackPanel>
 </UserControl>
