@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -37,11 +38,6 @@ public partial class BreadcrumbBar : Control
 		m_itemsRepeaterElementFactory = new BreadcrumbElementFactory();
 		m_itemsRepeaterLayout = new BreadcrumbLayout(this);
 		m_itemsIterable = new BreadcrumbIterable();
-
-#if HAS_UNO
-		this.Loaded += BreadcrumbBar_Loaded;
-		this.Unloaded += BreadcrumbBar_Unloaded;
-#endif
 	}
 
 	private void RevokeListeners()
@@ -84,29 +80,10 @@ public partial class BreadcrumbBar : Control
 			itemsRepeater.ItemsSource = new ObservableCollection<object>();
 			itemsRepeater.ItemTemplate = m_itemsRepeaterElementFactory;
 
-			m_itemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() =>
-			{
-				itemsRepeater.ElementPrepared -= OnElementPreparedEvent;
-			});
-			itemsRepeater.ElementPrepared += OnElementPreparedEvent;
-
-			m_itemsRepeaterElementIndexChangedRevoker.Disposable = Disposable.Create(() =>
-			{
-				itemsRepeater.ElementIndexChanged -= OnElementIndexChangedEvent;
-			});
-			itemsRepeater.ElementIndexChanged += OnElementIndexChangedEvent;
-
-			m_itemsRepeaterElementClearingRevoker.Disposable = Disposable.Create(() =>
-			{
-				itemsRepeater.ElementClearing -= OnElementClearingEvent;
-			});
-			itemsRepeater.ElementClearing += OnElementClearingEvent;
-
-			m_itemsRepeaterLoadedRevoker.Disposable = Disposable.Create(() =>
-			{
-				itemsRepeater.Loaded -= OnBreadcrumbBarItemsRepeaterLoaded;
-			});
-			itemsRepeater.Loaded += OnBreadcrumbBarItemsRepeaterLoaded;
+			m_itemsRepeaterElementPreparedRevoker.Disposable = itemsRepeater.RegisterWeakElementPrepared(OnElementPreparedEvent);
+			m_itemsRepeaterElementIndexChangedRevoker.Disposable = itemsRepeater.RegisterWeakElementIndexChanged(OnElementIndexChangedEvent);
+			m_itemsRepeaterElementClearingRevoker.Disposable = itemsRepeater.RegisterWeakElementClearing(OnElementClearingEvent);
+			m_itemsRepeaterLoadedRevoker.Disposable = itemsRepeater.RegisterWeakLoaded(OnBreadcrumbBarItemsRepeaterLoaded);
 		}
 
 		UpdateItemsRepeaterItemsSource();
@@ -725,6 +702,16 @@ public partial class BreadcrumbBar : Control
 #if HAS_UNO
 	private bool _isUnloaded = false;
 	private long _flowPropertyToken = 0;
+
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+	}
+
+	private protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+	}
 
 	private void BreadcrumbBar_Loaded(object sender, RoutedEventArgs e)
 	{
