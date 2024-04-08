@@ -32,6 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ListView _suggestionsList;
 		private Button _queryButton;
 		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
+		private bool _isUserModifyingText;
 		private string userInput;
 		private FrameworkElement _suggestionsContainer;
 		private IDisposable _textChangedDisposable;
@@ -94,7 +95,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
 		{
+			_isUserModifyingText = args.IsUserModifying;
 			Text = _textBox.Text;
+			_isUserModifyingText = false;
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -492,7 +495,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// as KeyDown is not triggered (e.g. Android)
 				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && tb._textBox is not null)
 				{
-					if (tb._textBox.IsUserModifying)
+					if (tb._isUserModifyingText)
 					{
 						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
 					}

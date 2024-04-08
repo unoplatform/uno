@@ -100,10 +100,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInputClearingText;
 		/// <summary>
-		/// Set when <see cref="RaiseTextChanged"/> has been dispatched but not yet called.
-		/// </summary>
-		private bool _isTextChangedPending;
-		/// <summary>
 		/// True if Text has changed while the TextBox has had focus, false otherwise
 		///
 		/// This flag is checked to avoid pushing a value to a two-way binding if no edits have occurred, per UWP's behavior.
@@ -168,8 +164,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			}
 		}
-
-		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -310,11 +304,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 
-			if (!_isTextChangedPending)
-			{
-				_isTextChangedPending = true;
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
-			}
+			var isUserModifyingText = _isInputModifyingText | _isInputClearingText;
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTextChanged(isUserModifyingText));
 		}
 
 		partial void OnTextChangedPartial();
@@ -341,7 +332,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// be performed in this method to avoid potential race conditions
 		/// (see #6289)
 		/// </summary>
-		private void RaiseTextChanged()
+		private void RaiseTextChanged(bool isUserModifyingText)
 		{
 			if (_isInvokingTextChanged)
 			{
@@ -351,10 +342,9 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				_isInvokingTextChanged = true;
-				_isTextChangedPending = false;
 				if (!_suppressTextChanged) // This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 				{
-					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+					TextChanged?.Invoke(this, new TextChangedEventArgs(this, isUserModifyingText));
 				}
 			}
 			finally

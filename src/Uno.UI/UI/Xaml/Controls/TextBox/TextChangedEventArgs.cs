@@ -6,9 +6,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class TextChangedEventArgs : RoutedEventArgs
 	{
-		internal TextChangedEventArgs(object originalSource)
+		internal TextChangedEventArgs(object originalSource, bool isUserModifying)
 			: base(originalSource)
 		{
+			IsUserModifying = isUserModifying;
 		}
+
+		internal bool IsUserModifying { get; }
 	}
 }
