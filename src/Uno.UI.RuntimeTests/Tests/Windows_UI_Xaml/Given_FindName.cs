@@ -138,26 +138,50 @@ public class Given_FindName
 
 		btnViaFindName = SUT.FindName("MyButton");
 		var btnViaFindName2 = SUT.FindName("MyButton2");
+
+#if WINAPPSDK
 		Assert.AreEqual(btn, btnViaFindName);
+#else
+		Assert.IsNull(btnViaFindName);
+#endif
+
 		Assert.AreEqual(btn, btnViaFindName2);
 
 		SUT.Children.Clear();
 		btnViaFindName = SUT.FindName("MyButton");
 		btnViaFindName2 = SUT.FindName("MyButton2");
+
+#if WINAPPSDK
 		Assert.AreEqual(btn, btnViaFindName);
+#else
+		Assert.IsNull(btnViaFindName);
+#endif
+
 		Assert.IsNull(btnViaFindName2);
 
 		btn.Name = "MyButton2";
 		btnViaFindName = SUT.FindName("MyButton");
 		btnViaFindName2 = SUT.FindName("MyButton2");
+
+#if WINAPPSDK
 		Assert.AreEqual(btn, btnViaFindName);
+#else
+		Assert.IsNull(btnViaFindName);
+#endif
+
 		Assert.IsNull(btnViaFindName2);
 
 		btn.Name = "MyButton3";
 		btnViaFindName = SUT.FindName("MyButton");
 		btnViaFindName2 = SUT.FindName("MyButton2");
 		var btnViaFindName3 = SUT.FindName("MyButton3");
+
+#if WINAPPSDK
 		Assert.AreEqual(btn, btnViaFindName);
+#else
+		Assert.IsNull(btnViaFindName);
+#endif
+
 		Assert.IsNull(btnViaFindName3);
 		Assert.IsNull(btnViaFindName2);
 	}

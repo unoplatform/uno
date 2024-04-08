@@ -56,6 +56,20 @@ namespace Microsoft.UI.Xaml
 			{
 				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
+
+			var nameScope = FindNameScope(this);
+			if (nameScope is not null)
+			{
+				if (oldValue is not null)
+				{
+					nameScope.UnregisterName(oldValue);
+				}
+
+				if (newValue is not null)
+				{
+					nameScope.RegisterName(newValue, this);
+				}
+			}
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
