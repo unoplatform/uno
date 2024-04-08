@@ -327,6 +327,11 @@ public class Given_DependencyPropertyGenerator
 						{
 							partial class C
 							{
+								private GeneratedDependencyPropertyFlags0 _generatedDependencyPropertyFlags0;
+								private enum GeneratedDependencyPropertyFlags0 : byte
+								{
+									DPFlag0 = 1 << 0,
+								}
 								#region MyValue Dependency Property
 								private int GetMyValueValue()
 								{
@@ -338,7 +343,11 @@ public class Given_DependencyPropertyGenerator
 									return _MyValuePropertyBackingField;
 								}
 								private void SetMyValueValue(int value) => SetValue(MyValueProperty, value);
-								private bool _MyValuePropertyBackingFieldSet = false;
+								private bool _MyValuePropertyBackingFieldSet
+								{
+									get => (_generatedDependencyPropertyFlags0 & GeneratedDependencyPropertyFlags0.DPFlag0) != 0;
+									set { if (value) _generatedDependencyPropertyFlags0 |= GeneratedDependencyPropertyFlags0.DPFlag0; else _generatedDependencyPropertyFlags0 &= ~GeneratedDependencyPropertyFlags0.DPFlag0; }
+								}
 								private int _MyValuePropertyBackingField;
 								/// <summary>
 								/// Generated method used to create the <see cref="MyValueProperty" /> member value
@@ -371,8 +380,8 @@ public class Given_DependencyPropertyGenerator
 		};
 
 		test.ExpectedDiagnostics.Add(
-			// Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C.cs(47,10): error CS1029: #error: 'The generated property MyValue cannot contains both a DefaultValue and the GetMyValueDefaultValue() method.'
-			DiagnosticResult.CompilerError("CS1029").WithSpan(@"Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C.cs", 47, 10, 47, 117).WithArguments("The generated property MyValue cannot contains both a DefaultValue and the GetMyValueDefaultValue() method.")
+			// Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C.cs(56,10): error CS1029: #error: 'The generated property MyValue cannot contains both a DefaultValue and the GetMyValueDefaultValue() method.'
+			DiagnosticResult.CompilerError("CS1029").WithSpan(@"Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C.cs", 56, 10, 56, 117).WithArguments("The generated property MyValue cannot contains both a DefaultValue and the GetMyValueDefaultValue() method.")
 		);
 
 		await test.RunAsync();

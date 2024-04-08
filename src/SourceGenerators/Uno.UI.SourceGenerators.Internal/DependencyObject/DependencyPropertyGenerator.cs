@@ -332,24 +332,25 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				using (builder.BlockInvariant($"partial class {dpCandidatesData[0].ContainingTypeName}"))
 				{
-					var completeEnumsCount = boolPropertiesCount / 8;
+					var completeEnumsCount = boolPropertiesCount / 32;
 					for (int i = 0; i < completeEnumsCount; i++)
 					{
 						builder.AppendLineIndented($"private GeneratedDependencyPropertyFlags{i} _generatedDependencyPropertyFlags{i};");
-						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{i} : byte"))
+						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{i} : uint"))
 						{
-							for (int j = 0; j < 8; j++)
+							for (int j = 0; j < 32; j++)
 							{
 								builder.AppendLineIndented($"DPFlag{j} = 1 << {j},");
 							}
 						}
 					}
 
-					var lastEnumMemberCount = boolPropertiesCount % 8;
+					var lastEnumMemberCount = boolPropertiesCount % 32;
+					var lastEnumType = boolPropertiesCount <= 8 ? "byte" : "uint";
 					if (lastEnumMemberCount > 0)
 					{
 						builder.AppendLineIndented($"private GeneratedDependencyPropertyFlags{completeEnumsCount} _generatedDependencyPropertyFlags{completeEnumsCount};");
-						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{completeEnumsCount} : byte"))
+						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{completeEnumsCount} : {lastEnumType}"))
 						{
 							for (int i = 0; i < lastEnumMemberCount; i++)
 							{
@@ -534,8 +535,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private static (string GetAccessor, string SetAccessor) GetFlagPropertyAccessors(int boolCounter)
 		{
-			var flagsFieldName = boolCounter / 8;
-			var flagsFieldValue = boolCounter % 8;
+			var flagsFieldName = boolCounter / 32;
+			var flagsFieldValue = boolCounter % 32;
 			var enumMemberName = $"GeneratedDependencyPropertyFlags{flagsFieldName}.DPFlag{flagsFieldValue}";
 			var getAccessor = $"get => (_generatedDependencyPropertyFlags{flagsFieldName} & {enumMemberName}) != 0;";
 			var setAccessor = $"set {{ if (value) _generatedDependencyPropertyFlags{flagsFieldName} |= {enumMemberName}; else _generatedDependencyPropertyFlags{flagsFieldName} &= ~{enumMemberName}; }}";
