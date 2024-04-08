@@ -48,6 +48,12 @@ partial class AppWindow
 		}
 	}
 
+#if __IOS__
+	internal UIKit.UIScreen Screen => _nativeAppWindow.Screen;
+#elif __MACOS__
+	internal AppKit.NSScreen Screen => _nativeAppWindow.Screen;
+#endif
+
 	internal void SetNativeWindow(INativeAppWindow nativeAppWindow)
 	{
 		if (nativeAppWindow is null)

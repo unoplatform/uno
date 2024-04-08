@@ -12,4 +12,10 @@ internal interface INativeAppWindow
 	string Title { get; set; }
 
 	void SetPresenter(AppWindowPresenter presenter);
+
+#if __IOS__
+	UIKit.UIScreen Screen { get; }
+#elif __MACOS__
+	AppKit.NSScreen Screen { get; }
+#endif
 }

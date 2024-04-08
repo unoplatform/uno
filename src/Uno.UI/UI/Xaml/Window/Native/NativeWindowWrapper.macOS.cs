@@ -50,6 +50,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		ObserveOrientationAndSize();
 	}
 
+	public override UIScreen Screen => _window.Screen;
+
 	public override string Title
 	{
 		get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : base.Title;

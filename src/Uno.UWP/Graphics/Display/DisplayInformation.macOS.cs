@@ -1,6 +1,7 @@
-﻿using AppKit;
+﻿using System;
+using AppKit;
 using Foundation;
-using System;
+using Microsoft.UI.Windowing;
 
 namespace Windows.Graphics.Display
 {
@@ -57,7 +58,7 @@ namespace Windows.Graphics.Display
 
 		private void Update()
 		{
-			var screen = NSScreen.MainScreen;
+			var screen = AppWindow.GetFromWindowId(WindowId).Screen;
 			var rect = screen.ConvertRectToBacking(screen.Frame);
 
 			ScreenHeightInRawPixels = (uint)rect.Height;

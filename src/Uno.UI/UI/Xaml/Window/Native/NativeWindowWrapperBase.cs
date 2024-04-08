@@ -21,6 +21,12 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public abstract object? NativeWindow { get; }
 
+#if __IOS__
+	public abstract UIKit.UIScreen Screen { get; }
+#elif __MACOS__
+	public abstract AppKit.NSScreen Screen { get; }
+#endif
+
 	public Rect Bounds
 	{
 		get => _bounds;

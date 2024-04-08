@@ -34,6 +34,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #endif
 	}
 
+	public override UIScreen Screen => _nativeWindow.Screen;
+
 	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;

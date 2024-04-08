@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Foundation;
+using Microsoft.UI.Windowing;
 using UIKit;
 using Windows.Foundation;
 
@@ -94,7 +95,7 @@ namespace Windows.Graphics.Display
 
 		private void Update()
 		{
-			var screen = UIScreen.MainScreen;
+			var screen = AppWindow.GetFromWindowId(WindowId).Screen;
 			var bounds = screen.Bounds;
 
 			RawPixelsPerViewPixel = screen.NativeScale;
