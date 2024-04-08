@@ -53,6 +53,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			typeof(FontWeight),
 		};
 
+		private Stack<NameScope> _nameScopes = new();
+
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
@@ -72,11 +74,24 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		{
 			var topLevelControl = _fileDefinition.Objects.First();
 
-			var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
+			var nameScope = new NameScope();
+			_nameScopes.Push(nameScope);
+			try
+			{
+				var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
+				if (instance is DependencyObject instanceAsDO)
+				{
+					NameScope.SetNameScope(instanceAsDO, nameScope);
+				}
 
-			ApplyPostActions(instance);
+				ApplyPostActions(instance);
 
-			return instance;
+				return instance;
+			}
+			finally
+			{
+				_nameScopes.Pop();
+			}
 		}
 
 		private object? LoadObject(XamlObjectDefinition? control, object? rootInstance, object? component = null, bool createInstanceFromXClass = false)
@@ -126,7 +141,22 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance) as _View;
+					var nameScope = new NameScope();
+					_nameScopes.Push(nameScope);
+					try
+					{
+						var result = LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance) as _View;
+						if (result is DependencyObject resultAsDO)
+						{
+							NameScope.SetNameScope(resultAsDO, nameScope);
+						}
+
+						return result;
+					}
+					finally
+					{
+						_nameScopes.Pop();
+					}
 				};
 
 				var created = Activator.CreateInstance(type, builder);
@@ -463,6 +493,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// Update x:Name generated fields, if any
 				if (rootInstance != null && member.Value is string nameValue)
 				{
+					if (_nameScopes.TryPeek(out var nameScope))
+					{
+						nameScope.RegisterName(nameValue, instance);
+					}
+
 					var allMembers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 					var rootInstanceType = rootInstance.GetType();
 
