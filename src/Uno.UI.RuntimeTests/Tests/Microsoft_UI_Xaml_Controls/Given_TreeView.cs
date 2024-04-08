@@ -95,6 +95,44 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		public async Task When_TreeViewItem_Collapsed_Children_Removed_From_Tree()
+		{
+			var treeView = new TreeView
+			{
+				RootNodes =
+				{
+					new TreeViewNode
+					{
+						Content = "Parent",
+						IsExpanded = true,
+						Children =
+						{
+							new TreeViewNode
+							{
+								Content = "Child",
+								IsExpanded = true
+							}
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(treeView);
+
+			Assert.AreEqual(2, treeView.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+
+			treeView.RootNodes[0].IsExpanded = false;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, treeView.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+
+			treeView.RootNodes[0].IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, treeView.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+		}
+
+		[TestMethod]
 		public async Task When_Setting_SelectedItem_DoesNotTakeEffect()
 		{
 			var treeView = new TreeView();

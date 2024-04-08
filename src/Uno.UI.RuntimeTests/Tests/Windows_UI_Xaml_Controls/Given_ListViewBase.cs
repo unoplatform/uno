@@ -3973,6 +3973,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree(string sutType, string scenario)
+		{
+			var source = new ObservableCollection<string>()
+			{
+				"1",
+				"2",
+				"3"
+			};
+
+			var SUT = new ListView
+			{
+				ItemsSource = source
+			};
+
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(3, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			source.RemoveAt(2);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			source.RemoveAt(1);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			source.RemoveAt(0);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+		}
+
+		[TestMethod]
 		public async Task When_ItemsSource_INCC_Reset()
 		{
 			// note: In order to repro #12059 (extra SelectTemplate call) & SelectTemplateCore called with incorrect item (the `source` is passed as item),
