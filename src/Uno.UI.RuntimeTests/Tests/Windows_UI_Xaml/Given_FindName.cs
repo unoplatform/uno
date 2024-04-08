@@ -99,4 +99,23 @@ public class Given_FindName
 		Assert.IsInstanceOfType(test2, typeof(MenuFlyoutItem));
 		Assert.AreEqual("SecondFlyoutItem", ((MenuFlyoutItem)test2).Tag);
 	}
+
+	[TestMethod]
+	public void When_FromResources()
+	{
+		var SUT = new FindName_FromResources();
+		var btn = SUT.FindName("MyButton");
+		Assert.IsNotNull(btn);
+		Assert.IsInstanceOfType(btn, typeof(Button));
+	}
+
+	[TestMethod]
+	public void When_ChildCanFindParent()
+	{
+		var SUT = new FindName_ChildCanFindParent();
+		var btn = SUT.childButton;
+		var result = btn.FindName("parentGrid");
+		Assert.IsNotNull(result);
+		Assert.IsInstanceOfType(result, typeof(Grid));
+	}
 }
