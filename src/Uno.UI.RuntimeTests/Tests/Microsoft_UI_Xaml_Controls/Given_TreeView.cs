@@ -29,6 +29,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.ComponentModel;
 using Windows.UI.Input.Preview.Injection;
+using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
@@ -131,6 +132,63 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			Assert.AreEqual(2, treeView.FindVisualChildByType<ItemsStackPanel>().Children.Count);
 		}
+
+#if HAS_UNO
+		// https://github.com/unoplatform/uno/issues/16041
+		// This test actually always passes due to catching the NRE in SafeRaiseEvent in RaiseDragEnterOrOver
+		// so you need to check manually if there are any logged exceptions
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_TreeViewItem_Dragged_NRE()
+		{
+			var treeView = new TreeView
+			{
+				RootNodes =
+				{
+					new TreeViewNode
+					{
+						Content = "Parent",
+						IsExpanded = true,
+						Children =
+						{
+							new TreeViewNode
+							{
+								Content = "Child",
+								IsExpanded = true
+							}
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(treeView);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// The bug is extremely hard to reproduce. Even slight changes to the numbers will fail to repro.
+			// The main idea is to have the first PointerEnteredEvent in the "Parent" TreeViewItem
+			// and the very next "frame" (i.e. pointer event) should jump to the the "Child" TreeViewItem.
+			// At least, that's the leading hypothesis.
+			// Note that removing the WaitForIdle's will throw an NRE and this is somewhat expected. The TreeView
+			// removes the children "nodes" immediately when a parent node starts dragging, but the children
+			// are asynchronously removed, so if an "about to be removed" child node receives a DragOver/DragEnter,
+			// the event callback will run some logic that assumes that the node is still in the TreeView, when it
+			// technically isn't (it's in the tree, but the TreeView has internally discarded it), which throws the NRE.
+			mouse.Press(treeView.TransformToVisual(null).TransformPoint(new Point(54, 17)));
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(treeView.TransformToVisual(null).TransformPoint(new Point(54, 29)), 1);
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(treeView.TransformToVisual(null).TransformPoint(new Point(86, 42)), 1);
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(treeView.TransformToVisual(null).TransformPoint(new Point(118, 55)), 1);
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(treeView.TransformToVisual(null).TransformPoint(new Point(121, 55)), 1);
+			await WindowHelper.WaitForIdle();
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_Setting_SelectedItem_DoesNotTakeEffect()

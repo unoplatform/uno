@@ -3973,7 +3973,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree(string sutType, string scenario)
+		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree()
 		{
 			var source = new ObservableCollection<string>()
 			{
