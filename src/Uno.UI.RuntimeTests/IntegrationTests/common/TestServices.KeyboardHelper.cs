@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
@@ -317,6 +318,18 @@ namespace Private.Infrastructure
 			public static void GamepadDpadDown(UIElement element = null)
 			{
 				PressKeySequence("$d$_GamepadDpadDown#$u$_GamepadDpadDown", element);
+			}
+
+			/// <param name="text">Assuming lowercase text. To add capitalization, use <see cref="PressKeySequence"/></param>
+			public static void InputText(string text, UIElement element = null)
+			{
+				var sequence = text
+					.ToLower()
+					.Select(c => $"$d$_{c}#$u$_{c}#")
+					.Aggregate("", (a, b) => a + b)
+					[..^1]; // drop last #
+
+				PressKeySequence(sequence, element);
 			}
 		}
 	}

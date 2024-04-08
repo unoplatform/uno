@@ -61,6 +61,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			textBox.IsFocused.Should().BeTrue();
 			SUT.Text = "a";
+			SUT.IsSuggestionListOpen.Should().BeFalse();
+			await WindowHelper.WaitForIdle();
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
 
@@ -282,45 +284,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
-		public async Task When_Text_Changed_Sequence()
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Text_Changed_Sequence(bool waitBetweenActions)
 		{
 			var SUT = new AutoSuggestBox();
 			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
-			bool eventRaised = false;
 			var reasons = new List<AutoSuggestionBoxTextChangeReason>();
-			var counter = 0;
 			SUT.TextChanged += (s, e) =>
 			{
 				reasons.Add(e.Reason);
-				if (++counter == 7)
-				{
-					eventRaised = true;
-				}
 			};
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);
 			SUT.ChoseItem("ab");
+			await Wait();
 			SUT.Text = "other";
-			textBox.ProcessTextInput("manual");
+			await Wait();
+			KeyboardHelper.InputText("manual");
+			await Wait();
 			SUT.ChoseItem("ab");
-			textBox.ProcessTextInput("manual");
+			await Wait();
+			KeyboardHelper.InputText("manual");
+			await Wait();
 			SUT.Text = "other";
+			await Wait();
 			SUT.ChoseItem("ab");
+			await Wait();
 
-			await WindowHelper.WaitFor(() => eventRaised);
-			CollectionAssert.AreEquivalent(
-				new[] {
-					AutoSuggestionBoxTextChangeReason.SuggestionChosen,
-					AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
-					AutoSuggestionBoxTextChangeReason.UserInput,
-					AutoSuggestionBoxTextChangeReason.SuggestionChosen,
-					AutoSuggestionBoxTextChangeReason.UserInput,
-					AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
-					AutoSuggestionBoxTextChangeReason.SuggestionChosen
-				},
-				reasons);
+			await WindowHelper.WaitForIdle();
+
+			if (waitBetweenActions)
+			{
+				CollectionAssert.AreEquivalent(
+					new[] {
+						AutoSuggestionBoxTextChangeReason.SuggestionChosen,
+						AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
+						AutoSuggestionBoxTextChangeReason.UserInput,
+						AutoSuggestionBoxTextChangeReason.SuggestionChosen,
+						AutoSuggestionBoxTextChangeReason.UserInput,
+						AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
+						AutoSuggestionBoxTextChangeReason.SuggestionChosen
+					},
+					reasons);
+			}
+			else
+			{
+				CollectionAssert.AreEquivalent(
+					new[] {
+						AutoSuggestionBoxTextChangeReason.SuggestionChosen
+					},
+					reasons);
+			}
+
+			async Task Wait()
+			{
+				if (waitBetweenActions)
+				{
+					await WindowHelper.WaitForIdle();
+				}
+			}
 		}
 
 		[TestMethod]

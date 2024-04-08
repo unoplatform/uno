@@ -32,8 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ListView _suggestionsList;
 		private Button _queryButton;
 		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-		private bool _isUserModifyingText;
-		private string userInput;
+		private string _userInput;
 		private FrameworkElement _suggestionsContainer;
 		private IDisposable _textChangedDisposable;
 
@@ -95,9 +94,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
 		{
-			_isUserModifyingText = args.IsUserModifying;
+			if (args.IsTextChangedPending)
+			{
+				// just respond to the last TextChanged event. This is not exactly what WinUI does, but it should be close enough.
+				return;
+			}
 			Text = _textBox.Text;
-			_isUserModifyingText = false;
+			OnTextChanged(args.IsUserModifyingText);
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -164,7 +167,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateUserInput(Object o)
 		{
-			userInput = GetObjectText(o);
+			_userInput = GetObjectText(o);
 		}
 
 		private void LayoutPopup()
@@ -464,7 +467,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_suggestionsList.SelectedIndex = -1;
 			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 
-			Text = userInput ?? "";
+			Text = _userInput ?? "";
 		}
 
 		private string GetObjectText(Object o)
@@ -485,43 +488,38 @@ namespace Microsoft.UI.Xaml.Controls
 			return value?.ToString() ?? "";
 		}
 
-		private static void OnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnTextChanged(bool isUserModifyingText)
 		{
-			var newValue = args.NewValue as string ?? string.Empty;
-
-			if (dependencyObject is AutoSuggestBox tb)
+			// On some platforms, the TextChangeReason is not updated
+			// as KeyDown is not triggered (e.g. Android)
+			if (_textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && _textBox is not null)
 			{
-				// On some platforms, the TextChangeReason is not updated
-				// as KeyDown is not triggered (e.g. Android)
-				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && tb._textBox is not null)
+				if (isUserModifyingText)
 				{
-					if (tb._isUserModifyingText)
-					{
-						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
-					}
-					else
-					{
-						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-					}
+					_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
 				}
-
-				tb.UpdateTextBox();
-				tb.UpdateSuggestionList();
-
-				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+				else
 				{
-					tb.UpdateUserInput(newValue);
+					_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 				}
-
-				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs()
-				{
-					Reason = tb._textChangeReason,
-					Owner = tb
-				});
-
-				// Reset the default - otherwise SuggestionChosen could remain set.
-				tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 			}
+
+
+			UpdateSuggestionList();
+
+			if (_textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+			{
+				UpdateUserInput(Text);
+			}
+
+			TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs
+			{
+				Reason = _textChangeReason,
+				Owner = this
+			});
+
+			// Reset the default - otherwise SuggestionChosen could remain set.
+			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		}
 
 		private void UpdateDescriptionVisibility(bool initialization)
