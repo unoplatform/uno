@@ -183,8 +183,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			contentControl.Content = null;
 
-			Assert.IsTrue(comboBox.Items.Count == 0);
-			Assert.IsTrue(comboBox.SelectedIndex == -1);
+			Assert.AreEqual(3, comboBox.Items.Count);
+			Assert.AreEqual(1, comboBox.SelectedIndex);
 		}
 
 #if HAS_UNO
