@@ -1,8 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests;
 
@@ -117,5 +118,123 @@ public class Given_FindName
 		var result = btn.FindName("parentGrid");
 		Assert.IsNotNull(result);
 		Assert.IsInstanceOfType(result, typeof(Grid));
+	}
+
+	[TestMethod]
+	public async Task When_Child_Is_Added_And_Removed()
+	{
+		var SUT = new StackPanel();
+		var btn = new Button()
+		{
+			Name = "MyButton",
+		};
+		SUT.Children.Add(btn);
+
+		await UITestHelper.Load(SUT);
+		var btnViaFindName = SUT.FindName("MyButton");
+		Assert.AreEqual(btn, btnViaFindName);
+
+		btn.Name = "MyButton2";
+
+		btnViaFindName = SUT.FindName("MyButton");
+		var btnViaFindName2 = SUT.FindName("MyButton2");
+		Assert.AreEqual(btn, btnViaFindName);
+		Assert.AreEqual(btn, btnViaFindName2);
+
+		SUT.Children.Clear();
+		btnViaFindName = SUT.FindName("MyButton");
+		btnViaFindName2 = SUT.FindName("MyButton2");
+		Assert.AreEqual(btn, btnViaFindName);
+		Assert.IsNull(btnViaFindName2);
+
+		btn.Name = "MyButton2";
+		btnViaFindName = SUT.FindName("MyButton");
+		btnViaFindName2 = SUT.FindName("MyButton2");
+		Assert.AreEqual(btn, btnViaFindName);
+		Assert.IsNull(btnViaFindName2);
+
+		btn.Name = "MyButton3";
+		btnViaFindName = SUT.FindName("MyButton");
+		btnViaFindName2 = SUT.FindName("MyButton2");
+		var btnViaFindName3 = SUT.FindName("MyButton3");
+		Assert.AreEqual(btn, btnViaFindName);
+		Assert.IsNull(btnViaFindName3);
+		Assert.IsNull(btnViaFindName2);
+	}
+
+	[TestMethod]
+	public async Task When_Child_With_Same_Name_As_Original_Is_Added()
+	{
+		var SUT = new StackPanel();
+		var btn = new Button()
+		{
+			Name = "MyButton",
+		};
+		SUT.Children.Add(btn);
+
+		await UITestHelper.Load(SUT);
+		var btnViaFindName = SUT.FindName("MyButton");
+		Assert.AreEqual(btn, btnViaFindName);
+
+		var btn2 = new Button()
+		{
+			Name = "MyButton",
+		};
+
+		SUT.Children.Add(btn2);
+
+		btnViaFindName = SUT.FindName("MyButton");
+		Assert.AreEqual(btn2, btnViaFindName);
+	}
+
+	[TestMethod]
+	public async Task When_Child_With_Same_Name_As_Modified_Is_Added()
+	{
+		var SUT = new StackPanel();
+		var btn = new Button()
+		{
+			Name = "MyButton",
+		};
+		SUT.Children.Add(btn);
+
+		await UITestHelper.Load(SUT);
+		var btnViaFindName = SUT.FindName("MyButton");
+		Assert.AreEqual(btn, btnViaFindName);
+
+		btn.Name = "MyButton2";
+
+		btnViaFindName = SUT.FindName("MyButton");
+		var btnViaFindName2 = SUT.FindName("MyButton2");
+		Assert.AreEqual(btn, btnViaFindName);
+		Assert.AreEqual(btn, btnViaFindName2);
+
+		var btn2 = new Button()
+		{
+			Name = "MyButton",
+		};
+
+		SUT.Children.Add(btn2);
+
+		btnViaFindName = SUT.FindName("MyButton");
+		btnViaFindName2 = SUT.FindName("MyButton2");
+		Assert.AreEqual(btn2, btnViaFindName);
+		Assert.AreEqual(btn, btnViaFindName2);
+	}
+
+	[TestMethod]
+	public async Task When_Disconnected_From_NameScope()
+	{
+		var btn = new Button()
+		{
+			Content = "Click",
+			Name = "MyButton",
+		};
+
+		Assert.IsNull(btn.FindName("MyButton"));
+
+		// Now, connect to NameScope.
+		await UITestHelper.Load(btn);
+
+		Assert.AreEqual(btn, btn.FindName("MyButton"));
 	}
 }
