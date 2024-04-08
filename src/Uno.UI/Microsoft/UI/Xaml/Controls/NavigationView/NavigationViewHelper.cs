@@ -4,6 +4,10 @@
 
 using Microsoft.UI.Xaml;
 
+#if !HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+#endif
+
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal enum NavigationViewVisualStateDisplayMode
