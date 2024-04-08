@@ -186,15 +186,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// Finds a realised element in the control template
-		/// </summary>
-		/// <param name="e">The framework element instance</param>
-		/// <param name="name">The name of the template part</param>
-		public static DependencyObject GetTemplateChild(this IFrameworkElement e, string name)
-		{
-			return e.FindName(name) as IFrameworkElement;
-		}
 #if !UNO_REFERENCE_API
 		// This extension method is not needed for Skia
 		// nor Wasm, since all elements in visual tree are
@@ -237,74 +228,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-
-		public static IFrameworkElement FindName(IFrameworkElement e, ViewGroup group, string name)
-		{
-			if (string.Equals(e.Name, name, StringComparison.Ordinal))
-			{
-				return e;
-			}
-
-			// The lambda is static to make sure it doesn't capture anything, for performance reasons.
-			var matchingChild = group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null);
-			matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement);
-			if (matchingChild is not null)
-			{
-				return matchingChild.ConvertFromStubToElement(e, name);
-			}
-
-			// If element is a ContentControl with a view as Content, include the view and its children in the search,
-			// to better match Windows behaviour
-			IFrameworkElement content = null;
-			if (e is ContentControl contentControl &&
-				contentControl.Content is IFrameworkElement innerContent &&
-				contentControl.ContentTemplate is null) // Only include the Content view if there is no ContentTemplate.
-			{
-				content = innerContent;
-			}
-			else if (e is Controls.Primitives.Popup popup)
-			{
-				content = popup.Child as IFrameworkElement;
-			}
-
-			if (content != null)
-			{
-				if (string.Equals(content.Name, name, StringComparison.Ordinal))
-				{
-					return content.ConvertFromStubToElement(e, name);
-				}
-
-				var subviewResult = content.FindName(name) as IFrameworkElement;
-				if (subviewResult != null)
-				{
-					return subviewResult.ConvertFromStubToElement(e, name);
-				}
-			}
-
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
-			{
-				// Static version here to ensure that it's not used outside of this scope
-				// where we're ensuring that we're not taking a dependency on FlyoutBase statically.
-				static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
-					=> flyoutBase switch
-					{
-						MenuFlyout f => f.Items.Select(i => i.FindName(name) as IFrameworkElement).Trim().FirstOrDefault(),
-						Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
-					};
-
-				if (e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
-				{
-					return FindInFlyout(name, contextFlyout);
-				}
-
-				if (e is Button button && button.Flyout is Controls.Primitives.FlyoutBase buttonFlyout)
-				{
-					return FindInFlyout(name, buttonFlyout);
-				}
-			}
-
-			return null;
-		}
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
@@ -407,17 +330,6 @@ namespace Microsoft.UI.Xaml
 		private static nfloat LocalMax(this nfloat left, nfloat right)
 		{
 			return NMath.Max(left, right);
-		}
-
-		private static IFrameworkElement ConvertFromStubToElement(this IFrameworkElement element, IFrameworkElement originalRootElement, string name)
-		{
-			var elementStub = element as ElementStub;
-			if (elementStub != null)
-			{
-				elementStub.Materialize();
-				element = originalRootElement.FindName(name) as IFrameworkElement;
-			}
-			return element;
 		}
 
 		private static nfloat NumberOrDefault(this nfloat number, nfloat defaultValue)

@@ -64,9 +64,6 @@ namespace Microsoft.UI.Xaml
 			return finalSize;
 		}
 
-		public object FindName(string name)
-			=> IFrameworkElementHelper.FindName(this, this, name);
-
 		#region Background DependencyProperty
 
 		public Brush Background

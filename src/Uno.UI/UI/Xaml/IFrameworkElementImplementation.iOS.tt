@@ -213,9 +213,17 @@ namespace <#= mixin.NamespaceName #>
 			return size;
 		}
 
-		public object FindName (string name)
+		public object FindName(string name)
 		{
-			return IFrameworkElementHelper.FindName (this, this, name);
+			var nameScope = FrameworkElement.FindNameScope(this);
+			var result = nameScope?.FindName(name);
+			if (result is ElementStub stub)
+			{
+				stub.Materialize();
+				return stub.Content;
+			}
+
+			return result;
 		}
 
 		#region Name Dependency Property

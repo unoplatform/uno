@@ -52,7 +52,7 @@ internal class NavigationViewItemHelper<T>
 
 	internal UIElement GetSelectionIndicator() { return m_selectionIndicator; }
 
-	internal void Init(FrameworkElement controlProtected)
+	internal void Init(Control controlProtected)
 	{
 		m_selectionIndicator = controlProtected.GetTemplateChild(c_selectionIndicatorName) as UIElement;
 	}

@@ -62,16 +62,15 @@ namespace <#= mixin.NamespaceName #>
 
 		public object FindName(string name)
 		{
-			var viewGroup = ((object)this) as ViewGroup;
+			var nameScope = FrameworkElement.FindNameScope(this);
+			var result = nameScope?.FindName(name);
+			if (result is ElementStub stub)
+			{
+				stub.Materialize();
+				return stub.Content;
+			}
 
-			if (viewGroup != null)
-			{
-				return IFrameworkElementHelper.FindName(this, viewGroup, name);
-			}
-			else
-			{
-				return null;
-			}
+			return result;
 		}
 
 		partial void AdjustArrangePartial(ref Size size);

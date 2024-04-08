@@ -84,10 +84,6 @@ namespace Microsoft.UI.Xaml
 		}
 		#endregion
 
-		public object FindName(string name)
-			=> IFrameworkElementHelper.FindName(this, this, name);
-
-
 		public void Dispose()
 		{
 		}
