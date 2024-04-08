@@ -996,6 +996,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_DragOver_Fires_Along_DragEnter_Drop()
 		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Drag and drop doesn't work in Uno islands.");
+			}
+
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
