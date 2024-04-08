@@ -50,7 +50,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		ObserveOrientationAndSize();
 	}
 
-	public override AppKit.UIScreen Screen => _window.Screen;
+	public override NSScreen Screen => _window.Screen;
 
 	public override string Title
 	{
