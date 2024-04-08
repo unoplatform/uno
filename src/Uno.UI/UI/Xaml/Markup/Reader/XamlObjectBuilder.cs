@@ -335,6 +335,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// && FindEventType(member.Member) == null
 			)
 			{
+				if (member.Member.Name == "Name" && member.Value is string nameValue && _nameScopes.TryPeek(out var nameScope))
+				{
+					nameScope.RegisterName(nameValue, instance);
+				}
+
 				if (instance is TextBlock textBlock)
 				{
 					ProcessTextBlock(control, textBlock, member, rootInstance);
