@@ -52,6 +52,7 @@
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
       "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
       "Uno.UI.Runtime.Skia.MacOS\\Uno.UI.Runtime.Skia.MacOS.csproj",
+      "Uno.UI.Runtime.Skia.Android\\Uno.UI.Runtime.Skia.Android.csproj",
       "Uno.UI.Runtime.Skia.WebAssembly.Browser\\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj",
       "Uno.UI.Runtime.Skia.Wpf\\Uno.UI.Runtime.Skia.Wpf.csproj",
       "Uno.UI.Runtime.Skia.X11\\Uno.UI.Runtime.Skia.X11.csproj",

@@ -17,6 +17,7 @@ using Windows.ApplicationModel.Activation;
 using Microsoft.Extensions.Logging;
 using Windows.UI.StartScreen;
 using Java.Interop;
+using Uno.UI.Runtime.Skia.Android;
 
 [assembly: UsesPermission("android.permission.ACCESS_COARSE_LOCATION")]
 [assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
@@ -72,7 +73,7 @@ namespace SamplesApp.Droid
 			// Delay create the Windows.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
-			Microsoft.UI.Xaml.Application.Start(_ => _app = appBuilder());
+			new AndroidSkiaHost(() => _app = appBuilder()).Run();
 		}
 
 		public override void OnCreate()
