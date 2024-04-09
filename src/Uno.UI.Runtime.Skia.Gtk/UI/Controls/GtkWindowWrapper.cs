@@ -19,10 +19,11 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class GtkWindowWrapper : NativeWindowWrapperBase
 {
-	private bool _wasShown;
 	private readonly UnoGtkWindow _gtkWindow;
+	private readonly DpiHelper _dpiHelper;
+
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
-	private DpiHelper _dpiHelper;
+	private bool _wasShown;
 
 	public GtkWindowWrapper(UnoGtkWindow gtkWindow, XamlRoot xamlRoot) : base(xamlRoot)
 	{
