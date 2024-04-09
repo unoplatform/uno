@@ -19,7 +19,7 @@ namespace UnoApp50
 		}
 
 		/// <summary>
-		/// Configures global Uno Platform logging
+		/// Configures global Uno Platform logging.
 		/// </summary>
 		private static void InitializeLogging()
 		{
