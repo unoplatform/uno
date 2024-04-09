@@ -5,6 +5,7 @@
 		<_IsUnoSingleProjectAndLegacy Condition=" $(SingleProject) == 'true' OR $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProjectAndLegacy>
 
 		<_ImplicitRestoreOutputType>$([MSBuild]::ValueOrDefault('$(OutputType)', 'Library'))</_ImplicitRestoreOutputType>
+		<IsUnoHead Condition="$(_ImplicitRestoreOutputType) == 'Exe'">true</IsUnoHead>
 		<_InitialOutputType>$([MSBuild]::ValueOrDefault('$(OutputType)', 'Library'))</_InitialOutputType>
 		<_InitialOutputType Condition="$(TargetFramework) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">Library</_InitialOutputType>
 		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
