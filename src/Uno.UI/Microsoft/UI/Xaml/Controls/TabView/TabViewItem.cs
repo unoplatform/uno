@@ -46,7 +46,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			Loaded += OnLoaded;
 
-			RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedPropertyChanged);
 			RegisterPropertyChangedCallback(Control.ForegroundProperty, OnForegroundPropertyChanged);
 		}
 
@@ -133,7 +132,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 		}
 
-		private void OnIsSelectedPropertyChanged(DependencyObject sender, DependencyProperty args)
+		protected internal override void OnIsSelectedChanged()
 		{
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(this);
 			if (peer != null)
@@ -141,15 +140,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				peer.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementSelected);
 			}
 
+			SetValue(Canvas.ZIndexProperty, IsSelected ? 20 : 0);
+#if __ANDROID__ || __IOS__
 			if (IsSelected)
 			{
-				SetValue(Canvas.ZIndexProperty, 20);
+				// ios/droid: For some reason, ScrollToItem/ScrollToPosition from Selector::OnSelectedItemChanged would fail to scroll to the index
+				// when the ListView in question is a TabViewListView.
+				// On Android, this is due to the TabScrollViewerStyle uses ScrollContentPresenter instead of ListViewBaseScrollContentPresenter, prevent virtualization.
+				// For iOS, it is unclear why. Using ListViewBaseScrollContentPresenter breaks StartBringIntoView, while enabling ScrollIntoView. However, ScrollIntoView doesn't work properly.
 				StartBringIntoView();
 			}
-			else
-			{
-				SetValue(Canvas.ZIndexProperty, 0);
-			}
+#endif
 
 			UpdateShadow();
 			UpdateWidthModeVisualState();

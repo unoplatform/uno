@@ -16,6 +16,10 @@ using Windows.Foundation.Collections;
 using Windows.System;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Windows.Foundation;
+using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -172,9 +176,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				isSelectionUnset = true;
 			}
 
+			var newIndex = -1;
 			if (!_changingSelectedIndex)
 			{
-				var newIndex = IndexFromItem(selectedItem);
+				newIndex = IndexFromItem(selectedItem);
 				if (SelectedIndex != newIndex)
 				{
 					SelectedIndex = newIndex;
@@ -190,6 +195,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
+
+#if !IS_UNIT_TESTS
+			if (newIndex != -1 && IsInLiveTree)
+			{
+				if (this is ListViewBase lvb)
+				{
+#if __IOS__ || __ANDROID__
+					lvb.InstantScrollToIndex(newIndex);
+#elif __MACOS__
+					// not implemented
+#else
+					lvb.ScrollIntoView(selectedItem);
+#endif
+				}
+			}
+#endif
 
 			_isUpdatingSelection = false;
 
