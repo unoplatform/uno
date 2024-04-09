@@ -346,11 +346,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}
 
 					var lastEnumMemberCount = boolPropertiesCount % 32;
-					var lastEnumType = boolPropertiesCount <= 8 ? "byte" : "uint";
 					if (lastEnumMemberCount > 0)
 					{
 						builder.AppendLineIndented($"private GeneratedDependencyPropertyFlags{completeEnumsCount} _generatedDependencyPropertyFlags{completeEnumsCount};");
-						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{completeEnumsCount} : {lastEnumType}"))
+						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{completeEnumsCount} : uint"))
 						{
 							for (int i = 0; i < lastEnumMemberCount; i++)
 							{
