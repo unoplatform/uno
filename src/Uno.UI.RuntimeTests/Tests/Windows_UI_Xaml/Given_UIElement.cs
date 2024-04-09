@@ -994,7 +994,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_DragOver_Fires_Along_DragEnter_Drop()
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_DragOver_Fires_Along_DragEnter_Drop(bool waitAfterRelease)
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)
 			{
@@ -1055,7 +1057,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, dragOverCount);
 			Assert.AreEqual(0, dropCount);
 
-			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top);
+			mouse.MoveTo(new Windows.Foundation.Point(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top + 10), 1);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, dragEnterCount);
@@ -1063,10 +1065,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, dropCount);
 
 			mouse.Release();
+			if (waitAfterRelease)
+			{
+				await TestServices.WindowHelper.WaitForIdle();
+			}
 
 			Assert.AreEqual(1, dragEnterCount);
 			Assert.AreEqual(2, dragOverCount);
-			Assert.AreEqual(1, dropCount);
+			Assert.AreEqual(waitAfterRelease ? 1 : 0, dropCount);
 		}
 
 		#endregion
