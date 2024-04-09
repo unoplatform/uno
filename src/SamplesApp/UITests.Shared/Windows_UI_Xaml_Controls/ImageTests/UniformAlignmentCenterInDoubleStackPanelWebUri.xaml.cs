@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelWebUri")]
+	[SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelWebUri", Description = "UniformAlignmentCenterInDoubleStackPanelWebUri - The image below should still appear the second time the sample is loaded")]
 	public sealed partial class UniformAlignmentCenterInDoubleStackPanelWebUri : UserControl
 	{
 		public UniformAlignmentCenterInDoubleStackPanelWebUri()

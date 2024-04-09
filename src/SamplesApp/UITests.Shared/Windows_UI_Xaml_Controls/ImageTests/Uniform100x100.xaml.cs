@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "Uniform100x100")]
+	[SampleControlInfo("Image", "Uniform100x100", Description = "Uniform100x100")]
 	public sealed partial class Uniform100x100 : UserControl
 	{
 		public Uniform100x100()

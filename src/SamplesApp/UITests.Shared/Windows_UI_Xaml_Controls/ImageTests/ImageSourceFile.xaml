@@ -15,21 +15,15 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Image using local file path as Source, set as string">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<not_win:TextBlock Text="Note: Source string should be an absolute filepath, otherwise it will be interpreted as a resource."/>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="File path: "/>
-						<TextBlock Text="{Binding [FilePath]}"
-								   TextWrapping="Wrap"/>
-					</StackPanel>
-					<Border BorderBrush="OliveDrab" BorderThickness="2">
-						<Image Source="{Binding [FilePath]}" MaxHeight="300"/>
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<not_win:TextBlock Text="Note: Source string should be an absolute filepath, otherwise it will be interpreted as a resource."/>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="File path: "/>
+			<TextBlock Text="{Binding [FilePath]}"
+							   TextWrapping="Wrap"/>
+		</StackPanel>
+		<Border BorderBrush="OliveDrab" BorderThickness="2">
+			<Image Source="{Binding [FilePath]}" MaxHeight="300"/>
+		</Border>
+	</StackPanel>
 </UserControl>

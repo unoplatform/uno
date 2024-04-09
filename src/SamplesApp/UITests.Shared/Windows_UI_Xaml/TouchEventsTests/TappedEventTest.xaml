@@ -15,21 +15,16 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-    <controls:SampleControl SampleDescription="TappedEventTest">
-        <controls:SampleControl.SampleContent>
-            <DataTemplate>
-                <controls:ControlWithTouchEvent
+	<controls:ControlWithTouchEvent
                     Height="30"
                     Width="200">
-                    <controls:ControlWithTouchEvent.Template>
-                        <ControlTemplate>
-                            <Border Background="White">
-                                <TextBlock Text="Control with tapped event" Foreground="Black"/>
-                            </Border>
-                        </ControlTemplate>
-                    </controls:ControlWithTouchEvent.Template>
-                </controls:ControlWithTouchEvent>
-            </DataTemplate>
-        </controls:SampleControl.SampleContent>
-    </controls:SampleControl>
+		<controls:ControlWithTouchEvent.Template>
+			<ControlTemplate>
+				<Border Background="White">
+					<TextBlock Text="Control with tapped event" Foreground="Black"/>
+				</Border>
+			</ControlTemplate>
+		</controls:ControlWithTouchEvent.Template>
+	</controls:ControlWithTouchEvent>
+
 </UserControl>

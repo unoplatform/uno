@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "StretchNoneBoundingBoxInDoubleStackPanel")]
+	[SampleControlInfo("Image", "StretchNoneBoundingBoxInDoubleStackPanel", Description = "StretchNoneBoundingBoxInDoubleStackPanel")]
 	public sealed partial class StretchNoneBoundingBoxInDoubleStackPanel : UserControl
 	{
 		public StretchNoneBoundingBoxInDoubleStackPanel()
