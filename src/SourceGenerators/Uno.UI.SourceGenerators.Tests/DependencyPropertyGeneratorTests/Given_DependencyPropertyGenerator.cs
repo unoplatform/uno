@@ -328,7 +328,7 @@ public class Given_DependencyPropertyGenerator
 							partial class C
 							{
 								private GeneratedDependencyPropertyFlags0 _generatedDependencyPropertyFlags0;
-								private enum GeneratedDependencyPropertyFlags0 : byte
+								private enum GeneratedDependencyPropertyFlags0 : uint
 								{
 									DPFlag0 = 1 << 0,
 								}
