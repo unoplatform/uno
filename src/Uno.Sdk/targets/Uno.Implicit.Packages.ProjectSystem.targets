@@ -8,7 +8,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_IsExecutable) == 'true'">
+	<ItemGroup Condition="$(_ImplicitRestoreOutputType) == 'Exe'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" />
 	</ItemGroup>
 
