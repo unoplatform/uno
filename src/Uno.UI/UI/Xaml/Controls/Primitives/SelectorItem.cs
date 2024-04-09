@@ -76,6 +76,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public SelectorItem()
 		{
 			AddHandler(ManipulationStartedEvent, _onManipulationStarted, handledEventsToo: true);
+
+			// We subscribe with handledEventsToo in order to clean up state even if the "originalSource"
+			// of a PointerPressed is a child that captures the pointer and may handle Pointer<Released/Exited|Canceled>
+			// without handling PointerPressed. In that case we wouldn't receive a PointerPressed without
+			// a matching Pointer<Released|Exited|Canceled> without handledEventsToo.
+			AddHandler(PointerReleasedEvent, _onPointerReleased, handledEventsToo: true);
+			AddHandler(PointerExitedEvent, _onPointerExitedOrCanceled, handledEventsToo: true);
+			AddHandler(PointerCanceledEvent, _onPointerExitedOrCanceled, handledEventsToo: true);
 		}
 
 		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
@@ -308,6 +316,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		};
 
+		private static readonly PointerEventHandler _onPointerReleased = (snd, e) => ((SelectorItem)snd).OnPointerReleasedPrivate(e);
+		private static readonly PointerEventHandler _onPointerExitedOrCanceled = (snd, e) => ((SelectorItem)snd).CleanUpPointerState(e);
+
 		/// <inheritdoc />
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
@@ -320,8 +331,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
-				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed
-				&& CapturePointer(args.Pointer, PointerCaptureKind.Implicit) is not PointerCaptureResult.Failed)
+				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
 			{
 				// Note: We do allow PointerCaptureResult.AlreadyCaptured as if element has been flagged as CanDrag
 				//		 (common in ListView that do allow re-ordering ;) ),
@@ -337,60 +347,36 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		/// <inheritdoc />
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		private void OnPointerReleasedPrivate(PointerRoutedEventArgs args)
 		{
-			// Selector item focus should be triggered only when pointer is released.
-			Focus(FocusState.Pointer);
-
-			ManipulationUpdateKind update;
-			if (_canRaiseClickOnPointerRelease)
+			if (args.Handled)
 			{
-				_canRaiseClickOnPointerRelease = false;
-
-				update = ManipulationUpdateKind.Clicked;
-				Selector?.OnItemClicked(this, args.KeyModifiers);
-
-				// This should be automatically done by the pointers due to release, but if for any reason
-				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
-				ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
+				CleanUpPointerState(args);
 			}
 			else
 			{
-				update = ManipulationUpdateKind.End;
+				// Selector item focus should be triggered only when pointer is released.
+				Focus(FocusState.Pointer);
+
+				var update = ManipulationUpdateKind.End;
+				if (_canRaiseClickOnPointerRelease)
+				{
+					_canRaiseClickOnPointerRelease = false;
+
+					update = ManipulationUpdateKind.Clicked;
+					Selector?.OnItemClicked(this, args.KeyModifiers);
+				}
+
+				args.Handled = ShouldHandlePressed;
+				UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, update);
 			}
-
-			args.Handled = ShouldHandlePressed;
-
-			base.OnPointerReleased(args);
-			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, update);
 		}
 
 		/// <inheritdoc />
-		protected override void OnPointerExited(PointerRoutedEventArgs args)
+		private void CleanUpPointerState(PointerRoutedEventArgs args)
 		{
 			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
 			_canRaiseClickOnPointerRelease = false;
-			ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
-
-			base.OnPointerExited(args);
-			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
-		}
-
-		/// <inheritdoc />
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
-		{
-			_canRaiseClickOnPointerRelease = false;
-
-			base.OnPointerCanceled(args);
-			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
-		}
-
-		/// <inheritdoc />
-		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
-		{
-			_canRaiseClickOnPointerRelease = false;
-
-			base.OnPointerCaptureLost(args);
 			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
