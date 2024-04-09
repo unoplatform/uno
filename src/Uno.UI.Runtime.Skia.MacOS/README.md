@@ -6,7 +6,7 @@
 
 ## Pros
 
-* Faster startup: Less dependencies
+* Faster startup: Fewer dependencies
   * Removing GTK3+ (native, requires separate installation)
   * Removing Silk.NET on macOS (not needed for Metal)
 
