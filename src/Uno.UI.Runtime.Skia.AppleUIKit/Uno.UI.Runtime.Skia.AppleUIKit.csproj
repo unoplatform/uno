@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetPrevious)-ios</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<authors>Uno Platform</authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the platform support for Skia Android in Uno Platform projects.</Description>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Android</PackageId>
+
+		<RootNamespace>Uno.WinUI.Runtime.Skia.Android</RootNamespace>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\NativeWindowWrapper.iOS.cs" Link="UI\Xaml\Window\Native\NativeWindowWrapper.iOS.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\Window.iOS.cs" Link="UI\Xaml\Window\Native\Window.iOS.cs" />
+		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.iOSmacOS.cs" Link="Controls\BringIntoViewMode.iOSmacOS.cs" />
+		<Compile Include="..\Uno.UI\Controls\RootViewController.iOS.cs" Link="Controls\RootViewController.iOS.cs" />
+		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.iOS.cs" Link="Controls\IRotationAwareViewController.iOS.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="SkiaSharp.Views" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	</ItemGroup>
+
+	<!-- <ItemGroup> -->
+	<!-- <Content Include="buildTransitive/*.targets"> -->
+	<!-- <Pack>true</Pack> -->
+	<!-- <PackagePath>buildTransitive</PackagePath> -->
+	<!-- </Content> -->
+	<!-- </ItemGroup> -->
+
+	<!--<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />-->
+
+</Project>
