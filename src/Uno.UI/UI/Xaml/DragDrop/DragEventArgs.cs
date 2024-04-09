@@ -29,11 +29,6 @@ namespace Microsoft.UI.Xaml
 			DragUIOverride = uiOverride;
 		}
 
-		internal DragEventArgs(DragEventArgs args) : this((UIElement)args.OriginalSource, args._info, args.DragUIOverride)
-		{
-			AcceptedOperation = args.AcceptedOperation;
-		}
-
 		#region Readonly properties that gives context to the handler
 		public bool Handled { get; set; }
 

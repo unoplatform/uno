@@ -136,9 +136,17 @@ namespace Microsoft.UI.Xaml
 			var isOver = _state == State.Over;
 			_state = State.Over;
 
-			var acceptedOperation = isOver
-				? await _target.OverAsync(Info, _viewOverride).AsTask(ct)
-				: await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
+			DataPackageOperation acceptedOperation;
+			if (isOver)
+			{
+				acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
+			}
+			else
+			{
+				await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
+				// No Task.Yield here. This is similar to what happens on WinUI.
+				acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
+			}
 			acceptedOperation &= Info.AllowedOperations;
 
 			_acceptedOperation = acceptedOperation;
@@ -201,6 +209,8 @@ namespace Microsoft.UI.Xaml
 				}
 
 				_state = State.Completing;
+				await _target.OverAsync(Info, _viewOverride).AsTask(ct);
+				await Task.Yield(); // give a chance for layout updates, etc. This is similar to what happens on WinUI.
 				result = await _target.DropAsync(Info).AsTask(ct);
 				result &= Info.AllowedOperations;
 

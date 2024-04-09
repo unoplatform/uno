@@ -792,18 +792,13 @@ namespace Microsoft.UI.Xaml
 
 		internal void RaiseDragEnterOrOver(global::Microsoft.UI.Xaml.DragEventArgs args)
 		{
-			var wasDragOver = IsDragOver(args.SourceId);
+			var evt = IsDragOver(args.SourceId)
+				? DragOverEvent
+				: DragEnterEvent;
 
 			(_draggingOver ??= new HashSet<long>()).Add(args.SourceId);
 
-			if (!wasDragOver)
-			{
-				var args2 = new global::Microsoft.UI.Xaml.DragEventArgs(args);
-				SafeRaiseEvent(DragEnterEvent, args);
-				args.AcceptedOperation = args2.AcceptedOperation;
-			}
-
-			SafeRaiseEvent(DragOverEvent, args);
+			SafeRaiseEvent(evt, args);
 		}
 
 		internal void RaiseDragLeave(global::Microsoft.UI.Xaml.DragEventArgs args, UIElement upTo = null)
@@ -818,14 +813,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{
-				var args2 = new global::Microsoft.UI.Xaml.DragEventArgs(args);
-				SafeRaiseEvent(DragOverEvent, args2);
-				args.AcceptedOperation = args2.AcceptedOperation;
-				// On WinUI, if the final DragOver event sets AcceptedOperation to None, the DropEvent won't fire
-				if (args.AcceptedOperation is not DataPackageOperation.None)
-				{
-					SafeRaiseEvent(DropEvent, args);
-				}
+				SafeRaiseEvent(DropEvent, args);
 			}
 		}
 		#endregion
