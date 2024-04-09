@@ -213,7 +213,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 
 				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
+				ContainingTypeHintName = dpSymbol.ContainingType.GetFullMetadataNameForFileName();
 
 				if (dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null)
 				{

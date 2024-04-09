@@ -121,7 +121,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
 						_context.AddSource(
-							HashBuilder.BuildIDFromSymbol(typeSymbol),
+							typeSymbol.GetFullMetadataNameForFileName(),
 							GetGeneratedCode(typeSymbol));
 					}
 				}
@@ -134,7 +134,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
 						_context.AddSource(
-							HashBuilder.BuildIDFromSymbol(typeSymbol),
+							typeSymbol.GetFullMetadataNameForFileName(),
 							GetGeneratedCode(typeSymbol));
 					}
 				}
