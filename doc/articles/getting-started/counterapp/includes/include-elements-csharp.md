@@ -13,7 +13,7 @@
         .HorizontalAlignment(HorizontalAlignment.Center)
         .Width(150)
         .Height(150)
-        .Source("ms-appx:///Counter/Assets/logo.png")
+        .Source("ms-appx:///Assets/logo.png"),
     ```
 
 - Add a **`TextBox`** to allow the user to enter the step size.
@@ -24,7 +24,7 @@
         .HorizontalAlignment(HorizontalAlignment.Center)
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .PlaceholderText("Step Size")
-        .Text("1")
+        .Text("1"),
     ```
 
 - Add a **`TextBlock`** to display the current counter value.
