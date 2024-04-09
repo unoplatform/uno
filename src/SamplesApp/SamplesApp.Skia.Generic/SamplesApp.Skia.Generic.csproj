@@ -5,7 +5,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
-	<Import Project="../../targetframework-override.props" />
+	<Import Project="../../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>

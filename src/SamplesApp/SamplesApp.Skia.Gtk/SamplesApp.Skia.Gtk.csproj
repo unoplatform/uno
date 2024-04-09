@@ -5,7 +5,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
-	<Import Project="../../targetframework-override.props" />
+	<Import Project="../../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>

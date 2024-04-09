@@ -9,7 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Com.Nostra13.Universalimageloader.Core;
 using Windows.Foundation.Metadata;
 using Uno.Extensions;
@@ -50,11 +50,11 @@ namespace SamplesApp.Droid
 
 	public class NativeApplication : Android.App.Application
 	{
-		private Windows.UI.Xaml.Application _app;
+		private Microsoft.UI.Xaml.Application _app;
 
 		private bool _isRunning;
 
-		public delegate Windows.UI.Xaml.Application AppBuilder();
+		public delegate Microsoft.UI.Xaml.Application AppBuilder();
 
 		/// <summary>
 		/// Creates an android Application instance
@@ -72,7 +72,7 @@ namespace SamplesApp.Droid
 			// Delay create the Windows.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
-			Windows.UI.Xaml.Application.Start(_ => _app = appBuilder());
+			Microsoft.UI.Xaml.Application.Start(_ => _app = appBuilder());
 		}
 
 		public override void OnCreate()
@@ -96,7 +96,7 @@ namespace SamplesApp.Droid
 				// default to normal launch
 				if (!handled && !_isRunning)
 				{
-					_app.OnLaunched(new LaunchActivatedEventArgs());
+					_app.OnLaunched(new Microsoft.UI.Xaml.LaunchActivatedEventArgs());
 				}
 
 				_isRunning = true;

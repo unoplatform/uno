@@ -223,6 +223,9 @@
 		
 		<!-- Disable warning about cross platform call sites -->
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
+		
+		<!-- YOUSSEF TODO: Fix doc comments and remove this NoWarn -->
+		<NoWarn>$(NoWarn);CS1711;CS1712;CS1572;CS1574;CS1570</NoWarn>
 
 		<!-- Workaround for https://github.com/dotnet/runtime/issues/103205 -->
 		<NoWarn>$(NoWarn);CS0436</NoWarn>
