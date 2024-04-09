@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		#endregion
 
 		internal override bool IsViewHit()
-			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
+			=> Fill != null || Stroke != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
