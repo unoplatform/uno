@@ -254,21 +254,12 @@ namespace Microsoft.UI.Xaml
 
 		private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
 		{
-			var canvas = e.Surface.Canvas;
-			canvas.Clear(SKColors.Red);
-			using (var paint = new SKPaint())
+			if (Microsoft.UI.Xaml.Window.CurrentSafe is { RootElement: { } root } window)
 			{
-				paint.IsAntialias = true;
-				paint.Color = SKColors.Blue;
-				paint.StrokeWidth = 5;
-
-				var rect = new SKRect(100, 100, 300, 300);
-				canvas.DrawRect(rect, paint);
-
-				canvas.DrawLine(50, 50, 200, 200, paint);
-
-				paint.TextSize = 48;
-				canvas.DrawText("Hello, SkiaSharp!", 100, 400, paint);
+				var canvas = e.Surface.Canvas;
+				canvas.Clear(SKColors.Red);
+				window.Compositor.RenderRootVisual(e.Surface, root.Visual);
+				((SKCanvasView)sender!).Invalidate();
 			}
 		}
 
