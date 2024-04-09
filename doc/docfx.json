@@ -8,7 +8,6 @@
                 "files": [
                     "articles/**.md",
                     "articles/**/toc.yml",
-                    "toc.yml",
                     "*.md"
                 ],
                 "exclude": [
