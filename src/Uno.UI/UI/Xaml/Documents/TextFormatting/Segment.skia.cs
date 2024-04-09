@@ -15,7 +15,6 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 	internal sealed class Segment
 	{
 		private readonly IReadOnlyList<GlyphInfo>? _glyphs;
-		private SkiaSharp.SKPaint? _paint;
 		private readonly FontDetails? _fallbackFont;
 		// we cache the text as soon as we create the Segment in case a Run's text Updates
 		// before this (now outdated) Segment is discarded.
@@ -108,25 +107,5 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		}
 
 		public FontDetails? FallbackFont => _fallbackFont;
-
-		internal SKPaint? Paint
-		{
-			get
-			{
-				if (_fallbackFont is not null)
-				{
-					var paint = _paint ??= new SKPaint(_fallbackFont.SKFont)
-					{
-						TextEncoding = SkiaSharp.SKTextEncoding.Utf16,
-						IsStroke = false,
-						IsAntialias = true,
-					};
-
-					return paint;
-
-				}
-				return default;
-			}
-		}
 	}
 }

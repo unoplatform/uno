@@ -531,14 +531,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 					var segment = segmentSpan.Segment;
 					var inline = segment.Inline;
-					var fontInfo = inline.FontInfo;
+					var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 					var paint = inline.Paint;
-
-					if (segment.FallbackFont is FontDetails fallback)
-					{
-						paint = segment.Paint!;
-						fontInfo = fallback;
-					}
 
 					if (inline.Foreground is SolidColorBrush scb)
 					{

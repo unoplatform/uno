@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				var paint = _paint ??= new SKPaint(FontInfo.SKFont)
+				var paint = _paint ??= new SKPaint()
 				{
 					TextEncoding = SKTextEncoding.Utf16,
 					IsStroke = false,
