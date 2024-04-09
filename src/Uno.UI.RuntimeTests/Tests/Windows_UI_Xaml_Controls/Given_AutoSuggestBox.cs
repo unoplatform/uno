@@ -297,7 +297,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				reasons.Add(e.Reason);
 			};
-			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);
 			SUT.ChoseItem("ab");
 			await Wait();
@@ -316,7 +315,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
+#if __SKIA__ // skia is closer to what happens on WinUI. On WinUI, if there is no delay between changes, AutoSuggestBox.TextChanged is fired once (but TextBox.TextChanged fires everytime)
 			if (waitBetweenActions)
+#endif
 			{
 				CollectionAssert.AreEquivalent(
 					new[] {
@@ -330,6 +331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					},
 					reasons);
 			}
+#if __SKIA__
 			else
 			{
 				CollectionAssert.AreEquivalent(
@@ -338,6 +340,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					},
 					reasons);
 			}
+#endif
 
 			async Task Wait()
 			{
