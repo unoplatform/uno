@@ -189,5 +189,7 @@
 		<file src="_._" target="build\net7.0-windows" />
 		<file src="_._" target="build\net7.0-windows10.0.19041.0" />
 		<file src="_._" target="build\net8.0-windows10.0.19041.0" />
+		<file src="_._" target="lib\net7.0-windows10.0.19041.0" />
+		<file src="_._" target="lib\net8.0-windows10.0.19041.0" />
 	</files>
 </package>
