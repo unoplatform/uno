@@ -11,7 +11,7 @@ The currently supported targets and platforms are:
 - Linux X11
 - [Linux Framebuffer](xref:Uno.Skia.Linux.Framebuffer)
 - Windows (Using a WPF shell)
-- macOS (Using an AppKit shell)
+- [macOS (Using an AppKit shell)](xref:Uno.Skia.macOS)
 
 The set of supported platforms can be defined by using the `SkiaHostBuilder`, introduced in Uno Platform 5.2 and the [Single Project support](xref:Uno.Development.MigratingToSingleProject).
 
