@@ -5,6 +5,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Java.Interop;
+using Microsoft.UI.Xaml;
 using Uno.UI;
 using Windows.UI.ViewManagement;
 
@@ -36,15 +37,5 @@ namespace SamplesApp.Droid
 		// private HandlerThread _pixelCopyHandlerThread;
 
 
-	}
-
-	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
-	public class ApplicationActivity : Activity
-	{
-		protected override void OnStart()
-		{
-			//global::Uno.UI.ContextHelper.Current = this;
-			base.OnStart();
-		}
 	}
 }

@@ -27,7 +27,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
 	{
 		try
 		{
-			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory();
+			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory());
 
 			Application.Start(_ => _appBuilder());
 		}

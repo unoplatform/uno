@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Windows.UI.StartScreen;
 using Java.Interop;
 using Uno.UI.Runtime.Skia.Android;
+using Microsoft.UI.Xaml;
 
 [assembly: UsesPermission("android.permission.ACCESS_COARSE_LOCATION")]
 [assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
@@ -37,8 +38,8 @@ namespace SamplesApp.Droid
 		Label = "@string/ApplicationName",
 		Banner = "@drawable/banner",
 		LargeHeap = true,
-		HardwareAccelerated = true
-		// , Theme = "@style/AppTheme"
+		HardwareAccelerated = true,
+		Theme = "@style/AppTheme"
 	)]
 	public class Application : NativeApplication
 	{

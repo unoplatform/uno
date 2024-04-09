@@ -36,6 +36,8 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="SkiaSharp.Views" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<!--<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Android" />-->
 	</ItemGroup>
@@ -44,7 +46,7 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<!-- <ItemGroup> -->
@@ -54,6 +56,6 @@
 		<!-- </Content> -->
 	<!-- </ItemGroup> -->
 
-	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+	<!--<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />-->
 
 </Project>

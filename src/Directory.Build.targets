@@ -116,7 +116,6 @@
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
-		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
