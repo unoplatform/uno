@@ -40,10 +40,6 @@ namespace Microsoft.UI.Xaml
 		internal void ResumeRendering() => throw new NotSupportedException();
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		public double ActualWidth => throw new NotSupportedException("Reference assembly");
-
-		public double ActualHeight => throw new NotSupportedException("Reference assembly");
-
 		internal Size UnclippedDesiredSize => throw new NotSupportedException("Reference assembly");
 
 #pragma warning disable 67
