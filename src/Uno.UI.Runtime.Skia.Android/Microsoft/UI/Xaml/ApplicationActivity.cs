@@ -27,6 +27,9 @@ using Uno.UI.Dispatching;
 using SkiaSharp;
 using SkiaSharp.Views.Android;
 using Android.Widget;
+using Microsoft.UI.Xaml.Extensions;
+using Windows.Devices.Input;
+using Microsoft.UI.Input;
 
 
 namespace Microsoft.UI.Xaml
@@ -188,6 +191,66 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			return base.DispatchGenericMotionEvent(e);
+		}
+
+		public override bool OnTouchEvent(MotionEvent? e)
+		{
+			if (e is null)
+			{
+				// Can this happen? Is Xamarin nullability annotation wrong?
+				return base.OnTouchEvent(e);
+			}
+
+			try
+			{
+				var pointerIndex = 0; // TODO: ?
+				var nativePointerType = e.GetToolType(pointerIndex);
+				var pointerType = nativePointerType.ToPointerDeviceType();
+				var pointerDevice = PointerDevice.For(pointerType);
+				var pointerIdentifier = new PointerIdentifier(pointerType, id: 0);
+
+				var nativePointerAction = e.Action;
+				var nativePointerButtons = e.ButtonState;
+				var frameId = (uint)e.EventTime;
+				var ts = (ulong)(TimeSpan.TicksPerMillisecond * frameId);
+				var isInContact = PointerHelpers.IsInContact(e, pointerType, nativePointerAction, nativePointerButtons);
+				var isInRange = true; // TODO: ?
+				var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
+				var x = e.GetX(pointerIndex);
+				var y = e.GetY(pointerIndex);
+				var position = new global::Windows.Foundation.Point((int)e.RawX, (int)e.RawY);
+
+				var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
+
+				var point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, new PointerPointProperties(properties));
+				var args = new PointerEventArgs(point, keyModifiers);
+
+				switch (nativePointerAction)
+				{
+					case MotionEventActions.Move:
+						break;
+
+
+					case MotionEventActions.Down:
+						break;
+
+					case MotionEventActions.Cancel:
+					case MotionEventActions.Up:
+						break;
+
+					default:
+						throw new ArgumentOutOfRangeException(nameof(e), $"Unknown event ({e}-{nativePointerAction}).");
+				}
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to dispatch native pointer event: {error}");
+				}
+			}
+
+			return base.OnTouchEvent(e);
 		}
 
 		public void DismissKeyboard()
