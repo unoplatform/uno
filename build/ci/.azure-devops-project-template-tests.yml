@@ -64,7 +64,7 @@ jobs:
       cp global-net8.json global.json
     displayName: Replace global.json with .NET 8
 
-  - template: templates/dotnet-mobile-install-macos.yml
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - script: copy $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
