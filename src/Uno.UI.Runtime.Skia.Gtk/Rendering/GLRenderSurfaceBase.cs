@@ -83,12 +83,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		private void UnoGLDrawingArea_Render(object o, RenderArgs args)
 		{
-			if (_host.RootElement is { } rootElement &&
-				(rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-			{
-				rootElement.UpdateLayout();
-			}
-
 			args.Context.MakeCurrent();
 
 			// create the contexts if not done already
