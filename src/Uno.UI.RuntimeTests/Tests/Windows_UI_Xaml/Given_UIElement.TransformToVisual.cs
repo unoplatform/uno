@@ -1103,6 +1103,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Not_InLiveVisualTree()
+		{
+			var inner = new Rectangle
+			{
+				Margin = new Thickness(10),
+				Width = 150,
+				Height = 150,
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Green)
+			};
+			var outer = new Border
+			{
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Child = inner
+			};
+			var root = new Grid
+			{
+				Width = 200,
+				Margin = new Thickness(10),
+				Children =
+				{
+					outer
+				}
+			};
+			await UITestHelper.Load(root);
+
+			Assert.IsFalse(((MatrixTransform)inner.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)outer.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)root.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)inner.TransformToVisual(outer)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)outer.TransformToVisual(root)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)root.TransformToVisual((UIElement)root.Parent)).Matrix.IsIdentity);
+
+			WindowContent = null;
+
+			Assert.IsTrue(((MatrixTransform)inner.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)outer.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)root.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)inner.TransformToVisual(outer)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)outer.TransformToVisual(root)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)root.TransformToVisual((UIElement)root.Parent)).Matrix.IsIdentity);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[RequiresFullWindow]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
