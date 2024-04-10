@@ -33,6 +33,7 @@
 				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'desktop'
 				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'windows'
 			)
+			AND '$(_UnoVSExtensionLoaded)' == 'true'
 			AND '$(TargetFrameworks)' != ''
 			AND !$(TargetFrameworks.StartsWith($(ActiveDebugFramework)))
 			AND '$(BuildingInsideVisualStudio)' == 'true'">
