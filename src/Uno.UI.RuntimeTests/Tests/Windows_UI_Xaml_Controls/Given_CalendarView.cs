@@ -26,6 +26,7 @@ public class Given_CalendarView
 {
 	[TestMethod]
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16123")]
+	[Ignore("Test is unstable on CI: https://github.com/unoplatform/uno/issues/16123")]
 	public async Task When_ReMeasure_After_Changing_MaxDate()
 	{
 		var contentDialog = new ContentDialog();
