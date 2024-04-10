@@ -123,12 +123,16 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- 
+		The UnoAssetsGeneration must be run at design time as well, as it 
+		interacts with the `.R` generation on android. If not run, temporary
+		resource files may be deleted incorrectly by design time builds.
+	-->
 	<Target Name="UnoAssetsGeneration"
 				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems;_UnoLangSetup"
 				Condition="
-				'$(DesignTimeBuild)' != 'true'
-				and '$(BuildingInsideUnoSourceGenerator)' == ''
+				'$(BuildingInsideUnoSourceGenerator)' == ''
 				and ('$(IsUnoHead)'=='true'
 					or '$(AndroidApplication)'=='true'
 					or '$(ProjectTypeGuids)'!='')">
