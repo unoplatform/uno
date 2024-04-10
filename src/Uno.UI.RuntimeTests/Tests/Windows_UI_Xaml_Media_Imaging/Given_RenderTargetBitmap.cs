@@ -191,25 +191,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			await UITestHelper.Load(sv);
 
-			var irRTB1 = new RenderTargetBitmap();
-			await irRTB1.RenderAsync(ir);
-			var irBitmap1 = await RawBitmap.From(irRTB1, ir);
-			var svRTB1 = new RenderTargetBitmap();
-			await svRTB1.RenderAsync(sv);
-			var svBitmap1 = await RawBitmap.From(svRTB1, sv);
+			var irBitmap1 = await UITestHelper.ScreenShot(ir);
+			var svBitmap1 = await UITestHelper.ScreenShot(sv);
 
 			sv.ScrollToVerticalOffset(100);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var irRTB2 = new RenderTargetBitmap();
-			await irRTB2.RenderAsync(ir);
-			var irBitmap2 = await RawBitmap.From(irRTB2, ir);
-			var svRTB2 = new RenderTargetBitmap();
-			await svRTB2.RenderAsync(sv);
-			var svBitmap2 = await RawBitmap.From(svRTB2, sv);
+			var irBitmap2 = await UITestHelper.ScreenShot(ir);
+			var svBitmap2 = await UITestHelper.ScreenShot(sv);
 
-			await ImageAssert.AreEqualAsync(irBitmap1, irBitmap2, comparisonHeight: (int)sv.ViewportHeight);
-			await ImageAssert.AreNotEqualAsync(svBitmap1, svBitmap2, comparisonHeight: (int)sv.ViewportHeight);
+			var bytesPerPixel = irBitmap1.GetPixels().Length / (irBitmap1.Width * irBitmap1.Height);
+			var bytesToCompare = bytesPerPixel * (int)sv.ViewportHeight * irBitmap1.Width;
+			CollectionAssert.AreEqual(irBitmap1.GetPixels()[..bytesToCompare], irBitmap2.GetPixels()[..bytesToCompare]);
+			CollectionAssert.AreNotEqual(svBitmap1.GetPixels()[..bytesToCompare], svBitmap2.GetPixels()[..bytesToCompare]);
 		}
 #endif
 	}

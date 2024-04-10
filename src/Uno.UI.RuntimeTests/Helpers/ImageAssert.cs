@@ -210,27 +210,25 @@ public static partial class ImageAssert
 		return new Rect(new Point(minX, minY), new Size(maxX - minX, maxY - minY));
 	}
 
-	public static async Task AreEqualAsync(RawBitmap actual, RawBitmap expected, int? comparisonHeight = null)
+	public static async Task AreEqualAsync(RawBitmap actual, RawBitmap expected)
 	{
-		if (!await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap, comparisonHeight))
+		if (!await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap))
 		{
 			Assert.Fail("The bitmaps are not the same");
 		}
 	}
 
-	public static async Task AreNotEqualAsync(RawBitmap actual, RawBitmap expected, int? comparisonHeight = null)
+	public static async Task AreNotEqualAsync(RawBitmap actual, RawBitmap expected)
 	{
-		if (await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap, comparisonHeight))
+		if (await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap))
 		{
 			Assert.Fail("The bitmaps are the same");
 		}
 	}
 
-	private static async Task<bool> AreRenderTargetBitmapsEqualAsync(RenderTargetBitmap bitmap1, RenderTargetBitmap bitmap2, int? comparisonHeight)
+	private static async Task<bool> AreRenderTargetBitmapsEqualAsync(RenderTargetBitmap bitmap1, RenderTargetBitmap bitmap2)
 	{
-		if (bitmap1.PixelWidth != bitmap2.PixelWidth ||
-			(comparisonHeight is null && bitmap1.PixelWidth != bitmap2.PixelWidth) ||
-			(comparisonHeight is not null && (bitmap1.PixelHeight < comparisonHeight || bitmap1.PixelHeight < comparisonHeight)))
+		if (bitmap1.PixelWidth != bitmap2.PixelWidth || bitmap1.PixelHeight != bitmap2.PixelHeight)
 		{
 			return false;
 		}
@@ -240,10 +238,7 @@ public static partial class ImageAssert
 
 		using var reader1 = DataReader.FromBuffer(buffer1);
 		using var reader2 = DataReader.FromBuffer(buffer2);
-
-		var bytesPerPixel = reader1.UnconsumedBufferLength / (bitmap1.PixelWidth * bitmap1.PixelHeight);
-		var totalBytes = bitmap1.PixelWidth * (comparisonHeight ?? bitmap2.PixelHeight) * bytesPerPixel;
-		for (long i = 0; i < totalBytes; i += bytesPerPixel)
+		while (reader1.UnconsumedBufferLength > 0 && reader2.UnconsumedBufferLength > 0)
 		{
 			if (reader1.ReadByte() != reader2.ReadByte())
 			{

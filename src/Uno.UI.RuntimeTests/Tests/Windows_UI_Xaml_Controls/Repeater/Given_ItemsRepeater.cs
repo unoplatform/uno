@@ -484,7 +484,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			item3UpdatedVerticalOffset.Should().Be(item3OriginalVerticalOffset); // Confirm that item #3 has not been moved down
 			var result = await UITestHelper.ScreenShot(sut.Root);
-			await UITestHelper.Show(result);
 			ImageAssert.HasColorAt(result, 15, 15, Colors.FromARGB("#008000")); // For safety also check it's effectively the item 3 that is visible
 		}
 
