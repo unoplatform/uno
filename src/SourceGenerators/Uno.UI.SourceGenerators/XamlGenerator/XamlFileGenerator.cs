@@ -116,7 +116,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool _isInSingletonInstance;
 
-		private INamedTypeSymbol? _currentStyleTargetType;
+		private Stack<INamedTypeSymbol?> _currentStyleTargetTypeStack = new();
+
+		private INamedTypeSymbol? CurrentStyleTargetType
+			=> _currentStyleTargetTypeStack.Count > 0 ? _currentStyleTargetTypeStack.Peek() : null;
 
 		/// <summary>
 		/// Context to report diagnostics to
@@ -4961,7 +4964,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// The Setter.Target property can be used in either a Style or a VisualState, but in different ways.
 			// - When used in a Style, the property that needs to be modified can be specified directly.
 			// - When used in VisualState, the Target property must be given a TargetPropertyPath(dotted syntax with a target element and property explicitly specified).
-			if (_currentStyleTargetType is not null)
+			if (CurrentStyleTargetType is not null)
 			{
 				// Target is used in a style, so it defines the DP directly.
 				return BuildDependencyProperty(target);
@@ -5094,7 +5097,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return _metadataHelper.GetAttachedPropertyType(type!, property);
 			}
 
-			return _metadataHelper.FindPropertyTypeByOwnerSymbol(_currentStyleTargetType, property);
+			return _metadataHelper.FindPropertyTypeByOwnerSymbol(CurrentStyleTargetType, property);
 		}
 
 		private string BuildDependencyProperty(string property)
@@ -5113,17 +5116,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return $"{foundFullTargetType}.{property}Property";
 			}
 
-			if (_currentStyleTargetType is null)
+			var currentStyleTargetType = CurrentStyleTargetType;
+			if (currentStyleTargetType is null)
 			{
 				throw new InvalidOperationException($"Cannot convert '{property}' to DependencyProperty");
 			}
 
-			if (IsDependencyProperty(_currentStyleTargetType, property))
+			if (IsDependencyProperty(currentStyleTargetType, property))
 			{
-				return $"{_currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal()}.{property}Property";
+				return $"{currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal()}.{property}Property";
 			}
 
-			throw new InvalidOperationException($"{property} is not a DependencyProperty in type {_currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}");
+			throw new InvalidOperationException($"{property} is not a DependencyProperty in type {currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}");
 		}
 
 		private string BuildBrush(string memberValue)
@@ -5503,13 +5507,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										setterPropertyType = GetDependencyPropertyTypeForSetter(setterPropertyName);
 									}
-									else if (_currentStyleTargetType is not null && GetMember(member.Owner, "Target") is { Value: string setterTarget })
+									else if (CurrentStyleTargetType is not null && GetMember(member.Owner, "Target") is { Value: string setterTarget })
 									{
 										// TODO: Confirm if (or not) we need to find the type even if we are not in a Style.
 										setterPropertyType = GetDependencyPropertyTypeForSetter(setterTarget);
 									}
 								}
-								else if (member.Owner?.Type.Name == "Setter" && member.Member.Name == "Target" && _currentStyleTargetType is not null)
+								else if (member.Owner?.Type.Name == "Setter" && member.Member.Name == "Target" && CurrentStyleTargetType is not null)
 								{
 									// A setter's Target inside a style will set Property instead of Target
 									fullValueSetter = string.IsNullOrWhiteSpace(closureName) ? "Property" : $"{closureName}.Property";
@@ -5828,13 +5832,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildLiteralProperties(writer, xamlObjectDefinition);
 				}
 				// TODO: Remove this else if in Uno 6 as a breaking change.
-				else if (fullTypeName == XamlConstants.Types.Setter && _currentStyleTargetType is not null && IsLegacySetter(xamlObjectDefinition, out var propertyName))
+				else if (fullTypeName == XamlConstants.Types.Setter && CurrentStyleTargetType is { } currentStyleTargetType && IsLegacySetter(xamlObjectDefinition, out var propertyName))
 				{
 					var propertyType = GetDependencyPropertyTypeForSetter(propertyName);
 					var valueNode = FindMember(xamlObjectDefinition, "Value");
 					writer.AppendLineInvariantIndented(
 						"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => o.{1} = {2})",
-						_currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal(),
+						currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal(),
 						propertyName,
 						BuildLiteralValue(valueNode!, propertyType)
 					);
@@ -5872,7 +5876,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 
 							var targetType = targetTypeNode.Value.ToString();
-							_currentStyleTargetType = FindType(targetType);
+							_currentStyleTargetTypeStack.Push(FindType(targetType));
 						}
 
 						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
@@ -5919,7 +5923,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						if (isStyle)
 						{
-							_currentStyleTargetType = null;
+							_currentStyleTargetTypeStack.Pop();
 						}
 					}
 				}
@@ -5932,7 +5936,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			propertyName = propertyNode?.Value?.ToString()!;
 			if (propertyName is not null && !propertyName.Contains('.'))
 			{
-				return !IsDependencyProperty(_currentStyleTargetType, propertyName);
+				return !IsDependencyProperty(CurrentStyleTargetType, propertyName);
 			}
 
 			return false;
