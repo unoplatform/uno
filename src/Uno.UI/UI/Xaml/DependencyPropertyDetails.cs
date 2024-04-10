@@ -163,7 +163,7 @@ namespace Microsoft.UI.Xaml
 
 		private void SetValueFull(object? value, DependencyPropertyValuePrecedences precedence)
 		{
-			var valueIsUnsetValue = value is UnsetValue;
+			var valueIsUnsetValue = value == DependencyProperty.UnsetValue;
 
 			var stackAlias = Stack;
 
@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_stack == null && precedence == DependencyPropertyValuePrecedences.Local)
 			{
-				var valueIsUnsetValue = value is UnsetValue;
+				var valueIsUnsetValue = value == DependencyProperty.UnsetValue;
 
 				if (HasWeakStorage)
 				{
