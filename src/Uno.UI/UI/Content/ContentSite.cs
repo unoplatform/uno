@@ -10,6 +10,8 @@ public partial class ContentSite
 	: IDisposable, IClosableNotifier
 #endif
 {
+	private float _parentScale = 1f;
+
 	internal ContentSite() => View = new(this);
 
 	/// <summary>
@@ -20,7 +22,15 @@ public partial class ContentSite
 	/// <summary>
 	/// Gets or sets the parent default scaling factor for this ContentSite.
 	/// </summary>
-	public float ParentScale { get; set; } = 1f;
+	public float ParentScale
+	{
+		get => _parentScale;
+		set
+		{
+			_parentScale = value;
+			RasterizationScaleInitialized = true;
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets the scaling factor to use for this ContentSite, which overrides the ParentScale.
@@ -36,4 +46,6 @@ public partial class ContentSite
 	/// Gets the ContentSiteView associated with this ContentSite.
 	/// </summary>
 	public ContentSiteView View { get; }
+
+	internal bool RasterizationScaleInitialized { get; private set; }
 }

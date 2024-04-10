@@ -34,6 +34,8 @@ public partial class ContentIsland
 	/// </summary>
 	public bool IsSiteVisible => _contentSiteView.IsSiteVisible;
 
+	internal bool RasterizationScaleInitialized => _contentSiteView.RasterizationScaleInitialized;
+
 	/// <summary>
 	/// Occurs when a state property for this ContentIsland changes.
 	/// </summary>
