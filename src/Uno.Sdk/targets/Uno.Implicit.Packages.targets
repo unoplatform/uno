@@ -31,7 +31,7 @@
 			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference" />
 		</ItemGroup>
 
-		<ImplicitPackagesResolver_V0
+		<ImplicitPackagesResolver_v0
 				IntermediateOutput="$(_UnoCacheFolder)"
 				SdkDebugging="$(UnoSdkDebugging)"
 				SingleProject="$(_IsUnoSingleProjectAndLegacy)"
@@ -76,7 +76,7 @@
 					TaskParameter="ImplicitPackages" />
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
-		</ImplicitPackagesResolver_V0>
+		</ImplicitPackagesResolver_v0>
 
 		<ItemGroup>
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
