@@ -165,6 +165,8 @@ public partial class EntryPoint : IDisposable
 				&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
 			)
 			{
+				var startupProjectUniqueName = startupProjects[0].UniqueName;
+
 				var sw = Stopwatch.StartNew();
 
 				// Wait for VS to write down the active target, so that on reload the selected target 
@@ -217,6 +219,33 @@ public partial class EntryPoint : IDisposable
 
 							// Reload project
 							solution4.ReloadProject(ref projectGuid);
+
+							var sw2 = Stopwatch.StartNew();
+
+							while (sw2.Elapsed < TimeSpan.FromSeconds(5))
+							{
+								// Reset the startup project, as it VS will move it to the next available
+								// project in the solution on unload.
+								if (_dte.Solution.SolutionBuild is SolutionBuild2 val)
+								{
+									_debugAction?.Invoke($"Setting startup project to {startupProjectUniqueName}");
+									val.StartupProjects = startupProjectUniqueName;
+								}
+
+								await Task.Delay(50);
+
+								if (await _dte.GetStartupProjectsAsync() is { Length: > 0 } newStartupProjects
+									&& newStartupProjects[0].UniqueName == startupProjectUniqueName)
+								{
+									_debugAction?.Invoke($"Startup project changed successfully");
+									break;
+								}
+								else
+								{
+									_debugAction?.Invoke($"Startup project was not changed, retrying...");
+									await Task.Delay(1000);
+								}
+							}
 						}
 					}
 				}
