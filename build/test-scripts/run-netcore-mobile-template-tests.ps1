@@ -11,7 +11,11 @@ function Assert-ExitCodeIsZero()
 }
 
 $default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
-$msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+
+if ($IsWindows) 
+{
+    $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+}
 
 $debug = $default + '/p:Configuration=Debug' + '/r'
 $release = $default + '/p:Configuration=Release' + '/r'
@@ -41,8 +45,11 @@ for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
     Assert-ExitCodeIsZero
 }
 
-& $msbuild $debug "UnoAppAll.UWP\UnoAppAll.UWP.csproj"
-Assert-ExitCodeIsZero
+if ($IsWindows) 
+{
+    & $msbuild $debug "UnoAppAll.UWP\UnoAppAll.UWP.csproj"
+    Assert-ExitCodeIsZero
+}
 
 for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
 {
@@ -51,8 +58,11 @@ for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
     Assert-ExitCodeIsZero
 }
 
-& $msbuild $debug "UnoAppAll.UWP\UnoAppAll.UWP.csproj"
-Assert-ExitCodeIsZero
+if ($IsWindows) 
+{
+    & $msbuild $debug "UnoAppAll.UWP\UnoAppAll.UWP.csproj"
+    Assert-ExitCodeIsZero
+}
 
 popd
 
@@ -81,10 +91,13 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 # Server project build (merge with above loop when .App folder is removed)
 & dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
 
- # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
- # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
- & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
-Assert-ExitCodeIsZero
+if ($IsWindows) 
+{
+    # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
+    # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
+    & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
+    Assert-ExitCodeIsZero
+}
 
 popd
 
@@ -99,31 +112,34 @@ popd
 & dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
 Assert-ExitCodeIsZero
 
-# Uno Library
-# Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-& $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
-Assert-ExitCodeIsZero
-
-# Uno Cross-Runtime Library
-& $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
-Assert-ExitCodeIsZero
-
-#
-# Uno Library with assets, Validate assets count
-#
-# Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-& $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
-Assert-ExitCodeIsZero
-
-mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip
-Expand-Archive -LiteralPath MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip -DestinationPath MyUnoLib2Extract
-
-$assetsCount = Get-ChildItem MyUnoLib2Extract\ -Filter MyTestAsset01.txt -Recurse -File | Measure-Object | %{$_.Count}
-
-#if ($assetsCount -ne 6) # Restore when mobile validation is available
-if ($assetsCount -ne 2)
+if ($IsWindows) 
 {
-    throw "Not enough assets in the package."
+    # Uno Library
+    # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
+    & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
+    Assert-ExitCodeIsZero
+
+    # Uno Cross-Runtime Library
+    & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
+    Assert-ExitCodeIsZero
+
+    #
+    # Uno Library with assets, Validate assets count
+    #
+    # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
+    & $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
+    Assert-ExitCodeIsZero
+
+    mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip
+    Expand-Archive -LiteralPath MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip -DestinationPath MyUnoLib2Extract
+
+    $assetsCount = Get-ChildItem MyUnoLib2Extract\ -Filter MyTestAsset01.txt -Recurse -File | Measure-Object | %{$_.Count}
+
+    #if ($assetsCount -ne 6) # Restore when mobile validation is available
+    if ($assetsCount -ne 2)
+    {
+        throw "Not enough assets in the package."
+    }
 }
 
 
@@ -233,12 +249,15 @@ for($i = 0; $i -lt $projects.Length; $i++)
     }
     else
     {
-        Write-Host "MSBuild Building Debug $projectPath with $projectOptions"
-        & $msbuild $debug /r "$projectPath" $projectOptions
-        Assert-ExitCodeIsZero
+        if ($IsWindows) 
+        {
+            Write-Host "MSBuild Building Debug $projectPath with $projectOptions"
+            & $msbuild $debug /r "$projectPath" $projectOptions
+            Assert-ExitCodeIsZero
 
-        Write-Host "MSBuild Building Release $projectPath with $projectOptions"
-        & $msbuild $release /r "$projectPath" $projectOptions
-        Assert-ExitCodeIsZero
+            Write-Host "MSBuild Building Release $projectPath with $projectOptions"
+            & $msbuild $release /r "$projectPath" $projectOptions
+            Assert-ExitCodeIsZero
+        }
     }
 }
