@@ -116,6 +116,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool _isInSingletonInstance;
 
+<<<<<<< HEAD
+=======
+		private Stack<INamedTypeSymbol?> _currentStyleTargetTypeStack = new();
+
+		private INamedTypeSymbol? CurrentStyleTargetType
+			=> _currentStyleTargetTypeStack.Count > 0 ? _currentStyleTargetTypeStack.Peek() : null;
+
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 		/// <summary>
 		/// Context to report diagnostics to
 		/// </summary>
@@ -5224,6 +5232,45 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			throw new Exception($"The [{memberValue}] cache mode is not supported");
 		}
 
+<<<<<<< HEAD
+=======
+		private string BuildTargetPropertyPath(string target, XamlMemberDefinition? owner)
+		{
+			// https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.setter.target?view=winrt-22621
+			// The Setter.Target property can be used in either a Style or a VisualState, but in different ways.
+			// - When used in a Style, the property that needs to be modified can be specified directly.
+			// - When used in VisualState, the Target property must be given a TargetPropertyPath(dotted syntax with a target element and property explicitly specified).
+			if (CurrentStyleTargetType is not null)
+			{
+				// Target is used in a style, so it defines the DP directly.
+				return BuildDependencyProperty(target);
+			}
+
+			var ownerControl = GetControlOwner(owner?.Owner);
+			if (ownerControl != null)
+			{
+				// This builds property setters for specified member setter.
+				var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
+				var elementName = target.Substring(0, separatorIndex);
+				var targetElement = FindSubElementByName(ownerControl, elementName);
+				if (targetElement != null)
+				{
+					var propertyName = target.Substring(separatorIndex + 1);
+					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
+					// performed at runtime at a higher cost.
+					propertyName = RewriteAttachedPropertyPath(propertyName);
+					return $"new global::Microsoft.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\")";
+				}
+				else
+				{
+					return $"/* target element not found {elementName} */ null";
+				}
+			}
+
+			throw new InvalidOperationException("GetControlOwner returned null.");
+		}
+
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 		private static string? DoubleEscape(string? thisString)
 		{
 			//http://stackoverflow.com/questions/366124/inserting-a-tab-character-into-text-using-c-sharp
@@ -5312,6 +5359,57 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		private INamedTypeSymbol? GetDependencyPropertyTypeForSetter(string property)
+		{
+			property = property.Trim('(', ')');
+			// Handle attached properties
+			var isAttachedProperty = property.Contains(".");
+			if (isAttachedProperty)
+			{
+				var separatorIndex = property.IndexOf('.');
+
+				var target = property.Remove(separatorIndex);
+				property = property.Substring(separatorIndex + 1);
+				var type = FindType(target);
+				return _metadataHelper.GetAttachedPropertyType(type!, property);
+			}
+
+			return _metadataHelper.FindPropertyTypeByOwnerSymbol(CurrentStyleTargetType, property);
+		}
+
+		private string BuildDependencyProperty(string property)
+		{
+			property = property.Trim('(', ')');
+			// Handle attached properties
+			var isAttachedProperty = property.Contains(".");
+			if (isAttachedProperty)
+			{
+				var separatorIndex = property.IndexOf('.');
+
+				var target = property.Remove(separatorIndex);
+				property = property.Substring(separatorIndex + 1);
+				var foundFullTargetType = FindType(target)?.GetFullyQualifiedTypeIncludingGlobal();
+
+				return $"{foundFullTargetType}.{property}Property";
+			}
+
+			var currentStyleTargetType = CurrentStyleTargetType;
+			if (currentStyleTargetType is null)
+			{
+				throw new InvalidOperationException($"Cannot convert '{property}' to DependencyProperty");
+			}
+
+			if (IsDependencyProperty(currentStyleTargetType, property))
+			{
+				return $"{currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal()}.{property}Property";
+			}
+
+			throw new InvalidOperationException($"{property} is not a DependencyProperty in type {currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}");
+		}
+
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 		private string BuildBrush(string memberValue)
 		{
 			var colors = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
@@ -5681,6 +5779,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
+<<<<<<< HEAD
+=======
+								INamedTypeSymbol? setterPropertyType = null;
+								if (member.Owner?.Type.Name == "Setter" &&
+									member.Member.Name == "Value")
+								{
+									if (FindMember(member.Owner, "Property") is { Value: string setterPropertyName })
+									{
+										setterPropertyType = GetDependencyPropertyTypeForSetter(setterPropertyName);
+									}
+									else if (CurrentStyleTargetType is not null && GetMember(member.Owner, "Target") is { Value: string setterTarget })
+									{
+										// TODO: Confirm if (or not) we need to find the type even if we are not in a Style.
+										setterPropertyType = GetDependencyPropertyTypeForSetter(setterTarget);
+									}
+								}
+								else if (member.Owner?.Type.Name == "Setter" && member.Member.Name == "Target" && CurrentStyleTargetType is not null)
+								{
+									// A setter's Target inside a style will set Property instead of Target
+									fullValueSetter = string.IsNullOrWhiteSpace(closureName) ? "Property" : $"{closureName}.Property";
+								}
+
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 								if (FindPropertyType(member.Member) != null)
 								{
 									writer.AppendLineInvariantIndented("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, objectUid: objectUid ?? ""), closingPunctuation);
@@ -5993,7 +6114,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildInitializer(writer, xamlObjectDefinition, owner);
 					BuildLiteralProperties(writer, xamlObjectDefinition);
 				}
+<<<<<<< HEAD
 				else if (fullTypeName == XamlConstants.Types.Style)
+=======
+				// TODO: Remove this else if in Uno 6 as a breaking change.
+				else if (fullTypeName == XamlConstants.Types.Setter && CurrentStyleTargetType is { } currentStyleTargetType && IsLegacySetter(xamlObjectDefinition, out var propertyName))
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 				{
 					BuildInlineStyle(writer, xamlObjectDefinition);
 				}
@@ -6002,6 +6128,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var propertyNode = FindMember(xamlObjectDefinition, "Property");
 					var targetNode = FindMember(xamlObjectDefinition, "Target");
 					var valueNode = FindMember(xamlObjectDefinition, "Value");
+<<<<<<< HEAD
+=======
+					writer.AppendLineInvariantIndented(
+						"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => o.{1} = {2})",
+						currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal(),
+						propertyName,
+						BuildLiteralValue(valueNode!, propertyType)
+					);
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 
 					if (valueNode == null)
 					{
@@ -6109,6 +6244,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+<<<<<<< HEAD
+=======
+						var isStyle = fullTypeName == XamlConstants.Types.Style;
+						if (isStyle)
+						{
+							var targetTypeNode = GetMember(xamlObjectDefinition, "TargetType");
+
+							if (targetTypeNode.Value == null)
+							{
+								throw new InvalidOperationException("TargetType cannot be empty");
+							}
+
+							var targetType = targetTypeNode.Value.ToString();
+							_currentStyleTargetTypeStack.Push(FindType(targetType));
+						}
+
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
 						{
 							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(knownType)))
@@ -6122,11 +6274,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildExtendedProperties(writer, xamlObjectDefinition);
 						}
+<<<<<<< HEAD
+=======
+
+						if (isStyle)
+						{
+							_currentStyleTargetTypeStack.Pop();
+						}
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 					}
 				}
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		private bool IsLegacySetter(XamlObjectDefinition xamlObjectDefinition, out string propertyName)
+		{
+			var propertyNode = FindMember(xamlObjectDefinition, "Property");
+			propertyName = propertyNode?.Value?.ToString()!;
+			if (propertyName is not null && !propertyName.Contains('.'))
+			{
+				return !IsDependencyProperty(CurrentStyleTargetType, propertyName);
+			}
+
+			return false;
+		}
+
+>>>>>>> 42af020b98 (fix: Handle nested styles correctly in XAML generator)
 		/// <summary>
 		/// Set the 'IsParsing' flag. This should be the first property set when an element is parsed.
 		/// </summary>
