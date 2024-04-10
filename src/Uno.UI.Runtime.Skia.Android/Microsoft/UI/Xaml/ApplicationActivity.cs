@@ -34,6 +34,8 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
+		private SKCanvasView? _skCanvasView;
+
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
@@ -239,16 +241,16 @@ namespace Microsoft.UI.Xaml
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
-			var canvasView = new SKCanvasView(this);
-			canvasView.LayoutParameters = new ViewGroup.LayoutParams(
+			_skCanvasView = new SKCanvasView(this);
+			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
-			relativeLayout.AddView(canvasView);
+			relativeLayout.AddView(_skCanvasView);
 
 			SetContentView(relativeLayout);
 
-			canvasView.PaintSurface += OnPaintSurface;
+			_skCanvasView.PaintSurface += OnPaintSurface;
 
 		}
 
@@ -259,9 +261,13 @@ namespace Microsoft.UI.Xaml
 				var canvas = e.Surface.Canvas;
 				canvas.Clear(SKColors.Red);
 				window.Compositor.RenderRootVisual(e.Surface, root.Visual);
-				((SKCanvasView)sender!).Invalidate();
 			}
+
+			//InvalidateRender();
 		}
+
+		internal void InvalidateRender()
+			=> _skCanvasView?.Invalidate();
 
 		private void OnInsetsChanged(Thickness insets)
 		{

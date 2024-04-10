@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using Uno.Foundation.Logging;
+using Windows.Foundation;
 
 namespace Windows.UI.Core;
 
@@ -13,4 +14,15 @@ public partial class CoreWindow : ICoreWindowEvents
 
 	void ICoreWindowEvents.RaiseKeyUp(KeyEventArgs eventArgs) =>
 		KeyUp?.Invoke(this, eventArgs);
+
+
+	internal void SetKeyboardInputSource(IUnoKeyboardInputSource source)
+	{
+		this.Log().Error($"SetKeyboardInputSource is not implemented");
+	}
+
+	internal void SetPointerInputSource(IUnoCorePointerInputSource source)
+	{
+		this.Log().Error($"SetPointerInputSource is not implemented");
+	}
 }

@@ -11,6 +11,8 @@ public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
 {
 	private Func<Application> _appBuilder;
 
+	internal static IXamlRootHost? Instance { get; private set; }
+
 	/// <summary>
 	/// Creates a host for an Uno Skia Android application.
 	/// </summary>
@@ -21,7 +23,10 @@ public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
 	public AndroidSkiaHost(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
+		Instance ??= this;
 	}
+
+	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
 	public Task Run()
 	{
@@ -41,6 +46,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
+		ApplicationActivity.Instance?.InvalidateRender();
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;

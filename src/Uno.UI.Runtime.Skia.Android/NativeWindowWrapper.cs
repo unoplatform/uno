@@ -7,6 +7,7 @@ using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using Uno.Disposables;
 using Uno.UI.Extensions;
+using Uno.UI.Hosting;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core;

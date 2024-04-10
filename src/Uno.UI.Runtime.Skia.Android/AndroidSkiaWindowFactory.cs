@@ -7,5 +7,9 @@ internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 {
 	public bool SupportsMultipleWindows => false;
 
-	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot) => NativeWindowWrapper.Instance;
+	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
+	{
+		AndroidSkiaHost.XamlRootMap.Register(xamlRoot, AndroidSkiaHost.Instance!);
+		return NativeWindowWrapper.Instance;
+	}
 }
