@@ -38,4 +38,6 @@ public partial class ContentSiteView
 	/// which is computed from the OverrideScale and ParentScale.
 	/// </summary>
 	public float RasterizationScale => _contentSite.RasterizationScale;
+
+	internal bool RasterizationScaleInitialized => _contentSite.RasterizationScaleInitialized;
 }
