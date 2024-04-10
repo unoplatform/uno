@@ -20,6 +20,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
 	private readonly DisplayInformation _displayInformation;
+	private UIScreen _lastScreen;
 
 	public NativeWindowWrapper()
 	{
@@ -37,7 +38,19 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		UpdateScreen();
 		DispatchDpiChanged();
+	}
+
+	private void UpdateScreen()
+	{
+		if (_nativeWindow.Screen is {} screen &&
+			screen != _lastScreen &&
+			_displayInformation is not null)
+		{
+			_lastScreen = _nativeWindow.Screen;
+			_displayInformation.SetScreen(_lastScreen);
+		}
 	}
 
 	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
@@ -52,6 +65,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_nativeWindow.RootViewController = _mainController;
 		_nativeWindow.MakeKeyAndVisible();
 		Visible = true;
+		UpdateScreen();
 	}
 
 	internal RootViewController MainController => _mainController;
@@ -64,6 +78,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void RaiseNativeSizeChanged()
 	{
+		UpdateScreen();
+
 		var newWindowSize = GetWindowSize();
 
 		Bounds = new Rect(default, newWindowSize);

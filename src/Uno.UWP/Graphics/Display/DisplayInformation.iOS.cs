@@ -11,6 +11,7 @@ namespace Windows.Graphics.Display
 	public sealed partial class DisplayInformation
 	{
 		private NSObject _didChangeStatusBarOrientationObserver;
+		private UIScreen _currentScreen;
 
 		private static readonly UIInterfaceOrientationMask[] _preferredOrientations =
 		{
@@ -92,9 +93,15 @@ namespace Windows.Graphics.Display
 			};
 		}
 
+		internal void SetScreen(UIScreen screen)
+		{
+			_currentScreen = screen;
+			Update();
+		}
+
 		private void Update()
 		{
-			var screen = UIScreen.MainScreen;
+			var screen = _currentScreen ?? UIScreen.MainScreen;
 			var bounds = screen.Bounds;
 
 			RawPixelsPerViewPixel = screen.NativeScale;
@@ -104,6 +111,8 @@ namespace Windows.Graphics.Display
 			LogicalDpi = (float)(RawPixelsPerViewPixel * BaseDpi);
 
 			ResolutionScale = (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
+
+			OnDisplayMetricsChanged();
 		}
 
 		partial void Initialize()
