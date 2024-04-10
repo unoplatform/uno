@@ -40,8 +40,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
 				var totalOffset = this.GetTotalOffset();
-				var offsetMatrix = SKMatrix.Identity with { TransX = totalOffset.X + AnchorPoint.X, TransY = totalOffset.Y + AnchorPoint.Y };
-				matrix = offsetMatrix.ToMatrix4x4() * matrix;
+				var offsetMatrix = new Matrix4x4(
+					1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y, 0, 1);
+				matrix = offsetMatrix * matrix;
 
 				// Apply the rending transformation matrix (i.e. change coordinates system to the "rendering" one)
 				if (this.GetTransform() is { IsIdentity: false } transform)
