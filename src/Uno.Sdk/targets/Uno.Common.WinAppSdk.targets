@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<IsWinAppSdk>true</IsWinAppSdk>
+		<UseRidGraph>true</UseRidGraph>
 		<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.18362.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
 
