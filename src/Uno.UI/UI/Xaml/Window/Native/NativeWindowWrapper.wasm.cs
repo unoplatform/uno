@@ -50,7 +50,11 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = bounds;
 	}
 
-	protected override void ShowCore() => WindowManagerInterop.WindowActivate();
+	protected override void ShowCore()
+	{
+		DispatchDpiChanged();
+		WindowManagerInterop.WindowActivate();
+	}
 
 	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
 

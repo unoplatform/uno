@@ -34,9 +34,9 @@ namespace Uno.UI.Samples.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			Assert.IsNotNull(XamlRoot);
+			Assert.IsNotNull(XamlRoot, "XamlRoot was not initialized before measure");
 #if HAS_UNO
-			Assert.IsTrue(XamlRoot.VisualTree.ContentRoot.CompositionContent.RasterizationScaleInitialized);
+			Assert.IsTrue(XamlRoot.VisualTree.ContentRoot.CompositionContent.RasterizationScaleInitialized, "Rasterization scale was not initialized");
 #endif
 
 			if (_initialMeasure && availableSize == default)
