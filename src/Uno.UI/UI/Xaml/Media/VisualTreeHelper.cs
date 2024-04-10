@@ -659,9 +659,14 @@ namespace Microsoft.UI.Xaml.Media
 				}
 			}
 
+#if __SKIA__
+			// We still need to check the renderingBounds in case the element is clipped.
+			if (element.HitTest(transformToElement.Inverse.TransformPoint(testPosition)) && renderingBounds.Contains(testPosition))
+#else
 			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
 			// and the position is in actual bounds (which might be different than the clipping bounds)
 			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
+#endif
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);

@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using Windows.Foundation;
 using SkiaSharp;
 using Uno;
 using Uno.Extensions;
@@ -13,9 +14,15 @@ namespace Microsoft.UI.Composition
 	{
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
+		
+		internal SKPath? LastDrawnStrokePath { get; private set; }
+		internal SKPath? LastDrawnFillPath { get; private set; }
 
 		internal override void Paint(in Visual.PaintingSession session)
 		{
+			LastDrawnStrokePath = null;
+			LastDrawnFillPath = null;
+
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
 				var transform = this.GetTransform();
@@ -33,7 +40,7 @@ namespace Microsoft.UI.Composition
 				if (FillBrush is { } fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
-
+					
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
 						fillPaint.Color = colorFromTransition.ToSKColor();
@@ -42,6 +49,8 @@ namespace Microsoft.UI.Composition
 					{
 						fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
 					}
+					
+					LastDrawnFillPath = geometryWithTransformations;
 
 					if (fill is CompositionBrushWrapper wrapper)
 					{
@@ -92,10 +101,11 @@ namespace Microsoft.UI.Composition
 					// So, to get a correct stroke geometry, we must apply the transformations first.
 
 					// Get the stroke geometry, after scaling has been applied.
-					using var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
+					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
 
 					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
+					LastDrawnStrokePath = strokeGeometry;
 					session.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
@@ -144,6 +154,12 @@ namespace Microsoft.UI.Composition
 			paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			return paint;
+		}
+
+		internal override bool HitTest(Point point)
+		{
+			return (LastDrawnStrokePath?.Contains((float)point.X, (float)point.Y) ?? false)
+				|| (LastDrawnFillPath?.Contains((float)point.X, (float)point.Y) ?? false);
 		}
 	}
 }

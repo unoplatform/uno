@@ -3,6 +3,7 @@
 using SkiaSharp;
 using System;
 using System.Numerics;
+using Windows.Foundation;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
@@ -40,4 +41,6 @@ public partial class CompositionShape
 	internal virtual void Paint(in Visual.PaintingSession session)
 	{
 	}
+
+	internal virtual bool HitTest(Point point) => false;
 }
