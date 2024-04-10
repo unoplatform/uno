@@ -107,6 +107,16 @@
 				<dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
 			</group>
+
+			<!-- .NET 7.0 (WinUI) -->
+			<group targetFramework="net7.0-windows10.0.19041.0">
+				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+			</group>
+
+			<!-- .NET 8.0 (WinUI) -->
+			<group targetFramework="net8.0-windows10.0.19041.0">
+				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+			</group>
 		</dependencies>
 
 	</metadata>
@@ -177,5 +187,9 @@
 		<file src="_._" target="build\uap10.0.16299" />
 		<file src="_._" target="build\uap10.0.19041" />
 		<file src="_._" target="build\net7.0-windows" />
+		<file src="_._" target="build\net7.0-windows10.0.19041.0" />
+		<file src="_._" target="build\net8.0-windows10.0.19041.0" />
+		<file src="_._" target="lib\net7.0-windows10.0.19041.0" />
+		<file src="_._" target="lib\net8.0-windows10.0.19041.0" />
 	</files>
 </package>
