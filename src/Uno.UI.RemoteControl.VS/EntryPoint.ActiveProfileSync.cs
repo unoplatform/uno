@@ -181,7 +181,7 @@ public partial class EntryPoint : IDisposable
 
 						if (content.Contains($"<ActiveDebugFramework>{newFramework}</ActiveDebugFramework>"))
 						{
-							_warningAction?.Invoke($"Detected new target framework in {userFilePath}");
+							_debugAction?.Invoke($"Detected new target framework in {userFilePath}, continuing.");
 							break;
 						}
 					}
