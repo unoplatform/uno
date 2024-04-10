@@ -490,7 +490,7 @@ namespace Microsoft.UI.Xaml.Media
 			var transformToElement = element.TransformToVisual(null);
 
 			// The maximum region where the current element and its children might draw themselves
-			// This is expressed in element coordinate space.
+			// This is expressed in the window (absolute) coordinate space.
 			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
 				? transformToElement.TransformBounds(new Rect(rect.Left, rect.Top, rect.Width, rect.Height))
 				: Rect.Infinite;
@@ -498,7 +498,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			// The region where the current element draws itself.
 			// Be aware that children might be out of this rendering bounds if no clipping defined.
-			// This is expressed in element coordinate space.
+			// This is expressed in the window (absolute) coordinate space.
 			var renderingBounds = transformToElement.TransformBounds(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
 			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
 #else

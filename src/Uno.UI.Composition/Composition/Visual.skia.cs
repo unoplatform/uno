@@ -22,7 +22,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal virtual bool SetMatrixDirty() => _matrixDirty = true;
 
 	/// <summary>
-	/// This is the final transformation matrix from the origin for this Visual.
+	/// This is the final transformation matrix from the origin to this Visual.
 	/// </summary>
 #if DEBUG
 	[DebuggerDisplay("{TotalMatrixString}")]
@@ -102,7 +102,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Render a visual as if it's the root visual.
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
-	/// <param name="ignoreLocation">A boolean which indicates if the location of the root visual should be ignored (so it will be rendered at 0,0).</param>
+	/// <param name="ignoreLocation">A boolean that indicates if the location of the root visual should be ignored (so it will be rendered at 0,0).</param>
 	internal void RenderRootVisual(SKSurface surface, bool ignoreLocation = false)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })

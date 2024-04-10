@@ -284,7 +284,7 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// The visible window of the SCP
-				// TODO: We should constrains the clip only on axis on which we can scroll
+				// TODO: We should constrain the clip to only the axes on which we can scroll
 #if __SKIA__ // The viewport on an IsScrollPort element should not be affected by its ScrollOffsets. Skia does this correctly, but the other platforms need this inaccuracy due to the way TransformToVisual works (which is only correct on skia).
 				var scrollport = LayoutInformation.GetLayoutSlot(this);
 #else

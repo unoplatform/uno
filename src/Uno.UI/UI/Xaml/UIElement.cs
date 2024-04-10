@@ -531,7 +531,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 #if __SKIA__
-			Matrix4x4.Invert(to?.Visual?.TotalMatrix ?? Matrix4x4.Identity, out var invertedTotalMatrix);
+			Matrix4x4.Invert(to?.Visual.TotalMatrix ?? Matrix4x4.Identity, out var invertedTotalMatrix);
 			var finalTransform = (from.Visual.TotalMatrix * invertedTotalMatrix).ToMatrix3x2();
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
