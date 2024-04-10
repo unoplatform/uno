@@ -107,6 +107,7 @@ stages:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
       vmPoolLinux: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
 
 - stage: unit_tests
   displayName: Tests - Unit
