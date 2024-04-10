@@ -4,6 +4,9 @@ using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
+using System.Windows.Shell;
+using Windows.ApplicationModel.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.UI.ViewManagement;
@@ -41,11 +44,14 @@ internal class UnoWpfWindow : WpfWindow
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+
 		Closed += UnoWpfWindow_Closed;
 		Activated += UnoWpfWindow_Activated;
 
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
+		UpdateWindowPropertiesFromCoreApplication();
 	}
 
 	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
@@ -63,6 +69,7 @@ internal class UnoWpfWindow : WpfWindow
 	private void UnoWpfWindow_Closed(object? sender, EventArgs e)
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 	}
 
 	internal UnoWpfWindowHost Host { get; private set; }
@@ -112,6 +119,30 @@ internal class UnoWpfWindow : WpfWindow
 		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
 			Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+	}
+
+	internal void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		if (coreApplicationView.TitleBar.ExtendViewIntoTitleBar)
+		{
+			WindowStyle = System.Windows.WindowStyle.None;
+			WindowChrome.SetWindowChrome(this, new WindowChrome
+			{
+				UseAeroCaptionButtons = false,
+				// this removes the thin white bar at the top, but this causes the window to grow a little.
+				// No work around has been found for this yet.
+				CaptionHeight = 0
+			});
+
+			// for some reason touchpad physical presses work without this, but not "taps"
+			WindowChrome.SetIsHitTestVisibleInChrome((IInputElement)Content, true);
+		}
+		else
+		{
+			WindowStyle = System.Windows.WindowStyle.SingleBorderWindow;
+			ClearValue(WindowChrome.WindowChromeProperty);
 		}
 	}
 }
