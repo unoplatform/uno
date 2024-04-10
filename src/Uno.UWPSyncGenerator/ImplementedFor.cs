@@ -18,9 +18,10 @@ namespace Uno.UWPSyncGenerator
 		WASM = 32,
 		Skia = 64,
 		UAP = 128,
-		Uno = Android | iOS | MacOS | UnitTests | NetStdReference | WASM | Skia,
-		Main = Android | iOS | WASM | Skia | MacOS,
-		Mobile = Android | iOS,
-		Xamarin = Android | iOS | MacOS
+		tvOS = 256,
+		Uno = Android | iOS | MacOS | UnitTests | NetStdReference | WASM | Skia | tvOS,
+		Main = Android | iOS | WASM | Skia | MacOS | tvOS,
+		Mobile = Android | iOS | tvOS,
+		Xamarin = Android | iOS | MacOS | tvOS
 	}
 }
