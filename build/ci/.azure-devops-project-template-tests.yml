@@ -59,14 +59,14 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - script: |
+  - powershell: |
       cp global.json global-net7.json
       cp global-net8.json global.json
     displayName: Replace global.json with .NET 8
 
   - template: templates/dotnet-mobile-install-mac.yml
 
-  - script: copy $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - powershell: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1
