@@ -156,7 +156,7 @@
 			},
 			"Resize": {
 				"type": "bool",
-				"description": "Boolean value to say if the asset should Resized or not. By default just vectors asset are resized by default"
+				"description": "Boolean value to say if the asset should Resized or not. By default, just vector assets are resized."
 			},
 			"TintColor": {
 				"type": "string",
