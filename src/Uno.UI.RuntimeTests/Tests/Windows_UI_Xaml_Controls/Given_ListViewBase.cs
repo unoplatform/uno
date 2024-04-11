@@ -4961,7 +4961,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// On iOS, the template selector may be invoked with a null item. This is arguably also a bug, but not presently under test here.
 				item != null &&
 #endif
-							!_itemsSource.Contains(item)
+					!_itemsSource.Contains(item)
 					)
 				{
 					var ex = new InvalidOperationException($"Selector called for item not in source ({item})");

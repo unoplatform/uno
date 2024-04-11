@@ -27,13 +27,17 @@ internal partial class AndroidInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		public InvisibleEditText(TextBoxView owner) : base(ContextHelper.Current)
 		{
-			//SetBackgroundColor(Color.Transparent);
-			//SetTextColor(Color.Transparent);
-			//SetPadding(0, 0, 0, 0);
-			//SetCursorVisible(false);
+			SetBackgroundColor(Color.Transparent);
+			SetTextColor(Color.Transparent);
+			SetPadding(0, 0, 0, 0);
+			SetCursorVisible(false);
 			if (owner.IsPasswordBox)
 			{
 				InputType = InputTypes.TextVariationPassword;
+			}
+			else
+			{
+				InputType = InputTypes.TextFlagNoSuggestions;
 			}
 
 			Text = owner.TextBox?.Text ?? string.Empty;

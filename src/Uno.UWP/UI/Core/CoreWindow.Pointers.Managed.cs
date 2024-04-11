@@ -1,4 +1,3 @@
-#if UNO_HAS_MANAGED_POINTERS
 #nullable enable
 
 using System;
@@ -40,8 +39,16 @@ public partial class CoreWindow
 		_pointerSource.PointerCancelled += (_, args) => PointerCancelled?.Invoke(this, args);
 	}
 
+	public void SetPointerCapture()
+		=> _pointerSource?.SetPointerCapture();
+
+	public void ReleasePointerCapture()
+		=> _pointerSource?.ReleasePointerCapture();
+
 	internal IUnoCorePointerInputSource? PointersSource => _pointerSource;
 
+	// Wasm partial has the property. We should unify the implementation.
+#if !__WASM__
 	public CoreCursor PointerCursor
 	{
 		get => _pointerSource?.PointerCursor ?? new CoreCursor(CoreCursorType.Arrow, 0);
@@ -53,11 +60,5 @@ public partial class CoreWindow
 			}
 		}
 	}
-
-	public void SetPointerCapture()
-		=> _pointerSource?.SetPointerCapture();
-
-	public void ReleasePointerCapture()
-		=> _pointerSource?.ReleasePointerCapture();
-}
 #endif
+}

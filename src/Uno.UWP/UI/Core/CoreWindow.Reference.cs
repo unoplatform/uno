@@ -12,12 +12,6 @@ namespace Windows.UI.Core;
 
 public partial class CoreWindow
 {
-	internal void SetPointerInputSource(IUnoCorePointerInputSource source)
-		=> throw new NotSupportedException();
-
-	internal void SetKeyboardInputSource(IUnoKeyboardInputSource source)
-		=> throw new NotSupportedException();
-
 	internal bool IsNativeElement(object content)
 		=> throw new NotSupportedException();
 
@@ -34,9 +28,6 @@ public partial class CoreWindow
 		=> throw new NotSupportedException();
 
 	internal bool IsNativeElementAttached(object owner, object nativeElement)
-		=> throw new NotSupportedException();
-
-	internal IUnoCorePointerInputSource? PointersSource
 		=> throw new NotSupportedException();
 
 	internal void RaiseNativeKeyDownReceived(KeyEventArgs args)

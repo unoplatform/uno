@@ -103,72 +103,12 @@ namespace Microsoft.UI.Xaml
 
 		public override bool DispatchKeyEvent(KeyEvent? e)
 		{
-			var handled = false;
-
-			var virtualKey = VirtualKeyHelper.FromKeyCode(e!.KeyCode);
-			var modifiers = VirtualKeyHelper.FromModifiers(e.Modifiers);
-
-			if (this.Log().IsEnabled(LogLevel.Trace))
+			if (e is null)
 			{
-				this.Log().Trace($"DispatchKeyEvent: {e.KeyCode} -> {virtualKey}");
+				return base.DispatchKeyEvent(e);
 			}
 
-			try
-			{
-				if (FocusManager.GetFocusedElement() is not FrameworkElement element)
-				{
-					element = WinUICoreServices.Instance.MainRootVisual!;
-				}
-
-				var routedArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
-				{
-					CanBubbleNatively = false,
-				};
-
-				RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
-					UIElement.KeyDownEvent :
-					UIElement.KeyUpEvent;
-
-				element?.RaiseEvent(routedEvent, routedArgs);
-
-				handled = routedArgs.Handled;
-
-				//if (CoreWindow.GetForCurrentThread() is ICoreWindowEvents ownerEvents)
-				//{
-				//	var coreWindowArgs = new KeyEventArgs(
-				//		"keyboard",
-				//		virtualKey,
-				//		modifiers,
-				//		new CorePhysicalKeyStatus
-				//		{
-				//			ScanCode = (uint)e.KeyCode,
-				//			RepeatCount = 1,
-				//		})
-				//	{
-				//		Handled = handled
-				//	};
-
-				//	if (e.Action == KeyEventActions.Down)
-				//	{
-				//		ownerEvents.RaiseKeyDown(coreWindowArgs);
-				//	}
-				//	else if (e.Action == KeyEventActions.Up)
-				//	{
-				//		ownerEvents.RaiseKeyUp(coreWindowArgs);
-				//	}
-
-				//	handled = coreWindowArgs.Handled;
-				//}
-			}
-			catch (Exception ex)
-			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
-			}
-
-			//if (Gamepad.TryHandleKeyEvent(e))
-			//{
-			//	return true;
-			//}
+			var handled = AndroidKeyboardInputSource.Instance.OnNativeKeyEvent(e);
 
 			if (!handled)
 			{
