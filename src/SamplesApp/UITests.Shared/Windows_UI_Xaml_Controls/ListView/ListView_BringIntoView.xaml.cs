@@ -1,4 +1,6 @@
-﻿using Uno.UI.Samples.Controls;
+﻿using System;
+using System.Linq;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Microsoft.UI.Xaml;
@@ -14,13 +16,18 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		public ListView_BringIntoView()
 		{
 			this.InitializeComponent();
+
+			var random = new Random(42);
+			// using newlines to vary the height of each item
+			myList.ItemsSource = Enumerable.Range(0, 100).Select(i => $"item {i}" + new string('\n', random.Next(0, 5))).ToArray();
 		}
 
 		public void BringIntoView(object sender, RoutedEventArgs e)
 		{
 			var list = (Microsoft.UI.Xaml.Controls.ListViewBase)this.myList;
 
-			list.ScrollIntoView(list.SelectedItem, ScrollIntoViewAlignment.Leading);
+			var alignment = (chkBox.IsChecked ?? false) ? ScrollIntoViewAlignment.Leading : ScrollIntoViewAlignment.Default;
+			list.ScrollIntoView(list.ItemFromIndex((int)nb.Value), alignment);
 		}
 	}
 }
