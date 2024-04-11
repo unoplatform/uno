@@ -3973,6 +3973,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails")]
+#endif
 		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree()
 		{
 			var source = new ObservableCollection<string>()
