@@ -65,6 +65,11 @@ jobs:
       sed -i.bu 's/8.0.100/8.0.200/' global.json
     displayName: Replace global.json with .NET 8.0.200
 
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
   - template: templates/dotnet-mobile-install-mac.yml
 
   - powershell: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
