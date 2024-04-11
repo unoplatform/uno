@@ -14,6 +14,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml
 {
@@ -136,18 +137,12 @@ namespace Microsoft.UI.Xaml
 			var isOver = _state == State.Over;
 			_state = State.Over;
 
-			DataPackageOperation acceptedOperation;
-			if (isOver)
-			{
-				acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
-			}
-			else
+			if (!isOver)
 			{
 				await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
 				// No Task.Yield here. This is similar to what happens on WinUI.
-				acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
 			}
-			acceptedOperation &= Info.AllowedOperations;
+			var acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
 
 			_acceptedOperation = acceptedOperation;
 			_view.Update(acceptedOperation, _viewOverride);
@@ -209,8 +204,16 @@ namespace Microsoft.UI.Xaml
 				}
 
 				_state = State.Completing;
-				await _target.OverAsync(Info, _viewOverride).AsTask(ct);
-				await Task.Yield(); // give a chance for layout updates, etc. This is similar to what happens on WinUI.
+#if __WASM__
+				// firing OverAsync then DropAsync without a layout cycle in-between breaks ListView dragging
+				// (since it causes a Refresh that clears all the containers and then waits for MeasureOverride
+				// to recreate them). So on WASM, we don't call OverAsync, which shouldn't be too problematic.
+				if (NativeDispatcher.IsThreadingSupported)
+#endif
+				{
+					await _target.OverAsync(Info, _viewOverride).AsTask(ct);
+					await Task.Yield(); // give a chance for layout updates, etc. This is similar to what happens on WinUI.
+				}
 				result = await _target.DropAsync(Info).AsTask(ct);
 				result &= Info.AllowedOperations;
 
