@@ -13,12 +13,15 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Xaml.Input.FocusConversionFunctions;
+using DirectUI;
 
 namespace Uno.UI.Xaml.Input;
 
 internal class FocusObserver
 {
 	private readonly ContentRoot _contentRoot;
+
+	private FocusController? _focusController;
 
 	private XamlSourceFocusNavigationRequest? _currentInteraction;
 
@@ -327,23 +330,22 @@ internal class FocusObserver
 		Guid correlationId,
 		ref bool handled)
 	{
-		return;
-		//if (handled || _focusController == null)
-		//{
-		//	return;
-		//}
+		if (handled || _focusController is null)
+		{
+			return;
+		}
 
-		//var reason = GetFocusNavigationReasonFromDirection(direction);
-		//if (reason == null)
-		//{
-		//	// Do nothing if we dont support this navigation
-		//	return;
-		//}
+		var reason = GetFocusNavigationReasonFromDirection(direction);
+		if (reason == null)
+		{
+			// Do nothing if we dont support this navigation
+			return;
+		}
 
-		//StartInteraction(reason.Value, origin, correlationId);
+		StartInteraction(reason.Value, origin, correlationId);
 
-		////_focusController.DepartFocus(_currentInteraction);
-		//handled = true;
+		_focusController.DepartFocus(_currentInteraction);
+		handled = true;
 	}
 
 	private void StartInteraction(

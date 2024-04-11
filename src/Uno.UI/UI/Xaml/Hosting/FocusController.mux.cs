@@ -84,35 +84,19 @@ internal partial class FocusController
 		pFocusObserver.ProcessNavigateFocusRequest(pRequest, out isHandled);
 
 		var result = new NavigateFocusResult(isHandled);
-		return AsyncOperation.FromTask<IXamlSourceFocusNavigationResult>(() => result);
+		return AsyncOperation.FromTask<XamlSourceFocusNavigationResult>(() => result);
 	}
 
-	public EventRegistrationToken AddLosingFocus(FocusDepartingEventHandler handler)
-	{
-		return m_focusDepartingEvent.Add(handler);
-	}
+	internal event TypedEventHandler<object, object> FocusDeparting;
 
-	public void RemoveLosingFocus(EventRegistrationToken token)
-	{
-		m_focusDepartingEvent.Remove(token);
-	}
+	internal event TypedEventHandler<object, object> GotFocus;
 
-	public EventRegistrationToken AddGotFocus(FocusNavigatedEventHandler handler)
-	{
-		return _gotFocusEvent.Add(handler);
-	}
-
-	public void RemoveGotFocus(EventRegistrationToken token)
-	{
-		AddGotFocus .Remove(token);
-	}
-
-	public IAsyncOperation<FocusNavigationResult> DepartFocusAsync(XamlSourceFocusNavigationRequest request)
+	public FocusNavigationResult DepartFocus(XamlSourceFocusNavigationRequest request)
 	{
 		var spLosingFocusRequest = new NavigationLosingFocusEventArgs(request);
 		var departingEventArgs = spLosingFocusRequest as DesktopWindowXamlSourceTakeFocusRequestedEventArgs;
 
-		m_focusDepartingEvent.InvokeAll(this, departingEventArgs);
+		FocusDeparting?.Invoke(this, departingEventArgs);
 
 		// Trigger IXP focus navigation
 		var ixpReason = FocusNavigationReason.First;
