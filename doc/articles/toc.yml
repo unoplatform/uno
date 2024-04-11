@@ -456,6 +456,8 @@
           href: features/working-with-assets.md
         - name: Composition API
           href: composition.md
+        - nsmr: Dialogs
+          href: features/dialogs.md
         - name: Fluent styles
           href: features/fluent-styles.md
         - name: Focus management
