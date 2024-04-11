@@ -137,3 +137,11 @@ Building for the specified target framework is not supported on the current plat
 Building WinUI applications requires the use of `msbuild` and the extension must be able to find it. This is done by using the `vswhere` utility.
 
 Installing the latest stable Visual Studio release should provide both tools.
+
+With version 0.14 (and later) you can override the location of `msbuild.exe` by:
+
+1. Opening the **Settings** using `Ctrl`+`,`
+1. Searching for `msbuild`
+1. Setting the location where your `msbuild.exe` is located
+
+![settings](Assets/quick-start/vs-code-settings-msbuild.png)
