@@ -71,8 +71,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnTransformChanged(DependencyPropertyChangedEventArgs args)
 		{
-			RaiseGeometryChanged();
-
 			if (args.OldValue is Transform oldValue)
 			{
 				oldValue.Changed -= OnTransformSubChanged;
