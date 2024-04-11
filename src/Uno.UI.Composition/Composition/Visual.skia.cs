@@ -31,6 +31,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		get
 		{
+			// Due to the layout of the matrices and how they're multiplied, a scaling transform followed by a
+			// translating transform will actually scale the translation. i.e.
+			// MatrixThatTranslatesBy50 * MatrixThatScalesBy2 = MatrixThatScalesBy2ThenTranslatesBy100
+			// This contradicts the traditional linear algebraic definitions, but works out in practice (e.g.
+			// if the canvas is scaled very early, you want all the offsets to scale with it)
+			// https://learn.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/transforms/matrix
 			if (_matrixDirty)
 			{
 				_matrixDirty = false;
@@ -129,7 +135,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			canvas.Save();
 			var totalOffset = this.GetTotalOffset();
 			var translation = Matrix4x4.Identity with { M41 = -(totalOffset.X + AnchorPoint.X), M42 = -(totalOffset.Y + AnchorPoint.Y) };
-			initialTransform *= translation;
+			initialTransform = translation * initialTransform;
 		}
 
 		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default, initialTransform);
@@ -191,7 +197,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		else
 		{
-			canvas.SetMatrix((initialTransform * TotalMatrix).ToSKMatrix());
+			canvas.SetMatrix((TotalMatrix * initialTransform).ToSKMatrix());
 		}
 
 		// Apply the clipping defined on the element

@@ -61,12 +61,12 @@ namespace Microsoft.UI.Composition
 				if (SourceOffset != default)
 				{
 					var translation = Matrix4x4.Identity with { M41 = -(SourceOffset.X), M42 = -(SourceOffset.Y) };
-					initialTransform *= translation;
+					initialTransform = translation * initialTransform;
 				}
 
 				var totalOffset = SourceVisual.GetTotalOffset();
 				var translation2 = Matrix4x4.Identity with { M41 = -(totalOffset.X + SourceVisual.AnchorPoint.X), M42 = -(totalOffset.Y + SourceVisual.AnchorPoint.Y) };
-				initialTransform *= translation2;
+				initialTransform = translation2 * initialTransform;
 
 				bool? previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;

@@ -57,13 +57,6 @@ namespace Microsoft.UI.Composition
 			return ret;
 		}
 
-		public static Matrix4x4 ToMatrix4x4(this SKMatrix44 m)
-			=> new(
-				m[0, 0], m[1, 0], m[2, 0], m[3, 0],
-				m[0, 1], m[1, 1], m[2, 1], m[3, 1],
-				m[0, 2], m[1, 2], m[2, 2], m[3, 2],
-				m[0, 3], m[1, 3], m[2, 3], m[3, 3]);
-
 		public static SKMatrix44 ToSKMatrix44(this Matrix3x2 m)
 		{
 			var ret = new SKMatrix44();
