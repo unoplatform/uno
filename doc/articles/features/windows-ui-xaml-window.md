@@ -5,7 +5,7 @@ uid: Uno.Features.WinUIWindow
 # Windowing
 
 > [!TIP]
-> This article covers Uno-specific information for `Microsoft.UI.Xaml.Window` and windowing. For a full description of the feature and instructions on using it, see [Window Class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window) and [Windowing Overview](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/windowing/windowing-overview).
+> This article covers Uno-specific information for `Microsoft.UI.Xaml.Window` and windowing. For a full description of the feature and instructions on using it, see [Window Class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window) and [Windowing Overview](https://learn.microsoft.com/windows/apps/windows-app-sdk/windowing/windowing-overview).
 
 * The `Microsoft.UI.Xaml.Window` class allows for managing the window of the application.
 * This article also describes window management in Uno Platform apps
@@ -26,7 +26,7 @@ While these are still available for backward compatibility purposes, they will b
 
 ## Creating a new window
 
-To display a new window (both primary and secondary) you can utilize the `Microsoft.UI.Xaml.Window` constructor:
+To display a new window (both primary and secondary), you can utilize the `Microsoft.UI.Xaml.Window` constructor:
 
 ```csharp
 var window = new Window();
