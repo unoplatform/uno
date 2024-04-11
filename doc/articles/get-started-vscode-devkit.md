@@ -35,7 +35,7 @@ To see which version of Uno.WinUI you're currently using, open the `Directory.Pa
 
 If you have version 5.0.116 (or later), then there's no need to update your version of .NET or Uno to use VS Code.
 
-If you need to update you can use a tool like [`dotnet outdated`](https://github.com/dotnet-outdated/dotnet-outdated) to update your dependencies to the latest available. Also see [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases]) for additional information about updating your project(s).
+If you need to update you can use a tool like [`dotnet outdated`](https://github.com/dotnet-outdated/dotnet-outdated) to update your dependencies to the latest available. Also see [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases) for additional information about updating your project(s).
 
 ## Disable OmniSharp
 
