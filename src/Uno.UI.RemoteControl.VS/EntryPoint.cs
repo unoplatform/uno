@@ -46,6 +46,7 @@ public partial class EntryPoint : IDisposable
 {
 	private const string UnoPlatformOutputPane = "Uno Platform";
 	private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
+	private const string UnoVSExtensionLoadedProperty = "_UnoVSExtensionLoaded";
 
 	private readonly DTE _dte;
 	private readonly DTE2 _dte2;
@@ -107,7 +108,8 @@ public partial class EntryPoint : IDisposable
 		}
 
 		return Task.FromResult(new Dictionary<string, string> {
-			{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) }
+			{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) },
+			{ UnoVSExtensionLoadedProperty, "true" },
 		});
 	}
 

@@ -36,6 +36,7 @@ internal class ProfilesObserver : IDisposable
 	private record FrameworkServices(object? ActiveDebugFrameworkServices, MethodInfo? SetActiveFrameworkMethod, MethodInfo? GetProjectFrameworksAsyncMethod);
 	private FrameworkServices? _projectFrameworkServices;
 
+	private bool _isDisposed;
 	private string? _currentActiveDebugProfile;
 	private string? _currentActiveDebugFramework;
 	private IDisposable? _projectRuleSubscriptionLink;
@@ -68,9 +69,21 @@ internal class ProfilesObserver : IDisposable
 		_onDebugProfileChanged = onDebugProfileChanged;
 
 		ObserveSolutionEvents();
+		_ = ObserveStartupProjectAsync();
 	}
 
 	object[]? _existingStartupProjects = [];
+
+
+	private async Task ObserveStartupProjectAsync()
+	{
+		while (!_isDisposed)
+		{
+			await Task.Delay(2000);
+
+			TryUpdateSolution();
+		}
+	}
 
 	private void TryUpdateSolution()
 	{
@@ -78,8 +91,12 @@ internal class ProfilesObserver : IDisposable
 		{
 			if (!newStartupProjects.SequenceEqual(_existingStartupProjects))
 			{
+				_debugLog("Startup projects have changed, reloading observer");
+
 				// log all projects
 				_existingStartupProjects = newStartupProjects;
+
+				UnsubscribeCurrentProject();
 			}
 
 			if (_unconfiguredProject is null)
@@ -175,6 +192,11 @@ internal class ProfilesObserver : IDisposable
 
 		_debugLog($"unconfiguredProject was unloaded");
 
+		UnsubscribeCurrentProject();
+	}
+
+	private void UnsubscribeCurrentProject()
+	{
 		_currentActiveDebugFramework = null;
 		_currentActiveDebugProfile = null;
 
@@ -344,5 +366,8 @@ internal class ProfilesObserver : IDisposable
 	}
 
 	public void Dispose()
-		=> _projectRuleSubscriptionLink?.Dispose();
+	{
+		_projectRuleSubscriptionLink?.Dispose();
+		_isDisposed = true;
+	}
 }
