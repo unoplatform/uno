@@ -421,8 +421,6 @@
               href: controls/ToggleSwitch.md
             - name: WebView (WebView2)
               href: controls/WebView.md
-            - name: Windowing
-              href: features/windows-ui-xaml-window.md
             - name: Fluent icon font
               href: uno-fluent-assets.md
             - name: Lottie animations
@@ -488,6 +486,8 @@
           href: features/windows-ui-markup-extensions.md
         - name: Build telemetry
           href: uno-toolchain-telemetry.md
+        - name: Windowing
+          href: features/windows-ui-xaml-window.md
 
       - name: 3rd-party libraries
         href: supported-libraries.md
