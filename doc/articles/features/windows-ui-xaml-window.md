@@ -70,7 +70,7 @@ overlappedPresenter.Maximize();
 
 ## Enumerating windows
 
-WinUI currently does not provide a way to enumerate open windows of an application. Due to this limitation we recommend you to track the windows manually.
+WinUI currently does not provide a way to enumerate open windows of an application. Due to this limitation, we recommend you to track the windows manually.
 
 To simplify this on non-WinUI targets, we provide the `ApplicationHelper.Windows` property to enumerate currently available windows:
 
@@ -83,7 +83,8 @@ foreach (var window in ApplicationHelper.Windows)
 #endif
 ```
 
-**Note:** Make sure to access this property from the UI thread.
+> [!NOTE]
+> Make sure to access this property from the UI thread.
 
 ## Retrieving the native window
 
@@ -103,7 +104,7 @@ The `nativeWindow` is an `object`, so you need to cast it to the specific type o
 
 ## Avoiding `Window.Current`
 
-`Window` type has a static `Current` property which previously served as a way to access the main, singleton window instance. This is no longer relevant in multi-window scenarios. For legacy reasons and to maintain compatibility with existing Uno Platform apps, we opted to keep this property and it returns the first window that was created. You should not rely on this behavior going forward as it will be deprecated
+`Window` type has a static `Current` property which previously served as a way to access the main, singleton window instance. This is no longer relevant in multi-window scenarios. For legacy reasons and to maintain compatibility with existing Uno Platform apps, we opted to keep this property and it returns the first window that was created. You should not rely on this behavior going forward as it will be deprecated.
 
 ## Setting the background color for the Window
 
