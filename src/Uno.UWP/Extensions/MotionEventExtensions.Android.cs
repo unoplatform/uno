@@ -1,8 +1,7 @@
-﻿using Android.Views;
-using Microsoft.UI.Xaml.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Android.Views;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Input;
@@ -15,14 +14,14 @@ namespace Microsoft.UI.Xaml.Extensions
 		{
 			switch (nativeType)
 			{
-				case Android.Views.MotionEventToolType.Eraser:
-				case Android.Views.MotionEventToolType.Stylus:
+				case MotionEventToolType.Eraser:
+				case MotionEventToolType.Stylus:
 					return PointerDeviceType.Pen;
-				case Android.Views.MotionEventToolType.Finger:
+				case MotionEventToolType.Finger:
 					return PointerDeviceType.Touch;
-				case Android.Views.MotionEventToolType.Mouse:
+				case MotionEventToolType.Mouse:
 					return PointerDeviceType.Mouse;
-				case Android.Views.MotionEventToolType.Unknown: // used by Xamarin.UITest
+				case MotionEventToolType.Unknown: // used by Xamarin.UITest
 				default:
 					return default(PointerDeviceType);
 			}
