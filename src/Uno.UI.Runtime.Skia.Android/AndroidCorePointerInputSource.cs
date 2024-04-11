@@ -88,7 +88,6 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 					PointerMoved?.Invoke(this, args);
 					break;
 
-
 				case MotionEventActions.Down:
 					PointerPressed?.Invoke(this, args);
 					break;
