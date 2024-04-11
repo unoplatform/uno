@@ -13,7 +13,7 @@ namespace DirectUI;
 partial class FocusController
 {
 	private readonly SerialDisposable _focusDepartingEvent = new();
-	private CoreComponentFocusable? _coreComponentFocusable;
+	//private CoreComponentFocusable? _coreComponentFocusable;
 	private InputFocusController? _inputObjectFocusable;
 
 	private readonly SerialDisposable _gotFocusToken = new();

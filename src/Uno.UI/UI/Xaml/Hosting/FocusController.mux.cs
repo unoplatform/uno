@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\components\UIBridgeFocus\FocusController.cpp, tag winui3/release/1.5.1, commit 3d10001ba8e12336cad392846b1030ba691b784a
+#nullable enable
 
 using System;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Hosting;
 using Uno.Disposables;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -14,10 +16,10 @@ namespace DirectUI;
 
 internal partial class FocusController
 {
-	public FocusController(CoreComponentFocusable pFocusable)
-	{
-		_coreComponentFocusable = pFocusable;
-	}
+	//public FocusController(CoreComponentFocusable pFocusable)
+	//{
+	//	_coreComponentFocusable = pFocusable;
+	//}
 
 	public FocusController(InputFocusController pFocusable)
 	{
@@ -32,12 +34,12 @@ internal partial class FocusController
 
 	public void Init()
 	{
-		if (_coreComponentFocusable != null)
-		{
-			_coreComponentFocusable.GotFocus += OnCoreInputGotFocus;
-			_gotFocusToken.Disposable = Disposable.Create(() => _coreComponentFocusable.GotFocus -= OnCoreInputGotFocus);
-		}
-		else
+		//if (_coreComponentFocusable != null)
+		//{
+		//	_coreComponentFocusable.GotFocus += OnCoreInputGotFocus;
+		//	_gotFocusToken.Disposable = Disposable.Create(() => _coreComponentFocusable.GotFocus -= OnCoreInputGotFocus);
+		//}
+		//else
 		{
 			var wrThis = new WeakReference<FocusController>(this);
 			void OnInputControllerGotFocus(object sender, FocusChangedEventArgs args)
@@ -48,7 +50,7 @@ internal partial class FocusController
 					focusController.OnGotFocusCommon();
 				}
 			}
-			_inputObjectFocusable.GotFocus += OnInputControllerGotFocus;
+			_inputObjectFocusable!.GotFocus += OnInputControllerGotFocus;
 			_gotFocusToken.Disposable = Disposable.Create(() => _inputObjectFocusable.GotFocus -= OnInputControllerGotFocus);
 		}
 	}
@@ -58,40 +60,39 @@ internal partial class FocusController
 	//	_gotFocusToken.Disposable = null;
 	//}
 
-	public static IAsyncOperation<FocusController> CreateAsync(CoreComponentFocusable pFocusable)
+	//public static FocusController Create(CoreComponentFocusable pFocusable)
+	//{
+	//	var focusController = new FocusController(pFocusable);
+	//	focusController.Init();
+	//	return focusController;
+	//}
+
+	public static FocusController Create(InputFocusController focusable)
 	{
-		var focusController = new FocusController(pFocusable);
+		var focusController = new FocusController(focusable);
 		focusController.Init();
-		return AsyncOperation.FromTask<FocusController>(() => focusController);
+		return focusController;
 	}
 
-	public static IAsyncOperation<FocusController> CreateAsync(InputFocusController pFocusable)
+	public XamlSourceFocusNavigationResult NavigateFocus(XamlSourceFocusNavigationRequest request, FocusObserver focusObserver)
 	{
-		var focusController = new FocusController(pFocusable);
-		focusController.Init();
-		return AsyncOperation.FromTask<FocusController>(() => focusController);
-	}
-
-	public IAsyncOperation<XamlSourceFocusNavigationResult> NavigateFocusAsync(XamlSourceFocusNavigationRequest pRequest, FocusObserver pFocusObserver)
-	{
-		_currentRequest = pRequest;
-		var scopeExit = new Deferral(() =>
+		_currentRequest = request;
+		using var scopeExit = Disposable.Create(() =>
 		{
 			_currentRequest = null;
 		});
 
-		bool isHandled = false;
-		pFocusObserver.ProcessNavigateFocusRequest(pRequest, out isHandled);
+		bool isHandled = focusObserver.ProcessNavigateFocusRequest(request);
 
 		var result = new NavigateFocusResult(isHandled);
-		return AsyncOperation.FromTask<XamlSourceFocusNavigationResult>(() => result);
+		return result;
 	}
 
-	internal event TypedEventHandler<object, object> FocusDeparting;
+	internal event TypedEventHandler<object, object>? FocusDeparting;
 
-	internal event TypedEventHandler<object, object> GotFocus;
+	internal event TypedEventHandler<object, object>? GotFocus;
 
-	public FocusNavigationResult DepartFocus(XamlSourceFocusNavigationRequest request)
+	public void DepartFocus(XamlSourceFocusNavigationRequest request)
 	{
 		var spLosingFocusRequest = new NavigationLosingFocusEventArgs(request);
 		var departingEventArgs = spLosingFocusRequest as DesktopWindowXamlSourceTakeFocusRequestedEventArgs;
@@ -134,23 +135,16 @@ internal partial class FocusController
 		var correlationId = request.CorrelationId;
 		var ixpRequest = FocusNavigationRequest.Create(ixpReason, hintRect, correlationId);
 
-		var inputFocusController2 = _inputObjectFocusable as InputFocusController;
-		var result = inputFocusController2.DepartFocusAsync(ixpRequest);
+		_inputObjectFocusable!.DepartFocus(ixpRequest);
 
 		// WinUI may wish to respond to the result (Moved/NotMoved/NoFocusableElements) here in some way
-
-		return AsyncOperation.FromTask<Windows.UI.Xaml.Input.FocusNavigationResult>(() => result);
 	}
 
-	private IAsyncAction OnCoreInputGotFocus(object sender, CoreWindowEventArgs e)
-	{
-		return OnGotFocusCommon().AsAsyncAction();
-	}
+	private void OnCoreInputGotFocus(object sender, CoreWindowEventArgs e) => OnGotFocusCommon();
 
-	private IAsyncAction OnGotFocusCommon()
+	private void OnGotFocusCommon()
 	{
-		var spDispatcherQueueStatics = DispatcherQueue.GetForCurrentThread();
-		var spDispatcherQueue = spDispatcherQueueStatics as DispatcherQueue;
+		var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
 		var currentRequest = _currentRequest;
 		_currentRequest = null;
@@ -160,23 +154,24 @@ internal partial class FocusController
 			FireGotFocus(currentRequest);
 		});
 
-		spDispatcherQueue.TryEnqueue(callback);
+		dispatcherQueue.TryEnqueue(callback);
 	}
 
-	public bool HasFocus => _coreComponentFocusable != null ? _coreComponentFocusable.HasFocus : _inputObjectFocusable.HasFocus;
+	public bool HasFocus =>
+		//_coreComponentFocusable != null ? _coreComponentFocusable.HasFocus : 
+		_inputObjectFocusable!.HasFocus;
 
-	private void FireGotFocus(XamlSourceFocusNavigationRequest pCurrentRequest)
+	private void FireGotFocus(XamlSourceFocusNavigationRequest? currentRequest)
 	{
-		var spRequest = pCurrentRequest ?? CreateActivationFactory_XamlSourceFocusNavigationRequest().CreateInstance(XamlSourceFocusNavigationReason.Restore);
+		var request = currentRequest;
+		if (request is null)
+		{
+			request = new XamlSourceFocusNavigationRequest(XamlSourceFocusNavigationReason.Restore);
+		}
 
-		var spArgs = new NavigationGotFocusEventArgs(spRequest);
-		var gotFocusEventArgs = spArgs as DesktopWindowXamlSourceGotFocusEventArgs;
+		var args = new NavigationGotFocusEventArgs(request);
+		var gotFocusEventArgs = args as DesktopWindowXamlSourceGotFocusEventArgs;
 
-		_gotFocusEvent.InvokeAll(this, gotFocusEventArgs);
-	}
-
-	private IActivationFactory CreateActivationFactory_XamlSourceFocusNavigationRequest()
-	{
-		throw new NotImplementedException();
+		GotFocus?.Invoke(this, gotFocusEventArgs);
 	}
 }
