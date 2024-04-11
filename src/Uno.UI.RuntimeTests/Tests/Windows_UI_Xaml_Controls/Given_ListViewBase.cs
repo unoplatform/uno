@@ -4483,6 +4483,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				else { throw new NotImplementedException(); }
 			}
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#endif
+		public async Task When_ScrollIntoView_No_Virtualization()
+		{
+			var source = Enumerable.Range(0, 100).ToArray();
+			var lv = new ListView { Width = 400, Height = 200, ItemsSource = source };
+
+			await UITestHelper.Load(lv);
+
+			lv.ScrollIntoView(lv.ItemFromIndex(50));
+			await WindowHelper.WaitForIdle();
+
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			var container = (ContentControl)lv.ContainerFromIndex(50);
+
+			var offset = container.TransformToVisual(lv).TransformPoint(default);
+			var (offsetStart, vpExtent) = (offset.Y, sv.ViewportHeight);
+
+			Assert.IsTrue(0 <= offsetStart && offsetStart + container.ActualHeight <= vpExtent, $"Container#50 should be within viewport: 0 <= {offsetStart} <= {vpExtent}");
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
