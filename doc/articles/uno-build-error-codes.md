@@ -138,10 +138,10 @@ Building WinUI applications requires the use of `msbuild` and the extension must
 
 Installing the latest stable Visual Studio release should provide both tools.
 
-With version 0.14 (and later) you can override the location of `msbuild.exe` by
+With version 0.14 (and later) you can override the location of `msbuild.exe` by:
 
-- opening the **Settings** using `Ctrl`+`,`
-- searching for `msbuild`
-- setting the location where your `msbuild.exe` is located
+1. Opening the **Settings** using `Ctrl`+`,`
+1. Searching for `msbuild`
+1. Setting the location where your `msbuild.exe` is located
 
 ![settings](Assets/quick-start/vs-code-settings-msbuild.png)
