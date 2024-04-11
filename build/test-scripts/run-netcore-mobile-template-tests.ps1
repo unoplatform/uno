@@ -121,7 +121,13 @@ popd
 
 if ($IsWindows) 
 {
-    & dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
+    dotnet build MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true /p:WasmShellILLinkerEnabled=true
+    Assert-ExitCodeIsZero
+
+    dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem MyAppXamlTrim.Wasm.clr -Recurse).FullName -r Strings.en.Resources.upri -x Strings.fr.Resources.upri
+    Assert-ExitCodeIsZero
+
+    dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem Uno.UI.clr -Recurse).FullName -r Resources.Strings.en.Resources.upri -r UI.Xaml.DragDrop.Strings.en-US.Resources.upri -x Resources.Strings.cs-CZ.Resources.upri
     Assert-ExitCodeIsZero
 
     # Uno Library

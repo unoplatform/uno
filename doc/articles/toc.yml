@@ -76,10 +76,6 @@
         href: tutorials-intro.md
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
         href: guides/azure-static-webapps.md
-      - name: How to integrate Uno.Material
-        href: external/uno.themes/doc/material-getting-started.md
-      - name: How to integrate Uno.Cupertino
-        href: external/uno.themes/doc/cupertino-getting-started.md
       - name: How to use Windows Community Toolkit
         href: uno-community-toolkit.md
       - name: How to manually add a splash screen
@@ -240,6 +236,8 @@
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Working with String Resource Trimming
+          href: features/upri-trimming.md
         - name: Working with XAML Trimming
           href: features/resources-trimming.md
 
@@ -425,8 +423,6 @@
               href: controls/ToggleSwitch.md
             - name: WebView (WebView2)
               href: controls/WebView.md
-            - name: Window
-              href: features/windows-ui-xaml-window.md
             - name: Fluent icon font
               href: uno-fluent-assets.md
             - name: Lottie animations
@@ -460,6 +456,8 @@
           href: features/working-with-assets.md
         - name: Composition API
           href: composition.md
+        - name: Dialogs
+          href: features/dialogs.md
         - name: Fluent styles
           href: features/fluent-styles.md
         - name: Focus management
@@ -490,6 +488,8 @@
           href: features/windows-ui-markup-extensions.md
         - name: Build telemetry
           href: uno-toolchain-telemetry.md
+        - name: Windowing
+          href: features/windows-ui-xaml-window.md
 
       - name: 3rd-party libraries
         href: supported-libraries.md
@@ -588,15 +588,15 @@
         href: features/working-with-cookies.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/ExtensionsOverview.md
+  # topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
 
 - name: Themes
-  topicHref: external/uno.themes/doc/themes-overview.html
+  # topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
 
 - name: Toolkit
-  topicHref: external/uno.toolkit.ui/doc/getting-started.md
+  #topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
   
 - name: Figma
