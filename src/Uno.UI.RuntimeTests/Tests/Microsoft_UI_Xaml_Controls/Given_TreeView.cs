@@ -29,6 +29,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.ComponentModel;
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml.Data;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -138,14 +139,13 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 #if HAS_UNO
 		// https://github.com/unoplatform/uno/issues/16041
-		// This test actually always passes due to catching the NRE in SafeRaiseEvent in RaiseDragEnterOrOver
-		// so you need to check manually if there are any logged exceptions
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_TreeViewItem_Dragged_NRE()
 		{
+			using var _ = new DisposableAction(() => TestableTreeViewItem.DraggingThrewException = false);
 			var treeView = new TreeView
 			{
 				RootNodes =
@@ -162,6 +162,31 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 								IsExpanded = true
 							}
 						}
+					}
+				},
+				Style = new Style
+				{
+					BasedOn = Style.GetDefaultStyleForType(typeof(TreeView)),
+					Setters =
+					{
+						new Setter(Control.TemplateProperty, new ControlTemplate(() =>
+						{
+							var tvl = new CustomTreeViewList
+							{
+								Name = "ListControl"
+							};
+							tvl.SetBinding(FrameworkElement.BackgroundProperty, new TemplateBinding(new PropertyPath("Background")));
+							tvl.SetBinding(ItemsControl.ItemTemplateProperty, new TemplateBinding(new PropertyPath("ItemTemplate")));
+							tvl.SetBinding(ItemsControl.ItemTemplateSelectorProperty, new TemplateBinding(new PropertyPath("ItemTemplateSelector")));
+							tvl.SetBinding(ItemsControl.ItemTemplateSelectorProperty, new TemplateBinding(new PropertyPath("ItemTemplateSelector")));
+							tvl.SetBinding(ItemsControl.ItemContainerStyleProperty, new TemplateBinding(new PropertyPath("ItemContainerStyle")));
+							tvl.SetBinding(ItemsControl.ItemContainerStyleSelectorProperty, new TemplateBinding(new PropertyPath("ItemContainerStyleSelector")));
+							tvl.SetBinding(ItemsControl.ItemContainerTransitionsProperty, new TemplateBinding(new PropertyPath("ItemContainerTransitions")));
+							tvl.SetBinding(ListViewBase.CanDragItemsProperty, new TemplateBinding(new PropertyPath("CanDragItems")));
+							tvl.SetBinding(UIElement.AllowDropProperty, new TemplateBinding(new PropertyPath("AllowDrop")));
+							tvl.SetBinding(ListViewBase.CanReorderItemsProperty, new TemplateBinding(new PropertyPath("CanReorderItems")));
+							return tvl;
+						}))
 					}
 				}
 			};
@@ -190,6 +215,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			mouse.MoveTo(treeView.TransformToVisual(null).TransformPoint(new Point(121, 55)), 1);
 			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(TestableTreeViewItem.DraggingThrewException);
 		}
 #endif
 
@@ -331,4 +358,44 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			string _label;
 		}
 	}
+
+#if HAS_UNO
+	partial class CustomTreeViewList : TreeViewList
+	{
+		protected override DependencyObject GetContainerForItemOverride()
+		{
+			var targetItem = new TestableTreeViewItem() { IsGeneratedContainer = true }; // Uno specific IsGeneratedContainer
+			return targetItem;
+		}
+	}
+
+	partial class TestableTreeViewItem : TreeViewItem
+	{
+		public static bool DraggingThrewException { get; set; }
+
+		protected override void OnDragEnter(Microsoft.UI.Xaml.DragEventArgs args)
+		{
+			try
+			{
+				base.OnDragEnter(args);
+			}
+			catch (Exception)
+			{
+				DraggingThrewException = true;
+			}
+		}
+
+		protected override void OnDragOver(Microsoft.UI.Xaml.DragEventArgs args)
+		{
+			try
+			{
+				base.OnDragOver(args);
+			}
+			catch (Exception)
+			{
+				DraggingThrewException = true;
+			}
+		}
+	}
+#endif
 }
