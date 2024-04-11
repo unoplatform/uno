@@ -144,7 +144,14 @@ if ($IsWindows)
 
 
 ## Tests Per versions of uno
-$default = @('-v:m', '-p:EnableWindowsTargeting=true')
+if ($IsWindows)
+{
+    $default = @('-v:m', '-p:EnableWindowsTargeting=true')
+}
+else
+{
+    $default = @('-v:m')
+}
 
 $debug = $default + '-p:Configuration=Debug'
 $release = $default + '-p:Configuration=Release'
