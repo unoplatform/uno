@@ -6,9 +6,6 @@
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 
-		<!-- Required for TSBinding tests -->
-		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
-
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
@@ -82,10 +79,6 @@
 			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
 		</ItemGroup>
 	</Target>
-
-	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

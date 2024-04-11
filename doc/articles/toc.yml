@@ -240,6 +240,8 @@
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Working with String Resource Trimming
+          href: features/upri-trimming.md
         - name: Working with XAML Trimming
           href: features/resources-trimming.md
 
