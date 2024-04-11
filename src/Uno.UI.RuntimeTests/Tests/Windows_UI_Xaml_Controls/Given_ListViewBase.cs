@@ -3974,7 +3974,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 #if __ANDROID__ || __IOS__
-		[Ignore("Fails")]
+		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree()
 		{

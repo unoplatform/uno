@@ -97,7 +97,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 		[TestMethod]
 #if __ANDROID__ || __IOS__
-		[Ignore("Fails")]
+		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_TreeViewItem_Collapsed_Children_Removed_From_Tree()
 		{
