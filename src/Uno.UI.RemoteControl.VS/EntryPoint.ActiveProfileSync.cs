@@ -224,7 +224,7 @@ public partial class EntryPoint : IDisposable
 
 							while (sw2.Elapsed < TimeSpan.FromSeconds(5))
 							{
-								// Reset the startup project, as it VS will move it to the next available
+								// Reset the startup project, as VS will move it to the next available
 								// project in the solution on unload.
 								if (_dte.Solution.SolutionBuild is SolutionBuild2 val)
 								{
