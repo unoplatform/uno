@@ -4507,6 +4507,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(0 <= offsetStart && offsetStart + container.ActualHeight <= vpExtent, $"Container#50 should be within viewport: 0 <= {offsetStart} <= {vpExtent}");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#else
+		[Ignore("https://github.com/unoplatform/uno/issues/16246")]
+#endif
+		public async Task When_ScrollIntoView_Containers_With_Varying_Heights()
+		{
+			var random = new Random(42);
+			var lv = new ListView
+			{
+				Height = 400,
+				ItemsSource = Enumerable.Range(0, 100).Select(i => $"item {i}" + new string('\n', random.Next(0, 5))).ToArray(),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+
+					return new StackPanel
+					{
+						Padding = new Thickness(16),
+						Children =
+						{
+							tb
+						}
+					};
+				})
+			};
+
+			await UITestHelper.Load(lv);
+
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			var i = 7049.5;
+			while (i > 0)
+			{
+				sv.ScrollToVerticalOffset(i);
+				await WindowHelper.WaitForIdle();
+				i -= 400;
+				// try i -= 800, it will also fail the test even though visually, item 0 is visible, but the list view is interally corrupted
+			}
+
+			sv.ScrollToVerticalOffset(i);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(lv.ContainerFromItem(0));
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
