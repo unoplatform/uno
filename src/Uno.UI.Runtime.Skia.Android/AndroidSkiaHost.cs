@@ -24,8 +24,6 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 		_appBuilder = appBuilder;
 	}
 
-	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
-
 	public Task Run()
 	{
 		try

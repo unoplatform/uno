@@ -99,9 +99,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
 		}
 
-		//var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
-		var opaqueInsets = default(Microsoft.UI.Xaml.Thickness); // windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
-		var translucentInsets = default(Microsoft.UI.Xaml.Thickness); // insets.Minus(opaqueInsets);
+		var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+		var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
+		var translucentInsets = insets.Minus(opaqueInsets);
 
 		// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
 		var windowBounds = new Rect(default, GetDisplaySize().Subtract(opaqueInsets));
