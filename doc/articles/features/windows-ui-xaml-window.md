@@ -14,13 +14,13 @@ uid: Uno.Features.WinUIWindow
 
 There are several "window" types in Uno Platform apps, some are legacy only and will be removed in future releases.
 
-- `Microsoft.UI.Xaml.Window` - the main type representing a XAML-based Window. Allows for basic manipulation and setting content.
-- `Microsoft.UI.Windowing.AppWindow` - represents a general Window (may not be XAML based in case of WinUI target). Includes advanced capabilities not present on `Window` itself.
+* `Microsoft.UI.Xaml.Window` - the main type representing a XAML-based Window. Allows for basic manipulation and setting content.
+* `Microsoft.UI.Windowing.AppWindow` - represents a general Window (may not be XAML based in case of WinUI target). Includes advanced capabilities not present on `Window` itself.
 
 The legacy types are:
 
-- `Windows.UI.Core.CoreWindow`
-- `Windows.UI.WindowManagement.AppWindow`
+* `Windows.UI.Core.CoreWindow`
+* `Windows.UI.WindowManagement.AppWindow`
 
 While these are still available for backward compatibility purposes, they will be deprecated and no longer retrievable in future releases of Uno Platform.
 
