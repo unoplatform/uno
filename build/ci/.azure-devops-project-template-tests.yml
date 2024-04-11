@@ -59,7 +59,7 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - powershell: |
+  - bash: |
       cp global.json global-net7.json
       cp global-net8.json global.json
       sed -i 's/8.0.100/8.0.200/g' global.json
