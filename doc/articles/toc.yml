@@ -76,10 +76,6 @@
         href: tutorials-intro.md
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
         href: guides/azure-static-webapps.md
-      - name: How to integrate Uno.Material
-        href: external/uno.themes/doc/material-getting-started.md
-      - name: How to integrate Uno.Cupertino
-        href: external/uno.themes/doc/cupertino-getting-started.md
       - name: How to use Windows Community Toolkit
         href: uno-community-toolkit.md
       - name: How to manually add a splash screen
