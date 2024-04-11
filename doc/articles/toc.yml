@@ -586,15 +586,15 @@
         href: features/working-with-cookies.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/ExtensionsOverview.md
+  # topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
 
 - name: Themes
-  topicHref: external/uno.themes/doc/themes-overview.html
+  # topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
 
 - name: Toolkit
-  topicHref: external/uno.toolkit.ui/doc/getting-started.md
+  #topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
   
 - name: Figma
