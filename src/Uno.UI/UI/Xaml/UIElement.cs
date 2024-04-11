@@ -48,6 +48,7 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
 
+		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
@@ -378,17 +379,16 @@ namespace Microsoft.UI.Xaml
 
 		private void OnClipChanged(DependencyPropertyChangedEventArgs e)
 		{
-			if (e.OldValue is RectangleGeometry oldValue)
-			{
-				oldValue.GeometryChanged -= ApplyClip;
-			}
+			var geometry = e.NewValue as RectangleGeometry;
 
 			ApplyClip();
-
-			if (e.NewValue is RectangleGeometry newValue)
-			{
-				newValue.GeometryChanged += ApplyClip;
-			}
+			_clipSubscription.Disposable = geometry.RegisterDisposableNestedPropertyChangedCallback(
+				(_, __) => ApplyClip(),
+				new[] { RectangleGeometry.RectProperty },
+				new[] { Geometry.TransformProperty },
+				new[] { Geometry.TransformProperty, TranslateTransform.XProperty },
+				new[] { Geometry.TransformProperty, TranslateTransform.YProperty }
+			);
 		}
 
 		#endregion
@@ -857,10 +857,6 @@ namespace Microsoft.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
-
-#if __SKIA__
-			InvalidateArrange();
-#endif
 		}
 
 		partial void ApplyNativeClip(Rect rect);

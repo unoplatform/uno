@@ -735,12 +735,7 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException($"{FormatDebugName()}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 			}
 
-			var clip = Clip;
-			var clipRect = clip?.Rect ?? (needsClipToSlot ? clippedFrame : default(Rect?));
-			if (clipRect.HasValue && clip?.Transform is { } transform)
-			{
-				clipRect = transform.TransformBounds(clipRect.Value);
-			}
+			var clipRect = Clip?.Rect ?? (needsClipToSlot ? clippedFrame : default(Rect?));
 
 			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.ArrangeElementNative({newRect}, clip={clipRect} (NeedsClipToSlot={NeedsClipToSlot})");
 
