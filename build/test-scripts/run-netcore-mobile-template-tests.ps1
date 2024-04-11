@@ -29,9 +29,14 @@ $dotnetBuildConfigurations =
     # @("Mobile", "-f:net7.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
     @("Skia.Gtk", "", ""),
-    @("Skia.Linux.FrameBuffer", "", ""),
-    @("Skia.WPF", "", "")
+    @("Skia.Linux.FrameBuffer", "", "")
 )
+
+if ($IsWindows) 
+{
+    $dotnetBuildConfigurations = $dotnetBuildConfigurations 
+        + @("Skia.WPF", "", "");
+}
 
 cd src/SolutionTemplate
 
@@ -75,9 +80,14 @@ $dotnetBuildNet6Configurations =
     @("Wasm", "", ""),
     @("Server", "", ""),
     @("Skia.Gtk", "", ""),
-    @("Skia.Linux.FrameBuffer", "", ""),
-    @("Skia.WPF", "", "")
+    @("Skia.Linux.FrameBuffer", "", "")
 )
+
+if ($IsWindows) 
+{
+    $dotnetBuildNet6Configurations = $dotnetBuildNet6Configurations 
+        + @("Skia.WPF", "", "");
+}
 
 # WinUI - Default
 pushd UnoAppWinUI
