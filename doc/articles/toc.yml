@@ -592,7 +592,7 @@
   href: external/uno.extensions/doc/toc.yml
 
 - name: Themes
-  # topicHref: xref:Uno.Themes.Overview
+  # topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
 
 - name: Toolkit
