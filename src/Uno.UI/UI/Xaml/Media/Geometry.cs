@@ -32,11 +32,6 @@ namespace Microsoft.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-		internal event Action GeometryChanged;
-
-		private protected void RaiseGeometryChanged()
-			=> GeometryChanged?.Invoke();
-
 		public static implicit operator Geometry(string data)
 		{
 #if __WASM__
@@ -66,24 +61,8 @@ namespace Microsoft.UI.Xaml.Media
 				"Transform",
 				typeof(Transform),
 				typeof(Geometry),
-				new FrameworkPropertyMetadata(default(Transform), propertyChangedCallback: (s, args) => ((Geometry)s).OnTransformChanged(args))
+				new FrameworkPropertyMetadata(default(Transform))
 			);
-
-		private void OnTransformChanged(DependencyPropertyChangedEventArgs args)
-		{
-			if (args.OldValue is Transform oldValue)
-			{
-				oldValue.Changed -= OnTransformSubChanged;
-			}
-
-			if (args.NewValue is Transform newValue)
-			{
-				newValue.Changed += OnTransformSubChanged;
-			}
-		}
-
-		private void OnTransformSubChanged(object sender, EventArgs e)
-			=> RaiseGeometryChanged();
 
 		#endregion
 
