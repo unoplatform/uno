@@ -56,7 +56,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 	{
 	}
 
-	internal void OnNativeTouchEvent(MotionEvent e)
+	internal void OnNativeTouchEvent(MotionEvent e, int[] correction)
 	{
 		try
 		{
@@ -73,9 +73,9 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 			var isInContact = PointerHelpers.IsInContact(e, pointerType, nativePointerAction, nativePointerButtons);
 			var isInRange = true; // TODO: ?
 			var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
-			var x = e.GetX(pointerIndex);
-			var y = e.GetY(pointerIndex);
-			var position = new Point((int)x, (int)y);
+			var x = e.RawX;
+			var y = e.RawY;
+			var position = new Point((int)x - correction[0], (int)y - correction[1]);
 
 			var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
 

@@ -194,7 +194,9 @@ namespace Microsoft.UI.Xaml
 				return base.OnTouchEvent(e);
 			}
 
-			AndroidCorePointerInputSource.Instance.OnNativeTouchEvent(e);
+			var correction = new int[2];
+			_skCanvasView?.GetLocationInWindow(correction);
+			AndroidCorePointerInputSource.Instance.OnNativeTouchEvent(e, correction);
 
 			return base.OnTouchEvent(e);
 		}
