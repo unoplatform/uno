@@ -9,7 +9,9 @@ internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
-		AndroidSkiaHost.XamlRootMap.Register(xamlRoot, AndroidSkiaHost.Instance!);
+		// While we are currently not having something very useful in the root host, instantiating it has side effects that we need.
+		// So this line isn't unnecessary ;)
+		_ = new AndroidSkiaXamlRootHost(xamlRoot);
 		return NativeWindowWrapper.Instance;
 	}
 }

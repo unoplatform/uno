@@ -1,0 +1,113 @@
+using System;
+using Android.Views;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Extensions;
+using Uno.Foundation.Logging;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Core;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+
+namespace Uno.UI.Runtime.Skia.Android;
+
+internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
+{
+	public static AndroidCorePointerInputSource Instance { get; } = new();
+
+	private AndroidCorePointerInputSource()
+	{
+	}
+
+#pragma warning disable CS0067
+	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerEntered;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerExited;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerMoved;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerPressed;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerReleased;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerWheelChanged;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
+#pragma warning restore CS0067
+
+	public bool HasCapture => false;
+
+	public Point PointerPosition => default;
+
+	public CoreCursor PointerCursor
+	{
+		get => new(CoreCursorType.Arrow, 0);
+		set { }
+	}
+
+	public void SetPointerCapture()
+	{
+
+	}
+
+	public void SetPointerCapture(PointerIdentifier pointer)
+	{
+	}
+
+	public void ReleasePointerCapture()
+	{
+	}
+
+	public void ReleasePointerCapture(PointerIdentifier pointer)
+	{
+	}
+
+	internal void OnNativeTouchEvent(MotionEvent e)
+	{
+		try
+		{
+			var pointerIndex = 0; // TODO: ?
+			var nativePointerType = e.GetToolType(pointerIndex);
+			var pointerType = nativePointerType.ToPointerDeviceType();
+			var pointerDevice = PointerDevice.For(pointerType);
+			var pointerIdentifier = new PointerIdentifier(pointerType, id: 0);
+
+			var nativePointerAction = e.Action;
+			var nativePointerButtons = e.ButtonState;
+			var frameId = (uint)e.EventTime;
+			var ts = (ulong)(TimeSpan.TicksPerMillisecond * frameId);
+			var isInContact = PointerHelpers.IsInContact(e, pointerType, nativePointerAction, nativePointerButtons);
+			var isInRange = true; // TODO: ?
+			var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
+			var x = e.GetX(pointerIndex);
+			var y = e.GetY(pointerIndex);
+			var position = new Point((int)x, (int)y);
+
+			var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
+
+			var point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, new PointerPointProperties(properties));
+			var args = new PointerEventArgs(point, keyModifiers);
+
+			switch (nativePointerAction)
+			{
+				case MotionEventActions.Move:
+					PointerMoved?.Invoke(this, args);
+					break;
+
+
+				case MotionEventActions.Down:
+					PointerPressed?.Invoke(this, args);
+					break;
+
+				case MotionEventActions.Cancel:
+				case MotionEventActions.Up:
+					PointerReleased?.Invoke(this, args);
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException(nameof(e), $"Unknown event ({e}-{nativePointerAction}).");
+			}
+		}
+		catch (Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Failed to dispatch native pointer event: {error}");
+			}
+		}
+	}
+}

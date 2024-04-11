@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -7,29 +8,21 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
+using Android.Widget;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using SkiaSharp.Views.Android;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Dispatching;
+using Uno.UI.Runtime.Skia.Android;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
-using Windows.Gaming.Input;
-using Windows.Graphics.Display;
-using Windows.Security.Authentication.Web;
-using Windows.Storage.Pickers;
 using Windows.System;
-using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using System.Diagnostics.CodeAnalysis;
-using Uno.UI.Dispatching;
-using SkiaSharp;
-using SkiaSharp.Views.Android;
-using Android.Widget;
-using Microsoft.UI.Xaml.Extensions;
-using Windows.Devices.Input;
-using Microsoft.UI.Input;
 
 
 namespace Microsoft.UI.Xaml
@@ -201,54 +194,7 @@ namespace Microsoft.UI.Xaml
 				return base.OnTouchEvent(e);
 			}
 
-			try
-			{
-				var pointerIndex = 0; // TODO: ?
-				var nativePointerType = e.GetToolType(pointerIndex);
-				var pointerType = nativePointerType.ToPointerDeviceType();
-				var pointerDevice = PointerDevice.For(pointerType);
-				var pointerIdentifier = new PointerIdentifier(pointerType, id: 0);
-
-				var nativePointerAction = e.Action;
-				var nativePointerButtons = e.ButtonState;
-				var frameId = (uint)e.EventTime;
-				var ts = (ulong)(TimeSpan.TicksPerMillisecond * frameId);
-				var isInContact = PointerHelpers.IsInContact(e, pointerType, nativePointerAction, nativePointerButtons);
-				var isInRange = true; // TODO: ?
-				var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
-				var x = e.GetX(pointerIndex);
-				var y = e.GetY(pointerIndex);
-				var position = new global::Windows.Foundation.Point((int)e.RawX, (int)e.RawY);
-
-				var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
-
-				var point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, new PointerPointProperties(properties));
-				var args = new PointerEventArgs(point, keyModifiers);
-
-				switch (nativePointerAction)
-				{
-					case MotionEventActions.Move:
-						break;
-
-
-					case MotionEventActions.Down:
-						break;
-
-					case MotionEventActions.Cancel:
-					case MotionEventActions.Up:
-						break;
-
-					default:
-						throw new ArgumentOutOfRangeException(nameof(e), $"Unknown event ({e}-{nativePointerAction}).");
-				}
-			}
-			catch (Exception error)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Failed to dispatch native pointer event: {error}");
-				}
-			}
+			AndroidCorePointerInputSource.Instance.OnNativeTouchEvent(e);
 
 			return base.OnTouchEvent(e);
 		}

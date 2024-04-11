@@ -4,14 +4,13 @@ using Microsoft.UI.Xaml;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
+using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
+public class AndroidSkiaHost : ISkiaApplicationHost
 {
 	private Func<Application> _appBuilder;
-
-	internal static IXamlRootHost? Instance { get; private set; }
 
 	/// <summary>
 	/// Creates a host for an Uno Skia Android application.
@@ -23,7 +22,6 @@ public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
 	public AndroidSkiaHost(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
-		Instance ??= this;
 	}
 
 	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
@@ -33,6 +31,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
 		try
 		{
 			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory());
+			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), o => AndroidCorePointerInputSource.Instance);
 
 			Application.Start(_ => _appBuilder());
 		}
@@ -43,11 +42,4 @@ public class AndroidSkiaHost : ISkiaApplicationHost, IXamlRootHost
 
 		return Task.CompletedTask;
 	}
-
-	void IXamlRootHost.InvalidateRender()
-	{
-		ApplicationActivity.Instance?.InvalidateRender();
-	}
-
-	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
 }
