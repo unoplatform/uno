@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -30,6 +32,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 		{
 			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory());
 			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), o => AndroidCorePointerInputSource.Instance);
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new AndroidInvisibleTextBoxViewExtension(o));
 
 			Application.Start(_ => _appBuilder());
 		}

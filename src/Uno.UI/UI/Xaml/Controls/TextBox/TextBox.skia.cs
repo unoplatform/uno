@@ -528,6 +528,9 @@ public partial class TextBox
 		}
 	}
 
+	internal void SetPendingSelection(int selectionStart, int selectionLength)
+		=> _pendingSelection = (selectionStart, selectionLength);
+
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		if (_isPressed)

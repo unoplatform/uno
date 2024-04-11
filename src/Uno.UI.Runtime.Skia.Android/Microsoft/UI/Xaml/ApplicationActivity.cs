@@ -37,6 +37,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; } = null!;
 
+		internal RelativeLayout RelativeLayout { get; private set; } = null!;
+
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
 
 		private InputPane _inputPane;
@@ -247,8 +249,8 @@ namespace Microsoft.UI.Xaml
 			RaiseConfigurationChanges();
 
 
-			var relativeLayout = new RelativeLayout(this);
-			relativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
+			RelativeLayout = new RelativeLayout(this);
+			RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
@@ -257,9 +259,9 @@ namespace Microsoft.UI.Xaml
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
-			relativeLayout.AddView(_skCanvasView);
+			RelativeLayout.AddView(_skCanvasView);
 
-			SetContentView(relativeLayout);
+			SetContentView(RelativeLayout);
 
 			_skCanvasView.PaintSurface += OnPaintSurface;
 
