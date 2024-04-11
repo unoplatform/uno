@@ -12,7 +12,7 @@ uid: Uno.Features.Dialogs
 
 ## Using `ContentDialog`
 
-The recommended way to display user dialogs is via the `Microsoft.UI.Xaml.Controls.ContentDialog` class. You can use various properties to customize its display (see [Microsoft API docs](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.contentdialog?view=windows-app-sdk-1.5)), and also provide a custom XAML-based content for it.
+The recommended way to display user dialogs is via the `Microsoft.UI.Xaml.Controls.ContentDialog` class. You can use various properties to customize its display and also provide a custom XAML-based content for it. For more information, see [ContentDialog Class | Microsoft Learn](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.contentdialog).
 
 ```csharp
 ContentDialog noWifiDialog = new ContentDialog
@@ -23,7 +23,7 @@ ContentDialog noWifiDialog = new ContentDialog
 };
 
 // Make sure to set the XamlRoot!
-noWifiDialog = anyLoadedControl.XamlRoot;
+noWifiDialog.XamlRoot = anyLoadedControl.XamlRoot;
 
 ContentDialogResult result = await noWifiDialog.ShowAsync();
 ```
@@ -51,4 +51,4 @@ await dialog.ShowAsync();
 
 ### Using native or XAML-based UI for `MessageDialog`
 
-Uno Platform targets offer two different display modes for `MessageDialog`. To switch between them, you can use [feature flags](../feature-flags.md#messagedialog).
+Uno Platform targets offer two different display modes for `MessageDialog`. To switch between them, you can use the [`UseNativeDialog`](../feature-flags.md#messagedialog).
