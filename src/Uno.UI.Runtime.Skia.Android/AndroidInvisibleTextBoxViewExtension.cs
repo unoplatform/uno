@@ -23,12 +23,19 @@ internal partial class AndroidInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private sealed class InvisibleEditText : EditText
 	{
 		private readonly TextBoxView _owner;
-		private bool _isInTextChanged;
+		private int _selectionChangeSuspended;
+
+		internal void SuspendSelectionChange()
+			=> _selectionChangeSuspended++;
+
+		internal void ResumeSelectionChange()
+			=> _selectionChangeSuspended--;
 
 		public InvisibleEditText(TextBoxView owner) : base(ContextHelper.Current)
 		{
 			SetBackgroundColor(Color.Transparent);
 			SetTextColor(Color.Transparent);
+			SetHighlightColor(Color.Transparent);
 			SetPadding(0, 0, 0, 0);
 			SetCursorVisible(false);
 			if (owner.IsPasswordBox)
@@ -53,33 +60,22 @@ internal partial class AndroidInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			base.OnTextChanged(text, start, lengthBefore, lengthAfter);
 
-			if (_isInTextChanged)
+			if (_selectionChangeSuspended > 0)
 			{
 				return;
 			}
 
-			_isInTextChanged = true;
-
-			try
+			if (_owner?.TextBox is { } textBox)
 			{
-				if (_owner?.TextBox is { IsUserModifying: false } textBox)
-				{
-					var selectionStart = textBox.SelectionStart;
-					var selectionLength = textBox.SelectionLength;
-					var oldText = textBox.Text;
+				var selectionStart = textBox.SelectionStart;
+				var selectionLength = textBox.SelectionLength;
 
-					var selectionMax = Math.Max(selectionStart, selectionStart + selectionLength);
-					var distanceFromEnd = oldText.Length - selectionMax;
-					var newText = text?.ToString() ?? string.Empty;
+				var selectionEnd = selectionStart + selectionLength;
+				var distanceFromEnd = lengthBefore - selectionEnd;
 
-					var newSelectionStart = newText.Length - distanceFromEnd;
-					textBox.SetPendingSelection(newSelectionStart, 0);
-					textBox.Text = text?.ToString() ?? string.Empty;
-				}
-			}
-			finally
-			{
-				_isInTextChanged = false;
+				var newSelectionStart = lengthAfter - distanceFromEnd;
+				textBox.SetPendingSelection(newSelectionStart, 0);
+				textBox.Text = text?.ToString() ?? string.Empty;
 			}
 		}
 	}
@@ -163,7 +159,15 @@ internal partial class AndroidInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		if (_nativeEditText is not null)
 		{
-			_nativeEditText.Text = text;
+			try
+			{
+				_nativeEditText.SuspendSelectionChange();
+				_nativeEditText.Text = text;
+			}
+			finally
+			{
+				_nativeEditText.ResumeSelectionChange();
+			}
 		}
 	}
 

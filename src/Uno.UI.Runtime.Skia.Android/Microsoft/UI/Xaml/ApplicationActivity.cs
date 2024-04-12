@@ -120,10 +120,15 @@ namespace Microsoft.UI.Xaml
 
 		public override bool DispatchGenericMotionEvent(MotionEvent? e)
 		{
-			//if (Gamepad.OnGenericMotionEvent(e))
-			//{
-			//	return true;
-			//}
+			if (e is null)
+			{
+				// Can this happen? Is Xamarin nullability annotation wrong?
+				return base.OnTouchEvent(e);
+			}
+
+			var correction = new int[2];
+			_skCanvasView?.GetLocationInWindow(correction);
+			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(e, correction);
 
 			return base.DispatchGenericMotionEvent(e);
 		}
@@ -138,7 +143,7 @@ namespace Microsoft.UI.Xaml
 
 			var correction = new int[2];
 			_skCanvasView?.GetLocationInWindow(correction);
-			AndroidCorePointerInputSource.Instance.OnNativeTouchEvent(e, correction);
+			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(e, correction);
 
 			return base.OnTouchEvent(e);
 		}

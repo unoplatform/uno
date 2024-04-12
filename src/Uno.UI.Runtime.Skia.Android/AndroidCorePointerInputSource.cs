@@ -56,7 +56,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 	{
 	}
 
-	internal void OnNativeTouchEvent(MotionEvent e, int[] correction)
+	internal void OnNativeMotionEvent(MotionEvent e, int[] correction)
 	{
 		try
 		{
@@ -89,6 +89,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 					break;
 
 				case MotionEventActions.Down:
+				case MotionEventActions.PointerDown:
 					PointerPressed?.Invoke(this, args);
 					break;
 
