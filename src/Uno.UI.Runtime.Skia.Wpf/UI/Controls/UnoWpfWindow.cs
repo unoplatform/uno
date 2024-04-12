@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Shell;
 using Windows.ApplicationModel.Core;
 using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Core;
 using Windows.UI.ViewManagement;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
@@ -19,6 +18,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindow : WpfWindow
 {
 	private readonly ApplicationView _applicationView;
+	private readonly WinUI.Window _winUIWindow;
 
 	private bool _shown;
 
@@ -29,6 +29,7 @@ internal class UnoWpfWindow : WpfWindow
 
 	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
+		_winUIWindow = winUIWindow;
 		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
 		winUIWindow.Closed += (_, _) => _windowToWpfWindow.TryRemove(winUIWindow, out _);
 
@@ -44,6 +45,7 @@ internal class UnoWpfWindow : WpfWindow
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		winUIWindow.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 
 		Closed += UnoWpfWindow_Closed;
@@ -70,19 +72,20 @@ internal class UnoWpfWindow : WpfWindow
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		_winUIWindow.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
 	internal UnoWpfWindowHost Host { get; private set; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
 		MinWidth = _applicationView.PreferredMinSize.Width;
 		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
 
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{
@@ -122,12 +125,17 @@ internal class UnoWpfWindow : WpfWindow
 		}
 	}
 
-	internal void UpdateWindowPropertiesFromCoreApplication()
+	private void UpdateWindowPropertiesFromCoreApplication()
 	{
 		var coreApplicationView = CoreApplication.GetCurrentView();
-		if (coreApplicationView.TitleBar.ExtendViewIntoTitleBar)
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
+	}
+
+	internal void ExtendContentIntoTitleBar(bool extend)
+	{
+		if (extend)
 		{
-			WindowStyle = System.Windows.WindowStyle.None;
+			WindowStyle = WindowStyle.None;
 			WindowChrome.SetWindowChrome(this, new WindowChrome
 			{
 				UseAeroCaptionButtons = false,
@@ -141,7 +149,7 @@ internal class UnoWpfWindow : WpfWindow
 		}
 		else
 		{
-			WindowStyle = System.Windows.WindowStyle.SingleBorderWindow;
+			WindowStyle = WindowStyle.SingleBorderWindow;
 			ClearValue(WindowChrome.WindowChromeProperty);
 		}
 	}

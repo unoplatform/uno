@@ -10,6 +10,7 @@ partial class CoreApplicationViewTitleBar
 {
 	private bool _extendViewIntoTitleBar;
 
+	// This is not synchronized with Window.ExtendContentIntoTitleBar. The value set last wins.
 	public bool ExtendViewIntoTitleBar
 	{
 		get => _extendViewIntoTitleBar;

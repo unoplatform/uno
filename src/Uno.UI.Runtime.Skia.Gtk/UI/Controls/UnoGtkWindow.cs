@@ -18,6 +18,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class UnoGtkWindow : Window
 {
+	private readonly WinUIWindow _winUIWindow;
 	private readonly ApplicationView _applicationView;
 	private static readonly ConcurrentDictionary<WinUIWindow, UnoGtkWindow> _windowToGtkWindow = new();
 
@@ -26,6 +27,7 @@ internal class UnoGtkWindow : Window
 
 	public UnoGtkWindow(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
+		_winUIWindow = winUIWindow;
 		_windowToGtkWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
 		winUIWindow.Closed += (_, _) => _windowToGtkWindow.TryRemove(winUIWindow, out _);
 
@@ -57,6 +59,7 @@ internal class UnoGtkWindow : Window
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		winUIWindow.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 		Destroyed += UnoGtkWindow_Destroyed;
 		Shown += UnoGtkWindow_Shown;
@@ -73,11 +76,12 @@ internal class UnoGtkWindow : Window
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		_winUIWindow.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
 	internal UnoGtkWindowHost Host { get; }
 
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{
@@ -119,14 +123,16 @@ internal class UnoGtkWindow : Window
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
 		SetSizeRequest((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 	}
 
-	internal void UpdateWindowPropertiesFromCoreApplication()
+	private void UpdateWindowPropertiesFromCoreApplication()
 	{
 		var coreApplicationView = CoreApplication.GetCurrentView();
-		Decorated = !coreApplicationView.TitleBar.ExtendViewIntoTitleBar;
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
 	}
+
+	internal void ExtendContentIntoTitleBar(bool extend) => Decorated = !extend;
 }
