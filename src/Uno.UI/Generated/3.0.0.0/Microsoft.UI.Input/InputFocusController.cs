@@ -34,7 +34,7 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.remove
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.add
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Input.FocusNavigationResult DepartFocus(global::Microsoft.UI.Input.FocusNavigationRequest request)
 		{

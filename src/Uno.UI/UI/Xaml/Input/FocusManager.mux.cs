@@ -155,6 +155,11 @@ namespace Microsoft.UI.Xaml.Input
 		internal FocusRectManager FocusRectManager => _focusRectManager;
 
 		/// <summary>
+		/// Gets a value indicating whether the user can tab out of plugin.
+		/// </summary>
+		internal bool CanTabOutOfPlugin => _canTabOutOfPlugin;
+
+		/// <summary>
 		/// Represents the control which is focus-engaged.
 		/// </summary>
 		internal Control? EngagedControl

@@ -17,10 +17,6 @@ internal class UnoFocusInputHandler
 		_rootElement.KeyDown += OnKeyDown;
 	}
 
-	private void FocusDeparting(object sender, object args)
-	{
-	}
-
 	private void OnKeyDown(object sender, KeyRoutedEventArgs e)
 	{
 		if (e.Handled)
