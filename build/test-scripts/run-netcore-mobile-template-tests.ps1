@@ -98,11 +98,11 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
     Assert-ExitCodeIsZero
 }
 
-# Server project build (merge with above loop when .App folder is removed)
-& dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
-
 if ($IsWindows) 
 {
+    # Server project build (merge with above loop when .App folder is removed)
+    & dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
+
     # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
     # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
     & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
@@ -166,7 +166,7 @@ if ($IsWindows)
 }
 else
 {
-    $default = @('-v:m')
+    $default = @('-v:m', '-p:AotAssemblies=false')
 }
 
 $debug = $default + '-p:Configuration=Debug'
@@ -205,7 +205,7 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", $true, $false),
     @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", $true, $false),
-    @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", "", $true, $true),
+    @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", "", $true, $false),
     @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", $true, $true),
 
