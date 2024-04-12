@@ -65,17 +65,24 @@ public partial class EntryPoint : IDisposable
 	private bool _isDisposed;
 	private IdeChannelClient? _ideChannelClient;
 	private ProfilesObserver _debuggerObserver;
+	private readonly Func<Task> _globalPropertiesChanged;
 	private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
 	private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
 	private readonly _dispBuildEvents_OnBuildProjConfigBeginEventHandler _onBuildProjConfigBeginHandler;
 
-	public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
+	public EntryPoint(
+		DTE2 dte2
+		, string toolsPath
+		, AsyncPackage asyncPackage
+		, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider
+		, Func<Task> globalPropertiesChanged)
 	{
 		_dte = dte2 as DTE;
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
 		globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
+		_globalPropertiesChanged = globalPropertiesChanged;
 
 		SetupOutputWindow();
 
@@ -96,21 +103,25 @@ public partial class EntryPoint : IDisposable
 
 		_debuggerObserver = new ProfilesObserver(asyncPackage, _dte, OnDebugFrameworkChangedAsync, OnDebugProfileChangedAsync, _debugAction);
 		_ = _debuggerObserver.ObserveProfilesAsync();
+
+		_ = _globalPropertiesChanged();
 	}
 
-	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
+	private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
 	{
-		if (RemoteControlServerPort == 0)
+		Dictionary<string, string> properties = new()
 		{
-			_warningAction?.Invoke(
-				$"The Remote Control server is not yet started, providing [0] as the server port. " +
-				$"Rebuilding the application may fix the issue.");
+			[UnoVSExtensionLoadedProperty] = "true"
+		};
+
+		if (RemoteControlServerPort != 0)
+		{
+			properties.Add(RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture));
 		}
 
-		return Task.FromResult(new Dictionary<string, string> {
-			{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) },
-			{ UnoVSExtensionLoadedProperty, "true" },
-		});
+		await Task.Yield();
+
+		return properties;
 	}
 
 	[MemberNotNull(
@@ -335,6 +346,8 @@ public partial class EntryPoint : IDisposable
 			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 			_ideChannelClient.ForceHotReloadRequested += IdeChannelClient_ForceHotReloadRequested;
 			_ideChannelClient.ConnectToHost();
+
+			_ = _globalPropertiesChanged();
 		}
 	}
 
