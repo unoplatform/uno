@@ -5,15 +5,16 @@
 #nullable enable
 
 using System;
-using Uno.UI.Xaml.Core;
-using Windows.Foundation;
-using Windows.UI.Core;
+using DirectUI;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
+using Windows.Foundation;
+using Windows.UI.Core;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Xaml.Input.FocusConversionFunctions;
-using DirectUI;
 
 namespace Uno.UI.Xaml.Input;
 
@@ -28,7 +29,14 @@ internal class FocusObserver
 	internal FocusObserver(ContentRoot contentRoot)
 	{
 		_contentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
+
+		// TODO Uno: Move this initialization somewhere else based on WinUI sources.
+		Init(new FocusController(new InputFocusController()));
 	}
+
+	internal FocusController FocusController => _focusController!;
+
+	internal void Init(FocusController focusController) => _focusController = focusController;
 
 	private Rect GetOriginToComponent(DependencyObject? pOldFocusedElement)
 	{
@@ -344,7 +352,7 @@ internal class FocusObserver
 
 		StartInteraction(reason.Value, origin, correlationId);
 
-		_focusController.DepartFocus(_currentInteraction);
+		_focusController.DepartFocus(_currentInteraction!);
 		handled = true;
 	}
 
