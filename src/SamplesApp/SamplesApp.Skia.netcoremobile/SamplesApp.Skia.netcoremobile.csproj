@@ -181,7 +181,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
+		<!-- TODO (IMPORTANT BEFORE MERGE): Is it okay this is netcoremobile? or should it really be Reference? -->
+		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
 	</ItemGroup>

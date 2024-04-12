@@ -390,10 +390,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							using var scopeAutoDisposable = LogicalScope(topLevelControl);
 
 							BuildInitializeComponent(writer, topLevelControl, controlBaseType);
-							if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
-							{
-								BuildDrawableResourcesIdResolver(writer);
-							}
 
 							TryBuildElementStubHolders(writer);
 
@@ -520,10 +516,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 			}
 
-			writer.AppendLineIndented($"#if __ANDROID__");
-			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.{_xClassName?.ClassName}.DrawableResourcesIdResolver.Resolve);");
-			writer.AppendLineIndented($"#endif");
-
 			if (_isWasm
 				// Only applicable when building for Wasm DOM support
 				&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
@@ -600,54 +592,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformDefaultSymbolsFontFamily") is { Length: > 0 } fontOverride)
 			{
 				writer.AppendLineInvariantIndented($"global::Uno.UI.FeatureConfiguration.Font.SymbolsFont = \"{fontOverride}\";");
-			}
-		}
-
-		private void BuildDrawableResourcesIdResolver(IndentedStringBuilder writer)
-		{
-			writer.AppendLine();
-			writer.AppendLineIndented("/// <summary>");
-			writer.AppendLineIndented("/// Resolves the Id of a bundled image.");
-			writer.AppendLineIndented("/// </summary>");
-
-			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-
-			using (writer.BlockInvariant("internal static class DrawableResourcesIdResolver"))
-			{
-				using (writer.BlockInvariant("internal static int Resolve(string imageName)"))
-				{
-					using (writer.BlockInvariant("switch (imageName)"))
-					{
-						var drawables = _metadataHelper
-							.GetTypeByFullName($"{_defaultNamespace}.Resource")
-							.GetTypeMembers("Drawable")
-							.SingleOrDefault();
-
-						// Support for net8.0+ resource constants
-						drawables ??= _metadataHelper
-							.GetTypeByFullName("_Microsoft.Android.Resource.Designer.ResourceConstant")
-							.GetTypeMembers("Drawable")
-							.SingleOrDefault();
-
-						if (drawables?.GetFields() is { } drawableFields)
-						{
-							foreach (var drawable in drawableFields)
-							{
-								writer.AppendLineInvariantIndented("case \"{0}\":", drawable.Name);
-								using (writer.Indent())
-								{
-									writer.AppendLineInvariantIndented("return {0};", drawable.ConstantValue);
-								}
-							}
-						}
-
-						writer.AppendLineIndented("default:");
-						using (writer.Indent())
-						{
-							writer.AppendLineIndented("return 0;");
-						}
-					}
-				}
 			}
 		}
 
