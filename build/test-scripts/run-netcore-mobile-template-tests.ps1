@@ -229,7 +229,7 @@ $projects =
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-browserwasm"), $true, $true),
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-ios"), $true, $true,
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-android"), $true, $true),
-    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-maccatalyst"), $true), $true,
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-maccatalyst"), $true, $true),
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-desktop"), $true, $true),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
