@@ -20,5 +20,3 @@
     ```
 
 1. Follow the instructions indicated by the tool.
-
-You can find additional information about [**uno-check here**](xref:UnoCheck.UsingUnoCheck).
