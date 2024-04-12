@@ -45,7 +45,7 @@ To switch between C# Dev Kit and OmniSharp:
 
 You may need to follow additional directions, depending on your development environment.
 
-### [**Linux**](#tab/linux)
+### Linux
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
