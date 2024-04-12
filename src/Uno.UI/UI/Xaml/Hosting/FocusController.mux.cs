@@ -140,7 +140,7 @@ internal partial class FocusController
 		// WinUI may wish to respond to the result (Moved/NotMoved/NoFocusableElements) here in some way
 	}
 
-	private void OnCoreInputGotFocus(object sender, CoreWindowEventArgs e) => OnGotFocusCommon();
+	internal void OnCoreInputGotFocus(object sender, CoreWindowEventArgs e) => OnGotFocusCommon();
 
 	private void OnGotFocusCommon()
 	{
