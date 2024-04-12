@@ -193,7 +193,7 @@ $projects =
     @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", "", $true, $true),
     @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
     @("5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", "", $true, $false),
-    @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", $true, $true),
+    @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", $true, $false),
     @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", $false, $false),
 
     #
@@ -204,7 +204,7 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", $true, $false),
-    @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", $true, $true),
+    @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", $true, $false),
     @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", $true, $true),
