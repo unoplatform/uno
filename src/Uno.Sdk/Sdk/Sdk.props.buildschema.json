@@ -3,11 +3,11 @@
 	"properties": {
 		"UsingUnoSdk": {
 			"type": "bool",
-			"description": "Provides a flag to indicate that the Uno.Sdk is being used"
+			"description": "Provides a flag to indicate that the Uno.Sdk is being used."
 		},
 		"UnoSingleProject": {
 			"type": "bool",
-			"description": "Indicates whether the source project should use UnoSingleProject features including support for the Platform specific directories"
+			"description": "Indicates whether the source project should use UnoSingleProject features including support for the Platform specific directories."
 		},
 		"UnoVersion": {
 			"type": "nuget-version",
@@ -23,7 +23,7 @@
 		},
 		"ApplicationId": {
 			"type": "string",
-			"description": "The application ID (i.e com.companyname.appname)"
+			"description": "The application ID (i.e com.companyname.appname)."
 		},
 		"ApplicationDisplayVersion": {
 			"type": "version",
@@ -88,19 +88,19 @@
 			"type": "bool"
 		},
 		"UnoDisableFilterWebSdkGlobalUsings": {
-			"description": "Disables the automatic filtering of the Web Sdk Global Using that are brought in for the WASM project",
+			"description": "Disables the automatic filtering of the Web Sdk Global Using that are brought in for the WASM project.",
 			"type": "bool"
 		},
 		"DisableDefaultUnoResizetizerItems": {
-			"description": "Disables the default items added for Uno.Resizetizer",
+			"description": "Disables the default items added for Uno.Resizetizer.",
 			"type": "bool"
 		},
 		"DisableMsixProjectCapabilityAddedByProject": {
-			"description": "Disables the Msix ProjectCapability that is added for WinUI",
+			"description": "Disables the Msix ProjectCapability that is added for WinUI.",
 			"type": "bool"
 		},
 		"DisableHasPackageAndPublishMenuAddedByProject": {
-			"description": "Disables Solution Explorer 'Package and Publish' context menu entry from being enabled",
+			"description": "Disables Solution Explorer 'Package and Publish' context menu entry from being enabled.",
 			"type": "bool"
 		},
 		"UnoDisableVSWarnBrowserIsFirst": {
@@ -108,15 +108,15 @@
 			"type": "bool"
 		},
 		"UnoDisableVSWarnDesktopIsFirst": {
-			"description": "Disables the build check in Visual Studio that ensures the Desktop target is first",
+			"description": "Disables the build check in Visual Studio that ensures the Desktop target is first.",
 			"type": "bool"
 		},
 		"UnoDisableVSWarnWindowsIsFirst": {
-			"description": "Disables the build check in Visual Studio that ensures the Windows target is first",
+			"description": "Disables the build check in Visual Studio that ensures the Windows target is first.",
 			"type": "bool"
 		},
 		"UnoDisable_RemoveTransitiveWPFDependency": {
-			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net8.0-windows and not net8.0",
+			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net8.0-windows and not net8.0.",
 			"type": "bool"
 		},
 		"UnoDisable_RemoveRuntimeFrameworkInRuntimeConfigurationFiles": {
@@ -124,21 +124,21 @@
 			"type": "bool"
 		},
 		"UnoDisableVSFilterTargetFrameworkWithDebuggerTarget": {
-			"description": "Disables restricting the number of active target frameworks used when building a head project",
+			"description": "Disables restricting the number of active target frameworks used when building a head project.",
 			"type": "bool"
 		},
 		"DisableWinUI8857_Workaround": {
-			"description": "Disables the WinUI workaround for issue 8857",
+			"description": "Disables the WinUI workaround for issue 8857.",
 			"helpUrl": "https://github.com/microsoft/microsoft-ui-xaml/issues/8857",
 			"type": "bool"
 		},
 		"DisableUno9430_Workaround": {
-			"description": "Disables modification of MtouchExtraArgs for Uno Issue 9430",
+			"description": "Disables modification of MtouchExtraArgs for Uno Issue 9430.",
 			"helpUrl": "https://github.com/unoplatform/uno/issues/9430",
 			"type": "bool"
 		},
 		"DisableXamarinDebug_Workaround": {
-			"description": "Disables modification of MtouchExtraArgs for Debugging",
+			"description": "Disables modification of MtouchExtraArgs for Debugging.",
 			"helpUrl": "https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7",
 			"type": "bool"
 		}
@@ -152,19 +152,19 @@
 			],
 			"BaseSize": {
 				"type": "string",
-				"description": "Used to specify the size that will be used as a basement for the resize operations. e.g.: BaseSize=\"48,48\""
+				"description": "Used to specify the size that will be used as a basement for the resize operations. e.g.: BaseSize=\"48,48\"."
 			},
 			"Resize": {
 				"type": "bool",
-				"description": "Boolean value to say if the asset should Resized or not. By default, just vector assets are resized."
+				"description": "Boolean value to say if the asset should be Resized or not. By default, just vector assets are resized by default."
 			},
 			"TintColor": {
 				"type": "string",
-				"description": "Color that will be used to tint the image during the resize phase. You can use a Hex value or a named value like `Fuchsia`"
+				"description": "Color that will be used to tint the image during the resize phase. You can use a Hex value or a named value like `Fuchsia`."
 			},
 			"Color": {
 				"type": "string",
-				"description": "Color that will be used as a background color"
+				"description": "Color that will be used as a background color."
 			}
 		}
 	],
@@ -220,7 +220,7 @@
 			"metadata": {
 				"Scale": {
 					"type": "int",
-					"description": "Used to scale the image that will be used as SplashScreen. This property will be overridden by any platform specific scale."
+					"description": "Used to scale the image that will be used as SplashScreen. This property will be overridden by any platform-specific scale."
 				},
 				"AndroidScale": {
 					"type": "int",
@@ -266,15 +266,15 @@
 			"caseSensitive": true,
 			"values": {
 				"Maps": {
-					"description": "Adds a reference to Uno.WinUI.Maps",
+					"description": "Adds a reference to Uno.WinUI.Maps.",
 					"helpUrl": "https://aka.platform.uno/feature-maps"
 				},
 				"Foldable": {
-					"description": "Adds a reference to Uno.WinUI.Foldable",
+					"description": "Adds a reference to Uno.WinUI.Foldable.",
 					"helpUrl": "https://aka.platform.uno/feature-foldable"
 				},
 				"MediaElement": {
-					"description": "Adds a native references where needed to use MediaElement",
+					"description": "Adds a native references where needed to use MediaElement.",
 					"helpUrl": "https://aka.platform.uno/feature-media-element"
 				},
 				"CSharpMarkup": {
@@ -282,91 +282,91 @@
 					"helpUrl": "https://aka.platform.uno/feature-csharp-markup"
 				},
 				"Extensions": {
-					"description": "Generally adds most of the Uno.Extensions packages",
+					"description": "Generally adds most of the Uno.Extensions packages.",
 					"helpUrl": "https://aka.platform.uno/feature-extensions"
 				},
 				"Authentication": {
-					"description": "Adds all of the Uno.Extensions packages for Authentication",
+					"description": "Adds all of the Uno.Extensions packages for Authentication.",
 					"helpUrl": "https://aka.platform.uno/feature-authentication"
 				},
 				"AuthenticationMsal": {
-					"description": "Adds the Uno.Extensions packages for Authentication using Microsoft.Identity.Client",
+					"description": "Adds the Uno.Extensions packages for Authentication using Microsoft.Identity.Client.",
 					"helpUrl": "https://aka.platform.uno/feature-authentication-msal"
 				},
 				"AuthenticationOidc": {
-					"description": "Adds the Uno.Extensions packages for Authentication using a custom Oidc client",
+					"description": "Adds the Uno.Extensions packages for Authentication using a custom Oidc client.",
 					"helpUrl": "https://aka.platform.uno/feature-authentication-oidc"
 				},
 				"Configuration": {
-					"description": "Adds the Uno.Extensions packages for Configuration",
+					"description": "Adds the Uno.Extensions packages for Configuration.",
 					"helpUrl": "https://aka.platform.uno/feature-configuration"
 				},
 				"ExtensionsCore": {
-					"description": "Adds the Uno.Extensions.Core.WinUI package",
+					"description": "Adds the Uno.Extensions.Core.WinUI package.",
 					"helpUrl": "https://aka.platform.uno/feature-extensions-core"
 				},
 				"Hosting": {
-					"description": "Adds support for Dependency Injection using Uno.Extensions.Hosting packages",
+					"description": "Adds support for Dependency Injection using Uno.Extensions.Hosting packages.",
 					"helpUrl": "https://aka.platform.uno/feature-hosting"
 				},
 				"Http": {
-					"description": "Adds support for custom Http Clients including the use of Refit with Uno.Extensions",
+					"description": "Adds support for custom Http Clients including the use of Refit with Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-http"
 				},
 				"Localization": {
-					"description": "Adds support for Localization using Uno.Extensions",
+					"description": "Adds support for Localization using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-localization"
 				},
 				"Logging": {
-					"description": "Adds support for Logging using Uno.Extensions",
+					"description": "Adds support for Logging using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-logging"
 				},
 				"MauiEmbedding": {
-					"description": "Adds support for embedding Maui controls in Uno",
+					"description": "Adds support for embedding Maui controls in Uno.",
 					"helpUrl": "https://aka.platform.uno/feature-maui-embedding"
 				},
 				"Mvux": {
-					"description": "Adds support for MVUX",
+					"description": "Adds support for MVUX.",
 					"helpUrl": "https://aka.platform.uno/feature-mvux"
 				},
 				"Navigation": {
-					"description": "Adds support for Navigation using Uno.Extensions",
+					"description": "Adds support for Navigation using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-navigation"
 				},
 				"Serilog": {
-					"description": "Adds support for Serilog using Uno.Extensions",
+					"description": "Adds support for Serilog using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-serilog"
 				},
 				"Storage": {
-					"description": "Adds support for Storage using Uno.Extensions",
+					"description": "Adds support for Storage using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-storage"
 				},
 				"Toolkit": {
-					"description": "Adds support for the Uno.Toolkit",
+					"description": "Adds support for the Uno.Toolkit.",
 					"helpUrl": "https://aka.platform.uno/feature-toolkit"
 				},
 				"Material": {
-					"description": "Adds support for the Material Design Toolkit",
+					"description": "Adds support for the Material Design Toolkit.",
 					"helpUrl": "https://aka.platform.uno/feature-material"
 				},
 				"Cupertino": {
-					"description": "Adds support for the Cupertino Design Toolkit",
+					"description": "Adds support for the Cupertino Design Toolkit.",
 					"helpUrl": "https://aka.platform.uno/feature-cupertino"
 				},
 				"Dsp": {
-					"description": "Adds support for the Uno.Dsp package",
+					"description": "Adds support for the Uno.Dsp package.",
 					"helpUrl": "https://aka.platform.uno/feature-dsp"
 				},
 				"Mvvm": {
-					"description": "Adds support for the CommunityToolkit.Mvvm package",
+					"description": "Adds support for the CommunityToolkit.Mvvm package.",
 					"helpUrl": "https://aka.platform.uno/feature-mvvm"
 				},
 				"Prism": {
-					"description": "Adds Prism support for Uno.WinUI",
+					"description": "Adds Prism support for Uno.WinUI.",
 					"helpUrl": "https://aka.platform.uno/feature-prism"
 				},
 				"Skia": {
-					"description": "Adds support for SkiaSharp",
+					"description": "Adds support for SkiaSharp.",
 					"helpUrl": "https://aka.platform.uno/feature-skia"
 				}
 			}
