@@ -2,11 +2,34 @@
 using System;
 using System.Linq;
 using SkiaSharp;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
 partial class CompositionClip
 {
+	internal Rect? GetRect(Visual visual)
+	{
+		if (this is InsetClip insetClip)
+		{
+			return new Rect(
+				x: insetClip.LeftInset,
+				y: insetClip.TopInset,
+				width: visual.Size.X - insetClip.LeftInset - insetClip.RightInset,
+				height: visual.Size.Y - insetClip.TopInset - insetClip.BottomInset);
+		}
+		else if (this is RectangleClip rectangleClip)
+		{
+			return new Rect(
+				x: rectangleClip.Left,
+				y: rectangleClip.Top,
+				width: rectangleClip.Right - rectangleClip.Left,
+				height: rectangleClip.Bottom - rectangleClip.Top);
+		}
+
+		return null;
+	}
+
 	internal void Apply(SKCanvas canvas, Visual visual)
 	{
 		if (this is InsetClip insetClip)

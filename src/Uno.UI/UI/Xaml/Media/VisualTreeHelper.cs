@@ -487,19 +487,23 @@ namespace Microsoft.UI.Xaml.Media
 				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
 
 #if __SKIA__
-			var transformToElement = element.TransformToVisual(null);
+			var transformToElement = UIElement.GetTransform(element, null);
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
 			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
-				? transformToElement.TransformBounds(new Rect(rect.Left, rect.Top, rect.Width, rect.Height))
+				? transformToElement.Transform(rect)
 				: Rect.Infinite;
+			if (element.Visual.Clip?.GetRect(element.Visual) is { } clip)
+			{
+				clippingBounds = clippingBounds.IntersectWith(clip) ?? default;
+			}
 			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
 
 			// The region where the current element draws itself.
 			// Be aware that children might be out of this rendering bounds if no clipping defined.
 			// This is expressed in the window (absolute) coordinate space.
-			var renderingBounds = transformToElement.TransformBounds(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
+			var renderingBounds = transformToElement.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
 			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
 #else
 			// First compute the transformation between the element and its parent coordinate space

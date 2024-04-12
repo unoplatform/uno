@@ -226,9 +226,15 @@ namespace Microsoft.UI.Xaml
 #else
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
 
+#if __SKIA__
+		private protected sealed override void OnViewportUpdated() // a.k.a. OnLayoutUpdated / OnClippingApplied
+		{
+			base.OnViewportUpdated();
+#else
 		private protected sealed override void OnViewportUpdated(Rect viewport) // a.k.a. OnLayoutUpdated / OnClippingApplied
 		{
 			base.OnViewportUpdated(viewport);
+#endif
 
 			// The 'viewport' (a.k.a. the clipping) is actually not used to compute the EffectiveViewport ...
 			// except for element flagged as ScrollHost!

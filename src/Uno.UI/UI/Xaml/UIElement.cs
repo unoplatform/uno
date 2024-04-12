@@ -854,7 +854,7 @@ namespace Microsoft.UI.Xaml
 			if (clip is null)
 			{
 				ApplyNativeClip(Rect.Empty);
-				OnViewportUpdated(Rect.Empty);
+				OnViewportUpdated();
 			}
 			else
 			{
@@ -865,7 +865,7 @@ namespace Microsoft.UI.Xaml
 				}
 
 				ApplyNativeClip(rect);
-				OnViewportUpdated(rect);
+				OnViewportUpdated();
 			}
 #elif __WASM__
 			InvalidateArrange();
@@ -903,7 +903,11 @@ namespace Microsoft.UI.Xaml
 
 		partial void ApplyNativeClip(Rect rect);
 
-		private protected virtual void OnViewportUpdated(Rect viewport) // Not "Changed" as it might be the same as previous
+		private protected virtual void OnViewportUpdated(
+#if !__SKIA__
+			Rect viewport
+#endif
+			) // Not "Changed" as it might be the same as previous
 		{
 #if !__SKIA__
 			// If not clipped, we consider the viewport as infinite.

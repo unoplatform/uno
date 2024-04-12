@@ -46,7 +46,7 @@ public partial class ShapeVisual
 	{
 		if (ViewBox is { } viewBox)
 		{
-			session.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
+			session.Canvas.ClipRect(viewBox.GetSKRect(), antialias: true);
 		}
 
 		base.Draw(in session);
@@ -67,7 +67,7 @@ public partial class ShapeVisual
 			// We apply the transformed viewbox clipping
 			if (transform.IsIdentity)
 			{
-				parentSession.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
+				parentSession.Canvas.ClipRect(viewBox.GetSKRect(), antialias: true);
 			}
 			else
 			{
