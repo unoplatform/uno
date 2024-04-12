@@ -496,7 +496,7 @@ namespace Microsoft.UI.Xaml.Media
 				: Rect.Infinite;
 			if (element.Visual.Clip?.GetRect(element.Visual) is { } clip)
 			{
-				clippingBounds = clippingBounds.IntersectWith(clip) ?? default;
+				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;
 			}
 			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
 
