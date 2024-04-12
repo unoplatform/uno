@@ -39,7 +39,7 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater
 
 		private void Tree(object server, RoutedEventArgs routedEventArgs)
 		{
-#if !WINAPPSDK && (HAS_UNO || HAS_UNO_WINUI)
+#if HAS_UNO || HAS_UNO_WINUI
 
 			var txt = this.ShowLocalVisualTree(0);
 			Console.WriteLine(txt);

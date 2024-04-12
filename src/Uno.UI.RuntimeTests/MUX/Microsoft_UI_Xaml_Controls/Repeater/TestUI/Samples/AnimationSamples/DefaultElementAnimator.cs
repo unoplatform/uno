@@ -92,7 +92,6 @@ namespace MUXControlsTestApp.Utils
 
 		protected override void StartBoundsChangeAnimation(UIElement element, AnimationContext context, Rect oldBounds, Rect newBounds)
 		{
-#if false // CreateVector2KeyFrameAnimation not supported by uno yet
 			var visual = ElementCompositionPreview.GetElementVisual(element);
 			var compositor = visual.Compositor;
 			var batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
@@ -126,7 +125,6 @@ namespace MUXControlsTestApp.Utils
 				DefaultAnimationDurationInMs * ((HasHideAnimationsPending ? 1 : 0) + 1) * AnimationSlowdownFactor);
 
 			visual.StartAnimation("TransformMatrix._41_42", offsetAnimation);
-#endif
 		}
 	}
 }
