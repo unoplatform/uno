@@ -430,16 +430,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.Materialized.Should().Be(0);
 		}
 
-
-		[TestMethod]
-		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif !__SKIA__
-		[Ignore("Fails due to async native scrolling.")]
-#endif
-		public async Task When_ItemSignificantlyHigher_Then_VirtualizeProperly()
+		private record SUT(Border Root, ScrollViewer Scroller, ItemsRepeater Repeater, ObservableCollection<string> Source)
 		{
+<<<<<<< HEAD
 			var sut = SUT.Create(
 				new ObservableCollection<MyItem>
 				{
@@ -496,18 +489,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		private static class SUT
 		{
 			public static SUT<T> Create<T>(ObservableCollection<T> source, DataTemplate? itemTemplate = null, Size? viewport = default)
+=======
+			public static SUT Create(int itemsCount = 3, Size? viewport = default)
+>>>>>>> 9cffe012d0 (Revert "Merge pull request #15946 from unoplatform/dev/dr/irVirIssue")
 			{
-				itemTemplate ??= new DataTemplate(() => new Border
-				{
-					Width = 100,
-					Height = 100,
-					Background = new SolidColorBrush(Colors.DeepSkyBlue),
-					Margin = new Thickness(10),
-					Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
-				});
-
 				var repeater = default(ItemsRepeater);
 				var scroller = default(ScrollViewer);
+				var source = new ObservableCollection<string>(Enumerable.Range(0, itemsCount).Select(i => $"Item #{i}"));
 				var root = new Border
 				{
 					BorderThickness = new Thickness(5),
@@ -518,7 +506,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 						{
 							ItemsSource = source,
 							Layout = new StackLayout(),
-							ItemTemplate = itemTemplate
+							ItemTemplate = new DataTemplate(() => new Border
+							{
+								Width = 100,
+								Height = 100,
+								Background = new SolidColorBrush(Colors.DeepSkyBlue),
+								Margin = new Thickness(10),
+								Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							})
 						})
 					})
 				};
@@ -532,15 +527,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				return new(root, scroller, repeater, source);
 			}
 
-			public static SUT<string> Create(int itemsCount = 3, Size? viewport = default)
-				=> Create(new ObservableCollection<string>(Enumerable.Range(0, itemsCount).Select(i => $"Item #{i}")), viewport: viewport);
-		}
-
-		private record SUT<T>(Border Root, ScrollViewer Scroller, ItemsRepeater Repeater, ObservableCollection<T> Source)
-		{
 			public int Materialized => Repeater.Children.Count(elt => elt.ActualOffset.X >= 0);
 
-			public IEnumerable<T> MaterializedItems => Repeater.Children.Where(elt => elt.ActualOffset.X >= 0).Select(elt => (T)elt.DataContext);
+			public IEnumerable<string> MaterializedItems => Repeater.Children.Where(elt => elt.ActualOffset.X >= 0).Select(elt => elt.DataContext?.ToString());
 
 			public async ValueTask Load()
 			{
