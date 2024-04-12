@@ -457,7 +457,7 @@ namespace Microsoft.UI.Xaml.Controls
 					foreach (var item in e.RemovedItems)
 					{
 						SetSelectedState(IndexFromItem(item), false);
-					} 
+					}
 				}
 			}
 		}
