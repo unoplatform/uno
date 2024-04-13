@@ -510,6 +510,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Thumb">
+                                            <!-- Uno specific (LinearGradientBrush borders): Use solid border brush #6457 -->
                                             <Border 
                                                 win:BorderBrush="{ThemeResource SliderThumbBorderBrush}"
                                                 not_win:BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
