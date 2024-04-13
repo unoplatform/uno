@@ -29,7 +29,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-dev.35"
+			"net9.0": "9.0.0-dev.43"
 		}
 	},
 	{
@@ -70,7 +70,7 @@
 	},
 	{
 		"group": "SkiaSharp",
-		"version": "2.88.7",
+		"version": "2.88.8",
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.Uno.WinUI",
@@ -81,7 +81,7 @@
 	},
 	{
 		"group": "WinAppSdk",
-		"version": "1.5.240311000",
+		"version": "1.5.240404000",
 		"packages": [
 			"Microsoft.WindowsAppSDK"
 		]
@@ -100,22 +100,22 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.2.24128.5"
+			"net9.0": "9.0.0-preview.3.24172.9"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "8.0.3",
+		"version": "8.0.4",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.2.24128.10"
+			"net9.0": "9.0.0-preview.3.24175.3"
 		}
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.59.0",
+		"version": "4.60.2",
 		"packages": [
 			"Microsoft.Identity.Client"
 		]
