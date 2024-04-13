@@ -55,7 +55,9 @@ internal class GeolocatorPositionChangedTestViewModel : ViewModelBase
 	public ICommand AskPermissionsCommand =>
 		GetOrCreateCommand(async () => await AskPermissions());
 
-	private async Task AskPermissions()
+	private Task AskPermissions() => Task.Run(AskPermissionsAsync);
+
+	private async Task AskPermissionsAsync()
 	{
 		UpdateStatus("Asking Permissions...");
 
