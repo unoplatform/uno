@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Android.Locations;
 using Android.OS;
 using Android.Runtime;
-using Microsoft.UI.Dispatching;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
