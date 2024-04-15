@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.h, tag winui3/release/1.5.2, commit 6f533ce512dc0914324ebeba1660da706e092fc2
 
 #nullable enable
 
@@ -25,8 +26,6 @@ partial class CommandBarFlyout
 		set => m_alwaysExpanded = value;
 	}
 
-	internal CommandBarFlyoutCommandBar? m_commandBar;
-
 	/// <summary>
 	/// Gets the collection of primary command elements for the CommandBarFlyout.
 	/// </summary>
@@ -36,6 +35,8 @@ partial class CommandBarFlyout
 	/// Gets the collection of secondary command elements for the CommandBarFlyout.
 	/// </summary>
 	public IObservableVector<ICommandBarElement> SecondaryCommands => m_secondaryCommands;
+
+	internal CommandBarFlyoutCommandBar? m_commandBar;
 
 	private const int s_commandBarElementDependencyPropertiesCount = 3;
 
