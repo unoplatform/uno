@@ -351,7 +351,15 @@ public partial class TreeViewList : ListView
 				{
 					// Uno Specific: this is actually a bug in WinUI
 					// itemNode.IsExpanded = itemContainer.IsExpanded;
-					itemContainer.IsExpanded = itemNode.IsExpanded;
+					var bindingExists = itemContainer.GetBindingExpression(TreeViewItem.IsExpandedProperty) is { };
+					if (bindingExists is { })
+					{
+						itemNode.IsExpanded = itemContainer.IsExpanded;
+					}
+					else
+					{
+						itemContainer.IsExpanded = itemNode.IsExpanded;
+					}
 				});
 			}
 		}
