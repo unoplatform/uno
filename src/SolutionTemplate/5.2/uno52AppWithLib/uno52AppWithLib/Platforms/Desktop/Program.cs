@@ -1,6 +1,6 @@
 using Uno.UI.Runtime.Skia;
 
-namespace uno52blank;
+namespace uno52AppWithLib;
 
 public class Program
 {

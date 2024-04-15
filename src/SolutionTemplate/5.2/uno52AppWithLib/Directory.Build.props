@@ -3,8 +3,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <UnoSdkDebugging>true</UnoSdkDebugging>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!--
       Adding NoWarn to remove build warnings
