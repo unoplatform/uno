@@ -6,7 +6,7 @@
 				'$(BuildingInsideVisualStudio)'=='true'
 				AND '$(UnoDisableVSFilterTargetFrameworkWithDebuggerTarget)' != 'true'
 				AND '$(IsImplicitlyTriggeredBuild)' == 'true'
-				AND $(IsUnoHead)">
+				AND '$(IsUnoHead)' == 'true' ">
 
 		<!-- 
 			This target is used to restrict the number of active target frameworks used when
