@@ -1,6 +1,7 @@
 ﻿#nullable enable
 //#define TRACE_COMPOSITION
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using SkiaSharp;
@@ -159,6 +160,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
+	private protected virtual List<Visual>? GetChildrenInRenderOrder() => null;
+
+	internal List<Visual>? GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+
 	/// <summary>
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
@@ -179,6 +184,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using var session = BeginDrawing(in parentSession);
 		Draw(in session);
+
+		if (GetChildrenInRenderOrder() is { } children)
+		{
+			foreach (var child in children)
+			{
+				child.Render(in session);
+			}
+		}
 	}
 
 	/// <summary>

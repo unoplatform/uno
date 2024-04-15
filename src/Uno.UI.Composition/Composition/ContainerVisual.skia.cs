@@ -18,7 +18,7 @@ public partial class ContainerVisual : Visual
 		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
 	}
 
-	internal List<Visual> GetChildrenInRenderOrder()
+	private protected override List<Visual>? GetChildrenInRenderOrder()
 	{
 		if (IsChildrenRenderOrderDirty)
 		{
@@ -43,18 +43,6 @@ public partial class ContainerVisual : Visual
 			_hasCustomRenderOrder = true;
 		}
 		IsChildrenRenderOrderDirty = false;
-	}
-
-	internal override void Draw(in DrawingSession session)
-	{
-		base.Draw(in session);
-
-		var children = GetChildrenInRenderOrder();
-		var childrenCount = children.Count;
-		for (var i = 0; i < childrenCount; i++)
-		{
-			children[i].Render(in session);
-		}
 	}
 
 	internal override bool SetMatrixDirty()
