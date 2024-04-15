@@ -26,23 +26,6 @@
 		<_UnoFirstOriginalTargetFramework>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries)[0].Trim())</_UnoFirstOriginalTargetFramework>
 	</PropertyGroup>
 
-	<PropertyGroup
-		Condition="
-			(
-				$([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'browserwasm'
-				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'desktop'
-				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'windows'
-			)
-			AND '$(_UnoVSExtensionLoaded)' == 'true'
-			AND '$(TargetFrameworks)' != ''
-			AND !$(TargetFrameworks.StartsWith($(ActiveDebugFramework)))
-			AND '$(BuildingInsideVisualStudio)' == 'true'">
-
-		<_UnoTargetFrameworksFiltered>$(TargetFrameworks.Replace($(ActiveDebugFramework),''))</_UnoTargetFrameworksFiltered>
-
-		<TargetFrameworks>$([MSBuild]::Unescape('$(ActiveDebugFramework);$(_UnoTargetFrameworksFiltered)'))</TargetFrameworks>
-	</PropertyGroup>
-
 	<Target Name="_UnoVSWarnBrowserIsFirst"
 			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
 			Condition=" 

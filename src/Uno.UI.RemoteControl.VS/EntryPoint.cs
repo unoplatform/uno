@@ -46,7 +46,6 @@ public partial class EntryPoint : IDisposable
 {
 	private const string UnoPlatformOutputPane = "Uno Platform";
 	private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
-	private const string UnoVSExtensionLoadedProperty = "_UnoVSExtensionLoaded";
 
 	private readonly DTE _dte;
 	private readonly DTE2 _dte2;
@@ -111,7 +110,6 @@ public partial class EntryPoint : IDisposable
 	{
 		Dictionary<string, string> properties = new()
 		{
-			[UnoVSExtensionLoadedProperty] = "true"
 		};
 
 		if (RemoteControlServerPort != 0)
