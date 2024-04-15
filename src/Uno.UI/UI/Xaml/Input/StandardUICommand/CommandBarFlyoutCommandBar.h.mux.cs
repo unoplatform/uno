@@ -1,4 +1,8 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyoutCommandBar.h, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+
+#nullable enable
 
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -7,6 +11,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
+using System.Windows.Input;
+using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -22,6 +28,14 @@ partial class CommandBarFlyoutCommandBar
 
 	internal bool m_commandBarFlyoutIsOpening;
 
+	private bool HasVisibleLabel(TCommand command)
+	{
+		return command is not null &&
+			!string.IsNullOrEmpty(command.Label) &&
+			command.Visibility == Visibility.Visible &&
+			command.LabelPosition == CommandBarLabelPosition.Default;
+	}
+
 	private FrameworkElement? m_primaryItemsRoot;
 	private Popup? m_overflowPopup;
 	private FrameworkElement? m_secondaryItemsRoot;
@@ -32,6 +46,7 @@ partial class CommandBarFlyoutCommandBar
 	private readonly SerialDisposable m_secondaryItemsRootPreviewKeyDownRevoker = new();
 	private readonly SerialDisposable m_secondaryItemsRootSizeChangedRevoker = new();
 	private readonly SerialDisposable m_firstItemLoadedRevoker = new();
+	private readonly List<SerialDisposable> m_itemLoadedRevokerVector = new();
 
 	// We need to manually connect the end element of the primary items to the start element of the secondary items
 	// for the purposes of UIA items navigation. To ensure that we only have the current start and end elements registered
@@ -56,4 +71,27 @@ partial class CommandBarFlyoutCommandBar
 
 	private IList<Control>? m_horizontallyAccessibleControls;
 	private IList<Control>? m_verticallyAccessibleControls;
+
+	private FrameworkElement m_outerOverflowContentRootV2;
+	private FrameworkElement m_primaryItemsSystemBackdropRoot;
+	private FrameworkElement m_overflowPopupSystemBackdropRoot;
+
+	// These ContentExternalBackdropLink objects implement the backdrop behind the CommandBarFlyoutCommandBar. We don't
+	// use the one built into Popup because we need to animate this backdrop using Storyboards in the CBFCB's template.
+	// The one built into Popup is too high up in the Visual tree to be animated by a custom animation.
+	private ContentExternalBackdropLink m_backdropLink;
+	private ContentExternalBackdropLink m_overflowPopupBackdropLink;
+
+	// A copy of the value in the DependencyProperty. We need to unregister with this SystemBackdrop when this
+	// CommandBarFlyoutCommandBar is deleted, but the DP value is already cleared by the time we get to Unloaded or the
+	// dtor, so we cache a copy for ourselves to use during cleanup. Another possibility is to do cleanup during Closed,
+	// but the app can release and delete this CommandBarFlyoutCommandBar without ever closing it.
+	private ManagedWeakReference m_systemBackdrop;
+
+	// Localized string caches. Looking these up from MRTCore is expensive, so we don't want to put the lookups in a
+	// loop. Instead, look them up once, cache them, use the cached values, then clear the cache. The values in these
+	// caches are only valid after CacheLocalizedStringResources and before ClearLocalizedStringResourceCache.
+	private bool m_areLocalizedStringResourcesCached;
+	private string m_localizedCommandBarFlyoutAppBarButtonControlType;
+	private string m_localizedCommandBarFlyoutAppBarToggleButtonControlType;
 }
