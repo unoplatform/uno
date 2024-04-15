@@ -28,6 +28,7 @@ using FluentAssertions.Execution;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml.Data;
 using MUXControlsTestApp.Utilities;
@@ -98,7 +99,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved()
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved(bool bindIsExpanded)
 		{
 			var itemsSource = Enumerable.Range(0, 8).Select(i =>
 				new Item
@@ -123,15 +126,29 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				ItemsSource = itemsSource,
 				ItemTemplate = new DataTemplate(() =>
 				{
-					return new TreeViewItem()
-						.Apply(tvi => tvi.SetBinding(TreeViewItem.ItemsSourceProperty, new Binding("Children")))
-						.Apply(tvi => tvi.SetBinding(ContentControl.ContentProperty, new Binding("Name")));
+					var tvi = new TreeViewItem();
+					tvi.SetBinding(TreeViewItem.ItemsSourceProperty, new Binding("Children"));
+					tvi.SetBinding(ContentControl.ContentProperty, new Binding("Name"));
+					if (bindIsExpanded)
+					{
+						tvi.SetBinding(TreeViewItem.IsExpandedProperty, new Binding("IsExpanded"));
+					}
+
+					return tvi;
 				})
 			};
 
 			await UITestHelper.Load(treeView);
 
-			((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded = true;
+			if (bindIsExpanded)
+			{
+				itemsSource[0].IsExpanded = true;
+			}
+			else
+			{
+				((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded = true;
+			}
+
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, itemsSource
@@ -155,7 +172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				.Select(item => treeView.ContainerFromItem(item))
 				.OfType<TreeViewItem>()
 				.Count(c => c.IsExpanded));
-			Assert.AreEqual(true, ((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded);
+			Assert.IsTrue(((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded);
 		}
 #endif
 
@@ -428,10 +445,25 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			string _label;
 		}
 
-		public class Item
+		public class Item : INotifyPropertyChanged
 		{
+			private bool _isExpanded;
 			public string Name { get; set; }
 			public List<Item> Children { get; set; }
+			public bool IsExpanded { get => _isExpanded; set => SetField(ref _isExpanded, value); }
+			public event PropertyChangedEventHandler PropertyChanged;
+			protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+			{
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			}
+			protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+			{
+				if (EqualityComparer<T>.Default.Equals(field, value))
+					return false;
+				field = value;
+				OnPropertyChanged(propertyName);
+				return true;
+			}
 		}
 	}
 
