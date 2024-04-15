@@ -370,4 +370,80 @@ public class Given_Binding
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestXBindReferencesXLoadedElement()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d">
+				<Page.Resources>
+					<local:NullableBoolConverter x:Key="NullableBoolConverter" />
+				</Page.Resources>
+				<StackPanel>
+					<ToggleButton x:Name="LoadElement" x:FieldModifier="public" x:Load="{x:Bind ToggleLoad.IsChecked, Mode=OneWay, Converter={StaticResource NullableBoolConverter}}">Loaded via x:Load and toggle enable for buttons</ToggleButton>
+					<Button x:Name="button1" IsEnabled="{x:Bind LoadElement.IsChecked, Mode=OneWay, Converter={StaticResource NullableBoolConverter}}" x:FieldModifier="public">Button1</Button>
+					<ToggleButton x:Name="ToggleLoad" IsChecked="False" x:FieldModifier="public">Toggle Load</ToggleButton>
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					﻿using System;
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Data;
+
+					namespace TestRepro
+					{
+						internal class NullableBoolConverter : IValueConverter
+						{
+							public object Convert(object value, Type targetType, object parameter, string language)
+							{
+								if (value == null || value is bool b && b == false)
+								{
+									return false;
+								}
+
+								return true;
+							}
+
+							public object ConvertBack(object value, Type targetType, object parameter, string language)
+							{
+								if (value == null || value is bool b && b == false)
+								{
+									return false;
+								}
+
+								return true;
+							}
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
