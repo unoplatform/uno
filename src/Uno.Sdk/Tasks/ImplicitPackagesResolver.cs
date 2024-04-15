@@ -35,7 +35,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 		{
 			AddPackageWhen(!IsPackable, "Uno.WinUI.Lottie", null);
 
-			if (HasFeature(UnoFeature.Skia) && TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead() && !IsPackable)
+			if (HasFeature(UnoFeature.Skia) && TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead())
 			{
 				AddPackage("SkiaSharp.Skottie", SkiaSharpVersion);
 				AddPackage("SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
