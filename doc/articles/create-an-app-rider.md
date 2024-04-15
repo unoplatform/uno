@@ -84,7 +84,7 @@ You will be able to build the Windows project.
 
 Select the `net8.0-desktop` target framework, then Run.
 
-***
+---
 
 ## Next Steps
 
