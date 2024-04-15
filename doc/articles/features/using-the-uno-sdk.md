@@ -62,6 +62,8 @@ Here are the supported features:
 - `Mvvm`, to enable CommunityToolkit.Mvvm
 - `Prism`, to enable Prism Library
 - `Skia`, to enable SkiaSharp
+- `Svg`, to enable Svg support for iOS, Android and mac Catalyst. This option is not needed for WebAssembly, Desktop and WinAppSDK.
+- `Skottie`, to enable lottie files playback
 
 ## Implicit Packages
 
