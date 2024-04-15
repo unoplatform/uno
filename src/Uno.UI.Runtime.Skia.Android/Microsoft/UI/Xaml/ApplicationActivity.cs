@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
+using AndroidX.Core.View;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
@@ -200,6 +201,7 @@ namespace Microsoft.UI.Xaml
 				ViewGroup.LayoutParams.MatchParent);
 
 			_skCanvasView = new SKCanvasView(this);
+			ViewCompat.SetAccessibilityDelegate(_skCanvasView, new UnoExploreByTouchHelper(_skCanvasView, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!));
 			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
