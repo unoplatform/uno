@@ -349,7 +349,7 @@ public partial class TreeViewList : ListView
 			{
 				DispatcherQueue.TryEnqueue(() =>
 				{
-					// Uno Specific: this is actually a bug in WinUI
+					// Uno Specific: this is actually a bug in WinUI, copy WinUI's fix when https://github.com/microsoft/microsoft-ui-xaml/issues/9549 is resolved
 					// itemNode.IsExpanded = itemContainer.IsExpanded;
 					var bindingExists = itemContainer.GetBindingExpression(TreeViewItem.IsExpandedProperty) is { };
 					if (bindingExists is { })
