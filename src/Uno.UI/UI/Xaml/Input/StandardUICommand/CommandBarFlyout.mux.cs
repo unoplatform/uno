@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.cpp, commit 3d10001ba
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.cpp, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
 
 using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using CommandBarFlyoutCommandBar = Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar;
 using System.Numerics;
 
