@@ -4,11 +4,52 @@ uid: Uno.Features.SVG
 
 # Using SVG images
 
+#### [**Single Project Template**](#tab/single-project)
+
+Uno Platform supports using vector SVG graphics inside of your cross-platform applications using the `Uno.WinUI.Svg` NuGet package.
+
+#### [**Multi-Head Project Template (Legacy)**](#tab/multi-project)
+
 Uno Platform supports using vector SVG graphics inside of your cross-platform applications using the `Uno.WinUI.Svg` (or `Uno.UI.Svg`) NuGet package.
+
+***
 
 ![Uno SVG sample](../Assets/features/svg/heliocentric.png)
 
 ## How to use SVG
+
+#### [**Single Project Template**](#tab/single-project)
+
+To use SVG, install the following NuGet packages into the project:
+
+* `Uno.WinUI.Svg`
+* `SkiaSharp.Views.Uno.WinUI`
+* `Svg.Skia` (required only for the Skia project)
+
+> [!NOTE]
+> If the `Uno.WinUI.Svg` package is not installed, you will get a warning when an `.svg` image is loaded.
+> If the `Svg.Skia` package is not installed, you will get an error when an `.svg` image is loaded for the Skia project.
+> [!IMPORTANT]
+> The `Uno.WinUI.Svg` package is not needed for WebAssembly, and must only be installed on the Mobile and Skia heads. It must not be in any other class libraries of your solution.
+
+Add the SVG Image to the app project and make sure that the build action is set to Content.
+Now, you can display the SVG image in an `Image` by referencing it from the `Source` property. For example:
+
+```xml
+<Image Source="ms-appx:///Assets/test.svg" Stretch="UniformToFill" Width="100" Height="100" />
+```
+
+You can also explicitly use `SvgImageSource`:
+
+```xml
+<Image>
+  <Image.Source>
+    <SvgImageSource UriSource="https://example.com/test.svg" />
+  </Image.Source>
+</Image>
+```
+
+#### [**Multi-Head Project Template (Legacy)**](#tab/multi-project)
 
 To use SVG, install the following NuGet packages into the iOS, macOS, Mac Catalyst, Android, and Skia projects:
 
@@ -38,6 +79,8 @@ You can also explicitly use `SvgImageSource`:
   </Image.Source>
 </Image>
 ```
+
+***
 
 ## Supported features by platform
 
