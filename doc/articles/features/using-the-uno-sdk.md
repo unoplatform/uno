@@ -103,7 +103,7 @@ Those properties can be set from `Directory.Build.props`.
 
 If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file. You will be then able to manually add the NuGet packages for your project.
 
-### Supported OS Platform versions
+## Supported OS Platform versions
 
 By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 
@@ -117,7 +117,28 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
 
-### Disabling Default Items
+## Visual Studio 2022 First-TargetFramework workarounds
+
+Using a Single Project in Visual Studio 2022 requires the Uno Platform tooling to apply workarounds in order to have an acceptable debugging experience.
+
+For some of the platforms (Desktop, WinAppSDK and WebAssembly), the corresponding target frameworks must be placed first in order for debugging and publishing to function properly. To adress that problem, the Uno Platform tooling modifies the `csproj` file to reorder the `TargetFrameworks` property so that the list is accepted by Visual Studio.
+
+As a result, the csproj file on disk and will show the file as modified in you source control, yet the automatic change can be reverted safely. If the behavior is impacting your IDE negatively, you can disable it by adding the following in your `.csproj` file:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSTargetFrameworksRewrite>true</UnoDisableVSTargetFrameworksRewrite>
+</PropertyGroup>
+```
+
+Note that we are currently tracking these Visual Studio issues, make sure to upvote them:
+
+- `net8.0-desktop` must be first for WSL debugging to work (**Link to be available soon**)
+- `net8.0-browserwasm` must be first for WebAssembly debugging to work (**Link to be available soon**)
+- `net8.0-desktop` being first breaks all other targets debugging (**Link to be available soon**)
+- `net8.0-windows10` needs to be first for WinAppSDK Hot reload to work (**Link to be available soon**)
+
+## Disabling Default Items
 
 The `Uno.Sdk` will automatically includes files that you previously needed to manage within your projects. These default items include definitions for including files within the `Content`, `Page`, and `PRIResource` item groups. Additionally, if you have referenced the `Uno.Resizetizer` it will add default items for the `UnoImage` allowing you to more easily manage your image assets.
 
@@ -133,7 +154,7 @@ You may disable this behavior in one of two ways:
 </PropertyGroup>
 ```
 
-### WinAppSdk PRIResource Workaround
+## WinAppSdk PRIResource Workaround
 
 Many Uno projects and libraries make use of a `winappsdk-workaround.targets` file that corrects a [bug](https://github.com/microsoft/microsoft-ui-xaml/issues/8857) found in WinUI. When using the `Uno.Sdk` these targets now are provided for you out of the box. This extra set of workaround targets can be disabled by setting the following property:
 
