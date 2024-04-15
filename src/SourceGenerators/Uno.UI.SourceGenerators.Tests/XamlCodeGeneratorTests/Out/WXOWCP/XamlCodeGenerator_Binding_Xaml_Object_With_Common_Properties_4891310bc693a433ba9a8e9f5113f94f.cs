@@ -164,6 +164,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			void Update();
 			void UpdateResources();
 			void StopTracking();
+			void NotifyXLoad(string name);
 		}
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IBinding_Xaml_Object_With_Common_Properties_Bindings Bindings;
@@ -180,6 +181,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			public Binding_Xaml_Object_With_Common_Properties_Bindings(global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties owner)
 			{
 				Owner = owner;
+			}
+			void IBinding_Xaml_Object_With_Common_Properties_Bindings.NotifyXLoad(string name)
+			{
 			}
 			void IBinding_Xaml_Object_With_Common_Properties_Bindings.Initialize()
 			{
