@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\TestUI\CommandBarFlyoutPage.xaml.cs, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
 
 using Common;
 using System;
@@ -62,54 +63,70 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		clearSecondaryCommandsTimer.Interval = new TimeSpan(0, 0, 3 /*sec*/);
 		clearPrimaryCommandsTimer.Tick += ClearPrimaryCommandsTimer_Tick;
 
-		if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
-		{
-			UndoButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
-			UndoButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
-			UndoButton3.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
-			UndoButton4.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
-			UndoButton5.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
-			UndoButton6.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
-			UndoButton7.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton3.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton4.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton5.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton6.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton7.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton11.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton12.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton13.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton14.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+		UndoButton15.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
 
-			RedoButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
-			RedoButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
-			RedoButton3.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
-			RedoButton4.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
-			RedoButton5.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
-			RedoButton6.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
-			RedoButton7.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton3.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton4.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton5.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton6.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton7.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton11.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton12.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton13.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton14.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton15.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
 
-			SelectAllButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-			SelectAllButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-			SelectAllButton3.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-			SelectAllButton4.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-			SelectAllButton5.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-			SelectAllButton6.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-			SelectAllButton7.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-		}
+		SelectAllButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton3.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton4.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton5.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton6.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton7.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton11.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton12.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton13.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton14.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton15.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
 
-		if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "ContextFlyout"))
-		{
-			FlyoutTarget1.ContextFlyout = Flyout1;
-			FlyoutTarget2.ContextFlyout = Flyout2;
-			FlyoutTarget3.ContextFlyout = Flyout3;
-			FlyoutTarget4.ContextFlyout = Flyout4;
-			FlyoutTarget5.ContextFlyout = Flyout5;
-			FlyoutTarget6.ContextFlyout = Flyout6;
-			FlyoutTarget7.ContextFlyout = Flyout7;
-		}
+		FlyoutTarget1.ContextFlyout = Flyout1;
+		FlyoutTarget2.ContextFlyout = Flyout2;
+		FlyoutTarget3.ContextFlyout = Flyout3;
+		FlyoutTarget4.ContextFlyout = Flyout4;
+		FlyoutTarget5.ContextFlyout = Flyout5;
+		FlyoutTarget6.ContextFlyout = Flyout6;
+		FlyoutTarget7.ContextFlyout = Flyout7;
+		FlyoutTarget11.ContextFlyout = Flyout11;
+		FlyoutTarget12.ContextFlyout = Flyout12;
+		FlyoutTarget13.ContextFlyout = Flyout13;
+		FlyoutTarget14.ContextFlyout = Flyout14;
+		FlyoutTarget15.ContextFlyout = Flyout15;
 
-		if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode", "TopEdgeAlignedLeft"))
-		{
-			Flyout1.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-			Flyout2.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-			Flyout3.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-			Flyout4.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-			Flyout5.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-			Flyout6.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-			Flyout7.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-		}
+		Flyout1.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout2.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout3.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout4.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout5.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout6.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout7.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout11.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout12.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout13.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout14.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout15.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
 	}
 
 	public void OnElementClicked(object sender, object args)
@@ -259,9 +276,39 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 
 	private void OnFlyoutTarget10Click(object sender, RoutedEventArgs e)
 	{
-#if false // This uses WUX CommandBarFlyout - ignored
 		ShowFlyoutAt(Flyout10, FlyoutTarget10);
-#endif
+	}
+
+	private void OnFlyoutTarget11Click(object sender, RoutedEventArgs e)
+	{
+		ShowFlyoutAt(Flyout11, FlyoutTarget11, FlyoutShowMode.Standard);
+	}
+
+	private void OnFlyoutTarget12Click(object sender, RoutedEventArgs e)
+	{
+		DispatcherTimer showFlyoutTimer = new();
+		showFlyoutTimer.Interval = TimeSpan.FromSeconds(5);
+		showFlyoutTimer.Tick += (object sender, object args) =>
+		{
+			ShowFlyoutAt(Flyout12, FlyoutTarget12, FlyoutShowMode.Standard);
+			showFlyoutTimer.Stop();
+		};
+		showFlyoutTimer.Start();
+	}
+
+	private void OnFlyoutTarget13Click(object sender, RoutedEventArgs e)
+	{
+		ShowFlyoutAt(Flyout13, FlyoutTarget13);
+	}
+
+	private void OnFlyoutTarget14Click(object sender, RoutedEventArgs e)
+	{
+		ShowFlyoutAt(Flyout14, FlyoutTarget14);
+	}
+
+	private void OnFlyoutTarget15Click(object sender, RoutedEventArgs e)
+	{
+		ShowFlyoutAt(Flyout15, FlyoutTarget15);
 	}
 
 	private void ShowFlyoutAt(FlyoutBase flyout, FrameworkElement targetElement, FlyoutShowMode showMode = FlyoutShowMode.Transient)
@@ -309,15 +356,7 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 			}
 		}
 
-		if (PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
-		{
-			flyout.ShowAt(targetElement, new FlyoutShowOptions { Placement = FlyoutPlacementMode.TopEdgeAlignedLeft, ShowMode = showMode });
-		}
-		else
-		{
-			flyout.Placement = FlyoutPlacementMode.Top;
-			flyout.ShowAt(targetElement);
-		}
+		flyout.ShowAt(targetElement, new FlyoutShowOptions { Placement = FlyoutPlacementMode.TopEdgeAlignedLeft, ShowMode = showMode });
 	}
 
 	private void SetClearSecondaryCommandsFlyout(CommandBarFlyout commandBarFlyout)
