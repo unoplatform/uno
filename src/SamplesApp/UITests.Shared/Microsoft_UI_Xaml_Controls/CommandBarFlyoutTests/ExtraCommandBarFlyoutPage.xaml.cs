@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\TestUI\ExtraCommandBarFlyoutPage.xaml.cs, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
 
 using System;
 using System.Collections.Generic;
@@ -30,46 +31,12 @@ public sealed partial class ExtraCommandBarFlyoutPage : TestPage
 	{
 		this.InitializeComponent();
 
-		if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode", "BottomEdgeAlignedLeft"))
-		{
-			TextCommandBarContextFlyout.Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft;
-		}
-		else
-		{
-			TextCommandBarContextFlyout.Placement = FlyoutPlacementMode.Top;
-		}
-
-		if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode", "TopEdgeAlignedLeft"))
-		{
-			TextCommandBarSelectionFlyout.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
-		}
-		else
-		{
-			TextCommandBarSelectionFlyout.Placement = FlyoutPlacementMode.Top;
-		}
-
-		if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "ContextFlyout"))
-		{
-			TextBox1.ContextFlyout = TextCommandBarContextFlyout;
-			RichTextBlock1.ContextFlyout = TextCommandBarContextFlyout;
-		}
-
-		try
-		{
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.TextBox", "SelectionFlyout"))
-			{
-				TextBox1.SelectionFlyout = TextCommandBarSelectionFlyout;
-			}
-		}
-		catch (InvalidCastException)
-		{
-			// RS5 interfaces can change before release, so we need to make sure we don't crash if they do.
-		}
-
-		if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.RichTextBlock", "SelectionFlyout"))
-		{
-			RichTextBlock1.SelectionFlyout = TextCommandBarSelectionFlyout;
-		}
+		TextCommandBarContextFlyout.Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft;
+		TextCommandBarSelectionFlyout.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		TextBox1.ContextFlyout = TextCommandBarContextFlyout;
+		RichTextBlock1.ContextFlyout = TextCommandBarContextFlyout;
+		TextBox1.SelectionFlyout = TextCommandBarSelectionFlyout;
+		RichTextBlock1.SelectionFlyout = TextCommandBarSelectionFlyout;
 	}
 
 	private void OnClearClipboardContentsClicked(object sender, object args)
@@ -79,7 +46,7 @@ public sealed partial class ExtraCommandBarFlyoutPage : TestPage
 
 	private void OnCountPopupsClicked(object sender, object args)
 	{
-		PopupCountTextBox.Text = VisualTreeHelper.GetOpenPopups(Window.Current).Count.ToString();
+		PopupCountTextBox.Text = VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot).Count.ToString();
 		CustomButtonsOpenCount.Text = customButtonsFlyoutOpenCount.ToString();
 	}
 
