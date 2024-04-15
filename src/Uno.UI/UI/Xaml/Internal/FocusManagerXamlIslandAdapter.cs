@@ -5,7 +5,7 @@
 #nullable enable
 
 using Microsoft.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Core;
 
