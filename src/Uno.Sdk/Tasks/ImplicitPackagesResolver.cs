@@ -33,19 +33,15 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 
 		if (TargetRuntime != UnoTarget.Windows)
 		{
-			AddPackageWhen(!IsPackable, "Uno.WinUI.Lottie", null);
+			AddPackageForFeature(UnoFeature.Lottie, "Uno.WinUI.Lottie", null);
+			AddPackageForFeatureWhen(TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead(), UnoFeature.Lottie, "SkiaSharp.Skottie", null);
 
-			if (HasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Skottie) || HasFeature(UnoFeature.Svg))
+			if (HasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Svg))
 			{
 				AddPackageForFeature(UnoFeature.Skia, "SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
 			}
 
 			AddPackageForFeatureWhen(IsExecutable, UnoFeature.Svg, "Uno.WinUI.Svg", null);
-
-			if (HasFeature(UnoFeature.Skottie) && TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead())
-			{
-				AddPackage("SkiaSharp.Skottie", SkiaSharpVersion);
-			}
 
 			if (TargetRuntime == UnoTarget.Wasm || IsLegacyWasmHead())
 			{
@@ -61,7 +57,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 			AddPackageWhen(IsExecutable, "Uno.Core.Extensions.Logging.Singleton", UnoCoreLoggingSingletonVersion);
 
 			// Match the conditions to Uno so that we have the reference across all targets
-			if (HasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Skottie) || HasFeature(UnoFeature.Svg))
+			if (HasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Svg))
 			{
 				// NOTE: This will change to come through transitively in SkiaSharp 3
 				AddPackageForFeature(UnoFeature.Skia, "SkiaSharp.Views.WinUI", SkiaSharpVersion);
