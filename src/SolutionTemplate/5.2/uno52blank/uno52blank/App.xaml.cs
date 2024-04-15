@@ -6,9 +6,6 @@ namespace uno52blank;
 
 public partial class App : Application
 {
-    static App() =>
-        InitializeLogging();
-
     /// <summary>
     /// Initializes the singleton application object. This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -67,7 +64,7 @@ public partial class App : Application
     /// <summary>
     /// Configures global Uno Platform logging
     /// </summary>
-    private static void InitializeLogging()
+    public static void InitializeLogging()
     {
 #if DEBUG
         // Logging is disabled by default for release builds, as it incurs a significant
