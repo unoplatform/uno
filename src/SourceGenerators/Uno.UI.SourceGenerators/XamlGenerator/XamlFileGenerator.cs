@@ -1130,6 +1130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented("void Update();");
 					writer.AppendLineIndented("void UpdateResources();");
 					writer.AppendLineIndented("void StopTracking();");
+					writer.AppendLineIndented("void NotifyXLoad(string name);");
 				}
 
 				writer.AppendLineIndented($"#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.");
@@ -1151,6 +1152,70 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					using (writer.BlockInvariant($"public {bindingsClassName}({_xClassName} owner)"))
 					{
 						writer.AppendLineIndented($"Owner = owner;");
+					}
+
+					using (writer.BlockInvariant($"void {bindingsInterfaceName}.NotifyXLoad(string name)"))
+					{
+						var xLoadNames = new HashSet<string>();
+						for (var i = 0; i < CurrentScope.Components.Count; i++)
+						{
+							var component = CurrentScope.Components[i];
+							var isXLoad = false;
+							string? xName = null;
+							foreach (var member in component.XamlObject.Members)
+							{
+								if (IsXLoadMember(member))
+								{
+									isXLoad = true;
+								}
+
+								if (member.Member.Name == "Name" &&
+									member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+								{
+									xName = member.Value as string;
+								}
+							}
+
+							if (isXLoad && xName is not null)
+							{
+								xLoadNames.Add(xName);
+							}
+						}
+
+						foreach (var xLoadName in xLoadNames)
+						{
+							var componentsWithXBindReferencingLazyElement = new HashSet<string>();
+							using (writer.BlockInvariant($"if (name == \"{xLoadName}\")"))
+							{
+								for (var i = 0; i < CurrentScope.Components.Count; i++)
+								{
+									var component = CurrentScope.Components[i];
+									foreach (var member in component.XamlObject.Members)
+									{
+										foreach (var xamlObject in member.Objects)
+										{
+											if (xamlObject.Type.Name == "Bind")
+											{
+												var xbindPath = XBindExpressionParser.RestoreSinglePath(xamlObject.Members?.First().Value as string);
+												if (!string.IsNullOrEmpty(xbindPath))
+												{
+													var firstPart = xbindPath;
+													var indexOfDot = xbindPath!.IndexOf('.');
+													if (indexOfDot > -1)
+													{
+														firstPart = xbindPath.Substring(0, indexOfDot);
+														if (firstPart == xLoadName && componentsWithXBindReferencingLazyElement.Add(xLoadName))
+														{
+															writer.AppendLineIndented($"Owner.{component.MemberName}.ApplyXBind();");
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Initialize()")) { }
@@ -6241,6 +6306,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 												{
 													writer.AppendLineIndented($"that.Bindings.UpdateResources();");
+													if (nameMember?.Value is string xName)
+													{
+														writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
+													}
 												}
 											}
 										}

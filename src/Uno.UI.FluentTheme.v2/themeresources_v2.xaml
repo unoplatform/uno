@@ -12263,7 +12263,8 @@
                 <Setter Property="Template">
                   <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                      <Border BorderBrush="{ThemeResource SliderThumbBorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{ThemeResource SliderOuterThumbBackground}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
+                      <!-- Uno specific (LinearGradientBrush borders): Use solid border brush #6457 -->
+                      <Border win:BorderBrush="{ThemeResource SliderThumbBorderBrush}" not_win:BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{ThemeResource SliderOuterThumbBackground}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
                         <Ellipse x:Name="SliderInnerThumb" Fill="{TemplateBinding Background}" Width="{ThemeResource ColorPickerSliderInnerThumbWidth}" Height="{ThemeResource ColorPickerSliderInnerThumbHeight}" />
                       </Border>
                     </ControlTemplate>
@@ -21955,7 +21956,7 @@
   <Style x:Key="DefaultSliderStyle" TargetType="Slider">
     <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
     <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
+    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush #6457 -->
     <win:Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}" />
     <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
     <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
