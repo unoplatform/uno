@@ -143,7 +143,7 @@ namespace MUXControlsTestApp.Utilities
 
 			return children;
 		}
-		
+
 		public static FrameworkElement FindVisualParentByName(this DependencyObject element, string name)
 		{
 			if (element is null || string.IsNullOrWhiteSpace(name))
