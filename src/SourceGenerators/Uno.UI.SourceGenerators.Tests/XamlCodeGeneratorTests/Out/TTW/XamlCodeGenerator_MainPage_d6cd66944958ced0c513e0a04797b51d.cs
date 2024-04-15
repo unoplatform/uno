@@ -146,6 +146,7 @@ namespace TestRepro
 			void Update();
 			void UpdateResources();
 			void StopTracking();
+			void NotifyXLoad(string name);
 		}
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IMainPage_Bindings Bindings;
@@ -162,6 +163,9 @@ namespace TestRepro
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;
+			}
+			void IMainPage_Bindings.NotifyXLoad(string name)
+			{
 			}
 			void IMainPage_Bindings.Initialize()
 			{
