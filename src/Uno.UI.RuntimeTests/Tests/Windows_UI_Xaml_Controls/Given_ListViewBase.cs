@@ -4498,7 +4498,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(lv);
 
-			lv.ScrollIntoView(lv.ItemFromIndex(50));
+			lv.ScrollIntoView(source[50]);
 			await WindowHelper.WaitForIdle();
 
 			var sv = lv.FindFirstDescendant<ScrollViewer>();
@@ -4510,6 +4510,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(0 <= offsetStart && offsetStart + container.ActualHeight <= vpExtent, $"Container#50 should be within viewport: 0 <= {offsetStart} <= {vpExtent}");
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
@@ -4557,6 +4558,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsNotNull(lv.ContainerFromItem(0));
 		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector

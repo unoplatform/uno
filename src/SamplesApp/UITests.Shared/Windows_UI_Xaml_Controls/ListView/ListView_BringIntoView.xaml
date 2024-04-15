@@ -5,6 +5,7 @@
     xmlns:local="using:SamplesApp.Windows_UI_Xaml_Controls.ListView"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -19,7 +20,7 @@
 
 	<StackPanel>
 		<StackPanel Orientation="Horizontal">
-			<NumberBox x:Name="nb" Minimum="0" SmallChange="1" />
+			<muxc:NumberBox x:Name="nb" Minimum="0" SmallChange="1" />
 			<StackPanel>
 				<TextBlock Text="Leading" />
 				<CheckBox x:Name="chkBox" />
