@@ -1,3 +1,4 @@
+#if HAS_UNO_WINUI
 namespace Microsoft.Windows.ApplicationModel.Resources;
 
 /// <summary>
@@ -25,3 +26,4 @@ public enum ResourceCandidateKind
 	/// </summary>
 	EmbeddedData = 3,
 }
+#endif
