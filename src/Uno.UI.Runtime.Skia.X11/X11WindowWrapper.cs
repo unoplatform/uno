@@ -94,6 +94,12 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		RaiseClosed();
 	}
 
+	public override void ExtendContentIntoTitleBar(bool extend)
+	{
+		base.ExtendContentIntoTitleBar(extend);
+		_host.ExtendContentIntoTitleBar(extend);
+	}
+
 	private void OnWindowClosing()
 	{
 		var closingArgs = RaiseClosing();

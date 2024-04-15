@@ -60,8 +60,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
-		var coreApplicationView = CoreApplication.GetCurrentView();
-		coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+		winUIWindow.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
@@ -81,7 +81,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				X11Manager.XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
-				coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+				winUIWindow.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 			}
 		});
 
@@ -118,8 +119,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	{
 		var coreApplicationView = CoreApplication.GetCurrentView();
 
-		X11Helper.SetMotifWMDecorations(X11Window, !coreApplicationView.TitleBar.ExtendViewIntoTitleBar, 0xFF);
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
 	}
+
+	internal void ExtendContentIntoTitleBar(bool extend) => X11Helper.SetMotifWMDecorations(X11Window, !extend, 0xFF);
 
 	private void UpdateWindowPropertiesFromPackage()
 	{

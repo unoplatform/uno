@@ -44,6 +44,12 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override void Close() => _wpfWindow.Close();
 
+	public override void ExtendContentIntoTitleBar(bool extend)
+	{
+		base.ExtendContentIntoTitleBar(extend);
+		_wpfWindow.ExtendContentIntoTitleBar(extend);
+	}
+
 	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
 	{
 		Bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
