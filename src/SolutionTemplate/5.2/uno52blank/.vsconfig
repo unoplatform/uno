@@ -28,7 +28,6 @@
     "Microsoft.VisualStudio.Component.Merq",
     "Component.Xamarin.RemotedSimulator",
     "Microsoft.VisualStudio.Component.MonoDebugger",
-    "Component.Xamarin",
     "Microsoft.VisualStudio.ComponentGroup.Maui.All",
     "Component.Android.SDK34",
     "Component.Android.SDK33",
