@@ -6,17 +6,17 @@ uid: Uno.Development.DebuggingWasm
 
 There are two ways to debug a WebAssembly application:
 
-- Using Visual Studio 2019 or 2022 integrated debugger (preferred)
+- Using Visual Studio 2022 integrated debugger (preferred)
 - Using the browser's debugger
 
 ## Using Visual Studio
 
-Here’s what you need to do to debug an Uno application in Visual Studio (2019 16.10+ or 2022 17.1):
+Here’s what you need to do to debug an Uno application in Visual Studio (2022 17.1 or later):
 
 - Install the latest [Uno Platform Visual Studio templates](./get-started-vs-2022.md#install-the-solution-templates)
 - Have Chrome or Edge (Chromium based)
-- In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 3.0.0 or later
-- Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
+- In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 8.0.0 or later
+- Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj. It is automatically set [when using the Uno.SDK](xref:Uno.Features.Uno.Sdk).
 - Ensure that in the `Properties/launchSettings.json` file, the following like below each `launchBrowser` line:
 
     ```json
@@ -25,8 +25,8 @@ Here’s what you need to do to debug an Uno application in Visual Studio (2019 
 
 Then you can start debugging with the VS debugger toolbar:
 
-- Select **IIS Express** or your application name as the debugging target
-- Select **Chrome** as the Web Browser
+- Select **MyApp (WebAssembly IIS Express)** or your application name as the debugging target
+- Select **Chrome** or **Microsoft Edge** as the Web Browser
 - Press <kbd>F5</kbd> or _Debug_ > _Start Debugging_
 
 You should now be able to set breakpoints or do step by step debugging of your code.
@@ -41,15 +41,14 @@ You should now be able to set breakpoints or do step by step debugging of your c
 
 To debug your application:
 
-- Make your WASM project the startup project (right-click **set as startup** in Solution Explorer)
-- In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` to 3.0.0 or later
-- Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
+- Make the `net8.0-browserwasm` active debugging target framework (right-click **set as startup** in Solution Explorer)
+- Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj. It is automatically set [when using the Uno.SDK](xref:Uno.Features.Uno.Sdk).
 - In the debugging toolbar:
 
-  - Select **IIS Express** as the debugging target
-  - Select **Chrome** as the Web Browser
+  - Select **MyApp (WebAssembly IIS Express)** as the debugging target
+  - Select **Chrome** or **Microsoft Edge** as the Web Browser
   - Make sure script debugging is disabled<br/>
-   ![IIS express settings](Assets/quick-start/wasm-debugging-iis-express.png)
+   ![IIS express settings](Assets/quick-start/![alt text](image.png))
 
 - Start the debugging session using <kbd>Ctrl</kbd><kbd>F5</kbd> or _Debug_ > _Start Without Debugging_ from the menu, (<kbd>F5</kbd> will work, but the debugging experience won't be in Visual Studio)
 - Once your application has started, press <kbd>Alt</kbd><kbd>Shift</kbd><kbd>D</kbd> (in Chrome, on your application's tab)
