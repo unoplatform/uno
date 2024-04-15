@@ -4,6 +4,8 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 # Create an app with Rider
 
+> [!VIDEO source=https://www.youtube-nocookie.com/embed/BQdj9rqLcos max-width=600]
+
 > [!NOTE]
 > Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.Rider).
 >
