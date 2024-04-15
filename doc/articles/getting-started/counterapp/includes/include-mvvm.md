@@ -4,7 +4,7 @@ So far all the elements we've added to the **MainPage** have had their content s
 
 As part of creating the application, we selected MVVM as the presentation framework. This added a reference to the [**MVVM Toolkit**](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/) package which provides a base class called `ObservableObject` which implements the `INotifyPropertyChanged` interface. This interface is used to notify the UI when a property has changed so that the UI can be updated.
 
-- Add a new class, `MainViewModel`, to the **Counter** project.
+- Add a new class named `MainViewModel`.
 - Update the **MainViewModel** class to be a `partial` class and inherit from **ObservableObject**.
 
     ```csharp
