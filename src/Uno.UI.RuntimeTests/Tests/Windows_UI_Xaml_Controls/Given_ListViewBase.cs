@@ -4488,6 +4488,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#elif __ANDROID__ || __IOS__
+		[Ignore("This test is for managed ListViewBase.")]
 #endif
 		public async Task When_ScrollIntoView_No_Virtualization()
 		{
