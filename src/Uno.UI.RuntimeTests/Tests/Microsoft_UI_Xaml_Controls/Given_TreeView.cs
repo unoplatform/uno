@@ -96,6 +96,69 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved()
+		{
+			var itemsSource = Enumerable.Range(0, 8).Select(i =>
+				new Item
+				{
+					Name = $"Root{i}",
+					Children = new List<Item>
+					{
+						new Item { Name = $"Root{i} Child 1", Children = new List<Item>
+							{
+								new Item { Name = $"Root{i} Grandchild 1" },
+								new Item { Name = $"Root{i} Grandchild 2" }
+							}
+						},
+						new Item { Name = $"Root{i} Child 2" }
+					}
+				}
+			).ToList();
+
+			var treeView = new TreeView
+			{
+				Height = 100,
+				ItemsSource = itemsSource,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					return new TreeViewItem()
+						.Apply(tvi => tvi.SetBinding(TreeViewItem.ItemsSourceProperty, new Binding("Children")))
+						.Apply(tvi => tvi.SetBinding(ContentControl.ContentProperty, new Binding("Name")));
+				})
+			};
+
+			await UITestHelper.Load(treeView);
+
+			((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, itemsSource
+				.Select(item => treeView.ContainerFromItem(item))
+				.OfType<TreeViewItem>()
+				.Count(c => c.IsExpanded));
+
+			var sv = (ScrollViewer)GetListControl(treeView).FindName("ScrollViewer");
+			sv.ScrollToVerticalOffset(9999);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, itemsSource
+				.Select(item => treeView.ContainerFromItem(item))
+				.OfType<TreeViewItem>()
+				.Count(c => c.IsExpanded));
+
+			sv.ScrollToVerticalOffset(0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, itemsSource
+				.Select(item => treeView.ContainerFromItem(item))
+				.OfType<TreeViewItem>()
+				.Count(c => c.IsExpanded));
+			Assert.AreEqual(true, ((TreeViewItem)treeView.ContainerFromItem(itemsSource[0])).IsExpanded);
+		}
+#endif
+
 		[TestMethod]
 #if __ANDROID__ || __IOS__
 		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
@@ -244,11 +307,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			treeView.SelectedItem = treeView.RootNodes[1];
 
-#if !HAS_UNO
-			var listControl = (TreeViewList)typeof(Control).GetMethod("GetTemplateChild", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(treeView, new[] { "ListControl" });
-#else
-			var listControl = treeView.ListControl;
-#endif
+			var listControl = GetListControl(treeView);
 			// Yes, that's how it behaves on WinUI :/
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}
@@ -337,6 +396,15 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			TestViewModelItem Get_Depth_2_Item() => new TestViewModelItem { Label = $"Subitem {(char)(++initial_Depth_2)}" };
 		}
 
+		private static TreeViewList GetListControl(TreeView treeView)
+		{
+#if !HAS_UNO
+			return (TreeViewList)typeof(Control).GetMethod("GetTemplateChild", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(treeView, new[] { "ListControl" });
+#else
+			return treeView.ListControl;
+#endif
+		}
+
 		public class TestViewModelItem : INotifyPropertyChanged
 		{
 			public event PropertyChangedEventHandler PropertyChanged;
@@ -358,6 +426,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				}
 			}
 			string _label;
+		}
+
+		public class Item
+		{
+			public string Name { get; set; }
+			public List<Item> Children { get; set; }
 		}
 	}
 
