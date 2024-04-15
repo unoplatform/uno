@@ -142,6 +142,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
+#elif HAS_UNO && !HAS_UNO_WINUI
+		[Ignore("Fails on UWP branch as mixing WUX and MUX types causes errors.")]
 #endif
 		public async Task When_TreeViewItem_Dragged_NRE()
 		{
