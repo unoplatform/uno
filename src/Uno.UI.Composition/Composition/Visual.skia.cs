@@ -163,7 +163,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	internal virtual void Render(in DrawingSession parentSession)
+	internal void Render(in DrawingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -216,9 +216,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
 		Clip?.Apply(canvas, this);
-
-		// CornerRadiusClip applies to the children only.
-		CornerRadiusClip?.Apply(canvas, this);
 
 		var session = new DrawingSession(surface, canvas, in filters, in initialTransform);
 
