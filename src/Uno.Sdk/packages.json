@@ -16,6 +16,7 @@
 			"Uno.WinUI.Skia.MacOS",
 			"Uno.WinUI.Skia.Wpf",
 			"Uno.WinUI.Skia.X11",
+			"Uno.WinUI.Svg",
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly"
 		]
