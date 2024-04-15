@@ -10,7 +10,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Core.Extensions.Logging.Singleton" ProjectSystem="true" Condition="$(_IsExecutable) == 'true'"/>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Skia;')) OR $(UnoFeatures.Contains(';Skottie;')) OR $(UnoFeatures.Contains(';Svg;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Skia;')) OR $(UnoFeatures.Contains(';Lottie;')) OR $(UnoFeatures.Contains(';Svg;'))">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

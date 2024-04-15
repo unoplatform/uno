@@ -83,7 +83,7 @@ public enum UnoFeature
 	Skia,
 
 	[UnoArea(UnoArea.Core)]
-	Skottie,
+	Lottie,
 
 	[UnoArea(UnoArea.Core)]
 	Svg
