@@ -78,6 +78,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		set => SetProperty(ref _clip, value);
 	}
 
+	/// <summary>
+	/// DO NOT USE: This a a temporary property to properly support the corner radius. 
+	/// It should be removed by https://github.com/unoplatform/uno/issues/16294.
+	/// This clipping should be applied only on Children elements (i.e. in the context of a ContainerVisual)
+	/// </summary>
 	internal RectangleClip? CornerRadiusClip
 	{
 		get => _cornerRadiusClip;

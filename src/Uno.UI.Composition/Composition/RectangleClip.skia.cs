@@ -1,8 +1,7 @@
 ﻿#nullable enable
 
-#nullable enable
-
 using SkiaSharp;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -31,5 +30,19 @@ partial class RectangleClip
 				Bottom),
 			_radiiStore);
 		return _skRoundRect;
+	}
+
+	internal override Rect? GetBounds(Visual visual)
+	{
+		return new Rect(
+			x: Left,
+			y: Top,
+			width: Right - Left,
+			height: Bottom - Top);
+	}
+
+	internal override void Apply(SKCanvas canvas, Visual visual)
+	{
+		canvas.ClipRoundRect(SKRoundRect, SKClipOperation.Intersect, true);
 	}
 }

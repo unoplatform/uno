@@ -14,11 +14,4 @@ public partial class CompositionViewBox
 			top: Offset.Y,
 			right: Offset.X + Size.X,
 			bottom: Offset.Y + Size.Y);
-
-	internal Rect GetRect()
-		=> new(
-			x: Offset.X,
-			y: Offset.Y,
-			width: Size.X,
-			height: Size.Y);
 }

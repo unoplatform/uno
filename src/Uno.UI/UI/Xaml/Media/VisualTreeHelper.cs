@@ -494,7 +494,7 @@ namespace Microsoft.UI.Xaml.Media
 			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
 				? transformToElement.Transform(rect)
 				: Rect.Infinite;
-			if (element.Visual.Clip?.GetRect(element.Visual) is { } clip)
+			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
 			{
 				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;
 			}

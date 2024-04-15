@@ -84,6 +84,7 @@ public partial class ShapeVisual
 			parentSession.Canvas.Concat(ref transform);
 		}
 
+		// Note: Here only the `Clip` is relevant for the shapes, `CornerRadiusClip` applies only for children (i.e. UIElement's content)
 		Clip?.Apply(parentSession.Canvas, this);
 
 		var session = parentSession; // Creates a new session (clone the struct)
