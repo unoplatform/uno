@@ -349,7 +349,9 @@ public partial class TreeViewList : ListView
 			{
 				DispatcherQueue.TryEnqueue(() =>
 				{
-					itemNode.IsExpanded = itemContainer.IsExpanded;
+					// Uno Specific: this is actually a bug in WinUI
+					// itemNode.IsExpanded = itemContainer.IsExpanded;
+					itemContainer.IsExpanded = itemNode.IsExpanded;
 				});
 			}
 		}
