@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\APITests\CommandBarFlyoutTests.cs, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
 
 using Common;
 using MUXControlsTestApp.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,18 +16,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 
-#if USING_TAEF
-using WEX.TestExecution;
-using WEX.TestExecution.Markup;
-using WEX.Logging.Interop;
-#else
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
-#endif
-
-using CommandBarFlyout = Microsoft.UI.Xaml.Controls.CommandBarFlyout;
-
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
 public class CommandBarFlyoutTests : MUXApiTestBase
@@ -34,12 +25,6 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 	[TestProperty("Description", "Verifies the CommandBarFlyout's default properties.")]
 	public void VerifyFlyoutDefaultPropertyValues()
 	{
-		if (PlatformConfiguration.IsOSVersionLessThan(OSVersion.Redstone2))
-		{
-			Log.Warning("Test is disabled pre-RS2 because CommandBarFlyout is not supported pre-RS2");
-			return;
-		}
-
 		RunOnUIThread.Execute(() =>
 		{
 			CommandBarFlyout commandBarFlyout = new CommandBarFlyout();
@@ -56,12 +41,6 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 	[TestProperty("Description", "Verifies that setting commands on CommandBarFlyout causes them to propagate down to its CommandBar.")]
 	public void VerifyFlyoutCommandsArePropagatedToTheCommandBar()
 	{
-		if (PlatformConfiguration.IsOSVersionLessThan(OSVersion.Redstone2))
-		{
-			Log.Warning("Test is disabled pre-RS2 because CommandBarFlyout is not supported pre-RS2");
-			return;
-		}
-
 		CommandBarFlyout commandBarFlyout = null;
 		Button commandBarFlyoutTarget = null;
 
@@ -70,7 +49,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 
 		RunOnUIThread.Execute(() =>
 		{
-			Popup flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+			Popup flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(commandBarFlyout.XamlRoot).Last();
 			CommandBar commandBar = TestUtilities.FindDescendents<CommandBar>(flyoutPopup).Single();
 
 			Verify.AreEqual(commandBarFlyout.PrimaryCommands.Count, commandBar.PrimaryCommands.Count);
@@ -103,12 +82,6 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 	[TestProperty("Description", "Verifies that the overflow popup sizes itself to be the size of the main command bar if the primary items section width is larger than the secondary items section width.")]
 	public void VerifyCommandBarSizingPrimaryItemsLarger()
 	{
-		if (PlatformConfiguration.IsOSVersionLessThan(OSVersion.Redstone2))
-		{
-			Log.Warning("Test is disabled pre-RS2 because CommandBarFlyout is not supported pre-RS2");
-			return;
-		}
-
 		VerifyCommandBarSizing(CommandBarSizingOptions.PrimaryItemsLarger);
 	}
 
@@ -116,12 +89,6 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 	[TestProperty("Description", "Verifies that the main command bar sizes itself to be the size of the overflow popup when open if the primary items section width is smaller than the secondary items section width.")]
 	public void VerifyCommandBarSizingSecondaryItemsLarger()
 	{
-		if (PlatformConfiguration.IsOSVersionLessThan(OSVersion.Redstone2))
-		{
-			Log.Warning("Test is disabled pre-RS2 because CommandBarFlyout is not supported pre-RS2");
-			return;
-		}
-
 		VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsLarger);
 	}
 
@@ -129,12 +96,6 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 	[TestProperty("Description", "Verifies that the command bar and overflow popup do not size themselves to be larger than the max width if a very wide AppBarButton is present.")]
 	public void VerifyCommandBarSizingSecondaryItemsMaxWidth()
 	{
-		if (PlatformConfiguration.IsOSVersionLessThan(OSVersion.Redstone2))
-		{
-			Log.Warning("Test is disabled pre-RS2 because CommandBarFlyout is not supported pre-RS2");
-			return;
-		}
-
 		VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsMaxWidth);
 	}
 
@@ -142,12 +103,6 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 	[TestProperty("Description", "Verifies that the overflow popup does not size itself to be larger than its max height if a sufficiently large number of AppBarButtons are present.")]
 	public void VerifyCommandBarSizingSecondaryItemsMaxHeight()
 	{
-		if (PlatformConfiguration.IsOSVersionLessThan(OSVersion.Redstone2))
-		{
-			Log.Warning("Test is disabled pre-RS2 because CommandBarFlyout is not supported pre-RS2");
-			return;
-		}
-
 		VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsMaxHeight);
 	}
 
@@ -183,7 +138,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 
 		RunOnUIThread.Execute(() =>
 		{
-			Popup flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+			Popup flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(commandBarFlyout.XamlRoot).Last();
 			commandBar = TestUtilities.FindDescendents<CommandBar>(flyoutPopup).Single();
 		});
 
@@ -203,7 +158,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 
 		RunOnUIThread.Execute(() =>
 		{
-			Popup flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+			Popup flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(commandBar.XamlRoot).Last();
 			commandBar = TestUtilities.FindDescendents<CommandBar>(flyoutPopup).Single();
 
 			originalWidth = commandBar.ActualWidth;
@@ -252,12 +207,6 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 	[TestProperty("Description", "Verifies that the overflow popup does not size itself to be larger than its max height if a sufficiently large number of AppBarButtons are present.")]
 	public void VerifyPrimaryCommandsCanOverflowToSecondaryItemsControl()
 	{
-		if (PlatformConfiguration.IsOSVersionLessThan(OSVersion.Redstone2))
-		{
-			Log.Warning("Test is disabled pre-RS2 because CommandBarFlyout is not supported pre-RS2");
-			return;
-		}
-
 		CommandBarFlyout flyout = null;
 		Button flyoutTarget = null;
 
@@ -265,26 +214,26 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 		{
 			flyout = new CommandBarFlyout() { Placement = FlyoutPlacementMode.Right };
 
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 1" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 2" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 3" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 4" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 5" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 6" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 7" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 8" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 9" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 10" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 11" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 12" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 13" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 14" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 15" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 16" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 17" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 18" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 19" });
-			flyout.PrimaryCommands.Add(new AppBarButton() { Label = "Item 20" });
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
+			flyout.PrimaryCommands.Add(new AppBarButton());
 
 			flyout.SecondaryCommands.Add(new AppBarButton() { Label = "Item 21" });
 			flyout.SecondaryCommands.Add(new AppBarButton() { Label = "Item 22" });
@@ -301,7 +250,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 
 		RunOnUIThread.Execute(() =>
 		{
-			Popup flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+			Popup flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyoutTarget.XamlRoot).Last();
 			CommandBar commandBar = TestUtilities.FindDescendents<CommandBar>(flyoutPopup).Single();
 
 			IList<ItemsControl> itemsControls = TestUtilities.FindDescendents<ItemsControl>(commandBar);
@@ -316,6 +265,100 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			Verify.AreEqual(9, primaryItemsControl.Items.Count);
 			Log.Comment("We expect there to be 17 items located inside the secondary ItemsControl (16 + autogenerated separator); {0} were found.", secondaryItemsControl.Items.Count);
 			Verify.AreEqual(17, secondaryItemsControl.Items.Count);
+		});
+
+		CloseFlyout(flyout);
+	}
+
+	[TestMethod]
+	[TestProperty("Description", "Verifies that labels cause primary commmands to be wider than without, and to have their labels be visible.")]
+	public void VerifyPrimaryCommandLabelsAffectLayout()
+	{
+		CommandBarFlyout flyout = null;
+		Button flyoutTarget = null;
+		AppBarButton button1 = null;
+		AppBarButton button2 = null;
+
+		RunOnUIThread.Execute(() =>
+		{
+			flyout = new CommandBarFlyout() { Placement = FlyoutPlacementMode.Right };
+
+			button1 = new AppBarButton();
+			button2 = new AppBarButton();
+
+			flyout.PrimaryCommands.Add(button1);
+			flyout.PrimaryCommands.Add(button2);
+
+			flyoutTarget = new Button() { Content = "Click for flyout" };
+			Content = flyoutTarget;
+			Content.UpdateLayout();
+		});
+
+		OpenFlyout(flyout, flyoutTarget);
+
+		double originalWidth = 0;
+		double originalHeight = 0;
+
+		CommandBar commandBar = null;
+		TextBlock button1TextLabel = null;
+		TextBlock button2TextLabel = null;
+
+		RunOnUIThread.Execute(() =>
+		{
+			button1TextLabel = TestUtilities.FindDescendents<TextBlock>(button1).Where(textBlock => textBlock.Name == "TextLabel").Single();
+			button2TextLabel = TestUtilities.FindDescendents<TextBlock>(button2).Where(textBlock => textBlock.Name == "TextLabel").Single();
+
+			Log.Comment("We expect the TextLabel template parts to be collapsed when the Label property is empty.");
+			Verify.AreEqual(Visibility.Collapsed, button1TextLabel.Visibility);
+			Verify.AreEqual(Visibility.Collapsed, button2TextLabel.Visibility);
+
+			Popup flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyoutTarget.XamlRoot).Last();
+			commandBar = TestUtilities.FindDescendents<CommandBar>(flyoutPopup).Single();
+
+			originalWidth = commandBar.ActualWidth;
+			originalHeight = commandBar.ActualHeight;
+		});
+
+		CloseFlyout(flyout);
+
+		RunOnUIThread.Execute(() =>
+		{
+			button1.Label = "Item 1";
+		});
+
+		OpenFlyout(flyout, flyoutTarget);
+
+		double finalWidth = 0;
+		double finalHeight = 0;
+
+		RunOnUIThread.Execute(() =>
+		{
+			Log.Comment("We expect the TextLabel template parts to be visible when the Label property is set.");
+			Verify.AreEqual(Visibility.Visible, button1TextLabel.Visibility);
+			Verify.AreEqual(Visibility.Visible, button2TextLabel.Visibility);
+
+			finalWidth = commandBar.ActualWidth;
+			finalHeight = commandBar.ActualHeight;
+
+			Log.Comment("We also expect the width and height of the AppBarButtons to be larger when the Label property is set on at least one primary command.");
+			Verify.IsGreaterThan(finalWidth, originalWidth);
+			Verify.IsGreaterThan(finalHeight, originalHeight);
+		});
+
+		CloseFlyout(flyout);
+
+		RunOnUIThread.Execute(() =>
+		{
+			button2.Label = "Item 2";
+		});
+
+		OpenFlyout(flyout, flyoutTarget);
+
+		RunOnUIThread.Execute(() =>
+		{
+			Log.Comment("Having all labels set should not make things any wider or taller than only some labels set.");
+			Verify.AreEqual(Math.Round(finalWidth), Math.Round(commandBar.ActualWidth));
+			Verify.AreEqual(Math.Round(finalHeight), Math.Round(commandBar.ActualHeight));
 		});
 
 		CloseFlyout(flyout);
@@ -344,12 +387,9 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			AppBarButton selectAllButton = new AppBarButton() { Label = "Select all" };
 			commandBarFlyout.SecondaryCommands.Add(selectAllButton);
 
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "KeyboardAccelerators"))
-			{
-				undoButton.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
-				redoButton.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
-				selectAllButton.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
-			}
+			undoButton.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
+			redoButton.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+			selectAllButton.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
 
 			commandBarFlyoutTarget = new Button() { Content = "Click for flyout" };
 			Content = commandBarFlyoutTarget;
@@ -368,15 +408,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 		RunOnUIThread.Execute(() =>
 		{
 			flyout.Opened += (sender, args) => openedEvent.Set();
-
-			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowMode"))
-			{
-				flyout.ShowAt(flyoutTarget, new FlyoutShowOptions { ShowMode = FlyoutShowMode.Transient });
-			}
-			else
-			{
-				flyout.ShowAt(flyoutTarget);
-			}
+			flyout.ShowAt(flyoutTarget, new FlyoutShowOptions { ShowMode = FlyoutShowMode.Transient });
 		});
 
 		TestUtilities.WaitForEvent(openedEvent);
