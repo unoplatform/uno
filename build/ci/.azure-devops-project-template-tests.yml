@@ -25,7 +25,7 @@ jobs:
   - template: templates/gitversion.yml
 
   - script: |
-      cp global.json global-net7.json
+      rm global.json
       cp global-net8.json global.json
     displayName: Replace global.json with .NET 8
 
@@ -59,8 +59,8 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - bash: |
-      cp global.json global-net7.json
+  - script: |
+      rm global.json
       cp global-net8.json global.json
       sed -i.bu 's/8.0.100/8.0.200/' global.json
     displayName: Replace global.json with .NET 8.0.200
@@ -100,9 +100,9 @@ jobs:
       artifactName: NugetPackages
 
   - script: |
-      cp global.json global-net7.json
+      rm global.json
       cp global-net8.json global.json
-      sed -i 's/8.0.100/8.0.200/g' global.json
+      sed -i.bu 's/8.0.100/8.0.200/' global.json
     displayName: Replace global.json with .NET 8.0.200
 
   - template: templates/dotnet-mobile-install-linux.yml

@@ -34,7 +34,7 @@ jobs:
   - template: templates/gitversion.yml
 
   - script: |
-      cp global.json global-net7.json
+      rm global.json
       cp global-net8.json global.json
     displayName: Replace global.json with .NET 8
 

@@ -31,6 +31,11 @@ jobs:
 
   - template: templates/gitversion.yml
 
+  - script: |
+      rm global.json
+      cp global-net7.json global.json
+    displayName: Replace global.json with .NET 7
+
   - template: templates/dotnet-mobile-install-windows.yml
 
   - powershell: |
