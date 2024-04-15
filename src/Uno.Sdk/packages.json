@@ -75,6 +75,7 @@
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.Uno.WinUI",
+			"SkiaSharp.Views.WinUI",
 			"SkiaSharp.NativeAssets.Linux",
 			"SkiaSharp.NativeAssets.macOS",
 			"SkiaSharp.NativeAssets.Win32"

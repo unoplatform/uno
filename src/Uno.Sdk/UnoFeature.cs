@@ -80,5 +80,11 @@ public enum UnoFeature
 	Prism,
 
 	[UnoArea(UnoArea.Core)]
-	Skia
+	Skia,
+
+	[UnoArea(UnoArea.Core)]
+	Skottie,
+
+	[UnoArea(UnoArea.Core)]
+	Svg
 }
