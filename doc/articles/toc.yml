@@ -153,6 +153,8 @@
 
     - name: Authoring
       items:
+      - name: Using the Uno.SDK
+        href: xref:Uno.Features.Uno.Sdk
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
