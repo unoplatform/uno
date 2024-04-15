@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,8 +11,10 @@ using System.Threading;
 using Windows.Graphics.Display;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
+using Microsoft.UI.Xaml.Data;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -164,5 +165,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			ImageAssert.HasColorAt(result, 5, 5, nonOpaqueColor, tolerance: 1);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("The behaviour is only correct on skia due to the changes in https://github.com/unoplatform/uno/pull/15875")]
+#endif
+		public async Task When_ScrollViewer_Scrolled()
+		{
+			ItemsRepeater ir;
+			var sv = new ScrollViewer
+			{
+				Width = 100,
+				Height = 500,
+				Content = ir = new ItemsRepeater
+				{
+					ItemTemplate = new DataTemplate(() => new Border
+					{
+						Height = 100,
+						Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+					}),
+					ItemsSource = "0123456789"
+				}
+			};
+
+			await UITestHelper.Load(sv);
+
+			var irBitmap1 = await UITestHelper.ScreenShot(ir);
+			var svBitmap1 = await UITestHelper.ScreenShot(sv);
+
+			sv.ScrollToVerticalOffset(100);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var irBitmap2 = await UITestHelper.ScreenShot(ir);
+			var svBitmap2 = await UITestHelper.ScreenShot(sv);
+
+			var bytesPerPixel = irBitmap1.GetPixels().Length / (irBitmap1.Width * irBitmap1.Height);
+			var bytesToCompare = bytesPerPixel * (int)sv.ViewportHeight * irBitmap1.Width;
+			CollectionAssert.AreEqual(irBitmap1.GetPixels()[..bytesToCompare], irBitmap2.GetPixels()[..bytesToCompare]);
+			CollectionAssert.AreNotEqual(svBitmap1.GetPixels()[..bytesToCompare], svBitmap2.GetPixels()[..bytesToCompare]);
+		}
+#endif
 	}
 }

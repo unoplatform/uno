@@ -53,9 +53,9 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Modifiers.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Data.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Position.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Data.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Modifiers.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.AllowedOperations.get
 	}
 }

@@ -3,15 +3,6 @@
 	<!-- https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#use-case-multi-level-merging -->
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 
-	<!-- Ensure that Uno.Samples.UITest.Generator build before all SamplesApp project -->
-	<ItemGroup Condition="'$(MSBuildProjectName)'!='Uno.Samples.UITest.Generator' and '$(DocsGeneration)'==''">
-		<ProjectReference Include="$(MSBuildThisFileDirectory)\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework;RuntimeIdentifier;TargetFrameworks;RuntimeIdentifiers</UndefineProperties>
-		</ProjectReference>
-	</ItemGroup>
-
 	<Target Name="BuildUnoUITasks" BeforeTargets="BeforeBuild" Condition="'$(PreBuildUnoUITasks)'=='true'">
 		<Message Text="Building uno.ui.tasks" Importance="low" />
 		<MSBuild Projects="$(MsBuildThisFileDirectory)../SourceGenerators/Uno.UI.Tasks/Uno.UI.Tasks.csproj"

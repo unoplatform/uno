@@ -31,6 +31,7 @@
 				<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 				<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
 				<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
+				<dependency id="Xamarin.AndroidX.SwipeRefreshLayout"  version="1.1.0.10" />
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
@@ -63,6 +64,7 @@
 				<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 				<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
 				<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
+				<dependency id="Xamarin.AndroidX.SwipeRefreshLayout"  version="1.1.0.10" />
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
@@ -280,11 +282,20 @@
 	<files>
 		<!-- Icon File -->
 		<file src="..\..\src\Common\uno.png" target="/" />
-		<!-- UAP -->
+
+		<!-- UAP / netprevious -->
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
+
+		<!-- BEGIN UWP-excluded -->
+		<!-- netcurrent, currently using netprevious to avoid netcore build issues -->
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net8.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net8.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net8.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net8.0-windows10.0.19041.0\Uno.UI.Toolkit" />
+		<!-- END UWP-excluded -->
 
 		<!-- net8.0-ios -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios\Uno.dll" target="lib\net8.0-ios" />

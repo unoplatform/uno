@@ -23,7 +23,7 @@
 			        Width="150"
 			        Height="80">
 				<Border.Background>
-					<ImageBrush Stretch="Uniform"
+					<ImageBrush x:Name="imageBrush1"  Stretch="Uniform"
 								AlignmentX="Left"
 								ImageSource="{x:Bind MySource, Mode=OneWay}" />
 				</Border.Background>
@@ -34,7 +34,7 @@
 			        Width="150"
 			        Height="80">
 				<Border.Background>
-					<ImageBrush Stretch="Uniform"
+					<ImageBrush x:Name="imageBrush2" Stretch="Uniform"
 					            AlignmentX="Center"
 					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
 				</Border.Background>
@@ -45,7 +45,7 @@
 			        Width="150"
 			        Height="80">
 				<Border.Background>
-					<ImageBrush Stretch="Uniform"
+					<ImageBrush x:Name="imageBrush3" Stretch="Uniform"
 					            AlignmentX="Right"
 					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
 				</Border.Background>
@@ -58,7 +58,7 @@
 			        Width="150"
 			        Height="80">
 				<Border.Background>
-					<ImageBrush Stretch="UniformToFill"
+					<ImageBrush x:Name="imageBrush4" Stretch="UniformToFill"
 					            AlignmentY="Top"
 					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
 				</Border.Background>
@@ -69,7 +69,7 @@
 			        Width="150"
 			        Height="80">
 				<Border.Background>
-					<ImageBrush Stretch="UniformToFill"
+					<ImageBrush x:Name="imageBrush5" Stretch="UniformToFill"
 					            AlignmentY="Center"
 					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
 				</Border.Background>
@@ -80,7 +80,7 @@
 			        Width="150"
 			        Height="80">
 				<Border.Background>
-					<ImageBrush Stretch="UniformToFill"
+					<ImageBrush x:Name="imageBrush6" Stretch="UniformToFill"
 					            AlignmentY="Bottom"
 					            ImageSource="{x:Bind MySource, Mode=OneWay}" />
 				</Border.Background>

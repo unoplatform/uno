@@ -15,13 +15,13 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Position
 		// Skipping already declared property Properties
 		// Skipping already declared property Timestamp
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Timestamp.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.IsInContact.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FrameId.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerId.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Position.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Properties.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Timestamp.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FrameId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Input.PointerPoint GetTransformedPoint(global::Microsoft.UI.Input.IPointerPointTransform transform)

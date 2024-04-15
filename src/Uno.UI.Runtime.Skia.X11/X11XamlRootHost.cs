@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
@@ -36,6 +38,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private static bool _firstWindowCreated;
 	private static object _x11WindowToXamlRootHostMutex = new();
 	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
+	private static ConcurrentDictionary<Window, X11XamlRootHost> _windowToHost = new();
 
 	private readonly TaskCompletionSource _closed; // To keep it simple, only SetResult if you have the lock
 	private readonly ApplicationView _applicationView;
@@ -46,34 +49,80 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public X11Window X11Window => _x11Window!.Value;
 
-	public X11XamlRootHost(Window winUIWindow, Action<Size> resizeCallback, Action closeCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
 		_window = winUIWindow;
 
 		_resizeCallback = resizeCallback;
-		_closeCallback = closeCallback;
+		_closingCallback = closingCallback;
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+		winUIWindow.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
-		Closed.ContinueWith(_ => _applicationView.PropertyChanged -= OnApplicationViewPropertyChanged);
 
 		Initialize();
+
+		// Note: the timing of XamlRootMap.Register is very fragile. It needs to be early enough
+		// so things like UpdateWindowPropertiesFromPackage can read the DPI, but also late enough so that
+		// the X11Window is "initialized".
+		X11Manager.XamlRootMap.Register(xamlRoot, this);
+		_windowToHost[winUIWindow] = this;
+
+		Closed.ContinueWith(_ =>
+		{
+			using (X11Helper.XLock(X11Window.Display))
+			{
+				X11Manager.XamlRootMap.Unregister(xamlRoot);
+				_windowToHost.Remove(winUIWindow, out var _);
+				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+				winUIWindow.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
+			}
+		});
+
 		UpdateWindowPropertiesFromPackage();
+		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
+
+		// only start listening to events after we're done setting everything up
+		InitializeX11EventsThread();
 	}
+
+	public static X11XamlRootHost? GetHostFromWindow(Window window)
+		=> _windowToHost.TryGetValue(window, out var host) ? host : null;
 
 	public Task Closed { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		// We could use _NET_WM_NAME instead
-		using var _ = X11Helper.XLock(X11Window.Display);
-		var __ = XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
+		var minSize = _applicationView.PreferredMinSize;
+
+		if (minSize != Size.Empty)
+		{
+			var hints = new XSizeHints
+			{
+				flags = (int)XSizeHintsFlags.PMinSize,
+				min_width = (int)minSize.Width,
+				min_height = (int)minSize.Height
+			};
+
+			XLib.XSetWMNormalHints(X11Window.Display, X11Window.Window, ref hints);
+		}
 	}
+
+	internal void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
+	}
+
+	internal void ExtendContentIntoTitleBar(bool extend) => X11Helper.SetMotifWMDecorations(X11Window, !extend, 0xFF);
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
@@ -109,7 +158,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
 			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
@@ -226,9 +275,19 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void Initialize()
 	{
+		using var _1 = Disposable.Create(() =>
+		{
+			// set _firstWindowCreated even if we crash. This prevents the Main thread from being
+			// kept alive forever even if the main window creation crashed.
+			lock (_x11WindowToXamlRootHostMutex)
+			{
+				_firstWindowCreated = true;
+			}
+		});
+
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
 
-		using var _1 = X11Helper.XLock(display);
+		using var _2 = X11Helper.XLock(display);
 
 		if (display == IntPtr.Zero)
 		{
@@ -236,6 +295,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			{
 				this.Log().Error("XLIB ERROR: Cannot connect to X server");
 			}
+			throw new InvalidOperationException("XLIB ERROR: Cannot connect to X server");
 		}
 
 		int screen = XLib.XDefaultScreen(display);
@@ -270,7 +330,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
-		var _2 = XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
+		var _3 = XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -278,10 +338,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			_x11WindowToXamlRootHost[_x11Window.Value] = this;
 		}
 
-		InitializeX11EventsThread();
-
 		// The window must be mapped before DisplayInformationExtension is initialized.
-		var _3 = XLib.XMapWindow(display, window);
+		var _4 = XLib.XMapWindow(display, window);
 
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
@@ -341,7 +399,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		XSetWindowAttributes attribs = default;
 		attribs.border_pixel = XLib.XBlackPixel(display, screen);
 		attribs.background_pixel = XLib.XWhitePixel(display, screen);
-		attribs.override_redirect = /* True */ 1;
+		// Not sure why this is needed, commented out until further notice
+		// attribs.override_redirect = /* True */ 1;
 		attribs.colormap = XLib.XCreateColormap(display, XLib.XRootWindow(display, screen), visual->visual, /* AllocNone */ 0);
 		attribs.event_mask = EventsMask;
 		var window = XLib.XCreateWindow(

@@ -84,7 +84,7 @@ jobs:
     displayName: Restoring macOS native assets
     inputs:
       artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
-      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/runtimes/osx/native
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later

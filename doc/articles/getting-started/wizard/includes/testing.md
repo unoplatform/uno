@@ -34,4 +34,4 @@ Alternatively, to include no tests, use the `none` parameter:
 dotnet new unoapp -tests none
 ```
 
-![Testing tab in the wizard](assets/testing.jpg)
+![Testing tab in the wizard](../assets/testing.png)

@@ -14,13 +14,15 @@ To use SVG, install the following NuGet packages into the iOS, macOS, Mac Cataly
 
 * `Uno.WinUI.Svg` (or `Uno.UI.Svg` if you are using a UWP-based app template)
 * `SkiaSharp.Views.Uno.WinUI` (or `SkiaSharp.Views.Uno` if you are using a UWP-based app template)
+* `Svg.Skia` (required only for the Skia project)
 
 > [!NOTE]
 > If the `Uno.[UI|WinUI].Svg` package is not installed, you will get a warning when an `.svg` image is loaded.
+> If the `Svg.Skia` package is not installed, you will get an error when an `.svg` image is loaded for the Skia project.
 > [!IMPORTANT]
-> The `Uno.[UI|WinUI].Svg` package is not needed for WebAssembly, and must only be installed on the Mobile and Skia heads. It must not in any other class libraries of your solution.
+> The `Uno.[UI|WinUI].Svg` package is not needed for WebAssembly, and must only be installed on the Mobile and Skia heads. It must not be in any other class libraries of your solution.
 
-Add the SVG Image into the project's class library (or shared project) and make sure that the build action is set to Content.
+Add the SVG Image to the app project and make sure that the build action is set to Content.
 Now, you can display the SVG image in an `Image` by referencing it from the `Source` property. For example:
 
 ```xml

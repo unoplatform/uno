@@ -107,6 +107,9 @@ stages:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
       vmPoolLinux: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
+      xCodeRoot: '$(xCodeRoot)'
+      XamarinSDKVersion: '$(XamarinSDKVersion)'
 
 - stage: unit_tests
   displayName: Tests - Unit

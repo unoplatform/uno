@@ -49,7 +49,7 @@ More articles on WinUI 3:
 
 ## Uno Platform Blank Application (UWP)
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP API set.
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Desktop (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP API set.
 
 A basic example:
 
@@ -71,16 +71,6 @@ A basic example:
 
 ```dotnetcli
 dotnet new unolib -o MyUnoLib
-```
-
-## Uno Platform Blank Cross-Runtime library
-
-This template can be used to create a blank cross-runtime library when platform-specific code needs to be created for Skia and WebAssembly.
-
-A basic example:
-
-```dotnetcli
-dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```
 
 ## Uno Platform MAUI Embedding Class Library

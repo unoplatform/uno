@@ -440,32 +440,44 @@ namespace Microsoft.UI.Xaml
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
-			DefaultBrushes.ResetDefaultThemeBrushes();
-			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			try
 			{
-				if (GetTreeRoot(contentRoot) is { } root)
+				// When we change theme, we may update properties and set them with Local precedence
+				// with the newly evaluated ThemeResource value.
+				// In this case, if we previously had Animation value in effect, we don't want the new Local value to take effect.
+				// So, we avoid setting LocalValueNewerThanAnimationsValue
+				DependencyPropertyDetails.SuppressLocalCanDefeatAnimations();
+				DefaultBrushes.ResetDefaultThemeBrushes();
+				foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 				{
-					// Update theme bindings in application resources
-					Resources?.UpdateThemeBindings(updateReason);
-
-					// Update theme bindings in system resources
-					ResourceResolver.UpdateSystemThemeBindings(updateReason);
-
-					PropagateResourcesChanged(root, updateReason);
-				}
-
-				// Start from the real root, which may not be a FrameworkElement on some platforms
-				View GetTreeRoot(ContentRoot contentRoot)
-				{
-					View current = contentRoot.XamlRoot.Content;
-					var parent = current?.GetVisualTreeParent();
-					while (parent != null)
+					if (GetTreeRoot(contentRoot) is { } root)
 					{
-						current = parent;
-						parent = current?.GetVisualTreeParent();
+						// Update theme bindings in application resources
+						Resources?.UpdateThemeBindings(updateReason);
+
+						// Update theme bindings in system resources
+						ResourceResolver.UpdateSystemThemeBindings(updateReason);
+
+						PropagateResourcesChanged(root, updateReason);
 					}
-					return current;
+
+					// Start from the real root, which may not be a FrameworkElement on some platforms
+					View GetTreeRoot(ContentRoot contentRoot)
+					{
+						View current = contentRoot.XamlRoot.Content;
+						var parent = current?.GetVisualTreeParent();
+						while (parent != null)
+						{
+							current = parent;
+							parent = current?.GetVisualTreeParent();
+						}
+						return current;
+					}
 				}
+			}
+			finally
+			{
+				DependencyPropertyDetails.ContinueLocalCanDefeatAnimations();
 			}
 		}
 

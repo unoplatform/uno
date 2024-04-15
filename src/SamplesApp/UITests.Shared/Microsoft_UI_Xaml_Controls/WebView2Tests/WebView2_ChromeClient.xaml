@@ -12,11 +12,5 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="WebChromeClient">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<mux:WebView2 Source="{Binding [ChromeTestUri]}" />
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<mux:WebView2 Source="{Binding [ChromeTestUri]}" />
 </UserControl>

@@ -4,25 +4,25 @@ using System;
 
 namespace UnoApp50
 {
-    public sealed partial class AppHead : App
-    {
-        static AppHead() =>
-            InitializeLogging();
+	public sealed partial class AppHead : App
+	{
+		static AppHead() =>
+			InitializeLogging();
 
-        /// <summary>
-        /// Initializes the singleton application object. This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
-        public AppHead()
-        {
-            this.InitializeComponent();
-        }
+		/// <summary>
+		/// Initializes the singleton application object. This is the first line of authored code
+		/// executed, and as such is the logical equivalent of main() or WinMain().
+		/// </summary>
+		public AppHead()
+		{
+			this.InitializeComponent();
+		}
 
-        /// <summary>
-        /// Configures global Uno Platform logging
-        /// </summary>
-        private static void InitializeLogging()
-        {
+		/// <summary>
+		/// Configures global Uno Platform logging.
+		/// </summary>
+		private static void InitializeLogging()
+		{
 		// Logging is disabled by default for release builds, as it incurs a significant
 		// initialization cost from Microsoft.Extensions.Logging setup. If startup performance
 		// is a concern for your application, keep this disabled. If you're running on the web or
@@ -83,6 +83,6 @@ namespace UnoApp50
 #if HAS_UNO
 		global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
-        }
-    }
+		}
+	}
 }

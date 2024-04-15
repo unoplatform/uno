@@ -4,8 +4,8 @@
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
 		<EnableDefaultAndroidItems Condition="$(EnableDefaultAndroidItems) == ''">false</EnableDefaultAndroidItems>
 
-		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$(AndroidProjectFolder)AndroidManifest.xml') ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
+		<AndroidManifest Condition=" $(AndroidManifest) == '' AND $(_IsUnoSingleProjectAndLegacy) == 'true' AND Exists('$(AndroidProjectFolder)AndroidManifest.xml') ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.Android.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.Android.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 </Project>

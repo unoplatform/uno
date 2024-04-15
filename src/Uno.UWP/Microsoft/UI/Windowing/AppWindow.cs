@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Windows.Foundation;
-using Windows.Graphics.Display;
 using Microsoft.UI.Windowing.Native;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
@@ -22,7 +22,7 @@ partial class AppWindow
 	private INativeAppWindow _nativeAppWindow;
 
 	private AppWindowPresenter _presenter;
-	private string _title;
+	private string _titleCache; // only use this until the _nativeAppWindow is set
 
 	internal AppWindow()
 	{
@@ -36,15 +36,15 @@ partial class AppWindow
 
 	public string Title
 	{
-		get => _title;
+		get => _nativeAppWindow is not null ? _nativeAppWindow.Title : _titleCache;
 		set
 		{
-			_title = value;
-
 			if (_nativeAppWindow is not null)
 			{
-				_nativeAppWindow.Title = _title;
+				_nativeAppWindow.Title = value;
 			}
+
+			_titleCache = value;
 		}
 	}
 
@@ -57,13 +57,13 @@ partial class AppWindow
 
 		_nativeAppWindow = nativeAppWindow;
 
-		if (string.IsNullOrWhiteSpace(_nativeAppWindow.Title) && !string.IsNullOrWhiteSpace(_title))
+		if (string.IsNullOrWhiteSpace(_nativeAppWindow.Title) && !string.IsNullOrWhiteSpace(_titleCache))
 		{
-			_nativeAppWindow.Title = _title;
+			_nativeAppWindow.Title = _titleCache;
 		}
 		else
 		{
-			_title = _nativeAppWindow.Title;
+			_titleCache = _nativeAppWindow.Title;
 		}
 
 		SetPresenter(AppWindowPresenterKind.Default);
@@ -86,6 +86,9 @@ partial class AppWindow
 
 		return appWindow;
 	}
+
+	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
+		=> _windowIdMap.TryGetValue(windowId, out appWindow);
 
 	public void SetPresenter(AppWindowPresenter appWindowPresenter)
 	{

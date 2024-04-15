@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum ScrollSnapPointsAlignment
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Near = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Center = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Far = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment.Near
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment.Center
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment.Far
 	}
 #endif
 }

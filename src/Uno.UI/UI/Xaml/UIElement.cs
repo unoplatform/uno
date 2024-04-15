@@ -75,9 +75,11 @@ namespace Microsoft.UI.Xaml
 		// but it should actually be computed based on clipping vs desired size.
 		internal Point ScrollOffsets { get; private protected set; }
 
+#if !__SKIA__
 		// This is the local viewport of the element, i.e. where the element can draw content once clipping has been applied.
 		// This is expressed in local coordinate space.
 		internal Rect Viewport { get; private set; } = Rect.Infinite;
+#endif
 		#endregion
 
 		/// <summary>
@@ -97,12 +99,20 @@ namespace Microsoft.UI.Xaml
 
 		private bool ShouldMirrorVisual()
 		{
-			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
+			if (this is not FrameworkElement fe)
 			{
-				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
+				return false;
+			}
+
+			var parent = VisualTreeHelper.GetParent(this);
+			while (parent is not null)
+			{
+				if (parent is FrameworkElement feParent)
 				{
-					return true;
+					return feParent is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
 				}
+
+				parent = VisualTreeHelper.GetParent(parent);
 			}
 
 			return false;
@@ -515,11 +525,22 @@ namespace Microsoft.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			if (from == to)
+			if (from == to || !from.IsInLiveTree || (!to?.IsInLiveTree ?? false))
 			{
 				return Matrix3x2.Identity;
 			}
 
+#if __SKIA__
+			Matrix4x4.Invert(to?.Visual.TotalMatrix ?? Matrix4x4.Identity, out var invertedTotalMatrix);
+			var finalTransform = (from.Visual.TotalMatrix * invertedTotalMatrix).ToMatrix3x2();
+
+			if (from.Log().IsEnabled(LogLevel.Trace))
+			{
+				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {finalTransform}");
+			}
+
+			return finalTransform;
+#else
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
 			// to find an element in the parent hierarchy of the other element.
@@ -530,6 +551,7 @@ namespace Microsoft.UI.Xaml
 #endif
 
 			var matrix = Matrix3x2.Identity;
+
 			var elt = from;
 			do
 			{
@@ -556,6 +578,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return matrix;
+#endif
 		}
 
 		/// <summary>
@@ -821,6 +844,9 @@ namespace Microsoft.UI.Xaml
 
 		internal void ApplyClip()
 		{
+#if __CROSSRUNTIME__
+			InvalidateArrange();
+#else
 			Rect rect;
 
 			if (Clip == null)
@@ -849,16 +875,18 @@ namespace Microsoft.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
-
-#if __SKIA__
-			InvalidateArrange();
 #endif
 		}
 
 		partial void ApplyNativeClip(Rect rect);
 
 		private protected virtual void OnViewportUpdated(Rect viewport) // Not "Changed" as it might be the same as previous
-			=> Viewport = viewport.IsEmpty ? Rect.Infinite : viewport; // If not clipped, we consider the viewport as infinite.
+		{
+#if !__SKIA__
+			// If not clipped, we consider the viewport as infinite.
+			Viewport = viewport.IsEmpty ? Rect.Infinite : viewport;
+#endif
+		}
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
@@ -938,7 +966,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
 		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
-		/// This is the 'finalRect' of the last Arrange.
+		/// This is the 'finalRect' of the last Arrange. However, this doesn't affect clipping (even for children).
 		/// </summary>
 		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; }
@@ -1339,6 +1367,11 @@ namespace Microsoft.UI.Xaml
 					});
 				}
 			}
+		}
+
+		internal void SetProtectedCursor(Microsoft /* UWP don't rename */.UI.Input.InputCursor cursor)
+		{
+			ProtectedCursor = cursor;
 		}
 
 		/// <summary>

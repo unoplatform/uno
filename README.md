@@ -33,10 +33,11 @@ For a larger example and features demo:
 # Uno Platform Features
 * Supported platforms:
     * Windows 10 and Windows 11
-    * Windows 7 (via Skia+WPF)
-    * iOS, Mac Catalyst and Android (via [Xamarin](https://www.visualstudio.com/xamarin/) and [.NET](https://dotnet.microsoft.com/))
+    * Windows 7 (via Skia Desktop)
+    * iOS, MacOS (Catalyst) and Android (via [.NET](https://dotnet.microsoft.com/))
     * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
-    * Linux through Skia (Gtk and FrameBuffer)
+    * Linux (via Skia Desktop with X11 and FrameBuffer)
+    * macOS (via Skia Desktop)
 * Dev loop:
     * Develop on Windows first using Visual Studio
     * [XAML Hot Reload](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
@@ -115,6 +116,6 @@ Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [
 # Contributors
 Thanks go to these wonderful people (List made with [contrib.rocks](https://contrib.rocks)):
 
-[![Uno Platform Contributors](https://contrib.rocks/image?repo=unoplatform/uno)](https://github.com/unoplatform/uno/graphs/contributors)
+[![Uno Platform Contributors](https://contrib.rocks/image?repo=unoplatform/uno&max=500)](https://github.com/unoplatform/uno/graphs/contributors)
 
 💖 Thank you.

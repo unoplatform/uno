@@ -9,15 +9,15 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of 
 ## Features
 
 - Supported in **Visual Studio 2022** (Windows) and **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod)
-- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, and Skia (Gtk, WPF and FrameBuffer)**
+- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**
 - All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio and VS Code. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support
 - What can be Hot Reloaded:
-  - **XAML files** in the **main project**, in **shared projects**, and **referenced projects libraries**
+  - **XAML files** in the **main project** and **referenced projects libraries**
   - **C# Markup controls**
   - **Bindings**
   - Full **x:Bind expressions**
-  - **AppResources.xaml** and **referenced resource dictionaries**
+  - **App.xaml** and **referenced resource dictionaries**
   - **DataTemplates**
   - **Styles**
   - Extensible [**State restoration**](xref:Uno.Contributing.Internals.HotReload)
@@ -47,11 +47,12 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 
 ## Supported features
 
-### [**Skia**](#tab/skia)
+### [**Desktop**](#tab/skia-desktop)
 
 Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. There are some restrictions that are listed below:
 
 - The Visual Studio 2022 for Windows support is fully available, with and without running under the debugger
+- As of VS 2022 17.9 XAML Hot Reload under WSL is not supported
 - VS Code
   - With the debugger: The C# Dev Kit is handling hot reload [when enabled](https://code.visualstudio.com/docs/csharp/debugging#_hot-reload). As of December 20th, 2023, C# Dev Kit hot reload does not handle class libraries. To experience the best hot reload, do not use the debugger.
   - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# or XAML)
@@ -143,11 +144,11 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 ### VS Code
 
 - The output window in Code has an output named "Uno Platform - Hot Reload" in its drop-down. Diagnostics messages from the extension appear there.
-- Hot Reload is not supported for WebAssembly and Skia+GTK/WPF when using the debugger. Start your app using `Ctrl+F5`.
+- Hot Reload is not supported for WebAssembly and Skia Desktop when using the debugger. Start your app using `Ctrl+F5`.
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
 - Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
-- When working on Skia+Gtk apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Skia.Gtk (Debug)` target selected.
+- When working on Skia Desktop apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Uno Platform Desktop (Debug)` target is selected.
 
 ## Next Steps
 

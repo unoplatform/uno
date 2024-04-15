@@ -8,6 +8,17 @@ Uno Platform offers fine-grained customization of typography, corner radius, and
 
 These themes affect both the `Background` and `Foreground` colors to accommodate user preferences. All of the color modes mentioned above are available for use in your app. This guide will detail how to change the system theme setting, make your app receive change notifications for it, and react to those changes at runtime.
 
+<div style="position: relative; width: 100%; padding-bottom: 56.25%;">
+    <iframe
+        src="https://www.youtube-nocookie.com/embed/FXHUiHjgAQ4"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    </iframe>
+</div>
+
 ## Enable dark mode
 
 As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms.
@@ -42,7 +53,6 @@ When you change the theme mode on your device, the system will send a notificati
 
 - `App` constructor
 - `App.xaml`
-- `AppResources.xaml`
 - The `RequestedTheme` property of a parent `FrameworkElement`
 
 However, your app can still react manually to changes in the theme mode. To do so, you can use the [Uno.CommunityToolkit.WinUI.UI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI) NuGet package. This package is not required to change the app color theme, but it contains a `ThemeListener` class that can be used to listen for OS theme changes. To actually change the app color theme at runtime, you need to install the [Uno.Toolkit.WinUI](https://www.nuget.org/packages/Uno.Toolkit.WinUI) NuGet package which contains a `SystemThemeHelper` class.

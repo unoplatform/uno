@@ -66,6 +66,15 @@ public partial class Popup
 		if (args.Key == VirtualKey.Escape)
 		{
 			args.Handled = true;
+
+			// Give the popup an opportunity to cancel closing
+			var cancel = false;
+			OnClosing(ref cancel);
+			if (cancel)
+			{
+				return;
+			}
+
 			IsOpen = false;
 		}
 	}

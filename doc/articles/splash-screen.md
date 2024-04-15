@@ -37,11 +37,11 @@ While the new templates simplify adding a splash screen, this article covers how
     > [!NOTE]
     > Regardless if you provide a single image or multiple images, you would always refer to this image as `SplashScreen.png`.
 
-* Add these images under the `Assets\` folder of the `MyApp` Class Library project, right-click on each image, go to `Properties`, and set their build action as `Content`.
+* Add these images under the `Assets\` folder of the `MyApp` project, right-click on each image, go to `Properties`, and set their build action as `Content`.
 
 ### 2. Windows
 
-* In the `.Windows` project, open the file `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
+* In the `MyApp` project, open the file `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
 
 * Make sure the value for `Preview Images > Splash Screen` is set to `Assets\SplashScreen.png`
 
@@ -49,7 +49,7 @@ While the new templates simplify adding a splash screen, this article covers how
 
 ### 3. Android
 
-* In the `.Mobile` project, open the subfolder for `Android`
+* In the `MyApp` project, open the subfolder for `Platforms/Android`
 
 * Navigate further to the file at `Resources/values/Styles.xml`
 
@@ -103,7 +103,7 @@ While the new templates simplify adding a splash screen, this article covers how
 
 ### 4. iOS/MacCatalyst
 
-* In the `.Mobile` project, open the subfolder for `iOS` or `MacCatalyst`.
+* In the `MyApp` project, open the subfolder for `Platforms/iOS` or `Platforms/MacCatalyst`.
 
   * Delete the old splash screen files:
     * `Resources\SplashScreen@2x.png`
@@ -111,7 +111,7 @@ While the new templates simplify adding a splash screen, this article covers how
     * `LaunchScreen.storyboard`
 
 * Create a new **StoryBoard** named `LaunchScreen.storyboard`:
-  * Right-click the `.Mobile` project subfolder you're working with (ex: `MyApp.Mobile\iOS`)
+  * Right-click the project subfolder you're working with (ex: `MyApp/Platforms/iOS`)
   * Select **Add** > **New Item...**
   * Create a **Visual C#** > **Apple** > **Empty Storyboard**
 
@@ -148,9 +148,9 @@ While the new templates simplify adding a splash screen, this article covers how
 
 ### 5. WebAssembly
 
-* The default splash screen configuration for WebAssembly is to use the Uno Platform logo as a placeholder
+* The default splash screen configuration for WebAssembly is to use the Uno Platform logo as a placeholder.
 
-* An `AppManifest.js` file contains settings for your WebAssembly application, including properties to customize its splash screen. This file is found in the `[AppName].Wasm` project, typically located at `WasmScripts/AppManifest.js`.
+* An `Platforms/WebAssembly/WasmScript/AppManifest.js` file contains some app settings, including properties to customize its splash screen. This file is found in the `MyApp` project.
 
 #### General properties
 

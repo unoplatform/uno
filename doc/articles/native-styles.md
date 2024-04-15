@@ -28,9 +28,9 @@ On WASM, the `NativeDefault[Control]` styles are currently only aliases to the `
 
 An application can set native styles as the default for supported controls by setting the static flag `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = false;` somewhere in app code (typically from the `App()` constructor in `App.cs` or `App.xaml.cs`). It's also possible to configure only certain control types to default to the native style, by adding an entry to `UseUWPDefaultStylesOverride` for that type. For example, to default to native styling for every `ToggleSwitch` in the app, you would add the following code: `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(ToggleSwitch)] = false;`
 
-The default Uno app template includes Fluent control styles in the application. If enabling native control styles globally, these Fluent resources **should be removed from `AppResources.xaml`**, by removing `<XamlControlsResources />` from the `Resources.MergedDictionaries` declaration.
+The default Uno app template includes Fluent control styles in the application. If enabling native control styles globally, these Fluent resources **should be removed from `App.xaml`**, by removing `<XamlControlsResources />` from the `Resources.MergedDictionaries` declaration.
 
-In order for the native styles to be used globally by default, you cannot include resources in your `AppResources.xaml` that also contain implicit styles for those same controls. For example, if you are using Uno.Material or Uno.Cupertino, those resources will override the native styles and, therefore, cannot be used if you are planning to enable native styles globally. You should remove the corresponding resource dictionaries from `AppResources.xaml`.
+In order for the native styles to be used globally by default, you cannot include resources in your `App.xaml` that also contain implicit styles for those same controls. For example, if you are using Uno.Material or Uno.Cupertino, those resources will override the native styles and, therefore, cannot be used if you are planning to enable native styles globally. You should remove the corresponding resource dictionaries from `App.xaml`.
 
 ### Native navigation styles
 
@@ -44,9 +44,9 @@ Since there are several controls that participate in navigation (`Frame`, `Comma
 
 ### Example
 
-This sample shows how you'd enable native styles globally for your whole app. You need to modify both `App.cs` and `AppResources.xaml`:
+This sample shows how you'd enable native styles globally for your whole app. You need to modify both `App.cs` and `App.xaml`:
 
-App.cs:
+`App.xaml.cs`:
 
 ```diff
 public class App : Application
@@ -67,7 +67,7 @@ public class App : Application
 }
 ```
 
-AppResources.xaml:
+App.xaml:
 
 ```diff
  <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

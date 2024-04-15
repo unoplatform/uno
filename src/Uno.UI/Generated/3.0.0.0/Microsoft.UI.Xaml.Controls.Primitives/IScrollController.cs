@@ -3,44 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IScrollController
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool CanScroll
-		{
-			get;
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsScrollingWithMouse
-		{
-			get;
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Microsoft.UI.Xaml.Controls.Primitives.IScrollControllerPanningInfo PanningInfo
-		{
-			get;
-		}
-#endif
+		// Skipping already declared property CanScroll
+		// Skipping already declared property IsScrollingWithMouse
+		// Skipping already declared property PanningInfo
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.PanningInfo.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.CanScroll.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.IsScrollingWithMouse.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetIsScrollable(bool isScrollable);
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetValues(double minOffset, double maxOffset, double offset, double viewportLength);
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Microsoft.UI.Composition.CompositionAnimation GetScrollAnimation(int correlationId, global::System.Numerics.Vector2 startPosition, global::System.Numerics.Vector2 endPosition, global::Microsoft.UI.Composition.CompositionAnimation defaultAnimation);
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void NotifyRequestedScrollCompleted(int correlationId);
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.SetIsScrollable(bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.SetValues(double, double, double, double)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.GetScrollAnimation(int, System.Numerics.Vector2, System.Numerics.Vector2, Microsoft.UI.Composition.CompositionAnimation)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.NotifyRequestedScrollCompleted(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.CanScrollChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.CanScrollChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.IsScrollingWithMouseChanged.add
@@ -51,20 +28,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.ScrollByRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.AddScrollVelocityRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.IScrollController.AddScrollVelocityRequested.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController, global::Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs> AddScrollVelocityRequested;
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController, object> CanScrollChanged;
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController, object> IsScrollingWithMouseChanged;
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController, global::Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs> ScrollByRequested;
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController, global::Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs> ScrollToRequested;
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.IScrollController.AddScrollVelocityRequested
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.IScrollController.CanScrollChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.IScrollController.IsScrollingWithMouseChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.IScrollController.ScrollByRequested
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.IScrollController.ScrollToRequested
 	}
 }

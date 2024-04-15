@@ -14,6 +14,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
+using System.Threading.Tasks;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -75,7 +76,7 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
 
-	protected override void RunLoop()
+	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
 		_eventLoop.Schedule(StartApp);
@@ -93,6 +94,8 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		{
 			this.Log().Debug($"{nameof(X11ApplicationHost)} is exiting");
 		}
+
+		return Task.CompletedTask;
 	}
 
 	private void StartApp()

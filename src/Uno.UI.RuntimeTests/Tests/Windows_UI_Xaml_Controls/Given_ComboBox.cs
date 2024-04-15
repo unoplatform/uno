@@ -79,6 +79,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
+		[DataRow(0)]
+		[DataRow(1)]
+		[DataRow(2)]
+		public async Task When_ReOpened_Remains_Selected_VisualState(int selectedIndex)
+		{
+			var SUT = new ComboBox();
+			var items = new[] { "First", "Second", "Third" };
+			SUT.ItemsSource = items;
+			await UITestHelper.Load(SUT);
+
+			SUT.IsDropDownOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			SUT.SelectedIndex = selectedIndex;
+			await TestServices.WindowHelper.WaitForIdle();
+			SUT.IsDropDownOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			SUT.IsDropDownOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			var container = (ComboBoxItem)SUT.ContainerFromItem(items[selectedIndex]);
+#if __ANDROID__ || __IOS__
+			Assert.AreEqual("SelectedUnfocused", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
+#else
+			Assert.AreEqual("Selected", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
+#endif
+		}
+
+		[TestMethod]
 		public async Task When_IsEditable_False()
 		{
 			// EditableText is only available in fluent style.

@@ -26,6 +26,20 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property FocusVisualKind
 		// Skipping already declared property DebugSettings
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.DispatcherShutdownMode DispatcherShutdownMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DispatcherShutdownMode Application.DispatcherShutdownMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherShutdownMode%20Application.DispatcherShutdownMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "DispatcherShutdownMode Application.DispatcherShutdownMode");
+			}
+		}
+#endif
 		// Skipping already declared property Current
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Application()
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Application()
@@ -43,6 +57,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Exit()
 		// Forced skipping of method Microsoft.UI.Xaml.Application.ResourceManagerRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Application.ResourceManagerRequested.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.set
 		// Skipping already declared method Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Current.get
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Start(Microsoft.UI.Xaml.ApplicationInitializationCallback)

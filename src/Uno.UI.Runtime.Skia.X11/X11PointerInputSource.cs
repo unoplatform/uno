@@ -2,9 +2,9 @@
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -149,7 +149,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		var args = new PointerEventArgs(point, modifiers);
 
 		CreatePointFromCurrentState(ev.time);
-		X11XamlRootHost.QueueEvent(_host, () => RaisePointerExited(args));
+		X11XamlRootHost.QueueAction(_host, () => RaisePointerExited(args));
 	}
 
 	public void ProcessEnterEvent(XCrossingEvent ev)
@@ -157,7 +157,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		_mousePosition = new Point(ev.x, ev.y);
 
 		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
-		X11XamlRootHost.QueueEvent(_host, () => RaisePointerEntered(args));
+		X11XamlRootHost.QueueAction(_host, () => RaisePointerEntered(args));
 	}
 
 	private PointerEventArgs CreatePointerEventArgsFromCurrentState(IntPtr time, XModifierMask state)
@@ -181,6 +181,10 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 			IsRightButtonPressed = (_pressedButtons & (1 << RIGHT)) != 0
 		};
 
+		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
+			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+			: 1;
+
 		// Time is given in milliseconds since system boot
 		// This matches the format of WinUI. See also: https://github.com/unoplatform/uno/issues/14535
 		var point = new PointerPoint(
@@ -188,8 +192,8 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 			timestamp: (uint)time,
 			PointerDevice.For(PointerDeviceType.Mouse),
 			0, // TODO: XInput
-			_mousePosition,
-			_mousePosition,
+			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
+			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
 			// TODO: is isInContact correct?
 			(_pressedButtons & 0b1111) != 0,
 			properties

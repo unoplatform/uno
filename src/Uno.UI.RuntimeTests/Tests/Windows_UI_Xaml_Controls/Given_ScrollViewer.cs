@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
@@ -528,6 +530,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive();
+			}
+
 			var SUT = new ScrollViewer
 			{
 				Height = 300,
@@ -1326,5 +1333,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.VerticalOffset.Should().Be(0);
 #endif
 		}
+
+#if HAS_UNO // uses internal ToMatrix
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		public async Task When_SCP_TransformToVisual()
+		{
+			var SUT = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = new Border
+				{
+					Height = 4192,
+					Width = 256,
+					Background = new SolidColorBrush(Colors.DeepPink)
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			var ttv = ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero);
+			var childTtvMatrix = ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero);
+
+			SUT.ScrollToVerticalOffset(100);
+			await WindowHelper.WaitForIdle();
+
+			// The content inside the SCP should move, not the SCP itself
+#if __SKIA__ || __WASM__
+			// "Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child."
+			Assert.AreEqual(ttv, ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
+#else
+			Assert.AreEqual(ttv * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
+#endif
+
+#if __WASM__ // incorrect
+			Assert.AreEqual(childTtvMatrix, ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero));
+#else
+			Assert.AreEqual(childTtvMatrix * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero));
+#endif
+		}
+#endif
 	}
 }

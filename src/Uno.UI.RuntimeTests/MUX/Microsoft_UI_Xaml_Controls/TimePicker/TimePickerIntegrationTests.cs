@@ -161,6 +161,8 @@ public class TimePickerIntegrationTests
 
 			timePicker = new TimePicker();
 			timePicker.Header = "TimePickerTest";
+			// Uno Specific: some tests will fail on 24-hour systems as they expect a period LoopingSelector
+			timePicker.ClockIdentifier = ClockIdentifiers.TwelveHour;
 
 			rootGrid.Children.Add(timePicker);
 		});
@@ -273,6 +275,8 @@ public class TimePickerIntegrationTests
 	[TestMethod]
 #if __ANDROID__ || __IOS__
 	[Ignore("This is only relevant for managed implementation")]
+#elif __WASM__
+	[Ignore("https://github.com/unoplatform/uno/issues/16167")]
 #endif
 	public async Task SelectingTimeSetsSelectedTime()
 	{

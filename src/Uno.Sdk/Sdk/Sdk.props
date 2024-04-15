@@ -11,8 +11,13 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<_DefaultMicrosoftNETSdk>Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
-		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' or $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+		<!-- Legacy Project System Support -->
+		<_DefaultMicrosoftNETSdk Condition="$(SingleProject) != 'true' AND $(UnoSingleProject) != 'true' AND ($(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+
+		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'" >Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+		<_DefaultMicrosoftNETSdk Condition=" $(_DefaultMicrosoftNETSdk) == '' ">Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
+
+		<_DefaultWasmOutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">$(OutputType)</_DefaultWasmOutputType>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -31,14 +36,22 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<_UnoSdkTargetsDirectory>$([MSBuild]::EnsureTrailingSlash($(_UnoSdkTargetsDirectory)))</_UnoSdkTargetsDirectory>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Import.SolutionConfig.props</CustomAfterDirectoryBuildProps>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.IsPlatform.props</CustomAfterDirectoryBuildProps>
-		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Features.props</CustomAfterDirectoryBuildProps>
-		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Default.PackageVersions.props</CustomAfterDirectoryBuildProps>
 
-		<AvailablePlatforms Condition="'$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' > '10.0'">Any CPU,x86,x64</AvailablePlatforms>
+		<!-- We do this to make sure that we include Resizetizer by default. Libraries using Uno.Sdk should have this set to true -->
+		<IsPackable Condition=" '$(IsPackable)' == '' ">false</IsPackable>
+	</PropertyGroup>
+
+	<!-- We want to try to avoid having AnyCPU passed-->
+	<PropertyGroup Condition=" '$(VisualStudioVersion)' != '' AND '$(VisualStudioVersion)' > '10.0' AND '$(AvailablePlatforms)' == '' ">
+		<AvailablePlatforms Condition=" '$(TargetFramework)' == '' OR !$(TargetFramework.Contains('windows10')) ">AnyCPU,x86,x64,arm64</AvailablePlatforms>
+		<AvailablePlatforms Condition=" '$(TargetFramework)' != '' AND $(TargetFramework.Contains('windows10')) ">x86,x64,arm64</AvailablePlatforms>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<DisableImplicitUnoPackages Condition=" '$(DisableImplicitUnoPackages)' == '' ">false</DisableImplicitUnoPackages>
+
+		<!-- Disable analyzers provided by Microsoft.AspNetCore.App -->
+		<DisableImplicitAspNetCoreAnalyzers Condition=" '$(DisableImplicitAspNetCoreAnalyzers)' == '' ">true</DisableImplicitAspNetCoreAnalyzers>
 	</PropertyGroup>
 
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />
@@ -48,4 +61,22 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<AvailableItemName Include="UnoAsset"/>
+		<AvailableItemName Include="UnoImage"/>
+		<AvailableItemName Include="UnoIcon"/>
+		<AvailableItemName Include="UnoSplashScreen"/>
+		<AvailableItemName Include="UnoDspImportColors"/>
+	</ItemGroup>
+
+	<!-- 
+		Remove the implicitly added FrameworkReference from the Web SDK. 
+
+		This needs to be explicitly manipulated here as a global item, and not in a Target. This is for
+		VS to read the global properties and avoid showing a yellow icon being the result of a mismatch 
+		between runs of design-time builds (one build defining a FrameworkReference and another one not).
+	-->
+	<ItemGroup>
+		<FrameworkReference Remove="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 </Project>

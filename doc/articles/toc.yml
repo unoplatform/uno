@@ -76,10 +76,6 @@
         href: tutorials-intro.md
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
         href: guides/azure-static-webapps.md
-      - name: How to integrate Uno.Material
-        href: external/uno.themes/doc/material-getting-started.md
-      - name: How to integrate Uno.Cupertino
-        href: external/uno.themes/doc/cupertino-getting-started.md
       - name: How to use Windows Community Toolkit
         href: uno-community-toolkit.md
       - name: How to manually add a splash screen
@@ -125,7 +121,6 @@
 - name: Overview
   items:
     - name: Architecture
-      topicHref: xref:Uno.Development.About
       items:
         - name: Intro
           href: xref:Uno.Documentation.Intro
@@ -134,10 +129,8 @@
           items:
           - name: .NET Versions
             href: net-version-support.md
-          - name: Working with Skia+GTK
-            href: features/using-skia-gtk.md
-          - name: Working with Skia+WPF
-            href: features/using-skia-wpf.md
+          - name: Working with Skia Desktop
+            href: xref:Uno.Skia.Desktop
           - name: Working with the Linux Framebuffer
             href: features/using-linux-framebuffer.md
         - name: Philosophy
@@ -160,6 +153,8 @@
 
     - name: Authoring
       items:
+      - name: Using the Uno.SDK
+        href: xref:Uno.Features.Uno.Sdk
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
@@ -172,10 +167,15 @@
         href: logging.md
       - name: AppManifest (WebAssembly)
         href: wasm-appmanifest.md
-      - name: Creating a cross-targeted library
-        href: cross-targeted-libraries.md
       - name: Hosting a WebAssembly app
         href: xref:Uno.Development.HostWebAssemblyApp
+      - name: Using Skia Desktop (macOS)
+        href: xref:Uno.Skia.macOS
+      - name: Legacy Topics
+        items:
+        - name: Working with Skia+GTK
+          href: features/using-skia-gtk.md
+
 
     - name: Embedding
       items:
@@ -192,10 +192,10 @@
         href: xref:Uno.Development.UpgradeUnoNuget
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
+      - name: Upgrading to Single Project
+        href: xref:Uno.Development.MigratingToSingleProject
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
-      - name: Upgrading to Uno.Sdk
-        href: xref:Uno.Development.MigratingToUnoSdk
       - name: Upgrading from .NET 7 to .NET 8
         href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
@@ -238,6 +238,8 @@
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Working with String Resource Trimming
+          href: features/upri-trimming.md
         - name: Working with XAML Trimming
           href: features/resources-trimming.md
 
@@ -348,8 +350,9 @@
 - name: Reference
   items:
     - name: Overview
-      href: using-uno-ui.md
       items:
+      - name: Developing with Uno Platform
+        href: xref:Uno.Development.Overview
       - name: Features List
         href: supported-features.md
       - name: Feature Flags
@@ -422,8 +425,6 @@
               href: controls/ToggleSwitch.md
             - name: WebView (WebView2)
               href: controls/WebView.md
-            - name: Window
-              href: features/windows-ui-xaml-window.md
             - name: Fluent icon font
               href: uno-fluent-assets.md
             - name: Lottie animations
@@ -457,6 +458,8 @@
           href: features/working-with-assets.md
         - name: Composition API
           href: composition.md
+        - name: Dialogs
+          href: features/dialogs.md
         - name: Fluent styles
           href: features/fluent-styles.md
         - name: Focus management
@@ -487,6 +490,8 @@
           href: features/windows-ui-markup-extensions.md
         - name: Build telemetry
           href: uno-toolchain-telemetry.md
+        - name: Windowing
+          href: features/windows-ui-xaml-window.md
 
       - name: 3rd-party libraries
         href: supported-libraries.md
@@ -585,15 +590,15 @@
         href: features/working-with-cookies.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/ExtensionsOverview.md
+  # topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
 
 - name: Themes
-  topicHref: external/uno.themes/doc/themes-overview.html
+  # topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
 
 - name: Toolkit
-  topicHref: external/uno.toolkit.ui/doc/getting-started.md
+  #topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
   
 - name: Figma

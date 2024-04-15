@@ -78,6 +78,12 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+	public override void ExtendContentIntoTitleBar(bool extend)
+	{
+		base.ExtendContentIntoTitleBar(extend);
+		_gtkWindow.ExtendContentIntoTitleBar(extend);
+	}
+
 	private void OnWindowClosed(object? sender, EventArgs e)
 	{
 		RaiseClosed();

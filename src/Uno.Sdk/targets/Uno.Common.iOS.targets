@@ -7,5 +7,5 @@
 		<EnableDefaultiOSItems Condition="$(EnableDefaultiOSItems) == ''">false</EnableDefaultiOSItems>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 </Project>

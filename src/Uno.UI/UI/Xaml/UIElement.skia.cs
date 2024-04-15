@@ -32,8 +32,8 @@ namespace Microsoft.UI.Xaml
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
 		private ShapeVisual _visual;
-		private Rect _currentFinalRect;
-		private Rect? _currentClippedFrame;
+		private Rect _lastFinalRect;
+		private Rect? _lastClippedFrame;
 
 		public UIElement()
 		{
@@ -173,7 +173,19 @@ namespace Microsoft.UI.Xaml
 
 		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
-			ApiInformation.TryRaiseNotImplemented("UIElement", "MoveChildTo");
+			var view = _children[oldIndex];
+
+			_children.RemoveAt(oldIndex);
+			if (newIndex == _children.Count)
+			{
+				_children.Add(view);
+			}
+			else
+			{
+				_children.Insert(newIndex, view);
+			}
+
+			InvalidateMeasure();
 		}
 
 		internal bool RemoveChild(UIElement child)
@@ -263,10 +275,10 @@ namespace Microsoft.UI.Xaml
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
-			var oldFinalRect = _currentFinalRect;
-			var oldClippedFrame = _currentClippedFrame;
-			_currentFinalRect = finalRect;
-			_currentClippedFrame = clippedFrame;
+			var oldFinalRect = _lastFinalRect;
+			var oldClippedFrame = _lastClippedFrame;
+			_lastFinalRect = finalRect;
+			_lastClippedFrame = clippedFrame;
 
 			var oldRect = oldFinalRect;
 			var newRect = finalRect;
@@ -288,24 +300,14 @@ namespace Microsoft.UI.Xaml
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
-				Rect? clip;
-				if (this is Controls.ScrollViewer)
-				{
-					clip = (Rect?)null;
-				}
-				else
-				{
-					clip = clippedFrame;
-				}
-
-				OnArrangeVisual(newRect, clip);
+				OnArrangeVisual(newRect, clippedFrame);
 				OnViewportUpdated(clippedFrame ?? Rect.Empty);
 			}
 			else
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+					this.Log().Debug($"{this}: ArrangeVisual({_lastFinalRect}) -- SKIPPED (no change)");
 				}
 			}
 		}

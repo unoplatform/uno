@@ -28,7 +28,7 @@ On Wasm platform, fonts files are loaded by the browser and can take some time t
 ``` csharp
 // Preloading of font families on Wasm. Add this before the Application.Start() in the Program.cs
 
-public static void main(string[] orgs)
+public static void Main(string[] args)
 {
     // Add this in your application to preload a font.
     // You can add more than one, but preloading too many fonts could hurt the user experience.

@@ -21,6 +21,6 @@ internal class MacOSBadgeUpdaterExtension : IBadgeUpdaterExtension
 		{
 			s = value.Value.ToString(CultureInfo.CurrentUICulture.NumberFormat);
 		}
-		// NativeUno.uno_application_set_badge(s);
+		NativeUno.uno_application_set_badge(s);
 	}
 }

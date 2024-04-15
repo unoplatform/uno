@@ -38,7 +38,7 @@
 	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 
-		<CallTarget Targets="UpdateTasksSHA" Condition="$(_isWindows)" />
+		<CallTarget Targets="UpdateTasksSHA" />
 		<CallTarget Targets="PrepareNuGetPackage" />
 	</Target>
 
@@ -50,6 +50,7 @@
 			<_Sha1Replace Include="..\build\nuget\uno.winui.runtime-replace.targets" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
+			<_Sha1Replace Include="..\src\Uno.Sdk\**\*" />
 		</ItemGroup>
 
 		<PropertyGroup>
@@ -59,10 +60,14 @@
 			<_ReplacedSHA Condition="$(GITVERSION_INFORMATIONALVERSION.Contains('PullRequest'))">$(GITVERSION_VersionSourceSha)</_ReplacedSHA>
 		</PropertyGroup>
 
-		<WriteLinesToFile
-			File="%(_Sha1Replace.Identity)"
-			Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(_ReplacedSHA)'))"
-			Overwrite="true" />
+		<ItemGroup>
+			<_FilesContent 
+				Include="%(_Sha1Replace.Identity)"
+				Contents="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(_ReplacedSHA)'))" />
+
+		</ItemGroup>
+
+		<WriteFilesTask FilesToProcess="@(_FilesContent)" />
 	</Target>
 
 	<Target Name="BuildCIMobile">
@@ -457,5 +462,29 @@
 
 		<Exec Command="dotnet $(MSBuildThisFileDirectory)..\src\Uno.ReferenceImplComparer\bin\Release\Uno.ReferenceImplComparer.dll $(MSBuildThisFileDirectory)$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg" />
 	</Target>
+
+	<!-- Custom target to avoid path normalization introduced by the WriteLinesToFile task -->
+	<UsingTask TaskName="WriteFilesTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<FilesToProcess ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+		</ParameterGroup>
+
+		<Task>
+			<Using Namespace="System.IO" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+				foreach (var fileItem in FilesToProcess)
+				{
+					var filePath = fileItem.ItemSpec;
+					var fileContent = fileItem.GetMetadata("Contents");
+					if (File.ReadAllText(filePath) != fileContent)
+					{
+						File.WriteAllText(filePath, fileContent);
+					}
+				}
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
 
 </Project>

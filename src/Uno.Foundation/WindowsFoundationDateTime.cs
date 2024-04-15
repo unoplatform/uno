@@ -44,9 +44,16 @@ internal struct WindowsFoundationDateTime
 		return new DateTimeOffset(value);
 	}
 
+	public static bool operator ==(WindowsFoundationDateTime left, WindowsFoundationDateTime right) => left.Equals(right);
+	public static bool operator !=(WindowsFoundationDateTime left, WindowsFoundationDateTime right) => !(left == right);
+
 	internal string ToString(string? format, IFormatProvider? formatProvider) => ((DateTimeOffset)this).ToString(format, formatProvider);
 
 	internal int CompareTo(DateTimeOffset other) => ((DateTimeOffset)this).CompareTo(other);
+
+	public override bool Equals(object? obj) => obj is WindowsFoundationDateTime time && UniversalTime == time.UniversalTime;
+
+	public override int GetHashCode() => UniversalTime.GetHashCode();
 
 	internal int Year => ((DateTimeOffset)this).Year;
 	internal int Month => ((DateTimeOffset)this).Month;

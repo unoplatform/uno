@@ -40,4 +40,6 @@ internal interface INativeWindowWrapper : INativeAppWindow
 	void Show();
 
 	void Close();
+
+	void ExtendContentIntoTitleBar(bool extend);
 }

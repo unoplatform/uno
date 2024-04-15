@@ -21,6 +21,7 @@ namespace Windows.Storage.Pickers
 		private const string AnyWildcard = "*/*";
 		private const string ImageWildcard = "image/*";
 		private const string VideoWildcard = "video/*";
+		private Action<Intent>? _intentAction;
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
@@ -102,6 +103,8 @@ namespace Windows.Storage.Pickers
 			}
 
 			_currentFileOpenPickerRequest = new TaskCompletionSource<Intent?>();
+
+			_intentAction?.Invoke(intent);
 
 			var pickerIntent = Intent.CreateChooser(intent, "");
 
@@ -234,5 +237,8 @@ namespace Windows.Storage.Pickers
 
 			return mimeTypes.ToArray();
 		}
+
+		internal void RegisterOnBeforeStartActivity(Action<Intent> intentAction)
+			=> _intentAction = intentAction;
 	}
 }

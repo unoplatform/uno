@@ -460,7 +460,7 @@ namespace Microsoft.UI.Xaml
 
 				try
 				{
-					if ((value is UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
+					if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
 					{
 						throw new InvalidOperationException("The default value must be a valid value");
 					}
@@ -627,7 +627,7 @@ namespace Microsoft.UI.Xaml
 		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails,
 			object? previousValue, object? baseValue, DependencyPropertyValuePrecedences precedence)
 		{
-			if (baseValue is UnsetValue)
+			if (baseValue == DependencyProperty.UnsetValue)
 			{
 				// Removing any previously applied coercion
 				SetValueInternal(DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
@@ -652,7 +652,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue, precedence);
-			if (coercedValue is UnsetValue)
+			if (coercedValue == DependencyProperty.UnsetValue)
 			{
 				// The property system will treat any CoerceValueCallback that returns the value UnsetValue as a special case.
 				// This special case means that the property change that resulted in the CoerceValueCallback being called
@@ -1383,7 +1383,7 @@ namespace Microsoft.UI.Xaml
 
 		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
 		{
-			var convertedValue = BindingPropertyHelper.Convert(() => property.Type, value);
+			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
 			if (binding.SetterBindingPath != null)
 			{
 				try

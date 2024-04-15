@@ -115,7 +115,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
 							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
 							("IsRunningCI", IsRunningCI.ToString()),
-							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString()),
+							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString().ToLowerInvariant()),
+							("IDE", BuildIDEName()),
 						},
 						new[] { ("FileCount", (double)files.Length) }
 					);
@@ -128,6 +129,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 				}
 #pragma warning restore CS0168 // unused parameter
+			}
+		}
+
+		private string BuildIDEName()
+		{
+			if (bool.TryParse(_generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString(), out var insideVS) && insideVS)
+			{
+				return "vswin";
+			}
+			else if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformIDE")?.ToString() is { } unoPlatformIDE)
+			{
+				return unoPlatformIDE;
+			}
+			else
+			{
+				return "unknown";
 			}
 		}
 

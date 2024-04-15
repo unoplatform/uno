@@ -8,5 +8,16 @@ namespace Windows.ApplicationModel.Core;
 
 partial class CoreApplicationViewTitleBar
 {
-	public bool ExtendViewIntoTitleBar { get; set; }
+	private bool _extendViewIntoTitleBar;
+
+	// This is not synchronized with Window.ExtendContentIntoTitleBar. The value set last wins.
+	public bool ExtendViewIntoTitleBar
+	{
+		get => _extendViewIntoTitleBar;
+		set
+		{
+			_extendViewIntoTitleBar = value;
+			ExtendViewIntoTitleBarChanged?.Invoke();
+		}
+	}
 }

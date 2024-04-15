@@ -15,10 +15,6 @@ internal class MacOSApplicationViewExtension : IApplicationViewExtension
 
 	public static void Register() => ApiExtensibility.Register(typeof(IApplicationViewExtension), _ => _instance);
 
-	public void ExitFullScreenMode() => NativeUno.uno_application_exit_full_screen();
-
-	public bool TryEnterFullScreenMode() => NativeUno.uno_application_enter_full_screen();
-
 	public bool TryResizeView(Size size)
 	{
 		var main = NativeUno.uno_app_get_main_window();

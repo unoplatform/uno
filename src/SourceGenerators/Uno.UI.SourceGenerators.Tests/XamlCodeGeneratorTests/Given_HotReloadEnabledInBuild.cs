@@ -227,6 +227,29 @@ public class Given_HotReloadEnabledInBuild
 	}
 
 	[TestMethod]
+	public async Task SetOriginalSourceLocationInOutputForTopLevelResourceDictionaries()
+	{
+		var xamlFile = new XamlFile("MyDictionary.xaml", """
+			<ResourceDictionary
+			      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      xmlns:local="using:TestRepro"
+				  x:Class="TestNamespace.TestClass">
+			</ResourceDictionary>
+			""");
+
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+
+		var test = new Verify.Test(xamlFile, configOverride)
+		{
+			ReferenceAssemblies = _net7Uno5Refs,
+			DisableBuildReferences = true,
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task SetOriginalSourceLocationIncludedInOutputForDependencyObjectsThatArentFrameworkElements()
 	{
 		var xamlFile = new XamlFile("MainPage.xaml", """

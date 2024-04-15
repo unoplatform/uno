@@ -1,7 +1,7 @@
 ﻿#nullable enable
-using SkiaSharp;
 using System.Collections.Generic;
 using System.Linq;
+using SkiaSharp;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -18,7 +18,7 @@ public partial class ContainerVisual : Visual
 		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
 	}
 
-	internal IList<Visual> GetChildrenInRenderOrder()
+	internal List<Visual> GetChildrenInRenderOrder()
 	{
 		if (IsChildrenRenderOrderDirty)
 		{
@@ -55,5 +55,20 @@ public partial class ContainerVisual : Visual
 		{
 			children[i].Render(in session);
 		}
+	}
+
+	internal override bool SetMatrixDirty()
+	{
+		if (base.SetMatrixDirty())
+		{
+			foreach (var child in Children)
+			{
+				child.SetMatrixDirty();
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }

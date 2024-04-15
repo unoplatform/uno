@@ -1,0 +1,29 @@
+<Project>
+
+	<Target Name="_UnoFilterTargetFrameworkWithDebuggerTarget"
+			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+			Condition="
+				'$(BuildingInsideVisualStudio)'=='true'
+				AND '$(UnoDisableVSFilterTargetFrameworkWithDebuggerTarget)' != 'true'
+				AND '$(IsImplicitlyTriggeredBuild)' == 'true'
+				AND '$(IsUnoHead)' == 'true' ">
+
+		<!-- 
+			This target is used to restrict the number of active target frameworks used when
+			building a head project. This current version uses $(_IsExecutable) in order to
+			allow for faster builds with the uno.templates `Server` project.
+
+			Filtering on `IsImplicitlyTriggeredBuild` implies that this target will be 
+			executed only when the debugger command is used. An explicit build or rebuild
+			on the project will perform a full build.
+
+			This will be enhanced in the future to support class libraries as well.
+		-->
+
+		<PropertyGroup Condition=" '$(TargetFramework)'=='' AND '$(_SelectedTargetFramework)' != '' ">
+			<TargetFramework>$(_SelectedTargetFramework)</TargetFramework>
+			<TargetFrameworks>$(_SelectedTargetFramework)</TargetFrameworks>
+		</PropertyGroup>
+	</Target>
+
+</Project>

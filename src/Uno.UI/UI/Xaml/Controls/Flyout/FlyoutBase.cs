@@ -20,6 +20,11 @@ using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
 
 #if __IOS__
 using View = UIKit.UIView;
@@ -41,6 +46,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private static readonly List<FlyoutBase> _openFlyouts = new List<FlyoutBase>();
 
 		internal bool m_isPositionedAtPoint;
+
+		private bool _isClosedPending;
 
 		protected internal Popup _popup;
 		private bool _isLightDismissEnabled = true;
@@ -324,12 +331,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				_openFlyouts.Remove(this);
 
-				Closed?.Invoke(this, EventArgs.Empty);
+				_isClosedPending = true;
 
-				if (_openFlyouts.Count > 0)
+				// TODO Uno: Closed should occur on PresenterUnloaded,
+				// but that requires aligned loading/unloading lifecycle. #2895
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
-					_openFlyouts[0].Hide();
-				}
+					Closed?.Invoke(this, EventArgs.Empty);
+					_isClosedPending = false;
+
+					if (_openFlyouts.Count > 0)
+					{
+						_openFlyouts[0].Hide();
+					}
+				});
 			}
 		}
 
@@ -351,6 +366,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			EnsurePopupCreated();
 
 			m_hasPlacementOverride = false;
+
+			if (_isClosedPending)
+			{
+				return;
+			}
 
 			if (IsOpen)
 			{

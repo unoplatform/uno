@@ -22,6 +22,7 @@ namespace Microsoft.UI.Composition
 
 		void ISkiaSurface.UpdateSurface(bool recreateSurface)
 		{
+			SKCanvas? canvas = null;
 			if (_surface is null || _drawingSession is null || recreateSurface)
 			{
 				_drawingSession?.Dispose();
@@ -39,21 +40,38 @@ namespace Microsoft.UI.Composition
 
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
-				_drawingSession = new DrawingSession(_surface, DrawingFilters.Default);
+				canvas = _surface.Canvas;
+				_drawingSession = new DrawingSession(_surface, canvas, DrawingFilters.Default, Matrix4x4.Identity);
 			}
+
+			canvas ??= _surface.Canvas;
 
 			if (SourceVisual is not null && _surface is not null)
 			{
-				_surface.Canvas.Clear();
+				canvas.Clear();
+
+				// similar logic to Visual.RenderRootVisual
+				var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
+				if (SourceVisual.Parent?.TotalMatrix is { } parentTotalMatrix)
+				{
+					Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
+					initialTransform = invertedParentTotalMatrix;
+				}
+
 				if (SourceOffset != default)
 				{
-					_surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
+					var translation = Matrix4x4.Identity with { M41 = -(SourceOffset.X), M42 = -(SourceOffset.Y) };
+					initialTransform = translation * initialTransform;
 				}
+
+				var totalOffset = SourceVisual.GetTotalOffset();
+				var translation2 = Matrix4x4.Identity with { M41 = -(totalOffset.X + SourceVisual.AnchorPoint.X), M42 = -(totalOffset.Y + SourceVisual.AnchorPoint.Y) };
+				initialTransform = translation2 * initialTransform;
 
 				bool? previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
 
-				SourceVisual.Draw(_drawingSession.Value);
+				SourceVisual.Draw(_drawingSession.Value with { RootTransform = initialTransform });
 
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
@@ -61,17 +79,17 @@ namespace Microsoft.UI.Composition
 
 		void ISkiaSurface.UpdateSurface(in DrawingSession session)
 		{
-			if (SourceVisual is not null && session.Surface is not null)
+			if (SourceVisual is not null && session.Canvas is not null)
 			{
-				int save = session.Surface.Canvas.Save();
+				int save = session.Canvas.Save();
 				if (SourceOffset != default)
 				{
-					session.Surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
-					session.Surface.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Surface.Canvas.DeviceClipBounds.Width, session.Surface.Canvas.DeviceClipBounds.Height));
+					session.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
+					session.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Canvas.DeviceClipBounds.Width, session.Canvas.DeviceClipBounds.Height));
 				}
 
 				SourceVisual.Draw(in session);
-				session.Surface.Canvas.RestoreToCount(save);
+				session.Canvas.RestoreToCount(save);
 			}
 		}
 

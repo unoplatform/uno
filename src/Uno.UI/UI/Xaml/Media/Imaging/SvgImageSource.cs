@@ -107,6 +107,8 @@ public partial class SvgImageSource : ImageSource
 			{
 				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 			}
+#elif IS_UNIT_TESTS
+			return Task.FromResult(SvgImageSourceLoadStatus.Other);
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
@@ -118,7 +120,7 @@ public partial class SvgImageSource : ImageSource
 		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
-#if !__CROSSRUNTIME__
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 	internal event EventHandler? StreamLoaded;
 #endif
 
@@ -135,21 +137,6 @@ public partial class SvgImageSource : ImageSource
 		_lastStatus = SvgImageSourceLoadStatus.Success;
 		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 	}
-
-#if __ANDROID__ || __SKIA__
-	private async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
-	{
-		if (stream.CanSeek && stream.Position != 0)
-		{
-			stream.Position = 0;
-		}
-
-		var memoryStream = new MemoryStream();
-		await stream.CopyToAsync(memoryStream, 81920, ct);
-		var data = memoryStream.ToArray();
-		return ImageData.FromBytes(data);
-	}
-#endif
 
 	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
 

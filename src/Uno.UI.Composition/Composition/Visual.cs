@@ -130,8 +130,6 @@ namespace Microsoft.UI.Composition
 			set => _compositionTarget = value;
 		}
 
-		internal bool HasThemeShadow { get; set; }
-
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			Compositor.InvalidateRender(this);

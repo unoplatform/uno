@@ -60,13 +60,13 @@
 		<None Include="Resources\Values\Styles.xml" />
 		<None Include="Resources\IResourceRegistry.cs" />
 		<None Include="Resources\ResourceRegistry.cs" />
-		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
+		<PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" />
 	</ItemGroup>
 
 	<!-- This condition is **explicitly** for net7.0 -->

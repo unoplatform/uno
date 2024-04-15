@@ -112,8 +112,8 @@ namespace Microsoft.UI.Xaml
 
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
-#if !__WASM__
-		[global::Uno.NotImplemented]
+#if !__CROSSRUNTIME__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 #endif
 		public static RoutedEvent PointerWheelChangedEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerWheelChanged);
 
@@ -341,8 +341,8 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(PointerReleasedEvent, value);
 		}
 
-#if !__WASM__ && !__SKIA__
-		[global::Uno.NotImplemented]
+#if !__CROSSRUNTIME__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 #endif
 		public event PointerEventHandler PointerWheelChanged
 		{
@@ -836,6 +836,7 @@ namespace Microsoft.UI.Xaml
 			return bubblingMode;
 		}
 
+#nullable enable
 		// WARNING: When implementing one of those methods to maintain a local state, you should also opt-in for RoutedEvent.IsAlwaysBubbled
 		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
 		partial void PrepareManagedKeyEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode);
@@ -846,7 +847,9 @@ namespace Microsoft.UI.Xaml
 
 		internal struct BubblingContext
 		{
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 			public static readonly BubblingContext Bubble;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
 			public static readonly BubblingContext NoBubbling = new() { Mode = BubblingMode.NoBubbling };
 
@@ -858,7 +861,7 @@ namespace Microsoft.UI.Xaml
 			/// </summary>
 			public static readonly BubblingContext OnManagedBubbling = new() { Mode = BubblingMode.NoBubbling, IsInternal = true };
 
-			public static BubblingContext BubbleUpTo(UIElement root)
+			public static BubblingContext BubbleUpTo(UIElement? root)
 				=> new() { Root = root };
 
 			/// <summary>
@@ -870,7 +873,7 @@ namespace Microsoft.UI.Xaml
 			/// An optional root element on which the bubbling should stop.
 			/// </summary>
 			/// <remarks>It's expected that the event is raised on this Root element.</remarks>
-			public UIElement Root { get; set; }
+			public UIElement? Root { get; set; }
 
 			/// <summary>
 			/// Indicates that the associated event should not be publicly raised.
@@ -891,6 +894,7 @@ namespace Microsoft.UI.Xaml
 			public override string ToString()
 				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";
 		}
+#nullable restore
 
 		/// <summary>
 		/// Defines the mode used to bubble an event.

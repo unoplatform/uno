@@ -21,6 +21,7 @@
 			<Button Click="{x:Bind ViewModel.Minimize}">Minimize</Button>
 			<Button Click="{x:Bind ViewModel.Maximize}">Maximize</Button>
 			<Button Click="{x:Bind ViewModel.Restore}">Restore</Button>
+			<Button Click="{x:Bind ViewModel.RestoreAfter2Seconds}">Restore After 2 Seconds</Button>
 
 			<TextBlock Text="Properties" FontWeight="Bold" />
 			<CheckBox IsChecked="{x:Bind ViewModel.IsAlwaysOnTop, Mode=TwoWay}">Is always on top</CheckBox>

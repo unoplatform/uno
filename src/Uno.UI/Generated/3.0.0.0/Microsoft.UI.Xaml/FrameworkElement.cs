@@ -8,97 +8,19 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class FrameworkElement
 	{
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double Width
-		{
-			get
-			{
-				return (double)this.GetValue(WidthProperty);
-			}
-			set
-			{
-				this.SetValue(WidthProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.VerticalAlignment VerticalAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.VerticalAlignment)this.GetValue(VerticalAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalAlignmentProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property Width
+		// Skipping already declared property VerticalAlignment
 		// Skipping already declared property Tag
 		// Skipping already declared property Style
 		// Skipping already declared property Resources
 		// Skipping already declared property RequestedTheme
 		// Skipping already declared property Name
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double MinWidth
-		{
-			get
-			{
-				return (double)this.GetValue(MinWidthProperty);
-			}
-			set
-			{
-				this.SetValue(MinWidthProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double MinHeight
-		{
-			get
-			{
-				return (double)this.GetValue(MinHeightProperty);
-			}
-			set
-			{
-				this.SetValue(MinHeightProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double MaxWidth
-		{
-			get
-			{
-				return (double)this.GetValue(MaxWidthProperty);
-			}
-			set
-			{
-				this.SetValue(MaxWidthProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double MaxHeight
-		{
-			get
-			{
-				return (double)this.GetValue(MaxHeightProperty);
-			}
-			set
-			{
-				this.SetValue(MaxHeightProperty, value);
-			}
-		}
-#endif
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		// Skipping already declared property MinWidth
+		// Skipping already declared property MinHeight
+		// Skipping already declared property MaxWidth
+		// Skipping already declared property MaxHeight
+#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Microsoft.UI.Xaml.Thickness Margin
 		{
 			get
@@ -125,34 +47,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.HorizontalAlignment HorizontalAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalAlignmentProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double Height
-		{
-			get
-			{
-				return (double)this.GetValue(HeightProperty);
-			}
-			set
-			{
-				this.SetValue(HeightProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property HorizontalAlignment
+		// Skipping already declared property Height
 		// Skipping already declared property FocusVisualSecondaryThickness
 		// Skipping already declared property FocusVisualSecondaryBrush
 		// Skipping already declared property FocusVisualPrimaryThickness
@@ -209,22 +105,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property FocusVisualPrimaryThicknessProperty
 		// Skipping already declared property FocusVisualSecondaryBrushProperty
 		// Skipping already declared property FocusVisualSecondaryThicknessProperty
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Height), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalAlignmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalAlignment), typeof(global::Microsoft.UI.Xaml.HorizontalAlignment),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.HorizontalAlignment)));
-#endif
+		// Skipping already declared property HeightProperty
+		// Skipping already declared property HorizontalAlignmentProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LanguageProperty { get; } =
@@ -233,46 +115,18 @@ namespace Microsoft.UI.Xaml
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty MarginProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Margin), typeof(global::Microsoft.UI.Xaml.Thickness),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
 #endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MaxHeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxHeight), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MaxWidthProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxWidth), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MinHeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MinHeight), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MinWidthProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MinWidth), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
+		// Skipping already declared property MaxHeightProperty
+		// Skipping already declared property MaxWidthProperty
+		// Skipping already declared property MinHeightProperty
+		// Skipping already declared property MinWidthProperty
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty NameProperty { get; } =
@@ -284,22 +138,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property RequestedThemeProperty
 		// Skipping already declared property StyleProperty
 		// Skipping already declared property TagProperty
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalAlignmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalAlignment), typeof(global::Microsoft.UI.Xaml.VerticalAlignment),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.VerticalAlignment)));
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty WidthProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Width), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
+		// Skipping already declared property VerticalAlignmentProperty
+		// Skipping already declared property WidthProperty
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Triggers.get
@@ -419,8 +259,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loaded
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.Loading
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]

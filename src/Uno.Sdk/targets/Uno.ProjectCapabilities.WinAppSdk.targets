@@ -16,12 +16,12 @@
 		the Windows App SDK Nuget package has not yet been restored.
 	-->
 	<Choose>
-		<When Condition="$(SingleProject) == 'true'">
+		<When Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
 			<PropertyGroup>
 				<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 			</PropertyGroup>
 		</When>
-		<When Condition="$(SingleProject) != 'true' and $(OutputType)=='WinExe' and '$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<When Condition=" $(_IsUnoSingleProjectAndLegacy) != 'true' and $(OutputType)=='WinExe' and '$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 			<PropertyGroup>
 				<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 			</PropertyGroup>

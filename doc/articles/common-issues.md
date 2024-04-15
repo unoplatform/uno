@@ -8,6 +8,8 @@ The Uno Platform features and support are constantly evolving, yet you may encou
 
 [!include[getting-help](includes/getting-help.md)]
 
+A better resource for high-level questions about Uno Platform is the [general FAQ](xref:Uno.Development.FAQ).
+
 ## Hot Reload
 
 More troubleshooting information is available [in this section](xref:Uno.Features.HotReload#troubleshooting).
@@ -22,7 +24,7 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 ## Platforms
 
 - [Common issues on WebAssembly](xref:Uno.UI.CommonIssues.Wasm)
-- [Common issues on Skia (Gtk/WPF/Framebuffer)](xref:Uno.UI.CommonIssues.Skia)
+- [Common issues on Skia (X11/macOS/Framebuffer/Windows)](xref:Uno.UI.CommonIssues.Skia)
 - [Common issues on iOS/mac Catalyst](xref:Uno.UI.CommonIssues.IosCatalyst)
 
 ## Next Steps

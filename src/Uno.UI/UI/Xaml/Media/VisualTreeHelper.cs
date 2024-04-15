@@ -444,11 +444,15 @@ namespace Microsoft.UI.Xaml.Media
 			return default;
 		}
 
+		/// <param name="position">
+		/// On skia: The absolute position relative to the window origin.
+		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
+		/// </param>
 		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
-			Point posRelToParent,
+			Point position,
 			UIElement element,
 			GetHitTestability getVisibility,
-			StalePredicate? isStale = null)
+			StalePredicate? isStale)
 		{
 			var stale = default(Branch?);
 			HitTestability elementHitTestVisibility;
@@ -482,6 +486,22 @@ namespace Microsoft.UI.Xaml.Media
 			if (element.RenderTransform is { } tr)
 				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
 
+#if __SKIA__
+			var transformToElement = element.TransformToVisual(null);
+
+			// The maximum region where the current element and its children might draw themselves
+			// This is expressed in the window (absolute) coordinate space.
+			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
+				? transformToElement.TransformBounds(new Rect(rect.Left, rect.Top, rect.Width, rect.Height))
+				: Rect.Infinite;
+			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
+
+			// The region where the current element draws itself.
+			// Be aware that children might be out of this rendering bounds if no clipping defined.
+			// This is expressed in the window (absolute) coordinate space.
+			var renderingBounds = transformToElement.TransformBounds(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
+			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
+#else
 			// First compute the transformation between the element and its parent coordinate space
 			var matrix = Matrix3x2.Identity;
 			element.ApplyRenderTransform(ref matrix);
@@ -492,8 +512,8 @@ namespace Microsoft.UI.Xaml.Media
 			TRACE($"- transform to parent: [{matrix.M11:F2},{matrix.M12:F2} / {matrix.M21:F2},{matrix.M22:F2} / {matrix.M31:F2},{matrix.M32:F2}]");
 
 			// Build 'position' in the current element coordinate space
-			var posRelToElement = matrix.Inverse().Transform(posRelToParent);
-			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {posRelToParent.ToDebugString()}");
+			var posRelToElement = matrix.Inverse().Transform(position);
+			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {position.ToDebugString()}");
 
 			// Second compute the transformations applied locally.
 			// This is somehow the difference between the "XAML coordinate space" and the effective coordinate space.
@@ -515,9 +535,15 @@ namespace Microsoft.UI.Xaml.Media
 			var renderingBounds = matrix.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size));
 			renderingBounds = renderingBounds.IntersectWith(clippingBounds) ?? Rect.Empty;
 			TRACE($"- rendering (rel to element): {renderingBounds.ToDebugString()}");
+#endif
 
+#if __SKIA__
+			var testPosition = position;
+#else
+			var testPosition = posRelToElement;
+#endif
 			// Validate that the pointer is in the bounds of the element
-			if (!clippingBounds.Contains(posRelToElement))
+			if (!clippingBounds.Contains(testPosition))
 			{
 				// Even if out of bounds, if the element is stale, we search down for the real stale leaf
 				if (isStale is not null)
@@ -543,18 +569,24 @@ namespace Microsoft.UI.Xaml.Media
 
 			var isChildStale = isStale;
 
+			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
+			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
+			// https://github.com/unoplatform/uno/issues/325
 			using var child = children
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
-				.Reverse().GetEnumerator();
-#else
+#if __SKIA__
 				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
 				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
+				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
+#elif __WASM__
 				.GetReverseEnumerator();
+#else
+				.Reverse()
+				.GetEnumerator();
 #endif
 
 			while (child.MoveNext())
 			{
-				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
+				var childResult = SearchDownForTopMostElementAt(testPosition, child.Current!, getVisibility, isChildStale);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
 				if (childResult.stale is not null)
@@ -624,7 +656,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
 			// and the position is in actual bounds (which might be different than the clipping bounds)
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(posRelToElement))
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);
@@ -656,11 +688,19 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static UIElement SearchDownForLeafCore(UIElement root, StalePredicate predicate)
 		{
+			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
+			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
+			// https://github.com/unoplatform/uno/issues/325
 			using var enumerator = GetManagedVisualChildren(root)
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
-				.Reverse().GetEnumerator();
-#else
+#if __SKIA__
+				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
+				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
+				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
+#elif __WASM__
 				.GetReverseEnumerator();
+#else
+				.Reverse()
+				.GetEnumerator();
 #endif
 
 			while (enumerator.MoveNext())
@@ -683,6 +723,12 @@ namespace Microsoft.UI.Xaml.Media
 
 			return root;
 		}
+
+#if __SKIA__
+		// This is used with MaterializableList.GetReverseSortedEnumerator
+		private static int UIElementToCanvasZIndex(UIElement element)
+			=> element.Visual.ZIndex; // Equivalent to GetValue(Canvas.ZIndexProperty) on skia
+#endif
 
 		internal static IEnumerable<DependencyObject> EnumerateAncestors(DependencyObject o)
 		{

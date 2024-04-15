@@ -20,7 +20,11 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	[Sample("Microsoft.UI.Composition", Name = "CompositionMaskBrush", Description = "Paints a SpriteVisual with a CompositionBrush with an opacity mask applied to it.", IsManualTest = true)]
+	[Sample("Microsoft.UI.Composition",
+		Name = "CompositionMaskBrush",
+		Description = "Paints a SpriteVisual with a CompositionBrush with an opacity mask applied to it.",
+		IsManualTest = true,
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class MaskBrushTests : UserControl
 	{
 		public MaskBrushTests()

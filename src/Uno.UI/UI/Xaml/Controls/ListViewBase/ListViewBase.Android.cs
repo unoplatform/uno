@@ -180,8 +180,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (selectorItem.LayoutParameters is RecyclerView.LayoutParams)
 				{
-					var displayPosition = NativePanel.GetChildLayoutPosition(selectorItem);
+					var displayPosition = NativePanel.GetChildAdapterPosition(selectorItem);
 					var index = ConvertDisplayPositionToIndex(displayPosition);
+
 					return index;
 				}
 			}

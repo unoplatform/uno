@@ -12,13 +12,13 @@ On WebAssembly, [Read this guide](xref:Uno.Interop.WasmJavaScript1) to learn how
 
 ## Adding native views in Skia
 
-On Skia, integrating native views is done differently. [Read this guide](xref:Uno.Skia.Embedding.Native) to learn how.
+On Skia targets, integrating native views is done differently. [Read this guide](xref:Uno.Skia.Embedding.Native) to learn how.
 
 ## Native Views for iOS/Android/Catalyst
 
 ### Adding native views in XAML
 
-There's no special syntax required when adding native views in XAML, apart from [platform conditionals](platform-specific-xaml.md) to ensure that the XAML compiles for all platforms. Uno's XAML parser supplies the needed 'glue', including supplying common constructor parameters (such as the `Context` parameter on Android).
+There's no special syntax required when adding native views in XAML, apart from [platform conditionals](xref:Uno.Development.PlatformSpecificXaml) to ensure that the XAML compiles for all platforms. Uno's XAML parser supplies the needed 'glue', including supplying common constructor parameters (such as the `Context` parameter on Android).
 
 An example:
 

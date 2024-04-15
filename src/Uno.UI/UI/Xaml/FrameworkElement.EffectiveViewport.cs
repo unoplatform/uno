@@ -47,6 +47,7 @@ namespace Microsoft.UI.Xaml
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
+		private Point? _lastScrollOffsets;
 #if CHECK_LAYOUTED
 		private bool _isLayouted;
 #endif
@@ -205,11 +206,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			if (!isInitial && viewport == _parentViewport)
-			{
-				return;
-			}
-
 			_parentViewport = viewport;
 			PropagateEffectiveViewportChange(isInitial, isInternal);
 		}
@@ -288,10 +284,14 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// The visible window of the SCP
-				// TODO: We should constrains the clip only on axis on which we can scroll
+				// TODO: We should constrain the clip to only the axes on which we can scroll
+#if __SKIA__ // The viewport on an IsScrollPort element should not be affected by its ScrollOffsets. Skia does this correctly, but the other platforms need this inaccuracy due to the way TransformToVisual works (which is only correct on skia).
+				var scrollport = LayoutInformation.GetLayoutSlot(this);
+#else
 				var scrollport = new Rect(
 					new Point(ScrollOffsets.X, ScrollOffsets.Y),
 					LayoutInformation.GetLayoutSlot(this).Size);
+#endif
 
 				if (viewport.IsInfinite)
 				{
@@ -375,7 +375,8 @@ namespace Microsoft.UI.Xaml
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 			}
 
-			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated))
+			// the ScrollOffsets check is only relevant on skia. It will only be true when viewportUpdated is also true on other platforms.
+			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated || _lastScrollOffsets != ScrollOffsets))
 			{
 				_isEnumeratingChildrenInterestedInViewportUpdates = true;
 				var enumerator = _childrenInterestedInViewportUpdates.GetEnumerator();
@@ -392,6 +393,8 @@ namespace Microsoft.UI.Xaml
 					enumerator.Dispose();
 				}
 			}
+
+			_lastScrollOffsets = ScrollOffsets;
 		}
 
 		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]

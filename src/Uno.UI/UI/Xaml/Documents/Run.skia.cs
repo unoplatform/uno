@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Documents
 			float defaultTextSizeY, defaultTextSizeX;
 			var font = defaultFont;
 			var paint = Paint;
-			var fontSize = paint.TextSize;
+			var fontSize = fontInfo.SKFontSize;
 
 			font.GetScale(out int fontScale, out _);
 			float textSizeY = fontInfo.SKFontSize / fontScale;
@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Documents
 					wordBreakAfter = Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1));
 					font.GetScale(out fontScale, out _);
 					textSizeY = fontSize / fontScale;
-					textSizeX = textSizeY * paint.TextScaleX;
+					textSizeX = textSizeY * fontInfo.SKFontScaleX;
 					i += surrogate ? 2 : 1;
 					surrogate = false;
 					fallbackFont = fi;

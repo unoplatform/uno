@@ -444,13 +444,20 @@ namespace Microsoft.UI.Xaml.Controls
 			// In Single mode, we respond to SelectedIndex changing, which is more reliable if there are duplicate items
 			if (IsSelectionMultiple)
 			{
-				foreach (var item in e.AddedItems)
+				if (e.AddedItems is not null)
 				{
-					SetSelectedState(IndexFromItem(item), true);
+					foreach (var item in e.AddedItems)
+					{
+						SetSelectedState(IndexFromItem(item), true);
+					}
 				}
-				foreach (var item in e.RemovedItems)
+
+				if (e.RemovedItems is not null)
 				{
-					SetSelectedState(IndexFromItem(item), false);
+					foreach (var item in e.RemovedItems)
+					{
+						SetSelectedState(IndexFromItem(item), false);
+					}
 				}
 			}
 		}

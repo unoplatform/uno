@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
+
 #if HAS_UNO_WINUI || WINDOWS_WINUI
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
@@ -15,6 +16,8 @@ using _Priority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 #else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 using _Impl = Windows.UI.Core.CoreDispatcher;
 using _Handler = Windows.UI.Core.DispatchedHandler;
@@ -92,6 +95,16 @@ public partial class UnitTestDispatcherCompat
 #else
 		new UnitTestDispatcherCompat(x.Dispatcher);
 #endif
+
+	public static UnitTestDispatcherCompat Instance { get; } =
+#if WINAPPSDK
+		new UnitTestDispatcherCompat(_Impl.GetForCurrentThread());
+#elif HAS_UNO_WINUI
+		new UnitTestDispatcherCompat(_Impl.Main);
+#else
+		new UnitTestDispatcherCompat(CoreDispatcher.Main);
+#endif
+
 
 	public bool HasThreadAccess => _impl.HasThreadAccess;
 

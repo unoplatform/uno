@@ -1674,6 +1674,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Open_In_GotFocus()
+		{
+			bool keepOpening = true;
+			var flyout = new Flyout
+			{
+				Content = new Button { Content = "Test" }
+			};
+			try
+			{
+				bool closed = false;
+
+				var container = new StackPanel();
+				var host = new Button
+				{
+					Content = "Asd",
+					Flyout = flyout
+				};
+				var unfocusButton = new Button();
+				container.Children.Add(unfocusButton);
+				container.Children.Add(host);
+
+				TestServices.WindowHelper.WindowContent = container;
+				await TestServices.WindowHelper.WaitForLoaded(container);
+				await TestServices.WindowHelper.WaitForIdle();
+				unfocusButton.Focus(FocusState.Programmatic);
+				await TestServices.WindowHelper.WaitForIdle();
+				bool gotFocus = false;
+				bool wasClosedWhenHostGotFocus = false;
+				host.GotFocus += (s, e) =>
+				{
+					gotFocus = true;
+					if (closed)
+					{
+						wasClosedWhenHostGotFocus = true;
+					}
+					if (!host.Flyout.IsOpen && keepOpening)
+					{
+						host.Flyout.ShowAt(host);
+					}
+				};
+
+				bool opened = false;
+				flyout.Opened += (s, e) => opened = true;
+
+				host.Focus(FocusState.Programmatic);
+
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				Assert.AreNotEqual(host, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
+
+				opened = false;
+				flyout.Closed += (s, e) => closed = true;
+
+				gotFocus = false;
+				flyout.Hide();
+
+				await TestServices.WindowHelper.WaitFor(() => gotFocus);
+				await TestServices.WindowHelper.WaitFor(() => closed);
+				Assert.IsFalse(wasClosedWhenHostGotFocus);
+				Assert.IsFalse(flyout.IsOpen);
+			}
+			finally
+			{
+				keepOpening = false;
+				flyout.Hide();
+			}
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();

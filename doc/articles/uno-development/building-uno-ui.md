@@ -56,7 +56,7 @@ The step-by-step process is:
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf` (or the name listed in `crosstargeting_override.props` for the selected `UnoTargetFrameworkOverride`), and open it.
 1. To confirm that everything works:
    - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'.
-   - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
+   - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf|X11|macOS]` project in the Solution Explorer and 'Build'.
 1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers` which can improve the build time during debugging sessions.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.

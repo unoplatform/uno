@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
@@ -11,18 +12,26 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Build;
+using Microsoft.VisualStudio.ProjectSystem.Debug;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using StreamJsonRpc;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
@@ -33,11 +42,11 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Uno.UI.RemoteControl.VS;
 
-public class EntryPoint : IDisposable
+public partial class EntryPoint : IDisposable
 {
 	private const string UnoPlatformOutputPane = "Uno Platform";
-	private const string FolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
 	private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
+
 	private readonly DTE _dte;
 	private readonly DTE2 _dte2;
 	private readonly string _toolsPath;
@@ -54,17 +63,25 @@ public class EntryPoint : IDisposable
 	private bool _closing;
 	private bool _isDisposed;
 	private IdeChannelClient? _ideChannelClient;
+	private ProfilesObserver _debuggerObserver;
+	private readonly Func<Task> _globalPropertiesChanged;
 	private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
 	private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
 	private readonly _dispBuildEvents_OnBuildProjConfigBeginEventHandler _onBuildProjConfigBeginHandler;
 
-	public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
+	public EntryPoint(
+		DTE2 dte2
+		, string toolsPath
+		, AsyncPackage asyncPackage
+		, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider
+		, Func<Task> globalPropertiesChanged)
 	{
 		_dte = dte2 as DTE;
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
 		globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
+		_globalPropertiesChanged = globalPropertiesChanged;
 
 		SetupOutputWindow();
 
@@ -82,22 +99,35 @@ public class EntryPoint : IDisposable
 		//
 		// This will can possibly be removed when all projects are migrated to the sdk project system.
 		_ = UpdateProjectsAsync();
+
+		_debuggerObserver = new ProfilesObserver(asyncPackage, _dte, OnDebugFrameworkChangedAsync, OnDebugProfileChangedAsync, _debugAction);
+		_ = _debuggerObserver.ObserveProfilesAsync();
+
+		_ = _globalPropertiesChanged();
 	}
 
-	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
+	private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
 	{
-		if (RemoteControlServerPort == 0)
+		Dictionary<string, string> properties = new()
 		{
-			_warningAction?.Invoke(
-				$"The Remote Control server is not yet started, providing [0] as the server port. " +
-				$"Rebuilding the application may fix the issue.");
+		};
+
+		if (RemoteControlServerPort != 0)
+		{
+			properties.Add(RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture));
 		}
 
-		return Task.FromResult(new Dictionary<string, string> {
-			{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) }
-		});
+		await Task.Yield();
+
+		return properties;
 	}
 
+	[MemberNotNull(
+		nameof(_debugAction)
+		, nameof(_infoAction)
+		, nameof(_verboseAction)
+		, nameof(_warningAction)
+		, nameof(_errorAction))]
 	private void SetupOutputWindow()
 	{
 		var ow = _dte2.ToolWindows.OutputWindow;
@@ -185,7 +215,7 @@ public class EntryPoint : IDisposable
 		{
 			StartServer();
 			var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-			foreach (var p in await GetProjectsAsync())
+			foreach (var p in await _dte.GetProjectsAsync())
 			{
 				var filename = string.Empty;
 				try
@@ -314,6 +344,8 @@ public class EntryPoint : IDisposable
 			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 			_ideChannelClient.ForceHotReloadRequested += IdeChannelClient_ForceHotReloadRequested;
 			_ideChannelClient.ConnectToHost();
+
+			_ = _globalPropertiesChanged();
 		}
 	}
 
@@ -344,69 +376,6 @@ public class EntryPoint : IDisposable
 		var port = ((IPEndPoint)l.LocalEndpoint).Port;
 		l.Stop();
 		return port;
-	}
-
-	private async System.Threading.Tasks.Task<IEnumerable<EnvDTE.Project>> GetProjectsAsync()
-	{
-		ThreadHelper.ThrowIfNotOnUIThread();
-
-		var projectService = await _asyncPackage.GetServiceAsync(typeof(IProjectService)) as IProjectService;
-
-		var solutionProjectItems = _dte.Solution.Projects;
-
-		if (solutionProjectItems != null)
-		{
-			return EnumerateProjects(solutionProjectItems);
-		}
-		else
-		{
-			return Array.Empty<EnvDTE.Project>();
-		}
-	}
-
-	private IEnumerable<EnvDTE.Project> EnumerateProjects(EnvDTE.Projects vsSolution)
-	{
-		foreach (var project in vsSolution.OfType<EnvDTE.Project>())
-		{
-			if (project.Kind == FolderKind /* Folder */)
-			{
-				foreach (var subProject in EnumSubProjects(project))
-				{
-					yield return subProject;
-				}
-			}
-			else
-			{
-				yield return project;
-			}
-		}
-	}
-
-	private IEnumerable<EnvDTE.Project> EnumSubProjects(EnvDTE.Project folder)
-	{
-		if (folder.ProjectItems != null)
-		{
-			var subProjects = folder.ProjectItems
-				.OfType<EnvDTE.ProjectItem>()
-				.Select(p => p.Object)
-				.Where(p => p != null)
-				.Cast<EnvDTE.Project>();
-
-			foreach (var project in subProjects)
-			{
-				if (project.Kind == FolderKind)
-				{
-					foreach (var subProject in EnumSubProjects(project))
-					{
-						yield return subProject;
-					}
-				}
-				else
-				{
-					yield return project;
-				}
-			}
-		}
 	}
 
 	public void SetGlobalProperty(string projectFullName, string propertyName, string propertyValue)

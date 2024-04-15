@@ -14,6 +14,7 @@ using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
 using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
+using System.Threading.Tasks;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
@@ -59,7 +60,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			_eventLoop.Schedule(InnerInitialize);
 		}
 
-		protected override void RunLoop()
+		protected override Task RunLoop()
 		{
 			_terminationGate.WaitOne();
 
@@ -67,6 +68,8 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			{
 				this.Log().Debug($"Application is exiting");
 			}
+
+			return Task.CompletedTask;
 		}
 
 		private void StartConsoleInterception()

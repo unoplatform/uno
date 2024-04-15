@@ -10,6 +10,8 @@ using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.Linq;
+using SamplesApp.UITests;
+using Windows.Foundation;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -22,6 +24,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CalendarView
 {
+	[TestMethod]
+	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16123")]
+	[Ignore("Test is unstable on CI: https://github.com/unoplatform/uno/issues/16123")]
+	public async Task When_ReMeasure_After_Changing_MaxDate()
+	{
+		var contentDialog = new ContentDialog();
+		contentDialog.XamlRoot = TestServices.WindowHelper.XamlRoot;
+		var calendarView = new CalendarView();
+		contentDialog.Content = calendarView;
+
+		// Set MaxDate, show dialog, screenshot it, and hide it.
+		calendarView.MaxDate = DateTimeOffset.Now.AddDays(1);
+		var task = contentDialog.ShowAsync();
+		await TestServices.WindowHelper.WaitForIdle();
+		var screenshot1 = await UITestHelper.ScreenShot(calendarView);
+		task.Cancel();
+
+		// Change MaxDate, show dialog, screenshot it, and hide it.
+		calendarView.MaxDate = DateTimeOffset.Now.AddDays(2);
+		task = contentDialog.ShowAsync();
+		await TestServices.WindowHelper.WaitForIdle();
+		var screenshot2 = await UITestHelper.ScreenShot(calendarView);
+		task.Cancel();
+
+		await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
+	}
+
 	[TestMethod]
 	public async Task When_MinDate_Has_Different_Offset()
 	{

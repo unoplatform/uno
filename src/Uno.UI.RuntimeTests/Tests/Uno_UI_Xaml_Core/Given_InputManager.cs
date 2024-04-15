@@ -209,7 +209,7 @@ public class Given_InputManager
 		var button1 = (Button)stackPanel.Children[0];
 		var button2 = (Button)stackPanel.Children[1];
 
-		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
 		var border = new Border { scrollViewer };
 
@@ -250,7 +250,7 @@ public class Given_InputManager
 		var button1 = (Button)stackPanel.Children[0];
 		var button2 = (Button)stackPanel.Children[1];
 
-		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
 		var border = new Border { scrollViewer };
 
@@ -297,7 +297,7 @@ public class Given_InputManager
 
 		var button1 = (Button)stackPanel.Children[0];
 
-		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
 		var border = new Border { scrollViewer };
 
@@ -342,7 +342,7 @@ public class Given_InputManager
 
 		var button1 = (Button)stackPanel.Children[0];
 
-		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
 		var border = new Border { scrollViewer };
 
@@ -395,7 +395,7 @@ public class Given_InputManager
 		var button1 = (Button)stackPanel.Children[0];
 
 		var cursor = InputSystemCursor.Create(InputSystemCursorShape.IBeam);
-		SetProtectedCursor(button1, cursor);
+		button1.SetProtectedCursor(cursor);
 
 		var border = new Border { scrollViewer };
 
@@ -449,7 +449,7 @@ public class Given_InputManager
 
 		var button1 = (Button)stackPanel.Children[0];
 
-		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+		button1.SetProtectedCursor(InputSystemCursor.Create(InputSystemCursorShape.IBeam));
 
 		var border = new Border { scrollViewer };
 
@@ -463,7 +463,7 @@ public class Given_InputManager
 
 		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
 
-		SetProtectedCursor(button1, null);
+		button1.SetProtectedCursor(null);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// This is NOT the behaviour on WinUI. The cursor should change immediately. To align this behaviour,
@@ -503,15 +503,6 @@ public class Given_InputManager
 		{
 			source.PointerCursor = cursor;
 		}
-	}
-
-	// This is to deal with WinUI's silly design choice to make ProtectedCursor protected.
-	// The alternative would be to create subclasses that set ProtectedCursor from within.
-	private static void SetProtectedCursor(UIElement element, InputCursor cursor)
-	{
-		var propInfo = typeof(UIElement).GetProperty("ProtectedCursor", BindingFlags.Instance | BindingFlags.NonPublic);
-		propInfo!.SetValue(element, cursor, null);
-
 	}
 }
 #endif

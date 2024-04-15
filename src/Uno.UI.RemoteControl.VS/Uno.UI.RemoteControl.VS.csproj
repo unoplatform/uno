@@ -17,24 +17,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<UpToDateCheckInput Remove="Helpers\DTEHelper.cs" />
-		<UpToDateCheckInput Remove="Helpers\ILogger.cs" />
-		<UpToDateCheckInput Remove="IdeChannel\IDEChannelClient.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeMessageSerializer.cs" Link="IDEChannel\IdeMessageSerializer.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-2-31512-422" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
+		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
-		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="16.0.374-pre" />
+		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
 		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
+		<PackageReference Include="PolySharp" Version="1.14.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

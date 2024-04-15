@@ -98,6 +98,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public virtual void Close() { }
 
+	public virtual void ExtendContentIntoTitleBar(bool extend) { }
+
 	public virtual void Show()
 	{
 		ShowCore();
@@ -117,6 +119,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void SetPresenter(AppWindowPresenter presenter)
 	{
+		_presenterSubscription.Disposable?.Dispose();
 		switch (presenter)
 		{
 			case FullScreenPresenter _:

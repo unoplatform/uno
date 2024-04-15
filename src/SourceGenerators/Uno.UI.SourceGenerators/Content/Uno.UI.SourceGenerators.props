@@ -10,26 +10,6 @@
 		<ShouldRunGenerator>true</ShouldRunGenerator>
 		<ShouldRunGenerator Condition="'$(_UnoIsWinAppSDKDefined)'=='true' or $(TargetFramework.StartsWith('uap10.0'))">false</ShouldRunGenerator>
 
-		<!--
-		MSBuild below 17.0 implies C# 7.3 or below, which does not support lambda parameters shadowing (https://github.com/dotnet/csharplang/blob/main/meetings/2019/LDM-2019-01-16.md).
-		In this mode, we disable all hot reload specific code generation.
-		Additionally, if LangVersion is explicitly set to 7.3 or below, we also disable hot reload (Xamarin.iOS/Android/Mac projects set this explicitly)
-		-->
-		<UnoForceHotReloadCodeGen Condition="
-								  '$(UnoForceHotReloadCodeGen)'==''
-								  and (
-									'$(MSBuildVersion)' &lt; '17.0'
-									or (
-										'$(MSBuildVersion)' &gt;= '17.0'
-										and '$(LangVersion)' != ''
-										and '$(LangVersion)' != 'preview'
-										and '$(LangVersion)' != 'latest'
-										and '$(LangVersion)' != 'latestMajor'
-										and '$(LangVersion)' != 'default'
-										and '$(LangVersion)' &lt; '8.0'
-									)
-								  )">false</UnoForceHotReloadCodeGen>
-
 		<XamarinProjectType Condition="
 							'$(TargetPlatformIdentifier)' == 'ios'
 							or '$(TargetPlatformIdentifier)' == 'maccatalyst'
@@ -64,6 +44,7 @@
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
+		<CompilerVisibleProperty Include="UnoPlatformIDE" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
 		<CompilerVisibleProperty Include="UnoForceHotReloadCodeGen" />
 		<CompilerVisibleProperty Include="UnoForceIncludeProjectConfiguration" />

@@ -8,23 +8,7 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputKeyboardSource : global::Microsoft.UI.Input.InputObject
 	{
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Input.VirtualKeyStates GetKeyState(global::Windows.System.VirtualKey virtualKey)
-		{
-			throw new global::System.NotImplementedException("The member VirtualKeyStates InputKeyboardSource.GetKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyStates%20InputKeyboardSource.GetKeyState%28VirtualKey%20virtualKey%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.add
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.remove
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyDown.add
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyDown.remove
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyUp.add
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyUp.remove
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyDown.add
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyDown.remove
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyUp.add
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -33,7 +17,23 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member VirtualKeyStates InputKeyboardSource.GetCurrentKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyStates%20InputKeyboardSource.GetCurrentKeyState%28VirtualKey%20virtualKey%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.add
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.remove
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyDown.add
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.remove
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyUp.add
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyUp.remove
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyDown.add
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyDown.remove
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Input.VirtualKeyStates GetKeyState(global::Windows.System.VirtualKey virtualKey)
+		{
+			throw new global::System.NotImplementedException("The member VirtualKeyStates InputKeyboardSource.GetKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyStates%20InputKeyboardSource.GetKeyState%28VirtualKey%20virtualKey%29");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyUp.remove
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyUp.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.InputKeyboardSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)

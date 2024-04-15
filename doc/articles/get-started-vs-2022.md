@@ -43,7 +43,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or 
 
 ## Additional Setup for Windows Subsystem for Linux (WSL)
 
-It is possible to build and debug Skia+GTK projects under WSL, if you choose to do so.
+It is possible to build and debug Skia Desktop projects under WSL if you choose to do so.
 
 To setup your environment for WSL:
 
@@ -53,13 +53,9 @@ To setup your environment for WSL:
 > [!NOTE]
 > Running Uno Platform apps using WSL makes use of [WSLg's support for Wayland](https://github.com/microsoft/wslg).
 
-## Additional Setup for Skia+GTK projects
+## Additional Setup for Skia Desktop projects
 
-# [**Windows**](#tab/windows)
-
-[!include[windows-setup](includes/additional-windows-setup-inline.md)]
-
-# [**WSL**](#tab/linux)
+### WSL
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 

@@ -47,6 +47,68 @@ The build process has determined that you have specified an UnoFeature that requ
 
 The build process has detected that you have set the value `UnoGenerateAotProfile` to true for a build configuration that has not optimized the assembly (i.e. Debug build Configuration). You should only generate an AOT profile from a build Configuration that will optimize the assembly such as the Release build Configuration.
 
+### UNOB0008: Building a WinUI class library with dotnet build is not supported
+
+Building a `net8.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
+
+To work around this, use `msbuild /r` on Windows. You can build using `msbuild` with a **Developer Command Prompt for VS 2022**, or by using `vswhere` or using [GitHub actions scripts](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp) in a CI environment.
+
+This particular check can be disabled by setting the msbuild property `UnoDisableValidateWinAppSDK3548` to `true`.
+
+### UNOB0009: Uno Platform Implicit Package references are enabled
+
+When Uno Implicit Package References are enabled you do not need to provide an explicit PackageReference for the Packages listed in the build message. You should open the csproj file, find and remove the `<PackageReference Include="{Package name}" />` as listed in the build message.
+
+Alternatively you may disable the Implicit Package References
+
+```xml
+<PropertyGroup>
+  <DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+</PropertyGroup>
+```
+
+### UNOB00010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
+
+Make sure to place `net8.0-browserwasm` last in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnBrowserNotFirst>true</UnoDisableVSWarnBrowserNotFirst>
+</PropertyGroup>
+```
+
+### UNOB00011: The desktop TargetFramework must be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
+
+Make sure to place `net8.0-desktop` first in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnDesktopNotFirst>true</UnoDisableVSWarnDesktopNotFirst>
+</PropertyGroup>
+```
+
+### UNOB00012: The windows TargetFramework must not be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
+
+Make sure that `net8.0-windows10.xxx` is not first in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnWindowsIsFirst>true</UnoDisableVSWarnWindowsIsFirst>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001
@@ -60,3 +122,26 @@ A member is not implemented, see [this page](xref:Uno.Development.NotImplemented
 On iOS and Catalyst, calling `Dispose()` or `Dispose(bool)` on a type inheriting directly from `UIKit.UIView` can lead to unstable results. It is not needed to call `Dispose` as the runtime will do so automatically during garbage collection.
 
 Invocations to `Dispose` can cause the application to crash in `__NSObject_Disposer drain`, cause `ObjectDisposedException` exception to be thrown. More information can be found in [xamarin/xamarin-macios#19493](https://github.com/xamarin/xamarin-macios/issues/19493).
+
+## VS Code Errors
+
+### UVSC0001
+
+Building for the specified target framework is not supported on the current platform or architecture. For examples:
+
+- a Mac computer is required to build iOS, Mac Catalyst and macOS applications
+- a Windows computer is required to build WinUI applications
+
+### UVSC0002
+
+Building WinUI applications requires the use of `msbuild` and the extension must be able to find it. This is done by using the `vswhere` utility.
+
+Installing the latest stable Visual Studio release should provide both tools.
+
+With version 0.14 (and later) you can override the location of `msbuild.exe` by:
+
+1. Opening the **Settings** using `Ctrl`+`,`
+1. Searching for `msbuild`
+1. Setting the location where your `msbuild.exe` is located
+
+![settings](Assets/quick-start/vs-code-settings-msbuild.png)

@@ -8,7 +8,7 @@
         Title="Uno Islands Sample" Height="768" Width="1024">
 	<Border BorderThickness="20" BorderBrush="Red" Background="White">
 		<Grid>
-			<ContentControl Grid.Row="1" x:Name="hostContainer">
+			<ContentControl Grid.Row="1" x:Name="hostContainer" IsTabStop="False">
 				<xamlHost:UnoXamlHost x:Name="xamlHost" InitialTypeName="SamplesApp.MainPage" />
 			</ContentControl>
 		</Grid>

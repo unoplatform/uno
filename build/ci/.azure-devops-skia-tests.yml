@@ -117,12 +117,12 @@ jobs:
           SNAPSHOT_GROUP: ${{ testGroup }}
 
   steps:
+  - checkout: none
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
   - template: templates/gtk-install-windows.yml
 
   - script: |
@@ -216,6 +216,7 @@ jobs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
 ##
 ## WPF
@@ -239,12 +240,11 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
+  - checkout: none
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
-
-  - template: templates/dotnet-install.yml
 
   - script: |
         cd $(SamplesAppArtifactPath)
@@ -297,6 +297,7 @@ jobs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml'
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
   displayName: 'Run Uno Islands Skia WPF Runtime Tests'
@@ -335,6 +336,7 @@ jobs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml'
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
 ##
 ## X11
@@ -357,12 +359,12 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
+  - checkout: none
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
   - template: templates/linux-install-xvfb.yml
 
   - script: |
@@ -423,3 +425,4 @@ jobs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true

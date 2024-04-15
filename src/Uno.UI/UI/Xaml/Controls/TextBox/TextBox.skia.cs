@@ -37,6 +37,8 @@ public partial class TextBox
 	private bool _selectionEndsAtTheStart;
 	private bool _showCaret = true;
 
+	private bool _inSelectInternal;
+
 	private (int start, int length)? _pendingSelection;
 
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
@@ -195,7 +197,7 @@ public partial class TextBox
 						}
 					};
 
-					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight));
+					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
 					bool lastFoundCaret = false;
 					bool currentFoundCaret = false;
@@ -319,8 +321,13 @@ public partial class TextBox
 
 	partial void SelectPartial(int start, int length)
 	{
+		_pendingSelection = null;
 		TrySetCurrentlyTyping(false);
-		_selectionEndsAtTheStart = false;
+		if (!_inSelectInternal)
+		{
+			// SelectInternal sets _selectionEndsAtTheStart on its own
+			_selectionEndsAtTheStart = false;
+		}
 		_selection = (start, length);
 		if (!_isSkiaTextBox)
 		{
@@ -373,7 +380,7 @@ public partial class TextBox
 			var rect = DisplayBlockInlines.GetRectForIndex(selectionEnd);
 
 			// TODO: we are sometimes horizontally overscrolling, but it's more visually pleasant that underscrolling as we want the caret to be fully showing.
-			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight)));
+			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + InlineCollection.CaretThickness));
 			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportWidth);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
@@ -818,10 +825,10 @@ public partial class TextBox
 	/// </summary>
 	private void SelectInternal(int selectionStart, int selectionLength)
 	{
+		_inSelectInternal = true;
+		_selectionEndsAtTheStart = selectionLength < 0;
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
-		_selectionEndsAtTheStart = selectionLength < 0; // set here because Select clears it
-		_pendingSelection = null;
-		UpdateScrolling();
+		_inSelectInternal = false;
 	}
 
 	private void TimerOnTick(object sender, object e)

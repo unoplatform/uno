@@ -31,5 +31,7 @@
 
 	<Import Project="Uno.ProjectCapabilities.WinAppSdk.targets" Condition="$(IsWinAppSdk)" />
 
-	<Import Project="Uno.ProjectCapabilities.SingleProject.targets" Condition=" '$(SingleProject)' == 'true' " />
+	<Import Project="Uno.ProjectCapabilities.Wasm.targets" Condition="$(IsBrowserWasm)" />
+
+	<Import Project="Uno.ProjectCapabilities.SingleProject.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 </Project>

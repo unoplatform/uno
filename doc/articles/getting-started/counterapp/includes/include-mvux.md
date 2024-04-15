@@ -4,7 +4,7 @@ So far, all the elements we've added to the **MainPage** have had their content 
 
 As part of creating the application, we selected MVUX as the presentation framework. This added a reference to [**MVUX**](https://aka.platform.uno/mvux) which is responsible for dealing with our Models and generating the ViewModels.
 
-- Add a new class, `MainModel`, to the **Counter** project.
+- Add a new class named `MainModel`.
 - Update the `MainModel` class to be a `partial record`.
 
     ```csharp

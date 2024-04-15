@@ -8,7 +8,7 @@ uid: Uno.Development.FAQ
 
 ### What is the Uno Platform?
 
-Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md). Read more [here](what-is-uno.md).
+Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md). Read more [here](xref:Uno.Documentation.Intro).
 
 ### Who makes Uno Platform?
 
@@ -20,11 +20,11 @@ Uno Platform applications run on the Web (via WebAssembly), Windows, Linux, Mac 
 
 ### Are Uno Platform applications native?
 
-Yes - Uno Platform taps into the native UI frameworks on most supported platforms, so your final product is a native app. [Read more about how Uno Platform works.](what-is-uno.md)
+Yes - Uno Platform taps into the native UI frameworks on most supported platforms, so your final product is a native app. [Read more about how Uno Platform works.](xref:Uno.Documentation.Intro)
 
 ### Can applications look the same on all platforms?
 
-Yes. Unless configured otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno Platform achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](what-is-uno.md)
+Yes. Unless configured otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno Platform achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](xref:Uno.Documentation.Intro)
 
 ### How is Uno Platform different from .NET MAUI?
 
@@ -81,7 +81,7 @@ Consult [the list of supported WinUI controls](implemented-views.md).
 
 ### What do I need to develop Uno Platform applications?
 
-You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details.
+You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details. If you need help with issues specific to your developer environment or hardware, check out [Common Issues](xref:Uno.UI.CommonIssues).
 
 ### Can I use VB.NET for Uno Platform applications?
 

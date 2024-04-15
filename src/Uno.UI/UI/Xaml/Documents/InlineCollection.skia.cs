@@ -4,6 +4,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
@@ -16,8 +17,8 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
-		// This is a randomly chosen number that looks clean enough.
-		internal const float CaretThicknessAsRatioOfLineHeight = 0.05f;
+		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
+		internal const float CaretThickness = 1;
 
 		// This is safe as a static field.
 		// 1) It's only accessed from UI thread.
@@ -106,14 +107,31 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			set
 			{
+				var parent = ((IBlock)_collection.GetParent());
+				var text = parent.GetText();
+				var unadjustedValue = (start: CountRunes(text[..value.start]), end: CountRunes(text[..value.end])); // unadjust for surrogate pairs
+
 				// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
-				var startLine = GetRenderLineAt(GetRectForIndex(value.start).GetCenter().Y, true)?.index ?? 0;
-				var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
-				var selection = new SelectionDetails(startLine, value.start, endLine, value.end);
-				if (selection != _selection)
+				if (_selection is null || (unadjustedValue.start, unadjustedValue.end) != (_selection.StartIndex, _selection.EndIndex))
 				{
-					_selection = selection;
-					((IBlock)_collection.GetParent()).Invalidate(false);
+					// GetRectForIndex expects an adjusted index, so no need to unadjust
+					var startLine = GetRenderLineAt(GetRectForIndex(value.start).GetCenter().Y, true)?.index ?? 0;
+					var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
+					_selection = new SelectionDetails(startLine, unadjustedValue.start, endLine, unadjustedValue.end);
+					parent.Invalidate(false);
+				}
+
+				static int CountRunes(string s)
+				{
+					var enumerator = s.EnumerateRunes();
+					int count = 0;
+					// Avoid LINQ's Count() because it will box the enumerator.
+					while (enumerator.MoveNext())
+					{
+						count++;
+					}
+
+					return count;
 				}
 			}
 		}
@@ -453,7 +471,7 @@ namespace Microsoft.UI.Xaml.Documents
 		internal void Draw(in DrawingSession session)
 		{
 			var newDrawingState = (_selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
-			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && !_lastDrawingState.Equals(newDrawingState);
+			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } || !_lastDrawingState.Equals(newDrawingState);
 			var fireEvents = FireDrawingEventsOnEveryRedraw || somethingChanged;
 			_drawingValid.wentThroughDraw = true;
 			_lastDrawingState = newDrawingState;
@@ -471,7 +489,7 @@ namespace Microsoft.UI.Xaml.Documents
 					// empty, so caret is at the beginning
 					if (RenderCaret)
 					{
-						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(_lastDefaultLineHeight * CaretThicknessAsRatioOfLineHeight, _lastDefaultLineHeight)));
+						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)));
 					}
 					DrawingFinished?.Invoke();
 				}
@@ -479,7 +497,7 @@ namespace Microsoft.UI.Xaml.Documents
 				return;
 			}
 
-			var canvas = session.Surface.Canvas;
+			var canvas = session.Canvas;
 			var parent = (IBlock)_collection.GetParent();
 			var alignment = parent.TextAlignment;
 			if (parent.FlowDirection == FlowDirection.RightToLeft)
@@ -513,14 +531,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 					var segment = segmentSpan.Segment;
 					var inline = segment.Inline;
-					var fontInfo = inline.FontInfo;
+					var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 					var paint = inline.Paint;
-
-					if (segment.FallbackFont is FontDetails fallback)
-					{
-						paint = segment.Paint!;
-						fontInfo = fallback;
-					}
 
 					if (inline.Foreground is SolidColorBrush scb)
 					{
@@ -630,7 +642,7 @@ namespace Microsoft.UI.Xaml.Documents
 					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, fireEvents, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
-					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? 1 : 0);
+					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? segment.LineBreakLength : 0);
 
 					ArrayPool<SKPoint>.Shared.Return(positions);
 					ArrayPool<ushort>.Shared.Return(glyphs);
@@ -693,7 +705,9 @@ namespace Microsoft.UI.Xaml.Documents
 					right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 
 					var selectionNotEmpty = bg.StartIndex != bg.EndIndex;
-					if (selectionNotEmpty && SpanEndsInNewLine(segmentSpan))
+					// positions.Length doesn't include CRLF, so we specifically check if EndIndex goes past position.Length to know if CRLF is included or not.
+					var newLineIncludedInSelection = SpanEndsInNewLine(segmentSpan) && bg.EndIndex - spanStartingIndex > positions.Length;
+					if (selectionNotEmpty && newLineIncludedInSelection)
 					{
 						// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
 						right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
@@ -819,12 +833,16 @@ namespace Microsoft.UI.Xaml.Documents
 
 				if (caretLocation != float.MinValue && fireEvents)
 				{
-					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y)));
+					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)));
 				}
 			}
 		}
 
+		/// <remarks>Adjusted for surrogate pairs</remarks>
 		internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
+			=> AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
+
+		private int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
 		{
 			var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
@@ -878,11 +896,13 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		// Warning: this is only tested and currently used by TextBox
-		internal Rect GetRectForIndex(int index)
+		/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
+		internal Rect GetRectForIndex(int adjustedIndex)
 		{
 			var characterCount = 0;
 			float y = 0, x = 0;
 			var parent = (IBlock)_collection.GetParent();
+			var index = parent.GetText()[..adjustedIndex].EnumerateRunes().Count(); // unadjust
 
 			foreach (var line in _renderLines)
 			{
@@ -988,7 +1008,10 @@ namespace Microsoft.UI.Xaml.Documents
 			return extendedSelection ? (span, spanX - span.Width) : null;
 		}
 
-		internal (int start, int end) GetStartAndEndIndicesForSpan(RenderSegmentSpan span, bool includeNewline)
+		/// <remarks>
+		/// Adjusted for surrogate pairs
+		/// </remarks>
+		internal (int start, int end) GetStartAndEndIndicesForSpanAdjusted(RenderSegmentSpan span, bool includeNewline)
 		{
 			var characterCount = 0;
 			var lineIndex = 0;
@@ -1009,12 +1032,84 @@ namespace Microsoft.UI.Xaml.Documents
 				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
 				.Sum(GlyphsLengthWithCR); // all characters in span
 
+			var start = characterCount;
+			var end = characterCount + GlyphsLengthWithCR(span);
 			if (!includeNewline && (SpanEndsInNewLine(span)))
 			{
-				characterCount--;
+				end -= span.Segment.LineBreakLength;
 			}
 
-			return (characterCount, characterCount + GlyphsLengthWithCR(span));
+			return AdjustSelectionForSurrogatePairs(start, end);
+		}
+
+		/// <summary>
+		/// When we read the length of a span or segment from Skia/HarfBuzz, what we actually get is the
+		/// number of glyphs (i.e. Unicode runes), not the number of c# chars, so surrogate pairs will
+		/// only be counted as a single "unit". This method stretches the range to account for surrogate
+		/// pairs being 2 characters, not one.
+		/// </summary>
+		/// <remarks>
+		/// Make sure not to call this on an already-adjusted range with surrogate pairs in it, as it will
+		/// double count the surrogate pairs.
+		/// </remarks>
+		/// <remarks>Assumes valid indices</remarks>
+		private (int start, int end) AdjustSelectionForSurrogatePairs(int unadjustedStart, int unadjustedEnd)
+		{
+			var start = Math.Min(unadjustedStart, unadjustedEnd);
+			var end = Math.Max(unadjustedStart, unadjustedEnd);
+			var text = ((IBlock)_collection.GetParent()).GetText();
+
+			var count = 0;
+			for (int i = 0, j = 0; i < text.Length && j < start; i++, j++, count += 1)
+			{
+				if (i < text.Length - 1 && char.IsSurrogatePair(text[i], text[i + 1]))
+				{
+					// Notice how j didn't move here
+					count += 1;
+					i++;
+				}
+			}
+
+			var adjustedStart = count;
+
+			for (int i = start, j = 0; i < text.Length && j < end - start; i++, j++, count += 1)
+			{
+				if (i < text.Length - 1 && char.IsSurrogatePair(text[i], text[i + 1]))
+				{
+					// Notice how j didn't move here
+					count += 1;
+					i++;
+				}
+			}
+
+			var adjustedEnd = count;
+
+			// keep direction
+			return unadjustedStart < unadjustedEnd ? (adjustedStart, adjustedEnd) : (adjustedEnd, adjustedStart);
+		}
+
+		// equivalent to AdjustSelectionForSurrogatePairs for a single index
+		/// <remarks>does nothing on invalid index input (i.e. keeps it invalid)</remarks>
+		private int AdjustIndexForSurrogatePairs(int index)
+		{
+			if (index < 0)
+			{
+				return index;
+			}
+
+			var text = ((IBlock)_collection.GetParent()).GetText();
+			var count = 0;
+			for (int i = 0, j = 0; i < text.Length && j < index; i++, j++, count += 1)
+			{
+				if (i < text.Length - 1 && char.IsSurrogatePair(text[i], text[i + 1]))
+				{
+					// Notice how j didn't move here
+					count += 1;
+					i++;
+				}
+			}
+
+			return count;
 		}
 
 		// Warning: this is only tested and currently used by TextBox
@@ -1044,7 +1139,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		// RenderSegmentSpan.FullGlyphsLength includes spaces, but not \r
 		private int GlyphsLengthWithCR(RenderSegmentSpan span)
-			=> span.FullGlyphsLength + (SpanEndsInNewLine(span) ? 1 : 0);
+			=> span.FullGlyphsLength + (SpanEndsInNewLine(span) ? span.Segment.LineBreakLength : 0);
 
 		private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
 		{
