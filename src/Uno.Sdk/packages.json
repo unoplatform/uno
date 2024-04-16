@@ -16,6 +16,7 @@
 			"Uno.WinUI.Skia.MacOS",
 			"Uno.WinUI.Skia.Wpf",
 			"Uno.WinUI.Skia.X11",
+			"Uno.WinUI.Svg",
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly"
 		]
@@ -74,6 +75,7 @@
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.Uno.WinUI",
+			"SkiaSharp.Views.WinUI",
 			"SkiaSharp.NativeAssets.Linux",
 			"SkiaSharp.NativeAssets.macOS",
 			"SkiaSharp.NativeAssets.Win32"
