@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			TestServices.WindowHelper.WindowContent = SUT;
 
-			Assert.IsTrue(ContentPresenter.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+			Assert.IsTrue(SUT.IsNativeHost);
 		}
 
 		[TestMethod]
@@ -52,12 +52,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = SUT;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(ContentPresenter.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+			Assert.IsTrue(SUT.IsNativeHost);
 
 			TestServices.WindowHelper.WindowContent = null;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsFalse(ContentPresenter.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+			Assert.IsFalse(SUT.IsNativeHost);
 		}
 	}
 }
