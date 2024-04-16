@@ -936,19 +936,6 @@ namespace Uno.UI.Helpers.WinUI
 			return FindInVisualTreeInner(parent, isMatch);
 		}
 
-		public static bool IsFrameworkElementLoaded(FrameworkElement frameworkElement)
-		{
-			if (IsRS5OrHigher())
-			{
-				// TODO:MZ: Does this work everywhere?
-				return frameworkElement.IsLoaded;
-			}
-			else
-			{
-				return VisualTreeHelper.GetParent(frameworkElement) != null;
-			}
-		}
-
 		public static bool IsTrue(bool? nullableBool)
 		{
 			if (nullableBool != null)
