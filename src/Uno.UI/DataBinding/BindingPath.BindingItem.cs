@@ -213,6 +213,10 @@ namespace Uno.UI.DataBinding
 
 				if (shouldRaiseValueChanged)
 				{
+					// We should call RaiseValueChanged even if oldValue == newValue.
+					// It's the responsibility of the user to only raise PropertyChanged event when needed.
+					// Not calling RaiseValueChanged when oldValue == newValue is a bug because a sub-property could
+					// have changed, and it can have an effect when applying the binding, for converters for example.
 					RaiseValueChanged(newValue);
 				}
 			}
