@@ -10,6 +10,11 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
+function CleanupTree()
+{
+    git clean -fdx
+}
+
 $default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
 
 if ($IsWindows) 
@@ -69,6 +74,8 @@ if ($IsWindows)
     Assert-ExitCodeIsZero
 }
 
+CleanupTree
+
 popd
 
 $dotnetBuildNet6Configurations =
@@ -108,6 +115,8 @@ if ($IsWindows)
     & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
     Assert-ExitCodeIsZero
 }
+
+CleanupTree
 
 popd
 
@@ -158,6 +167,7 @@ if ($IsWindows)
     }
 }
 
+CleanupTree
 
 ## Tests Per versions of uno
 if ($IsWindows)
@@ -284,9 +294,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet build $debug "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
 
+        dotnet clean $debug
+
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
         dotnet build $release "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
+ 
+        dotnet clean $release
     }
     else
     {
@@ -296,9 +310,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
             & $msbuild $debug /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
 
+            & $msbuild $debug /t:Clean
+
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
             & $msbuild $release /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
+
+            & $msbuild $release /t:Clean
         }
     }
 }
