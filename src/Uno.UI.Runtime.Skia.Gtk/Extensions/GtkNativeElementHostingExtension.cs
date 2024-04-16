@@ -1,6 +1,8 @@
 ﻿#nullable enable
 //#define TRACE_NATIVE_POINTER_EVENTS
 
+using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Gtk;
 using Windows.UI.Core;
@@ -9,7 +11,6 @@ using Microsoft.UI.Xaml;
 using Windows.Graphics.Display;
 
 using GLib;
-using Microsoft.UI.Xaml.Controls;
 using GtkApplication = Gtk.Application;
 using Button = Gtk.Button;
 
@@ -18,6 +19,8 @@ namespace Uno.UI.Runtime.Skia.Gtk;
 internal partial class GtkNativeElementHostingExtension : INativeElementHostingExtension
 {
 	private DisplayInformation _displayInformation;
+
+	private static Dictionary<object, IDisposable> NativeRenderDisposables { get; } = new();
 
 	public GtkNativeElementHostingExtension()
 	{
@@ -55,7 +58,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 			&& owner is XamlRoot xamlRoot
 			&& GetOverlayLayer(xamlRoot) is { } overlay)
 		{
-			if (ContentPresenter.NativeRenderDisposables.Remove(widget, out var disposable))
+			if (NativeRenderDisposables.Remove(widget, out var disposable))
 			{
 				disposable.Dispose();
 			}
@@ -141,7 +144,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 					(int)(arrangeRect.Width * scaleAdjustment),
 					(int)(arrangeRect.Height * scaleAdjustment));
 
-				if (ContentPresenter.NativeRenderDisposables.Remove(widget, out var disposable))
+				if (NativeRenderDisposables.Remove(widget, out var disposable))
 				{
 					disposable.Dispose();
 				}
@@ -185,7 +188,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 					{
 						window.Activated += onActivated;
 						window.SizeChanged += onSizeChanged;
-						ContentPresenter.NativeRenderDisposables[widget] = new DisposableAction(() =>
+						NativeRenderDisposables[widget] = new DisposableAction(() =>
 						{
 							window.Activated -= onActivated;
 							window.SizeChanged -= onSizeChanged;

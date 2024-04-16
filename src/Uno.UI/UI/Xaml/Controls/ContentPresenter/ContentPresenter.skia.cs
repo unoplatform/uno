@@ -28,19 +28,13 @@ partial class ContentPresenter
 	private bool? _lastVisiblity;
 	private Rect? _lastClipRect;
 	private Rect? _clipRect;
-	private bool _nativeHostRegistered;
-
-	// TODO: do we have a cleaner way to do this?
-	internal static Dictionary<object, IDisposable> NativeRenderDisposables { get; } = new();
-
-	partial void InitializePlatform()
-	{
-		Loaded += (s, e) => RegisterNativeHostSupport();
-		Unloaded += (s, e) => UnregisterNativeHostSupport();
-	}
 
 	partial void TryRegisterNativeElement(object newValue)
 	{
+		if (IsNativeHost && IsLoaded)
+		{
+			DetachNativeElement(); // remove the old native element
+		}
 		if (_nativeElementHostingExtension.Value?.IsNativeElement(newValue) ?? false)
 		{
 			IsNativeHost = true;
@@ -54,35 +48,16 @@ partial class ContentPresenter
 				throw new InvalidOperationException("ContentTemplateSelector cannot be set when the Content is a native element");
 			}
 
-			RegisterNativeHostSupport();
+			if (IsLoaded)
+			{
+				//If loaded, attach immediately. If not, wait for OnLoaded to attach, since
+				// XamlRoot might not be set at this moment.
+				AttachNativeElement();
+			}
 		}
 		else if (IsNativeHost)
 		{
 			IsNativeHost = false;
-			UnregisterNativeHostSupport();
-		}
-	}
-
-	void RegisterNativeHostSupport()
-	{
-		if (IsNativeHost && XamlRoot is not null)
-		{
-			XamlRoot.InvalidateRender += UpdateNativeElementPosition;
-			EffectiveViewportChanged += OnEffectiveViewportChanged;
-			_nativeHostRegistered = true;
-		}
-	}
-
-	void UnregisterNativeHostSupport()
-	{
-		if (_nativeHostRegistered)
-		{
-			XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
-			EffectiveViewportChanged -= OnEffectiveViewportChanged;
-			_nativeHostRegistered = false;
-
-			NativeRenderDisposables.Remove(Content, out var disposable);
-			disposable?.Dispose();
 		}
 	}
 
@@ -93,20 +68,20 @@ partial class ContentPresenter
 		UpdateNativeElementPosition();
 	}
 
-	partial void TryAttachNativeElement()
+	partial void AttachNativeElement()
 	{
-		if (IsNativeHost)
-		{
-			_nativeElementHostingExtension.Value!.AttachNativeElement(XamlRoot, Content);
-		}
+		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null);
+		_nativeElementHostingExtension.Value!.AttachNativeElement(XamlRoot, Content);
+		XamlRoot.InvalidateRender += UpdateNativeElementPosition;
+		EffectiveViewportChanged += OnEffectiveViewportChanged;
 	}
 
-	partial void TryDetachNativeElement()
+	partial void DetachNativeElement()
 	{
-		if (IsNativeHost)
-		{
-			_nativeElementHostingExtension.Value!.DetachNativeElement(XamlRoot, Content);
-		}
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
+		EffectiveViewportChanged -= OnEffectiveViewportChanged;
+		_nativeElementHostingExtension.Value!.DetachNativeElement(XamlRoot, Content);
 	}
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
@@ -142,29 +117,27 @@ partial class ContentPresenter
 
 	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 	{
-		if (IsNativeHost)
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		var ev = args.EffectiveViewport;
+
+		if (ev.IsEmpty)
 		{
-			var ev = args.EffectiveViewport;
-
-			if (ev.IsEmpty)
-			{
-				_clipRect = new Rect(0, 0, 0, 0);
-			}
-			else if (ev.IsInfinite)
-			{
-				_clipRect = null;
-			}
-			else
-			{
-				var top = Math.Min(Math.Max(0, ev.Y), ActualHeight);
-				var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
-				var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
-				var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
-				_clipRect = new Rect(left, top, width, height);
-			}
-
-			UpdateNativeElementPosition();
+			_clipRect = new Rect(0, 0, 0, 0);
 		}
+		else if (ev.IsInfinite)
+		{
+			_clipRect = null;
+		}
+		else
+		{
+			var top = Math.Min(Math.Max(0, ev.Y), ActualHeight);
+			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
+			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
+			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
+			_clipRect = new Rect(left, top, width, height);
+		}
+
+		UpdateNativeElementPosition();
 	}
 
 	internal static object CreateSampleComponent(string text)

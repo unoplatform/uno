@@ -874,7 +874,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
 
-		TryAttachNativeElement();
+		if (IsNativeHost)
+		{
+			AttachNativeElement();
+		}
 #endif
 	}
 
@@ -882,7 +885,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 		base.OnUnloaded();
 
-		TryDetachNativeElement();
+		if (IsNativeHost)
+		{
+			DetachNativeElement();
+		}
 	}
 
 	private bool ResetDataContextOnFirstLoad()
@@ -1230,12 +1236,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <summary>
 	/// Attaches the current native element in the native shell
 	/// </summary>
-	partial void TryAttachNativeElement();
+	partial void AttachNativeElement();
 
 	/// <summary>
 	/// Detaches the current native element from the native shell
 	/// </summary>
-	partial void TryDetachNativeElement();
+	partial void DetachNativeElement();
 
 	/// <summary>
 	/// Arranges the native element in the native shell
