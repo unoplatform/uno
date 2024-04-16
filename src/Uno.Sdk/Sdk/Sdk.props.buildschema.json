@@ -265,10 +265,6 @@
 			"allowUnknownValues": false,
 			"caseSensitive": true,
 			"values": {
-				"Maps": {
-					"description": "Adds a reference to Uno.WinUI.Maps.",
-					"helpUrl": "https://aka.platform.uno/feature-maps"
-				},
 				"Foldable": {
 					"description": "Adds a reference to Uno.WinUI.Foldable.",
 					"helpUrl": "https://aka.platform.uno/feature-foldable"
@@ -282,11 +278,11 @@
 					"helpUrl": "https://aka.platform.uno/feature-csharp-markup"
 				},
 				"Extensions": {
-					"description": "Generally adds most of the Uno.Extensions packages.",
+					"description": "Adds the most commonly used Extensions Packages for Hosting, Configuration, & Logging.",
 					"helpUrl": "https://aka.platform.uno/feature-extensions"
 				},
 				"Authentication": {
-					"description": "Adds all of the Uno.Extensions packages for Authentication.",
+					"description": "Adds the Uno.Extensions package for Custom Authentication.",
 					"helpUrl": "https://aka.platform.uno/feature-authentication"
 				},
 				"AuthenticationMsal": {
@@ -302,6 +298,10 @@
 					"helpUrl": "https://aka.platform.uno/feature-configuration"
 				},
 				"ExtensionsCore": {
+					"description": "Adds the Uno.Extensions.Core.WinUI package.",
+					"helpUrl": "https://aka.platform.uno/feature-extensions-core"
+				},
+				"ThemeService": {
 					"description": "Adds the Uno.Extensions.Core.WinUI package.",
 					"helpUrl": "https://aka.platform.uno/feature-extensions-core"
 				},
