@@ -168,7 +168,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 			AddPackage("Uno.Extensions.Configuration", UnoExtensionsVersion);
 		}
 
-		if (useExtensions || HasFeature(UnoFeature.ExtensionsCore))
+		if (useExtensions || HasFeature(UnoFeature.ExtensionsCore) || HasFeature(UnoFeature.ThemeService))
 		{
 			AddPackage("Uno.Extensions.Core.WinUI", UnoExtensionsVersion);
 		}

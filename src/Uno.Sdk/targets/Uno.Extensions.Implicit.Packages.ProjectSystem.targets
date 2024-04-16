@@ -36,7 +36,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Configuration" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';ExtensionsCore;'))">
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';ExtensionsCore;')) OR $(UnoFeatures.Contains(';ThemeService;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Core.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
