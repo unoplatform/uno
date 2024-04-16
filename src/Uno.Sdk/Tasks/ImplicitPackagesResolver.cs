@@ -39,7 +39,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 				AddPackageWhen(TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead(), "SkiaSharp.Skottie", SkiaSharpVersion);
 			}
 
-			if (HasFeature(UnoFeature.Material) || HHasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Svg) || asFeature(UnoFeature.Cupertino))
+			if (HasFeature(UnoFeature.Material) || HasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Svg) || HasFeature(UnoFeature.Cupertino))
 			{
 				AddPackageForFeature(UnoFeature.Skia, "SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
 			}
