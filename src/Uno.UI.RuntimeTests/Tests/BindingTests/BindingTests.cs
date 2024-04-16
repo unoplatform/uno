@@ -11,10 +11,10 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests;
 
 [TestClass]
+[RunsOnUIThread]
 public class BindingTests
 {
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Binding_Setter_Value_In_Style()
 	{
 		var SUT = new BindingToSetterValuePage();
@@ -30,5 +30,23 @@ public class BindingTests
 			Assert.AreEqual(AutomationProperties.AutomationIdProperty, setter.Property);
 			Assert.AreEqual(expectedSetterValue, setter.Value);
 		}
+	}
+
+	[TestMethod]
+	public async Task When_BindingShouldBeAppliedOnPropertyChangedEvent()
+	{
+		var SUT = new BindingShouldBeAppliedOnPropertyChangedEvent();
+		await UITestHelper.Load(SUT);
+
+		var dc = (BindingShouldBeAppliedOnPropertyChangedEventVM)SUT.DataContext;
+		var converter = (BindingShouldBeAppliedOnPropertyChangedEventConverter)SUT.Resources["MyConverter"];
+
+		Assert.AreEqual(1, converter.ConvertCount);
+		Assert.AreEqual("0", SUT.myTb.Text);
+
+		dc.Increment();
+
+		Assert.AreEqual(2, converter.ConvertCount);
+		Assert.AreEqual("1", SUT.myTb.Text);
 	}
 }
