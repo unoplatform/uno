@@ -6,10 +6,12 @@ uid: Uno.Features.Uno.Sdk
 
 Uno Platform projects use the Uno.Sdk, and msbuild package designed to keep projects simple, yet configurable. It inherits from the `Microsoft.Net.Sdk` and `Microsoft.Net.Sdk.Web` depending on the platform.
 
-This document explains the many features of this SDK, and how to change its behavior.
+This document explains the many features of this SDK, and how to configure its behavior.
 
 > [!NOTE]
 > The Uno.Sdk only supports the WinUI API set.
+> [!TIP]
+> The Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
 
 ## Uno Platform Features
 
@@ -62,6 +64,8 @@ Here are the supported features:
 - `Mvvm`, to enable CommunityToolkit.Mvvm
 - `Prism`, to enable Prism Library
 - `Skia`, to enable SkiaSharp
+- `Svg`, to enable Svg support for iOS, Android, and mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK.
+- `Skottie`, to enable lottie files playback
 
 ## Implicit Packages
 
