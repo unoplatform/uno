@@ -35,7 +35,7 @@ Add the following namespaces:
 
 #### References in a Single Project
 
-In Uno Platform Single Project, you'll need to add the `Skottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
 
 ```xml
 <UnoFeatures>

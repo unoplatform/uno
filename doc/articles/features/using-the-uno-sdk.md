@@ -39,12 +39,11 @@ This allows for the SDK to selectively include references to relevant sets of Nu
 
 Here are the supported features:
 
-- `Maps`, to enable Maps support
 - `Foldable`, to enable Android foldable support
 - `MediaElement`, to enable MediaElement support
 - `CSharpMarkup`, to enable C# Markup
 - `Extensions`, to enable all Uno.Extensions
-- `Authentication`, to enable all Uno.Extensions.Authentication
+- `Authentication`, to enable Uno.Extensions.Authentication for Custom Authentication
 - `AuthenticationMsal`, to enable Uno.Extensions support for MSAL
 - `AuthenticationOidc`, to enable Uno.Extensions support for OIDC
 - `Configuration`, to enable Uno.Extensions.Configuration
@@ -65,7 +64,7 @@ Here are the supported features:
 - `Prism`, to enable Prism Library
 - `Skia`, to enable SkiaSharp
 - `Svg`, to enable Svg support for iOS, Android, and mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK.
-- `Skottie`, to enable lottie files playback
+- `Lottie`, to enable lottie files playback
 
 ## Implicit Packages
 
