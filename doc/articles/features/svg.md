@@ -12,7 +12,7 @@ Uno Platform supports using vector SVG graphics inside of your cross-platform ap
 
 ## [**Single Project**](#tab/singleproject)
 
-To use an SVG, for iOS, Android and Mac Catalyst, you'll need to add the `Svg` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+To use an SVG, for iOS, Android, and Mac Catalyst, you'll need to add the `Svg` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
 
 ```xml
 <UnoFeatures>
