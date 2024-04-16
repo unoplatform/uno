@@ -46,7 +46,7 @@ partial class CommandBarFlyoutCommandBar
 	private readonly SerialDisposable m_secondaryItemsRootPreviewKeyDownRevoker = new();
 	private readonly SerialDisposable m_secondaryItemsRootSizeChangedRevoker = new();
 	private readonly SerialDisposable m_firstItemLoadedRevoker = new();
-	private readonly List<SerialDisposable> m_itemLoadedRevokerVector = new();
+	private readonly CompositeDisposable m_itemLoadedRevokerVector = new();
 
 	// We need to manually connect the end element of the primary items to the start element of the secondary items
 	// for the purposes of UIA items navigation. To ensure that we only have the current start and end elements registered
@@ -92,6 +92,6 @@ partial class CommandBarFlyoutCommandBar
 	// loop. Instead, look them up once, cache them, use the cached values, then clear the cache. The values in these
 	// caches are only valid after CacheLocalizedStringResources and before ClearLocalizedStringResourceCache.
 	private bool m_areLocalizedStringResourcesCached;
-	private string m_localizedCommandBarFlyoutAppBarButtonControlType;
-	private string m_localizedCommandBarFlyoutAppBarToggleButtonControlType;
+	private string? m_localizedCommandBarFlyoutAppBarButtonControlType;
+	private string? m_localizedCommandBarFlyoutAppBarToggleButtonControlType;
 }
