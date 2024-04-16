@@ -941,7 +941,7 @@ namespace Uno.UI {
 		 * @param evt
 		 */
 		private keyboardEventExtractor(evt: Event): string {
-			return (evt instanceof KeyboardEvent) ? evt.key : "0";
+			return (evt instanceof KeyboardEvent) ? `${(evt.ctrlKey ? "1" : "0")}${(evt.altKey ? "1" : "0")}${(evt.metaKey ? "1" : "0")}${(evt.shiftKey ? "1" : "0")}${evt.key}` : "0";
 		}
 
 		/**

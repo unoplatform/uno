@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Input;
 
@@ -67,6 +68,39 @@ public class Given_UnoFocusInputHandler
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(SUT.ScrollableHeight, SUT.VerticalOffset);
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task Validate_DepartFocusWhenCanTabOut()
+	{
+		var button = new Button() { Content = "Test" };
+		await UITestHelper.Load(button);
+
+		button.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot), button);
+
+		var focusManager = VisualTree.GetFocusManagerForElement(button);
+		if (!focusManager.CanTabOutOfPlugin)
+		{
+			Assert.Inconclusive("This target does not support tab out of plugin");
+		}
+
+		var inputHandler = new UnoFocusInputHandler(VisualTree.GetRootOrIslandForElement(button));
+		var handled = inputHandler.TryHandleTabFocus(false);
+		Assert.IsFalse(handled);
+
+		button.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot), button);
+
+		handled = inputHandler.TryHandleTabFocus(true);
+		Assert.IsFalse(handled);
+	}
+#endif
 
 	private async Task VerifyXYNavigationAsync(XYFocusKeyboardNavigationMode mode, VirtualKey key, bool shouldSucceed, int targetIndex)
 	{

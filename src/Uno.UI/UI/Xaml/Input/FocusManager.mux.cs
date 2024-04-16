@@ -21,6 +21,8 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using DirectUI;
+using Microsoft.UI.Input;
 
 //TODO:MZ: Handle parameters in/out
 
@@ -151,6 +153,11 @@ namespace Microsoft.UI.Xaml.Input
 		/// Focus rect manager.
 		/// </summary>
 		internal FocusRectManager FocusRectManager => _focusRectManager;
+
+		/// <summary>
+		/// Gets a value indicating whether the user can tab out of plugin.
+		/// </summary>
+		internal bool CanTabOutOfPlugin => _canTabOutOfPlugin;
 
 		/// <summary>
 		/// Represents the control which is focus-engaged.

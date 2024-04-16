@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
-using Uno.UI.Xaml.Core;
-using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
+using Windows.System;
 
 namespace Uno.UI.Xaml.Input;
 
@@ -11,42 +11,24 @@ internal class UnoFocusInputHandler
 {
 	private readonly UIElement _rootElement;
 
-	private bool _isShiftDown;
-
 	public UnoFocusInputHandler(UIElement rootElement)
 	{
 		_rootElement = rootElement;
 		_rootElement.KeyDown += OnKeyDown;
-		_rootElement.KeyUp += OnKeyUp;
-	}
-
-	private void OnKeyUp(object sender, KeyRoutedEventArgs e)
-	{
-		if (e.OriginalKey == VirtualKey.Shift ||
-			e.OriginalKey == VirtualKey.LeftShift ||
-			e.OriginalKey == VirtualKey.RightShift)
-		{
-			_isShiftDown = false;
-		}
 	}
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs e)
 	{
-		if (e.OriginalKey == VirtualKey.Shift ||
-			e.OriginalKey == VirtualKey.LeftShift ||
-			e.OriginalKey == VirtualKey.RightShift)
-		{
-			_isShiftDown = true;
-		}
-
 		if (e.Handled)
 		{
 			return;
 		}
 
+		bool isShiftDown = e.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
+
 		if (e.OriginalKey == VirtualKey.Tab)
 		{
-			e.Handled = TryHandleTabFocus(_isShiftDown);
+			e.Handled = TryHandleTabFocus(isShiftDown);
 		}
 
 		if (e.OriginalKey is
@@ -74,13 +56,34 @@ internal class UnoFocusInputHandler
 
 		contentRoot.InputManager.LastInputDeviceType = InputDeviceType.Keyboard;
 
+		bool focusDeparted = false;
+		void OnFocusDeparting(object s, object e)
+		{
+			focusDeparted = true;
+		}
+
 		var focusManager = VisualTree.GetFocusManagerForElement(_rootElement);
-		var focusMovement = new FocusMovement(XYFocusOptions.Default, direction, null);
-		focusMovement.IsShiftPressed = _isShiftDown;
-		focusMovement.IsProcessingTab = true;
-		focusMovement.ForceBringIntoView = true;
-		var result = focusManager?.FindAndSetNextFocus(focusMovement);
-		return result?.WasMoved == true;
+		if (focusManager is null)
+		{
+			return false;
+		}
+
+		try
+		{
+			var focusMovement = new FocusMovement(XYFocusOptions.Default, direction, null);
+			focusMovement.IsShiftPressed = isShiftDown;
+			focusMovement.IsProcessingTab = true;
+			focusMovement.ForceBringIntoView = true;
+
+			focusManager.FocusObserver.FocusController.FocusDeparting += OnFocusDeparting;
+
+			var result = focusManager?.FindAndSetNextFocus(focusMovement);
+			return result?.WasMoved == true && !focusDeparted;
+		}
+		finally
+		{
+			focusManager.FocusObserver.FocusController.FocusDeparting -= OnFocusDeparting;
+		}
 	}
 
 	internal bool TryHandleDirectionalFocus(VirtualKey originalKey)
