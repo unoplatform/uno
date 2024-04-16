@@ -368,6 +368,14 @@
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",
 					"helpUrl": "https://aka.platform.uno/feature-skia"
+				},
+				"Lottie": {
+					"description": "Adds support for Lottie animations.",
+					"helpUrl": "https://aka.platform.uno/feature-lottie"
+				},
+				"Svg": {
+					"description": "Adds support for SVG images.",
+					"helpUrl": "https://aka.platform.uno/feature-svg"
 				}
 			}
 		}
