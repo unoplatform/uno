@@ -39,7 +39,6 @@ This allows for the SDK to selectively include references to relevant sets of Nu
 
 Here are the supported features:
 
-- `Maps`, to enable Maps support
 - `Foldable`, to enable Android foldable support
 - `MediaElement`, to enable MediaElement support
 - `CSharpMarkup`, to enable C# Markup

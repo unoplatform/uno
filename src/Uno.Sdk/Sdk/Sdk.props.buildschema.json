@@ -265,10 +265,6 @@
 			"allowUnknownValues": false,
 			"caseSensitive": true,
 			"values": {
-				"Maps": {
-					"description": "Adds a reference to Uno.WinUI.Maps.",
-					"helpUrl": "https://aka.platform.uno/feature-maps"
-				},
 				"Foldable": {
 					"description": "Adds a reference to Uno.WinUI.Foldable.",
 					"helpUrl": "https://aka.platform.uno/feature-foldable"
