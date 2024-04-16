@@ -4,7 +4,7 @@ uid: Uno.Features.SVG
 
 # Using SVG images
 
-Uno Platform supports using vector SVG graphics inside of your cross-platform applications using the `Uno.WinUI.Svg` (or `Uno.UI.Svg`) NuGet package.
+Uno Platform supports using vector SVG graphics inside of your cross-platform applications, using the `SvgImageSource` class. SVG Images can also be used through [`UnoImage` with Resizetizer](xref:xref:Uno.Resizetizer.GettingStarted).
 
 ![Uno SVG sample](../Assets/features/svg/heliocentric.png)
 
