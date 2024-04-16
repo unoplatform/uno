@@ -79,11 +79,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
     dotnet build $debug "$projectPath" $projectOptions
     Assert-ExitCodeIsZero
 
-    dotnet clean $debug
+    dotnet clean $debug "$projectPath"
 
     Write-Host "Building Release $projectPath with $projectOptions"
     dotnet build $release "$projectPath" $projectOptions
     Assert-ExitCodeIsZero
 
-    dotnet clean $release
+    dotnet clean $release "$projectPath"
 }

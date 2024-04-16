@@ -294,13 +294,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet build $debug "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
 
-        dotnet clean $debug
+        dotnet clean $debug "$projectPath"
 
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
         dotnet build $release "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
  
-        dotnet clean $release
+        dotnet clean $release "$projectPath"
     }
     else
     {
@@ -310,13 +310,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
             & $msbuild $debug /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
 
-            & $msbuild $debug /t:Clean
+            & $msbuild $debug /t:Clean "$projectPath"
 
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
             & $msbuild $release /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
 
-            & $msbuild $release /t:Clean
+            & $msbuild $release /t:Clean "$projectPath"
         }
     }
 }
