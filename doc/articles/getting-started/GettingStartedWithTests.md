@@ -4,29 +4,30 @@ uid: Uno.Authoring.Tests
 # How-To: Creating an application with tests using Uno.Extensions
  
 This tutorial will walk through how to create an Uno application with the `dotnet new` tool, which is already configured to use the Uno.Extensions.
- 
-## Step-by-steps
- 
-### 1. Exploring the Solution
+
+> [!NOTE]
+> Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
+  
+## 1. Exploring the Solution
  
 The generated solution will contain:
  
-* *MyProjectName* - for application logic, and other constructs like view models and services, as well as the pages, controls and other views that make up the UI of the application.
+* *MyProjectName* - for application logic, and other constructs like view models and services, as well as the pages, controls, and other views that make up the UI of the application.
 * *MyProjectName/Platforms* - platform-specific folders for each supported platform.
 * *MyProjectName.Tests* and *MyProjectName.UI.Tests* - for writing unit and UI tests respectively.
 * *MyProjectName.Server* - backend server projects.
  
-    ![The structure of the generated solution](ProjectStructure-Tests-min.png)
+![The structure of the generated solution](Assets/ProjectStructure-Tests-min.png)
  
-### 2. Running the Application
+## 2. Running the Application
  
 * Select a target from the drop-down as pictured below
  
-    ![A screenshot of the generated targets](GeneratedTargets-min.png)
+    ![A screenshot of the generated targets](Assets/GeneratedTargets-min.png)
  
 * Click the "play" button, or press F5 to start debugging. The project will be compiled and deployed based on the target platform. For more detailed instructions specific to each platform, refer to the [Debug the App](xref:Uno.GettingStarted.CreateAnApp.VS2022#debug-the-app) documentation.
  
-### 3. Running the Unit Tests
+## 3. Running the Unit Tests
  
 * Right click the project inside Tests\\MyProjectName.Tests to open the context menu
  
@@ -37,7 +38,7 @@ The generated solution will contain:
 > [!TIP]
 > If the 'Run Tests' menu item doesn't exist, you need to Rebuild the solution to get Visual Studio to detect the available tests.
  
-### 4. Running the UI tests
+## 4. Running the UI tests
  
 * As demonstrated on step 3, select the **WebAssembly** target from the drop-down.
  
@@ -57,10 +58,4 @@ The generated solution will contain:
  
 * Go back to the project *Tests\\MyProjectName.UI.Tests* and right click. Then, *Run Tests*.
  
-    ![Test Explorer in VS](TestExplorer-min.png)
- 
-### 6. Running the Server
- 
-* Set the MyProjectName.Server project as the startup project.
- 
-* Start the server by pressing F5 which will host your backend services.
+    ![Test Explorer in VS](Assets/TestExplorer-min.png)
