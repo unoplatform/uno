@@ -155,6 +155,8 @@
       items:
       - name: Using the Uno.SDK
         href: xref:Uno.Features.Uno.Sdk
+      - name: Getting Started With Tests
+        href: xref:Uno.Authoring.Tests
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup

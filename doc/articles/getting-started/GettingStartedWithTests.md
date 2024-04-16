@@ -3,7 +3,7 @@ uid: Uno.Authoring.Tests
 ---
 # How-To: Creating an application with tests using Uno.Extensions
  
-This tutorial will walk through how to create an Uno application with the `dotnet new` tool, which is already configured to use the Uno.Extensions.
+This tutorial will walk through how to create an Uno application with tests.
 
 > [!NOTE]
 > Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
@@ -13,9 +13,7 @@ This tutorial will walk through how to create an Uno application with the `dotne
 The generated solution will contain:
  
 * *MyProjectName* - for application logic, and other constructs like view models and services, as well as the pages, controls, and other views that make up the UI of the application.
-* *MyProjectName/Platforms* - platform-specific folders for each supported platform.
 * *MyProjectName.Tests* and *MyProjectName.UI.Tests* - for writing unit and UI tests respectively.
-* *MyProjectName.Server* - backend server projects.
  
 ![The structure of the generated solution](Assets/ProjectStructure-Tests-min.png)
  
