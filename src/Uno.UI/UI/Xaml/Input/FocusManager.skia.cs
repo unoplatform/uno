@@ -14,6 +14,20 @@ public partial class FocusManager
 		{
 			NativeMethods.FocusSemanticElement(control.Visual.Handle);
 		}
+
+		internal UIElement? UnoFindNextFocusableElement(UIElement current)
+		{
+			var old = _focusedElement;
+			_focusedElement = current;
+			try
+			{
+				return FindNextFocusableElement(FocusNavigationDirection.Next);
+			}
+			finally
+			{
+				_focusedElement = old;
+			}
+		}
 	}
 
 	private static partial class NativeMethods

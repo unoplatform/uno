@@ -194,12 +194,17 @@ namespace Microsoft.UI.Xaml
 
 			RaiseConfigurationChanges();
 
-
 			RelativeLayout = new RelativeLayout(this);
 			RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
+			SetContentView(RelativeLayout);
+		}
+
+		protected override void OnStart()
+		{
+			base.OnStart();
 			_skCanvasView = new SKCanvasView(this);
 			ViewCompat.SetAccessibilityDelegate(_skCanvasView, new UnoExploreByTouchHelper(_skCanvasView, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!));
 			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
@@ -207,11 +212,7 @@ namespace Microsoft.UI.Xaml
 				ViewGroup.LayoutParams.MatchParent);
 
 			RelativeLayout.AddView(_skCanvasView);
-
-			SetContentView(RelativeLayout);
-
 			_skCanvasView.PaintSurface += OnPaintSurface;
-
 		}
 
 		private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
@@ -222,8 +223,6 @@ namespace Microsoft.UI.Xaml
 				canvas.Clear(SKColors.Red);
 				window.Compositor.RenderRootVisual(e.Surface, root.Visual);
 			}
-
-			//InvalidateRender();
 		}
 
 		internal void InvalidateRender()
