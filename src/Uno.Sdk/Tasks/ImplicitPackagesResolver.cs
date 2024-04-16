@@ -147,13 +147,9 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 	public void AddUnoExtensionsPackages()
 	{
 		var useExtensions = HasFeature(UnoFeature.Extensions);
-		if (useExtensions || HasFeature(UnoFeature.Authentication))
+		if (HasFeature(UnoFeature.Authentication))
 		{
 			AddPackage("Uno.Extensions.Authentication.WinUI", UnoExtensionsVersion);
-			AddPackage("Uno.Extensions.Authentication.MSAL.WinUI", UnoExtensionsVersion);
-			AddPackage("Uno.Extensions.Authentication.Oidc.WinUI", UnoExtensionsVersion);
-			AddPackage("Microsoft.Identity.Client", MicrosoftIdentityClientVersion);
-			AddPackage("Uno.WinUI.MSAL", null);
 		}
 		else if (HasFeature(UnoFeature.AuthenticationMsal))
 		{

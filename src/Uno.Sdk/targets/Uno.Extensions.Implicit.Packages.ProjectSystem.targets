@@ -24,10 +24,6 @@
 		<When Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Authentication;'))">
 			<ItemGroup>
 				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.WinUI" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
 			</ItemGroup>
 		</When>
 	</Choose>

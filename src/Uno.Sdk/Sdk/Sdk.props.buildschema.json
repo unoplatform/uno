@@ -286,7 +286,7 @@
 					"helpUrl": "https://aka.platform.uno/feature-extensions"
 				},
 				"Authentication": {
-					"description": "Adds all of the Uno.Extensions packages for Authentication.",
+					"description": "Adds the Uno.Extensions package for Custom Authentication.",
 					"helpUrl": "https://aka.platform.uno/feature-authentication"
 				},
 				"AuthenticationMsal": {
