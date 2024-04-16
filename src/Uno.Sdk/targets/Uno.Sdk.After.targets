@@ -17,6 +17,9 @@
 		Adjust the first target framework to be browserwasm or desktop or windows, if the current debugging
 		target is either of those. This portion is linked to the TryReloadTargetAsync in
 		the Uno.UI.RemoteControl.VS project.
+		
+		The _UnoSelectedTargetFramework is defined as a csproj.user property, set when the IDE
+		changes the active target framework.
 	
 		This is required by a WebAssembly/Desktop support issue in VS, where both Publishing/Debugging and other 
 		targets hot reload or mobile targets debugging is not supported. See https://aka.platform.uno/singleproject-vs-reload.
@@ -28,19 +31,24 @@
 
 	<PropertyGroup
 		Condition="
-			(
-				$([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'browserwasm'
-				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'desktop'
-				OR $([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'windows'
+			'$(BuildingInsideVisualStudio)' == 'true'
+			AND (
+				$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
+				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
+				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
 			)
-			AND '$(_UnoVSExtensionLoaded)' == 'true'
 			AND '$(TargetFrameworks)' != ''
-			AND !$(TargetFrameworks.StartsWith($(ActiveDebugFramework)))
-			AND '$(BuildingInsideVisualStudio)' == 'true'">
+			AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'">
 
-		<_UnoTargetFrameworksFiltered>$(TargetFrameworks.Replace($(ActiveDebugFramework),''))</_UnoTargetFrameworksFiltered>
+		<_UnoTargetFrameworksFiltered>
+			$(TargetFrameworks
+			.Replace($(_UnoSelectedTargetFramework),'**PLACEHOLDER**')
+			.Replace('$(_UnoFirstOriginalTargetFramework)',$(_UnoSelectedTargetFramework))
+			.Replace('**PLACEHOLDER**','$(_UnoFirstOriginalTargetFramework)')
+			)
+		</_UnoTargetFrameworksFiltered>
 
-		<TargetFrameworks>$([MSBuild]::Unescape('$(ActiveDebugFramework);$(_UnoTargetFrameworksFiltered)'))</TargetFrameworks>
+		<TargetFrameworks>$([MSBuild]::Unescape('$(_UnoTargetFrameworksFiltered)'))</TargetFrameworks>
 	</PropertyGroup>
 
 	<Target Name="_UnoVSWarnBrowserIsFirst"

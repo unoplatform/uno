@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using System.Xml;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
@@ -48,19 +49,19 @@ public partial class EntryPoint : IDisposable
 	private const string CompatibleTargetFrameworkProfileKey = "compatibleTargetFramework";
 	private const string Windows10TargetFrameworkIdentifier = "windows10";
 	private const string WasmTargetFrameworkIdentifier = "browserwasm";
-
+	private const string UnoSelectedTargetFrameworkProperty = "_UnoSelectedTargetFramework";
 	private CancellationTokenSource? _wasmProjectReloadTask;
 
-	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework)
+	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework, bool forceReload = false)
 	{
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
 		// In this case, a new TargetFramework was selected. We need to file a matching launch profile, if any.
 		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier)
 		{
-			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier})");
+			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload})");
 
-			if (string.IsNullOrEmpty(previousFramework))
+			if (!forceReload && string.IsNullOrEmpty(previousFramework))
 			{
 				// The first change after a reload is always the active target. This happens
 				// when going to/from desktop/wasm for VS issues.
@@ -103,7 +104,7 @@ public partial class EntryPoint : IDisposable
 				}
 			}
 
-			await TryReloadTargetAsync(previousFramework, newFramework, targetFrameworkIdentifier);
+			await TryReloadTargetAsync(previousFramework, newFramework, targetFrameworkIdentifier, forceReload);
 		}
 	}
 
@@ -146,40 +147,45 @@ public partial class EntryPoint : IDisposable
 			=> targetFrameworks.FirstOrDefault(f => f.IndexOf("-" + identifier, StringComparison.OrdinalIgnoreCase) != -1);
 	}
 
-	private async Task TryReloadTargetAsync(string? previousFramework, string newFramework, string targetFrameworkIdentifier)
+	private async Task TryReloadTargetAsync(string? previousFramework, string newFramework, string targetFrameworkIdentifier, bool forceReload)
 	{
 		if (_wasmProjectReloadTask is not null)
 		{
 			_wasmProjectReloadTask.Cancel();
 		}
 
-		_wasmProjectReloadTask = new CancellationTokenSource();
+		var currentReloadTask = _wasmProjectReloadTask = new CancellationTokenSource();
 
 		try
 		{
-			if (previousFramework is not null
-				&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
-				&& (
-					previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
-					|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier)
-				&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
+			if (await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
+				&&
+				(
+					forceReload
+					||
+					(
+						previousFramework is not null
+						&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
+						&& (previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
+							|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier)
+					)
+				)
 			)
 			{
 				var startupProjectUniqueName = startupProjects[0].UniqueName;
+				var userFilePath = startupProjects[0].FileName + ".user";
 
 				var sw = Stopwatch.StartNew();
 
 				// Wait for VS to write down the active target, so that on reload the selected target 
 				// stays the same.
-				while (!_wasmProjectReloadTask.IsCancellationRequested && sw.Elapsed < TimeSpan.FromSeconds(5))
+				while (!currentReloadTask.IsCancellationRequested && sw.Elapsed < TimeSpan.FromSeconds(2))
 				{
-					var userFilePath = startupProjects[0].FileName + ".user";
-
 					if (File.Exists(userFilePath))
 					{
 						var content = File.ReadAllText(userFilePath);
 
-						if (content.Contains($"<ActiveDebugFramework>{newFramework}</ActiveDebugFramework>"))
+						if (content.Contains($"<{UnoSelectedTargetFrameworkProperty}>{newFramework}</{UnoSelectedTargetFrameworkProperty}>"))
 						{
 							_debugAction?.Invoke($"Detected new target framework in {userFilePath}, continuing.");
 							break;
@@ -189,7 +195,7 @@ public partial class EntryPoint : IDisposable
 					await Task.Delay(100);
 				}
 
-				if (_wasmProjectReloadTask.IsCancellationRequested)
+				if (currentReloadTask.IsCancellationRequested)
 				{
 					return;
 				}
@@ -204,7 +210,7 @@ public partial class EntryPoint : IDisposable
 				if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
 					&& solution is IVsSolution4 solution4)
 				{
-					if (_wasmProjectReloadTask.IsCancellationRequested)
+					if (currentReloadTask.IsCancellationRequested)
 					{
 						return;
 					}
@@ -214,6 +220,10 @@ public partial class EntryPoint : IDisposable
 						if (startupProject.GetGuidProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out var guidObj) == 0
 							&& guidObj is Guid projectGuid)
 						{
+							// Set the property early before unloading so the msbuild cache
+							// properly keeps the value.
+							await WriteProjectUserSettingsAsync(newFramework);
+
 							// Unload project
 							solution4.UnloadProject(ref projectGuid, (uint)_VSProjectUnloadStatus.UNLOADSTATUS_UnloadedByUser);
 
@@ -245,6 +255,8 @@ public partial class EntryPoint : IDisposable
 									_debugAction?.Invoke($"Startup project was not changed, retrying...");
 									await Task.Delay(1000);
 								}
+
+								await WriteProjectUserSettingsAsync(newFramework);
 							}
 						}
 					}
@@ -257,7 +269,10 @@ public partial class EntryPoint : IDisposable
 		}
 		finally
 		{
-			_wasmProjectReloadTask = null;
+			if (currentReloadTask == _wasmProjectReloadTask)
+			{
+				_wasmProjectReloadTask = null;
+			}
 		}
 	}
 
@@ -269,5 +284,120 @@ public partial class EntryPoint : IDisposable
 		return match.Success
 			? match.Groups["tfi"].Value
 			: null;
+	}
+
+	private async Task OnStartupProjectChangedAsync()
+	{
+		if (!await EnsureProjectUserSettingsAsync())
+		{
+			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
+
+			// The user settings file is not available, we have created the
+			// file, but we also need to align the profile.
+			string currentActiveDebugFramework = "";
+
+			var hasTargetFramework = _debuggerObserver
+				.UnconfiguredProject
+				?.Services
+				.ActiveConfiguredProjectProvider
+				?.ActiveConfiguredProject
+				?.ProjectConfiguration
+				.Dimensions
+				.TryGetValue("TargetFramework", out currentActiveDebugFramework) ?? false;
+
+			if (hasTargetFramework)
+			{
+				await OnDebugFrameworkChangedAsync(null, currentActiveDebugFramework, true);
+			}
+		}
+	}
+
+	private async Task<bool> EnsureProjectUserSettingsAsync()
+	{
+		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
+			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects)
+		{
+			// Convert DTE project to IVsHierarchy
+			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
+
+			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
+			{
+				var currentActiveDebugFramework = _debuggerObserver.CurrentActiveDebugFramework;
+
+				if (currentActiveDebugFramework is null)
+				{
+					_debuggerObserver
+						.UnconfiguredProject
+						?.Services
+						.ActiveConfiguredProjectProvider
+						?.ActiveConfiguredProject
+						?.ProjectConfiguration
+						.Dimensions
+						.TryGetValue("TargetFramework", out currentActiveDebugFramework);
+				}
+
+				propertyStorage.GetPropertyValue(
+					UnoSelectedTargetFrameworkProperty
+					, null
+					, (uint)_PersistStorageType.PST_USER_FILE
+					, out var currentSettingValue);
+
+				if (string.IsNullOrEmpty(currentSettingValue) && currentActiveDebugFramework is not null)
+				{
+					// The UnoSelectedTargetFrameworkProperty is not defined, we need to reload the
+					// project so it can be set.
+					return false;
+				}
+				else
+				{
+					_debugAction?.Invoke($"User Setting is already set: {UnoSelectedTargetFrameworkProperty}={currentSettingValue}, currentActiveDebugFramework={currentActiveDebugFramework}");
+				}
+			}
+			else
+			{
+				_debugAction?.Invoke("Could not write .user file (2)");
+			}
+		}
+		else
+		{
+			_debugAction?.Invoke("Could not write .user file (1)");
+		}
+
+		return true;
+	}
+
+	private async Task WriteProjectUserSettingsAsync(string targetFramework)
+	{
+		_debugAction?.Invoke($"WriteProjectUserSettingsAsync {targetFramework}");
+
+		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
+			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects)
+		{
+			// Convert DTE project to IVsHierarchy
+			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
+
+			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
+			{
+				WriteUserProperty(propertyStorage, UnoSelectedTargetFrameworkProperty, targetFramework);
+			}
+			else
+			{
+				_debugAction?.Invoke("Could not write .user file (2)");
+			}
+		}
+		else
+		{
+			_debugAction?.Invoke("Could not write .user file (1)");
+		}
+	}
+
+	private static void WriteUserProperty(IVsBuildPropertyStorage propertyStorage, string propertyName, string propertyValue)
+	{
+		propertyStorage.SetPropertyValue(
+			propertyName,        // Property name
+			null,                 // Configuration name, null applies to all configurations
+			(uint)_PersistStorageType.PST_USER_FILE,  // Specifies that this is a user-specific property
+			propertyValue             // Property value
+		);
 	}
 }
