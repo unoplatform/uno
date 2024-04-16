@@ -33,18 +33,14 @@ namespace Uno.UI.Xaml.Core;
 internal partial class RootVisual : Panel, IRootElement
 {
 	private readonly CoreServices _coreServices;
-	private readonly UnoRootElementLogic _rootElementLogic;
 
 	public RootVisual(CoreServices coreServices)
 	{
 		_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
-		_rootElementLogic = new(this);
+
+		//Uno specific - flag as VisualTreeRoot for interop with existing logic
+		IsVisualTreeRoot = true;
 	}
-
-	void IRootElement.NotifyFocusChanged() => _rootElementLogic.NotifyFocusChanged();
-
-	void IRootElement.ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp) =>
-		_rootElementLogic.ProcessPointerUp(args, isAfterHandledUp);
 
 	/// <summary>
 	/// Gets or sets the Visual Tree.

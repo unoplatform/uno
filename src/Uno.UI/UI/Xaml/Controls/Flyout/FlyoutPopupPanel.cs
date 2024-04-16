@@ -50,7 +50,8 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 			// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
-				this.Log().Debug($"{this.GetDebugName()} PassThroughElement ignored as element ({Flyout.OverlayInputPassThroughElement?.GetAllParents().Reverse().Select(elt => elt.GetDebugName()).JoinBy(">") ?? "--null--"})"
+				this.Log().Debug(
+					$"{this.GetDebugName()} PassThroughElement ignored as element ({Flyout.OverlayInputPassThroughElement?.GetAllParents().Reverse().Select(elt => elt.GetDebugName()).JoinBy(">") ?? "--null--"})"
 					+ $" is not a parent of the Flyout ({Flyout.GetAllParents().Select(elt => elt.GetDebugName()).Reverse().JoinBy(">")}).");
 
 			return;
@@ -71,9 +72,9 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 		if (!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
-				this.Log()
-					.Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
-						+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
+				this.Log().Debug(
+					$"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
+					+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
 
 			// The element found by the HitTest is not a child of the pass-through element.
 			return;

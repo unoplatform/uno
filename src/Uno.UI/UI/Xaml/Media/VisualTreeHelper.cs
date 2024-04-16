@@ -565,6 +565,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 
 			// Validate if any child is an acceptable target
+			var children = GetManagedVisualChildren(element);
 			var isChildStale = isStale;
 
 			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.

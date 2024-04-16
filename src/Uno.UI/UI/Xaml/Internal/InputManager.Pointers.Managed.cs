@@ -211,8 +211,6 @@ internal partial class InputManager
 				Trace($"PointerWheelChanged [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
 #if __SKIA__ // Currently, only Skia supports interaction tracker.
 			Visual? currentVisual = originalSource.Visual;
 			while (currentVisual is not null)

@@ -15,8 +15,10 @@ internal partial class XamlIsland : Panel
 	public XamlIsland()
 	{
 		_contentManager = new(this, false);
-		// TODO: Uno specific - additional root logic required by Uno.
-		_rootElementLogic = new(this);
+
+		//Uno specific - flag as VisualTreeRoot for interop with existing logic
+		IsVisualTreeRoot = true;
+
 		InitializeRoot(WinUICoreServices.Instance);
 	}
 
