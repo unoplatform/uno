@@ -19,6 +19,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 - Not selecting a file should not cause an exception.
 - Selecting a file should show information below the file picker buttons.
 - It should be possible to pick multiple files, even if PicturesLibrary is selected and .jpg is used as file type.
+- Important (iOS): iOS 17 changed the way the file picker works. When testing this sample make sure to test it on iOS 17 or higher and iOS 16 or lower.
 """
 	)]
 	public sealed partial class FileOpenPickerTests : Page
