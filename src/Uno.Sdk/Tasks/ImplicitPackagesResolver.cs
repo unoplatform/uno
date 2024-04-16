@@ -33,10 +33,13 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 
 		if (TargetRuntime != UnoTarget.Windows)
 		{
-			AddPackageForFeature(UnoFeature.Lottie, "Uno.WinUI.Lottie", null);
-			AddPackageForFeatureWhen(TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead(), UnoFeature.Lottie, "SkiaSharp.Skottie", null);
+			if (HasFeature(UnoFeature.Material) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Cupertino))
+			{
+				AddPackage("Uno.WinUI.Lottie", null);
+				AddPackageWhen(TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead(), "SkiaSharp.Skottie", SkiaSharpVersion);
+			}
 
-			if (HasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Svg))
+			if (HasFeature(UnoFeature.Material) || HHasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Svg) || asFeature(UnoFeature.Cupertino))
 			{
 				AddPackageForFeature(UnoFeature.Skia, "SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
 			}
