@@ -344,7 +344,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(keyDownArgs);
 			Assert.IsNotNull(previewKeyDownArgs);
-			Assert.AreNotEqual(keyDownArgs, previewKeyDownArgs);
+			// We use the same args object twice to reduce allocations, which is different from WinUI.
+			// Assert.AreNotEqual(keyDownArgs, previewKeyDownArgs);
 		}
 
 		[TestMethod]
