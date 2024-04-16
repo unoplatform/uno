@@ -25,7 +25,6 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSFileSavePickerExtension.Register();
 		MacOSFolderPickerExtension.Register();
 		MacOSLauncherExtension.Register();
-		MacOSNativeElementHostingExtension.Register();  // seems used only for native elements, which Skia avoids ?!?
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemNavigationManagerPreviewExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
