@@ -22,8 +22,8 @@ Legend
 | Picker         | UWP   | WebAssembly | Android | iOS    | macOS | Skia Desktop (Windows) | Skia Desktop (X11) |
 |----------------|-------|-------------|---------|--------|-------|----------------------- |-----|
 | FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔                      | ✔  |
-| FileSavePicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔                      | ✔  |
-| FolderPicker   | ✔    | ✔           | ✔      | 💬 (2) | ✔    | ✖                      | ✔  |
+| FileSavePicker | ✔    | ✔ (1)       | ✔      | 💬 (2) | ✔    | ✔                      | ✔  |
+| FolderPicker   | ✔    | ✔           | ✔      | ✔      | ✔    | ✖                      | ✔  |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*\
 *(2) - See iOS section below*
