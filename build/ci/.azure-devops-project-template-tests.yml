@@ -42,6 +42,7 @@ jobs:
 
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
   displayName: 'Run .NET Templates Tests macOS'
+  timeoutInMinutes: 90
 
   pool:
     vmImage: ${{ parameters.macOSImageName }}
