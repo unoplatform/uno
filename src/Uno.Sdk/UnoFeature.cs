@@ -4,6 +4,7 @@ public enum UnoFeature
 {
 	Invalid = -1,
 
+	// NOTE: We are removing this from the public API but keeping it as a supported feature for now
 	[UnoArea(UnoArea.Core)]
 	Maps,
 
