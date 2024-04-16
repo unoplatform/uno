@@ -149,7 +149,7 @@ public partial class EntryPoint : IDisposable
 
 		_wasmProjectReloadTask = new CancellationTokenSource();
 
-		var isValidFirstProject = await IsCorrectFirstProjectAsync(newFramework);
+		var isValidUnoProject = await IsCorrectFirstProjectAsync(newFramework);
 		var startupProjects = await _dte.GetStartupProjectsAsync();
 
 		var isValidTargetFrameworkChange =
@@ -164,10 +164,10 @@ public partial class EntryPoint : IDisposable
 			if (
 				startupProjects is { Length: > 0 }
 				&& (
-					!isValidFirstProject
+					!isValidUnoProject
 					|| isValidTargetFrameworkChange))
 			{
-				if (previousFramework is null && !isValidFirstProject)
+				if (previousFramework is null && !isValidUnoProject)
 				{
 					// If the previous target framework is null, it means that we got here
 					// because the first target framework is not valid and needs to be adjusted.
