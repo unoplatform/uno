@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using Uno.Resizetizer;
 
-namespace uno52blank;
+namespace uno52AppWithLib;
 
 public partial class App : Application
 {

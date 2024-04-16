@@ -9,7 +9,7 @@
   },
   "profiles": {
     // This profile is first in order for dotnet run to pick it up by default
-    "uno52blank (WebAssembly)": {
+    "uno52AppWithLib (WebAssembly)": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -19,7 +19,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "uno52blank (WebAssembly IIS Express)": {
+    "uno52AppWithLib (WebAssembly IIS Express)": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
@@ -28,21 +28,21 @@
       }
     },
     // Note: In order to select this profile, you'll need to comment the `Packaged` profile below until this is fixed: https://aka.platform.uno/wasdk-maui-debug-profile-issue
-    "uno52blank (WinAppSDK Unpackaged)": {
+    "uno52AppWithLib (WinAppSDK Unpackaged)": {
       "commandName": "Project",
       "compatibleTargetFramework": "windows"
     },
-    "uno52blank (WinAppSDK Packaged)": {
+    "uno52AppWithLib (WinAppSDK Packaged)": {
       "commandName": "MsixPackage",
       "compatibleTargetFramework": "windows"
     },
-    "uno52blank (Desktop)": {
+    "uno52AppWithLib (Desktop)": {
       "commandName": "Project",
       "compatibleTargetFramework": "desktop"
     },
-    "uno52blank (Desktop WSL2)": {
+    "uno52AppWithLib (Desktop WSL2)": {
       "commandName": "WSL2",
-      "commandLineArgs": "{ProjectDir}/bin/Debug/net8.0-desktop/uno52blank.dll",
+      "commandLineArgs": "{ProjectDir}/bin/Debug/net8.0-desktop/uno52AppWithLib.dll",
       "distributionName": "",
       "compatibleTargetFramework": "desktop"
     }
