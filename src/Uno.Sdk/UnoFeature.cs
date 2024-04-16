@@ -35,6 +35,9 @@ public enum UnoFeature
 	ExtensionsCore,
 
 	[UnoArea(UnoArea.Extensions)]
+	ThemeService,
+
+	[UnoArea(UnoArea.Extensions)]
 	Hosting,
 
 	[UnoArea(UnoArea.Extensions)]

@@ -305,6 +305,10 @@
 					"description": "Adds the Uno.Extensions.Core.WinUI package.",
 					"helpUrl": "https://aka.platform.uno/feature-extensions-core"
 				},
+				"ThemeService": {
+					"description": "Adds the Uno.Extensions.Core.WinUI package.",
+					"helpUrl": "https://aka.platform.uno/feature-extensions-core"
+				},
 				"Hosting": {
 					"description": "Adds support for Dependency Injection using Uno.Extensions.Hosting packages.",
 					"helpUrl": "https://aka.platform.uno/feature-hosting"
