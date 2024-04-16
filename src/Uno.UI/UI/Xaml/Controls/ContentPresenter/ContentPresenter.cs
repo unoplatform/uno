@@ -1132,7 +1132,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 			ArrangeElement(child, arrangeRect);
 
-			ArrangeNativeElement(arrangeRect);
+			if (IsNativeHost)
+			{
+				ArrangeNativeElement(arrangeRect);
+			}
 		}
 
 		return finalSize;
@@ -1201,7 +1204,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		);
 
 #if UNO_SUPPORTS_NATIVEHOST
-		measuredSize = MeasureNativeElement(measuredSize);
+		if (IsNativeHost)
+		{
+			measuredSize = MeasureNativeElement(measuredSize, size);
+		}
 #endif
 
 		return new Size(
