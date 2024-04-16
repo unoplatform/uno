@@ -101,7 +101,14 @@ public partial class EntryPoint : IDisposable
 		// This will can possibly be removed when all projects are migrated to the sdk project system.
 		_ = UpdateProjectsAsync();
 
-		_debuggerObserver = new ProfilesObserver(asyncPackage, _dte, OnDebugFrameworkChangedAsync, OnDebugProfileChangedAsync, _debugAction);
+		_debuggerObserver = new ProfilesObserver(
+			asyncPackage
+			, _dte
+			, (previous, newFramework) => OnDebugFrameworkChangedAsync(previous, newFramework)
+			, OnDebugProfileChangedAsync
+			, OnStartupProjectChangedAsync
+			, _debugAction);
+
 		_ = _debuggerObserver.ObserveProfilesAsync();
 
 		_ = _globalPropertiesChanged();
