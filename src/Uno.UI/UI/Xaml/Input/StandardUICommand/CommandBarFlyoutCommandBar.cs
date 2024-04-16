@@ -44,5 +44,5 @@ public partial class CommandBarFlyoutCommandBar : CommandBar
 			nameof(SystemBackdrop),
 			typeof(SystemBackdrop),
 			typeof(CommandBarFlyoutCommandBar),
-			new FrameworkPropertyMetadata(default(SystemBackdrop)));
+			new FrameworkPropertyMetadata(default(SystemBackdrop), (s, e) => ((CommandBarFlyoutCommandBar)s).OnPropertyChanged(e));
 }

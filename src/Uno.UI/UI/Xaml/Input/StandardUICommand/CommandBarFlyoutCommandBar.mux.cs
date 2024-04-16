@@ -1,4 +1,8 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyoutCommandBar.cpp, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -20,6 +24,12 @@ using Microsoft.UI.Xaml.Media.Animation;
 
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.ResourceAccessor;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Core;
+using Uno.Extensions;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -51,12 +61,12 @@ partial class CommandBarFlyoutCommandBar
 						if (commands is not null)
 						{
 							bool usingPrimaryCommands = commands == PrimaryCommands;
-							bool ensureTabStopUniqueness = usingPrimaryCommands || SharedHelpers.IsRS3OrHigher();
+							bool ensureTabStopUniqueness = usingPrimaryCommands;
 							var firstCommandAsFrameworkElement = commands[0] as FrameworkElement;
 
 							if (firstCommandAsFrameworkElement is not null)
 							{
-								if (SharedHelpers.IsFrameworkElementLoaded(firstCommandAsFrameworkElement))
+								if (firstCommandAsFrameworkElement.IsLoaded)
 								{
 									FocusCommand(
 										commands,
@@ -67,7 +77,7 @@ partial class CommandBarFlyoutCommandBar
 								}
 								else
 								{
-									void OnFirstCommandLoaded(object sender, object args)
+									void OnFirstItemLoaded(object sender, object args)
 									{
 										FocusCommand(
 											commands,
@@ -77,8 +87,8 @@ partial class CommandBarFlyoutCommandBar
 											ensureTabStopUniqueness);
 										m_firstItemLoadedRevoker.Disposable = null;
 									}
-									firstCommandAsFrameworkElement.Loaded += OnFirstCommandLoaded;
-									m_firstItemLoadedRevoker.Disposable = Disposable.Create(() => firstCommandAsFrameworkElement.Loaded -= OnFirstCommandLoaded);
+									firstCommandAsFrameworkElement.Loaded += OnFirstItemLoaded;
+									m_firstItemLoadedRevoker.Disposable = Disposable.Create(() => firstCommandAsFrameworkElement.Loaded -= OnFirstItemLoaded);
 								}
 							}
 						}
@@ -98,7 +108,7 @@ partial class CommandBarFlyoutCommandBar
 		Closing += (s, e) =>
 		{
 #if MUX_DEBUG
-	            COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "Closing");
+	        COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "Closing");
 #endif
 
 			if (m_owningFlyout is { } owningFlyout)
@@ -118,13 +128,6 @@ partial class CommandBarFlyoutCommandBar
 #endif
 
 			m_secondaryItemsRootSized = false;
-
-			if (!SharedHelpers.IsRS3OrHigher() && PrimaryCommands.Count > 0)
-			{
-				// Before RS3, ensure the focus goes to a primary command when
-				// the secondary commands are closed.
-				EnsureFocusedPrimaryCommand();
-			}
 		};
 
 		this.RegisterDisposablePropertyChangedCallback(
@@ -152,6 +155,7 @@ partial class CommandBarFlyoutCommandBar
 			PopulateAccessibleControls();
 			UpdateFlowsFromAndFlowsTo();
 			UpdateUI(!m_commandBarFlyoutIsOpening);
+			AttachItemEventHandlers();
 		};
 
 		SecondaryCommands.VectorChanged += (s, e) =>
@@ -165,8 +169,19 @@ partial class CommandBarFlyoutCommandBar
 			PopulateAccessibleControls();
 			UpdateFlowsFromAndFlowsTo();
 			UpdateUI(!m_commandBarFlyoutIsOpening);
+			AttachItemEventHandlers();
 		};
 	}
+
+	//CommandBarFlyoutCommandBar::~CommandBarFlyoutCommandBar()
+	//{
+	//	// The SystemBackdrop DP has already been cleared out. Use our cached field.
+	//	if (auto systemBackdrop = m_systemBackdrop.get())
+	//	{
+	//		systemBackdrop.OnTargetDisconnected(m_backdropLink);
+	//		systemBackdrop.OnTargetDisconnected(m_overflowPopupBackdropLink);
+	//	}
+	//}
 
 	protected override void OnApplyTemplate()
 	{
@@ -211,6 +226,45 @@ partial class CommandBarFlyoutCommandBar
 		}
 		m_closingStoryboard = GetClosingStoryboard();
 
+		m_primaryItemsSystemBackdropRoot = GetTemplateChild<FrameworkElement>("PrimaryItemsSystemBackdropRoot");
+		m_overflowPopupSystemBackdropRoot = GetTemplateChild<FrameworkElement>("OverflowPopupSystemBackdropRoot");
+		m_outerOverflowContentRootV2 = GetTemplateChild<FrameworkElement>("OuterOverflowContentRootV2");
+
+		var primaryItemsRoot = m_primaryItemsRoot;
+		var primaryItemsSystemBackdropRoot = m_primaryItemsSystemBackdropRoot;
+		if (primaryItemsRoot is not null && primaryItemsSystemBackdropRoot is not null && m_backdropLink is not null)
+		{
+			Visual placementVisual = m_backdropLink.PlacementVisual;
+
+			// Hard-code a large size for the placement visual. The size and position of this lifted visual controls the
+			// size and position of the system visual with the backdrop. This visual is parented in a windowed popup, so it
+			// should use the popup's coordinate space, but we're seeing it use the main island's coordinate space instead.
+			// We don't easily have the popup hwnd's offset from outside MUX.dll, so just size the placement visual to a
+			// large number to cover everything. We'll apply a clip to this placement visual later to size it to the
+			// CommandBarFlyoutCommandBar's contents.
+			placementVisual.Size = new(10000, 10000);
+			// Replace with this when the coordinate space issue is fixed - http://task.ms/44279950
+			//placementVisual.Size({static_cast<float>(primaryItemsRoot.ActualWidth()), static_cast<float>(primaryItemsRoot.ActualHeight())});
+
+			ElementCompositionPreview.SetElementChildVisual(primaryItemsSystemBackdropRoot, placementVisual);
+		}
+
+		var overflowContentRootV2 = m_outerOverflowContentRootV2;
+		var overflowPopupSystemBackdropRoot = m_overflowPopupSystemBackdropRoot;
+		if (overflowContentRootV2 is not null && overflowPopupSystemBackdropRoot is not null && m_overflowPopupBackdropLink is not null)
+		{
+			Visual popupPlacementVisual = m_overflowPopupBackdropLink.PlacementVisual;
+
+			// Use a hardcoded size. See above.
+			popupPlacementVisual.Size = new(10000, 10000);
+			// Replace with this when the coordinate space issue is fixed - http://task.ms/44279950
+			//popupPlacementVisual.Size({static_cast<float>(overflowContentRootV2.ActualWidth()), static_cast<float>(overflowContentRootV2.ActualHeight())});
+
+			// Don't put the overflow popup's backdrop visual in the tree yet. The popup may not be open yet and we don't
+			// want anything to flicker. The backdrop will be put in the tree in UpdateVisualState once we've opened and
+			// measured the overflow popup.
+		}
+
 		if (m_overflowPopup is { } overflowPopup2)
 		{
 			overflowPopup2.PlacementTarget = m_primaryItemsRoot;
@@ -227,19 +281,17 @@ partial class CommandBarFlyoutCommandBar
 			}
 		}
 
-		if (SharedHelpers.Is21H1OrHigher() && m_owningFlyout is not null)
+		if (m_owningFlyout is not null)
 		{
 			AttachEventsToSecondaryStoryboards();
 		}
 
 		// Keep the owning FlyoutPresenter's corner radius in sync with the
 		// primary commands's corner radius.
-		if (SharedHelpers.IsRS5OrHigher())
-		{
-			BindOwningFlyoutPresenterToCornerRadius();
-		}
+		BindOwningFlyoutPresenterToCornerRadius();
 
-		AttachEventHandlers();
+		AttachControlEventHandlers();
+		AttachItemEventHandlers();
 		PopulateAccessibleControls();
 		UpdateFlowsFromAndFlowsTo();
 		UpdateUI(false /* useTransitions */);
@@ -251,26 +303,20 @@ partial class CommandBarFlyoutCommandBar
 		m_owningFlyout = owningFlyout;
 	}
 
-	private void AttachEventHandlers()
+	private void AttachControlEventHandlers()
 	{
 		//COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH, METH_NAME, this);
 
 		if (m_overflowPopup is { } overflowPopup)
 		{
-			if (overflowPopup is { } overflowPopup4)
+			void OnActualPlacementChanged(object? sender, object eventArgs)
 			{
-				void actualPlacementChangedHandler(object? sender, object? args)
-				{
-#if MUX_DEBUG
-					COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "OverflowPopup ActualPlacementChanged");
-#endif
+				//COMMANDBARFLYOUT_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"OverflowPopup ActualPlacementChanged");
 
-					UpdateUI();
-				}
-
-				overflowPopup4.ActualPlacementChanged += actualPlacementChangedHandler;
-				m_overflowPopupActualPlacementChangedRevoker.Disposable = Disposable.Create(() => overflowPopup4.ActualPlacementChanged -= actualPlacementChangedHandler);
+				UpdateUI();
 			}
+			overflowPopup.ActualPlacementChanged += OnActualPlacementChanged;
+			m_overflowPopupActualPlacementChangedRevoker.Disposable = Disposable.Create(() => overflowPopup.ActualPlacementChanged -= OnActualPlacementChanged);
 		}
 
 		if (m_secondaryItemsRoot is { } secondaryItemsRoot)
@@ -288,7 +334,7 @@ partial class CommandBarFlyoutCommandBar
 			secondaryItemsRoot.SizeChanged += sizeChangedHandler;
 			m_secondaryItemsRootSizeChangedRevoker.Disposable = Disposable.Create(() => secondaryItemsRoot.SizeChanged -= sizeChangedHandler);
 
-			if (SharedHelpers.IsRS3OrHigher())
+			if (SharedHelpers.IsRS3OrHigher()) // TODO MZ: Change this to check for PreviewKeyDown availability
 			{
 				void previewKeyDownHandler(object sender, KeyRoutedEventArgs args)
 				{
@@ -342,6 +388,7 @@ partial class CommandBarFlyoutCommandBar
 						}
 					}
 				}
+
 				var routedHandler = new RoutedEventHandler<KeyRoutedEventArgs>(keyDownHandler);
 
 				secondaryItemsRoot.AddHandler(UIElement.KeyDownEvent, routedHandler, true);
@@ -357,6 +404,37 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
+	private void AttachItemEventHandlers()
+	{
+		m_itemLoadedRevokerVector.Dispose();
+
+		foreach (var command in PrimaryCommands)
+		{
+			if (command is FrameworkElement commandAsFE)
+			{
+				void OnItemLoaded(object? sender, object args)
+				{
+					UpdateItemVisualState(sender as Control, true /* isPrimaryControl */);
+				}
+				commandAsFE.Loaded += OnItemLoaded;
+				m_itemLoadedRevokerVector.Add(() => commandAsFE.Loaded -= OnItemLoaded);
+			}
+		}
+
+		foreach (var command in SecondaryCommands)
+		{
+			if (command is FrameworkElement commandAsFE)
+			{
+				void OnItemLoaded(object? sender, object args)
+				{
+					UpdateItemVisualState(sender as Control, false /* isPrimaryControl */);
+				}
+				commandAsFE.Loaded += OnItemLoaded;
+				m_itemLoadedRevokerVector.Add(() => commandAsFE.Loaded -= OnItemLoaded);
+			}
+		}
+	}
+
 	private void DetachEventHandlers()
 	{
 		//COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH, METH_NAME, this);
@@ -365,6 +443,7 @@ partial class CommandBarFlyoutCommandBar
 		m_secondaryItemsRootPreviewKeyDownRevoker.Disposable = null;
 		m_secondaryItemsRootSizeChangedRevoker.Disposable = null;
 		m_firstItemLoadedRevoker.Disposable = null;
+		m_itemLoadedRevokerVector.Dispose();
 		m_openingStoryboardCompletedRevoker.Disposable = null;
 		m_closingStoryboardCompletedCallbackRevoker.Disposable = null;
 		m_expandedUpToCollapsedStoryboardRevoker.Disposable = null;
@@ -433,10 +512,7 @@ partial class CommandBarFlyoutCommandBar
 		// to enable tabbing from primary to secondary commands and vice-versa
 		// with a single Tab keystroke.
 		EnsureTabStopUniqueness(PrimaryCommands, moreButton);
-		if (SharedHelpers.IsRS3OrHigher())
-		{
-			EnsureTabStopUniqueness(SecondaryCommands, null);
-		}
+		EnsureTabStopUniqueness(SecondaryCommands, null);
 
 		// Ensure the SizeOfSet and PositionInSet automation properties
 		// for the primary commands and the MoreButton account for the
@@ -461,17 +537,17 @@ partial class CommandBarFlyoutCommandBar
 		// is when the secondary commands are showing, in which case we want to connect the primary and secondary command lists.
 		if (IsOpen)
 		{
-			bool isElementFocusable(ICommandBarElement element, bool checkTabStop)
+			bool isElementFocusable(ICommandBarElement element)
 			{
 				Control? primaryCommandAsControl = element as Control;
-				return IsControlFocusable(primaryCommandAsControl, checkTabStop);
+				return IsControlFocusable(primaryCommandAsControl, false);
 			};
 
 			var primaryCommands = PrimaryCommands;
 			for (int i = (int)(PrimaryCommands.Count - 1); i >= 0; i--)
 			{
 				var primaryCommand = primaryCommands[i];
-				if (isElementFocusable(primaryCommand, false /*checkTabStop*/))
+				if (isElementFocusable(primaryCommand))
 				{
 					m_currentPrimaryItemsEndElement = primaryCommand as FrameworkElement;
 					break;
@@ -487,7 +563,7 @@ partial class CommandBarFlyoutCommandBar
 
 			foreach (var secondaryCommand in SecondaryCommands)
 			{
-				if (isElementFocusable(secondaryCommand, !SharedHelpers.IsRS3OrHigher() /*checkTabStop*/))
+				if (isElementFocusable(secondaryCommand))
 				{
 					m_currentSecondaryItemsStartElement = secondaryCommand as FrameworkElement;
 					break;
@@ -509,18 +585,24 @@ partial class CommandBarFlyoutCommandBar
 
 		UpdateTemplateSettings();
 		UpdateVisualState(useTransitions, isForSizeChange);
-
-		UpdateProjectedShadow();
 	}
 
 	private void UpdateVisualState(bool useTransitions, bool isForSizeChange = false)
 	{
 		if (IsOpen)
 		{
-			// If we're currently open, have overflow items, and haven't yet sized our overflow item root,
-			// then we want to wait until then to update visual state - otherwise, we'll be animating
-			// to incorrect values.  Animations only retrieve values from bindings when they begin,
-			// so if we begin an animation and then update a bound template setting, that won't take effect.
+			//
+			// If we're currently open, have overflow items, and haven't yet sized our overflow item root, then we want to
+			// wait until then to update visual state - otherwise, we'll be animating to incorrect values.  Animations only
+			// retrieve values from bindings when they begin, so if we begin an animation and then update a bound template
+			// setting, that won't take effect.
+			//
+			// This also skips copying the size into the placement visual's clip. If the secondary items haven't been sized
+			// yet, then we can't copy that size into the clip. Note that we don't want to remove the backdrop placement
+			// visual from the tree. It's possible for the items to change while their layout size stay the same, in which
+			// case the m_secondaryItemsRootSized flag will never be reset. In that case the old placement visual still has
+			// the correct size, so leave it in the tree.
+			//
 			if (!m_secondaryItemsRootSized)
 			{
 				return;
@@ -548,22 +630,25 @@ partial class CommandBarFlyoutCommandBar
 
 			// If there isn't enough space to display the overflow below the command bar,
 			// and if there is enough space above, then we'll display it above instead.
-			if (Window.Current is { } window && !hadActualPlacement && m_secondaryItemsRoot is not null)
+			if (m_secondaryItemsRoot is not null)
 			{
 				double availableHeight = -1;
 				var controlBounds = TransformToVisual(null).TransformBounds(new Rect(0, 0, ActualWidth, ActualHeight));
 
-				try
+				if (CoreWindow.GetForCurrentThreadSafe() is not null)
 				{
-					// Note: this doesn't work right for islands scenarios
-					// Bug 19617460: CommandBarFlyoutCommandBar isn't able to decide whether to open up or down because it doesn't know where it is relative to the monitor
-					var view = ApplicationView.GetForCurrentView();
-					availableHeight = view.VisibleBounds.Height;
-				}
-				catch (Exception)
-				{
-					// Calling GetForCurrentView on threads without a CoreWindow throws an error. This comes up in places like LogonUI.
-					// In this circumstance, we'll just always expand down, since we can't get bounds information.
+					try
+					{
+						// Note: this doesn't work right for islands scenarios
+						// Bug 19617460: CommandBarFlyoutCommandBar isn't able to decide whether to open up or down because it doesn't know where it is relative to the monitor
+						var view = ApplicationView.GetForCurrentView();
+						availableHeight = view.VisibleBounds.Height;
+					}
+					catch
+					{
+						// Calling GetForCurrentView on threads without a CoreWindow throws an error. This comes up in places like LogonUI.
+						// In this circumstance, we'll just always expand down, since we can't get bounds information.
+					}
 				}
 
 				if (availableHeight >= 0)
@@ -613,15 +698,125 @@ partial class CommandBarFlyoutCommandBar
 					VisualStateManager.GoToState(this, "ExpandedDownWithoutPrimaryCommands", useTransitions);
 				}
 			}
+
+			// Update the corner radius clip on the backdrop. We copy the corner radius from the elements in the template,
+			// which depends on the visual state of the CommandBarFlyoutCommandBar.
+			if (m_overflowPopupBackdropLink is not null && m_outerOverflowContentRootV2 is not null)
+			{
+				Visual popupPlacementVisual = m_overflowPopupBackdropLink.PlacementVisual;
+				var overflowContentRootV2 = (Grid)m_outerOverflowContentRootV2;
+				var cornerRadius = overflowContentRootV2.CornerRadius;
+
+				var compositor = popupPlacementVisual.Compositor;
+				RectangleClip rectangleClip = compositor.CreateRectangleClip();
+				rectangleClip.Right = (float)overflowContentRootV2.ActualWidth;
+				rectangleClip.Bottom = (float)overflowContentRootV2.ActualHeight;
+				rectangleClip.TopLeftRadius = new((float)cornerRadius.TopLeft, (float)cornerRadius.TopLeft);
+				rectangleClip.TopRightRadius = new((float)cornerRadius.TopRight, (float)cornerRadius.TopRight);
+				rectangleClip.BottomLeftRadius = new((float)cornerRadius.BottomLeft, (float)cornerRadius.BottomLeft);
+				rectangleClip.BottomRightRadius = new((float)cornerRadius.BottomRight, (float)cornerRadius.BottomRight);
+				popupPlacementVisual.Clip = rectangleClip;
+			}
+
+			if (m_overflowPopupBackdropLink && m_overflowPopupSystemBackdropRoot)
+			{
+				Visual popupPlacementVisual = m_overflowPopupBackdropLink.PlacementVisual;
+				var overflowPopupSystemBackdropRoot = m_overflowPopupSystemBackdropRoot;
+				ElementCompositionPreview.SetElementChildVisual(overflowPopupSystemBackdropRoot, popupPlacementVisual);
+			}
 		}
 		else
 		{
 			VisualStateManager.GoToState(this, "NoOuterOverflowContentRootShadow", useTransitions);
 			VisualStateManager.GoToState(this, "Default", useTransitions);
 			VisualStateManager.GoToState(this, "Collapsed", useTransitions);
+
+			// Take the backdrop behind the overflow popup out of the tree. If the entire CommandBarFlyoutCommandBar is
+			// closed and reopens, the overflow popup could be closed and we don't want the backdrop behind the overflow
+			// popup to flicker.
+			if (m_overflowPopupBackdropLink is not null && m_overflowPopupSystemBackdropRoot is not null)
+			{
+				var overflowPopupSystemBackdropRoot = m_overflowPopupSystemBackdropRoot;
+				ElementCompositionPreview.SetElementChildVisual(overflowPopupSystemBackdropRoot, null);
+			}
 		}
+
+		// Update the corner radius clip on the backdrop. We copy the corner radius from the elements in the template, which
+		// depends on the visual state of the CommandBarFlyoutCommandBar.
+		if (m_backdropLink is not null && m_primaryItemsRoot is not null)
+		{
+			Visual placementVisual = m_backdropLink.PlacementVisual;
+
+			Grid primaryItemsRoot = (Grid)m_primaryItemsRoot;
+			var cornerRadius = primaryItemsRoot.CornerRadius;
+
+			// Copy the rounded corner clip from the templated element with the rounded corner clip set on it
+			var compositor = placementVisual.Compositor;
+			RectangleClip rectangleClip = compositor.CreateRectangleClip();
+			rectangleClip.Right = (float)primaryItemsRoot.ActualWidth;
+			rectangleClip.Bottom = (float)primaryItemsRoot.ActualHeight;
+			rectangleClip.TopLeftRadius = new((float)cornerRadius.TopLeft, (float)cornerRadius.TopLeft);
+			rectangleClip.TopRightRadius = new((float)cornerRadius.TopRight, (float)cornerRadius.TopRight);
+			rectangleClip.BottomLeftRadius = new((float)cornerRadius.BottomLeft, (float)cornerRadius.BottomLeft);
+			rectangleClip.BottomRightRadius = new((float)cornerRadius.BottomRight, (float)cornerRadius.BottomRight);
+			placementVisual.Clip = rectangleClip;
+		}
+
+		// If no primary command has labels, then we'll shrink down the size of primary commands since the extra space to accommodate labels is unnecessary.
+		bool hasPrimaryCommandLabels = false;
+		foreach (var primaryCommand in PrimaryCommands)
+		{
+			if (HasVisibleLabel(primaryCommand as AppBarButton) ||
+				HasVisibleLabel(primaryCommand as AppBarToggleButton)
+			{
+				hasPrimaryCommandLabels = true;
+				break;
+			}
+		}
+
+		foreach (var command in PrimaryCommands)
+		{
+			if (command is Control commandControl)
+			{
+				VisualStateManager.GoToState(commandControl, hasPrimaryCommandLabels ? "HasPrimaryLabels" : "NoPrimaryLabels", useTransitions);
+			}
+		}
+
+		// Secondary commands by definition will not have any primary commands that they need to accommodate, so we'll set all of them to that state.
+		foreach (var command in SecondaryCommands)
+		{
+			if (command is Control commandControl)
+			{
+				VisualStateManager.GoToState(commandControl, "NoPrimaryLabels", useTransitions);
+			}
+		}
+
+		VisualStateManager.GoToState(this, hasPrimaryCommandLabels ? "HasPrimaryLabels" : "NoPrimaryLabels", useTransitions);
 	}
 
+	private void UpdateItemVisualState(Control item, bool isPrimaryItem)
+	{
+		if (isPrimaryItem)
+		{
+			bool hasPrimaryCommandLabels = false;
+			foreach (var primaryCommand in PrimaryCommands)
+			{
+				if (HasVisibleLabel(primaryCommand as AppBarButton) ||
+					HasVisibleLabel(primaryCommand as AppBarToggleButton))
+				{
+					hasPrimaryCommandLabels = true;
+					break;
+				}
+			}
+
+			VisualStateManager.GoToState(item, hasPrimaryCommandLabels ? "HasPrimaryLabels" : "NoPrimaryLabels", false /* useTransitions */);
+		}
+
+		else
+		{
+			VisualStateManager.GoToState(item, "NoPrimaryLabels", false /* useTransitions */);
+		}
+	}
 	protected override void UpdateTemplateSettings() // TODO:MZ: Should override?
 	{
 		//COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH_INT, METH_NAME, this, IsOpen);
@@ -661,7 +856,7 @@ partial class CommandBarFlyoutCommandBar
 				flyoutTemplateSettings.ExpandDownAnimationStartPosition = -overflowPopupSize.Height / 2;
 				flyoutTemplateSettings.ExpandDownAnimationEndPosition = 0.0;
 				flyoutTemplateSettings.ExpandDownAnimationHoldPosition = -overflowPopupSize.Height;
-				// This clip needs to cover the border at the bottom of the overflow otherwise it'll 
+				// This clip needs to cover the border at the bottom of the overflow otherwise it'll
 				// clip the border. The measure size seems slightly off from what we eventually require
 				// so we're going to compensate just a bit to make sure there's room for any borders.
 				flyoutTemplateSettings.OverflowContentClipRect = new Rect(0, 0, (float)flyoutTemplateSettings.ExpandedWidth, overflowPopupSize.Height + 2);
@@ -749,6 +944,10 @@ partial class CommandBarFlyoutCommandBar
 
 			if (PrimaryCommands.Count > 0)
 			{
+				// This needs to be calculated like these other properties, but because this property needs to be set on the CommandBarFlyoutCommandBar itself,
+				// we can't use a template setting.  So we'll just set the property itself here.
+				Height = primaryItemsRootDesiredSize.Height;
+
 				flyoutTemplateSettings.ExpandDownOverflowVerticalPosition = Height;
 			}
 			else
@@ -831,57 +1030,47 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
+	private void CacheLocalizedStringResources()
+	{
+		m_localizedCommandBarFlyoutAppBarButtonControlType = ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarButtonLocalizedControlType);
+		m_localizedCommandBarFlyoutAppBarToggleButtonControlType = ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarToggleButtonLocalizedControlType);
+		m_areLocalizedStringResourcesCached = true;
+	}
+
+	private void ClearLocalizedStringResourceCache()
+	{
+		m_areLocalizedStringResourcesCached = false;
+		m_localizedCommandBarFlyoutAppBarButtonControlType = null;
+		m_localizedCommandBarFlyoutAppBarToggleButtonControlType = null;
+	}
+
 	private void SetKnownCommandLocalizedControlTypes(ICommandBarElement command)
 	{
 		//COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH, METH_NAME, this);
 
 		if (command is AppBarButton appBarButton)
 		{
-			AutomationProperties.SetLocalizedControlType(appBarButton, ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarButtonLocalizedControlType));
+			if (m_areLocalizedStringResourcesCached)
+			{
+				MUX_ASSERT(!string.IsNullOrEmpty(m_localizedCommandBarFlyoutAppBarButtonControlType));
+				AutomationProperties.SetLocalizedControlType(appBarButton, m_localizedCommandBarFlyoutAppBarButtonControlType);
+			}
+			else
+			{
+				AutomationProperties.SetLocalizedControlType(appBarButton, ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarButtonLocalizedControlType));
+			}
 		}
-
 		else if (command is AppBarToggleButton appBarToggleButton)
 		{
-			AutomationProperties.SetLocalizedControlType(appBarToggleButton, ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarToggleButtonLocalizedControlType));
-		}
-	}
-
-	private void EnsureFocusedPrimaryCommand()
-	{
-		//COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH, METH_NAME, this);
-
-		MUX_ASSERT(!SharedHelpers.IsRS3OrHigher());
-
-		var moreButton = m_moreButton;
-		var tabStopControl = GetFirstTabStopControl(PrimaryCommands);
-
-		if (tabStopControl is null)
-		{
-			if (moreButton is not null && moreButton.IsTabStop)
+			if (m_areLocalizedStringResourcesCached)
 			{
-				tabStopControl = moreButton;
+				MUX_ASSERT(!string.IsNullOrEmpty(m_localizedCommandBarFlyoutAppBarToggleButtonControlType));
+				AutomationProperties.SetLocalizedControlType(appBarToggleButton, m_localizedCommandBarFlyoutAppBarToggleButtonControlType);
 			}
-		}
-
-		if (tabStopControl is not null)
-		{
-			if (tabStopControl.FocusState == FocusState.Unfocused)
+			else
 			{
-				FocusControl(
-					tabStopControl /*newFocus*/,
-					null /*oldFocus*/,
-					FocusState.Programmatic /*focusState*/,
-					false /*updateTabStop*/);
+				AutomationProperties.SetLocalizedControlType(appBarToggleButton, ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarToggleButtonLocalizedControlType));
 			}
-		}
-		else
-		{
-			FocusCommand(
-				PrimaryCommands /*commands*/,
-				moreButton /*moreButton*/,
-				FocusState.Programmatic /*focusState*/,
-				true /*firstCommand*/,
-				true /*ensureTabStopUniqueness*/);
 		}
 	}
 
@@ -961,7 +1150,7 @@ partial class CommandBarFlyoutCommandBar
 							null /*moreButton*/,
 							FocusState.Keyboard /*focusState*/,
 							true /*firstCommand*/,
-							SharedHelpers.IsRS3OrHigher() /*ensureTabStopUniqueness*/);
+							true /*ensureTabStopUniqueness*/);
 					}
 					break;
 				}
@@ -1051,15 +1240,14 @@ partial class CommandBarFlyoutCommandBar
 								}
 							}
 
-							if (FocusControl(
+							FocusControl(
 								accessibleControls[i] /*newFocus*/,
 								focusedControl /*oldFocus*/,
 								FocusState.Keyboard /*focusState*/,
-								true /*updateTabStop*/))
-							{
-								args.Handled = true;
-								break;
-							}
+								true /*updateTabStop*/);
+
+							args.Handled = true;
+							break;
 						}
 					}
 
@@ -1096,7 +1284,7 @@ partial class CommandBarFlyoutCommandBar
 		return null;
 	}
 
-	private bool FocusControl(
+	private async Task<bool> FocusControl(
 		Control newFocus,
 		Control? oldFocus,
 		FocusState focusState,
@@ -1109,6 +1297,15 @@ partial class CommandBarFlyoutCommandBar
 			newFocus!.IsTabStop = true;
 		}
 
+		// Setting focus can cause us to enter the window message handler loop, which is bad if
+		// CXcpDispatcher::OnReentrancyProtectedWindowMessage is on the callstack, since that can lead to reentry.
+		// Switching to a background thread and then back to the UI thread ensures that this call to Control.Focus()
+		// occurs outside that callstack.
+		//winrt::apartment_context uiThread;
+		//co_await winrt::resume_background();
+		//co_await uiThread;
+		await Task.Yield();
+
 		if (newFocus!.Focus(focusState))
 		{
 			if (oldFocus is not null && updateTabStop)
@@ -1120,7 +1317,7 @@ partial class CommandBarFlyoutCommandBar
 		return false;
 	}
 
-	private bool FocusCommand(
+	private async Task<bool> FocusCommand(
 		IObservableVector<ICommandBarElement> commands,
 		Control? moreButton,
 		FocusState focusState,
@@ -1154,11 +1351,11 @@ partial class CommandBarFlyoutCommandBar
 				{
 					if (focusedControl is null)
 					{
-						if (FocusControl(
-								commandAsControl /*newFocus*/,
-								null /*oldFocus*/,
-								focusState /*focusState*/,
-								ensureTabStopUniqueness /*updateTabStop*/))
+						if (await FocusControl(
+							commandAsControl /*newFocus*/,
+							null /*oldFocus*/,
+							focusState /*focusState*/,
+							ensureTabStopUniqueness /*updateTabStop*/))
 						{
 							if (ensureTabStopUniqueness && moreButton is not null && moreButton.IsTabStop)
 							{
@@ -1233,70 +1430,10 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
-	private void UpdateProjectedShadow()
-	{
-		if (SharedHelpers.IsThemeShadowAvailable() && !SharedHelpers.Is21H1OrHigher())
-		{
-			if (PrimaryCommands.Count > 0)
-			{
-				AddProjectedShadow();
-			}
-			else if (PrimaryCommands.Count == 0)
-			{
-				ClearProjectedShadow();
-			}
-		}
-	}
-
-	private void AddProjectedShadow()
-	{
-		//This logic applies to projected shadows, which are the default on < 21H1.
-		//See additional notes in CommandBarFlyout.CreatePresenter().
-		//Apply Shadow on the Grid named "ContentRoot", this is the first element below
-		//the clip animation of the commandBar. This guarantees that shadow respects the 
-		//animation
-		var grid = (Grid)GetTemplateChild("ContentRoot");
-
-		if (grid is not null)
-		{
-			if (grid.Shadow is null)
-			{
-				Windows.UI.Xaml.Media.ThemeShadow shadow = new();
-				grid.Shadow = shadow;
-
-				var translation = new Vector3(grid.Translation.X, grid.Translation.Y, 32.0f);
-				grid.Translation = translation;
-			}
-		}
-	}
-
-	private void ClearProjectedShadow()
-	{
-		// This logic applies to projected shadows, which are the default on < 21H1.
-		// See additional notes in CommandBarFlyout.CreatePresenter().
-		var grid = (Grid)GetTemplateChild("ContentRoot");
-		if (grid is not null)
-		{
-			if (grid.Shadow is not null)
-			{
-				grid.Shadow = null;
-
-				//Undo the elevation
-				var translation = new Vector3(grid.Translation.X, grid.Translation.Y, 0.0f);
-				grid.Translation = translation;
-			}
-		}
-	}
-
 	internal void ClearShadow()
 	{
-		if (SharedHelpers.IsThemeShadowAvailable() && !SharedHelpers.Is21H1OrHigher())
-		{
-			ClearProjectedShadow();
-		}
 		VisualStateManager.GoToState(this, "NoOuterOverflowContentRootShadow", true/*useTransitions*/);
 	}
-
 
 	internal void SetPresenter(FlyoutPresenter presenter)
 	{
@@ -1396,6 +1533,48 @@ partial class CommandBarFlyoutCommandBar
 		if (IsOpen)
 		{
 			UpdateUI(!m_commandBarFlyoutIsOpening, true /*isForSizeChange*/);
+		}
+	}
+
+	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+	{
+		DependencyProperty property = args.Property;
+
+		if (property == SystemBackdropProperty)
+		{
+			if (args.NewValue != args.OldValue)
+			{
+				var oldSystemBackdrop = args.OldValue as SystemBackdrop;
+				var newSystemBackdrop = args.NewValue as SystemBackdrop;
+
+				if (oldSystemBackdrop is not null)
+				{
+					oldSystemBackdrop.OnTargetDisconnected(m_backdropLink);
+					oldSystemBackdrop.OnTargetDisconnected(m_overflowPopupBackdropLink);
+				}
+
+				m_systemBackdrop = WeakReferencePool.RentWeakReference(this, newSystemBackdrop);
+
+				if (newSystemBackdrop is not null)
+				{
+					if (!m_backdropLink)
+					{
+						var visual = ElementCompositionPreview.GetElementVisual(*this);
+						var compositor = visual.Compositor;
+						m_backdropLink = ContentExternalBackdropLink.Create(compositor);
+						m_overflowPopupBackdropLink = ContentExternalBackdropLink.Create(compositor);
+					}
+
+					newSystemBackdrop.OnTargetConnected(m_backdropLink, XamlRoot);
+					newSystemBackdrop.OnTargetConnected(m_overflowPopupBackdropLink, XamlRoot);
+				}
+
+				else
+				{
+					m_backdropLink = null;
+					m_overflowPopupBackdropLink = null;
+				}
+			}
 		}
 	}
 }
