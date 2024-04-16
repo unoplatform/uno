@@ -25,7 +25,22 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 #if __SKIA__
 				if (dependencyObject is NativeControlHostWithText this_ && args.NewValue is string text)
 				{
-					this_.Content = Microsoft.UI.Xaml.Controls.ContentPresenter.CreateSampleComponent(text);
+					if (this_.IsLoaded)
+					{
+						this_.Content = Microsoft.UI.Xaml.Controls.ContentPresenter.CreateSampleComponent(this_.XamlRoot, text);
+					}
+					else
+					{
+						// we need XamlRoot to not be null, so we have to wait until IsLoaded
+						RoutedEventHandler onLoaded = null;
+						onLoaded = (_, _) =>
+						{
+							this_.Content = Microsoft.UI.Xaml.Controls.ContentPresenter.CreateSampleComponent(this_.XamlRoot, text);
+							this_.Loaded -= onLoaded;
+						};
+
+						this_.Loaded += onLoaded;
+					}
 				}
 #endif
 			}));

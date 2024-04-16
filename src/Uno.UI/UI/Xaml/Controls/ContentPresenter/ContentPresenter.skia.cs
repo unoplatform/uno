@@ -140,6 +140,6 @@ partial class ContentPresenter
 		UpdateNativeElementPosition();
 	}
 
-	internal static object CreateSampleComponent(string text)
-		=> _nativeElementHostingExtension.Value?.CreateSampleComponent(text);
+	internal static object CreateSampleComponent(XamlRoot root, string text)
+		=> _nativeElementHostingExtension.Value?.CreateSampleComponent(root, text);
 }

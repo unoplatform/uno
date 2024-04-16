@@ -5,28 +5,23 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Uno.Foundation.Logging;
-using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf;
 
-internal partial class WpfNativeElementHostingExtension : INativeElementHostingExtension
+internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	public WpfNativeElementHostingExtension()
-	{
-	}
-
 	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
 		WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
 	public bool IsNativeElement(object content)
 		=> content is System.Windows.UIElement;
 
-	public void AttachNativeElement(object owner, object content)
+	public void AttachNativeElement(XamlRoot owner, object content)
 	{
-		if (owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } layer
+		if (GetOverlayLayer(owner) is { } layer
 			&& content is System.Windows.FrameworkElement contentAsFE
 			&& contentAsFE.Parent != layer)
 		{
@@ -41,10 +36,9 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public void DetachNativeElement(object owner, object content)
+	public void DetachNativeElement(XamlRoot owner, object content)
 	{
-		if (owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } layer
+		if (GetOverlayLayer(owner) is { } layer
 			&& content is System.Windows.FrameworkElement contentAsFE
 			&& contentAsFE.Parent == layer)
 		{
@@ -59,20 +53,19 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public bool IsNativeElementAttached(object owner, object nativeElement) =>
+	public bool IsNativeElementAttached(XamlRoot owner, object nativeElement) =>
 		nativeElement is System.Windows.FrameworkElement contentAsFE
-			&& owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } layer
+			&& GetOverlayLayer(owner) is { } layer
 			&& contentAsFE.Parent == layer;
 
-	public void ChangeNativeElementVisibility(object owner, object content, bool visible)
+	public void ChangeNativeElementVisibility(XamlRoot owner, object content, bool visible)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
 			contentAsUIElement.Visibility = visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 		}
 	}
-	public void ChangeNativeElementOpacity(object owner, object content, double opacity)
+	public void ChangeNativeElementOpacity(XamlRoot owner, object content, double opacity)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -80,7 +73,7 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect? clip)
+	public void ArrangeNativeElement(XamlRoot owner, object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect? clip)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -109,7 +102,7 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize)
+	public Windows.Foundation.Size MeasureNativeElement(XamlRoot owner, object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -120,7 +113,7 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 		return Windows.Foundation.Size.Empty;
 	}
 
-	public object CreateSampleComponent(string text)
+	public object CreateSampleComponent(XamlRoot owner, string text)
 	{
 		return new Button
 		{

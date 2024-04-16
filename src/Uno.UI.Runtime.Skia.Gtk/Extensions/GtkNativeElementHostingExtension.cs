@@ -5,27 +5,19 @@ using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Gtk;
-using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
-using Windows.Graphics.Display;
 
 using GLib;
+using Microsoft.UI.Xaml.Controls;
 using GtkApplication = Gtk.Application;
 using Button = Gtk.Button;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
-internal partial class GtkNativeElementHostingExtension : INativeElementHostingExtension
+internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	private DisplayInformation _displayInformation;
-
 	private static Dictionary<object, IDisposable> NativeRenderDisposables { get; } = new();
-
-	public GtkNativeElementHostingExtension()
-	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
-	}
 
 	internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
 		GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
@@ -33,11 +25,9 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 	public bool IsNativeElement(object content)
 		=> content is Widget;
 
-	public void AttachNativeElement(object owner, object content)
+	public void AttachNativeElement(XamlRoot owner, object content)
 	{
-		if (content is Widget widget
-			&& owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } overlay)
+		if (content is Widget widget)
 		{
 			widget.ShowAll();
 			// We don't attach the widget to the overlay here, but on the first arrange, to prevent the overlay from being
@@ -52,11 +42,10 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public void DetachNativeElement(object owner, object content)
+	public void DetachNativeElement(XamlRoot owner, object content)
 	{
 		if (content is Widget widget
-			&& owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } overlay)
+			&& GetOverlayLayer(owner) is { } overlay)
 		{
 			if (NativeRenderDisposables.Remove(widget, out var disposable))
 			{
@@ -73,7 +62,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public object CreateSampleComponent(string text)
+	public object CreateSampleComponent(XamlRoot owner, string text)
 	{
 		var vbox = new VBox(false, 5);
 
@@ -92,13 +81,12 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 		return vbox;
 	}
 
-	public bool IsNativeElementAttached(object owner, object nativeElement) =>
+	public bool IsNativeElementAttached(XamlRoot owner, object nativeElement) =>
 		nativeElement is Widget widget
-			&& owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } overlay
+			&& GetOverlayLayer(owner) is { } overlay
 			&& widget.Parent == overlay;
 
-	public void ChangeNativeElementVisibility(object owner, object content, bool visible)
+	public void ChangeNativeElementVisibility(XamlRoot owner, object content, bool visible)
 	{
 		if (content is Widget widget)
 		{
@@ -106,7 +94,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public void ChangeNativeElementOpacity(object owner, object content, double opacity)
+	public void ChangeNativeElementOpacity(XamlRoot owner, object content, double opacity)
 	{
 		if (content is Widget widget)
 		{
@@ -114,11 +102,10 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 		}
 	}
 
-	public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect, Rect? clipRect)
+	public void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect? clipRect)
 		{
 			if (content is Widget widget
-				&& owner is XamlRoot xamlRoot
-				&& GetOverlayLayer(xamlRoot) is { } overlay)
+				&& GetOverlayLayer(owner) is { } overlay)
 			{
 				if (!IsNativeElementAttached(owner, content))
 				{
@@ -137,7 +124,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 					this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
 				}
 
-				var scaleAdjustment = xamlRoot.FractionalScaleAdjustment;
+				var scaleAdjustment = owner.FractionalScaleAdjustment;
 				var rect = new Gdk.Rectangle(
 					(int)(arrangeRect.X * scaleAdjustment),
 					(int)(arrangeRect.Y * scaleAdjustment),
@@ -184,7 +171,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 
 					var onActivated = new WindowActivatedEventHandler(callback);
 					var onSizeChanged = new WindowSizeChangedEventHandler(callback);
-					if (xamlRoot?.HostWindow is { } window)
+					if (owner.HostWindow is { } window)
 					{
 						window.Activated += onActivated;
 						window.SizeChanged += onSizeChanged;
@@ -205,11 +192,9 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 			}
 		}
 
-	public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Size childMeasuredSize, Size availableSize)
+	public Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize)
 	{
-		if (content is Widget widget
-			&& owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } overlay)
+		if (content is Widget widget)
 		{
 			widget.GetPreferredSize(out var minimum_Size, out var naturalSize);
 
@@ -218,7 +203,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 				this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
 			}
 
-			var scaleAdjustment = xamlRoot.FractionalScaleAdjustment;
+			var scaleAdjustment = owner.FractionalScaleAdjustment;
 			return new(naturalSize.Width / scaleAdjustment, naturalSize.Height / scaleAdjustment);
 		}
 		else
