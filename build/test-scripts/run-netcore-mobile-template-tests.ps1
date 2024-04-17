@@ -10,6 +10,11 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
+function CleanupTree()
+{
+    git clean -fdx
+}
+
 $default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
@@ -54,6 +59,8 @@ for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
 & $msbuild $debug "UnoAppAll.UWP\UnoAppAll.UWP.csproj"
 Assert-ExitCodeIsZero
 
+CleanupTree
+
 popd
 
 $dotnetBuildNet6Configurations =
@@ -85,6 +92,8 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
  # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
  & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
 Assert-ExitCodeIsZero
+
+CleanupTree
 
 popd
 
@@ -126,6 +135,7 @@ if ($assetsCount -ne 2)
     throw "Not enough assets in the package."
 }
 
+CleanupTree
 
 ## Tests Per versions of uno
 $default = @('-v:m', '-p:EnableWindowsTargeting=true')
@@ -238,9 +248,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet build $debug "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
 
+        dotnet clean $debug "$projectPath"
+
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
         dotnet build $release "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
+ 
+        dotnet clean $release "$projectPath"
     }
     else
     {
@@ -248,8 +262,12 @@ for($i = 0; $i -lt $projects.Length; $i++)
         & $msbuild $debug /r "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
 
+        & $msbuild $debug /t:Clean "$projectPath"
+
         Write-Host "MSBuild Building Release $projectPath with $projectOptions"
         & $msbuild $release /r "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
+
+        & $msbuild $release /t:Clean "$projectPath"
     }
 }
