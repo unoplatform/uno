@@ -7,7 +7,7 @@ using System;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[Sample("Flyouts", "Flyout_ButtonInContent")]
+	[Sample("Flyouts")]
 	public sealed partial class Flyout_OverlayInputPassThroughElement : Page
 	{
 		public Flyout_OverlayInputPassThroughElement()

@@ -1,11 +1,4 @@
-﻿#if __WASM__ || __SKIA__
-// On iOS and Android, pointers are implicitly captured, so we will receive the "irrelevant" (i.e. !isOverOrCaptured)
-// pointer moves and we can use them for manipulation. But on WASM and SKIA we have to explicitly request to get those events
-// (expect on FF where they are also implicitly captured ... but we still capture them anyway).
-#define NEEDS_IMPLICIT_CAPTURE
-#endif
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -346,7 +339,7 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-#if NEEDS_IMPLICIT_CAPTURE
+#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 			foreach (var pointer in args.Pointers)
 			{
 				that.ReleasePointerCapture(pointer, muteEvent: true, PointerCaptureKind.Implicit);
@@ -967,7 +960,7 @@ namespace Microsoft.UI.Xaml
 
 				recognizer.ProcessDownEvent(point);
 
-#if NEEDS_IMPLICIT_CAPTURE
+#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 				if (recognizer.PendingManipulation?.IsActive(point.Pointer) ?? false)
 				{
 					Capture(args.Pointer, PointerCaptureKind.Implicit, PointerCaptureOptions.PreventOSSteal, args);
