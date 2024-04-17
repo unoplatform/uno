@@ -47,14 +47,6 @@
 		<PackageReference Include="Microsoft.Win32.SystemEvents" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">
-		<PackageReference Include="System.Drawing.Common" Version="8.0.0-preview.7.23375.5" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows'">
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
