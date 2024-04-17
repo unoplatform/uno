@@ -32,6 +32,7 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
+		private DisplayInformation? _cachedDisplayInformation;
 		private UnoSKCanvasView? _skCanvasView;
 
 		/// <summary>
@@ -206,6 +207,7 @@ namespace Microsoft.UI.Xaml
 		protected override void OnStart()
 		{
 			base.OnStart();
+			_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
 			_skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
 			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MatchParent,
@@ -221,11 +223,10 @@ namespace Microsoft.UI.Xaml
 			{
 				var canvas = e.Surface.Canvas;
 				canvas.Clear(SKColors.Red);
-				var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
 				canvas.Scale((float)scale);
 				window.Compositor.RenderRootVisual(e.Surface, root.Visual);
-				var helper = (UnoExploreByTouchHelper)ViewCompat.GetAccessibilityDelegate(_skCanvasView);
-				helper.InvalidateRoot();
+				_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
 			}
 		}
 

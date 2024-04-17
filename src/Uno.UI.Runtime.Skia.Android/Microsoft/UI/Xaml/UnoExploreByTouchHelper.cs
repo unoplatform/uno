@@ -84,14 +84,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				break;
 			}
 		}
-
-		//foreach (var element in elements)
-		//{
-		//	if (element.Element is UIElement { IsFocusable: true }) // TODO: What about non-UIElements? e.g, Hyperlinks?
-		//	{
-		//		virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(element.Element)));
-		//	}
-		//}
 	}
 
 	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle arguments)

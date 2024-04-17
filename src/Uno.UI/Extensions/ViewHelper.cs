@@ -46,10 +46,10 @@ namespace Uno.UI
 
 		private static double PhysicalToLogicalPixels(double value)
 		{
-			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UI
+			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
 			if (OperatingSystem.IsAndroid())
 			{
-				return value * _cachedDensity;
+				return value / _cachedDensity;
 			}
 
 			return value;
@@ -57,7 +57,7 @@ namespace Uno.UI
 
 		private static double LogicalToPhysicalPixels(double value)
 		{
-			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UI
+			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
 			if (OperatingSystem.IsAndroid())
 			{
 				if (double.IsNaN(value))

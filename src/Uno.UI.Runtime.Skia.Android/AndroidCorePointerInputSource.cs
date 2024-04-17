@@ -75,7 +75,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 			var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
 			var x = e.RawX;
 			var y = e.RawY;
-			var position = new Point((int)x - correction[0], (int)y - correction[1]);
+			var position = new Point((int)x - correction[0], (int)y - correction[1]).PhysicalToLogicalPixels();
 
 			var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
 

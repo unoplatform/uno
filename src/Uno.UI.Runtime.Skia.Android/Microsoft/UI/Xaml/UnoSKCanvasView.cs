@@ -10,29 +10,29 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class UnoSKCanvasView : SKCanvasView
 {
-	private readonly UnoExploreByTouchHelper _exploreByTouchHelper;
+	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 
 	public UnoSKCanvasView(Context context, UIElement rootElement) : base(context)
 	{
-		_exploreByTouchHelper = new UnoExploreByTouchHelper(this, rootElement);
+		ExploreByTouchHelper = new UnoExploreByTouchHelper(this, rootElement);
 		ViewCompat.SetAccessibilityDelegate(this, new UnoExploreByTouchHelper(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!));
 	}
 
 	protected override bool DispatchHoverEvent(MotionEvent? e)
 	{
-		return _exploreByTouchHelper.DispatchHoverEvent(e) ||
+		return ExploreByTouchHelper.DispatchHoverEvent(e) ||
 			base.DispatchHoverEvent(e);
 	}
 
 	public override bool DispatchKeyEvent(KeyEvent? e)
 	{
-		return _exploreByTouchHelper.DispatchKeyEvent(e) ||
+		return ExploreByTouchHelper.DispatchKeyEvent(e) ||
 			base.DispatchKeyEvent(e);
 	}
 
 	protected override void OnFocusChanged(bool gainFocus, [GeneratedEnum] FocusSearchDirection direction, Rect? previouslyFocusedRect)
 	{
 		base.OnFocusChanged(gainFocus, direction, previouslyFocusedRect);
-		_exploreByTouchHelper.OnFocusChanged(gainFocus, (int)direction, previouslyFocusedRect);
+		ExploreByTouchHelper.OnFocusChanged(gainFocus, (int)direction, previouslyFocusedRect);
 	}
 }
