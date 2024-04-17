@@ -7,9 +7,12 @@ using AndroidX.Core.View.Accessibility;
 using AndroidX.CustomView.Widget;
 using Java.Lang;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp.Views.Android;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -23,7 +26,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private Dictionary<int, DependencyObject?> _idToElement = new(); // TODO: This will leak.
 	private int _currentId;
 
-	public UnoExploreByTouchHelper(SKCanvasView host, UIElement rootElement) : base(host)
+	public UnoExploreByTouchHelper(UnoSKCanvasView host, UIElement rootElement) : base(host)
 	{
 		_rootElement = rootElement;
 	}
@@ -70,18 +73,39 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
-		var elements = XYFocusTreeWalker.FindElements(startRoot: _rootElement, currentElement: null, activeScroller: null, ignoreClipping: false, shouldConsiderXYFocusKeyboardNavigation: false);
-		foreach (var element in elements)
+		var current = focusManager.UnoFindNextFocusableElement(_rootElement);
+		var firstFocusable = current;
+		while (current is not null)
 		{
-			if (element.Element is not null)
+			virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(current)));
+			current = focusManager.UnoFindNextFocusableElement(current); // TODO: What about non-UIElements? e.g, Hyperlinks?
+			if (current == firstFocusable)
 			{
-				virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(element.Element)));
+				break;
 			}
 		}
+
+		//foreach (var element in elements)
+		//{
+		//	if (element.Element is UIElement { IsFocusable: true }) // TODO: What about non-UIElements? e.g, Hyperlinks?
+		//	{
+		//		virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(element.Element)));
+		//	}
+		//}
 	}
 
 	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle arguments)
 	{
+		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
+			element is UIElement uiElement &&
+			uiElement.GetOrCreateAutomationPeer() is { } peer)
+		{
+			if (peer.InvokeAutomationPeer())
+			{
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -90,15 +114,34 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
 			element is UIElement uiElement)
 		{
-			var slot = uiElement.LayoutSlot.LogicalToPhysicalPixels();
+			var transform = UIElement.GetTransform(from: uiElement, to: null);
+			var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(uiElement.Visual.Size.X, uiElement.Visual.Size.Y)));
+			var physicalRect = logicalRect.LogicalToPhysicalPixels();
 #pragma warning disable CS0618 // Type or member is obsolete
-			node.SetBoundsInParent(new global::Android.Graphics.Rect((int)slot.Left, (int)slot.Top, (int)slot.Right, (int)slot.Bottom));
+			node.SetBoundsInParent(new global::Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 #pragma warning restore CS0618 // Type or member is obsolete
-			node.ContentDescription = uiElement.GetOrCreateAutomationPeer()?.GetName() ?? uiElement.GetType().Name;
-		}
-		else
-		{
-			node.ContentDescription = "Unknown";
+
+			var description = AutomationProperties.GetAutomationId(uiElement);
+			var peer = uiElement.GetOrCreateAutomationPeer();
+
+			if (string.IsNullOrEmpty(description))
+			{
+				description = peer?.GetName();
+			}
+			if (string.IsNullOrEmpty(description))
+			{
+				description = uiElement.GetType().Name;
+			}
+
+			if (peer is not null)
+			{
+				if (peer is IInvokeProvider or IToggleProvider)
+				{
+					node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
+				}
+			}
+
+			node.ContentDescription = description;
 		}
 	}
 }

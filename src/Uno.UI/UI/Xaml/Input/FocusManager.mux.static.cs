@@ -62,11 +62,11 @@ namespace Microsoft.UI.Xaml.Input
 			{
 				focusManager = VisualTree.GetFocusManagerForElement(searchRoot);
 			}
-			else if (core.GetHandle().InitializationType == InitializationType.IslandsOnly)
-			{
-				// Return error if searchRoot is not valid in islands/ desktop mode
-				throw new ArgumentException("The search root must not be null.");
-			}
+			//else if (core.GetHandle().InitializationType == InitializationType.IslandsOnly)
+			//{
+			//	// Return error if searchRoot is not valid in islands/ desktop mode
+			//	throw new ArgumentException("The search root must not be null.");
+			//}
 			else
 			{
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
@@ -380,7 +380,7 @@ namespace Microsoft.UI.Xaml.Input
 			if (InIslandsMode())
 			{
 				// This api is not supported in islands/ desktop mode. 
-				throw new NotSupportedException("This API is not supported in desktop mode.");
+				//throw new NotSupportedException("This API is not supported in desktop mode.");
 			}
 
 			XYFocusOptions xyFocusOptions = new XYFocusOptions();

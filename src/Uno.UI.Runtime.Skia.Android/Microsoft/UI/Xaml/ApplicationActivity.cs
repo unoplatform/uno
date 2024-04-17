@@ -21,6 +21,7 @@ using Uno.UI.Dispatching;
 using Uno.UI.Runtime.Skia.Android;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
+using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -31,7 +32,7 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
-		private SKCanvasView? _skCanvasView;
+		private UnoSKCanvasView? _skCanvasView;
 
 		/// <summary>
 		/// The windows model implies only one managed activity.
@@ -205,8 +206,7 @@ namespace Microsoft.UI.Xaml
 		protected override void OnStart()
 		{
 			base.OnStart();
-			_skCanvasView = new SKCanvasView(this);
-			ViewCompat.SetAccessibilityDelegate(_skCanvasView, new UnoExploreByTouchHelper(_skCanvasView, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!));
+			_skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
 			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
@@ -221,7 +221,11 @@ namespace Microsoft.UI.Xaml
 			{
 				var canvas = e.Surface.Canvas;
 				canvas.Clear(SKColors.Red);
+				var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+				canvas.Scale((float)scale);
 				window.Compositor.RenderRootVisual(e.Surface, root.Visual);
+				var helper = (UnoExploreByTouchHelper)ViewCompat.GetAccessibilityDelegate(_skCanvasView);
+				helper.InvalidateRoot();
 			}
 		}
 

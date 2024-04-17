@@ -84,6 +84,14 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 
 			switch (nativePointerAction)
 			{
+				case MotionEventActions.HoverEnter:
+					PointerEntered?.Invoke(this, args);
+					break;
+
+				case MotionEventActions.HoverExit:
+					PointerExited?.Invoke(this, args);
+					break;
+
 				case MotionEventActions.Move:
 					PointerMoved?.Invoke(this, args);
 					break;
