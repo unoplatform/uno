@@ -221,7 +221,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 			AddPackageForFeature(UnoFeature.Toolkit, "Uno.Extensions.Navigation.Toolkit.WinUI", UnoExtensionsVersion);
 		}
 
-		if (HasFeature(UnoFeature.Mvux))
+		if (HasFeature(UnoFeature.MVUX))
 		{
 			AddPackage("Uno.Extensions.Reactive.WinUI", UnoExtensionsVersion);
 			AddPackage("Uno.Extensions.Reactive.Messaging", UnoExtensionsVersion);
@@ -234,7 +234,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 			AddPackage("Uno.Extensions.Serialization.Refit", UnoExtensionsVersion);
 		}
 
-		if (HasFeature(UnoFeature.Serilog))
+		if (HasFeature(UnoFeature.LoggingSerilog))
 		{
 			AddPackage("Uno.Extensions.Logging.Serilog", UnoExtensionsVersion);
 		}
