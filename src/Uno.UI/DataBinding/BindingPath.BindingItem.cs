@@ -196,7 +196,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			private void OnPropertyChanged(object? newValue, bool shouldRaiseValueChanged)
+			private void OnPropertyChanged(object? previousValue, object? newValue, bool shouldRaiseValueChanged)
 			{
 				if (_isDataContextChanging && newValue == DependencyProperty.UnsetValue)
 				{
@@ -211,7 +211,12 @@ namespace Uno.UI.DataBinding
 					Next.DataContext = newValue;
 				}
 
-				if (shouldRaiseValueChanged)
+				if (shouldRaiseValueChanged
+					// If IgnoreINPCSameReferences is true, we will RaiseValueChanged only if previousValue != newValue
+					// If IgnoreINPCSameReferences is false, we are not going to compare previousValue and newValue (which is the correct behavior).
+					// In Uno 6, we should remove the following line.
+					&& (!FeatureConfiguration.Binding.IgnoreINPCSameReferences || previousValue != newValue)
+					)
 				{
 					// We should call RaiseValueChanged even if oldValue == newValue.
 					// It's the responsibility of the user to only raise PropertyChanged event when needed.
@@ -413,6 +418,13 @@ namespace Uno.UI.DataBinding
 
 					if (handlerDisposable != null)
 					{
+						if (FeatureConfiguration.Binding.IgnoreINPCSameReferences)
+						{
+							// GetSourceValue calls into user code.
+							// Avoid this if PreviousValue isn't going to be used at all.
+							valueHandler.PreviousValue = GetSourceValue();
+						}
+
 						// We need to keep the reference to the updatePropertyHandler
 						// in this disposable. The reference is attached to the source's
 						// object lifetime, to the target (bound) object.
@@ -421,9 +433,11 @@ namespace Uno.UI.DataBinding
 						// weak with regards to the delegates that are provided.
 						disposables.Add(() =>
 						{
+							var previousValue = valueHandler.PreviousValue;
+
 							valueHandler = null;
 							handlerDisposable.Dispose();
-							OnPropertyChanged(DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
+							OnPropertyChanged(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
 						});
 					}
 				}
@@ -509,6 +523,8 @@ namespace Uno.UI.DataBinding
 					_self = WeakReferencePool.RentSelfWeakReference(this);
 				}
 
+				public object? PreviousValue { get; set; }
+
 				public ManagedWeakReference WeakReference
 					=> _self;
 
@@ -516,7 +532,9 @@ namespace Uno.UI.DataBinding
 				{
 					var newValue = _owner.GetSourceValue();
 
-					_owner.OnPropertyChanged(newValue, shouldRaiseValueChanged: true);
+					_owner.OnPropertyChanged(PreviousValue, newValue, shouldRaiseValueChanged: true);
+
+					PreviousValue = newValue;
 				}
 
 				public void NewValue(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
