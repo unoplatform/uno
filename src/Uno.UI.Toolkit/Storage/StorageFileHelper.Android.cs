@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Android.Content.Res;
 using System.Threading.Tasks;
+using System;
 
 namespace Uno.UI.Toolkit;
 
@@ -90,21 +91,24 @@ partial class StorageFileHelper
 	}
 
 	/// <summary>
-	/// This method will return all the assets within current package
+	/// Retrieves the paths of assets within the current Android application package based on the specified filter predicate.
 	/// </summary>
-	/// <param name="extensionsFilter">Extensions list for filter files</param>
-	private static Task<string[]> GetFilesInPackage(string[]? extensionsFilter)
+	/// <param name="predicate">A predicate function determining whether a file should be included in the result.</param>
+	/// <returns>
+	/// Returns an array of strings containing the paths of the filtered assets.
+	/// </returns>
+	private static Task<string[]> GetFilesInDirectory(Func<string, bool> predicate)
 	{
 		var context = global::Android.App.Application.Context;
 
-		if (ScannedFiles is null)
+		if (_scannedFiles is null)
 		{
-			ScannedFiles = new List<string>();
-			_ = ScanPackageAssetsAsync(ScannedFiles);
+			_scannedFiles = new List<string>();
+			_ = ScanPackageAssets(_scannedFiles);
 		}
 
-		var results = ScannedFiles?.ToList()
-			.Where(e => extensionsFilter == null || extensionsFilter.Any(filter => e.EndsWith(filter, StringComparison.OrdinalIgnoreCase)))
+		var results = _scannedFiles?.Where(e => predicate(e))
+			.Select(e => e.Replace('\\', '/'))
 			.ToArray() ?? Array.Empty<string>();
 
 		return Task.FromResult(results);

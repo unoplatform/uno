@@ -23,12 +23,13 @@ partial class StorageFileHelper
 		return Task.FromResult(resourcePathname != null);
 	}
 
-	private static Task<string[]> GetFilesInPackage(string[]? extensionsFilter)
+	private static Task<string[]> GetFilesInDirectory(Func<string, bool> predicate)
 	{
-		string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*", SearchOption.AllDirectories);
+		string rootPath = AppDomain.CurrentDomain.BaseDirectory;
+		string[] files = Directory.GetFiles(rootPath, "*", SearchOption.AllDirectories);
 
-		var results = files?.ToList()
-			.Where(e => extensionsFilter == null || extensionsFilter.Any(filter => e.EndsWith(filter, StringComparison.OrdinalIgnoreCase)))
+		var results = files?.Where(e => predicate(e))
+			.Select(e => e.Replace(rootPath, string.Empty).Replace('\\', '/'))
 			.ToArray() ?? Array.Empty<string>();
 
 		return Task.FromResult(results);

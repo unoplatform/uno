@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_ExistFilesInPackage()
 		{
-			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.GetAllFilesPathInPackage(null);
+			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync(null);
 
 			Assert.IsTrue(fileExists.Any());
 		}
@@ -20,8 +20,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_ExtensionsFilterCountDifferentFromAllInPackage()
 		{
-			var filteredFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetAllFilesPathInPackage([".png"]);
-			var allFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetAllFilesPathInPackage(null);
+			var filteredFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync([".png"]);
+			var allFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync(null);
 
 			Assert.IsFalse(allFileExists.Count() == filteredFileExists.Count());
 		}
@@ -29,8 +29,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_ExtensionsFilterOnlyPathsForPngFiles()
 		{
-			var filteredFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetAllFilesPathInPackage([".png"]);
-			var allFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetAllFilesPathInPackage(null);
+			var filteredFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync([".png"]);
+			var allFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync(null);
 
 			Assert.IsTrue(filteredFileExists.Count() == filteredFileExists.Where(e => e.ToString().EndsWith(".png")).Count());
 		}

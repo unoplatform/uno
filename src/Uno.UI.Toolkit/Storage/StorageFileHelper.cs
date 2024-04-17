@@ -20,16 +20,18 @@ public partial class StorageFileHelper
 	public static async Task<bool> ExistsInPackage(string fileName) => await FileExistsInPackage(fileName);
 
 	/// <summary>
-	/// Get all files in the package
+	/// This asynchronous method retrieves the paths of files within a directory based on a specified filter for file extensions.
 	/// </summary>
-	/// <returns>List of string with the Paths - Filtered by extensionsFilter list</returns>
-	public static async Task<string[]> GetAllFilesPathInPackage(string[] extensionsFilter) => await GetFilesInPackage(extensionsFilter);
+	/// <param name="extensionsFilter">An array of strings representing the file extensions to filter the files.If null, all files in the directory are considered.</param>
+	/// <returns>An array of strings containing the paths of the filtered files within the directory.</returns>
+	public static async Task<string[]> GetFilesInDirectoryAsync(string[] extensionsFilter)
+		=> await GetFilesInDirectory(e => extensionsFilter == null || extensionsFilter.Any(filter => e.EndsWith(filter, StringComparison.OrdinalIgnoreCase)));
 
 #if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 	private static Task<bool> FileExistsInPackage(string fileName)
 		=> throw new NotImplementedException();
 
-	private static Task<string[]> GetAllFilesPathInPackage(string[] extensionsFilter)
+	private static Task<string[]> GetFilesInDirectory(Func<string, bool> predicate)
 		=> throw new NotImplementedException();
 #endif
 
@@ -50,7 +52,7 @@ public partial class StorageFileHelper
 		return Task.FromResult(false);
 	}
 
-	private static Task<string[]> GetFilesInPackage(string[]? extensionsFilter)
+	private static Task<string[]> GetFilesInDirectory(Func<string, bool> predicate)
 	{
 		List<string> assetsFiles = new();
 		string path = string.Empty;
@@ -61,7 +63,8 @@ public partial class StorageFileHelper
 			if (!string.IsNullOrEmpty(path))
 			{
 				assetsFiles = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
-										.Where(e => extensionsFilter == null || extensionsFilter.Any(filter => e.EndsWith(filter, StringComparison.OrdinalIgnoreCase)))
+										.Where(e => predicate(e))
+										.Select(e => e.Replace(path, string.Empty).Replace('\\', '/'))
 										.ToList();
 			}
 		}
