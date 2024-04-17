@@ -114,7 +114,7 @@
       - name: Community Tutorials
         topicHref: guides/community-tutorials.md
     - name: Samples
-      topicHref: uno-samples.md
+      href: external/uno.samples/doc/samples.md
     - name: Additional Resources
       href: xref:Uno.GetStarted.NextSteps
 
