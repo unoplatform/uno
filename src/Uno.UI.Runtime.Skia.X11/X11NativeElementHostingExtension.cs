@@ -7,12 +7,15 @@ using System.Threading;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 public class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 #pragma warning disable CS0414 // Field is assigned but its value is never used
-	private static string SampleVideoLink = "https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4";
+	// private static string SampleVideoLink = "https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4";
+	private static string SampleVideoLink = "/home/ramez/Downloads/big_buck_bunny_720p_5mb.mp4";
 #pragma warning restore CS0414 // Field is assigned but its value is never used
 
 	public bool IsNativeElement(object content)
@@ -82,6 +85,8 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 
 			var _3 = X11Helper.XReparentWindow(x11Window.Display, x11Window.Window, host.X11Window.Window, 0, 0);
 			XLib.XSync(x11Window.Display, false);
+
+			Debug.Assert(IsNativeElementAttached(owner, content));
 		}
 		else
 		{
@@ -98,67 +103,98 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 			XLib.XFree(children);
 			var _3 = X11Helper.XReparentWindow(x11Window.Display, x11Window.Window, root, 0, 0);
 			XLib.XSync(x11Window.Display, false);
+
+			Debug.Assert(!IsNativeElementAttached(owner, content));
 		}
 		else
 		{
 			 throw new InvalidOperationException($"{nameof(DetachNativeElement)} called in an invalid state.");
 		}
 	}
-	public void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect? clipRect)
+	public void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect clipRect)
 	{
 		Debug.Assert(IsNativeElementAttached(owner, content));
-		if (content is X11Window x11Window
-			&& (int)arrangeRect.Width > 0 && (int)arrangeRect.Height > 0)
+		if (content is X11Window x11Window)
 		{
 			using var _1 = X11Helper.XLock(x11Window.Display);
+			if (arrangeRect.Width <= 0 || arrangeRect.Height <= 0)
+			{
+				arrangeRect.Size = new Size(1, 1);
+			}
 			var _2 = XLib.XResizeWindow(x11Window.Display, x11Window.Window, (int)arrangeRect.Width, (int)arrangeRect.Height);
 			var _3 = X11Helper.XMoveWindow(x11Window.Display, x11Window.Window, (int)arrangeRect.X, (int)arrangeRect.Y);
+
+			if (X11Helper.XShapeQueryExtension(x11Window.Display, out _, out _))
+			{
+				var region = X11Helper.CreateRegion((short)clipRect.Left, (short)clipRect.Top, (short)clipRect.Width, (short)clipRect.Height);
+				using var _4 = Disposable.Create(() => X11Helper.XDestroyRegion(region));
+				X11Helper.XShapeCombineRegion(x11Window.Display, x11Window.Window, /* ShapeBounding */ 0, 0, 0, region, /* ShapeSet */ 0);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Unable to clip an embedded X11 window, the X server doesn't support the X Nonrectangular Window Shape Extension Protocol.");
+				}
+			}
+
 			XLib.XSync(x11Window.Display, false);
 		}
-		else
-		{
-			throw new InvalidOperationException($"{nameof(ArrangeNativeElement)} called in an invalid state.");
-		}
 	}
-	public Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize)
-	{
-		return new Size(200, 200);
-	}
+	public Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize) => availableSize;
 
-	/// <summary>
 	/// replace the executable and the args with whatever you have locally. This is only used
 	/// for internal debugging. However, make sure that you can set a unique title to the window,
 	/// so that you can then look it up.
-	/// </summary>
 	public object? CreateSampleComponent(XamlRoot owner, string text) {
 		if (X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
 		{
 			var display = host.X11Window.Display;
 			if (!Exists("mpv"))
+			// if (!Exists("vlc"))
+			// if (!Exists("alacritty"))
+			// if (!Exists("xterm"))
 			{
 				return null;
 			}
 
+			// Note: xterm will more than likely crash. Use alacritty instead if you want to test embedding a terminal.
 			var process = new Process
 			{
 				StartInfo = new ProcessStartInfo
 				{
-					// FileName = "mpv",
-					FileName = "xterm",
+					FileName = "mpv",
+					// FileName = "vlc",
+					// FileName = "alacritty",
+					// FileName = "xterm",
 					UseShellExecute = false
 				}
 			};
 
-			// var title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
-			// process.StartInfo.ArgumentList.Add("--keep-open=always");
-			// process.StartInfo.ArgumentList.Add($"--title={title}");
-			// process.StartInfo.ArgumentList.Add(SampleVideoLink);
+			// mpv
+			var title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			process.StartInfo.ArgumentList.Add("--keep-open=always");
+			process.StartInfo.ArgumentList.Add($"--title={title}");
+			process.StartInfo.ArgumentList.Add(SampleVideoLink);
 
-			var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
-			process.StartInfo.ArgumentList.Add("-xrm");
-			process.StartInfo.ArgumentList.Add("XTerm.vt100.allowTitleOps: false");
-			process.StartInfo.ArgumentList.Add("-T");
-			process.StartInfo.ArgumentList.Add(title);
+			// vlc
+			// var title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			// process.StartInfo.ArgumentList.Add(SampleVideoLink);
+			// process.StartInfo.ArgumentList.Add("--meta-title");
+			// process.StartInfo.ArgumentList.Add(title);
+			// title += " - VLC media player";
+			
+			// alacritty
+			// var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			// process.StartInfo.ArgumentList.Add("--title");
+			// process.StartInfo.ArgumentList.Add(title);
+
+			// xterm
+			// var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			// process.StartInfo.ArgumentList.Add("-xrm");
+			// process.StartInfo.ArgumentList.Add("XTerm.vt100.allowTitleOps: false");
+			// process.StartInfo.ArgumentList.Add("-T");
+			// process.StartInfo.ArgumentList.Add(title);
 
 			process.Start();
 
@@ -214,6 +250,7 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 
 		return false;
 	}
+
 	public void ChangeNativeElementVisibility(XamlRoot owner, object content, bool visible)
 	{
 		if (content is X11Window x11Window)

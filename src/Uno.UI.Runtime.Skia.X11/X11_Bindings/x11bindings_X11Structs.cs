@@ -1933,6 +1933,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public byte FeedbackMask; // one or more of XIMFeedback enum
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public struct XIMText
 	{
 		public ushort Length;
@@ -1941,6 +1942,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public IntPtr String; // it could be either char* or wchar_t*
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public struct XIMPreeditDrawCallbackStruct
 	{
 		public int Caret;
@@ -1972,6 +1974,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		IsSecondary
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public struct XIMPreeditCaretCallbackStruct
 	{
 		public int Position;
@@ -2011,6 +2014,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public const string XNFontSet = "fontSet";
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
 	public unsafe struct XRRMonitorInfo
 	{
 		public IntPtr Name;

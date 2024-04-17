@@ -1137,11 +1137,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				contentSize.Height);
 
 			ArrangeElement(child, arrangeRect);
-
-			if (IsNativeHost)
-			{
-				ArrangeNativeElement(arrangeRect);
-			}
 		}
 
 		return finalSize;
@@ -1243,13 +1238,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </summary>
 	partial void DetachNativeElement();
 
-	/// <summary>
-	/// Arranges the native element in the native shell
-	/// </summary>
-	partial void ArrangeNativeElement(Rect arrangeRect);
-
 #if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();
+#endif
 #endif
 
 	private void SetUpdateTemplate()

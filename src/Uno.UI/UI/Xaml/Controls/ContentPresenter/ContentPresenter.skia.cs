@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Uno.UI;
-using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using Uno.UI.Xaml.Controls;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -22,12 +13,7 @@ partial class ContentPresenter
 		return extension;
 	});
 
-	private Rect? _lastArrangeRect;
-	private Rect? _lastGlobalRect;
-	private double? _lastOpacity;
-	private bool? _lastVisiblity;
-	private Rect? _lastClipRect;
-	private Rect? _clipRect;
+	private IDisposable _nativeElementDisposable;
 
 	partial void TryRegisterNativeElement(object newValue)
 	{
@@ -50,8 +36,7 @@ partial class ContentPresenter
 
 			if (IsLoaded)
 			{
-				//If loaded, attach immediately. If not, wait for OnLoaded to attach, since
-				// XamlRoot might not be set at this moment.
+				//If loaded, attach immediately. If not, don't attach since OnLoaded will attach later.
 				AttachNativeElement();
 			}
 		}
@@ -61,27 +46,59 @@ partial class ContentPresenter
 		}
 	}
 
-	partial void ArrangeNativeElement(Rect arrangeRect)
+	private void ArrangeNativeElement()
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		_lastArrangeRect = arrangeRect;
-		UpdateNativeElementPosition();
+		var arrangeRect = TransformToVisual(null).TransformBounds(LayoutSlotWithMarginsAndAlignments);
+		var ev = GetParentViewport().Effective;
+
+		Rect clippingBounds;
+		if (ev.IsEmpty)
+		{
+			clippingBounds = new Rect(0, 0, 0, 0);
+		}
+		else if (ev.IsInfinite)
+		{
+			clippingBounds = null;
+		}
+		else
+		{
+			var top = Math.Min(Math.Max(0, ev.Y), ActualHeight);
+			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
+			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
+			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
+			clippingBounds = new Rect(left, top, width, height);
+		}
+
+		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
+			XamlRoot,
+			Content,
+			arrangeRect,
+			clippingBounds);
 	}
 
 	partial void AttachNativeElement()
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null);
 		_nativeElementHostingExtension.Value!.AttachNativeElement(XamlRoot, Content);
-		XamlRoot.InvalidateRender += UpdateNativeElementPosition;
 		EffectiveViewportChanged += OnEffectiveViewportChanged;
+		LayoutUpdated += OnLayoutUpdated;
+		var opacityToken = RegisterPropertyChangedCallback(CalculatedOpacityProperty, OnCalculatedOpacityChanged);
+		var visiblityToken = RegisterPropertyChangedCallback(HitTestVisibilityProperty, OnHitTestVisiblityChanged);
+		_nativeElementDisposable = Disposable.Create(() =>
+		{
+			UnregisterPropertyChangedCallback(CalculatedOpacityProperty, opacityToken);
+			UnregisterPropertyChangedCallback(HitTestVisibilityProperty, visiblityToken);
+		});
 	}
 
 	partial void DetachNativeElement()
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
 		EffectiveViewportChanged -= OnEffectiveViewportChanged;
+		LayoutUpdated -= OnLayoutUpdated;
 		_nativeElementHostingExtension.Value!.DetachNativeElement(XamlRoot, Content);
+		_nativeElementDisposable?.Dispose();
 	}
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
@@ -90,54 +107,27 @@ partial class ContentPresenter
 		return _nativeElementHostingExtension.Value!.MeasureNativeElement(XamlRoot, Content, childMeasuredSize, availableSize);
 	}
 
-	private void UpdateNativeElementPosition()
+	private void OnCalculatedOpacityChanged(DependencyObject sender, DependencyProperty dp)
 	{
-		if (_lastArrangeRect is { } lastArrangeRect)
-		{
-			var globalPosition = TransformToVisual(null).TransformPoint(lastArrangeRect.Location);
-			var globalRect = new Rect(globalPosition, lastArrangeRect.Size);
+		_nativeElementHostingExtension.Value!.ChangeNativeElementOpacity(XamlRoot, Content, CalculatedOpacity);
+	}
 
-			if (_lastGlobalRect != globalRect ||
-				_lastOpacity != CalculatedOpacity ||
-				_lastVisiblity != (HitTestVisibility != HitTestability.Collapsed) ||
-				_lastClipRect != _clipRect)
-			{
-				_lastGlobalRect = globalRect;
-				_lastOpacity = CalculatedOpacity;
-				_lastVisiblity = HitTestVisibility != HitTestability.Collapsed;
-				_lastClipRect = _clipRect;
+	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)
+	{
+		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(XamlRoot, Content, HitTestVisibility != HitTestability.Collapsed);
+	}
 
-				_nativeElementHostingExtension.Value!.ArrangeNativeElement(XamlRoot, Content, globalRect, _clipRect);
-				_nativeElementHostingExtension.Value!.ChangeNativeElementOpacity(XamlRoot, Content, CalculatedOpacity);
-				// TODO: revise if HitTestVisibility is good enough or maybe we need to add a new CalculatedVisibility property
-				_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(XamlRoot, Content, HitTestVisibility != HitTestability.Collapsed);
-			}
-		}
+	private void OnLayoutUpdated(object sender, object e)
+	{
+		// Not quite sure why we need to queue the arrange call, but the native element either explodes or doesn't
+		// respect alignments correctly otherwise. This is particularly relevant for the initial load.
+		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
 	}
 
 	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		var ev = args.EffectiveViewport;
-
-		if (ev.IsEmpty)
-		{
-			_clipRect = new Rect(0, 0, 0, 0);
-		}
-		else if (ev.IsInfinite)
-		{
-			_clipRect = null;
-		}
-		else
-		{
-			var top = Math.Min(Math.Max(0, ev.Y), ActualHeight);
-			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
-			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
-			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
-			_clipRect = new Rect(left, top, width, height);
-		}
-
-		UpdateNativeElementPosition();
+		ArrangeNativeElement();
 	}
 
 	internal static object CreateSampleComponent(XamlRoot root, string text)

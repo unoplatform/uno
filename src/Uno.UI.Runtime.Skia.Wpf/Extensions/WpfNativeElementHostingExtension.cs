@@ -73,7 +73,7 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 		}
 	}
 
-	public void ArrangeNativeElement(XamlRoot owner, object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect? clip)
+	public void ArrangeNativeElement(XamlRoot owner, object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -84,14 +84,7 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 				new(arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height)
 			);
 
-			if (clip is { } c)
-			{
-				contentAsUIElement.Clip = new RectangleGeometry(new System.Windows.Rect(0, c.Y, 9999, Math.Round(c.Height)));
-			}
-			else
-			{
-				contentAsUIElement.Clip = null;
-			}
+			contentAsUIElement.Clip = new RectangleGeometry(new System.Windows.Rect(0, clipRect.Y, Math.Round(clipRect.Width), Math.Round(clipRect.Height)));
 		}
 		else
 		{

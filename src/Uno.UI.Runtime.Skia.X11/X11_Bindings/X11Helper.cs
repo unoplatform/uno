@@ -39,6 +39,7 @@ internal static partial class X11Helper
 {
 	private const string libX11 = "libX11.so.6";
 	private const string libX11Randr = "libXrandr.so.2";
+	private const string libXext = "libXext.so.6";
 
 	public static readonly IntPtr CurrentTime = IntPtr.Zero;
 	public static readonly IntPtr None = IntPtr.Zero;
@@ -353,6 +354,45 @@ internal static partial class X11Helper
 
 	[LibraryImport(libX11)]
 	public static partial int XHeightOfScreen(IntPtr screen);
+
+	[LibraryImport(libX11)]
+	public static partial IntPtr XCreateRegion();
+
+	[LibraryImport(libX11)]
+	public static partial int XDestroyRegion(IntPtr region);
+
+	[LibraryImport(libX11)]
+	public unsafe static partial int XUnionRectWithRegion(
+		XRectangle*	rectangle,
+		IntPtr src_region,
+		IntPtr dest_region_return
+	);
+
+	public unsafe static IntPtr CreateRegion(short x, short y, short w, short h) {
+		IntPtr region = XCreateRegion();
+		XRectangle rectangle;
+		rectangle.X = x;
+		rectangle.Y = y;
+		rectangle.W = w;
+		rectangle.H = h;
+		XUnionRectWithRegion(&rectangle, region, region);
+
+		return region;
+	}
+
+	[LibraryImport(libX11Randr)]
+	public static partial bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
+
+	[LibraryImport(libXext)]
+	public static partial void XShapeCombineRegion (
+		IntPtr display,
+		IntPtr window,
+		int	dest_kind,
+		int	x_off,
+		int	y_off,
+		IntPtr region,
+		int op
+	);
 
 	[LibraryImport(libX11Randr)]
 	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);

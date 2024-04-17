@@ -13,7 +13,7 @@ partial class ContentPresenter
 
 		void DetachNativeElement(XamlRoot owner, object content);
 
-		void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect? clipRect);
+		void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect clipRect);
 
 		Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize);
 
