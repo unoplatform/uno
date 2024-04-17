@@ -3,24 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Windows.ApplicationModel.Resources
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IResourceManager
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Microsoft.Windows.ApplicationModel.Resources.ResourceMap MainResourceMap
 		{
 			get;
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.MainResourceMap.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Microsoft.Windows.ApplicationModel.Resources.ResourceContext CreateResourceContext();
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound.add
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Windows.ApplicationModel.Resources.ResourceManager, global::Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs> ResourceNotFound;
 #endif
 	}
