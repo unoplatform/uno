@@ -65,7 +65,7 @@ As part of the continuing evolution of desktop development on Windows, Microsoft
 > [!NOTE]
 > The Uno Platform has great support for WinUI 2.x and preview support for WinUI 3:
 >
-> * For WinUI 2.5, see [Fluent-styled controls](https://platform.uno/docs/articles/features/fluent-styles.html)
+> * For WinUI 2.5, see [Fluent-styled controls](/articles/features/fluent-styles.md)
 > * For WinUI 3, see [Uno Platform 3.3 – Day 0 support for WinUI 3 Preview 3, Android 11](https://platform.uno/blog/uno-platform-3-3-day-0-support-for-winui-3-preview-3-android-11/).
 >
 > [!TIP]

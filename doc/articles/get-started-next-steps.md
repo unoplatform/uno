@@ -65,7 +65,7 @@ Microsoft MVP Skye Hoefling put together [Uno Platform: Getting Started Series](
 
 ### Raspberry Pi Applications with Uno Platform (Free)
 
-If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started]( https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation]( https://platform.uno/docs/articles/guides/raspberry-pi/raspberry-pi-intro.html).
+If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started]( https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation](/articles/guides/raspberry-pi/raspberry-pi-intro.md).
 
 ### XAML Fundamentals for Web and Mobile (Free)
 

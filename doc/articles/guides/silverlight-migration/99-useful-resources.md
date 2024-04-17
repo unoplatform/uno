@@ -5,7 +5,7 @@ uid: Uno.SilverlightMigration.UsefulResources
 # Useful resources
 
 * Uno Platform:
-  * [Using Uno - getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs.html)
+  * [Using Uno - getting started on Visual Studio](/articles/get-started-vs-2022.md)
 * Uno Platform Samples:
   * [unoplatform/Uno.Samples GitHub Repo](https://github.com/unoplatform/Uno.Samples)
   * [Uno.UI.Toolkit.SL GitHub Repo](https://github.com/unoplatform/Uno.UI.Toolkit.SL)
