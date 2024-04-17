@@ -88,7 +88,7 @@ It is possible to configure the version of those packages in two ways. The first
 
 Here are the supported properties:
 
-# [**Uno Platform Packages**](#tab/uno-packages)
+## [**Uno Platform Packages**](#tab/uno-packages)
 
 - `UnoCoreLoggingSingletonVersion`
 - `UnoCSharpMarkupVersion`
@@ -101,7 +101,7 @@ Here are the supported properties:
 - `UnoUniversalImageLoaderVersion`
 - `UnoWasmBootstrapVersion`
 
-# [**Third Party Packages**](#tab/3rd-party-packages)
+## [**Third Party Packages**](#tab/3rd-party-packages)
 
 - `AndroidMaterialVersion`
 - `AndroidXActivityVersion`
