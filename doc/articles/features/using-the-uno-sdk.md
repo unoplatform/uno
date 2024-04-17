@@ -42,7 +42,7 @@ Here are the supported features:
 - `Foldable`, to enable Android foldable support
 - `MediaElement`, to enable MediaElement support
 - `CSharpMarkup`, to enable C# Markup
-- `Extensions`, to enable all Uno.Extensions
+- `Extensions`, to enable the most common Uno.Extensions for Hosting, Configuration, and Logging.
 - `Authentication`, to enable Uno.Extensions.Authentication for Custom Authentication
 - `AuthenticationMsal`, to enable Uno.Extensions support for MSAL
 - `AuthenticationOidc`, to enable Uno.Extensions support for OIDC
