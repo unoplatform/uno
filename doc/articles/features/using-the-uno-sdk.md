@@ -49,7 +49,7 @@ Here are the supported features:
 | feature | description |
 |---------|-------------|
 | `Foldable` | Adds a reference to Uno.WinUI.Foldable |
-| `MediaElement` | Adds a native references where needed to use MediaElement |
+| `MediaElement` | Adds native references where needed to use MediaElement |
 | `CSharpMarkup` | Adds support for C# Markup|
 | `Extensions` | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging |
 | `Authentication` | Adds the Uno.Extensions package for Custom Authentication |
@@ -74,7 +74,7 @@ Here are the supported features:
 | `Dsp` | Adds support for the Uno.Dsp package |
 | `Prism` | Adds Prism support for Uno.WinUI |
 | `Skia` | Adds support for SkiaSharp |
-| `Svg` | Svg support for iOS, Android, and mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK. |
+| `Svg` | Svg support for iOS, Android, and Mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK. |
 | `Lottie` | Adds support for Lottie animations |
 
 > [!IMPORTANT]
