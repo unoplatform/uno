@@ -93,18 +93,17 @@ public partial class EntryPoint : IDisposable
 				// If the current profile already matches the targetframework we're going to
 				// prefer using it. It can happen if the change is initiated through the profile
 				// selector.
-				var currentCompatible = profiles
-					.Where(profileFilter)
-					.FirstOrDefault(p => p.Name == _debuggerObserver.CurrentActiveDebugProfile);
+				var selectedProfile = profiles
+					.FirstOrDefault(p => profileFilter(p) && p.Name == _debuggerObserver.CurrentActiveDebugProfile);
 
 				// Otherwise, select the first compatible profile.
-				var firstCompatible = profiles.Find(p => profileFilter(p));
+				selectedProfile ??= profiles.Find(p => profileFilter(p));
 
-				if ((currentCompatible ?? firstCompatible) is { } profile)
+				if (selectedProfile is not null)
 				{
-					_debugAction?.Invoke($"Setting profile {profile}");
+					_debugAction?.Invoke($"Setting profile {selectedProfile}");
 
-					await _debuggerObserver.SetActiveLaunchProfileAsync(profile.Name);
+					await _debuggerObserver.SetActiveLaunchProfileAsync(selectedProfile.Name);
 				}
 			}
 
