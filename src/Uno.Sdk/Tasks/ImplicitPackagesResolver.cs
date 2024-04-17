@@ -41,7 +41,7 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 
 			if (HasFeature(UnoFeature.Material) || HasFeature(UnoFeature.Skia) || HasFeature(UnoFeature.Lottie) || HasFeature(UnoFeature.Svg) || HasFeature(UnoFeature.Cupertino))
 			{
-				AddPackageForFeature(UnoFeature.Skia, "SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
+				AddPackage("SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
 			}
 
 			AddPackageForFeatureWhen(IsExecutable, UnoFeature.Svg, "Uno.WinUI.Svg", null);
