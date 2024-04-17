@@ -59,7 +59,9 @@ namespace Windows.Graphics.Display
 #endif
 		}
 
+#pragma warning disable RS0030 // Do not use banned APIs
 		internal static DisplayInformation GetForCurrentViewSafe() => GetForCurrentView();
+#pragma warning restore RS0030 // Do not use banned APIs
 
 		internal static DisplayInformation GetForWindowId(WindowId windowId)
 		{
