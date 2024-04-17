@@ -5,14 +5,10 @@ uid: Uno.Development.UpgradeUnoNuget
 
 Upgrading packages in your applications is done differently, depending on how your solution has created.
 
-- If your Uno Platform `.csproj` files start with `<Project Sdk="Uno.Sdk"`, your are using the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) structure introduced in Uno Platform 5.1.
+- If your Uno Platform `.csproj` files start with `<Project Sdk="Uno.Sdk"`, you are using the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) structure introduced in Uno Platform 5.1.
 - If not, you are using the original project structure provided before Uno Platform 5.1.
 
 Choose one of the sections below depending on your situation.
-
-## Projects without the Uno.Sdk
-
-To upgrade nuget packages without the Uno.Sdk, you can use the [Nuget Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio) coming from Visual Studio. Choose the latest stable versions of Uno Platform's NuGet packages.
 
 ## Projects using the Uno.Sdk
 
@@ -55,3 +51,7 @@ To find the version to update to, pick the latest stable build from the [Uno.Win
 - [Uno.WinUI in nuget.org](https://www.nuget.org/packages/Uno.WinUI)
 
 Once the version has been chosen, change the `global.json` line with `"Uno.Sdk"` to use the newer version of Uno Platform. If you're running Visual Studio 2022, make sure to close/reopen the solution or restart the IDE.
+
+## Projects without the Uno.Sdk
+
+To upgrade nuget packages without the Uno.Sdk, you can use the [Nuget Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio) coming from Visual Studio. Choose the latest stable versions of Uno Platform's NuGet packages.

@@ -13,6 +13,10 @@ This document explains the many features of this SDK, and how to configure its b
 > [!TIP]
 > The Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
 
+## Managing the Uno.Sdk version
+
+Updating the Uno.Sdk is [done through the global.json file](xref:Uno.Development.UpgradeUnoNuget).
+
 ## Uno Platform Features
 
 As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to specify which Uno Platform features should be enabled.
@@ -35,36 +39,46 @@ In the csproj of an app, you will find the following property:
 </UnoFeatures>
 ```
 
+> [!IMPORTANT]
+> Once you have changed the features list, Visual Studio requires restoring packages explicitly, or building the app once for the change to take effect.
+
 This allows for the SDK to selectively include references to relevant sets of Nuget packages to enable features for your app.
 
 Here are the supported features:
 
-- `Foldable`, to enable Android foldable support
-- `MediaElement`, to enable MediaElement support
-- `CSharpMarkup`, to enable C# Markup
-- `Extensions`, to enable the most common Uno.Extensions for Hosting, Configuration, and Logging.
-- `Authentication`, to enable Uno.Extensions.Authentication for Custom Authentication
-- `AuthenticationMsal`, to enable Uno.Extensions support for MSAL
-- `AuthenticationOidc`, to enable Uno.Extensions support for OIDC
-- `Configuration`, to enable Uno.Extensions.Configuration
-- `Hosting`, to enable Uno.Extensions.Hosting
-- `Http`, to enable Uno.Extensions.Http
-- `Localization`, to enable Uno.Extensions.Localization
-- `Logging`, to enable Uno.Extensions.Logging
-- `MauiEmbedding`, to enable Uno.Extensions.MauiEmbedding
-- `MVUX`, to enable Uno.Extensions.Reactive
-- `Navigation`, to enable Uno.Extensions.Navigation
-- `LoggingSerilog`, to enable Uno.Extensions.Logging.Serilog
-- `Storage`, to enable Uno.Extensions.Storage
-- `Serialization`, to enable Uno.Extensions.Serialization
-- `Toolkit`, to enable Uno.Toolkit.UI
-- `Material`, to enable Uno.Material
-- `Cupertino`, to enable Uno.Cupertino
-- `Mvvm`, to enable CommunityToolkit.Mvvm
-- `Prism`, to enable Prism Library
-- `Skia`, to enable SkiaSharp
-- `Svg`, to enable Svg support for iOS, Android, and mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK.
-- `Lottie`, to enable lottie files playback
+| feature | description |
+|---------|-------------|
+| `Foldable` | Adds a reference to Uno.WinUI.Foldable |
+| `MediaElement` | Adds a native references where needed to use MediaElement |
+| `CSharpMarkup` | Adds support for C# Markup|
+| `Extensions` | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging |
+| `Authentication` | Adds the Uno.Extensions package for Custom Authentication |
+| `AuthenticationMsal` | dds the Uno.Extensions packages for Authentication using Microsoft.Identity.Client |
+| `AuthenticationOidc` | Adds the Uno.Extensions packages for Authentication using a custom Oidc client |
+| `Configuration` | Adds the Uno.Extensions packages for Configuration |
+| `Hosting` | Adds support for Dependency Injection using Uno.Extensions.Hosting packages |
+| `Http` | Adds support for custom Http Clients including the use of Refit with Uno.Extensions |
+| `Localization` | Adds support for Localization using Uno.Extensions |
+| `Logging` | Adds support for Logging using Uno.Extensions |
+| `MauiEmbedding` | Adds support for embedding Maui controls in Uno |
+| `MVUX` | Adds support for MVUX |
+| `ThemeService` | Adds the Uno.Extensions.Core.WinUI package |
+| `Navigation` | Adds support for Navigation using Uno.Extensions |
+| `LoggingSerilog` | Adds support for Serilog using Uno.Extensions |
+| `Storage` | Adds support for Storage using Uno.Extensions |
+| `Serialization` | Adds support for Uno.Extensions.Serialization |
+| `Toolkit` | Adds support for the Uno.Toolkit |
+| `Material` | Adds support for the Material Design Toolkit |
+| `Cupertino` | Adds support for the Cupertino Design Toolkit |
+| `Mvvm` | Adds support for the CommunityToolkit.Mvvm package |
+| `Dsp` | Adds support for the Uno.Dsp package |
+| `Prism` | Adds Prism support for Uno.WinUI |
+| `Skia` | Adds support for SkiaSharp |
+| `Svg` | Svg support for iOS, Android, and mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK. |
+| `Lottie` | Adds support for Lottie animations |
+
+> [!IMPORTANT]
+> Feature names are case sensitive
 
 ## Implicit Packages
 
@@ -74,33 +88,40 @@ It is possible to configure the version of those packages in two ways. The first
 
 Here are the supported properties:
 
-- `UnoExtensionsVersion`
-- `UnoToolkitVersion`
-- `UnoThemesVersion`
-- `UnoCSharpMarkupVersion`
-- `SkiaSharpVersion`
-- `UnoLoggingVersion`
-- `WindowsCompatibilityVersion`
-- `UnoWasmBootstrapVersion`
-- `UnoUniversalImageLoaderVersion`
-- `AndroidMaterialVersion`
-- `AndroidXLegacySupportV4Version`
-- `AndroidXAppCompatVersion`
-- `AndroidXRecyclerViewVersion`
-- `AndroidXActivityVersion`
-- `AndroidXBrowserVersion`
-- `AndroidXSwipeRefreshLayoutVersion`
-- `UnoResizetizerVersion`
-- `MicrosoftLoggingVersion`
-- `WinAppSdkVersion`
-- `WinAppSdkBuildToolsVersion`
+# [**Uno Platform Packages**](#tab/uno-packages)
+
 - `UnoCoreLoggingSingletonVersion`
+- `UnoCSharpMarkupVersion`
 - `UnoDspTasksVersion`
-- `CommunityToolkitMvvmVersion`
-- `PrismVersion`
-- `AndroidXNavigationVersion`
+- `UnoExtensionsVersion`
+- `UnoLoggingVersion`
+- `UnoResizetizerVersion`
+- `UnoThemesVersion`
+- `UnoToolkitVersion`
+- `UnoUniversalImageLoaderVersion`
+- `UnoWasmBootstrapVersion`
+
+# [**Third Party Packages**](#tab/3rd-party-packages)
+
+- `AndroidMaterialVersion`
+- `AndroidXActivityVersion`
+- `AndroidXAppCompatVersion`
+- `AndroidXBrowserVersion`
 - `AndroidXCollectionVersion`
+- `AndroidXLegacySupportV4Version`
+- `AndroidXNavigationVersion`
+- `AndroidXRecyclerViewVersion`
+- `AndroidXSwipeRefreshLayoutVersion`
+- `CommunityToolkitMvvmVersion`
 - `MicrosoftIdentityClientVersion`
+- `MicrosoftLoggingVersion`
+- `PrismVersion`
+- `SkiaSharpVersion`
+- `WinAppSdkBuildToolsVersion`
+- `WinAppSdkVersion`
+- `WindowsCompatibilityVersion`
+
+***
 
 Those properties can be set from `Directory.Build.props`.
 
