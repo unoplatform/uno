@@ -16,6 +16,10 @@
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<_RequiresILLinkPack>true</_RequiresILLinkPack>
+	</PropertyGroup>
+
 	<!-- Enable the netx.0-browserwasm target -->
 	<ItemGroup>
 		<SupportedPlatform Remove="@(SupportedPlatform)" />
