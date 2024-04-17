@@ -49,6 +49,8 @@ internal static partial class X11Helper
 	public const string _NET_ACTIVE_WINDOW = "_NET_ACTIVE_WINDOW";
 	public const string _NET_WM_STATE = "_NET_WM_STATE";
 	public const string _NET_WM_STATE_FULLSCREEN = "_NET_WM_STATE_FULLSCREEN";
+	public const string _NET_WM_WINDOW_OPACITY = "_NET_WM_WINDOW_OPACITY";
+	public const string _NET_CLIENT_LIST = "_NET_CLIENT_LIST";
 	public const string _NET_WM_STATE_ABOVE = "_NET_WM_STATE_ABOVE";
 	public const string _NET_WM_STATE_HIDDEN = "_NET_WM_STATE_HIDDEN";
 	public const string _NET_WM_STATE_MAXIMIZED_HORZ = "_NET_WM_STATE_MAXIMIZED_HORZ";
@@ -71,6 +73,8 @@ internal static partial class X11Helper
 	public const string XA_CARDINAL = "CARDINAL";
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
+
+	public const int Success = 0;
 
 	public const int POLLIN = 0x001; /* There is data to read.  */
 	public const int POLLPRI = 0x002; /* There is urgent data to read.  */
@@ -312,6 +316,22 @@ internal static partial class X11Helper
 	[LibraryImport(libX11)]
 	public static partial IntPtr XCreateImage(IntPtr display, IntPtr visual, uint depth, int format, int offset,
 		IntPtr data, uint width, uint height, int bitmap_pad, int bytes_per_line);
+
+	[LibraryImport(libX11)]
+	public static partial int XFetchName(IntPtr display, IntPtr window, out string name_return);
+
+	[LibraryImport(libX11)]
+	public unsafe static partial int XChangeWindowAttributes(
+		IntPtr display, IntPtr window, IntPtr valuemask, XSetWindowAttributes* attributes);
+
+	[LibraryImport(libX11)]
+	public static partial int XReparentWindow(IntPtr display, IntPtr window, IntPtr parent, int x, int y);
+
+	[LibraryImport(libX11)]
+	public static partial int XMoveWindow(IntPtr display, IntPtr window, int x, int y);
+
+	[LibraryImport(libX11)]
+	public static partial int XUnmapWindow(IntPtr display, IntPtr window);
 
 	[LibraryImport(libX11)]
 	public static partial int XPending(IntPtr display);

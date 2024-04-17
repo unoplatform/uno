@@ -16,6 +16,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -61,6 +62,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
+
+		ApiExtensibility.Register(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension());
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)
