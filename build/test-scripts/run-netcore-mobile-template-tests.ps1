@@ -262,23 +262,12 @@ for($i = 0; $i -lt $projects.Length; $i++)
         & $msbuild $debug /r "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+        & $msbuild $debug /t:Clean "$projectPath"
+
         Write-Host "MSBuild Building Release $projectPath with $projectOptions"
         & $msbuild $release /r "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
-=======
-            & $msbuild $debug /t:Clean
-=======
-            & $msbuild $debug /t:Clean "$projectPath"
->>>>>>> 2272b97e98 (chore: Adjust project paths)
 
-            Write-Host "MSBuild Building Release $projectPath with $projectOptions"
-            & $msbuild $release /r "$projectPath" $projectOptions
-            Assert-ExitCodeIsZero
-
-            & $msbuild $release /t:Clean "$projectPath"
-        }
->>>>>>> 47795004fb (ci: Clean artifacts after individual regression tests)
+        & $msbuild $release /t:Clean "$projectPath"
     }
 }
