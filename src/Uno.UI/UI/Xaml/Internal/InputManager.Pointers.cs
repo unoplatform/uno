@@ -133,6 +133,11 @@ partial class InputManager
 
 					// Raise the event to the target
 					reRouted.To.OnPointerDown(args);
+#if __IOS__
+					// Also as the FlyoutPopupPanel is being removed from the UI tree, we won't get any ProcessPointerUp, so we are forcefully causing it here.
+					args.Reset(canBubbleNatively: false);
+					reRouted.To.OnPointerUp(args);
+#endif
 
 					args.Handled = true; // Make sure the event is flagged as handled so it won't be bubbled by native code to us again from the FlyoutPopupPanel.
 					return; // The event already came back to us (due to reRouted.To.OnPointerDown(args)).
