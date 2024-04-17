@@ -5,7 +5,7 @@ namespace Microsoft.UI.Composition;
 
 partial class InsetClip
 {
-	internal override Rect? GetBounds(Visual visual)
+	private protected override Rect? GetBoundsCore(Visual visual)
 	{
 		return new Rect(
 			x: LeftInset,
@@ -16,11 +16,7 @@ partial class InsetClip
 
 	internal override void Apply(SKCanvas canvas, Visual visual)
 	{
-		var rect = new SKRect(
-			LeftInset,
-			TopInset,
-			visual.Size.X - RightInset,
-			visual.Size.Y - BottomInset);
+		var rect = GetBounds(visual).Value.ToSKRect();
 		canvas.ClipRect(rect, SKClipOperation.Intersect, true);
 	}
 }

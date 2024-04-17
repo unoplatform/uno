@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition;
 
 partial class CompositionGeometricClip
 {
-	internal override Rect? GetBounds(Visual visual)
+	private protected override Rect? GetBoundsCore(Visual visual)
 	{
 		switch (Geometry)
 		{
@@ -31,7 +31,15 @@ partial class CompositionGeometricClip
 		switch (Geometry)
 		{
 			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
-				canvas.ClipPath(geometrySource.Geometry, antialias: true);
+				var path = geometrySource.Geometry;
+				if (!TransformMatrix.IsIdentity)
+				{
+					var transformedPath = new SKPath();
+					path.Transform(TransformMatrix.ToSKMatrix(), transformedPath);
+					path = transformedPath;
+				}
+
+				canvas.ClipPath(path, antialias: true);
 				break;
 
 			case CompositionPathGeometry cpg:

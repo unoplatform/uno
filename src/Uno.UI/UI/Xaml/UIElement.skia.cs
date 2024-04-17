@@ -354,12 +354,19 @@ namespace Microsoft.UI.Xaml
 					roundedRectClip = LayoutRound(roundedRectClip);
 				}
 
-				Visual.Clip = Visual.Compositor.CreateRectangleClip(
+				var compositionClip = Visual.Compositor.CreateRectangleClip(
 					top: (float)roundedRectClip.Top,
 					left: (float)roundedRectClip.Left,
 					bottom: (float)roundedRectClip.Bottom,
 					right: (float)roundedRectClip.Right
 				);
+
+				if (Clip.Transform is { } clipTransform)
+				{
+					compositionClip.TransformMatrix = clipTransform.MatrixCore;
+				}
+
+				Visual.Clip = compositionClip;
 			}
 		}
 

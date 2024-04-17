@@ -859,10 +859,6 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				var rect = clip.Rect;
-				if (clip.Transform is { } clipTransform)
-				{
-					rect = clipTransform.TransformBounds(rect);
-				}
 
 				ApplyNativeClip(rect);
 				OnViewportUpdated();
