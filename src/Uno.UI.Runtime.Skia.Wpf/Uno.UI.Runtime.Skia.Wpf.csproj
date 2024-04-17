@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
-		<TargetFrameworks Condition="'$(UnoDisableNetCurrent)'!='true'">$(TargetFrameworks);$(NetCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetPreviousWpf)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoDisableNetCurrent)'!='true'">$(TargetFrameworks);$(NetCurrentWpf)</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-windows.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -19,18 +19,11 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<UseWPF>true</UseWPF>
 
 		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>	
-
-	<ItemGroup>
-		<!--
-		This allows for building the library with a dependency to WPF while not
-		building with net8-windows.
-		-->
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF"/>
-	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
