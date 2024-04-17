@@ -54,13 +54,13 @@ public enum UnoFeature
 	MauiEmbedding,
 
 	[UnoArea(UnoArea.Extensions)]
-	Mvux,
+	MVUX,
 
 	[UnoArea(UnoArea.Extensions)]
 	Navigation,
 
 	[UnoArea(UnoArea.Extensions)]
-	Serilog,
+	LoggingSerilog,
 
 	[UnoArea(UnoArea.Extensions)]
 	Storage,

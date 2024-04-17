@@ -69,7 +69,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Navigation.Toolkit.WinUI" ProjectSystem="true" Condition="$(UnoFeatures.Contains('Toolkit'))"/>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Mvux;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';MVUX;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.Messaging" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains('CSharpMarkup'))" />
@@ -80,7 +80,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Serialization.Refit" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Serilog;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';LoggingSerilog;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Logging.Serilog" ProjectSystem="true" />
 	</ItemGroup>
 
