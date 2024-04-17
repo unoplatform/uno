@@ -15,8 +15,6 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 	private static string SampleVideoLink = "https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4";
 #pragma warning restore CS0414 // Field is assigned but its value is never used
 
-	private Rect? _lastArrangeRect;
-
 	public bool IsNativeElement(object content)
 	{
 		if (content is not X11Window x11Window)
@@ -63,35 +61,37 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 	}
 	public void AttachNativeElement(XamlRoot owner, object content)
 	{
-		if (!IsNativeElementAttached(owner, content)
-			&& content is X11Window x11Window
-			&& owner is XamlRoot xamlRoot
-			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+		Debug.Assert(!IsNativeElementAttached(owner, content));
+		if (content is X11Window x11Window
+			&& X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
 		{
+			using var _1 = X11Helper.XLock(x11Window.Display);
 
-				using var _1 = X11Helper.XLock(x11Window.Display);
+			// this seems to be necessary or else the WM will keep detaching the subwindow
+			XWindowAttributes attributes = default;
+			var _2 = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
+			attributes.override_direct = /* True */ 1;
 
-				// this seems to be necessary or else the WM will keep detaching the subwindow
-				XWindowAttributes attributes = default;
-				var _2 = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
-				attributes.override_direct = /* True */ 1;
+			unsafe
+			{
+				IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
+				Marshal.StructureToPtr(attributes, attr, false);
+				X11Helper.XChangeWindowAttributes(x11Window.Display, x11Window.Window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
+				Marshal.FreeHGlobal(attr);
+			}
 
-				unsafe
-				{
-					IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
-					Marshal.StructureToPtr(attributes, attr, false);
-					X11Helper.XChangeWindowAttributes(x11Window.Display, x11Window.Window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
-					Marshal.FreeHGlobal(attr);
-				}
-
-				var _3 = X11Helper.XReparentWindow(x11Window.Display, x11Window.Window, host.X11Window.Window, 0, 0);
-				XLib.XSync(x11Window.Display, false);
+			var _3 = X11Helper.XReparentWindow(x11Window.Display, x11Window.Window, host.X11Window.Window, 0, 0);
+			XLib.XSync(x11Window.Display, false);
+		}
+		else
+		{
+			throw new InvalidOperationException($"{nameof(AttachNativeElement)} called in an invalid state.");
 		}
 	}
 	public void DetachNativeElement(XamlRoot owner, object content)
 	{
-		 if (IsNativeElementAttached(owner, content)
-			&& content is X11Window x11Window)
+		Debug.Assert(IsNativeElementAttached(owner, content));
+		if (content is X11Window x11Window)
 		{
 			using var _1 = X11Helper.XLock(x11Window.Display);
 			var _2 = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
@@ -99,20 +99,25 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 			var _3 = X11Helper.XReparentWindow(x11Window.Display, x11Window.Window, root, 0, 0);
 			XLib.XSync(x11Window.Display, false);
 		}
+		else
+		{
+			 throw new InvalidOperationException($"{nameof(DetachNativeElement)} called in an invalid state.");
+		}
 	}
 	public void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect? clipRect)
 	{
-		if (IsNativeElementAttached(owner, content)
-			&& content is X11Window x11Window
-			&& owner is XamlRoot xamlRoot
-			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host
+		Debug.Assert(IsNativeElementAttached(owner, content));
+		if (content is X11Window x11Window
 			&& (int)arrangeRect.Width > 0 && (int)arrangeRect.Height > 0)
 		{
-			_lastArrangeRect = arrangeRect;
 			using var _1 = X11Helper.XLock(x11Window.Display);
 			var _2 = XLib.XResizeWindow(x11Window.Display, x11Window.Window, (int)arrangeRect.Width, (int)arrangeRect.Height);
 			var _3 = X11Helper.XMoveWindow(x11Window.Display, x11Window.Window, (int)arrangeRect.X, (int)arrangeRect.Y);
 			XLib.XSync(x11Window.Display, false);
+		}
+		else
+		{
+			throw new InvalidOperationException($"{nameof(ArrangeNativeElement)} called in an invalid state.");
 		}
 	}
 	public Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize)
@@ -126,8 +131,7 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 	/// so that you can then look it up.
 	/// </summary>
 	public object? CreateSampleComponent(XamlRoot owner, string text) {
-		if (owner is XamlRoot xamlRoot
-			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+		if (X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
 		{
 			var display = host.X11Window.Display;
 			if (!Exists("mpv"))
@@ -163,6 +167,7 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 			var _2 = XLib.XQueryTree(display, host.X11Window.Window, out IntPtr root, out _, out var children, out _);
 			XLib.XFree(children);
 
+			// Wait for the window to open.
 			IntPtr window = IntPtr.Zero;
 			SpinWait.SpinUntil(() =>
 			{
@@ -175,7 +180,7 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 				XWindowAttributes attributes = default;
 				var _ = XLib.XGetWindowAttributes(display, window, ref attributes);
 				return attributes.map_state == MapState.IsViewable;
-			}, 2000);
+			});
 
 			if (window == IntPtr.Zero)
 			{
@@ -199,8 +204,7 @@ public class X11NativeElementHostingExtension : ContentPresenter.INativeElementH
 	public bool IsNativeElementAttached(XamlRoot owner, object nativeElement)
 	{
 		if (nativeElement is X11Window x11Window
-			&& owner is XamlRoot xamlRoot
-			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+			&& X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
 		{
 			using var _1 = X11Helper.XLock(x11Window.Display);
 			var _2 = XLib.XQueryTree(x11Window.Display, x11Window.Window, out _, out IntPtr parent, out var children, out _);
