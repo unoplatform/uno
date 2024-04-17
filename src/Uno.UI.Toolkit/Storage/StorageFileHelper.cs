@@ -52,6 +52,11 @@ public partial class StorageFileHelper
 		return Task.FromResult(false);
 	}
 
+	/// <summary>
+	/// Retrieves the paths of assets within the current application based on the specified filter predicate.
+	/// </summary>
+	/// <param name="predicate">A predicate function determining whether a file should be included in the result.</param>
+	/// <returns>Returns an array of strings containing the paths of the filtered assets.</returns>
 	private static Task<string[]> GetFilesInDirectory(Func<string, bool> predicate)
 	{
 		List<string> assetsFiles = new();
@@ -64,7 +69,7 @@ public partial class StorageFileHelper
 			{
 				assetsFiles = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
 										.Where(e => predicate(e))
-										.Select(e => e.Replace(path, string.Empty).Replace('\\', '/'))
+										.Select(e => e.Replace(path, string.Empty).Replace('\\', '/').TrimStart('/'))
 										.ToList();
 			}
 		}

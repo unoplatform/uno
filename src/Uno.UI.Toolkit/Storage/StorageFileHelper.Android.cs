@@ -94,9 +94,7 @@ partial class StorageFileHelper
 	/// Retrieves the paths of assets within the current Android application package based on the specified filter predicate.
 	/// </summary>
 	/// <param name="predicate">A predicate function determining whether a file should be included in the result.</param>
-	/// <returns>
-	/// Returns an array of strings containing the paths of the filtered assets.
-	/// </returns>
+	/// <returns>Returns an array of strings containing the paths of the filtered assets.</returns>
 	private static Task<string[]> GetFilesInDirectory(Func<string, bool> predicate)
 	{
 		var context = global::Android.App.Application.Context;
