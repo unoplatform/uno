@@ -3,3 +3,4 @@ M:Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(System.String,System.Typ
 P:Microsoft.UI.Xaml.Window.Current;Window.Current is null in WinUI - try using XamlRoot instead, CurrentSafe if necessary.
 P:Microsoft.UI.Xaml.Window.CoreWindow;Window.CoreWindow is null in WinUI - try using XamlRoot instead, CoreWindowSafe if necessary.
 P:Microsoft.UI.Xaml.Window.Dispatcher;Window.Dispatcher is null in WinUI - try using DispatcherQueue instead.
+M:Microsoft.UI.Xaml.XamlRoot.GetDisplayInformation;Use RasterizationScale and Size whenever possible.
