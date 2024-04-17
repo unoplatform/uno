@@ -341,6 +341,10 @@
 					"description": "Adds support for Storage using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-storage"
 				},
+				"Serialization": {
+					"description": "Adds support for Serialization using Uno.Extensions.",
+					"helpUrl": "https://aka.platform.uno/feature-serialization"
+				},
 				"Toolkit": {
 					"description": "Adds support for the Uno.Toolkit.",
 					"helpUrl": "https://aka.platform.uno/feature-toolkit"
