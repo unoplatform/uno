@@ -448,7 +448,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// On skia: The absolute position relative to the window origin.
 		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
 		/// </param>
-		internal static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
+		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
 			Point position,
 			UIElement element,
 			GetHitTestability getVisibility,
