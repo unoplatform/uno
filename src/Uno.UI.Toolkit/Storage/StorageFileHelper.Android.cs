@@ -88,5 +88,26 @@ partial class StorageFileHelper
 			return false;
 		}
 	}
+
+	/// <summary>
+	/// This method will return all the assets within current package
+	/// </summary>
+	/// <param name="extensionsFilter">Extensions list for filter files</param>
+	private static Task<string[]> GetFilesInPackage(string[]? extensionsFilter)
+	{
+		var context = global::Android.App.Application.Context;
+
+		if (ScannedFiles is null)
+		{
+			ScannedFiles = new List<string>();
+			_ = ScanPackageAssetsAsync(ScannedFiles);
+		}
+
+		var results = ScannedFiles?.ToList()
+			.Where(e => extensionsFilter == null || extensionsFilter.Any(filter => e.EndsWith(filter, StringComparison.OrdinalIgnoreCase)))
+			.ToArray() ?? Array.Empty<string>();
+
+		return Task.FromResult(results);
+	}
 }
 

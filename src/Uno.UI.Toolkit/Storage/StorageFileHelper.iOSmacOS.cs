@@ -22,4 +22,15 @@ partial class StorageFileHelper
 
 		return Task.FromResult(resourcePathname != null);
 	}
+
+	private static Task<string[]> GetFilesInPackage(string[]? extensionsFilter)
+	{
+		string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*", SearchOption.AllDirectories);
+
+		var results = files?.ToList()
+			.Where(e => extensionsFilter == null || extensionsFilter.Any(filter => e.EndsWith(filter, StringComparison.OrdinalIgnoreCase)))
+			.ToArray() ?? Array.Empty<string>();
+
+		return Task.FromResult(results);
+	}
 }

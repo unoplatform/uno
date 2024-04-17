@@ -6,6 +6,7 @@ using Uno;
 using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Uno.UI.Toolkit;
 
@@ -18,8 +19,17 @@ public partial class StorageFileHelper
 	/// <returns>A task that will complete with a result of true if file exists, otherwise with a result of false.</returns>
 	public static async Task<bool> ExistsInPackage(string fileName) => await FileExistsInPackage(fileName);
 
+	/// <summary>
+	/// Get all files in the package
+	/// </summary>
+	/// <returns>List of string with the Paths - Filtered by extensionsFilter list</returns>
+	public static async Task<string[]> GetAllFilesPathInPackage(string[] extensionsFilter) => await GetFilesInPackage(extensionsFilter);
+
 #if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 	private static Task<bool> FileExistsInPackage(string fileName)
+		=> throw new NotImplementedException();
+
+	private static Task<string[]> GetAllFilesPathInPackage(string[] extensionsFilter)
 		=> throw new NotImplementedException();
 #endif
 
@@ -38,6 +48,24 @@ public partial class StorageFileHelper
 		}
 
 		return Task.FromResult(false);
+	}
+
+	private static Task<string[]> GetFilesInPackage(string[]? extensionsFilter)
+	{
+		List<string> assetsFiles = new();
+		string path = string.Empty;
+		var executingPath = Assembly.GetExecutingAssembly().Location;
+		if (!string.IsNullOrEmpty(executingPath))
+		{
+			path = Path.GetDirectoryName(executingPath) + string.Empty;
+			if (!string.IsNullOrEmpty(path))
+			{
+				assetsFiles = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+										.Where(e => extensionsFilter == null || extensionsFilter.Any(filter => e.EndsWith(filter, StringComparison.OrdinalIgnoreCase)))
+										.ToList();
+			}
+		}
+		return Task.FromResult(assetsFiles.ToArray());
 	}
 #endif
 }
