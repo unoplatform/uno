@@ -52,9 +52,9 @@ Here are the supported features:
 - `Localization`, to enable Uno.Extensions.Localization
 - `Logging`, to enable Uno.Extensions.Logging
 - `MauiEmbedding`, to enable Uno.Extensions.MauiEmbedding
-- `Mvux`, to enable Uno.Extensions.Reactive
+- `MVUX`, to enable Uno.Extensions.Reactive
 - `Navigation`, to enable Uno.Extensions.Navigation
-- `Serilog`, to enable Uno.Extensions.Logging.Serilog
+- `LoggingSerilog`, to enable Uno.Extensions.Logging.Serilog
 - `Storage`, to enable Uno.Extensions.Storage
 - `Serialization`, to enable Uno.Extensions.Serialization
 - `Toolkit`, to enable Uno.Toolkit.UI

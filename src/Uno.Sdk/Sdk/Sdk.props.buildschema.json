@@ -325,7 +325,7 @@
 					"description": "Adds support for embedding Maui controls in Uno.",
 					"helpUrl": "https://aka.platform.uno/feature-maui-embedding"
 				},
-				"Mvux": {
+				"MVUX": {
 					"description": "Adds support for MVUX.",
 					"helpUrl": "https://aka.platform.uno/feature-mvux"
 				},
@@ -333,7 +333,7 @@
 					"description": "Adds support for Navigation using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-navigation"
 				},
-				"Serilog": {
+				"LoggingSerilog": {
 					"description": "Adds support for Serilog using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-serilog"
 				},
