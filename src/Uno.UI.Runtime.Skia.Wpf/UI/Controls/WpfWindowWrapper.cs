@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media;
 using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -44,7 +45,11 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override object NativeWindow => _wpfWindow;
 
-	protected override void ShowCore() => _wpfWindow.Show();
+	protected override void ShowCore()
+	{
+		RasterizationScale = (float)VisualTreeHelper.GetDpi(_wpfWindow.Host).DpiScaleX;
+		_wpfWindow.Show();
+	}
 
 	public override void Activate() => _wpfWindow.Activate();
 
