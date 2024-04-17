@@ -1230,13 +1230,8 @@ namespace SampleControl.Presentation
 						BitmapAlphaMode.Ignore,
 						(uint)targetBitmap.PixelWidth,
 						(uint)targetBitmap.PixelHeight,
-#if HAS_UNO
-						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiX,
-						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiY,
-#else
-						GetDpi(),
-						GetDpi(),
-#endif
+						content.XamlRoot.RasterizationScale,
+						content.XamlRoot.RasterizationScale,
 						pixels.ToArray()
 					);
 

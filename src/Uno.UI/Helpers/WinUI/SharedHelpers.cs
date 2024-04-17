@@ -445,8 +445,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			try
 			{
-				var displayInformation = XamlRoot.GetDisplayInformation(xamlRootReference.XamlRoot);
-				var scaleFactor = (float)displayInformation.RawPixelsPerViewPixel;
+				var scaleFactor = (float)xamlRootReference.XamlRoot.RasterizationScale;
 
 				return new Rect()
 				{
@@ -469,8 +468,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			try
 			{
-				var displayInformation = XamlRoot.GetDisplayInformation(xamlRootReference.XamlRoot);
-				var scaleFactor = (float)displayInformation.RawPixelsPerViewPixel;
+				var scaleFactor = xamlRootReference.XamlRoot.RasterizationScale;
 
 				return new Rect
 				{

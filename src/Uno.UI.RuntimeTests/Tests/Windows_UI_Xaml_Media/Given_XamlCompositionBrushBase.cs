@@ -24,8 +24,7 @@ public class Given_XamlCompositionBrushBase
 	[RunsOnUIThread]
 	public async Task When_CompositionBrush_Changes()
 	{
-		var displayInformation = XamlRoot.GetDisplayInformation(TestServices.WindowHelper.XamlRoot);
-		var dpi = displayInformation.RawPixelsPerViewPixel;
+		var dpi = TestServices.WindowHelper.XamlRoot.RasterizationScale;
 
 		var compositor = Window.Current.Compositor;
 		var expected = new Grid
