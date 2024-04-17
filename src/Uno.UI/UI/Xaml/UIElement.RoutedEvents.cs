@@ -680,7 +680,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// Make sure that the visual tree root element still get notified that the event as reach the top of the tree
+				// Make sure that the visual tree root element still gets notified that the event has reached the top of the tree
 				// This is important to ensure to clear any relevant global state, e.g. for pointers to clear capture on pointer up (cf. InputManager).
 				parent = this.XamlRoot?.VisualTree.RootElement;
 			}

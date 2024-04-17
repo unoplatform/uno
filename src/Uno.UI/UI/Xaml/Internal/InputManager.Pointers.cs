@@ -180,8 +180,8 @@ partial class InputManager
 			}
 #endif
 
-			// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
-			// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
+			// Uno specific: To ensure focus is properly lost when clicking "outside" the app's content,
+			// we set focus here. In the case of UWP, the focus is set to the root ScrollViewer instead,
 			// but Uno does not have it on all targets yet.
 			var focusedElement = _inputManager.ContentRoot.XamlRoot is { } xamlRoot
 				? FocusManager.GetFocusedElement(xamlRoot)

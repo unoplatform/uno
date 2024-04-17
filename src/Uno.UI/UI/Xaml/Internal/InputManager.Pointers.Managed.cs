@@ -158,7 +158,7 @@ internal partial class InputManager
 
 					// Note: Here we are not validating the current result.VisualTreeAltered nor we perform a new hit test as we should if `true`
 					// This is valid only because the single element that is able to re-route the event is the PopupRoot, which is already at the top of the visual tree.
-					// When the PopupRoot perform teh HitTest, the visual tree is already updated.
+					// When the PopupRoot performs the HitTest, the visual tree is already updated.
 					result += _manager.Raise(
 						Event,
 						new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
