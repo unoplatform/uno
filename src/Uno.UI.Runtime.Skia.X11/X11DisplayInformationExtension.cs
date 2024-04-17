@@ -318,9 +318,10 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var resources = X11Helper.XRRGetScreenResourcesCurrent(display, window);
 			using var _2 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
 
-			var _3 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
+			var _3 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out var children, out _);
+			var _4 = XLib.XFree(children);
 			XWindowAttributes windowAttrs = default;
-			var _4 = XLib.XGetWindowAttributes(display, window, ref windowAttrs);
+			var _5 = XLib.XGetWindowAttributes(display, window, ref windowAttrs);
 			XLib.XTranslateCoordinates(display, window, root, windowAttrs.x, windowAttrs.y, out var rootx, out var rooty, out _);
 
 			X11Helper.XRRCrtcInfo* crtcInfo = default;
@@ -350,7 +351,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				}
 			}
 
-			using var _5 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
+			using var _6 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
 
 			if (crtcInfo == default || crtcInfo->noutput == 0)
 			{
@@ -362,11 +363,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// the first one we find for the numbers
 
 			var outputInfo = X11Helper.XRRGetOutputInfo(display, new IntPtr(resources), *(IntPtr*)crtcInfo->outputs.ToPointer());
-			using var _6 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
+			using var _7 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
 
 			X11Helper.XRRCrtcTransformAttributes* transformInfo = default;
-			var _7 = X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
-			using var _8 = Disposable.Create(() =>
+			var _8 = X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
+			using var _9 = Disposable.Create(() =>
 			{
 				var _ = XLib.XFree(new IntPtr(transformInfo));
 			});
