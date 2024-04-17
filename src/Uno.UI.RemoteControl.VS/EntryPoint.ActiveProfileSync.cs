@@ -71,36 +71,39 @@ public partial class EntryPoint : IDisposable
 
 			var profiles = await _debuggerObserver.GetLaunchProfilesAsync();
 
-			if (targetFrameworkIdentifier == WasmTargetFrameworkIdentifier)
+			var profileFilter = targetFrameworkIdentifier switch
 			{
-				if (profiles.Find(p => p.LaunchBrowser) is { } browserProfile)
-				{
-					_debugAction?.Invoke($"Setting profile {browserProfile.Name}");
+				WasmTargetFrameworkIdentifier
+					=> ((ILaunchProfile p) => p.LaunchBrowser),
 
-					await _debuggerObserver.SetActiveLaunchProfileAsync(browserProfile.Name);
-				}
-			}
-			else if (targetFrameworkIdentifier == DesktopTargetFrameworkIdentifier)
+				DesktopTargetFrameworkIdentifier
+					=> (ILaunchProfile profile)
+						=> profile.OtherSettings.TryGetValue(CompatibleTargetFrameworkProfileKey, out var compatibleTargetFramework)
+							&& compatibleTargetFramework is string ctfs
+							&& ctfs.Equals(DesktopTargetFrameworkIdentifier, StringComparison.OrdinalIgnoreCase),
+
+				Windows10TargetFrameworkIdentifier
+					=> (ILaunchProfile p) => p.CommandName.Equals("MsixPackage", StringComparison.OrdinalIgnoreCase),
+
+				_ => (Func<ILaunchProfile, bool>?)null
+			};
+
+			if (profileFilter is not null)
 			{
-				bool IsCompatible(ILaunchProfile profile)
-					=> profile.OtherSettings.TryGetValue(CompatibleTargetFrameworkProfileKey, out var compatibleTargetFramework)
-						&& compatibleTargetFramework is string ctfs
-						&& ctfs.Equals(DesktopTargetFrameworkIdentifier, StringComparison.OrdinalIgnoreCase);
+				// If the current profile already matches the targetframework we're going to
+				// prefer using it. It can happen if the change is initiated through the profile
+				// selector.
+				var selectedProfile = profiles
+					.FirstOrDefault(p => profileFilter(p) && p.Name == _debuggerObserver.CurrentActiveDebugProfile);
 
-				if (profiles.Find(IsCompatible) is { } desktopProfile)
+				// Otherwise, select the first compatible profile.
+				selectedProfile ??= profiles.Find(p => profileFilter(p));
+
+				if (selectedProfile is not null)
 				{
-					_debugAction?.Invoke($"Setting profile {desktopProfile.Name}");
+					_debugAction?.Invoke($"Setting profile {selectedProfile}");
 
-					await _debuggerObserver.SetActiveLaunchProfileAsync(desktopProfile.Name);
-				}
-			}
-			else if (targetFrameworkIdentifier == Windows10TargetFrameworkIdentifier)
-			{
-				if (profiles.Find(p => p.CommandName.Equals("MsixPackage", StringComparison.OrdinalIgnoreCase)) is { } msixProfile)
-				{
-					_debugAction?.Invoke($"Setting profile {msixProfile.Name}");
-
-					await _debuggerObserver.SetActiveLaunchProfileAsync(msixProfile.Name);
+					await _debuggerObserver.SetActiveLaunchProfileAsync(selectedProfile.Name);
 				}
 			}
 
