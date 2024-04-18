@@ -113,6 +113,8 @@
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
+		
+		<None Include="@(_IgnorePlatformFiles)" Sdk="Uno" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
