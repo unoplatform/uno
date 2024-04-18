@@ -8,6 +8,9 @@ on:
     branches:
       - master
 
+concurrency: 
+  group: ${{github.workflow}} - ${{github.ref}}
+  cancel-in-progress: true
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   UnoCheck_Version: '1.18.1'
@@ -23,7 +26,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       with:
         fetch-depth: 0
 
@@ -32,54 +35,58 @@ jobs:
         (Get-Content global.json).replace("latestFeature", "disable") | Set-Content global.json
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3
       with:
         global-json-file: global.json
 
     - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.15
+      uses: gittools/actions/gitversion/setup@31b3198b2de324472547fecec2c0f721b70c38e2 # v0.9.15
       with:
         versionSpec: '5.10.3'
 
     - name: GitVersion
       id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.15
+      uses: gittools/actions/gitversion/execute@31b3198b2de324472547fecec2c0f721b70c38e2 # v0.9.15
       with:
         useConfigFile: true
         configFilePath: gitversion.yml
 
-    - name: setup git config
-      run: |
-        git config user.name "GitHub Actions Bot"
-        git config user.email "<>"
+    - name: setup git username
+      run: git config user.name "GitHub Actions Bot"
+
+    - name: Setup git email
+      run: git config user.email "<>"
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@34cfbaee7f672c76950673338facd8a73f637506 # v1.1
 
-    - run: |
-       echo "JAVA_HOME=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
-       echo "JavaSdkDirectory=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
-      name: Select JDK 11
+    - run: echo "JAVA_HOME=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
+      name: Select JDK 11 (Java home)
+
+    - run: echo "JavaSdkDirectory=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
+      name: Select JDK 11 (Java sdk directory)
 
     - run: |
         & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
-        & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
       name: Install .NET Workloads
-
+    - run: | 
+        & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
+      name: Run uno-check
     - name: Convert source tree to UWP
+      working-directory: \src\Uno.WinUIRevert
       run: |
-        cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
         dotnet run "$env:GITHUB_WORKSPACE"
 
     - name: Run API Sync Tool
+      working-directory: \build
       run: |
-        cd $env:GITHUB_WORKSPACE\build
         msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+    - name: Turn script debugging on
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      run: Set-PSDebug -Trace 1
 
     - name: Commit to repository
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-      run: |
-        Set-PSDebug -Trace 1
-        git add .
-        git commit -m "Update UWP Autoconvert from $env:GITHUB_SHA"
-        git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/uwp-autoconvert -f
+      run: git commit -a -m "Update UWP Autoconvert from $env:GITHUB_SHA"
+    - name: Push to repository
+      run: git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/uwp-autoconvert -f
