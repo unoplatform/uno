@@ -60,6 +60,8 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	public string? SkiaSharpVersion { get; set; }
 
+	public string? SvgSkiaVersion { get; set; }
+
 	public string? UnoLoggingVersion { get; set; }
 
 	public string? WindowsCompatibilityVersion { get; set; }
@@ -242,6 +244,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 			.UpdateManifest(PackageManifest.Group.Dsp, UnoDspTasksVersion)
 			.UpdateManifest(PackageManifest.Group.Resizetizer, UnoResizetizerVersion)
 			.UpdateManifest(PackageManifest.Group.SkiaSharp, SkiaSharpVersion)
+			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)

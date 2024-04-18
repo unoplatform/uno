@@ -12,8 +12,12 @@
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
+	<ItemGroup>
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Svg;')) AND $(IsUnoHead) == 'true'" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND '$(IsPackable)' != 'true'">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Lottie;')) OR $(UnoFeatures.Contains(';Material;')) OR $(UnoFeatures.Contains(';Cupertino;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Svg;')) AND $(IsUnoHead) == 'true'" />
+		<_UnoProjectSystemPackageReference Include="Svg.Skia" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Svg;')) AND $(IsUnoHead) == 'true'" />
 	</ItemGroup>
 </Project>

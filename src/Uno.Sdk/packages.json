@@ -82,6 +82,13 @@
 		]
 	},
 	{
+		"group": "SvgSkia",
+		"version": "1.0.0.18",
+		"packages": [
+			"Svg.Skia"
+		]
+	},
+	{
 		"group": "WinAppSdk",
 		"version": "1.5.240404000",
 		"packages": [
