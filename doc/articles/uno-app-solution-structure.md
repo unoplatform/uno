@@ -20,8 +20,8 @@ You'll find below details about the contents of the solution.
 
 The Platforms folder contains platform specific files for targets supported by Uno Platform:
 
-- `Desktop` is using the [Uno Platform Skia Desktop](xref:Uno.Features.Uno.Sdk) support for Windows 7+, Linux and macOS
-- `Android` contains files and assets specific to the Android Phones, Tablets, TVs and watches
+- `Desktop` uses the [Uno Platform Skia Desktop](xref:Uno.Features.Uno.Sdk) support for Windows 7+, Linux, and macOS
+- `Android` contains files and assets specific to Android Phones, Tablets, TVs, and watches
 - `iOS` targets Apple's iOS devices, Phones and Tablets
 - `MacCatalyst` targets the macOS Catalyst platform
 - `WebAssembly` targets the browser using WebAssembly
@@ -29,7 +29,7 @@ The Platforms folder contains platform specific files for targets supported by U
 
 ### Properties
 
-This folder contains the debug profile configuration. This is used to choose where to debug your Skia Desktop app (Local Windows or WSL), the Web Server for your WebAssembly app or Package and Unpackaged modes for Windows App SDK.
+This folder contains the debug profile configuration. This is used to choose where to debug your Skia Desktop app (Local Windows or WSL), the Web Server for your WebAssembly app, or Package and Unpackaged modes for Windows App SDK.
 
 ### Assets
 
@@ -38,17 +38,17 @@ This folder contains [all the assets](xref:Uno.Features.Assets) (images, splash 
 ## Other project files
 
 - `App.xaml` and `App.xaml.cs` are the common entry point for the app. The generic app setup runtime code generally goes here.
-- `MainPage.xaml` and `MainPage.xaml.cs` contains the main UI of the app.
+- `MainPage.xaml` and `MainPage.xaml.cs` contain the main UI of the app.
 - `GlobalUsings.cs` contains the [global usings](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-directive#global-modifier) define for the project.
 - `app.manifest` contains [Windows specific configuration](https://learn.microsoft.com/en-us/windows/win32/sbscs/application-manifests) for `net8.0-desktop` and `net8.0-windows` targets.
 - `Package.appxmanifest` contains metadata about the application such as the app name and description.
 
 ### Solution items
 
-This solution folder contains configuration for the whole solution:
+This solution folder contains the configuration for the whole solution:
 
 - `global.json` contains the [.NET SDK configuration](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json) as well as the Uno.Sdk version to use. See [our documentation](xref:Uno.Features.Uno.Sdk) on how to update it.
-- `Directory.Build.props` and `Directory.Build.targets` contain common solution configuration applied to all projects.
+- `Directory.Build.props` and `Directory.Build.targets` contain common solution configurations applied to all projects.
 - `Directory.Packages.props` contains the [NuGet Central Package Management](https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management) package versions.
 
 ## Further information
