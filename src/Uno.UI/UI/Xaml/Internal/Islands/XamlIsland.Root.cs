@@ -110,7 +110,7 @@ internal partial class XamlIsland
 
 	// TODO Uno: Implement focus on island.
 	public bool TrySetFocus() => true;
-	
+
 	internal ContentIsland? ContentIsland => ContentRoot?.CompositionContent;
 
 	internal void OnStateChanged()

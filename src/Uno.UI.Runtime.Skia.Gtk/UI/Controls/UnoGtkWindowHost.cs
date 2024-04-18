@@ -13,22 +13,24 @@ using Windows.Graphics.Display;
 using Windows.Foundation;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
+using GtkWindow = Gtk.Window;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class UnoGtkWindowHost : IGtkXamlRootHost
 {
-	private readonly Window _gtkWindow;
+	private readonly GtkWindow _gtkWindow;
 	private readonly WinUIWindow _winUIWindow;
 	private readonly UnoEventBox _eventBox = new();
 	private readonly Fixed _nativeOverlayLayer = new();
 	private readonly CompositeDisposable _disposables = new();
 
-	private DisplayInformation? _displayInformation;
 	private Widget? _area;
+	private XamlRoot? _xamlRoot;
 	private IGtkRenderer? _renderer;
 
-	public UnoGtkWindowHost(Window gtkWindow, WinUIWindow winUIWindow)
+	public UnoGtkWindowHost(GtkWindow gtkWindow, WinUIWindow winUIWindow)
 	{
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;
@@ -36,7 +38,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		RegisterForBackgroundColor();
 	}
 
-	public Window GtkWindow => _gtkWindow;
+	public GtkWindow GtkWindow => _gtkWindow;
 
 	public UnoEventBox EventBox => _eventBox;
 
@@ -59,9 +61,8 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		_area = (Widget)_renderer;
 
-		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
-		_displayInformation = WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
-		_displayInformation.DpiChanged += OnDpiChanged;
+		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
+		_xamlRoot!.Changed += OnXamlRootChanged;
 
 		// Subscribing to _area or _gtkWindow should yield similar results, except on WSL,
 		// where _gtkWindow.AllocatedHeight is a lot bigger than it actually is for some reason.
@@ -86,12 +87,12 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	internal event EventHandler<Size>? SizeChanged;
 
-	private void OnDpiChanged(DisplayInformation sender, object args) =>
+	private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) =>
 		UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
 
 	private void UpdateWindowSize(int nativeWidth, int nativeHeight)
 	{
-		var sizeAdjustment = _displayInformation!.FractionalScaleAdjustment;
+		var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 		SizeChanged?.Invoke(this, new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
 	}
 

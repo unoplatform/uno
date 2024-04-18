@@ -48,7 +48,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	private void RaiseNativeSizeChanged(Size newWindowSize)
 	{
 		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
-			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+			? root.RasterizationScale
 			: 1;
 		newWindowSize = new Size(newWindowSize.Width / scale, newWindowSize.Height / scale);
 		Bounds = new Rect(default, newWindowSize);

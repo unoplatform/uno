@@ -128,13 +128,8 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 								BitmapAlphaMode.Premultiplied,
 								(uint)renderer.PixelWidth,
 								(uint)renderer.PixelHeight,
-#if HAS_UNO
-								XamlRoot.GetDisplayInformation(XamlRoot).RawDpiX,
-								XamlRoot.GetDisplayInformation(XamlRoot).RawDpiY,
-#else
-								DisplayInformation.GetForCurrentView().RawDpiX,
-								DisplayInformation.GetForCurrentView().RawDpiY,
-#endif
+								XamlRoot.RasterizationScale,
+								XamlRoot.RasterizationScale,
 								bgraPixels.ToArray()
 								);
 							await encoder.FlushAsync();

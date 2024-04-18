@@ -85,7 +85,7 @@ internal partial class ContentRoot
 				FocusAdapter = new FocusManagerCoreWindowAdapter(this);
 				FocusManager.SetFocusObserver(new CoreWindowFocusObserver(this));
 				break;
-			case ContentRootType.XamlIsland:
+			case ContentRootType.XamlIslandRoot:
 				FocusAdapter = new FocusManagerXamlIslandAdapter(this);
 				FocusManager.SetFocusObserver(new FocusObserver(this));
 				break;

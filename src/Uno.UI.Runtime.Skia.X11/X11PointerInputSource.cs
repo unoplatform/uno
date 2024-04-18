@@ -182,7 +182,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		};
 
 		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
-			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+			? root.RasterizationScale
 			: 1;
 
 		// Time is given in milliseconds since system boot

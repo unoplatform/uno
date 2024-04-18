@@ -73,8 +73,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 				this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
 			}
 
-			var displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
-			var scaleAdjustment = displayInformation.FractionalScaleAdjustment;
+			var scaleAdjustment = xamlRoot.FractionalScaleAdjustment;
 			widget.SizeAllocate(
 				new(
 					(int)(arrangeRect.X * scaleAdjustment),
@@ -104,8 +103,7 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 				this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
 			}
 
-			var displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
-			var scaleAdjustment = displayInformation.FractionalScaleAdjustment;
+			var scaleAdjustment = xamlRoot.FractionalScaleAdjustment;
 			return new(naturalSize.Width / scaleAdjustment, naturalSize.Height / scaleAdjustment);
 		}
 		else
