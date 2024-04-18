@@ -121,34 +121,34 @@ namespace Microsoft.UI.Xaml
 			return handled;
 		}
 
-		public override bool DispatchGenericMotionEvent(MotionEvent? e)
+		public override bool DispatchGenericMotionEvent(MotionEvent? ev)
 		{
-			if (e is null)
+			if (ev is null)
 			{
 				// Can this happen? Is Xamarin nullability annotation wrong?
-				return base.OnTouchEvent(e);
+				return base.DispatchGenericMotionEvent(ev);
 			}
 
 			var correction = new int[2];
 			_skCanvasView?.GetLocationInWindow(correction);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(e, correction);
+			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction);
 
-			return base.DispatchGenericMotionEvent(e);
+			return base.DispatchGenericMotionEvent(ev);
 		}
 
-		public override bool OnTouchEvent(MotionEvent? e)
+		public override bool DispatchTouchEvent(MotionEvent? ev)
 		{
-			if (e is null)
+			if (ev is null)
 			{
 				// Can this happen? Is Xamarin nullability annotation wrong?
-				return base.OnTouchEvent(e);
+				return base.DispatchTouchEvent(ev);
 			}
 
 			var correction = new int[2];
 			_skCanvasView?.GetLocationInWindow(correction);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(e, correction);
+			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction);
 
-			return base.OnTouchEvent(e);
+			return base.DispatchTouchEvent(ev);
 		}
 
 		public void DismissKeyboard()

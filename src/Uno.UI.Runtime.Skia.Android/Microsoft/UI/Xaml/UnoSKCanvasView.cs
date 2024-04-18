@@ -15,7 +15,7 @@ internal sealed class UnoSKCanvasView : SKCanvasView
 	public UnoSKCanvasView(Context context, UIElement rootElement) : base(context)
 	{
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this, rootElement);
-		ViewCompat.SetAccessibilityDelegate(this, new UnoExploreByTouchHelper(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!));
+		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
 	}
 
 	protected override bool DispatchHoverEvent(MotionEvent? e)

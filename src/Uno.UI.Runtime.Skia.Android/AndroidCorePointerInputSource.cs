@@ -84,12 +84,18 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 
 			switch (nativePointerAction)
 			{
-				case MotionEventActions.HoverEnter:
+				case MotionEventActions.HoverEnter when pointerType != Windows.Devices.Input.PointerDeviceType.Touch:
 					PointerEntered?.Invoke(this, args);
 					break;
 
-				case MotionEventActions.HoverExit:
+				case MotionEventActions.HoverExit when pointerType != Windows.Devices.Input.PointerDeviceType.Touch:
 					PointerExited?.Invoke(this, args);
+					break;
+
+				case MotionEventActions.HoverEnter:
+				case MotionEventActions.HoverExit:
+					// We get HoverEnter and HoverExit for touch only when TalkBack is enabled.
+					// We ignore these events.
 					break;
 
 				case MotionEventActions.Move:
