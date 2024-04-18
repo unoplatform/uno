@@ -172,8 +172,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var applicationDefinitionItems = GetWinUIItems("ApplicationDefinition").Concat(GetWinUIItems("UnoApplicationDefinition"));
 
 			var xamlItems = pageItems
+				.Except(applicationDefinitionItems, MSBuildItem.IdentityComparer)
 				.Concat(applicationDefinitionItems)
-				.Distinct()
+				.Distinct(MSBuildItem.IdentityComparer)
 				.ToArray();
 
 			_xamlSourceFiles = xamlItems;
