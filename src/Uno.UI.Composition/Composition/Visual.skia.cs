@@ -118,7 +118,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null)
+	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null, bool isFlyoutSurface = false)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{

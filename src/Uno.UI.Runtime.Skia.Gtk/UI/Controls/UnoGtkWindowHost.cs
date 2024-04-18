@@ -8,9 +8,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
-using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
 using Windows.Foundation;
+using SkiaSharp;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 using GtkWindow = Gtk.Window;
@@ -26,9 +26,9 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	private readonly Fixed _nativeOverlayLayer = new();
 	private readonly CompositeDisposable _disposables = new();
 
-	private Widget? _area;
 	private XamlRoot? _xamlRoot;
-	private IGtkRenderer? _renderer;
+	private IGtkRenderer? _bottomRenderer;
+	private IGtkRenderer? _topRenderer;
 
 	public UnoGtkWindowHost(GtkWindow gtkWindow, WinUIWindow winUIWindow)
 	{
@@ -50,16 +50,15 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	public Fixed? NativeOverlayLayer => _nativeOverlayLayer;
 
-	public IGtkRenderer? Renderer => _renderer;
-
 	public async Task InitializeAsync()
 	{
-		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
+		_bottomRenderer = await GtkRendererProvider.CreateForHostAsync(this, isFlyoutSurface: false);
+		_topRenderer = await GtkRendererProvider.CreateForHostAsync(this, isFlyoutSurface: true);
 		UpdateRendererBackground();
+		_topRenderer.BackgroundColor = SKColors.Transparent;
 
-		var overlay = new Overlay();
-
-		_area = (Widget)_renderer;
+		var area = (Widget)_bottomRenderer;
+		var area2 = (Widget)_topRenderer;
 
 		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
 		_xamlRoot!.Changed += OnXamlRootChanged;
@@ -69,18 +68,32 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		// Either way, make sure to match the subscription with the size, i.e. either use
 		// _area.Realized/SizeAllocated and _area.AllocatedXX or _gtkWindow.Realized/SizeAllocation
 		// and _gtkWindow.AllocatedXX
-		_area.Realized += (s, e) =>
+		area.Realized += (s, e) =>
 		{
-			UpdateWindowSize(_area.AllocatedWidth, _area.AllocatedHeight);
+			UpdateWindowSize(area.AllocatedWidth, area.AllocatedHeight);
+		};
+		area2.Realized += (s, e) =>
+		{
+			area2.Window.PassThrough = true;
 		};
 
-		_area.SizeAllocated += (s, e) =>
+		// PassThrough makes it so that any pointer event will fall through.
+		// We can't selectively pass certain events through, so we keep it off.
+		// area2.Realized += (s, e) =>
+		// {
+		// 	area2.Window.PassThrough = true;
+		// };
+
+		area.SizeAllocated += (s, e) =>
 		{
 			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
 		};
 
-		overlay.Add(_area);
+		var overlay = new Overlay();
+		overlay.Add(area);
 		overlay.AddOverlay(_nativeOverlayLayer);
+		overlay.AddOverlay(area2);
+		overlay.SetOverlayPassThrough(area2, true);
 		_eventBox.Add(overlay);
 		_gtkWindow.Add(_eventBox);
 	}
@@ -107,9 +120,9 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	{
 		if (_winUIWindow.Background is WinUI.Media.SolidColorBrush brush)
 		{
-			if (_renderer is not null)
+			if (_bottomRenderer is not null)
 			{
-				_renderer.BackgroundColor = brush.Color;
+				_bottomRenderer.BackgroundColor = brush.Color;
 			}
 		}
 		else
@@ -125,6 +138,9 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	{
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 
-		_renderer?.InvalidateRender();
+		_bottomRenderer?.InvalidateRender();
+		_topRenderer?.InvalidateRender();
 	}
+
+	public void TakeScreenshot(string filePath) => _bottomRenderer?.TakeScreenshot(filePath);
 }

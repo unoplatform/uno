@@ -39,6 +39,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		private GRContext? _grContext;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
+		private bool _isFlyoutSurface;
 
 		/// <summary>
 		/// This field determines if OpenGL ES shouls be used or not.
@@ -51,7 +52,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		public SKColor BackgroundColor { get; set; }
 
-		public GLRenderSurfaceBase(IGtkXamlRootHost host)
+		public GLRenderSurfaceBase(IGtkXamlRootHost host, bool isFlyoutSurface)
 		{
 			_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 			_xamlRoot.Changed += OnXamlRootChanged;
@@ -70,6 +71,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			// and arranged properly.
 			AutoRender = false;
 			_host = host;
+			_isFlyoutSurface = isFlyoutSurface;
 		}
 
 		public Widget Widget => this;
@@ -142,7 +144,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual);
+					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual, _isFlyoutSurface);
 				}
 			}
 

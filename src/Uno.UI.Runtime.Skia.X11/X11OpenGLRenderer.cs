@@ -97,7 +97,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, false);
 				}
 			}
 
