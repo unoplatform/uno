@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_sequenceReRouteTarget is { } target && target != this)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug)) 
+				if (this.Log().IsEnabled(LogLevel.Debug))
 					this.Log().Debug($"Re-routing pointer sequence (implicit capture) from {this.GetDebugName()} to {target.GetDebugName()}");
 
 				target.TouchesBegan(touches, evt, canBubbleNatively: false, forcedOriginalSource: target);

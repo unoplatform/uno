@@ -5,6 +5,7 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Islands;
 
@@ -15,9 +16,8 @@ internal partial class XamlIsland : Panel
 	public XamlIsland()
 	{
 		_contentManager = new(this, false);
-
-		//Uno specific - flag as VisualTreeRoot for interop with existing logic
-		IsVisualTreeRoot = true;
+		// TODO: Uno specific - additional root logic required by Uno.
+		_rootElementLogic = new(this);
 
 		InitializeRoot(WinUICoreServices.Instance);
 	}

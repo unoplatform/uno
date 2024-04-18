@@ -33,13 +33,12 @@ namespace Uno.UI.Xaml.Core;
 internal partial class RootVisual : Panel, IRootElement
 {
 	private readonly CoreServices _coreServices;
+	private readonly UnoRootElementLogic _rootElementLogic;
 
 	public RootVisual(CoreServices coreServices)
 	{
 		_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
-
-		//Uno specific - flag as VisualTreeRoot for interop with existing logic
-		IsVisualTreeRoot = true;
+		_rootElementLogic = new(this);
 	}
 
 	/// <summary>
