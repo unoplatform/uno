@@ -1,7 +1,7 @@
 ---
 uid: Uno.Authoring.Tests
 ---
-# How-To: Creating an application with tests using Uno.Extensions
+# How-To: Creating an application with tests
  
 This tutorial will walk through how to create an Uno application with tests.
 
