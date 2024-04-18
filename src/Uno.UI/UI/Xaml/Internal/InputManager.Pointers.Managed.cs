@@ -311,6 +311,14 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
+			// Second (try to) raise the PointerEnter on the OriginalSource
+			// Note: This won't do anything if already over.
+			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
+			{
+				// The visual tree has been modified in a way that requires performing a new hit test.
+				originalSource = HitTest(args, caller: "OnPointerPressed_post_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			}
+
 			_pressedElements[routedArgs.Pointer] = originalSource;
 			Raise(Pressed, originalSource, routedArgs);
 		}
@@ -361,6 +369,12 @@ internal partial class InputManager
 				// the element that just lost the capture
 				SetSourceCursor(originalSource);
 			}
+
+			if ((PointerDeviceType)args.CurrentPoint.Pointer.Type == PointerDeviceType.Touch)
+			{
+				Raise(Leave, originalSource, routedArgs);
+			}
+
 			ClearPressedState(routedArgs);
 		}
 
