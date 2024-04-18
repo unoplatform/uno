@@ -13,9 +13,9 @@ $external_docs = @{
     "uno.check"          = "4a7dd7290daf0aabfbb8efabcd2b067898b7f45e" #latest main commit
     "uno.xamlmerge.task" = "21f02c98702b875a9942047ca042e41810b6fe56" #latest main commit
     "figma-docs"         = "08aea8467414390673e8f4a917e29bf07ef96680" #latest main commit
-    "uno.resizetizer"    = "55c9bac2b19c0bf39f8794684396db3cc9a4e9d0" #latest main commit
+    "uno.resizetizer"    = "eba992033f16bbcd07922c2350c0cf1f9df17c57" #latest main commit
     "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
-    "uno.extensions"     = "71b3bcc76bc599996dfa3329d4bb311a1aeba330" #latest release branch commit
+    "uno.extensions"     = "cb5399ca5a622835f0b636dd135c2f62f4965240" #latest release branch commit
     "workshops"          = "bb4a34a533b1cd7617cc7d1a3911dbd4fb23c70a" #latest master commit
     "uno.samples"        = "4599f4e09d12cfef46f5f70e65347e93600af499" #latest master commit
 }
