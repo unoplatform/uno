@@ -125,6 +125,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				description = uiElement.GetType().Name;
 			}
 
+			// TODO: Scrolling?
+
 			if (peer is not null)
 			{
 				if (peer is IInvokeProvider or IToggleProvider)
