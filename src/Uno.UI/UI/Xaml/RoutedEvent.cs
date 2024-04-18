@@ -22,7 +22,6 @@ namespace Microsoft.UI.Xaml
 			IsGestureEvent = flag.IsGestureEvent();
 			IsDragAndDropEvent = flag.IsDragAndDropEvent();
 
-			IsAlwaysBubbled = IsPointerEvent || IsGestureEvent || IsManipulationEvent || IsDragAndDropEvent;
 			IsTunnelingEvent = flag.IsTunnelingEvent();
 		}
 
@@ -46,8 +45,6 @@ namespace Microsoft.UI.Xaml
 		/// Basically all routed events that are implementing the 'PrepareManaged***EventBubbling' to maintain local
 		/// state should opt-in for that.
 		/// </remarks>
-		[Pure]
-		internal bool IsAlwaysBubbled { get; }
 		[Pure]
 		internal bool IsTunnelingEvent { get; }
 		[Pure]
