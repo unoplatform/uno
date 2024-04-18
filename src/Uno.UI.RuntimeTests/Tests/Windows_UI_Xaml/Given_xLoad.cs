@@ -9,6 +9,8 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.RuntimeTests.Helpers;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -152,6 +154,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			SUT.Model.MyValue = 42;
 
 			Assert.AreEqual(42, SUT.tb01.Tag);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/16250")]
+		public async Task When_xLoad_Referenced_By_xBind()
+		{
+			var SUT = new When_xLoad_Referenced_By_xBind();
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNull(SUT.LoadElement);
+			Assert.IsTrue(SUT.button1.IsEnabled);
+			Assert.IsFalse(SUT.ToggleLoad.IsChecked);
+
+			SUT.ToggleLoad.IsChecked = true;
+
+			Assert.IsNotNull(SUT.LoadElement);
+			Assert.IsFalse(SUT.button1.IsEnabled);
+			Assert.IsTrue(SUT.ToggleLoad.IsChecked);
 		}
 
 
