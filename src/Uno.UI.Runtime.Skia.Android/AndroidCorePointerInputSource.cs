@@ -84,18 +84,25 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 
 			switch (nativePointerAction)
 			{
-				case MotionEventActions.HoverEnter when pointerType != Windows.Devices.Input.PointerDeviceType.Touch:
-					PointerEntered?.Invoke(this, args);
-					break;
-
-				case MotionEventActions.HoverExit when pointerType != Windows.Devices.Input.PointerDeviceType.Touch:
-					PointerExited?.Invoke(this, args);
+				case MotionEventActions.HoverEnter when pointerType == Windows.Devices.Input.PointerDeviceType.Touch:
+				case MotionEventActions.HoverExit when pointerType == Windows.Devices.Input.PointerDeviceType.Touch:
+					// We get HoverEnter and HoverExit for touch only when TalkBack is enabled.
+					// We ignore these events.
 					break;
 
 				case MotionEventActions.HoverEnter:
+					PointerEntered?.Invoke(this, args);
+					break;
+
+				case MotionEventActions.HoverExit when !isInContact:
+					// When a mouse button is pressed or pen touches the screen (a.k.a. becomes in contact), we receive an HoverExit before the Down.
+					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touched the screen)
+					// and we ignore them (as on UWP Exit is raised only when pointer moves out of bounds of the control, no matter the pressed state).
+					// As a side effect we will have to update the hover state on each Move in order to handle the case of press -> move out -> release.
+					PointerExited?.Invoke(this, args);
+					break;
+
 				case MotionEventActions.HoverExit:
-					// We get HoverEnter and HoverExit for touch only when TalkBack is enabled.
-					// We ignore these events.
 					break;
 
 				case MotionEventActions.Move:
