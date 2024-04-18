@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if __SKIA__
 			=> AutomationPeerListener?.ListenerExistsHelper(eventId) == true;
 #else
-			=> false;
+			=> true;
 #endif
 	}
 }

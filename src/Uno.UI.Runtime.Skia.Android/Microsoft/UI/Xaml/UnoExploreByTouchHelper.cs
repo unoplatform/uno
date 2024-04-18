@@ -19,6 +19,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 {
+	private readonly UnoSKCanvasView _host;
 	private readonly UIElement _rootElement;
 	private ConditionalWeakTable<DependencyObject, object> _cwtElementToId = new();
 	private Dictionary<int, DependencyObject?> _idToElement = new(); // TODO: This will leak.
@@ -26,6 +27,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	public UnoExploreByTouchHelper(UnoSKCanvasView host, UIElement rootElement) : base(host)
 	{
+		_host = host;
 		_rootElement = rootElement;
 	}
 
@@ -158,29 +160,84 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			node.SetBoundsInParent(new global::Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 #pragma warning restore CS0618 // Type or member is obsolete
 
-			var description = AutomationProperties.GetAutomationId(uiElement);
-			var peer = uiElement.GetOrCreateAutomationPeer();
-
-			if (string.IsNullOrEmpty(description))
-			{
-				description = peer?.GetName();
-			}
-			if (string.IsNullOrEmpty(description))
-			{
-				description = uiElement.GetType().Name;
-			}
-
+			var peer = uiElement.GetOrCreateAutomationPeer()!;
 			// TODO: Scrolling?
 
-			if (peer is not null)
+			var isClickable = peer is IInvokeProvider or IToggleProvider or ISelectionItemProvider;
+
+			if (isClickable)
 			{
-				if (peer is IInvokeProvider or IToggleProvider)
-				{
-					node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
-				}
+				node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
 			}
 
-			node.ContentDescription = description;
+			var automationControlType = peer.GetAutomationControlType();
+
+			node.ContentDescription = peer.GetName();
+			node.Password = peer.IsPassword();
+			node.Enabled = peer.IsEnabled();
+			node.Checked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
+			node.Checkable = peer is IToggleProvider;
+			node.Clickable = isClickable;
+			node.Editable = automationControlType == AutomationControlType.Edit;
+
+			if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
+				_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
+			{
+				node.SetLabeledBy(_host, (int)labeledByVirtualId);
+			}
+
+			node.Heading = peer.GetHeadingLevel() != AutomationHeadingLevel.None;
+			node.HintText = peer.GetHelpText();
+			var controlType = peer.GetAutomationControlType();
+			// TalkBack appears to rely on the native qualified name. So, we have to transform common class names.
+			// TODO: Is it correct to rely on AutomationControlType? or should we rely on our GetClassName? or a mix of both?
+			var androidClassName = controlType switch
+			{
+				AutomationControlType.AppBar => "android.view.View",
+				AutomationControlType.Button => "android.widget.Button",
+				AutomationControlType.CheckBox => "android.widget.CheckBox",
+				AutomationControlType.Calendar => "android.view.View",
+				AutomationControlType.ComboBox => "android.widget.Spinner",
+				AutomationControlType.Edit => "android.widget.EditText",
+				AutomationControlType.Hyperlink => "android.view.View",
+				AutomationControlType.Image => "android.widget.ImageView",
+				AutomationControlType.ListItem => "android.view.View",
+				AutomationControlType.List => "android.view.View",
+				AutomationControlType.Menu => "android.view.View",
+				AutomationControlType.MenuBar => "android.view.View",
+				AutomationControlType.MenuItem => "android.view.View",
+				AutomationControlType.ProgressBar => "android.view.View",
+				AutomationControlType.RadioButton => "android.widget.RadioButton",
+				AutomationControlType.ScrollBar => "android.view.View",
+				AutomationControlType.Slider => "android.widget.SeekBar",
+				AutomationControlType.Spinner => "android.view.View",
+				AutomationControlType.StatusBar => "android.view.View",
+				AutomationControlType.Tab => "android.view.View",
+				AutomationControlType.TabItem => "android.view.View",
+				AutomationControlType.Text => "android.view.View",
+				AutomationControlType.ToolBar => "android.view.View",
+				AutomationControlType.ToolTip => "android.view.View",
+				AutomationControlType.Tree => "android.view.View",
+				AutomationControlType.TreeItem => "android.view.View",
+				AutomationControlType.Custom => "android.view.View",
+				AutomationControlType.Group => "android.view.View",
+				AutomationControlType.Thumb => "android.view.View",
+				AutomationControlType.DataGrid => "android.view.View",
+				AutomationControlType.DataItem => "android.view.View",
+				AutomationControlType.Document => "android.view.View",
+				AutomationControlType.SplitButton => "android.view.View",
+				AutomationControlType.Window => "android.view.View",
+				AutomationControlType.Pane => "android.view.View",
+				AutomationControlType.Header => "android.view.View",
+				AutomationControlType.HeaderItem => "android.view.View",
+				AutomationControlType.Table => "android.view.View",
+				AutomationControlType.TitleBar => "android.view.View",
+				AutomationControlType.Separator => "android.view.View",
+				AutomationControlType.SemanticZoom => "android.view.View",
+				_ => "android.view.View",
+			};
+
+			node.ClassName = androidClassName;
 		}
 	}
 }

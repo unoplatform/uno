@@ -239,6 +239,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				toggleProvider.Toggle();
 				return true;
 			}
+			else if (this is ISelectionItemProvider selectionItemProvider)
+			{
+				selectionItemProvider.Select();
+				return true;
+			}
 
 			return false;
 		}
