@@ -28,6 +28,7 @@ using Uno.Foundation.Logging;
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Input;
 
 #if __IOS__
 using UIKit;
@@ -1263,7 +1264,10 @@ namespace Microsoft.UI.Xaml.Controls
 		internal override bool IsFocusable =>
 			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
 			IsVisible() &&
-			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop) &&
+			// Uno-specific: On Android Skia, we force GetCaretBrowsingModeEnable so that TextBlocks can be navigated
+			// with TalkBack. In this case, we want IsFocusable to be true for the TextBlock to be considered
+			// by UnoExploreByTouchHelper.GetVisibleVirtualViews
+			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop || FocusProperties.GetCaretBrowsingModeEnable()) &&
 			AreAllAncestorsVisible();
 
 		private record struct Range(int start, int end)

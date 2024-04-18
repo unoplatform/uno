@@ -2,16 +2,14 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Android.OS;
-using Android.Views;
 using AndroidX.Core.View.Accessibility;
 using AndroidX.CustomView.Widget;
 using Java.Lang;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp.Views.Android;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
@@ -31,20 +29,50 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_rootElement = rootElement;
 	}
 
+	private static bool ShouldSkipElement(DependencyObject element)
+	{
+		var accessibilityView = AutomationProperties.GetAccessibilityView(element);
+		if (accessibilityView == AccessibilityView.Raw)
+		{
+			return true;
+		}
+
+		// TODO: What about non-UIElements? e.g, Hyperlinks?
+		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
+		if ((element as UIElement)?.GetOrCreateAutomationPeer() is null)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	protected override int GetVirtualViewAt(float x, float y)
 	{
 		var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(x, y).PhysicalToLogicalPixels(), _rootElement.XamlRoot);
 		element ??= _rootElement;
-		while (!element.IsFocusable)
+		try
 		{
-			element = element.GetUIElementAdjustedParentInternal();
-			if (element is null)
+			FocusProperties.UnoForceGetTextBlockForAccessibility = true;
+			while (!FocusProperties.IsPotentialTabStop(element) || ShouldSkipElement(element))
 			{
-				return ExploreByTouchHelper.HostId;
+				// Walking the tree up is not correct in the case of render transforms.
+				// We could press on some coordinates and end up walking the tree up and retrieving
+				// a parent that doesn't contain the pressed point.
+				// TODO: Find a good way to handle this case.
+				element = element.GetUIElementAdjustedParentInternal();
+				if (element is null)
+				{
+					return ExploreByTouchHelper.HostId;
+				}
 			}
-		}
 
-		return GetOrCreateVirtualId(element);
+			return GetOrCreateVirtualId(element);
+		}
+		finally
+		{
+			FocusProperties.UnoForceGetTextBlockForAccessibility = false;
+		}
 	}
 
 	private int GetOrCreateVirtualId(DependencyObject element)
@@ -73,21 +101,36 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
-		var current = focusManager.UnoFindNextFocusableElement(_rootElement);
-		var firstFocusable = current;
-		while (current is not null)
+		try
 		{
-			virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(current)));
-			current = focusManager.UnoFindNextFocusableElement(current); // TODO: What about non-UIElements? e.g, Hyperlinks?
-			if (current == firstFocusable)
+			FocusProperties.UnoForceGetTextBlockForAccessibility = true;
+
+			var current = focusManager.GetNextTabStop(_rootElement);
+			var firstFocusable = current;
+			while (current is not null)
 			{
-				break;
+				if (!ShouldSkipElement(current))
+				{
+					virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(current)));
+				}
+
+				current = focusManager.GetNextTabStop(current);
+				if (current == firstFocusable)
+				{
+					break;
+				}
 			}
+		}
+		finally
+		{
+			FocusProperties.UnoForceGetTextBlockForAccessibility = false;
 		}
 	}
 
 	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle arguments)
 	{
+		// TODO: What about non-UIElements? e.g, Hyperlinks?
+		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
 		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
 			element is UIElement uiElement &&
 			uiElement.GetOrCreateAutomationPeer() is { } peer)
@@ -103,6 +146,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
 	{
+		// TODO: What about non-UIElements? e.g, Hyperlinks?
+		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
 		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
 			element is UIElement uiElement)
 		{
