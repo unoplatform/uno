@@ -142,15 +142,6 @@
         - name: Why use Uno Platform?
           href: xref:Uno.Overview.WhyUno
 
-    - name: Debugging
-      items:
-        - name: How to create a repro sample
-          href: uno-howto-create-a-repro.md
-        - name: 'Debugging C# on WASM'
-          href: debugging-wasm.md
-        - name: VS Code Advanced Mobile Debugging
-          href: xref:uno.vscode.mobile.advanced.debugging
-
     - name: Authoring
       items:
       - name: Using the Uno.SDK
@@ -176,6 +167,14 @@
         - name: Working with Skia+GTK
           href: features/using-skia-gtk.md
 
+    - name: Debugging
+      items:
+        - name: How to create a repro sample
+          href: uno-howto-create-a-repro.md
+        - name: 'Debugging C# on WASM'
+          href: debugging-wasm.md
+        - name: VS Code Advanced Mobile Debugging
+          href: xref:uno.vscode.mobile.advanced.debugging
 
     - name: Embedding
       items:
