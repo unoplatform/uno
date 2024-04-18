@@ -232,7 +232,7 @@ internal partial class InputManager
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Wheel, originalSource, routedArgs, true);
+			RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
 			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
@@ -408,7 +408,7 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			RaiseUsingCaptures(Released, originalSource, routedArgs, false);
+			RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
 				// We release the captures on up but only after the released event and processed the gesture
@@ -471,7 +471,7 @@ internal partial class InputManager
 			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Move, originalSource, routedArgs, true);
+			RaiseUsingCaptures(Move, originalSource, routedArgs, setCursor: true);
 		}
 
 		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
@@ -504,7 +504,7 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			RaiseUsingCaptures(Cancelled, originalSource, routedArgs, false);
+			RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
 			SetSourceCursor(originalSource);
 			ClearPressedState(routedArgs);
@@ -567,7 +567,7 @@ internal partial class InputManager
 				_pressedElements.Remove(routedArgs.Pointer);
 
 				// Note: The event is propagated silently (public events won't be raised) as it's only to clear internal state
-				var ctx = new BubblingContext { IsInternal = true };
+				var ctx = new BubblingContext { IsInternal = true, IsCleanup = true };
 				pressedLeaf.OnPointerUp(routedArgs, ctx);
 			}
 		}

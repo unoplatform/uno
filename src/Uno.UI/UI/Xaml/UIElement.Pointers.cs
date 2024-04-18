@@ -1001,7 +1001,7 @@ namespace Microsoft.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				var gestures = GestureRecognizer;
-				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
+				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 				if (gestures.IsDragging)
 				{
 					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
@@ -1033,7 +1033,7 @@ namespace Microsoft.UI.Xaml
 				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
 				var gestures = GestureRecognizer;
-				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
+				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 				if (gestures.IsDragging)
 				{
 					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
@@ -1063,7 +1063,7 @@ namespace Microsoft.UI.Xaml
 			{
 				currentPoint = args.GetCurrentPoint(this);
 				UpdateRaisedGestureEventsFlag(args);
-				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
+				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
 			}
 
 			handledInManaged |= SetPressed(args, false, ctx);
@@ -1076,8 +1076,8 @@ namespace Microsoft.UI.Xaml
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
 				var isDragging = GestureRecognizer.IsDragging;
-				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
-				if (isDragging && !ctx.IsInternal)
+				GestureRecognizer.ProcessUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
+				if (isDragging)
 				{
 					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessDropped(args);
 				}
@@ -1176,7 +1176,7 @@ namespace Microsoft.UI.Xaml
 		private static (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) _pendingRaisedEvent;
 		private bool RaisePointerEvent(RoutedEvent evt, PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
-			if (ctx.IsInternal)
+			if (ctx.IsInternal || ctx.IsCleanup)
 			{
 				// If the event has been flagged as internal it means that it's bubbling in managed code,
 				// so the RaiseEvent won't do anything. This check only avoids a potentially costly try/finally.
@@ -1238,7 +1238,7 @@ namespace Microsoft.UI.Xaml
 			IsPointerOver = isOver;
 
 			var hasNotChanged = wasOver == isOver;
-			if (hasNotChanged && ctx.IsInternal)
+			if (hasNotChanged && (ctx.IsInternal || ctx.IsCleanup))
 			{
 				// Already bubbling in managed, and didn't changed, nothing to do!
 				return false;
@@ -1311,7 +1311,7 @@ namespace Microsoft.UI.Xaml
 			var wasPressed = IsPressed(args.Pointer);
 			var hasNotChanged = wasPressed == isPressed;
 
-			if (hasNotChanged && ctx.IsInternal)
+			if (hasNotChanged && (ctx.IsInternal || ctx.IsCleanup))
 			{
 				// Already bubbling in managed, and didn't changed, nothing to do!
 				return false;

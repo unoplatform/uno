@@ -1,4 +1,4 @@
-﻿// #define TRACE_ROUTED_EVENT_BUBBLING
+﻿#define TRACE_ROUTED_EVENT_BUBBLING
 
 using System;
 using System.Collections.Generic;
@@ -621,15 +621,27 @@ namespace Microsoft.UI.Xaml
 			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
 				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
-				&& handlers.Any())
+				&& handlers is { Count: >0 })
 			{
 				// [4] Invoke local handlers
-				foreach (var handler in handlers.ToArray())
+				if (handlers.Count == 1)
 				{
+					var handler = handlers[0];
 					if (!isHandled || handler.HandledEventsToo)
 					{
 						InvokeHandler(handler.Handler, args);
 						isHandled = IsHandled(args);
+					}
+				}
+				else
+				{
+					foreach (var handler in handlers.ToArray())
+					{
+						if (!isHandled || handler.HandledEventsToo)
+						{
+							InvokeHandler(handler.Handler, args);
+							isHandled = IsHandled(args);
+						}
 					}
 				}
 
@@ -854,6 +866,12 @@ namespace Microsoft.UI.Xaml
 			/// but the UIElement.RoutedEvent won't be raised in any way (public and internal handlers) and it won't be sent to Control.On`RoutedEvent`() neither.
 			/// </remarks>
 			public bool IsInternal { get; set; }
+
+			/// <summary>
+			/// Used only with managed pointers to indicate that the bubbling is for cleanup.
+			/// In that case even interpreted events should be muted.
+			/// </summary>
+			public bool IsCleanup { get; set; }
 
 			public BubblingContext WithMode(BubblingMode mode)
 				=> this with { Mode = mode };

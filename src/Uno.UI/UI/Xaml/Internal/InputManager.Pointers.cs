@@ -69,7 +69,7 @@ partial class InputManager
 				handledEventsToo: true);
 			rootElement.AddHandler(
 				UIElement.PointerReleasedEvent,
-				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
+				new PointerEventHandler((snd, args) => ProcessPointerUp(args, false)),
 				handledEventsToo: true);
 #if __WASM__
 			rootElement.AddHandler(
@@ -151,7 +151,7 @@ partial class InputManager
 			}
 		}
 
-		internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
+		internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp)
 		{
 			// We don't want handled events raised on RootVisual,
 			// instead we wait for the element that handled it to directly forward it to us,
@@ -175,6 +175,11 @@ partial class InputManager
 				// It's acceptable to use only the OriginalSource on Android and iOS:
 				// since those platforms have "implicit capture" and captures are propagated to the OS,
 				// the OriginalSource will be the element that has capture (if any).
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Re-dispatching pointer {args.Pointer} to {src.GetDebugName()} to inject exit event.");
+				}
 
 				src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
 			}
