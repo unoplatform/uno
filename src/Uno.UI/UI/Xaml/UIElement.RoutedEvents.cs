@@ -1,4 +1,4 @@
-﻿#define TRACE_ROUTED_EVENT_BUBBLING
+﻿//#define TRACE_ROUTED_EVENT_BUBBLING
 
 using System;
 using System.Collections.Generic;
@@ -621,29 +621,10 @@ namespace Microsoft.UI.Xaml
 			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
 				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
-				&& handlers is { Count: >0 })
+				&& handlers is { Count: > 0 })
 			{
 				// [4] Invoke local handlers
-				if (handlers.Count == 1)
-				{
-					var handler = handlers[0];
-					if (!isHandled || handler.HandledEventsToo)
-					{
-						InvokeHandler(handler.Handler, args);
-						isHandled = IsHandled(args);
-					}
-				}
-				else
-				{
-					foreach (var handler in handlers.ToArray())
-					{
-						if (!isHandled || handler.HandledEventsToo)
-						{
-							InvokeHandler(handler.Handler, args);
-							isHandled = IsHandled(args);
-						}
-					}
-				}
+				InvokeHandlers(handlers, args, ref isHandled);
 
 				// [5] Event handled by local handlers?
 				if (isHandled)
@@ -935,6 +916,43 @@ namespace Microsoft.UI.Xaml
 
 			return eventsBubblingInManagedCode.HasFlag(flag);
 		}
+
+#pragma warning disable IDE0055 // Fix formatting: Current formatting is readable and rule expectation is unclear
+		private void InvokeHandlers(IList<RoutedEventHandlerInfo> handlers, RoutedEventArgs args, ref bool isHandled)
+		{
+			switch (handlers.Count)
+			{
+				case 0:
+					return;
+
+				case 1:
+				{
+					var handler = handlers[0];
+					if (!isHandled || handler.HandledEventsToo)
+					{
+						InvokeHandler(handler.Handler, args);
+						isHandled = IsHandled(args);
+					}
+
+					break;
+				}
+
+				default:
+				{
+					foreach (var handler in handlers.ToArray())
+					{
+						if (!isHandled || handler.HandledEventsToo)
+						{
+							InvokeHandler(handler.Handler, args);
+							isHandled = IsHandled(args);
+						}
+					}
+
+					break;
+				}
+			}
+		}
+#pragma warning restore IDE0055 // Fix formatting
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)
 		{
