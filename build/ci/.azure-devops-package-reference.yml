@@ -29,11 +29,6 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - script: |
-      rm global.json
-      cp global-net8.json global.json
-    displayName: Replace global.json with .NET 8
-
   - template: templates/dotnet-install.yml
 
   # This task is required to run in separately to avoid hitting targets file

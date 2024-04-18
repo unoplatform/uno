@@ -28,9 +28,7 @@ jobs:
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
+    UnoTargetFrameworkOverride: net8.0
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -55,7 +53,7 @@ jobs:
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net7.0
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net8.0
       ArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
@@ -66,18 +64,18 @@ jobs:
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net7.0-windows
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net8.0-windows
       ArtifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net8.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
     displayName: Build Generic Skia Head
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net7.0
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net8.0
       ArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
@@ -196,7 +194,7 @@ jobs:
       cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
       dotnet build -c Debug
       cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
-      dotnet build -c Debug -p:UnoDisableNetCurrent=true
+      dotnet build -c Debug -p:UnoTargetFrameworkOverride=net8.0
     displayName: Build HR dependencies
 
   - script: |

@@ -61,9 +61,8 @@ jobs:
     SourceLinkEnabled: falses
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
+    # Only build for NetCurrent
+    UnoDisableNetPreviousMobile: true
 
   steps:
   - checkout: self
@@ -73,7 +72,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - template: templates/ios-build-select-version.yml
     parameters:
@@ -93,7 +92,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-ios/iossimulator-x64/SamplesApp.app
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-ios/iossimulator-x64/SamplesApp.app
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
       CleanTargetFolder: false
@@ -124,10 +123,8 @@ jobs:
     - name: NUGET_PACKAGES
       value: $(Pipeline.Workspace)/.nuget/packages
 
-    # Only build for NetPrevious
-    - name: UnoDisableNetCurrentMobile
-      value: true
-    - name: UnoDisableNetCurrent
+    # Only build for NetCurrent
+    - name: UnoDisableNetPreviousMobile
       value: true
 
   steps:
@@ -151,7 +148,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - template: templates/ios-build-select-version.yml
     parameters:
@@ -163,12 +160,11 @@ jobs:
   - bash: |
       cd $(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile
       dotnet publish \
-        -f net7.0-ios \
+        -f net8.0-ios \
         -c Release \
         -r:ios-arm64 \
         -p:BuildForTestFlight=true \
-        -p:UnoTargetFrameworkOverride=net7.0-ios \
-        -p:UnoUIDisableNet8Build=true \
+        -p:UnoTargetFrameworkOverride=net8.0-ios \
         /bl:$(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
 
     displayName: Build iOS App for TestFlight
@@ -180,7 +176,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-ios/ios-arm64/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-ios/ios-arm64/publish
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/TestFlight
       CleanTargetFolder: false

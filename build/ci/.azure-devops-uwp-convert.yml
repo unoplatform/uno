@@ -17,9 +17,8 @@ jobs:
     UNO_UWP_BUILD: true
     XAML_FLAVOR_BUILD: WinUI
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
+    # Only build for NetCurrent
+    UnoDisableNetPreviousMobile: true
 
   steps:
   - checkout: self
@@ -30,11 +29,6 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
-
-  - script: |
-      rm global.json
-      cp global-net7.json global.json
-    displayName: Replace global.json with .NET 7
 
   - template: templates/dotnet-mobile-install-windows.yml
 
@@ -78,5 +72,13 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)\src\Uno.UWPSyncGenerator
       ArtifactName: NugetPackages-Artifacts
       ArtifactType: Container

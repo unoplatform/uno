@@ -67,8 +67,6 @@ namespace Uno.SourceGeneration.Host
 			properties["UseHostCompilerIfAvailable"] = "true";
 			properties["UseSharedCompilation"] = "true";
 			properties["LangVersion"] = Generator.CSharpLangVersion;
-			properties["UnoDisableNetCurrentMobile"] = "true";
-			properties["UnoDisableNetCurrent"] = "true";
 
 			// Platform is intentionally kept as not defined, to avoid having 
 			// dependent projects being loaded with a platform they don't support.

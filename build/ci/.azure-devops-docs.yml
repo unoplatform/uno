@@ -16,9 +16,8 @@ jobs:
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
+    # Only build for NetCurrent
+    UnoDisableNetPreviousMobile: true
 
   steps:
   - template: templates/nuget-cache.yml

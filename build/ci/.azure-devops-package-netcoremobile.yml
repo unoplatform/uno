@@ -50,13 +50,7 @@ jobs:
   - template: templates/gitversion.yml
 
   - script: |
-      rm global.json
-      cp global-net8.json global.json
-    displayName: Replace global.json with .NET 8
-    condition: and(succeeded(), eq(variables.UnoDisableNetPreviousMobile, 'true'))
-
-  - script: |
-      rm global.json
+      cp global.json global-net8.json
       cp global-net7.json global.json
     displayName: Replace global.json with .NET 7
     condition: and(succeeded(), not(eq(variables.UnoDisableNetPreviousMobile, 'true')))

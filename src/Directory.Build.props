@@ -66,7 +66,7 @@
 		<NetWasmPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetWasmPreviousAndCurrent>
 		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>
 		<NetReferencePreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetReferencePreviousAndCurrent>
-		<NetUnitTests>$(NetPrevious)</NetUnitTests>
+		<NetUnitTests>$(NetCurrent)</NetUnitTests>
 
 		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>
 		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">$(NetPrevious)-windows10.0.19041.0</NetUWPOrWinUI>

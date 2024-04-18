@@ -10,12 +10,8 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  UnoCheck_Version: '1.18.1'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/3728e150e4e148789302dcc00baaeae63e0c7eae/manifests/uno.ui.manifest.json'
-
-  # Only convert using NetPrevious
-  UnoDisableNetCurrentMobile: true
-  UnoDisableNetCurrent: true
+  UnoCheck_Version: '1.20.2'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/bd121b30a0044fd80df18618dd7915fe8ccf4503/manifests/uno.ui.manifest.json'
 
 jobs:
   build:
@@ -34,7 +30,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        global-json-file: global-net7.json
+        global-json-file: global.json
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.15
