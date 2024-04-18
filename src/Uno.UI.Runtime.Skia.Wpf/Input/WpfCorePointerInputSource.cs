@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
@@ -17,6 +18,8 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Point = System.Windows.Point;
 using Rect = Windows.Foundation.Rect;
 using WpfControl = System.Windows.Controls.Control;
@@ -110,9 +113,16 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	public void ReleasePointerCapture()
 		=> _hostControl.ReleaseMouseCapture();
 
+	private RoutedEventArgs? _lastArgs;
+
 	#region Native events
 	private void HostOnMouseEvent(InputEventArgs args, TypedEventHandler<object, PointerEventArgs>? @event, [CallerArgumentExpression(nameof(@event))] string eventName = "")
 	{
+		if (_lastArgs == args)
+		{
+			return;
+		}
+		_lastArgs = args;
 		var current = SynchronizationContext.Current;
 		try
 		{
@@ -123,7 +133,27 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			}
 
 			var eventArgs = BuildPointerArgs(args);
-			@event?.Invoke(this, eventArgs);
+
+			// Is the pointer inside an element in the flyout layer? if so, raise in managed
+			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl);
+			var managedHitTestResult = Microsoft.UI.Xaml.Media.VisualTreeHelper.SearchDownForTopMostElementAt(eventArgs.CurrentPoint.Position, xamlRoot!.VisualTree.PopupRoot!, Microsoft.UI.Xaml.Media.VisualTreeHelper.DefaultGetTestability, null);
+			if (managedHitTestResult.element is { })
+			{
+				@event?.Invoke(this, eventArgs);
+			}
+			else
+			{
+				// if not, is it on top of a native element? if so, raise in native
+				var result = VisualTreeHelper.HitTest(((IWpfXamlRootHost)_hostControl).NativeOverlayLayer!, args.GetPosition(null));
+				if (result?.VisualHit is UIElement element)
+				{
+					element.RaiseEvent(args);
+				}
+				else // if not, then raise in managed
+				{
+					@event?.Invoke(this, eventArgs);
+				}
+			}
 			_previous = eventArgs;
 		}
 		catch (Exception e)

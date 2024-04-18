@@ -116,7 +116,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 		if (_renderer is null)
 		{
-			_renderer = WpfRendererProvider.CreateForHost(this);
+			_renderer = WpfRendererProvider.CreateForHost(this, false);
 			UpdateRendererBackground();
 		}
 

@@ -20,12 +20,18 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 	private WriteableBitmap? _bitmap;
 	private IWpfXamlRootHost _host;
 	private readonly XamlRoot _xamlRoot;
+	private bool _isFlyoutSurface;
 
-	public SoftwareWpfRenderer(IWpfXamlRootHost host)
+	public SoftwareWpfRenderer(IWpfXamlRootHost host, bool isFlyoutSurface)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
 		_xamlRoot = WpfManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		_isFlyoutSurface = isFlyoutSurface;
+		if (isFlyoutSurface)
+		{
+			BackgroundColor = SKColors.Transparent;
+		}
 	}
 
 	public SKColor BackgroundColor { get; set; } = SKColors.White;
@@ -83,7 +89,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, false);
+				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, _isFlyoutSurface);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
 				{
