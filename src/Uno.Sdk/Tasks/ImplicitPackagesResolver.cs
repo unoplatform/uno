@@ -50,6 +50,10 @@ public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 			{
 				AddPackage("Uno.WinUI.WebAssembly", null);
 			}
+			else
+			{
+				AddPackageForFeatureWhen(IsExecutable, UnoFeature.Svg, "Svg.Skia", SvgSkiaVersion);
+			}
 
 			AddCorePackagesForExecutable();
 		}

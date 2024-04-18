@@ -148,6 +148,7 @@ internal class PackageManifest
 		public const string Dsp = nameof(Dsp);
 		public const string Resizetizer = nameof(Resizetizer);
 		public const string SkiaSharp = nameof(SkiaSharp);
+		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
