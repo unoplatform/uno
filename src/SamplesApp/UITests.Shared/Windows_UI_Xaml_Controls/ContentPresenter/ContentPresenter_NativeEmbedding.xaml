@@ -15,17 +15,17 @@
 		<uc:FromNullableBoolToVisibilityConverter x:Key="FromNullableBoolToVisibilityConverter"
 		                                          VisibilityIfTrue="Visible" />
 	</UserControl.Resources>
-	<skia:ScrollViewer>
+	<skia:ScrollViewer Height="300">
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 			<StackPanel Grid.Column="0">
-				<ListView ItemsSource="0123456789abcdefghijklmnopq">
+				<ListView ItemsSource="0123456">
 					<ListView.ItemTemplate>
 						<DataTemplate>
-							<local:NativeControlHostWithText Text="{Binding}" />
+							<local:NativeControlHostWithText Width="300" Height="200" Text="{Binding}" />
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>
@@ -35,6 +35,8 @@
 				<Slider x:Name="slider" Minimum="0" Maximum="1" Value="1" StepFrequency="0.01"></Slider>
 				<TextBlock>Opacity</TextBlock>
 				<local:NativeControlHostWithText x:Name="visibleHost"
+												 Width="300"
+												 Height="200"
 				                                 Opacity="{Binding Value, ElementName=slider}"
 				                                 Visibility="{Binding IsOn, ElementName=ToggleSwitch, Converter={StaticResource FromNullableBoolToVisibilityConverter}}"
 				                                 Text="I'm visible if you can see me" />
