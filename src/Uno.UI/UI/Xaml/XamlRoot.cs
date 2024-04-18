@@ -82,8 +82,8 @@ public sealed partial class XamlRoot
 
 	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
 
-	//internal static DisplayInformation GetDisplayInformation(XamlRoot? root)
-	//	=> root?.HostWindow?.AppWindow.Id is { } id ? DisplayInformation.GetOrCreateForWindowId(id) : DisplayInformation.GetForCurrentViewSafe();
+	internal static DisplayInformation GetDisplayInformation(XamlRoot? root)
+		=> root?.HostWindow?.AppWindow.Id is { } id ? DisplayInformation.GetOrCreateForWindowId(id) : DisplayInformation.GetForCurrentViewSafe();
 
 	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
 	{

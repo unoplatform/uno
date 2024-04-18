@@ -42,6 +42,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private readonly TaskCompletionSource _closed; // To keep it simple, only SetResult if you have the lock
 	private readonly ApplicationView _applicationView;
+	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
 
 	private X11Window? _x11Window;
@@ -49,8 +50,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public X11Window X11Window => _x11Window!.Value;
 
-	public X11XamlRootHost(Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
+		_wrapper = wrapper;
 		_window = winUIWindow;
 
 		_resizeCallback = resizeCallback;

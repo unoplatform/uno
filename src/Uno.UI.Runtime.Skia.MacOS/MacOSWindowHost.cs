@@ -24,6 +24,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 {
 	private readonly MacOSWindowNative _nativeWindow;
 	private readonly Window _winUIWindow;
+	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
 	private readonly GRContext? _context;
 	private SKBitmap? _bitmap;
@@ -33,11 +34,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	private static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
-	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow)
+	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
 		_nativeWindow = nativeWindow ?? throw new ArgumentNullException(nameof(nativeWindow));
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-
+		_xamlRoot = xamlRoot ?? throw new ArgumentNullException(nameof(xamlRoot));
 		_displayInformation = DisplayInformation.GetOrCreateForWindowId(winUIWindow.AppWindow.Id);
 
 		// RegisterForBackgroundColor();
@@ -57,6 +58,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	// Display
 
 	internal event EventHandler<Size>? SizeChanged;
+
+	internal event EventHandler? RasterizationScaleChanged;
+
+	internal double RasterizationScale => _displayInformation.RawPixelsPerViewPixel;
 
 	private void UpdateWindowSize(double nativeWidth, double nativeHeight)
 	{
@@ -87,7 +92,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture}");
 		}
 
-		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+		var scale = (float)_xamlRoot.RasterizationScale;
 
 		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
 		// https://github.com/unoplatform/uno-private/issues/319
@@ -119,7 +124,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight}");
 		}
 
-		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+		var scale = (float)_xamlRoot.RasterizationScale;
 
 		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
 		// https://github.com/unoplatform/uno-private/issues/319
@@ -555,6 +560,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			var window = GetWindowHost(handle);
 			window?._displayInformation.NotifyDpiChanged();
+			window?.RasterizationScaleChanged?.Invoke(window, EventArgs.Empty);
 		}
 		catch (Exception e)
 		{
