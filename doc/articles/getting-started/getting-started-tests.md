@@ -38,6 +38,8 @@ The generated solution will contain:
 
 ## 4. Running the UI tests
 
+UI Tests are using the [Uno.UITest nuget package](xref:Uno.UITest.GetStarted), see the documentation for more information on how to create more UI Tests.
+
 * As demonstrated on step 2, select the **MyProjectName (WebAssembly)** target from the drop-down.
 
 * Press Ctrl + F5 to start the WASM project without debugging.

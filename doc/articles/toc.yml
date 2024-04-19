@@ -155,8 +155,6 @@
       items:
       - name: Using the Uno.SDK
         href: xref:Uno.Features.Uno.Sdk
-      - name: Getting Started With Tests
-        href: xref:Uno.Authoring.Tests
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
@@ -165,6 +163,8 @@
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
         href: guides/how-to-add-platforms-existing-project.md
+      - name: Getting Started With Tests
+        href: xref:Uno.Authoring.Tests
       - name: Logging
         href: logging.md
       - name: AppManifest (WebAssembly)
