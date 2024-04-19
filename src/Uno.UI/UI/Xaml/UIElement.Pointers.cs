@@ -1287,7 +1287,7 @@ namespace Microsoft.UI.Xaml
 				{
 					// Currently works on Wasm Skia only.
 					string text = (this as TextBlock)?.Text;
-					Uno.Helpers.AccessibilityAnnouncer.Announce(text);
+					Uno.Helpers.AccessibilityAnnouncer.AnnouncePolite(text);
 				}
 #endif
 				return RaisePointerEvent(PointerEnteredEvent, args, ctx);

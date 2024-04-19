@@ -228,6 +228,9 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	public void AnnouncePolite(string text)
 		=> NativeMethods.AnnouncePolite(text);
 
+	public void AnnounceAssertive(string text)
+		=> NativeMethods.AnnounceAssertive(text);
+
 	public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
 		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
@@ -286,5 +289,8 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.announcePolite")]
 		internal static partial void AnnouncePolite(string text);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.announceAssertive")]
+		internal static partial void AnnounceAssertive(string text);
 	}
 }

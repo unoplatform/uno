@@ -2,6 +2,7 @@ namespace Uno.UI.Runtime.Skia {
 
 	export class Accessibility {
 		private static politeElement: HTMLDivElement;
+		private static assertiveElement: HTMLDivElement;
 		private static enableAccessibilityButton: HTMLDivElement;
 		private static semanticsRoot: HTMLDivElement;
 		private static managedEnableAccessibility: any;
@@ -20,13 +21,20 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		private static createLiveElement(kind: string) {
+			const element = document.createElement("div");
+			element.classList.add("uno-aria-live");
+			element.setAttribute("aria-live", kind);
+			return element;
+		}
+
 		public static async setup() {
 			await this.buildImports();
 			this.containerElement = document.getElementById("uno-body");
-			this.politeElement = document.createElement("div");
-			this.politeElement.classList.add("uno-aria-live");
-			this.politeElement.setAttribute("aria-live", "polite");
+			this.politeElement = Accessibility.createLiveElement("polite");
+			this.assertiveElement = Accessibility.createLiveElement("assertive");
 			this.containerElement.appendChild(this.politeElement);
+			this.containerElement.appendChild(this.assertiveElement);
 
 			this.enableAccessibilityButton = document.createElement("div");
 			this.enableAccessibilityButton.id = "uno-enable-accessibility";
@@ -72,16 +80,24 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static announcePolite(text: string) {
+			Accessibility.announce(Accessibility.politeElement, text);
+		}
+
+		public static announceAssertive(text: string) {
+			Accessibility.announce(Accessibility.assertiveElement, text);
+		}
+
+		private static announce(ariaLiveElement: HTMLDivElement, text: string) {
 			let child = document.createElement("div");
 			child.innerText = text;
-			this.politeElement.appendChild(child);
-			setTimeout(() => this.politeElement.removeChild(child), 300);
+			ariaLiveElement.appendChild(child);
+			setTimeout(() => ariaLiveElement.removeChild(child), 300);
 		}
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableAccessibilityButton);
 			this.managedEnableAccessibility();
-			this.announcePolite("Accessibility enabled successfully.");
+			this.announceAssertive("Accessibility enabled successfully.");
 		}
 
 		public static focusSemanticElement(handle: number) {
