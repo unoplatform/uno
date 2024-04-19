@@ -127,11 +127,15 @@ partial class InputManager
 					if (this.Log().IsEnabled(LogLevel.Debug))
 						this.Log().Debug($"Re-routing pointer event from {reRouted.From.GetDebugName()} to {reRouted.To.GetDebugName()}");
 
-					// Clean the args before raising it again, and also change the OriginalSource to reflect the updated target.
-					args.Reset(canBubbleNatively: false);
+					// Make sure to change the OriginalSource to reflect the updated target.
 					args.OriginalSource = reRouted.To;
 
+					// First make sure to have a logical state regarding current over check use to determine if events are relevant or not.
+					args.Reset(canBubbleNatively: false);
+					reRouted.To.OnPointerEnter(args);
+
 					// Raise the event to the target
+					args.Reset(canBubbleNatively: false);
 					reRouted.To.OnPointerDown(args);
 #if __IOS__
 					// Also as the FlyoutPopupPanel is being removed from the UI tree, we won't get any ProcessPointerUp, so we are forcefully causing it here.

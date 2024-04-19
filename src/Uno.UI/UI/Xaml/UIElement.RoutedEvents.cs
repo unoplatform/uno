@@ -602,7 +602,7 @@ namespace Microsoft.UI.Xaml
 #if TRACE_ROUTED_EVENT_BUBBLING
 			global::System.Diagnostics.Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}-{args?.GetHashCode():X8}] (ctx: {ctx}){(this is Microsoft.UI.Xaml.Controls.ContentControl ctrl ? ctrl.DataContext : "")}\r\n");
 #endif
-			global::System.Diagnostics.Debug.Assert(routedEvent.Flag != RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
+			global::System.Diagnostics.Debug.Assert(routedEvent.Flag is not RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
 
 #if !__WASM__
 			global::System.Diagnostics.Debug.Assert(!routedEvent.IsTunnelingEvent, $"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");

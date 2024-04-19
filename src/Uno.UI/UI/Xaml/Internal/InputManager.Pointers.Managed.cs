@@ -159,6 +159,16 @@ internal partial class InputManager
 					// Note: Here we are not validating the current result.VisualTreeAltered nor we perform a new hit test as we should if `true`
 					// This is valid only because the single element that is able to re-route the event is the PopupRoot, which is already at the top of the visual tree.
 					// When the PopupRoot performs the HitTest, the visual tree is already updated.
+					if (Event == Pressed)
+					{
+						// Make sure to have a logical state regarding current over check use to determine if events are relevant or not
+						// Note: That check should be removed for managed only events, but too massive in the context of current PR.
+						result += _manager.Raise(
+							Enter,
+							new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
+							new PointerRoutedEventArgs(reRouted.Args.CoreArgs, reRouted.To) { CanBubbleNatively = false });
+					}
+
 					result += _manager.Raise(
 						Event,
 						new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
