@@ -340,9 +340,6 @@ namespace Microsoft.UI.Composition
 			RaiseContextStoreChanged();
 		}
 
-		internal void RaiseContextStoreChanged()
-			=> _contextStore.RaiseChanged();
-
 		private protected virtual void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 		}
