@@ -20,12 +20,6 @@ using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
-using Uno.Helpers;
-using System.Numerics;
-using Microsoft.UI.Composition;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia;
 
