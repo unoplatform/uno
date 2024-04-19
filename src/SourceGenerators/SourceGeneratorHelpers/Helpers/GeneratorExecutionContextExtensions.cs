@@ -42,6 +42,7 @@ namespace Uno.Roslyn
 	public class MSBuildItem
 	{
 		private readonly GeneratorExecutionContext Context;
+		private static MSBuildItemIdentityComparer? _identityComparer;
 
 		internal MSBuildItem(AdditionalText file, GeneratorExecutionContext context)
 		{
@@ -66,6 +67,18 @@ namespace Uno.Roslyn
 			Context.TryGetOptionValue(File, "build_metadata.AdditionalFiles." + name, out var metadataValue);
 
 			return string.IsNullOrEmpty(metadataValue) ? "" : metadataValue!;
+		}
+
+		public static IEqualityComparer<MSBuildItem> IdentityComparer
+			=> _identityComparer ??= new MSBuildItemIdentityComparer();
+
+		private class MSBuildItemIdentityComparer : IEqualityComparer<MSBuildItem>
+		{
+			public bool Equals(MSBuildItem x, MSBuildItem y)
+				=> string.Equals(x.Identity, y.Identity, System.StringComparison.OrdinalIgnoreCase);
+
+			public int GetHashCode(MSBuildItem obj)
+				=> obj.Identity.GetHashCode();
 		}
 	}
 }
