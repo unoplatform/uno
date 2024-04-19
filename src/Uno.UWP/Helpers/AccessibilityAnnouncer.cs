@@ -1,21 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Uno.Helpers;
-
-interface IUnoAccessibility
-{
-	bool IsAccessibilityEnabled { get; }
-
-	// See live regions documentation for more information
-	// https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#live_regions
-	void AnnouncePolite(string text);
-	void AnnounceAssertive(string text);
-}
+﻿namespace Uno.Helpers;
 
 internal static partial class AccessibilityAnnouncer
 {
