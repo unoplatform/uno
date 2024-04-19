@@ -1,35 +1,21 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading;
-using Uno.Extensions;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.Graphics.Display;
-using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.Input;
-using static Windows.UI.Input.PointerUpdateKind;
-using System.Runtime.CompilerServices;
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
-using System.Runtime.InteropServices.JavaScript;
-using Microsoft.UI.Xaml;
-using Uno.UI.Hosting;
-using Uno.UI.Xaml.Controls;
-using Uno.Helpers;
-using System.Numerics;
-using Microsoft.UI.Composition;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
+using Uno.Helpers;
 
 namespace Uno.UI.Runtime.Skia;
 
-internal partial class WebAssemblyAccessibility : IUnoAccessibility
+internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomationPeerListener
 {
 	private static readonly Lazy<WebAssemblyAccessibility> _instance = new Lazy<WebAssemblyAccessibility>(() => new());
 
@@ -46,6 +32,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 		UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
 		UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
 		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnSizeOrOffsetChanged;
+		AutomationPeer.AutomationPeerListener = this;
 	}
 
 	public bool IsAccessibilityEnabled { get; private set; }
@@ -68,11 +55,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 	{
 		if (IsAccessibilityEnabled)
 		{
-			if (parent.GetOrCreateAutomationPeer() is { } automationPeer)
-			{
-				automationPeer.OnPropertyChanged -= AutomationPeer_OnPropertyChanged;
-			}
-
 			RemoveSemanticElement(parent.Visual.Handle, child.Visual.Handle);
 		}
 	}
@@ -118,7 +100,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 			return;
 		}
 
-		AutomationProperties.OnAutomationIdChangedCallback = @this.OnAutomationIdChanged;
 		@this.IsAccessibilityEnabled = true;
 		@this.CreateAOM(rootElement);
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
@@ -126,7 +107,31 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 
 	private void UpdateIsFocusable(Control control, bool isFocusable)
 	{
-		NativeMethods.UpdateIsFocusable(control.Visual.Handle, isFocusable);
+		NativeMethods.UpdateIsFocusable(control.Visual.Handle, IsAccessibilityFocusable(control, isFocusable));
+	}
+
+	private static bool IsAccessibilityFocusable(DependencyObject dependencyObject, bool isFocusable)
+	{
+		// We'll consider TextBlock and RichTextBlock as accessibility focusable, even if they are not focusable.
+		// Screen readers should read them.
+		if (!isFocusable && dependencyObject is not (TextBlock or RichTextBlock))
+		{
+			return false;
+		}
+
+		var accessibilityView = AutomationProperties.GetAccessibilityView(dependencyObject);
+		if (accessibilityView == AccessibilityView.Raw)
+		{
+			return false;
+		}
+
+		// TODO: Adjust when TextElement's automation peers are supported.
+		if ((dependencyObject as UIElement)?.GetOrCreateAutomationPeer() is null)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	internal void CreateAOM(UIElement rootElement)
@@ -138,7 +143,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 		var rootHandle = rootElement.Visual.Handle;
 
 		var totalOffset = rootElement.Visual.GetTotalOffset();
-		NativeMethods.AddRootElementToSemanticsRoot(rootHandle, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y, rootElement.IsFocusable);
+		NativeMethods.AddRootElementToSemanticsRoot(rootHandle, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y, IsAccessibilityFocusable(rootElement, rootElement.IsFocusable));
 		foreach (var child in rootElement.GetChildren())
 		{
 			BuildSemanticsTreeRecursive(rootHandle, child);
@@ -167,8 +172,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 
 		if (automationPeer is not null)
 		{
-			automationPeer.OnPropertyChanged += AutomationPeer_OnPropertyChanged;
-
 			// TODO: Verify if this is the right behavior.
 			if (string.IsNullOrEmpty(automationId))
 			{
@@ -187,23 +190,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 		}
 		// TODO: aria-valuenow, aria-valuemin, aria-valuemax for Slider
 
-		return NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, child.IsFocusable, ariaChecked, child.Visual.IsVisible);
+		return NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible);
 	}
 
 	private void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle)
 	{
 		NativeMethods.RemoveSemanticElement(parentHandle, childHandle);
-	}
-
-	// Important to keep this static to avoid memory leaks.
-	// Otherwise, proper event un-subscription will be needed.
-	private static void AutomationPeer_OnPropertyChanged(UIElement element, AutomationProperty automationProperty, object value)
-	{
-		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty)
-		{
-			var ariaChecked = ConvertToAriaChecked((ToggleState)value);
-			NativeMethods.UpdateAriaChecked(element.Visual.Handle, ariaChecked);
-		}
 	}
 
 	private static string? ConvertToAriaChecked(ToggleState isChecked)
@@ -227,7 +219,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 		};
 	}
 
-	internal void OnAutomationIdChanged(UIElement element, string automationId)
+	private void OnAutomationNameChanged(UIElement element, string automationId)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
@@ -235,6 +227,36 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility
 
 	public void AnnouncePolite(string text)
 		=> NativeMethods.AnnouncePolite(text);
+
+	public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+	{
+		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
+			TryGetPeerOwner(peer, out var element))
+		{
+			var ariaChecked = ConvertToAriaChecked((ToggleState)newValue);
+			NativeMethods.UpdateAriaChecked(element.Visual.Handle, ariaChecked);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.NameProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			OnAutomationNameChanged(element, (string)newValue);
+		}
+	}
+
+	public bool ListenerExistsHelper(AutomationEvents eventId)
+		=> IsAccessibilityEnabled;
+
+	private static bool TryGetPeerOwner(AutomationPeer peer, [NotNullWhen(true)] out UIElement? owner)
+	{
+		if (peer is FrameworkElementAutomationPeer { Owner: { } element })
+		{
+			owner = element;
+			return true;
+		}
+
+		owner = null;
+		return false;
+	}
 
 	private static partial class NativeMethods
 	{

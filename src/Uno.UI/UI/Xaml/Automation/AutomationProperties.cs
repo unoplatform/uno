@@ -8,8 +8,6 @@ namespace Microsoft.UI.Xaml.Automation
 {
 	public sealed partial class AutomationProperties
 	{
-		internal static Action<UIElement, string> OnAutomationIdChangedCallback;
-
 		#region Name
 
 		public static void SetName(DependencyObject element, string value)
@@ -33,6 +31,14 @@ namespace Microsoft.UI.Xaml.Automation
 
 		private static void OnNamePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+#if __SKIA__
+			if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+				dependencyObject is UIElement element && // TODO: Adjust when TextElement's automation peers are supported.
+				element.GetOrCreateAutomationPeer() is { } peer)
+			{
+				AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.NameProperty, args.OldValue, args.NewValue);
+			}
+#endif
 		}
 
 		#endregion
@@ -161,11 +167,6 @@ namespace Microsoft.UI.Xaml.Automation
 						("aria-label", (string)args.NewValue),
 						("role", role));
 				}
-			}
-#elif __SKIA__
-			if (OperatingSystem.IsBrowser() && dependencyObject is UIElement uiElement)
-			{
-				OnAutomationIdChangedCallback?.Invoke(uiElement, (string)args.NewValue);
 			}
 #endif
 		}
