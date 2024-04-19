@@ -3,7 +3,7 @@ uid: Uno.Authoring.Tests
 ---
 # How-To: Creating an application with tests
  
-This tutorial will walk through how to create an Uno application with tests.
+This tutorial will walk through how to create an [Uno application with tests](https://platform.uno/docs/articles/getting-started/wizard/using-wizard.html#10-testing).
 
 > [!NOTE]
 > Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
