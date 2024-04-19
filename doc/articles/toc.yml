@@ -154,6 +154,8 @@
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
         href: guides/how-to-add-platforms-existing-project.md
+      - name: Getting Started With Tests
+        href: xref:Uno.Authoring.Tests
       - name: Logging
         href: logging.md
       - name: AppManifest (WebAssembly)
