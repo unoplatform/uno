@@ -23,7 +23,7 @@ internal static partial class AccessibilityAnnouncer
 
 	public static void AnnouncePolite(string text)
 	{
-		if (AccessibilityImpl?.IsAccessibilityEnabled == true)
+		if (text is not null && AccessibilityImpl?.IsAccessibilityEnabled == true)
 		{
 			AccessibilityImpl.AnnouncePolite(text);
 		}
@@ -33,7 +33,7 @@ internal static partial class AccessibilityAnnouncer
 	// we will support AutomationLiveSetting
 	public static void AnnounceAssertive(string text)
 	{
-		if (AccessibilityImpl?.IsAccessibilityEnabled == true)
+		if (text is not null && AccessibilityImpl?.IsAccessibilityEnabled == true)
 		{
 			AccessibilityImpl.AnnounceAssertive(text);
 		}
