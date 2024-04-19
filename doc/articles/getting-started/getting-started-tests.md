@@ -3,7 +3,7 @@ uid: Uno.Authoring.Tests
 ---
 # How-To: Creating an application with tests
  
-This tutorial will walk through how to create an [Uno application with tests](https://platform.uno/docs/articles/getting-started/wizard/using-wizard.html#10-testing).
+This tutorial will guide you through the process of creating an [Uno application along with tests](xref:Uno.GettingStarted.UsingWizard#10-testing).
 
 > [!NOTE]
 > Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
@@ -27,9 +27,9 @@ The generated solution will contain:
  
 ## 3. Running the Unit Tests
  
-* Right click the project inside Tests\\MyProjectName.Tests to open the context menu
+* In the Solution Explorer within Visual Studio, navigate to the *Tests* folder, and right-click on `MyProjectName.Tests`.
  
-* Select *Run Tests*
+* From the context menu that appears, select *Run Tests*.
  
    The application will be compiled and the test cases will run.
  
@@ -38,13 +38,13 @@ The generated solution will contain:
  
 ## 4. Running the UI tests
  
-* As demonstrated on step 3, select the **WebAssembly** target from the drop-down.
+* As demonstrated on step 2, select the **MyProjectName (WebAssembly)** target from the drop-down.
  
 * Press Ctrl + F5 to start the WASM project without debugging.
  
 * Once the application is compiled, it will launch inside your default browser. Take note of the URL which should look something like this: https://localhost:5000/Main
  
-* Find the project *Tests\\MyProjectName.UI.Tests* and locate the *Constants.cs* file.
+* In the Solution Explorer, go to the *Tests* folder, open the `MyProjectName.UI.Tests` project, and locate the Constants.cs file.
  
 * Open *Constants.cs* and update the WebAssemblyDefaultUri constant.
  
@@ -54,6 +54,6 @@ The generated solution will contain:
     public readonly static string WebAssemblyDefaultUri = "https://localhost:5000/";
     ```
  
-* Go back to the project *Tests\\MyProjectName.UI.Tests* and right click. Then, *Run Tests*.
+* Go back to the Solution Explorer, navigate to the *Tests* folder, right-click on the `MyProjectName.UI.Tests` project, and then select *Run Tests*.
  
     ![Test Explorer in VS](Assets/TestExplorer-min.png)
