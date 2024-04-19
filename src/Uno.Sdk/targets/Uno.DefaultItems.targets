@@ -30,7 +30,7 @@
 			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Content)"
 			IsDefaultItem="true" />
 		<Page Include="**\*.xaml"
-			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Page)"
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Page);App.xaml"
 			IsDefaultItem="true" />
 		<Compile Update="**\*.xaml.cs"
 			DependentUpon="%(Filename)"
