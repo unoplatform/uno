@@ -19,7 +19,7 @@ Updating the Uno.Sdk is [done through the global.json file](xref:Uno.Development
 
 ## Uno Platform Features
 
-As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to simplify which Uno Platform features should be enabled. This
+As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to simplify which Uno Platform features should be enabled.
 
 You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props` as shown here:
 
