@@ -152,7 +152,7 @@
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
 							IntermediateOutputPath="$(IntermediateOutputPath)"
-							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
+							ContentItems="@(ContentWithTargetPath);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 							IosAppManifest="$(_UnoIosAppManifest)"
 							Condition="'$(XamarinProjectType)'!=''">

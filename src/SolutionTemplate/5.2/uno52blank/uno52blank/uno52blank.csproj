@@ -43,4 +43,11 @@
           Condition="!exists('$(OutputPath)\Assets\SharedAssets.md')" />
   </Target>
 
+  <!-- fail the build if a BundleResource.LogicalName contains a rooted path -->
+  <Target Name="ValidateBundleResourceLogicalName" AfterTargets="AfterBuild">
+    <Error 
+      Condition="'%(BundleResource.LogicalName)' != '' And $([System.IO.Path]::IsPathRooted('%(BundleResource.LogicalName)'))" 
+      Text="BundleResource.LogicalName must not contain a rooted path" />
+  </Target>
+
 </Project>
