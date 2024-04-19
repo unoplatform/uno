@@ -28,7 +28,6 @@
 		<ItemGroup>
 			<PackageReference Remove="@(PackageReference)"
 				Condition="%(PackageReference.ProjectSystem) != ''" />
-			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference" />
 		</ItemGroup>
 
 		<ImplicitPackagesResolver_v0
@@ -41,6 +40,7 @@
 				IsPackable="$(IsPackable)"
 				TargetFramework="$(TargetFramework)"
 				ProjectName="$(MSBuildProjectName)"
+				ImplicitPackageReferences="@(ImplicitPackageReference)"
 				PackageReferences="@(PackageReference)"
 				PackageVersions="@(PackageVersion)"
 				MauiVersion="$(MauiVersion)"
@@ -80,6 +80,7 @@
 		</ImplicitPackagesResolver_v0>
 
 		<ItemGroup>
+			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference" />
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
 			<_UnoImplicitPackageReference Remove="@(_UnoImplicitPackageReference)" />
