@@ -602,10 +602,10 @@ namespace Microsoft.UI.Xaml
 #if TRACE_ROUTED_EVENT_BUBBLING
 			global::System.Diagnostics.Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}-{args?.GetHashCode():X8}] (ctx: {ctx}){(this is Microsoft.UI.Xaml.Controls.ContentControl ctrl ? ctrl.DataContext : "")}\r\n");
 #endif
-			global::System.Diagnostics.Debug.Assert(routedEvent.Flag == RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
+			global::System.Diagnostics.Debug.Assert(routedEvent.Flag != RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
 
 #if !__WASM__
-			global::System.Diagnostics.Debug.Assert(routedEvent.IsTunnelingEvent, $"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");
+			global::System.Diagnostics.Debug.Assert(!routedEvent.IsTunnelingEvent, $"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");
 #endif
 
 			// TODO: This is just temporary workaround before proper
@@ -694,7 +694,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void RaiseTunnelingEvent(RoutedEvent routedEvent, RoutedEventArgs args)
 		{
-			global::System.Diagnostics.Debug.Assert(!routedEvent.IsTunnelingEvent, $"Event {routedEvent.Name} is not marked as a tunneling event.");
+			global::System.Diagnostics.Debug.Assert(routedEvent.IsTunnelingEvent, $"Event {routedEvent.Name} is not marked as a tunneling event.");
 
 			// TODO: This is just temporary workaround before proper
 			// keyboard event infrastructure is implemented everywhere
