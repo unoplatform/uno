@@ -119,6 +119,10 @@
 		<DefineConstants>$(DefineConstants);IS_CI</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true' OR '$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);IS_CI_OR_DEBUG</DefineConstants>
+	</PropertyGroup>
+
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"
 		  DependsOnTargets="BuiltProjectOutputGroup"

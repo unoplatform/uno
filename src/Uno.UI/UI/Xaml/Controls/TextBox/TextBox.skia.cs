@@ -115,7 +115,7 @@ public partial class TextBox
 		}
 		else
 		{
-			global::System.Diagnostics.Debug.Assert(!_isSkiaTextBox || _selection.length == 0);
+			global::System.Diagnostics.CI.Assert(!_isSkiaTextBox || _selection.length == 0);
 			_historyIndex++;
 			_history.RemoveAllAt(_historyIndex);
 			_history.Add(new HistoryRecord(
@@ -1017,7 +1017,7 @@ public partial class TextBox
 		}
 
 		var lines = DisplayBlockInlines.GetLineIntervals();
-		global::System.Diagnostics.Debug.Assert(lines.Count > 0);
+		global::System.Diagnostics.CI.Assert(lines.Count > 0);
 
 		var end = selectionStart + selectionLength;
 
@@ -1355,7 +1355,7 @@ public partial class TextBox
 			case SentinelAction:
 				break;
 			default:
-				global::System.Diagnostics.Debug.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+				global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
@@ -1393,7 +1393,7 @@ public partial class TextBox
 			case SentinelAction:
 				break;
 			default:
-				global::System.Diagnostics.Debug.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+				global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
