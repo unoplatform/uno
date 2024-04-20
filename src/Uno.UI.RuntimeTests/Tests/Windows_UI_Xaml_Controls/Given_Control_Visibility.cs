@@ -8,6 +8,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
+using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
+using TeachingTip = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTip;
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
@@ -33,7 +36,9 @@ public class Given_Control_Visibility
 					type == typeof(Slider) ||
 					type == typeof(SwipeControl) ||
 					type == typeof(TeachingTip) ||
+#if HAS_UNO
 					type == typeof(CalendarViewItem) ||
+#endif
 					type == typeof(ColorPickerSlider))
 				{
 					continue;
