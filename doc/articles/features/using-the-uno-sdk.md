@@ -4,14 +4,14 @@ uid: Uno.Features.Uno.Sdk
 
 # Using the Uno.Sdk
 
-Uno Platform projects use the Uno.Sdk, and msbuild package designed to keep projects simple, yet configurable. It inherits from the `Microsoft.Net.Sdk` and `Microsoft.Net.Sdk.Web` depending on the platform.
+Uno Platform projects use the Uno.Sdk package designed to keep projects simple, yet configurable. It import the `Microsoft.Net.Sdk` (and the `Microsoft.Net.Sdk.Web` for WebAssembly).
 
 This document explains the many features of this SDK, and how to configure its behavior.
 
 > [!NOTE]
 > The Uno.Sdk only supports the WinUI API set.
 > [!TIP]
-> The Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
+> Beginning with 5.2, Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
 
 ## Managing the Uno.Sdk version
 
@@ -19,9 +19,9 @@ Updating the Uno.Sdk is [done through the global.json file](xref:Uno.Development
 
 ## Uno Platform Features
 
-As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to specify which Uno Platform features should be enabled.
+As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to simplify which Uno Platform features should be enabled.
 
-In the csproj of an app, you will find the following property:
+You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props` as shown here:
 
 ```xml
 <UnoFeatures>
@@ -101,6 +101,9 @@ Here are the supported properties:
 - `UnoUniversalImageLoaderVersion`
 - `UnoWasmBootstrapVersion`
 
+> [!NOTE]
+> In the 5.2 version of the Uno.Sdk you must provide a value for `UnoExtensionsVersion`, `UnoThemesVersion`, `UnoToolkitVersion` and `UnoCSharpMarkupVersion` in order to use the packages associated with the UnoFeatures from these libraries as they are downstream dependencies of the Uno repository.
+
 ## [**Third Party Packages**](#tab/3rd-party-packages)
 
 - `AndroidMaterialVersion`
@@ -117,15 +120,19 @@ Here are the supported properties:
 - `MicrosoftLoggingVersion`
 - `PrismVersion`
 - `SkiaSharpVersion`
+- `SvgSkiaVersion`
 - `WinAppSdkBuildToolsVersion`
 - `WinAppSdkVersion`
 - `WindowsCompatibilityVersion`
 
 ***
 
-Those properties can be set from `Directory.Build.props`.
+Those properties can be set from `Directory.Build.props` or may be set in the `csproj` file for your project.
 
-If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file. You will be then able to manually add the NuGet packages for your project.
+If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
+
+> [!NOTE]
+> When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
 
 ## Supported OS Platform versions
 
@@ -140,6 +147,37 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | WinUI | 10.0.18362.0 |
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
+
+```xml
+ <Choose>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$(TargetFramework.Contains('windows10'))">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
+        <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+      </PropertyGroup>
+    </When>
+  </Choose>
+```
 
 ## Visual Studio 2022 First-TargetFramework workarounds
 

@@ -35,16 +35,48 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../uno52Lib/uno52Lib.csproj" />
+    <ProjectReference Include="../uno52lib/uno52lib.csproj" />
   </ItemGroup>
 
   <Target Name="_UnoValidateSelfAssets"
-          BeforeTargets="AfterBuild"
-          Condition="'$(TargetFramework)'=='$(DotNetVersion)-windows10.0.19041'">
+          BeforeTargets="AfterBuild">
 
-    <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
-    <Error Text="Missing asset $(OutputPath)\Assets\SharedAssets.md"
-          Condition="!exists('$(OutputPath)\Assets\SharedAssets.md')" />
+      <ItemGroup
+          Condition=" '$(TargetFramework)' == 'net8.0-windows10.0.19041' OR '$(TargetFramework)' == 'net8.0-desktop' ">
+        <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
+        <_AssetsToValidate Include="$(OutputPath)Assets\SharedAssets.md" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-100.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-125.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-150.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-200.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-300.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-400.png" />
+
+        <!-- Transitive library asset -->
+        <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\test.xml" />
+        <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\icon_lib.png" />
+      </ItemGroup>
+
+      <ItemGroup
+          Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-100.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-125.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-150.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-200.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-300.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
+
+        <!-- Transitive library asset -->
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\test.xml" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\icon_lib.png" />
+      </ItemGroup>
+
+    <Error Text="Missing asset %(_AssetsToValidate.Identity)"
+          Condition="'@(_AssetsToValidate)'!='' AND !exists('%(_AssetsToValidate.Identity)')" />
+
   </Target>
 
 </Project>

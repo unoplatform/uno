@@ -55,21 +55,14 @@ internal class PackageManifest
 
 	public List<ManifestGroup> Manifest { get; private set; }
 
-	public string? GetPackageVersion(string packageId, string? userSpecifiedVersion)
+	public string? GetPackageVersion(string packageId)
 	{
-		if (!string.IsNullOrEmpty(userSpecifiedVersion))
-		{
-			_log.LogMessage(MessageImportance.Low, "Using user specified package version '{0}' for the package '{1}'.", userSpecifiedVersion, packageId);
-			return userSpecifiedVersion;
-		}
-
 		var group = _defaultManifest.SingleOrDefault(group => group.Packages.Any(p => p.Equals(packageId, System.StringComparison.InvariantCultureIgnoreCase)));
 		if (group is null)
 		{
 			_log.LogMessage(MessageImportance.Normal, "Could not locate a package version for the package '{0}'.", packageId);
 			return null;
 		}
-
 		return GetGroupVersion(group);
 	}
 
@@ -124,10 +117,6 @@ internal class PackageManifest
 		return this;
 	}
 
-	public string? GetPackageVersion(string packageId) =>
-		Manifest.SingleOrDefault(group => group.Packages.Any(p => p.Equals(packageId, StringComparison.InvariantCulture)))
-			?.Version;
-
 	private string? GetGroupVersion(string groupName)
 	{
 		var group = Manifest.SingleOrDefault(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
@@ -148,6 +137,7 @@ internal class PackageManifest
 		public const string Dsp = nameof(Dsp);
 		public const string Resizetizer = nameof(Resizetizer);
 		public const string SkiaSharp = nameof(SkiaSharp);
+		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
