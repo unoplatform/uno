@@ -49,12 +49,6 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - script: |
-      cp global.json global-net7.json
-      cp global-net8.json global.json
-    displayName: Replace global.json with .NET 8
-    condition: and(succeeded(), eq(variables.UnoDisableNetPreviousMobile, 'true'))
-
   - template: templates/dotnet-mobile-install-windows.yml
 
   # This task is required to run in separately to avoid hitting targets file

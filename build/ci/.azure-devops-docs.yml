@@ -25,10 +25,9 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet-install.yml
+  - template: templates/dotnet-mobile-install-windows.yml
 
   - template: templates/gitversion.yml
-  - template: templates/dotnet-mobile-install-windows.yml
   - template: templates/jdk-setup.yml
 
   - task: MSBuild@1

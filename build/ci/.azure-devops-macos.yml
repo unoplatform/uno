@@ -14,6 +14,9 @@ jobs:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
 
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -34,7 +37,7 @@ jobs:
 
   - script: |
       cd src/SamplesApp/SamplesApp.netcoremobile
-      dotnet build -f net7.0-macos -r osx-x64 -c Release -p:UnoTargetFrameworkOverride=net7.0-macos -p:CreatePackage=true -p:EnableCodeSigning=false -p:UnoDisableNetCurrentMobile=true /p:UnoDisableNetCurrent=true /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/macos-netcoremobile-sampleapp.binlog
+      dotnet build -f net7.0-macos -r osx-x64 -c Release -p:UnoTargetFrameworkOverride=net7.0-macos -p:CreatePackage=true -p:EnableCodeSigning=false /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/macos-netcoremobile-sampleapp.binlog
     displayName: 'Build Sample app'
 
   - task: CopyFiles@2

@@ -29,12 +29,12 @@ jobs:
 
     - name: Pin .NET Version
       run: |
-        (Get-Content global.json).replace("latestFeature", "disable") | Set-Content global.json
+        (Get-Content build/ci/net7/global.json).replace("latestFeature", "disable") | Set-Content build/ci/net7/global.json
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        global-json-file: global.json
+        global-json-file: build/ci/net7/global.json
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.15
