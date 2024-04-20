@@ -7,7 +7,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
+
+#if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
