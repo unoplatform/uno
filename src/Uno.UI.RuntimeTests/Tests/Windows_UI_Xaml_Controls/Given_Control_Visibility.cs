@@ -7,9 +7,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
-
-using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
-using TeachingTip = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTip;
 using Uno.UI.WinRT.Extensions.UI.Popups;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -18,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_Control_Visibility
 {
+#if HAS_UNO_WINUI
 	[TestMethod]
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16369")]
 	public async Task When_Visibility_Changes()
@@ -50,6 +48,10 @@ public class Given_Control_Visibility
 #if __ANDROID__
 					// RefreshContainer requires a control of type NativeRefreshControl in its hierarchy.
 					type == typeof(RefreshContainer) ||
+#endif
+#if __IOS__
+					// Native implementation not found. Make sure FlipView has a style which contains an ItemsPanel of type {nameof(PagedCollectionView)}.
+					type == typeof(FlipView) ||
 #endif
 					type == typeof(ColorPickerSlider))
 				{
@@ -109,4 +111,5 @@ public class Given_Control_Visibility
 			}
 		}
 	}
+#endif
 }
