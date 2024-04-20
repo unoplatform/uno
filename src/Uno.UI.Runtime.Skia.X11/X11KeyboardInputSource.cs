@@ -45,7 +45,7 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 			}
 
 			var symbols = System.Text.Encoding.UTF8.GetString(buffer, nbytes); // According to the docs, this should be ISO Latin-1 or ASCII
-			if (string.IsNullOrEmpty(symbols) || char.IsControl(symbols[0]))
+			if (string.IsNullOrEmpty(symbols) || (symbols != "\r" && char.IsControl(symbols[0])))
 			{
 				symbols = null;
 			}
