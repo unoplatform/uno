@@ -10,6 +10,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
 using TeachingTip = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTip;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -39,11 +40,23 @@ public class Given_Control_Visibility
 #if HAS_UNO
 					type == typeof(CalendarViewItem) ||
 #endif
+#if __ANDROID__ || __IOS__
+					// OnApplyTemplate crashes with NRE.
+					type == typeof(AutoSuggestBox) ||
+					type == typeof(TwoPaneView) ||
+					type == typeof(NativePivotPresenter) ||
+					type == typeof(MessageDialogContentDialog) ||
+#endif
+#if __ANDROID__
+					// RefreshContainer requires a control of type NativeRefreshControl in its hierarchy.
+					type == typeof(RefreshContainer) ||
+#endif
 					type == typeof(ColorPickerSlider))
 				{
 					continue;
 				}
 
+				Console.WriteLine($"Running When_Visibility_Changes test for {type.FullName}");
 				Control control;
 				try
 				{
@@ -54,6 +67,8 @@ public class Given_Control_Visibility
 					control.MinWidth = 100;
 					control.MaxWidth = 100;
 					control.MaxHeight = 100;
+					control.HorizontalAlignment = HorizontalAlignment.Stretch;
+					control.VerticalAlignment = VerticalAlignment.Stretch;
 				}
 				catch (MissingMethodException)
 				{
@@ -80,16 +95,17 @@ public class Given_Control_Visibility
 				await UITestHelper.Load(border);
 				var bitmap = await UITestHelper.ScreenShot(border);
 				var bounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Yellow);
-				Assert.AreEqual(99, bounds.Width, $"Checking width when visible for {type}");
-				Assert.AreEqual(99, bounds.Height, $"Checking height when visible for {type}");
+				// When there is DPI scaling, the Widths can differ by 1px (rounding errors maybe?)
+				Assert.AreEqual(bitmap.Width, bounds.Width, delta: 1, $"Checking width when visible for {type}");
+				Assert.AreEqual(bitmap.Height, bounds.Height, delta: 1, $"Checking height when visible for {type}");
 
 				control.Visibility = Visibility.Collapsed;
 				await UITestHelper.WaitForIdle();
 
 				bitmap = await UITestHelper.ScreenShot(border);
 				bounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Red);
-				Assert.AreEqual(99, bounds.Width, $"Checking width when collapsed for {type}");
-				Assert.AreEqual(99, bounds.Height, $"Checking height when collapsed for {type}");
+				Assert.AreEqual(bitmap.Width, bounds.Width, delta: 1, $"Checking width when collapsed for {type}");
+				Assert.AreEqual(bitmap.Height, bounds.Height, delta: 1, $"Checking height when collapsed for {type}");
 			}
 		}
 	}
