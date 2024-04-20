@@ -54,8 +54,8 @@
         <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-400.png" />
 
         <!-- Transitive library asset -->
-        <_AssetsToValidate Include="$(OutputPath)\uno52Lib\Assets\test.xml" />
-        <_AssetsToValidate Include="$(OutputPath)\uno52Lib\Assets\icon_lib.png" />
+        <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\test.xml" />
+        <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\icon_lib.png" />
       </ItemGroup>
 
       <ItemGroup
@@ -70,8 +70,8 @@
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
 
         <!-- Transitive library asset -->
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52Lib\Assets\test.xml" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52Lib\Assets\icon_lib.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\test.xml" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\icon_lib.png" />
       </ItemGroup>
 
     <Error Text="Missing asset %(_AssetsToValidate.Identity)"
