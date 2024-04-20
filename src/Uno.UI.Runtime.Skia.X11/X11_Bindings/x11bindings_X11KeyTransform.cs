@@ -37,6 +37,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{ X11Key.Cancel, VirtualKey.Cancel },
 			{ X11Key.BackSpace, VirtualKey.Back },
 			{ X11Key.Tab, VirtualKey.Tab },
+			{ X11Key.ISO_Left_Tab, VirtualKey.Tab },
 			// {X11Key.Linefeed, VirtualKey.LineFeed},
 			{ X11Key.Clear, VirtualKey.Clear },
 			{ X11Key.Return, VirtualKey.Enter },
