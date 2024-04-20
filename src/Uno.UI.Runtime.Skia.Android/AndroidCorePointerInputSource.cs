@@ -111,12 +111,22 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
+					if (pointerType == Windows.Devices.Input.PointerDeviceType.Touch)
+					{
+						PointerEntered?.Invoke(this, args);
+					}
+
 					PointerPressed?.Invoke(this, args);
 					break;
 
 				case MotionEventActions.Cancel:
 				case MotionEventActions.Up:
 					PointerReleased?.Invoke(this, args);
+
+					if (pointerType == Windows.Devices.Input.PointerDeviceType.Touch)
+					{
+						PointerExited?.Invoke(this, args);
+					}
 					break;
 
 				default:
