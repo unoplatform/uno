@@ -76,4 +76,16 @@ internal readonly struct NuGetVersion : IComparable<NuGetVersion>
 		// If both are previews or both are stable, maintain their order (consider them equal in terms of sorting)
 		return 0;
 	}
+
+	public static bool operator <(NuGetVersion left, NuGetVersion right) =>
+		left.CompareTo(right) < 0;
+
+	public static bool operator >(NuGetVersion left, NuGetVersion right) =>
+		left.CompareTo(right) > 0;
+
+	public static bool operator <=(NuGetVersion left, NuGetVersion right) =>
+		left.CompareTo(right) <= 0;
+
+	public static bool operator >=(NuGetVersion left, NuGetVersion right) =>
+		left.CompareTo(right) >= 0;
 }

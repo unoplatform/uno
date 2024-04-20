@@ -14,6 +14,7 @@ internal record PackageReference(string PackageId, string Version, string? Exclu
 		};
 		taskItem.SetMetadata(nameof(Version), Version);
 		taskItem.SetMetadata("IsImplicitlyDefined", bool.TrueString);
+		taskItem.SetMetadata("Sdk", "Uno");
 		if (!string.IsNullOrEmpty(ExcludeAssets))
 		{
 			taskItem.SetMetadata(nameof(ExcludeAssets), ExcludeAssets);

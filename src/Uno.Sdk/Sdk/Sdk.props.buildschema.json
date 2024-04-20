@@ -141,6 +141,122 @@
 			"description": "Disables modification of MtouchExtraArgs for Debugging.",
 			"helpUrl": "https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7",
 			"type": "bool"
+		},
+		"MauiVersion": {
+			"description": "Provides an explicit override for the version of .NET MAUI to use with MAUI Embedding.",
+			"type": "nuget-version"
+		},
+		"UnoExtensionsVersion": {
+			"description": "Provides an explicit override for the version of Uno Extensions to use.",
+			"type": "nuget-version"
+		},
+		"UnoToolkitVersion": {
+			"description": "Provides an explicit override for the version of Uno Toolkit to use.",
+			"type": "nuget-version"
+		},
+		"UnoThemesVersion": {
+			"description": "Provides an explicit override for the version of Uno Themes to use.",
+			"type": "nuget-version"
+		},
+		"UnoCSharpMarkupVersion": {
+			"description": "Provides an explicit override for the version of C# Markup to use.",
+			"type": "nuget-version"
+		},
+		"SkiaSharpVersion": {
+			"description": "Provides an explicit override for the version of SkiaSharp to use.",
+			"type": "nuget-version"
+		},
+		"SvgSkiaVersion": {
+			"description": "Provides an explicit override for the version of Svg.Skia to use.",
+			"type": "nuget-version"
+		},
+		"UnoLoggingVersion": {
+			"description": "Provides an explicit override for the version of Uno Logging to use.",
+			"type": "nuget-version"
+		},
+		"WindowsCompatibilityVersion": {
+			"description": "Provides an explicit override for the version of Windows.Compatibility to use.",
+			"type": "nuget-version"
+		},
+		"UnoWasmBootstrapVersion": {
+			"description": "Provides an explicit override for the version of the Uno.Wasm.Bootstrap packages to use.",
+			"type": "nuget-version"
+		},
+		"UnoUniversalImageLoaderVersion": {
+			"description": "Provides an explicit override for the version of the Uno.UniversalImageLoader packages to use.",
+			"type": "nuget-version"
+		},
+		"AndroidMaterialVersion": {
+			"description": "Provides an explicit override for the version of Android Material to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXLegacySupportV4Version": {
+			"description": "Provides an explicit override for the version of AndroidX.Legacy.Support.V4 to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXAppCompatVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.AppCompat to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXRecyclerViewVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.RecyclerView to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXActivityVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Activity to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXBrowserVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Browser to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXSwipeRefreshLayoutVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.SwipeRefreshLayout to use.",
+			"type": "nuget-version"
+		},
+		"UnoResizetizerVersion": {
+			"description": "Provides an explicit override for the version of Uno.Resizetizer to use.",
+			"type": "nuget-version"
+		},
+		"MicrosoftLoggingVersion": {
+			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging to use.",
+			"type": "nuget-version"
+		},
+		"WinAppSdkVersion": {
+			"description": "Provides an explicit override for the version of the Microsoft.WindowsAppSDK to use.",
+			"type": "nuget-version"
+		},
+		"WinAppSdkBuildToolsVersion": {
+			"description": "Provides an explicit override for the version of the Microsoft.Windows.SDK.BuildTools to use.",
+			"type": "nuget-version"
+		},
+		"UnoCoreLoggingSingletonVersion": {
+			"description": "Provides an explicit override for the version of Uno.Core.Logging.Singleton to use.",
+			"type": "nuget-version"
+		},
+		"UnoDspTasksVersion": {
+			"description": "Provides an explicit override for the version of Uno.Dsp.Tasks to use.",
+			"type": "nuget-version"
+		},
+		"CommunityToolkitMvvmVersion": {
+			"description": "Provides an explicit override for the version of the CommunityToolkit.Mvvm to use.",
+			"type": "nuget-version"
+		},
+		"PrismVersion": {
+			"description": "Provides an explicit override for the version of Prism to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXNavigationVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Navigation to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXCollectionVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Collection to use.",
+			"type": "nuget-version"
+		},
+		"MicrosoftIdentityClientVersion": {
+			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
+			"type": "nuget-version"
 		}
 	},
 	"metadata": [

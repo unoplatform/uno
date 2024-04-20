@@ -6,7 +6,7 @@
 	-->
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
 
-	<ItemGroup Condition="$(_IsExecutable) == 'true'">
+	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebAssembly" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';MediaElement;'))"/>
 		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.Compatibility" ProjectSystem="true" />
@@ -14,4 +14,9 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap.DevServer" ProjectSystem="true" />
 	</ItemGroup>
+
+	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.WebAssembly" ProjectSystem="true" />
+	</ItemGroup>
+	
 </Project>
