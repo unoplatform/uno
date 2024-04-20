@@ -17,6 +17,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Input.Preview.Injection;
+using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -451,6 +453,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public static async Task When_ScrollWheel()
+		{
+			var flipView = new FlipView()
+			{
+				Width = 100,
+				Height = 100,
+				Items =
+				{
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+					},
+				}
+			};
+
+			var rect = await UITestHelper.Load(flipView);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var mouse = injector.GetMouse();
+			mouse.MoveTo(rect.GetCenter().X, rect.GetCenter().Y);
+			const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200 + 50; // 50ms margin to reduce flakiness
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(1, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(1, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(0, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(0, flipView.SelectedIndex);
+		}
+#endif
 	}
 
 #if __SKIA__ || __WASM__
