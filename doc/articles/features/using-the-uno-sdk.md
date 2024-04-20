@@ -102,7 +102,7 @@ Here are the supported properties:
 - `UnoWasmBootstrapVersion`
 
 > [!NOTE]
-> In the 5.2 version of the Uno.Sdk you must provide a value for `UnoExtensionsVersion`, `UnoThemesVersion`, `UnoToolkitVersion` and `UnoCSharpMarkupVersion` in order to use the packages associated with the UnoFeatures from these libraries as they are down stream dependencies of the Uno repository.
+> In the 5.2 version of the Uno.Sdk you must provide a value for `UnoExtensionsVersion`, `UnoThemesVersion`, `UnoToolkitVersion` and `UnoCSharpMarkupVersion` in order to use the packages associated with the UnoFeatures from these libraries as they are downstream dependencies of the Uno repository.
 
 ## [**Third Party Packages**](#tab/3rd-party-packages)
 

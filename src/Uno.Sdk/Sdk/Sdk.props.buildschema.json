@@ -175,7 +175,7 @@
 			"type": "nuget-version"
 		},
 		"WindowsCompatibilityVersion": {
-			"description": "Provides an explicit override for the version of Windows.Compatability to use.",
+			"description": "Provides an explicit override for the version of Windows.Compatibility to use.",
 			"type": "nuget-version"
 		},
 		"UnoWasmBootstrapVersion": {
