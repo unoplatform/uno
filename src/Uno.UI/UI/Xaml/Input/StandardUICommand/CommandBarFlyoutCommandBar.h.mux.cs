@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -28,7 +29,7 @@ partial class CommandBarFlyoutCommandBar
 
 	internal bool m_commandBarFlyoutIsOpening;
 
-	private bool HasVisibleLabel(TCommand command)
+	private bool HasVisibleLabel(IAppBarCommand? command)
 	{
 		return command is not null &&
 			!string.IsNullOrEmpty(command.Label) &&
@@ -72,13 +73,14 @@ partial class CommandBarFlyoutCommandBar
 	private IList<Control>? m_horizontallyAccessibleControls;
 	private IList<Control>? m_verticallyAccessibleControls;
 
-	private FrameworkElement m_outerOverflowContentRootV2;
-	private FrameworkElement m_primaryItemsSystemBackdropRoot;
-	private FrameworkElement m_overflowPopupSystemBackdropRoot;
+	private FrameworkElement? m_outerOverflowContentRootV2;
+	private FrameworkElement? m_primaryItemsSystemBackdropRoot;
+	private FrameworkElement? m_overflowPopupSystemBackdropRoot;
 
 	// These ContentExternalBackdropLink objects implement the backdrop behind the CommandBarFlyoutCommandBar. We don't
 	// use the one built into Popup because we need to animate this backdrop using Storyboards in the CBFCB's template.
 	// The one built into Popup is too high up in the Visual tree to be animated by a custom animation.
+#if !HAS_UNO // SystemBackdrop is not yet supported
 	private ContentExternalBackdropLink m_backdropLink;
 	private ContentExternalBackdropLink m_overflowPopupBackdropLink;
 
@@ -87,6 +89,7 @@ partial class CommandBarFlyoutCommandBar
 	// dtor, so we cache a copy for ourselves to use during cleanup. Another possibility is to do cleanup during Closed,
 	// but the app can release and delete this CommandBarFlyoutCommandBar without ever closing it.
 	private ManagedWeakReference m_systemBackdrop;
+#endif
 
 	// Localized string caches. Looking these up from MRTCore is expensive, so we don't want to put the lookups in a
 	// loop. Instead, look them up once, cache them, use the cached values, then clear the cache. The values in these
