@@ -9,7 +9,7 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<Image Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
+	<Image x:Name="image1" Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
 				   Width="100"
 				   Height="100"
 				   Stretch="Uniform" />

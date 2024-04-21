@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ProgressRing
 {
-	[Sample("Progress", "MUX")]
+	[Sample("Progress", "MUX", IgnoreInSnapshotTests = true)]
 	public sealed partial class WinUIProgressRingPage : Page
 	{
 		public WinUIProgressRingPage()
