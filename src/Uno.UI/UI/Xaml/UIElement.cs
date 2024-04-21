@@ -853,16 +853,15 @@ namespace Microsoft.UI.Xaml
 			var clip = Clip;
 			if (clip is null)
 			{
-				ApplyNativeClip(Rect.Empty);
-				OnViewportUpdated();
+				ApplyNativeClip(Rect.Empty, transform: null);
 			}
 			else
 			{
-				var rect = clip.Rect;
-
-				ApplyNativeClip(rect);
-				OnViewportUpdated();
+				ApplyNativeClip(clip.Rect, clip.Transform);
 			}
+
+			OnViewportUpdated();
+
 #elif __WASM__
 			InvalidateArrange();
 #else
@@ -897,7 +896,11 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		partial void ApplyNativeClip(Rect rect);
+		partial void ApplyNativeClip(Rect rect
+#if __SKIA__
+			, Transform transform
+#endif
+			);
 
 		private protected virtual void OnViewportUpdated(
 #if !__SKIA__

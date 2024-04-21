@@ -340,7 +340,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		partial void ApplyNativeClip(Rect rect)
+		partial void ApplyNativeClip(Rect rect, Transform transform)
 		{
 			if (rect.IsEmpty)
 			{
@@ -361,7 +361,7 @@ namespace Microsoft.UI.Xaml
 					right: (float)roundedRectClip.Right
 				);
 
-				if (Clip.Transform is { } clipTransform)
+				if (transform is { } clipTransform)
 				{
 					compositionClip.TransformMatrix = clipTransform.MatrixCore;
 				}

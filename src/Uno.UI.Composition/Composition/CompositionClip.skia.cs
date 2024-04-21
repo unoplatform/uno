@@ -17,7 +17,7 @@ partial class CompositionClip
 	{
 		if (GetBoundsCore(visual) is { } bounds)
 		{
-			return bounds.Transform(this.TransformMatrix);
+			return TransformMatrix.Transform(bounds);
 		}
 
 		return null;
