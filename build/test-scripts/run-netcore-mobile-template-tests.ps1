@@ -228,6 +228,7 @@ $projects =
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android"), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst"), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop"), $true, $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", "-p:UnoFeatures=Material;Extensions;Toolkit;CSharpMarkup;MVUX;Svg"), $true, $true),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false, $false),
