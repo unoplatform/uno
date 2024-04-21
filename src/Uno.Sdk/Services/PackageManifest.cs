@@ -57,7 +57,7 @@ internal class PackageManifest
 
 	public string? GetPackageVersion(string packageId)
 	{
-		var group = _defaultManifest.SingleOrDefault(group => group.Packages.Any(p => p.Equals(packageId, System.StringComparison.InvariantCultureIgnoreCase)));
+		var group = Manifest.SingleOrDefault(group => group.Packages.Any(p => p.Equals(packageId, System.StringComparison.InvariantCultureIgnoreCase)));
 		if (group is null)
 		{
 			_log.LogMessage(MessageImportance.Normal, "Could not locate a package version for the package '{0}'.", packageId);
