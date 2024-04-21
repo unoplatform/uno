@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\CommandBarFlyout\TextCommandBarFlyout.cpp, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
 
 using System;
 using System.Collections.Generic;
@@ -36,10 +37,8 @@ partial class TextCommandBarFlyout
 			// in this state anyway, but this makes sure we don't have a light-dismiss layer
 			// with nothing visible to light dismiss.
 
-			var showModeIsStandard = ShowMode == FlyoutShowMode.Standard;
-
 			if (PrimaryCommands.Count == 0 &&
-				(SecondaryCommands.Count == 0 || (!m_commandBar.IsOpen && !showModeIsStandard)))
+				(SecondaryCommands.Count == 0 || (!m_commandBar.IsOpen && ShowMode != FlyoutShowMode.Standard)))
 			{
 				Hide();
 			}
@@ -378,33 +377,17 @@ partial class TextCommandBarFlyout
 				buttonsToAdd |= TextControlButtons.Cut;
 			}
 
-			var textBox8 = textBox;
-
-			if (textBox8 is not null)
+			if (textBox.CanPasteClipboardContent)
 			{
-				if (textBox8.CanPasteClipboardContent)
-				{
-					buttonsToAdd |= TextControlButtons.Paste;
-				}
-			}
-			else
-			{
-				DataPackageView clipboardContent = Clipboard.GetContent();
-
-				if (clipboardContent.Contains(StandardDataFormats.Text))
-				{
-					buttonsToAdd |= TextControlButtons.Paste;
-				}
+				buttonsToAdd |= TextControlButtons.Paste;
 			}
 
-			// There's no way to polyfill undo and redo - those are black-box operations that we need
-			// the TextBox to tell us about.
-			if (textBox8 is not null && textBox8.CanUndo)
+			if (textBox.CanUndo)
 			{
 				buttonsToAdd |= TextControlButtons.Undo;
 			}
 
-			if (textBox8 is not null && textBox8.CanRedo)
+			if (textBox.CanRedo)
 			{
 				buttonsToAdd |= TextControlButtons.Redo;
 			}
@@ -448,29 +431,21 @@ partial class TextCommandBarFlyout
 
 		if (!richEditBox.IsReadOnly)
 		{
-			if (richEditBox is { } richEditBox6)
+			var disabledFormattingAccelerators = richEditBox.DisabledFormattingAccelerators;
+
+			if (!disabledFormattingAccelerators.HasFlag(DisabledFormattingAccelerators.Bold))
 			{
-				var disabledFormattingAccelerators = richEditBox6.DisabledFormattingAccelerators;
-
-				if ((disabledFormattingAccelerators & DisabledFormattingAccelerators.Bold) != DisabledFormattingAccelerators.Bold)
-				{
-					buttonsToAdd |= TextControlButtons.Bold;
-				}
-
-				if ((disabledFormattingAccelerators & DisabledFormattingAccelerators.Italic) != DisabledFormattingAccelerators.Italic)
-				{
-					buttonsToAdd |= TextControlButtons.Italic;
-				}
-
-				if ((disabledFormattingAccelerators & DisabledFormattingAccelerators.Underline) != DisabledFormattingAccelerators.Underline)
-				{
-					buttonsToAdd |= TextControlButtons.Underline;
-				}
+				buttonsToAdd |= TextControlButtons.Bold;
 			}
 
-			else
+			if (!disabledFormattingAccelerators.HasFlag(DisabledFormattingAccelerators.Italic))
 			{
-				buttonsToAdd |= TextControlButtons.Bold | TextControlButtons.Italic | TextControlButtons.Underline;
+				buttonsToAdd |= TextControlButtons.Italic;
+			}
+
+			if (!disabledFormattingAccelerators.HasFlag(DisabledFormattingAccelerators.Underline))
+			{
+				buttonsToAdd |= TextControlButtons.Underline;
 			}
 
 			if (document is not null && document.CanCopy() && selection is not null && selection.Length != 0)
@@ -533,7 +508,6 @@ partial class TextCommandBarFlyout
 	{
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
 
-		// There isn't any way to get the selection in a PasswordBox, so there's no way to polyfill pasting.
 		if (passwordBox.CanPasteClipboardContent)
 		{
 			buttonsToAdd |= TextControlButtons.Paste;
@@ -561,18 +535,7 @@ partial class TextCommandBarFlyout
 		{
 			if (target is TextBox textBoxTarget)
 			{
-				if (target is TextBox textBoxTarget2)
-				{
-					textBoxTarget.CutSelectionToClipboard();
-				}
-				else
-				{
-					DataPackage cutPackage = new DataPackage();
-					cutPackage.RequestedOperation = DataPackageOperation.Move;
-					cutPackage.SetText(textBoxTarget.SelectedText);
-					Clipboard.SetContent(cutPackage);
-					textBoxTarget.SelectedText = "";
-				}
+				textBoxTarget.CutSelectionToClipboard();
 			}
 			else if ((object)target is RichEditBox richEditBoxTarget)
 			{
@@ -604,52 +567,16 @@ partial class TextCommandBarFlyout
 		{
 			var executeRichTextBlockCopyCommand = (RichTextBlock richTextBlockTarget) =>
 			{
-				if (richTextBlockTarget is RichTextBlock richTextBlock6)
-				{
-					richTextBlock6.CopySelectionToClipboard();
-				}
-				else
-				{
-					DataPackage copyPackage = new();
-
-					copyPackage.RequestedOperation = DataPackageOperation.Copy;
-					copyPackage.SetText(richTextBlockTarget.SelectedText);
-
-					Clipboard.SetContent(copyPackage);
-				}
+				richTextBlockTarget.CopySelectionToClipboard();
 			};
 
 			if (target is TextBox textBoxTarget)
 			{
-				if (textBoxTarget is TextBox textBox8)
-				{
-					textBox8.CopySelectionToClipboard();
-				}
-				else
-				{
-					DataPackage copyPackage = new();
-
-					copyPackage.RequestedOperation = DataPackageOperation.Copy;
-					copyPackage.SetText(textBoxTarget.SelectedText);
-
-					Clipboard.SetContent(copyPackage);
-				}
+				textBoxTarget.CopySelectionToClipboard();
 			}
 			else if (target is TextBlock textBlockTarget)
 			{
-				if (textBlockTarget is TextBlock textBlock7)
-				{
-					textBlock7.CopySelectionToClipboard();
-				}
-				else
-				{
-					DataPackage copyPackage = new();
-
-					copyPackage.RequestedOperation = DataPackageOperation.Copy;
-					copyPackage.SetText(textBlockTarget.SelectedText);
-
-					Clipboard.SetContent(copyPackage);
-				}
+				textBlockTarget.CopySelectionToClipboard();
 			}
 			else if ((object)target is RichEditBox richEditBoxTarget)
 			{
@@ -693,32 +620,7 @@ partial class TextCommandBarFlyout
 		{
 			if (target is TextBox textBoxTarget)
 			{
-				// TODO:MZ: Use API Information
-				if (textBoxTarget is TextBox textBox8)
-				{
-					textBox8.PasteFromClipboard();
-				}
-				else
-				{
-					Clipboard.GetContent().GetTextAsync().Completed += (asyncOperation, asyncStatus) =>
-						{
-							if (asyncStatus != AsyncStatus.Completed)
-							{
-								return;
-							}
-
-							var textToPaste = asyncOperation.GetResults();
-
-							m_dispatcherHelper.RunAsync(() =>
-							{
-								textBoxTarget.SelectedText = textToPaste;
-								textBoxTarget.SelectionStart = textBoxTarget.SelectionStart + textToPaste.Length;
-								textBoxTarget.SelectionLength = 0;
-
-								UpdateButtons();
-							});
-						};
-				}
+				textBoxTarget.PasteFromClipboard();
 			}
 			else if ((object)target is RichEditBox richEditBoxTarget)
 			{
@@ -920,20 +822,7 @@ partial class TextCommandBarFlyout
 						AppBarButton button = new();
 						var executeFunc = () => ExecuteCutCommand();
 
-						if (SharedHelpers.IsStandardUICommandAvailable())
-						{
-							InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Cut), executeFunc);
-						}
-						else
-						{
-							InitializeButtonWithProperties(
-								button,
-								SR_TextCommandLabelCut,
-								Symbol.Cut,
-								SR_TextCommandKeyboardAcceleratorKeyCut,
-								SR_TextCommandDescriptionCut,
-								executeFunc);
-						}
+						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Cut), executeFunc);
 
 						m_buttons[TextControlButtons.Cut] = button;
 						return button;
@@ -943,20 +832,7 @@ partial class TextCommandBarFlyout
 						AppBarButton button = new();
 						var executeFunc = () => ExecuteCopyCommand();
 
-						if (SharedHelpers.IsStandardUICommandAvailable())
-						{
-							InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Copy), executeFunc);
-						}
-						else
-						{
-							InitializeButtonWithProperties(
-								button,
-								SR_TextCommandLabelCopy,
-								Symbol.Copy,
-								SR_TextCommandKeyboardAcceleratorKeyCopy,
-								SR_TextCommandDescriptionCopy,
-								executeFunc);
-						}
+						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Copy), executeFunc);
 
 						m_buttons[TextControlButtons.Copy] = button;
 						return button;
@@ -966,20 +842,7 @@ partial class TextCommandBarFlyout
 						AppBarButton button = new();
 						var executeFunc = () => ExecutePasteCommand();
 
-						if (SharedHelpers.IsStandardUICommandAvailable())
-						{
-							InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Paste), executeFunc);
-						}
-						else
-						{
-							InitializeButtonWithProperties(
-								button,
-								SR_TextCommandLabelPaste,
-								Symbol.Paste,
-								SR_TextCommandKeyboardAcceleratorKeyPaste,
-								SR_TextCommandDescriptionPaste,
-								executeFunc);
-						}
+						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Paste), executeFunc);
 
 						m_buttons[TextControlButtons.Paste] = button;
 						return button;
@@ -1033,20 +896,7 @@ partial class TextCommandBarFlyout
 						AppBarButton button = new();
 						var executeFunc = () => ExecuteUndoCommand();
 
-						if (SharedHelpers.IsStandardUICommandAvailable())
-						{
-							InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Undo), executeFunc);
-						}
-						else
-						{
-							InitializeButtonWithProperties(
-								button,
-								SR_TextCommandLabelUndo,
-								Symbol.Undo,
-								SR_TextCommandKeyboardAcceleratorKeyUndo,
-								SR_TextCommandDescriptionUndo,
-								executeFunc);
-						}
+						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Undo), executeFunc);
 
 						m_buttons[TextControlButtons.Undo] = button;
 						return button;
@@ -1056,20 +906,7 @@ partial class TextCommandBarFlyout
 						AppBarButton button = new();
 						var executeFunc = () => ExecuteRedoCommand();
 
-						if (SharedHelpers.IsStandardUICommandAvailable())
-						{
-							InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Redo), executeFunc);
-						}
-						else
-						{
-							InitializeButtonWithProperties(
-								button,
-								SR_TextCommandLabelRedo,
-								Symbol.Redo,
-								SR_TextCommandKeyboardAcceleratorKeyRedo,
-								SR_TextCommandDescriptionRedo,
-								executeFunc);
-						}
+						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Redo), executeFunc);
 
 						m_buttons[TextControlButtons.Redo] = button;
 						return button;
@@ -1079,22 +916,10 @@ partial class TextCommandBarFlyout
 						AppBarButton button = new();
 						var executeFunc = () => ExecuteSelectAllCommand();
 
-						if (SharedHelpers.IsStandardUICommandAvailable())
-						{
-							var command = new StandardUICommand(StandardUICommandKind.SelectAll);
-							command.IconSource = null;
+						var command = new StandardUICommand(StandardUICommandKind.SelectAll);
+						command.IconSource = null;
 
-							InitializeButtonWithUICommand(button, command, executeFunc);
-						}
-						else
-						{
-							InitializeButtonWithProperties(
-								button,
-								SR_TextCommandLabelSelectAll,
-								SR_TextCommandKeyboardAcceleratorKeySelectAll,
-								SR_TextCommandDescriptionSelectAll,
-								executeFunc);
-						}
+						InitializeButtonWithUICommand(button, command, executeFunc);
 
 						m_buttons[TextControlButtons.SelectAll] = button;
 						return button;
