@@ -100,8 +100,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-		internal bool ClippingIsSetByCornerRadius { get; set; }
-
 		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
@@ -301,7 +299,7 @@ namespace Microsoft.UI.Xaml
 				}
 
 				OnArrangeVisual(newRect, clippedFrame);
-				OnViewportUpdated(clippedFrame ?? Rect.Empty);
+				OnViewportUpdated();
 			}
 			else
 			{
@@ -342,13 +340,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		partial void ApplyNativeClip(Rect rect)
+		partial void ApplyNativeClip(Rect rect, Transform transform)
 		{
-			if (ClippingIsSetByCornerRadius)
-			{
-				return; // already applied
-			}
-
 			if (rect.IsEmpty)
 			{
 				Visual.Clip = null;
@@ -361,12 +354,19 @@ namespace Microsoft.UI.Xaml
 					roundedRectClip = LayoutRound(roundedRectClip);
 				}
 
-				Visual.Clip = Visual.Compositor.CreateRectangleClip(
+				var compositionClip = Visual.Compositor.CreateRectangleClip(
 					top: (float)roundedRectClip.Top,
 					left: (float)roundedRectClip.Left,
 					bottom: (float)roundedRectClip.Bottom,
 					right: (float)roundedRectClip.Right
 				);
+
+				if (transform is { } clipTransform)
+				{
+					compositionClip.TransformMatrix = clipTransform.MatrixCore;
+				}
+
+				Visual.Clip = compositionClip;
 			}
 		}
 
