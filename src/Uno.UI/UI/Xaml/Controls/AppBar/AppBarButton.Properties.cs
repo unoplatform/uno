@@ -6,10 +6,11 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class AppBarButton
+	partial class AppBarButton : IAppBarCommand
 	{
 		#region TemplateSettings
 		public AppBarButtonTemplateSettings TemplateSettings

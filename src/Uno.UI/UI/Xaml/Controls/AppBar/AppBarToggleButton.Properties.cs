@@ -4,10 +4,11 @@ using System.Text;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class AppBarToggleButton
+	partial class AppBarToggleButton : IAppBarCommand
 	{
 		#region TemplateSettings
 		public AppBarToggleButtonTemplateSettings TemplateSettings
