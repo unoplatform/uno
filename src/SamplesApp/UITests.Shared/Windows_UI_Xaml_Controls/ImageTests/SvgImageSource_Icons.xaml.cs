@@ -26,7 +26,7 @@ public sealed partial class SvgImageSource_Icons : Page, IWaitableSample
 		this.InitializeComponent();
 		_samplePreparedTask = Task.WhenAll(
 			WaitableSampleImageHelpers.WaitAllImages(image1),
-			WaitableSampleImageHelpers.WaitAllImages((SvgImageSource)imageIcon1.Source, (SvgImageSource)bitmapIcon1.UriSource)
+			WaitableSampleImageHelpers.WaitAllImages((SvgImageSource)imageIcon1.Source)
 		);
 	}
 
