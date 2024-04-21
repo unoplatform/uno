@@ -199,6 +199,7 @@ $projects =
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop"), $true, $true),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", "-p:UnoFeatures=Material;Extensions;Toolkit;CSharpMarkup;MVUX;Svg"), $true, $true),
 >>>>>>> deb039a51c (chore: Add regression testing for features)
 =======
@@ -207,6 +208,9 @@ $projects =
 =======
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", "-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg"), $true, $true),
 >>>>>>> dbdfa52118 (chore: Remove mvux)
+=======
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" })), $true, $true),
+>>>>>>> 9b60dd8414 (chore: Adjust for macos testing)
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false),
