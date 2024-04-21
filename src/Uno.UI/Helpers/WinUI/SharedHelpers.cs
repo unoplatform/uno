@@ -21,7 +21,13 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
+using static Microsoft.UI.Xaml.Controls._Tracing;
+
+#if HAS_UNO_WINUI
 using ITextSelection = Microsoft.UI.Text.ITextSelection;
+#else
+using ITextSelection = Windows.UI.Text.ITextSelection;
+#endif
 
 namespace Uno.UI.Helpers.WinUI
 {
@@ -1031,12 +1037,9 @@ namespace Uno.UI.Helpers.WinUI
 			}
 		}
 
-		public static void EraseIfExists<TKey, TValue>(Dictionary<TKey, TValue> map, TKey key)			
+		public static void EraseIfExists<TKey, TValue>(Dictionary<TKey, TValue> map, TKey key)
 		{
-			if (map.ContainsKey(key))
-			{
-				map.Remove(key);
-			}
+			map.Remove(key);
 		}
 	}
 }
