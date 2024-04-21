@@ -53,6 +53,7 @@
   - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
 									  uses render transforms instead of native scroll feature (if any)
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
+  - HAS_NATIVE_IMPLICIT_POINTER_CAPTURE: Indicate if the OS once a pointer is pressed, OS will send all pointer event to the same target (a.k.a. OriginalSource)
 
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
@@ -79,11 +80,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">
-		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsCatalyst)">
-		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE</DefineConstants>
 		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
@@ -93,7 +94,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">
-		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN</DefineConstants>
+		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE</DefineConstants>
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 

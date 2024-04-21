@@ -36,12 +36,10 @@ internal partial class InputManager : IInputInjectorTarget
 	internal void Initialize(object host)
 	{
 		InitializeKeyboard(host);
-		InitializeManagedPointers(host);
+		InitializePointers(host);
 	}
 
 	partial void InitializeKeyboard(object host);
-
-	partial void InitializeManagedPointers(object host);
 
 	internal ContentRoot ContentRoot { get; }
 

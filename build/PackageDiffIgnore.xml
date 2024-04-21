@@ -1760,6 +1760,8 @@
 			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in Windows" />
 
 			<Member fullName="System.Void Uno.Media.Playback.IMediaPlayerEventsExtension.RaiseVideoRatioChanged(System.Double videoRatio)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.add_VideoRatioChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.Media.Playback.MediaPlayer,System.Double&gt; value)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
@@ -1841,7 +1843,7 @@
 		</Methods>
 	</IgnoreSet>
 
-	  <!--
+  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">
 		<Types>

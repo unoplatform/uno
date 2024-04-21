@@ -15,6 +15,11 @@ internal class UnoFocusInputHandler
 	{
 		_rootElement = rootElement;
 		_rootElement.KeyDown += OnKeyDown;
+
+#if __WASM__
+		//Uno WASM specific - set tabindex to 0 so the RootVisual is "native focusable"
+		rootElement.SetAttribute("tabindex", "0");
+#endif
 	}
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs e)

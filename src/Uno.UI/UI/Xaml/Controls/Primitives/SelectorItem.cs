@@ -81,8 +81,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// of a PointerPressed is a child that captures the pointer and may handle Pointer<Released/Exited|Canceled>
 			// without handling PointerPressed. In that case we wouldn't receive a PointerPressed without
 			// a matching Pointer<Released|Exited|Canceled> without handledEventsToo.
-			// Note: we also subscribe to PointerCaptureLostEvent to cleanup state also when pointer is canceled by scroller
-			//		 (i.e. with CanceledByDirectManipulation, in that case we only raise a CaptureLost event, not cancelled).
+			// Note: we also subscribe to PointerCaptureLostEvent to cleanup the state when the pointer is canceled by the scroller
+			//		 (i.e. with CanceledByDirectManipulation, in that case, we only raise a CaptureLost event, not canceled).
 			AddHandler(PointerReleasedEvent, _onPointerReleased, handledEventsToo: true);
 			AddHandler(PointerExitedEvent, _onPointerExitedOrCanceled, handledEventsToo: true);
 			AddHandler(PointerCanceledEvent, _onPointerExitedOrCanceled, handledEventsToo: true);

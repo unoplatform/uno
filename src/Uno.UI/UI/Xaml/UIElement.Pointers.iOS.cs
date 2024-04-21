@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -75,25 +76,39 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		[ThreadStatic]
+		private static UIElement _sequenceReRouteTarget;
+		public static void ReRoutePointerSequenceTo(UIElement target)
+			=> _sequenceReRouteTarget = target;
+
 		private IEnumerable<TouchesManager> _parentsTouchesManager;
 		private bool _isManipulating;
 
 		partial void InitializePointersPartial()
 		{
 			MultipleTouchEnabled = true;
-
 			ArePointersEnabled = true;
 		}
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
-			=> TouchesBegan(touches, evt, canBubbleNatively: true);
+		{
+			if (_sequenceReRouteTarget is { } target && target != this)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+					this.Log().Debug($"Re-routing pointer sequence (implicit capture) from {this.GetDebugName()} to {target.GetDebugName()}");
+
+				target.TouchesBegan(touches, evt, canBubbleNatively: false, forcedOriginalSource: target);
+			}
+
+			TouchesBegan(touches, evt, canBubbleNatively: true);
+		}
 
 		/// <summary>
 		/// WARNING: canBubbleNatively=false on TouchesBegan has MAJOR impact regarding future events, use precautiously!
 		/// (cf. remarks in the method)
 		/// </summary>
-		internal void TouchesBegan(NSSet touches, UIEvent evt, bool canBubbleNatively)
+		internal void TouchesBegan(NSSet touches, UIEvent evt, bool canBubbleNatively, UIElement forcedOriginalSource = null)
 		{
 #if TRACE_NATIVE_POINTER_EVENTS
 			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_BEGAN] enabled:{ArePointersEnabled}");
@@ -116,7 +131,8 @@ namespace Microsoft.UI.Xaml
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
+					var src = forcedOriginalSource ?? touch.FindOriginalSource() ?? this;
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, src) { CanBubbleNatively = canBubbleNatively };
 
 					// We set the DownArgs only for the top most element (a.k.a. OriginalSource)
 					pt.DownArgs ??= args;
@@ -166,9 +182,19 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override void TouchesMoved(NSSet touches, UIEvent evt)
-			=> TouchesMoved(touches, evt, canBubbleNatively: true);
+		{
+			if (_sequenceReRouteTarget is { } target && target != this)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+					this.Log().Debug($"Re-routing pointer sequence (implicit capture) from {this.GetDebugName()} to {target.GetDebugName()}");
 
-		internal void TouchesMoved(NSSet touches, UIEvent evt, bool canBubbleNatively)
+				target.TouchesMoved(touches, evt, canBubbleNatively: false, forcedOriginalSource: target);
+			}
+
+			TouchesMoved(touches, evt, canBubbleNatively: true);
+		}
+
+		internal void TouchesMoved(NSSet touches, UIEvent evt, bool canBubbleNatively, UIElement forcedOriginalSource = null)
 		{
 #if TRACE_NATIVE_POINTER_EVENTS
 			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_MOVED]");
@@ -180,7 +206,8 @@ namespace Microsoft.UI.Xaml
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
+					var src = forcedOriginalSource ?? touch.FindOriginalSource() ?? this;
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, src) { CanBubbleNatively = canBubbleNatively };
 					var isPointerOver = touch.IsTouchInView(this);
 
 					// This is acceptable to keep that flag in a kind-of static way, since iOS do "implicit captures",
@@ -205,9 +232,21 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override void TouchesEnded(NSSet touches, UIEvent evt)
-			=> TouchesEnded(touches, evt, canBubbleNatively: true);
+		{
+			if (_sequenceReRouteTarget is { } target && target != this)
+			{
+				_sequenceReRouteTarget = null;
 
-		internal void TouchesEnded(NSSet touches, UIEvent evt, bool canBubbleNatively)
+				if (this.Log().IsEnabled(LogLevel.Debug))
+					this.Log().Debug($"Re-routing pointer sequence (implicit capture) from {this.GetDebugName()} to {target.GetDebugName()}");
+
+				target.TouchesEnded(touches, evt, canBubbleNatively: false, forcedOriginalSource: target);
+			}
+
+			TouchesEnded(touches, evt, canBubbleNatively: true);
+		}
+
+		internal void TouchesEnded(NSSet touches, UIEvent evt, bool canBubbleNatively, UIElement forcedOriginalSource = null)
 		{
 #if TRACE_NATIVE_POINTER_EVENTS
 			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_ENDED]");
@@ -236,7 +275,8 @@ namespace Microsoft.UI.Xaml
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
+					var src = forcedOriginalSource ?? touch.FindOriginalSource() ?? this;
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, src) { CanBubbleNatively = canBubbleNatively };
 
 					if (!pt.HadMove)
 					{
@@ -262,11 +302,7 @@ namespace Microsoft.UI.Xaml
 						// This is expected to be done by the RootVisual, except if the "up" has been handled
 						// (in order to ensure the "up" has been fully processed, including gesture recognition).
 						// In that case we need to sent it by our-own directly from teh element that has handled the event.
-						if (WinUICoreServices.Instance.MainRootVisual is not IRootElement rootElement)
-						{
-							rootElement = XamlRoot?.VisualTree.RootElement as IRootElement;
-						}
-						rootElement?.ProcessPointerUp(args, isAfterHandledUp: true);
+						XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ProcessPointerUp(args, isAfterHandledUp: true);
 					}
 
 					pt.Release(this);
@@ -287,9 +323,21 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override void TouchesCancelled(NSSet touches, UIEvent evt)
-			=> TouchesCancelled(touches, evt, canBubbleNatively: true);
+		{
+			if (_sequenceReRouteTarget is { } target && target != this)
+			{
+				_sequenceReRouteTarget = null;
 
-		internal void TouchesCancelled(NSSet touches, UIEvent evt, bool canBubbleNatively)
+				if (this.Log().IsEnabled(LogLevel.Debug))
+					this.Log().Debug($"Re-routing pointer sequence (implicit capture) from {this.GetDebugName()} to {target.GetDebugName()}");
+
+				target.TouchesCancelled(touches, evt, canBubbleNatively: false, forcedOriginalSource: target);
+			}
+
+			TouchesCancelled(touches, evt, canBubbleNatively: true);
+		}
+
+		internal void TouchesCancelled(NSSet touches, UIEvent evt, bool canBubbleNatively, UIElement forcedOriginalSource = null)
 		{
 #if TRACE_NATIVE_POINTER_EVENTS
 			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_CANCELLED]");
@@ -301,7 +349,8 @@ namespace Microsoft.UI.Xaml
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
+					var src = forcedOriginalSource ?? touch.FindOriginalSource() ?? this;
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, src) { CanBubbleNatively = canBubbleNatively };
 
 					// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
 					//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's

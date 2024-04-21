@@ -49,7 +49,9 @@ namespace Uno.Collections
 
 		IEnumerator<T> IEnumerable<T>.GetEnumerator() => Materialized.GetEnumerator();
 
-		public MaterializableList<T>.ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(Materialized);
+		public ReverseEnumerator GetReverseEnumerator() => new(Materialized);
+
+		public ReverseReduceEnumerator GetReverseEnumerator(Predicate<T> predicate) => new(Materialized, predicate);
 
 		/// <remarks>
 		/// To optimize sequential calls with the same sorting function, the implementation remembers the sorted list and the last
@@ -182,6 +184,52 @@ namespace Uno.Collections
 					_current = _list[_index];
 					_index--;
 					return true;
+				}
+
+				return false;
+			}
+
+			public T Current => _current!;
+
+			object? IEnumerator.Current => _current;
+
+			void IEnumerator.Reset()
+			{
+				_index = _list.Count - 1;
+				_current = default;
+			}
+		}
+
+		public struct ReverseReduceEnumerator : IEnumerator<T>, IEnumerator
+		{
+			private readonly List<T> _list;
+			private readonly Predicate<T> _predicate;
+			private int _index;
+			private T? _current;
+
+			internal ReverseReduceEnumerator(List<T> list, Predicate<T> predicate)
+			{
+				_list = list;
+				_predicate = predicate;
+				_index = list.Count - 1;
+				_current = default;
+			}
+
+			public void Dispose()
+			{
+			}
+
+			public bool MoveNext()
+			{
+				while (_index >= 0)
+				{
+					_current = _list[_index];
+					_index--;
+
+					if (_predicate(_current))
+					{
+						return true;
+					}
 				}
 
 				return false;

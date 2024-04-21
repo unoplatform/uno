@@ -1,4 +1,4 @@
-﻿// #define TRACE_ROUTED_EVENT_BUBBLING
+﻿//#define TRACE_ROUTED_EVENT_BUBBLING
 
 using System;
 using System.Collections.Generic;
@@ -602,7 +602,7 @@ namespace Microsoft.UI.Xaml
 #if TRACE_ROUTED_EVENT_BUBBLING
 			global::System.Diagnostics.Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}-{args?.GetHashCode():X8}] (ctx: {ctx}){(this is Microsoft.UI.Xaml.Controls.ContentControl ctrl ? ctrl.DataContext : "")}\r\n");
 #endif
-			global::System.Diagnostics.Debug.Assert(routedEvent.Flag != RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
+			global::System.Diagnostics.Debug.Assert(routedEvent.Flag is not RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
 
 #if !__WASM__
 			global::System.Diagnostics.Debug.Assert(!routedEvent.IsTunnelingEvent, $"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");
@@ -621,17 +621,10 @@ namespace Microsoft.UI.Xaml
 			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
 				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
-				&& handlers.Any())
+				&& handlers is { Count: > 0 })
 			{
 				// [4] Invoke local handlers
-				foreach (var handler in handlers.ToArray())
-				{
-					if (!isHandled || handler.HandledEventsToo)
-					{
-						InvokeHandler(handler.Handler, args);
-						isHandled = IsHandled(args);
-					}
-				}
+				InvokeHandlers(handlers, args, ref isHandled);
 
 				// [5] Event handled by local handlers?
 				if (isHandled)
@@ -677,6 +670,12 @@ namespace Microsoft.UI.Xaml
 				// A common issue is the managed parent being cleared before unload event raised.
 				parent ??= this.FindFirstParent<UIElement>();
 #endif
+			}
+			else
+			{
+				// Make sure that the visual tree root element still gets notified that the event has reached the top of the tree
+				// This is important to ensure to clear any relevant global state, e.g. for pointers to clear capture on pointer up (cf. InputManager).
+				parent = this.XamlRoot?.VisualTree.RootElement;
 			}
 
 			// [11] A parent is defined?
@@ -849,6 +848,12 @@ namespace Microsoft.UI.Xaml
 			/// </remarks>
 			public bool IsInternal { get; set; }
 
+			/// <summary>
+			/// Used only with managed pointers to indicate that the bubbling is for cleanup.
+			/// In that case even interpreted events should be muted.
+			/// </summary>
+			public bool IsCleanup { get; set; }
+
 			public BubblingContext WithMode(BubblingMode mode)
 				=> this with { Mode = mode };
 
@@ -911,6 +916,43 @@ namespace Microsoft.UI.Xaml
 
 			return eventsBubblingInManagedCode.HasFlag(flag);
 		}
+
+#pragma warning disable IDE0055 // Fix formatting: Current formatting is readable and rule expectation is unclear
+		private void InvokeHandlers(IList<RoutedEventHandlerInfo> handlers, RoutedEventArgs args, ref bool isHandled)
+		{
+			switch (handlers.Count)
+			{
+				case 0:
+					return;
+
+				case 1:
+				{
+					var handler = handlers[0];
+					if (!isHandled || handler.HandledEventsToo)
+					{
+						InvokeHandler(handler.Handler, args);
+						isHandled = IsHandled(args);
+					}
+
+					break;
+				}
+
+				default:
+				{
+					foreach (var handler in handlers.ToArray())
+					{
+						if (!isHandled || handler.HandledEventsToo)
+						{
+							InvokeHandler(handler.Handler, args);
+							isHandled = IsHandled(args);
+						}
+					}
+
+					break;
+				}
+			}
+		}
+#pragma warning restore IDE0055 // Fix formatting
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)
 		{
