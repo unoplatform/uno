@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Windows.Foundation;
 using SkiaSharp;
 using Uno;
 using Uno.Extensions;
@@ -13,8 +14,15 @@ namespace Microsoft.UI.Composition
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
 
+		internal SKPath? LastDrawnStrokePath { get; private set; }
+		internal SKPath? LastDrawnFillPath { get; private set; }
+
+
 		internal override void Draw(in DrawingSession session)
 		{
+			LastDrawnStrokePath = null;
+			LastDrawnFillPath = null;
+
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
 				var transform = this.GetTransform();
@@ -33,6 +41,7 @@ namespace Microsoft.UI.Composition
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
 					fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
+					LastDrawnFillPath = geometryWithTransformations;
 
 					if (FillBrush is CompositionEffectBrush { HasBackdropBrushInput: true })
 					{
@@ -76,10 +85,11 @@ namespace Microsoft.UI.Composition
 					// So, to get a correct stroke geometry, we must apply the transformations first.
 
 					// Get the stroke geometry, after scaling has been applied.
-					using var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
+					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
 
 					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
+					LastDrawnStrokePath = strokeGeometry;
 					session.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
@@ -122,6 +132,12 @@ namespace Microsoft.UI.Composition
 			paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			return paint;
+		}
+
+		internal override bool HitTest(Point point)
+		{
+			return (LastDrawnStrokePath?.Contains((float)point.X, (float)point.Y) ?? false)
+				|| (LastDrawnFillPath?.Contains((float)point.X, (float)point.Y) ?? false);
 		}
 	}
 }

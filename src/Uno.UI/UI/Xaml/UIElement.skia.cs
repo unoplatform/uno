@@ -100,6 +100,10 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
+		/// <param name="point">The point being tested, in element coordinates (i.e. top-left of element is (0,0) if not RTL)</param>
+		/// <remarks>This does NOT take the clipping into account.</remarks>
+		internal virtual bool HitTest(Point point) => Visual.HitTest(point);
+
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		internal void AddChild(UIElement child, int? index = null)
