@@ -68,7 +68,7 @@ partial class CommandBarFlyoutCommandBar
 							{
 								if (firstCommandAsFrameworkElement.IsLoaded)
 								{
-									FocusCommand(
+									_ = FocusCommand(
 										commands,
 										usingPrimaryCommands ? m_moreButton : null /*moreButton*/,
 										FocusState.Programmatic /*focusState*/,
@@ -79,7 +79,7 @@ partial class CommandBarFlyoutCommandBar
 								{
 									void OnFirstItemLoaded(object sender, object args)
 									{
-										FocusCommand(
+										_ = FocusCommand(
 											commands,
 											usingPrimaryCommands ? m_moreButton : null /*moreButton*/,
 											FocusState.Programmatic /*focusState*/,
@@ -230,6 +230,7 @@ partial class CommandBarFlyoutCommandBar
 		m_overflowPopupSystemBackdropRoot = GetTemplateChild<FrameworkElement>("OverflowPopupSystemBackdropRoot");
 		m_outerOverflowContentRootV2 = GetTemplateChild<FrameworkElement>("OuterOverflowContentRootV2");
 
+#if !HAS_UNO // We do not support SystemBackdrop yet.
 		var primaryItemsRoot = m_primaryItemsRoot;
 		var primaryItemsSystemBackdropRoot = m_primaryItemsSystemBackdropRoot;
 		if (primaryItemsRoot is not null && primaryItemsSystemBackdropRoot is not null && m_backdropLink is not null)
@@ -264,6 +265,7 @@ partial class CommandBarFlyoutCommandBar
 			// want anything to flicker. The backdrop will be put in the tree in UpdateVisualState once we've opened and
 			// measured the overflow popup.
 		}
+#endif
 
 		if (m_overflowPopup is { } overflowPopup2)
 		{
@@ -609,7 +611,7 @@ partial class CommandBarFlyoutCommandBar
 			}
 
 			bool shouldExpandUp = false;
-			bool hadActualPlacement = false;
+			//bool hadActualPlacement = false;
 
 			if (m_overflowPopup is { } overflowPopup)
 			{
@@ -620,7 +622,7 @@ partial class CommandBarFlyoutCommandBar
 					// infer where it should go.
 					if (overflowPopup4.ActualPlacement != PopupPlacementMode.Auto)
 					{
-						hadActualPlacement = true;
+						//hadActualPlacement = true;
 						shouldExpandUp =
 							overflowPopup4.ActualPlacement == PopupPlacementMode.TopEdgeAlignedLeft ||
 							overflowPopup4.ActualPlacement == PopupPlacementMode.TopEdgeAlignedRight;
@@ -699,6 +701,7 @@ partial class CommandBarFlyoutCommandBar
 				}
 			}
 
+#if !HAS_UNO // We do not support SystemBackdrop yet
 			// Update the corner radius clip on the backdrop. We copy the corner radius from the elements in the template,
 			// which depends on the visual state of the CommandBarFlyoutCommandBar.
 			if (m_overflowPopupBackdropLink is not null && m_outerOverflowContentRootV2 is not null)
@@ -724,6 +727,7 @@ partial class CommandBarFlyoutCommandBar
 				var overflowPopupSystemBackdropRoot = m_overflowPopupSystemBackdropRoot;
 				ElementCompositionPreview.SetElementChildVisual(overflowPopupSystemBackdropRoot, popupPlacementVisual);
 			}
+#endif
 		}
 		else
 		{
@@ -731,6 +735,7 @@ partial class CommandBarFlyoutCommandBar
 			VisualStateManager.GoToState(this, "Default", useTransitions);
 			VisualStateManager.GoToState(this, "Collapsed", useTransitions);
 
+#if !HAS_UNO // We do not support SystemBackdrop yet.
 			// Take the backdrop behind the overflow popup out of the tree. If the entire CommandBarFlyoutCommandBar is
 			// closed and reopens, the overflow popup could be closed and we don't want the backdrop behind the overflow
 			// popup to flicker.
@@ -739,8 +744,10 @@ partial class CommandBarFlyoutCommandBar
 				var overflowPopupSystemBackdropRoot = m_overflowPopupSystemBackdropRoot;
 				ElementCompositionPreview.SetElementChildVisual(overflowPopupSystemBackdropRoot, null);
 			}
+#endif
 		}
 
+#if !HAS_UNO // We do not support SystemBackdrop yet.
 		// Update the corner radius clip on the backdrop. We copy the corner radius from the elements in the template, which
 		// depends on the visual state of the CommandBarFlyoutCommandBar.
 		if (m_backdropLink is not null && m_primaryItemsRoot is not null)
@@ -761,13 +768,14 @@ partial class CommandBarFlyoutCommandBar
 			rectangleClip.BottomRightRadius = new((float)cornerRadius.BottomRight, (float)cornerRadius.BottomRight);
 			placementVisual.Clip = rectangleClip;
 		}
+#endif
 
 		// If no primary command has labels, then we'll shrink down the size of primary commands since the extra space to accommodate labels is unnecessary.
 		bool hasPrimaryCommandLabels = false;
 		foreach (var primaryCommand in PrimaryCommands)
 		{
 			if (HasVisibleLabel(primaryCommand as AppBarButton) ||
-				HasVisibleLabel(primaryCommand as AppBarToggleButton)
+				HasVisibleLabel(primaryCommand as AppBarToggleButton))
 			{
 				hasPrimaryCommandLabels = true;
 				break;
@@ -794,7 +802,7 @@ partial class CommandBarFlyoutCommandBar
 		VisualStateManager.GoToState(this, hasPrimaryCommandLabels ? "HasPrimaryLabels" : "NoPrimaryLabels", useTransitions);
 	}
 
-	private void UpdateItemVisualState(Control item, bool isPrimaryItem)
+	private void UpdateItemVisualState(Control? item, bool isPrimaryItem)
 	{
 		if (isPrimaryItem)
 		{
@@ -1030,14 +1038,14 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
-	private void CacheLocalizedStringResources()
+	internal void CacheLocalizedStringResources()
 	{
 		m_localizedCommandBarFlyoutAppBarButtonControlType = ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarButtonLocalizedControlType);
 		m_localizedCommandBarFlyoutAppBarToggleButtonControlType = ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutAppBarToggleButtonLocalizedControlType);
 		m_areLocalizedStringResourcesCached = true;
 	}
 
-	private void ClearLocalizedStringResourceCache()
+	internal void ClearLocalizedStringResourceCache()
 	{
 		m_areLocalizedStringResourcesCached = false;
 		m_localizedCommandBarFlyoutAppBarButtonControlType = null;
@@ -1145,7 +1153,7 @@ partial class CommandBarFlyoutCommandBar
 						IsOpen = true;
 
 						// ... and focus the first focusable command
-						FocusCommand(
+						_ = FocusCommand(
 							SecondaryCommands /*commands*/,
 							null /*moreButton*/,
 							FocusState.Keyboard /*focusState*/,
@@ -1240,7 +1248,7 @@ partial class CommandBarFlyoutCommandBar
 								}
 							}
 
-							FocusControl(
+							_ = FocusControl(
 								accessibleControls[i] /*newFocus*/,
 								focusedControl /*oldFocus*/,
 								FocusState.Keyboard /*focusState*/,
@@ -1542,6 +1550,7 @@ partial class CommandBarFlyoutCommandBar
 
 		if (property == SystemBackdropProperty)
 		{
+#if !HAS_UNO // We do not support SystemBackdrop yet
 			if (args.NewValue != args.OldValue)
 			{
 				var oldSystemBackdrop = args.OldValue as SystemBackdrop;
@@ -1575,6 +1584,7 @@ partial class CommandBarFlyoutCommandBar
 					m_overflowPopupBackdropLink = null;
 				}
 			}
+#endif
 		}
 	}
 }
