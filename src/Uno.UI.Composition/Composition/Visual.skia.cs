@@ -24,7 +24,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
-	private bool _requiresRepaint = true;
+	private bool _requiresRepaint;
 	private SKPicture? _picture;
 
 	public object? Owner { get; set; }
@@ -39,9 +39,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal void InvalidatePaint()
 	{
-		_picture?.Dispose();
-		_picture = null;
-		_requiresRepaint = true;
+		if (CanPaint)
+		{
+			_picture?.Dispose();
+			_picture = null;
+			_requiresRepaint = true;
+		}
 	}
 
 	/// <summary>
@@ -200,6 +203,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		using var session = BeginDrawing(in parentSession);
+
 		if (_requiresRepaint)
 		{
 			_requiresRepaint = false;
@@ -209,7 +213,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			Paint(in recorderSession);
 			_picture = _recorder.EndRecording();
 		}
-		session.Canvas.DrawPicture(_picture);
+
+		if (_picture is { })
+		{
+			session.Canvas.DrawPicture(_picture);
+		}
 
 		// The CornerRadiusClip doesn't affect the visual itself, only its children
 		CornerRadiusClip?.Apply(parentSession.Canvas, this);
@@ -224,9 +232,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
-	internal virtual void Paint(in PaintingSession session)
-	{
-	}
+	internal virtual void Paint(in PaintingSession session) { }
 
 	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
 	private protected virtual void ApplyClipping(in SKCanvas canvas)

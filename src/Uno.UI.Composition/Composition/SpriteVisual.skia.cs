@@ -67,5 +67,7 @@ namespace Microsoft.UI.Composition
 				);
 			}
 		}
+
+		internal override bool CanPaint => true;
 	}
 }

@@ -29,4 +29,6 @@ public partial class ShapeVisual
 
 		base.Paint(in session);
 	}
+
+	internal override bool CanPaint => _shapes is { Count: not 0 };
 }
