@@ -4,7 +4,8 @@
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
       <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
-      <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="DesktopAcrylicTransparentBrush" />
+      <!-- Uno specific: DesktopAcrylic backdrop is not supported in Uno -->
+      <!-- <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="DesktopAcrylicTransparentBrush" /> -->
       <StaticResource x:Key="CommandBarFlyoutForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="CommandBarFlyoutBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="CommandBarFlyoutAppBarButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
@@ -39,7 +40,8 @@
     </ResourceDictionary>
     <ResourceDictionary x:Key="Light">
       <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
-      <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="DesktopAcrylicTransparentBrush" />
+      <!-- Uno specific: DesktopAcrylic backdrop is not supported in Uno -->
+      <!-- <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="DesktopAcrylicTransparentBrush" /> -->
       <StaticResource x:Key="CommandBarFlyoutForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="CommandBarFlyoutBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="CommandBarFlyoutAppBarButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
