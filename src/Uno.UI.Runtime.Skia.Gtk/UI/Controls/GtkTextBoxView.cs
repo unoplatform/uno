@@ -34,7 +34,6 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	protected GtkTextBoxView(XamlRoot? xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
-		
 		// Applies themes from Theming/UnoGtk.css
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}

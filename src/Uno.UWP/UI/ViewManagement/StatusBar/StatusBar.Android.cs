@@ -14,7 +14,7 @@ namespace Windows.UI.ViewManagement
 		private StatusBarForegroundType? _foregroundType;
 		private bool? _isShown;
 
-		private readonly DisplayInformation _displayInformation = DisplayInformation.GetForCurrentView();
+		private readonly DisplayInformation _displayInformation = DisplayInformation.GetForCurrentViewSafe(); // TODO Uno: Avoid using this #16404.
 
 		private int? _statusBarHeightResourceId;
 
