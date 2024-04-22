@@ -359,8 +359,13 @@ public partial class TreeViewList : ListView
 			{
 				DispatcherQueue.TryEnqueue(() =>
 				{
-					// Uno Specific: this is actually a bug in WinUI, copy WinUI's fix when https://github.com/microsoft/microsoft-ui-xaml/issues/9549 is resolved
-					// itemNode.IsExpanded = itemContainer.IsExpanded;
+#if !HAS_UNO // Uno Specific: this is actually a bug in WinUI, copy WinUI's fix when https://github.com/microsoft/microsoft-ui-xaml/issues/9549 is resolved
+					itemNode.IsExpanded = itemContainer.IsExpanded;
+#else
+					// The "source of truth" for IsExpanded should come from the (likely recycled) container only if
+					// it has a binding on IsExpanded. Otherwise, the container doesn't know anything and we should
+					// use the IsExpanded value of the Node (which remembers the last value of IsExpanded before
+					// the container was recycled)
 					var bindingExists = itemContainer.GetBindingExpression(TreeViewItem.IsExpandedProperty) is { };
 					if (bindingExists)
 					{
@@ -370,6 +375,7 @@ public partial class TreeViewList : ListView
 					{
 						itemContainer.IsExpanded = itemNode.IsExpanded;
 					}
+#endif
 				});
 			}
 		}
