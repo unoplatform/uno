@@ -195,10 +195,11 @@ As a result, the csproj file on disk and will show the file as modified in you s
 
 Note that we are currently tracking these Visual Studio issues, make sure to upvote them:
 
-- `net8.0-desktop` must be first for WSL debugging to work (**Link to be available soon**)
-- `net8.0-browserwasm` must be first for WebAssembly debugging to work (**Link to be available soon**)
-- `net8.0-desktop` being first breaks all other targets debugging (**Link to be available soon**)
-- `net8.0-windows10` needs to be first for WinAppSDK Hot reload to work (**Link to be available soon**)
+- `net8.0-desktop` must be first for WSL debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-desktop-must-be-first-for-WSL-deb/10643714))
+- `net8.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
+- `net8.0-windows10` needs to be first for WinAppSDK Hot reload to work ([Link](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724))
+- [WSL HotReload does not invoke MetadataUpdater properly](https://developercommunity.visualstudio.com/t/WSL-HotReload-does-not-invoke-MetadataUp/10643733)
+- [WinAppSDK Unpackaged profile cannot be selected properly when a net8.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
 
 ## Disabling Default Items
 
