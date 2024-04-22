@@ -74,11 +74,11 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 				_ => CursorFontShape.XC_arrow // including CoreCursorType.Custom
 			};
 
-			using var _1 = X11Helper.XLock(_host.X11Window.Display);
+			using var _1 = X11Helper.XLock(_host.TopX11Window.Display);
 
-			var cursor = XLib.XCreateFontCursor(_host.X11Window.Display, shape);
-			var _2 = XLib.XDefineCursor(_host.X11Window.Display, _host.X11Window.Window, cursor);
-			var _3 = XLib.XFreeCursor(_host.X11Window.Display, cursor);
+			var cursor = XLib.XCreateFontCursor(_host.TopX11Window.Display, shape);
+			var _2 = XLib.XDefineCursor(_host.TopX11Window.Display, _host.TopX11Window.Window, cursor);
+			var _3 = XLib.XFreeCursor(_host.TopX11Window.Display, cursor);
 		}
 	}
 

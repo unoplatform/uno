@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
 using Windows.Foundation;
@@ -20,20 +19,24 @@ internal partial class X11XamlRootHost
 	private readonly Action<bool> _focusCallback;
 	private readonly Action<bool> _visibilityCallback;
 
-	private Thread? _eventsThread;
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
 	private X11DisplayInformationExtension? _displayInformationExtension;
 
 	private void InitializeX11EventsThread()
 	{
-		_eventsThread = new Thread(Run)
-		{
-			Name = $"Uno XEvents {Interlocked.Increment(ref _threadCount) - 1}",
-			IsBackground = true
-		};
+		var id = Interlocked.Increment(ref _threadCount) - 1;
 
-		_eventsThread.Start();
+		new Thread(() => Run(RootX11Window))
+		{
+			Name = $"Uno XEvents {id} (Root)",
+			IsBackground = true
+		}.Start();
+		new Thread(() => Run(TopX11Window))
+		{
+			Name = $"Uno XEvents {id} (Top)",
+			IsBackground = true
+		}.Start();
 	}
 
 	public void SetPointerSource(X11PointerInputSource pointerSource)
@@ -63,10 +66,10 @@ internal partial class X11XamlRootHost
 		_displayInformationExtension = extension;
 	}
 
-	private unsafe void Run()
+	private unsafe void Run(X11Window x11Window)
 	{
 		var fds = stackalloc X11Helper.Pollfd[1];
-		fds[0].fd = XLib.XConnectionNumber(X11Window.Display);
+		fds[0].fd = XLib.XConnectionNumber(x11Window.Display);
 		fds[0].events = X11Helper.POLLIN;
 
 		while (true)
@@ -93,9 +96,9 @@ internal partial class X11XamlRootHost
 
 				SpinWait.SpinUntil(() =>
 				{
-					using (X11Helper.XLock(X11Window.Display))
+					using (X11Helper.XLock(x11Window.Display))
 					{
-						return X11Helper.XPending(X11Window.Display) > 0;
+						return X11Helper.XPending(x11Window.Display) > 0;
 					}
 				});
 			}
@@ -110,7 +113,7 @@ internal partial class X11XamlRootHost
 				while (true)
 				{
 					XEvent @event;
-					using (var @lock = X11Helper.XLock(display))
+					using (X11Helper.XLock(display))
 					{
 						if (X11Helper.XPending(display) == 0)
 						{
@@ -123,7 +126,7 @@ internal partial class X11XamlRootHost
 				}
 			}
 
-			foreach (var @event in GetEvents(X11Window.Display))
+			foreach (var @event in GetEvents(x11Window.Display))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
@@ -134,7 +137,7 @@ internal partial class X11XamlRootHost
 				{
 					case XEventName.ClientMessage:
 						// no locking needed, WM_DELETE_WINDOW is already cached
-						IntPtr deleteWindow = X11Helper.GetAtom(X11Window.Display, X11Helper.WM_DELETE_WINDOW);
+						IntPtr deleteWindow = X11Helper.GetAtom(x11Window.Display, X11Helper.WM_DELETE_WINDOW);
 						if (@event.ClientMessageEvent.ptr1 == deleteWindow)
 						{
 							// This happens when we click the titlebar X, not like xkill,
@@ -189,19 +192,19 @@ internal partial class X11XamlRootHost
 					case XEventName.MapNotify:
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
+							this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
 						}
 						break;
 					case XEventName.UnmapNotify:
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is unmapped.");
+							this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is unmapped.");
 						}
 						break;
 					case XEventName.ReparentNotify:
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} was reparented to parent window {@event.ReparentEvent.parent.ToString("X", CultureInfo.InvariantCulture)}.");
+							this.Log().Debug($"Window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)} was reparented to parent window {@event.ReparentEvent.parent.ToString("X", CultureInfo.InvariantCulture)}.");
 						}
 						break;
 					default:

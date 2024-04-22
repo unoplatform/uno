@@ -63,7 +63,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
 
-		ApiExtensibility.Register(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension());
+		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension(o));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)

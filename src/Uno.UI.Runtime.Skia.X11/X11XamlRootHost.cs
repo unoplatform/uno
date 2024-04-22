@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
@@ -11,6 +12,7 @@ using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
@@ -21,7 +23,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 {
 	private const int InitialWidth = 900;
 	private const int InitialHeight = 800;
-	private const IntPtr EventsMask =
+	private const IntPtr RootEventsMask =
+		(IntPtr)EventMask.ExposureMask |
+		(IntPtr)EventMask.StructureNotifyMask |
+		(IntPtr)EventMask.VisibilityChangeMask |
+		(IntPtr)EventMask.NoEventMask;
+	private const IntPtr TopEventsMask =
 		(IntPtr)EventMask.ExposureMask |
 		(IntPtr)EventMask.ButtonPressMask |
 		(IntPtr)EventMask.ButtonReleaseMask |
@@ -30,32 +37,42 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		(IntPtr)EventMask.KeyReleaseMask |
 		(IntPtr)EventMask.EnterWindowMask |
 		(IntPtr)EventMask.LeaveWindowMask |
-		(IntPtr)EventMask.StructureNotifyMask |
 		(IntPtr)EventMask.FocusChangeMask |
-		(IntPtr)EventMask.VisibilityChangeMask |
 		(IntPtr)EventMask.NoEventMask;
 
 	private static bool _firstWindowCreated;
-	private static object _x11WindowToXamlRootHostMutex = new();
-	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
-	private static ConcurrentDictionary<Window, X11XamlRootHost> _windowToHost = new();
+	private static readonly object _x11WindowToXamlRootHostMutex = new();
+	private static readonly Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
+	private static readonly ConcurrentDictionary<Window, X11XamlRootHost> _windowToHost = new();
 
 	private readonly TaskCompletionSource _closed; // To keep it simple, only SetResult if you have the lock
 	private readonly ApplicationView _applicationView;
 	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
+	private readonly XamlRoot _xamlRoot;
 
 	private X11Window? _x11Window;
+	private X11Window? _x11TopWindow;
 	private IX11Renderer? _renderer;
 
-	public X11Window X11Window => _x11Window!.Value;
+	private bool _updateTopWindowClipOnNextRender = true;
+
+	public X11Window RootX11Window => _x11Window!.Value;
+	public X11Window TopX11Window => _x11TopWindow!.Value;
 
 	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
+		_xamlRoot = xamlRoot;
 		_wrapper = wrapper;
 		_window = winUIWindow;
 
-		_resizeCallback = resizeCallback;
+		_resizeCallback = size =>
+		{
+			// copy the root window dimensions to the top window
+			using var _1 = X11Helper.XLock(TopX11Window.Display);
+			var _2 = XLib.XResizeWindow(TopX11Window.Display, TopX11Window.Window, (int)size.Width, (int)size.Height);
+			resizeCallback(size);
+		};
 		_closingCallback = closingCallback;
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
@@ -78,7 +95,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		Closed.ContinueWith(_ =>
 		{
-			using (X11Helper.XLock(X11Window.Display))
+			using (X11Helper.XLock(RootX11Window.Display))
 			{
 				X11Manager.XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
@@ -113,7 +130,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				min_height = (int)minSize.Height
 			};
 
-			XLib.XSetWMNormalHints(X11Window.Display, X11Window.Window, ref hints);
+			XLib.XSetWMNormalHints(RootX11Window.Display, RootX11Window.Window, ref hints);
 		}
 	}
 
@@ -124,7 +141,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
 	}
 
-	internal void ExtendContentIntoTitleBar(bool extend) => X11Helper.SetMotifWMDecorations(X11Window, !extend, 0xFF);
+	internal void ExtendContentIntoTitleBar(bool extend) => X11Helper.SetMotifWMDecorations(RootX11Window, !extend, 0xFF);
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
@@ -200,14 +217,14 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				*(ptr++) = pixel.Alpha << 24 | pixel.Red << 16 | pixel.Green << 8 | pixel.Blue << 0;
 			}
 
-			var display = _x11Window!.Value.Display;
+			var display = RootX11Window.Display;
 			using var _2 = X11Helper.XLock(display);
 
 			var wmIconAtom = X11Helper.GetAtom(display, X11Helper._NET_WM_ICON);
 			var cardinalAtom = X11Helper.GetAtom(display, X11Helper.XA_CARDINAL);
 			var _3 = XLib.XChangeProperty(
 				display,
-				_x11Window!.Value.Window,
+				RootX11Window.Window,
 				wmIconAtom,
 				cardinalAtom,
 				32,
@@ -234,7 +251,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			foreach (var host in _x11WindowToXamlRootHost.Values)
 			{
-				using (X11Helper.XLock(host.X11Window.Display))
+				using (X11Helper.XLock(host.RootX11Window.Display))
 				{
 					host._closed.SetResult();
 				}
@@ -308,15 +325,25 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			size = new Size(InitialWidth, InitialHeight);
 		}
 
-		IntPtr window;
+		IntPtr rootWindow = XLib.XCreateSimpleWindow(
+			display,
+			XLib.XRootWindow(display, screen),
+			0,
+			0,
+			(int)size.Width,
+			(int)size.Height,
+			0,
+			XLib.XBlackPixel(display, screen),
+			XLib.XWhitePixel(display, screen));
+		XLib.XSelectInput(display, rootWindow, RootEventsMask);
+		_x11Window = new X11Window(display, rootWindow);
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
-			_x11Window = CreateGLXWindow(display, screen, size);
-			window = _x11Window.Value.Window;
+			_x11TopWindow = CreateGLXWindow(display, screen, size);
 		}
 		else
 		{
-			window = XLib.XCreateSimpleWindow(
+			var topWindow = XLib.XCreateSimpleWindow(
 				display,
 				XLib.XRootWindow(display, screen),
 				0,
@@ -326,31 +353,38 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				0,
 				XLib.XBlackPixel(display, screen),
 				XLib.XWhitePixel(display, screen));
-			XLib.XSelectInput(display, window, EventsMask);
-			_x11Window = new X11Window(display, window);
+			XLib.XSelectInput(display, topWindow, TopEventsMask);
+			_x11TopWindow = new X11Window(display, topWindow);
 		}
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
-		var _3 = XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
+		var _3 = XLib.XSetWMProtocols(display, rootWindow, new[] { deleteWindow }, 1);
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
 			_firstWindowCreated = true;
-			_x11WindowToXamlRootHost[_x11Window.Value] = this;
+			_x11WindowToXamlRootHost[RootX11Window] = this;
 		}
 
 		// The window must be mapped before DisplayInformationExtension is initialized.
-		var _4 = XLib.XMapWindow(display, window);
+		var _4 = XLib.XMapWindow(display, rootWindow);
+		var _5 = XLib.XMapWindow(display, TopX11Window.Window);
+		XLib.XSync(display, false); // we apparently need to sync before calling XReparentWindow, or else the reparenting won't go through
+		var _6 = X11Helper.XReparentWindow(TopX11Window.Display, TopX11Window.Window, RootX11Window.Window, 0, 0);
+		XLib.XSync(display, false);
+		var _7 = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
 
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
-			_renderer = new X11OpenGLRenderer(this, _x11Window.Value);
+			_renderer = new X11OpenGLRenderer(this, TopX11Window);
 		}
 		else
 		{
-			_renderer = new X11SoftwareRenderer(this, _x11Window.Value);
+			_renderer = new X11SoftwareRenderer(this, TopX11Window);
 		}
+
+		QueueAction(this, () => _xamlRoot.VisualTree.PopupRoot!.Arranged += UpdateTopWindowClipRect);
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
@@ -404,7 +438,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Not sure why this is needed, commented out until further notice
 		// attribs.override_redirect = /* True */ 1;
 		attribs.colormap = XLib.XCreateColormap(display, XLib.XRootWindow(display, screen), visual->visual, /* AllocNone */ 0);
-		attribs.event_mask = EventsMask;
+		attribs.event_mask = TopEventsMask;
 		var window = XLib.XCreateWindow(
 			display,
 			XLib.XRootWindow(display, screen),
@@ -436,7 +470,59 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
-	void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
+	void IXamlRootHost.InvalidateRender()
+	{
+		if (_updateTopWindowClipOnNextRender)
+		{
+			_updateTopWindowClipOnNextRender = false;
+			UpdateTopWindowClipRect();
+		}
+		_renderer?.InvalidateRender();
+	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	public void QueueUpdateTopWindowClipRect()
+	{
+		_updateTopWindowClipOnNextRender = true;
+		_xamlRoot.QueueInvalidateRender();
+	}
+
+	private unsafe void UpdateTopWindowClipRect()
+	{
+		using var _1 = X11Helper.XLock(TopX11Window.Display);
+
+		XWindowAttributes attributes = default;
+		var _2 = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
+
+		var region = X11Helper.CreateRegion(0, 0, (short)attributes.width, (short)attributes.height);
+		using var _3 = Disposable.Create(() => X11Helper.XDestroyRegion(region));
+
+		// Reset ShapeBounding to the full viewport
+		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
+		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, region, X11Helper.ShapeSet);
+
+		// Subtract the areas that contain native elements
+		var array1 = X11NativeElementHostingExtension.GetNativeElementRects(this).ToArray();
+		IntPtr nativeRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array1.Length);
+		using var _4 = Disposable.Create(() => Marshal.FreeHGlobal(nativeRects));
+		new Span<XRectangle>(array1).CopyTo(new Span<XRectangle>(nativeRects.ToPointer(), array1.Length));
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
+
+		// Add back the areas that contain popups
+		var array2 =
+			VisualTreeHelper.GetOpenPopupsForXamlRoot(_xamlRoot)
+			.Select(p => p.Child)
+			.Select(e => e.TransformToVisual(null).TransformBounds(new Rect(Point.Zero, e.RenderSize)))
+			.Select(rect => new XRectangle { X = (short)rect.X, Y = (short)rect.Y, H = (short)rect.Height, W = (short)rect.Width })
+			.ToArray();
+		IntPtr flyoutRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array2.Length);
+		using var _6 = Disposable.Create(() => Marshal.FreeHGlobal(flyoutRects));
+		new Span<XRectangle>(array2).CopyTo(new Span<XRectangle>(flyoutRects.ToPointer(), array2.Length));
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
+
+		XLib.XSync(TopX11Window.Display, false);
+	}
 }

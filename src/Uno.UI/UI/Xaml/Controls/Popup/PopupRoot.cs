@@ -18,6 +18,9 @@ internal partial class PopupRoot : Panel
 
 	private readonly SerialDisposable _subscriptions = new();
 
+	// This is needed for native element hosting.
+	internal event Action Arranged;
+
 	public PopupRoot()
 	{
 		Visual.SetAsFlyoutVisual();
@@ -103,6 +106,7 @@ internal partial class PopupRoot : Panel
 			ArrangeElement(child, new Rect(new Point(), finalSize));
 		}
 
+		DispatcherQueue.TryEnqueue(() => Arranged?.Invoke());
 		return finalSize;
 	}
 

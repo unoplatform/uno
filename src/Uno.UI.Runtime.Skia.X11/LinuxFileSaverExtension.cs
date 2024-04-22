@@ -118,7 +118,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				tcs.TrySetResult(null);
 			});
 
-			var window = "x11:" + host.X11Window.Window.ToString("X", CultureInfo.InvariantCulture);
+			var window = "x11:" + host.RootX11Window.Window.ToString("X", CultureInfo.InvariantCulture);
 			var requestPath2 = await fileChooser.SaveFileAsync(window, ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE"), new Dictionary<string, object>
 			{
 				{ "handle_token", handleToken },

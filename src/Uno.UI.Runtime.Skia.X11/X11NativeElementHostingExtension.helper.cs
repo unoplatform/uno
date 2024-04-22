@@ -1,0 +1,186 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+namespace Uno.WinUI.Runtime.Skia.X11;
+
+// https://www.x.org/releases/X11R7.6/doc/xextproto/shape.html
+// Thanks to Jörg Seebohn for providing an example on how to use X SHAPE
+// https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
+internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
+{
+	/// replace the executable and the args with whatever you have locally. This is only used
+	/// for internal debugging. However, make sure that you can set a unique title to the window,
+	/// so that you can then look it up.
+	public object? CreateSampleComponent(XamlRoot owner, string text) {
+		if (X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
+		{
+			if (!Exists("mpv"))
+			// if (!Exists("vlc"))
+			// if (!Exists("alacritty"))
+			// if (!Exists("xterm"))
+			{
+				return null;
+			}
+
+			// Note: xterm will more than likely crash. Use alacritty instead if you want to test embedding a terminal.
+			var process = new Process
+			{
+				StartInfo = new ProcessStartInfo
+				{
+					FileName = "mpv",
+					// FileName = "vlc",
+					// FileName = "alacritty",
+					// FileName = "xterm",
+					UseShellExecute = false
+				}
+			};
+
+			// mpv
+			var title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			process.StartInfo.ArgumentList.Add("--keep-open=always");
+			process.StartInfo.ArgumentList.Add($"--title={title}");
+			process.StartInfo.ArgumentList.Add(SampleVideoLink);
+
+			// vlc
+			// var title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			// process.StartInfo.ArgumentList.Add(SampleVideoLink);
+			// process.StartInfo.ArgumentList.Add("--meta-title");
+			// process.StartInfo.ArgumentList.Add(title);
+			// title += " - VLC media player";
+			
+			// alacritty
+			// var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			// process.StartInfo.ArgumentList.Add("--title");
+			// process.StartInfo.ArgumentList.Add(title);
+
+			// xterm
+			// var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
+			// process.StartInfo.ArgumentList.Add("-xrm");
+			// process.StartInfo.ArgumentList.Add("XTerm.vt100.allowTitleOps: false");
+			// process.StartInfo.ArgumentList.Add("-T");
+			// process.StartInfo.ArgumentList.Add(title);
+
+			process.Start();
+
+			var display = host.RootX11Window.Display;
+			using var _1 = X11Helper.XLock(display);
+
+			var _2 = XLib.XQueryTree(display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
+			XLib.XFree(children);
+
+			// Wait for the window to open.
+			IntPtr window = IntPtr.Zero;
+			SpinWait.SpinUntil(() =>
+			{
+				window = FindWindowByTitle(display, root, title);
+				if (window == IntPtr.Zero)
+				{
+					return false;
+				}
+
+				XWindowAttributes attributes = default;
+				var _ = XLib.XGetWindowAttributes(display, window, ref attributes);
+				return attributes.map_state == MapState.IsViewable;
+			});
+
+			if (window == IntPtr.Zero)
+			{
+				process.Kill();
+				return null;
+			}
+
+			return new X11Window(display, window);
+		}
+
+		// For debugging: replace the above with a hardcoded window id, obtainable using e.g. wmctrl
+		// if (owner is XamlRoot xamlRoot
+		// 	&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+		// {
+		// 	return new X11Window(host.X11Window.Display, 0x04a00002);
+		// }
+
+		return null;
+	}
+
+	private static bool Exists(string fileName)
+	{
+		if (File.Exists(fileName))
+		{
+			return true;
+		}
+
+		var values = Environment.GetEnvironmentVariable("PATH");
+		if (values is null)
+		{
+			return false;
+		}
+
+		return values
+			.Split(Path.PathSeparator)
+			.Select(path => Path.Combine(path, fileName))
+			.Any(File.Exists);
+	}
+
+	private unsafe static IntPtr FindWindowByTitle(IntPtr display, IntPtr current, string title)
+	{
+		var _1 = X11Helper.XFetchName(display, current, out var name);
+		if (name == title)
+		{
+			return current;
+		}
+
+		var _2 = XLib.XQueryTree(display,
+			current,
+			out _,
+			out _,
+			out IntPtr children,
+			out int nChildren);
+
+		var span = new Span<IntPtr>(children.ToPointer(), nChildren);
+
+		for (var i =  0; i < nChildren; ++i)
+		{
+			IntPtr window = FindWindowByTitle(display, span[i], title);
+
+			if (window != IntPtr.Zero)
+			{
+				return window;
+			}
+		}
+
+		return IntPtr.Zero;
+	}
+
+	private unsafe static IntPtr FindWindowById(IntPtr display, IntPtr current, IntPtr id)
+	{
+		if (current == id)
+		{
+			return current;
+		}
+
+		var _2 = XLib.XQueryTree(display,
+			current,
+			out _,
+			out _,
+			out IntPtr children,
+			out int nChildren);
+
+		var span = new Span<IntPtr>(children.ToPointer(), nChildren);
+
+		for (var i =  0; i < nChildren; ++i)
+		{
+			IntPtr window = FindWindowById(display, span[i], id);
+
+			if (window != IntPtr.Zero)
+			{
+				return window;
+			}
+		}
+
+		return IntPtr.Zero;
+	}
+}

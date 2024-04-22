@@ -2,16 +2,22 @@
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
 using Uno.Disposables;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {
-	private static readonly Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
+	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
+
+	partial void InitializePlatform()
 	{
-		ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter), out var extension);
-		return extension;
-	});
+		_nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
+		{
+			ApiExtensibility.CreateInstance<INativeElementHostingExtension>(this, out var extension);
+			return extension;
+		});
+	}
 
 	private IDisposable _nativeElementDisposable;
 
@@ -49,7 +55,7 @@ partial class ContentPresenter
 	private void ArrangeNativeElement()
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		var arrangeRect = TransformToVisual(null).TransformBounds(LayoutSlotWithMarginsAndAlignments);
+		var arrangeRect = this.GetAbsoluteBoundsRect();
 		var ev = GetParentViewport().Effective;
 
 		Rect clippingBounds;
@@ -130,6 +136,8 @@ partial class ContentPresenter
 		ArrangeNativeElement();
 	}
 
-	internal static object CreateSampleComponent(XamlRoot root, string text)
-		=> _nativeElementHostingExtension.Value?.CreateSampleComponent(root, text);
+	internal object CreateSampleComponent(string text)
+	{
+		return _nativeElementHostingExtension.Value?.CreateSampleComponent(XamlRoot, text);
+	}
 }

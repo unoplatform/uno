@@ -27,7 +27,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 				{
 					if (this_.IsLoaded)
 					{
-						this_.Content = Microsoft.UI.Xaml.Controls.ContentPresenter.CreateSampleComponent(this_.XamlRoot, text);
+						this_.Content = this_.FindFirstChild<Microsoft.UI.Xaml.Controls.ContentPresenter>().CreateSampleComponent(text);
 					}
 					else
 					{
@@ -35,7 +35,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 						RoutedEventHandler onLoaded = null;
 						onLoaded = (_, _) =>
 						{
-							this_.Content = Microsoft.UI.Xaml.Controls.ContentPresenter.CreateSampleComponent(this_.XamlRoot, text);
+							this_.Content = this_.FindFirstChild<Microsoft.UI.Xaml.Controls.ContentPresenter>().CreateSampleComponent(text);
 							this_.Loaded -= onLoaded;
 						};
 

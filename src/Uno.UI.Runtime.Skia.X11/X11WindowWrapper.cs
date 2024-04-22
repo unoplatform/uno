@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Globalization;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -31,19 +30,19 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		get
 		{
-			using var _1 = X11Helper.XLock(_host.X11Window.Display);
+			using var _1 = X11Helper.XLock(_host.RootX11Window.Display);
 			var @out = string.Empty;
-			var _2 = XLib.XFetchName(_host.X11Window.Display, _host.X11Window.Window, ref @out);
+			var _2 = XLib.XFetchName(_host.RootX11Window.Display, _host.RootX11Window.Window, ref @out);
 			return @out;
 		}
 		set
 		{
-			using var _1 = X11Helper.XLock(_host.X11Window.Display);
-			var _2 = XLib.XStoreName(_host.X11Window.Display, _host.X11Window.Window, value);
+			using var _1 = X11Helper.XLock(_host.RootX11Window.Display);
+			var _2 = XLib.XStoreName(_host.RootX11Window.Display, _host.RootX11Window.Window, value);
 		}
 	}
 
-	public override object NativeWindow => _host.X11Window;
+	public override object NativeWindow => _host.RootX11Window;
 
 	private void RaiseNativeSizeChanged(Size newWindowSize)
 	{
@@ -139,7 +138,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new X11NativeOverlappedPresenter(_host.X11Window, this));
+		presenter.SetNative(new X11NativeOverlappedPresenter(_host.RootX11Window, this));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 
@@ -153,9 +152,9 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	internal void SetFullScreenMode(bool on)
 	{
 		X11Helper.SetWMHints(
-			_host.X11Window,
-			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE),
+			_host.RootX11Window,
+			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE),
 			on ? 1 : 0,
-			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
+			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
 	}
 }

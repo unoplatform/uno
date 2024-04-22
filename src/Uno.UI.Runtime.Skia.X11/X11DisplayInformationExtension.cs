@@ -128,8 +128,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		internal void UpdateDetails()
 		{
-			var window = _host.X11Window.Window;
-			var display = _host.X11Window.Display;
+			var window = _host.RootX11Window.Window;
+			var display = _host.RootX11Window.Display;
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{

@@ -75,6 +75,16 @@ internal static partial class X11Helper
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
 
+	public const int ShapeSet = 0;
+	public const int ShapeUnion = 1;
+	public const int ShapeIntersect = 2;
+	public const int ShapeSubtract = 3;
+	public const int ShapeInvert = 4;
+	public const int ShapeBounding = 0;
+	public const int ShapeClip = 1;
+	public const int ShapeInput = 2;
+	public const int Unsorted = 0;
+
 	public const int Success = 0;
 
 	public const int POLLIN = 0x001; /* There is data to read.  */
@@ -319,6 +329,9 @@ internal static partial class X11Helper
 		IntPtr data, uint width, uint height, int bitmap_pad, int bytes_per_line);
 
 	[LibraryImport(libX11)]
+	public static partial int XClearWindow(IntPtr display, IntPtr window);
+
+	[LibraryImport(libX11)]
 	public static partial int XFetchName(IntPtr display, IntPtr window, out string name_return);
 
 	[LibraryImport(libX11)]
@@ -327,6 +340,9 @@ internal static partial class X11Helper
 
 	[LibraryImport(libX11)]
 	public static partial int XReparentWindow(IntPtr display, IntPtr window, IntPtr parent, int x, int y);
+
+	[LibraryImport(libX11)]
+	public static partial int XRaiseWindow(IntPtr display, IntPtr window);
 
 	[LibraryImport(libX11)]
 	public static partial int XMoveWindow(IntPtr display, IntPtr window, int x, int y);
@@ -393,6 +409,19 @@ internal static partial class X11Helper
 		IntPtr region,
 		int op
 	);
+
+	[LibraryImport(libXext)]
+	public unsafe static partial void XShapeCombineRectangles (
+		IntPtr display,
+		IntPtr window,
+		int	dest_kind,
+		int	x_off,
+		int	y_off,
+        XRectangle*	rectangles,
+        int n_rects,
+        int	op,
+        int	ordering
+    );
 
 	[LibraryImport(libX11Randr)]
 	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
