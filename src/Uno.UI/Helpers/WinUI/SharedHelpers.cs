@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
@@ -20,6 +21,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 #if HAS_UNO_WINUI
 using ITextSelection = Microsoft.UI.Text.ITextSelection;
@@ -981,6 +983,50 @@ namespace Uno.UI.Helpers.WinUI
 			{
 				return null;
 			}
+		}
+
+		public static void CopyVector<T>(
+			IObservableVector<T> source,
+			IObservableVector<T> destination)
+		{
+			destination.Clear();
+
+			foreach (var element in source)
+			{
+				destination.Add(element);
+			}
+		}
+
+		public static void ForwardVectorChange<T>(
+			IObservableVector<T> source,
+			IObservableVector<T> destination,
+			IVectorChangedEventArgs args)
+		{
+			var index = (int)args.Index;
+
+			switch (args.CollectionChange)
+			{
+				case CollectionChange.ItemChanged:
+					destination[index] = source[index];
+					break;
+				case CollectionChange.ItemInserted:
+					destination.Insert(index, source[index]);
+					break;
+				case CollectionChange.ItemRemoved:
+					destination.RemoveAt(index);
+					break;
+				case CollectionChange.Reset:
+					CopyVector(source, destination);
+					break;
+				default:
+					MUX_ASSERT(false);
+					break;
+			}
+		}
+
+		public static void EraseIfExists<TKey, TValue>(Dictionary<TKey, TValue> map, TKey key)
+		{
+			map.Remove(key);
 		}
 	}
 }
