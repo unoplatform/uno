@@ -35,10 +35,11 @@ jobs:
     displayName: Copy Artifacts to PackageCache
 
   - task: PowerShell@2
-    targetType: 'filePath'
-    filePath: build\test-scripts\run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests
-    pwsh: true # Use PowerShell core (required for IsWindows to run)
+    inputs:
+      targetType: 'filePath'
+      filePath: build\test-scripts\run-netcore-mobile-template-tests.ps1
+      pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
