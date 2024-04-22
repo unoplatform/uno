@@ -23,7 +23,7 @@ using Microsoft.UI.Text;
 using Windows.UI.Text;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 partial class TextCommandBarFlyout
 {
