@@ -526,7 +526,7 @@ namespace Microsoft.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			if (from == to || !from.IsInLiveTree || (!to?.IsInLiveTree ?? false))
+			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))
 			{
 				return Matrix3x2.Identity;
 			}
