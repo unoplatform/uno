@@ -541,6 +541,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			var window = GetWindowHost(handle);
 			window?.DisplayInformationExtension?.Update(width, height, scaleFactor);
+			window?.RasterizationScaleChanged?.Invoke(window, EventArgs.Empty);
 		}
 		catch (Exception e)
 		{
