@@ -14,7 +14,6 @@ public class Given_ScrollViewer : BaseTestClass
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[Ignore("This test is broken on WinAppSDK, and broke in Uno as part of aligning lifecycle with WinUI")]
 	public async Task Check_Change_ScrollViewer()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
