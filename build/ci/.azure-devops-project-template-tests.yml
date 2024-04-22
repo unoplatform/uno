@@ -8,6 +8,7 @@ jobs:
 
 - job: Dotnet_Template_Tests_NetCoreMobile_windows
   displayName: 'Run .NET Templates Tests Windows'
+  timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}
 
