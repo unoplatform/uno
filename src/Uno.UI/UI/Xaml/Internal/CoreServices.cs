@@ -42,7 +42,7 @@ namespace Uno.UI.Xaml.Core
 			if (Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
 				// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
-				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
+				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Normal);
 			}
 		}
 
