@@ -1281,7 +1281,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				=> _args.Add(args);
 
 			public void Dispose()
-				=> _elt.EffectiveViewportChanged += OnEVPChanged;
+				=> _elt.EffectiveViewportChanged -= OnEVPChanged;
 		}
 
 		private class EVPTreeListener : IDisposable
