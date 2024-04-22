@@ -8,6 +8,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using FluentAssertions;
@@ -15,9 +16,12 @@ using FluentAssertions.Execution;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.System;
+using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
@@ -42,6 +46,120 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_UIElement
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(200)]
+		[DataRow(10)]
+		public async Task When_Both_Layouting_Clip_And_Clip_DP(double newClipValue)
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Rectangle()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 100,
+				Height = 100,
+			};
+
+			var grid = new Grid()
+			{
+				Width = 200,
+				Height = 75,
+				Children =
+				{
+					new Rectangle()
+					{
+						Fill = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					SUT,
+				},
+			};
+
+			await UITestHelper.Load(grid);
+			var screenshot = await UITestHelper.ScreenShot(grid);
+
+			var greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
+			Assert.AreEqual(new Size(199, 74), new Size(greenBounds.Width, greenBounds.Height));
+
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Size(99, 74), new Size(redBounds.Width, redBounds.Height));
+
+			SUT.Clip = new RectangleGeometry()
+			{
+				Rect = new(0, 0, newClipValue, newClipValue),
+			};
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			screenshot = await UITestHelper.ScreenShot(grid);
+			greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
+			Assert.AreEqual(new Size(199, 74), new Size(greenBounds.Width, greenBounds.Height));
+
+			redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Size(Math.Min(100, newClipValue) - 1, Math.Min(75, newClipValue) - 1), new Size(redBounds.Width, redBounds.Height));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("It doesn't yet work properly on Android and iOS")]
+#endif
+		public async Task When_TranslateTransform_And_Clip()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse),
+				Children =
+				{
+					new Grid()
+					{
+						Width = 50,
+						Height = 50,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
+						Children =
+						{
+							new Grid()
+							{
+								Width = 100,
+								Height = 100,
+								HorizontalAlignment = HorizontalAlignment.Center,
+								VerticalAlignment = VerticalAlignment.Center,
+								Background = new SolidColorBrush(Microsoft.UI.Colors.DeepSkyBlue),
+								Clip = new RectangleGeometry()
+								{
+									Rect = new Rect(0, 0, 5, 50),
+								},
+								RenderTransform = new TranslateTransform()
+								{
+									X = 65,
+								},
+							},
+						},
+					},
+				},
+			};
+
+			await UITestHelper.Load(grid);
+			var screenshot = await UITestHelper.ScreenShot(grid);
+			var chartreuseBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Chartreuse);
+			var deepPinkBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.DeepPink);
+			var deepSkyBlueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.DeepSkyBlue);
+
+			Assert.AreEqual(new Rect(0, 0, 99, 99), chartreuseBounds);
+			Assert.AreEqual(new Rect(25, 25, 49, 49), deepPinkBounds);
+			Assert.AreEqual(new Rect(65, 25, 4, 24), deepSkyBlueBounds);
+		}
+
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
 		[TestMethod]
 		[RunsOnUIThread]
@@ -230,6 +348,466 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(new Vector3(110, 60, 0), button.ActualOffset);
 		}
+
+#if __SKIA__
+		private async Task TapKey(VirtualKey key)
+		{
+			TestServices.WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager.Keyboard.OnKeyTestingOnly(
+				new KeyEventArgs("test", key, VirtualKeyModifiers.None, new CorePhysicalKeyStatus()), true);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			TestServices.WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager.Keyboard.OnKeyTestingOnly(
+				new KeyEventArgs("test", key, VirtualKeyModifiers.None, new CorePhysicalKeyStatus()), false);
+
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PreviewKeyDown_Basic()
+		{
+			StackPanel sp2, sp3;
+			Button btn1, btn2, btn3;
+			var sp1 = new StackPanel
+			{
+				Name = "sp1",
+				Children =
+				{
+					(sp2 = new StackPanel
+					{
+						Name = "sp2",
+						Children =
+						{
+							(sp3 = new StackPanel
+							{
+								Name = "sp3",
+								Children =
+								{
+									(btn1 = new Button { Name = "btn1" }),
+									(btn2 = new Button { Name = "btn2" })
+								}
+							}),
+							(btn3 = new Button { Name = "btn3" })
+						}
+					})
+				}
+			};
+
+			var result = new StringBuilder();
+
+			btn1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			btn1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			await UITestHelper.Load(sp1);
+
+			btn1.Focus(FocusState.Programmatic);
+			await TapKey(VirtualKey.A); // any key that doesn't get handled by Button
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(
+				"""
+				sp1 PreviewKeyDown False
+				sp2 PreviewKeyDown False
+				sp3 PreviewKeyDown False
+				btn1 PreviewKeyDown False
+				btn1 KeyDown False
+				sp3 KeyDown False
+				sp2 KeyDown False
+				sp1 KeyDown False
+				
+				""".ReplaceLineEndings("\n")
+				, result.ToString());
+
+			void OnKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} KeyDown {e.Handled}\n");
+			}
+
+			void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} PreviewKeyDown {e.Handled}\n");
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PreviewKeyDown_KeyDown_DifferentArgs()
+		{
+			var button = new Button();
+
+			KeyRoutedEventArgs keyDownArgs = default, previewKeyDownArgs = default;
+			button.KeyDown += (_, args) => keyDownArgs = args;
+			button.PreviewKeyDown += (_, args) => previewKeyDownArgs = args;
+
+			await UITestHelper.Load(button);
+			button.Focus(FocusState.Programmatic);
+			await TapKey(VirtualKey.A);
+
+			Assert.IsNotNull(keyDownArgs);
+			Assert.IsNotNull(previewKeyDownArgs);
+			// We use the same args object twice to reduce allocations, which is different from WinUI.
+			// Assert.AreNotEqual(keyDownArgs, previewKeyDownArgs);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PreviewKeyDown_Handled()
+		{
+			StackPanel sp2, sp3;
+			Button btn1, btn2, btn3;
+			var sp1 = new StackPanel
+			{
+				Name = "sp1",
+				Children =
+				{
+					(sp2 = new StackPanel
+					{
+						Name = "sp2",
+						Children =
+						{
+							(sp3 = new StackPanel
+							{
+								Name = "sp3",
+								Children =
+								{
+									(btn1 = new Button { Name = "btn1" }),
+									(btn2 = new Button { Name = "btn2" })
+								}
+							}),
+							(btn3 = new Button { Name = "btn3" })
+						}
+					})
+				}
+			};
+
+			var result = new StringBuilder();
+
+			btn1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), false); // Change from other tests, true -> false
+			btn2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			btn1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			await UITestHelper.Load(sp1);
+
+			btn1.Focus(FocusState.Programmatic);
+			await TapKey(VirtualKey.A); // any key that doesn't get handled by Button
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(
+				"""
+				sp1 PreviewKeyDown False
+				sp2 PreviewKeyDown False
+				sp3 PreviewKeyDown True
+				btn1 PreviewKeyDown True
+				sp3 KeyDown True
+				sp2 KeyDown True
+				sp1 KeyDown True
+				
+				""".ReplaceLineEndings("\n")
+				, result.ToString());
+
+			void OnKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} KeyDown {e.Handled}\n");
+			}
+
+			void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} PreviewKeyDown {e.Handled}\n");
+
+				if (((FrameworkElement)sender).Name == "sp2")
+				{
+					e.Handled = true;
+				}
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PreviewKeyDown_Handled_Then_Unhandled()
+		{
+			StackPanel sp2, sp3;
+			Button btn1, btn2, btn3;
+			var sp1 = new StackPanel
+			{
+				Name = "sp1",
+				Children =
+				{
+					(sp2 = new StackPanel
+					{
+						Name = "sp2",
+						Children =
+						{
+							(sp3 = new StackPanel
+							{
+								Name = "sp3",
+								Children =
+								{
+									(btn1 = new Button { Name = "btn1" }),
+									(btn2 = new Button { Name = "btn2" })
+								}
+							}),
+							(btn3 = new Button { Name = "btn3" })
+						}
+					})
+				}
+			};
+
+			var result = new StringBuilder();
+
+			btn1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), false); // change from other tests, true -> false
+			btn2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			btn1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			await UITestHelper.Load(sp1);
+
+			btn1.Focus(FocusState.Programmatic);
+			await TapKey(VirtualKey.A); // any key that doesn't get handled by Button
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(
+				"""
+				sp1 PreviewKeyDown False
+				sp2 PreviewKeyDown False
+				sp3 PreviewKeyDown True
+				btn1 PreviewKeyDown False
+				btn1 KeyDown False
+				sp3 KeyDown False
+				sp2 KeyDown False
+				sp1 KeyDown False
+				
+				""".ReplaceLineEndings("\n")
+				, result.ToString());
+
+			void OnKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} KeyDown {e.Handled}\n");
+			}
+
+			void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} PreviewKeyDown {e.Handled}\n");
+
+				if (((FrameworkElement)sender).Name == "sp2")
+				{
+					e.Handled = true;
+				}
+
+				if (((FrameworkElement)sender).Name == "sp3")
+				{
+					e.Handled = false;
+				}
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[Ignore("Failing due to #15942")]
+		public async Task When_PreviewKeyDown_Reparenting()
+		{
+			StackPanel sp2, sp3;
+			Button btn1, btn2, btn3;
+			var sp1 = new StackPanel
+			{
+				Name = "sp1",
+				Children =
+				{
+					(sp2 = new StackPanel
+					{
+						Name = "sp2",
+						Children =
+						{
+							(sp3 = new StackPanel
+							{
+								Name = "sp3",
+								Children =
+								{
+									(btn1 = new Button { Name = "btn1" }),
+									(btn2 = new Button { Name = "btn2" })
+								}
+							}),
+							(btn3 = new Button { Name = "btn3" })
+						}
+					})
+				}
+			};
+
+			var result = new StringBuilder();
+
+			btn1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			btn1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			await UITestHelper.Load(sp1);
+
+			btn1.Focus(FocusState.Programmatic);
+			await TapKey(VirtualKey.A); // any key that doesn't get handled by Button
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(
+				"""
+				sp1 PreviewKeyDown False
+				sp2 PreviewKeyDown False
+				sp3 PreviewKeyDown False
+				btn1 PreviewKeyDown False
+				btn3 KeyDown False
+				sp2 KeyDown False
+				sp1 KeyDown False
+				
+				""".ReplaceLineEndings("\n")
+				, result.ToString());
+
+			void OnKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} KeyDown {e.Handled}\n");
+			}
+
+			void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} PreviewKeyDown {e.Handled}\n");
+
+				if (((FrameworkElement)sender).Name == "sp2")
+				{
+					sp3.Children.Remove(btn1);
+					sp2.Children.Add(btn1);
+				}
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PreviewKeyDown_FocusChanged()
+		{
+			StackPanel sp2, sp3;
+			Button btn1, btn2, btn3;
+			var sp1 = new StackPanel
+			{
+				Name = "sp1",
+				Children =
+				{
+					(sp2 = new StackPanel
+					{
+						Name = "sp2",
+						Children =
+						{
+							(sp3 = new StackPanel
+							{
+								Name = "sp3",
+								Children =
+								{
+									(btn1 = new Button { Name = "btn1" }),
+									(btn2 = new Button { Name = "btn2" })
+								}
+							}),
+							(btn3 = new Button { Name = "btn3" })
+						}
+					})
+				}
+			};
+
+			var result = new StringBuilder();
+
+			btn1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			btn3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			btn1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			btn3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp2.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			sp3.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+
+			sp1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp2.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			sp3.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+
+			await UITestHelper.Load(sp1);
+
+			btn1.Focus(FocusState.Programmatic);
+			await TapKey(VirtualKey.A); // any key that doesn't get handled by Button
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(
+				"""
+				sp1 PreviewKeyDown False
+				sp2 PreviewKeyDown False
+				sp3 PreviewKeyDown False
+				btn1 PreviewKeyDown False
+				btn2 KeyDown False
+				sp3 KeyDown False
+				sp2 KeyDown False
+				sp1 KeyDown False
+				
+				""".ReplaceLineEndings("\n")
+				, result.ToString());
+
+			void OnKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} KeyDown {e.Handled}\n");
+			}
+
+			void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e)
+			{
+				result.Append($"{((FrameworkElement)sender).Name} PreviewKeyDown {e.Handled}\n");
+
+				if (((FrameworkElement)sender).Name == "sp2")
+				{
+					btn2.Focus(FocusState.Programmatic);
+				}
+			}
+		}
+#endif
 
 #if HAS_UNO // Cannot Set the LayoutInformation on UWP
 		[TestMethod]

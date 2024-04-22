@@ -33,6 +33,20 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
+#### References in a Single Project
+
+In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+
+```xml
+<UnoFeatures>
+    ...
+    Lottie;
+    ...
+</UnoFeatures>
+```
+
+#### References in a Legacy Project
+
 On all Uno Platform targets, you'll need the following packages:
 
 * `Uno.WinUI.Lottie` (for the `LottieVisualSource`)

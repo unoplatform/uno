@@ -4,18 +4,24 @@ uid: Uno.Features.Uno.Sdk
 
 # Using the Uno.Sdk
 
-Uno Platform projects use the Uno.Sdk, and msbuild package designed to keep projects simple, yet configurable. It inherits from the `Microsoft.Net.Sdk` and `Microsoft.Net.Sdk.Web` depending on the platform.
+Uno Platform projects use the Uno.Sdk package designed to keep projects simple, yet configurable. It import the `Microsoft.Net.Sdk` (and the `Microsoft.Net.Sdk.Web` for WebAssembly).
 
-This document explains the many features of this SDK, and how to change its behavior.
+This document explains the many features of this SDK, and how to configure its behavior.
 
 > [!NOTE]
 > The Uno.Sdk only supports the WinUI API set.
+> [!TIP]
+> Beginning with 5.2, Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
+
+## Managing the Uno.Sdk version
+
+Updating the Uno.Sdk is [done through the global.json file](xref:Uno.Development.UpgradeUnoNuget).
 
 ## Uno Platform Features
 
-As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to specify which Uno Platform features should be enabled.
+As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to simplify which Uno Platform features should be enabled.
 
-In the csproj of an app, you will find the following property:
+You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props` as shown here:
 
 ```xml
 <UnoFeatures>
@@ -33,35 +39,46 @@ In the csproj of an app, you will find the following property:
 </UnoFeatures>
 ```
 
+> [!IMPORTANT]
+> Once you have changed the features list, Visual Studio requires restoring packages explicitly, or building the app once for the change to take effect.
+
 This allows for the SDK to selectively include references to relevant sets of Nuget packages to enable features for your app.
 
 Here are the supported features:
 
-- `Maps`, to enable Maps support
-- `Foldable`, to enable Android foldable support
-- `MediaElement`, to enable MediaElement support
-- `CSharpMarkup`, to enable C# Markup
-- `Extensions`, to enable all Uno.Extensions
-- `Authentication`, to enable all Uno.Extensions.Authentication
-- `AuthenticationMsal`, to enable Uno.Extensions support for MSAL
-- `AuthenticationOidc`, to enable Uno.Extensions support for OIDC
-- `Configuration`, to enable Uno.Extensions.Configuration
-- `Hosting`, to enable Uno.Extensions.Hosting
-- `Http`, to enable Uno.Extensions.Http
-- `Localization`, to enable Uno.Extensions.Localization
-- `Logging`, to enable Uno.Extensions.Logging
-- `MauiEmbedding`, to enable Uno.Extensions.MauiEmbedding
-- `Mvux`, to enable Uno.Extensions.Reactive
-- `Navigation`, to enable Uno.Extensions.Navigation
-- `Serilog`, to enable Uno.Extensions.Logging.Serilog
-- `Storage`, to enable Uno.Extensions.Storage
-- `Serialization`, to enable Uno.Extensions.Serialization
-- `Toolkit`, to enable Uno.Toolkit.UI
-- `Material`, to enable Uno.Material
-- `Cupertino`, to enable Uno.Cupertino
-- `Mvvm`, to enable CommunityToolkit.Mvvm
-- `Prism`, to enable Prism Library
-- `Skia`, to enable SkiaSharp
+| feature | description |
+|---------|-------------|
+| `Foldable` | Adds a reference to Uno.WinUI.Foldable |
+| `MediaElement` | Adds native references where needed to use MediaElement |
+| `CSharpMarkup` | Adds support for C# Markup|
+| `Extensions` | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging |
+| `Authentication` | Adds the Uno.Extensions package for Custom Authentication |
+| `AuthenticationMsal` | dds the Uno.Extensions packages for Authentication using Microsoft.Identity.Client |
+| `AuthenticationOidc` | Adds the Uno.Extensions packages for Authentication using a custom Oidc client |
+| `Configuration` | Adds the Uno.Extensions packages for Configuration |
+| `Hosting` | Adds support for Dependency Injection using Uno.Extensions.Hosting packages |
+| `Http` | Adds support for custom Http Clients including the use of Refit with Uno.Extensions |
+| `Localization` | Adds support for Localization using Uno.Extensions |
+| `Logging` | Adds support for Logging using Uno.Extensions |
+| `MauiEmbedding` | Adds support for embedding Maui controls in Uno |
+| `MVUX` | Adds support for MVUX |
+| `ThemeService` | Adds the Uno.Extensions.Core.WinUI package |
+| `Navigation` | Adds support for Navigation using Uno.Extensions |
+| `LoggingSerilog` | Adds support for Serilog using Uno.Extensions |
+| `Storage` | Adds support for Storage using Uno.Extensions |
+| `Serialization` | Adds support for Uno.Extensions.Serialization |
+| `Toolkit` | Adds support for the Uno.Toolkit |
+| `Material` | Adds support for the Material Design Toolkit |
+| `Cupertino` | Adds support for the Cupertino Design Toolkit |
+| `Mvvm` | Adds support for the CommunityToolkit.Mvvm package |
+| `Dsp` | Adds support for the Uno.Dsp package |
+| `Prism` | Adds Prism support for Uno.WinUI |
+| `Skia` | Adds support for SkiaSharp |
+| `Svg` | Svg support for iOS, Android, and Mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK. |
+| `Lottie` | Adds support for Lottie animations |
+
+> [!IMPORTANT]
+> Feature names are case sensitive
 
 ## Implicit Packages
 
@@ -71,37 +88,51 @@ It is possible to configure the version of those packages in two ways. The first
 
 Here are the supported properties:
 
-- `UnoExtensionsVersion`
-- `UnoToolkitVersion`
-- `UnoThemesVersion`
-- `UnoCSharpMarkupVersion`
-- `SkiaSharpVersion`
-- `UnoLoggingVersion`
-- `WindowsCompatibilityVersion`
-- `UnoWasmBootstrapVersion`
-- `UnoUniversalImageLoaderVersion`
-- `AndroidMaterialVersion`
-- `AndroidXLegacySupportV4Version`
-- `AndroidXAppCompatVersion`
-- `AndroidXRecyclerViewVersion`
-- `AndroidXActivityVersion`
-- `AndroidXBrowserVersion`
-- `AndroidXSwipeRefreshLayoutVersion`
-- `UnoResizetizerVersion`
-- `MicrosoftLoggingVersion`
-- `WinAppSdkVersion`
-- `WinAppSdkBuildToolsVersion`
+## [**Uno Platform Packages**](#tab/uno-packages)
+
 - `UnoCoreLoggingSingletonVersion`
+- `UnoCSharpMarkupVersion`
 - `UnoDspTasksVersion`
-- `CommunityToolkitMvvmVersion`
-- `PrismVersion`
-- `AndroidXNavigationVersion`
+- `UnoExtensionsVersion`
+- `UnoLoggingVersion`
+- `UnoResizetizerVersion`
+- `UnoThemesVersion`
+- `UnoToolkitVersion`
+- `UnoUniversalImageLoaderVersion`
+- `UnoWasmBootstrapVersion`
+
+> [!NOTE]
+> In the 5.2 version of the Uno.Sdk you must provide a value for `UnoExtensionsVersion`, `UnoThemesVersion`, `UnoToolkitVersion` and `UnoCSharpMarkupVersion` in order to use the packages associated with the UnoFeatures from these libraries as they are downstream dependencies of the Uno repository.
+
+## [**Third Party Packages**](#tab/3rd-party-packages)
+
+- `AndroidMaterialVersion`
+- `AndroidXActivityVersion`
+- `AndroidXAppCompatVersion`
+- `AndroidXBrowserVersion`
 - `AndroidXCollectionVersion`
+- `AndroidXLegacySupportV4Version`
+- `AndroidXNavigationVersion`
+- `AndroidXRecyclerViewVersion`
+- `AndroidXSwipeRefreshLayoutVersion`
+- `CommunityToolkitMvvmVersion`
 - `MicrosoftIdentityClientVersion`
+- `MicrosoftLoggingVersion`
+- `PrismVersion`
+- `SkiaSharpVersion`
+- `SvgSkiaVersion`
+- `WinAppSdkBuildToolsVersion`
+- `WinAppSdkVersion`
+- `WindowsCompatibilityVersion`
 
-Those properties can be set from `Directory.Build.props`.
+***
 
-If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file. You will be then able to manually add the NuGet packages for your project.
+Those properties can be set from `Directory.Build.props` or may be set in the `csproj` file for your project.
+
+If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
+
+> [!NOTE]
+> When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
 
 ## Supported OS Platform versions
 
@@ -116,6 +147,37 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | WinUI | 10.0.18362.0 |
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
+
+```xml
+ <Choose>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$(TargetFramework.Contains('windows10'))">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
+        <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+      </PropertyGroup>
+    </When>
+  </Choose>
+```
 
 ## Visual Studio 2022 First-TargetFramework workarounds
 

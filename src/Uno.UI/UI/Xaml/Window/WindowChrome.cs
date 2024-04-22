@@ -10,5 +10,7 @@ internal sealed partial class WindowChrome : ContentControl
 		VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
 		HorizontalContentAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch;
 		VerticalContentAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
+
+		IsTabStop = false;
 	}
 }

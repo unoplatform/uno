@@ -134,12 +134,14 @@
 		<ItemGroup Condition="'$(ProjectTypeGuids)'!=''">
 			<!-- Xamarin-based targets which don't set RuntimeCopyLocalItems must use  -->
 			<_UnoPriFiles Include="@(Reference->'%(RootDir)%(Directory)%(Filename).uprimarker')"
-						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
+						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"
+						  PublishFolderType="None" />
 		</ItemGroup>
 
 		<ItemGroup Condition="'$(ProjectTypeGuids)'==''">
 			<_UnoPriFiles Include="@(RuntimeCopyLocalItems->'%(RootDir)%(Directory)%(Filename).uprimarker')"
-						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
+						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"
+						  PublishFolderType="None" />
 		</ItemGroup>
 
 		<ItemGroup>

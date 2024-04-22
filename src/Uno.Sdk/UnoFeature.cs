@@ -4,6 +4,7 @@ public enum UnoFeature
 {
 	Invalid = -1,
 
+	// NOTE: We are removing this from the public API but keeping it as a supported feature for now
 	[UnoArea(UnoArea.Core)]
 	Maps,
 
@@ -35,6 +36,9 @@ public enum UnoFeature
 	ExtensionsCore,
 
 	[UnoArea(UnoArea.Extensions)]
+	ThemeService,
+
+	[UnoArea(UnoArea.Extensions)]
 	Hosting,
 
 	[UnoArea(UnoArea.Extensions)]
@@ -50,13 +54,13 @@ public enum UnoFeature
 	MauiEmbedding,
 
 	[UnoArea(UnoArea.Extensions)]
-	Mvux,
+	MVUX,
 
 	[UnoArea(UnoArea.Extensions)]
 	Navigation,
 
 	[UnoArea(UnoArea.Extensions)]
-	Serilog,
+	LoggingSerilog,
 
 	[UnoArea(UnoArea.Extensions)]
 	Storage,
@@ -80,5 +84,11 @@ public enum UnoFeature
 	Prism,
 
 	[UnoArea(UnoArea.Core)]
-	Skia
+	Skia,
+
+	[UnoArea(UnoArea.Core)]
+	Lottie,
+
+	[UnoArea(UnoArea.Core)]
+	Svg
 }

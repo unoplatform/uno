@@ -55,11 +55,7 @@ To setup your environment for WSL:
 
 ## Additional Setup for Skia Desktop projects
 
-# [**Windows**](#tab/windows)
-
-[!include[windows-setup](includes/additional-windows-setup-inline.md)]
-
-# [**WSL**](#tab/linux)
+### WSL
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 

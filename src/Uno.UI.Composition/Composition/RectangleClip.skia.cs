@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
-#nullable enable
-
 using SkiaSharp;
+using Uno.Extensions;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -23,13 +23,24 @@ partial class RectangleClip
 		_radiiStore[2] = new SKPoint(_bottomRightRadius.X, _bottomRightRadius.Y);
 		_radiiStore[3] = new SKPoint(_bottomLeftRadius.X, _bottomLeftRadius.Y);
 
-		_skRoundRect.SetRectRadii(
-			new SKRect(
-				Left,
-				Top,
-				Right,
-				Bottom),
-			_radiiStore);
+		_skRoundRect.SetRectRadii(GetRectangleBounds().ToSKRect(), _radiiStore);
 		return _skRoundRect;
+	}
+
+	private protected override Rect? GetBoundsCore(Visual visual)
+		=> GetRectangleBounds();
+
+	private Rect GetRectangleBounds()
+	{
+		return new Rect(
+			x: Left,
+			y: Top,
+			width: Right - Left,
+			height: Bottom - Top);
+	}
+
+	internal override void Apply(SKCanvas canvas, Visual visual)
+	{
+		canvas.ClipRoundRect(SKRoundRect, SKClipOperation.Intersect, true);
 	}
 }

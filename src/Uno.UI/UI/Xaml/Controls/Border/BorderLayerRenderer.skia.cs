@@ -159,8 +159,7 @@ partial class BorderLayerRenderer
 			// Note: The clipping is used to determine the location where the children of current element can be rendered.
 			//		 So its has to be the "inner" area (i.e. the area without the border).
 			//		 The border and the background shapes are already clipped properly and will be drawn without that clipping property set.
-			owner.ClippingIsSetByCornerRadius = true;
-			visual.Clip = compositor.CreateRectangleClip(
+			visual.CornerRadiusClip = compositor.CreateRectangleClip(
 				(float)adjustedArea.Left, (float)adjustedArea.Top, (float)adjustedArea.Right, (float)adjustedArea.Bottom,
 				fullCornerRadius.Inner.TopLeft, fullCornerRadius.Inner.TopRight, fullCornerRadius.Inner.BottomRight, fullCornerRadius.Inner.BottomLeft);
 		}
@@ -266,8 +265,6 @@ partial class BorderLayerRenderer
 
 		disposables.Add(() =>
 		{
-			owner.ClippingIsSetByCornerRadius = false;
-
 			foreach (var shape in shapes)
 			{
 				visual.Shapes.Remove(shape);

@@ -260,11 +260,14 @@ internal partial class PopupPanel : Panel
 			// disabled for ContentDialogs.
 			else if (popup.IsLightDismissEnabled)
 			{
+				OnPointerPressedDismissed(args);
 				ClosePopup(popup);
 			}
 			args.Handled = true;
 		}
 	}
+
+	private protected virtual void OnPointerPressedDismissed(PointerRoutedEventArgs args) { }
 
 	private static void ClosePopup(Popup popup)
 	{

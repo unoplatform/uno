@@ -114,7 +114,7 @@
       - name: Community Tutorials
         topicHref: guides/community-tutorials.md
     - name: Samples
-      topicHref: uno-samples.md
+      href: external/uno.samples/doc/samples.md
     - name: Additional Resources
       href: xref:Uno.GetStarted.NextSteps
 
@@ -142,15 +142,6 @@
         - name: Why use Uno Platform?
           href: xref:Uno.Overview.WhyUno
 
-    - name: Debugging
-      items:
-        - name: How to create a repro sample
-          href: uno-howto-create-a-repro.md
-        - name: 'Debugging C# on WASM'
-          href: debugging-wasm.md
-        - name: VS Code Advanced Mobile Debugging
-          href: xref:uno.vscode.mobile.advanced.debugging
-
     - name: Authoring
       items:
       - name: Using the Uno.SDK
@@ -163,6 +154,8 @@
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
         href: guides/how-to-add-platforms-existing-project.md
+      - name: Getting Started With Tests
+        href: xref:Uno.Authoring.Tests
       - name: Logging
         href: logging.md
       - name: AppManifest (WebAssembly)
@@ -176,6 +169,14 @@
         - name: Working with Skia+GTK
           href: features/using-skia-gtk.md
 
+    - name: Debugging
+      items:
+        - name: How to create a repro sample
+          href: uno-howto-create-a-repro.md
+        - name: 'Debugging C# on WASM'
+          href: debugging-wasm.md
+        - name: VS Code Advanced Mobile Debugging
+          href: xref:uno.vscode.mobile.advanced.debugging
 
     - name: Embedding
       items:

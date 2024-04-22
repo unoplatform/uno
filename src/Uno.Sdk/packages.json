@@ -16,7 +16,9 @@
 			"Uno.WinUI.Skia.MacOS",
 			"Uno.WinUI.Skia.Wpf",
 			"Uno.WinUI.Skia.X11",
+			"Uno.WinUI.Svg",
 			"Uno.WinUI.WebAssembly",
+			"Uno.WinUI.Runtime.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly"
 		]
 	},
@@ -63,7 +65,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.4.4",
+		"version": "1.4.8",
 		"packages": [
 			"Uno.Resizetizer"
 		]
@@ -74,9 +76,17 @@
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.Uno.WinUI",
+			"SkiaSharp.Views.WinUI",
 			"SkiaSharp.NativeAssets.Linux",
 			"SkiaSharp.NativeAssets.macOS",
 			"SkiaSharp.NativeAssets.Win32"
+		]
+	},
+	{
+		"group": "SvgSkia",
+		"version": "1.0.0.18",
+		"packages": [
+			"Svg.Skia"
 		]
 	},
 	{
@@ -115,7 +125,7 @@
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.60.2",
+		"version": "4.60.3",
 		"packages": [
 			"Microsoft.Identity.Client"
 		]
@@ -138,7 +148,7 @@
 	},
 	{
 		"group": "AndroidMaterial",
-		"version": "1.10.0.2",
+		"version": "1.10.0.3",
 		"packages": [
 			"Xamarin.Google.Android.Material"
 		]

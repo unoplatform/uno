@@ -21,6 +21,8 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using DirectUI;
+using Microsoft.UI.Input;
 
 //TODO:MZ: Handle parameters in/out
 
@@ -151,6 +153,11 @@ namespace Microsoft.UI.Xaml.Input
 		/// Focus rect manager.
 		/// </summary>
 		internal FocusRectManager FocusRectManager => _focusRectManager;
+
+		/// <summary>
+		/// Gets a value indicating whether the user can tab out of plugin.
+		/// </summary>
+		internal bool CanTabOutOfPlugin => _canTabOutOfPlugin;
 
 		/// <summary>
 		/// Represents the control which is focus-engaged.
@@ -1863,7 +1870,7 @@ namespace Microsoft.UI.Xaml.Input
 			// TODO Uno specific: We need to do a full redraw, as render loop does not yet check for focus visuals rendering.
 			UpdateFocusRect(focusNavigationDirection, false);
 			FocusNative(_focusedElement as UIElement);
-			(_contentRoot.VisualTree.RootElement as IRootElement)?.NotifyFocusChanged();
+			_contentRoot.InputManager.Pointers.NotifyFocusChanged(); // Note: This sounds like a duplicate of the NotifyFocusChanged done a few lines below (1944). We need to evaluate if this is still relevant or if we can just remove that uno-specific call.
 
 			// At this point the focused pointer has been switched.  So success is true
 			// even in the case we run into trouble raising the event(s) to notify as such.

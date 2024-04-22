@@ -542,6 +542,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorPositionChangedTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\Power\Battery.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1827,6 +1831,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\FlipView\FlipView_Buttons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_OverlayInputPassThroughElement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4650,11 +4658,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5777,6 +5785,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorPositionChangedTest.xaml.cs">
+      <DependentUpon>GeolocatorPositionChangedTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\Power\Battery.xaml.cs">
       <DependentUpon>Battery.xaml</DependentUpon>
     </Compile>
@@ -6091,6 +6102,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridView\GridViewMultipleSelectionMode.xaml.cs">
       <DependentUpon>GridViewMultipleSelectionMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_OverlayInputPassThroughElement.xaml.cs">
+      <DependentUpon>Flyout_OverlayInputPassThroughElement.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageSourceWriteableBitmapInvalidate_Stretch.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\IconSourceTests\IconSourceElementTests.xaml.cs">
@@ -8166,10 +8180,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MixTransformCliPropertyAndClippedByParentWithBorders_Then_RenderingIsValid.xaml.cs">
       <DependentUpon>MixTransformCliPropertyAndClippedByParentWithBorders_Then_RenderingIsValid.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml.cs">
       <DependentUpon>EffectBrushTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml.cs">
       <DependentUpon>XamlCompositionBrushBaseTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml.cs">
@@ -9570,10 +9584,10 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\TimePicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ToolTip.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\TreeView.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\Uno200x200.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\Uno50x50.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\WinUI.png" />
-	<Content Include="$(MSBuildThisFileDirectory)Assets\LightMap.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Uno200x200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Uno50x50.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\WinUI.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\LightMap.png" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\4770-lady-and-dove.json" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\4930-checkbox-animation.json" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\lottie-logo.json" />

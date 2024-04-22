@@ -1,9 +1,8 @@
 <Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>$(DotNetVersion)-browserwasm;$(DotNetVersion)-desktop;$(DotNetVersion)</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);$(DotNetVersion)-android;$(DotNetVersion)-ios;$(DotNetVersion)-maccatalyst;$(DotNetVersion)-desktop</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(DotNetVersion)-windows10.0.19041</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OverrideTargetFramework)'!=''">$(OverrideTargetFramework)</TargetFrameworks>
+    <TargetFrameworks>net8.0-browserwasm;net8.0-desktop;net8.0</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-desktop</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
@@ -26,15 +25,29 @@
       must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
     -->
     <!-- <WindowsSdkPackageVersion>10.0.22621.28</WindowsSdkPackageVersion> -->
+
+    <!--
+      UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+    </UnoFeatures>
   </PropertyGroup>
 
   <Target Name="_UnoValidateSelfAssets" 
           BeforeTargets="AfterBuild" 
-          Condition="'$(TargetFramework)'=='$(DotNetVersion)-windows10.0.19041'">
+          Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041'">
 
     <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
     <Error Text="Missing asset $(OutputPath)\Assets\SharedAssets.md"
           Condition="!exists('$(OutputPath)\Assets\SharedAssets.md')" />
+  </Target>
+
+  <!-- fail the build if a BundleResource.LogicalName contains a rooted path -->
+  <Target Name="ValidateBundleResourceLogicalName" AfterTargets="AfterBuild">
+    <Error 
+      Condition="'%(BundleResource.LogicalName)' != '' And $([System.IO.Path]::IsPathRooted('%(BundleResource.LogicalName)'))" 
+      Text="BundleResource.LogicalName must not contain a rooted path" />
   </Target>
 
 </Project>

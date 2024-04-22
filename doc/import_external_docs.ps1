@@ -7,16 +7,17 @@ Set-PSDebug -Trace 1
 
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = "b1bc52b211bfe73e75a285e6fa1c89c7f655c335" #latest main commit
-    "uno.themes"         = "fa2eee00b63901c94840633204e0837b32ade719" #latest release branch commit
-    "uno.toolkit.ui"     = "d48202c41792148db7ea1b05d5a9e42c651f6218" #latest release branch commit
-    "uno.check"          = "e84be1813874a3b876a74a911a6fee1430092b87" #latest main commit
+    "uno.wasm.bootstrap" = "9b559fc9a8b5e939fd99fa119a243e760ae3770d" #latest main commit
+    "uno.themes"         = "98eb4b4aebaf19ad1ce1c67220d7a7beaa772959" #latest release branch commit
+    "uno.toolkit.ui"     = "c7af29b7f352fbed1c83bd119e9d10d14736cf26" #latest release branch commit
+    "uno.check"          = "4a7dd7290daf0aabfbb8efabcd2b067898b7f45e" #latest main commit
     "uno.xamlmerge.task" = "21f02c98702b875a9942047ca042e41810b6fe56" #latest main commit
-    "figma-docs"         = "9106b3228677b7025704dbaa02ff196da6b2fd3e" #latest main commit
-    "uno.resizetizer"    = "f47b65ffbfca58dbccf1e8cb2c35cfeaeb8cc20a" #latest main commit
+    "figma-docs"         = "08aea8467414390673e8f4a917e29bf07ef96680" #latest main commit
+    "uno.resizetizer"    = "ec018465f3b7dd7286a46597ebc2b9b66776ee7f" #latest main commit
     "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
-    "uno.extensions"     = "e838163145dd581716bb3df7b31e1182191f116e" #latest release branch commit
-    "workshops"          = "f3d80513c7a9a69162bedd6a145462a3a4310f33" #latest master commit
+    "uno.extensions"     = "cb5399ca5a622835f0b636dd135c2f62f4965240" #latest release branch commit
+    "workshops"          = "f87cb67d9fd9cb3e78c740b62d40fe8d3201182a" #latest master commit
+    "uno.samples"        = "4599f4e09d12cfef46f5f70e65347e93600af499" #latest master commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"

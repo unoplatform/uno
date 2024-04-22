@@ -487,19 +487,23 @@ namespace Microsoft.UI.Xaml.Media
 				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
 
 #if __SKIA__
-			var transformToElement = element.TransformToVisual(null);
+			var transformToElement = UIElement.GetTransform(element, null);
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
 			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
-				? transformToElement.TransformBounds(new Rect(rect.Left, rect.Top, rect.Width, rect.Height))
+				? transformToElement.Transform(rect)
 				: Rect.Infinite;
+			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
+			{
+				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;
+			}
 			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
 
 			// The region where the current element draws itself.
 			// Be aware that children might be out of this rendering bounds if no clipping defined.
 			// This is expressed in the window (absolute) coordinate space.
-			var renderingBounds = transformToElement.TransformBounds(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
+			var renderingBounds = transformToElement.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
 			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
 #else
 			// First compute the transformation between the element and its parent coordinate space
@@ -566,7 +570,6 @@ namespace Microsoft.UI.Xaml.Media
 
 			// Validate if any child is an acceptable target
 			var children = GetManagedVisualChildren(element);
-
 			var isChildStale = isStale;
 
 			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
@@ -798,6 +801,22 @@ namespace Microsoft.UI.Xaml.Media
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
 #endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> GetManagedVisualChildren(view).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseEnumerator GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> view._children.GetReverseEnumerator();
+#endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> GetManagedVisualChildren(view).Where(elt => predicate(elt)).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseReduceEnumerator GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> view._children.GetReverseEnumerator(predicate);
+#endif
 		#endregion
 
 		#region HitTest tracing
@@ -898,6 +917,31 @@ namespace Microsoft.UI.Xaml.Media
 
 					yield return current;
 				}
+			}
+
+			public bool Contains(UIElement element)
+			{
+				var current = Leaf;
+				if (current == element)
+				{
+					return true;
+				}
+
+				while (current != Root)
+				{
+					var parentDo = GetParent(current);
+					while ((current = parentDo as UIElement) is null)
+					{
+						parentDo = GetParent(parentDo!);
+					}
+
+					if (current == element)
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 
 			public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";

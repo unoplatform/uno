@@ -66,13 +66,22 @@ namespace Windows.Storage.Pickers
 					};
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
-				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
-					var configuration = new PHPickerConfiguration
+					var imageConfiguration = new PHPickerConfiguration
 					{
 						Filter = PHPickerFilter.ImagesFilter,
-						SelectionLimit = multiple ? 0 : 1
+						SelectionLimit = 0
 					};
-					return new PHPickerViewController(configuration)
+					return new PHPickerViewController(imageConfiguration)
+					{
+						Delegate = new PhotoPickerDelegate(completionSource)
+					};
+				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
+					var videoConfiguration = new PHPickerConfiguration
+					{
+						Filter = PHPickerFilter.VideosFilter,
+						SelectionLimit = 0
+					};
+					return new PHPickerViewController(videoConfiguration)
 					{
 						Delegate = new PhotoPickerDelegate(completionSource)
 					};

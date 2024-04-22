@@ -139,8 +139,14 @@ namespace Windows.UI.Input
 			{
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
-
-				gesture.ProcessUp(value);
+				if (isRelevant)
+				{
+					gesture.ProcessUp(value);
+				}
+				else
+				{
+					gesture.ProcessComplete();
+				}
 			}
 			else if (_log.IsEnabled(LogLevel.Debug))
 			{
@@ -149,7 +155,14 @@ namespace Windows.UI.Input
 				_log.Debug($"{Owner} Received a 'Up' for a pointer which was not considered as down. Ignoring event.");
 			}
 
-			_manipulation?.Remove(value);
+			if (isRelevant)
+			{
+				_manipulation?.Remove(value);
+			}
+			else
+			{
+				_manipulation?.Complete();
+			}
 		}
 
 #if IS_UNIT_TESTS

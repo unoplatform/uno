@@ -59,7 +59,10 @@ $projects =
     @("5.2/uno52Lib/uno52Lib.csproj", ""),
 
     # 5.2 Uno SingleProject Lib
-    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", "")
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", ""),
+
+    # 5.2 Uno App with Library reference
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", "")
 
     ## Note for contributors
     ##
@@ -76,7 +79,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
     dotnet build $debug "$projectPath" $projectOptions
     Assert-ExitCodeIsZero
 
+    dotnet clean $debug "$projectPath"
+
     Write-Host "Building Release $projectPath with $projectOptions"
     dotnet build $release "$projectPath" $projectOptions
     Assert-ExitCodeIsZero
+
+    dotnet clean $release "$projectPath"
 }

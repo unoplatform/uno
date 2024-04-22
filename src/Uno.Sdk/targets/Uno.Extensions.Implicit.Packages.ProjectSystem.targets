@@ -8,35 +8,25 @@
 		<_UseUnoExtensions>$(UnoFeatures.Contains(';Extensions;'))</_UseUnoExtensions>
 	</PropertyGroup>
 
-	<Choose>
-		<When Condition="!$(_UseUnoExtensions) AND $(UnoFeatures.Contains(';AuthenticationMsal;'))">
-			<ItemGroup>
-				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
-			</ItemGroup>
-		</When>
-		<When Condition="!$(_UseUnoExtensions) AND $(UnoFeatures.Contains(';AuthenticationOidc;'))">
-			<ItemGroup>
-				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
-			</ItemGroup>
-		</When>
-		<When Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Authentication;'))">
-			<ItemGroup>
-				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.WinUI" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
-				<_UnoProjectSystemPackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
-			</ItemGroup>
-		</When>
-	</Choose>
+	<ItemGroup Condition="$(UnoFeatures.Contains(';AuthenticationMsal;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';AuthenticationOidc;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Authentication;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.WinUI" ProjectSystem="true" />
+	</ItemGroup>
 
 	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Configuration;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Configuration" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';ExtensionsCore;'))">
+	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';ExtensionsCore;')) OR $(UnoFeatures.Contains(';ThemeService;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Core.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
@@ -44,12 +34,12 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Hosting.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Http;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Http;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Http.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Http.Refit" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Localization;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Localization;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Localization.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
@@ -73,28 +63,28 @@
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Collection.Ktx" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="($(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Navigation;'))) AND !$(UnoFeatures.Contains(';Prism;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Navigation;')) AND !$(UnoFeatures.Contains(';Prism;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Navigation.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Navigation.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains('CSharpMarkup'))"/>
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Navigation.Toolkit.WinUI" ProjectSystem="true" Condition="$(UnoFeatures.Contains('Toolkit'))"/>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Mvux;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';MVUX;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.Messaging" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains('CSharpMarkup'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Serialization;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Serialization;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Serialization.Http" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Serialization.Refit" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Serilog;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';LoggingSerilog;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Logging.Serilog" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_UseUnoExtensions) OR $(UnoFeatures.Contains(';Storage;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Storage;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Storage.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 

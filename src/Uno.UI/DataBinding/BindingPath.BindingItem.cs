@@ -211,8 +211,17 @@ namespace Uno.UI.DataBinding
 					Next.DataContext = newValue;
 				}
 
-				if (shouldRaiseValueChanged && previousValue != newValue)
+				if (shouldRaiseValueChanged
+					// If IgnoreINPCSameReferences is true, we will RaiseValueChanged only if previousValue != newValue
+					// If IgnoreINPCSameReferences is false, we are not going to compare previousValue and newValue (which is the correct behavior).
+					// In Uno 6, we should remove the following line.
+					&& (!FeatureConfiguration.Binding.IgnoreINPCSameReferences || previousValue != newValue)
+					)
 				{
+					// We should call RaiseValueChanged even if oldValue == newValue.
+					// It's the responsibility of the user to only raise PropertyChanged event when needed.
+					// Not calling RaiseValueChanged when oldValue == newValue is a bug because a sub-property could
+					// have changed, and it can have an effect when applying the binding, for converters for example.
 					RaiseValueChanged(newValue);
 				}
 			}
@@ -409,7 +418,12 @@ namespace Uno.UI.DataBinding
 
 					if (handlerDisposable != null)
 					{
-						valueHandler.PreviousValue = GetSourceValue();
+						if (FeatureConfiguration.Binding.IgnoreINPCSameReferences)
+						{
+							// GetSourceValue calls into user code.
+							// Avoid this if PreviousValue isn't going to be used at all.
+							valueHandler.PreviousValue = GetSourceValue();
+						}
 
 						// We need to keep the reference to the updatePropertyHandler
 						// in this disposable. The reference is attached to the source's

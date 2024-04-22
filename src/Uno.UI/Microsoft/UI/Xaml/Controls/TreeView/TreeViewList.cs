@@ -125,12 +125,22 @@ public partial class TreeViewList : ListView
 					treeViewItem.SetItemsSource(targetNode, itemsSource);
 				}
 			}
+#if HAS_UNO // #15214: workaround for initial selection being lost
+			if (treeViewItem.IsSelected)
+			{
+				ListViewModel.UpdateSelection(treeViewNode, TreeNodeSelectionState.Selected);
+			}
+			else if (ListViewModel.TreeView.PendingSelectedItem == args.Item)
+			{
+				ListViewModel.UpdateSelection(treeViewNode, TreeNodeSelectionState.Selected);
+			}
+#endif
 			treeViewItem.UpdateIndentation(targetNode.Depth);
 			treeViewItem.UpdateSelectionVisual(targetNode.SelectionState);
 		}
 	}
 
-	// IControlOverrides		
+	// IControlOverrides
 	protected override void OnDrop(Microsoft.UI.Xaml.DragEventArgs e)
 	{
 		var args = e;

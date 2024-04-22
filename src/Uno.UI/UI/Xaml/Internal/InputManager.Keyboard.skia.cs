@@ -44,30 +44,33 @@ partial class InputManager
 				CoreWindow.GetForCurrentThreadSafe()?.SetKeyboardInputSource(_source);
 			}
 
-			_source.KeyDown += (s, e) => InitiateKeyDownBubblingFlow(e);
-			_source.KeyUp += (s, e) => InitiateKeyUpBubblingFlow(e);
+			_source.KeyDown += (_, e) => OnKey(e, true);
+			_source.KeyUp += (_, e) => OnKey(e, false);
 		}
 
-		private void InitiateKeyDownBubblingFlow(KeyEventArgs args)
+		private void OnKey(KeyEventArgs args, bool down)
 		{
-			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			var originalSource1 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
 
-			if (originalSource is null)
-			{
-				return;
-			}
-
-			var krea = new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
+			var routedArgs = new KeyRoutedEventArgs(originalSource1, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 			{
 				CanBubbleNatively = false
 			};
-			originalSource.RaiseEvent(UIElement.KeyDownEvent, krea);
-			args.Handled = krea.Handled;
+
+			originalSource1.RaiseTunnelingEvent(down ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent, routedArgs);
+
+			// On WinUI, if the focus changes during PreviewKey<Down|Up>, the Key<Up|Down> event bubbles from the new focused element.
+			var originalSource2 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+
+			// WinUI doesn't reuse the same args object, but creates a new routed args object and copies the Handled value
+			// To reduce allocations, we reuse the same routed args object twice.
+			originalSource2.RaiseEvent(down ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, routedArgs);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
+				var methodName = down ? "CoreWindow_KeyDown" : "CoreWindow_KeyUp";
 				this.Log().Trace(
-					$"CoreWindow_KeyDown(vk: {args.VirtualKey}, " +
+					$"{methodName}(vk: {args.VirtualKey}, " +
 					$"IsExtendedKey: {args.KeyStatus.IsExtendedKey}, " +
 					$"IsKeyReleased: {args.KeyStatus.IsKeyReleased}, " +
 					$"IsMenuKeyDown: {args.KeyStatus.IsMenuKeyDown}, " +
@@ -77,34 +80,9 @@ partial class InputManager
 			}
 		}
 
-		private void InitiateKeyUpBubblingFlow(KeyEventArgs args)
-		{
-			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
-
-			if (originalSource is null)
-			{
-				return;
-			}
-
-			originalSource.RaiseEvent(
-				UIElement.KeyUpEvent,
-				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
-				{
-					CanBubbleNatively = false
-				}
-			);
-
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace(
-					$"CoreWindow_KeyUp(vk: {args.VirtualKey}, " +
-					$"IsExtendedKey: {args.KeyStatus.IsExtendedKey}, " +
-					$"IsKeyReleased: {args.KeyStatus.IsKeyReleased}, " +
-					$"IsMenuKeyDown: {args.KeyStatus.IsMenuKeyDown}, " +
-					$"RepeatCount: {args.KeyStatus.RepeatCount}, " +
-					$"ScanCode: {args.KeyStatus.ScanCode})"
-				);
-			}
-		}
+		/// <summary>
+		/// ONLY USE THIS FOR TESTS
+		/// </summary>
+		internal void OnKeyTestingOnly(KeyEventArgs args, bool down) => OnKey(args, down);
 	}
 }

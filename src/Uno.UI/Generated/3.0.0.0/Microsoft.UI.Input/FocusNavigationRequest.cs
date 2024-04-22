@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FocusNavigationRequest
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		internal FocusNavigationRequest()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Guid CorrelationId
 		{
@@ -23,7 +23,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.Rect? HintRect
 		{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Input.FocusNavigationReason Reason
 		{
@@ -46,21 +46,21 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Reason.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.HintRect.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.CorrelationId.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.FocusNavigationRequest Create(global::Microsoft.UI.Input.FocusNavigationReason reason)
 		{
 			throw new global::System.NotImplementedException("The member FocusNavigationRequest FocusNavigationRequest.Create(FocusNavigationReason reason) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationRequest%20FocusNavigationRequest.Create%28FocusNavigationReason%20reason%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.FocusNavigationRequest Create(global::Microsoft.UI.Input.FocusNavigationReason reason, global::Windows.Foundation.Rect hintRect)
 		{
 			throw new global::System.NotImplementedException("The member FocusNavigationRequest FocusNavigationRequest.Create(FocusNavigationReason reason, Rect hintRect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationRequest%20FocusNavigationRequest.Create%28FocusNavigationReason%20reason%2C%20Rect%20hintRect%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.FocusNavigationRequest Create(global::Microsoft.UI.Input.FocusNavigationReason reason, global::Windows.Foundation.Rect hintRect, global::System.Guid correlationId)
 		{

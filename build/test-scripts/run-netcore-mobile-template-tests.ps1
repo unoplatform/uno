@@ -10,6 +10,11 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
+function CleanupTree()
+{
+    git clean -fdx
+}
+
 $default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
 
 if ($IsWindows) 
@@ -69,6 +74,8 @@ if ($IsWindows)
     Assert-ExitCodeIsZero
 }
 
+CleanupTree
+
 popd
 
 $dotnetBuildNet6Configurations =
@@ -108,6 +115,8 @@ if ($IsWindows)
     & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
     Assert-ExitCodeIsZero
 }
+
+CleanupTree
 
 popd
 
@@ -158,6 +167,7 @@ if ($IsWindows)
     }
 }
 
+CleanupTree
 
 ## Tests Per versions of uno
 if ($IsWindows)
@@ -218,9 +228,10 @@ $projects =
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android"), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst"), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop"), $true, $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" })), $true, $true),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false, $false)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false, $false),
 
     #
     # 5.2 Uno Lib
@@ -246,7 +257,18 @@ $projects =
     @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-desktop"), $true, $true),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false, $false)
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false, $false),
+
+    # 5.2 Uno App with Library reference
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0"), $true, $true),
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-browserwasm"), $true, $true),
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-ios"), $true, $true),
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-android"), $true, $true),
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-maccatalyst"), $true, $true),
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-desktop"), $true, $true),
+
+    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false, $false)
 
     ## Note for contributors
     ##
@@ -273,9 +295,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet build $debug "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
 
+        dotnet clean $debug "$projectPath"
+
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
         dotnet build $release "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
+ 
+        dotnet clean $release "$projectPath"
     }
     else
     {
@@ -285,9 +311,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
             & $msbuild $debug /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
 
+            & $msbuild $debug /t:Clean "$projectPath"
+
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
             & $msbuild $release /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
+
+            & $msbuild $release /t:Clean "$projectPath"
         }
     }
 }

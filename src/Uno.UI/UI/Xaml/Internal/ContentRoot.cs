@@ -68,10 +68,6 @@ internal partial class ContentRoot
 		_contentRootEventListener = new ContentRootEventListener(this);
 		FocusManager = new FocusManager(this);
 
-		//TODO Uno: We may want to create a custom version of adapter and observer for Island vs CoreWindow.
-		FocusAdapter = new FocusAdapter(this);
-		FocusManager.SetFocusObserver(new FocusObserver(this));
-
 		CompositionTarget = new CompositionTarget(this);
 		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
 		CompositionTarget.Root.CompositionTarget = CompositionTarget;
@@ -81,9 +77,16 @@ internal partial class ContentRoot
 			case ContentRootType.CoreWindow:
 				MUX_ASSERT(coreServices.ContentRootCoordinator.CoreWindowContentRoot == null);
 				coreServices.ContentRootCoordinator.CoreWindowContentRoot = this;
+
+				FocusAdapter = new FocusManagerCoreWindowAdapter(this);
+				FocusManager.SetFocusObserver(new CoreWindowFocusObserver(this));
 				break;
 			case ContentRootType.XamlIsland:
+				FocusAdapter = new FocusManagerXamlIslandAdapter(this);
+				FocusManager.SetFocusObserver(new FocusObserver(this));
 				break;
+			default:
+				throw new InvalidOperationException("Unknown content root type.");
 		}
 	}
 
