@@ -9,7 +9,6 @@ using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
@@ -17,6 +16,12 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.ResourceAccessor;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Text;
+#else
+using Windows.UI.Text;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
