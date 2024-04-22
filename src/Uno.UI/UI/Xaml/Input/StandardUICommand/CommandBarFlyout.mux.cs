@@ -21,8 +21,8 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class CommandBarFlyout
 {
 	// Change to 'true' to turn on debugging outputs in Output window
-	private const bool s_IsDebugOutputEnabled = false;
-	private const bool s_IsVerboseDebugOutputEnabled = false;
+	//private const bool s_IsDebugOutputEnabled = false;
+	//private const bool s_IsVerboseDebugOutputEnabled = false;
 
 	// List of AppBarButton/AppBarToggleButton dependency properties being listened to for raising the CommandBarFlyoutCommandBar.OnCommandBarElementDependencyPropertyChanged notifications.
 	// IsCompact and LabelPosition have no effect on an AppBarButton's rendering, when used as a secondary command, they are not present in the list.
