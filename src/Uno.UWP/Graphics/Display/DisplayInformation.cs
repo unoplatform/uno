@@ -59,19 +59,9 @@ namespace Windows.Graphics.Display
 #endif
 		}
 
+#pragma warning disable RS0030 // Do not use banned APIs
 		internal static DisplayInformation GetForCurrentViewSafe() => GetForCurrentView();
-
-		internal static DisplayInformation GetForWindowId(WindowId windowId)
-		{
-			if (!_windowIdMap.TryGetValue(windowId, out var appView))
-			{
-				throw new InvalidOperationException(
-					$"ApplicationView corresponding with this window does not exist yet, which usually means " +
-					$"the API was called too early in the windowing lifecycle. Try to use ApplicationView later.");
-			}
-
-			return appView;
-		}
+#pragma warning restore RS0030 // Do not use banned APIs
 
 		internal static DisplayInformation GetOrCreateForWindowId(WindowId windowId)
 		{

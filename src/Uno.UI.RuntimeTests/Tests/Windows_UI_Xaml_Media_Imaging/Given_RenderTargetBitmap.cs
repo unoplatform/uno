@@ -38,12 +38,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 		public async Task When_Render_Border_GetPixelsAsync()
 		{
-#if HAS_UNO
-			var displayInformation = XamlRoot.GetDisplayInformation(TestServices.WindowHelper.XamlRoot);
-#else
-			var displayInformation = DisplayInformation.GetForCurrentView();
-#endif
-			if (displayInformation.RawPixelsPerViewPixel is not 1.0)
+			var dpi = TestServices.WindowHelper.XamlRoot.RasterizationScale;
+			if (dpi is not 1.0)
 			{
 				Assert.Inconclusive("This test is not compatible with non-default display scaling.");
 				return;

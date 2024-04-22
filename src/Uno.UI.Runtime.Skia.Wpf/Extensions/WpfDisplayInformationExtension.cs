@@ -2,10 +2,10 @@
 using System;
 using System.Windows;
 using System.Windows.Media;
-using Windows.ApplicationModel.Core;
-using Windows.Graphics.Display;
 using Microsoft.UI.Windowing;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
+using Windows.ApplicationModel.Core;
+using Windows.Graphics.Display;
 using WpfApplication = global::System.Windows.Application;
 using WpfWindow = global::System.Windows.Window;
 
@@ -41,7 +41,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 				// TODO: this is a ridiculous amount of indirection, find something better
 				if (!AppWindow.TryGetFromWindowId(_displayInformation.WindowId, out var appWindow) ||
 					Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
-					UnoWpfWindow.GetWpfWindowFromWindow(window) is not { } wpfWindow)
+					UnoWpfWindow.GetFromWinUIWindow(window) is not { } wpfWindow)
 				{
 					throw new InvalidOperationException($"{nameof(WpfDisplayInformationExtension)} couldn't find a WPF window.");
 				}

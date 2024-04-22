@@ -408,8 +408,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		Event? evt)
 	{
 		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(_windowHost);
-		var displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
-		var positionAdjustment = displayInformation.FractionalScaleAdjustment;
+		var positionAdjustment = xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 
 		var pointerDevice = PointerDevice.For(devType);
 		var rawPosition = new Windows.Foundation.Point(rootX / positionAdjustment, rootY / positionAdjustment);

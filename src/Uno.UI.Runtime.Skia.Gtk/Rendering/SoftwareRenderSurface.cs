@@ -14,20 +14,21 @@ using Uno.UI.Hosting;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
+using Pango;
+using Context = Cairo.Context;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 {
-	private readonly DisplayInformation _displayInformation;
 	private SKSurface? _surface;
 	private SKBitmap? _bitmap;
 	private int _bheight, _bwidth;
 	private ImageSurface? _gtkSurface;
 	private int renderCount;
 
-	private float _dpi = 1;
-
+	private float _scale = 1;
+	private XamlRoot _xamlRoot;
 	private readonly SKColorType _colorType;
 	private readonly IGtkXamlRootHost _host;
 
@@ -36,9 +37,8 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 	public SoftwareRenderSurface(IGtkXamlRootHost host)
 	{
-		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host);
-		_displayInformation ??= XamlRoot.GetDisplayInformation(xamlRoot);
-		_displayInformation.DpiChanged += OnDpiChanged;
+		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		_xamlRoot.Changed += OnXamlRootChanged;
 		UpdateDpi();
 
 		_colorType = SKImageInfo.PlatformColorType;
@@ -57,8 +57,6 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 	public void InvalidateRender() => QueueDrawArea(0, 0, 10000, 10000);
 
-	private void OnDpiChanged(DisplayInformation sender, object args) => UpdateDpi();
-
 	protected override bool OnDrawn(Context cr)
 	{
 		Stopwatch? sw = null;
@@ -69,8 +67,8 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			this.Log().Trace($"Render {renderCount++}");
 		}
 
-		var scaledWidth = (int)(AllocatedWidth * _dpi);
-		var scaledHeight = (int)(AllocatedHeight * _dpi);
+		var scaledWidth = (int)(AllocatedWidth * _scale);
+		var scaledHeight = (int)(AllocatedHeight * _scale);
 
 		// reset the surfaces (skia/cairo) and bitmap if the size has changed
 		if (_surface == null || scaledWidth != _bwidth || scaledHeight != _bheight)
@@ -93,7 +91,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(BackgroundColor);
-			canvas.Scale(_dpi);
+			canvas.Scale(_scale);
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
@@ -130,5 +128,15 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 		_bitmap?.Encode(wstream, SKEncodedImageFormat.Png, 100);
 	}
 
-	private float UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
+	private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => UpdateDpi();
+
+	private void UpdateDpi()
+	{
+		var newScale = (float)_xamlRoot.RasterizationScale;
+		if (_scale != newScale)
+		{
+			_scale = newScale;
+			InvalidateRender();
+		}
+	}
 }

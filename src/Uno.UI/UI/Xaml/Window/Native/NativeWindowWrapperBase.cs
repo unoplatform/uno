@@ -1,23 +1,42 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Microsoft.UI.Windowing.Native;
 using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
+	protected readonly ContentSite _contentSite = new();
 	private Rect _bounds;
 	private Rect _visibleBounds;
 	private bool _visible;
 	private string _title = "";
 	private CoreWindowActivationState _activationState;
+	private XamlRoot? _xamlRoot;
+	private float _rasterizationScale;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
+
+	protected NativeWindowWrapperBase(XamlRoot xamlRoot) : this()
+	{
+		SetXamlRoot(xamlRoot);
+	}
+
+	protected NativeWindowWrapperBase()
+	{
+	}
+
+	public ContentSiteView ContentSiteView => _contentSite.View;
+
+	protected XamlRoot? XamlRoot => _xamlRoot;
+
+	internal void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
 	public abstract object? NativeWindow { get; }
 
@@ -30,6 +49,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			{
 				_bounds = value;
 				SizeChanged?.Invoke(this, value.Size);
+
+				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
 			}
 		}
 	}
@@ -69,6 +90,24 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			{
 				_visible = value;
 				VisibilityChanged?.Invoke(this, value);
+
+				_contentSite.IsSiteVisible = value;
+				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.SiteVisibleChange);
+			}
+		}
+	}
+
+	public float RasterizationScale
+	{
+		get => _rasterizationScale;
+		set
+		{
+			if (_rasterizationScale != value)
+			{
+				_rasterizationScale = value;
+
+				_contentSite.ParentScale = value;
+				RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
 			}
 		}
 	}
@@ -103,6 +142,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public virtual void Show()
 	{
 		ShowCore();
+		// On single-window targets, the window is already shown with splash screen
+		// so we must ensure the property is initialized correctly.
+		Visible = true;
 		Shown?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -140,4 +182,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	protected virtual IDisposable ApplyFullScreenPresenter() => Disposable.Empty;
 
 	protected virtual IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter) => Disposable.Empty;
+
+	private void RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs args)
+	{
+		XamlRoot?.VisualTree.ContentRoot.CompositionContent?.RaiseStateChanged(args);
+	}
 }

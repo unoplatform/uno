@@ -31,7 +31,9 @@ internal static partial class PlatformImageHelpers
 				 path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar)
 			);
 
+#pragma warning disable RS0030 // Do not use banned APIs // TODO MZ: Avoid this by using XamlRoot
 		var resolutionScale = (int)DisplayInformation.GetForCurrentView().ResolutionScale;
+#pragma warning restore RS0030 // Do not use banned APIs
 		var baseDirectory = Path.GetDirectoryName(originalLocalPath);
 		var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
 		var baseExtension = Path.GetExtension(originalLocalPath);

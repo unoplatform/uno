@@ -18,11 +18,13 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	private readonly X11XamlRootHost _host;
 	private readonly XamlRoot _xamlRoot;
 
-	internal X11WindowWrapper(Window window, XamlRoot xamlRoot)
+	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
 
-		_host = new X11XamlRootHost(window, xamlRoot, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+		_host = new X11XamlRootHost(this, window, xamlRoot, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+
+		RasterizationScale = (float)XamlRoot.GetDisplayInformation(_xamlRoot).RawPixelsPerViewPixel;
 	}
 
 	public override string Title
@@ -46,7 +48,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	private void RaiseNativeSizeChanged(Size newWindowSize)
 	{
 		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
-			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+			? root.RasterizationScale
 			: 1;
 		newWindowSize = new Size(newWindowSize.Width / scale, newWindowSize.Height / scale);
 		Bounds = new Rect(default, newWindowSize);

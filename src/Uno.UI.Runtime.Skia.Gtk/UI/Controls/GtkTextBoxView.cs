@@ -27,13 +27,13 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	private static bool _warnedAboutSelectionColorChanges;
 
 	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
+	private readonly XamlRoot? _xamlRoot;
 	private CssProvider? _foregroundCssProvider;
 	private Windows.UI.Color? _lastForegroundColor;
-	private DisplayInformation _displayInformation;
 
 	protected GtkTextBoxView(XamlRoot? xamlRoot)
 	{
-		_displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
+		_xamlRoot = xamlRoot;
 		// Applies themes from Theming/UnoGtk.css
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
@@ -99,7 +99,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void SetSize(double width, double height)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 		RootWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
 		InputWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
 	}
@@ -108,7 +108,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	{
 		if (RootWidget.Parent is Fixed layer)
 		{
-			var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+			var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 			layer.Move(RootWidget, (int)(x * sizeAdjustment), (int)(y * sizeAdjustment));
 		}
 	}
@@ -117,7 +117,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	private void SetFont(TextBox textBox)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 		var fontDescription = new FontDescription
 		{
 			Weight = textBox.FontWeight.ToPangoWeight(),

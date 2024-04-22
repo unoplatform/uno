@@ -5,6 +5,7 @@ using UIKit;
 using Uno.Disposables;
 using Uno.UI.Controls;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 
@@ -18,6 +19,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
+	private readonly DisplayInformation _displayInformation;
 
 	public NativeWindowWrapper()
 	{
@@ -32,11 +34,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
+
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
 	}
 
 	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
+
+	private void DispatchDpiChanged() =>
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	protected override void ShowCore()
 	{

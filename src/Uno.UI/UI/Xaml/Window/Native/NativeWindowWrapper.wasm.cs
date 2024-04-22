@@ -1,6 +1,9 @@
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 using static __Uno.UI.Xaml.Controls.NativeWindowWrapper;
 
@@ -10,7 +13,15 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
+	private readonly DisplayInformation _displayInformation;
+
 	internal static NativeWindowWrapper Instance => _instance.Value;
+
+	public NativeWindowWrapper()
+	{
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+	}
 
 	public override object NativeWindow => null;
 
@@ -21,6 +32,9 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 	public override void Close()
 	{
 	}
+
+	private void DispatchDpiChanged() =>
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	internal void OnNativeClosed() => RaiseClosed();
 
@@ -36,7 +50,11 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = bounds;
 	}
 
-	protected override void ShowCore() => WindowManagerInterop.WindowActivate();
+	protected override void ShowCore()
+	{
+		DispatchDpiChanged();
+		WindowManagerInterop.WindowActivate();
+	}
 
 	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
 
