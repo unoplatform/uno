@@ -38,6 +38,7 @@ using Uno.UI;
 using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
 using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
 using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
+using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
 #if HAS_UNO
 using TreeNodeSelectionState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeNodeSelectionState;
 #endif
