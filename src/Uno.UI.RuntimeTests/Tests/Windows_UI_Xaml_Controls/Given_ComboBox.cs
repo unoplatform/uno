@@ -838,6 +838,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				SUT.IsDropDownOpen = false;
 
+				// Not required on WinUI. Fixing this in Uno requires porting ComboBox.
+				await WindowHelper.WaitForIdle();
+
 				Assert.AreEqual(SUT.Items.Count, 3);
 
 				using (c.BatchUpdate())
