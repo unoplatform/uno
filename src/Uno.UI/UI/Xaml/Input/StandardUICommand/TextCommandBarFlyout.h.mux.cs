@@ -10,7 +10,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 [Flags]
 internal enum TextControlButtons

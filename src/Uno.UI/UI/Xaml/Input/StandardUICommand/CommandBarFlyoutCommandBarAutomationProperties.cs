@@ -5,7 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Enables getting or setting specific automation properties for the CommandBarFlyoutCommandBar.

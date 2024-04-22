@@ -31,7 +31,7 @@ using Windows.UI.Core;
 using Uno.Extensions;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 partial class CommandBarFlyoutCommandBar
 {

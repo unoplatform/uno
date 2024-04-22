@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Provides calculated values that can be referenced as TemplatedParent sources when defining
