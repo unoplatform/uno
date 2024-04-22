@@ -8,6 +8,6 @@ namespace Uno.UI.Composition
 	{
 		internal SKSurface? Surface { get; }
 		internal void UpdateSurface(bool recreateSurface = false);
-		internal void UpdateSurface(in DrawingSession session);
+		internal void UpdateSurface(in PaintingSession session);
 	}
 }

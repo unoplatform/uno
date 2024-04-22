@@ -10,18 +10,18 @@ namespace Microsoft.UI.Composition;
 
 public partial class CompositionShape
 {
-	internal virtual void Render(in DrawingSession session)
+	internal virtual void Render(in PaintingSession session)
 	{
 		using var localSession = BeginDrawing(in session);
 
 		Draw(in session); // We use the session on purpose here!
 	}
 
-	internal virtual void Draw(in DrawingSession session)
+	internal virtual void Draw(in PaintingSession session)
 	{
 	}
 
-	private DrawingSession? BeginDrawing(in DrawingSession session)
+	private PaintingSession? BeginDrawing(in PaintingSession session)
 	{
 		var offset = Offset;
 		var transform = this.GetTransform();

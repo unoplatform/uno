@@ -185,7 +185,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in DrawingSession parentSession)
+	private void Render(in PaintingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -206,7 +206,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			_recorder ??= new SKPictureRecorder();
 			var recorderSession = session with { Canvas = _recorder.BeginRecording(new SKRect(float.NegativeInfinity, float.NegativeInfinity, float.PositiveInfinity, float.PositiveInfinity)) };
 			// To debug what exactly gets repainted, replace the following line with `Draw(in session);`
-			Draw(in recorderSession);
+			Paint(in recorderSession);
 			_picture = _recorder.EndRecording();
 		}
 		session.Canvas.DrawPicture(_picture);
@@ -224,7 +224,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
-	internal virtual void Draw(in DrawingSession session)
+	internal virtual void Paint(in PaintingSession session)
 	{
 	}
 
@@ -249,10 +249,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	internal virtual bool CanPaint => false;
 
-	private DrawingSession BeginDrawing(in DrawingSession parentSession)
+	private PaintingSession BeginDrawing(in PaintingSession parentSession)
 		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.RootTransform);
 
-	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 initialTransform)
+	private PaintingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 initialTransform)
 	{
 		if (ShadowState is { } shadow)
 		{
@@ -274,9 +274,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		ApplyClipping(canvas);
 
-		var session = new DrawingSession(surface, canvas, in filters, in initialTransform);
+		var session = new PaintingSession(surface, canvas, in filters, in initialTransform);
 
-		DrawingSession.PushOpacity(ref session, Opacity);
+		PaintingSession.PushOpacity(ref session, Opacity);
 
 		return session;
 	}

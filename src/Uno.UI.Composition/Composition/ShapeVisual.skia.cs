@@ -17,16 +17,16 @@ public partial class ShapeVisual
 	}
 
 	/// <inheritdoc />
-	internal override void Draw(in DrawingSession session)
+	internal override void Paint(in PaintingSession session)
 	{
 		if (_shapes is { Count: not 0 } shapes)
 		{
-			foreach (var t in shapes)
+			foreach (var shape in shapes)
 			{
-				t.Render(in session);
+				shape.Render(in session);
 			}
 		}
 
-		base.Draw(in session);
+		base.Paint(in session);
 	}
 }

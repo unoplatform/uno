@@ -39,9 +39,9 @@ namespace Microsoft.UI.Composition
 			UpdatePaint();
 		}
 
-		internal override void Draw(in DrawingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
-			base.Draw(in session);
+			base.Paint(in session);
 
 			if (Brush is IOnlineBrush onlineBrush && onlineBrush.IsOnline)
 			{
