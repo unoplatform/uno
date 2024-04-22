@@ -14,6 +14,10 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
+	// If we move to a UI-thread-per-window model, then we need multiple recorders.
+	[ThreadStatic] private static SKPictureRecorder? _recorder;
+
 	private CompositionClip? _clip;
 	private RectangleClip? _cornerRadiusClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
@@ -21,7 +25,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 	private bool _requiresRepaint = true;
-	private SKPictureRecorder? _recorder;
 	private SKPicture? _picture;
 
 	/// <returns>true if wasn't dirty</returns>
