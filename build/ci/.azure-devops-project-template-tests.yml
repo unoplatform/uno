@@ -34,7 +34,9 @@ jobs:
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - powershell: build\test-scripts\run-netcore-mobile-template-tests.ps1
+  - task: PowerShell@2
+    targetType: 'filePath'
+    filePath: build\test-scripts\run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests
     pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
