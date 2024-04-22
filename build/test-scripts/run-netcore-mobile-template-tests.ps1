@@ -91,8 +91,7 @@ $dotnetBuildNet6Configurations =
 
 if ($IsWindows) 
 {
-    $dotnetBuildNet6Configurations = $dotnetBuildNet6Configurations 
-        + @("Skia.WPF", "", "");
+    $dotnetBuildNet6Configurations = $($dotnetBuildNet6Configurations; @("Skia.WPF", "", ""));
 }
 
 # WinUI - Default
