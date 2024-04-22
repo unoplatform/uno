@@ -15,7 +15,7 @@ using System.Windows.Input;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 internal enum CommandBarFlyoutOpenCloseAnimationKind
 {
