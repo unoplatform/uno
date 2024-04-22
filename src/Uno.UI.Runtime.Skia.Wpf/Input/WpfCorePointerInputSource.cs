@@ -17,6 +17,8 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Point = System.Windows.Point;
+using Rect = Windows.Foundation.Rect;
 using WpfControl = System.Windows.Controls.Control;
 using WpfMouseEventArgs = System.Windows.Input.MouseEventArgs;
 
@@ -52,9 +54,15 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 
 		_hostControl.MouseEnter += HostOnMouseEnter;
 		_hostControl.MouseLeave += HostOnMouseLeave;
+
+		_hostControl.StylusMove += HostControlOnStylusMove;
+		_hostControl.StylusDown += HostControlOnStylusDown;
+		_hostControl.StylusUp += HostControlOnStylusUp;
+
 		_hostControl.MouseMove += HostOnMouseMove;
 		_hostControl.MouseDown += HostOnMouseDown;
 		_hostControl.MouseUp += HostOnMouseUp;
+
 		_hostControl.LostMouseCapture += HostOnMouseCaptureLost;
 
 		// Hook for native events
@@ -103,7 +111,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		=> _hostControl.ReleaseMouseCapture();
 
 	#region Native events
-	private void HostOnMouseEvent(WpfMouseEventArgs args, TypedEventHandler<object, PointerEventArgs>? @event, [CallerArgumentExpression(nameof(@event))] string eventName = "")
+	private void HostOnMouseEvent(InputEventArgs args, TypedEventHandler<object, PointerEventArgs>? @event, [CallerArgumentExpression(nameof(@event))] string eventName = "")
 	{
 		var current = SynchronizationContext.Current;
 		try
@@ -137,18 +145,39 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		HostOnMouseEvent(args, PointerExited);
 	}
 
+
+	private void HostControlOnStylusMove(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerMoved);
+	private void HostControlOnStylusDown(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerPressed);
+	private void HostControlOnStylusUp(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerReleased);
+
+
 	private void HostOnMouseMove(object sender, WpfMouseEventArgs args)
 	{
+		if (args.StylusDevice != null)
+		{
+			return;
+		}
+
 		HostOnMouseEvent(args, PointerMoved);
 	}
 
 	private void HostOnMouseDown(object sender, MouseButtonEventArgs args)
 	{
+		if (args.StylusDevice != null)
+		{
+			return;
+		}
+
 		HostOnMouseEvent(args, PointerPressed);
 	}
 
 	private void HostOnMouseUp(object sender, MouseButtonEventArgs args)
 	{
+		if (args.StylusDevice != null)
+		{
+			return;
+		}
+
 		HostOnMouseEvent(args, PointerReleased);
 	}
 
@@ -230,21 +259,86 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	#endregion
 
 	#region Convert helpers
-	private PointerEventArgs BuildPointerArgs(WpfMouseEventArgs args)
+	private PointerEventArgs BuildPointerArgs(InputEventArgs args)
 	{
 		if (args is null)
 		{
 			throw new ArgumentNullException(nameof(args));
 		}
 
-		var position = args.GetPosition(_hostControl);
-		var properties = BuildPointerProperties(args).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+		Point position;
+		PointerPointProperties properties;
+
+		uint pointerId;
+		if (args is WpfMouseEventArgs mouseEventArgs)
+		{
+			pointerId = 1;
+			position = mouseEventArgs.GetPosition(_hostControl);
+			properties = new()
+			{
+				IsLeftButtonPressed = mouseEventArgs.LeftButton == MouseButtonState.Pressed,
+				IsMiddleButtonPressed = mouseEventArgs.MiddleButton == MouseButtonState.Pressed,
+				IsRightButtonPressed = mouseEventArgs.RightButton == MouseButtonState.Pressed,
+				IsXButton1Pressed = mouseEventArgs.XButton1 == MouseButtonState.Pressed,
+				IsXButton2Pressed = mouseEventArgs.XButton2 == MouseButtonState.Pressed,
+				IsPrimary = true,
+				IsInRange = true
+			};
+		}
+		else if (args is StylusEventArgs stylusEventArgs)
+		{
+			pointerId = (uint)stylusEventArgs.StylusDevice.Id;
+			position = stylusEventArgs.GetPosition(_hostControl);
+
+			properties = new()
+			{
+				IsLeftButtonPressed = true,
+				IsPrimary = true,
+				IsInRange = !stylusEventArgs.InAir,
+			};
+
+			var stylusPointCollection = stylusEventArgs.GetStylusPoints(_hostControl);
+			if (stylusPointCollection.Count > 0)
+			{
+				var stylusPoint = stylusPointCollection[0];
+
+				properties.Pressure = stylusPoint.PressureFactor;
+
+				if (stylusPoint.HasProperty(StylusPointProperties.Width) && stylusPoint.HasProperty(StylusPointProperties.Height))
+				{
+					var width = stylusPoint.GetPropertyValue(StylusPointProperties.Width);
+					var height = stylusPoint.GetPropertyValue(StylusPointProperties.Height);
+
+					// Consider enable the ContactRectRaw property.
+					//properties.ContactRectRaw = new Rect(position.X, position.Y, width, height);
+					properties.ContactRect = new Rect(position.X, position.Y, width, height);
+				}
+
+				if (stylusPoint.HasProperty(StylusPointProperties.XTiltOrientation))
+				{
+					var xTilt = stylusPoint.GetPropertyValue(StylusPointProperties.XTiltOrientation);
+					properties.XTilt = xTilt;
+				}
+
+				if (stylusPoint.HasProperty(StylusPointProperties.YTiltOrientation))
+				{
+					var yTilt = stylusPoint.GetPropertyValue(StylusPointProperties.YTiltOrientation);
+					properties.YTilt = yTilt;
+				}
+			}
+		}
+		else
+		{
+			throw new ArgumentException();
+		}
+
+		properties = properties.SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 		var modifiers = GetKeyModifiers();
 		var point = new PointerPoint(
 			frameId: FrameIdProvider.GetNextFrameId(),
 			timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 			device: GetPointerDevice(args),
-			pointerId: 1,
+			pointerId: pointerId,
 			rawPosition: new Windows.Foundation.Point(position.X, position.Y),
 			position: new Windows.Foundation.Point(position.X, position.Y),
 			isInContact: properties.HasPressedButton,
@@ -254,45 +348,16 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		return new PointerEventArgs(point, modifiers);
 	}
 
-	private static PointerPointProperties BuildPointerProperties(WpfMouseEventArgs args)
+	private static PointerDevice GetPointerDevice(InputEventArgs args)
 	{
 		if (args is null)
 		{
 			throw new ArgumentNullException(nameof(args));
 		}
 
-		return new()
+		if (args is StylusEventArgs stylusEventArgs)
 		{
-			IsLeftButtonPressed = args.LeftButton == MouseButtonState.Pressed,
-			IsMiddleButtonPressed = args.MiddleButton == MouseButtonState.Pressed,
-			IsRightButtonPressed = args.RightButton == MouseButtonState.Pressed,
-			IsXButton1Pressed = args.XButton1 == MouseButtonState.Pressed,
-			IsXButton2Pressed = args.XButton2 == MouseButtonState.Pressed,
-			IsPrimary = true,
-			IsInRange = true
-		};
-	}
-
-	private static PointerDevice GetPointerDevice(WpfMouseEventArgs args)
-	{
-		if (args is null)
-		{
-			throw new ArgumentNullException(nameof(args));
-		}
-
-		if (args.StylusDevice is null)
-		{
-			return args.Device switch
-			{
-				System.Windows.Input.MouseDevice _ => PointerDevice.For(PointerDeviceType.Mouse),
-				StylusDevice _ => PointerDevice.For(PointerDeviceType.Pen),
-				TouchDevice _ => PointerDevice.For(PointerDeviceType.Touch),
-				_ => PointerDevice.For(PointerDeviceType.Mouse),
-			};
-		}
-		else
-		{
-			if (args.StylusDevice.TabletDevice?.Type == TabletDeviceType.Touch)
+			if (stylusEventArgs.StylusDevice.TabletDevice?.Type == TabletDeviceType.Touch)
 			{
 				return PointerDevice.For(PointerDeviceType.Touch);
 			}
@@ -300,6 +365,10 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			{
 				return PointerDevice.For(PointerDeviceType.Pen);
 			}
+		}
+		else
+		{
+			return PointerDevice.For(PointerDeviceType.Mouse);
 		}
 	}
 
