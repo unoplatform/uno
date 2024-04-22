@@ -39,8 +39,7 @@ $dotnetBuildConfigurations =
 
 if ($IsWindows) 
 {
-    $dotnetBuildConfigurations = $dotnetBuildConfigurations 
-        + @("Skia.WPF", "", "");
+    $dotnetBuildConfigurations = $($dotnetBuildConfigurations; @("Skia.WPF", "", ""));
 }
 
 cd src/SolutionTemplate
