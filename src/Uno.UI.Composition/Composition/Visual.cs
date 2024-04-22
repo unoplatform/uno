@@ -133,7 +133,9 @@ namespace Microsoft.UI.Composition
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			Compositor.InvalidateRender(this);
+#if __SKIA__
 			InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
+#endif
 		}
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
