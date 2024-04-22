@@ -1,8 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using SkiaSharp;
-using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
@@ -18,7 +16,7 @@ public partial class ContainerVisual : Visual
 		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
 	}
 
-	internal List<Visual> GetChildrenInRenderOrder()
+	private protected override IEnumerable<Visual> GetChildrenInRenderOrder()
 	{
 		if (IsChildrenRenderOrderDirty)
 		{
@@ -60,15 +58,5 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
-	}
-
-	internal override void Render(in DrawingSession parentSession)
-	{
-		base.Render(in parentSession);
-
-		foreach (var child in GetChildrenInRenderOrder())
-		{
-			child.Render(in parentSession);
-		}
 	}
 }

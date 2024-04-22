@@ -1,21 +1,24 @@
 ﻿#nullable enable
 
+using SkiaSharp;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
+	private protected override void ApplyClipping(in SKCanvas canvas)
+	{
+		base.ApplyClipping(in canvas);
+		if (ViewBox is { } viewBox)
+		{
+			canvas.ClipRect(viewBox.GetSKRect(), antialias: true);
+		}
+	}
+
 	/// <inheritdoc />
 	internal override void Draw(in DrawingSession session)
 	{
-		// Note that Visual.Clip is already applied in Visual.Render -> Visual.BeginDrawing
-
-		if (ViewBox is { } viewBox)
-		{
-			session.Canvas.ClipRect(viewBox.GetSKRect(), antialias: true);
-		}
-
 		if (_shapes is { Count: not 0 } shapes)
 		{
 			foreach (var t in shapes)
@@ -23,9 +26,6 @@ public partial class ShapeVisual
 				t.Render(in session);
 			}
 		}
-
-		// The CornerRadiusClip doesn't affect the shapes of the ShapeVisual, only its children
-		CornerRadiusClip?.Apply(session.Canvas, this);
 
 		base.Draw(in session);
 	}

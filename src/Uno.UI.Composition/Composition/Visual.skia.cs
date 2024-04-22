@@ -27,6 +27,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private bool _requiresRepaint = true;
 	private SKPicture? _picture;
 
+	public object? Owner { get; set; }
+
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
@@ -183,7 +185,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	internal virtual void Render(in DrawingSession parentSession)
+	private void Render(in DrawingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -207,8 +209,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			Draw(in recorderSession);
 			_picture = _recorder.EndRecording();
 		}
-
 		session.Canvas.DrawPicture(_picture);
+
+		// The CornerRadiusClip doesn't affect the visual itself, only its children
+		CornerRadiusClip?.Apply(parentSession.Canvas, this);
+
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.Render(in parentSession);
+		}
 	}
 
 	/// <summary>
@@ -218,6 +227,27 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal virtual void Draw(in DrawingSession session)
 	{
 	}
+
+	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
+	private protected virtual void ApplyClipping(in SKCanvas canvas)
+	{
+		// Apply the clipping defined on the element
+		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
+		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
+		Clip?.Apply(canvas, this);
+	}
+
+	private protected virtual IEnumerable<Visual> GetChildrenInRenderOrder() => Array.Empty<Visual>();
+	internal IEnumerable<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+
+	/// <summary>
+	/// Identifies whether a Visual can paint things. For example, ContainerVisuals don't
+	/// paint on their own (even though they might contain other Visuals that do).
+	/// This is a temporary optimization used with <see cref="_requiresRepaint"/> to reduce unnecessary
+	/// SkPicture allocations. In the future, we should accurately set <see cref="_requiresRepaint"/> to
+	/// only be true when we really have something to paint (and that painting needs to be updated).
+	/// </summary>
+	internal virtual bool CanPaint => false;
 
 	private DrawingSession BeginDrawing(in DrawingSession parentSession)
 		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.RootTransform);
@@ -242,10 +272,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			canvas.SetMatrix((TotalMatrix * initialTransform).ToSKMatrix());
 		}
 
-		// Apply the clipping defined on the element
-		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
-		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		Clip?.Apply(canvas, this);
+		ApplyClipping(canvas);
 
 		var session = new DrawingSession(surface, canvas, in filters, in initialTransform);
 
