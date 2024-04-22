@@ -47,11 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #else
 		private Rect WindowBounds =>
-#if HAS_UNO
-			TestServices.WindowHelper.XamlRoot.Bounds;
-#else
-			Microsoft.UI.Xaml.Window.Current?.Bounds ?? default;
-#endif
+			new Rect(default, TestServices.WindowHelper.XamlRoot.Size);
 #endif
 
 		private Point RootLocation
