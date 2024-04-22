@@ -12,6 +12,7 @@ using WpfControl = global::System.Windows.Controls.Control;
 using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Content;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -116,6 +117,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			// Create DesktopWindowXamlSource, host for UWP XAML content
 			_xamlSource = new WUX.Hosting.DesktopWindowXamlSource();
+			CoreServices.Instance.SetMainVisualTree(_xamlSource.XamlIsland.ContentRoot.VisualTree);
 
 			// Hook DesktopWindowXamlSource OnTakeFocus event for Focus processing
 			_xamlSource.TakeFocusRequested += OnTakeFocusRequested;

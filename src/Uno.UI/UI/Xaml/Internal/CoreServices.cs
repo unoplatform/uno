@@ -38,20 +38,51 @@ namespace Uno.UI.Xaml.Core
 			// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
 			NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
 
-			// TODO: foreach should be replaced with if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
-			foreach (var window in ApplicationHelper.Windows)
+			// NOTE: The following if/else should really be replaced with just this:
+			// ----------------------------
+			//if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
+			//{
+			//	root.UpdateLayout();
+			//
+			//	if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+			//	{
+			//		CoreServices.Instance.EventManager.RaiseLoadedEvent();
+			//		root.UpdateLayout();
+			//	}
+			//}
+			// -----------------------------
+			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
+
+			if (ApplicationHelper.Windows.Count == 0)
 			{
-				if (window.RootElement is not { } root)
+				// This happens for Islands.
+				if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
 				{
-					continue;
-				}
-
-				root.UpdateLayout();
-
-				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
-				{
-					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
+
+					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+					{
+						CoreServices.Instance.EventManager.RaiseLoadedEvent();
+						root.UpdateLayout();
+					}
+				}
+			}
+			else
+			{
+				foreach (var window in ApplicationHelper.Windows)
+				{
+					if (window.RootElement is not { } root)
+					{
+						continue;
+					}
+
+					root.UpdateLayout();
+
+					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+					{
+						CoreServices.Instance.EventManager.RaiseLoadedEvent();
+						root.UpdateLayout();
+					}
 				}
 			}
 		}
@@ -86,6 +117,9 @@ namespace Uno.UI.Xaml.Core
 		public VisualTree? MainVisualTree => _mainVisualTree;
 
 		public UIElement? VisualRoot => _mainVisualTree?.PublicRootVisual;
+
+		internal void SetMainVisualTree(VisualTree visualTree)
+			=> _mainVisualTree = visualTree;
 
 		internal void InitCoreWindowContentRoot()
 		{
