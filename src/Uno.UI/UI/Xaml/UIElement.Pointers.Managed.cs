@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -60,6 +61,11 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		private object CoerceHitTestVisibility(object baseValue)
 		{
+			if (this is RootVisual or XamlIsland)
+			{
+				return HitTestability.Visible;
+			}
+
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
 			var parentValue = baseValue == DependencyProperty.UnsetValue
 				? HitTestability.Collapsed
