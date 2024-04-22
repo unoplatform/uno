@@ -148,7 +148,7 @@
 	},
 	{
 		"group": "AndroidMaterial",
-		"version": "1.10.0.2",
+		"version": "1.10.0.3",
 		"packages": [
 			"Xamarin.Google.Android.Material"
 		]
