@@ -36,6 +36,7 @@ jobs:
 
   - powershell: build\test-scripts\run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests
+    pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
