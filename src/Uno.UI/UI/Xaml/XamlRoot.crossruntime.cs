@@ -1,6 +1,7 @@
 ﻿using System;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml;
 
@@ -10,9 +11,19 @@ public sealed partial class XamlRoot
 
 	internal event Action InvalidateRender = () => { };
 
-	internal void InvalidateMeasure() => VisualTree.RootElement.InvalidateMeasure();
+	internal void InvalidateMeasure()
+	{
+		VisualTree.RootElement.InvalidateMeasure();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		CoreServices.RequestAdditionalFrame();
+#endif
+	}
 
-	internal void InvalidateArrange() => VisualTree.RootElement.InvalidateArrange();
+	internal void InvalidateArrange()
+	{
+		VisualTree.RootElement.InvalidateArrange();
+		CoreServices.RequestAdditionalFrame();
+	}
 
 	internal void RaiseInvalidateRender()
 	{

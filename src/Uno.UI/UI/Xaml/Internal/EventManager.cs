@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -31,6 +32,7 @@ internal sealed class EventManager
 		}
 
 		_effectiveViewportChangedQueue.Add((element, args));
+		CoreServices.RequestAdditionalFrame();
 	}
 
 	internal void RaiseEffectiveViewportChangedEvents()
@@ -82,7 +84,7 @@ internal sealed class EventManager
 	internal void RequestRaiseLoadedEventOnNextTick()
 	{
 		ShouldRaiseLoadedEvent = true;
-		//RequestAdditionalFrame();
+		CoreServices.RequestAdditionalFrame();
 	}
 
 	internal void RaiseLoadedEvent()

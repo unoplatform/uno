@@ -6,10 +6,11 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using Uno.UI.Dispatching;
+using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -20,6 +21,9 @@ namespace Uno.UI.Xaml.Core
 		private VisualTree? _mainVisualTree;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
+
+		private static int _isAdditionalFrameRequested;
+
 		public EventManager EventManager { get; private set; }
 #endif
 
@@ -28,15 +32,23 @@ namespace Uno.UI.Xaml.Core
 			ContentRootCoordinator = new ContentRootCoordinator(this);
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			EventManager = EventManager.Create();
-			NativeDispatcher.Main.Enqueue(() => OnTick(), NativeDispatcherPriority.Idle);
+			RequestAdditionalFrame();
 #endif
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
+		internal static void RequestAdditionalFrame()
+		{
+			if (Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
+			{
+				// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
+				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
+			}
+		}
+
 		private static void OnTick()
 		{
-			// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
-			NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
+			Interlocked.Exchange(ref _isAdditionalFrameRequested, 0);
 
 			// NOTE: The following if/else should really be replaced with just this:
 			// ----------------------------
