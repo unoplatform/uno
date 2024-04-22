@@ -54,7 +54,7 @@ namespace UnoWinUIRevert
 				("Microsoft.UI.Xaml", "Windows.UI.Xaml"),
 				("Microsoft.UI.Composition", "Windows.UI.Composition"),
 				("Microsoft.UI.Colors", "Windows.UI.Colors"),
-				("Microsoft.UI.Text.FontWeights", "Windows.UI.Text.FontWeights"),
+				("Microsoft.UI.Text", "Windows.UI.Text"),
 				("Microsoft.UI.ColorHelper", "Windows.UI.ColorHelper"),
 				("__LinkerHints.Is_Microsoft_UI_Xaml", "__LinkerHints.Is_Windows_UI_Xaml"),
 				("__LinkerHints.Is_Windows_UI_Xaml_Controls_LayoutPanel", "__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel"),

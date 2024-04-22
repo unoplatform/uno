@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Windows.UI;
 using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
+using Microsoft.UI.Text;
+using FontWeight = Windows.UI.Text.FontWeight;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -22,16 +24,6 @@ using Android.Graphics;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#endif
-
-#if HAS_UNO_WINUI
-using Microsoft.UI.Text;
-using FontWeights = Microsoft.UI.Text.FontWeights;
-using FontWeight = Windows.UI.Text.FontWeight;
-#else
-using Windows.UI.Text;
-using FontWeights = Microsoft.UI.Text.FontWeights;
-using FontWeight = Windows.UI.Text.FontWeight;
 #endif
 
 namespace Uno.UI.DataBinding

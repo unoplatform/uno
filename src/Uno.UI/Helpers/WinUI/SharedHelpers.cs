@@ -20,12 +20,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
-
-#if HAS_UNO_WINUI
 using ITextSelection = Microsoft.UI.Text.ITextSelection;
-#else
-using ITextSelection = Windows.UI.Text.ITextSelection;
-#endif
 
 namespace Uno.UI.Helpers.WinUI
 {
