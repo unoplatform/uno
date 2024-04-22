@@ -39,7 +39,7 @@ $dotnetBuildConfigurations =
 
 if ($IsWindows) 
 {
-    $dotnetBuildConfigurations = $($dotnetBuildConfigurations; @("Skia.WPF", "", ""));
+    $dotnetBuildConfigurations += , @("Skia.WPF", "", "");
 }
 
 cd src/SolutionTemplate
@@ -91,7 +91,7 @@ $dotnetBuildNet6Configurations =
 
 if ($IsWindows) 
 {
-    $dotnetBuildNet6Configurations = $($dotnetBuildNet6Configurations; @("Skia.WPF", "", ""));
+    $dotnetBuildNet6Configurations += , @("Skia.WPF", "", "");
 }
 
 # WinUI - Default
