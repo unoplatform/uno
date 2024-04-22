@@ -18,7 +18,7 @@ public partial class ContainerVisual : Visual
 		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
 	}
 
-	private protected override List<Visual>? GetChildrenInRenderOrder()
+	internal List<Visual> GetChildrenInRenderOrder()
 	{
 		if (IsChildrenRenderOrderDirty)
 		{
@@ -60,5 +60,15 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
+	}
+
+	internal override void Render(in DrawingSession parentSession)
+	{
+		base.Render(in parentSession);
+
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.Render(in parentSession);
+		}
 	}
 }

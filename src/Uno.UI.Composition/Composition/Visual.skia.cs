@@ -1,6 +1,7 @@
 ﻿#nullable enable
 //#define TRACE_COMPOSITION
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
@@ -19,9 +20,24 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+	private bool _requiresRepaint = true;
+	private SKPictureRecorder? _recorder;
+	private SKPicture? _picture;
 
 	/// <returns>true if wasn't dirty</returns>
-	internal virtual bool SetMatrixDirty() => _matrixDirty = true;
+	internal virtual bool SetMatrixDirty()
+	{
+		var matrixDirty = _matrixDirty;
+		_matrixDirty = true;
+		return !matrixDirty;
+	}
+
+	internal void InvalidatePaint()
+	{
+		_picture?.Dispose();
+		_picture = null;
+		_requiresRepaint = true;
+	}
 
 	/// <summary>
 	/// This is the final transformation matrix from the origin to this Visual.
@@ -160,15 +176,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	private protected virtual List<Visual>? GetChildrenInRenderOrder() => null;
-
-	internal List<Visual>? GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
-
 	/// <summary>
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	internal void Render(in DrawingSession parentSession)
+	internal virtual void Render(in DrawingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -183,15 +195,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		using var session = BeginDrawing(in parentSession);
-		Draw(in session);
-
-		if (GetChildrenInRenderOrder() is { } children)
+		if (_requiresRepaint)
 		{
-			foreach (var child in children)
-			{
-				child.Render(in session);
-			}
+			_requiresRepaint = false;
+			_recorder ??= new SKPictureRecorder();
+			var recorderSession = session with { Canvas = _recorder.BeginRecording(new SKRect(float.NegativeInfinity, float.NegativeInfinity, float.PositiveInfinity, float.PositiveInfinity)) };
+			// To debug what exactly gets repainted, replace the following line with `Draw(in session);`
+			Draw(in recorderSession);
+			_picture = _recorder.EndRecording();
 		}
+
+		session.Canvas.DrawPicture(_picture);
 	}
 
 	/// <summary>

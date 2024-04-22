@@ -24,19 +24,19 @@ public class Given_ContainerVisual
 		var shape = compositor.CreateShapeVisual();
 		containerVisual.Children.InsertAtTop(shape);
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
-		var children = containerVisual.GetChildrenInRenderOrderTestingOnly();
+		var children = containerVisual.GetChildrenInRenderOrder();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
 		Assert.AreEqual(1, children.Count);
 
 		containerVisual.Children.InsertAtTop(compositor.CreateShapeVisual());
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
-		children = containerVisual.GetChildrenInRenderOrderTestingOnly();
+		children = containerVisual.GetChildrenInRenderOrder();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
 		Assert.AreEqual(2, children.Count);
 
 		containerVisual.Children.Remove(shape);
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
-		children = containerVisual.GetChildrenInRenderOrderTestingOnly();
+		children = containerVisual.GetChildrenInRenderOrder();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
 		Assert.AreEqual(1, children.Count);
 	}

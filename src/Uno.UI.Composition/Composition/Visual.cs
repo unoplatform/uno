@@ -133,6 +133,7 @@ namespace Microsoft.UI.Composition
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			Compositor.InvalidateRender(this);
+			InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
 		}
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
