@@ -158,39 +158,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => Inlines.GetIndexAt(point, false, extended);
 
-		partial void OnInlinesChangedPartial()
+		// Invalidate Inlines measure and repaint text when any IBlock properties used during measuring change:
+
+		private void InvalidateInlineAndRequireRepaint()
 		{
 			Inlines.InvalidateMeasure();
+			_textVisual.InvalidatePaint();
 		}
 
-		// Invalidate Inlines measure when any IBlock properties used during measuring change:
+		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnLineHeightChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnLineStackingStrategyChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => InvalidateInlineAndRequireRepaint();
 
-		partial void OnMaxLinesChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnTextWrappingChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnLineHeightChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnLineStackingStrategyChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		void IBlock.Invalidate(bool updateText) => InvalidateInlines(updateText);
+		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 
 		partial void OnSelectionChanged()
