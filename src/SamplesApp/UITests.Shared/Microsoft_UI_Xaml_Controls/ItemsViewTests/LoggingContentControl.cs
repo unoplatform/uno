@@ -6,6 +6,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 
+using Debug = System.Diagnostics.Debug;
+
 namespace MUXControlsTestApp.Utilities;
 
 public sealed partial class LoggingContentControl : ContentControl
