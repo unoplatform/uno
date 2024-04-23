@@ -39,8 +39,7 @@ $dotnetBuildConfigurations =
 
 if ($IsWindows) 
 {
-    $dotnetBuildConfigurations = $dotnetBuildConfigurations 
-        + @("Skia.WPF", "", "");
+    $dotnetBuildConfigurations += , @("Skia.WPF", "", "");
 }
 
 cd src/SolutionTemplate
@@ -92,8 +91,7 @@ $dotnetBuildNet6Configurations =
 
 if ($IsWindows) 
 {
-    $dotnetBuildNet6Configurations = $dotnetBuildNet6Configurations 
-        + @("Skia.WPF", "", "");
+    $dotnetBuildNet6Configurations += , @("Skia.WPF", "", "");
 }
 
 # WinUI - Default
@@ -311,13 +309,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
             & $msbuild $debug /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
 
-            & $msbuild $debug /t:Clean "$projectPath"
+            & $msbuild $debug /r /t:Clean "$projectPath"
 
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
             & $msbuild $release /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
 
-            & $msbuild $release /t:Clean "$projectPath"
+            & $msbuild $release /r /t:Clean "$projectPath"
         }
     }
 }
