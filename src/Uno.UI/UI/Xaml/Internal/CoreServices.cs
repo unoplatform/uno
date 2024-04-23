@@ -32,14 +32,14 @@ namespace Uno.UI.Xaml.Core
 			ContentRootCoordinator = new ContentRootCoordinator(this);
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			EventManager = EventManager.Create();
-			RequestAdditionalFrame();
 #endif
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal static void RequestAdditionalFrame()
 		{
-			if (Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
+			if (CoreServices.Instance.MainVisualTree is { VisibleBounds: { Width: not 0, Height: not 0 } } &&
+				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
 				// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
 				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Normal);
