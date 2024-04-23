@@ -64,10 +64,9 @@ public partial class InteractionTracker : CompositionObject
 				NativeDispatcher.Main.Enqueue(() =>
 				{
 					owner.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, Scale, requestId));
+					OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
 				});
 			}
-
-			OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
 		}
 	}
 

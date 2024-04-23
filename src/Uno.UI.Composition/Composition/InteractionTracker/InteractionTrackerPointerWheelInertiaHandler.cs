@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
-using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Composition.Interactions;
 
@@ -68,8 +67,7 @@ internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTracke
 
 		if (currentElapsed >= 250)
 		{
-			// Ideally, we don't want to get back to dispatcher :/
-			NativeDispatcher.Main.Enqueue(() => _interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0), NativeDispatcherPriority.High);
+			_interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0);
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
 			_timer!.Dispose();
 			_stopwatch!.Stop();
@@ -79,8 +77,7 @@ internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTracke
 		var newPosition = _initialPosition + (currentElapsed / 1000.0f) * InitialVelocity;
 		var clampedNewPosition = Vector3.Clamp(newPosition, _minPosition, _maxPosition);
 
-		// Ideally, we don't want to get back to dispatcher :/
-		NativeDispatcher.Main.Enqueue(() => _interactionTracker.SetPosition(clampedNewPosition, requestId: 0), NativeDispatcherPriority.High);
+		_interactionTracker.SetPosition(clampedNewPosition, requestId: 0);
 
 		if (clampedNewPosition.Equals(FinalModifiedPosition))
 		{

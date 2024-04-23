@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
-using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Composition.Interactions;
 
@@ -61,7 +60,7 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler : IInt
 
 		if (_xHelper.HasCompleted && _yHelper.HasCompleted && _zHelper.HasCompleted)
 		{
-			NativeDispatcher.Main.Enqueue(() => _interactionTracker.SetPosition(FinalModifiedPosition, _requestId), NativeDispatcherPriority.High);
+			_interactionTracker.SetPosition(FinalModifiedPosition, _requestId);
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
 			_timer!.Dispose();
 			_stopwatch!.Stop();
@@ -73,6 +72,6 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler : IInt
 			_yHelper.GetPosition(currentElapsedInSeconds),
 			_zHelper.GetPosition(currentElapsedInSeconds));
 
-		NativeDispatcher.Main.Enqueue(() => _interactionTracker.SetPosition(newPosition, _requestId), NativeDispatcherPriority.High);
+		_interactionTracker.SetPosition(newPosition, _requestId);
 	}
 }
