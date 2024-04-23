@@ -244,7 +244,7 @@ namespace Microsoft.UI.Xaml.Documents
 							else if (start + length < end)
 							{
 								// equivalently condition would be `trailingSpaces < segment.TrailingSpaces`
-								global::System.Diagnostics.Debug.Assert(end - (start + length) == segment.TrailingSpaces - trailingSpaces);
+								global::System.Diagnostics.CI.Assert(end - (start + length) == segment.TrailingSpaces - trailingSpaces);
 
 								// We could fit the segment, but not all of the trailing spaces
 								// These remaining trailing spaces will never be rendered, that's
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Documents
 						}
 
 						// By this point, we must have at least dealt with the leading spaces.
-						global::System.Diagnostics.Debug.Assert(start >= segment.LeadingSpaces);
+						global::System.Diagnostics.CI.Assert(start >= segment.LeadingSpaces);
 
 						if (x > 0)
 						{
