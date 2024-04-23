@@ -4,6 +4,12 @@ using Microsoft.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 
+#if HAS_UNO_WINUI
+using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
+#else
+using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter
@@ -179,11 +185,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if HAS_UNO_WINUI
-			if (e.PointerDeviceType == global::Microsoft.UI.Input.PointerDeviceType.Touch)
-#else
-			if (e.PointerDeviceType == global::Windows.Devices.Input.PointerDeviceType.Touch)
-#endif
+			if (e.PointerDeviceType == _PointerDeviceType.Touch)
 			{
 				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
 				this.CapturePointer(PointerRoutedEventArgs.LastPointerEvent.Pointer);
