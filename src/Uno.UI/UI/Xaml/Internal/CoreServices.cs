@@ -38,18 +38,19 @@ namespace Uno.UI.Xaml.Core
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		private static XamlRoot? GetXamlRoot()
 		{
-			if (CoreServices.Instance.MainVisualTree is { } mainVisualTree)
-			{
-				return mainVisualTree.XamlRoot;
-			}
-
 			if (CoreServices.Instance.ContentRootCoordinator.ContentRoots.Count > 0)
 			{
 				return CoreServices.Instance.ContentRootCoordinator.ContentRoots[0].XamlRoot;
 			}
 
+			if (CoreServices.Instance.MainVisualTree is { } mainVisualTree)
+			{
+				return mainVisualTree.XamlRoot;
+			}
+
 			return null;
 		}
+
 		internal static void RequestAdditionalFrame()
 		{
 			if (GetXamlRoot() is { Bounds: { Width: not 0, Height: not 0 } } &&
