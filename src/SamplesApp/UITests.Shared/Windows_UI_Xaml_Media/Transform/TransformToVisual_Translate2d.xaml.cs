@@ -9,15 +9,15 @@ namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 	[SampleControlInfo("Transform", "TransformToVisual_Translate2d", description: "The ellipses should track the x- and y-positions of the duck inside the scroll viewer, using TransformToVisual")]
 	public sealed partial class TransformToVisual_Translate2d : UserControl, IWaitableSample
 	{
-		private TaskCompletionSource _tcs = new();
+		private readonly Task _samplePreparedTask;
+
 		public TransformToVisual_Translate2d()
 		{
 			this.InitializeComponent();
-			image1.ImageOpened += (_, _) => _tcs.SetResult();
-			image1.ImageFailed += (_, _) => _tcs.SetResult();
+			_samplePreparedTask = WaitableSampleImageHelpers.WaitAllImages(image1);
 		}
 
-		public Task SamplePreparedTask => _tcs.Task;
+		public Task SamplePreparedTask => _samplePreparedTask;
 
 		private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
 		{

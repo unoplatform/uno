@@ -5380,6 +5380,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\IWaitableSample.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UWPViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\WaitableSampleImageHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml.cs">
       <DependentUpon>LottieEmbeddedJson.xaml</DependentUpon>
     </Compile>
