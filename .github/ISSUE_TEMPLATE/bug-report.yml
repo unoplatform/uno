@@ -83,6 +83,8 @@ body:
         - Skia (WPF)
         - Skia (GTK on Linux/macOS/Windows)
         - Skia (Linux Framebuffer)
+        - Skia (Linux X11)
+        - Skia (macOS)
         - Windows
         - Build tasks
 
