@@ -9,7 +9,7 @@
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
 		<!-- These files are present for the UWP Build only, to preserve compatibility -->
 		<Compile Remove="UI\Xaml\Controls\Unsupported\*.cs"/>
-		
+
 		<Compile Remove="UI\Xaml\Controls\ProgressBar\*.cs"/>
 		<None Include="UI\Xaml\Controls\ProgressBar\*.cs"/>
 
@@ -20,10 +20,16 @@
 		<Compile Remove="UI\Xaml\Controls\Icons\IconSource.cs" />
 		<Compile Remove="UI\Xaml\Media\RevealBrush.Android.cs" />
 		<Compile Remove="UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs" />
-		
+
 		<Compile Remove="UI\Xaml\Controls\NavigationView\**\*.cs" />
 		<Page Remove="UI\Xaml\Controls\NavigationView\**\*.xaml" />
 		<XamlMergeInput Remove="UI\Xaml\Controls\NavigationView\**\*.xaml" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<!-- These files are present for the WinUI Build only -->
+		<Compile Remove="Microsoft\UI\Xaml\Controls\ItemsView\**\*.cs"/>
+		<None Include="Microsoft\UI\Xaml\Controls\ItemsView\**\*.cs"/>
 	</ItemGroup>
 
 </Project>
