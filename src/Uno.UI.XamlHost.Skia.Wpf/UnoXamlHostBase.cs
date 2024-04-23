@@ -117,7 +117,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			// Create DesktopWindowXamlSource, host for UWP XAML content
 			_xamlSource = new WUX.Hosting.DesktopWindowXamlSource();
-			CoreServices.Instance.SetMainVisualTree(_xamlSource.XamlIsland.ContentRoot.VisualTree);
 
 			// Hook DesktopWindowXamlSource OnTakeFocus event for Focus processing
 			_xamlSource.TakeFocusRequested += OnTakeFocusRequested;

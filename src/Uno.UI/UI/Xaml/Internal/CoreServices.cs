@@ -36,9 +36,23 @@ namespace Uno.UI.Xaml.Core
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
+		private static XamlRoot? GetXamlRoot()
+		{
+			if (CoreServices.Instance.MainVisualTree is { } mainVisualTree)
+			{
+				return mainVisualTree.XamlRoot;
+			}
+
+			if (CoreServices.Instance.ContentRootCoordinator.ContentRoots.Count > 0)
+			{
+				return CoreServices.Instance.ContentRootCoordinator.ContentRoots[0].XamlRoot;
+			}
+
+			return null;
+		}
 		internal static void RequestAdditionalFrame()
 		{
-			if (CoreServices.Instance.MainVisualTree is { VisibleBounds: { Width: not 0, Height: not 0 } } &&
+			if (GetXamlRoot() is { Bounds: { Width: not 0, Height: not 0 } } &&
 				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
 				// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
@@ -52,7 +66,7 @@ namespace Uno.UI.Xaml.Core
 
 			// NOTE: The following if/else should really be replaced with just this:
 			// ----------------------------
-			//if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
+			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
 			//{
 			//	root.UpdateLayout();
 			//
@@ -68,7 +82,7 @@ namespace Uno.UI.Xaml.Core
 			if (ApplicationHelper.Windows.Count == 0)
 			{
 				// This happens for Islands.
-				if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
+				if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
 				{
 					root.UpdateLayout();
 
@@ -129,9 +143,6 @@ namespace Uno.UI.Xaml.Core
 		public VisualTree? MainVisualTree => _mainVisualTree;
 
 		public UIElement? VisualRoot => _mainVisualTree?.PublicRootVisual;
-
-		internal void SetMainVisualTree(VisualTree visualTree)
-			=> _mainVisualTree = visualTree;
 
 		internal void InitCoreWindowContentRoot()
 		{
