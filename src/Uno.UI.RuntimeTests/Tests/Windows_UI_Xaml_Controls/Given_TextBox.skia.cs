@@ -3653,7 +3653,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			var revealButton = (Button)SUT.FindName("RevealButton");
+			var revealButton = (FrameworkElement)SUT.FindName("RevealButton");
 			mouse.MoveTo(revealButton.GetAbsoluteBoundsRect().GetCenter());
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
