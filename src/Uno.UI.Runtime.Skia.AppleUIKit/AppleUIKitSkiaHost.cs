@@ -10,8 +10,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 public class AppleUIKitSkiaHost : ISkiaApplicationHost, IXamlRootHost
 {
-	private readonly Func<Application> _appBuilder;
-	private readonly string[] _args;
+	private static Func<Application>? _appBuilder;
+	private static string[]? _args;
 
 	/// <summary>
 	/// Creates a host for an Uno Skia Android application.
@@ -26,15 +26,17 @@ public class AppleUIKitSkiaHost : ISkiaApplicationHost, IXamlRootHost
 		_args = args;
 	}
 
+	internal static Func<Application>? AppBuilder => _appBuilder;
+
+	internal static string[]? Args => _args;
+
 	public Task Run()
 	{
 		try
 		{
 			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new SingletonWindowFactory(NativeWindowWrapper.Instance));
 
-			Application.Start(_ => _appBuilder());
-
-			UIApplication.Main(_args, null, typeof(App));
+			UIApplication.Main(_args, null, typeof(UnoSkiaAppDelegate));
 		}
 		catch (Exception e)
 		{

@@ -1,15 +1,15 @@
-﻿using UIKit;
+﻿using System.Threading.Tasks;
+using UIKit;
+using Uno.UI.Runtime.Skia.AppleUIKit;
 
 namespace SamplesApp.iOS
 {
 	public class Application
 	{
 		// This is the main entry point of the application.
-		static void Main(string[] args)
+		static async Task Main(string[] args)
 		{
-			// if you want to use a different Application Delegate class from "AppDelegate"
-			// you can specify it here.
-			UIApplication.Main(args, null, typeof(App));
+			await (new AppleUIKitSkiaHost(() => new SamplesApp.App())).Run();
 		}
 	}
 }

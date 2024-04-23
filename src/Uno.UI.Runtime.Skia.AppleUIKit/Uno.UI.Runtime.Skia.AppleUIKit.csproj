@@ -14,9 +14,9 @@
 		<Description>This package provides the platform support for Skia Android in Uno Platform projects.</Description>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Android</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.AppleUIKit</PackageId>
 
-		<RootNamespace>Uno.WinUI.Runtime.Skia.Android</RootNamespace>
+		<RootNamespace>Uno.WinUI.Runtime.Skia.AppleUIKit</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
@@ -30,10 +30,7 @@
 	</ItemDefinitionGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\NativeWindowWrapper.iOS.cs" Link="UI\Xaml\Window\Native\NativeWindowWrapper.iOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\Window.iOS.cs" Link="UI\Xaml\Window\Native\Window.iOS.cs" />
 		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.iOSmacOS.cs" Link="Controls\BringIntoViewMode.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\Controls\RootViewController.iOS.cs" Link="Controls\RootViewController.iOS.cs" />
 		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.iOS.cs" Link="Controls\IRotationAwareViewController.iOS.cs" />
 	</ItemGroup>
 
