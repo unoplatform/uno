@@ -43,12 +43,12 @@ namespace Microsoft.UI.Xaml.Controls
 		const int TICKS_PER_MILLISECOND = 10000;
 
 		// Minimum required time between mouse wheel inputs for triggering successive flips
-		//const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200;
+		const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200;
 
 		// How long the FlipView's navigation buttons show before fading out.
 		const int FLIP_VIEW_BUTTONS_SHOW_DURATION_MS = 3000;
 
-		//static int s_scrollWheelDelayMS = FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS;
+		static int s_scrollWheelDelayMS = FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS;
 
 		// Dispatcher timer to set correct offset values after size changed
 		DispatcherTimer m_tpFixOffsetTimer;
@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 		SnapPointsType m_horizontalSnapPointsType;
 
 		// A value indicating the last time a scroll wheel event occurred.
-		//long m_lastScrollWheelTime;
+		long m_lastScrollWheelTime;
 
 		// A value indicating the last wheel delta a scroll wheel event contained.
 		int m_lastScrollWheelDelta;
@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_horizontalSnapPointsType = SnapPointsType.None;
 			m_skipAnimationOnce = false;
 			m_lastScrollWheelDelta = 0;
-			//m_lastScrollWheelTime = 0;
+			m_lastScrollWheelTime = 0;
 			m_keepNavigationButtonsVisible = false;
 			m_itemsAreSized = false;
 		}
@@ -616,11 +616,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (!isCtrlPressed)
 				{
-					//long lTimeCurrent = default;
+					long lTimeCurrent = default;
 					bool canFlip = false;
 					bool queryCounterSuccess = false;
 
-					//queryCounterSuccess = QueryPerformanceCounter(lTimeCurrent);
+					queryCounterSuccess = QueryPerformanceCounter(out lTimeCurrent);
 
 					if (queryCounterSuccess)
 					{
@@ -641,17 +641,16 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 						else
 						{
-							//long frequency;
-							//bool queryFrequencySuccess;
+							long frequency;
+							bool queryFrequencySuccess;
 
-							//queryFrequencySuccess = QueryPerformanceFrequency(frequency);
-							//queryFrequencySuccess &&
+							queryFrequencySuccess = QueryPerformanceFrequency(out frequency);
 
-							//if (((lTimeCurrent.QuadPart - m_lastScrollWheelTime) / (double)(frequency.QuadPart) * 1000) > s_scrollWheelDelayMS)
-							//{
-							//	// Enough time has passed so we can flip.
-							//	canFlip = true;
-							//}
+							if (queryFrequencySuccess && ((lTimeCurrent - m_lastScrollWheelTime) / (double)(frequency) * 1000) > s_scrollWheelDelayMS)
+							{
+								// Enough time has passed so we can flip.
+								canFlip = true;
+							}
 						}
 
 						// Whether a flip is performed or not, the time of this mouse wheel delta is being recorded. This is to avoid a single touch pad
@@ -659,8 +658,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// over multiple seconds, which is much larger than s_scrollWheelDelayMS==200ms. So a pause of 200ms since the last
 						// wheel delta, or a change in direction, is required to trigger a new flip. Unfortunately that may require the user to wait a few seconds
 						// before being able to trigger a new flip with the touch pad.
-						//m_lastScrollWheelTime = lTimeCurrent.QuadPart;
-						//m_lastScrollWheelTime = 0;
+						m_lastScrollWheelTime = lTimeCurrent;
 
 						if (canFlip)
 						{
