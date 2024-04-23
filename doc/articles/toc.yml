@@ -109,8 +109,6 @@
         href: guides/raspberry-pi/raspberry-pi-intro.md
       - name: (Wasm) Handling custom HTML events
         href: wasm-custom-events.md
-      - name: Using Uno Platform Controls in Xamarin.Forms
-        href: howto-use-uno-in-xamarin-forms.md
       - name: Community Tutorials
         topicHref: guides/community-tutorials.md
     - name: Samples
