@@ -133,7 +133,9 @@ partial class ContentPresenter
 	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		ArrangeNativeElement();
+		// The arrange call here is queued because EVPChanged is fired before the layout of the ContentPresenter is updated,
+		// so calling ArrangeNativeElement synchronously would get outdated coordinates.
+		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
 	}
 
 	internal object CreateSampleComponent(string text)
