@@ -44,6 +44,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			_picture?.Dispose();
 			_picture = null;
 			_requiresRepaint = true;
+			Compositor.InvalidateRender(this);
 		}
 	}
 
