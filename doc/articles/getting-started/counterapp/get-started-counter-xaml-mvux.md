@@ -4,7 +4,7 @@ uid: Uno.Workshop.Counter.XAML.MVUX
 
 # Counter App using XAML and MVUX
 
-[Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX)  
+[Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVUX)  
 
 [!INCLUDE [Intro](includes/include-intro.md)]
 
@@ -168,4 +168,4 @@ The final code for **MainPage.xaml** should look like this:
 
 [!INCLUDE [View Model](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVUX).

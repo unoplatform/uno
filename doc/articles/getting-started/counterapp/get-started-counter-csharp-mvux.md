@@ -4,7 +4,7 @@ uid: Uno.Workshop.Counter.CSharp.MVUX
 
 # Counter App using C# Markup and MVUX
 
-[Download the complete C# Markup + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVUX)
+[Download the complete C# Markup + MVUX sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVUX)
 
 [!INCLUDE [Intro](includes/include-intro.md)]
 
@@ -179,4 +179,4 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
 
 [!INCLUDE [View Model](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVUX).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVUX).

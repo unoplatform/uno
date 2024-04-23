@@ -4,7 +4,7 @@ uid: Uno.Workshop.Counter.XAML.MVVM
 
 # Counter App using XAML and MVVM
 
-[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM)  
+[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM)  
 
 [!INCLUDE [Intro](includes/include-intro.md)]
 
@@ -168,4 +168,4 @@ The final code for **MainPage.xaml** should look like this:
 
 [!INCLUDE [View Model](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM).
