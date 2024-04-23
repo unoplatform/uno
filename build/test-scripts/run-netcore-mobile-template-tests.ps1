@@ -229,7 +229,7 @@ $projects =
     @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-ios"), $true),
     @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-android"), $true),
     @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-maccatalyst"), $true),
-    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-desktop"), $true),
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-desktop"), $true)
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     # Disabled until agent supports net8 in msbuild
