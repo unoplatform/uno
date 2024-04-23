@@ -6628,11 +6628,10 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 	void HookCompositionTargetRendering()
 	{
-		if (m_renderingRevoker is null)
+		if (m_renderingRevoker.Disposable is null)
 		{
 			// SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH, METH_NAME, this);
 			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
-			m_renderingRevoker = new SerialDisposable();
 			m_renderingRevoker.Disposable = Disposable.Create(() => Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering);
 		}
 	}
@@ -6640,33 +6639,29 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	void UnhookCompositionTargetRendering()
 	{
 		// SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH, METH_NAME, this);
-		if (m_renderingRevoker is not null)
+		if (m_renderingRevoker.Disposable is not null)
 		{
 			m_renderingRevoker.Disposable = null;
-			m_renderingRevoker = null;
 		}
 	}
 
 	void HookScrollPresenterEvents()
 	{
-		if (m_loadedRevoker is null)
+		if (m_loadedRevoker.Disposable is null)
 		{
 			Loaded += OnLoaded;
-			m_loadedRevoker = new SerialDisposable();
 			m_loadedRevoker.Disposable = Disposable.Create(() => Loaded -= OnLoaded);
 		}
 
-		if (m_unloadedRevoker is null)
+		if (m_unloadedRevoker.Disposable is null)
 		{
 			Unloaded += OnUnloaded;
-			m_unloadedRevoker = new SerialDisposable();
 			m_unloadedRevoker.Disposable = Disposable.Create(() => Unloaded -= OnUnloaded);
 		}
 
-		if (m_bringIntoViewRequestedRevoker is null)
+		if (m_bringIntoViewRequestedRevoker.Disposable is null)
 		{
 			BringIntoViewRequested += OnBringIntoViewRequestedHandler;
-			m_bringIntoViewRequestedRevoker = new SerialDisposable();
 			m_bringIntoViewRequestedRevoker.Disposable = Disposable.Create(() => BringIntoViewRequested -= OnBringIntoViewRequestedHandler);
 		}
 
@@ -6698,52 +6693,44 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		{
 			if (content is FrameworkElement contentAsFE)
 			{
-				if (m_contentMinWidthChangedRevoker is null)
+				if (m_contentMinWidthChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.MinWidthProperty, OnContentPropertyChanged);
-					m_contentMinWidthChangedRevoker = new SerialDisposable();
 					m_contentMinWidthChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.MinWidthProperty, token));
 				}
-				if (m_contentWidthChangedRevoker is null)
+				if (m_contentWidthChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.WidthProperty, OnContentPropertyChanged);
-					m_contentWidthChangedRevoker = new SerialDisposable();
 					m_contentWidthChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.WidthProperty, token));
 				}
-				if (m_contentMaxWidthChangedRevoker is null)
+				if (m_contentMaxWidthChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.MaxWidthProperty, OnContentPropertyChanged);
-					m_contentMaxWidthChangedRevoker = new SerialDisposable();
 					m_contentMaxWidthChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.MaxWidthProperty, token));
 				}
-				if (m_contentMinHeightChangedRevoker is null)
+				if (m_contentMinHeightChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.MinHeightProperty, OnContentPropertyChanged);
-					m_contentMinHeightChangedRevoker = new SerialDisposable();
 					m_contentMinHeightChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.MinHeightProperty, token));
 				}
-				if (m_contentHeightChangedRevoker is null)
+				if (m_contentHeightChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.HeightProperty, OnContentPropertyChanged);
-					m_contentHeightChangedRevoker = new SerialDisposable();
 					m_contentHeightChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.HeightProperty, token));
 				}
-				if (m_contentMaxHeightChangedRevoker is null)
+				if (m_contentMaxHeightChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.MaxHeightProperty, OnContentPropertyChanged);
-					m_contentMaxHeightChangedRevoker = new SerialDisposable();
 					m_contentMaxHeightChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.MaxHeightProperty, token));
 				}
-				if (m_contentHorizontalAlignmentChangedRevoker is null)
+				if (m_contentHorizontalAlignmentChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.HorizontalAlignmentProperty, OnContentPropertyChanged);
-					m_contentHorizontalAlignmentChangedRevoker = new SerialDisposable();
 					m_contentHorizontalAlignmentChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.HorizontalAlignmentProperty, token));
 				}
-				if (m_contentVerticalAlignmentChangedRevoker is null)
+				if (m_contentVerticalAlignmentChangedRevoker.Disposable is null)
 				{
 					long token = contentAsFE.RegisterPropertyChangedCallback(FrameworkElement.VerticalAlignmentProperty, OnContentPropertyChanged);
-					m_contentVerticalAlignmentChangedRevoker = new SerialDisposable();
 					m_contentVerticalAlignmentChangedRevoker.Disposable = Disposable.Create(() => contentAsFE.UnregisterPropertyChangedCallback(FrameworkElement.VerticalAlignmentProperty, token));
 				}
 			}
@@ -6759,53 +6746,14 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 			if (contentAsFE is not null)
 			{
-				if (m_contentMinWidthChangedRevoker is not null)
-				{
-					m_contentMinWidthChangedRevoker.Disposable = null;
-					m_contentMinWidthChangedRevoker = null;
-				}
-
-				if (m_contentWidthChangedRevoker is not null)
-				{
-					m_contentWidthChangedRevoker.Disposable = null;
-					m_contentWidthChangedRevoker = null;
-				}
-
-				if (m_contentMaxWidthChangedRevoker is not null)
-				{
-					m_contentMaxWidthChangedRevoker.Disposable = null;
-					m_contentMaxWidthChangedRevoker = null;
-				}
-
-				if (m_contentMinHeightChangedRevoker is not null)
-				{
-					m_contentMinHeightChangedRevoker.Disposable = null;
-					m_contentMinHeightChangedRevoker = null;
-				}
-
-				if (m_contentHeightChangedRevoker is not null)
-				{
-					m_contentHeightChangedRevoker.Disposable = null;
-					m_contentHeightChangedRevoker = null;
-				}
-
-				if (m_contentMaxHeightChangedRevoker is not null)
-				{
-					m_contentMaxHeightChangedRevoker.Disposable = null;
-					m_contentMaxHeightChangedRevoker = null;
-				}
-
-				if (m_contentHorizontalAlignmentChangedRevoker is not null)
-				{
-					m_contentHorizontalAlignmentChangedRevoker.Disposable = null;
-					m_contentHorizontalAlignmentChangedRevoker = null;
-				}
-
-				if (m_contentVerticalAlignmentChangedRevoker is not null)
-				{
-					m_contentVerticalAlignmentChangedRevoker.Disposable = null;
-					m_contentVerticalAlignmentChangedRevoker = null;
-				}
+				m_contentMinWidthChangedRevoker.Disposable = null;
+				m_contentWidthChangedRevoker.Disposable = null;
+				m_contentMaxWidthChangedRevoker.Disposable = null;
+				m_contentMinHeightChangedRevoker.Disposable = null;
+				m_contentHeightChangedRevoker.Disposable = null;
+				m_contentMaxHeightChangedRevoker.Disposable = null;
+				m_contentHorizontalAlignmentChangedRevoker.Disposable = null;
+				m_contentVerticalAlignmentChangedRevoker.Disposable = null;
 			}
 		}
 	}
@@ -6815,24 +6763,21 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	{
 		MUX_ASSERT(horizontalScrollController is not null);
 
-		if (m_horizontalScrollControllerScrollToRequestedRevoker is null)
+		if (m_horizontalScrollControllerScrollToRequestedRevoker.Disposable is null)
 		{
 			horizontalScrollController.ScrollToRequested += OnScrollControllerScrollToRequested;
-			m_horizontalScrollControllerScrollToRequestedRevoker = new SerialDisposable();
 			m_horizontalScrollControllerScrollToRequestedRevoker.Disposable = Disposable.Create(() => horizontalScrollController.ScrollToRequested -= OnScrollControllerScrollToRequested);
 		}
 
-		if (m_horizontalScrollControllerScrollByRequestedRevoker is null)
+		if (m_horizontalScrollControllerScrollByRequestedRevoker.Disposable is null)
 		{
 			horizontalScrollController.ScrollByRequested += OnScrollControllerScrollByRequested;
-			m_horizontalScrollControllerScrollByRequestedRevoker = new SerialDisposable();
 			m_horizontalScrollControllerScrollByRequestedRevoker.Disposable = Disposable.Create(() => horizontalScrollController.ScrollByRequested -= OnScrollControllerScrollByRequested);
 		}
 
-		if (m_horizontalScrollControllerAddScrollVelocityRequestedRevoker is null)
+		if (m_horizontalScrollControllerAddScrollVelocityRequestedRevoker.Disposable is null)
 		{
 			horizontalScrollController.AddScrollVelocityRequested += OnScrollControllerAddScrollVelocityRequested;
-			m_horizontalScrollControllerAddScrollVelocityRequestedRevoker = new SerialDisposable();
 			m_horizontalScrollControllerAddScrollVelocityRequestedRevoker.Disposable = Disposable.Create(() => horizontalScrollController.AddScrollVelocityRequested -= OnScrollControllerAddScrollVelocityRequested);
 		}
 	}
@@ -6848,10 +6793,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			HookHorizontalScrollControllerInteractionSourceEvents(horizontalScrollControllerPanningInfo);
 		}
 
-		if (m_horizontalScrollControllerPanningInfoChangedRevoker is null)
+		if (m_horizontalScrollControllerPanningInfoChangedRevoker.Disposable is null)
 		{
 			horizontalScrollControllerPanningInfo.Changed += OnScrollControllerPanningInfoChanged;
-			m_horizontalScrollControllerPanningInfoChangedRevoker = new SerialDisposable();
 			m_horizontalScrollControllerPanningInfoChangedRevoker.Disposable = Disposable.Create(() => horizontalScrollControllerPanningInfo.Changed -= OnScrollControllerPanningInfoChanged);
 		}
 	}
@@ -6861,10 +6805,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	{
 		MUX_ASSERT(horizontalScrollControllerPanningInfo is not null);
 
-		if (m_horizontalScrollControllerPanningInfoPanRequestedRevoker is null)
+		if (m_horizontalScrollControllerPanningInfoPanRequestedRevoker.Disposable is null)
 		{
 			horizontalScrollControllerPanningInfo.PanRequested += OnScrollControllerPanningInfoPanRequested;
-			m_horizontalScrollControllerPanningInfoPanRequestedRevoker = new SerialDisposable();
 			m_horizontalScrollControllerPanningInfoPanRequestedRevoker.Disposable = Disposable.Create(() => horizontalScrollControllerPanningInfo.PanRequested -= OnScrollControllerPanningInfoPanRequested);
 		}
 	}
@@ -6874,24 +6817,21 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	{
 		MUX_ASSERT(verticalScrollController is not null);
 
-		if (m_verticalScrollControllerScrollToRequestedRevoker is null)
+		if (m_verticalScrollControllerScrollToRequestedRevoker.Disposable is null)
 		{
 			verticalScrollController.ScrollToRequested += OnScrollControllerScrollToRequested;
-			m_verticalScrollControllerScrollToRequestedRevoker = new SerialDisposable();
 			m_verticalScrollControllerScrollToRequestedRevoker.Disposable = Disposable.Create(() => verticalScrollController.ScrollToRequested -= OnScrollControllerScrollToRequested);
 		}
 
-		if (m_verticalScrollControllerScrollByRequestedRevoker is null)
+		if (m_verticalScrollControllerScrollByRequestedRevoker.Disposable is null)
 		{
 			verticalScrollController.ScrollByRequested += OnScrollControllerScrollByRequested;
-			m_verticalScrollControllerScrollByRequestedRevoker = new SerialDisposable();
 			m_verticalScrollControllerScrollByRequestedRevoker.Disposable = Disposable.Create(() => verticalScrollController.ScrollByRequested -= OnScrollControllerScrollByRequested);
 		}
 
-		if (m_verticalScrollControllerAddScrollVelocityRequestedRevoker is null)
+		if (m_verticalScrollControllerAddScrollVelocityRequestedRevoker.Disposable is null)
 		{
 			verticalScrollController.AddScrollVelocityRequested += OnScrollControllerAddScrollVelocityRequested;
-			m_verticalScrollControllerAddScrollVelocityRequestedRevoker = new SerialDisposable();
 			m_verticalScrollControllerAddScrollVelocityRequestedRevoker.Disposable = Disposable.Create(() => verticalScrollController.AddScrollVelocityRequested -= OnScrollControllerAddScrollVelocityRequested);
 		}
 	}
@@ -6907,10 +6847,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			HookVerticalScrollControllerInteractionSourceEvents(verticalScrollControllerPanningInfo);
 		}
 
-		if (m_verticalScrollControllerPanningInfoChangedRevoker is null)
+		if (m_verticalScrollControllerPanningInfoChangedRevoker.Disposable is null)
 		{
 			verticalScrollControllerPanningInfo.Changed += OnScrollControllerPanningInfoChanged;
-			m_verticalScrollControllerPanningInfoChangedRevoker = new SerialDisposable();
 			m_verticalScrollControllerPanningInfoChangedRevoker.Disposable = Disposable.Create(() => verticalScrollControllerPanningInfo.Changed -= OnScrollControllerPanningInfoChanged);
 		}
 	}
@@ -6920,10 +6859,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	{
 		MUX_ASSERT(verticalScrollControllerPanningInfo is not null);
 
-		if (m_verticalScrollControllerPanningInfoPanRequestedRevoker is null)
+		if (m_verticalScrollControllerPanningInfoPanRequestedRevoker.Disposable is null)
 		{
 			verticalScrollControllerPanningInfo.PanRequested += OnScrollControllerPanningInfoPanRequested;
-			m_verticalScrollControllerPanningInfoPanRequestedRevoker = new SerialDisposable();
 			m_verticalScrollControllerPanningInfoPanRequestedRevoker.Disposable = Disposable.Create(() => verticalScrollControllerPanningInfo.PanRequested -= OnScrollControllerPanningInfoPanRequested);
 		}
 	}
