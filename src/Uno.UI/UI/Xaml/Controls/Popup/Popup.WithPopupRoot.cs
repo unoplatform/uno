@@ -111,11 +111,11 @@ public partial class Popup
 		if (newIsOpen)
 		{
 			// TODO: Add EventManager.RaiseEvent method and use it here.
-			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, newIsOpen), NativeDispatcherPriority.Low);
+			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
 		}
 		else
 		{
-			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, newIsOpen), NativeDispatcherPriority.Low);
+			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
 		}
 	}
 
