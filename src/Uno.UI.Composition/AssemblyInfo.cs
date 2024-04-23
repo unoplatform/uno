@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]

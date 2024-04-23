@@ -1,6 +1,5 @@
 ﻿#nullable enable
 #if !__SKIA__
-
 using System;
 using Uno.Foundation.Extensibility;
 using Microsoft.UI.Xaml;
@@ -13,10 +12,6 @@ partial class NativeWindowFactory
 
 	public static bool SupportsMultipleWindows => false;
 
-	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)
-	{
-		NativeWindowWrapper.Instance.SetWindow(window, xamlRoot);
-		return NativeWindowWrapper.Instance;
-	}
+	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot) => _singletonFactory.Value.CreateWindow(window, xamlRoot);
 }
 #endif

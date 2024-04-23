@@ -9,7 +9,7 @@ namespace SamplesApp.iOS
 		// This is the main entry point of the application.
 		static async Task Main(string[] args)
 		{
-			await (new AppleUIKitSkiaHost(() => new SamplesApp.App())).Run();
+			await (new AppleUIKitSkiaHost(() => new SamplesApp.App(), args)).Run();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Foundation;
 using Uno.Extensions;
 using Uno.UI;
@@ -33,6 +34,11 @@ namespace Windows.ApplicationModel
 			var installDate = NSFileManager.DefaultManager.GetAttributes(urlToDocumentsFolder[0].Path, out var error).CreationDate;
 
 			return (DateTimeOffset)(DateTime)installDate;
+		}
+
+		internal static void SetEntryAssembly(Assembly entryAssembly)
+		{
+			// TODO: Specific to SKIA!
 		}
 	}
 }
