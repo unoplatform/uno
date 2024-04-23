@@ -5137,6 +5137,10 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 				m_zoomedVerticalOffset = zoomedOffset;
 			}
 		}
+
+		// Uno-specific: Required for EVP.
+		ScrollOffsets = new(m_zoomedHorizontalOffset, m_zoomedVerticalOffset);
+		InvalidateViewport();
 	}
 
 	void UpdateScrollControllerIsScrollable(ScrollPresenterDimension dimension)
