@@ -5,10 +5,11 @@ using UIKit;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
+using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
-public class AppleUIKitSkiaHost : ISkiaApplicationHost, IXamlRootHost
+public class AppleUIKitSkiaHost : ISkiaApplicationHost
 {
 	private static Func<Application>? _appBuilder;
 	private static string[]? _args;
@@ -34,7 +35,7 @@ public class AppleUIKitSkiaHost : ISkiaApplicationHost, IXamlRootHost
 	{
 		try
 		{
-			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new SingletonWindowFactory(NativeWindowWrapper.Instance));
+			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
 
 			UIApplication.Main(_args, null, typeof(UnoSkiaAppDelegate));
 		}
@@ -45,10 +46,4 @@ public class AppleUIKitSkiaHost : ISkiaApplicationHost, IXamlRootHost
 
 		return Task.CompletedTask;
 	}
-
-	void IXamlRootHost.InvalidateRender()
-	{
-	}
-
-	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
 }

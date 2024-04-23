@@ -1,9 +1,11 @@
 using System;
 using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
 using Uno.UI.Controls;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -11,20 +13,18 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : NativeWindowWrapperBase
+internal class NativeWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
-
 	private AppleUIKitWindow _nativeWindow;
 
 	private RootViewController _mainController;
 	private NSObject? _orientationRegistration;
 
-	public NativeWindowWrapper()
+	public NativeWindowWrapper(Window window, XamlRoot xamlRoot)
 	{
 		_nativeWindow = new();
 
-		_mainController = new RootViewController();
+		_mainController = new RootViewController(xamlRoot);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
@@ -36,8 +36,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	public override AppleUIKitWindow NativeWindow => _nativeWindow;
-
-	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	protected override void ShowCore()
 	{
@@ -129,6 +127,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
+	public UIElement? RootElement => throw new NotImplementedException();
+
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
 		CoreDispatcher.CheckThreadAccess();
@@ -137,4 +137,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
 #pragma warning restore CA1422 // Validate platform compatibility
 	}
+
+	public void InvalidateRender() => throw new NotImplementedException();
 }
