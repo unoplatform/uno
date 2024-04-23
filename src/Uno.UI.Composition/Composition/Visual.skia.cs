@@ -220,11 +220,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		// The CornerRadiusClip doesn't affect the visual itself, only its children
-		CornerRadiusClip?.Apply(parentSession.Canvas, this);
+		CornerRadiusClip?.Apply(session.Canvas, this);
 
 		foreach (var child in GetChildrenInRenderOrder())
 		{
-			child.Render(in parentSession);
+			child.Render(in session);
 		}
 	}
 
