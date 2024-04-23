@@ -50,29 +50,9 @@ namespace Microsoft.UI.Composition
 			{
 				canvas.Clear();
 
-				// similar logic to Visual.RenderRootVisual
-				var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
-				if (SourceVisual.Parent?.TotalMatrix is { } parentTotalMatrix)
-				{
-					Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
-					initialTransform = invertedParentTotalMatrix;
-				}
-
-				if (SourceOffset != default)
-				{
-					var translation = Matrix4x4.Identity with { M41 = -(SourceOffset.X), M42 = -(SourceOffset.Y) };
-					initialTransform = translation * initialTransform;
-				}
-
-				var totalOffset = SourceVisual.GetTotalOffset();
-				var translation2 = Matrix4x4.Identity with { M41 = -(totalOffset.X + SourceVisual.AnchorPoint.X), M42 = -(totalOffset.Y + SourceVisual.AnchorPoint.Y) };
-				initialTransform = translation2 * initialTransform;
-
-				bool? previousCompMode = Compositor.IsSoftwareRenderer;
+				var previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
-
-				SourceVisual.Paint(_drawingSession.Value with { RootTransform = initialTransform });
-
+				SourceVisual.RenderRootVisual(_drawingSession.Value.Surface, SourceOffset);
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}

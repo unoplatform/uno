@@ -72,7 +72,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
 
 				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-				var totalOffset = this.GetTotalOffset();
+				var totalOffset = GetTotalOffset();
 				var offsetMatrix = new Matrix4x4(
 					1, 0, 0, 0,
 					0, 1, 0, 0,
@@ -146,8 +146,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Render a visual as if it's the root visual.
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
-	/// <param name="ignoreLocation">A boolean that indicates if the location of the root visual should be ignored (so it will be rendered at 0,0).</param>
-	internal void RenderRootVisual(SKSurface surface, bool ignoreLocation = false)
+	/// <param name="adjustedInitialOffset">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used </param>
+	internal void RenderRootVisual(SKSurface surface, Vector2? adjustedInitialOffset = null)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -168,18 +168,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = invertedParentTotalMatrix;
 		}
 
-		if (ignoreLocation)
+		if (adjustedInitialOffset is { } adjustedOffset)
 		{
 			canvas.Save();
-			var totalOffset = this.GetTotalOffset();
-			var translation = Matrix4x4.Identity with { M41 = -(totalOffset.X + AnchorPoint.X), M42 = -(totalOffset.Y + AnchorPoint.Y) };
+			var totalOffset = GetTotalOffset();
+			var translation = Matrix4x4.Identity with { M41 = -(adjustedOffset.X + totalOffset.X + AnchorPoint.X), M42 = -(adjustedOffset.Y + totalOffset.Y + AnchorPoint.Y) };
 			initialTransform = translation * initialTransform;
 		}
 
 		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default, initialTransform);
 		Render(in session);
 
-		if (ignoreLocation)
+		if (adjustedInitialOffset is { })
 		{
 			canvas.Restore();
 		}
@@ -234,6 +234,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
 	internal virtual void Paint(in PaintingSession session) { }
+
+	private Vector3 GetTotalOffset()
+	{
+		if (IsTranslationEnabled && Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
+		{
+			return Offset + translation;
+		}
+
+		return Offset;
+	}
 
 	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
 	private protected virtual void ApplyClipping(in SKCanvas canvas)

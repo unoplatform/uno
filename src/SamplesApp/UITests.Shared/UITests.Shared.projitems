@@ -8097,6 +8097,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\Brushes_ImplicitConvert.xaml.cs">
       <DependentUpon>Brushes_ImplicitConvert.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\CompositionNineGridBrush_Source_Changes.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\ColorPresenter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\DynamicBrushes_On_Shapes.xaml.cs">
       <DependentUpon>DynamicBrushes_On_Shapes.xaml</DependentUpon>

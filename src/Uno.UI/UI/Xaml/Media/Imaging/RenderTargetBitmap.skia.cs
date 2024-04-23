@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System;
-using System.Runtime.InteropServices;
+using System.Numerics;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
 			canvas.Scale((float)dpi);
-			visual.RenderRootVisual(surface, ignoreLocation: true);
+			visual.RenderRootVisual(surface, adjustedInitialOffset: new Vector2(0, 0));
 
 			var img = surface.Snapshot();
 
