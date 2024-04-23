@@ -12,7 +12,6 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
-using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 
