@@ -31,6 +31,8 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+
+		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration> <!-- TODO MZ: Should not be here, remove -->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -44,6 +46,7 @@
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.6.0" />
+				<PackageReference Include="SkiaSharp" />
 				<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
 				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true'" />
 			</ItemGroup>
@@ -64,7 +67,9 @@
 			<ItemGroup>
 				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
-				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />			
+				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />		
+				
+				<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" />
 			</ItemGroup>
 		</When>
 
@@ -135,14 +140,10 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="GenerateVersion" 
-			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
-			Condition="'$(GITVERSION_InformationalVersion)'!=''">
+	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
-		<Exec Command="git rev-list --count HEAD"
-              ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput"
-                      PropertyName="_VersionCode" />
+		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
 		</Exec>
 
 		<PropertyGroup>
@@ -155,7 +156,7 @@
 
 	</Target>
 
-	<PropertyGroup >
+	<PropertyGroup>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
@@ -177,10 +178,8 @@
 
 			<ReferenceCopyLocalPaths Include="@(_redirectedReferences)" />
 
-			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths
-				Include="$(MSBuildProjectDirectory)\..\..\Uno.UWP\bin\Uno.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.dll"/>
-			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths
-				Include="$(MSBuildProjectDirectory)\..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll"/>
+			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths Include="$(MSBuildProjectDirectory)\..\..\Uno.UWP\bin\Uno.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.dll" />
+			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths Include="$(MSBuildProjectDirectory)\..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
 		</ItemGroup>
 
 	</Target>
