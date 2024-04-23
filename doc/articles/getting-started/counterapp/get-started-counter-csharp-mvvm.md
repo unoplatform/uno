@@ -4,7 +4,7 @@ uid: Uno.Workshop.Counter.CSharp.MVVM
 
 # Counter App using C# Markup and MVVM
 
-[Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM)  
+[Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM)  
 
 [!INCLUDE [Intro](includes/include-intro.md)]
 
@@ -179,4 +179,4 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
 
 [!INCLUDE [View Model](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM).
