@@ -1232,6 +1232,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			nested.PointerExited += (snd, e) => events.Add("exited");
 			nested.PointerPressed += (snd, e) => events.Add("pressed");
 			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCaptureLost += (snd, e) => events.Add("capturelost");
 			nested.PointerCanceled += (snd, e) => events.Add("cancel");
 
 			WindowHelper.WindowContent = new Grid { Children = { sut } };
@@ -1244,7 +1245,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
-			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
+			// The expected proper sequence when all sub-elements are ManipulationMode=System should be "Enter", "Pressed", "PointerCaptureLost", "Exited"
+			// This is caused by the Windows' Direct Manipulation.
+			// The important thing is to not get Released as it can cause a click on the nested element while it's being scrolled.
+			events.Should().BeEquivalentTo("enter", "pressed", "exited");
 		}
 
 		[TestMethod]
@@ -1272,6 +1276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			nested.PointerExited += (snd, e) => events.Add("exited");
 			nested.PointerPressed += (snd, e) => events.Add("pressed");
 			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCaptureLost += (snd, e) => events.Add("capturelost");
 			nested.PointerCanceled += (snd, e) => events.Add("cancel");
 
 			WindowHelper.WindowContent = new Grid { Children = { sut } };
@@ -1282,7 +1287,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var finger = input.GetFinger();
 
 			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
-			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
+			finger.Press(sutLocation.Offset(5, 5));
+			finger.Release();
 
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
 		}
