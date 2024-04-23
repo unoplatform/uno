@@ -41,6 +41,9 @@ public class Given_Control_Visibility
 #if HAS_UNO
 					type == typeof(CalendarViewItem) ||
 #endif
+#if HAS_UNO_WINUI
+					type == typeof(ItemsView) ||
+#endif
 #if __ANDROID__ || __IOS__
 					// OnApplyTemplate crashes with NRE.
 					type == typeof(AutoSuggestBox) ||

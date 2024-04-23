@@ -49,5 +49,9 @@
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
+
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\**" />
 	</ItemGroup>
 </Project>
