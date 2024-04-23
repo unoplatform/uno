@@ -29,7 +29,15 @@
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<!-- These files are present for the WinUI Build only -->
 		<Compile Remove="Microsoft\UI\Xaml\Controls\ItemsView\**\*.cs"/>
+		<Page Remove="Microsoft\UI\Xaml\Controls\ItemsView\ItemsView.xaml"/>
 		<None Include="Microsoft\UI\Xaml\Controls\ItemsView\**\*.cs"/>
+		<None Include="Microsoft\UI\Xaml\Controls\ItemsView\ItemsView.xaml"/>
+
+		<Compile Remove="Microsoft\UI\Xaml\Controls\ItemContainer\**\*.cs"/>
+		<Page Remove="Microsoft\UI\Xaml\Controls\ItemContainer\ItemContainer.xaml"/>
+		<None Include="Microsoft\UI\Xaml\Controls\ItemContainer\**\*.cs"/>
+		<None Include="Microsoft\UI\Xaml\Controls\ItemContainer\ItemContainer.xaml"/>
+
 	</ItemGroup>
 
 </Project>
