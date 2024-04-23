@@ -24,6 +24,7 @@ namespace Uno.UI.Tests
 			("Control", "XYFocusRight"),
 			("Control", "UseSystemFocusVisuals"),
 			("PasswordBox", "SelectionHighlightColor")
+			("ItemsView", "ItemsViewItemContainerRevokers")
 		};
 
 		[TestMethod]
