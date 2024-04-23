@@ -45,8 +45,13 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Fluent;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Cupertino;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Cupertino.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Prism;'))">
