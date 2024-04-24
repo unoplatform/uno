@@ -12,8 +12,8 @@
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
-	<ItemGroup>
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Svg;')) AND $(IsUnoHead) == 'true'" />
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Svg;')) AND $(IsUnoHead) == 'true' AND '$(IsBrowserWasm)' != 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND '$(IsPackable)' != 'true'">
