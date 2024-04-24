@@ -246,7 +246,7 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 
 Apple is introducing a [Privacy Manifest file](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) (named `PrivacyInfo.xcprivacy`) that needs to be included as of May 1st 2024.
 
-The Uno.Sdk (5.2 or later) automatically includes the `Platforms/iOS/PrivacyInfo.xcprivacy` file in the app bundle. You can find an example of this file in the [Uno.Templates](https://aka.platform.uno/apple-privacy-manifest-sample) repository
+The Uno.Sdk (5.2 or later) automatically includes the `Platforms/iOS/PrivacyInfo.xcprivacy` file in the app bundle. You can find an example of this file in the [Uno.Templates](https://aka.platform.uno/apple-privacy-manifest-sample) repository.
 
 For more information on how to include privacy entries in this file, see the [Microsoft .NET documentation](https://learn.microsoft.com/dotnet/maui/ios/privacy-manifest) on the subject, as well as [Apple's documentation](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files).
 
