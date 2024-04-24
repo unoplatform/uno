@@ -16,7 +16,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
 	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
 	// If we move to a UI-thread-per-window model, then we need multiple recorders.
-	[ThreadStatic] private static SKPictureRecorder? _recorder;
+	[ThreadStatic]
+	private static SKPictureRecorder? _recorder;
 
 	private CompositionClip? _clip;
 	private RectangleClip? _cornerRadiusClip;

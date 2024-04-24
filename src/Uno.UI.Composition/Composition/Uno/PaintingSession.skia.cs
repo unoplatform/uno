@@ -10,7 +10,7 @@ namespace Uno.UI.Composition;
 // Accessing Surface.Canvas is slow due to SkiaSharp interop.
 // Avoid using .Surface.Canvas and use .Canvas right away.
 /// <param name="RootTransform">The transform matrix to the root visual of this drawing session (which isn't necessarily the identity matrix due to scaling (DPI) and/or RenderTargetBitmap.</param>
-internal record struct PaintingSession(SKSurface Surface, SKCanvas Canvas, in DrawingFilters Filters, in Matrix4x4 RootTransform) : IDisposable
+internal readonly record struct PaintingSession(SKSurface Surface, SKCanvas Canvas, in DrawingFilters Filters, in Matrix4x4 RootTransform) : IDisposable
 {
 	public static void PushOpacity(ref PaintingSession session, float opacity)
 	{
