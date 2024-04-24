@@ -77,7 +77,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_entries.Clear();
 				FirstIndex = -1;
 				LastIndex = int.MinValue;
-
+				_generationRecyclableBefore = default;
+				_generationUnusedInRange = default;
+				_generationRecyclableAfter = default;
 				_generationStartIndex = -1;
 				_generationCurrentIndex = -1;
 				_generationEndIndex = -1;
