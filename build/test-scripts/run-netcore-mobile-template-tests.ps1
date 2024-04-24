@@ -155,6 +155,8 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
     $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
 }
 
+$sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" });
+
 $projects =
 @(
     #
