@@ -15,7 +15,9 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
+
 using static Private.Infrastructure.TestServices;
+using static Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -282,65 +284,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.SuggestionChosen, reason);
 		}
 
-
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
 		public async Task When_Text_Changed_Sequence(bool waitBetweenActions)
 		{
-			var SUT = new AutoSuggestBox();
-			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			var SUT = new AutoSuggestBox()
+			{
+				ItemsSource = new List<string>() { "ab", "abc", "abcde" }
+			};
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+
+			var expectations = new List<AutoSuggestionBoxTextChangeReason>();
 			var reasons = new List<AutoSuggestionBoxTextChangeReason>();
 			SUT.TextChanged += (s, e) =>
 			{
 				reasons.Add(e.Reason);
 			};
+
+			expectations.Add(SuggestionChosen);
 			SUT.Focus(FocusState.Programmatic);
 			SUT.ChoseItem("ab");
 			await Wait();
+
+			expectations.Add(ProgrammaticChange);
 			SUT.Text = "other";
 			await Wait();
-			KeyboardHelper.InputText("manual");
+
+			expectations.Add(UserInput);
+			SUT.Focus(FocusState.Programmatic);
+			textBox.ProcessTextInput("manual");
 			await Wait();
+
+			expectations.Add(SuggestionChosen);
 			SUT.ChoseItem("ab");
 			await Wait();
-			KeyboardHelper.InputText("manual");
+
+			expectations.Add(UserInput);
+			SUT.Focus(FocusState.Programmatic);
+			textBox.ProcessTextInput("manual");
 			await Wait();
+
+			expectations.Add(ProgrammaticChange);
+			SUT.Focus(FocusState.Programmatic);
 			SUT.Text = "other";
 			await Wait();
+
+			expectations.Add(SuggestionChosen);
 			SUT.ChoseItem("ab");
 			await Wait();
 
 			await WindowHelper.WaitForIdle();
 
-#if __SKIA__ // skia is closer to what happens on WinUI. On WinUI, if there is no delay between changes, AutoSuggestBox.TextChanged is fired once (but TextBox.TextChanged fires everytime)
-			if (waitBetweenActions)
-#endif
-			{
-				CollectionAssert.AreEquivalent(
-					new[] {
-						AutoSuggestionBoxTextChangeReason.SuggestionChosen,
-						AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
-						AutoSuggestionBoxTextChangeReason.UserInput,
-						AutoSuggestionBoxTextChangeReason.SuggestionChosen,
-						AutoSuggestionBoxTextChangeReason.UserInput,
-						AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
-						AutoSuggestionBoxTextChangeReason.SuggestionChosen
-					},
-					reasons);
-			}
 #if __SKIA__
-			else
+			// skia is closer to what happens on WinUI. On WinUI, if there is no delay between changes, 
+			// AutoSuggestBox.TextChanged is fired once (but TextBox.TextChanged fires everytime)
+			if (!waitBetweenActions)
 			{
-				CollectionAssert.AreEquivalent(
-					new[] {
-						AutoSuggestionBoxTextChangeReason.SuggestionChosen
-					},
-					reasons);
+				expectations = new() { SuggestionChosen };
 			}
 #endif
+
+			CollectionAssert.AreEquivalent(expectations, reasons, string.Join("; ",
+				$"expectations[{expectations.Count}]: {string.Join(",", expectations)}",
+				$"actual[{reasons.Count}]: {string.Join(",", reasons)}"
+			));
 
 			async Task Wait()
 			{
