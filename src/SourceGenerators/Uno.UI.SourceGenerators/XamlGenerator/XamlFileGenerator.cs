@@ -1196,7 +1196,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										{
 											if (xamlObject.Type.Name == "Bind")
 											{
-												var xbindPath = XBindExpressionParser.RestoreSinglePath(xamlObject.Members?.First().Value as string);
+												var xbindPath = XBindExpressionParser.RestoreSinglePath(xamlObject.Members?.FirstOrDefault()?.Value as string);
 												if (!string.IsNullOrEmpty(xbindPath))
 												{
 													var firstPart = xbindPath;
