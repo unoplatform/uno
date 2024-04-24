@@ -248,10 +248,10 @@ Apple is introducing a [Privacy Manifest file](https://developer.apple.com/docum
 
 The Uno.Sdk (5.2 or later) automatically includes the `Platforms/iOS/PrivacyInfo.xcprivacy` file in the app bundle. You can find an example of this file in the [Uno.Templates](https://aka.platform.uno/apple-privacy-manifest-sample) repository
 
-For more information on how to include privacy entries in this file, see the [Microsoft .NET documentation](https://learn.microsoft.com/en-us/dotnet/maui/ios/privacy-manifest) on the subject, as well as [Apple's documentation](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files).
+For more information on how to include privacy entries in this file, see the [Microsoft .NET documentation](https://learn.microsoft.com/dotnet/maui/ios/privacy-manifest) on the subject, as well as [Apple's documentation](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files).
 
 > [!NOTE]
-> If your application is not using the Uno Platform 5.1 or earlier, you can include the file using the following:
+> If your application is using the Uno Platform 5.1 or earlier, or is not using the Uno.Sdk, you can include the file using the following:
 >
 > ```xml
 >  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
