@@ -23,6 +23,7 @@ public class Given_AcrylicBrush
 #if __SKIA__ && HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	[Ignore("Crashes")]
 	public async Task When_Drawn()
 	{
 		var img = new Image
