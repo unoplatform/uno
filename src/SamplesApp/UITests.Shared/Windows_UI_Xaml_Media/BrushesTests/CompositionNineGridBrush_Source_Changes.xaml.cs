@@ -17,17 +17,22 @@ namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 
 			var onlineSource = new Image
 			{
-				Width = 100, Height = 100, Stretch = Stretch.UniformToFill, Source = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_100.png"))
+				Width = 100,
+				Height = 100,
+				Stretch = Stretch.UniformToFill,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_100.png"))
 			};
 
 			var online = new Border
 			{
-				Width = 200, Height = 200
+				Width = 200,
+				Height = 200
 			};
 
 			var offline = new Grid
 			{
-				Width = 200, Height = 200
+				Width = 200,
+				Height = 200
 			};
 
 			var visualSurface = compositor.CreateVisualSurface();
