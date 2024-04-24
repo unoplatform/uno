@@ -42,7 +42,7 @@
 
 			See https://github.com/dotnet/sdk/blob/e3c62139dd25af2b7593a2cde702261f20822e47/src/StaticWebAssetsSdk/Sdk/Sdk.StaticWebAssets.StaticAssets.ProjectSystem.props#L36
 			-->
-			<_RemoveWebSDKConfigContent Include="@(Content)" Condition="$([System.String]::Copy(%(Using.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.StaticWebAssets'))" />
+			<_RemoveWebSDKConfigContent Include="@(Content)" Condition="$([System.String]::Copy(%(Content.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.StaticWebAssets'))" />
 			<Content Remove="@(_RemoveWebSDKConfigContent)" />
 			<_RemoveWebSDKConfigContent Remove="@(_RemoveWebSDKConfigContent)"/>
 		</ItemGroup>
