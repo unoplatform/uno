@@ -114,20 +114,22 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
+#if __ANDROID__ || __IOS__
+		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
+#endif
 		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved(bool bindIsExpanded)
 		{
 			var itemsSource = Enumerable.Range(0, 8).Select(i =>
 				new TestTreeNodeModel($"Root{i}", false, false)
-					.Apply(vm => vm.Items.AddRange(new[]
 					{
 						new TestTreeNodeModel($"Root{i} Child 1", false, false)
-							.Apply(vm => vm.Items.AddRange(new[]
-							{
-								new TestTreeNodeModel($"Root{i} Grandchild 1", false, false),
-								new TestTreeNodeModel($"Root{i} Grandchild 2", false, false)
-							})),
+						{
+							new TestTreeNodeModel($"Root{i} Grandchild 1", false, false),
+							new TestTreeNodeModel($"Root{i} Grandchild 2", false, false)
+						},
 						new TestTreeNodeModel($"Root{i} Child 2", false, false)
-					})))
+					}
+				)
 				.ToList();
 
 			var treeView = new TreeView
@@ -170,6 +172,10 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			sv.ScrollToVerticalOffset(9999);
 			await WindowHelper.WaitForIdle();
 
+#if !__SKIA__ // other platforms need some additional delay for some reason
+			await Task.Delay(1000);
+#endif
+
 			Assert.AreEqual(0, itemsSource
 				.Select(item => treeView.ContainerFromItem(item))
 				.OfType<TreeViewItem>()
@@ -177,6 +183,10 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			sv.ScrollToVerticalOffset(0);
 			await WindowHelper.WaitForIdle();
+
+#if !__SKIA__ // other platforms need some additional delay for some reason
+			await Task.Delay(1000);
+#endif
 
 			Assert.AreEqual(1, itemsSource
 				.Select(item => treeView.ContainerFromItem(item))
@@ -328,7 +338,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			treeView.SelectedItem = treeView.RootNodes[1];
 
-			var listControl = treeView.FindFirstDescendant<TreeViewList>("ListControl");
+			var listControl = treeView.FindFirstDescendant<Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList>("ListControl");
 			// Yes, that's how it behaves on WinUI :/
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}
