@@ -65,7 +65,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			Interlocked.Exchange(ref _isAdditionalFrameRequested, 0);
 
-			// NOTE: The following if/else should really be replaced with just this:
+			// NOTE: The below code should really be replaced with just this:
 			// ----------------------------
 			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
 			//{
@@ -80,36 +80,31 @@ namespace Uno.UI.Xaml.Core
 			// -----------------------------
 			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
 
-			if (ApplicationHelper.Windows.Count == 0)
+			// This happens for Islands.
+			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
 			{
-				// This happens for Islands.
-				if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
-				{
-					root.UpdateLayout();
+				xamlIsland.UpdateLayout();
 
-					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
-					{
-						CoreServices.Instance.EventManager.RaiseLoadedEvent();
-						root.UpdateLayout();
-					}
+				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				{
+					CoreServices.Instance.EventManager.RaiseLoadedEvent();
+					xamlIsland.UpdateLayout();
 				}
 			}
-			else
+
+			foreach (var window in ApplicationHelper.WindowsInternal)
 			{
-				foreach (var window in ApplicationHelper.Windows)
+				if (window.RootElement is not { } root)
 				{
-					if (window.RootElement is not { } root)
-					{
-						continue;
-					}
+					continue;
+				}
 
+				root.UpdateLayout();
+
+				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				{
+					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
-
-					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
-					{
-						CoreServices.Instance.EventManager.RaiseLoadedEvent();
-						root.UpdateLayout();
-					}
 				}
 			}
 		}
