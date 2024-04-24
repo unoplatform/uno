@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// MUX Reference ItemsViewTestHooks.cpp, tag winui3/release/1.5.0
+
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
-#if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Controls;
-#endif
 
 namespace Microsoft.UI.Private.Controls;
 
