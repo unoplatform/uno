@@ -20,6 +20,16 @@
 		<SceneKitAsset Include="$(iOSProjectFolder)**/*.scnassets/*" Exclude="$(_SingleProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
 		<InterfaceDefinition Include="$(iOSProjectFolder)**/*.storyboard;$(iOSProjectFolder)**/*.xib" Exclude="$(_SingleProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
 		<BundleResource Include="$(iOSProjectFolder)Resources\**" Exclude="$(_SingleProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+				
+		<!-- Apple privacy manifest support https://learn.microsoft.com/en-us/dotnet/maui/ios/privacy-manifest -->
+		<None 
+			Include="$(iOSProjectFolder)PrivacyInfo.xcprivacy"
+			LogicalName="PrivacyInfo.xcprivacy"
+			Condition="exists('$(iOSProjectFolder)PrivacyInfo.xcprivacy')" />
+		<BundleResource 
+			Include="$(iOSProjectFolder)PrivacyInfo.xcprivacy"
+			LogicalName="PrivacyInfo.xcprivacy"
+			Condition="exists('$(iOSProjectFolder)PrivacyInfo.xcprivacy')" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
