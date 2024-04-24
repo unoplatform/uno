@@ -185,7 +185,8 @@
 	"winapp",
 	"wapproj's",
 	"xamlmerge",
-	"xbind"
+	"xbind",
+	"xcprivacy"
   ],
   "patterns": [
 	{
