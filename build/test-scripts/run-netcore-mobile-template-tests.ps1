@@ -155,7 +155,7 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
     $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
 }
 
-$sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" }));
+$sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" });
 
 $projects =
 @(
@@ -195,18 +195,22 @@ $projects =
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", "-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg"), $true),
 =======
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0"), $true, $true),
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0", $sdkFeatures, $true, $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0", $sdkFeatures), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-browserwasm"), $true, $true),
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-browserwasm", $sdkFeatures, $true, $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-browserwasm", $sdkFeatures), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-ios"), $true, $true),
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-ios", $sdkFeatures, $true, $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-ios", $sdkFeatures), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android"), $true, $true),
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android", $sdkFeatures, $true, $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android", $sdkFeatures), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst"), $true, $true),
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst", $sdkFeatures, $true, $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst", $sdkFeatures), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop"), $true, $true),
+<<<<<<< HEAD
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", $sdkFeatures, $true, $true),
 >>>>>>> c1c62fe508 (fix: Remove svg package from wasm head)
+=======
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", $sdkFeatures), $true, $true),
+>>>>>>> 67764f2770 (chore: Fix ps syntax)
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     # Disabled until agent supports net8 in msbuild
