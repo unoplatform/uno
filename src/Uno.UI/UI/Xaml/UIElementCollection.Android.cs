@@ -12,13 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
 	{
-		private readonly BindableView _owner;
-
-		public UIElementCollection(BindableView owner)
-		{
-			_owner = owner;
-		}
-
 		private int IndexOfCore(UIElement item)
 		{
 			return _owner.GetChildren().IndexOf(item);
