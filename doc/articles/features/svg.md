@@ -4,7 +4,7 @@ uid: Uno.Features.SVG
 
 # Using SVG images
 
-Uno Platform supports using vector SVG graphics inside of your cross-platform applications, using the `SvgImageSource` class. SVG Images can also be used through [`UnoImage` with Resizetizer](xref:xref:Uno.Resizetizer.GettingStarted).
+Uno Platform supports using vector SVG graphics inside of your cross-platform applications, using the `SvgImageSource` class. SVG Images can also be used through [`UnoImage` with Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
 ![Uno SVG sample](../Assets/features/svg/heliocentric.png)
 
@@ -24,7 +24,7 @@ To use an SVG, for iOS, Android, and Mac Catalyst, you'll need to add the `Svg` 
 
 On Desktop Skia and WebAssembly, the feature is enabled by default.
 
-To include an SVG file, you will need to place it in a folder named `Svg` (e.g. `Assets\Svg\MyFile.svg`). This is required in order to avoid [Uno.Resizetizer](xref:xref:Uno.Resizetizer.GettingStarted) transform the file into a set of scaled PNGs files.
+To include an SVG file, you will need to place it in a folder named `Svg` (e.g. `Assets\Svg\MyFile.svg`). This is required in order to avoid [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted) transform the file into a set of scaled PNGs files.
 
 ## [**Legacy Project**](#tab/legacyproject)
 
