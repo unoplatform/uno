@@ -20,6 +20,9 @@ public class NativeWebView : FrameworkElement, INativeWebView
 		this.RegisterEventHandler("load", OnNavigationCompleted, GenericEventHandlers.RaiseRoutedEventHandler);
 	}
 
+	public string DocumentTitle =>
+		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.document.title");
+
 	private void OnNavigationCompleted(object sender, RoutedEventArgs e)
 	{
 		var uriString = this.GetAttribute("src");
@@ -28,7 +31,9 @@ public class NativeWebView : FrameworkElement, INativeWebView
 		{
 			uri = new Uri(uriString);
 		}
+		_coreWebView.OnDocumentTitleChanged();
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
+
 	}
 
 	public void SetOwner(CoreWebView2 coreWebView)
@@ -42,8 +47,6 @@ public class NativeWebView : FrameworkElement, INativeWebView
 		return Task.FromResult(WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.eval(\"{scriptString}\")"));
 	}
 
-	public void GoBack() { }
-	public void GoForward() { }
 	public Task<string> InvokeScriptAsync(string script, string[] arguments, CancellationToken token) => Task.FromResult<string>("");
 
 	private void ScheduleNavigationStarting(string url, Action loadAction)
@@ -65,22 +68,25 @@ public class NativeWebView : FrameworkElement, INativeWebView
 		ScheduleNavigationStarting(uriString, () => this.SetAttribute("src", uriString));
 	}
 
-
-	public void ProcessNavigation(string html)
-	{
+	public void ProcessNavigation(string html) =>
 		ScheduleNavigationStarting(null, () => this.SetAttribute("srcdoc", html));
-	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
 	{
-
 	}
 
-	public void Reload()
-	{
+	public void Reload() =>
 		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.location.reload()");
-	}
+
+	public void Stop() =>
+		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.stop();");
+
+	public void GoBack() =>
+		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.history.back()");
+
+	public void GoForward() =>
+		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.history.forward()");
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
-	public void Stop() { }
+
 }

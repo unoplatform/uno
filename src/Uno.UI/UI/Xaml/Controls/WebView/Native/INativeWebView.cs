@@ -9,6 +9,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal partial interface INativeWebView
 {
+	string DocumentTitle { get; }
+
 	void GoBack();
 
 	void GoForward();
