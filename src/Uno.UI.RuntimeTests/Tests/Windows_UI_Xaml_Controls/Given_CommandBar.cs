@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -85,6 +86,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+		}
+
+		[TestMethod]
+		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
+		{
+			using (StyleHelper.UseFluentStyles()) // numbers are different between legacy and fluent styles
+			{
+				var SUT = new CommandBar
+				{
+					PrimaryCommands =
+					{
+						new AppBarButton
+						{
+							Content = "PrimaryCommand"
+						}
+					},
+					SecondaryCommands =
+					{
+						new AppBarButton
+						{
+							Content="SecondaryCommand"
+						}
+					}
+				};
+
+				await UITestHelper.Load(SUT);
+
+				var moreButton = (Button)SUT.FindName("MoreButton");
+				Assert.AreEqual(moreButton.ActualHeight, 48);
+				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
+
+				SUT.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(moreButton.ActualHeight, 64);
+				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Stretch);
+
+				SUT.IsOpen = false;
+				await Task.Delay(1000); // wait for animations
+				Assert.AreEqual(moreButton.ActualHeight, 48);
+				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
+			}
 		}
 
 #if __IOS__
