@@ -59,6 +59,13 @@ namespace Microsoft.UI.Composition
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
+#if __IOS__
+			if (StartAnimationCore(propertyName, animation))
+			{
+				return;
+			}
+#endif
+
 			ReadOnlySpan<char> firstPropertyName;
 			ReadOnlySpan<char> subPropertyName;
 			var firstDotIndex = propertyName.IndexOf('.');
@@ -145,10 +152,10 @@ namespace Microsoft.UI.Composition
 		{
 		}
 
-		internal virtual void StartAnimationCore(string propertyName, CompositionAnimation animation)
-		{
-
-		}
+#if __IOS__
+		internal virtual bool StartAnimationCore(string propertyName, CompositionAnimation animation)
+			=> false;
+#endif
 
 		internal void AddContext(CompositionObject context, string? propertyName)
 		{

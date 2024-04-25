@@ -9,12 +9,15 @@ namespace Microsoft.UI.Composition;
 
 public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 {
+#if !__IOS__
 	private readonly SortedDictionary<float, float> _keyFrames = new();
+#endif
 
 	internal ScalarKeyFrameAnimation(Compositor compositor) : base(compositor)
 	{
 	}
 
+#if !__IOS__
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
 	public void InsertKeyFrame(float normalizedProgressKey, float value)
@@ -43,4 +46,5 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, _keyFrames[1.0f], Duration, _keyFrames, lerp, IterationCount, IterationBehavior, Compositor);
 		return startValue;
 	}
+#endif
 }
