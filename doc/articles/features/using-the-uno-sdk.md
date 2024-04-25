@@ -241,3 +241,20 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 - `*.Android.cs`
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
+
+## Apple Privacy Manifest Support
+
+Starting May 1st, 2024, Apple requires the inclusion of a new file, the [Privacy Manifest file](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) (named `PrivacyInfo.xcprivacy`), in app bundles. This file is crucial for complying with updated privacy regulations.
+
+For projects using the Uno.Sdk (version 5.2 or later), the `Platforms/iOS/PrivacyInfo.xcprivacy` file is automatically integrated within the app bundle. An example of this manifest file can be found in the [Uno.Templates](https://aka.platform.uno/apple-privacy-manifest-sample) repository.
+
+For more information on how to include privacy entries in this file, see the [Microsoft .NET documentation](https://learn.microsoft.com/dotnet/maui/ios/privacy-manifest) on the subject, as well as [Apple's documentation](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files).
+
+> [!NOTE]
+> If your application is using the Uno Platform 5.1 or earlier, or is not using the Uno.Sdk, you can include the file using the following:
+>
+> ```xml
+>  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+>    <BundleResource Include="iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
+>  </ItemGroup>
+> ```
