@@ -253,6 +253,9 @@ namespace Microsoft.UI.Xaml
 				&& !DependencyObjectStore.AreDifferent(path.DataContext, otherPath.DataContext);
 		}
 
+		internal string? GetBindingPathString(IFrameworkElement owner)
+			=> TryGetOrCreateBindingPath(DependencyPropertyValuePrecedences.Animations, owner)?.Path;
+
 		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";
 	}
 }

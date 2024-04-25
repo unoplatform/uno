@@ -5,7 +5,6 @@ using System.Linq;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
@@ -24,6 +23,14 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = "States")]
 	public sealed partial class VisualStateGroup : DependencyObject
 	{
+		/// <summary>
+		/// Reusable HashSet to check properties set by the current state and not set by the next state
+		/// in <see cref="GoToState"/>. Since changing visual states should happen on the UI thread, there
+		/// are no concurrency problems. Consider this not a part of the state. Use it instead of
+		/// new HashSet() and clear before each use.
+		/// </summary>
+		private static HashSet<string> _propertiesNotToClear;
+
 		/// <summary>
 		/// The xaml scope in force at the time the VisualStateGroup was created.
 		/// </summary>
@@ -262,40 +269,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// Rollback setters that won't be re-set by the target state setters
-			// Note about setters and transition (as of 2021-08-16 win 19043):
-			//		* if current and target state have setters for the same property,
-			//		  the value of the current is kept as is and updated only once at the end of the transition
-			//		* if current has a setter which is not updated by the target state
-			//		  the value is rollbacked before the transition
-			//		* if the target has a setter for a property that was not affected by the current
-			//		  the value is applied only at the end of the transition
-			if (current.setters is { } currentSetters)
-			{
-				// This block is a manual enumeration to avoid the foreach pattern
-				// See https://github.com/dotnet/runtime/issues/56309 for details
-				var settersEnumerator = currentSetters.OfType<Setter>().GetEnumerator();
-				while (settersEnumerator.MoveNext())
-				{
-					var setter = settersEnumerator.Current;
-
-					if (element != null && (target.setters?.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
-					{
-						// We clear the value of the current setter only if there isn't any setter in the target state
-						// which changes the same target property (for perf ... and UWP behavior support regarding transition animation).
-
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().Debug($"Ignoring reset of setter of '{setter.Target?.Path}' as it will be updated again by '{state.Name}'");
-						}
-
-						continue;
-					}
-
-					setter.ClearValue();
-				}
-			}
-
 			_current = targetValues;
 
 			// For backward compatibility, we may apply the setters before the end of the transition.
@@ -307,6 +280,13 @@ namespace Microsoft.UI.Xaml
 			// Finally effectively apply the target state!
 			if (useTransitions && target.transition is { } transitionAnimation)
 			{
+				ClearPropertiesNotSetInNextState(
+					element,
+					current.setters,
+					runningAnimation,
+					null,
+					transitionAnimation);
+
 				// Note: As of 2021-08-16 win 19043, if the transitionAnimation is Repeat=Forever, we actually never apply the state!
 
 				transitionAnimation.Completed += OnTransitionCompleted;
@@ -321,11 +301,25 @@ namespace Microsoft.UI.Xaml
 						transitionAnimation.TurnOverAnimationsTo(stateAnimation);
 					}
 
+					ClearPropertiesNotSetInNextState(
+						element,
+						null,
+						transitionAnimation,
+						target.setters,
+						target.animation);
+
 					ApplyTargetState();
 				}
 			}
 			else
 			{
+				ClearPropertiesNotSetInNextState(
+					element,
+					current.setters,
+					runningAnimation,
+					target.setters,
+					target.animation);
+
 				ApplyTargetState();
 			}
 
@@ -366,8 +360,6 @@ namespace Microsoft.UI.Xaml
 					while (settersEnumerator.MoveNext())
 					{
 						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
-
-
 					}
 				}
 				finally
@@ -375,6 +367,84 @@ namespace Microsoft.UI.Xaml
 					ResourceResolver.PopScope();
 				}
 
+			}
+		}
+
+		// Older note from 17/08/2021
+		/*****************************************************************/
+		// Rollback setters that won't be re-set by the target state setters
+		// Note about setters and transition (as of 2021-08-16 win 19043):
+		//		* if current and target state have setters for the same property,
+		//		  the value of the current is kept as is and updated only once at the end of the transition
+		//		* if current has a setter which is not updated by the target state
+		//		  the value is rollbacked before the transition
+		//		* if the target has a setter for a property that was not affected by the current
+		//		  the value is applied only at the end of the transition
+		/*****************************************************************/
+
+		// Newer note from 25/04/2021
+		/*****************************************************************/
+		// WinUI rolls back properties that are set by the current state that won't be set by the
+		// setters of the next state and won't be set by the nextAnimation.
+		// It doesn't matter how it's set by the current state (setters or transition or animation) or
+		// how it will possibly be set by the new state. Simply put, if the ne doesn't touch
+		// the property in any way, roll it back. Similarly, if the animation of the new state
+		// doesn't set a property but it's set in the transition, it should be cleared after the
+		// transition.
+		// In other words, one can think of it as actually manipulating 3 states
+		// "Active" State (Setter & runningAnimation) --> Transition (if exists) --> New State (Setter & target.animation)
+		// Moving from one to the next rolls back the properties of the one before it.
+		/*****************************************************************/
+		private static void ClearPropertiesNotSetInNextState(
+			IFrameworkElement element,
+			SetterBaseCollection prevSetters,
+			Storyboard prevAnimation,
+			SetterBaseCollection nextSetters,
+			Storyboard nextAnimation)
+		{
+			if (element is null || (prevSetters is null && prevAnimation is null))
+			{
+				return;
+			}
+
+			(_propertiesNotToClear ??= new HashSet<string>()).Clear();
+
+			if (nextSetters is { })
+			{
+				foreach (var setter in nextSetters.OfType<Setter>())
+				{
+					_propertiesNotToClear.Add(setter.GetBindingPathString(element));
+				}
+			}
+
+			if (nextAnimation is { })
+			{
+				foreach (var item in nextAnimation.Children.Items)
+				{
+					_propertiesNotToClear.Add(item.PropertyInfo.Path);
+				}
+			}
+
+			if (prevSetters is { })
+			{
+				foreach (var setter in prevSetters.OfType<Setter>())
+				{
+					if (!_propertiesNotToClear.Contains(setter.GetBindingPathString(element)))
+					{
+						setter.ClearValue();
+					}
+				}
+			}
+
+			if (prevAnimation is { })
+			{
+				foreach (var item in prevAnimation.Children.Items)
+				{
+					if (!_propertiesNotToClear.Contains(item.GetTimelineTargetFullName()))
+					{
+						item.PropertyInfo.ClearValue();
+					}
+				}
 			}
 		}
 
