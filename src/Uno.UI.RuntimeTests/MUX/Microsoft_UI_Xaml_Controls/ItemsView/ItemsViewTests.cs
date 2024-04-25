@@ -25,6 +25,9 @@ using Microsoft.UI.Xaml.Automation.Peers;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
+#if !__SKIA__
+[Ignore("Only works properly on Skia")]
+#endif
 public class ItemsViewTests : MUXApiTestBase
 {
 	private const int c_MaxWaitDuration = 5000;
