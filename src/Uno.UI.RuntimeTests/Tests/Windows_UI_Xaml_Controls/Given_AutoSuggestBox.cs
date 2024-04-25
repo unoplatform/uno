@@ -316,7 +316,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
+#if __SKIA__
+			KeyboardHelper.InputText("manual");
+#else
 			textBox.ProcessTextInput("manual");
+#endif
 			await Wait();
 
 			expectations.Add(SuggestionChosen);
@@ -325,7 +329,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
+#if __SKIA__ // We want to test the behaviour of "typing individual characters in sequence", not setting the Text in one shot. The behaviour is currently only accurate on skia.
+			KeyboardHelper.InputText("manual");
+#else
 			textBox.ProcessTextInput("manual");
+#endif
 			await Wait();
 
 			expectations.Add(ProgrammaticChange);
@@ -339,14 +347,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-#if __SKIA__
-			// skia is closer to what happens on WinUI. On WinUI, if there is no delay between changes, 
-			// AutoSuggestBox.TextChanged is fired once (but TextBox.TextChanged fires everytime)
+			// We want to test the behaviour of "typing individual characters in sequence", not setting the Text in one shot. The behaviour is currently only accurate on skia.
 			if (!waitBetweenActions)
 			{
+				// skia is closer to what happens on WinUI. On WinUI, if there is no delay between changes,
+				// AutoSuggestBox.TextChanged is fired once (but TextBox.TextChanged fires everytime)
 				expectations = new() { SuggestionChosen };
 			}
-#endif
 
 			CollectionAssert.AreEquivalent(expectations, reasons, string.Join("; ",
 				$"expectations[{expectations.Count}]: {string.Join(",", expectations)}",
