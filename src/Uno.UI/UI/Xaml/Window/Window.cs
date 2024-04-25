@@ -46,12 +46,9 @@ partial class Window
 	private Brush? _background;
 	private bool _splashScreenDismissed;
 	private WindowType _windowType;
-	private bool _extendsContentIntoTitleBar;
 
 	private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 	private List<WeakEventHelper.GenericEventHandler>? _backgroundChangedHandlers;
-
-	internal event Action<bool>? ExtendsContentIntoTitleBarChanged;
 
 	internal Window(WindowType windowType)
 	{
@@ -329,16 +326,8 @@ partial class Window
 
 	public bool ExtendsContentIntoTitleBar
 	{
-		get => _extendsContentIntoTitleBar;
-		set
-		{
-			if (_extendsContentIntoTitleBar != value)
-			{
-				_extendsContentIntoTitleBar = value;
-				ExtendsContentIntoTitleBarChanged?.Invoke(value);
-			}
-
-		}
+		get => AppWindow.TitleBar.ExtendsContentIntoTitleBar;
+		set => AppWindow.TitleBar.ExtendsContentIntoTitleBar = value;
 	}
 
 	internal Brush? Background
