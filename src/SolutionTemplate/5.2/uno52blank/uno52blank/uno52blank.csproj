@@ -34,6 +34,11 @@
     </UnoFeatures>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- This file should not cause a duplicate content inclusion on Wasm -->
+    <Content Include="TestStaticContent.json" />
+  </ItemGroup>
+
   <Target Name="_UnoValidateSelfAssets" 
           BeforeTargets="AfterBuild" 
           Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041'">
