@@ -63,21 +63,17 @@ partial class ItemsViewAutomationPeer : FrameworkElementAutomationPeer, ISelecti
 
 	public IRawElementProviderSimple[] GetSelection()
 	{
-		List<IRawElementProviderSimple> selectionList = new();
+		List<IRawElementProviderSimple> selectionList = null;
 
 		if (GetImpl() is ItemsView itemsView)
-
 		{
 			if (itemsView.GetSelectionModel() is { } selectionModel)
-
 			{
 				if (selectionModel.SelectedIndices is { } selectedIndices)
-
 				{
 					if (selectedIndices.Count > 0)
 					{
 						if (ItemsViewTestHooks.GetItemsRepeaterPart(itemsView) is { } repeater)
-
 						{
 							foreach (var indexPath in selectedIndices)
 							{
@@ -89,7 +85,7 @@ partial class ItemsViewAutomationPeer : FrameworkElementAutomationPeer, ISelecti
 									if (FrameworkElementAutomationPeer.CreatePeerForElement(itemElement) is { } peer)
 
 									{
-										selectionList.Add(ProviderFromPeer(peer));
+										(selectionList ??= new()).Add(ProviderFromPeer(peer));
 									}
 								}
 							}
@@ -99,7 +95,7 @@ partial class ItemsViewAutomationPeer : FrameworkElementAutomationPeer, ISelecti
 			}
 		}
 
-		return selectionList.ToArray();
+		return selectionList?.ToArray();
 	}
 
 	void RaiseSelectionChanged(double oldIndex, double newIndex)
