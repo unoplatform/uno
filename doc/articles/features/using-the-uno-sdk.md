@@ -74,7 +74,7 @@ Here are the supported features:
 | `Dsp`                | Adds support for the [Uno.Dsp packages](https://www.nuget.org/packages?q=uno.dsp).                                                                                                                                                         |
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
-| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK.                                                                                                |
+| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                                |
 | `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
 
 > [!IMPORTANT]
