@@ -29,7 +29,6 @@ jobs:
 
     - name: Pin .NET Version
       run: |
-        (Get-Content build/ci/net7/global.json).replace("latestFeature", "disable") | Set-Content build/ci/net7/global.json
         cp build/ci/net7/global.json global.json
 
     - name: Setup .NET SDK
