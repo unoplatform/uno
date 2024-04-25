@@ -4,7 +4,7 @@ uid: Uno.Features.Uno.Sdk
 
 # Using the Uno.Sdk
 
-Uno Platform projects use the Uno.Sdk package designed to keep projects simple, yet configurable. It import the `Microsoft.Net.Sdk` (and the `Microsoft.Net.Sdk.Web` for WebAssembly).
+Uno Platform projects use the Uno.Sdk package that is designed to keep projects simple, yet configurable. It imports the `Microsoft.Net.Sdk` (and the `Microsoft.Net.Sdk.Web` for WebAssembly).
 
 This document explains the many features of this SDK, and how to configure its behavior.
 
@@ -30,7 +30,7 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Toolkit;
     Logging;
     Serilog;
-    Mvux;
+    MVUX;
     Configuration;
     Http;
     Serialization;
@@ -46,36 +46,36 @@ This allows for the SDK to selectively include references to relevant sets of Nu
 
 Here are the supported features:
 
-| feature | description |
-|---------|-------------|
-| `Foldable` | Adds a reference to Uno.WinUI.Foldable |
-| `MediaElement` | Adds native references where needed to use MediaElement |
-| `CSharpMarkup` | Adds support for C# Markup|
-| `Extensions` | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging |
-| `Authentication` | Adds the Uno.Extensions package for Custom Authentication |
-| `AuthenticationMsal` | dds the Uno.Extensions packages for Authentication using Microsoft.Identity.Client |
-| `AuthenticationOidc` | Adds the Uno.Extensions packages for Authentication using a custom Oidc client |
-| `Configuration` | Adds the Uno.Extensions packages for Configuration |
-| `Hosting` | Adds support for Dependency Injection using Uno.Extensions.Hosting packages |
-| `Http` | Adds support for custom Http Clients including the use of Refit with Uno.Extensions |
-| `Localization` | Adds support for Localization using Uno.Extensions |
-| `Logging` | Adds support for Logging using Uno.Extensions |
-| `MauiEmbedding` | Adds support for embedding Maui controls in Uno |
-| `MVUX` | Adds support for MVUX |
-| `ThemeService` | Adds the Uno.Extensions.Core.WinUI package |
-| `Navigation` | Adds support for Navigation using Uno.Extensions |
-| `LoggingSerilog` | Adds support for Serilog using Uno.Extensions |
-| `Storage` | Adds support for Storage using Uno.Extensions |
-| `Serialization` | Adds support for Uno.Extensions.Serialization |
-| `Toolkit` | Adds support for the Uno.Toolkit |
-| `Material` | Adds support for the Material Design Toolkit |
-| `Cupertino` | Adds support for the Cupertino Design Toolkit |
-| `Mvvm` | Adds support for the CommunityToolkit.Mvvm package |
-| `Dsp` | Adds support for the Uno.Dsp package |
-| `Prism` | Adds Prism support for Uno.WinUI |
-| `Skia` | Adds support for SkiaSharp |
-| `Svg` | Svg support for iOS, Android, and Mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK. |
-| `Lottie` | Adds support for Lottie animations |
+| Feature              | Description                                                                                                                                                                                                                                |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
+| `MediaElement`       | Adds native references where needed to use [MediaElement](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.mediaelement).                                                                                                |
+| `CSharpMarkup`       | Adds support for [C# Markup](xref:Uno.Extensions.Markup.Overview).                                                                                                                                                                         |
+| `Extensions`         | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging.                                                                                                                                                   |
+| `Authentication`     | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for Custom [Authentication](xref:Uno.Extensions.Authentication.Overview).                                                                                                 |
+| `AuthenticationMsal` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using [Microsoft.Identity.Client](https://www.nuget.org/packages/Microsoft.Identity.Client).            |
+| `AuthenticationOidc` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using a custom [Oidc](xref:Uno.Extensions.Authentication.HowToOidcAuthentication) client.               |
+| `Configuration`      | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Configuration](xref:Uno.Extensions.Configuration.Overview).                                                                                                          |
+| `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
+| `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) including the use of [Refit](xref:Uno.Extensions.Http.Overview#refit) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                       |
+| `Localization`       | Adds support for [Localization](xref:Uno.Extensions.Localization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                           |
+| `Logging`            | Adds support for [Logging](xref:Uno.Extensions.Logging.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
+| `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
+| `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview).                                                                                                                                                                                |
+| `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
+| `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
+| `LoggingSerilog`     | Adds support for [Serilog](https://github.com/serilog/serilog) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                       |
+| `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
+| `Serialization`      | Adds support for [Serialization](Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                              |
+| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
+| `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
+| `Cupertino`          | Adds support for the [Cupertino Design Theme](xref:Uno.Themes.Cupertino.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Cupertino Design Toolkit](xref:Toolkit.GettingStarted.Cupertino) library. |
+| `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
+| `Dsp`                | Adds support for the [Uno.Dsp packages](https://www.nuget.org/packages?q=uno.dsp).                                                                                                                                                         |
+| `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
+| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
+| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed for WebAssembly, Desktop, and WinAppSDK.                                                                                                |
+| `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
 
 > [!IMPORTANT]
 > Feature names are case sensitive
@@ -90,40 +90,44 @@ Here are the supported properties:
 
 ## [**Uno Platform Packages**](#tab/uno-packages)
 
-- `UnoCoreLoggingSingletonVersion`
-- `UnoCSharpMarkupVersion`
-- `UnoDspTasksVersion`
-- `UnoExtensionsVersion`
-- `UnoLoggingVersion`
-- `UnoResizetizerVersion`
-- `UnoThemesVersion`
-- `UnoToolkitVersion`
-- `UnoUniversalImageLoaderVersion`
-- `UnoWasmBootstrapVersion`
+| Property                         | NuGet Package(s)                                                                                                 | Description                                                                                              |
+|----------------------------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| `UnoCoreLoggingSingletonVersion` | [Uno.Core.Extensions.Logging.Singleton](https://www.nuget.org/packages/Uno.Core.Extensions.Logging.Singleton)    | Provides a logging singleton pattern with helpers and extension methods for simplified logging.          |
+| `UnoCSharpMarkupVersion`         | [Uno.WinUI.Markup](https://www.nuget.org/packages/Uno.WinUI.Markup) and similar packages                         | Enables the use of C# for building UI markup, similar to XAML but with C# syntax.                        |
+| `UnoDspTasksVersion`             | [Uno.Dsp.Tasks](https://www.nuget.org/packages/Uno.Dsp.Tasks) and similar packages                               | Includes tasks for Digital Signal Processing within Uno Platform projects.                               |
+| `UnoExtensionsVersion`           | [Uno.Extensions.Storage.WinUI](https://www.nuget.org/packages/Uno.Extensions.Storage.WinUI) and similar packages | Extends the Uno Platform with additional methods and classes for more versatile application development. |
+| `UnoLoggingVersion`              | [Uno.Extensions.Logging.OSLog](https://www.nuget.org/packages/Uno.Extensions.Logging.OSLog) and similar packages | Implements logging mechanisms to help with monitoring and debugging Uno Platform applications.           |
+| `UnoResizetizerVersion`          | [Uno.Resizetizer](https://www.nuget.org/packages/Uno.Resizetizer)                                                | Provides tools for automatically resizing and managing image assets in Uno Platform projects.            |
+| `UnoThemesVersion`               | [Uno.Material.WinUI](https://www.nuget.org/packages/Uno.Material.WinUI) and similar packages                     | Supplies a variety of themes that can be applied to Uno Platform applications to enhance the UI.         |
+| `UnoToolkitVersion`              | [Uno.Toolkit.WinUI](https://www.nuget.org/packages/Uno.Toolkit.WinUI) and similar packages                       | Offers a collection of controls, helpers, and tools to complement the standard Uno Platform components.  |
+| `UnoUniversalImageLoaderVersion` | [Uno.UniversalImageLoader](https://www.nuget.org/packages/Uno.UniversalImageLoader)                              | Facilitates the loading and displaying of images across different platforms supported by Uno.            |
+| `UnoWasmBootstrapVersion`        | [Uno.Wasm.Bootstrap](https://www.nuget.org/packages/Uno.Wasm.Bootstrap) and similar packages                     | Enables the bootstrapping of Uno Platform applications running on WebAssembly.                           |
 
 > [!NOTE]
-> In the 5.2 version of the Uno.Sdk you must provide a value for `UnoExtensionsVersion`, `UnoThemesVersion`, `UnoToolkitVersion` and `UnoCSharpMarkupVersion` in order to use the packages associated with the UnoFeatures from these libraries as they are downstream dependencies of the Uno repository.
+> In the 5.2 version of the Uno.Sdk you must provide a value for `UnoExtensionsVersion`, `UnoThemesVersion`, `UnoToolkitVersion`, and `UnoCSharpMarkupVersion` in order to use the packages associated with the UnoFeatures from these libraries as they are downstream dependencies of the Uno repository.
 
 ## [**Third Party Packages**](#tab/3rd-party-packages)
 
-- `AndroidMaterialVersion`
-- `AndroidXActivityVersion`
-- `AndroidXAppCompatVersion`
-- `AndroidXBrowserVersion`
-- `AndroidXCollectionVersion`
-- `AndroidXLegacySupportV4Version`
-- `AndroidXNavigationVersion`
-- `AndroidXRecyclerViewVersion`
-- `AndroidXSwipeRefreshLayoutVersion`
-- `CommunityToolkitMvvmVersion`
-- `MicrosoftIdentityClientVersion`
-- `MicrosoftLoggingVersion`
-- `PrismVersion`
-- `SkiaSharpVersion`
-- `SvgSkiaVersion`
-- `WinAppSdkBuildToolsVersion`
-- `WinAppSdkVersion`
-- `WindowsCompatibilityVersion`
+| Property                            | NuGet Package(s)                                                                                                     | Description                                                                                                    |
+|-------------------------------------|----------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `AndroidMaterialVersion`            | [Xamarin.Google.Android.Material](https://www.nuget.org/packages/Xamarin.Google.Android.Material)                    | Implements Material Design components for Android using Xamarin bindings.                                      |
+| `AndroidXActivityVersion`           | [Xamarin.AndroidX.Activity](https://www.nuget.org/packages/Xamarin.AndroidX.Activity)                                | Provides classes to build Android activities with AndroidX libraries.                                          |
+| `AndroidXAppCompatVersion`          | [Xamarin.AndroidX.AppCompat](https://www.nuget.org/packages/Xamarin.AndroidX.AppCompat)                              | Offers backward-compatible versions of Android components with AndroidX.                                       |
+| `AndroidXBrowserVersion`            | [Xamarin.AndroidX.Browser](https://www.nuget.org/packages/Xamarin.AndroidX.Browser)                                  | Contains components to implement browser features with AndroidX.                                               |
+| `AndroidXCollectionVersion`         | [Xamarin.AndroidX.Collection](https://www.nuget.org/packages/Xamarin.AndroidX.Collection) and similar packages       | Provides AndroidX extensions for collections like sparse arrays and bundles.                                   |
+| `AndroidXLegacySupportV4Version`    | [Xamarin.AndroidX.Legacy.Support.V4](https://www.nuget.org/packages/Xamarin.AndroidX.Legacy.Support.V4)              | Supports older Android versions with AndroidX compatibility libraries.                                         |
+| `AndroidXNavigationVersion`         | [Xamarin.AndroidX.Navigation.UI](https://www.nuget.org/packages/Xamarin.AndroidX.Navigation.UI) and similar packages | Facilitates navigation within an Android app using AndroidX.                                                   |
+| `AndroidXRecyclerViewVersion`       | [Xamarin.AndroidX.RecyclerView](https://www.nuget.org/packages/Xamarin.AndroidX.RecyclerView)                        | Implements a flexible view for providing a limited window into large datasets with AndroidX.                   |
+| `AndroidXSwipeRefreshLayoutVersion` | [Xamarin.AndroidX.SwipeRefreshLayout](https://www.nuget.org/packages/Xamarin.AndroidX.SwipeRefreshLayout)            | Provides a swipe-to-refresh UI pattern with AndroidX.                                                          |
+| `CommunityToolkitMvvmVersion`       | [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm)                                        | Delivers a set of MVVM (Model-View-ViewModel) components for .NET applications.                                |
+| `MicrosoftIdentityClientVersion`    | [Microsoft.Identity.Client](https://www.nuget.org/packages/Microsoft.Identity.Client)                                | Provides an authentication library for Microsoft Identity Platform.                                            |
+| `MicrosoftLoggingVersion`           | [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console)          | Enables logging to the console with Microsoft's extensions.                                                    |
+| `PrismVersion`                      | [Prism.Uno.WinUI](https://www.nuget.org/packages/Prism.Uno.WinUI) and similar packages                               | Integrates the Prism library, which aids in building loosely coupled, maintainable, and testable applications. |
+| `SkiaSharpVersion`                  | [SkiaSharp.Skottie](https://www.nuget.org/packages/SkiaSharp.Skottie) and similar packages                           | Provides a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library.          |
+| `SvgSkiaVersion`                    | [Svg.Skia](https://www.nuget.org/packages/Svg.Skia)                                                                  | Renders SVG files using the SkiaSharp graphics engine.                                                         |
+| `WinAppSdkBuildToolsVersion`        | [Microsoft.Windows.SDK.BuildTools](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)                  | Contains the tools required to build applications for the Microsoft Windows App SDK.                           |
+| `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
+| `WindowsCompatibilityVersion`       | [Microsoft.Windows.Compatibility](https://www.nuget.org/packages/Microsoft.Windows.Compatibility)                    | Enables Windows desktop apps to use .NET Core by providing access to additional Windows APIs.                  |
 
 ***
 
@@ -183,9 +187,9 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
 
 Using a Single Project in Visual Studio 2022 requires the Uno Platform tooling to apply workarounds in order to have an acceptable debugging experience.
 
-For some of the platforms (Desktop, WinAppSDK and WebAssembly), the corresponding target frameworks must be placed first in order for debugging and publishing to function properly. To adress that problem, the Uno Platform tooling modifies the `csproj` file to reorder the `TargetFrameworks` property so that the list is accepted by Visual Studio.
+For some of the platforms (Desktop, WinAppSDK, and WebAssembly), the corresponding target frameworks must be placed first in order for debugging and publishing to function properly. To address that problem, the Uno Platform tooling modifies the `csproj` file to reorder the `TargetFrameworks` property so that the list is accepted by Visual Studio.
 
-As a result, the csproj file on disk and will show the file as modified in you source control, yet the automatic change can be reverted safely. If the behavior is impacting your IDE negatively, you can disable it by adding the following in your `.csproj` file:
+As a result, the csproj file is on disk and will show the file as modified in your source control, yet the automatic change can be reverted safely. If the behavior is impacting your IDE negatively, you can disable it by adding the following in your `.csproj` file:
 
 ```xml
 <PropertyGroup>
