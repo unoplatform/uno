@@ -78,14 +78,13 @@ body:
         - WebAssembly
         - Android
         - iOS
-        - macOS (AppKit)
         - Mac Catalyst
         - Skia (WPF)
-        - Skia (GTK on Linux/macOS/Windows)
-        - Skia (Linux Framebuffer)
         - Skia (Linux X11)
         - Skia (macOS)
-        - Windows
+        - Skia (Linux Framebuffer)
+        - Skia (GTK)
+        - Windows (WinAppSDK)
         - Build tasks
 
   - type: dropdown
