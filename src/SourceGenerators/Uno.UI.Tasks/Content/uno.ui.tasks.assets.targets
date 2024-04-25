@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
-			   TaskName="Uno.UI.Tasks.Assets.ExpandPackageAssets_v0" />
+	<UsingTask
+		Condition="'$(_IsUnoUISolution)'==''"
+		AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
+		TaskName="Uno.UI.Tasks.Assets.ExpandPackageAssets_v0" />
+	
+	<UsingTask
+		Condition="'$(_IsUnoUISolution)'!=''"
+		AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
+		TaskName="Uno.UI.Tasks.Assets.ExpandPackageAssets_v0"
+		TaskFactory="TaskHostFactory" />
 
 	<PropertyGroup>
 		<_UnoDirectorySeparator Condition="'$(OS)' == 'Unix'">/</_UnoDirectorySeparator>
