@@ -61,7 +61,7 @@ namespace Microsoft.UI.Composition
 				}
 				catch (Exception e)
 				{
-					return (true, e.Message);
+					return (false, e.Message);
 				}
 			}
 		}
