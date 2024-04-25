@@ -72,11 +72,6 @@ jobs:
 
   - template: templates/gitversion.yml
   
-  - script: |
-      cp global.json global-net7.json
-      cp global-net8.json global.json
-    displayName: Replace global.json with .NET 8
-
   - template: templates/dotnet-install.yml
   
   ## Restore skia-macos native assets
