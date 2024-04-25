@@ -50,7 +50,10 @@
         href: xref:Build.Solution.error-codes
 
 - name: Samples & Tutorials
+  topicHref: xref:Uno.SamplesTutorials.Overview
   items:
+    - name: Overview
+      href: xref:Uno.SamplesTutorials.Overview
     - name: Counter
       href: xref:Uno.Workshop.Counter
       items:
@@ -71,48 +74,49 @@
       topicHref: xref:Workshop.TubePlayer.Overview
       href: external/workshops/tube-player/toc.yml
     - name: Tutorials
+      topicHref: xref:Uno.Tutorials.Intro
       items:
       - name: Overview
-        href: tutorials-intro.md
+        href: xref:Uno.Tutorials.Intro
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
-        href: guides/azure-static-webapps.md
+        href: xref:Uno.Tutorials.AzureStaticWepApps
       - name: How to use Windows Community Toolkit
-        href: uno-community-toolkit.md
+        href: xref:Uno.Development.CommunityToolkit
       - name: How to manually add a splash screen
         href: xref:Uno.Development.SplashScreen
       - name: How to use native Frame navigation
-        href: guides/native-frame-nav-tutorial.md
+        href: xref:Uno.Tutorials.UseNativeFrameNav
       - name: How to consume a web API
-        href: howto-consume-webservices.md
+        href: xref:Uno.Development.ConsumeWebApi
       - name: How to localize text resources
-        href: guides/localization.md
+        href: xref:Uno.Tutorials.Localization
       - name: How to change app language at runtime
-        href: guides/hotswap-app-language.md
+        href: xref:Uno.Tutorials.ChangeAppLanguage
       - name: How to integrate SignalR
-        href: signalr.md
+        href: xref:Uno.Development.SignalR
       - name: How to update StatusBar color based on dark/light theme
-        href: guides/status-bar-theme-color.md
+        href: xref:Uno.Tutorials.StatusBarThemeColor
       - name: How to use MSAL for Azure Authentication
-        href: interop/MSAL.md
+        href: xref:Uno.Interop.MSAL
       - name: How to authenticate with OpenID Connect
-        href: guides/open-id-connect.md
+        href: xref:Uno.Tutorials.OpenIDConnect
       - name: Embed a JavaScript Component
-        topicHref: interop/wasm-javascript-1.md
+        topicHref: xref:Uno.Interop.WasmJavaScript1
         items:
           - name: Part 1
-            href: interop/wasm-javascript-1.md
+            href: xref:Uno.Interop.WasmJavaScript1
           - name: Part 2
-            href: interop/wasm-javascript-2.md
+            href: xref:Uno.Interop.WasmJavaScript2
           - name: Part 3
-            href: interop/wasm-javascript-3.md
+            href: xref:Uno.Interop.WasmJavaScript3
       - name: Deploy to Raspberry Pi
-        href: guides/raspberry-pi/raspberry-pi-intro.md
+        href: xref:Uno.RaspberryPi.Intro
       - name: (Wasm) Handling custom HTML events
-        href: wasm-custom-events.md
+        href: xref:Uno.Development.WasmCustomEvents
       - name: Community Tutorials
-        topicHref: guides/community-tutorials.md
+        topicHref: xref:Uno.Tutorials.CommunityTutorials
     - name: Samples
-      href: external/uno.samples/doc/samples.md
+      href: xref:Uno.Samples
     - name: Additional Resources
       href: xref:Uno.GetStarted.NextSteps
 
