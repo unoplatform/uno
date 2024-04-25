@@ -144,8 +144,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					realizationWindowOffsetInExtent + MajorSize(realizationRect) >= 0 && realizationWindowOffsetInExtent <= majorSize)
 				{
 					anchorIndex = (int)(realizationWindowOffsetInExtent / averageElementSize);
-					offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
+					// Uno workaround [BEGIN]: Make sure items at index 0 is always at offset 0
 					anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex));
+					// Uno workaround [END]
+
+					offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
+					//anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex)); // Line moved before computation of the offset for uno
 				}
 			}
 
