@@ -4,7 +4,7 @@
 
     ```bash
     sudo apt update
-    sudo apt-get install mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer dbus libfontconfig1 libxrandr
+    sudo apt-get install mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer dbus libfontconfig1 libxrandr2
     ```
 
 ## [**Ubuntu 20.04/22.04**](#tab/ubuntu2004)
@@ -13,7 +13,7 @@
 
     ```bash
     sudo apt update
-    sudo apt install mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer dbus libfontconfig1 libxrandr
+    sudo apt install mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer dbus libfontconfig1 libxrandr2
     ```
 
 ## [**ArchLinux 5.8.14 or later / Manjaro**](#tab/archlinux2004)
