@@ -821,6 +821,9 @@ namespace Microsoft.UI.Xaml
 				{
 					root.Arrange(bounds);
 #if !IS_UNIT_TESTS
+					// Workaround: Without this, the managed Skia TextBox breaks.
+					// For example, keyboard selection or double clicking to select breaks
+					// It's probably an issue with TextBox implementation itself, but for now we workaround it here.
 					root.XamlRoot.RaiseInvalidateRender();
 #endif
 				}
