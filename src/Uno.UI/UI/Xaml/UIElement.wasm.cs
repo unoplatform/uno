@@ -659,7 +659,7 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// Remaining characters are the pressed key
-				key = VirtualKeyHelper.FromKey(payload[4..]);
+				key = BrowserVirtualKeyHelper.FromKey(payload[4..]);
 
 			}
 			return new KeyRoutedEventArgs(src, key, modifiers) { CanBubbleNatively = true };
