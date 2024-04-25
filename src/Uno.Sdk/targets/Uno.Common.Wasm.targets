@@ -34,7 +34,7 @@
 
 	<Target Name="_UnoRemoveWebSdkConfigContent"
 			Condition=" '$(UnoDisableRemoveWebSdkConfigContent)' != 'true' "
-			BeforeTargets="BeforeBuild;;CheckForDuplicateItems">
+			BeforeTargets="BeforeBuild;CheckForDuplicateItems">
 		<ItemGroup>
 			<!-- 
 			Prevent .json and .config files from being included and conflict 
