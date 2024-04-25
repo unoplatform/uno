@@ -25,9 +25,7 @@ using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if WINAPPSDK
-using Uno.UI.Extensions;
-#elif __IOS__
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
