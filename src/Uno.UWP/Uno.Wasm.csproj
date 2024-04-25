@@ -73,6 +73,13 @@
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
 
 	<Target Name="GetTargetPath" />
 
