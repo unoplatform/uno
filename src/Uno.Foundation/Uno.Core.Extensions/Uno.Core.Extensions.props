@@ -16,6 +16,7 @@
 
   <ItemGroup>
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Collections\ImmutableList.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+    <Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Collections\FreezableList.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\DateTimeExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\FormattableExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\IIndentedStringBuilder.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
