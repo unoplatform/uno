@@ -87,13 +87,54 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
 		{
-			if (VirtualizingPanel?.GetLayouter() is { } layouter)
+			if (ContainerFromItem(item) is UIElement element)
+			{
+				// The container we want to jump to is already materialized, so just jump to it.
+				// This means we're in a non-virtualizing panel or in a virtualizing panel where the container we want is materialized for some reason (e.g. partially in view)
+				ScrollIntoViewFastPath(element, alignment);
+			}
+			else if (VirtualizingPanel?.GetLayouter() is { } layouter)
 			{
 				layouter.ScrollIntoView(item, alignment);
 			}
-			else if (this.Log().IsEnabled(LogLevel.Warning))
+		}
+
+		private void ScrollIntoViewFastPath(UIElement element, ScrollIntoViewAlignment alignment)
+		{
+			if (ScrollViewer is { } sv && sv.Presenter is { } presenter)
 			{
-				this.Log().LogWarning($"{nameof(ScrollIntoView)} not supported when using non-virtualizing panels.");
+				var offsetXY = element.TransformToVisual(presenter).TransformPoint(Point.Zero);
+
+				var (newOffset, elementLength, presenterOffset, presenterViewportLength) =
+					ItemsPanelRoot.PhysicalOrientation is Orientation.Vertical
+						? (offsetXY.Y, element.ActualSize.Y, presenter.VerticalOffset, presenter.ViewportHeight)
+						: (offsetXY.X, element.ActualSize.X, presenter.HorizontalOffset, presenter.ViewportWidth);
+
+				if (presenterOffset < newOffset && newOffset + elementLength < presenterOffset + presenterViewportLength)
+				{
+					// if the element is within the visible viewport, do nothing.
+					return;
+				}
+
+				// If we use the above offset directly, the item we want to jump to will be the start of the viewport, i.e. leading
+				if (alignment is ScrollIntoViewAlignment.Default)
+				{
+					if (presenterOffset < newOffset)
+					{
+						// scroll one "viewport page" less: this brings the element's start right after the viewport's length ends
+						// we then scroll again by elementLength so that the end of the element is the end of the viewport
+						newOffset += (-presenterViewportLength) + elementLength;
+					}
+				}
+
+				if (ItemsPanelRoot.PhysicalOrientation is Orientation.Vertical)
+				{
+					sv.ScrollToVerticalOffset(newOffset);
+				}
+				else
+				{
+					sv.ScrollToHorizontalOffset(newOffset);
+				}
 			}
 		}
 #endif
