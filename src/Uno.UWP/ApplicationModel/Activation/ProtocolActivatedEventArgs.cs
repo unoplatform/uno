@@ -16,7 +16,6 @@ namespace Windows.ApplicationModel.Activation
 	{
 		internal ProtocolActivatedEventArgs()
 		{
-
 		}
 
 #if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
