@@ -226,10 +226,7 @@
                         </Button>
                         <Grid x:Name="Border" Grid.ColumnSpan="3" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" />
                         <!-- Uno specific (LinearGradientBrush borders): #6457 -->
-                        <uc:FauxGradientBorderPresenter
-                            RequestedBorderBrush="{Binding ElementName=Border, Path=BorderBrush}"
-                            RequestedBorderThickness="{Binding ElementName=Border, Path=BorderThickness}"
-                            RequestedCornerRadius="{Binding ElementName=Border, Path=CornerRadius}" />
+                        <uc:FauxGradientBorderPresenter Grid.ColumnSpan="3" RequestedBorderBrush="{Binding ElementName=Border, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=Border, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=Border, Path=CornerRadius}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
