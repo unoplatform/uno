@@ -19,19 +19,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Border
 {
-	partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
-	{
-		if (previousValue != null)
-		{
-			RemoveView(previousValue);
-		}
-
-		if (newValue != null)
-		{
-			AddView(newValue);
-		}
-	}
-
 	protected override void OnDraw(Android.Graphics.Canvas canvas) => AdjustCornerRadius(canvas, CornerRadius);
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;

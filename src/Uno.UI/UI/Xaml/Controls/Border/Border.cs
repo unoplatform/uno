@@ -32,301 +32,260 @@ using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.Radial
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+// TODO: Border should be sealed
+[ContentProperty(Name = nameof(Child))]
+public partial class Border : FrameworkElement
 {
-	// TODO: Border should be sealed
-	[ContentProperty(Name = nameof(Child))]
-	public partial class Border : FrameworkElement
+	private readonly BorderLayerRenderer _borderRenderer;
+
+	public Border()
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		private readonly BorderLayerRenderer _borderRenderer;
-#endif
+		_borderRenderer = new BorderLayerRenderer(this);
+	}
 
-		public Border()
-		{
-#if !UNO_HAS_BORDER_VISUAL
-			_borderRenderer = new BorderLayerRenderer(this);
-#endif
-		}
-
-#if UNO_HAS_BORDER_VISUAL
-		private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
-
-		/// <summary>
-		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this
-		/// new Border
-		/// {
-		///    new Border()
-		/// }
-		/// </summary>
-		/// <param name="view"></param>
-		public
+	/// <summary>
+	/// Support for the C# collection initializer style.
+	/// Allows items to be added like this
+	/// new Border
+	/// {
+	///    new Border()
+	/// }
+	/// </summary>
+	/// <param name="view"></param>
+	public
 #if __IOS__
-			new
+		new
 #endif
-			void Add(View view)
+		void Add(View view)
+	{
+		Child = VisualTreeHelper.TryAdaptNative(view);
+	}
+
+	protected override bool IsSimpleLayout => true;
+
+	private protected override Thickness GetBorderThickness() => BorderThickness;
+
+
+	#region Child DependencyProperty
+
+	public UIElement Child
+	{
+		get => (UIElement)this.GetValue(ChildProperty);
+		set => this.SetValue(ChildProperty, value);
+	}
+
+	public static DependencyProperty ChildProperty { get; } =
+		DependencyProperty.Register(
+			"Child",
+			typeof(UIElement),
+			typeof(Border),
+			new FrameworkPropertyMetadata(
+				null,
+				// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
+				// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
+				// a different inheritance hierarchy, as is done for some controls with native styles.
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+				(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
+			)
+		);
+
+	private void OnChildChanged(UIElement oldValue, UIElement newValue)
+	{
+		ReAttachChildTransitions(oldValue, newValue);
+
+		if (oldValue is not null)
 		{
-			Child = VisualTreeHelper.TryAdaptNative(view);
+			RemoveChild(oldValue);
 		}
 
-		protected override bool IsSimpleLayout => true;
-
-		private protected override Thickness GetBorderThickness() => BorderThickness;
-
-
-		#region Child DependencyProperty
-
-		public UIElement Child
+		if (newValue is not null)
 		{
-			get => (UIElement)this.GetValue(ChildProperty);
-			set => this.SetValue(ChildProperty, value);
+			AddChild(newValue);
+		}
+	}
+
+	#endregion
+
+	#region CornerRadius
+	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
+	public CornerRadius CornerRadius
+	{
+		get => GetCornerRadiusValue();
+		set => SetCornerRadiusValue(value);
+	}
+
+	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
+
+	#endregion
+
+	#region ChildTransitions
+
+	/// <summary>
+	/// This is a Transition for a UIElement.
+	/// </summary>
+	public TransitionCollection ChildTransitions
+	{
+		get => (TransitionCollection)this.GetValue(ChildTransitionsProperty);
+		set => this.SetValue(ChildTransitionsProperty, value);
+	}
+
+	// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
+	public static DependencyProperty ChildTransitionsProperty { get; } =
+		DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new FrameworkPropertyMetadata(null));
+
+	private void ReAttachChildTransitions(UIElement originalChild, UIElement child)
+	{
+		if (this.ChildTransitions == null)
+		{
+			return;
 		}
 
-		public static DependencyProperty ChildProperty { get; } =
-			DependencyProperty.Register(
-				"Child",
-				typeof(UIElement),
-				typeof(Border),
-				new FrameworkPropertyMetadata(
-					null,
-					// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
-					// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
-					// a different inheritance hierarchy, as is done for some controls with native styles.
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-					(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
-				)
-			);
-
-		private void OnChildChanged(UIElement oldValue, UIElement newValue)
+		if (!(originalChild is IFrameworkElement oldTargetElement))
 		{
-			ReAttachChildTransitions(oldValue, newValue);
-
-			OnChildChangedPartial(oldValue, newValue);
+			return;
 		}
 
-		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue);
-
-		#endregion
-
-		#region CornerRadius
-		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
-
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
-		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
-
-		public CornerRadius CornerRadius
+		foreach (var transition in this.ChildTransitions)
 		{
-			get => GetCornerRadiusValue();
-			set => SetCornerRadiusValue(value);
+			transition.DetachFromElement(oldTargetElement);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+		if (!(child is IFrameworkElement targetElement))
 		{
-#if UNO_HAS_BORDER_VISUAL
-			this.UpdateCornerRadius();
-#else
-			UpdateBorder();
-#endif
+			return;
 		}
 
-		#endregion
-
-		#region ChildTransitions
-
-		/// <summary>
-		/// This is a Transition for a UIElement.
-		/// </summary>
-		public TransitionCollection ChildTransitions
+		foreach (var transition in this.ChildTransitions)
 		{
-			get => (TransitionCollection)this.GetValue(ChildTransitionsProperty);
-			set => this.SetValue(ChildTransitionsProperty, value);
+			transition.AttachToElement(targetElement);
 		}
-
-		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static DependencyProperty ChildTransitionsProperty { get; } =
-			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new FrameworkPropertyMetadata(null));
-
-		private void ReAttachChildTransitions(UIElement originalChild, UIElement child)
-		{
-			if (this.ChildTransitions == null)
-			{
-				return;
-			}
-
-			if (!(originalChild is IFrameworkElement oldTargetElement))
-			{
-				return;
-			}
-
-			foreach (var transition in this.ChildTransitions)
-			{
-				transition.DetachFromElement(oldTargetElement);
-			}
-
-			if (!(child is IFrameworkElement targetElement))
-			{
-				return;
-			}
-
-			foreach (var transition in this.ChildTransitions)
-			{
-				transition.AttachToElement(targetElement);
-			}
-		}
+	}
 
 
-		#endregion
+	#endregion
 
-		#region Padding DependencyProperty
-		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+	#region Padding DependencyProperty
+	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
-		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
-		public Thickness Padding
-		{
-			get => GetPaddingValue();
-			set => SetPaddingValue(value);
-		}
+	public Thickness Padding
+	{
+		get => GetPaddingValue();
+		set => SetPaddingValue(value);
+	}
 
-		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
-		{
-#if UNO_HAS_BORDER_VISUAL
-			// TODO: https://github.com/unoplatform/uno/issues/16705
-#else
-			UpdateBorder();
-#endif
-		}
+	private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
-		#endregion
+	#endregion
 
-		#region BackgroundSizing DepedencyProperty
-		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+	#region BackgroundSizing DepedencyProperty
+	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
+	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
 
-		public BackgroundSizing BackgroundSizing
-		{
-			get => GetBackgroundSizingValue();
-			set => SetBackgroundSizingValue(value);
-		}
-		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
-		{
-#if UNO_HAS_BORDER_VISUAL
-			this.UpdateBackgroundSizing();
-#else
-			UpdateBorder();
-#endif
-			base.OnBackgroundSizingChangedInner(e);
-		}
-		#endregion
+	public BackgroundSizing BackgroundSizing
+	{
+		get => GetBackgroundSizingValue();
+		set => SetBackgroundSizingValue(value);
+	}
+	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+	{
+		UpdateBorder();
+		base.OnBackgroundSizingChangedInner(e);
+	}
+	#endregion
 
-		#region BorderThickness DependencyProperty
-		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+	#region BorderThickness DependencyProperty
+	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
-		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
-		public Thickness BorderThickness
-		{
-			get => GetBorderThicknessValue();
-			set => SetBorderThicknessValue(value);
-		}
+	public Thickness BorderThickness
+	{
+		get => GetBorderThicknessValue();
+		set => SetBorderThicknessValue(value);
+	}
 
-		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
-		{
-#if UNO_HAS_BORDER_VISUAL
-			this.UpdateBorderThickness();
-#else
-			UpdateBorder();
-#endif
-		}
+	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
-		#endregion
+	#endregion
 
-		#region BorderBrush Dependency Property
+	#region BorderBrush Dependency Property
 
-		private Action _borderBrushChanged;
+	private Action _borderBrushChanged;
 
 #if __ANDROID__
-		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
-		private Brush _borderBrushStrongReference;
+	//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
+	private Brush _borderBrushStrongReference;
 #endif
 
-		public Brush BorderBrush
+	public Brush BorderBrush
+	{
+		get => GetBorderBrushValue();
+		set
 		{
-			get => GetBorderBrushValue();
-			set
-			{
-				SetBorderBrushValue(value);
+			SetBorderBrushValue(value);
 
 #if __ANDROID__
-				_borderBrushStrongReference = value;
+			_borderBrushStrongReference = value;
 #endif
-			}
 		}
+	}
 
-		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
+	private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
 
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
-		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+	public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
-		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
-			{
-#if UNO_HAS_BORDER_VISUAL
-				this.UpdateBorderBrush();
-#else
-				UpdateBorder();
-#endif
-			}));
+	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
+	{
+		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => UpdateBorder()));
 #if __WASM__
-			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
-			{
-				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
-				Child?.InvalidateArrange();
-			}
-#endif
-		}
-
-		#endregion
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 		{
-#if UNO_HAS_BORDER_VISUAL
-			this.UpdateBackground();
-#else
-			UpdateBorder();
-#endif
-			OnBackgroundChangedPartial();
+			// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
+			Child?.InvalidateArrange();
 		}
-
-		partial void OnBackgroundChangedPartial();
-
-		internal override bool CanHaveChildren() => true;
-
-		internal override bool IsViewHit() => IsViewHitImpl(this);
-
-		internal static bool IsViewHitImpl(FrameworkElement element)
-		{
-			_Debug.Assert(element is Panel
-				|| element is Border
-				|| element is ContentPresenter
-			);
-
-			return element.Background != null;
-		}
-
-#if !UNO_HAS_BORDER_VISUAL
-		private void UpdateBorder()
-		{
-			_borderRenderer.Update();
-			AfterUpdateBorderPartial();
-		}
-
-		partial void AfterUpdateBorderPartial();
 #endif
 	}
+
+	#endregion
+
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+		UpdateBorder();
+		OnBackgroundChangedPartial();
+	}
+
+	partial void OnBackgroundChangedPartial();
+
+	internal override bool CanHaveChildren() => true;
+
+	internal override bool IsViewHit() => IsViewHitImpl(this);
+
+	internal static bool IsViewHitImpl(FrameworkElement element)
+	{
+		_Debug.Assert(element is Panel
+			|| element is Border
+			|| element is ContentPresenter
+		);
+
+		return element.Background != null;
+	}
+
+	private void UpdateBorder()
+	{
+		_borderRenderer.Update();
+		AfterUpdateBorderPartial();
+	}
+
+	partial void AfterUpdateBorderPartial();
 }
