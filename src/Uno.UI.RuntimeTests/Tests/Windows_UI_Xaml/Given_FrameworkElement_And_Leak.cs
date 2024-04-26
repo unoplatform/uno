@@ -91,6 +91,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(ToggleSwitch), 15)]
 #endif
+#if __SKIA__ // Control is currently supported on Skia targets only.
+		[DataRow(typeof(SelectorBar), 15)]
+		[DataRow(typeof(SelectorBarItem), 15)]
+#endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
