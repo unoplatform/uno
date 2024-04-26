@@ -647,6 +647,19 @@ namespace Uno.UI.Helpers.WinUI
 			return false;
 		}
 
+		public static bool IsFocusableElement(
+			UIElement element)
+		{
+			if (element.Visibility == Visibility.Collapsed)
+			{
+				return false;
+			}
+
+			var control = element as Control;
+
+			return control is not null && (control.IsEnabled || control.AllowFocusWhenDisabled) && control.IsTabStop;
+		}
+
 		public static IconElement MakeIconElementFrom(Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource iconSource)
 		{
 			if (iconSource is Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource fontIconSource)

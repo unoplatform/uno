@@ -3,236 +3,33 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemsView : global::Microsoft.UI.Xaml.Controls.Control
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController VerticalScrollController
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController)this.GetValue(VerticalScrollControllerProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalScrollControllerProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ItemsViewSelectionMode SelectionMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ItemsViewSelectionMode)this.GetValue(SelectionModeProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.Layout Layout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Layout)this.GetValue(LayoutProperty);
-			}
-			set
-			{
-				this.SetValue(LayoutProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public object ItemsSource
-		{
-			get
-			{
-				return (object)this.GetValue(ItemsSourceProperty);
-			}
-			set
-			{
-				this.SetValue(ItemsSourceProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider ItemTransitionProvider
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)this.GetValue(ItemTransitionProviderProperty);
-			}
-			set
-			{
-				this.SetValue(ItemTransitionProviderProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.IElementFactory ItemTemplate
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.IElementFactory)this.GetValue(ItemTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(ItemTemplateProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsItemInvokedEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsItemInvokedEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsItemInvokedEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int CurrentItemIndex
-		{
-			get
-			{
-				return (int)this.GetValue(CurrentItemIndexProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollView ScrollView
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollView)this.GetValue(ScrollViewProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public object SelectedItem
-		{
-			get
-			{
-				return (object)this.GetValue(SelectedItemProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<object> SelectedItems
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> ItemsView.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20ItemsView.SelectedItems");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CurrentItemIndexProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CurrentItemIndex), typeof(int),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsItemInvokedEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsItemInvokedEnabled), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ItemTemplateProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemTemplate), typeof(global::Microsoft.UI.Xaml.IElementFactory),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.IElementFactory)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ItemTransitionProviderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemTransitionProvider), typeof(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemsSource), typeof(object),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LayoutProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Layout), typeof(global::Microsoft.UI.Xaml.Controls.Layout),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Layout)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ScrollViewProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ScrollView), typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollView)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedItemProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedItem), typeof(object),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionMode), typeof(global::Microsoft.UI.Xaml.Controls.ItemsViewSelectionMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ItemsViewSelectionMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalScrollControllerProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalScrollController), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.IScrollController)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ItemsView() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "ItemsView.ItemsView()");
-		}
-#endif
+		// Skipping already declared property VerticalScrollController
+		// Skipping already declared property SelectionMode
+		// Skipping already declared property Layout
+		// Skipping already declared property ItemsSource
+		// Skipping already declared property ItemTransitionProvider
+		// Skipping already declared property ItemTemplate
+		// Skipping already declared property IsItemInvokedEnabled
+		// Skipping already declared property CurrentItemIndex
+		// Skipping already declared property ScrollView
+		// Skipping already declared property SelectedItem
+		// Skipping already declared property SelectedItems
+		// Skipping already declared property CurrentItemIndexProperty
+		// Skipping already declared property IsItemInvokedEnabledProperty
+		// Skipping already declared property ItemTemplateProperty
+		// Skipping already declared property ItemTransitionProviderProperty
+		// Skipping already declared property ItemsSourceProperty
+		// Skipping already declared property LayoutProperty
+		// Skipping already declared property ScrollViewProperty
+		// Skipping already declared property SelectedItemProperty
+		// Skipping already declared property SelectionModeProperty
+		// Skipping already declared property VerticalScrollControllerProperty
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.ItemsView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.ItemsView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.ItemsSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.ItemsSource.set
@@ -252,62 +49,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.CurrentItemIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.SelectedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.SelectedItems.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetItemIndex(double horizontalViewportRatio, double verticalViewportRatio, out int index)
-		{
-			throw new global::System.NotImplementedException("The member bool ItemsView.TryGetItemIndex(double horizontalViewportRatio, double verticalViewportRatio, out int index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ItemsView.TryGetItemIndex%28double%20horizontalViewportRatio%2C%20double%20verticalViewportRatio%2C%20out%20int%20index%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartBringItemIntoView(int index, global::Microsoft.UI.Xaml.BringIntoViewOptions options)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "void ItemsView.StartBringItemIntoView(int index, BringIntoViewOptions options)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Select(int itemIndex)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "void ItemsView.Select(int itemIndex)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Deselect(int itemIndex)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "void ItemsView.Deselect(int itemIndex)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSelected(int itemIndex)
-		{
-			throw new global::System.NotImplementedException("The member bool ItemsView.IsSelected(int itemIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ItemsView.IsSelected%28int%20itemIndex%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SelectAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "void ItemsView.SelectAll()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void DeselectAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "void ItemsView.DeselectAll()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void InvertSelection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "void ItemsView.InvertSelection()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.TryGetItemIndex(double, double, out int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.StartBringItemIntoView(int, Microsoft.UI.Xaml.BringIntoViewOptions)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.Select(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.Deselect(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.IsSelected(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.SelectAll()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.DeselectAll()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.InvertSelection()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.ItemInvoked.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.ItemInvoked.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.SelectionChanged.add
@@ -322,37 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.SelectedItemProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.ScrollViewProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.VerticalScrollControllerProperty.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ItemsView, global::Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs> ItemInvoked
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "event TypedEventHandler<ItemsView, ItemsViewItemInvokedEventArgs> ItemsView.ItemInvoked");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "event TypedEventHandler<ItemsView, ItemsViewItemInvokedEventArgs> ItemsView.ItemInvoked");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ItemsView, global::Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs> SelectionChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "event TypedEventHandler<ItemsView, ItemsViewSelectionChangedEventArgs> ItemsView.SelectionChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsView", "event TypedEventHandler<ItemsView, ItemsViewSelectionChangedEventArgs> ItemsView.SelectionChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsView.ItemInvoked
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsView.SelectionChanged
 	}
 }
