@@ -18,19 +18,22 @@ namespace Microsoft.UI.Composition
 {
 	internal partial class SkiaCompositionSurface : CompositionObject, ICompositionSurface
 	{
+		// Don't set this field directly. Use SetFrameProviderAndOnFrameChanged instead.
 		private ImageFrameProvider? _frameProvider;
 
-		private ImageFrameProvider? FrameProvider
+		// Unused: But intentionally kept!
+		// This is here to keep the Action lifetime the same as SkiaCompositionSurface.
+		// i.e, only cause the Action to be GC'ed if SkiaCompositionSurface is GC'ed.
+		private Action? _onFrameChanged;
+
+		private void SetFrameProviderAndOnFrameChanged(ImageFrameProvider? provider, Action? onFrameChanged)
 		{
-			get => _frameProvider;
-			set
-			{
-				_frameProvider?.Dispose();
-				_frameProvider = value;
-			}
+			_frameProvider?.Dispose();
+			_frameProvider = provider;
+			_onFrameChanged = onFrameChanged;
 		}
 
-		public SKImage? Image => FrameProvider?.CurrentImage;
+		public SKImage? Image => _frameProvider?.CurrentImage;
 
 		internal SkiaCompositionSurface(SKImage image)
 		{
@@ -58,7 +61,7 @@ namespace Microsoft.UI.Composition
 
 				if (result == SKCodecResult.Success)
 				{
-					FrameProvider = ImageFrameProvider.Create(SKImage.FromBitmap(bitmap));
+					SetFrameProviderAndOnFrameChanged(ImageFrameProvider.Create(SKImage.FromBitmap(bitmap)), null);
 				}
 
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
@@ -71,16 +74,17 @@ namespace Microsoft.UI.Composition
 					var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
 					if (!ImageFrameProvider.TryCreate(codec, onFrameChanged, out var provider))
 					{
-						FrameProvider = null;
+						SetFrameProviderAndOnFrameChanged(null, null);
 						return (false, "Failed to decode image");
 					}
 
-					FrameProvider = provider;
+					SetFrameProviderAndOnFrameChanged(provider, onFrameChanged);
+					GC.KeepAlive(onFrameChanged);
 					return (true, "Success");
 				}
 				catch (Exception e)
 				{
-					FrameProvider = null;
+					SetFrameProviderAndOnFrameChanged(null, null);
 					return (false, e.Message);
 				}
 			}
@@ -95,14 +99,20 @@ namespace Microsoft.UI.Composition
 
 			using (var pData = data.Pin())
 			{
-				FrameProvider = ImageFrameProvider.Create(SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4));
+				SetFrameProviderAndOnFrameChanged(ImageFrameProvider.Create(SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4)), null);
 			}
 		}
 
 		private protected override void DisposeInternal()
 		{
 			base.DisposeInternal();
-			FrameProvider = null;
+			SetFrameProviderAndOnFrameChanged(null, null);
+			GC.SuppressFinalize(this);
+		}
+
+		~SkiaCompositionSurface()
+		{
+			this.Dispose();
 		}
 	}
 }
