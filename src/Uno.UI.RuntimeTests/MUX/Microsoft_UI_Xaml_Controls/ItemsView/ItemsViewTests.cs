@@ -21,6 +21,8 @@ using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -83,7 +85,7 @@ public class ItemsViewTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Loads an ItemsView, verifies properties and unloads.")]
 	[Ignore("Uno-specific: Fails for not-yet known reason. To be investigated.")]
-	public void VerifyPropertyValuesAfterTemplateApplication()
+	public async Task VerifyPropertyValuesAfterTemplateApplication()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
@@ -138,7 +140,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -149,7 +151,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Loads an ItemsView, sets properties and unloads.")]
-	public void VerifyPropertySetters()
+	public async Task VerifyPropertySetters()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
@@ -178,7 +180,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemsSource, itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -194,7 +196,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemTemplate, itemsView.ItemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -213,7 +215,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsTrue(itemsView.Layout is UniformGridLayout);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -223,7 +225,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(ItemsViewSelectionMode.None, itemsView.SelectionMode);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -240,7 +242,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemTemplate, itemsView.ItemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -252,7 +254,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsNotNull(itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -262,7 +264,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsNull(itemsView.Layout);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -272,7 +274,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsNull(itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -283,7 +285,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -294,7 +296,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Loads and populates an ItemsView with an ItemsSource made of ItemContainers.")]
-	public void CanUseItemsSourceWithItemContainers()
+	public async Task CanUseItemsSourceWithItemContainers()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView"))
 		{
@@ -322,7 +324,7 @@ public class ItemsViewTests : MUXApiTestBase
 			});
 
 			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -349,7 +351,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Loads and populates an ItemsView, changes SelectionMode property to all enum values.")]
-	public void CanChangeSelectionModeProperty()
+	public async Task CanChangeSelectionModeProperty()
 	{
 		List<string> types = new List<string>(3);
 		types.Add("ItemsView");
@@ -380,7 +382,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(ItemsViewSelectionMode.Single, itemsView.SelectionMode);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -396,7 +398,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemTemplate, itemsView.ItemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -405,7 +407,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemsSource, itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -430,7 +432,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsTrue(itemContainer.IsSelected);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -444,7 +446,7 @@ public class ItemsViewTests : MUXApiTestBase
 #endif
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -458,7 +460,7 @@ public class ItemsViewTests : MUXApiTestBase
 #endif
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -472,7 +474,7 @@ public class ItemsViewTests : MUXApiTestBase
 #endif
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -490,7 +492,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Select an item, call InvertSelection")]
-	public void VerifyCanInvertSelection()
+	public async Task VerifyCanInvertSelection()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView"))
 		{
@@ -514,7 +516,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView.Select(0);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -523,7 +525,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView.InvertSelection();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -534,7 +536,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(numSelectedItems, totalItemCount - 1, "Verify expected number of items are selected");
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Done");
 		}
 	}
@@ -542,7 +544,7 @@ public class ItemsViewTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Select an item, scroll to recycle selected item, scroll back to ensure selection persisted across recycling")]
 	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
-	public void VerifySelectionPersistsAfterRecycling()
+	public async Task VerifySelectionPersistsAfterRecycling()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
@@ -581,7 +583,7 @@ public class ItemsViewTests : MUXApiTestBase
 				};
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -591,10 +593,10 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView.Select(0);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			// Scroll to the end
-			BringItemIntoView(itemsSource.Count - 1, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(itemsSource.Count - 1, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -602,21 +604,21 @@ public class ItemsViewTests : MUXApiTestBase
 			});
 
 			// Scroll back to 0
-			BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.IsTrue(itemsView.IsSelected(0), "Selected item is still 0");
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Done");
 		}
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Loads and populates an ItemsView, sets ItemContainer.IsSelected even though ItemContainer.UserCanSelect==ItemContainerUserSelectMode.UserCannotSelect.")]
-	public void CanSetItemContainerIsSelectedProperty()
+	public async Task CanSetItemContainerIsSelectedProperty()
 	{
 		List<string> types = new List<string>(3);
 		types.Add("ItemsView");
@@ -647,7 +649,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(ItemsViewSelectionMode.Single, itemsView.SelectionMode);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -663,7 +665,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemTemplate, itemsView.ItemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -672,7 +674,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemsSource, itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -705,7 +707,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Loads an ItemsView, changes Layout property to various types.")]
-	public void CanChangeLayoutProperty()
+	public async Task CanChangeLayoutProperty()
 	{
 		List<string> types = new List<string>
 		{
@@ -739,7 +741,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView.Layout = new UniformGridLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -748,7 +750,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView.Layout = new LinedFlowLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -766,7 +768,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies ability to set the ItemTemplate property after the ItemsSource.")]
-	public void CanSetItemTemplateAfterItemsSourceProperty()
+	public async Task CanSetItemTemplateAfterItemsSourceProperty()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ItemsRepeater"))
 		{
@@ -785,7 +787,7 @@ public class ItemsViewTests : MUXApiTestBase
 			});
 
 			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -794,7 +796,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemsSource, itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -810,7 +812,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemTemplate, itemsView.ItemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -826,7 +828,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemsRepeater.ItemTemplate, itemsView.ItemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -840,7 +842,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreNotEqual(itemsView.ItemTemplate, itemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -857,16 +859,16 @@ public class ItemsViewTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Invokes the ItemsView.StartBringItemIntoView methods.")]
 	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
-	public void CanBringItemIntoView()
+	public async Task CanBringItemIntoView()
 	{
-		CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: false);
-		CanBringItemIntoView(useLinedFlowLayout: true, useUniformGridLayout: false);
-		CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: true);
+		await CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: false);
+		await CanBringItemIntoView(useLinedFlowLayout: true, useUniformGridLayout: false);
+		await CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: true);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verify binding to the ItemsView's SelectedItem using XAML markup.")]
-	public void CanBindSelectedItem()
+	public async Task CanBindSelectedItem()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ItemsRepeater"))
 		{
@@ -910,7 +912,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for Panel.Loaded event", rootPanelLoadedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -929,7 +931,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView.Select(5);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -941,7 +943,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[Ignore("Uno-specific: Fails for unknown reason, possibly ItemsRepeater issue")]
-	public void VerifyItemsViewUIABehavior()
+	public async Task VerifyItemsViewUIABehavior()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
@@ -969,7 +971,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsNotNull(itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -990,7 +992,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[Ignore("Uno-specific: ItemsView uses Layout.IndexBasedLayoutOrientation in TryGetItemIndex which is not yet implemented in Uno.")]
-	public void VerifyItemsViewUIASelectionProviderBehavior()
+	public async Task VerifyItemsViewUIASelectionProviderBehavior()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
@@ -1057,7 +1059,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsNotNull(itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1080,7 +1082,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Log.Comment("GetSelection returns null as no items are selected.");
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1122,9 +1124,9 @@ public class ItemsViewTests : MUXApiTestBase
 				Log.Comment("ItemContainer is null as it is out of view and not realized.");
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			BringItemIntoView(49, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(49, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 			Log.Comment("Scroll to last item.");
 
 			RunOnUIThread.Execute(() =>
@@ -1152,7 +1154,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Log.Comment("ItemContainer SelectionContainer returns parent ItemsView.");
 			});
 
-			BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(0, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 			Log.Comment("Scroll back to first item.");
 
 			RunOnUIThread.Execute(() =>
@@ -1176,83 +1178,83 @@ public class ItemsViewTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and provides the minimum information requested.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void HandleItemsInfoRequested()
+	public async Task HandleItemsInfoRequested()
 	{
-		HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: false, useTemporaryAspectRatio: false);
+		await HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: false, useTemporaryAspectRatio: false);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and provides the minimum information requested, with min/max size arrays.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void HandleItemsInfoRequestedWithSizeArrays()
+	public async Task HandleItemsInfoRequestedWithSizeArrays()
 	{
-		HandleItemsInfoRequested(useSizeArrays: true, useExtraInfo: false, useTemporaryAspectRatio: false);
+		await HandleItemsInfoRequested(useSizeArrays: true, useExtraInfo: false, useTemporaryAspectRatio: false);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and provides information beyond the minimum requested.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void HandleItemsInfoRequestedWithExtraInfo()
+	public async Task HandleItemsInfoRequestedWithExtraInfo()
 	{
-		HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: true, useTemporaryAspectRatio: false);
+		await HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: true, useTemporaryAspectRatio: false);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and provides information beyond the minimum requested, with min/max size arrays.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void HandleItemsInfoRequestedWithSizeArraysAndExtraInfo()
+	public async Task HandleItemsInfoRequestedWithSizeArraysAndExtraInfo()
 	{
-		HandleItemsInfoRequested(useSizeArrays: true, useExtraInfo: true, useTemporaryAspectRatio: false);
+		await HandleItemsInfoRequested(useSizeArrays: true, useExtraInfo: true, useTemporaryAspectRatio: false);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and provides partial temporary aspect ratios.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void HandleItemsInfoRequestedWithTemporaryInfo()
+	public async Task HandleItemsInfoRequestedWithTemporaryInfo()
 	{
-		HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: false, useTemporaryAspectRatio: true);
+		await HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: false, useTemporaryAspectRatio: true);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and provides information beyond the minimum requested, with partial temporary aspect ratios.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void HandleItemsInfoRequestedWithTemporaryAndExtraInfo()
+	public async Task HandleItemsInfoRequestedWithTemporaryAndExtraInfo()
 	{
-		HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: true, useTemporaryAspectRatio: true);
+		await HandleItemsInfoRequested(useSizeArrays: false, useExtraInfo: true, useTemporaryAspectRatio: true);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and triggers various exceptions exercising LinedFlowLayoutItemsInfoRequestedEventArgs APIs.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void TriggerLinedFlowLayoutItemsInfoRequestedEventArgsExceptions()
+	public async Task TriggerLinedFlowLayoutItemsInfoRequestedEventArgsExceptions()
 	{
-		TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexNegative);
-		TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexIncreased);
-		TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexTooSmall);
-		TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthSmallerThanItemsRangeRequestedLength);
-		TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthTooSmallForDecreasedItemsRangeStartIndex);
-		TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthInconsistent);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexNegative);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexIncreased);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ItemsRangeStartIndexTooSmall);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthSmallerThanItemsRangeRequestedLength);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthTooSmallForDecreasedItemsRangeStartIndex);
+		await TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger.ArrayLengthInconsistent);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and alternatively triggers the fast and regular paths. LinedFlowLayoutItemsInfoRequestedEventArgs.SetMinWidths & LinedFlowLayoutItemsInfoRequestedEventArgs.SetMaxWidths are used.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void AlternateLayoutPathsWithSizeArrays()
+	public async Task AlternateLayoutPathsWithSizeArrays()
 	{
-		AlternateLayoutPaths(useSizeArrays: true);
+		await AlternateLayoutPaths(useSizeArrays: true);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Handles the LinedFlowLayout.ItemsInfoRequested event and alternatively triggers the fast and regular paths. LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth & LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth are used.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void AlternateLayoutPathsWithUniformSizes()
+	public async Task AlternateLayoutPathsWithUniformSizes()
 	{
-		AlternateLayoutPaths(useSizeArrays: false);
+		await AlternateLayoutPaths(useSizeArrays: false);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Alternatively hooks and unhooks the LinedFlowLayout.ItemsInfoRequested event to use the fast and regular paths.")]
-	public void AlternateLayoutPathsByUnhookingItemsInfoRequested()
+	public async Task AlternateLayoutPathsByUnhookingItemsInfoRequested()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "LinedFlowLayout"))
 		{
@@ -1281,7 +1283,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			for (int resizeCount = 0; resizeCount < 6; resizeCount++)
 			{
@@ -1302,7 +1304,7 @@ public class ItemsViewTests : MUXApiTestBase
 					itemsView.Width = itemsView.ActualWidth + 1;
 				});
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 
 			RunOnUIThread.Execute(() =>
@@ -1320,7 +1322,7 @@ public class ItemsViewTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies the stability of the LinedFlowLayout's average-items-per-line by progressively lowering it through new collection items.")]
 	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
-	public void VerifyLinedFlowLayoutAverageItemsPerLineStability()
+	public async Task VerifyLinedFlowLayoutAverageItemsPerLineStability()
 	{
 		ItemsView itemsView = null;
 		LinedFlowLayout linedFlowLayout = null;
@@ -1350,7 +1352,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 		WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		for (int newItemCount = 0; newItemCount < 10; newItemCount++)
 		{
@@ -1365,7 +1367,7 @@ public class ItemsViewTests : MUXApiTestBase
 					itemsSource.Add(newItem);
 				});
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -1447,7 +1449,7 @@ public class ItemsViewTests : MUXApiTestBase
 		args.SetDesiredAspectRatios(desiredAspectRatios);
 	}
 
-	private void AlternateLayoutPaths(bool useSizeArrays)
+	private async Task AlternateLayoutPaths(bool useSizeArrays)
 	{
 		List<string> types = new List<string>
 		{
@@ -1569,7 +1571,7 @@ public class ItemsViewTests : MUXApiTestBase
 			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 			WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1597,7 +1599,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 				WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -1609,7 +1611,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 				WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				Log.Comment($"ItemsInfoRequested event count={itemsInfoRequestedCount}");
 			}
@@ -1626,7 +1628,7 @@ public class ItemsViewTests : MUXApiTestBase
 		}
 	}
 
-	private void HandleItemsInfoRequested(bool useSizeArrays, bool useExtraInfo, bool useTemporaryAspectRatio)
+	private async Task HandleItemsInfoRequested(bool useSizeArrays, bool useExtraInfo, bool useTemporaryAspectRatio)
 	{
 		List<string> types = new List<string>
 		{
@@ -1729,7 +1731,7 @@ public class ItemsViewTests : MUXApiTestBase
 			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 			WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1752,7 +1754,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Log.Comment($"ItemsInfoRequested event count={itemsInfoRequestedCount}");
 
@@ -1786,7 +1788,7 @@ public class ItemsViewTests : MUXApiTestBase
 				}
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1815,7 +1817,7 @@ public class ItemsViewTests : MUXApiTestBase
 		}
 	}
 
-	private void TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(
+	private async Task TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException(
 		LinedFlowLayoutItemsInfoRequestedEventArgsExceptionTrigger trigger)
 	{
 		Log.Comment($"TriggerLinedFlowLayoutItemsInfoRequestedEventArgsException - trigger={trigger}");
@@ -1847,7 +1849,7 @@ public class ItemsViewTests : MUXApiTestBase
 		});
 
 		WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1866,7 +1868,7 @@ public class ItemsViewTests : MUXApiTestBase
 			};
 		});
 
-		BringItemIntoView(150, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+		await BringItemIntoView(150, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1930,7 +1932,7 @@ public class ItemsViewTests : MUXApiTestBase
 		});
 
 		WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1946,7 +1948,7 @@ public class ItemsViewTests : MUXApiTestBase
 		Log.Comment("Done");
 	}
 
-	private void CanBringItemIntoView(bool useLinedFlowLayout, bool useUniformGridLayout)
+	private async Task CanBringItemIntoView(bool useLinedFlowLayout, bool useUniformGridLayout)
 	{
 		List<string> types = null;
 
@@ -2007,7 +2009,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.IsNotNull(itemsView.ItemsSource);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -2023,7 +2025,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Verify.AreEqual(itemTemplate, itemsView.ItemTemplate);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -2060,16 +2062,16 @@ public class ItemsViewTests : MUXApiTestBase
 				}
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			BringItemIntoView(350, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
-			BringItemIntoView(340, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
-			BringItemIntoView(150, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
-			BringItemIntoView(160, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(350, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(340, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(150, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
+			await BringItemIntoView(160, itemsView, scrollViewBringingIntoViewEvent, scrollViewScrollCompletedEvent);
 		}
 	}
 
-	private void BringItemIntoView(
+	private async Task BringItemIntoView(
 		int index,
 		ItemsView itemsView,
 		AutoResetEvent scrollViewBringingIntoViewEvent,
@@ -2094,7 +2096,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 		WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{

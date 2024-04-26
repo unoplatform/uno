@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using Common;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
@@ -17,6 +18,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.UI;
 
@@ -113,7 +115,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Exercises the ScrollPresenter property setters and getters for non-default values.")]
-	public void VerifyPropertyGettersAndSetters()
+	public async Task VerifyPropertyGettersAndSetters()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangle = null;
@@ -144,7 +146,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.VerticalAnchorRatio = 0.75f;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -287,7 +289,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies the InteractionTracker's VisualInteractionSource properties get set according to ScrollPresenter properties.")]
-	public void VerifyInteractionSourceSettings()
+	public async Task VerifyInteractionSourceSettings()
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: false,
@@ -347,7 +349,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 				scrollPresenter.IgnoredInputKinds = ScrollingInputKinds.All & ~ScrollingInputKinds.Touch;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -382,7 +384,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 	//[TestMethod] Bug 19277312: MUX Scroller tests fail on RS5_Release
 	[TestProperty("Description", "Decreases the ScrollPresenter.MaxZoomFactor property and verifies the ScrollPresenter.ZoomFactor value decreases accordingly. Verifies the impact on the ScrollPresenter.Content Visual.")]
 	[Ignore("Relies on CompositionAnimation.SetExpressionReferenceParameter which is not yet implemented.")]
-	public void PinchContentThroughMaxZoomFactor()
+	public async Task PinchContentThroughMaxZoomFactor()
 	{
 		const double newMaxZoomFactor = 0.5;
 		ScrollPresenter scrollPresenter = null;
@@ -410,7 +412,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.MaxZoomFactor = newMaxZoomFactor;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -461,7 +463,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 	// [TestMethod] Bug 19277312: MUX Scroller tests fail on RS5_Release
 	[TestProperty("Description", "Increases the ScrollPresenter.MinZoomFactor property and verifies the ScrollPresenter.ZoomFactor value increases accordingly. Verifies the impact on the ScrollPresenter.Content Visual.")]
 	[Ignore("Relies on CompositionAnimation.SetExpressionReferenceParameter which is not yet implemented.")]
-	public void StretchContentThroughMinZoomFactor()
+	public async Task StretchContentThroughMinZoomFactor()
 	{
 		const double newMinZoomFactor = 2.0;
 		ScrollPresenter scrollPresenter = null;
@@ -489,7 +491,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.MinZoomFactor = newMinZoomFactor;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{

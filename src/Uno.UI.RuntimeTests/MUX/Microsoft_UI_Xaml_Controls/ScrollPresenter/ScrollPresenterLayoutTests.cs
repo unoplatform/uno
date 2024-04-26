@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Windows.UI;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;
@@ -33,7 +35,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Sets ScrollPresenter.Content.Margin and verifies InteractionTracker.MaxPosition.")]
-	public void BasicMargin()
+	public async Task BasicMargin()
 	{
 		const double c_Margin = 50.0;
 		ScrollPresenter scrollPresenter = null;
@@ -68,7 +70,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedFinalHorizontalOffset: c_defaultUIScrollPresenterContentWidth + 2 * c_Margin - c_defaultUIScrollPresenterWidth,
 			expectedFinalVerticalOffset: c_defaultUIScrollPresenterContentHeight + 2 * c_Margin - c_defaultUIScrollPresenterHeight);
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -137,7 +139,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Sets ScrollPresenter.Content.HorizontalAlignment/VerticalAlignment and verifies content positioning.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void BasicAlignment()
+	public async Task BasicAlignment()
 	{
 		const float c_smallZoomFactor = 0.15f;
 		ScrollPresenter scrollPresenter = null;
@@ -158,7 +160,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
 		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
@@ -379,7 +381,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Sets ScrollPresenter.Content.HorizontalAlignment/VerticalAlignment and ScrollPresenter.Content.Margin and verifies content positioning.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void BasicMarginAndAlignment()
+	public async Task BasicMarginAndAlignment()
 	{
 		const float c_smallZoomFactor = 0.15f;
 		const double c_Margin = 40.0;
@@ -404,7 +406,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
 		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
@@ -466,7 +468,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Sets ScrollPresenter.Content to an unsized and stretched Image, verifies resulting ScrollPresenter extents.")]
 	[Ignore("Fails for missing InteractionTracker features")]
-	public void StretchedImage()
+	public async Task StretchedImage()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Image imageScrollPresenterContent = null;
@@ -489,7 +491,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -506,7 +508,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.ContentOrientation = ScrollingContentOrientation.Vertical;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -523,7 +525,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.ContentOrientation = ScrollingContentOrientation.Horizontal;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -605,7 +607,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestProperty("Description",
 		"Sets ScrollPresenter.ContentOrientation to Vertical and verifies Image positioning for Stretch alignment.")]
 	[Ignore("Relies on CompositionAnimation.SetExpressionReferenceParameter which is not yet implemented.")]
-	public void BasicImageWithConstrainedWidth()
+	public async Task BasicImageWithConstrainedWidth()
 	{
 		//using (PrivateLoggingHelper privateLoggingHelper = new PrivateLoggingHelper("ScrollPresenter"))
 		{
@@ -638,7 +640,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ValidateContentWithConstrainedWidth(
+			await ValidateContentWithConstrainedWidth(
 				compositor,
 				scrollPresenter,
 				content: imageScrollPresenterContent,
@@ -654,7 +656,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestProperty("Description",
 		"Sets ScrollPresenter.ContentOrientation to Vertical and verifies Image positioning for various alignments and zoom factors.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ImageWithConstrainedWidth()
+	public async Task ImageWithConstrainedWidth()
 	{
 		const float c_smallZoomFactor = 0.5f;
 		const float c_largeZoomFactor = 2.0f;
@@ -690,7 +692,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -703,7 +705,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
 		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -713,7 +715,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: (float)(-c_scrollPresenterWidth * c_smallZoomFactor / 2.0), // -50
 			expectedZoomFactor: c_smallZoomFactor);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -723,7 +725,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_smallZoomFactor);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -733,7 +735,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: (float)(-c_scrollPresenterWidth * c_smallZoomFactor), // -100
 			expectedZoomFactor: c_smallZoomFactor);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -746,7 +748,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		// Jump to absolute large zoomFactor to make the content larger than the viewport.
 		ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -756,7 +758,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_largeZoomFactor);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -766,7 +768,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_largeZoomFactor);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -776,7 +778,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_largeZoomFactor);
 
-		ValidateContentWithConstrainedWidth(
+		await ValidateContentWithConstrainedWidth(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -791,7 +793,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestProperty("Description",
 		"Sets ScrollPresenter.ContentOrientation to Horizontal and verifies Image positioning for Stretch alignment.")]
 	[Ignore("Relies on CompositionAnimation.SetExpressionReferenceParameter which is not yet implemented.")]
-	public void BasicImageWithConstrainedHeight()
+	public async Task BasicImageWithConstrainedHeight()
 	{
 		//using (PrivateLoggingHelper privateLoggingHelper = new PrivateLoggingHelper("ScrollPresenter"))
 		{
@@ -823,7 +825,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ValidateContentWithConstrainedHeight(
+			await ValidateContentWithConstrainedHeight(
 				compositor,
 				scrollPresenter,
 				content: imageScrollPresenterContent,
@@ -836,7 +838,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			// Jump to absolute small zoomFactor to make the content smaller than the viewport.
 			ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
-			ValidateContentWithConstrainedHeight(
+			await ValidateContentWithConstrainedHeight(
 				compositor,
 				scrollPresenter,
 				content: imageScrollPresenterContent,
@@ -852,7 +854,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestProperty("Description",
 		"Sets ScrollPresenter.ContentOrientation to Horizontal and verifies Image positioning for various alignments and zoom factors.")]
 	[Ignore("Relies on CompositionAnimation.SetExpressionReferenceParameter which is not yet implemented.")]
-	public void ImageWithConstrainedHeight()
+	public async Task ImageWithConstrainedHeight()
 	{
 		const float c_smallZoomFactor = 0.5f;
 		const float c_largeZoomFactor = 2.0f;
@@ -886,7 +888,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -899,7 +901,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
 		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -909,7 +911,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: (float)(-c_defaultUIScrollPresenterHeight * c_smallZoomFactor / 2.0), // -50
 			expectedZoomFactor: c_smallZoomFactor);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -919,7 +921,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_smallZoomFactor);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -929,7 +931,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: (float)(-c_defaultUIScrollPresenterHeight * c_smallZoomFactor), // -100
 			expectedZoomFactor: c_smallZoomFactor);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -942,7 +944,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		// Jump to absolute large zoomFactor to make the content larger than the viewport.
 		ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -952,7 +954,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_largeZoomFactor);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -962,7 +964,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_largeZoomFactor);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -972,7 +974,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedMinPosition: 0.0f,
 			expectedZoomFactor: c_largeZoomFactor);
 
-		ValidateContentWithConstrainedHeight(
+		await ValidateContentWithConstrainedHeight(
 			compositor,
 			scrollPresenter,
 			content: imageScrollPresenterContent,
@@ -987,7 +989,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestProperty("Description",
 		"Sets ScrollPresenter.ContentOrientation to Both and verifies Image positioning for various alignments and zoom factors.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ImageWithConstrainedSize()
+	public async Task ImageWithConstrainedSize()
 	{
 		//using (PrivateLoggingHelper privateLoggingHelper = new PrivateLoggingHelper("ScrollPresenter"))
 		{
@@ -1029,7 +1031,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ValidateContentWithConstrainedSize(
+			await ValidateContentWithConstrainedSize(
 				compositor,
 				scrollPresenter,
 				content: imageScrollPresenterContent,
@@ -1042,7 +1044,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			// Jump to absolute small zoomFactor to make the content smaller than the viewport.
 			ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
-			ValidateContentWithConstrainedSize(
+			await ValidateContentWithConstrainedSize(
 				compositor,
 				scrollPresenter,
 				content: imageScrollPresenterContent,
@@ -1055,7 +1057,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			// Jump to absolute large zoomFactor to make the content larger than the viewport.
 			ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
 
-			ValidateContentWithConstrainedSize(
+			await ValidateContentWithConstrainedSize(
 				compositor,
 				scrollPresenter,
 				content: imageScrollPresenterContent,
@@ -1070,7 +1072,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Tests ScrollPresenter's view properties and methods with RightToLeft flow direction.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void RightToLeftFlowDirection()
+	public async Task RightToLeftFlowDirection()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
@@ -1111,7 +1113,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			ScrollingSnapPointsMode.Ignore,
 			hookViewChanged: false);
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1126,7 +1128,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.FlowDirection = FlowDirection.RightToLeft;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1158,7 +1160,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			ScrollingSnapPointsMode.Ignore,
 			hookViewChanged: false);
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1169,7 +1171,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 	}
 
-	private void ValidateContentWithConstrainedWidth(
+	private async Task ValidateContentWithConstrainedWidth(
 		Compositor compositor,
 		ScrollPresenter scrollPresenter,
 		FrameworkElement content,
@@ -1192,7 +1194,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			content.HorizontalAlignment = horizontalAlignment;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1231,7 +1233,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 	}
 
-	private void ValidateContentWithConstrainedHeight(
+	private async Task ValidateContentWithConstrainedHeight(
 		Compositor compositor,
 		ScrollPresenter scrollPresenter,
 		FrameworkElement content,
@@ -1253,7 +1255,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			content.VerticalAlignment = verticalAlignment;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1292,7 +1294,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 	}
 
-	private void ValidateContentWithConstrainedSize(
+	private async Task ValidateContentWithConstrainedSize(
 		Compositor compositor,
 		ScrollPresenter scrollPresenter,
 		FrameworkElement content,
@@ -1326,7 +1328,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			content.VerticalAlignment = verticalAlignment;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{

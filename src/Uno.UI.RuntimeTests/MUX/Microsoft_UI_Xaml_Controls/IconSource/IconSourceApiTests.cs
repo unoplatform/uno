@@ -29,6 +29,8 @@ using ImageIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIc
 using PathIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PathIconSource;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -40,7 +42,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	public class IconSourceApiTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void ImageIconSourceTest()
+		public async Task ImageIconSourceTest()
 		{
 			ImageIconSource iconSource = null;
 			ImageIcon imageIcon = null;
@@ -67,7 +69,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
 				iconSource.ImageSource = new SvgImageSource(uri);
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -81,7 +83,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void AnimatedIconSourceTest()
+		public async Task AnimatedIconSourceTest()
 		{
 			AnimatedIconSource iconSource = null;
 			IAnimatedVisualSource2 source = null;
@@ -113,7 +115,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				iconSource.Source = source;
 				iconSource.MirroredWhenRightToLeft = true;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -130,7 +132,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 		// Uno Doc: tests from here onwards are only present in the WinUI2 source
 		[TestMethod]
-		public void SymbolIconSourceTest()
+		public async Task SymbolIconSourceTest()
 		{
 			SymbolIconSource iconSource = null;
 			SymbolIcon symbolIcon = null;
@@ -156,7 +158,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
 				iconSource.Symbol = Symbol.HangUp;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -169,7 +171,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void FontIconSourceTest()
+		public async Task FontIconSourceTest()
 		{
 			FontIconSource iconSource = null;
 			FontIcon fontIcon = null;
@@ -213,7 +215,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				iconSource.IsTextScaleFactorEnabled = true;
 				iconSource.MirroredWhenRightToLeft = true;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -239,7 +241,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void BitmapIconSourceTest()
+		public async Task BitmapIconSourceTest()
 		{
 			BitmapIconSource iconSource = null;
 			BitmapIcon bitmapIcon = null;
@@ -273,7 +275,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				iconSource.UriSource = uri;
 				iconSource.ShowAsMonochrome = false;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -289,7 +291,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void PathIconSourceTest()
+		public async Task PathIconSourceTest()
 		{
 			PathIconSource iconSource = null;
 			RectangleGeometry rectGeometry = null;
@@ -316,7 +318,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
 				iconSource.Data = rectGeometry = new RectangleGeometry();
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
