@@ -204,13 +204,17 @@
 			</_UnoUpriResource>
 		</ItemGroup>
 
+		<PropertyGroup>
+			<_UnoUpriSubstitutionsFile>$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml</_UnoUpriSubstitutionsFile>
+		</PropertyGroup>
+
 		<UpriSubstitutionsGeneratorTask_v0
 			AssemblyName="$(AssemblyName)"
 			Resources="@(_UnoUpriResource)"
-			OutputFile="$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml" />
+			OutputFile="$(_UnoUpriSubstitutionsFile)" />
 
 		<ItemGroup>
-			<FileWrites Include="$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml" />
+			<FileWrites Include="$(_UnoUpriSubstitutionsFile)" Condition="Exists('$(_UnoUpriSubstitutionsFile)')" />
 		</ItemGroup>
 
 	</Target>
