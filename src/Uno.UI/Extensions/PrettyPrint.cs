@@ -18,7 +18,7 @@ using Colors = Windows.UI.Colors;
 namespace Uno.UI.Extensions;
 
 
-#if WINAPPSDK || WINUI || WINDOWS_UWP
+#if WINAPPSDK || WINDOWS_UWP
 internal static class PrettyPrint
 #else
 public static class PrettyPrint
