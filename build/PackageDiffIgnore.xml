@@ -1842,7 +1842,53 @@
 			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView.get_IsFullScreen()" reason="Not in WinUI" />
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="5.2">
+		<Types>
+		</Types>
 
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<!-- BEGIN AppWindowTitleBar -->
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::InactiveForegroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::InactiveBackgroundColor()" reason="Not in UWP" />
+			<Member fullName="Microsoft.UI.Windowing.IconShowOptions Microsoft.UI.Windowing.AppWindowTitleBar::IconShowOptions()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ForegroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonPressedForegroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonPressedBackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonInactiveForegroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonInactiveBackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonHoverForegroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonHoverBackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonForegroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::ButtonBackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar::BackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Int32 Microsoft.UI.Windowing.AppWindowTitleBar::Height()" reason="Not in UWP" />
+			<Member fullName="System.Int32 Microsoft.UI.Windowing.AppWindowTitleBar::LeftInset()" reason="Not in UWP" />
+			<!-- END AppWindowTitleBar -->
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN AppWindowTitleBar -->
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindowTitleBar.set_ButtonHoverForegroundColor(System.Nullable`1&lt;Windows.UI.Color&gt; value)" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar.get_ButtonHoverBackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindowTitleBar.set_ButtonHoverBackgroundColor(System.Nullable`1&lt;Windows.UI.Color&gt; value)" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar.get_ButtonForegroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindowTitleBar.set_ButtonForegroundColor(System.Nullable`1&lt;Windows.UI.Color&gt; value)" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar.get_ButtonBackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindowTitleBar.set_ButtonBackgroundColor(System.Nullable`1&lt;Windows.UI.Color&gt; value)" reason="Not in UWP" />
+			<Member fullName="System.Nullable`1&lt;Windows.UI.Color&gt; Microsoft.UI.Windowing.AppWindowTitleBar.get_BackgroundColor()" reason="Not in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindowTitleBar.set_BackgroundColor(System.Nullable`1&lt;Windows.UI.Color&gt; value)" reason="Not in UWP" />
+			<Member fullName="System.Int32 Microsoft.UI.Windowing.AppWindowTitleBar.get_Height()" reason="Not in UWP" />
+			<Member fullName="System.Int32 Microsoft.UI.Windowing.AppWindowTitleBar.get_LeftInset()" reason="Not in UWP" />
+			<Member fullName="System.Int32 Microsoft.UI.Windowing.AppWindowTitleBar.get_RightInset()" reason="Not in UWP" />
+			<!-- END AppWindowTitleBar -->
+		</Methods>
+	</IgnoreSet>
   <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">
