@@ -79,9 +79,9 @@ public class TeachingTipTests
 			MUXControlsTestApp.App.TestContentRoot = root;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 		loadedEvent.WaitOne();
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -141,7 +141,7 @@ public class TeachingTipTests
 			teachingTip.IsLightDismissEnabled = true;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -177,7 +177,7 @@ public class TeachingTipTests
 	}
 
 	[TestMethod]
-	public void TeachingTipWithContentAndWithoutHeroContentDoesNotCrash()
+	public async Task TeachingTipWithContentAndWithoutHeroContentDoesNotCrash()
 	{
 		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
@@ -200,7 +200,7 @@ public class TeachingTipTests
 				TestServices.WindowHelper.WindowContent = teachingTip;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			loadedEvent.WaitOne();
 		}
 		finally
@@ -210,7 +210,7 @@ public class TeachingTipTests
 	}
 
 	[TestMethod]
-	public void TeachingTipWithContentAndWithoutIconSourceDoesNotCrash()
+	public async Task TeachingTipWithContentAndWithoutIconSourceDoesNotCrash()
 	{
 		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
@@ -232,7 +232,7 @@ public class TeachingTipTests
 				TestServices.WindowHelper.WindowContent = teachingTip;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			loadedEvent.WaitOne();
 		}
 		finally
@@ -242,7 +242,7 @@ public class TeachingTipTests
 	}
 
 	[TestMethod]
-	public void PropagatePropertiesDown()
+	public async Task PropagatePropertiesDown()
 	{
 		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
@@ -277,7 +277,7 @@ public class TeachingTipTests
 				tip.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{

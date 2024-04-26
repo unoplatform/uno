@@ -7,6 +7,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Common;
 using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
+
+
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -37,9 +41,9 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		[TestInitialize]
-		public void Setup()
+		public async Task Setup()
 		{
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			var hostLoaded = new ManualResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
@@ -51,9 +55,9 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		[TestCleanup]
-		public void Cleanup()
+		public async Task Cleanup()
 		{
-			TestUtilities.ClearVisualTreeRoot();
+			await TestUtilities.ClearVisualTreeRoot();
 		}
 	}
 }

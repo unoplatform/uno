@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Windows.UI;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;
@@ -24,7 +26,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 {
 	[TestMethod]
 	[TestProperty("Description", "Sets the ScrollPresenter.HorizontalScrollController and ScrollPresenter.VerticalScrollController properties.")]
-	public void SettingScrollControllerProperties()
+	public async Task SettingScrollControllerProperties()
 	{
 		ScrollPresenter scrollPresenter = null;
 		CompositionScrollController horizontalScrollController = null;
@@ -49,7 +51,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.VerticalScrollController = verticalScrollController;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -69,7 +71,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Change ScrollPresenter view while scroll controllers are attached.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ChangeOffsetsWhileScrollControllersAreAttached()
+	public async Task ChangeOffsetsWhileScrollControllersAreAttached()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
@@ -118,7 +120,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			Log.Comment("VerticalScrollController size={0}, {1}", verticalScrollController.ActualWidth, verticalScrollController.ActualHeight);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		Log.Comment("Jump to offsets");
 		ScrollTo(
@@ -434,7 +436,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Change ScrollPresenter view while a bi-directional scroll controller is attached.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ChangeOffsetsWhileBiDirectionalScrollControllerIsAttached()
+	public async Task ChangeOffsetsWhileBiDirectionalScrollControllerIsAttached()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
@@ -472,7 +474,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			Log.Comment("BiDirectionalScrollController size={0}, {1}", biDirectionalScrollController.ActualWidth, biDirectionalScrollController.ActualHeight);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		Log.Comment("Jump to offsets");
 		ScrollTo(

@@ -12,6 +12,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
 using Windows.Foundation;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -20,7 +22,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	public class InfoBadgeTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void InfoBadgeDisplayKindTest()
+		public async Task InfoBadgeDisplayKindTest()
 		{
 			InfoBadge infoBadge = null;
 			SymbolIconSource symbolIconSource = null;
@@ -34,7 +36,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -74,7 +76,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void InfoBadgeSupportsAllIconTypes()
+		public async Task InfoBadgeSupportsAllIconTypes()
 		{
 			InfoBadge infoBadge = null;
 			SymbolIconSource symbolIconSource = null;
@@ -115,7 +117,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -146,7 +148,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void InfoBadgeValueLessThanNegativeOneCrashes()
+		public async Task InfoBadgeValueLessThanNegativeOneCrashes()
 		{
 			InfoBadge infoBadge = null;
 			RunOnUIThread.Execute(() =>
@@ -156,7 +158,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{

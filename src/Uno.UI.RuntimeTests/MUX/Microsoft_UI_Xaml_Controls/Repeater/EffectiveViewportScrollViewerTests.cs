@@ -37,6 +37,8 @@ using IRepeaterScrollingSurface = Microsoft.UI.Private.Controls.IRepeaterScrolli
 using ConfigurationChangedEventHandler = Microsoft.UI.Private.Controls.ConfigurationChangedEventHandler;
 using PostArrangeEventHandler = Microsoft.UI.Private.Controls.PostArrangeEventHandler;
 using ViewportChangedEventHandler = Microsoft.UI.Private.Controls.ViewportChangedEventHandler;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -46,7 +48,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class EffectiveViewportTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void ValidateBasicScrollViewerScenario()
+		public async Task ValidateBasicScrollViewerScenario()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -105,7 +107,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsTrue(viewChanged.WaitOne(), "Did not receive view changed event");
 			Verify.IsTrue(layoutMeasured.WaitOne(), "Did not receive measure on layout");
 			viewChanged.Reset();
@@ -122,7 +124,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(400, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsTrue(viewChanged.WaitOne(), "Did not receive view changed event");
 			Verify.IsTrue(layoutMeasured.WaitOne(), "Did not receive measure on layout");
 			viewChanged.Reset();
@@ -137,7 +139,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, null, 2.0f, disableAnimation: true);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsTrue(viewChanged.WaitOne(), "Did not receive view changed event");
 			Verify.IsTrue(layoutMeasured.WaitOne(), "Did not receive measure on layout");
 			viewChanged.Reset();
@@ -151,7 +153,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void ValidateOneScrollViewerScenario()
+		public async Task ValidateOneScrollViewerScenarioAsync()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -195,7 +197,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					}
 				};
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -223,7 +225,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void ValidateTwoScrollViewerScenario()
+		public async Task ValidateTwoScrollViewerScenarioAsync()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -286,7 +288,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					}
 				};
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -313,7 +315,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void CanGrowCacheBufferWithScrollViewer()
+		public async Task CanGrowCacheBufferWithScrollViewerAsync()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -379,7 +381,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			if (!fullCacheEvent.WaitOne(DefaultWaitTimeInMS)) Verify.Fail("Cache full size never reached.");
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -411,7 +413,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void CanBringIntoViewElements()
+		public async Task CanBringIntoViewElementsAsync()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -492,7 +494,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 			Verify.IsTrue(rootLoadedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -501,7 +503,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			Verify.IsTrue(viewChangeCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.AreEqual(1, viewChangedOffsets.Count);
 			viewChangedOffsets.Clear();
 
@@ -519,7 +521,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			Verify.IsTrue(viewChangeCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsLessThanOrEqual(1, viewChangedOffsets.Count);
 			viewChangedOffsets.Clear();
 			ValidateRealizedRange(repeater, 101, 109);
@@ -536,7 +538,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			Verify.IsTrue(viewChangeCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			viewChangedOffsets.Clear();
 			ValidateRealizedRange(repeater, 0, 6);
 
@@ -554,7 +556,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			Verify.IsTrue(viewChangeCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			ValidateRealizedRange(repeater, 19, 26);
 		}
 

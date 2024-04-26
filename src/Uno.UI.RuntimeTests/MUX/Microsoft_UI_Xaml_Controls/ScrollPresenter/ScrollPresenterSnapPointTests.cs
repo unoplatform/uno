@@ -4,12 +4,14 @@
 using System;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using Common;
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;
@@ -65,14 +67,14 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Add and remove snap points and make sure the corresponding collections look correct.")]
 	[Ignore("Fails for missing InteractionTracker features")]
-	public void CanAddAndRemoveSnapPointsFromAScrollPresenter()
+	public async Task CanAddAndRemoveSnapPointsFromAScrollPresenter()
 	{
-		CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment.Near);
-		CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment.Center);
-		CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment.Far);
+		await CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment.Near);
+		await CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment.Center);
+		await CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment.Far);
 	}
 
-	private void CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment alignment)
+	private async Task CanAddAndRemoveSnapPointsFromAScrollPresenter(ScrollSnapPointsAlignment alignment)
 	{
 		ScrollPresenter scrollPresenter = null;
 		ScrollSnapPoint snapPoint2 = null;
@@ -92,7 +94,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.ZoomSnapPoints.Add(snapPoint5);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -104,7 +106,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.HorizontalSnapPoints.Add(snapPoint4);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -112,7 +114,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.HorizontalSnapPoints.Remove(snapPoint2);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -120,7 +122,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.HorizontalSnapPoints.Remove(snapPoint2);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -128,7 +130,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.HorizontalSnapPoints.Clear();
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -141,7 +143,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Add scroll snap points with various alignments.")]
 	[Ignore("Fails for missing InteractionTracker features")]
-	public void CanAddScrollSnapPointsWithMixedAlignments()
+	public async Task CanAddScrollSnapPointsWithMixedAlignments()
 	{
 		ScrollPresenter scrollPresenter = null;
 
@@ -168,7 +170,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.VerticalSnapPoints.Add(farRepeatedScrollSnapPoint);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -180,7 +182,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Add the same snap points to multiple collections and ensure they use collection-specific data.")]
 	[Ignore("Fails for missing InteractionTracker features")]
-	public void CanShareSnapPointsInMultipleCollections()
+	public async Task CanShareSnapPointsInMultipleCollections()
 	{
 		ScrollPresenter scrollPresenter1 = null;
 		ScrollPresenter scrollPresenter2 = null;
@@ -235,7 +237,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter3.HorizontalSnapPoints.Add(scrollSnapPoint1);
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{

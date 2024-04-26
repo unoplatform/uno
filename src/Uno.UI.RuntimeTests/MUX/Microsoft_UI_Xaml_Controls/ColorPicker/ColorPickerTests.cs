@@ -9,6 +9,8 @@ using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Shapes;
 
 using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -183,7 +185,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void ColorPickerDerivationTest()
+		public async Task ColorPickerDerivationTest()
 		{
 			RunOnUIThread.Execute(() =>
 			{
@@ -192,11 +194,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				MyColorSpectrum colorSpectrum = new MyColorSpectrum();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
-		public void ValidateHueRange()
+		public async Task ValidateHueRange()
 		{
 			RunOnUIThread.Execute(() =>
 			{
@@ -212,7 +214,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				}
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
@@ -241,7 +243,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyClearingHexInputFieldDoesNotCrash()
+		public async Task VerifyClearingHexInputFieldDoesNotCrash()
 		{
 			ColorPicker colorPicker = null;
 
@@ -253,7 +255,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = colorPicker;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -267,7 +269,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyClearingAlphaChannelInputFieldDoesNotCrash()
+		public async Task VerifyClearingAlphaChannelInputFieldDoesNotCrash()
 		{
 			ColorPicker colorPicker = null;
 
@@ -279,7 +281,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = colorPicker;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -309,14 +311,14 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[TestProperty("Ignore", "True")]
-		public void VerifyVisualTree()
+		public async Task VerifyVisualTree()
 		{
 			ColorPicker colorPicker = null;
 			RunOnUIThread.Execute(() =>
 			{
 				colorPicker = new ColorPicker { IsAlphaEnabled = true, Width = 300, Height = 600 };
 			});
-			TestUtilities.SetAsVisualTreeRoot(colorPicker);
+			await TestUtilities.SetAsVisualTreeRoot(colorPicker);
 
 			// Uno docs: Commented out as this requires additional test infrastructure.
 			//VisualTreeTestHelper.VerifyVisualTree(root: colorPicker, verificationFileNamePrefix: "ColorPicker");

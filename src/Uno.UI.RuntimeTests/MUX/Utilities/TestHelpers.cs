@@ -141,9 +141,9 @@ namespace MUXControlsTestApp.Utilities
 	{
 		public static int DefaultWaitMs = Debugger.IsAttached ? 120000 : 5000;
 
-		public static void SetAsVisualTreeRoot(FrameworkElement element)
+		public static async Task SetAsVisualTreeRoot(FrameworkElement element)
 		{
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			AutoResetEvent loadedEvent = new AutoResetEvent(false);
 
@@ -155,13 +155,13 @@ namespace MUXControlsTestApp.Utilities
 			});
 
 			WaitForEvent(loadedEvent);
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Loaded raised.");
 		}
 
-		public static void ClearVisualTreeRoot()
+		public static async Task ClearVisualTreeRoot()
 		{
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			AutoResetEvent unloadedEvent = new AutoResetEvent(false);
 
@@ -190,7 +190,7 @@ namespace MUXControlsTestApp.Utilities
 			});
 
 			WaitForEvent(unloadedEvent);
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Unloaded raised.");
 		}
 
