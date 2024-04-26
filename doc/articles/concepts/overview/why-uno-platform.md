@@ -14,6 +14,10 @@ At the core is a cross-platform .NET UI framework, that allows apps to run every
 
 However, built on top of this foundation is also a rich platform which includes libraries, extensions, and tools that accelerate the design, development, and testing of cross-platform applications.
 
+## True Single Project for 9 Platform Targets across Mobile, Web, Desktop, and Embedded
+
+Our Single Project approach is .NET ecosystem’s first and only true Single Project solution, empowering developers with a unified approach across all 9 platform targets, spanning mobile, web, desktop, and embedded apps. This genuine Single Project approach simplifies development, accelerates build times, and facilitates platform-specific development, enhancing your productivity and efficiency.
+
 ## It's Free and Open-Source
 
 Uno Platform is free and open source under Apache 2.0.
