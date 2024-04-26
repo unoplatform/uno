@@ -115,8 +115,8 @@ public class ScrollViewTests : MUXApiTestBase
 		{
 			ScrollView scrollView = null;
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -126,7 +126,7 @@ public class ScrollViewTests : MUXApiTestBase
 				SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent, scrollViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -167,7 +167,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
@@ -186,8 +186,8 @@ public class ScrollViewTests : MUXApiTestBase
 		{
 			ScrollView scrollView = null;
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -197,7 +197,7 @@ public class ScrollViewTests : MUXApiTestBase
 				SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent, scrollViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -218,7 +218,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
@@ -269,8 +269,8 @@ public class ScrollViewTests : MUXApiTestBase
 		using (ScrollViewTestHooksHelper scrollViewTestHooksHelper = new ScrollViewTestHooksHelper(scrollView, autoHideScrollControllers))
 		{
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -287,7 +287,7 @@ public class ScrollViewTests : MUXApiTestBase
 					useParentGrid: true);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -360,7 +360,7 @@ public class ScrollViewTests : MUXApiTestBase
 				m_scrollViewVisualStateCounts = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
 		}
 	}
 
@@ -443,7 +443,7 @@ public class ScrollViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies anchor candidate registration and unregistration.")]
-	public void VerifyAnchorCandidateRegistration()
+	public async Task VerifyAnchorCandidateRegistration()
 	{
 		//using (PrivateLoggingHelper privateSVLoggingHelper = new PrivateLoggingHelper("ScrollView", "ScrollPresenter"))
 		{
@@ -451,8 +451,8 @@ public class ScrollViewTests : MUXApiTestBase
 			ScrollPresenter scrollPresenter = null;
 			ScrollView scrollView = null;
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewAnchorRequestedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewAnchorRequestedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -472,7 +472,7 @@ public class ScrollViewTests : MUXApiTestBase
 				};
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -487,7 +487,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollPresenter.InvalidateArrange();
 			});
 
-			WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
+			await WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -499,7 +499,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollPresenter.InvalidateArrange();
 			});
 
-			WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
+			await WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -513,8 +513,8 @@ public class ScrollViewTests : MUXApiTestBase
 	private void SetupDefaultUI(
 		ScrollView scrollView,
 		Rectangle rectangleScrollViewContent = null,
-		AutoResetEvent scrollViewLoadedEvent = null,
-		AutoResetEvent scrollViewUnloadedEvent = null,
+		UnoAutoResetEvent scrollViewLoadedEvent = null,
+		UnoAutoResetEvent scrollViewUnloadedEvent = null,
 		bool setAsContentRoot = true,
 		bool useParentGrid = false)
 	{
@@ -590,19 +590,19 @@ public class ScrollViewTests : MUXApiTestBase
 		}
 	}
 
-	private void WaitForEvent(string logComment, EventWaitHandle eventWaitHandle)
+	private async Task WaitForEvent(string logComment, UnoManualOrAutoResetEvent eventWaitHandle)
 	{
 		Log.Comment(logComment);
 		if (!UnoIsDebuggerPresent())
 		{
-			if (!eventWaitHandle.WaitOne(TimeSpan.FromMilliseconds(c_MaxWaitDuration)))
+			if (!await eventWaitHandle.WaitOne(TimeSpan.FromMilliseconds(c_MaxWaitDuration)))
 			{
 				throw new Exception("Timeout expiration in WaitForEvent.");
 			}
 		}
 		else
 		{
-			eventWaitHandle.WaitOne();
+			await eventWaitHandle.WaitOne();
 		}
 	}
 

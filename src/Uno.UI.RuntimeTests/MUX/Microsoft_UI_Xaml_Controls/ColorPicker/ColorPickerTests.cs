@@ -223,7 +223,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 #else
 		[Ignore("Fails on all targets https://github.com/unoplatform/uno/issues/9080")]
 #endif
-		public void ValidateFractionalWidthDoesNotCrash()
+		public async Task ValidateFractionalWidthDoesNotCrash()
 		{
 			ColorSpectrum colorSpectrum = null;
 
@@ -239,7 +239,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				colorSpectrum.Height = 332.75;
 			});
 
-			SetAsRootAndWaitForColorSpectrumFill(colorSpectrum);
+			await SetAsRootAndWaitForColorSpectrumFill(colorSpectrum);
 		}
 
 		[TestMethod]
@@ -325,9 +325,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		// This takes a FrameworkElement parameter so you can pass in either a ColorPicker or a ColorSpectrum.
-		private void SetAsRootAndWaitForColorSpectrumFill(FrameworkElement element)
+		private async Task SetAsRootAndWaitForColorSpectrumFill(FrameworkElement element)
 		{
-			ManualResetEvent spectrumLoadedEvent = new ManualResetEvent(false);
+			UnoManualResetEvent spectrumLoadedEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -346,7 +346,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			if (!spectrumLoadedEvent.WaitOne(timeout: TimeSpan.FromSeconds(10)))
+			if (!await spectrumLoadedEvent.WaitOne(timeout: TimeSpan.FromSeconds(10)))
 			{
 				Assert.Fail("Timeout waiting on SpectrumRectangle.Fill to be set.");
 			}

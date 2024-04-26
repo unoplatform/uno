@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater repeater = null;
 			ScrollViewer scrollViewer = null;
 			var data = new ObservableCollection<string>(Enumerable.Range(0, 50).Select(i => "Item #" + i));
-			var viewChangedEvent = new AutoResetEvent(false);
+			var viewChangedEvent = new UnoAutoResetEvent(false);
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 2000, null, true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTimeInMS), "Waiting for final ViewChanged event.");
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTimeInMS), "Waiting for final ViewChanged event.");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>

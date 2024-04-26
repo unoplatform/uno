@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 20).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -137,7 +137,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 600, null, true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -272,7 +272,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 10).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 			int elementsCleared = 0;
 			int elementsPrepared = 0;
 
@@ -293,7 +293,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 200, null, true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -341,7 +341,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 10).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -356,7 +356,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 400, null, true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -442,7 +442,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 10).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 			int elementsCleared = 0;
 			int elementsPrepared = 0;
 

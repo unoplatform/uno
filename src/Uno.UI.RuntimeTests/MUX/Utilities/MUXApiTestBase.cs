@@ -44,14 +44,14 @@ namespace MUXControlsTestApp.Utilities
 		public async Task Setup()
 		{
 			await TestServices.WindowHelper.WaitForIdle();
-			var hostLoaded = new ManualResetEvent(false);
+			var hostLoaded = new UnoManualResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				_host = new Border();
 				_host.Loaded += delegate { hostLoaded.Set(); };
 				MUXControlsTestApp.App.TestContentRoot = _host;
 			});
-			Verify.IsTrue(hostLoaded.WaitOne(DefaultWaitTimeInMS), "Waiting for loaded event");
+			Verify.IsTrue(await hostLoaded.WaitOne(DefaultWaitTimeInMS), "Waiting for loaded event");
 		}
 
 		[TestCleanup]

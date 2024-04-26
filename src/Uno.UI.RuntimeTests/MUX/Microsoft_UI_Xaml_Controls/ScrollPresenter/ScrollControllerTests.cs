@@ -77,7 +77,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		Rectangle rectangleScrollPresenterContent = null;
 		CompositionScrollController horizontalScrollController = null;
 		CompositionScrollController verticalScrollController = null;
-		AutoResetEvent loadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -112,7 +112,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				loadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", loadedEvent);
+		await WaitForEvent("Waiting for Loaded event", loadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -123,7 +123,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Log.Comment("Jump to offsets");
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			(c_defaultUIScrollPresenterContentWidth - c_defaultUIScrollPresenterWidth) / 2.0,
 			(c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 2.0,
@@ -135,7 +135,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedFinalVerticalOffset: (c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 2.0);
 
 		Log.Comment("Animate to offsets");
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			(c_defaultUIScrollPresenterContentWidth - c_defaultUIScrollPresenterWidth) / 4.0,
 			(c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 4.0,
@@ -147,7 +147,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedFinalVerticalOffset: (c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 4.0);
 
 		Log.Comment("Jump to zoomFactor 2.0");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			2.0f,
 			0.0f,
@@ -157,7 +157,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			hookViewChanged: false);
 
 		Log.Comment("Animate to zoomFactor 1.5");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			1.5f,
 			0.0f,
@@ -170,14 +170,14 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Change ScrollPresenter view via attached scroll controllers.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ChangeOffsetsWithAttachedScrollControllers()
+	public async Task ChangeOffsetsWithAttachedScrollControllers()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
 		CompositionScrollController horizontalScrollController = null;
 		CompositionScrollController verticalScrollController = null;
-		AutoResetEvent loadedEvent = new AutoResetEvent(false);
-		AutoResetEvent scrollCompletedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollCompletedEvent = new UnoAutoResetEvent(false);
 		int hOffsetChangeCorrelationId = -1;
 		int vOffsetChangeCorrelationId = -1;
 
@@ -227,7 +227,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			};
 		});
 
-		WaitForEvent("Waiting for Loaded event", loadedEvent);
+		await WaitForEvent("Waiting for Loaded event", loadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -236,7 +236,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Jump to zoomFactor 0.75");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			0.75f,
 			0.0f,
@@ -259,7 +259,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			Verify.AreEqual(hOffsetChangeCorrelationId, vOffsetChangeCorrelationId);
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -281,7 +281,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollCompletedEvent.Reset();
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -293,14 +293,14 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Change ScrollPresenter view with additional velocity via attached scroll controllers.")]
 	[Ignore("Fails for missing InteractionTracker/ExpressionAnimation features.")]
-	public void ChangeOffsetsWithAdditionalVelocityAndAttachedScrollControllers()
+	public async Task ChangeOffsetsWithAdditionalVelocityAndAttachedScrollControllers()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
 		CompositionScrollController horizontalScrollController = null;
 		CompositionScrollController verticalScrollController = null;
-		AutoResetEvent loadedEvent = new AutoResetEvent(false);
-		AutoResetEvent scrollCompletedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollCompletedEvent = new UnoAutoResetEvent(false);
 		int hOffsetChangeCorrelationId = -1;
 		int vOffsetChangeCorrelationId = -1;
 
@@ -345,7 +345,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			};
 		});
 
-		WaitForEvent("Waiting for Loaded event", loadedEvent);
+		await WaitForEvent("Waiting for Loaded event", loadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -354,7 +354,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Jump to zoomFactor 0.75");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			0.75f,
 			0.0f,
@@ -375,7 +375,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			Verify.AreEqual(hOffsetChangeCorrelationId, vOffsetChangeCorrelationId);
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -398,7 +398,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollCompletedEvent.Reset();
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -421,7 +421,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollCompletedEvent.Reset();
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -441,7 +441,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
 		BiDirectionalScrollController biDirectionalScrollController = null;
-		AutoResetEvent loadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -467,7 +467,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				loadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", loadedEvent);
+		await WaitForEvent("Waiting for Loaded event", loadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -477,7 +477,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Log.Comment("Jump to offsets");
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			(c_defaultUIScrollPresenterContentWidth - c_defaultUIScrollPresenterWidth) / 2.0,
 			(c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 2.0,
@@ -489,7 +489,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedFinalVerticalOffset: (c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 2.0);
 
 		Log.Comment("Animate to offsets");
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			(c_defaultUIScrollPresenterContentWidth - c_defaultUIScrollPresenterWidth) / 4.0,
 			(c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 4.0,
@@ -501,7 +501,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedFinalVerticalOffset: (c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight) / 4.0);
 
 		Log.Comment("Jump to zoomFactor 2.0");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			2.0f,
 			0.0f,
@@ -511,7 +511,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			hookViewChanged: false);
 
 		Log.Comment("Animate to zoomFactor 1.5");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			1.5f,
 			0.0f,
@@ -524,13 +524,13 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Change ScrollPresenter view via attached bi-directional scroll controller.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ChangeOffsetsWithAttachedBiDirectionalScrollController()
+	public async Task ChangeOffsetsWithAttachedBiDirectionalScrollController()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
 		BiDirectionalScrollController biDirectionalScrollController = null;
-		AutoResetEvent loadedEvent = new AutoResetEvent(false);
-		AutoResetEvent scrollCompletedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollCompletedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -564,7 +564,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			};
 		});
 
-		WaitForEvent("Waiting for Loaded event", loadedEvent);
+		await WaitForEvent("Waiting for Loaded event", loadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -572,7 +572,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Jump to zoomFactor 0.75");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			0.75f,
 			0.0f,
@@ -589,7 +589,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				ScrollingAnimationMode.Disabled);
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -605,7 +605,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollCompletedEvent.Reset();
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -617,13 +617,13 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Change ScrollPresenter view with additional velocity via attached bi-directional scroll controller.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ChangeOffsetsWithAdditionalVelocityAndAttachedBiDirectionalScrollController()
+	public async Task ChangeOffsetsWithAdditionalVelocityAndAttachedBiDirectionalScrollController()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
 		BiDirectionalScrollController biDirectionalScrollController = null;
-		AutoResetEvent loadedEvent = new AutoResetEvent(false);
-		AutoResetEvent scrollCompletedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollCompletedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -657,7 +657,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			};
 		});
 
-		WaitForEvent("Waiting for Loaded event", loadedEvent);
+		await WaitForEvent("Waiting for Loaded event", loadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -665,7 +665,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Jump to zoomFactor 0.75");
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			0.75f,
 			0.0f,
@@ -680,7 +680,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				new Vector2(100.0f) /*offsetsVelocity*/, null /*inertiaDecayRate*/);
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -697,7 +697,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollCompletedEvent.Reset();
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -714,7 +714,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollCompletedEvent.Reset();
 		});
 
-		WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
+		await WaitForEvent("Waiting for operation completion", scrollCompletedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -731,7 +731,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		Rectangle rectangleScrollPresenterContent,
 		CompositionScrollController horizontalScrollController,
 		CompositionScrollController verticalScrollController,
-		AutoResetEvent loadedEvent)
+		UnoAutoResetEvent loadedEvent)
 	{
 		Log.Comment("Setting up UI with ScrollPresenter and scroll controlllers" + (rectangleScrollPresenterContent == null ? "" : " and Rectangle"));
 
@@ -788,7 +788,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		ScrollPresenter scrollPresenter,
 		Rectangle rectangleScrollPresenterContent,
 		BiDirectionalScrollController biDirectionalScrollController,
-		AutoResetEvent loadedEvent)
+		UnoAutoResetEvent loadedEvent)
 	{
 		Log.Comment("Setting up UI with ScrollPresenter and bi-directional scroll controller" + (rectangleScrollPresenterContent == null ? "" : " and Rectangle"));
 

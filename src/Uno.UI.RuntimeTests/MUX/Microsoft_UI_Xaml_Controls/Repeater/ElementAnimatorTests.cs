@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater repeater = null;
 			ElementAnimatorDerived animator = null;
 			var data = new ObservableCollection<string>(Enumerable.Range(0, 10).Select(i => string.Format("Item #{0}", i)));
-			var renderingEvent = new ManualResetEvent(false);
+			var renderingEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			List<CallInfo> showCalls = new List<CallInfo>();
 			List<CallInfo> hideCalls = new List<CallInfo>();
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				data.RemoveAt(2);
 			});
 
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Verify.AreEqual(1, showCalls.Count);
@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				data.RemoveAt(2);
 			});
 
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Verify.AreEqual(1, showCalls.Count);

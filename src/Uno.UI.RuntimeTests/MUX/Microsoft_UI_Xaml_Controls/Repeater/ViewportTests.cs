@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			var realizationRects = new List<Rect>();
 			var scrollViewer = (ScrollViewer)null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 			int waitTime = 2000; // 2 seconds 
 
 			RunOnUIThread.Execute(() =>
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -176,7 +176,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(400, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -188,7 +188,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, null, 2.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -868,7 +868,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			TestScrollingSurface scroller2 = null;
 			ItemsRepeater repeater = null;
 			WeakReference repeaterWeakRef = null;
-			var renderingEvent = new ManualResetEvent(false);
+			var renderingEvent = new UnoManualResetEvent(false);
 
 			var unorderedLoadEvent = false;
 			var loadCounter = 0;
@@ -924,7 +924,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			renderingEvent.Reset();
 			Log.Comment("Putting repeater in and out of scroller 1 until we observe two out-of-sync loaded/unloaded events.");
@@ -947,7 +947,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			}
 
 			await TestServices.WindowHelper.WaitForIdle();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			renderingEvent.Reset();
 			RunOnUIThread.Execute(() =>
@@ -961,7 +961,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -995,7 +995,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 		}
 
 #if !HAS_UNO

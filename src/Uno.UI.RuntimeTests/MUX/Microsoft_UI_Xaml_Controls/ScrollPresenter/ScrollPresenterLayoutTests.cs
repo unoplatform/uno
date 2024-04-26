@@ -40,7 +40,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		const double c_Margin = 50.0;
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -50,7 +50,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -59,7 +59,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		// Try to jump beyond maximum offsets
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			c_defaultUIScrollPresenterContentWidth + 2 * c_Margin - c_defaultUIScrollPresenterWidth + 10.0,
 			c_defaultUIScrollPresenterContentHeight + 2 * c_Margin - c_defaultUIScrollPresenterHeight + 10.0,
@@ -79,7 +79,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		// Try to jump beyond maximum offsets
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			c_defaultUIScrollPresenterContentWidth - 2 * c_Margin - c_defaultUIScrollPresenterWidth + 10.0,
 			c_defaultUIScrollPresenterContentHeight - 2 * c_Margin - c_defaultUIScrollPresenterHeight + 10.0,
@@ -93,13 +93,13 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Sets ScrollPresenter.Content.Padding and verifies InteractionTracker.MaxPosition.")]
-	public void BasicPadding()
+	public async Task BasicPadding()
 	{
 		const double c_Padding = 50.0;
 		ScrollPresenter scrollPresenter = null;
 		Border borderScrollPresenterContent = null;
 		Rectangle rectangle = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -115,7 +115,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -124,7 +124,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		// Try to jump beyond maximum offsets
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			c_defaultUIScrollPresenterContentWidth - c_defaultUIScrollPresenterWidth + 10.0,
 			c_defaultUIScrollPresenterContentHeight - c_defaultUIScrollPresenterHeight + 10.0,
@@ -144,7 +144,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		const float c_smallZoomFactor = 0.15f;
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		float horizontalOffset = 0.0f;
 		float verticalOffset = 0.0f;
 		float zoomFactor = 1.0f;
@@ -159,11 +159,11 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
-		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+		await ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -172,7 +172,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			Verify.AreEqual(VerticalAlignment.Stretch, rectangleScrollPresenterContent.VerticalAlignment);
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.IsTrue(Math.Abs(horizontalOffset - (float)(c_defaultUIScrollPresenterWidth - c_defaultUIScrollPresenterContentWidth * c_smallZoomFactor) / 2.0f) < c_defaultOffsetResultTolerance);
 		Verify.IsTrue(Math.Abs(verticalOffset - (float)(c_defaultUIScrollPresenterHeight - c_defaultUIScrollPresenterContentHeight * c_smallZoomFactor) / 2.0f) < c_defaultOffsetResultTolerance);
@@ -185,7 +185,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			rectangleScrollPresenterContent.VerticalAlignment = VerticalAlignment.Top;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.AreEqual(0.0f, horizontalOffset);
 		Verify.AreEqual(0.0f, verticalOffset);
@@ -198,7 +198,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			rectangleScrollPresenterContent.VerticalAlignment = VerticalAlignment.Bottom;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.IsTrue(Math.Abs(horizontalOffset - (float)(c_defaultUIScrollPresenterWidth - c_defaultUIScrollPresenterContentWidth * c_smallZoomFactor)) < c_defaultOffsetResultTolerance);
 		Verify.IsTrue(Math.Abs(verticalOffset - (float)(c_defaultUIScrollPresenterHeight - c_defaultUIScrollPresenterContentHeight * c_smallZoomFactor)) < c_defaultOffsetResultTolerance);
@@ -211,7 +211,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			rectangleScrollPresenterContent.VerticalAlignment = VerticalAlignment.Center;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.IsTrue(Math.Abs(horizontalOffset - (float)(c_defaultUIScrollPresenterWidth - c_defaultUIScrollPresenterContentWidth * c_smallZoomFactor) / 2.0f) < c_defaultOffsetResultTolerance);
 		Verify.IsTrue(Math.Abs(verticalOffset - (float)(c_defaultUIScrollPresenterHeight - c_defaultUIScrollPresenterContentHeight * c_smallZoomFactor) / 2.0f) < c_defaultOffsetResultTolerance);
@@ -387,7 +387,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		const double c_Margin = 40.0;
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		float horizontalOffset = 0.0f;
 		float verticalOffset = 0.0f;
 		float zoomFactor = 1.0f;
@@ -405,11 +405,11 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
-		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+		await ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -419,7 +419,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.IsTrue(Math.Abs(horizontalOffset - 20.0f) < c_defaultOffsetResultTolerance);
 		Verify.IsTrue(Math.Abs(verticalOffset - 15.0f) < c_defaultOffsetResultTolerance);
@@ -432,7 +432,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			rectangleScrollPresenterContent.VerticalAlignment = VerticalAlignment.Top;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.IsTrue(Math.Abs(horizontalOffset + 34.0f) < c_defaultOffsetResultTolerance);
 		Verify.IsTrue(Math.Abs(verticalOffset + 34.0f) < c_defaultOffsetResultTolerance);
@@ -445,7 +445,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			rectangleScrollPresenterContent.VerticalAlignment = VerticalAlignment.Bottom;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.IsTrue(Math.Abs(horizontalOffset - 74.0f) < c_defaultOffsetResultTolerance);
 		Verify.IsTrue(Math.Abs(verticalOffset - 64.0f) < c_defaultOffsetResultTolerance);
@@ -458,7 +458,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			rectangleScrollPresenterContent.VerticalAlignment = VerticalAlignment.Center;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		Verify.IsTrue(Math.Abs(horizontalOffset - 20.0f) < c_defaultOffsetResultTolerance);
 		Verify.IsTrue(Math.Abs(verticalOffset - 15.0f) < c_defaultOffsetResultTolerance);
@@ -472,7 +472,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	{
 		ScrollPresenter scrollPresenter = null;
 		Image imageScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		const double margin = 10.0;
 
 		RunOnUIThread.Execute(() =>
@@ -489,7 +489,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -565,13 +565,13 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Sets ScrollPresenter.Content to Image with unnatural size and verifies InteractionTracker.MaxPosition.")]
-	public void ImageWithUnnaturalSize()
+	public async Task ImageWithUnnaturalSize()
 	{
 		const double c_UnnaturalImageWidth = 1200.0;
 		const double c_UnnaturalImageHeight = 1000.0;
 		ScrollPresenter scrollPresenter = null;
 		Image imageScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -588,10 +588,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		// Try to jump beyond maximum offsets
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			c_UnnaturalImageWidth - c_defaultUIScrollPresenterWidth + 10.0,
 			c_UnnaturalImageHeight - c_defaultUIScrollPresenterHeight + 10.0,
@@ -615,7 +615,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			const double c_scrollPresenterWidth = 200.0;
 			ScrollPresenter scrollPresenter = null;
 			Image imageScrollPresenterContent = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 			Compositor compositor = null;
 
 			RunOnUIThread.Execute(() =>
@@ -638,7 +638,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			await ValidateContentWithConstrainedWidth(
 				compositor,
@@ -666,7 +666,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		const double c_rightMargin = 30.0;
 		ScrollPresenter scrollPresenter = null;
 		Image imageScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		Compositor compositor = null;
 
 		RunOnUIThread.Execute(() =>
@@ -690,7 +690,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		await ValidateContentWithConstrainedWidth(
 			compositor,
@@ -703,7 +703,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedZoomFactor: 1.0f);
 
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
-		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+		await ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 		await ValidateContentWithConstrainedWidth(
 			compositor,
@@ -746,7 +746,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedZoomFactor: c_smallZoomFactor);
 
 		// Jump to absolute large zoomFactor to make the content larger than the viewport.
-		ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
+		await ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
 
 		await ValidateContentWithConstrainedWidth(
 			compositor,
@@ -801,7 +801,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			const double c_imageWidth = 250.0;
 			ScrollPresenter scrollPresenter = null;
 			Image imageScrollPresenterContent = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 			Compositor compositor = null;
 
 			RunOnUIThread.Execute(() =>
@@ -823,7 +823,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			await ValidateContentWithConstrainedHeight(
 				compositor,
@@ -836,7 +836,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				expectedZoomFactor: 1.0f);
 
 			// Jump to absolute small zoomFactor to make the content smaller than the viewport.
-			ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			await ValidateContentWithConstrainedHeight(
 				compositor,
@@ -863,7 +863,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		const double c_bottomMargin = 10.0;
 		ScrollPresenter scrollPresenter = null;
 		Image imageScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		Compositor compositor = null;
 
 		RunOnUIThread.Execute(() =>
@@ -886,7 +886,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		await ValidateContentWithConstrainedHeight(
 			compositor,
@@ -899,7 +899,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedZoomFactor: 1.0f);
 
 		// Jump to absolute small zoomFactor to make the content smaller than the viewport.
-		ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+		await ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 		await ValidateContentWithConstrainedHeight(
 			compositor,
@@ -942,7 +942,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedZoomFactor: c_smallZoomFactor);
 
 		// Jump to absolute large zoomFactor to make the content larger than the viewport.
-		ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
+		await ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
 
 		await ValidateContentWithConstrainedHeight(
 			compositor,
@@ -1005,7 +1005,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			const double c_bottomMargin = 10.0;
 			ScrollPresenter scrollPresenter = null;
 			Image imageScrollPresenterContent = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 			Compositor compositor = null;
 
 			RunOnUIThread.Execute(() =>
@@ -1029,7 +1029,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			await ValidateContentWithConstrainedSize(
 				compositor,
@@ -1042,7 +1042,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				expectedZoomFactor: 1.0f);
 
 			// Jump to absolute small zoomFactor to make the content smaller than the viewport.
-			ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, c_smallZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			await ValidateContentWithConstrainedSize(
 				compositor,
@@ -1055,7 +1055,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				expectedZoomFactor: c_smallZoomFactor);
 
 			// Jump to absolute large zoomFactor to make the content larger than the viewport.
-			ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
+			await ZoomTo(scrollPresenter, c_largeZoomFactor, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, hookViewChanged: false);
 
 			await ValidateContentWithConstrainedSize(
 				compositor,
@@ -1076,7 +1076,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1089,10 +1089,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		// Jump to absolute offsets
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			11.0,
 			17.0,
@@ -1104,7 +1104,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedFinalVerticalOffset: 17.0);
 
 		// Jump to absolute zoom factor
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			2.0f,
 			0.0f,
@@ -1139,7 +1139,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		// Jump to absolute offsets in RightToLeft flow direction
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			7.0,
 			13.0,
@@ -1151,7 +1151,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedFinalVerticalOffset: 13.0);
 
 		// Jump to absolute zoom factor in RightToLeft flow direction
-		ZoomTo(
+		await ZoomTo(
 			scrollPresenter,
 			4.0f,
 			0.0f,
@@ -1221,7 +1221,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedVerticalOffset = -minPosition.Y + (expectedZoomFactor - 1.0f) * arrangeRenderSizesDelta.Y;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1282,7 +1282,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedHorizontalOffset = -minPosition.X + (expectedZoomFactor - 1.0f) * arrangeRenderSizesDelta.X;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1372,7 +1372,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			expectedVerticalOffset = -minPosition.Y + (expectedZoomFactor - 1.0f) * verticalArrangeRenderSizesDelta;
 		});
 
-		SpyTranslationAndScale(scrollPresenter, compositor, out horizontalOffset, out verticalOffset, out zoomFactor);
+		(horizontalOffset, verticalOffset, zoomFactor) = await SpyTranslationAndScale(scrollPresenter, compositor);
 
 		RunOnUIThread.Execute(() =>
 		{

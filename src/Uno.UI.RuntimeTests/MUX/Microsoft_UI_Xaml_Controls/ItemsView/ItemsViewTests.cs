@@ -92,8 +92,8 @@ public class ItemsViewTests : MUXApiTestBase
 			ItemsView itemsView = null;
 			Random rnd = new Random();
 			List<string> itemsSource = new List<string>(Enumerable.Range(0, 50).Select(k => k + " - " + rnd.Next(100)));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -102,7 +102,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -138,7 +138,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
@@ -156,8 +156,8 @@ public class ItemsViewTests : MUXApiTestBase
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
 			ItemsView itemsView = null;
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -166,7 +166,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -283,7 +283,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
@@ -302,7 +302,7 @@ public class ItemsViewTests : MUXApiTestBase
 		{
 			ItemsView itemsView = null;
 			List<ItemContainer> itemsSource = new List<ItemContainer>();
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -323,7 +323,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -364,8 +364,8 @@ public class ItemsViewTests : MUXApiTestBase
 			ItemContainer itemContainer = null;
 			Random rnd = new Random();
 			List<string> itemsSource = new List<string>(Enumerable.Range(0, 10).Select(k => k + " - " + rnd.Next(100)));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -374,7 +374,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -498,7 +498,7 @@ public class ItemsViewTests : MUXApiTestBase
 		{
 			ItemsView itemsView = null;
 			List<int> itemsSource = new List<int>(Enumerable.Range(0, 5000));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -506,7 +506,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -551,10 +551,10 @@ public class ItemsViewTests : MUXApiTestBase
 			ItemsView itemsView = null;
 			ScrollView scrollView = null;
 			List<int> itemsSource = new List<int>(Enumerable.Range(0, 5000));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewBringingIntoViewEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewScrollCompletedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewBringingIntoViewEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -562,7 +562,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -631,8 +631,8 @@ public class ItemsViewTests : MUXApiTestBase
 			ItemContainer itemContainer = null;
 			Random rnd = new Random();
 			List<string> itemsSource = new List<string>(Enumerable.Range(0, 10).Select(k => k + " - " + rnd.Next(100)));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -641,7 +641,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -722,8 +722,8 @@ public class ItemsViewTests : MUXApiTestBase
 			ItemsView itemsView = null;
 			Random rnd = new Random();
 			List<string> itemsSource = new List<string>(Enumerable.Range(0, 50).Select(k => k + " - " + rnd.Next(100)));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -732,7 +732,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -761,7 +761,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 			Log.Comment("Done");
 		}
 	}
@@ -775,8 +775,8 @@ public class ItemsViewTests : MUXApiTestBase
 			DataTemplate itemTemplate = null;
 			ItemsView itemsView = null;
 			List<string> itemsSource = null;
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -786,7 +786,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -851,7 +851,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 			Log.Comment("Done");
 		}
 	}
@@ -874,7 +874,7 @@ public class ItemsViewTests : MUXApiTestBase
 		{
 			Panel rootPanel = null;
 			TextBlock textBlock = null;
-			AutoResetEvent rootPanelLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent rootPanelLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -910,7 +910,7 @@ public class ItemsViewTests : MUXApiTestBase
 				Content = rootPanel;
 			});
 
-			WaitForEvent("Waiting for Panel.Loaded event", rootPanelLoadedEvent);
+			await WaitForEvent("Waiting for Panel.Loaded event", rootPanelLoadedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -948,8 +948,8 @@ public class ItemsViewTests : MUXApiTestBase
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
 			ItemsView itemsView = null;
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -958,7 +958,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1000,10 +1000,10 @@ public class ItemsViewTests : MUXApiTestBase
 			ItemContainer itemContainer = null;
 			ItemsRepeater itemsRepeater = null;
 			ScrollView scrollView = null;
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewScrollCompletedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewBringingIntoViewEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewBringingIntoViewEvent = new UnoAutoResetEvent(false);
 			ISelectionProvider selectionProvider = null;
 			ISelectionItemProvider selectionItemProvider = null;
 
@@ -1014,7 +1014,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1262,8 +1262,8 @@ public class ItemsViewTests : MUXApiTestBase
 			LinedFlowLayout linedFlowLayout = null;
 			Random rnd = new Random();
 			ObservableCollection<string> itemsSource = new ObservableCollection<string>(Enumerable.Range(0, 75).Select(k => k + "-" + rnd.Next(20)));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1281,7 +1281,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -1314,7 +1314,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 			Log.Comment("Done");
 		}
 	}
@@ -1327,8 +1327,8 @@ public class ItemsViewTests : MUXApiTestBase
 		ItemsView itemsView = null;
 		LinedFlowLayout linedFlowLayout = null;
 		ObservableCollection<string> itemsSource = new ObservableCollection<string>();
-		AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-		AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
 		//double previousRawAverageItemsPerLine = 0.0;
 		//double previousSnappedAverageItemsPerLine = 0.0;
 
@@ -1350,7 +1350,7 @@ public class ItemsViewTests : MUXApiTestBase
 			itemsView.Height = 700.0;
 		});
 
-		WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1408,7 +1408,7 @@ public class ItemsViewTests : MUXApiTestBase
 			itemsView = null;
 		});
 
-		WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+		await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 		Log.Comment("Done");
 	}
 
@@ -1469,10 +1469,10 @@ public class ItemsViewTests : MUXApiTestBase
 			bool provideExtraItemsInfo = false;
 			Random rnd = new Random();
 			ObservableCollection<string> itemsSource = new ObservableCollection<string>(Enumerable.Range(0, 1000).Select(k => k + "-" + rnd.Next(20)));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewScrollCompletedEvent = new AutoResetEvent(false);
-			AutoResetEvent linedFlowLayoutItemsInfoRequestedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent linedFlowLayoutItemsInfoRequestedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1568,8 +1568,8 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
-			WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -1597,7 +1597,7 @@ public class ItemsViewTests : MUXApiTestBase
 					scrollView.ScrollTo(0.0, scrollView.ScrollableHeight / 6 * (scrollCount + 1), new ScrollingScrollOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
 				});
 
-				WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
+				await WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
 
 				await TestServices.WindowHelper.WaitForIdle();
 
@@ -1609,7 +1609,7 @@ public class ItemsViewTests : MUXApiTestBase
 					itemsSource.Add((1000 + scrollCount).ToString() + "-" + rnd.Next(20));
 				});
 
-				WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
+				await WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
 				await TestServices.WindowHelper.WaitForIdle();
 
@@ -1623,7 +1623,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 			Log.Comment("Done");
 		}
 	}
@@ -1647,10 +1647,10 @@ public class ItemsViewTests : MUXApiTestBase
 			bool provideNilAspectRatios = useTemporaryAspectRatio;
 			Random rnd = new Random();
 			List<string> itemsSource = new List<string>(Enumerable.Range(0, 200).Select(k => k + " - " + rnd.Next(100)));
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewScrollCompletedEvent = new AutoResetEvent(false);
-			AutoResetEvent linedFlowLayoutItemsInfoRequestedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent linedFlowLayoutItemsInfoRequestedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1728,8 +1728,8 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
-			WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -1752,7 +1752,7 @@ public class ItemsViewTests : MUXApiTestBase
 				scrollView.ScrollTo(0.0, 2000.0, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
 			});
 
-			WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
+			await WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -1764,7 +1764,7 @@ public class ItemsViewTests : MUXApiTestBase
 			}
 			else
 			{
-				WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
+				await WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
 				Verify.IsGreaterThan(itemsInfoRequestedCount, 1);
 			}
@@ -1790,11 +1790,11 @@ public class ItemsViewTests : MUXApiTestBase
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.Execute(async () =>
 			{
 				if (useTemporaryAspectRatio)
 				{
-					WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
+					await WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 
 					Log.Comment($"ItemsInfoRequested event count={itemsInfoRequestedCount}");
 					if (useExtraInfo)
@@ -1812,7 +1812,7 @@ public class ItemsViewTests : MUXApiTestBase
 				itemsView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 			Log.Comment("Done");
 		}
 	}
@@ -1825,11 +1825,11 @@ public class ItemsViewTests : MUXApiTestBase
 		ItemsView itemsView = null;
 		LinedFlowLayout linedFlowLayout = null;
 		List<string> itemsSource = new List<string>(Enumerable.Range(0, 300).Select(k => k + " - " + (new Random()).Next(100)));
-		AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-		AutoResetEvent itemsViewUnloadedEvent = new AutoResetEvent(false);
-		AutoResetEvent scrollViewBringingIntoViewEvent = new AutoResetEvent(false);
-		AutoResetEvent scrollViewScrollCompletedEvent = new AutoResetEvent(false);
-		AutoResetEvent linedFlowLayoutItemsInfoRequestedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent itemsViewUnloadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewBringingIntoViewEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent linedFlowLayoutItemsInfoRequestedEvent = new UnoAutoResetEvent(false);
 		bool linedFlowLayoutItemsInfoRequestedEventArgsExceptionThrown = false;
 
 		RunOnUIThread.Execute(() =>
@@ -1848,7 +1848,7 @@ public class ItemsViewTests : MUXApiTestBase
 			SetupDefaultUI(itemsView, itemsViewLoadedEvent, itemsViewUnloadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
@@ -1931,7 +1931,7 @@ public class ItemsViewTests : MUXApiTestBase
 			itemsView.ScrollView.ScrollBy(0.0, 1.0, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
 		});
 
-		WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
+		await WaitForEvent("Waiting for ItemsInfoRequested event", linedFlowLayoutItemsInfoRequestedEvent);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
@@ -1944,7 +1944,7 @@ public class ItemsViewTests : MUXApiTestBase
 			itemsView = null;
 		});
 
-		WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
+		await WaitForEvent("Waiting for Unloaded event", itemsViewUnloadedEvent);
 		Log.Comment("Done");
 	}
 
@@ -1970,9 +1970,9 @@ public class ItemsViewTests : MUXApiTestBase
 		{
 			ItemsView itemsView = null;
 			ScrollView scrollView = null;
-			AutoResetEvent itemsViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewBringingIntoViewEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewScrollCompletedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent itemsViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewBringingIntoViewEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1981,7 +1981,7 @@ public class ItemsViewTests : MUXApiTestBase
 				SetupDefaultUI(itemsView, itemsViewLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", itemsViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -2074,8 +2074,8 @@ public class ItemsViewTests : MUXApiTestBase
 	private async Task BringItemIntoView(
 		int index,
 		ItemsView itemsView,
-		AutoResetEvent scrollViewBringingIntoViewEvent,
-		AutoResetEvent scrollViewScrollCompletedEvent)
+		UnoAutoResetEvent scrollViewBringingIntoViewEvent,
+		UnoAutoResetEvent scrollViewScrollCompletedEvent)
 	{
 		RunOnUIThread.Execute(() =>
 		{
@@ -2092,9 +2092,9 @@ public class ItemsViewTests : MUXApiTestBase
 			itemsView.StartBringItemIntoView(index, bringIntoViewOptions);
 		});
 
-		WaitForEvent("Waiting for BringingIntoView event", scrollViewBringingIntoViewEvent);
+		await WaitForEvent("Waiting for BringingIntoView event", scrollViewBringingIntoViewEvent);
 
-		WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
+		await WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2116,8 +2116,8 @@ public class ItemsViewTests : MUXApiTestBase
 
 	private void SetupDefaultUI(
 		ItemsView itemsView,
-		AutoResetEvent itemsViewLoadedEvent = null,
-		AutoResetEvent itemsViewUnloadedEvent = null,
+		UnoAutoResetEvent itemsViewLoadedEvent = null,
+		UnoAutoResetEvent itemsViewUnloadedEvent = null,
 		bool setAsContentRoot = true,
 		bool useParentGrid = false)
 	{
@@ -2189,10 +2189,10 @@ public class ItemsViewTests : MUXApiTestBase
 		Log.Comment(" - itemsView.SelectionMode: " + itemsView.SelectionMode);
 	}
 
-	private void WaitForEvent(string logComment, EventWaitHandle eventWaitHandle)
+	private async Task WaitForEvent(string logComment, UnoAutoResetEvent eventWaitHandle)
 	{
 		Log.Comment(logComment);
-		if (!eventWaitHandle.WaitOne(TimeSpan.FromMilliseconds(c_MaxWaitDuration)))
+		if (!await eventWaitHandle.WaitOne(TimeSpan.FromMilliseconds(c_MaxWaitDuration)))
 		{
 			throw new Exception("Timeout expiration in WaitForEvent.");
 		}
