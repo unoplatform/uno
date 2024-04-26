@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Border
+partial class Border
 {
 	public override IEnumerable<UIElement> GetChildren()
 		=> Child is FrameworkElement fe ? new[] { fe } : Array.Empty<FrameworkElement>();

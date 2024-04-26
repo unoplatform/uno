@@ -20,7 +20,7 @@ using _Image = AppKit.NSImage;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Border
+partial class Border
 {
 	protected override void OnAfterArrange()
 	{
