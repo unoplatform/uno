@@ -20,7 +20,7 @@ using AppKit;
 using Uno.UI;
 #endif
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
@@ -45,7 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_NavigationView
 	{
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
@@ -161,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	}
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 	public partial class MyNavigationView : NavigationView
 	{
 		public NavigationViewList MenuItemsHost { get; private set; }

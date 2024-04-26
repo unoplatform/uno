@@ -100,6 +100,7 @@
 
 	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and '$(TargetFramework)'!='net7.0-windows10.0.19041.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
+		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
 		<!-- Hint the VS's XAML parser -->
 		<!-- https://github.com/unoplatform/uno/issues/15517 -->
@@ -107,7 +108,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-windows10.0.19041.0'">
-		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.19041' ">

@@ -7,7 +7,7 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using RatingControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
 #endif
 

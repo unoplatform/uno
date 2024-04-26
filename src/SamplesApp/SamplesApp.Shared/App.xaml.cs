@@ -32,7 +32,7 @@ using Private.Infrastructure;
 using Uno.Logging;
 #endif
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
@@ -120,7 +120,7 @@ namespace SamplesApp
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 				e.UWPLaunchActivatedEventArgs.Kind
 #else
 				e.Kind
@@ -306,7 +306,7 @@ namespace SamplesApp
 
 		public event EventHandler? MainWindowActivated;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 		protected override void OnWindowCreated(global::Microsoft.UI.Xaml.WindowCreatedEventArgs args)
 		{
 			if (Current is null)

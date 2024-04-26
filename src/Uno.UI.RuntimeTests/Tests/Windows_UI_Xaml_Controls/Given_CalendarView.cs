@@ -13,7 +13,7 @@ using System.Linq;
 using SamplesApp.UITests;
 using Windows.Foundation;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 

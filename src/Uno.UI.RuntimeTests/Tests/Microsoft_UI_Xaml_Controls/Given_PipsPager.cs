@@ -8,8 +8,8 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
+#if HAS_UNO && !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
