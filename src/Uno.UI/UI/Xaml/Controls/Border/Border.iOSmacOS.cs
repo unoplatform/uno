@@ -22,18 +22,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Border
 {
-	partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
-	{
-		previousValue?.RemoveFromSuperview();
-
-		if (newValue != null)
-		{
-			AddSubview(newValue);
-		}
-
-		UpdateBorder();
-	}
-
 	protected override void OnAfterArrange()
 	{
 		base.OnAfterArrange();

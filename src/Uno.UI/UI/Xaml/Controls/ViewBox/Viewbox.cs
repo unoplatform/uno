@@ -25,9 +25,7 @@ public partial class Viewbox : global::Microsoft.UI.Xaml.FrameworkElement, ILayo
 
 	bool ILayoutOptOut.ShouldUseMinSize => false;
 
-	partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue);
-
-	private void AddChildNative(UIElement child) => OnChildChangedPartial(null, child);
+	private void AddChildNative(UIElement child) => AddChild(child);
 }
 
 public partial class Viewbox // Viewbox.h
