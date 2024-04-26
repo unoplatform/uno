@@ -7,6 +7,7 @@ using Uno.UI.Xaml.Media;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Controls;
 
@@ -41,51 +42,55 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	/// </summary>
 	public Brush RequestedBorderBrush
 	{
-		get => (Brush)GetValue(RequestedBorderBrushProperty);
-		set => SetValue(RequestedBorderBrushProperty, value);
+		get => GetRequestedBorderBrushValue();
+		set => SetRequestedBorderBrushValue(value);
 	}
 
 	/// <summary>
 	/// Identifies the RequestedBorderBrush dependency property.
 	/// </summary>
-	public static DependencyProperty RequestedBorderBrushProperty { get; } =
-		DependencyProperty.Register(
-			nameof(RequestedBorderBrush),
-			typeof(Brush),
-			typeof(FauxGradientBorderPresenter),
-			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, args) => ((FauxGradientBorderPresenter)s)?.OnBorderChanged()));
+	[GeneratedDependencyProperty(DefaultValue = null)]
+	public static DependencyProperty RequestedBorderBrushProperty { get; } = CreateRequestedBorderBrushProperty();
+
+	private void OnRequestedBorderBrushChanged() => OnBorderChanged();
 
 	/// <summary>
-	/// Gets or sets the thickness of the border that is supposed to be displayed.
+	/// Gets or sets the thickness of the border that should be displayed.
 	/// </summary>
 	public Thickness RequestedBorderThickness
 	{
-		get => (Thickness)GetValue(RequestedBorderThicknessProperty);
-		set => SetValue(RequestedBorderThicknessProperty, value);
+		get => GetRequestedBorderThicknessValue();
+		set => SetRequestedBorderThicknessValue(value);
 	}
 
 	/// <summary>
 	/// Identifies the RequestedBorderThickness dependency property.
 	/// </summary>
-	public static DependencyProperty RequestedBorderThicknessProperty { get; } =
-		DependencyProperty.Register(
-			nameof(RequestedBorderThickness),
-			typeof(Thickness),
-			typeof(FauxGradientBorderPresenter),
-			new FrameworkPropertyMetadata(default(Thickness), propertyChangedCallback: (s, args) => ((FauxGradientBorderPresenter)s)?.OnBorderChanged()));
+	[GeneratedDependencyProperty]
+	public static DependencyProperty RequestedBorderThicknessProperty { get; } = CreateRequestedBorderThicknessProperty();
 
+	private static Thickness GetRequestedBorderThicknessDefaultValue() => Thickness.Empty;
+
+	private void OnRequestedBorderThicknessChanged() => OnBorderChanged();
+
+	/// <summary>
+	/// Gets or sets the corner radius of the border that should be displayed.
+	/// </summary>
 	public CornerRadius RequestedCornerRadius
 	{
-		get => (CornerRadius)GetValue(RequestedCornerRadiusProperty);
-		set => SetValue(RequestedCornerRadiusProperty, value);
+		get => GetRequestedCornerRadiusValue();
+		set => SetRequestedCornerRadiusValue(value);
 	}
 
-	public static DependencyProperty RequestedCornerRadiusProperty { get; } =
-		DependencyProperty.Register(
-			nameof(RequestedCornerRadius),
-			typeof(CornerRadius),
-			typeof(FauxGradientBorderPresenter),
-			new FrameworkPropertyMetadata(CornerRadius.None, propertyChangedCallback: (s, args) => ((FauxGradientBorderPresenter)s)?.OnBorderChanged()));
+	/// <summary>
+	/// Identifies the RequestedCornerRadius dependency property.
+	/// </summary>
+	[GeneratedDependencyProperty]
+	public static DependencyProperty RequestedCornerRadiusProperty { get; } = CreateRequestedCornerRadiusProperty();
+
+	private static CornerRadius GetRequestedCornerRadiusDefaultValue() => CornerRadius.None;
+
+	private void OnRequestedCornerRadiusChanged() => OnBorderChanged();
 
 	private void OnBorderChanged()
 	{
