@@ -17,7 +17,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Border
+partial class Border
 {
 	protected override void OnDraw(Android.Graphics.Canvas canvas) => AdjustCornerRadius(canvas, CornerRadius);
 
