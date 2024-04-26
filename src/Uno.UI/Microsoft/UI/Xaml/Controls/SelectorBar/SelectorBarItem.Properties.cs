@@ -48,7 +48,7 @@ partial class SelectorBarItem
 			nameof(Text),
 			typeof(string),
 			typeof(SelectorBarItem),
-			new FrameworkPropertyMetadata(default(string), OnPropertyChanged));
+			new FrameworkPropertyMetadata("", OnPropertyChanged));
 
 	private static void OnPropertyChanged(
 		DependencyObject sender,
