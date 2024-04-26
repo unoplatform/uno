@@ -438,7 +438,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #elif !__SKIA__
 		[Ignore("Fails due to async native scrolling.")]
 #endif
-		public async Task When_ItemSignificantlyHigher_Then_VirtualizeProperly()
+		public async Task When_ItemSignificantlyTaller_Then_VirtualizeProperly()
 		{
 			var sut = SUT.Create(
 				new ObservableCollection<MyItem>
@@ -452,7 +452,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				},
 				new DataTemplate(() => new Border
 				{
-					Width = 100,
+					Width = 120,
 					Margin = new Thickness(10),
 					Child = new ItemsControl
 					{
@@ -461,7 +461,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				}
 				.Apply(b => b.SetBinding(FrameworkElement.HeightProperty, new Binding { Path = nameof(MyItem.Height) }))
 				.Apply(b => b.SetBinding(FrameworkElement.BackgroundProperty, new Binding { Path = nameof(MyItem.Color) }))),
-				new Size(100, 500)
+				new Size(120, 500)
 			);
 
 			await sut.Load();
@@ -489,8 +489,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			var item3UpdatedVerticalOffset = sut.Repeater.Children.First(elt => ReferenceEquals(elt.DataContext, sut.Source[3])).ActualOffset.Y;
 
 			item3UpdatedVerticalOffset.Should().Be(item3OriginalVerticalOffset); // Confirm that item #3 has not been moved down
-			var result = await UITestHelper.ScreenShot(sut.Repeater);
-			ImageAssert.HasColorAt(result, 10, 10, Colors.FromARGB("#008000")); // For safety also check it's effectively the item 3 that is visible
+			var result = await UITestHelper.ScreenShot(sut.Root);
+			ImageAssert.HasColorAt(result, 100, 10, Colors.FromARGB("#008000")); // For safety also check it's effectively the item 3 that is visible
 		}
 
 		[TestMethod]
