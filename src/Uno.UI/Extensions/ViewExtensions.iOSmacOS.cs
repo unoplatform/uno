@@ -27,11 +27,13 @@ namespace Uno.UI
 
 		internal static IEnumerable<View> GetChildren(this UIElement element) => element.ChildrenShadow;
 
-		internal static TResult? FindLastChild<TParam, TResult>(this View group, TParam param, Func<View, TParam, TResult?> selector)
+		internal static TResult? FindLastChild<TParam, TResult>(this View group, TParam param, Func<View, TParam, TResult?> selector, out bool hasAnyChildren)
 			where TResult : class
 		{
+			hasAnyChildren = false;
 			if (group is IShadowChildrenProvider shadowProvider)
 			{
+				hasAnyChildren = true;
 				var childrenShadow = shadowProvider.ChildrenShadow;
 				for (int i = childrenShadow.Count - 1; i >= 0; i--)
 				{
@@ -48,6 +50,7 @@ namespace Uno.UI
 			var subviews = group.Subviews;
 			for (int i = subviews.Length - 1; i >= 0; i--)
 			{
+				hasAnyChildren = true;
 				var result = selector(subviews[i], param);
 				if (result is not null)
 				{

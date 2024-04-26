@@ -151,9 +151,10 @@ namespace Uno.UI
 			}
 		}
 
-		internal static TResult? FindLastChild<TParam, TResult>(this ViewGroup group, TParam param, Func<View, TParam, TResult?> selector)
+		internal static TResult? FindLastChild<TParam, TResult>(this ViewGroup group, TParam param, Func<View, TParam, TResult?> selector, out bool hasAnyChildren)
 			where TResult : class
 		{
+			hasAnyChildren = false;
 			if (group is IShadowChildrenProvider shadowProvider)
 			{
 				// To avoid calling ChildCount/GetChildAt too much during enumeration, use
@@ -161,6 +162,7 @@ namespace Uno.UI
 				var childrenShadow = shadowProvider.ChildrenShadow;
 				for (int i = childrenShadow.Count - 1; i >= 0; i--)
 				{
+					hasAnyChildren = true;
 					var result = selector(childrenShadow[i], param);
 					if (result is not null)
 					{
@@ -176,6 +178,7 @@ namespace Uno.UI
 
 			for (int i = count - 1; i >= 0; i--)
 			{
+				hasAnyChildren = true;
 				var child = group.GetChildAt(i)!;
 				var result = selector(child, param);
 				if (result is not null)

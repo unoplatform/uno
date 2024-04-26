@@ -246,8 +246,12 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// The lambda is static to make sure it doesn't capture anything, for performance reasons.
-			var matchingChild = group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null);
-			matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement);
+			var matchingChild = group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null, out var hasAnyChildren);
+			if (hasAnyChildren)
+			{
+				matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement, out _);
+			}
+
 			if (matchingChild is not null)
 			{
 				return matchingChild.ConvertFromStubToElement(e, name);
@@ -256,13 +260,15 @@ namespace Microsoft.UI.Xaml
 			// If element is a ContentControl with a view as Content, include the view and its children in the search,
 			// to better match Windows behaviour
 			IFrameworkElement content = null;
-			if (e is ContentControl contentControl &&
+			if (!hasAnyChildren &&
+				e is ContentControl contentControl &&
 				contentControl.Content is IFrameworkElement innerContent &&
 				contentControl.ContentTemplate is null) // Only include the Content view if there is no ContentTemplate.
 			{
 				content = innerContent;
 			}
-			else if (e is Controls.Primitives.Popup popup)
+			else if (!hasAnyChildren &&
+				e is Controls.Primitives.Popup popup)
 			{
 				content = popup.Child as IFrameworkElement;
 			}
