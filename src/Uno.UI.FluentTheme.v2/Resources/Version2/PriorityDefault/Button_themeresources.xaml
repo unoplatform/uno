@@ -133,7 +133,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed -->
+                    <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed #6457 -->
                     <Grid>
                         <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
                         <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls">
@@ -141,6 +141,7 @@
                                 <BrushTransition Duration="0:0:0.083" />
                             </ContentPresenter.BackgroundTransition>
                         </ContentPresenter>
+                        <!-- Uno specific (LinearGradientBrush borders): #6457 -->
                         <uc:FauxGradientBorderPresenter
                             RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}"
@@ -213,7 +214,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed -->
+                    <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed #6457 -->
                     <Grid>
                         <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
                         <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
@@ -221,6 +222,7 @@
                                 <BrushTransition Duration="0:0:0.083" />
                             </ContentPresenter.BackgroundTransition>
                         </ContentPresenter>
+                        <!-- Uno specific (LinearGradientBrush borders): #6457 -->
                         <uc:FauxGradientBorderPresenter
                             RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}"
