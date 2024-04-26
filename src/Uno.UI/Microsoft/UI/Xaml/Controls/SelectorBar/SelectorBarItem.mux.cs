@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 

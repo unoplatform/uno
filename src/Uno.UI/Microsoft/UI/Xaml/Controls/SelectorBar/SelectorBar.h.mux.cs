@@ -12,7 +12,7 @@ partial class SelectorBar
 {
 	private ItemsView? _itemsView;
 
-	private readonly SerialDisposable _loadedRevoker = new();
+	// private readonly SerialDisposable _loadedRevoker = new();
 
 	private readonly SerialDisposable _itemsViewSelectedItemPropertyChangedRevoker = new();
 

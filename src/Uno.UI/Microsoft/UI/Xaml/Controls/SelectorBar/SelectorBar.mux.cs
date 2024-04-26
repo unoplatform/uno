@@ -9,7 +9,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Collections;
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -32,7 +32,7 @@ partial class SelectorBar
 		SetValue(ItemsProperty, items);
 
 		Loaded += OnLoaded;
-		_loadedRevoker.Disposable = Disposable.Create(() => Loaded -= OnLoaded);
+		// _loadedRevoker.Disposable = Disposable.Create(() => Loaded -= OnLoaded);
 	}
 
 	//SelectorBar.~public SelectorBar()
