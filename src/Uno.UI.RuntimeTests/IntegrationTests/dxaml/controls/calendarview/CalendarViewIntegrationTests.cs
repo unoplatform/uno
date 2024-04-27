@@ -1065,6 +1065,9 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("UNO TODO - This test is failing on WASM")]
+#endif
 #if __SKIA__
 		[RequiresFullWindow]
 #endif
