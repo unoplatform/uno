@@ -1790,7 +1790,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(async () =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				if (useTemporaryAspectRatio)
 				{

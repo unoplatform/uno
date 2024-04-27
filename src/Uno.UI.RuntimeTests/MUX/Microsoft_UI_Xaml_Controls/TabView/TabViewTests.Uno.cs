@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,10 +18,10 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public void VerifyItemsAreCreatedOnlyOnce()
+		public async Task VerifyItemsAreCreatedOnlyOnce()
 		{
 			TabView tabView = null;
-			RunOnUIThread.Execute(async () =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				tabView = new TabView();
 				TestServices.WindowHelper.WindowContent = tabView;
