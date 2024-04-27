@@ -18,7 +18,8 @@ using Windows.Foundation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ItemsViewTests;
 
-[Sample("ItemsView")]
+// Samples times out on iOS.
+[Sample("ItemsView", IgnoreInSnapshotTests = true)]
 public sealed partial class ItemsViewSummaryPage : Page
 {
 	private enum QueuedOperationType
