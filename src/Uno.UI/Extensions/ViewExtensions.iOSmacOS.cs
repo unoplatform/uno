@@ -33,10 +33,10 @@ namespace Uno.UI
 			hasAnyChildren = false;
 			if (group is IShadowChildrenProvider shadowProvider)
 			{
-				hasAnyChildren = true;
 				var childrenShadow = shadowProvider.ChildrenShadow;
 				for (int i = childrenShadow.Count - 1; i >= 0; i--)
 				{
+					hasAnyChildren = true;
 					var result = selector(childrenShadow[i], param);
 					if (result is not null)
 					{
