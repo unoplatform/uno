@@ -73,27 +73,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// OR DrawBorder			=> Draws the border ...
 			// DrawInnerBorder			=> The today / selected state
 
-#if __WASM__
-			var borderInfoProvider = (IBorderInfoProvider)this;
-			var borderThickness = borderInfoProvider.BorderThickness;
-			var borderBrush = borderInfoProvider.BorderBrush;
-			if (borderBrush is not null)
-			{
-				EffectiveBorderThickness = borderThickness;
-			}
-			else
-			{
-				EffectiveBorderThickness = default;
-			}
-#endif
-
 			_borderRenderer.Update();
 		}
-
-
-#if __WASM__
-		internal Thickness EffectiveBorderThickness { get; set; }
-#endif
 
 		private bool IsClear(Brush brush)
 			=> brush is null
