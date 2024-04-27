@@ -137,7 +137,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public void SwipeControlCanOnlyBeHorizontalOrVerticalAfterRendering()
 		{
-			var resetEvent = new AutoResetEvent(false);
+			var resetEvent = new UnoAutoResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				SwipeControl swipeControl = new SwipeControl();

@@ -172,11 +172,11 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies the ScrollPresenter ExtentWidth/Height, ViewportWidth/Height and ScrollableWidth/Height properties.")]
-	public void VerifyExtentAndViewportProperties()
+	public async Task VerifyExtentAndViewportProperties()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -186,7 +186,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent, setAsContentRoot: true);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -298,7 +298,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		{
 			ScrollPresenter scrollPresenter = null;
 			Rectangle rectangleScrollPresenterContent = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -308,7 +308,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -389,7 +389,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		const double newMaxZoomFactor = 0.5;
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		Compositor compositor = null;
 
 		RunOnUIThread.Execute(() =>
@@ -402,7 +402,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 			compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -423,7 +423,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Waiting for spied properties to be captured");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -432,7 +432,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Waiting for captured properties to be updated");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -468,7 +468,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		const double newMinZoomFactor = 2.0;
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		Compositor compositor = null;
 
 		RunOnUIThread.Execute(() =>
@@ -481,7 +481,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 			compositor = Compositor.GetSharedCompositor(); //CompositionTarget.GetCompositorForCurrentThread(); - UNO Specific: GetCompositorForcurrentThread() isn't implemented.
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -502,7 +502,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Waiting for spied properties to be captured");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 		Log.Comment("Cancelling spying");
 
 		RunOnUIThread.Execute(() =>
@@ -512,7 +512,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Waiting for captured properties to be updated");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -543,11 +543,11 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Reads the properties exposed by the ScrollPresenter.ExpressionAnimationSources CompositionPropertySet.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void ReadExpressionAnimationSources()
+	public async Task ReadExpressionAnimationSources()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -558,7 +558,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 				scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -571,10 +571,10 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Jumping to absolute zoomFactor");
-		ZoomTo(scrollPresenter, 2.0f, 100.0f, 200.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+		await ZoomTo(scrollPresenter, 2.0f, 100.0f, 200.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 		Log.Comment("Waiting for spied properties to be captured");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -587,7 +587,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Waiting for captured properties to be updated");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -694,11 +694,11 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Listens to the ScrollPresenter.Content.EffectiveViewportChanged event and expects it to be raised while changing offsets.")]
 	[Ignore("ScrollingAnimationMode.Enabled requires InteractionTracker's CustomAnimation state")]
-	public void ListenToContentEffectiveViewportChanged()
+	public async Task ListenToContentEffectiveViewportChanged()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 		int effectiveViewportChangedCount = 0;
 
 		RunOnUIThread.Execute(() =>
@@ -717,9 +717,9 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 			};
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-		ScrollTo(
+		await ScrollTo(
 			scrollPresenter,
 			horizontalOffset: 250,
 			verticalOffset: 150,
@@ -737,7 +737,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 	private void SetupDefaultUI(
 		ScrollPresenter scrollPresenter,
 		Rectangle rectangleScrollPresenterContent,
-		AutoResetEvent scrollPresenterLoadedEvent,
+		UnoAutoResetEvent scrollPresenterLoadedEvent,
 		bool setAsContentRoot = true)
 	{
 		Log.Comment("Setting up default UI with ScrollPresenter" + (rectangleScrollPresenterContent == null ? "" : " and Rectangle"));
@@ -781,14 +781,15 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		}
 	}
 
-	private void SpyTranslationAndScale(ScrollPresenter scrollPresenter, Compositor compositor, out float horizontalOffset, out float verticalOffset, out float zoomFactor)
+	private async Task<(float HorizontalOffset, float VerticalOffset, float ZoomFactor)> SpyTranslationAndScale(ScrollPresenter scrollPresenter, Compositor compositor)
 	{
 		float horizontalOffsetTmp = 0.0f;
 		float verticalOffsetTmp = 0.0f;
 		float zoomFactorTmp = 1.0f;
 
-		horizontalOffset = verticalOffset = 0.0f;
-		zoomFactor = 0.0f;
+		float horizontalOffset = 0.0f;
+		float verticalOffset = 0.0f;
+		float zoomFactor = 0.0f;
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -802,7 +803,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Waiting for spied properties to be captured");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 
 		Log.Comment("Cancelling spying");
 
@@ -813,7 +814,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		Log.Comment("Waiting for captured properties to be updated");
-		CompositionPropertySpy.SynchronouslyTickUIThread(10);
+		await CompositionPropertySpy.SynchronouslyTickUIThread(10);
 
 		Log.Comment("Reading ScrollPresenter.Content's Visual Transform");
 		CompositionGetValueStatus status;
@@ -836,5 +837,6 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		horizontalOffset = horizontalOffsetTmp;
 		verticalOffset = verticalOffsetTmp;
 		zoomFactor = zoomFactorTmp;
+		return (horizontalOffset, verticalOffset, zoomFactor);
 	}
 }

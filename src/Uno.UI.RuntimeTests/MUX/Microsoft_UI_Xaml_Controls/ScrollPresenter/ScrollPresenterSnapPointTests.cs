@@ -284,11 +284,11 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Snap to the first instance of a repeated scroll snap point and ensure it is placed after the Start value.")]
 	[Ignore("Fails for missing InteractionTracker features")]
-	public void SnapToFirstRepeatedScrollSnapPoint()
+	public async Task SnapToFirstRepeatedScrollSnapPoint()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -298,10 +298,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		// Jump to absolute offsets
-		ScrollTo(scrollPresenter, 60.0, 0.0, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Default);
+		await ScrollTo(scrollPresenter, 60.0, 0.0, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Default);
 
 		// Add scroll repeated snap point with different offset and start.
 		RunOnUIThread.Execute(() =>
@@ -317,7 +317,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		// Flick with horizontal offset velocity to naturally land around offset 15.
-		AddScrollVelocity(scrollPresenter, horizontalVelocity: -165.0f, verticalVelocity: 0.0f, horizontalInertiaDecayRate: null, verticalInertiaDecayRate: null, hookViewChanged: false);
+		await AddScrollVelocity(scrollPresenter, horizontalVelocity: -165.0f, verticalVelocity: 0.0f, horizontalInertiaDecayRate: null, verticalInertiaDecayRate: null, hookViewChanged: false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -331,11 +331,11 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Snap to the first instance of a repeated zoom snap point and ensure it is placed after the Start value.")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void SnapToFirstRepeatedZoomSnapPoint()
+	public async Task SnapToFirstRepeatedZoomSnapPoint()
 	{
 		ScrollPresenter scrollPresenter = null;
 		Rectangle rectangleScrollPresenterContent = null;
-		AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+		UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -345,10 +345,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent, scrollPresenterLoadedEvent);
 		});
 
-		WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+		await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 		// Jump to absolute zoom factor, and center the content in the viewport.
-		ZoomTo(scrollPresenter,
+		await ZoomTo(scrollPresenter,
 			zoomFactor: 6.0f,
 			centerPointX: 690.0f,
 			centerPointY: 340.0f,
@@ -368,7 +368,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 
 		// Flick with zoom factor velocity to naturally land around factor 1.5.
-		AddZoomVelocity(scrollPresenter,
+		await AddZoomVelocity(scrollPresenter,
 			zoomFactorVelocity: -5.0f,
 			inertiaDecayRate: 0.6675f,
 			centerPointX: 150.0f,

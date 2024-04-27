@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 
@@ -34,7 +35,7 @@ namespace MUXControlsTestApp.Utilities
 		const string c_scaleFacadeName = "Scale";
 		private static Dictionary<CompositionObject, KeyValuePair<CompositionPropertySet, Dictionary<string, ExpressionAnimation>>> s_objectsDictionary = new Dictionary<CompositionObject, KeyValuePair<CompositionPropertySet, Dictionary<string, ExpressionAnimation>>>();
 		private static Dictionary<UIElement, KeyValuePair<CompositionPropertySet, Dictionary<string, ExpressionAnimation>>> s_elementsDictionary = new Dictionary<UIElement, KeyValuePair<CompositionPropertySet, Dictionary<string, ExpressionAnimation>>>();
-		private static AutoResetEvent s_tickEvent = null;
+		private static UnoAutoResetEvent s_tickEvent = null;
 
 		/// <summary>
 		/// Starts spying on the translation facade of the provided element.
@@ -306,11 +307,11 @@ namespace MUXControlsTestApp.Utilities
 		/// after it stops animating.
 		/// </summary>
 		/// <param name="ticks"></param>
-		public static void SynchronouslyTickUIThread(uint ticks)
+		public static async Task SynchronouslyTickUIThread(uint ticks)
 		{
 			if (s_tickEvent == null)
 			{
-				s_tickEvent = new AutoResetEvent(false);
+				s_tickEvent = new UnoAutoResetEvent(false);
 			}
 
 			for (uint tick = 0; tick < ticks; tick++)
@@ -320,7 +321,7 @@ namespace MUXControlsTestApp.Utilities
 					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 				});
 
-				s_tickEvent.WaitOne();
+				await s_tickEvent.WaitOne();
 			}
 		}
 

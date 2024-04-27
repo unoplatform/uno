@@ -53,7 +53,7 @@ public class TeachingTipTests
 		TeachingTip teachingTip = null, teachingTipLightDismiss = null;
 		SolidColorBrush blueBrush = null;
 		Brush lightDismissBackgroundBrush = null;
-		var loadedEvent = new AutoResetEvent(false);
+		var loadedEvent = new UnoAutoResetEvent(false);
 		RunOnUIThread.Execute(() =>
 		{
 			Grid root = new Grid();
@@ -80,7 +80,7 @@ public class TeachingTipTests
 		});
 
 		await TestServices.WindowHelper.WaitForIdle();
-		loadedEvent.WaitOne();
+		await loadedEvent.WaitOne();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
@@ -187,7 +187,7 @@ public class TeachingTipTests
 
 		try
 		{
-			var loadedEvent = new AutoResetEvent(false);
+			var loadedEvent = new UnoAutoResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				Grid contentGrid = new Grid();
@@ -201,7 +201,7 @@ public class TeachingTipTests
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			loadedEvent.WaitOne();
+			await loadedEvent.WaitOne();
 		}
 		finally
 		{
@@ -220,7 +220,7 @@ public class TeachingTipTests
 
 		try
 		{
-			var loadedEvent = new AutoResetEvent(false);
+			var loadedEvent = new UnoAutoResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				Grid contentGrid = new Grid();
@@ -233,7 +233,7 @@ public class TeachingTipTests
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			loadedEvent.WaitOne();
+			await loadedEvent.WaitOne();
 		}
 		finally
 		{

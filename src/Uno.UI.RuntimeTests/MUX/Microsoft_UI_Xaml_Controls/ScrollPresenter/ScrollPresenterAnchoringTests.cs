@@ -54,7 +54,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -63,7 +63,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -144,8 +144,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -154,9 +154,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -175,7 +175,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -214,7 +214,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -262,8 +262,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -272,9 +272,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -293,7 +293,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -322,7 +322,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -368,8 +368,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -378,12 +378,12 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			double horizontalOffset = orientation == Orientation.Vertical ? 0.0 : 1.0;
 			double verticalOffset = orientation == Orientation.Vertical ? 1.0 : 0.0;
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -399,7 +399,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				InsertStackPanelChild((scrollPresenter.Content as Border).Child as StackPanel, 1 /*operationCount*/, 0 /*newIndex*/, 1 /*newCount*/);
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -444,7 +444,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -453,9 +453,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -474,7 +474,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -526,8 +526,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -536,9 +536,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -557,7 +557,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -584,7 +584,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -610,7 +610,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	private void SetupDefaultAnchoringUI(
 		Orientation orientation,
 		ScrollPresenter scrollPresenter,
-		AutoResetEvent scrollPresenterLoadedEvent)
+		UnoAutoResetEvent scrollPresenterLoadedEvent)
 	{
 		Log.Comment("Setting up default anchoring UI with ScrollPresenter");
 
@@ -729,9 +729,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		{
 			ScrollPresenter scrollPresenter = null;
 			Border anchorElement = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterAnchorRequestedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterAnchorRequestedEvent = new UnoAutoResetEvent(false);
 
 			// This test validates that the ScrollPresenter accounts for maximum vertical offset (based on viewport and content extent) 
 			// when calculating the vertical offset shift for anchoring. The vertical offset cannot exceed content extent - viewport.
@@ -790,10 +790,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				Content = scrollPresenter;
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.Loaded event", scrollPresenterLoadedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			ScrollTo(scrollPresenter, 0.0, 600.0, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ScrollTo(scrollPresenter, 0.0, 600.0, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -809,8 +809,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				scrollPresenterViewChangedEvent.Reset();
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
-			WaitForEvent("Waiting for ScrollPresenter.AnchorRequested event", scrollPresenterAnchorRequestedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.AnchorRequested event", scrollPresenterAnchorRequestedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -826,7 +826,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset adjusts when inserting and removing items at the beginning (VerticalAnchorRatio=0.5).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtRepeaterMiddle()
+	public async Task AnchoringAtRepeaterMiddle()
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -836,8 +836,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			//using (PrivateLoggingHelper privateLoggingHelper = new PrivateLoggingHelper("ScrollPresenter"))
 			{
 				ScrollPresenter scrollPresenter = null;
-				AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-				AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+				UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+				UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -849,10 +849,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 					scrollPresenter.VerticalAnchorRatio = 0.5;
 				});
 
-				WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+				await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-				ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore);
-				ScrollTo(scrollPresenter, 0.0, 250.0, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+				await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore);
+				await ScrollTo(scrollPresenter, 0.0, 250.0, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 				ItemsRepeater repeater = null;
 				TestDataSource dataSource = null;
@@ -871,7 +871,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 					dataSource.Insert(0 /*index*/, 2 /*count*/);
 				});
 
-				WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+				await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -887,7 +887,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 					dataSource.Remove(0 /*index*/, 2 /*count*/);
 				});
 
-				WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+				await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -903,7 +903,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	private void SetupRepeaterAnchoringUI(
 		ScrollPresenter scrollPresenter,
-		AutoResetEvent scrollPresenterLoadedEvent)
+		UnoAutoResetEvent scrollPresenterLoadedEvent)
 	{
 		Log.Comment("Setting up ItemsRepeater anchoring UI with ScrollPresenter and ItemsRepeater");
 

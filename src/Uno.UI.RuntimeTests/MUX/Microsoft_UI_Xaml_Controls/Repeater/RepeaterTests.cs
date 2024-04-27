@@ -252,7 +252,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater rootRepeater = null;
 			ScrollViewer scrollViewer = null;
 			ItemsRepeaterScrollHost scrollhost = null;
-			ManualResetEvent viewChanged = new ManualResetEvent(false);
+			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					scrollViewer.ChangeView(null, i * 200, null);
 				});
 
-				Verify.IsTrue(viewChanged.WaitOne(DefaultWaitTimeInMS));
+				Verify.IsTrue(await viewChanged.WaitOne(DefaultWaitTimeInMS));
 				viewChanged.Reset();
 				await TestServices.WindowHelper.WaitForIdle();
 
@@ -409,7 +409,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			// {
 			ItemsRepeater rootRepeater = null;
 			ScrollViewer scrollViewer = null;
-			ManualResetEvent viewChanged = new ManualResetEvent(false);
+			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				var anchorProvider = (ItemsRepeaterScrollHost)XamlReader.Load(
@@ -477,7 +477,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 
 				Log.Comment("Waiting for view change completion...");
-				Verify.IsTrue(viewChanged.WaitOne(DefaultWaitTimeInMS));
+				Verify.IsTrue(await viewChanged.WaitOne(DefaultWaitTimeInMS));
 				viewChanged.Reset();
 				Log.Comment("View change completed");
 
@@ -502,7 +502,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater rootRepeater = null;
 			ScrollViewer scrollViewer = null;
 			ItemsRepeaterScrollHost scrollhost = null;
-			ManualResetEvent viewChanged = new ManualResetEvent(false);
+			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
@@ -554,7 +554,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					scrollViewer.ChangeView(null, i * 200, null);
 				});
 
-				Verify.IsTrue(viewChanged.WaitOne(DefaultWaitTimeInMS));
+				Verify.IsTrue(await viewChanged.WaitOne(DefaultWaitTimeInMS));
 				viewChanged.Reset();
 			}
 		}
@@ -740,7 +740,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			AutoResetEvent scrollViewerScrolledEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewerScrolledEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -779,11 +779,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			Log.Comment("Wait for scrolling");
 			if (Debugger.IsAttached)
 			{
-				scrollViewerScrolledEvent.WaitOne();
+				await scrollViewerScrolledEvent.WaitOne();
 			}
 			else
 			{
-				if (!scrollViewerScrolledEvent.WaitOne(TimeSpan.FromMilliseconds(5000)))
+				if (!await scrollViewerScrolledEvent.WaitOne(TimeSpan.FromMilliseconds(5000)))
 				{
 					throw new Exception("Timeout expiration in WaitForEvent.");
 				}
