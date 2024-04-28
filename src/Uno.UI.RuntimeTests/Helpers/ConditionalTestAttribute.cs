@@ -68,20 +68,24 @@ public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 		};
 	}
 
-	private static bool IsHostAssembly(string name)
+	private static bool IsSkiaHostAssembly(string name)
+#if __SKIA__
 		=> Microsoft.UI.Xaml.Application.Current.Host.GetType().Assembly.GetName().Name == name;
+#else
+		=> false;
+#endif
 
 	private static bool IsSkiaGtk()
-		=> IsHostAssembly("Uno.UI.Runtime.Skia.Gtk");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Gtk");
 
 	private static bool IsSkiaWpf()
-		=> IsHostAssembly("Uno.UI.Runtime.Skia.Wpf");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Wpf");
 
 	private static bool IsSkiaX11()
-		=> IsHostAssembly("Uno.UI.Runtime.Skia.X11");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.X11");
 
 	private static bool IsSkiaMacOS()
-		=> IsHostAssembly("Uno.UI.Runtime.Skia.MacOS");
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.MacOS");
 
 	private static bool IsWasm()
 	{
