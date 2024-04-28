@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 		}
 
-#if !__ANDROID__ && !__SKIA__
+#if !__ANDROID__
 		[TestMethod]
 		public async Task VerifyNumberPanelButtonUIABehavior()
 		{
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(async () =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				await Task.Delay(500);
 

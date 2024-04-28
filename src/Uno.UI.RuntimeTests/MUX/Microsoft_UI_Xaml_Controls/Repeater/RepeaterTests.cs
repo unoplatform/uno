@@ -91,9 +91,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void ValidateRepeaterDefaults()
+		public async Task ValidateRepeaterDefaults()
 		{
-			RunOnUIThread.Execute(async () =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var repeater = new ItemsRepeater()
 				{
