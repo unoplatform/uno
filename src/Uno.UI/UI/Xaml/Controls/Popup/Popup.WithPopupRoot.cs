@@ -110,12 +110,20 @@ public partial class Popup
 
 		if (newIsOpen)
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			// TODO: Add EventManager.RaiseEvent method and use it here.
 			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
+#else
+			Opened?.Invoke(this, newIsOpen);
+#endif
 		}
 		else
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
+#else
+			Closed?.Invoke(this, newIsOpen);
+#endif
 		}
 	}
 
