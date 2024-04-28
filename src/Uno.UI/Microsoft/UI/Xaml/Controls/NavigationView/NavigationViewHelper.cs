@@ -4,6 +4,10 @@
 
 using Microsoft.UI.Xaml;
 
+#if !HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+#endif
+
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal enum NavigationViewVisualStateDisplayMode
@@ -52,7 +56,7 @@ internal class NavigationViewItemHelper<T>
 
 	internal UIElement GetSelectionIndicator() { return m_selectionIndicator; }
 
-	internal void Init(FrameworkElement controlProtected)
+	internal void Init(Control controlProtected)
 	{
 		m_selectionIndicator = controlProtected.GetTemplateChild(c_selectionIndicatorName) as UIElement;
 	}

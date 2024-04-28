@@ -59,10 +59,6 @@ namespace Microsoft.UI.Xaml
 
 		public TransitionCollection Transitions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-		public object FindName(string name)
-			=> IFrameworkElementHelper.FindName(this, this, name);
-
-
 		public void Dispose()
 		{
 			throw new NotImplementedException();

@@ -275,6 +275,12 @@ namespace Microsoft.UI.Xaml
 		partial void OnLoadedPartial();
 		private protected virtual void OnLoaded()
 		{
+			if (Name is { } name && NameScope.GetNameScope(this) is { } nameScope)
+			{
+				// This should be in Enter, not Loaded. Needs changes from lifecycle PR :/
+				nameScope.RegisterName(name, this);
+			}
+
 			ReconfigureViewportPropagationPartial();
 		}
 
@@ -322,6 +328,13 @@ namespace Microsoft.UI.Xaml
 
 		private protected virtual void OnUnloaded()
 		{
+			// This doesn't work. GetNameScope will be null because the element is already unloaded. This needs to be in "Leave"
+			// So, has to wait for lifecycle.
+			if (Name is { } name && NameScope.GetNameScope(this) is { } nameScope)
+			{
+				nameScope.UnregisterName(name);
+			}
+
 			ReconfigureViewportPropagationPartial();
 		}
 

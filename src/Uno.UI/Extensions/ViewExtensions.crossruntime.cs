@@ -14,22 +14,6 @@ namespace Uno.UI
 {
 	public static partial class ViewExtensions
 	{
-		internal static TResult? FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult?> selector)
-			where TResult : class
-		{
-			var children = group.GetChildren();
-			for (int i = children.Count - 1; i >= 0; i--)
-			{
-				var result = selector(children[i], param);
-				if (result is not null)
-				{
-					return result;
-				}
-			}
-
-			return null;
-		}
-
 #if !__NETSTD_REFERENCE__
 		/// <summary>
 		/// Find the first child of a specific type.

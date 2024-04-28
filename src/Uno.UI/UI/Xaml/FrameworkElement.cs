@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Uno;
 using Uno.Disposables;
 using Windows.UI.Core;
@@ -26,6 +27,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using System.Runtime.CompilerServices;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -629,6 +632,37 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
+
+#if !__ANDROID__ && !__IOS__ && !__MACOS__ // Mixin-generated on those platforms
+		public object FindName(string name)
+		{
+			var nameScope = FindNameScope(this);
+			var result = nameScope?.FindName(name);
+			if (result is ElementStub stub)
+			{
+				stub.Materialize();
+				return stub.Content;
+			}
+
+			return result;
+		}
+#endif
+
+		internal static INameScope FindNameScope(DependencyObject dependencyObject)
+		{
+			var current = dependencyObject;
+			while (current is not null)
+			{
+				if (NameScope.GetNameScope(current) is { } nameScope)
+				{
+					return nameScope;
+				}
+
+				current = VisualTreeHelper.GetParent(current);
+			}
+
+			return null;
+		}
 
 		internal
 #if __ANDROID__

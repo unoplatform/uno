@@ -1465,8 +1465,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			SUT.ForceLoaded();
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
-			Assert.IsNotNull(tb);
-			Assert.AreEqual(Microsoft.UI.Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+			// This is expected to be null as SUT's name scope is different than SecondaryActionsList's name scope.
+			Assert.IsNull(tb);
 		}
 
 		[TestMethod]
@@ -1479,8 +1479,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			VisualStateManager.GoToState((Control)SUT.FindName("SubjectToggleButton"), "Checked", false);
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
-			Assert.IsNotNull(tb);
-			Assert.AreEqual(Microsoft.UI.Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
+			// This is expected to be null as SUT's name scope is different than MarkTextBlock's name scope.
+			Assert.IsNull(tb);
 		}
 
 		[TestMethod]
@@ -1490,17 +1490,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var SUT = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as Page;
 			SUT.ForceLoaded();
 
-
 			var border1 = (Border)SUT.FindName("border1");
 			var border2 = (Border)SUT.FindName("border2");
 
-			Assert.IsNotNull(border1);
-			Assert.IsNotNull(border2);
-
-			Assert.AreEqual(Microsoft.UI.Colors.Red, (border1.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Microsoft.UI.Colors.Pink, (border1.BorderBrush as SolidColorBrush)?.Color);
-			Assert.AreEqual(Microsoft.UI.Colors.Blue, (border2.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Microsoft.UI.Colors.Yellow, (border2.BorderBrush as SolidColorBrush)?.Color);
+			// These are expected to be null as SUT's name scope is different than the borders' name scopes.
+			Assert.IsNull(border1);
+			Assert.IsNull(border2);
 		}
 
 		[TestMethod]

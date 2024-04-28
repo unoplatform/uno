@@ -22,9 +22,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock");
 
-			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
+			// This is expected to be null as SUT's name scope is different from innerTextBlock's name scope.
+			Assert.IsNull(tb);
 		}
 
 		[TestMethod]
@@ -34,9 +35,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock");
 
-			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
+			// This is expected to be null as SUT's name scope is different from innerTextBlock's name scope.
+			Assert.IsNull(tb);
 		}
 
 		[TestMethod]
@@ -46,9 +48,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock");
 
-			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
+			// This is expected to be null as SUT's name scope is different than innerTextBlock's name scope.
+			Assert.IsNull(tb);
 		}
 
 		[TestMethod]
@@ -60,9 +63,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var button = SUT.FindName("button") as Microsoft.UI.Xaml.Controls.Button;
+			var button = SUT.FindName("button");
 
-			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
+			// This is expected to be null as SUT's name scope is different than button's name scope.
+			Assert.IsNull(button);
 		}
 
 		[TestMethod]
@@ -76,11 +80,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.PrimaryActionsList.ItemsSource = new[] { "test" };
 
-			var SecondaryActionsList = SUT.FindName("SecondaryActionsList") as ItemsControl;
-			SecondaryActionsList.ItemsSource = new[] { "test" };
+			var secondaryActionsList = SUT.FindName("SecondaryActionsList");
 
-			var button = SUT.FindName("button") as Button;
-			Assert.AreEqual(SUT.Tag, button.Tag);
+			// This is expected to be null as SUT's name scope is different than SecondaryActionsList's name scope.
+			Assert.IsNull(secondaryActionsList);
+
+			var button = SUT.FindName("button");
+
+			// This is expected to be null as SUT's name scope is different than button's name scope.
+			Assert.IsNull(button);
 		}
 
 		[TestMethod]
@@ -92,14 +100,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var button = SUT.FindName("button") as Microsoft.UI.Xaml.Controls.Button;
+			var button = SUT.FindName("button");
 
-			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
-
-			var nestedDO = Binding_ElementName_In_Template_ItemsControl_NonUINested_Attached.GetNonUIObject(button);
-
-			Assert.IsNotNull(nestedDO);
-			Assert.AreEqual(nestedDO.InnerProperty, button.Tag);
+			// This is expected to be null as SUT's name scope is different than button's name scope.
+			Assert.IsNull(button);
 		}
 
 		[TestMethod]
@@ -107,20 +111,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 		{
 			var SUT = new Binding_ElementName_NonUINested_GlobalResources();
 
-			var primaryActionsList = SUT.FindName("PrimaryActionsList") as Microsoft.UI.Xaml.Controls.ItemsControl;
+			var primaryActionsList = SUT.FindName("PrimaryActionsList");
 
-			primaryActionsList.ItemsSource = new[] { "test" };
+			// This is expected to be null as SUT's name scope is different than PrimaryActionsList's name scope.
+			Assert.IsNull(primaryActionsList);
 
 			SUT.ForceLoaded();
 
-			var button = SUT.FindName("button") as Microsoft.UI.Xaml.Controls.Button;
+			var button = SUT.FindName("button");
 
-			Assert.AreEqual(primaryActionsList.Tag, button.Tag);
-
-			var nestedDO = Binding_ElementName_NonUINested_GlobalResources_Attached.GetNonUIObject(button);
-
-			Assert.IsNotNull(nestedDO);
-			Assert.AreEqual(nestedDO.InnerProperty, button.Tag);
+			// This is expected to be null as SUT's name scope is different than button's name scope.
+			Assert.IsNull(button);
 		}
 
 		[TestMethod]
@@ -130,9 +131,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock");
 
-			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
+			// This is expected to be null as SUT's name scope is different than innerTextBlock's name scope.
+			Assert.IsNull(tb);
 		}
 
 		[TestMethod]

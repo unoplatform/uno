@@ -100,6 +100,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public bool IsMaterialized => _content != null;
 
+		internal View Content => _content;
+
 		public ElementStub(Func<View> contentBuilder) : this()
 		{
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
