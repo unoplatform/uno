@@ -528,18 +528,18 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateTemplateSwitchingRefreshesElementsVirtualizingLayout()
 		{
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
-				_ = ValidateTemplateSwitchingRefreshesElements(new StackLayout());
+				await ValidateTemplateSwitchingRefreshesElements(new StackLayout());
 			});
 		}
 
 		[TestMethod]
 		public async Task ValidateTemplateSwitchingRefreshesElementsNonVirtualizingLayout()
 		{
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
-				_ = ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
+				await ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
 			});
 		}
 
