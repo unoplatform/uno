@@ -250,7 +250,7 @@
 	</Target>
 
 	<Target Name="_UnoLinkerSubstitutionsMerge"
-		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true' and @(_SubstitutionFiles->Count()) > 0"
+		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true' and @(_SubstitutionFiles->Count()) > 0 and '$(Configuration)' == 'Release'"
 		DependsOnTargets="_UnoLinkerCollectSubstitutions"
 		BeforeTargets="_UnoEmbeddedResourcesInjection">
 
