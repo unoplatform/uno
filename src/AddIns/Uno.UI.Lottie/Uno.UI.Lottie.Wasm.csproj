@@ -24,11 +24,6 @@
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<None Remove="tsconfig.json" />
-		<Content Include="tsconfig.json" />
-	</ItemGroup>
-
 	<PropertyGroup Condition="'$(BuildingInsideUnoSourceGenerator)' != ''">
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 	</PropertyGroup>

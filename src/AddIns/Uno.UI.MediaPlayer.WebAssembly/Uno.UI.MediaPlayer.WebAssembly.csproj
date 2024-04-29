@@ -24,18 +24,7 @@
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Remove="WasmScripts\*.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="tsconfig.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<UpToDateCheckInput Remove="ts\MediaElement.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="tsconfig.json" />
+		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,10 +41,6 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 			<PrivateAssets>all</PrivateAssets>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		 <Folder Include="WasmScripts\" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIMSALOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
