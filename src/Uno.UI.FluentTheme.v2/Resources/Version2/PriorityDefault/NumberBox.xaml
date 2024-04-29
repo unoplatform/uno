@@ -203,6 +203,8 @@
         </Style.Setters>
     </Style>
     <Style x:Key="NumberBoxTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}">
+        <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
+        <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
