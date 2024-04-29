@@ -23,7 +23,7 @@ namespace Uno.UI.Controls;
 public partial class FauxGradientBorderPresenter : ContentPresenter
 {
 #if __WASM__ || __IOS__ || __MACOS__
-	private readonly Border? _displayBorder;
+	private readonly Border _displayBorder;
 #endif
 
 	public FauxGradientBorderPresenter()
@@ -95,39 +95,17 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	private void OnBorderChanged()
 	{
 #if __WASM__ || __IOS__ || __MACOS__
-		if (_displayBorder == null)
-		{
-			return;
-		}
-
 		var requestedThickness = RequestedBorderThickness;
 		var requestedBorderBrush = RequestedBorderBrush;
 		var requestedCornerRadius = RequestedCornerRadius;
 
 		if (requestedBorderBrush is not LinearGradientBrush gradientBrush ||
-			!gradientBrush.CanApplySolidColorRendering())
+			!gradientBrush.SupportsFauxGradientBorder() ||
+			gradientBrush.CanApplyToBorder(requestedCornerRadius))
 		{
 			_displayBorder.Visibility = Visibility.Collapsed;
 			return;
 		}
-
-#if __WASM__
-		if (requestedCornerRadius == CornerRadius.None)
-		{
-			// WASM can render linear gradient border unless corner radius is set.
-			_displayBorder.Visibility = Visibility.Collapsed;
-			return;
-		}
-#endif
-
-#if __IOS__ || __MACOS__
-		if (gradientBrush.RelativeTransform == null)
-		{
-			// iOS can render linear gradient border unless relative transform is used.
-			_displayBorder.Visibility = Visibility.Collapsed;
-			return;
-		}
-#endif
 
 		requestedThickness.Left = 0;
 		requestedThickness.Right = 0;

@@ -6,5 +6,7 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		internal abstract string ToCssString(Size size);
 		internal abstract UIElement ToSvgElement();
+
+		internal virtual bool CanApplyToBorder(CornerRadius cornerRadius) => true;
 	}
 }
