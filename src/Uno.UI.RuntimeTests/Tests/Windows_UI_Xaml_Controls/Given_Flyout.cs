@@ -901,7 +901,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				closing5 False False False False False  False
 				closed4 False False False False False 
 				closing5 False False False False False  False
-				closed5 False False False False False
+				closed5 False False False False False 
 
 				""";
 #else
