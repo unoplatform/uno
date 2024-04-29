@@ -42,7 +42,7 @@ internal class UnoWpfWindow : WpfWindow
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
-		winUIWindow.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 
 		Closed += UnoWpfWindow_Closed;
@@ -72,7 +72,7 @@ internal class UnoWpfWindow : WpfWindow
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
-		_winUIWindow.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
+		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
 	internal UnoWpfWindowHost Host { get; private set; }

@@ -15,5 +15,8 @@ public enum TitleBarHeightOption
 	/// </summary>
 	Tall = 1,
 
+	/// <summary>
+	/// Title bar is collapsed.
+	/// </summary>
 	Collapsed = 2,
 }

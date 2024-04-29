@@ -59,7 +59,7 @@ internal class UnoGtkWindow : Window
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
-		winUIWindow.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 		Destroyed += UnoGtkWindow_Destroyed;
 		Shown += UnoGtkWindow_Shown;
@@ -76,7 +76,7 @@ internal class UnoGtkWindow : Window
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
-		_winUIWindow.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
+		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
 	internal UnoGtkWindowHost Host { get; }

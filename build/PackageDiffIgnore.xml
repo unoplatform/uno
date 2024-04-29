@@ -1842,7 +1842,24 @@
 			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView.get_IsFullScreen()" reason="Not in WinUI" />
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="5.2">
+		<Types>
+		</Types>
 
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar::.*" reason="Not in UWP" isRegex="true" />
+		</Properties>
+
+		<Methods>
+			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar\..*" reason="Not in UWP" isRegex="true" />
+		</Methods>
+	</IgnoreSet>
   <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">

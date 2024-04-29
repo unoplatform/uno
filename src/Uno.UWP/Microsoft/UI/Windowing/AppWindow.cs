@@ -34,6 +34,11 @@ partial class AppWindow
 
 	public event TypedEventHandler<AppWindow, AppWindowChangedEventArgs> Changed;
 
+	/// <summary>
+	/// Gets the title bar of the app window.
+	/// </summary>
+	public AppWindowTitleBar TitleBar { get; } = new AppWindowTitleBar();
+
 	public string Title
 	{
 		get => _nativeAppWindow is not null ? _nativeAppWindow.Title : _titleCache;

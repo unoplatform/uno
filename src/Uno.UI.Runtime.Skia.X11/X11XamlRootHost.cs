@@ -63,7 +63,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
-		winUIWindow.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
@@ -84,7 +84,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_windowToHost.Remove(winUIWindow, out var _);
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
-				winUIWindow.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
+				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 			}
 		});
 
