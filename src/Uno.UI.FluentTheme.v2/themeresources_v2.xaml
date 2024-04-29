@@ -9206,6 +9206,8 @@
   <x:Double x:Key="TextBoxIconFontSize">12</x:Double>
   <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
   <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
+    <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
+    <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
@@ -12433,6 +12435,8 @@
   </Style>
   <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBoxStyle}" />
   <Style x:Key="DefaultComboBoxStyle" TargetType="ComboBox">
+    <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
+    <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Padding" Value="{ThemeResource ComboBoxPadding}" />
     <Setter Property="MaxDropDownHeight" Value="504" />
     <Setter Property="Foreground" Value="{ThemeResource ComboBoxForeground}" />
@@ -19488,6 +19492,8 @@
     </Style.Setters>
   </Style>
   <Style x:Key="NumberBoxTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}">
+    <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
+    <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="TextBox">
