@@ -34,7 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_sourceDisposable.Disposable = null;
 			_lastMeasuredSize = default;
 			_imageSprite.Brush = null;
-			_currentSurface?.Dispose();
 			_currentSurface = null;
 			_pendingImageData = new();
 			InvalidateMeasure();
@@ -139,7 +138,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_pendingImageData = new();
 			if (currentData.HasData)
 			{
-				_currentSurface?.Dispose();
 				_currentSurface = currentData.CompositionSurface;
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
 				_surfaceBrush.UsePaintColorToColorSurface = MonochromeColor is not null;

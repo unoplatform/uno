@@ -102,16 +102,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private protected override void DisposeInternal()
-		{
-			base.DisposeInternal();
-			SetFrameProviderAndOnFrameChanged(null, null);
-			GC.SuppressFinalize(this);
-		}
-
 		~SkiaCompositionSurface()
 		{
-			this.Dispose();
+			SetFrameProviderAndOnFrameChanged(null, null);
 		}
 	}
 }
