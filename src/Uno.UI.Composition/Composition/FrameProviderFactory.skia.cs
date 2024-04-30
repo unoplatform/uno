@@ -14,7 +14,6 @@ internal static class FrameProviderFactory
 
 	public static bool TryCreate(SKManagedStream stream, Action onFrameChanged, [NotNullWhen(true)] out IFrameProvider? provider)
 	{
-		var originalPosition = stream.Position;
 		using var codec = SKCodec.Create(stream);
 		var imageInfo = codec.Info;
 		var frameInfos = codec.FrameInfo;
@@ -23,22 +22,9 @@ internal static class FrameProviderFactory
 
 		if (codec.FrameInfo.Length < 2)
 		{
-			if (stream.Seek(originalPosition))
-			{
-				// Note: codec.GetPixels(imageInfo, bitmap.GetPixels()) doesn't seem to respect SKEncodedOrigin (aka Exif orientation)
-				// For non-Gifs, we use FromEncodedData, which appears to respect Exif.
-				// For Gifs, we currently don't properly support Exif orientation.
-				// If Skia can't give this out-of-the-box, we'll need to apply a transform matrix manually based on codec.EncodedOrigin value.
-				// See https://github.com/google/skia/blob/b20651c1aad43e3447830d6ce7a68ca507b398a4/include/codec/SkEncodedOrigin.h#L32-L42
-				// We should make sure we test a scenario for an Image whose width and height are different, and is Exif rotated by 90 degree
-				// i.e, cause the width and height to swap.
-				provider = new SingleFrameProvider(SKImage.FromEncodedData(stream));
-				return true;
-			}
-
 			// FrameInfo can be zero for single-frame images
 			codec.GetPixels(imageInfo, bitmap.GetPixels());
-			provider = new SingleFrameProvider(SKImage.FromBitmap(bitmap));
+			provider = new SingleFrameProvider(GetImage(bitmap, codec.EncodedOrigin));
 			return true;
 		}
 
@@ -48,7 +34,8 @@ internal static class FrameProviderFactory
 		{
 			var options = new SKCodecOptions(i);
 			codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
-			var currentBitmap = SKImage.FromBitmap(bitmap);
+
+			var currentBitmap = GetImage(bitmap, codec.EncodedOrigin);
 			if (currentBitmap is null)
 			{
 				provider = null;
@@ -62,4 +49,59 @@ internal static class FrameProviderFactory
 		provider = new GifFrameProvider(images, frameInfos, totalDuration, onFrameChanged);
 		return true;
 	}
+
+	private static SKImage GetImage(SKBitmap bitmap, SKEncodedOrigin origin)
+	{
+		var matrix = GetExifMatrix(origin, bitmap.Width, bitmap.Height);
+		if (matrix.IsIdentity)
+		{
+			return SKImage.FromBitmap(bitmap);
+		}
+
+		var info = bitmap.Info;
+		if (SkEncodedOriginSwapsWidthHeight(origin))
+		{
+			info = new SKImageInfo(info.Height, info.Width, SKColorType.Bgra8888, SKAlphaType.Premul);
+		}
+
+		var newBitmap = new SKBitmap(info);
+		using var canvas = new SKCanvas(newBitmap);
+		canvas.SetMatrix(matrix);
+		canvas.DrawBitmap(bitmap, 0, 0);
+		return SKImage.FromBitmap(newBitmap);
+	}
+
+	// https://github.com/google/skia/blob/b20651c1aad43e3447830d6ce7a68ca507b398a4/include/codec/SkEncodedOrigin.h#L32-L42
+	private static SKMatrix GetExifMatrix(SKEncodedOrigin origin, int width, int height)
+	{
+		return origin switch
+		{
+			SKEncodedOrigin.TopLeft => SKMatrix.Identity,
+			SKEncodedOrigin.TopRight => new SKMatrix(-1, 0, width, 0, 1, 0, 0, 0, 1),
+			SKEncodedOrigin.BottomRight => new SKMatrix(-1, 0, width, 0, -1, height, 0, 0, 1),
+			SKEncodedOrigin.BottomLeft => new SKMatrix(1, 0, 0, 0, -1, height, 0, 0, 1),
+			SKEncodedOrigin.LeftTop => new SKMatrix(0, 1, 0, 1, 0, 0, 0, 0, 1),
+			SKEncodedOrigin.RightTop => new SKMatrix(0, -1, width, 1, 0, 0, 0, 0, 1),
+			SKEncodedOrigin.RightBottom => new SKMatrix(0, -1, width, -1, 0, height, 0, 0, 1),
+			SKEncodedOrigin.LeftBottom => new SKMatrix(0, 1, 0, -1, 0, height, 0, 0, 1),
+			_ => throw new ArgumentException($"Unexpected SKEncodedOrigin value '{origin}'.", nameof(origin)),
+		};
+	}
+
+	private static bool SkEncodedOriginSwapsWidthHeight(SKEncodedOrigin origin)
+	{
+		return origin is
+			// Reflected across x - axis.Rotated 90° counter - clockwise.
+			SKEncodedOrigin.LeftTop or
+
+			// Rotated 90° clockwise.
+			SKEncodedOrigin.RightTop or
+
+			// Reflected across x-axis. Rotated 90° clockwise.
+			SKEncodedOrigin.RightBottom or
+
+			// Rotated 90° counter-clockwise.
+			SKEncodedOrigin.LeftBottom;
+	}
+
 }
