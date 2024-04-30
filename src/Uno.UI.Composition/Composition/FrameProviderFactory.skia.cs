@@ -52,16 +52,16 @@ internal static class FrameProviderFactory
 
 	private static SKImage GetImage(SKBitmap bitmap, SKEncodedOrigin origin)
 	{
-		var matrix = GetExifMatrix(origin, bitmap.Width, bitmap.Height);
-		if (matrix.IsIdentity)
-		{
-			return SKImage.FromBitmap(bitmap);
-		}
-
 		var info = bitmap.Info;
 		if (SkEncodedOriginSwapsWidthHeight(origin))
 		{
 			info = new SKImageInfo(info.Height, info.Width, SKColorType.Bgra8888, SKAlphaType.Premul);
+		}
+
+		var matrix = GetExifMatrix(origin, info.Width, info.Height);
+		if (matrix.IsIdentity)
+		{
+			return SKImage.FromBitmap(bitmap);
 		}
 
 		var newBitmap = new SKBitmap(info);

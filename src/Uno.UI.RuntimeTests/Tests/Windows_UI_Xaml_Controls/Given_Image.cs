@@ -638,6 +638,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+		public async Task When_Exif_Rotated_MsAppx_Unequal_Dimensions()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var uri = new Uri("ms-appx:///Assets/testimage_exif_rotated_different_dimensions.jpg");
+			var image = new Image();
+			var bitmapImage = new BitmapImage(uri);
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.Source = bitmapImage;
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await WindowHelper.WaitFor(() => imageOpened);
+			var screenshot = await TakeScreenshot(image);
+			ImageAssert.HasColorAt(screenshot, 5, screenshot.Height / 2, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2 - 7, screenshot.Height / 2, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2 + 7, screenshot.Height / 2, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width - 5, screenshot.Height / 2, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Exif_Rotated_MsAppData()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
