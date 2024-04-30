@@ -251,7 +251,6 @@
 
 	<Target Name="_UnoLinkerSubstitutionsMerge"
 		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true' and @(_SubstitutionFiles->Count()) > 0 and '$(Configuration)' == 'Release'"
-		DependsOnTargets="_UnoLinkerCollectSubstitutions"
 		BeforeTargets="_UnoEmbeddedResourcesInjection">
 
 		<LinkerDefinitionMergerTask_v0
@@ -259,7 +258,7 @@
 			TargetDefinitionFile="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 
 		<ItemGroup>
-			<EmbeddedResource Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
+			<_UnoInjectedResource Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
 
 			<FileWrites Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 		</ItemGroup>
@@ -278,13 +277,9 @@
 
 	</Target>
 
-	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CoreCompile" />
-	</ItemGroup>
-
 	<Target Name="_UnoEmbeddedResourcesInjection"
 		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true'"
-		AfterTargets="@(_UnoEmbeddedResourcesInjectionAfterTargets)">
+		AfterTargets="Compile">
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
@@ -292,7 +287,7 @@
 		</ItemGroup>
 
 		<EmbeddedResourceInjectorTask_v0
-			EmbeddedResources="@(EmbeddedResource)"
+			EmbeddedResources="@(_UnoInjectedResource)"
 			TargetAssembly="$(IntermediateOutputPath)$(TargetFileName)"
 			ReferencePath="@(_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths)" />
 

@@ -48,7 +48,7 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 			{
 				// Debugger.Launch();
 
-				if (EmbeddedResources != null)
+				if (EmbeddedResources?.Length > 0)
 				{
 					Log.LogMessage(DefaultLogMessageLevel, $"Writing embedded files to {TargetAssembly}");
 
