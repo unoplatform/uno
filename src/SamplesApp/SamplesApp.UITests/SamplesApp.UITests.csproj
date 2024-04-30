@@ -5,7 +5,7 @@
 
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
-		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
+		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().Contains('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
 		<!-- Use 'GeneratedRegexAttribute' to generate the regular expression -->
 		<NoWarn>$(NoWarn);SYSLIB1045</NoWarn>

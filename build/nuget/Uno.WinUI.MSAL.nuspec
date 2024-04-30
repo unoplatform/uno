@@ -11,7 +11,7 @@
 		<copyright>Uno Platform</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
-			<group targetFramework="net7.0">
+			<group targetFramework="net9.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
@@ -28,7 +28,7 @@
 
 
 			<!-- BEGIN WinUI-specific -->
-			<group targetFramework="net7.0-windows10.0.19041.0">
+			<group targetFramework="net8.0-windows10.0.19041.0">
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
 			<!-- END WinUI-specific -->
@@ -38,7 +38,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			<group targetFramework="net8.0-ios13.6">
+			<group targetFramework="net8.0-ios17.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
@@ -50,19 +50,19 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			<group targetFramework="net7.0-android30.0">
+			<group targetFramework="net9.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			<group targetFramework="net7.0-ios13.6">
+			<group targetFramework="net9.0-ios17.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			<group targetFramework="net7.0-maccatalyst13.5">
+			<group targetFramework="net9.0-maccatalyst13.5">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			<group targetFramework="net7.0-macos10.15">
+			<group targetFramework="net9.0-macos10.15">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
@@ -73,25 +73,25 @@
 		<file src="..\..\src\Common\uno.png" target="/" />
 
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net8.0\Uno.UI.MSAL.*" target="lib\net8.0" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net7.0\Uno.UI.MSAL.*" target="lib\net7.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net9.0\Uno.UI.MSAL.*" target="lib\net9.0" />
 
 		<!-- BEGIN UWP-specific
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\uap10.0.19041\Uno.UI.MSAL.*" target="lib\uap10.0.19041" />
 		END UWP-specific -->
 
 		<!-- BEGIN WinUI-specific -->
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\net7.0-windows10.0.19041.0\Uno.UI.MSAL.*" target="lib\net7.0-windows10.0.19041.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\net8.0-windows10.0.19041.0\Uno.UI.MSAL.*" target="lib\net8.0-windows10.0.19041.0" />
 		<!-- END WinUI-specific -->
 
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-android\Uno.UI.MSAL.*" target="lib\net8.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-ios\Uno.UI.MSAL.*" target="lib\net8.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-ios17.0\Uno.UI.MSAL.*" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net8.0-maccatalyst" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-macos\Uno.UI.MSAL.*" target="lib\net8.0-macos" />
 
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-android\Uno.UI.MSAL.*" target="lib\net7.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-ios\Uno.UI.MSAL.*" target="lib\net7.0-ios" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net7.0-maccatalyst" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-macos\Uno.UI.MSAL.*" target="lib\net7.0-macos" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-android\Uno.UI.MSAL.*" target="lib\net9.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-ios17.0\Uno.UI.MSAL.*" target="lib\net9.0-ios17.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net9.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-macos\Uno.UI.MSAL.*" target="lib\net9.0-macos" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\buildTransitive\*" target="buildTransitive" />
@@ -102,11 +102,11 @@
 		<!-- net8.0 Skia -->
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net8.0\Uno.UI.MSAL.*" target="uno-runtime\net8.0\skia" />
 
-		<!-- net7.0 WebAssembly -->
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\webassembly" />
+		<!-- net9.0 WebAssembly -->
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net9.0\Uno.UI.MSAL.*" target="uno-runtime\net9.0\webassembly" />
 
-		<!-- net7.0 Skia -->
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\skia" />
+		<!-- net9.0 Skia -->
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net9.0\Uno.UI.MSAL.*" target="uno-runtime\net9.0\skia" />
 
 	</files>
 

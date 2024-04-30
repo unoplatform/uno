@@ -51,11 +51,11 @@
 
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 
-		<NetCurrent>net8.0</NetCurrent>
-		<NetPrevious>net7.0</NetPrevious>
+		<NetCurrent>net9.0</NetCurrent>
+		<NetPrevious>net8.0</NetPrevious>
 
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst;$(NetCurrent)-macos</NetCurrentNetCoreMobile>
-		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-macos</NetPreviousNetCoreMobile>
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios17.0;$(NetCurrent)-maccatalyst;$(NetCurrent)-macos</NetCurrentNetCoreMobile>
+		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst;$(NetPrevious)-macos</NetPreviousNetCoreMobile>
 
 		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
 		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
