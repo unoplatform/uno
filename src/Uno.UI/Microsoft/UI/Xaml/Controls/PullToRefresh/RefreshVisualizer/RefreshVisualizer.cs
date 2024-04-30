@@ -173,11 +173,8 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		}
 		else
 		{
-			// UNO TODO: This doesn't look right.
-			// If RefreshInfoProvider changed from non-null to null, then from null to non-null,
-			// we will crash with NullReferenceException.
-			m_RefreshInfoProvider_InteractingForRefreshChangedToken = default!;
-			m_RefreshInfoProvider_InteractionRatioChangedToken = default!;
+			m_RefreshInfoProvider_InteractingForRefreshChangedToken.Disposable = null;
+			m_RefreshInfoProvider_InteractionRatioChangedToken.Disposable = null;
 
 			m_executionRatio = 1.0f;
 		}
@@ -480,16 +477,15 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 				m_compositor = contentVisual.Compositor;
 			}
 
-			// UNO TODO:
-			//Vector2KeyFrameAnimation contentScaleAnimation = m_compositor.CreateVector2KeyFrameAnimation();
-			//contentScaleAnimation.InsertKeyFrame(0.5f, new Vector2(1.50f, 1.50f));
-			//contentScaleAnimation.InsertKeyFrame(1.0f, new Vector2(1.0f, 1.0f));
-			//contentScaleAnimation.Duration = TimeSpan.FromMilliseconds(300);
+			Vector2KeyFrameAnimation contentScaleAnimation = m_compositor.CreateVector2KeyFrameAnimation();
+			contentScaleAnimation.InsertKeyFrame(0.5f, new Vector2(1.50f, 1.50f));
+			contentScaleAnimation.InsertKeyFrame(1.0f, new Vector2(1.0f, 1.0f));
+			contentScaleAnimation.Duration = TimeSpan.FromMilliseconds(300);
 
-			//Size contentSize = m_content.RenderSize;
-			//contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
+			Size contentSize = m_content.RenderSize;
+			contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
 
-			//contentVisual.StartAnimation("Scale.XY", contentScaleAnimation);
+			contentVisual.StartAnimation("Scale.XY", contentScaleAnimation);
 		}
 	}
 
@@ -504,17 +500,16 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 				m_compositor = contentVisual.Compositor;
 			}
 
-			// UNO TODO:
-			//ScalarKeyFrameAnimation contentExecutionRotationAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			//contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle, m_compositor.CreateLinearEasingFunction());
-			//contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI), m_compositor.CreateLinearEasingFunction());
-			//contentExecutionRotationAnimation.Duration = TimeSpan.FromMilliseconds(500);
-			//contentExecutionRotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
+			ScalarKeyFrameAnimation contentExecutionRotationAnimation = m_compositor.CreateScalarKeyFrameAnimation();
+			contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle, m_compositor.CreateLinearEasingFunction());
+			contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI), m_compositor.CreateLinearEasingFunction());
+			contentExecutionRotationAnimation.Duration = TimeSpan.FromMilliseconds(500);
+			contentExecutionRotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
 
-			//Size contentSize = m_content.RenderSize;
-			//contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
+			Size contentSize = m_content.RenderSize;
+			contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
 
-			//contentVisual.StartAnimation("RotationAngle", contentExecutionRotationAnimation);
+			contentVisual.StartAnimation("RotationAngle", contentExecutionRotationAnimation);
 		}
 	}
 
