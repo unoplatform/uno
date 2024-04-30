@@ -2,6 +2,8 @@
 
   <PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 	<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0-ios'">net8.0-ios17.0</TargetFrameworks>
+	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-ios'">net9.0-ios17.0</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

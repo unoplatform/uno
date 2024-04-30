@@ -12,7 +12,7 @@
   <PropertyGroup>
     <!-- See documentation for each property below -->
 
-    <!--<UnoTargetFrameworkOverride>net7.0</UnoTargetFrameworkOverride>-->
+    <!--<UnoTargetFrameworkOverride>net8.0</UnoTargetFrameworkOverride>-->
     <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
     <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
     <!--<UnoNugetOverrideVersion>4.9.0-dev.153</UnoNugetOverrideVersion>-->
