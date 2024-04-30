@@ -49,6 +49,7 @@ internal static class TransformableObjectExtensions
 			transform *= Matrix4x4.CreateFromQuaternion(orientation);
 		}
 
+		// TODO: Rotation should respect CenterPoint.
 		var rotation = transformableObject.RotationAngle;
 		if (rotation is not 0)
 		{
