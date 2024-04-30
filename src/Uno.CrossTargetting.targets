@@ -90,7 +90,7 @@
 
 	<PropertyGroup Condition="$(IsMacOS)">
 		<DefineConstants>$(DefineConstants);__MACOS__;XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
-		<SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>10.15</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">
