@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 
@@ -16,12 +18,12 @@ public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, bool value)
 		=> _keyFrames[normalizedProgressKey] = value;
 
-	internal override object Start()
+	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
-		base.Start();
+		base.Start(propertyName, subPropertyName, compositionObject);
 		if (!_keyFrames.TryGetValue(0, out var startValue))
 		{
-			// TODO: Set startValue to be the current property value.
+			startValue = (bool)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
 		Func<bool, bool, float, bool> lerp = (value1, value2, _) => value1;

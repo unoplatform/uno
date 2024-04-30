@@ -26,7 +26,11 @@ public sealed partial class Vector3KeyFrameAnimationSample : Page
 		var animation = _borderVisual.Compositor.CreateVector3KeyFrameAnimation();
 		var y = _borderVisual.Offset.Y;
 		var maxX = _pageVisual.Size.X - _borderVisual.Size.X;
-		animation.InsertKeyFrame(0.0f, new Vector3(0.0f, y, 0.0f));
+		if ((bool)hasFrameAtZeroCheckBox.IsChecked)
+		{
+			animation.InsertKeyFrame(0.0f, new Vector3(0.0f, y, 0.0f));
+		}
+
 		animation.InsertKeyFrame(0.5f, new Vector3(maxX / 4.0f, y, 0.0f));
 		animation.InsertKeyFrame(0.6f, new Vector3(maxX / 4.0f, y, 0.0f));
 		animation.InsertKeyFrame(1.0f, new Vector3(maxX, y, 0.0f));

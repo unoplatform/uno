@@ -88,7 +88,7 @@ namespace Microsoft.UI.Composition
 			_animations ??= new();
 			_animations[propertyName] = animation;
 			animation.AnimationFrame += ReEvaluateAnimation;
-			var animationValue = animation.Start();
+			var animationValue = animation.Start(firstPropertyName, subPropertyName, this);
 
 			try
 			{

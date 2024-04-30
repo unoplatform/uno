@@ -30,9 +30,9 @@ public partial class ExpressionAnimation : CompositionAnimation
 		}
 	}
 
-	internal override object? Start()
+	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
-		base.Start();
+		base.Start(propertyName, subPropertyName, compositionObject);
 
 		if (Expression.Length == 0)
 		{

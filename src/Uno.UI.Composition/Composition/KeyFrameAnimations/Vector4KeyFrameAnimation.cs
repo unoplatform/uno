@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,12 +21,12 @@ public partial class Vector4KeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, Vector4 value)
 		=> _keyFrames[normalizedProgressKey] = value;
 
-	internal override object Start()
+	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
-		base.Start();
+		base.Start(propertyName, subPropertyName, compositionObject);
 		if (!_keyFrames.TryGetValue(0, out var startValue))
 		{
-			// TODO: Set startValue to be the current property value.
+			startValue = (Vector4)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
 		_keyframeEvaluator = new KeyFrameEvaluator<Vector4>(startValue, _keyFrames[1.0f], Duration, _keyFrames, Vector4.Lerp, IterationCount, IterationBehavior, Compositor);

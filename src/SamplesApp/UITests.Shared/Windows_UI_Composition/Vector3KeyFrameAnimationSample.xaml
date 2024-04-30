@@ -11,6 +11,7 @@
 
 	<StackPanel Spacing="20">
 		<CheckBox x:Name="isForeverCheckBox" Content="Is forever?" />
+		<CheckBox x:Name="hasFrameAtZeroCheckBox" Content="Has a keyframe at 0.0f?" />
 		<muxc:NumberBox x:Name="iterationCountNumberBox"  Header="Iteration count" Value="1" />
 		<Button Content="Start" Click="OnStartAnimation" />
 		<Button Content="Stop" Click="OnStopAnimation" />

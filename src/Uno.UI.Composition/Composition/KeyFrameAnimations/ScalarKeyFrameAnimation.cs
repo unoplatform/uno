@@ -28,12 +28,12 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 		=> InsertKeyFrame(normalizedProgressKey, value);
 
 
-	internal override object Start()
+	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
-		base.Start();
+		base.Start(propertyName, subPropertyName, compositionObject);
 		if (!_keyFrames.TryGetValue(0, out var startValue))
 		{
-			// TODO: Set startValue to be the current property value.
+			startValue = (float)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
 		Func<float, float, float, float> lerp =

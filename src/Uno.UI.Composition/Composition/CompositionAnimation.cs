@@ -53,7 +53,7 @@ public partial class CompositionAnimation
 		set => _target = value ?? throw new ArgumentException();
 	}
 
-	internal virtual object? Start()
+	internal virtual object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 #if __SKIA__
 		Compositor.RegisterAnimation(this);
