@@ -46,7 +46,7 @@ jobs:
   - task: CopyFiles@2
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/Release/net7.0-windows10.0.19041.0/win10-x64/AppPackages
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false

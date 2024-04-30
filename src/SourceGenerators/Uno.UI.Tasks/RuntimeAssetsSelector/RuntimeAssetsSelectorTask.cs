@@ -60,16 +60,16 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 					List<string> searchPaths = new();
 
+					if (targetFrameworkVersion >= new Version(9, 0))
+					{
+						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net9.0", UnoRuntimeIdentifier));
+						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net9.0", UnoRuntimeIdentifier));
+					}
+
 					if (targetFrameworkVersion >= new Version(8, 0))
 					{
 						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net8.0", UnoRuntimeIdentifier));
 						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", UnoRuntimeIdentifier));
-					}
-
-					if (targetFrameworkVersion >= new Version(7, 0))
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net7.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net7.0", UnoRuntimeIdentifier));
 					}
 
 					if (targetFrameworkVersion >= new Version(2, 0))
