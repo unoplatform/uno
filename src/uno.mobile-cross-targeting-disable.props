@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoDisableNetCurrentMobile)'=='true'">
-		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net9.0-ios17.0','').Replace('net9.0-android','').Replace('net9.0-maccatalyst','').Replace('net9.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net9.0-ios17.2','').Replace('net9.0-android','').Replace('net9.0-maccatalyst','').Replace('net9.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--
 		Results from property functions are escaped, causing itemgroup inclusion to be

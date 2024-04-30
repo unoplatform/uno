@@ -54,7 +54,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			<group targetFramework="net9.0-ios17.0">
+			<group targetFramework="net9.0-ios17.2">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
@@ -89,7 +89,7 @@
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-macos\Uno.UI.MSAL.*" target="lib\net8.0-macos" />
 
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-android\Uno.UI.MSAL.*" target="lib\net9.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-ios17.0\Uno.UI.MSAL.*" target="lib\net9.0-ios17.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-ios17.2\Uno.UI.MSAL.*" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net9.0-maccatalyst" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net9.0-macos\Uno.UI.MSAL.*" target="lib\net9.0-macos" />
 

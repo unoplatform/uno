@@ -35,7 +35,7 @@
 		<file src="_._" target="lib\net8.0-macos" />
 		
 		<file src="_._" target="lib\net9.0-android" />
-		<file src="_._" target="lib\net9.0-ios17.0" />
+		<file src="_._" target="lib\net9.0-ios17.2" />
 		<file src="_._" target="lib\net9.0-maccatalyst" />
 		<file src="_._" target="lib\net9.0-macos" />
 	</files>

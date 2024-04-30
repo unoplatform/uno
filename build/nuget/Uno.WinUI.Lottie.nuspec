@@ -72,7 +72,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 			</group>
-			<group targetFramework="net9.0-ios17.0">
+			<group targetFramework="net9.0-ios17.2">
 				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
 				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.7" />
@@ -111,7 +111,7 @@
 			<group targetFramework="net8.0-android">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net9.0-ios17.0">
+			<group targetFramework="net9.0-ios17.2">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<group targetFramework="net9.0-maccatalyst">
@@ -142,7 +142,7 @@
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net8.0-maccatalyst" />
 
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-android\Uno.UI.Lottie.dll" target="lib\net9.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-ios17.0\Uno.UI.Lottie.dll" target="lib\net9.0-ios17.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-ios17.2\Uno.UI.Lottie.dll" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net9.0-maccatalyst" />
 
 		<!-- Build targets -->
