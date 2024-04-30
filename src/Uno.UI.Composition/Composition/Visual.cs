@@ -173,6 +173,10 @@ namespace Microsoft.UI.Composition
 			{
 				return GetMatrix4x4(subPropertyName, TransformMatrix);
 			}
+			else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector3(subPropertyName, Scale);
+			}
 			else
 			{
 				return base.GetAnimatableProperty(propertyName, subPropertyName);

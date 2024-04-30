@@ -501,8 +501,9 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			}
 
 			ScalarKeyFrameAnimation contentExecutionRotationAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle, m_compositor.CreateLinearEasingFunction());
-			contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI), m_compositor.CreateLinearEasingFunction());
+			// Uno specific: CreateLinearEasingFunction is not supported.
+			contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle/*, m_compositor.CreateLinearEasingFunction()*/);
+			contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI)/*, m_compositor.CreateLinearEasingFunction()*/);
 			contentExecutionRotationAnimation.Duration = TimeSpan.FromMilliseconds(500);
 			contentExecutionRotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
 
