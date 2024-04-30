@@ -15,5 +15,5 @@ steps:
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3
-    condition: and(succeeded(), eq(variables.UnoDisableNetPreviousMobile, 'true'))
+    condition: and(succeeded(), eq(variables.UnoDisableNetCurrentMobile, 'true'))
 
