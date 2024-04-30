@@ -77,7 +77,7 @@ namespace Uno.UI.Dispatching
 			}
 			else
 			{
-				DispatchOverride(static () => DispatchItems(), priority);
+				DispatchOverride(NativeDispatcher.DispatchItems, priority);
 			}
 		}
 

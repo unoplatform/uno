@@ -63,7 +63,7 @@ namespace Uno.UI.Xaml.Core
 
 		private static void OnTick()
 		{
-			Interlocked.Exchange(ref _isAdditionalFrameRequested, 0);
+			_isAdditionalFrameRequested = 0;
 
 			// NOTE: The below code should really be replaced with just this:
 			// ----------------------------

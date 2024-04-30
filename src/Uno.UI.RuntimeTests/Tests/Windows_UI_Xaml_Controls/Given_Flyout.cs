@@ -838,11 +838,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var xamlRoot = button1.XamlRoot;
 				Assert.IsNotNull(xamlRoot);
 				Assert.AreEqual(TestServices.WindowHelper.XamlRoot, xamlRoot);
-				flyout1.XamlRoot = xamlRoot;
-				flyout2.XamlRoot = xamlRoot;
-				flyout3.XamlRoot = xamlRoot;
-				flyout4.XamlRoot = xamlRoot;
-				flyout5.XamlRoot = xamlRoot;
+				//flyout1.XamlRoot = xamlRoot;
+				//flyout2.XamlRoot = xamlRoot;
+				//flyout3.XamlRoot = xamlRoot;
+				//flyout4.XamlRoot = xamlRoot;
+				//flyout5.XamlRoot = xamlRoot;
 
 				flyout1.ShowAt(button1);
 				await TestServices.WindowHelper.WaitForLoaded(button2);

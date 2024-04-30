@@ -23,7 +23,7 @@ namespace Uno.UI.Dispatching
 		{
 			Debug.Assert(DispatchOverride != null, "DispatchOverride must be set.");
 
-			DispatchOverride(static () => DispatchItems(), priority);
+			DispatchOverride(NativeDispatcher.DispatchItems, priority);
 		}
 	}
 }

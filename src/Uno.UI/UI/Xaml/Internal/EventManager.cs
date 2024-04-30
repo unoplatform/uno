@@ -13,8 +13,8 @@ namespace Uno.UI.Xaml.Core;
 
 internal sealed class EventManager
 {
-	private List<DependencyObject?>? _loadedEventList;
-	private List<(FrameworkElement Element, EffectiveViewportChangedEventArgs Args)>? _effectiveViewportChangedQueue;
+	private List<FrameworkElement?> _loadedEventList = new(1024);
+	private List<(FrameworkElement Element, EffectiveViewportChangedEventArgs Args)> _effectiveViewportChangedQueue = new(32);
 
 	internal bool ShouldRaiseLoadedEvent { get; private set; }
 
@@ -26,22 +26,12 @@ internal sealed class EventManager
 
 	internal void EnqueueForEffectiveViewportChanged(FrameworkElement element, EffectiveViewportChangedEventArgs args)
 	{
-		if (_effectiveViewportChangedQueue is null)
-		{
-			_effectiveViewportChangedQueue = new();
-		}
-
 		_effectiveViewportChangedQueue.Add((element, args));
 		CoreServices.RequestAdditionalFrame();
 	}
 
 	internal void RaiseEffectiveViewportChangedEvents()
 	{
-		if (_effectiveViewportChangedQueue is null)
-		{
-			return;
-		}
-
 		for (int i = 0; i < _effectiveViewportChangedQueue.Count; i++)
 		{
 			var (fe, args) = _effectiveViewportChangedQueue[i];
@@ -55,13 +45,8 @@ internal sealed class EventManager
 
 	}
 
-	private void AddToLoadedEventList(DependencyObject element)
+	private void AddToLoadedEventList(FrameworkElement element)
 	{
-		if (_loadedEventList is null)
-		{
-			_loadedEventList = new();
-		}
-
 		// TODO: Maybe this shouldn't happen?
 		// It doesn't make sense to attempt to add duplicate elements.
 		if (!_loadedEventList.Contains(element))
@@ -70,15 +55,12 @@ internal sealed class EventManager
 		}
 	}
 
-	private void RemoveFromLoadedEventList(DependencyObject element)
+	private void RemoveFromLoadedEventList(FrameworkElement element)
 	{
-		if (_loadedEventList is not null)
-		{
-			_loadedEventList.Remove(element);
+		_loadedEventList.Remove(element);
 
-			// Remove will only remove the first occurrence. Could it happen we have multiple occurrences of the same element?
-			Debug.Assert(!_loadedEventList.Contains(element));
-		}
+		// Remove will only remove the first occurrence. Could it happen we have multiple occurrences of the same element?
+		Debug.Assert(!_loadedEventList.Contains(element));
 	}
 
 	internal void RequestRaiseLoadedEventOnNextTick()
@@ -91,22 +73,17 @@ internal sealed class EventManager
 	{
 		Debug.Assert(ShouldRaiseLoadedEvent);
 
-		if (!ShouldRaiseLoadedEvent || _loadedEventList is null)
+		if (!ShouldRaiseLoadedEvent)
 		{
 			return;
 		}
 
 		for (int i = 0; i < _loadedEventList.Count; i++)
 		{
-			var loadedEventObject = _loadedEventList[i];
-			if (loadedEventObject is not UIElement uiElementLoadedEventObject)
-			{
-				continue;
-			}
-
+			var loadedEventObject = _loadedEventList[i]!;
 			_loadedEventList[i] = null;
 
-			uiElementLoadedEventObject.RaiseLoaded();
+			loadedEventObject.RaiseLoaded();
 		}
 
 		_loadedEventList.Clear();
@@ -142,16 +119,18 @@ internal sealed class EventManager
 	private void AddRequest(UIElement @object/*, Request request*/)
 	{
 		//if (IsLoadedEvent(request.Event))
+		if (@object is FrameworkElement fe)
 		{
-			AddToLoadedEventList(@object);
+			AddToLoadedEventList(fe);
 		}
 	}
 
 	internal void RemoveRequest(UIElement @object/*, Request request*/)
 	{
 		//if (IsLoadedEvent(request.Event))
+		if (@object is FrameworkElement fe)
 		{
-			RemoveFromLoadedEventList(@object);
+			RemoveFromLoadedEventList(fe);
 		}
 	}
 }

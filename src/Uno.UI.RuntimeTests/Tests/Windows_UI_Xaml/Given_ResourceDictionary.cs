@@ -72,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await UITestHelper.Load(grid);
 
-#if WINAPPSDK || __SKIA__ || __WASM__
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
 #else
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);
@@ -128,7 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await UITestHelper.Load(grid);
 
-#if WINAPPSDK || __SKIA__ || __WASM__
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
 #else
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);

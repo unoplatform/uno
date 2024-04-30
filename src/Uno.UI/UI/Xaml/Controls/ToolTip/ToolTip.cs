@@ -76,7 +76,13 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ToolTip);
 
 			SizeChanged += OnToolTipSizeChanged;
-			Loaded += (sender, e) => PerformPlacementInternal();
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			Loaded
+#else
+			Loading
+#endif
+				+= (sender, e) => PerformPlacementInternal();
 		}
 
 		public static DependencyProperty PlacementProperty { get; } =

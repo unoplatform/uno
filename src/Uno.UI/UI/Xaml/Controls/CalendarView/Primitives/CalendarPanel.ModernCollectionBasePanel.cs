@@ -100,8 +100,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_generationEndIndex = endIndex;
 				_generationState = GenerationState.Before;
 
-
-				// Note: Fist and Last indexes are INCLUSIVE
 				var startEntryIndex = Math.Max(0, Math.Min(GetEntryIndex(startIndex), _entries.Count));
 				var endEntryIndex = Math.Max(0, Math.Min(GetEntryIndex(endIndex) + 1, _entries.Count));
 
