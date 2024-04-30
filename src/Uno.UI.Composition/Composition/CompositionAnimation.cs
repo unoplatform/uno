@@ -56,7 +56,7 @@ public partial class CompositionAnimation
 	internal virtual object? Start()
 	{
 #if __SKIA__
-		Compositor.TrackKeyFrameAnimation(this);
+		Compositor.RegisterAnimation(this);
 #endif
 		return null;
 	}
@@ -66,7 +66,7 @@ public partial class CompositionAnimation
 	internal virtual void Stop()
 	{
 #if __SKIA__
-		Compositor.ForgetKeyFrameAnimation(this);
+		Compositor.UnregisterAnimation(this);
 #endif
 	}
 

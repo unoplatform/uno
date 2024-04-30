@@ -47,7 +47,6 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		elapsed = TimeSpan.FromTicks(elapsed.Ticks % _duration.Ticks);
 
 		var currentFrame = (float)elapsed.Ticks / _duration.Ticks;
-		Console.WriteLine($"Current frame: {currentFrame}");
 		var nextKeyFrame = _keyFrames.Keys.First(k => k >= currentFrame);
 		if (nextKeyFrame == currentFrame)
 		{
@@ -59,7 +58,6 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		var previousValue = previousKeyFrame == 0.0f ? _initialValue : _keyFrames[previousKeyFrame];
 		var nextValue = _keyFrames[nextKeyFrame];
 		var newValue = _lerp(previousValue, nextValue, (currentFrame - previousKeyFrame) / (nextKeyFrame - previousKeyFrame));
-		Console.WriteLine($"newValue: {newValue}");
 		return (newValue, false);
 	}
 }

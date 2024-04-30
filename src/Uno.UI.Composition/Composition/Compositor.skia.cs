@@ -13,7 +13,7 @@ public partial class Compositor
 
 	internal bool? IsSoftwareRenderer { get; set; }
 
-	internal void TrackKeyFrameAnimation(CompositionAnimation animation)
+	internal void RegisterAnimation(CompositionAnimation animation)
 	{
 		if (animation.IsTrackedByCompositor)
 		{
@@ -21,7 +21,7 @@ public partial class Compositor
 		}
 	}
 
-	internal void ForgetKeyFrameAnimation(CompositionAnimation animation)
+	internal void UnregisterAnimation(CompositionAnimation animation)
 	{
 		if (animation.IsTrackedByCompositor)
 		{
