@@ -41,7 +41,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet8-mobile-install-mac.yml
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
     parameters:
