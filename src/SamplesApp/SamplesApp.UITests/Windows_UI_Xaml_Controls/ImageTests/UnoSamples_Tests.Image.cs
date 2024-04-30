@@ -240,10 +240,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnBitmap = _app.Marked("btnBitmap");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
 			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.png");
@@ -279,10 +279,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnSvg = _app.Marked("btnSvg");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
 			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.svg");
@@ -318,10 +318,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnBitmap = _app.Marked("btnBitmap");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
 			url.SetDependencyPropertyValue("Text", "ms-appx:///Assets/Formats/uno-overalls.png");
@@ -357,10 +357,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnSvg = _app.Marked("btnSvg");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
 			url.SetDependencyPropertyValue("Text", "ms-appx:///Assets/Formats/uno-overalls.svg");
