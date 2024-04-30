@@ -8,14 +8,14 @@ using SkiaSharp;
 
 namespace Microsoft.UI.Composition;
 
-internal sealed class ImageFrameProvider : IDisposable
+internal sealed class GifFrameProvider : IFrameProvider
 {
 	private readonly SKImage[] _images;
 	private readonly SKCodecFrameInfo[]? _frameInfos;
 	private readonly Timer? _timer;
 	private readonly Stopwatch? _stopwatch;
 	private readonly long _totalDuration;
-	private readonly WeakReference<Action>? _onFrameChanged;
+	private readonly WeakReference<Action> _onFrameChanged;
 
 	private int _currentFrame;
 	private bool _disposed;
@@ -26,26 +26,24 @@ internal sealed class ImageFrameProvider : IDisposable
 	// So, if ImageFrameProvider holds onto onFrameChanged, the SkiaCompositionSurface is never GC'ed.
 	// That's why we make it a WeakReference.
 	// Note that SkiaCompositionSurface keeps an unused private field storing onFrameChanged so that it's not GC'ed early.
-	private ImageFrameProvider(SKImage[] images, SKCodecFrameInfo[]? frameInfos, long totalDuration, Action? onFrameChanged)
+	internal GifFrameProvider(SKImage[] images, SKCodecFrameInfo[] frameInfos, long totalDuration, Action onFrameChanged)
 	{
 		_images = images;
 		_frameInfos = frameInfos;
 		_totalDuration = totalDuration;
-		_onFrameChanged = onFrameChanged is null ? null : new WeakReference<Action>(onFrameChanged);
-		Debug.Assert(frameInfos is not null || images.Length == 1);
-		Debug.Assert(totalDuration != 0 || images.Length == 1);
-		Debug.Assert(onFrameChanged is not null || images.Length == 1);
+		_onFrameChanged = new WeakReference<Action>(onFrameChanged);
+		Debug.Assert(images.Length > 1);
+		Debug.Assert(frameInfos is not null);
+		Debug.Assert(totalDuration != 0);
+		Debug.Assert(onFrameChanged is not null);
 
-		if (_images.Length == 0)
+		if (_images.Length < 2)
 		{
-			throw new ArgumentException("Images array shouldn't be empty");
+			throw new ArgumentException("GifFrameProvider should only be used when there is at least two frames");
 		}
 
-		if (_images.Length > 1)
-		{
-			_stopwatch = Stopwatch.StartNew();
-			_timer = new Timer(OnTimerCallback, null, dueTime: _frameInfos![0].Duration, period: Timeout.Infinite);
-		}
+		_stopwatch = Stopwatch.StartNew();
+		_timer = new Timer(OnTimerCallback, null, dueTime: _frameInfos![0].Duration, period: Timeout.Infinite);
 	}
 
 	public SKImage? CurrentImage => _images[_currentFrame];
@@ -106,36 +104,6 @@ internal sealed class ImageFrameProvider : IDisposable
 		{
 		}
 	}
-
-	public static bool TryCreate(SKCodec codec, Action onFrameChanged, [NotNullWhen(true)] out ImageFrameProvider? provider)
-	{
-		var imageInfo = codec.Info;
-		var frameInfos = codec.FrameInfo;
-		imageInfo = new SKImageInfo(imageInfo.Width, imageInfo.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
-		var bitmap = new SKBitmap(imageInfo);
-		var images = GC.AllocateUninitializedArray<SKImage>(frameInfos.Length);
-		var totalDuration = 0;
-		for (int i = 0; i < frameInfos.Length; i++)
-		{
-			var options = new SKCodecOptions(i);
-			codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
-			var currentBitmap = SKImage.FromBitmap(bitmap);
-			if (currentBitmap is null)
-			{
-				provider = null;
-				return false;
-			}
-
-			images[i] = currentBitmap;
-			totalDuration += frameInfos[i].Duration;
-		}
-
-		provider = new ImageFrameProvider(images, frameInfos, totalDuration, onFrameChanged);
-		return true;
-	}
-
-	public static ImageFrameProvider Create(SKImage image)
-		=> new([image], null, 0, null);
 
 	public void Dispose()
 	{

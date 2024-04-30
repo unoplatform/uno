@@ -19,14 +19,14 @@ namespace Microsoft.UI.Composition
 	internal partial class SkiaCompositionSurface : CompositionObject, ICompositionSurface
 	{
 		// Don't set this field directly. Use SetFrameProviderAndOnFrameChanged instead.
-		private ImageFrameProvider? _frameProvider;
+		private IFrameProvider? _frameProvider;
 
 		// Unused: But intentionally kept!
 		// This is here to keep the Action lifetime the same as SkiaCompositionSurface.
 		// i.e, only cause the Action to be GC'ed if SkiaCompositionSurface is GC'ed.
 		private Action? _onFrameChanged;
 
-		private void SetFrameProviderAndOnFrameChanged(ImageFrameProvider? provider, Action? onFrameChanged)
+		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged)
 		{
 			_frameProvider?.Dispose();
 			_frameProvider = provider;
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Composition
 
 		internal SkiaCompositionSurface(SKImage image)
 		{
-			_frameProvider = ImageFrameProvider.Create(image);
+			_frameProvider = FrameProviderFactory.Create(image);
 		}
 
 		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Composition
 
 				if (result == SKCodecResult.Success)
 				{
-					SetFrameProviderAndOnFrameChanged(ImageFrameProvider.Create(SKImage.FromBitmap(bitmap)), null);
+					SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(SKImage.FromBitmap(bitmap)), null);
 				}
 
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Composition
 				{
 					using var codec = SKCodec.Create(stream);
 					var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
-					if (!ImageFrameProvider.TryCreate(codec, onFrameChanged, out var provider))
+					if (!FrameProviderFactory.TryCreate(codec, onFrameChanged, out var provider))
 					{
 						SetFrameProviderAndOnFrameChanged(null, null);
 						return (false, "Failed to decode image");
@@ -99,7 +99,7 @@ namespace Microsoft.UI.Composition
 
 			using (var pData = data.Pin())
 			{
-				SetFrameProviderAndOnFrameChanged(ImageFrameProvider.Create(SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4)), null);
+				SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4)), null);
 			}
 		}
 
