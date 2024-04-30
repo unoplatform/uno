@@ -73,20 +73,25 @@ jobs:
         & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
       name: Run uno-check
     - name: Convert source tree to UWP
-      working-directory: \src\Uno.WinUIRevert
       run: |
+        cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
         dotnet run "$env:GITHUB_WORKSPACE"
 
     - name: Run API Sync Tool
-      working-directory: \build
       run: |
+        cd $env:GITHUB_WORKSPACE\build
         msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
     - name: Turn script debugging on
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: Set-PSDebug -Trace 1
+    
+    - name: Stage all new/changed files
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      run: git add .
 
     - name: Commit to repository
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: git commit -a -m "Update UWP Autoconvert from $env:GITHUB_SHA"
     - name: Push to repository
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/uwp-autoconvert -f
