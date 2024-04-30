@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using Windows.Graphics.Effects;
 using Windows.UI;
@@ -15,6 +16,8 @@ namespace Microsoft.UI.Composition
 		public Compositor()
 		{
 		}
+
+		public long TimestampInTicks => Stopwatch.GetTimestamp();
 
 		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
 
@@ -165,6 +168,15 @@ namespace Microsoft.UI.Composition
 
 		public ExpressionAnimation CreateExpressionAnimation()
 			=> new ExpressionAnimation(this);
+
+		public Vector2KeyFrameAnimation CreateVector2KeyFrameAnimation()
+			=> new Vector2KeyFrameAnimation(this);
+
+		public Vector3KeyFrameAnimation CreateVector3KeyFrameAnimation()
+			=> new Vector3KeyFrameAnimation(this);
+
+		public Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
+			=> new Vector4KeyFrameAnimation(this);
 
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
 		public CompositionBackdropBrush CreateBackdropBrush()

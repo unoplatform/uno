@@ -19,16 +19,21 @@ public partial class ExpressionAnimation : CompositionAnimation
 		set => _expression = value ?? throw new ArgumentException();
 	}
 
+	// ExpressionAnimation is re-evaluated on property changes, not on every render frame by the compositor.
+	internal override bool IsTrackedByCompositor => false;
+
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
 		if (_parsedExpression is not null)
 		{
-			RaisePropertyChanged();
+			RaiseAnimationFrame();
 		}
 	}
 
-	internal override object? Start()
+	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
+		base.Start(propertyName, subPropertyName, compositionObject);
+
 		if (Expression.Length == 0)
 		{
 			throw new InvalidOperationException("Property 'Expression' should not be empty when starting an ExpressionAnimation");
