@@ -16,6 +16,8 @@ internal record UnitTestMethodInfo
 	private readonly List<object[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
 
+	private readonly bool _ignoredBecauseOfConditionalTestAttribute;
+
 	public UnitTestMethodInfo(object testClassInstance, MethodInfo method)
 	{
 		Method = method;
@@ -32,6 +34,11 @@ internal record UnitTestMethodInfo
 			.GetCustomAttributes<ExpectedExceptionAttribute>()
 			.SingleOrDefault()
 			?.ExceptionType;
+
+		_ignoredBecauseOfConditionalTestAttribute = method
+			.GetCustomAttributes<ConditionalTestAttribute>()
+			.SingleOrDefault()
+			?.ShouldRun() == false;
 
 		_casesParameters = method
 			.GetCustomAttributes<DataRowAttribute>()
@@ -79,6 +86,12 @@ internal record UnitTestMethodInfo
 		if (ignoreAttribute != null)
 		{
 			ignoreMessage = string.IsNullOrEmpty(ignoreAttribute.IgnoreMessage) ? "Test is marked as ignored" : ignoreAttribute.IgnoreMessage;
+			return true;
+		}
+
+		if (_ignoredBecauseOfConditionalTestAttribute)
+		{
+			ignoreMessage = "The test is ignored on the current platform";
 			return true;
 		}
 
