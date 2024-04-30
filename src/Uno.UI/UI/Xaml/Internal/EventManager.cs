@@ -13,7 +13,7 @@ namespace Uno.UI.Xaml.Core;
 
 internal sealed class EventManager
 {
-	private List<FrameworkElement?> _loadedEventList = new(1024);
+	private List<UIElement?> _loadedEventList = new(1024);
 	private List<(FrameworkElement Element, EffectiveViewportChangedEventArgs Args)> _effectiveViewportChangedQueue = new(32);
 
 	internal bool ShouldRaiseLoadedEvent { get; private set; }
@@ -45,7 +45,7 @@ internal sealed class EventManager
 
 	}
 
-	private void AddToLoadedEventList(FrameworkElement element)
+	private void AddToLoadedEventList(UIElement element)
 	{
 		// TODO: Maybe this shouldn't happen?
 		// It doesn't make sense to attempt to add duplicate elements.
@@ -55,7 +55,7 @@ internal sealed class EventManager
 		}
 	}
 
-	private void RemoveFromLoadedEventList(FrameworkElement element)
+	private void RemoveFromLoadedEventList(UIElement element)
 	{
 		_loadedEventList.Remove(element);
 
@@ -83,6 +83,8 @@ internal sealed class EventManager
 			var loadedEventObject = _loadedEventList[i]!;
 			_loadedEventList[i] = null;
 
+			// Uno docs: Even though Loaded is a FrameworkElement event, it's necessary to raise it from UIElement to call UpdateHitTest.
+			// This has an effect specifically for Wasm Hyperlink (Wasm's TextElement class inherits UIElement, this doesn't match WinUI)
 			loadedEventObject.RaiseLoaded();
 		}
 
@@ -119,18 +121,16 @@ internal sealed class EventManager
 	private void AddRequest(UIElement @object/*, Request request*/)
 	{
 		//if (IsLoadedEvent(request.Event))
-		if (@object is FrameworkElement fe)
 		{
-			AddToLoadedEventList(fe);
+			AddToLoadedEventList(@object);
 		}
 	}
 
 	internal void RemoveRequest(UIElement @object/*, Request request*/)
 	{
 		//if (IsLoadedEvent(request.Event))
-		if (@object is FrameworkElement fe)
 		{
-			RemoveFromLoadedEventList(fe);
+			RemoveFromLoadedEventList(@object);
 		}
 	}
 }
