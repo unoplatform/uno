@@ -31,11 +31,11 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler
 	private ExpressionAnimation? m_refreshVisualizerVisualOffsetAnimation = null;
 	private ExpressionAnimation? m_infoProviderOffsetAnimation = null;
 
-	private ExpressionAnimation? m_refreshVisualizerRefreshRequestedAnimation = null; // UNO TODO: Composition key frame animations are not yet supported.
-	private ExpressionAnimation? m_infoProviderRefreshRequestedAnimation = null; // UNO TODO: Composition key frame animations are not yet supported.
+	private ScalarKeyFrameAnimation? m_refreshVisualizerRefreshRequestedAnimation = null;
+	private ScalarKeyFrameAnimation? m_infoProviderRefreshRequestedAnimation = null;
 
-	private ExpressionAnimation? m_refreshVisualizerRefreshCompletedAnimation = null; // UNO TODO: Composition key frame animations are not yet supported.
-	private ExpressionAnimation? m_infoProviderRefreshCompletedAnimation = null; // UNO TODO: Composition key frame animations are not yet supported.
+	private ScalarKeyFrameAnimation? m_refreshVisualizerRefreshCompletedAnimation = null;
+	private ScalarKeyFrameAnimation? m_infoProviderRefreshCompletedAnimation = null;
 	private CompositionScopedBatch? m_refreshCompletedScopedBatch = null;
 
 	private readonly SerialDisposable m_compositionScopedBatchCompletedEventToken = new SerialDisposable();
