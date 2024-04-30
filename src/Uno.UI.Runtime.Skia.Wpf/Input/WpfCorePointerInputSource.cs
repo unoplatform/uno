@@ -111,7 +111,9 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		=> _hostControl.ReleaseMouseCapture();
 
 	#region Native events
-	private void HostOnMouseEvent(InputEventArgs args, TypedEventHandler<object, PointerEventArgs>? @event, [CallerArgumentExpression(nameof(@event))] string eventName = "")
+
+	private void HostOnMouseEvent(InputEventArgs args, TypedEventHandler<object, PointerEventArgs>? @event,
+		bool? isReleaseOrCancel = null, [CallerArgumentExpression(nameof(@event))] string eventName = "")
 	{
 		var current = SynchronizationContext.Current;
 		try
@@ -122,7 +124,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 				SynchronizationContext.SetSynchronizationContext(syncContext);
 			}
 
-			var eventArgs = BuildPointerArgs(args);
+			var eventArgs = BuildPointerArgs(args, isReleaseOrCancel);
 			@event?.Invoke(this, eventArgs);
 			_previous = eventArgs;
 		}
@@ -146,9 +148,10 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 
-	private void HostControlOnStylusMove(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerMoved);
-	private void HostControlOnStylusDown(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerPressed);
-	private void HostControlOnStylusUp(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerReleased);
+	private void HostControlOnStylusMove(object sender, StylusEventArgs args) =>
+		HostOnMouseEvent(args, PointerMoved, isReleaseOrCancel: false);
+	private void HostControlOnStylusDown(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerPressed, isReleaseOrCancel: false);
+	private void HostControlOnStylusUp(object sender, StylusEventArgs args) => HostOnMouseEvent(args, PointerReleased, isReleaseOrCancel: true);
 
 
 	private void HostOnMouseMove(object sender, WpfMouseEventArgs args)
@@ -259,7 +262,8 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	#endregion
 
 	#region Convert helpers
-	private PointerEventArgs BuildPointerArgs(InputEventArgs args)
+
+	private PointerEventArgs BuildPointerArgs(InputEventArgs args, bool? isReleaseOrCancel = null)
 	{
 		if (args is null)
 		{
@@ -290,9 +294,22 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			pointerId = (uint)stylusEventArgs.StylusDevice.Id;
 			position = stylusEventArgs.GetPosition(_hostControl);
 
+			var isTouch = stylusEventArgs.StylusDevice.TabletDevice?.Type == TabletDeviceType.Touch;
+			bool isLeftButtonPressed;
+			if (isTouch)
+			{
+				// For touch, IsLeftButtonPressed has to be false for release and cancel.
+				isLeftButtonPressed = isReleaseOrCancel != true;
+			}
+			else
+			{
+				// For pen, it has to be true only when !stylusEventArgs.InAir.
+				isLeftButtonPressed = !stylusEventArgs.InAir;
+			}
+
 			properties = new()
 			{
-				IsLeftButtonPressed = true,
+				IsLeftButtonPressed = isLeftButtonPressed,
 				IsPrimary = true,
 				IsInRange = !stylusEventArgs.InAir,
 			};
