@@ -73,7 +73,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - template: templates/ios-build-select-version.yml
     parameters:
@@ -168,7 +168,6 @@ jobs:
         -r:ios-arm64 \
         -p:BuildForTestFlight=true \
         -p:UnoTargetFrameworkOverride=net7.0-ios \
-        -p:UnoUIDisableNet8Build=true \
         /bl:$(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
 
     displayName: Build iOS App for TestFlight
