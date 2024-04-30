@@ -138,41 +138,29 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 		ValidateAndStoreParameters(refreshVisualizer, infoProvider, null);
 
-		// UNO TODO: Composition key frame animations are not supported yet.
-
 		if ((m_refreshVisualizerRefreshRequestedAnimation == null || m_infoProviderRefreshRequestedAnimation == null || m_refreshRequestedAnimationNeedsUpdating) && m_compositor != null)
 		{
-			//m_refreshVisualizerRefreshRequestedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			//m_refreshVisualizerRefreshRequestedAnimation.Duration = REFRESH_ANIMATION_DURATION;
-			m_refreshVisualizerRefreshRequestedAnimation = m_compositor.CreateExpressionAnimation();
-			//m_infoProviderRefreshRequestedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			//m_infoProviderRefreshRequestedAnimation.Duration = REFRESH_ANIMATION_DURATION;
-			m_infoProviderRefreshRequestedAnimation = m_compositor.CreateExpressionAnimation();
+			m_refreshVisualizerRefreshRequestedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
+			m_refreshVisualizerRefreshRequestedAnimation.Duration = REFRESH_ANIMATION_DURATION;
+			m_infoProviderRefreshRequestedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
+			m_infoProviderRefreshRequestedAnimation.Duration = REFRESH_ANIMATION_DURATION;
 			switch (m_refreshPullDirection)
 			{
 				case RefreshPullDirection.TopToBottom:
-					//m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.Y * (1 - (float)executionRatio)));
-					//m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.Y * (float)executionRatio);
-					m_refreshVisualizerRefreshRequestedAnimation.Expression = $"{-(m_refreshVisualizerVisual.Size.Y * (1 - (float)executionRatio))}";
-					m_infoProviderRefreshRequestedAnimation.Expression = $"{m_refreshVisualizerVisual.Size.Y * (float)executionRatio}";
+					m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.Y * (1 - (float)executionRatio)));
+					m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.Y * (float)executionRatio);
 					break;
 				case RefreshPullDirection.BottomToTop:
-					//m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.Y * (1 - (float)executionRatio));
-					//m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, -m_refreshVisualizerVisual.Size.Y * (float)executionRatio);
-					m_refreshVisualizerRefreshRequestedAnimation.Expression = $"{m_refreshVisualizerVisual.Size.Y * (1 - (float)executionRatio)}";
-					m_infoProviderRefreshRequestedAnimation.Expression = $"{-m_refreshVisualizerVisual.Size.Y * (float)executionRatio}";
+					m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.Y * (1 - (float)executionRatio));
+					m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, -m_refreshVisualizerVisual.Size.Y * (float)executionRatio);
 					break;
 				case RefreshPullDirection.LeftToRight:
-					//m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.X * (1 - (float)executionRatio)));
-					//m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.X * (float)executionRatio);
-					m_refreshVisualizerRefreshRequestedAnimation.Expression = $"{-(m_refreshVisualizerVisual.Size.X * (1 - (float)executionRatio))}";
-					m_infoProviderRefreshRequestedAnimation.Expression = $"{m_refreshVisualizerVisual.Size.X * (float)executionRatio}";
+					m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.X * (1 - (float)executionRatio)));
+					m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.X * (float)executionRatio);
 					break;
 				case RefreshPullDirection.RightToLeft:
-					//m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.X * (1 - (float)executionRatio));
-					//m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, -m_refreshVisualizerVisual.Size.X * (float)executionRatio);
-					m_refreshVisualizerRefreshRequestedAnimation.Expression = $"{m_refreshVisualizerVisual.Size.X * (1 - (float)executionRatio)}";
-					m_infoProviderRefreshRequestedAnimation.Expression = $"{-m_refreshVisualizerVisual.Size.X * (float)executionRatio}";
+					m_refreshVisualizerRefreshRequestedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.X * (1 - (float)executionRatio));
+					m_infoProviderRefreshRequestedAnimation.InsertKeyFrame(1.0f, -m_refreshVisualizerVisual.Size.X * (float)executionRatio);
 					break;
 				default:
 					MUX_ASSERT(false);
@@ -187,9 +175,6 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 
 			m_refreshVisualizerVisual.StartAnimation(animatedProperty, m_refreshVisualizerRefreshRequestedAnimation);
 			m_infoProviderVisual.StartAnimation(animatedProperty, m_infoProviderRefreshRequestedAnimation);
-
-			m_refreshVisualizerVisual.StopAnimation(animatedProperty); // Uno specific
-			m_infoProviderVisual.StopAnimation(animatedProperty); // Uno specific
 		}
 	}
 
@@ -200,33 +185,25 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 
 		if ((m_refreshVisualizerRefreshCompletedAnimation == null || m_infoProviderRefreshCompletedAnimation == null || m_refreshCompletedAnimationNeedsUpdating) && m_compositor != null)
 		{
-			// UNO TODO: Composition key frame animations are not yet supported.
-			//m_refreshVisualizerRefreshCompletedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			//m_refreshVisualizerRefreshCompletedAnimation.Duration = REFRESH_ANIMATION_DURATION;
-			//m_infoProviderRefreshCompletedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			//m_infoProviderRefreshCompletedAnimation.Duration = REFRESH_ANIMATION_DURATION;
-			//m_infoProviderRefreshCompletedAnimation.InsertKeyFrame(1.0f, 0.0f);
-
-			m_refreshVisualizerRefreshCompletedAnimation = m_compositor.CreateExpressionAnimation();
-			m_infoProviderRefreshCompletedAnimation = m_compositor.CreateExpressionAnimation("0.0");
+			m_refreshVisualizerRefreshCompletedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
+			m_refreshVisualizerRefreshCompletedAnimation.Duration = REFRESH_ANIMATION_DURATION;
+			m_infoProviderRefreshCompletedAnimation = m_compositor.CreateScalarKeyFrameAnimation();
+			m_infoProviderRefreshCompletedAnimation.Duration = REFRESH_ANIMATION_DURATION;
+			m_infoProviderRefreshCompletedAnimation.InsertKeyFrame(1.0f, 0.0f);
 
 			switch (m_refreshPullDirection)
 			{
 				case RefreshPullDirection.TopToBottom:
-					//m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.Y));
-					m_refreshVisualizerRefreshCompletedAnimation.Expression = $"{-(m_refreshVisualizerVisual.Size.Y)}";
+					m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.Y));
 					break;
 				case RefreshPullDirection.BottomToTop:
-					//m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.Y);
-					m_refreshVisualizerRefreshCompletedAnimation.Expression = $"{m_refreshVisualizerVisual.Size.Y}";
+					m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.Y);
 					break;
 				case RefreshPullDirection.LeftToRight:
-					//m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.X));
-					m_refreshVisualizerRefreshCompletedAnimation.Expression = $"{-(m_refreshVisualizerVisual.Size.X)}";
+					m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, -(m_refreshVisualizerVisual.Size.X));
 					break;
 				case RefreshPullDirection.RightToLeft:
-					//m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.X);
-					m_refreshVisualizerRefreshCompletedAnimation.Expression = $"{m_refreshVisualizerVisual.Size.X}";
+					m_refreshVisualizerRefreshCompletedAnimation.InsertKeyFrame(1.0f, m_refreshVisualizerVisual.Size.X);
 					break;
 				default:
 					MUX_ASSERT(false);
@@ -237,10 +214,9 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 
 		if (m_compositor is not null)
 		{
-			// UNO TODO: CompositionScopedBatch is not supported.
-			//m_refreshCompletedScopedBatch = m_compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
-			//m_refreshCompletedScopedBatch.Completed += RefreshCompletedBatchCompleted;
-			//m_compositionScopedBatchCompletedEventToken.Disposable = Disposable.Create(() => m_refreshCompletedScopedBatch.Completed -= RefreshCompletedBatchCompleted);
+			m_refreshCompletedScopedBatch = m_compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+			m_refreshCompletedScopedBatch.Completed += RefreshCompletedBatchCompleted;
+			m_compositionScopedBatchCompletedEventToken.Disposable = Disposable.Create(() => m_refreshCompletedScopedBatch.Completed -= RefreshCompletedBatchCompleted);
 		}
 
 		if (m_refreshVisualizerRefreshCompletedAnimation is not null && m_infoProviderRefreshCompletedAnimation is not null)
@@ -249,18 +225,12 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 
 			m_refreshVisualizerVisual.StartAnimation(animatedProperty, m_refreshVisualizerRefreshCompletedAnimation);
 			m_infoProviderVisual.StartAnimation(animatedProperty, m_infoProviderRefreshCompletedAnimation);
-
-			m_refreshVisualizerVisual.StopAnimation(animatedProperty); // Uno specific
-			m_infoProviderVisual.StopAnimation(animatedProperty); // Uno specific
-
-			// UNO TODO: CompositionScopedBatch is not supported. So, call RefreshCompletedBatchCompleted here right after StartAnimation. 
-			RefreshCompletedBatchCompleted(null, null);
 		}
 
-		//if (m_refreshCompletedScopedBatch is not null)
-		//{
-		//	m_refreshCompletedScopedBatch.End();
-		//}
+		if (m_refreshCompletedScopedBatch is not null)
+		{
+			m_refreshCompletedScopedBatch.End();
+		}
 	}
 
 	//PrivateHelpers
