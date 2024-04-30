@@ -70,9 +70,8 @@ namespace Microsoft.UI.Composition
 			{
 				try
 				{
-					using var codec = SKCodec.Create(stream);
 					var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
-					if (!FrameProviderFactory.TryCreate(codec, onFrameChanged, out var provider))
+					if (!FrameProviderFactory.TryCreate(stream, onFrameChanged, out var provider))
 					{
 						SetFrameProviderAndOnFrameChanged(null, null);
 						return (false, "Failed to decode image");
