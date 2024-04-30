@@ -1,12 +1,12 @@
 {
 	"sdk": {
-		"version": "9.0.100-preview.3",
+		"version": "9.0.100-preview.3.24204.13",
 		// Change to false once we have stable 9.0 SDK
 		"allowPrerelease": true,
 		"rollForward": "disable"
 	},
 	"tools": {
-		"dotnet": "9.0.100-preview.3"
+		"dotnet": "9.0.100-preview.3.24204.13"
 	},
 	"msbuild-sdks": {
 		"MSBuild.Sdk.Extras": "3.0.44",
