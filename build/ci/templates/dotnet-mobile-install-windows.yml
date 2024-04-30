@@ -14,8 +14,8 @@ steps:
     condition: and(succeeded(), eq(variables.UnoDisableNetPreviousMobile, 'true'))
 
   - powershell: |
-      & dotnet tool update --global uno.check --version 1.14.1 --add-source https://api.nuget.org/v3/index.json
-      & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest https://raw.githubusercontent.com/unoplatform/uno.check/8a14128754833984a0c83398e7dda6d995199e1b/manifests/uno.ui.manifest.json
+      & dotnet tool update --global uno.check --version 1.20.2 --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest https://raw.githubusercontent.com/unoplatform/uno.check/bd121b30a0044fd80df18618dd7915fe8ccf4503/manifests/uno.ui.manifest.json
     displayName: Install .NET Workloads
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
