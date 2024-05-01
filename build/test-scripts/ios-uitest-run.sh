@@ -95,6 +95,8 @@ export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/R
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-16-1"
 export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (5th generation)"
 
+export UnoTargetFrameworkOverride="net7.0-ios"
+
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ] && [ "$UITEST_IGNORE_RERUN_FILE" != "true" ]; then
