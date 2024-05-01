@@ -1,11 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using Uno.UI;
+using Windows.ApplicationModel.DataTransfer;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+partial class TextBlock
 {
-	partial class TextBlock
-	{
-		internal override bool IsViewHit() => Text != null || base.IsViewHit();
-	}
+	/// <summary>
+	/// Occurs when the text selection has changed.
+	/// </summary>
+	public event RoutedEventHandler SelectionChanged;
+
+	/// <summary>
+	/// Selects the entire contents in the TextBlock.
+	/// </summary>
+	public void SelectAll() => Selection = new Range(0, Text.Length);
+
+	internal override bool IsViewHit() => Text != null || base.IsViewHit();
 }
