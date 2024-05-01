@@ -144,8 +144,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					realizationWindowOffsetInExtent + MajorSize(realizationRect) >= 0 && realizationWindowOffsetInExtent <= majorSize)
 				{
 					anchorIndex = (int)(realizationWindowOffsetInExtent / averageElementSize);
-					offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
+					// Uno workaround [BEGIN]: Make sure items at index 0 is always at offset 0
 					anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex));
+					// Uno workaround [END]
+
+					offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
+					//anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex)); // Line moved before computation of the offset for uno
 				}
 			}
 
@@ -176,7 +180,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (firstRealized != null)
 				{
 					MUX_ASSERT(lastRealized != null);
-					SetMajorStart(ref extent, (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize));
+					var firstRealizedMajor = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
+					// Uno workaround [BEGIN]: Make sure to not move items above the viewport. This can be the case if an items is significantly higher than previous items (will increase the average items size)
+					firstRealizedMajor = Math.Max(0.0f, firstRealizedMajor);
+					// Uno workaround [END]
+					SetMajorStart(ref extent, firstRealizedMajor);
 					var remainingItems = itemsCount - lastRealizedItemIndex - 1;
 					SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - MajorStart(extent) + (float)(remainingItems * averageElementSize));
 				}
