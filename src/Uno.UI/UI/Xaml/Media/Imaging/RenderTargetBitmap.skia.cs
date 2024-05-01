@@ -6,6 +6,7 @@ using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -76,7 +77,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			EnsureBuffer(ref buffer, byteCount);
 			unsafe
 			{
-				bitmap.GetPixelSpan().CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
+				SkiaCompat.SKBitmap_GetPixelSpan(bitmap).CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
 			}
 			bitmap?.Dispose();
 
