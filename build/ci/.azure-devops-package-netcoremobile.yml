@@ -65,17 +65,9 @@ jobs:
       arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building package binaries
 
-  - task: MSBuild@1
+  - task: DotNetCoreCLI@2
     inputs:
-      solution: build/filters/Uno.UI-packages-windows.slnf
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
-      clean: false
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+      arguments: build/filters/Uno.UI-packages-windows.slnf -c Release -bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
     condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net8'))
     displayName: Building WinAppSDK/UWP package binaries
 
