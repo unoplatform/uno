@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../uno52lib/uno52lib.csproj" />
+    <ProjectReference Include="../uno52emptylib/uno52emptylib.csproj" />
   </ItemGroup>
 
   <Target Name="_UnoValidateSelfAssets"
