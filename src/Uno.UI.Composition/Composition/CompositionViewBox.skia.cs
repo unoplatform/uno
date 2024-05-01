@@ -8,6 +8,8 @@ namespace Microsoft.UI.Composition;
 
 public partial class CompositionViewBox
 {
+	internal bool IsAncestorClip { get; set; }
+
 	internal SKRect GetSKRect()
 		=> new(
 			left: Offset.X,

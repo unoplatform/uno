@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition;
@@ -18,10 +19,14 @@ public partial class ShapeVisual
 		// First we render the shapes (a.k.a. the "local content")
 		// For UIElement, those are background and border or shape's content
 		// WARNING: As we are overriding the "Render" method, at this point we are still in the parent's coordinate system
+
+		// This shouldn't be inside the if condition.
+		// When inside the if, the session.Dispose will be called before base.Render,
+		// which can cause clipping to be removed before rendering children.
+		using var session = BeginShapesDrawing(in parentSession);
+
 		if (_shapes is { Count: not 0 } shapes)
 		{
-			using var session = BeginShapesDrawing(in parentSession);
-
 			for (var i = 0; i < shapes.Count; i++)
 			{
 				// TODO: If the shape will end up being not in Window bounds,
@@ -56,14 +61,15 @@ public partial class ShapeVisual
 	{
 		parentSession.Canvas.Save();
 
-		var totalOffset = this.GetTotalOffset();
-		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		parentSession.Canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
-
 		var transform = this.GetTransform().ToSKMatrix();
 
 		if (ViewBox is { } viewBox)
 		{
+			if (!viewBox.IsAncestorClip)
+			{
+				ApplyTranslation(parentSession.Canvas);
+			}
+
 			// We apply the transformed viewbox clipping
 			if (transform.IsIdentity)
 			{
@@ -72,10 +78,25 @@ public partial class ShapeVisual
 			else
 			{
 				var shape = new SKPath();
-				shape.AddRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
-				shape.Transform(transform);
+				var clipRect = new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y);
+
+				shape.AddRect(clipRect);
+				if (!viewBox.IsAncestorClip)
+				{
+					shape.Transform(transform);
+				}
+
 				parentSession.Canvas.ClipPath(shape, antialias: true);
 			}
+
+			if (viewBox.IsAncestorClip)
+			{
+				ApplyTranslation(parentSession.Canvas);
+			}
+		}
+		else
+		{
+			ApplyTranslation(parentSession.Canvas);
 		}
 
 		if (!transform.IsIdentity)
@@ -92,5 +113,12 @@ public partial class ShapeVisual
 		DrawingSession.PushOpacity(ref session, Opacity);
 
 		return session;
+	}
+
+	private void ApplyTranslation(SKCanvas canvas)
+	{
+		var totalOffset = this.GetTotalOffset();
+		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
+		canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
 	}
 }

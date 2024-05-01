@@ -333,6 +333,8 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				var viewBox = visual.Compositor.CreateViewBox();
+				viewBox.IsAncestorClip = ShouldApplyLayoutClipAsAncestorClip();
+
 				viewBox.Offset = clip.Value.Location.ToVector2();
 				viewBox.Size = clip.Value.Size.ToVector2();
 

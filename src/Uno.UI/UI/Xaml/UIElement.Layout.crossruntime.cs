@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Uno.UI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {
@@ -287,6 +288,12 @@ namespace Microsoft.UI.Xaml
 		internal virtual void MeasureCore(Size availableSize)
 		{
 			throw new NotSupportedException("UIElement doesn't implement MeasureCore. Inherit from FrameworkElement, which properly implements MeasureCore.");
+		}
+
+		internal bool ShouldApplyLayoutClipAsAncestorClip()
+		{
+			return this is Panel; // Restrict to Panels, to limit app-compat risk
+								  //&& !GetIsScrollViewerHeader(); // Special-case:  ScrollViewer Headers, which can zoom, must scale the LayoutClip too
 		}
 
 		public void Arrange(Rect finalRect)
