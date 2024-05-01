@@ -48,7 +48,7 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
+  - template: templates/dotnet7-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
     parameters:
