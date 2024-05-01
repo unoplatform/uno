@@ -7,6 +7,7 @@
 		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
 		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<TargetFramework Condition="'$(UnoTargetFrameworkOverride)'=='net7.0-ios">net7.0</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<RollForward>major</RollForward>
 	</PropertyGroup>
