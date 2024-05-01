@@ -18,10 +18,10 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	private readonly X11XamlRootHost _host;
 	private readonly XamlRoot _xamlRoot;
 
-	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(xamlRoot)
+	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
-
+		
 		_host = new X11XamlRootHost(this, window, xamlRoot, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
 
 		RasterizationScale = (float)XamlRoot.GetDisplayInformation(_xamlRoot).RawPixelsPerViewPixel;

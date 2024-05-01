@@ -9,9 +9,11 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
+using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
+using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -20,7 +22,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	private readonly UnoWpfWindow _wpfWindow;
 	private bool _isFullScreen;
 
-	public WpfWindowWrapper(UnoWpfWindow wpfWindow, XamlRoot xamlRoot) : base(xamlRoot)
+	public WpfWindowWrapper(UnoWpfWindow wpfWindow, WinUIWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
 		_wpfWindow.Activated += OnNativeActivated;
@@ -37,8 +39,8 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		UpdateSizeFromNative();
 		UpdatePositionFromNative();
 	}
-	
-	private void OnNativeSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSizeFromNative();
+
+	private void OnNativeSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) => UpdateSizeFromNative();
 
 	private void UpdateSizeFromNative() =>
 		Size = new() { Width = (int)_wpfWindow.Width, Height = (int)_wpfWindow.Height };
@@ -119,7 +121,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	private void UpdateIsVisible()
 	{
 		var isVisible = _wpfWindow.IsVisible && _wpfWindow.WindowState != WindowState.Minimized;
-		if (isVisible == Visible)
+		if (isVisible == IsVisible)
 		{
 			return;
 		}

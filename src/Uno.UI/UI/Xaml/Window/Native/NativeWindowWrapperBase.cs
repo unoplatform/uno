@@ -34,7 +34,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	protected NativeWindowWrapperBase(Window window, XamlRoot xamlRoot) : this()
 	{
-		SetXamlRoot(window, xamlRoot);
+		SetWindow(window, xamlRoot);
 	}
 
 	protected NativeWindowWrapperBase()
@@ -146,7 +146,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			if (!_position.Equals(value))
 			{
 				_position = value;
-				// TODO:MZ: Raise AppWindow changed!
+				_window?.AppWindow.OnAppWindowChanged(new AppWindowChangedEventArgs() { DidPositionChange = true });
 			}
 		}
 	}
@@ -159,7 +159,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			if (!_size.Equals(value))
 			{
 				_size = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Size)));
+				_window?.AppWindow.OnAppWindowChanged(new AppWindowChangedEventArgs() { DidSizeChange = true });
 			}
 		}
 	}
@@ -175,7 +175,6 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public event EventHandler<AppWindowClosingEventArgs>? Closing;
 	public event EventHandler? Closed;
 	public event EventHandler? Shown;
-	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public virtual void Activate() { }
 
@@ -188,7 +187,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		ShowCore();
 		// On single-window targets, the window is already shown with splash screen
 		// so we must ensure the property is initialized correctly.
-		Visible = true;
+		IsVisible = true;
 		Shown?.Invoke(this, EventArgs.Empty);
 	}
 

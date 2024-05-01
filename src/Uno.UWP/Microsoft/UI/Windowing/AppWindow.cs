@@ -105,7 +105,6 @@ partial class AppWindow
 		}
 
 		_nativeAppWindow = nativeAppWindow;
-		_nativeAppWindow.PropertyChanged += OnNativeAppWindowPropertyChanged;
 
 		if (string.IsNullOrWhiteSpace(_nativeAppWindow.Title) && !string.IsNullOrWhiteSpace(_titleCache))
 		{
@@ -117,18 +116,6 @@ partial class AppWindow
 		}
 
 		SetPresenter(AppWindowPresenterKind.Default);
-	}
-
-	private void OnNativeAppWindowPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName == nameof(INativeAppWindow.Position))
-		{
-			OnAppWindowChanged(new AppWindowChangedEventArgs() { DidPositionChange = true });
-		}
-		else if (e.PropertyName == nameof(INativeAppWindow.Size))
-		{
-			OnAppWindowChanged(new AppWindowChangedEventArgs() { DidSizeChange = true });
-		}
 	}
 
 	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;

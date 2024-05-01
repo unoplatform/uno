@@ -34,10 +34,4 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosed();
-
-	internal void SetWindow(Window window, XamlRoot xamlRoot)
-	{
-		Window = window;
-		SetXamlRoot(xamlRoot);
-	}
 }

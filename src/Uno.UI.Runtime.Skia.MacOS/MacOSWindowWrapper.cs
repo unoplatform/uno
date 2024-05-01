@@ -14,7 +14,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	public MacOSWindowWrapper(MacOSWindowNative window, XamlRoot xamlRoot, Size initialSize) : base(xamlRoot)
 	{
-		_window = window;
+		_window = nativeWindow;
 
 		window.Host.Closing += OnWindowClosing;
 		window.Host.Closed += OnWindowClosed;

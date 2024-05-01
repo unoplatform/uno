@@ -24,8 +24,6 @@ internal interface INativeAppWindow
 
 	DispatcherQueue DispatcherQueue { get; }
 
-	event PropertyChangedEventHandler PropertyChanged;
-
 	void Destroy();
 
 	void Hide();
