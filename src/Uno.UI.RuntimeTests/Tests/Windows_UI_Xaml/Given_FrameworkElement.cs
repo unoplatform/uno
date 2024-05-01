@@ -48,6 +48,262 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public partial class Given_FrameworkElement
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Two_Grids_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Children =
+				{
+					redEllipse,
+				},
+			};
+
+			var parentGrid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Children =
+				{
+					grid,
+				},
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 77, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 76, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Border_And_Clip_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Children =
+				{
+					redEllipse,
+				},
+			};
+
+			var parentBorder = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Child = grid,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 77, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 76, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Grid_And_Border_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+			};
+
+			var parentGrid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Children =
+				{
+					border,
+				},
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 96, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Two_Borders_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+			};
+
+			var parentBorder = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Child = border,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 96, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Border_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(20, 0, 99, 99), blueBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Grid_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(20, 0, 99, 99), blueBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), redBounds);
+		}
+
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
