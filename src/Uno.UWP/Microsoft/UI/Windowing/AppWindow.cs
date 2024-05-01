@@ -44,7 +44,7 @@ partial class AppWindow
 	/// <summary>
 	/// Gets the title bar of the app window.
 	/// </summary>
-	public AppWindowTitleBar TitleBar { get; } = new AppWindowTitleBar();
+	public AppWindowTitleBar TitleBar { get; }
 
 	/// Gets the current size of the window's client area in client coordinates.
 	/// </summary>
@@ -97,8 +97,6 @@ partial class AppWindow
 		}
 	}
 
-	public AppWindowTitleBar TitleBar { get; }
-
 	internal void SetNativeWindow(INativeAppWindow nativeAppWindow)
 	{
 		if (nativeAppWindow is null)
@@ -149,7 +147,7 @@ partial class AppWindow
 
 	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
 		=> _windowIdMap.TryGetValue(windowId, out appWindow);
-		
+
 	public void Move(PointInt32 position) => _nativeAppWindow.Move(position);
 
 	public void Resize(SizeInt32 size) => _nativeAppWindow.Resize(size);

@@ -1,13 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using System.ComponentModel;
 using Microsoft.UI.Content;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Windows.UI.Core;
 using Windows.Graphics;
 using Windows.UI.Core;
 
@@ -27,12 +28,13 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private string _title = "";
 	private CoreWindowActivationState _activationState;
 	private XamlRoot? _xamlRoot;
+	private Window? _window;
 	private float _rasterizationScale;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
 
-	protected NativeWindowWrapperBase(XamlRoot xamlRoot) : this()
+	protected NativeWindowWrapperBase(Window window, XamlRoot xamlRoot) : this()
 	{
-		SetXamlRoot(xamlRoot);
+		SetXamlRoot(window, xamlRoot);
 	}
 
 	protected NativeWindowWrapperBase()
@@ -43,7 +45,11 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	protected XamlRoot? XamlRoot => _xamlRoot;
 
-	internal void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
+	internal void SetWindow(Window window, XamlRoot xamlRoot)
+	{
+		_window = window;
+		_xamlRoot = xamlRoot;
+	}
 
 	public abstract object? NativeWindow { get; }
 
@@ -140,7 +146,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			if (!_position.Equals(value))
 			{
 				_position = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Position)));
+				// TODO:MZ: Raise AppWindow changed!
 			}
 		}
 	}
