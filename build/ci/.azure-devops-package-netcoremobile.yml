@@ -67,7 +67,7 @@ jobs:
 
   - task: DotNetCoreCLI@2
     inputs:
-      arguments: build/filters/Uno.UI-packages-windows.slnf -c Release -bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      arguments: build/filters/Uno.UI-packages-windows.slnf -c Release -p:RuntimeIdentifiers=win-x86;win-x64;win-arm64 -bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
     condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net8'))
     displayName: Building WinAppSDK/UWP package binaries
 
