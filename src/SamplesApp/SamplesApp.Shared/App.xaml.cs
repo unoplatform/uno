@@ -188,7 +188,7 @@ namespace SamplesApp
 		private void EnsureMainWindow()
 		{
 			_mainWindow ??=
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 				new Microsoft.UI.Xaml.Window();
 #else
 				Microsoft.UI.Xaml.Window.Current!;
