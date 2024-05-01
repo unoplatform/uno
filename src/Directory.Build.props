@@ -75,7 +75,7 @@
 		<MicrosoftNetCompilersToolsetVersion>4.10.0-3.final</MicrosoftNetCompilersToolsetVersion>
 		<!-- Because Xamarin.UITest doesn't work for net7.0, we keep building iOS SamplesApp for tests with .NET 7 SDK -->
 		<!-- Using Roslyn 4.10 with .NET 7 SDK is not supported because of https://github.com/dotnet/roslyn/pull/71507 -->
-		<MicrosoftNetCompilersToolsetVersion Condition="'$(UnoTargetFramework)'=='net7.0-ios'">4.9.2</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion Condition="'$(UnoTargetFrameworkOverride)'=='net7.0-ios'">4.9.2</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
