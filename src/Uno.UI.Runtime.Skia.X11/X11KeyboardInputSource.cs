@@ -28,23 +28,18 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 	{
 		unsafe
 		{
-			var buffer = stackalloc byte[4]; // unicode is at most 4 bytes
+			// unicode is at most 4 bytes
+			var buffer = stackalloc byte[4];
+			// TODO: Composing inputs https://wiki.debian.org/XCompose
 			int nbytes = XLib.XLookupString(ref keyEvent, buffer, 4, out var keySym, IntPtr.Zero);
-
-			if (nbytes > 1)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Received keySym string with nbytes > 1, even though spec says it must be a single ASCII character.");
-				}
-			}
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"ProcessKeyboardEvent pressed={pressed}: {keyEvent.keycode} -> {X11KeyTransform.VirtualKeyFromKeySym(keySym)}");
 			}
 
-			var symbols = System.Text.Encoding.UTF8.GetString(buffer, nbytes); // According to the docs, this should be ISO Latin-1 or ASCII
+			// we make a call to libc's setlocale during startup, so buffer should be utf8
+			var symbols = System.Text.Encoding.UTF8.GetString(buffer, nbytes);
 			if (string.IsNullOrEmpty(symbols) || (symbols != "\r" && char.IsControl(symbols[0])))
 			{
 				symbols = null;
