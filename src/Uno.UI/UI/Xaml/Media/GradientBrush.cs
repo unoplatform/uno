@@ -118,5 +118,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
+
+		internal virtual bool CanApplyToBorder(CornerRadius cornerRadius) => true;
 	}
 }

@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __IOS__ || __MACOS__
+﻿//#if __WASM__ || __IOS__ || __MACOS__
 #nullable enable
 
 using System;
@@ -26,10 +26,10 @@ public partial class LinearGradientBrush
 	{
 #if __WASM__
 		return cornerRadius == CornerRadius.None;
-#endif
-
-#if __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__
 		return RelativeTransform == null;
+#else
+		return true;
 #endif
 	}
 
@@ -84,4 +84,4 @@ public partial class LinearGradientBrush
 		return new SolidColorBrush(minorStop.Color) { Opacity = Opacity };
 	}
 }
-#endif
+//#endif
