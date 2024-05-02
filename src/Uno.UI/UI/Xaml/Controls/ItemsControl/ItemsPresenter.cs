@@ -307,12 +307,7 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch,
 					IsTabStop = false
 				};
-
-				VisualTreeHelper.AddChild(this, HeaderContentControl);
 			}
-
-			SetItemsPanel(panel);
-
 			if (FooterContentControl is null && HeaderFooterEnabled)
 			{
 				FooterContentControl = new ContentControl
@@ -324,9 +319,14 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch,
 					IsTabStop = false
 				};
-
-				VisualTreeHelper.AddChild(this, FooterContentControl);
 			}
+
+			// We want FooterContentControl to be assigned before calling SetItemsPanel,
+			// because it may directly cause an ArrangeOverride to be called in some cases,
+			// where the value is expected to be non-null.
+			if (HeaderContentControl is { }) { VisualTreeHelper.AddChild(this, HeaderContentControl); }
+			SetItemsPanel(panel);
+			if (FooterContentControl is { }) { VisualTreeHelper.AddChild(this, FooterContentControl); }
 		}
 
 		private void PropagateLayoutValues()
@@ -383,7 +383,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (view == _itemsPanel)
 					{
 						// the panel should stretch to a width big enough such that the footer is at the very right
-						var footerWidth = HeaderFooterEnabled ? GetElementDesiredSize(FooterContentControl).Width : 0;
+						var footerWidth = (HeaderFooterEnabled && FooterContentControl is { }) ? GetElementDesiredSize(FooterContentControl).Width : 0;
 						childRect.Width = childRect.Width.AtLeast(finalSize.Width - footerWidth - childRect.X);
 					}
 
@@ -399,7 +399,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (view == _itemsPanel)
 					{
 						// the panel should stretch to a height big enough such that the footer is at the very bottom
-						var footerHeight = HeaderFooterEnabled ? GetElementDesiredSize(FooterContentControl).Height : 0;
+						var footerHeight = (HeaderFooterEnabled && FooterContentControl is { }) ? GetElementDesiredSize(FooterContentControl).Height : 0;
 						childRect.Height = childRect.Height.AtLeast(finalSize.Height - footerHeight - childRect.Y);
 					}
 
