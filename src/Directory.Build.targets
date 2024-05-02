@@ -63,7 +63,8 @@
 
 	<PropertyGroup>
 		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
-		<SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion>
+		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
+		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
 	</PropertyGroup>
 	
 	<ItemGroup>
