@@ -27,68 +27,73 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 
 // ReSharper disable UnassignedGetOnlyAutoProperty
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	unsafe internal class GlxInterface
+	internal unsafe partial class GlxInterface
 	{
 		private const string libGL = "libGL.so.1";
 		private static readonly char[] _separators = { ',', ' ' };
 		private static readonly int[] _null = { 0 };
 
-		[DllImport(libGL)]
-		public static extern bool glXQueryVersion(IntPtr dpy, out int maj, out int min);
+		[LibraryImport(libGL)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool glXQueryVersion(IntPtr dpy, out int maj, out int min);
 
-		[DllImport(libGL)]
-		public static extern bool glXQueryExtension(IntPtr dpy, out int errorBase, out int eventBase);
+		[LibraryImport(libGL)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool glXQueryExtension(IntPtr dpy, out int errorBase, out int eventBase);
 
-		[DllImport(libGL)]
-		public static extern bool glXMakeContextCurrent(IntPtr display, IntPtr draw, IntPtr read, IntPtr context);
+		[LibraryImport(libGL)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool glXMakeContextCurrent(IntPtr display, IntPtr draw, IntPtr read, IntPtr context);
 
-		[DllImport(libGL)]
-		public static extern bool glXMakeCurrent(IntPtr display, IntPtr drawable, IntPtr context);
+		[LibraryImport(libGL)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool glXMakeCurrent(IntPtr display, IntPtr drawable, IntPtr context);
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXGetCurrentContext();
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXGetCurrentContext();
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXGetCurrentDisplay();
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXGetCurrentDisplay();
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXGetCurrentDrawable();
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXGetCurrentDrawable();
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXGetCurrentReadDrawable();
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXGetCurrentReadDrawable();
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXCreatePbuffer(IntPtr dpy, IntPtr fbc, int[] attrib_list);
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXCreatePbuffer(IntPtr dpy, IntPtr fbc, int[] attrib_list);
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXDestroyPbuffer(IntPtr dpy, IntPtr fb);
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXDestroyPbuffer(IntPtr dpy, IntPtr fb);
 
-		[DllImport(libGL)]
-		public static extern XVisualInfo* glXChooseVisual(IntPtr dpy, int screen, int[] attribList);
+		[LibraryImport(libGL)]
+		public static partial XVisualInfo* glXChooseVisual(IntPtr dpy, int screen, int[] attribList);
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXCreateContext(IntPtr dpy, XVisualInfo* vis, IntPtr shareList, bool direct);
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXCreateContext(IntPtr dpy, XVisualInfo* vis, IntPtr shareList, [MarshalAs(UnmanagedType.Bool)] bool direct);
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXCreateNewContext(IntPtr dpy, IntPtr config, int renderType, IntPtr shareList, int direct);
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXCreateNewContext(IntPtr dpy, IntPtr config, int renderType, IntPtr shareList, int direct);
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXCreateContextAttribsARB(IntPtr dpy, IntPtr fbconfig, IntPtr shareList,
-			bool direct, int[] attribs);
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXCreateContextAttribsARB(IntPtr dpy, IntPtr fbconfig, IntPtr shareList,
+			[MarshalAs(UnmanagedType.Bool)] bool direct, int[] attribs);
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXGetProcAddress(string buffer);
+		[LibraryImport(libGL, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
+		public static partial IntPtr glXGetProcAddress(string buffer);
 
-		[DllImport(libGL)]
-		public static extern void glXDestroyContext(IntPtr dpy, IntPtr ctx);
+		[LibraryImport(libGL)]
+		public static partial void glXDestroyContext(IntPtr dpy, IntPtr ctx);
 
-		[DllImport(libGL)]
-		public static extern IntPtr* glXChooseFBConfig(IntPtr dpy, int screen, int[] attrib_list, out int nelements);
+		[LibraryImport(libGL)]
+		public static partial IntPtr* glXChooseFBConfig(IntPtr dpy, int screen, int[] attrib_list, out int nelements);
 
 		public IntPtr* glXChooseFBConfig(IntPtr dpy, int screen, IEnumerable<int> attribs, out int nelements)
 		{
@@ -96,26 +101,26 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			return glXChooseFBConfig(dpy, screen, arr, out nelements);
 		}
 
-		[DllImport(libGL)]
-		public static extern XVisualInfo* glXGetVisualFromFBConfig(IntPtr dpy, IntPtr config);
+		[LibraryImport(libGL)]
+		public static partial XVisualInfo* glXGetVisualFromFBConfig(IntPtr dpy, IntPtr config);
 
-		[DllImport(libGL)]
-		public static extern int glXGetFBConfigAttrib(IntPtr dpy, IntPtr config, int attribute, out int value);
+		[LibraryImport(libGL)]
+		public static partial int glXGetFBConfigAttrib(IntPtr dpy, IntPtr config, int attribute, out int value);
 
-		[DllImport(libGL)]
-		public static extern void glXSwapBuffers(IntPtr dpy, IntPtr drawable);
+		[LibraryImport(libGL)]
+		public static partial void glXSwapBuffers(IntPtr dpy, IntPtr drawable);
 
-		[DllImport(libGL)]
-		public static extern void glXWaitX();
+		[LibraryImport(libGL)]
+		public static partial void glXWaitX();
 
-		[DllImport(libGL)]
-		public static extern void glXWaitGL();
+		[LibraryImport(libGL)]
+		public static partial void glXWaitGL();
 
-		[DllImport(libGL)]
-		public static extern int glGetError();
+		[LibraryImport(libGL)]
+		public static partial int glGetError();
 
-		[DllImport(libGL)]
-		public static extern IntPtr glXQueryExtensionsString(IntPtr display, int screen);
+		[LibraryImport(libGL)]
+		public static partial IntPtr glXQueryExtensionsString(IntPtr display, int screen);
 
 		// Ignores egl functions.
 		// On some Linux systems, glXGetProcAddress will return valid pointers for even EGL functions.
