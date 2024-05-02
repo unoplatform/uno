@@ -161,7 +161,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
 		// from this visual.
 		// It's important to set the default to canvas.TotalMatrix not SKMatrix.Identity in case there's
-		// an initial global transformation set (e.g. if the renderer sets scaling for dpi)
+		// an initial global transformation set (e.g. if the renderer sets scaling for dpi or we're rendering from a VisualSurface)
 		var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
 		if (Parent?.TotalMatrix is { } parentTotalMatrix)
 		{
@@ -177,7 +177,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = translation * initialTransform;
 		}
 
-		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default, initialTransform);
+		using var session = new PaintingSession(surface, canvas, DrawingFilters.Default, initialTransform);
 		Render(in session);
 
 		if (adjustedInitialOffset is { })
@@ -204,7 +204,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		using var session = BeginDrawing(in parentSession);
+		using var session = parentSession.WithOpacity(Opacity);
+		SetupLocalCoordinatesAndClip(session);
 
 		if (_requiresRepaint)
 		{
@@ -267,11 +268,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	internal virtual bool CanPaint => false;
 
-	private PaintingSession BeginDrawing(in PaintingSession parentSession)
-		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.RootTransform);
-
-	private PaintingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 initialTransform)
+	private void SetupLocalCoordinatesAndClip(in PaintingSession session)
 	{
+		var canvas = session.Canvas;
+		var rootTransform = session.RootTransform;
 		if (ShadowState is { } shadow)
 		{
 			canvas.SaveLayer(shadow.Paint);
@@ -281,21 +281,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			canvas.Save();
 		}
 
-		if (initialTransform.IsIdentity)
+		if (rootTransform.IsIdentity)
 		{
 			canvas.SetMatrix(TotalMatrix.ToSKMatrix());
 		}
 		else
 		{
-			canvas.SetMatrix((TotalMatrix * initialTransform).ToSKMatrix());
+			canvas.SetMatrix((TotalMatrix * rootTransform).ToSKMatrix());
 		}
 
 		ApplyClipping(canvas);
-
-		var session = new PaintingSession(surface, canvas, in filters, in initialTransform);
-
-		PaintingSession.PushOpacity(ref session, Opacity);
-
-		return session;
 	}
 }
