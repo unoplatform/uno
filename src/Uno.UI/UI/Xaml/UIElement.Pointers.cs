@@ -593,7 +593,11 @@ namespace Microsoft.UI.Xaml
 			this.CompleteGesture();
 			foreach (var element in this.GetVisualAncestry())
 			{
+#if __ANDROID__ || __IOS__ || __MACOS__
+				(element as UIElement)?.CompleteGesture();
+#else
 				element.CompleteGesture();
+#endif
 			}
 		}
 
@@ -607,7 +611,7 @@ namespace Microsoft.UI.Xaml
 			var pointerId = args.Pointer.PointerId;
 			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(pointerId, args.GestureEventsAlreadyRaised);
 		}
-		#endregion
+#endregion
 
 		#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
 		private void UpdateDragAndDrop(bool isEnabled)
