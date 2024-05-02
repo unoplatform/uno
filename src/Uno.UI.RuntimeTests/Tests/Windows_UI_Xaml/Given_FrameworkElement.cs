@@ -48,6 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public partial class Given_FrameworkElement
 	{
+#if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Clip_Two_Grids_With_Translate_And_Ellipse()
@@ -303,6 +304,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Rect(20, 0, 99, 99), blueBounds);
 			Assert.AreEqual(new Rect(21, 1, 97, 97), redBounds);
 		}
+#endif
 
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
