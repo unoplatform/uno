@@ -44,7 +44,7 @@ public partial class ShapeVisual
 		}
 
 		// Second we render the children
-		base.Render(in session);
+		base.Render(in parentSession);
 	}
 
 	private DrawingSession BeginShapesDrawing(in DrawingSession parentSession)
