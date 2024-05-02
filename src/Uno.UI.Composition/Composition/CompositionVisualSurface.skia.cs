@@ -64,11 +64,13 @@ namespace Microsoft.UI.Composition
 				int save = session.Canvas.Save();
 				if (SourceOffset != default)
 				{
-					session.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
-					session.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Canvas.DeviceClipBounds.Width, session.Canvas.DeviceClipBounds.Height));
+					// clip to the left of and above the origin (in local coordinates).
+					// Note that this is applied before the SourceOffset translates the canvas' matrix, so
+					// when the translation happens, the drawing will be clipped by the SourceOffset.
+					session.Canvas.ClipRect(new SKRect(0, 0, int.MaxValue, int.MaxValue));
 				}
 
-				SourceVisual.Paint(in session);
+				SourceVisual.RenderRootVisual(session.Surface, SourceOffset);
 				session.Canvas.RestoreToCount(save);
 			}
 		}

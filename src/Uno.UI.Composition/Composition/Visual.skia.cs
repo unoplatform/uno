@@ -166,7 +166,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (Parent?.TotalMatrix is { } parentTotalMatrix)
 		{
 			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
-			initialTransform = invertedParentTotalMatrix;
+			initialTransform = invertedParentTotalMatrix * initialTransform;
 		}
 
 		if (adjustedInitialOffset is { } adjustedOffset)
