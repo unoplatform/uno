@@ -25,7 +25,7 @@ public sealed partial class VisualRotationSample : Page
 		_borderVisual.CenterPoint = new Vector3((float)myBorder.ActualWidth / 2, (float)myBorder.ActualHeight / 2, 0);
 	}
 
-	private void Button4_Click(object sender, RoutedEventArgs args)
+	private void Button2_Click(object sender, RoutedEventArgs args)
 	{
 		_borderVisual.RotationAngleInDegrees = 45;
 		_borderVisual.CenterPoint = new Vector3(0, 0, 0);
