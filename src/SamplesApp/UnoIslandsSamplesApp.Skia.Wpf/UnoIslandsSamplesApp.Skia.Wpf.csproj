@@ -30,7 +30,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.7" />
+		<PackageReference Include="SkiaSharp.Views.WPF" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">
