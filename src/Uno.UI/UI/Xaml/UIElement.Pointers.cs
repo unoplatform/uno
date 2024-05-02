@@ -611,7 +611,7 @@ namespace Microsoft.UI.Xaml
 			var pointerId = args.Pointer.PointerId;
 			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(pointerId, args.GestureEventsAlreadyRaised);
 		}
-#endregion
+		#endregion
 
 		#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
 		private void UpdateDragAndDrop(bool isEnabled)
