@@ -4,6 +4,7 @@ using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -109,5 +110,23 @@ public partial class ShapeVisual
 		var totalOffset = this.GetTotalOffset();
 		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
 		canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
+	}
+
+	internal Rect? GetViewBoxRectInElementCoordinateSpace()
+	{
+		if (ViewBox is null)
+		{
+			return null;
+		}
+
+		var rect = ViewBox.GetRect();
+		if (ViewBox.IsAncestorClip)
+		{
+			var totalOffset = this.GetTotalOffset();
+			rect.X -= totalOffset.X;
+			rect.Y -= totalOffset.Y;
+		}
+
+		return rect;
 	}
 }
