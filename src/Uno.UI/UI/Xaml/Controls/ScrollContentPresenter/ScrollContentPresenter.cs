@@ -231,7 +231,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __CROSSRUNTIME__
 		// This may need to be adjusted if/when CanContentRenderOutsideBounds is implemented.
-		private protected override Rect? GetClipRect(bool needsClipToSlot, double visualOffsetX, double visualOffsetY, Rect finalRect, Size maxSize, Thickness margin)
+		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
 			=> new Rect(default, RenderSize);
 #endif
 
