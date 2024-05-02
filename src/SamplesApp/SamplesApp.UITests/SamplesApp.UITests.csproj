@@ -3,6 +3,12 @@
 	<PropertyGroup>
 		<TargetFramework>$(NetPrevious)</TargetFramework>
 
+		<!-- We check specifically for net7.0-ios -->
+		<!-- Our builds are now all net8.0+ -->
+		<!-- However, Xamarin.UITest doesn't (probably won't) support net8.0+ -->
+		<!-- So, we still build SamplesApp in net7.0-ios in CI to be able to run UI tests -->
+		<TargetFrameworks Condition="'$(UnoTargetFrameworkOverride)'=='net7.0-ios'">net7.0</TargetFrameworks>
+
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().Contains('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
