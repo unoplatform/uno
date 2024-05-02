@@ -68,7 +68,15 @@ public partial class LinearGradientBrush
 	internal VerticalAlignment GetMinorStopAlignment()
 	{
 		var scaleTransform = RelativeTransform as ScaleTransform;
-		return scaleTransform?.ScaleY != -1 ? VerticalAlignment.Top : VerticalAlignment.Bottom;
+		var majorStopFirst = GetMajorStop()?.Offset < GradientStops.Where(s => s != GetMajorStop()).First().Offset;
+		if (majorStopFirst)
+		{
+			return scaleTransform?.ScaleY != -1 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+		}
+		else
+		{
+			return scaleTransform?.ScaleY != -1 ? VerticalAlignment.Top : VerticalAlignment.Bottom;
+		}
 	}
 
 	private SolidColorBrush? CreateFauxOverlayBrush()
@@ -78,10 +86,18 @@ public partial class LinearGradientBrush
 			return null;
 		}
 
-		var majorStop = GetMajorStop();
-		var minorStop = GradientStops.First(s => s != majorStop);
+		var majorStop = GetMajorStop()!;
+		var minorStop = GradientStops.First(s => s != majorStop)!;
 
-		return new SolidColorBrush(minorStop.Color) { Opacity = Opacity };
+		// As both major and minor colors may be semi-transparent, we need
+		// to calculate an approximate color, where minor = major + faux if possible
+		var faux = Color.FromArgb(
+			(byte)(Math.Max(0, minorStop.Color.A - majorStop.Color.A)),
+			(byte)(Math.Max(0, minorStop.Color.R - majorStop.Color.R)),
+			(byte)(Math.Max(0, minorStop.Color.G - majorStop.Color.G)),
+			(byte)(Math.Max(0, minorStop.Color.B - majorStop.Color.B)));
+
+		return new SolidColorBrush(faux) { Opacity = Opacity };
 	}
 }
 //#endif
