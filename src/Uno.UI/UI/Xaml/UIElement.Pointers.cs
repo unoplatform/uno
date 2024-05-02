@@ -231,6 +231,22 @@ namespace Microsoft.UI.Xaml
 			ClearDragOver();
 		}
 
+#if UNO_HAS_MANAGED_POINTERS
+		internal void AbortGestureRecognizer()
+		{
+			var element = this;
+			while (element is not null)
+			{
+				if (element.IsGestureRecognizerCreated)
+				{
+					element.GestureRecognizer.CompleteGesture();
+				}
+
+				element = element.GetParent() as UIElement;
+			}
+		}
+#endif
+
 		[ThreadStatic]
 		private static PointerEventDispatchResult _currentPointerEventDispatch;
 
