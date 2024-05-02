@@ -14,21 +14,12 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
-	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
-	// If we move to a UI-thread-per-window model, then we need multiple recorders.
-	[ThreadStatic]
-	private static SKPictureRecorder? _recorder;
-
 	private CompositionClip? _clip;
 	private RectangleClip? _cornerRadiusClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
-	private bool _requiresRepaint;
-	private SKPicture? _picture;
-
-	public object? Owner { get; set; }
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
@@ -36,17 +27,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var matrixDirty = _matrixDirty;
 		_matrixDirty = true;
 		return !matrixDirty;
-	}
-
-	internal void InvalidatePaint()
-	{
-		if (CanPaint)
-		{
-			_picture?.Dispose();
-			_picture = null;
-			_requiresRepaint = true;
-			Compositor.InvalidateRender(this);
-		}
 	}
 
 	/// <summary>
@@ -205,22 +185,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		using var session = parentSession.WithOpacity(Opacity);
-		SetupLocalCoordinatesAndClip(session);
-
-		if (_requiresRepaint)
-		{
-			_requiresRepaint = false;
-			_recorder ??= new SKPictureRecorder();
-			var recorderSession = session with { Canvas = _recorder.BeginRecording(new SKRect(float.NegativeInfinity, float.NegativeInfinity, float.PositiveInfinity, float.PositiveInfinity)) };
-			// To debug what exactly gets repainted, replace the following line with `Draw(in session);`
-			Paint(in recorderSession);
-			_picture = _recorder.EndRecording();
-		}
-
-		if (_picture is { })
-		{
-			session.Canvas.DrawPicture(_picture);
-		}
+		SetupLocalCoordinatesAndClip(in session);
+		Paint(in session);
 
 		// The CornerRadiusClip doesn't affect the visual itself, only its children
 		CornerRadiusClip?.Apply(session.Canvas, this);

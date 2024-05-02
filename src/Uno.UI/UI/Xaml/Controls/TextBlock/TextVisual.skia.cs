@@ -34,9 +34,5 @@ namespace Microsoft.UI.Composition
 				owner.Inlines.Draw(in session);
 			}
 		}
-
-		// This might be optimized to be false when _owner.Text is empty
-		// and _owner is not focused (i.e. no caret) and maybe some other conditions
-		internal override bool CanPaint => true;
 	}
 }
