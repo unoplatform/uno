@@ -231,15 +231,6 @@ namespace Microsoft.UI.Xaml
 			ClearDragOver();
 		}
 
-		internal void CompleteGesturesOnTree()
-		{
-			this.CompleteGesture();
-			foreach (var element in this.GetVisualAncestry())
-			{
-				element.CompleteGesture();
-			}
-		}
-
 		[ThreadStatic]
 		private static PointerEventDispatchResult _currentPointerEventDispatch;
 
@@ -594,6 +585,15 @@ namespace Microsoft.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				GestureRecognizer.CompleteGesture();
+			}
+		}
+
+		internal void CompleteGesturesOnTree()
+		{
+			this.CompleteGesture();
+			foreach (var element in this.GetVisualAncestry())
+			{
+				element.CompleteGesture();
 			}
 		}
 
