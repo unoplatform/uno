@@ -5,17 +5,18 @@
 
 using System;
 using System.Numerics;
-using Uno.Disposables;
-using Uno.UI.Helpers.WinUI;
+using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Uno.Disposables;
+using Uno.UI.Dispatching;
+using Uno.UI.Helpers.WinUI;
+
 using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
-using System.Threading.Tasks;
-using Microsoft.UI.Dispatching;
 
 namespace Microsoft.UI.Private.Controls;
 
@@ -235,7 +236,7 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 		_ = Task.Run(async () =>
 		{
 			await Task.Delay(REFRESH_ANIMATION_DURATION);
-			DispatcherQueue.Main.TryEnqueue(() =>
+			NativeDispatcher.Main.Enqueue(() =>
 			{
 				RefreshCompletedBatchCompleted();
 			});
