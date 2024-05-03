@@ -591,13 +591,9 @@ namespace Microsoft.UI.Xaml
 		internal void CompleteGesturesOnTree()
 		{
 			this.CompleteGesture();
-			foreach (var element in this.GetVisualAncestry())
+			foreach (var element in this.EnumerateAncestors())
 			{
-#if __ANDROID__ || __IOS__ || __MACOS__
 				(element as UIElement)?.CompleteGesture();
-#else
-				element.CompleteGesture();
-#endif
 			}
 		}
 
