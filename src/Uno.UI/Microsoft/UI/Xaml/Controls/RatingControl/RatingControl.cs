@@ -1,3 +1,7 @@
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls;
+#endif
+
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
