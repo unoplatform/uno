@@ -18,7 +18,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateBlur(sigmaX, sigmaY, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateBlur(sigmaX, sigmaY, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -37,7 +39,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateColorFilter(cf, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateColorFilter(cf, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -56,7 +60,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateColorFilter(cf, input);
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateColorFilter(cf, input);
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -75,7 +81,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateOffset(dx, dy, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateOffset(dx, dy, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -94,7 +102,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKRuntimeEffect.Create(sksl, out errors);
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKRuntimeEffect Legacy(out string errors) => SKRuntimeEffect.Create(sksl, out errors);
+			return Legacy(out errors);
 		}
 
 #if NET8_0_OR_GREATER
@@ -113,7 +123,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			@this.Add(name, null);
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			void Legacy() => @this.Add(name, null);
+			Legacy();
 			return;
 		}
 
@@ -129,7 +141,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateBlendMode(mode, background, foreground, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateBlendMode(mode, background, foreground, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -148,7 +162,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreatePaint(paint, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreatePaint(paint, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -167,7 +183,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateDropShadow(dx, dy, sigmaX, sigmaY, color);
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateDropShadow(dx, dy, sigmaX, sigmaY, color);
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -186,7 +204,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateArithmetic(k1, k2, k3, k4, enforcePMColor, background, foreground, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateArithmetic(k1, k2, k3, k4, enforcePMColor, background, foreground, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -205,7 +225,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateMerge(filters.ToArray(), new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy(ReadOnlySpan<SKImageFilter> filters) => SKImageFilter.CreateMerge(filters.ToArray(), new SKImageFilter.CropRect(cropRect));
+			return Legacy(filters);
 		}
 
 #if NET8_0_OR_GREATER
@@ -224,7 +246,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateMatrixConvolution(kernelSize, kernel.ToArray(), gain, bias, kernelOffset, tileMode, convolveAlpha, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy(ReadOnlySpan<float> kernel) => SKImageFilter.CreateMatrixConvolution(kernelSize, kernel.ToArray(), gain, bias, kernelOffset, tileMode, convolveAlpha, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy(kernel);
 		}
 
 #if NET8_0_OR_GREATER
@@ -243,7 +267,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateDistantLitDiffuse(direction, lightColor, surfaceScale, kd, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateDistantLitDiffuse(direction, lightColor, surfaceScale, kd, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -262,7 +288,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateDistantLitSpecular(direction, lightColor, surfaceScale, ks, shininess, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateDistantLitSpecular(direction, lightColor, surfaceScale, ks, shininess, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -281,7 +309,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateSpotLitDiffuse(location, target, specularExponent, cutoffAngle, lightColor, surfaceScale, kd, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateSpotLitDiffuse(location, target, specularExponent, cutoffAngle, lightColor, surfaceScale, kd, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -300,7 +330,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreateSpotLitSpecular(location, target, specularExponent, cutoffAngle, lightColor, surfaceScale, ks, shininess, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreateSpotLitSpecular(location, target, specularExponent, cutoffAngle, lightColor, surfaceScale, ks, shininess, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -319,7 +351,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreatePointLitDiffuse(location, lightColor, surfaceScale, kd, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreatePointLitDiffuse(location, lightColor, surfaceScale, kd, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -338,7 +372,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return SKImageFilter.CreatePointLitSpecular(location, lightColor, surfaceScale, ks, shininess, input, new SKImageFilter.CropRect(cropRect));
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKImageFilter Legacy() => SKImageFilter.CreatePointLitSpecular(location, lightColor, surfaceScale, ks, shininess, input, new SKImageFilter.CropRect(cropRect));
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -357,7 +393,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return @this.ToShader(isOpaque, uniforms);
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			SKShader Legacy() => @this.ToShader(isOpaque, uniforms);
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
@@ -377,7 +415,9 @@ internal static class SkiaCompat
 	{
 		if (!_isSkiaSharp3OrLater)
 		{
-			return @this.GetPixelSpan();
+			[MethodImpl(MethodImplOptions.NoInlining)]
+			ReadOnlySpan<byte> Legacy() => @this.GetPixelSpan();
+			return Legacy();
 		}
 
 #if NET8_0_OR_GREATER
