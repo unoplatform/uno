@@ -52,7 +52,9 @@ internal static class TransformableObjectExtensions
 		var rotation = transformableObject.RotationAngle;
 		if (rotation is not 0)
 		{
+			transform *= Matrix4x4.CreateTranslation(-transformableObject.CenterPoint);
 			transform *= Matrix4x4.CreateFromAxisAngle(transformableObject.RotationAxis, rotation);
+			transform *= Matrix4x4.CreateTranslation(transformableObject.CenterPoint);
 		}
 
 		return transform;
