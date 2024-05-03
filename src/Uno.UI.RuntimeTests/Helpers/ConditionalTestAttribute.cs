@@ -19,7 +19,6 @@ public enum RuntimeTestPlatform
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 {
-	private readonly RuntimeTestPlatform _platforms;
 	private static readonly RuntimeTestPlatform _currentPlatform;
 
 	static ConditionalTestAttribute()
@@ -44,13 +43,10 @@ public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 		_currentPlatform = platform;
 	}
 
-	public ConditionalTestAttribute(RuntimeTestPlatform platforms)
-	{
-		_platforms = platforms;
-	}
+	public RuntimeTestPlatform IgnoredPlatforms { get; set; }
 
 	public bool ShouldRun()
-		=> _platforms.HasFlag(_currentPlatform);
+		=> !IgnoredPlatforms.HasFlag(_currentPlatform);
 
 	private static bool ShouldRun(RuntimeTestPlatform singlePlatform)
 	{
