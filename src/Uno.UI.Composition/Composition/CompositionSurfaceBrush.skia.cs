@@ -100,6 +100,7 @@ namespace Microsoft.UI.Composition
 				}
 
 				fillPaint.IsAntialias = true;
+				fillPaint.FilterQuality = SKFilterQuality.High;
 			}
 			else if (Surface is ISkiaSurface skiaSurface)
 			{
