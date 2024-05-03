@@ -59,14 +59,11 @@ public partial class InteractionTracker : CompositionObject
 		if (_position != newPosition)
 		{
 			_position = newPosition;
-			if (Owner is { } owner)
+			NativeDispatcher.Main.Enqueue(() =>
 			{
-				NativeDispatcher.Main.Enqueue(() =>
-				{
-					owner.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, Scale, requestId));
-					OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
-				});
-			}
+				Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, Scale, requestId));
+				OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
+			});
 		}
 	}
 
