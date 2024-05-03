@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests;
@@ -48,5 +49,23 @@ public class BindingTests
 
 		Assert.AreEqual(2, converter.ConvertCount);
 		Assert.AreEqual("1", SUT.myTb.Text);
+	}
+
+	[TestMethod]
+	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16520")]
+	public async Task When_XBind_In_Window()
+	{
+		var SUT = new XBindInWindow();
+		SUT.Activate();
+		try
+		{
+			Assert.AreEqual(0, SUT.ClickCount);
+			SUT.MyButton.AutomationPeerClick();
+			Assert.AreEqual(1, SUT.ClickCount);
+		}
+		finally
+		{
+			SUT.Close();
+		}
 	}
 }
