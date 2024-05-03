@@ -38,6 +38,7 @@ using _ViewGroup = Android.Views.ViewGroup;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.UI.Composition;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
@@ -491,9 +492,10 @@ namespace Microsoft.UI.Xaml.Media
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
-			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
+			var clippingBounds = element.Visual.GetViewBoxRectInElementCoordinateSpace() is { } rect
 				? transformToElement.Transform(rect)
 				: Rect.Infinite;
+
 			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
 			{
 				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;

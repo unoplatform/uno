@@ -579,15 +579,15 @@ namespace Microsoft.UI.Xaml
 				UpdateDOMXamlProperty(nameof(NeedsClipToSlot), NeedsClipToSlot);
 			}
 #endif
-
-			var clippedFrame = GetClipRect(needsClipBounds, finalRect, new Size(maxWidth, maxHeight), margin);
-			ArrangeNative(new Point(offsetX, offsetY), clippedFrame);
+			var visualOffset = new Point(offsetX, offsetY);
+			var clippedFrame = GetClipRect(needsClipBounds, visualOffset, finalRect, new Size(maxWidth, maxHeight), margin);
+			ArrangeNative(visualOffset, clippedFrame);
 
 			OnLayoutUpdated();
 		}
 
 		// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
-		private protected virtual Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
+		private protected virtual Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
 		{
 			if (needsClipToSlot)
 			{
@@ -694,10 +694,19 @@ namespace Microsoft.UI.Xaml
 
 				if (needToClipSlot || needToClipLocally)
 				{
-					if (this is Panel && RenderTransform is { } renderTransform)
+					if (ShouldApplyLayoutClipAsAncestorClip()
+#if __WASM__
+						&& RenderTransform is { } renderTransform
+#endif
+						)
 					{
+#if __SKIA__
+						clipRect.X += visualOffset.X;
+						clipRect.Y += visualOffset.Y;
+#elif __WASM__
 						clipRect.X -= renderTransform.MatrixCore.M31;
 						clipRect.Y -= renderTransform.MatrixCore.M32;
+#endif
 					}
 
 					return clipRect;
