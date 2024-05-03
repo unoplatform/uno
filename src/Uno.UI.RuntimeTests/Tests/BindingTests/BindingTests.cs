@@ -51,6 +51,7 @@ public class BindingTests
 		Assert.AreEqual("1", SUT.myTb.Text);
 	}
 
+#if __SKIA__ && HAS_UNO_WINUI
 	[TestMethod]
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16520")]
 	public async Task When_XBind_In_Window()
@@ -68,4 +69,5 @@ public class BindingTests
 			SUT.Close();
 		}
 	}
+#endif
 }
