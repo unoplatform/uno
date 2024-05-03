@@ -29,14 +29,18 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 partial class RatingControl
 {
+#if !HAS_UNO // TODO Uno: Unused on Uno currently
 	private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
+#endif
 	private const float c_verticalScaleAnimationCenterPoint = 0.8f;
 	private readonly Thickness c_focusVisualMargin = new Thickness(-8, -7, -8, 0);
 	private const int c_defaultRatingFontSizeForRendering = 32; // (32 = 2 * [default fontsize] -- because of double size rendering), remove when MSFT #10030063 is done
 	private const int c_defaultItemSpacing = 8;
 
 	private const float c_mouseOverScale = 0.8f;
+#if !HAS_UNO // TODO Uno: Unused on Uno currently
 	private const float c_touchOverScale = 1.0f;
+#endif
 	private const float c_noPointerOverMagicNumber = -100;
 
 	// 22 = 20(compensate for the -20 margin on StackPanel) + 2(magic number makes the text and star center-aligned)
@@ -374,20 +378,15 @@ partial class RatingControl
 
 	private void ApplyScaleExpressionAnimation(UIElement uiElement, int starIndex)
 	{
-#if HAS_UNO // Uno specific - Expression animations are not supported on some targets
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Composition.ExpressionAnimation"))
+#if HAS_UNO // TODO: Uno specific - Expression animation throwing exception
+		var scaleTransform = new ScaleTransform()
 		{
-			var scaleTransform = new ScaleTransform()
-			{
-				ScaleX = 0.5,
-				ScaleY = 0.5
-			};
-			uiElement.RenderTransform = scaleTransform;
-			uiElement.RenderTransformOrigin = new Point(0.5, 0.5);
-			return;
-		}
-#endif
-
+			ScaleX = 0.5,
+			ScaleY = 0.5
+		};
+		uiElement.RenderTransform = scaleTransform;
+		uiElement.RenderTransformOrigin = new Point(0.5, 0.5);
+#else
 		Visual uiElementVisual = ElementCompositionPreview.GetElementVisual(uiElement);
 		Compositor comp = uiElementVisual.Compositor;
 
@@ -407,6 +406,7 @@ partial class RatingControl
 		// Star size = 16. 0.5 and 0.8 are just arbitrary center point chosen in design spec
 		// 32 = star size * 2 because of the rendering at double size we do
 		uiElementVisual.CenterPoint = new Vector3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f);
+#endif
 	}
 
 	private void PopulateStackPanelWithItems(string templateName, StackPanel stackPanel, RatingControlStates state)
@@ -937,7 +937,7 @@ partial class RatingControl
 		return ratingStarsWidth + textSpacing + captionWidth;
 	}
 
-
+#if !HAS_UNO // TODO Uno: Unused on Uno currently
 	private double CalculateStarCenter(int starIndex)
 	{
 		// TODO: MSFT sub in real API DP values
@@ -945,6 +945,7 @@ partial class RatingControl
 		// [real Rating Size * (starIndex + 0.5)] + (starIndex * itemSpacing)
 		return (ActualRatingFontSize() * (starIndex + 0.5)) + (starIndex * ItemSpacing());
 	}
+#endif
 
 	private double CalculateActualRatingWidth()
 	{
