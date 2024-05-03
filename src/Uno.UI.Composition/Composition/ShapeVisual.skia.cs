@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Numerics;
 using SkiaSharp;
 using Uno.UI.Composition;
 
@@ -10,9 +11,9 @@ public partial class ShapeVisual
 	private protected override void ApplyClipping(in SKCanvas canvas)
 	{
 		base.ApplyClipping(in canvas);
-		if (ViewBox is { } viewBox)
+		if (GetViewBoxPathInElementCoordinateSpace() is { } path)
 		{
-			canvas.ClipRect(viewBox.GetSKRect(), antialias: true);
+			canvas.ClipPath(path, antialias: true);
 		}
 	}
 
@@ -28,5 +29,29 @@ public partial class ShapeVisual
 		}
 
 		base.Paint(in session);
+	}
+
+	internal SKPath? GetViewBoxPathInElementCoordinateSpace()
+	{
+		if (ViewBox is not { } viewBox)
+		{
+			return null;
+		}
+
+		var shape = new SKPath();
+		var clipRect = new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y);
+		shape.AddRect(clipRect);
+		if (viewBox.IsAncestorClip)
+		{
+			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
+			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
+			if (!childToParentTransform.IsIdentity)
+			{
+
+				shape.Transform(childToParentTransform.ToSKMatrix());
+			}
+		}
+
+		return shape;
 	}
 }
