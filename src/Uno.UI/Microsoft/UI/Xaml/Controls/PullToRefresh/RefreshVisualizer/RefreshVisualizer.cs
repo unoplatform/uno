@@ -386,11 +386,10 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			string interactionRatioPropertyName = m_refreshInfoProvider.InteractionRatioCompositionProperty;
 			CompositionPropertySet interactionRatioPropertySet = m_refreshInfoProvider.CompositionProperties;
 
-			// Uno specific: "f" suffixes are removed as they are not supported.
 			ExpressionAnimation contentInteractionRatioRotationAnimation = m_compositor.CreateExpressionAnimation(
 			   "startingRotationAngle + (Pi * (Clamp(RefreshInteractionRatioPropertySet." +
 			   (string)(interactionRatioPropertyName) +
-			   ", 0.0, contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * 2)");
+			   ", 0.0f, contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * 2)");
 
 			var thresholdRatioName = "DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO";
 			contentVisual.Properties.InsertScalar(thresholdRatioName, (float)(m_executionRatio));
@@ -402,7 +401,7 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 
 			//Set up the InteractionRatioOpacityAnimation
 			ExpressionAnimation contentInteractionRatioOpacityAnimation = m_compositor.CreateExpressionAnimation(
-			   "((1.0 - contentVisual.MINIMUM_INDICATOR_OPACITY) * RefreshInteractionRatioPropertySet."
+			   "((1.0f - contentVisual.MINIMUM_INDICATOR_OPACITY) * RefreshInteractionRatioPropertySet."
 			   + (string)(interactionRatioPropertyName) +
 			   ") + contentVisual.MINIMUM_INDICATOR_OPACITY");
 			var minOpacityName = "MINIMUM_INDICATOR_OPACITY";
@@ -417,16 +416,16 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			if (IsPullDirectionFar())
 			{
 				contentInteractionRatioParallaxAnimation = m_compositor.CreateExpressionAnimation(
-					"((1.0 - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5 * -1.0) * min((RefreshInteractionRatioPropertySet."
+					"((1.0f - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5f * -1.0f) * min((RefreshInteractionRatioPropertySet."
 					+ (string)(interactionRatioPropertyName) +
-					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0)");
+					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0f)");
 			}
 			else
 			{
 				contentInteractionRatioParallaxAnimation = m_compositor.CreateExpressionAnimation(
-					"((1.0 - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5) * min((RefreshInteractionRatioPropertySet."
+					"((1.0f - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5f) * min((RefreshInteractionRatioPropertySet."
 					+ (string)(interactionRatioPropertyName) +
-					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0)");
+					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0f)");
 			}
 			if (m_root != null)
 			{
