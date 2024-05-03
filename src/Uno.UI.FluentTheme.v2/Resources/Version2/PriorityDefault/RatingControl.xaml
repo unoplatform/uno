@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference RatingControl.xaml, tag winui3/release/1.4.2 -->
+<!-- MUX Reference RatingControl.xaml, tag winui3/release/1.5.3, commit commit 2a60e27c591846556fa9ec4d8f305afdf0f96dc1 -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <Style TargetType="controls:RatingControl">
     <Setter Property="Height" Value="32" />
