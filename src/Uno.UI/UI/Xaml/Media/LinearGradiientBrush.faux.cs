@@ -27,7 +27,7 @@ public partial class LinearGradientBrush
 #if __WASM__
 		return cornerRadius == CornerRadius.None;
 #elif __IOS__ || __MACOS__
-		return RelativeTransform == null;
+		return cornerRadius == CornerRadius.None && RelativeTransform == null;
 #else
 		return true;
 #endif

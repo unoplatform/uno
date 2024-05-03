@@ -9,6 +9,15 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
+#if WINAPPSDK
+using Uno.UI.Extensions;
+#elif __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
+#endif
+
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif

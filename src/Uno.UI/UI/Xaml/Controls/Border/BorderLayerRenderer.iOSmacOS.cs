@@ -234,7 +234,7 @@ partial class BorderLayerRenderer
 
 			var borderCALayer = borderBrush switch
 			{
-				GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+				GradientBrush gradientBorder when gradientBorder.CanApplyToBorder(cornerRadius) => gradientBorder.GetLayer(area.Size),
 				RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
 				_ => null,
 			};
@@ -252,11 +252,11 @@ partial class BorderLayerRenderer
 				var borderLayerIndex = parent.Sublayers.Length;
 				CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
 			}
-			else if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
+			else
 			{
 				Action onInvalidateRender = () =>
 				{
-					CGColor color = Brush.GetFallbackColor(borderBrush);
+					CGColor color = GetNonGradientBorderColor(borderBrush);
 					outerLayer.StrokeColor = color;
 					outerLayer.FillColor = color;
 
@@ -382,7 +382,7 @@ partial class BorderLayerRenderer
 
 				var borderCALayer = borderBrush switch
 				{
-					GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+					GradientBrush gradientBorder when gradientBorder.CanApplyToBorder(cornerRadius) => gradientBorder.GetLayer(area.Size),
 					RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
 					_ => null,
 				};
@@ -400,12 +400,13 @@ partial class BorderLayerRenderer
 					var borderLayerIndex = parent.Sublayers.Length;
 					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
 				}
-				else if (borderBrush is SolidColorBrush scbBorder)
+				else
 				{
-					Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
+					Action onInvalidateRender = () => layer.FillColor = GetNonGradientBorderColor(borderBrush);
+
 					onInvalidateRender();
-					scbBorder.InvalidateRender += onInvalidateRender;
-					new DisposableAction(() => scbBorder.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+					borderBrush.InvalidateRender += onInvalidateRender;
+					new DisposableAction(() => borderBrush.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 				}
 			}
 
@@ -440,6 +441,18 @@ partial class BorderLayerRenderer
 		}
 		);
 		return disposables;
+	}
+
+	private static Color GetNonGradientBorderColor(Brush borderBrush)
+	{
+		if (borderBrush is LinearGradientBrush linearGradientBrush && linearGradientBrush.SupportsFauxGradientBorder())
+		{
+			return linearGradientBrush.MajorStopColor ?? linearGradientBrush.FallbackColorWithOpacity;
+		}
+		else
+		{
+			return Brush.GetFallbackColor(borderBrush);
+		}
 	}
 
 	/// <summary>
