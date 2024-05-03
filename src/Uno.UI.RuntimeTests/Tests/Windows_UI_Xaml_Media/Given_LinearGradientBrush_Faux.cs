@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __WASM__ || __IOS__ || __MACOS__
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,7 +46,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
 
-		Assert.IsTrue(brush.CanApplyToBorder(new CornerRadius(4, 0, 0, 0));
+		Assert.IsTrue(brush.CanApplyToBorder(new CornerRadius(4, 0, 0, 0)));
 	}
 
 	[TestMethod]
@@ -56,7 +57,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
 		brush.RelativeTransform = new RotateTransform { Angle = 45 };
 
-		Assert.IsFalse(brush.CanApplyToBorder(default);
+		Assert.IsFalse(brush.CanApplyToBorder(default));
 	}
 #endif
 
@@ -160,3 +161,4 @@ public class Given_LinearGradientBrush_Faux
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 }
+#endif
