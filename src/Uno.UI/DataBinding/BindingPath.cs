@@ -21,7 +21,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.DataBinding
 {
-	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
+	[DebuggerDisplay("Path={_path} DataContext={_dataContextWeakStorage?.Target}")]
 	internal partial class BindingPath : IDisposable, IValueChangedListener
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
