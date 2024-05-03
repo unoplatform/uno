@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
 
-		internal override UIElement VisualParent => Selector ?? base.VisualParent;
+		internal override UIElement VisualParent => base.VisualParent ?? Selector;
 
 		private bool IsItemClickEnabled
 		{
