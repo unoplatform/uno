@@ -10,16 +10,29 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-public partial class RatingControl
+internal enum RatingControlStates
 {
-	private bool IsItemInfoPresentAndFontInfo()
-	{
-		return m_infoType == RatingInfoType.Font;
-	}
-	private bool IsItemInfoPresentAndImageInfo()
-	{
-		return m_infoType == RatingInfoType.Image;
-	}
+	Disabled = 0,
+	Set = 1,
+	PointerOverSet = 2,
+	PointerOverPlaceholder = 3, // Also functions as the pointer over unset state at the moment
+	Placeholder = 4,
+	Unset = 5,
+	Null = 6
+}
+
+internal enum RatingInfoType
+{
+	None,
+	Font,
+	Image
+}
+
+partial class RatingControl
+{
+	private bool IsItemInfoPresentAndFontInfo() => m_infoType == RatingInfoType.Font;
+
+	private bool IsItemInfoPresentAndImageInfo() => m_infoType == RatingInfoType.Image;
 
 	// Private members
 	private TextBlock? m_captionTextBlock;

@@ -3,11 +3,11 @@
 // MUX Reference RatingControl.properties.cpp, tag winui3/release/1.4.2
 
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-public partial class RatingControl
+partial class RatingControl
 {
 	/// <summary>
 	/// Gets or sets the text label for the control.
@@ -22,7 +22,11 @@ public partial class RatingControl
 	/// Identifies the Caption dependency property.
 	/// </summary>
 	public static DependencyProperty CaptionProperty { get; } =
-		DependencyProperty.Register(nameof(Caption), typeof(string), typeof(RatingControl), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(Caption),
+			typeof(string),
+			typeof(RatingControl),
+			new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the initial set rating value.
@@ -37,7 +41,11 @@ public partial class RatingControl
 	/// Identifies the InitialSetValue dependency property.
 	/// </summary>
 	public static DependencyProperty InitialSetValueProperty { get; } =
-		DependencyProperty.Register(nameof(InitialSetValue), typeof(int), typeof(RatingControl), new FrameworkPropertyMetadata(1, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(InitialSetValue),
+			typeof(int),
+			typeof(RatingControl),
+			new FrameworkPropertyMetadata(1, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the value that determines if the user can remove the rating.
@@ -52,7 +60,10 @@ public partial class RatingControl
 	/// Identifies the IsClearEnabled dependency property.
 	/// </summary>
 	public static DependencyProperty IsClearEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsClearEnabled), typeof(bool), typeof(RatingControl), new FrameworkPropertyMetadata(true, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(IsClearEnabled),
+			typeof(bool),
+			typeof(RatingControl), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the value that determines if the user can change the rating.
@@ -67,7 +78,11 @@ public partial class RatingControl
 	/// Identifies the IsReadOnly dependency property.
 	/// </summary>
 	public static DependencyProperty IsReadOnlyProperty { get; } =
-		DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(RatingControl), new FrameworkPropertyMetadata(false, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(IsReadOnly),
+			typeof(bool),
+			typeof(RatingControl),
+			new FrameworkPropertyMetadata(false, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets info about the visual states of the items that represent a rating.
@@ -82,7 +97,11 @@ public partial class RatingControl
 	/// Identifies the ItemInfo dependency property.
 	/// </summary>
 	public static DependencyProperty ItemInfoProperty { get; } =
-		DependencyProperty.Register(nameof(ItemInfo), typeof(RatingItemInfo), typeof(RatingControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(ItemInfo),
+			typeof(RatingItemInfo),
+			typeof(RatingControl),
+			new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the maximum allowed rating value.
@@ -97,7 +116,11 @@ public partial class RatingControl
 	/// Identifies the MaxRating dependency property.
 	/// </summary>
 	public static DependencyProperty MaxRatingProperty { get; } =
-		DependencyProperty.Register(nameof(MaxRating), typeof(int), typeof(RatingControl), new FrameworkPropertyMetadata(5, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(MaxRating),
+			typeof(int),
+			typeof(RatingControl),
+			new FrameworkPropertyMetadata(5, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the rating that is displayed in the control until the value is changed by a user action or some other operation.
@@ -112,7 +135,11 @@ public partial class RatingControl
 	/// Identifies the PlaceholderValue dependency property.
 	/// </summary>
 	public static DependencyProperty PlaceholderValueProperty { get; } =
-		DependencyProperty.Register(nameof(PlaceholderValue), typeof(double), typeof(RatingControl), new FrameworkPropertyMetadata(-1.0, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(PlaceholderValue),
+			typeof(double),
+			typeof(RatingControl),
+			new FrameworkPropertyMetadata(-1.0, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the rating value.
@@ -127,7 +154,11 @@ public partial class RatingControl
 	/// Identifies the Value dependency property.
 	/// </summary>
 	public static DependencyProperty ValueProperty { get; } =
-		DependencyProperty.Register(nameof(Value), typeof(double), typeof(RatingControl), new FrameworkPropertyMetadata(-1.0, OnPropertyChanged));
+		DependencyProperty.Register(
+			nameof(Value),
+			typeof(double),
+			typeof(RatingControl),
+			new FrameworkPropertyMetadata(-1.0, OnPropertyChanged));
 
 	/// <summary>
 	/// Occurs when the Value property has changed.

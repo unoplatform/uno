@@ -27,10 +27,8 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 	{
 	}
 
-	protected override string GetLocalizedControlTypeCore()
-	{
-		return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_RatingLocalizedControlType);
-	}
+	protected override string GetLocalizedControlTypeCore() =>
+		ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_RatingLocalizedControlType);
 
 	// Properties.
 	bool IValueProvider.IsReadOnly => GetRatingControl().IsReadOnly;
@@ -69,7 +67,7 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 	{
 		DecimalFormatter formatter = new DecimalFormatter();
 		var potentialRating = formatter.ParseDouble(value);
-		if (potentialRating != null)
+		if (potentialRating is not null)
 		{
 			GetRatingControl().Value = potentialRating.Value;
 		}
@@ -101,10 +99,7 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 		}
 	}
 
-	void IRangeValueProvider.SetValue(double value)
-	{
-		GetRatingControl().Value = value;
-	}
+	void IRangeValueProvider.SetValue(double value) => GetRatingControl().Value = value;
 
 	bool IRangeValueProvider.IsReadOnly => GetRatingControl().IsReadOnly;
 
@@ -112,7 +107,8 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
-		if (patternInterface == PatternInterface.Value || patternInterface == PatternInterface.RangeValue)
+		if (patternInterface == PatternInterface.Value ||
+			patternInterface == PatternInterface.RangeValue)
 		{
 			return this;
 		}
@@ -120,10 +116,7 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 		return base.GetPatternCore(patternInterface);
 	}
 
-	protected override AutomationControlType GetAutomationControlTypeCore()
-	{
-		return AutomationControlType.Slider;
-	}
+	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Slider;
 
 	// Protected methods
 	internal void RaisePropertyChangedEvent(double newValue)
@@ -148,11 +141,7 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 
 	// private methods
 
-	private RatingControl GetRatingControl()
-	{
-		UIElement owner = Owner;
-		return owner as RatingControl;
-	}
+	private RatingControl GetRatingControl() => (RatingControl)Owner;
 
 	private int DetermineFractionDigits(double value)
 	{
