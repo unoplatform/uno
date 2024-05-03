@@ -20,8 +20,8 @@ public class Given_LinearGradientBrush_Faux
 	public void When_CanApplyToBorder_Wasm_No_Radius()
 	{
 		var brush = new LinearGradientBrush();
-		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 		brush.RelativeTransform = new RotateTransform { Angle = 45 };
 
 		Assert.IsTrue(brush.CanApplyToBorder(CornerRadius.None));
@@ -31,8 +31,8 @@ public class Given_LinearGradientBrush_Faux
 	public void When_CanApplyToBorder_Wasm_With_Radius()
 	{
 		var brush = new LinearGradientBrush();
-		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 
 		Assert.IsFalse(brush.CanApplyToBorder(new CornerRadius(4, 0, 0, 0)));
 	}
@@ -43,8 +43,8 @@ public class Given_LinearGradientBrush_Faux
 	public void When_CanApplyToBorder_iOS_No_Transform()
 	{
 		var brush = new LinearGradientBrush();
-		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 
 		Assert.IsTrue(brush.CanApplyToBorder(new CornerRadius(4, 0, 0, 0)));
 	}
@@ -53,8 +53,8 @@ public class Given_LinearGradientBrush_Faux
 	public void When_CanApplyToBorder_iOS_With_Transform()
 	{
 		var brush = new LinearGradientBrush();
-		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 		brush.RelativeTransform = new RotateTransform { Angle = 45 };
 
 		Assert.IsFalse(brush.CanApplyToBorder(default));
@@ -70,10 +70,10 @@ public class Given_LinearGradientBrush_Faux
 			StartPoint = new Point(0, 0),
 			EndPoint = new Point(0, 3)
 		};
-		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
 		Assert.AreEqual(VerticalAlignment.Top, brush.GetMinorStopAlignment());
 	}
 
@@ -87,10 +87,10 @@ public class Given_LinearGradientBrush_Faux
 			EndPoint = new Point(0, 3),
 			RelativeTransform = new ScaleTransform { ScaleY = -1, CenterY = 0.5 }
 		};
-		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -103,10 +103,10 @@ public class Given_LinearGradientBrush_Faux
 			StartPoint = new Point(0, 0),
 			EndPoint = new Point(0, 1)
 		};
-		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -119,10 +119,10 @@ public class Given_LinearGradientBrush_Faux
 			StartPoint = new Point(0, 0),
 			EndPoint = new Point(0, 1)
 		};
-		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Colors.Blue });
-		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Microsoft.UI.Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Microsoft.UI.Colors.Red });
 
-		Assert.AreEqual(Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -136,10 +136,10 @@ public class Given_LinearGradientBrush_Faux
 			EndPoint = new Point(0, 3),
 			RelativeTransform = new ScaleTransform { ScaleY = -1, CenterY = 0.5 }
 		};
-		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1.0, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1.0, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -154,10 +154,10 @@ public class Given_LinearGradientBrush_Faux
 			EndPoint = new Point(0, 3),
 			RelativeTransform = new ScaleTransform { ScaleY = -1, CenterY = 0.5 }
 		};
-		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Colors.Red });
-		brush.GradientStops.Add(new GradientStop { Offset = 1.0, Color = Colors.Blue });
+		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
+		brush.GradientStops.Add(new GradientStop { Offset = 1.0, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 }
