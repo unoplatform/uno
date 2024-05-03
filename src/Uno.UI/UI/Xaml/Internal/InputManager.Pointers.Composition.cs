@@ -127,6 +127,7 @@ partial class InputManager
 			var currentPoint = PointerRoutedEventArgs.LastPointerEvent.GetCurrentPoint(null);
 			var (originalSource, _) = VisualTreeHelper.HitTest(currentPoint.Position, owner.PointerManager._inputManager.ContentRoot.XamlRoot);
 			originalSource?.RaiseEvent(UIElement.PointerCaptureLostEvent, new PointerRoutedEventArgs(new(currentPoint, Windows.System.VirtualKeyModifiers.None), originalSource));
+			originalSource?.CompleteGesturesOnTree();
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>

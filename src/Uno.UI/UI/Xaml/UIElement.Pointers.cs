@@ -588,6 +588,19 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void CompleteGesturesOnTree()
+		{
+			this.CompleteGesture();
+			foreach (var element in this.GetVisualAncestry())
+			{
+#if __ANDROID__ || __IOS__ || __MACOS__
+				(element as UIElement)?.CompleteGesture();
+#else
+				element.CompleteGesture();
+#endif
+			}
+		}
+
 		private void UpdateRaisedGestureEventsFlag(PointerRoutedEventArgs args)
 		{
 			if (!IsGestureRecognizerCreated)
