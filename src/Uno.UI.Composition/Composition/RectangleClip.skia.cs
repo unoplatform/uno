@@ -12,9 +12,7 @@ partial class RectangleClip
 
 	private SKRoundRect? _skRoundRect;
 
-	internal SKRoundRect SKRoundRect => GetRect();
-
-	private SKRoundRect GetRect()
+	private SKRoundRect GetRect(Visual visual)
 	{
 		_skRoundRect ??= new SKRoundRect();
 
@@ -23,24 +21,20 @@ partial class RectangleClip
 		_radiiStore[2] = new SKPoint(_bottomRightRadius.X, _bottomRightRadius.Y);
 		_radiiStore[3] = new SKPoint(_bottomLeftRadius.X, _bottomLeftRadius.Y);
 
-		_skRoundRect.SetRectRadii(GetRectangleBounds().ToSKRect(), _radiiStore);
+		_skRoundRect.SetRectRadii(GetBounds(visual)!.Value.ToSKRect(), _radiiStore);
+
 		return _skRoundRect;
 	}
 
 	private protected override Rect? GetBoundsCore(Visual visual)
-		=> GetRectangleBounds();
-
-	private Rect GetRectangleBounds()
-	{
-		return new Rect(
+		=> new Rect(
 			x: Left,
 			y: Top,
 			width: Right - Left,
 			height: Bottom - Top);
-	}
 
 	internal override void Apply(SKCanvas canvas, Visual visual)
 	{
-		canvas.ClipRoundRect(SKRoundRect, SKClipOperation.Intersect, true);
+		canvas.ClipRoundRect(GetRect(visual), SKClipOperation.Intersect, true);
 	}
 }

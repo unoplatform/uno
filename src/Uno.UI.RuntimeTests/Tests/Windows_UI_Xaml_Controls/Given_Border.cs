@@ -158,6 +158,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("Fails on Android")]
+#endif
+		public async Task When_Clipped_With_TransformMatrix()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Clip = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 100, 100),
+					Transform = new TranslateTransform
+					{
+						Y = -50
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 50, 100, 50), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
 		public async Task Check_DataContext_Propagation()
 		{
 			var tb = new TextBlock();
