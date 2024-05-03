@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class ItemsControlAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IItemContainerProvider
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public ItemsControlAutomationPeer(global::Microsoft.UI.Xaml.Controls.ItemsControl owner) : base(owner)
 		{
