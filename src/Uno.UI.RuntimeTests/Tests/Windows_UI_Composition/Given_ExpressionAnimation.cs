@@ -196,6 +196,9 @@ internal partial class Given_ExpressionAnimation
 
 	[TestMethod]
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16570")]
+#if !__SKIA__
+	[Ignore("Only supported on Skia")]
+#endif
 	public async Task When_Animating_CompositionPropertySet()
 	{
 		var border = new Border()
