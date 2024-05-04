@@ -1,7 +1,6 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
-using SkiaSharp;
 namespace Uno.UI.Composition;
 
 // A close copy from MUX.CornerRadius
@@ -21,13 +20,15 @@ public readonly record struct CornerRadius(double TopLeft, double TopRight, doub
 			BottomRight == Vector2.Zero &&
 			BottomLeft == Vector2.Zero;
 
-		unsafe internal void GetRadii(SKPoint* radiiStore)
+#if __SKIA__
+		unsafe internal void GetRadii(SkiaSharp.SKPoint* radiiStore)
 		{
 			*(radiiStore++) = new(TopLeft.X, TopLeft.Y);
 			*(radiiStore++) = new(TopRight.X, TopRight.Y);
 			*(radiiStore++) = new(BottomRight.X, BottomRight.Y);
 			*radiiStore = new(BottomLeft.X, BottomLeft.Y);
 		}
+#endif
 	}
 
 	internal readonly record struct FullCornerRadius
