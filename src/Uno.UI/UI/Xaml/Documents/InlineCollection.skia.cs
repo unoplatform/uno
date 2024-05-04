@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.UI.Text;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -468,7 +469,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// <summary>
 		/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
-		internal void Draw(in PaintingSession session)
+		internal void Draw(in Visual.PaintingSession session)
 		{
 			var newDrawingState = (_selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
 			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } || !_lastDrawingState.Equals(newDrawingState);

@@ -157,8 +157,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = translation * initialTransform;
 		}
 
-		using var session = new PaintingSession(surface, canvas, DrawingFilters.Default, initialTransform);
-		Render(in session);
+		using (var wrapper =
+			((IPrivateSessionFactory)new PaintingSession.SessionFactory()).CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
+		{
+			Render(wrapper.Session);
+		}
 
 		if (offsetOverride is { })
 		{
@@ -184,16 +187,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		using var session = parentSession.WithOpacity(Opacity);
-		SetupLocalCoordinatesAndClip(in session);
-		Paint(in session);
-
-		// The CornerRadiusClip doesn't affect the visual itself, only its children
-		CornerRadiusClip?.Apply(session.Canvas, this);
-
-		foreach (var child in GetChildrenInRenderOrder())
+		using (var wrapper = CreateLocalSession(in parentSession))
 		{
-			child.Render(in session);
+			var session = wrapper.Session;
+			Paint(session);
+
+			// The CornerRadiusClip doesn't affect the visual itself, only its children
+			CornerRadiusClip?.Apply(session.Canvas, this);
+
+			foreach (var child in GetChildrenInRenderOrder())
+			{
+				child.Render(in session);
+			}
 		}
 	}
 
@@ -234,18 +239,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	internal virtual bool CanPaint => false;
 
-	private void SetupLocalCoordinatesAndClip(in PaintingSession session)
+	/// <summary>
+	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates,
+	/// clipping and opacity.
+	/// </summary>
+	private PaintingSessionWrapper CreateLocalSession(in PaintingSession parentSession)
 	{
-		var canvas = session.Canvas;
-		var rootTransform = session.RootTransform;
-		if (ShadowState is { } shadow)
-		{
-			canvas.SaveLayer(shadow.Paint);
-		}
-		else
-		{
-			canvas.Save();
-		}
+		var surface = parentSession.Surface;
+		var canvas = parentSession.Canvas;
+		var rootTransform = parentSession.RootTransform;
+		// We try to keep the filter ref as long as possible in order to share the same filter.OpacityColorFilter
+		var filters = Opacity is 1.0f
+			? parentSession.Filters
+			: parentSession.Filters with { Opacity = parentSession.Filters.Opacity * Opacity };
+
+		var session = ((IPrivateSessionFactory)new PaintingSession.SessionFactory()).CreateInstance(this, surface, canvas, filters, rootTransform);
 
 		if (rootTransform.IsIdentity)
 		{
@@ -257,5 +265,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		ApplyClipping(canvas);
+
+		return session;
 	}
 }

@@ -125,7 +125,7 @@ namespace Microsoft.UI.Composition
 
 		internal bool UsePaintColorToColorSurface { private get; set; }
 
-		void IOnlineBrush.Paint(in PaintingSession session, SKRect bounds)
+		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
 			if (Surface is ISkiaSurface skiaSurface)
 				skiaSurface.UpdateSurface(session);

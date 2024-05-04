@@ -10,38 +10,34 @@ namespace Microsoft.UI.Composition;
 
 public partial class CompositionShape
 {
-	internal virtual void Render(in PaintingSession session)
-	{
-		using var localSession = BeginDrawing(in session);
-
-		Paint(in session); // We use the session on purpose here!
-	}
-
-	internal virtual void Paint(in PaintingSession session)
-	{
-	}
-
-	private PaintingSession? BeginDrawing(in PaintingSession session)
+	internal virtual void Render(in Visual.PaintingSession session)
 	{
 		var offset = Offset;
 		var transform = this.GetTransform();
 
-		if (offset == Vector2.Zero && transform is { IsIdentity: true })
+		if (offset != Vector2.Zero || transform is not { IsIdentity: true })
 		{
-			return default; // Use the session without saving it, nothing to dispose
+			session.Canvas.Save();
+
+			if (offset != Vector2.Zero)
+			{
+				session.Canvas.Translate(offset.X, offset.Y);
+			}
+
+			// Intentionally not applying transform here.
+			// Derived classes should be responsible to call GetTransform and use it appropriately.
+			// For example, CompositionSpriteShape shouldn't "scale" the stroke thickness.
 		}
 
-		session.Canvas.Save();
+		Paint(in session);
 
-		if (offset != Vector2.Zero)
+		if (offset != Vector2.Zero || transform is not { IsIdentity: true })
 		{
-			session.Canvas.Translate(offset.X, offset.Y);
+			session.Canvas.Restore();
 		}
+	}
 
-		// Intentionally not applying transform here.
-		// Derived classes should be responsible to call GetTransform and use it appropriately.
-		// For example, CompositionSpriteShape shouldn't "scale" the stroke thickness.
-
-		return session;
+	internal virtual void Paint(in Visual.PaintingSession session)
+	{
 	}
 }

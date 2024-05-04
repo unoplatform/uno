@@ -13,7 +13,7 @@ namespace Microsoft.UI.Composition
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
 
-		internal override void Paint(in PaintingSession session)
+		internal override void Paint(in Visual.PaintingSession session)
 		{
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
@@ -85,13 +85,13 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint(in PaintingSession session)
+		private SKPaint TryCreateAndClearStrokePaint(in Visual.PaintingSession session)
 			=> TryCreateAndClearPaint(in session, ref _strokePaint, true, CompositionConfiguration.UseBrushAntialiasing);
 
-		private SKPaint TryCreateAndClearFillPaint(in PaintingSession session)
+		private SKPaint TryCreateAndClearFillPaint(in Visual.PaintingSession session)
 			=> TryCreateAndClearPaint(in session, ref _fillPaint, false, CompositionConfiguration.UseBrushAntialiasing);
 
-		private static SKPaint TryCreateAndClearPaint(in PaintingSession session, ref SKPaint? paint, bool isStroke, bool isHighQuality = false)
+		private static SKPaint TryCreateAndClearPaint(in Visual.PaintingSession session, ref SKPaint? paint, bool isStroke, bool isHighQuality = false)
 		{
 			if (paint == null)
 			{

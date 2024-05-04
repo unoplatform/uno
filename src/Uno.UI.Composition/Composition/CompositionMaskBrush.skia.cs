@@ -34,7 +34,7 @@ namespace Microsoft.UI.Composition
 			paint.Shader = SKShader.CreateCompose(_sourcePaint.Shader, _maskPaint.Shader, SKBlendMode.DstIn);
 		}
 
-		void IOnlineBrush.Paint(in PaintingSession session, SKRect bounds)
+		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
 			_resultPaint ??= new SKPaint() { IsAntialias = true };
 
