@@ -231,15 +231,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal IList<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
 	/// <summary>
-	/// Identifies whether a Visual can paint things. For example, ContainerVisuals don't
-	/// paint on their own (even though they might contain other Visuals that do).
-	/// This is a temporary optimization used with <see cref="_requiresRepaint"/> to reduce unnecessary
-	/// SkPicture allocations. In the future, we should accurately set <see cref="_requiresRepaint"/> to
-	/// only be true when we really have something to paint (and that painting needs to be updated).
-	/// </summary>
-	internal virtual bool CanPaint => false;
-
-	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates,
 	/// clipping and opacity.
 	/// </summary>
