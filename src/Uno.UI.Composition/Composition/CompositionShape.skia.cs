@@ -14,10 +14,10 @@ public partial class CompositionShape
 	{
 		using var localSession = BeginDrawing(in session);
 
-		Draw(in session); // We use the session on purpose here!
+		Paint(in session); // We use the session on purpose here!
 	}
 
-	internal virtual void Draw(in PaintingSession session)
+	internal virtual void Paint(in PaintingSession session)
 	{
 	}
 

@@ -7,6 +7,6 @@ namespace Uno.UI.Composition
 	internal interface IOnlineBrush
 	{
 		internal bool IsOnline { get; }
-		internal void Draw(in PaintingSession session, SKRect bounds = new());
+		internal void Paint(in PaintingSession session, SKRect bounds = new());
 	}
 }

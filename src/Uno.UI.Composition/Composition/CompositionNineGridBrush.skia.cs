@@ -89,7 +89,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		void IOnlineBrush.Draw(in PaintingSession session, SKRect bounds)
+		void IOnlineBrush.Paint(in PaintingSession session, SKRect bounds)
 		{
 			SKRect sourceBounds;
 			if (Source is ISizedBrush sizedBrush && sizedBrush.IsSized && sizedBrush.Size is Vector2 sourceSize)

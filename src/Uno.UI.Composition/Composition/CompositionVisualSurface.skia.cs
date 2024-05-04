@@ -16,16 +16,16 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
-		private PaintingSession? _drawingSession;
+		private PaintingSession? _paintingSession;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
 		void ISkiaSurface.UpdateSurface(bool recreateSurface)
 		{
 			SKCanvas? canvas = null;
-			if (_surface is null || _drawingSession is null || recreateSurface)
+			if (_surface is null || _paintingSession is null || recreateSurface)
 			{
-				_drawingSession?.Dispose();
+				_paintingSession?.Dispose();
 				_surface?.Dispose();
 
 				Vector2 size = SourceSize switch
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Composition
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				canvas = _surface.Canvas;
-				_drawingSession = new PaintingSession(_surface, canvas, DrawingFilters.Default, Matrix4x4.Identity);
+				_paintingSession = new PaintingSession(_surface, canvas, DrawingFilters.Default, Matrix4x4.Identity);
 			}
 
 			canvas ??= _surface.Canvas;
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Composition
 
 				var previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
-				SourceVisual.RenderRootVisual(_drawingSession.Value.Surface, SourceOffset);
+				SourceVisual.RenderRootVisual(_paintingSession.Value.Surface, SourceOffset);
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Composition
 		{
 			base.Dispose();
 
-			_drawingSession?.Dispose();
+			_paintingSession?.Dispose();
 			_surface?.Dispose();
 		}
 

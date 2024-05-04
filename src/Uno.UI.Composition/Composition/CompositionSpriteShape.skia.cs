@@ -13,7 +13,7 @@ namespace Microsoft.UI.Composition
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
 
-		internal override void Draw(in PaintingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{

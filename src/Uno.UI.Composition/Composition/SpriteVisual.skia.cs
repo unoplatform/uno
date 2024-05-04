@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition
 
 			if (Brush is IOnlineBrush onlineBrush && onlineBrush.IsOnline)
 			{
-				onlineBrush.Draw(session, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+				onlineBrush.Paint(session, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 				return;
 			}
 
