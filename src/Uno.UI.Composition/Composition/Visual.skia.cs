@@ -222,8 +222,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		Clip?.Apply(canvas, this);
 	}
 
-	private protected virtual IEnumerable<Visual> GetChildrenInRenderOrder() => Array.Empty<Visual>();
-	internal IEnumerable<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+	private protected virtual IList<Visual> GetChildrenInRenderOrder() => Array.Empty<Visual>();
+	internal IList<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
 	/// <summary>
 	/// Identifies whether a Visual can paint things. For example, ContainerVisuals don't
