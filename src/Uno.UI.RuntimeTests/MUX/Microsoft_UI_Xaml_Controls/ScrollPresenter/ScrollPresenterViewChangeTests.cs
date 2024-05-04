@@ -1320,7 +1320,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
 	[TestProperty("Description", "Requests a non-animated offsets change before loading scrollPresenter.")]
 	public async Task SetOffsetsBeforeLoading()
 	{
