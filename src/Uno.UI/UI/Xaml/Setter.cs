@@ -153,15 +153,15 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void ApplyValue(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
+		internal void ApplyValue(IFrameworkElement owner)
 		{
-			var path = TryGetOrCreateBindingPath(precedence, owner);
+			var path = TryGetOrCreateBindingPath(owner);
 
 			if (path != null)
 			{
 				RefreshBindingPath();
 
-				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence, ResourceBindingUpdateReason))
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, DependencyPropertyValuePrecedences.Animations, ResourceBindingUpdateReason))
 				{
 					// Applied as theme binding, no need to do more
 					return;
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml
 			// force binding value to re-evaluate the source and use converters
 			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
 
-		private BindingPath? TryGetOrCreateBindingPath(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
+		internal BindingPath? TryGetOrCreateBindingPath(IFrameworkElement owner)
 		{
 			if (_bindingPath != null)
 			{
@@ -213,7 +213,7 @@ namespace Microsoft.UI.Xaml
 				this.Log().Debug($"Using Target [{Target.Target}] for Setter [{Target.TargetName}] from [{owner}]");
 			}
 
-			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: precedence, allowPrivateMembers: false);
+			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: DependencyPropertyValuePrecedences.Animations, allowPrivateMembers: false);
 
 			if (Target.Target is ElementNameSubject subject)
 			{
@@ -241,20 +241,6 @@ namespace Microsoft.UI.Xaml
 		{
 			_bindingPath?.ClearValue();
 		}
-
-		internal bool HasSameTarget(Setter other, DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
-		{
-			var path = TryGetOrCreateBindingPath(precedence, owner);
-			var otherPath = other.TryGetOrCreateBindingPath(precedence, owner);
-
-			return path != null
-				&& otherPath != null
-				&& path.Path == otherPath.Path
-				&& !DependencyObjectStore.AreDifferent(path.DataContext, otherPath.DataContext);
-		}
-
-		internal string? GetBindingPathString(IFrameworkElement owner)
-			=> TryGetOrCreateBindingPath(DependencyPropertyValuePrecedences.Animations, owner)?.Path;
 
 		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";
 	}

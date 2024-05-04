@@ -18,11 +18,12 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
 	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
-	internal partial class BindingPath : IDisposable, IValueChangedListener
+	internal partial class BindingPath : IDisposable, IValueChangedListener, IEquatable<BindingPath>
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
 		private readonly string _path;
@@ -321,6 +322,17 @@ namespace Uno.UI.DataBinding
 		{
 			Dispose(false);
 		}
+
+		public bool Equals(BindingPath? that)
+		{
+			return that != null
+				&& this.Path == that.Path
+				&& !DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext);
+		}
+
+		// We define Equals to be based on Path, so `RuntimeHelpers.GetHashCode(path)` doesn't work,
+		// since we need the hashes must match if the two BindingPaths are Equal.
+		public override int GetHashCode() => RuntimeHelpers.GetHashCode(Path);
 
 		public void Dispose()
 		{

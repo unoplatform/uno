@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
-
+using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
 #if __IOS__
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml
 		/// are no concurrency problems. Consider this not a part of the state. Use it instead of
 		/// new HashSet() and clear before each use.
 		/// </summary>
-		private static HashSet<string> _propertiesNotToClear;
+		private static HashSet<BindingPath> _propertiesNotToClear;
 
 		/// <summary>
 		/// The xaml scope in force at the time the VisualStateGroup was created.
@@ -359,7 +359,7 @@ namespace Microsoft.UI.Xaml
 
 					while (settersEnumerator.MoveNext())
 					{
-						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+						settersEnumerator.Current.ApplyValue(element);
 					}
 				}
 				finally
@@ -407,13 +407,13 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			(_propertiesNotToClear ??= new HashSet<string>()).Clear();
+			(_propertiesNotToClear ??= new HashSet<BindingPath>(new PathComparer())).Clear();
 
 			if (nextSetters is { })
 			{
 				foreach (var setter in nextSetters.OfType<Setter>())
 				{
-					_propertiesNotToClear.Add(setter.GetBindingPathString(element));
+					_propertiesNotToClear.Add(setter.TryGetOrCreateBindingPath(element));
 				}
 			}
 
@@ -421,7 +421,7 @@ namespace Microsoft.UI.Xaml
 			{
 				foreach (var item in nextAnimation.Children.Items)
 				{
-					_propertiesNotToClear.Add(item.PropertyInfo.Path);
+					_propertiesNotToClear.Add(item.PropertyInfo);
 				}
 			}
 
@@ -429,7 +429,8 @@ namespace Microsoft.UI.Xaml
 			{
 				foreach (var setter in prevSetters.OfType<Setter>())
 				{
-					if (!_propertiesNotToClear.Contains(setter.GetBindingPathString(element)))
+					// Setters with a null path are always cleared.
+					if (setter.TryGetOrCreateBindingPath(element) is not { } path || !_propertiesNotToClear.Contains(path))
 					{
 						setter.ClearValue();
 					}
@@ -440,7 +441,8 @@ namespace Microsoft.UI.Xaml
 			{
 				foreach (var item in prevAnimation.Children.Items)
 				{
-					if (!_propertiesNotToClear.Contains(item.GetTimelineTargetFullName()))
+					// Animations with a null path are always cleared.
+					if (item.PropertyInfo is not { } path || !_propertiesNotToClear.Contains(path))
 					{
 						item.PropertyInfo.ClearValue();
 					}
@@ -593,5 +595,13 @@ namespace Microsoft.UI.Xaml
 
 		public override string ToString()
 			=> Name ?? $"<unnamed group {GetHashCode()}>";
+
+		private class PathComparer : EqualityComparer<BindingPath>
+		{
+			public override bool Equals(BindingPath path1, BindingPath path2)
+				=> (path1 != null && path1.Equals(path2)) || (path1 == null && path2 == null);
+
+			public override int GetHashCode(BindingPath path) => path.GetHashCode();
+		}
 	}
 }
