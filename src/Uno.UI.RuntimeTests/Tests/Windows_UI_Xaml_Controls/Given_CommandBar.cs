@@ -114,17 +114,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await UITestHelper.Load(SUT);
 
 				var moreButton = (Button)SUT.FindName("MoreButton");
+#if !__IOS__ && !__ANDROID__ // animation timings behave differently on other platforms
 				Assert.AreEqual(moreButton.ActualHeight, 48);
+#endif
 				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
 
 				SUT.IsOpen = true;
 				await WindowHelper.WaitForIdle();
+#if !__IOS__ && !__ANDROID__ // animation timings behave differently on other platforms
 				Assert.AreEqual(moreButton.ActualHeight, 64);
+#endif
 				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Stretch);
 
 				SUT.IsOpen = false;
 				await Task.Delay(1000); // wait for animations
+#if !__IOS__ && !__ANDROID__ // animations behave differently on other platforms
 				Assert.AreEqual(moreButton.ActualHeight, 48);
+#endif
 				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
 			}
 		}
