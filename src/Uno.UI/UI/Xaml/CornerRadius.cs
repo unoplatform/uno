@@ -96,6 +96,7 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	internal Uno.UI.Composition.CornerRadius ToUnoCompositionCornerRadius()
 		=> new Uno.UI.Composition.CornerRadius(TopLeft, TopRight, BottomRight, BottomLeft);
 
+#if !__SKIA__ // On skia, use Uno.UI.Composition.CornerRadius instead
 	/// <summary>
 	/// Retrieves the actual inner and outer radii.
 	/// </summary>
@@ -208,4 +209,5 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 			new((float)rightBottomArc, (float)bottomRightArc),
 			new((float)leftBottomArc, (float)bottomLeftArc));
 	}
+#endif
 }
