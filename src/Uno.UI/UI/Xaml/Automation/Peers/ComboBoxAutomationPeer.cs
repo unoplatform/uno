@@ -19,7 +19,7 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
-		var pOwner = Owner as ComboBox;
+		var pOwner = (ComboBox)Owner;
 
 		switch (patternInterface)
 		{
@@ -93,7 +93,7 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 		// return the combo header.
 		if (string.IsNullOrEmpty(returnValue))
 		{
-			return (Owner as ComboBox).Header?.ToString();
+			return ((ComboBox)Owner).Header?.ToString();
 		}
 
 		return returnValue;
@@ -110,19 +110,19 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 		// then we'll return the placeholder text.
 		if (string.IsNullOrEmpty(returnValue))
 		{
-			var selectedIndex = (Owner as ComboBox).SelectedIndex;
+			var selectedIndex = ((ComboBox)Owner).SelectedIndex;
 			if (selectedIndex < 0)
 			{
-				return (Owner as ComboBox).PlaceholderText;
+				return ((ComboBox)Owner).PlaceholderText;
 			}
 		}
 
 		return returnValue;
 	}
 
-	public bool IsReadOnly => !(Owner as ComboBox).IsEnabled || !(Owner as ComboBox).IsEditable;
+	public bool IsReadOnly => !((ComboBox)Owner).IsEnabled || !((ComboBox)Owner).IsEditable;
 
-	public string Value => FrameworkElement.GetStringFromObject((Owner as ComboBox).SelectedItem); // TODO Uno: this is different from WinUI
+	public string Value => FrameworkElement.GetStringFromObject(((ComboBox)Owner).SelectedItem); // TODO Uno: this is different from WinUI
 
 	public void SetValue(string value)
 	{
@@ -155,7 +155,7 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 	}
 
 	public ExpandCollapseState ExpandCollapseState
-		=> (Owner as ComboBox).IsDropDownOpen ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed;
+		=> ((ComboBox)Owner).IsDropDownOpen ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed;
 
 	// Raise events for ExpandCollapseState changes to UIAutomation Clients.
 	public void RaiseExpandCollapseAutomationEvent(bool isOpen)
