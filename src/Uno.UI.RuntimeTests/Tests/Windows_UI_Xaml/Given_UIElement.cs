@@ -1568,51 +1568,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 
 #if HAS_UNO
-	[TestMethod]
-	[RunsOnUIThread]
-	[RequiresFullWindow]
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
 #if !__SKIA__
-	[Ignore("Hittesting is only accurate in this case on skia.")]
+		[Ignore("Hittesting is only accurate in this case on skia.")]
 #endif
-	[DataRow(true)]
-	[DataRow(false)]
-	public async Task When_ScaleTransform_HitTest(bool addClip)
-	{
-		var sut = new Rectangle
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ScaleTransform_HitTest(bool addClip)
 		{
-			Width = 100,
-			Height = 100,
-			Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue),
-			RenderTransform = new ScaleTransform
+			var sut = new Rectangle
 			{
-				ScaleX = 2,
-				ScaleY = 2
-			},
-			// adding the clip here should do nothing since the clip matches the size of the drawing
-			Clip = addClip ? new RectangleGeometry { Rect = new Rect(0, 0, 100, 100) } : null
-		};
+				Width = 100,
+				Height = 100,
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				RenderTransform = new ScaleTransform
+				{
+					ScaleX = 2,
+					ScaleY = 2
+				},
+				// adding the clip here should do nothing since the clip matches the size of the drawing
+				Clip = addClip ? new RectangleGeometry { Rect = new Rect(0, 0, 100, 100) } : null
+			};
 
-		var rect = await UITestHelper.Load(sut);
+			var rect = await UITestHelper.Load(sut);
 
-		var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 50), sut.XamlRoot);
-		Assert.AreEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot);
-		Assert.AreEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 150), sut.XamlRoot);
-		Assert.AreEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot);
-		Assert.AreEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y + 201), sut.XamlRoot);
-		Assert.AreNotEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X, rect.Y - 1), sut.XamlRoot);
-		Assert.AreNotEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X - 1, rect.Y), sut.XamlRoot);
-		Assert.AreNotEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 200, rect.Y - 1), sut.XamlRoot);
-		Assert.AreNotEqual(sut, element);
-		(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y), sut.XamlRoot);
-		Assert.AreNotEqual(sut, element);
-	}
+			var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 50), sut.XamlRoot);
+			Assert.AreEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot);
+			Assert.AreEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 50, rect.Y + 150), sut.XamlRoot);
+			Assert.AreEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 150, rect.Y + 150), sut.XamlRoot);
+			Assert.AreEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y + 201), sut.XamlRoot);
+			Assert.AreNotEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X, rect.Y - 1), sut.XamlRoot);
+			Assert.AreNotEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X - 1, rect.Y), sut.XamlRoot);
+			Assert.AreNotEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 200, rect.Y - 1), sut.XamlRoot);
+			Assert.AreNotEqual(sut, element);
+			(element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(rect.X + 201, rect.Y), sut.XamlRoot);
+			Assert.AreNotEqual(sut, element);
+		}
 #endif
 
 #if HAS_UNO && HAS_INPUT_INJECTOR
