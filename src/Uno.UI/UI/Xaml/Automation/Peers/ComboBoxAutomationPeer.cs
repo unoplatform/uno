@@ -93,7 +93,7 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 		// return the combo header.
 		if (string.IsNullOrEmpty(returnValue))
 		{
-			return (Owner as ComboBox).Header.ToString();
+			return (Owner as ComboBox).Header?.ToString();
 		}
 
 		return returnValue;
