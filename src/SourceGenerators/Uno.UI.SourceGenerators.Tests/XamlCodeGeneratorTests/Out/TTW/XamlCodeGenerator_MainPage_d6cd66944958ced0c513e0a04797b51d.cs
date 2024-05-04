@@ -108,7 +108,7 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			Loading += (s, e) => 
+			Loading += (s, e) =>
 			{
 				__that.Bindings.Update();
 				__that.Bindings.UpdateResources();
