@@ -22,9 +22,9 @@ public partial class ShapeVisual
 	{
 		if (_shapes is { Count: not 0 } shapes)
 		{
-			foreach (var shape in shapes)
+			for (var i = 0; i < shapes.Count; i++)
 			{
-				shape.Render(in session);
+				shapes[i].Render(in session);
 			}
 		}
 
