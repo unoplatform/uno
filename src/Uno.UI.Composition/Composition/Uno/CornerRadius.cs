@@ -1,77 +1,49 @@
-﻿using Uno.Extensions;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Globalization;
-using Uno.UI.Helpers.WinUI;
+using System.Numerics;
 using Windows.Foundation;
+using SkiaSharp;
+namespace Uno.UI.Composition;
 
-namespace Microsoft.UI.Xaml;
-
-/// <summary>Defines the radius of a rectangle's corners. </summary>
-[TypeConverter(typeof(CornerRadiusConverter))]
-public partial struct CornerRadius : IEquatable<CornerRadius>
+// A close copy from MUX.CornerRadius
+public readonly record struct CornerRadius(double TopLeft, double TopRight, double BottomRight, double BottomLeft)
 {
-	/// <summary>Gets or sets the radius of the top-left corner.</summary>
-	/// <returns>The radius of the top-left corner. The default is 0.</returns>
-	public double TopLeft;
-
-	/// <summary>Gets or sets the radius of the top-right corner. </summary>
-	/// <returns>The radius of the top-right corner. The default is 0.</returns>
-	public double TopRight;
-
-	/// <summary>Gets or sets the radius of the bottom-right corner. </summary>
-	/// <returns>The radius of the bottom-right corner. The default is 0.</returns>
-	public double BottomRight;
-
-	/// <summary>Gets or sets the radius of the bottom-left corner. </summary>
-	/// <returns>The radius of the bottom-left corner. The default is 0.</returns>
-	public double BottomLeft;
-
-	public CornerRadius(double uniformRadius) : this()
+	internal readonly record struct NonUniformCornerRadius
+	(
+		Vector2 TopLeft,
+		Vector2 TopRight,
+		Vector2 BottomRight,
+		Vector2 BottomLeft
+	)
 	{
-		TopLeft = uniformRadius;
-		TopRight = uniformRadius;
-		BottomLeft = uniformRadius;
-		BottomRight = uniformRadius;
+		public bool IsEmpty =>
+			TopLeft == Vector2.Zero &&
+			TopRight == Vector2.Zero &&
+			BottomRight == Vector2.Zero &&
+			BottomLeft == Vector2.Zero;
+
+		unsafe internal void GetRadii(SKPoint* radiiStore)
+		{
+			*(radiiStore++) = new(TopLeft.X, TopLeft.Y);
+			*(radiiStore++) = new(TopRight.X, TopRight.Y);
+			*(radiiStore++) = new(BottomRight.X, BottomRight.Y);
+			*radiiStore = new(BottomLeft.X, BottomLeft.Y);
+		}
 	}
 
-	public CornerRadius(double topLeft, double topRight, double bottomRight, double bottomLeft) : this()
+	internal readonly record struct FullCornerRadius
+	(
+		NonUniformCornerRadius Outer,
+		NonUniformCornerRadius Inner
+	)
 	{
-		TopLeft = topLeft;
-		TopRight = topRight;
-		BottomLeft = bottomLeft;
-		BottomRight = bottomRight;
+		public static readonly FullCornerRadius None = default;
+
+		public bool IsEmpty => Outer.IsEmpty && Inner.IsEmpty;
 	}
 
-	private static bool Equals(CornerRadius left, CornerRadius right)
-		=> left.TopLeft == right.TopLeft
-			&& left.TopRight == right.TopRight
-			&& left.BottomLeft == right.BottomLeft
-			&& left.BottomRight == right.BottomRight;
-
-	/// <inheritdoc />
-	public bool Equals(CornerRadius other)
-		=> Equals(this, other);
-
-	/// <inheritdoc />
-	public override bool Equals(object obj)
-		=> obj is CornerRadius other && Equals(this, other);
-
-	/// <inheritdoc />
-	public override int GetHashCode()
-		=> TopLeft.GetHashCode()
-			^ TopRight.GetHashCode()
-			^ BottomLeft.GetHashCode()
-			^ BottomRight.GetHashCode();
-
-	/// <inheritdoc />
-	public override string ToString()
-		=> "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(TopLeft, TopRight, BottomRight, BottomLeft);
-
-	internal string ToStringCompact()
-		=> string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", TopLeft, TopRight, BottomRight, BottomLeft);
+	public CornerRadius(double uniformRadius) : this(uniformRadius, uniformRadius, uniformRadius, uniformRadius)
+	{
+	}
 
 	/// <summary>
 	/// Provides a Zero-valued corner radius.
@@ -82,19 +54,6 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	/// Builds a uniform radius from a double;
 	/// </summary>
 	public static implicit operator CornerRadius(double uniformRadius) => new CornerRadius(uniformRadius);
-
-	/// <summary>
-	/// Determines if two CornerRadius instances are equal.
-	/// </summary>
-	public static bool operator ==(CornerRadius cr1, CornerRadius cr2) => Equals(cr1, cr2);
-
-	/// <summary>
-	/// Determines if two CornerRadius instances are equal.
-	/// </summary>
-	public static bool operator !=(CornerRadius cr1, CornerRadius cr2) => !Equals(cr1, cr2);
-
-	internal Uno.UI.Composition.CornerRadius ToUnoCompositionCornerRadius()
-		=> new Uno.UI.Composition.CornerRadius(TopLeft, TopRight, BottomRight, BottomLeft);
 
 	/// <summary>
 	/// Retrieves the actual inner and outer radii.
@@ -131,27 +90,29 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 		double leftTopArc, topLeftArc, topRightArc, rightTopArc, rightBottomArc, bottomRightArc, leftBottomArc, bottomLeftArc;
 		leftTopArc = topLeftArc = topRightArc = rightTopArc = rightBottomArc = bottomRightArc = leftBottomArc = bottomLeftArc = 0;
 
+		static bool IsCloseReal(double a, double b) => Math.Abs((a - b) / ((b == 0.0f) ? 1.0f : b)) < 10.0f * 1.192092896e-07F;
+
 		if (outer)
 		{
-			if (!MathHelpers.IsCloseReal(TopLeft, 0.0f))
+			if (!IsCloseReal(TopLeft, 0.0f))
 			{
 				leftTopArc = TopLeft + halfLeftBorder;
 				topLeftArc = TopLeft + halfTopBorder;
 			}
 
-			if (!MathHelpers.IsCloseReal(TopRight, 0.0f))
+			if (!IsCloseReal(TopRight, 0.0f))
 			{
 				topRightArc = TopRight + halfTopBorder;
 				rightTopArc = TopRight + halfRightBorder;
 			}
 
-			if (!MathHelpers.IsCloseReal(BottomRight, 0.0f))
+			if (!IsCloseReal(BottomRight, 0.0f))
 			{
 				rightBottomArc = BottomRight + halfRightBorder;
 				bottomRightArc = BottomRight + halfBottomBorder;
 			}
 
-			if (!MathHelpers.IsCloseReal(BottomLeft, 0.0f))
+			if (!IsCloseReal(BottomLeft, 0.0f))
 			{
 				bottomLeftArc = BottomLeft + halfBottomBorder;
 				leftBottomArc = BottomLeft + halfLeftBorder;

@@ -63,6 +63,9 @@ namespace Microsoft.UI.Xaml
 			// Analysis restore NonReadonlyReferencedInGetHashCode
 		}
 
+		internal Uno.UI.Composition.Thickness ToUnoCompositionThickness()
+			=> new Uno.UI.Composition.Thickness((float)Left, (float)Top, (float)Right, (float)Bottom);
+
 		public override string ToString()
 		{
 			return string.Format(CultureInfo.InvariantCulture, "[Thickness: {0}-{1}-{2}-{3}]", Left, Top, Right, Bottom);
