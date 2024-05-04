@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Private.Infrastructure;
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,10 +11,11 @@ public enum RuntimeTestPlatform
 	SkiaWpf = 1 << 1,
 	SkiaX11 = 1 << 2,
 	SkiaMacOS = 1 << 3,
-	Wasm = 1 << 4,
-	Android = 1 << 5,
-	iOS = 1 << 6,
-	macOSCatalyst = 1 << 7,
+	SkiaIslands = 1 << 4,
+	Wasm = 1 << 5,
+	Android = 1 << 6,
+	iOS = 1 << 7,
+	macOSCatalyst = 1 << 8,
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
@@ -56,6 +58,7 @@ public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 			RuntimeTestPlatform.SkiaWpf => IsSkiaWpf(),
 			RuntimeTestPlatform.SkiaX11 => IsSkiaX11(),
 			RuntimeTestPlatform.SkiaMacOS => IsSkiaMacOS(),
+			RuntimeTestPlatform.SkiaIslands => TestServices.WindowHelper.IsXamlIsland,
 			RuntimeTestPlatform.Wasm => IsWasm(),
 			RuntimeTestPlatform.Android => IsAndroid(),
 			RuntimeTestPlatform.iOS => IsIOS(),
@@ -66,7 +69,7 @@ public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 
 	private static bool IsSkiaHostAssembly(string name)
 #if __SKIA__
-		=> Microsoft.UI.Xaml.Application.Current.Host.GetType().Assembly.GetName().Name == name;
+		=> Microsoft.UI.Xaml.Application.Current.Host?.GetType().Assembly.GetName().Name == name;
 #else
 		=> false;
 #endif
