@@ -10,4 +10,8 @@ public partial class SelectorAutomationPeer : ItemsControlAutomationPeer, ISelec
 	public SelectorAutomationPeer(Selector owner) : base(owner)
 	{
 	}
+
+	public SelectorAutomationPeer(object o) : base(null)
+	{
+	}
 }

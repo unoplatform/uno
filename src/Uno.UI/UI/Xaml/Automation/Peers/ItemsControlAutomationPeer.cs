@@ -10,4 +10,12 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 	public ItemsControlAutomationPeer(ItemsControl owner) : base(owner)
 	{
 	}
+
+	public ItemsControlAutomationPeer(FrameworkElement e)
+	{
+	}
+
+	public ItemsControlAutomationPeer(object e)
+	{
+	}
 }
