@@ -7,12 +7,12 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionObject
 	{
-		private readonly object _lock = new object();
+		private readonly object _contextEntriesLock = new object();
 		private List<ContextEntry>? _contextEntries;
 
 		public void AddContext(CompositionObject context, string? propertyName)
 		{
-			lock (_lock)
+			lock (_contextEntriesLock)
 			{
 				AddContextImpl(context, propertyName);
 			}
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Composition
 
 		public void RemoveContext(CompositionObject context, string? propertyName)
 		{
-			lock (_lock)
+			lock (_contextEntriesLock)
 			{
 				RemoveContextImpl(context, propertyName);
 			}
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Composition
 
 		public void PropagateChanged()
 		{
-			lock (_lock)
+			lock (_contextEntriesLock)
 			{
 				PropagateChangedImpl();
 			}
