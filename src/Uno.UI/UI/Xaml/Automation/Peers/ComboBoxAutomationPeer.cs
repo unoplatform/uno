@@ -15,7 +15,6 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 {
 	public ComboBoxAutomationPeer(ComboBox owner) : base(owner)
 	{
-
 	}
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
@@ -30,7 +29,6 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 					return this;
 				}
 				break;
-
 			case PatternInterface.ExpandCollapse:
 				return this;
 
@@ -43,22 +41,24 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 			default:
 				return base.GetPatternCore(patternInterface);
 		}
+
 		return null;
 	}
 
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
-		UIElement spOwner = Owner as UIElement;
-		ComboBox spComboBox = spOwner as ComboBox;
-
-		if (spComboBox == null || !spComboBox.IsDropDownOpen)
-		{
-			return base.GetChildrenCore();
-		}
-
-		IList<AutomationPeer> apChildren = new DirectUI.TrackerCollection<AutomationPeer>();
+		return base.GetChildrenCore();
 
 		//UNO TODO: Implement GetLightDismissElement on ComboBox
+		//UIElement spOwner = Owner as UIElement;
+		//ComboBox spComboBox = spOwner as ComboBox;
+
+		//if (spComboBox == null || !spComboBox.IsDropDownOpen)
+		//{
+		//	return base.GetChildrenCore();
+		//}
+
+		//IList<AutomationPeer> apChildren = new DirectUI.TrackerCollection<AutomationPeer>();
 
 		//var spLightDismissElement;
 		//spComboBox.GetLightDismissElement(out spLightDismissElement);
@@ -80,7 +80,7 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 		//	apChildren.Insert(0, ap);
 		//}
 
-		return apChildren;
+		//return apChildren;
 	}
 
 	protected override string GetClassNameCore() => nameof(ComboBox);
@@ -120,9 +120,9 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 		return returnValue;
 	}
 
-	public bool IsReadOnly => (Owner as ComboBox).IsEnabled || (Owner as ComboBox).IsEditable;
+	public bool IsReadOnly => !(Owner as ComboBox).IsEnabled || !(Owner as ComboBox).IsEditable;
 
-	public string Value => (Owner as ComboBox).SelectionBoxItem?.ToString();
+	public string Value => FrameworkElement.GetStringFromObject((Owner as ComboBox).SelectedItem); // TODO Uno: this is different from WinUI
 
 	public void SetValue(string value)
 	{
