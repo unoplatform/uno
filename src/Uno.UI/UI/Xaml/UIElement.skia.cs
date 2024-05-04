@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
-		private ShapeVisual _visual;
+		private BorderVisual _visual;
 		private Rect _lastFinalRect;
 		private Rect? _lastClippedFrame;
 
@@ -73,14 +73,14 @@ namespace Microsoft.UI.Xaml
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
-		internal ShapeVisual Visual
+		internal BorderVisual Visual
 		{
 			get
 			{
 
 				if (_visual is null)
 				{
-					_visual = Compositor.GetSharedCompositor().CreateShapeVisual();
+					_visual = Compositor.GetSharedCompositor().CreateBorderShapeVisual();
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
