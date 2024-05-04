@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
 
@@ -186,6 +187,46 @@ internal partial class Given_ExpressionAnimation
 			Assert.AreEqual(CompositionGetValueStatus.Succeeded, visual.Properties.TryGetVector3("Translation", out var visualTranslation));
 			Assert.AreEqual(new Vector3(10, 0, 0), visualTranslation);
 			Assert.AreEqual(new Vector3(10, 20, 0), myVisual.Offset);
+		}
+		finally
+		{
+			visual.StopAnimation("Translation.X");
+		}
+	}
+
+	[TestMethod]
+	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16570")]
+	public async Task When_Animating_CompositionPropertySet()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		ElementCompositionPreview.SetIsTranslationEnabled(border, true);
+
+		await UITestHelper.Load(border);
+
+		var cps = visual.Compositor.CreatePropertySet();
+
+		var expressionAnimation = visual.Compositor.CreateExpressionAnimation("cps.X");
+		expressionAnimation.SetReferenceParameter("cps", cps);
+
+		cps.InsertScalar("X", 75);
+
+		Assert.AreEqual(CompositionGetValueStatus.NotFound, visual.Properties.TryGetVector3("Translation", out _));
+		Assert.AreEqual(CompositionGetValueStatus.NotFound, cps.TryGetVector3("Translation", out _));
+
+		visual.StartAnimation("Translation.X", expressionAnimation);
+		try
+		{
+			Assert.AreEqual(CompositionGetValueStatus.Succeeded, visual.Properties.TryGetVector3("Translation", out var visualTranslation));
+			Assert.AreEqual(CompositionGetValueStatus.Succeeded, visual.Properties.TryGetVector3("Translation", out var cpsTranslation));
+			Assert.AreEqual(new Vector3(75, 0, 0), visualTranslation);
+			Assert.AreEqual(new Vector3(75, 0, 0), cpsTranslation);
 		}
 		finally
 		{

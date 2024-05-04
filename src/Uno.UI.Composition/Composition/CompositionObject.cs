@@ -52,10 +52,10 @@ namespace Microsoft.UI.Composition
 		// Overrides are based on:
 		// https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject.startanimation?view=winrt-22621
 		internal virtual object GetAnimatableProperty(string propertyName, string subPropertyName)
-			=> TryGetFromProperties(_properties, propertyName, subPropertyName);
+			=> TryGetFromProperties(_properties ?? this as CompositionPropertySet, propertyName, subPropertyName);
 
 		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
-			=> TryUpdateFromProperties(_properties, propertyName, subPropertyName, propertyValue);
+			=> TryUpdateFromProperties(Properties, propertyName, subPropertyName, propertyValue);
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
