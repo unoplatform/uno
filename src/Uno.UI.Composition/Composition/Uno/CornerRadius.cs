@@ -37,7 +37,7 @@ public readonly record struct CornerRadius(double TopLeft, double TopRight, doub
 		NonUniformCornerRadius Inner
 	)
 	{
-		public static readonly FullCornerRadius None = default;
+		public static FullCornerRadius None => default;
 
 		public bool IsEmpty => Outer.IsEmpty && Inner.IsEmpty;
 	}

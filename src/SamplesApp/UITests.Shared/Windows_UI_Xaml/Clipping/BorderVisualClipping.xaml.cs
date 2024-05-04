@@ -19,36 +19,36 @@ public sealed partial class BorderVisualClipping : Page, IWaitableSample
 	{
 		var grid = new Grid
 		{
-		    ColumnDefinitions =
-		        {
-		            new ColumnDefinition { Width = new GridLength(80) },
-		            new ColumnDefinition { Width = new GridLength(80) },
-		            new ColumnDefinition { Width = new GridLength(80) },
-		            new ColumnDefinition { Width = new GridLength(80) },
-		            new ColumnDefinition { Width = new GridLength(80) },
-		            new ColumnDefinition { Width = new GridLength(80) },
-		            new ColumnDefinition { Width = new GridLength(80) },
-		            new ColumnDefinition { Width = new GridLength(80) },
-		        },
-		    RowDefinitions =
-		        {
-		            new RowDefinition { Height = new GridLength(80) },
-		            new RowDefinition { Height = new GridLength(80) },
-		            new RowDefinition { Height = new GridLength(80) },
-		            new RowDefinition { Height = new GridLength(80) },
-		            new RowDefinition { Height = new GridLength(80) },
-		            new RowDefinition { Height = new GridLength(80) },
-		            new RowDefinition { Height = new GridLength(80) },
-		            new RowDefinition { Height = new GridLength(80) },
-		        },
-		    ColumnSpacing = 10,
-		    RowSpacing = 10
+			ColumnDefinitions =
+			{
+				new ColumnDefinition { Width = new GridLength(80) },
+				new ColumnDefinition { Width = new GridLength(80) },
+				new ColumnDefinition { Width = new GridLength(80) },
+				new ColumnDefinition { Width = new GridLength(80) },
+				new ColumnDefinition { Width = new GridLength(80) },
+				new ColumnDefinition { Width = new GridLength(80) },
+				new ColumnDefinition { Width = new GridLength(80) },
+				new ColumnDefinition { Width = new GridLength(80) },
+			},
+			RowDefinitions =
+			{
+				new RowDefinition { Height = new GridLength(80) },
+				new RowDefinition { Height = new GridLength(80) },
+				new RowDefinition { Height = new GridLength(80) },
+				new RowDefinition { Height = new GridLength(80) },
+				new RowDefinition { Height = new GridLength(80) },
+				new RowDefinition { Height = new GridLength(80) },
+				new RowDefinition { Height = new GridLength(80) },
+				new RowDefinition { Height = new GridLength(80) },
+			},
+			ColumnSpacing = 10,
+			RowSpacing = 10
 		};
 
 		Content = new ScrollViewer
 		{
-		    Background = new SolidColorBrush(Microsoft.UI.Colors.Pink),
-		    Content = grid
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Pink),
+			Content = grid
 		};
 
 		var imageBrush = new ImageBrush
@@ -58,69 +58,69 @@ public sealed partial class BorderVisualClipping : Page, IWaitableSample
 		SamplePreparedTask = WaitableSampleImageHelpers.WaitAllImages(imageBrush);
 
 		var brushes = new List<Brush>
-	    {
-	        new SolidColorBrush(Microsoft.UI.Colors.Blue),
-	        new SolidColorBrush(Windows.UI.Color.FromArgb(0x50, 0, 0, 0xFF)), // blue with low alpha
+		{
+			new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			new SolidColorBrush(Windows.UI.Color.FromArgb(0x50, 0, 0, 0xFF)), // blue with low alpha
 			imageBrush,
-	        null
-	    };
+			null
+		};
 
 		var counter = 0;
 		foreach (var createWrappingBorder in new[] { true, false })
 		{
-		    foreach (var backgroundSizing in new[] { BackgroundSizing.InnerBorderEdge, BackgroundSizing.OuterBorderEdge })
-		    {
-		        foreach (var borderBrush in brushes)
-		        {
-		            foreach (var backgroundBrush in brushes)
-		            {
-		                var border = new Border
-		                {
-		                    Width = 80,
-		                    Height = 80,
-		                    BorderBrush = borderBrush,
-		                    Background = backgroundBrush,
-		                    BackgroundSizing = backgroundSizing,
-		                    BorderThickness = new Thickness(16),
-		                    CornerRadius = new CornerRadius(40)
-		                };
+			foreach (var backgroundSizing in new[] { BackgroundSizing.InnerBorderEdge, BackgroundSizing.OuterBorderEdge })
+			{
+				foreach (var borderBrush in brushes)
+				{
+					foreach (var backgroundBrush in brushes)
+					{
+						var border = new Border
+						{
+							Width = 80,
+							Height = 80,
+							BorderBrush = borderBrush,
+							Background = backgroundBrush,
+							BackgroundSizing = backgroundSizing,
+							BorderThickness = new Thickness(16),
+							CornerRadius = new CornerRadius(40)
+						};
 
-		                if (createWrappingBorder)
-		                {
-		                    border = new Border
-		                    {
-		                        Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
-		                        Child = border
-		                    };
-		                }
+						if (createWrappingBorder)
+						{
+							border = new Border
+							{
+								Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+								Child = border
+							};
+						}
 
-		                var containergrid = new Grid
-		                {
-		                    Children =
-		                    {
-		                        border,
-		                        new TextBlock
-		                        {
-		                            HorizontalAlignment = HorizontalAlignment.Center,
-		                            VerticalAlignment = VerticalAlignment.Center,
-		                            Text =
-		                                $"""
-		                                {backgroundSizing}
-		                                border: {brushes.IndexOf(borderBrush) + 1}
-		                                background: {brushes.IndexOf(backgroundBrush) + 1}
-		                                """
-		                        }
-		                    }
-		                };
+						var containergrid = new Grid
+						{
+							Children =
+							{
+								border,
+								new TextBlock
+								{
+									HorizontalAlignment = HorizontalAlignment.Center,
+									VerticalAlignment = VerticalAlignment.Center,
+									Text =
+										$"""
+										{backgroundSizing}
+										border: {brushes.IndexOf(borderBrush) + 1}
+										background: {brushes.IndexOf(backgroundBrush) + 1}
+										"""
+								}
+							}
+						};
 
-		                Grid.SetRow(containergrid, counter / 8);
-		                Grid.SetColumn(containergrid, counter % 8);
-		                counter++;
+						Grid.SetRow(containergrid, counter / 8);
+						Grid.SetColumn(containergrid, counter % 8);
+						counter++;
 
-		                grid.Children.Add(containergrid);
-		            }
-		        }
-		    }
+						grid.Children.Add(containergrid);
+					}
+				}
+			}
 		}
 	}
 

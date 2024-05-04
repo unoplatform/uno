@@ -1,4 +1,4 @@
-#nullable  enable
+#nullable enable
 
 using System;
 using System.Numerics;
@@ -41,7 +41,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				_backgroundShape!.Comment = "#borderBackground";
 #endif
 			}
-			return _backgroundShape;
+			return _backgroundShape!;
 		}
 	}
 
@@ -57,7 +57,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				_borderShape!.Comment = "#borderShape";
 #endif
 			}
-			return _borderShape;
+			return _borderShape!;
 		}
 	}
 
