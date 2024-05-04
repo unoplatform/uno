@@ -49,11 +49,11 @@ public partial class Visual
 			RootTransform = rootTransform;
 		}
 
-		public SKSurface Surface { get; init; }
-		public SKCanvas Canvas { get; init; }
-		public DrawingFilters Filters { get; init; }
+		public SKSurface Surface { get; }
+		public SKCanvas Canvas { get; }
+		public DrawingFilters Filters { get; }
 
 		/// <summary>The transform matrix to the root visual of this drawing session (which isn't necessarily the identity matrix due to scaling (DPI) and/or RenderTargetBitmap.</summary>
-		public Matrix4x4 RootTransform { get; init; }
+		public Matrix4x4 RootTransform { get; }
 	}
 }
