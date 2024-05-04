@@ -127,8 +127,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Render a visual as if it's the root visual.
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
-	/// <param name="adjustedInitialOffset">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used </param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? adjustedInitialOffset = null)
+	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
+	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -149,18 +149,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = invertedParentTotalMatrix * initialTransform;
 		}
 
-		if (adjustedInitialOffset is { } adjustedOffset)
+		if (offsetOverride is { } offset)
 		{
 			canvas.Save();
 			var totalOffset = GetTotalOffset();
-			var translation = Matrix4x4.Identity with { M41 = -(adjustedOffset.X + totalOffset.X + AnchorPoint.X), M42 = -(adjustedOffset.Y + totalOffset.Y + AnchorPoint.Y) };
+			var translation = Matrix4x4.Identity with { M41 = -(offset.X + totalOffset.X + AnchorPoint.X), M42 = -(offset.Y + totalOffset.Y + AnchorPoint.Y) };
 			initialTransform = translation * initialTransform;
 		}
 
 		using var session = new PaintingSession(surface, canvas, DrawingFilters.Default, initialTransform);
 		Render(in session);
 
-		if (adjustedInitialOffset is { })
+		if (offsetOverride is { })
 		{
 			canvas.Restore();
 		}
