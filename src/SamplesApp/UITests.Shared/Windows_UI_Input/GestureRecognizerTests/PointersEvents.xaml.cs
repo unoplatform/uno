@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Uno.Extensions;
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;

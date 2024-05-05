@@ -11,6 +11,10 @@ partial class NativeWindowFactory
 {
 	public static bool SupportsMultipleWindows => false;
 
-	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot) => NativeWindowWrapper.Instance;
+	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)
+	{
+		NativeWindowWrapper.Instance.SetXamlRoot(xamlRoot);
+		return NativeWindowWrapper.Instance;
+	}
 }
 #endif

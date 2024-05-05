@@ -10,37 +10,31 @@
 			 d:DesignWidth="400">
 
 
-	<controls:SampleControl SampleDescription="Source is set after the image is loaded and visible.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<Button x:Name="setSource"
-							Content="Set image source"
-							Command="{Binding [SetSource]}" />
-					<Border Background="Firebrick"
-							BorderThickness="2"
-							BorderBrush="Azure">
-						<Image x:Name="lateImage"
-							   Source="{Binding [SourceUri]}"
-							   HorizontalAlignment="Center"
-							   VerticalAlignment="Center"
-							   Width="205"
-							   Height="88"
-							   Stretch="UniformToFill" />
-					</Border>
-					<Border Background="DarkSlateBlue"
-							BorderThickness="2"
-							BorderBrush="Azure">
-						<Image x:Name="refImage"
-							   Source="{Binding [SourceUriImmediate]}"
-							   HorizontalAlignment="Center"
-							   VerticalAlignment="Center"
-							   Width="205"
-							   Height="88"
-							   Stretch="UniformToFill" />
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<Button x:Name="setSource"
+						Content="Set image source"
+						Command="{Binding [SetSource]}" />
+		<Border Background="Firebrick"
+						BorderThickness="2"
+						BorderBrush="Azure">
+			<Image x:Name="lateImage"
+						   Source="{Binding [SourceUri]}"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   Width="205"
+						   Height="88"
+						   Stretch="UniformToFill" />
+		</Border>
+		<Border Background="DarkSlateBlue"
+						BorderThickness="2"
+						BorderBrush="Azure">
+			<Image x:Name="refImage"
+						   Source="{Binding [SourceUriImmediate]}"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   Width="205"
+						   Height="88"
+						   Stretch="UniformToFill" />
+		</Border>
+	</StackPanel>
 </UserControl>

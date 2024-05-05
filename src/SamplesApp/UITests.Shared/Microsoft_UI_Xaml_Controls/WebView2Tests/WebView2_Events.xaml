@@ -12,28 +12,23 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Monitoring WebView2 events">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<not_win:Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
+	<not_win:Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 
-					<mux:WebView2 x:Name="WebView2Control"
+		<mux:WebView2 x:Name="WebView2Control"
 							 Source="http://microsoft.com"
 							 local:WebView2ObserverBehavior.IsAttached="True" />
 
-					<TextBlock x:Name="Feedback"
+		<TextBlock x:Name="Feedback"
 							   Text="{Binding (local:WebView2ObserverBehavior.Message), ElementName=WebView2Control}"
 							   Grid.Row="1"
 							   Height="100"
 							   HorizontalAlignment="Stretch"
 							   VerticalAlignment="Bottom"
 							   TextWrapping="Wrap" />
-				</not_win:Grid>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	</not_win:Grid>
+
 </UserControl>

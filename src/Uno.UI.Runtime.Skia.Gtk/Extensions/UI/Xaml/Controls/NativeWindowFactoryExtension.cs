@@ -17,6 +17,6 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
 		var unoGtkWindow = new UnoGtkWindow(window, xamlRoot);
-		return new GtkWindowWrapper(unoGtkWindow);
+		return new GtkWindowWrapper(unoGtkWindow, xamlRoot);
 	}
 }

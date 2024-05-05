@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using MUXControlsTestApp.Utilities;
 using Windows.UI;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 
 //using WEX.TestExecution;
@@ -32,19 +34,19 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset remains at 0 when inserting an item at the beginning (HorizontalAnchorRatio=0).")]
-	public void AnchoringAtLeftEdge()
+	public async Task AnchoringAtLeftEdge()
 	{
-		AnchoringAtNearEdge(Orientation.Horizontal);
+		await AnchoringAtNearEdge(Orientation.Horizontal);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset remains at 0 when inserting an item at the beginning (VerticalAnchorRatio=0).")]
-	public void AnchoringAtTopEdge()
+	public async Task AnchoringAtTopEdge()
 	{
-		AnchoringAtNearEdge(Orientation.Vertical);
+		await AnchoringAtNearEdge(Orientation.Vertical);
 	}
 
-	private void AnchoringAtNearEdge(Orientation orientation)
+	private async Task AnchoringAtNearEdge(Orientation orientation)
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -52,7 +54,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -61,7 +63,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -69,7 +71,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				InsertStackPanelChild((scrollPresenter.Content as Border).Child as StackPanel, 1 /*operationCount*/, 0 /*newIndex*/, 1 /*newCount*/);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -89,52 +91,52 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset growns to max value when inserting an item at the end (HorizontalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtRightEdgeWhileIncreasingContentWidth()
+	public async Task AnchoringAtRightEdgeWhileIncreasingContentWidth()
 	{
-		AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Horizontal, 0 /*viewportSizeChange*/, 3876 /*expectedFinalOffset*/);
+		await AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Horizontal, 0 /*viewportSizeChange*/, 3876 /*expectedFinalOffset*/);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset grows to max value when inserting an item at the end (VerticalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtBottomEdgeWhileIncreasingContentHeight()
+	public async Task AnchoringAtBottomEdgeWhileIncreasingContentHeight()
 	{
-		AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Vertical, 0 /*viewportSizeChange*/, 3876 /*expectedFinalOffset*/);
+		await AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Vertical, 0 /*viewportSizeChange*/, 3876 /*expectedFinalOffset*/);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset growns to max value when inserting an item at the end and growing viewport (HorizontalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtRightEdgeWhileIncreasingContentAndViewportWidth()
+	public async Task AnchoringAtRightEdgeWhileIncreasingContentAndViewportWidth()
 	{
-		AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Horizontal, 10 /*viewportSizeChange*/, 3866 /*expectedFinalOffset*/);
+		await AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Horizontal, 10 /*viewportSizeChange*/, 3866 /*expectedFinalOffset*/);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset grows to max value when inserting an item at the end and growning viewport (VerticalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtBottomEdgeWhileIncreasingContentAndViewportHeight()
+	public async Task AnchoringAtBottomEdgeWhileIncreasingContentAndViewportHeight()
 	{
-		AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Vertical, 10 /*viewportSizeChange*/, 3866 /*expectedFinalOffset*/);
+		await AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Vertical, 10 /*viewportSizeChange*/, 3866 /*expectedFinalOffset*/);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset growns to max value when inserting an item at the end and shrinking viewport (HorizontalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtRightEdgeWhileIncreasingContentAndDecreasingViewportWidth()
+	public async Task AnchoringAtRightEdgeWhileIncreasingContentAndDecreasingViewportWidth()
 	{
-		AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Horizontal, -10 /*viewportSizeChange*/, 3886 /*expectedFinalOffset*/);
+		await AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Horizontal, -10 /*viewportSizeChange*/, 3886 /*expectedFinalOffset*/);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset grows to max value when inserting an item at the end and shrinking viewport (VerticalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtBottomEdgeWhileIncreasingContentAndDecreasingViewportHeight()
+	public async Task AnchoringAtBottomEdgeWhileIncreasingContentAndDecreasingViewportHeight()
 	{
-		AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Vertical, -10 /*viewportSizeChange*/, 3886 /*expectedFinalOffset*/);
+		await AnchoringAtFarEdgeWhileIncreasingContent(Orientation.Vertical, -10 /*viewportSizeChange*/, 3886 /*expectedFinalOffset*/);
 	}
 
-	private void AnchoringAtFarEdgeWhileIncreasingContent(Orientation orientation, double viewportSizeChange, double expectedFinalOffset)
+	private async Task AnchoringAtFarEdgeWhileIncreasingContent(Orientation orientation, double viewportSizeChange, double expectedFinalOffset)
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -142,8 +144,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -152,9 +154,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -173,7 +175,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -212,8 +214,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -239,20 +241,20 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset shrinks to max value when decreasing viewport width (HorizontalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtRightEdgeWhileDecreasingViewportWidth()
+	public async Task AnchoringAtRightEdgeWhileDecreasingViewportWidth()
 	{
-		AnchoringAtFarEdgeWhileDecreasingViewport(Orientation.Horizontal);
+		await AnchoringAtFarEdgeWhileDecreasingViewport(Orientation.Horizontal);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset shrinks to max value when decreasing viewport height (VerticalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtBottomEdgeWhileDecreasingViewportHeight()
+	public async Task AnchoringAtBottomEdgeWhileDecreasingViewportHeight()
 	{
-		AnchoringAtFarEdgeWhileDecreasingViewport(Orientation.Vertical);
+		await AnchoringAtFarEdgeWhileDecreasingViewport(Orientation.Vertical);
 	}
 
-	private void AnchoringAtFarEdgeWhileDecreasingViewport(Orientation orientation)
+	private async Task AnchoringAtFarEdgeWhileDecreasingViewport(Orientation orientation)
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -260,8 +262,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -270,9 +272,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -291,7 +293,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -320,8 +322,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -346,19 +348,19 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset growns when inserting an item at the beginning (HorizontalAnchorRatio=0).")]
-	public void AnchoringAtAlmostLeftEdge()
+	public async Task AnchoringAtAlmostLeftEdge()
 	{
-		AnchoringAtAlmostNearEdge(Orientation.Horizontal);
+		await AnchoringAtAlmostNearEdge(Orientation.Horizontal);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset grows when inserting an item at the beginning (VerticalAnchorRatio=0).")]
-	public void AnchoringAtAlmostTopEdge()
+	public async Task AnchoringAtAlmostTopEdge()
 	{
-		AnchoringAtAlmostNearEdge(Orientation.Vertical);
+		await AnchoringAtAlmostNearEdge(Orientation.Vertical);
 	}
 
-	private void AnchoringAtAlmostNearEdge(Orientation orientation)
+	private async Task AnchoringAtAlmostNearEdge(Orientation orientation)
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -366,8 +368,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -376,12 +378,12 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
 			double horizontalOffset = orientation == Orientation.Vertical ? 0.0 : 1.0;
 			double verticalOffset = orientation == Orientation.Vertical ? 1.0 : 0.0;
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -397,8 +399,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				InsertStackPanelChild((scrollPresenter.Content as Border).Child as StackPanel, 1 /*operationCount*/, 0 /*newIndex*/, 1 /*newCount*/);
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -421,20 +423,20 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset does not change when inserting an item at the end (HorizontalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtAlmostRightEdge()
+	public async Task AnchoringAtAlmostRightEdge()
 	{
-		AnchoringAtAlmostFarEdge(Orientation.Horizontal);
+		await AnchoringAtAlmostFarEdge(Orientation.Horizontal);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset does not change when inserting an item at the end (VerticalAnchorRatio=1).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtAlmostBottomEdge()
+	public async Task AnchoringAtAlmostBottomEdge()
 	{
-		AnchoringAtAlmostFarEdge(Orientation.Vertical);
+		await AnchoringAtAlmostFarEdge(Orientation.Vertical);
 	}
 
-	private void AnchoringAtAlmostFarEdge(Orientation orientation)
+	private async Task AnchoringAtAlmostFarEdge(Orientation orientation)
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -442,7 +444,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -451,9 +453,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -472,7 +474,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -480,7 +482,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				InsertStackPanelChild((scrollPresenter.Content as Border).Child as StackPanel, 1 /*operationCount*/, c_defaultAnchoringUIStackPanelChildrenCount /*newIndex*/, 1 /*newCount*/);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -503,20 +505,20 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies HorizontalOffset increases when shrinking the viewport width (HorizontalAnchorRatio=0.5).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringElementWithShrinkingViewport()
+	public async Task AnchoringElementWithShrinkingViewport()
 	{
-		AnchoringElementWithResizedViewport(Orientation.Horizontal, -100.0);
+		await AnchoringElementWithResizedViewport(Orientation.Horizontal, -100.0);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset decreases when growning the viewport height (VerticalAnchorRatio=0.5).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringElementWithGrowningViewport()
+	public async Task AnchoringElementWithGrowningViewport()
 	{
-		AnchoringElementWithResizedViewport(Orientation.Vertical, 100.0);
+		await AnchoringElementWithResizedViewport(Orientation.Vertical, 100.0);
 	}
 
-	private void AnchoringElementWithResizedViewport(Orientation orientation, double viewportSizeChange)
+	private async Task AnchoringElementWithResizedViewport(Orientation orientation, double viewportSizeChange)
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -524,8 +526,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			enableExpressionAnimationStatusNotifications: false))
 		{
 			ScrollPresenter scrollPresenter = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -534,9 +536,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				SetupDefaultAnchoringUI(orientation, scrollPresenter, scrollPresenterLoadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-			ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			double horizontalOffset = 0.0;
 			double verticalOffset = 0.0;
@@ -555,7 +557,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+			await ScrollTo(scrollPresenter, horizontalOffset, verticalOffset, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -582,8 +584,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				}
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -608,7 +610,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	private void SetupDefaultAnchoringUI(
 		Orientation orientation,
 		ScrollPresenter scrollPresenter,
-		AutoResetEvent scrollPresenterLoadedEvent)
+		UnoAutoResetEvent scrollPresenterLoadedEvent)
 	{
 		Log.Comment("Setting up default anchoring UI with ScrollPresenter");
 
@@ -705,20 +707,20 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies vertical offset does not exceed its max value because of anchoring, when reducing the extent height.")]
 	[Ignore("Fails in Uno, waiting forever on ViewChanged")]
-	public void AnchoringWithReducedExtent()
+	public async Task AnchoringWithReducedExtent()
 	{
-		AnchoringWithOffsetCoercion(false /*reduceAnchorOffset*/);
+		await AnchoringWithOffsetCoercion(false /*reduceAnchorOffset*/);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies vertical offset does not exceed its max value because of anchoring, when reducing the extent height and anchor offset.")]
 	[Ignore("Fails in Uno, waiting forever on ViewChanged")]
-	public void AnchoringWithReducedExtentAndAnchorOffset()
+	public async Task AnchoringWithReducedExtentAndAnchorOffset()
 	{
-		AnchoringWithOffsetCoercion(true /*reduceAnchorOffset*/);
+		await AnchoringWithOffsetCoercion(true /*reduceAnchorOffset*/);
 	}
 
-	private void AnchoringWithOffsetCoercion(bool reduceAnchorOffset)
+	private async Task AnchoringWithOffsetCoercion(bool reduceAnchorOffset)
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -727,9 +729,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		{
 			ScrollPresenter scrollPresenter = null;
 			Border anchorElement = null;
-			AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollPresenterAnchorRequestedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollPresenterAnchorRequestedEvent = new UnoAutoResetEvent(false);
 
 			// This test validates that the ScrollPresenter accounts for maximum vertical offset (based on viewport and content extent) 
 			// when calculating the vertical offset shift for anchoring. The vertical offset cannot exceed content extent - viewport.
@@ -788,10 +790,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				Content = scrollPresenter;
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.Loaded event", scrollPresenterLoadedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent("Waiting for ScrollPresenter.Loaded event", scrollPresenterLoadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 
-			ScrollTo(scrollPresenter, 0.0, 600.0, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			await ScrollTo(scrollPresenter, 0.0, 600.0, ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -807,9 +809,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				scrollPresenterViewChangedEvent.Reset();
 			});
 
-			WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
-			WaitForEvent("Waiting for ScrollPresenter.AnchorRequested event", scrollPresenterAnchorRequestedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+			await WaitForEvent("Waiting for ScrollPresenter.AnchorRequested event", scrollPresenterAnchorRequestedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -824,7 +826,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies VerticalOffset adjusts when inserting and removing items at the beginning (VerticalAnchorRatio=0.5).")]
 	[Ignore("Zoom is not yet supported in Uno.")]
-	public void AnchoringAtRepeaterMiddle()
+	public async Task AnchoringAtRepeaterMiddle()
 	{
 		using (ScrollPresenterTestHooksHelper scrollPresenterTestHooksHelper = new ScrollPresenterTestHooksHelper(
 			enableAnchorNotifications: true,
@@ -834,8 +836,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			//using (PrivateLoggingHelper privateLoggingHelper = new PrivateLoggingHelper("ScrollPresenter"))
 			{
 				ScrollPresenter scrollPresenter = null;
-				AutoResetEvent scrollPresenterLoadedEvent = new AutoResetEvent(false);
-				AutoResetEvent scrollPresenterViewChangedEvent = new AutoResetEvent(false);
+				UnoAutoResetEvent scrollPresenterLoadedEvent = new UnoAutoResetEvent(false);
+				UnoAutoResetEvent scrollPresenterViewChangedEvent = new UnoAutoResetEvent(false);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -847,10 +849,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 					scrollPresenter.VerticalAnchorRatio = 0.5;
 				});
 
-				WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
+				await WaitForEvent("Waiting for Loaded event", scrollPresenterLoadedEvent);
 
-				ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore);
-				ScrollTo(scrollPresenter, 0.0, 250.0, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
+				await ZoomTo(scrollPresenter, 2.0f, 0.0f, 0.0f, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore);
+				await ScrollTo(scrollPresenter, 0.0, 250.0, ScrollingAnimationMode.Enabled, ScrollingSnapPointsMode.Ignore, false /*hookViewChanged*/);
 
 				ItemsRepeater repeater = null;
 				TestDataSource dataSource = null;
@@ -869,7 +871,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 					dataSource.Insert(0 /*index*/, 2 /*count*/);
 				});
 
-				WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+				await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -885,7 +887,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 					dataSource.Remove(0 /*index*/, 2 /*count*/);
 				});
 
-				WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
+				await WaitForEvent("Waiting for ScrollPresenter.ViewChanged event", scrollPresenterViewChangedEvent);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -901,7 +903,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 	private void SetupRepeaterAnchoringUI(
 		ScrollPresenter scrollPresenter,
-		AutoResetEvent scrollPresenterLoadedEvent)
+		UnoAutoResetEvent scrollPresenterLoadedEvent)
 	{
 		Log.Comment("Setting up ItemsRepeater anchoring UI with ScrollPresenter and ItemsRepeater");
 

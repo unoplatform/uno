@@ -13,23 +13,24 @@ using Windows.Graphics.Display;
 using Windows.Foundation;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
+using GtkWindow = Gtk.Window;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class UnoGtkWindowHost : IGtkXamlRootHost
 {
-	private readonly Window _gtkWindow;
+	private readonly GtkWindow _gtkWindow;
 	private readonly WinUIWindow _winUIWindow;
 	private readonly UnoEventBox _eventBox = new();
 	private readonly Fixed _nativeOverlayLayer = new();
 	private readonly CompositeDisposable _disposables = new();
 
-	private DisplayInformation? _displayInformation;
 	private Widget? _area;
+	private XamlRoot? _xamlRoot;
 	private IGtkRenderer? _renderer;
-	private bool _firstSizeAllocated;
 
-	public UnoGtkWindowHost(Window gtkWindow, WinUIWindow winUIWindow)
+	public UnoGtkWindowHost(GtkWindow gtkWindow, WinUIWindow winUIWindow)
 	{
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;
@@ -37,7 +38,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		RegisterForBackgroundColor();
 	}
 
-	public Window GtkWindow => _gtkWindow;
+	public GtkWindow GtkWindow => _gtkWindow;
 
 	public UnoEventBox EventBox => _eventBox;
 
@@ -54,34 +55,28 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	public async Task InitializeAsync()
 	{
 		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
+		UpdateRendererBackground();
 
 		var overlay = new Overlay();
 
 		_area = (Widget)_renderer;
 
-		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
-		_displayInformation = WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
-		_displayInformation.DpiChanged += OnDpiChanged;
+		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
+		_xamlRoot!.Changed += OnXamlRootChanged;
 
-		UpdateWindowSize(_gtkWindow.Allocation.Width, _gtkWindow.Allocation.Height);
-
-		// Subcribing to _area or _gtkWindow should yield similar results, except that
-		// we explicitly set the DefaultSize on the window not the area, so the area
-		// will start out with size 1x1 and then after layouting is finished, will end up
-		// with the correct size. To avoid triggering multiple window size updates, we
-		// specifically choose to subscribe to the _gtkWindow not the _area
-		_gtkWindow.Realized += (s, e) =>
+		// Subscribing to _area or _gtkWindow should yield similar results, except on WSL,
+		// where _gtkWindow.AllocatedHeight is a lot bigger than it actually is for some reason.
+		// Either way, make sure to match the subscription with the size, i.e. either use
+		// _area.Realized/SizeAllocated and _area.AllocatedXX or _gtkWindow.Realized/SizeAllocation
+		// and _gtkWindow.AllocatedXX
+		_area.Realized += (s, e) =>
 		{
-			UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
+			UpdateWindowSize(_area.AllocatedWidth, _area.AllocatedHeight);
 		};
 
-		_gtkWindow.SizeAllocated += (s, e) =>
+		_area.SizeAllocated += (s, e) =>
 		{
 			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
-			if (!_firstSizeAllocated)
-			{
-				_firstSizeAllocated = true;
-			}
 		};
 
 		overlay.Add(_area);
@@ -92,12 +87,12 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	internal event EventHandler<Size>? SizeChanged;
 
-	private void OnDpiChanged(DisplayInformation sender, object args) =>
+	private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) =>
 		UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
 
 	private void UpdateWindowSize(int nativeWidth, int nativeHeight)
 	{
-		var sizeAdjustment = _displayInformation!.FractionalScaleAdjustment;
+		var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 		SizeChanged?.Invoke(this, new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
 	}
 

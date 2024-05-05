@@ -9,6 +9,19 @@
 		<MonoAndroidAssetsPrefix Condition="$(MonoAndroidAssetsPrefix) == ''">$(AndroidProjectFolder)Assets</MonoAndroidAssetsPrefix>
 	</PropertyGroup>
 
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(MonoAndroidResourcePrefix)' != '' ">
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.xml" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.axml" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.png" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.jpg" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.gif" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/font/*.ttf" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/font/*.otf" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/font/*.ttc" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/raw/*" Exclude="$(MonoAndroidResourcePrefix)/raw/.*" />
+		<AndroidAsset Include="$(MonoAndroidAssetsPrefix)/**/*" Exclude="$(MonoAndroidAssetsPrefix)/**/.*/**" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<AndroidEnvironment Include="$(AndroidProjectFolder)environment.conf"
 			Condition=" Exists('$(AndroidProjectFolder)environment.conf') "

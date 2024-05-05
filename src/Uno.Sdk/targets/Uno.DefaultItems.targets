@@ -30,7 +30,7 @@
 			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Content)"
 			IsDefaultItem="true" />
 		<Page Include="**\*.xaml"
-			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Page)"
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Page);App.xaml"
 			IsDefaultItem="true" />
 		<Compile Update="**\*.xaml.cs"
 			DependentUpon="%(Filename)"
@@ -41,7 +41,7 @@
 	</ItemGroup>
 
 	<!-- Single Project -->
-	<Import Project="Uno.DefaultItems.SingleProject.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="Uno.DefaultItems.SingleProject.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 
 	<!-- Resizetizer -->
 	<Import Project="Uno.DefaultItems.Resizetizer.targets" Condition="$(DisableDefaultUnoResizetizerItems) != 'true'" />

@@ -141,11 +141,11 @@ namespace MUXControlsTestApp.Utilities
 	{
 		public static int DefaultWaitMs = Debugger.IsAttached ? 120000 : 5000;
 
-		public static void SetAsVisualTreeRoot(FrameworkElement element)
+		public static async Task SetAsVisualTreeRoot(FrameworkElement element)
 		{
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			AutoResetEvent loadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -154,16 +154,16 @@ namespace MUXControlsTestApp.Utilities
 				MUXControlsTestApp.App.TestContentRoot = element;
 			});
 
-			WaitForEvent(loadedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent(loadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Loaded raised.");
 		}
 
-		public static void ClearVisualTreeRoot()
+		public static async Task ClearVisualTreeRoot()
 		{
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			AutoResetEvent unloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent unloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -189,14 +189,14 @@ namespace MUXControlsTestApp.Utilities
 
 			});
 
-			WaitForEvent(unloadedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent(unloadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Unloaded raised.");
 		}
 
-		public static void WaitForEvent(AutoResetEvent e)
+		public static async Task WaitForEvent(UnoAutoResetEvent e)
 		{
-			if (!e.WaitOne(TimeSpan.FromMilliseconds(DefaultWaitMs)))
+			if (!await e.WaitOne(TimeSpan.FromMilliseconds(DefaultWaitMs)))
 			{
 				throw new Exception("Event was not raised.");
 			}

@@ -118,14 +118,14 @@ If you need to define launches or modify the defaults then you can can create yo
     {
       "comment1": "// name: unique name for the configuration, can be identical to preLaunchTask",
       "name": "Uno: net6.0-android | Debug | android-x64",
-      "comment2": "// type: 'Uno' for mono-based SDK, 'coreclr' for macOS and Skia.Gtk",
+      "comment2": "// type: 'Uno' for mono-based SDK, 'coreclr' for desktop targets",
       "type": "Uno",
       "request": "launch",
       "comment3": "// preLaunchTask format is 'Uno: {tfm} | {config}[ | {rid]}]' where ",
       "comment4": "// * {tfm} is the target framework moniker, e.g. net6.0-ios",
       "comment5": "// * {config} is the build configuration, e.g. 'Debug' or 'Release'",
       "comment6": "// * {rid} is the optional runtime identifier, e.g. 'osx-arm64'",
-      "comment7": "// E.g. 'Uno: net6.0-ios | Debug | iossimulator-x64', 'Uno: net6.0 | Debug' for Skia.Gtk",
+      "comment7": "// E.g. 'Uno: net6.0-ios | Debug | iossimulator-x64', 'Uno: net6.0 | Debug' for desktop",
       "preLaunchTask": "Uno: net6.0-android | Debug | android-x64"
     },
     ```
@@ -164,11 +164,11 @@ See [VS Code documentation](https://code.visualstudio.com/docs/editor/tasks) for
   "type": "process",
   "args": [
     "build",
-    "${workspaceFolder}/unoapp.Mobile/unoapp.Mobile.csproj",
+    "${workspaceFolder}/unoapp/unoapp.csproj",
     "/property:GenerateFullPaths=true",
     "/consoleloggerparameters:NoSummary",
     // specify the target platform - since there's more than one inside the mobile.csproj
-    "/property:TargetFramework=net7.0-maccatalyst",
+    "/property:TargetFramework=net8.0-maccatalyst",
     "/property:RuntimeIdentifier=maccatalyst-arm64",
     "/property:Configuration=Debug",
     // this is to workaround both an OmniSharp limitation and a dotnet issue #21877

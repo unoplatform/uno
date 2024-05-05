@@ -27,6 +27,8 @@ using SwipeItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItem;
 using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
 using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
 using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -35,7 +37,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	public class SwipeControlTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void SwipeItemTest()
+		public async Task SwipeItemTest()
 		{
 			SwipeItem swipeItem = null;
 			RunOnUIThread.Execute(() =>
@@ -47,7 +49,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				swipeItem.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Blue);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -60,7 +62,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void SwipeItemsTest()
+		public async Task SwipeItemsTest()
 		{
 			SwipeItems swipeItems = null;
 
@@ -76,7 +78,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				swipeItems.Add(new SwipeItem());
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -135,7 +137,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public void SwipeControlCanOnlyBeHorizontalOrVerticalAfterRendering()
 		{
-			var resetEvent = new AutoResetEvent(false);
+			var resetEvent = new UnoAutoResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				SwipeControl swipeControl = new SwipeControl();

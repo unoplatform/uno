@@ -7,6 +7,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Common;
 using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
+
+
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -37,23 +41,23 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		[TestInitialize]
-		public void Setup()
+		public async Task Setup()
 		{
-			IdleSynchronizer.Wait();
-			var hostLoaded = new ManualResetEvent(false);
+			await TestServices.WindowHelper.WaitForIdle();
+			var hostLoaded = new UnoManualResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				_host = new Border();
 				_host.Loaded += delegate { hostLoaded.Set(); };
 				MUXControlsTestApp.App.TestContentRoot = _host;
 			});
-			Verify.IsTrue(hostLoaded.WaitOne(DefaultWaitTimeInMS), "Waiting for loaded event");
+			Verify.IsTrue(await hostLoaded.WaitOne(DefaultWaitTimeInMS), "Waiting for loaded event");
 		}
 
 		[TestCleanup]
-		public void Cleanup()
+		public async Task Cleanup()
 		{
-			TestUtilities.ClearVisualTreeRoot();
+			await TestUtilities.ClearVisualTreeRoot();
 		}
 	}
 }

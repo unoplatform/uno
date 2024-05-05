@@ -13,6 +13,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml;
 using Windows.UI;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -28,7 +30,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public void VerifyCustomItemTemplate()
+		public async Task VerifyCustomItemTemplate()
 		{
 			RadioButtons radioButtons = null;
 			RadioButtons radioButtons2 = null;
@@ -66,7 +68,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -84,7 +86,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public void VerifyIsEnabledChangeUpdatesVisualState()
+		public async Task VerifyIsEnabledChangeUpdatesVisualState()
 		{
 			RadioButtons radioButtons = null; ;
 			VisualStateGroup commonStatesGroup = null;
@@ -106,7 +108,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				// Check 2: Set IsEnabled to false.
 				radioButtons.IsEnabled = false;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -115,7 +117,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				// Check 3: Set IsEnabled back to true.
 				radioButtons.IsEnabled = true;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{

@@ -7,7 +7,7 @@ using Microsoft.Web.WebView2.Core;
 
 
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 #if HAS_UNO

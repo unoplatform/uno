@@ -65,6 +65,14 @@
         <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
       </ItemGroup>
     </When>
+    <When Condition="$(TargetFramework.Contains('windows10'))">
+      <ItemGroup>
+        <PackageReference Include="SkiaSharp.Views" NoWarn="NU1701" />
+        <PackageReference Include="SkiaSharp.Views.Gtk2" NoWarn="NU1701" />
+        <PackageReference Include="OpenTK" NoWarn="NU1701" />
+        <PackageReference Include="OpenTK.GLControl" NoWarn="NU1701" />
+      </ItemGroup>
+    </When>
   </Choose>
 
   <ItemGroup>

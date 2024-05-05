@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "ImagesInlineInFlipView")]
+	[SampleControlInfo("Image", "ImagesInlineInFlipView", Description = "ImagesInlineInFlipView - the image view will be loaded after the Source has been set.")]
 	public sealed partial class ImagesInlineInFlipView : UserControl
 	{
 		public ImagesInlineInFlipView()

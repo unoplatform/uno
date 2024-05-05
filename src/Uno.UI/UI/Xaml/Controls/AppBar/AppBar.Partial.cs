@@ -243,6 +243,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
+			base.OnVisibilityChanged(oldValue, newValue);
+
 			if (GetOwner() is { } pageOwner)
 			{
 				// UNO TODO

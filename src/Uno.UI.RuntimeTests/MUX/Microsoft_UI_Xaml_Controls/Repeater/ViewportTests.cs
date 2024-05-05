@@ -52,6 +52,8 @@ using PostArrangeEventHandler = Microsoft.UI.Private.Controls.PostArrangeEventHa
 using ViewportChangedEventHandler = Microsoft.UI.Private.Controls.ViewportChangedEventHandler;
 
 using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -104,11 +106,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		// [TestMethod] Temporarily disabled for bug 18866003
-		public void ValidateItemsRepeaterScrollHostScenario()
+		public async Task ValidateItemsRepeaterScrollHostScenario()
 		{
 			var realizationRects = new List<Rect>();
 			var scrollViewer = (ScrollViewer)null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 			int waitTime = 2000; // 2 seconds 
 
 			RunOnUIThread.Execute(() =>
@@ -160,8 +162,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -174,8 +176,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(400, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -186,8 +188,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, null, 2.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -239,7 +241,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					zoomCompletedEvent.Set();
 				};
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -339,7 +341,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					verticalScrollCompletedEvent.Set();
 				};
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -474,7 +476,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						scrollPresenters[1].ContentOrientation = ContentOrientation.Vertical;
 					}
 				});
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -560,7 +562,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			if (!fullCacheEvent.WaitOne(500000)) Verify.Fail("Cache full size never reached.");
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -849,7 +851,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		// [TestMethod] Temporarily disabled for bug 18866003
-		public void ValidateLoadUnload()
+		public async Task ValidateLoadUnload()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
 			{
@@ -866,7 +868,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			TestScrollingSurface scroller2 = null;
 			ItemsRepeater repeater = null;
 			WeakReference repeaterWeakRef = null;
-			var renderingEvent = new ManualResetEvent(false);
+			var renderingEvent = new UnoManualResetEvent(false);
 
 			var unorderedLoadEvent = false;
 			var loadCounter = 0;
@@ -921,8 +923,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = host;
 			});
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			renderingEvent.Reset();
 			Log.Comment("Putting repeater in and out of scroller 1 until we observe two out-of-sync loaded/unloaded events.");
@@ -944,8 +946,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Log.Comment("Detected an unordered load/unload event.");
 			}
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			renderingEvent.Reset();
 			RunOnUIThread.Execute(() =>
@@ -958,8 +960,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scroller2.Content = repeater;
 			});
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -976,7 +978,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 			Verify.IsFalse(repeaterWeakRef.IsAlive);
 
@@ -992,8 +994,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 		}
 
 #if !HAS_UNO
@@ -1094,7 +1096,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 			Verify.IsTrue(rootLoadedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1104,7 +1106,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				innerRepeater.GetOrCreateElement(14).StartBringIntoView();
 			});
 			Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.AreEqual(1, viewChangedOffsets.Count);
 			viewChangedOffsets.Clear();
 			ValidateRealizedRange(repeater, 8, 9, 9, 8, 9, 14);
@@ -1121,7 +1123,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 			});
 			Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsLessThan(1, viewChangedOffsets.Count);
 			viewChangedOffsets.Clear();
 			ValidateRealizedRange(repeater, 8, 9, 9, 6, 9, 14);
@@ -1142,7 +1144,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					});
 				});
 				Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -1162,7 +1164,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			ValidateRealizedRange(repeater, 2, 4, 3, 3, 3, 10);
 
 			// Code defect bug 17711793
@@ -1179,7 +1181,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			//});
 
 			//Verify.IsTrue(viewChangeCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			//IdleSynchronizer.Wait();
+			//await TestServices.WindowHelper.WaitForIdle();
 			//Verify.AreEqual(1, viewChangedOffsets.Count);   // Animations are always disabled for anchors outside the realized range.
 			//viewChangedOffsets.Clear();
 			//ValidateRealizedRange(repeater, 0, 1, 0, 0, 0, 6);

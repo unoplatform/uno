@@ -40,7 +40,7 @@ internal class MacOSWindowNative
 		}
 
 		// host MUST be created after we get a native handle
-		Host = new MacOSWindowHost(this, winUIWindow);
+		Host = new MacOSWindowHost(this, winUIWindow, xamlRoot);
 
 		MacOSWindowHost.Register(Handle, xamlRoot, Host);
 

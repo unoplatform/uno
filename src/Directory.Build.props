@@ -34,7 +34,6 @@
 		<Deterministic>true</Deterministic>
 
 		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
 		<!-- Resizetizer codegen is not supported in UWP -->
 		<UnoResizetizerDisableWindowIconExtensions Condition="'$(UNO_UWP_BUILD)'=='true'">true</UnoResizetizerDisableWindowIconExtensions>
@@ -271,7 +270,7 @@
 				<AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24072.1" PrivateAssets="All" />
+				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24122.1" PrivateAssets="All" />
 			</ItemGroup>
 		</When>
 		<Otherwise>

@@ -147,6 +147,7 @@ internal partial class X11XamlRootHost
 					case XEventName.ConfigureNotify:
 						var configureEvent = @event.ConfigureEvent;
 						_displayInformationExtension?.UpdateDetails();
+						_wrapper.RasterizationScale = (float)(_displayInformationExtension?.RawPixelsPerViewPixel ?? 1.0f);
 						QueueAction(this, () => _resizeCallback(new Size(configureEvent.width, configureEvent.height)));
 						break;
 					case XEventName.FocusIn:

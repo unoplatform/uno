@@ -26,46 +26,25 @@ namespace Uno.UI.Samples.Controls
 	{
 		private bool _initialMeasure = true;
 		private bool _initialArrange = true;
-#if HAS_UNO
-		private Rect? _initialBounds;
-#endif
 
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
-
-#if HAS_UNO
-			Loaded += OnLoaded;
-#endif
 		}
-
-#if HAS_UNO
-		private void OnLoaded(object sender, RoutedEventArgs e)
-		{
-			_initialBounds = XamlRoot.Bounds;
-			XamlRoot.Changed += OnXamlRootChanged;
-		}
-
-		private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
-		{
-			if (XamlRoot.Bounds != _initialBounds)
-			{
-				XamlRoot.Changed -= OnXamlRootChanged;
-			}
-			else
-			{
-				Assert.Fail("The XamlRoot's bounds should not have changed after Loaded.");
-			}
-		}
-#endif
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			Assert.IsNotNull(XamlRoot, "XamlRoot was not initialized before measure");
+#if HAS_UNO
+			Assert.IsTrue(XamlRoot.VisualTree.ContentRoot.CompositionContent.RasterizationScaleInitialized, "Rasterization scale was not initialized");
+#endif
+
 			if (_initialMeasure && availableSize == default)
 			{
-				_initialMeasure = false;
 				Assert.Fail("Initial Measure should not be called with empty size");
 			}
+
+			_initialMeasure = false;
 			return base.MeasureOverride(availableSize);
 		}
 
@@ -73,9 +52,10 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (_initialArrange && availableSize == default)
 			{
-				_initialArrange = false;
 				Assert.Fail("Initial Arrange should not be called with empty size");
 			}
+
+			_initialArrange = false;
 			return base.ArrangeOverride(availableSize);
 		}
 

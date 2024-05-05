@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RatingItemImageInfo.properties.cpp, commit de78834
+// MUX Reference RatingItemImageInfo.properties.cpp, tag winui3/release/1.5.3, commit 2a60e27c591846556fa9ec4d8f305afdf0f96dc1
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
@@ -32,7 +32,11 @@ public partial class RatingItemImageInfo : RatingItemInfo
 	/// Identifies the DisabledImage dependency property.
 	/// </summary>
 	public static DependencyProperty DisabledImageProperty { get; } =
-		DependencyProperty.Register(nameof(DisabledImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(
+			nameof(DisabledImage),
+			typeof(ImageSource),
+			typeof(RatingItemImageInfo),
+			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Gets or sets an image that represents a rating element that has been set by the user.
@@ -47,7 +51,11 @@ public partial class RatingItemImageInfo : RatingItemInfo
 	/// Identifies the Image dependency property.
 	/// </summary>
 	public static DependencyProperty ImageProperty { get; } =
-		DependencyProperty.Register(nameof(Image), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(
+			nameof(Image),
+			typeof(ImageSource),
+			typeof(RatingItemImageInfo),
+			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Gets or sets an image that represents a rating element that is showing a placeholder value.
@@ -62,7 +70,11 @@ public partial class RatingItemImageInfo : RatingItemInfo
 	/// Identifies the PlaceholderImage dependency property.
 	/// </summary>
 	public static DependencyProperty PlaceholderImageProperty { get; } =
-		DependencyProperty.Register(nameof(PlaceholderImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(
+			nameof(PlaceholderImage),
+			typeof(ImageSource),
+			typeof(RatingItemImageInfo),
+			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Gets or sets an image that represents a rating element that has the pointer over it.
@@ -77,7 +89,11 @@ public partial class RatingItemImageInfo : RatingItemInfo
 	/// Identifies the PointerOverImage dependency property.
 	/// </summary>
 	public static DependencyProperty PointerOverImageProperty { get; } =
-		DependencyProperty.Register(nameof(PointerOverImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(
+			nameof(PointerOverImage),
+			typeof(ImageSource),
+			typeof(RatingItemImageInfo),
+			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Gets or sets an image that represents a rating element showing a placeholder value with the pointer over it.
@@ -92,7 +108,11 @@ public partial class RatingItemImageInfo : RatingItemInfo
 	/// Identifies the PointerOverPlaceholderImage dependency property.
 	/// </summary>
 	public static DependencyProperty PointerOverPlaceholderImageProperty { get; } =
-		DependencyProperty.Register(nameof(PointerOverPlaceholderImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(
+			nameof(PointerOverPlaceholderImage),
+			typeof(ImageSource),
+			typeof(RatingItemImageInfo),
+			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Gets or sets an image that represents a rating element that has not been set.
@@ -107,5 +127,9 @@ public partial class RatingItemImageInfo : RatingItemInfo
 	/// Identifies the UnsetImage dependency property.
 	/// </summary>
 	public static DependencyProperty UnsetImageProperty { get; } =
-		DependencyProperty.Register(nameof(UnsetImage), typeof(ImageSource), typeof(RatingItemImageInfo), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(
+			nameof(UnsetImage),
+			typeof(ImageSource),
+			typeof(RatingItemImageInfo),
+			new FrameworkPropertyMetadata(null));
 }

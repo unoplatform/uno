@@ -4,6 +4,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
@@ -16,8 +17,8 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
-		// This is a randomly chosen number that looks clean enough.
-		internal const float CaretThicknessAsRatioOfLineHeight = 0.05f;
+		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
+		internal const float CaretThickness = 1;
 
 		// This is safe as a static field.
 		// 1) It's only accessed from UI thread.
@@ -108,7 +109,7 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				var parent = ((IBlock)_collection.GetParent());
 				var text = parent.GetText();
-				var unadjustedValue = (start: text[..value.start].EnumerateRunes().Count(), end: text[..value.end].EnumerateRunes().Count()); // unadjust for surrogate pairs
+				var unadjustedValue = (start: CountRunes(text[..value.start]), end: CountRunes(text[..value.end])); // unadjust for surrogate pairs
 
 				// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
 				if (_selection is null || (unadjustedValue.start, unadjustedValue.end) != (_selection.StartIndex, _selection.EndIndex))
@@ -118,6 +119,19 @@ namespace Microsoft.UI.Xaml.Documents
 					var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
 					_selection = new SelectionDetails(startLine, unadjustedValue.start, endLine, unadjustedValue.end);
 					parent.Invalidate(false);
+				}
+
+				static int CountRunes(string s)
+				{
+					var enumerator = s.EnumerateRunes();
+					int count = 0;
+					// Avoid LINQ's Count() because it will box the enumerator.
+					while (enumerator.MoveNext())
+					{
+						count++;
+					}
+
+					return count;
 				}
 			}
 		}
@@ -230,7 +244,7 @@ namespace Microsoft.UI.Xaml.Documents
 							else if (start + length < end)
 							{
 								// equivalently condition would be `trailingSpaces < segment.TrailingSpaces`
-								global::System.Diagnostics.Debug.Assert(end - (start + length) == segment.TrailingSpaces - trailingSpaces);
+								global::System.Diagnostics.CI.Assert(end - (start + length) == segment.TrailingSpaces - trailingSpaces);
 
 								// We could fit the segment, but not all of the trailing spaces
 								// These remaining trailing spaces will never be rendered, that's
@@ -280,7 +294,7 @@ namespace Microsoft.UI.Xaml.Documents
 						}
 
 						// By this point, we must have at least dealt with the leading spaces.
-						global::System.Diagnostics.Debug.Assert(start >= segment.LeadingSpaces);
+						global::System.Diagnostics.CI.Assert(start >= segment.LeadingSpaces);
 
 						if (x > 0)
 						{
@@ -457,7 +471,7 @@ namespace Microsoft.UI.Xaml.Documents
 		internal void Draw(in DrawingSession session)
 		{
 			var newDrawingState = (_selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
-			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && !_lastDrawingState.Equals(newDrawingState);
+			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } || !_lastDrawingState.Equals(newDrawingState);
 			var fireEvents = FireDrawingEventsOnEveryRedraw || somethingChanged;
 			_drawingValid.wentThroughDraw = true;
 			_lastDrawingState = newDrawingState;
@@ -475,7 +489,7 @@ namespace Microsoft.UI.Xaml.Documents
 					// empty, so caret is at the beginning
 					if (RenderCaret)
 					{
-						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(_lastDefaultLineHeight * CaretThicknessAsRatioOfLineHeight, _lastDefaultLineHeight)));
+						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)));
 					}
 					DrawingFinished?.Invoke();
 				}
@@ -517,14 +531,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 					var segment = segmentSpan.Segment;
 					var inline = segment.Inline;
-					var fontInfo = inline.FontInfo;
+					var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 					var paint = inline.Paint;
-
-					if (segment.FallbackFont is FontDetails fallback)
-					{
-						paint = segment.Paint!;
-						fontInfo = fallback;
-					}
 
 					if (inline.Foreground is SolidColorBrush scb)
 					{
@@ -825,7 +833,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 				if (caretLocation != float.MinValue && fireEvents)
 				{
-					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y)));
+					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)));
 				}
 			}
 		}

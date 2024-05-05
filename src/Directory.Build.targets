@@ -61,6 +61,12 @@
 		<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
 	</Target>
 
+	<PropertyGroup>
+		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
+		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
+		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
 		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
@@ -90,22 +96,22 @@
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
-		<PackageReference Update="SkiaSharp.Views" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.7"  />
-		<PackageReference Update="SkiaSharp" Version="2.88.7"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.7"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.7" />
-		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Harfbuzz" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
 		
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
-		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
@@ -131,7 +137,7 @@
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.17" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
@@ -142,7 +148,7 @@
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.17" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
 	</ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">

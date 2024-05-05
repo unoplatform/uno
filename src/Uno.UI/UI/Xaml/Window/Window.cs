@@ -324,6 +324,12 @@ partial class Window
 	{
 	}
 
+	public bool ExtendsContentIntoTitleBar
+	{
+		get => AppWindow.TitleBar.ExtendsContentIntoTitleBar;
+		set => AppWindow.TitleBar.ExtendsContentIntoTitleBar = value;
+	}
+
 	internal Brush? Background
 	{
 		get => _background;

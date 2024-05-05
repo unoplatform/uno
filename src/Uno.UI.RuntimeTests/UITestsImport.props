@@ -2,6 +2,7 @@
 
 	<ItemGroup>
 		<!-- File path or directy with globbing relative to SamplesApp\SamplesApp.UITests directory -->
+		<UITests Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Windows_UI_Xaml_Controls\FlyoutTests\UnoSamples_Tests.Flyout_OverlayInputPassThroughElement.cs" />
 		<UITests Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Windows_UI_Xaml_Controls\ListViewTests\Selection_Pointers.cs" />
 		<UITests Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControlTests.cs" />
 		<UITests Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Windows_UI_Xaml_Input\Capture_Tests.cs" />

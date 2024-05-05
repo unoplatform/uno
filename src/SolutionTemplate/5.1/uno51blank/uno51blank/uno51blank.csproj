@@ -48,10 +48,18 @@
         <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
       </ItemGroup>
     </When>
+    <When Condition="$(TargetFramework.Contains('windows10'))">
+      <ItemGroup>
+        <PackageReference Include="SkiaSharp.Views" NoWarn="NU1701" />
+        <PackageReference Include="SkiaSharp.Views.Gtk2" NoWarn="NU1701" />
+        <PackageReference Include="OpenTK" NoWarn="NU1701" />
+        <PackageReference Include="OpenTK.GLControl" NoWarn="NU1701" />
+      </ItemGroup>
+    </When>
   </Choose>
 
-  <Target Name="_UnoValidateAssemblyResources" 
-          BeforeTargets="AfterBuild" 
+  <Target Name="_UnoValidateAssemblyResources"
+          BeforeTargets="AfterBuild"
           Condition="'$(TargetFramework)'=='$(DotNetVersion)-windows10.0.19041'">
 
     <!-- Related to https://github.com/unoplatform/uno/issues/15492 to ensure that library assets are properly generated -->

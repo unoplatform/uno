@@ -60,6 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
+			base.OnVisibilityChanged(oldValue, newValue);
 			CommandBar.OnCommandBarElementVisibilityChanged(this);
 		}
 	}

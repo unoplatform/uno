@@ -452,7 +452,28 @@ namespace Microsoft.UI.Xaml.Data
 
 			if (viewTarget != null)
 			{
-				GetValueSetter()(viewTarget, value);
+				if (ParentBinding.RelativeSource?.Mode == RelativeSourceMode.TemplatedParent)
+				{
+					// Very hacky workaround. In WinUI, setting a local value *after* animation value will
+					// cause the local value to take precedence, and we aligned this behavior in Uno.
+					// However, when TemplateBinding is involved, things go wrong in Uno.
+					// This is due to lifecycle differences where we are setting Animations value first, then Local value from TemplateBinding
+					// while the order should be the opposite.
+					// It may be related to https://github.com/unoplatform/uno/issues/190
+					try
+					{
+						DependencyPropertyDetails.SuppressLocalCanDefeatAnimations();
+						GetValueSetter()(viewTarget, value);
+					}
+					finally
+					{
+						DependencyPropertyDetails.ContinueLocalCanDefeatAnimations();
+					}
+				}
+				else
+				{
+					GetValueSetter()(viewTarget, value);
+				}
 			}
 			else
 			{
@@ -718,7 +739,7 @@ namespace Microsoft.UI.Xaml.Data
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InnerSetTargetValueSafe(object v, bool useTargetNullValue)
 		{
-			if (v is UnsetValue)
+			if (v == DependencyProperty.UnsetValue)
 			{
 				ApplyFallbackValue();
 			}

@@ -15,61 +15,55 @@
 		<SolidColorBrush x:Key="xLargeColor" Color="Red"></SolidColorBrush>
 	</UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="Description for sample of VisualState_Setter_StaticResource">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="auto" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
-					 
-					<VisualStateManager.VisualStateGroups>
-						<VisualStateGroup x:Name="CommonStates">
-							<VisualState x:Name="NarrowState">
-								<VisualState.StateTriggers>
-									<AdaptiveTrigger MinWindowWidth ="100"/>
-								</VisualState.StateTriggers>
-								<VisualState.Setters>
-									<Setter Target="stateName.Text" Value="Narrow State" />
-									<Setter Target="myBorder1.Background" Value="Blue" />
-									<Setter Target="myBorder2.Background" Value="{StaticResource narrowColor}" />
-								</VisualState.Setters>
-							</VisualState>
-							<VisualState x:Name="LargeState">
-								<VisualState.StateTriggers>
-									<AdaptiveTrigger MinWindowWidth ="900"/>
-								</VisualState.StateTriggers>
-								<VisualState.Setters>
-									<Setter Target="stateName.Text" Value="Large State" />
-									<Setter Target="myBorder1.Background" Value="Yellow" />
-									<Setter Target="myBorder2.Background" Value="{StaticResource largeColor}" />
-								</VisualState.Setters>
-							</VisualState>
-							<VisualState x:Name="XLargeState">
-								<VisualState.StateTriggers>
-									<AdaptiveTrigger MinWindowWidth ="1200"/>
-								</VisualState.StateTriggers>
-								<VisualState.Setters>
-									<Setter Target="stateName.Text" Value="Extra Large State" />
-									<Setter Target="myBorder1.Background" Value="Red" />
-									<Setter Target="myBorder2.Background" Value="{StaticResource xLargeColor}" />
-								</VisualState.Setters>
-							</VisualState>
-						</VisualStateGroup>
-					</VisualStateManager.VisualStateGroups>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
 
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-						<Border x:Name="myBorder1" Grid.Column="0" />
-						<Border x:Name="myBorder2" Grid.Column="1" />
-					</Grid>
-					<TextBlock x:Name="stateName" />
-				</Grid>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="CommonStates">
+				<VisualState x:Name="NarrowState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth ="100"/>
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="stateName.Text" Value="Narrow State" />
+						<Setter Target="myBorder1.Background" Value="Blue" />
+						<Setter Target="myBorder2.Background" Value="{StaticResource narrowColor}" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="LargeState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth ="900"/>
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="stateName.Text" Value="Large State" />
+						<Setter Target="myBorder1.Background" Value="Yellow" />
+						<Setter Target="myBorder2.Background" Value="{StaticResource largeColor}" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="XLargeState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth ="1200"/>
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="stateName.Text" Value="Extra Large State" />
+						<Setter Target="myBorder1.Background" Value="Red" />
+						<Setter Target="myBorder2.Background" Value="{StaticResource xLargeColor}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			<Border x:Name="myBorder1" Grid.Column="0" />
+			<Border x:Name="myBorder2" Grid.Column="1" />
+		</Grid>
+		<TextBlock x:Name="stateName" />
+	</Grid>
 </UserControl>

@@ -36,9 +36,12 @@ using Uno.UI;
 using Foundation;
 #endif
 
+using Point = Windows.Foundation.Point;
+using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
+using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
+
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
-using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -3973,6 +3976,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__ || __IOS__
+		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
+#endif
+		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree()
+		{
+			var source = new ObservableCollection<string>()
+			{
+				"1",
+				"2",
+				"3"
+			};
+
+			var SUT = new ListView
+			{
+				ItemsSource = source
+			};
+
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(3, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			source.RemoveAt(2);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			source.RemoveAt(1);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+			source.RemoveAt(0);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.FindVisualChildByType<ItemsStackPanel>().Children.Count);
+		}
+
+		[TestMethod]
 		public async Task When_ItemsSource_INCC_Reset()
 		{
 			// note: In order to repro #12059 (extra SelectTemplate call) & SelectTemplateCore called with incorrect item (the `source` is passed as item),
@@ -4422,6 +4457,138 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, global::Foundation.NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#endif
+		public Task When_SelectionChanged_Item_Is_BroughtIntoView_ListView() => When_SelectionChanged_Item_Is_BroughtIntoView<ListView>();
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#endif
+		public Task When_SelectionChanged_Item_Is_BroughtIntoView_TabView() => When_SelectionChanged_Item_Is_BroughtIntoView<TabView>();
+
+		public async Task When_SelectionChanged_Item_Is_BroughtIntoView<T>() where T : FrameworkElement, new()
+		{
+			var source = Enumerable.Range(0, 100)
+				.Select(x => typeof(T) == typeof(TabView)
+					? (object)new TabViewItem { Header = x, Content = $"Content of {x}" }
+					: x)
+				.ToArray();
+			var setup = CreateSetup();
+
+			await UITestHelper.Load(setup);
+			await Task.Delay(1000);
+
+			SetSelectedItem(source.ElementAt(50));
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+
+			var lv = setup as ListView ?? setup.FindFirstDescendant<ListView>(); // get the LV itself, or the TabListView within TabView used for header
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			var container = lv.ContainerFromIndex(50) as ContentControl;
+
+			var offset = container.TransformToVisual(lv).TransformPoint(default);
+			var (offsetStart, vpExtent) = setup is TabView
+				? (offset.X, sv.ViewportWidth) // horizontal
+				: (offset.Y, sv.ViewportHeight); // vertical
+
+			Assert.IsTrue(0 <= offsetStart && offsetStart <= vpExtent, $"Container#50 should be within viewport: 0 <= {offsetStart} <= {vpExtent}");
+
+			FrameworkElement CreateSetup() => typeof(T).Name switch
+			{
+				nameof(ListView) => new ListView { Width = 400, Height = 200, ItemsSource = source },
+				nameof(TabView) => new TabView { Width = 400, Height = 200, TabItemsSource = source },
+
+				_ => throw new ArgumentOutOfRangeException($"Generic arg not accepted: {typeof(T).Name}")
+			};
+			void SetSelectedItem(object item)
+			{
+				if (setup is ListView lv) { lv.SelectedItem = item; }
+				else if (setup is TabView tv) { tv.SelectedItem = item; }
+				else { throw new NotImplementedException(); }
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#elif __ANDROID__ || __IOS__
+		[Ignore("This test is for managed ListViewBase.")]
+#endif
+		public async Task When_ScrollIntoView_No_Virtualization()
+		{
+			var source = Enumerable.Range(0, 100).ToArray();
+			var lv = new ListView { Width = 400, Height = 200, ItemsSource = source };
+
+			await UITestHelper.Load(lv);
+
+			lv.ScrollIntoView(source[50]);
+			await WindowHelper.WaitForIdle();
+
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			var container = (ContentControl)lv.ContainerFromIndex(50);
+
+			var offset = container.TransformToVisual(lv).TransformPoint(default);
+			var (offsetStart, vpExtent) = (offset.Y, sv.ViewportHeight);
+
+			Assert.IsTrue(0 <= offsetStart && offsetStart + container.ActualHeight <= vpExtent, $"Container#50 should be within viewport: 0 <= {offsetStart} <= {vpExtent}");
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#else
+		[Ignore("https://github.com/unoplatform/uno/issues/16246")]
+#endif
+		public async Task When_ScrollIntoView_Containers_With_Varying_Heights()
+		{
+			var random = new Random(42);
+			var lv = new ListView
+			{
+				Height = 400,
+				ItemsSource = Enumerable.Range(0, 100).Select(i => $"item {i}" + new string('\n', random.Next(0, 5))).ToArray(),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+
+					return new StackPanel
+					{
+						Padding = new Thickness(16),
+						Children =
+						{
+							tb
+						}
+					};
+				})
+			};
+
+			await UITestHelper.Load(lv);
+
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			var i = 7049.5;
+			while (i > 0)
+			{
+				sv.ScrollToVerticalOffset(i);
+				await WindowHelper.WaitForIdle();
+				i -= 400;
+				// try i -= 800, it will also fail the test even though visually, item 0 is visible, but the list view is interally corrupted
+			}
+
+			sv.ScrollToVerticalOffset(i);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(lv.ContainerFromItem(0));
 		}
 #endif
 	}

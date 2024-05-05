@@ -18,7 +18,7 @@ using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
@@ -82,5 +82,30 @@ public sealed partial class InteractionTrackerAndExpressionAnimationSample : Pag
 		{
 			_border2Visual.StopAnimation("Offset");
 		};
+	}
+
+	private void OnManipulationStarting(object sender, ManipulationStartingRoutedEventArgs e)
+	{
+		logTB.Text += "OnManipulationStarting\r\n";
+	}
+
+	private void OnManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+	{
+		logTB.Text += "OnManipulationStarted\r\n";
+	}
+
+	private void OnManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+	{
+		logTB.Text += "OnManipulationDelta\r\n";
+	}
+
+	private void OnManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+	{
+		logTB.Text += "OnManipulationCompleted\r\n";
+	}
+
+	private void OnManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+	{
+		logTB.Text += "OnManipulationInertiaStarting\r\n";
 	}
 }

@@ -67,7 +67,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{
 				canvas.Clear(SKColors.Transparent);
 				var scale = host.RootElement?.XamlRoot is { } root
-					? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+					? root.RasterizationScale
 					: 1;
 				canvas.Scale((int)scale);
 

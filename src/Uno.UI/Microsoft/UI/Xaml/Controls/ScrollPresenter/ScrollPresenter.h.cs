@@ -172,38 +172,38 @@ public partial class ScrollPresenter : FrameworkElement
 	//event_source<winrt::ConfigurationChangedEventHandler> m_configurationChanged{ this };
 
 	// Event Revokers
-	private SerialDisposable m_renderingRevoker;
-	private SerialDisposable m_loadedRevoker;
-	private SerialDisposable m_unloadedRevoker;
-	private SerialDisposable m_bringIntoViewRequestedRevoker;
-	private SerialDisposable m_contentMinWidthChangedRevoker;
-	private SerialDisposable m_contentWidthChangedRevoker;
-	private SerialDisposable m_contentMaxWidthChangedRevoker;
-	private SerialDisposable m_contentMinHeightChangedRevoker;
-	private SerialDisposable m_contentHeightChangedRevoker;
-	private SerialDisposable m_contentMaxHeightChangedRevoker;
-	private SerialDisposable m_contentHorizontalAlignmentChangedRevoker;
-	private SerialDisposable m_contentVerticalAlignmentChangedRevoker;
+	private readonly SerialDisposable m_renderingRevoker = new();
+	private readonly SerialDisposable m_loadedRevoker = new();
+	private readonly SerialDisposable m_unloadedRevoker = new();
+	private readonly SerialDisposable m_bringIntoViewRequestedRevoker = new();
+	private readonly SerialDisposable m_contentMinWidthChangedRevoker = new();
+	private readonly SerialDisposable m_contentWidthChangedRevoker = new();
+	private readonly SerialDisposable m_contentMaxWidthChangedRevoker = new();
+	private readonly SerialDisposable m_contentMinHeightChangedRevoker = new();
+	private readonly SerialDisposable m_contentHeightChangedRevoker = new();
+	private readonly SerialDisposable m_contentMaxHeightChangedRevoker = new();
+	private readonly SerialDisposable m_contentHorizontalAlignmentChangedRevoker = new();
+	private readonly SerialDisposable m_contentVerticalAlignmentChangedRevoker = new();
 
-	private SerialDisposable m_horizontalScrollControllerScrollToRequestedRevoker;
-	private SerialDisposable m_horizontalScrollControllerScrollByRequestedRevoker;
-	private SerialDisposable m_horizontalScrollControllerAddScrollVelocityRequestedRevoker;
-	private SerialDisposable m_horizontalScrollControllerPanningInfoChangedRevoker;
-	private SerialDisposable m_horizontalScrollControllerPanningInfoPanRequestedRevoker;
+	private readonly SerialDisposable m_horizontalScrollControllerScrollToRequestedRevoker = new();
+	private readonly SerialDisposable m_horizontalScrollControllerScrollByRequestedRevoker = new();
+	private readonly SerialDisposable m_horizontalScrollControllerAddScrollVelocityRequestedRevoker = new();
+	private readonly SerialDisposable m_horizontalScrollControllerPanningInfoChangedRevoker = new();
+	private readonly SerialDisposable m_horizontalScrollControllerPanningInfoPanRequestedRevoker = new();
 
-	private SerialDisposable m_verticalScrollControllerScrollToRequestedRevoker;
-	private SerialDisposable m_verticalScrollControllerScrollByRequestedRevoker;
-	private SerialDisposable m_verticalScrollControllerAddScrollVelocityRequestedRevoker;
-	private SerialDisposable m_verticalScrollControllerPanningInfoChangedRevoker;
-	private SerialDisposable m_verticalScrollControllerPanningInfoPanRequestedRevoker;
+	private readonly SerialDisposable m_verticalScrollControllerScrollToRequestedRevoker = new();
+	private readonly SerialDisposable m_verticalScrollControllerScrollByRequestedRevoker = new();
+	private readonly SerialDisposable m_verticalScrollControllerAddScrollVelocityRequestedRevoker = new();
+	private readonly SerialDisposable m_verticalScrollControllerPanningInfoChangedRevoker = new();
+	private readonly SerialDisposable m_verticalScrollControllerPanningInfoPanRequestedRevoker = new();
 
 	// Used on platforms where we don't have XamlRoot.
 	// winrt::ICoreWindow::KeyDown_revoker m_coreWindowKeyDownRevoker{};
 	// winrt::ICoreWindow::KeyUp_revoker m_coreWindowKeyUpRevoker{};
 
-	private SerialDisposable m_horizontalSnapPointsVectorChangedRevoker = new();
-	private SerialDisposable m_verticalSnapPointsVectorChangedRevoker = new();
-	private SerialDisposable m_zoomSnapPointsVectorChangedRevoker = new();
+	private readonly SerialDisposable m_horizontalSnapPointsVectorChangedRevoker = new();
+	private readonly SerialDisposable m_verticalSnapPointsVectorChangedRevoker = new();
+	private readonly SerialDisposable m_zoomSnapPointsVectorChangedRevoker = new();
 
 	private IList<ScrollSnapPointBase> m_horizontalSnapPoints;
 	private IList<ScrollSnapPointBase> m_verticalSnapPoints;

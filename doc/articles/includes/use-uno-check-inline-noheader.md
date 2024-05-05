@@ -12,4 +12,4 @@
 
 ***
 
-You can find additional information about [**uno-check here**](external/uno.check/doc/using-uno-check.md).
+You can find additional information about [**uno-check here**](xref:UnoCheck.UsingUnoCheck).

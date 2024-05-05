@@ -629,8 +629,33 @@ namespace Microsoft.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			// TODO: include modifier info
-			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload), VirtualKeyModifiers.None) { CanBubbleNatively = true };
+			var key = VirtualKey.None;
+			var modifiers = VirtualKeyModifiers.None;
+			if (payload.Length > 4)
+			{
+				// Modifiers are in this order Ctrl, Alt, Windows, Shift
+				if (payload[0] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Control;
+				}
+				if (payload[1] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Menu;
+				}
+				if (payload[2] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Windows;
+				}
+				if (payload[3] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Shift;
+				}
+
+				// Remaining characters are the pressed key
+				key = VirtualKeyHelper.FromKey(payload[4..]);
+
+			}
+			return new KeyRoutedEventArgs(src, key, modifiers) { CanBubbleNatively = true };
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)

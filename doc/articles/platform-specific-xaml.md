@@ -24,9 +24,9 @@ This guide covers multiple approaches to managing per-platform markup in XAML. S
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
 
 * Use conditionals within a shared file
-* Place the code in a file which is only included in the desired platform head.
+* Place the code in a file that is only included in the desired target framework.
 
- The structure of an Uno app created with the default [Visual Studio template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) is [explained in more detail here](uno-app-solution-structure.md). The key point to understand is that files in a shared project referenced from a platform head **are treated in exactly the same way** as files included directly under the head, and are compiled together into a single assembly.
+ The structure of an Uno Platform app created with the default [Visual Studio template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) is [explained in more detail here](xref:Uno.Development.AppStructure).
 
 ## XAML conditional prefixes
 
@@ -129,7 +129,7 @@ The pre-defined prefixes are listed below:
 
 More visually, platform support for the pre-defined prefixes is shown in the below table:
 
-| Prefix        |  Win  | Droid |  iOS  |  Web  | macOS | Skia  |
+| Prefix        |  Windows  | Android |  iOS  |  Web  | macOS | Skia  |
 |---------------|-------|-------|-------|-------|-------|-------|
 | `win`         | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
 | `android`     | ✖ | ✔ | ✖ | ✖ | ✖ | ✖ |
@@ -137,7 +137,6 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 | `wasm`        | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ |
 | `macos`       | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ |
 | `skia`        | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ |
-| `xamarin`     | ✖ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `not_win`     | ✖ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `not_android` | ✔ | ✖ | ✔ | ✔ | ✔ | ✔ |
 | `not_ios`     | ✔ | ✔ | ✖ | ✔ | ✔ | ✔ |
@@ -145,18 +144,13 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 | `not_macos`   | ✔ | ✔ | ✔ | ✔ | ✖ | ✔ |
 | `not_skia`    | ✔ | ✔ | ✔ | ✔ | ✔ | ✖ |
 
-Where:
-
-* 'Win' represents Windows, and
-* 'Droid' represents Android
-
 ### XAML prefixes in cross-targeted libraries
 
-For Uno 3.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm in a library, since both platforms use the .NET Standard 2.0 target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
+For Uno 3.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm in a library, since both platforms use the .NET 7 or .NET 8 target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
 
 The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm are similar, it is often not necessary to make the distinction.
 
-In cases where it is needed (fonts are one example) then the XAML files must be placed directly in the platform-specific project or a Class Library project.
+In cases where it is needed (fonts are one example) then the XAML files must be placed directly in the app project.
 
 | Prefix          | Namespace                                                   | Put in `mc:Ignorable`? |
 |-----------------|-------------------------------------------------------------|------------------------|

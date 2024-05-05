@@ -13,6 +13,7 @@ using Gtk;
 using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -32,7 +33,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		/// </summary>
 		private const int GuardBand = 1;
 
-		private readonly DisplayInformation _displayInformation;
 		private readonly IGtkXamlRootHost _host;
 
 		private float? _scale = 1;
@@ -47,14 +47,14 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		/// In order to avoid virtual calls to <see cref="ClearOpenGL"/> and <see cref="FlushOpenGL"/> for performance reasons.
 		/// </remarks>
 		protected bool _isGLES;
+		private readonly XamlRoot _xamlRoot;
 
 		public SKColor BackgroundColor { get; set; }
 
 		public GLRenderSurfaceBase(IGtkXamlRootHost host)
 		{
-			var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host);
-			_displayInformation = WUX.XamlRoot.GetDisplayInformation(xamlRoot);
-			_displayInformation.DpiChanged += OnDpiChanged;
+			_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+			_xamlRoot.Changed += OnXamlRootChanged;
 			UpdateDpi();
 
 			// Set some event handlers
@@ -180,9 +180,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		protected abstract GRContext TryBuildGRContext();
 
-		private void OnDpiChanged(DisplayInformation sender, object args) =>
-			UpdateDpi();
-
 		public void TakeScreenshot(string filePath)
 		{
 			if (_surface != null)
@@ -195,10 +192,16 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 		}
 
+		private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => UpdateDpi();
+
 		private void UpdateDpi()
 		{
-			_scale = (float)_displayInformation.RawPixelsPerViewPixel;
-			InvalidateRender();
+			var newScale = (float)_xamlRoot.RasterizationScale;
+			if (_scale != newScale)
+			{
+				_scale = newScale;
+				InvalidateRender();
+			}
 		}
 	}
 }

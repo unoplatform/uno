@@ -1,19 +1,14 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using Uno.Extensions;
-using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Windows.Foundation;
-using System.IO;
-using Windows.Devices.Input;
-using Windows.System;
-using Microsoft.UI.Composition;
+using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
-using Uno.UI.Media;
+using Windows.Devices.Input;
+using Windows.Foundation;
+
+#if HAS_UNO_WINUI
+using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
+#else
+using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -76,6 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Touch scroll support
 			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
 			ManipulationStarting += PrepareTouchScroll;
+			ManipulationStarted += TouchScrollStarted;
 			ManipulationDelta += UpdateTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
 		}
@@ -181,6 +177,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void TouchScrollStarted(object sender, ManipulationStartedRoutedEventArgs e)
+		{
+			if (e.Container != this)
+			{
+				// This gesture is coming from a nested element, we just ignore it!
+				return;
+			}
+
+			if (e.PointerDeviceType == _PointerDeviceType.Touch)
+			{
+				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
+				this.CapturePointer(PointerRoutedEventArgs.LastPointerEvent.Pointer);
+			}
+		}
+
 		private void UpdateTouchScroll(object sender, ManipulationDeltaRoutedEventArgs e)
 		{
 			if (e.Container != this) // No needs to check the pointer type, if the manip is local it's touch, otherwise it was cancelled in starting.
@@ -204,6 +215,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			Set(disableAnimation: true, isIntermediate: false);
+
+			Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
+			this.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
 		}
 
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS

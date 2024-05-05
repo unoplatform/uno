@@ -1,6 +1,9 @@
 <Project>
 	<PropertyGroup>
 		<UseWinUI>true</UseWinUI>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' ">
 		<OutputType>WinExe</OutputType>
 		<!-- Bundles the WinAppSDK binaries -->
 		<WindowsAppSDKSelfContained Condition="$(WindowsAppSDKSelfContained) == ''">true</WindowsAppSDKSelfContained>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Windows.Foundation;
 using Microsoft.UI.Windowing.Native;
@@ -32,6 +33,11 @@ partial class AppWindow
 	}
 
 	public event TypedEventHandler<AppWindow, AppWindowChangedEventArgs> Changed;
+
+	/// <summary>
+	/// Gets the title bar of the app window.
+	/// </summary>
+	public AppWindowTitleBar TitleBar { get; } = new AppWindowTitleBar();
 
 	public string Title
 	{
@@ -85,6 +91,9 @@ partial class AppWindow
 
 		return appWindow;
 	}
+
+	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
+		=> _windowIdMap.TryGetValue(windowId, out appWindow);
 
 	public void SetPresenter(AppWindowPresenter appWindowPresenter)
 	{

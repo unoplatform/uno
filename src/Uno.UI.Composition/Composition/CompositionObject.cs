@@ -52,13 +52,20 @@ namespace Microsoft.UI.Composition
 		// Overrides are based on:
 		// https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject.startanimation?view=winrt-22621
 		internal virtual object GetAnimatableProperty(string propertyName, string subPropertyName)
-			=> TryGetFromProperties(_properties, propertyName, subPropertyName);
+			=> TryGetFromProperties(_properties ?? this as CompositionPropertySet, propertyName, subPropertyName);
 
 		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
-			=> TryUpdateFromProperties(_properties, propertyName, subPropertyName, propertyValue);
+			=> TryUpdateFromProperties(Properties, propertyName, subPropertyName, propertyValue);
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
+#if __IOS__
+			if (StartAnimationCore(propertyName, animation))
+			{
+				return;
+			}
+#endif
+
 			ReadOnlySpan<char> firstPropertyName;
 			ReadOnlySpan<char> subPropertyName;
 			var firstDotIndex = propertyName.IndexOf('.');
@@ -80,8 +87,8 @@ namespace Microsoft.UI.Composition
 
 			_animations ??= new();
 			_animations[propertyName] = animation;
-			animation.PropertyChanged += ReEvaluateAnimation;
-			var animationValue = animation.Start();
+			animation.AnimationFrame += ReEvaluateAnimation;
+			var animationValue = animation.Start(firstPropertyName, subPropertyName, this);
 
 			try
 			{
@@ -133,7 +140,7 @@ namespace Microsoft.UI.Composition
 		{
 			if (_animations?.TryGetValue(propertyName, out var animation) == true)
 			{
-				animation.PropertyChanged -= ReEvaluateAnimation;
+				animation.AnimationFrame -= ReEvaluateAnimation;
 				animation.Stop();
 				_animations.Remove(propertyName);
 			}
@@ -145,10 +152,10 @@ namespace Microsoft.UI.Composition
 		{
 		}
 
-		internal virtual void StartAnimationCore(string propertyName, CompositionAnimation animation)
-		{
-
-		}
+#if __IOS__
+		internal virtual bool StartAnimationCore(string propertyName, CompositionAnimation animation)
+			=> false;
+#endif
 
 		internal void AddContext(CompositionObject context, string? propertyName)
 		{

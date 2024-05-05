@@ -3,69 +3,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemContainerAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider, global::Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSelected
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ItemContainerAutomationPeer.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ItemContainerAutomationPeer.IsSelected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple SelectionContainer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRawElementProviderSimple ItemContainerAutomationPeer.SelectionContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRawElementProviderSimple%20ItemContainerAutomationPeer.SelectionContainer");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ItemContainerAutomationPeer(global::Microsoft.UI.Xaml.Controls.ItemContainer owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer", "ItemContainerAutomationPeer.ItemContainerAutomationPeer(ItemContainer owner)");
-		}
-#endif
+		// Skipping already declared property IsSelected
+		// Skipping already declared property SelectionContainer
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.ItemContainerAutomationPeer(Microsoft.UI.Xaml.Controls.ItemContainer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.SelectionContainer.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddToSelection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer", "void ItemContainerAutomationPeer.AddToSelection()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveFromSelection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer", "void ItemContainerAutomationPeer.RemoveFromSelection()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Select()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer", "void ItemContainerAutomationPeer.Select()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Invoke()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer", "void ItemContainerAutomationPeer.Invoke()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.AddToSelection()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.RemoveFromSelection()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.Select()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.Invoke()
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}

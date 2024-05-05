@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Management.Instrumentation;
 using Microsoft.VisualStudio.RpcContracts.Build;
 using EnvDTE80;
+using System.Xml;
 namespace Uno.UI.RemoteControl.VS.DebuggerHelper;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
@@ -32,10 +33,12 @@ internal class ProfilesObserver : IDisposable
 	private readonly DTE _dte;
 	private readonly Func<string?, string, Task> _onDebugFrameworkChanged;
 	private readonly Func<string?, string, Task> _onDebugProfileChanged;
+	private Func<Task> _onStartupProjectChanged;
 
 	private record FrameworkServices(object? ActiveDebugFrameworkServices, MethodInfo? SetActiveFrameworkMethod, MethodInfo? GetProjectFrameworksAsyncMethod);
 	private FrameworkServices? _projectFrameworkServices;
 
+	private bool _isDisposed;
 	private string? _currentActiveDebugProfile;
 	private string? _currentActiveDebugFramework;
 	private IDisposable? _projectRuleSubscriptionLink;
@@ -54,11 +57,15 @@ internal class ProfilesObserver : IDisposable
 	public string? CurrentActiveDebugFramework
 		=> _currentActiveDebugFramework;
 
+	public UnconfiguredProject? UnconfiguredProject
+		=> _unconfiguredProject;
+
 	public ProfilesObserver(
 		AsyncPackage asyncPackage
 		, EnvDTE.DTE dte
 		, Func<string?, string, Task> onDebugFrameworkChanged
 		, Func<string?, string, Task> onDebugProfileChanged
+		, Func<Task> onStartupProjectChanged
 		, Action<string> debugLog)
 	{
 		_asyncPackage = asyncPackage;
@@ -66,11 +73,24 @@ internal class ProfilesObserver : IDisposable
 		_dte = dte;
 		_onDebugFrameworkChanged = onDebugFrameworkChanged;
 		_onDebugProfileChanged = onDebugProfileChanged;
+		_onStartupProjectChanged = onStartupProjectChanged;
 
 		ObserveSolutionEvents();
+		_ = ObserveStartupProjectAsync();
 	}
 
 	object[]? _existingStartupProjects = [];
+
+
+	private async Task ObserveStartupProjectAsync()
+	{
+		while (!_isDisposed)
+		{
+			await Task.Delay(2000);
+
+			TryUpdateSolution();
+		}
+	}
 
 	private void TryUpdateSolution()
 	{
@@ -78,8 +98,12 @@ internal class ProfilesObserver : IDisposable
 		{
 			if (!newStartupProjects.SequenceEqual(_existingStartupProjects))
 			{
+				_debugLog("Startup projects have changed, reloading observer");
+
 				// log all projects
 				_existingStartupProjects = newStartupProjects;
+
+				UnsubscribeCurrentProject();
 			}
 
 			if (_unconfiguredProject is null)
@@ -129,6 +153,8 @@ internal class ProfilesObserver : IDisposable
 							unconfiguredProjectBlock,
 							projectChangesBlock,
 							new() { PropagateCompletion = true });
+
+						await _onStartupProjectChanged();
 					}
 				}
 			}
@@ -175,6 +201,11 @@ internal class ProfilesObserver : IDisposable
 
 		_debugLog($"unconfiguredProject was unloaded");
 
+		UnsubscribeCurrentProject();
+	}
+
+	private void UnsubscribeCurrentProject()
+	{
 		_currentActiveDebugFramework = null;
 		_currentActiveDebugProfile = null;
 
@@ -344,5 +375,8 @@ internal class ProfilesObserver : IDisposable
 	}
 
 	public void Dispose()
-		=> _projectRuleSubscriptionLink?.Dispose();
+	{
+		_projectRuleSubscriptionLink?.Dispose();
+		_isDisposed = true;
+	}
 }

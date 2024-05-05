@@ -137,11 +137,15 @@ jobs:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120s'
+        IS_RUNTIME_TESTS: false
+        IS_UI_TESTS: true
 
       net7_benchmarks:
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '15m'
+        IS_RUNTIME_TESTS: false
+        IS_UI_TESTS: true
 
       net7_uwp_runtimetests_group_00:
         SITE_SUFFIX: 'net7.0-UWP'
@@ -149,6 +153,8 @@ jobs:
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
       net7_uwp_runtimetests_group_01:
         SITE_SUFFIX: 'net7.0-UWP'
@@ -156,6 +162,8 @@ jobs:
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
       net7_uwp_runtimetests_group_02:
         SITE_SUFFIX: 'net7.0-UWP'
@@ -163,6 +171,8 @@ jobs:
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
       net7_winui_runtimetests_group_00:
         SITE_SUFFIX: 'net7.0-WinUI'
@@ -170,6 +180,8 @@ jobs:
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
       net7_winui_runtimetests_group_01:
         SITE_SUFFIX: 'net7.0-WinUI'
@@ -177,6 +189,8 @@ jobs:
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
       net7_winui_runtimetests_group_02:
         SITE_SUFFIX: 'net7.0-WinUI'
@@ -184,6 +198,8 @@ jobs:
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
   pool: ${{ parameters.poolName }}
 
@@ -236,6 +252,8 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
+      # This is the first run, we don't fail if there are failed tests, or if results file is missing. We'll wait for the second run.
+      # Note: failTaskOnMissingResultsFile default is false.
       failTaskOnFailedTests: false
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
@@ -258,6 +276,8 @@ jobs:
       testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
+      # This is the second run, if TestResult-original.xml is missing *and* this is a UI tests run, we fail.
+      failTaskOnMissingResultsFile: $(IS_UI_TESTS)
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
   - task: PublishTestResults@2
@@ -267,6 +287,8 @@ jobs:
       testRunTitle: 'WebAssembly Runtime Tests Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
+      # This is the second run, if RuntimeTestResults*.xml is missing *and* this is a runtime tests run, we fail.
+      failTaskOnMissingResultsFile: $(IS_RUNTIME_TESTS)
 
   - task: PublishBuildArtifacts@1
     condition: always()

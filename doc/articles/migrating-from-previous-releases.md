@@ -6,11 +6,19 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 This article details the migration steps required to migrate from one version to the next when breaking changes are being introduced.
 
+## Uno Platform 5.2
+
+Uno Platform 5.2 contains a new project template that supports all target frameworks into a single project, based on the Uno.Sdk that was introduced in Uno Platform 5.1.
+
+Using this new project template is entirely optional and previous project structures are fully supported.
+
+If you want to migrate to the new Single Project, you can follow the [Migrating to 5.2 Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
+
 ## Uno Platform 5.1
 
 Uno Platform 5.1 does not contain breaking changes that require attention when upgrading.
 
-This version however introduces the MSBuild Uno.SDK, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk is entirely optional and previous projects templates are fully supported. If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Uno.Sdk](xref:Uno.Development.MigratingToUnoSdk) guide.
+This version however introduces the MSBuild Uno.SDK, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk is entirely optional and previous project templates are fully supported. If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
 
 ## Uno Platform 5.0
 

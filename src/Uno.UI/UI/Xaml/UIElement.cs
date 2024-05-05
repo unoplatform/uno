@@ -34,6 +34,7 @@ using Microsoft.UI.Xaml.Documents;
 using Windows.ApplicationModel.Core;
 using Microsoft.UI.Input;
 using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Core.Scaling;
 
 #if __IOS__
 using UIKit;
@@ -75,9 +76,11 @@ namespace Microsoft.UI.Xaml
 		// but it should actually be computed based on clipping vs desired size.
 		internal Point ScrollOffsets { get; private protected set; }
 
+#if !__SKIA__
 		// This is the local viewport of the element, i.e. where the element can draw content once clipping has been applied.
 		// This is expressed in local coordinate space.
 		internal Rect Viewport { get; private set; } = Rect.Infinite;
+#endif
 		#endregion
 
 		/// <summary>
@@ -523,21 +526,33 @@ namespace Microsoft.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			if (from == to)
+			if (from == to || !from.IsInLiveTree || (!to?.IsInLiveTree ?? false))
 			{
 				return Matrix3x2.Identity;
 			}
 
+#if __SKIA__
+			Matrix4x4.Invert(to?.Visual.TotalMatrix ?? Matrix4x4.Identity, out var invertedTotalMatrix);
+			var finalTransform = (from.Visual.TotalMatrix * invertedTotalMatrix).ToMatrix3x2();
+
+			if (from.Log().IsEnabled(LogLevel.Trace))
+			{
+				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {finalTransform}");
+			}
+
+			return finalTransform;
+#else
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
 			// to find an element in the parent hierarchy of the other element.
-			if (to is { } && from.Depth < to.Depth)
+			if (to is not null && from.Depth < to.Depth)
 			{
 				return GetTransform(to, from).Inverse();
 			}
 #endif
 
 			var matrix = Matrix3x2.Identity;
+
 			var elt = from;
 			do
 			{
@@ -551,7 +566,6 @@ namespace Microsoft.UI.Xaml
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
-				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
 
 				var rootToTo = toToRoot.Inverse();
@@ -564,6 +578,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return matrix;
+#endif
 		}
 
 		/// <summary>
@@ -641,13 +656,11 @@ namespace Microsoft.UI.Xaml
 		internal void ApplyFlowDirectionTransform(ref Matrix3x2 matrix)
 		{
 #if SUPPORTS_RTL
-			if (this is FrameworkElement fe && VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			if (this is FrameworkElement fe
+				&& VisualTreeHelper.GetParent(this) is FrameworkElement parent
+				&& fe.FlowDirection != parent.FlowDirection)
 			{
-				if (fe.FlowDirection != parent.FlowDirection)
-				{
-					matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f);
-					matrix *= Matrix3x2.CreateTranslation((float)parent.RenderSize.Width, 0);
-				}
+				matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f, new Vector2(.5f, 0f));
 			}
 #endif
 		}
@@ -829,7 +842,25 @@ namespace Microsoft.UI.Xaml
 
 		internal void ApplyClip()
 		{
-#if __CROSSRUNTIME__
+#if __SKIA__
+			// On Skia specifically, we separate the two types of clipping.
+			// First, from Clip DP (handled in this code path)
+			// That clipping propagates to Visual.Clip through ApplyNativeClip.
+			// Second is clipping calculated from FrameworkElement.GetClipRect during arrange.
+			// That clipping propagates to ViewBox during arrange.
+			var clip = Clip;
+			if (clip is null)
+			{
+				ApplyNativeClip(Rect.Empty, transform: null);
+			}
+			else
+			{
+				ApplyNativeClip(clip.Rect, clip.Transform);
+			}
+
+			OnViewportUpdated();
+
+#elif __WASM__
 			InvalidateArrange();
 #else
 			Rect rect;
@@ -863,10 +894,23 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		partial void ApplyNativeClip(Rect rect);
+		partial void ApplyNativeClip(Rect rect
+#if __SKIA__
+			, Transform transform
+#endif
+			);
 
-		private protected virtual void OnViewportUpdated(Rect viewport) // Not "Changed" as it might be the same as previous
-			=> Viewport = viewport.IsEmpty ? Rect.Infinite : viewport; // If not clipped, we consider the viewport as infinite.
+		private protected virtual void OnViewportUpdated(
+#if !__SKIA__
+			Rect viewport
+#endif
+			) // Not "Changed" as it might be the same as previous
+		{
+#if !__SKIA__
+			// If not clipped, we consider the viewport as infinite.
+			Viewport = viewport.IsEmpty ? Rect.Infinite : viewport;
+#endif
+		}
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
@@ -1236,11 +1280,7 @@ namespace Microsoft.UI.Xaml
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
-		internal double GetScaleFactorForLayoutRounding()
-		{
-			// TODO use actual scaling based on current transforms.
-			return XamlRoot.GetDisplayInformation(XamlRoot).LogicalDpi / DisplayInformation.BaseDpi; // 100%
-		}
+		internal double GetScaleFactorForLayoutRounding() => RootScale.GetRasterizationScaleForElement(this);
 
 		private static double XcpRound(double x)
 		{
@@ -1347,6 +1387,11 @@ namespace Microsoft.UI.Xaml
 					});
 				}
 			}
+		}
+
+		internal void SetProtectedCursor(Microsoft /* UWP don't rename */.UI.Input.InputCursor cursor)
+		{
+			ProtectedCursor = cursor;
 		}
 
 		/// <summary>

@@ -8,6 +8,8 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
@@ -28,7 +30,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 						</DataTemplate>", content));
 		}
 
-		public static void RunActionsWithWait(Action[] actions)
+		public static async Task RunActionsWithWait(Action[] actions)
 		{
 			foreach (var action in actions)
 			{
@@ -37,7 +39,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 					action();
 				});
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 		}
 

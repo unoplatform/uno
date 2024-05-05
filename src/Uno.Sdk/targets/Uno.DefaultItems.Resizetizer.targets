@@ -10,10 +10,15 @@
 		<UnoSplashScreenFile Condition="$(UnoSplashScreenFile) == ''">$(UnoSplashFolder)splash_screen.svg</UnoSplashScreenFile>
 		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">128,128</UnoSplashScreenBaseSize>
 		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">#FFFFFF</UnoSplashScreenColor>
-		<_UnoResizetizerIsCompatibleApp Condition="$(SingleProject) == 'true'">true</_UnoResizetizerIsCompatibleApp>
+
+		<!-- Support net8.0, without a platform identifier -->
+		<_UnoResizetizerIsCompatibleApp Condition=" 
+			$(_IsUnoSingleProjectAndLegacy) == 'true' 
+			AND '$(TargetFramework)' != '' 
+			AND  $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">true</_UnoResizetizerIsCompatibleApp>
 	</PropertyGroup>
 
-	<ItemGroup Condition="$(SingleProject) == 'true'">
+	<ItemGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
 		<UnoIcon Include="$(UnoIconBackgroundFile)"
 			ForegroundFile="$(UnoIconForegroundFile)"
 			ForegroundScale="$(UnoIconForegroundScale)"

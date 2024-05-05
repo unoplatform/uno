@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -17,11 +19,13 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class GtkWindowWrapper : NativeWindowWrapperBase
 {
-	private bool _wasShown;
 	private readonly UnoGtkWindow _gtkWindow;
-	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
+	private readonly DpiHelper _dpiHelper;
 
-	public GtkWindowWrapper(UnoGtkWindow gtkWindow)
+	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
+	private bool _wasShown;
+
+	public GtkWindowWrapper(UnoGtkWindow gtkWindow, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_gtkWindow = gtkWindow ?? throw new ArgumentNullException(nameof(gtkWindow));
 		_gtkWindow.Shown += OnWindowShown;
@@ -29,7 +33,11 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		_gtkWindow.DeleteEvent += OnWindowClosing;
 		_gtkWindow.Destroyed += OnWindowClosed;
 		_gtkWindow.WindowStateEvent += OnWindowStateChanged;
+		_dpiHelper = new DpiHelper(_gtkWindow);
+		_dpiHelper.DpiChanged += OnDpiChanged;
 	}
+
+	private void OnDpiChanged(object? sender, EventArgs e) => RasterizationScale = _dpiHelper.RasterizationScale;
 
 	public override string Title
 	{
@@ -76,6 +84,12 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 			// Simulate closing to be in line with other targets.
 			OnWindowClosed(null, EventArgs.Empty);
 		}
+	}
+
+	public override void ExtendContentIntoTitleBar(bool extend)
+	{
+		base.ExtendContentIntoTitleBar(extend);
+		_gtkWindow.ExtendContentIntoTitleBar(extend);
 	}
 
 	private void OnWindowClosed(object? sender, EventArgs e)
@@ -182,11 +196,11 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		{
 			if (isVisible)
 			{
-				winUIApplication?.RaiseLeavingBackground(() => Visible = _gtkWindow.IsVisible);
+				winUIApplication?.RaiseLeavingBackground(() => Visible = isVisible);
 			}
 			else
 			{
-				Visible = _gtkWindow.IsVisible;
+				Visible = isVisible;
 				winUIApplication?.RaiseEnteredBackground(null);
 			}
 		}

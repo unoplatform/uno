@@ -19,22 +19,22 @@ Legend
 * 💬 Partially supported (see below for more details)
 * ✖ Not supported
 
-| Picker         | UWP   | WebAssembly | Android | iOS    | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|--------|-------|-----|-----|
-| FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔   | ✔  |
-| FileSavePicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔   | ✔  |
-| FolderPicker   | ✔    | ✔           | ✔      | 💬 (2) | ✔    | ✖   | ✔  |
+| Picker         | UWP   | WebAssembly | Android | iOS    | macOS | Skia Desktop (Windows) | Skia Desktop (X11) |
+|----------------|-------|-------------|---------|--------|-------|----------------------- |-----|
+| FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔                      | ✔  |
+| FileSavePicker | ✔    | ✔ (1)       | ✔      | 💬 (2) | ✔    | ✔                      | ✔  |
+| FolderPicker   | ✔    | ✔           | ✔      | ✔      | ✔    | ✖                      | ✔  |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*\
 *(2) - See iOS section below*
 
 On some platforms, you can further customize the file-picking experience by utilizing additional properties:
 
-| Feature                 | UWP  | WebAssembly | Android | iOS   | macOS | WPF | GTK |
-|-------------------------|------|-------------|---------|-------|-------|-----|-----|
-| SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔    | ✔   | ✔  |
-| SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔    | ✔   | ✔  |
-| SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✖    | ✖   | ✖  |
+| Feature                 | UWP  | WebAssembly | Android | iOS   | Skia Desktop |
+|-------------------------|------|-------------|---------|-------|-----|
+| SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔ |
+| SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔ |
+| SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✔ |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
 *(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used to apply `image/*` and `video/*` filters*\

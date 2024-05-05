@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Samples.Shared.Content.UITests
 {
-	[SampleControlInfo("Pointers", "TappedEventTest")]
+	[SampleControlInfo("Pointers", "TappedEventTest", Description = "TappedEventTest")]
 	public sealed partial class TappedEventTest : UserControl
 	{
 		public TappedEventTest()

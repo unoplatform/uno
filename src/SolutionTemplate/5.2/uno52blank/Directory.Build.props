@@ -1,9 +1,10 @@
 <Project>
   <PropertyGroup>
-    <DotNetVersion>net8.0</DotNetVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <UnoSdkDebugging>true</UnoSdkDebugging>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!--
       Adding NoWarn to remove build warnings
@@ -12,13 +13,6 @@
       PRI257: Ignore default language (en) not being one of the included resources (eg en-us, en-uk)
     -->
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257</NoWarn>
-
-    <!--
-      UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
-      TODO: Add an aka link to the documentation
-    -->
-    <UnoFeatures>
-    </UnoFeatures>
   </PropertyGroup>
 
   <PropertyGroup>

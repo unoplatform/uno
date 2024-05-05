@@ -19,7 +19,7 @@ using FluentAssertions;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
 #endif
 
@@ -438,7 +438,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #elif !__SKIA__
 		[Ignore("Fails due to async native scrolling.")]
 #endif
-		public async Task When_ItemSignificantlyHigher_Then_VirtualizeProperly()
+		public async Task When_ItemSignificantlyTaller_Then_VirtualizeProperly()
 		{
 			var sut = SUT.Create(
 				new ObservableCollection<MyItem>
@@ -452,13 +452,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				},
 				new DataTemplate(() => new Border
 				{
-					Width = 100,
+					Width = 120,
 					Margin = new Thickness(10),
-					Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+					Child = new ItemsControl
+					{
+						ItemTemplate = new DataTemplate(() => new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding())))
+					}.Apply(tb => tb.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = nameof(MyItem.Lines) }))
 				}
 				.Apply(b => b.SetBinding(FrameworkElement.HeightProperty, new Binding { Path = nameof(MyItem.Height) }))
 				.Apply(b => b.SetBinding(FrameworkElement.BackgroundProperty, new Binding { Path = nameof(MyItem.Color) }))),
-				new Size(100, 500)
+				new Size(120, 500)
 			);
 
 			await sut.Load();
@@ -480,16 +483,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.MaterializedItems.Should().NotContain(sut.Source[0]); // Confirm that first items has been removed!
 			sut.MaterializedItems.Should().NotContain(sut.Source[1]);
 
+			sut.Scroller.ChangeView(null, 2940, null, disableAnimation: true); // Then scroll enough for first items to be DE-materialized
+			await TestServices.WindowHelper.WaitForIdle();
+
 			var item3UpdatedVerticalOffset = sut.Repeater.Children.First(elt => ReferenceEquals(elt.DataContext, sut.Source[3])).ActualOffset.Y;
 
 			item3UpdatedVerticalOffset.Should().Be(item3OriginalVerticalOffset); // Confirm that item #3 has not been moved down
-			var result = await UITestHelper.ScreenShot(sut.Repeater);
-			ImageAssert.HasColorAt(result, 10, 10, Colors.FromARGB("#008000")); // For safety also check it's effectively the item 3 that is visible
+			var result = await UITestHelper.ScreenShot(sut.Root);
+			ImageAssert.HasColorAt(result, 100, 10, Colors.FromARGB("#008000")); // For safety also check it's effectively the item 3 that is visible
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif !__SKIA__
+		[Ignore("Fails due to async native scrolling.")]
+#endif
+		public async Task When_UnloadReload_Then_MaterializeItemsForCurrentViewport()
+		{
+			var sut = SUT.Create(30, new Size(100, 500));
+
+			await sut.Load();
+
+			// Only few first items should have been materialized so far
+			sut.MaterializedItems.Should().Contain(sut.Source[0]);
+			sut.MaterializedItems.Should().Contain(sut.Source[5]);
+			sut.MaterializedItems.Should().NotContain(sut.Source[10]);
+			sut.MaterializedItems.Should().NotContain(sut.Source[15]);
+
+			await sut.Unload();
+			await sut.Load();
+
+			// Confirm that first items has been re-materialized
+			sut.MaterializedItems.Should().Contain(sut.Source[0]);
+			sut.MaterializedItems.Should().Contain(sut.Source[5]);
+			sut.MaterializedItems.Should().NotContain(sut.Source[10]);
+			sut.MaterializedItems.Should().NotContain(sut.Source[15]);
+
+			// Item 0 should be at offset 0
+			sut.MaterializedElements.OrderBy(e => e.DataContext).First().LayoutSlot.Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
 		}
 
 		private record MyItem(int Id, double Height, Color Color)
 		{
 			public string Title => $"Item {Id}";
+
+			public string[] Lines { get; } = Enumerable.Range(0, (int)(Height / 10)).Select(i => $"Line {i:D3}").ToArray();
 		}
 
 #nullable enable
@@ -540,7 +580,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		{
 			public int Materialized => Repeater.Children.Count(elt => elt.ActualOffset.X >= 0);
 
-			public IEnumerable<T> MaterializedItems => Repeater.Children.Where(elt => elt.ActualOffset.X >= 0).Select(elt => (T)elt.DataContext);
+			public IEnumerable<T> MaterializedItems => MaterializedElements.Select(elt => (T)elt.DataContext);
+
+			public IEnumerable<UIElement> MaterializedElements => Repeater.Children.Where(elt => elt.ActualOffset.X >= 0);
 
 			public async ValueTask Load()
 			{

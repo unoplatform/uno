@@ -819,7 +819,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (ReadLocalValue(TextProperty) is UnsetValue)
+			if (ReadLocalValue(TextProperty) == DependencyProperty.UnsetValue)
 			{
 				_skipInlinesChangedTextSetter = true;
 				Inlines.Clear();

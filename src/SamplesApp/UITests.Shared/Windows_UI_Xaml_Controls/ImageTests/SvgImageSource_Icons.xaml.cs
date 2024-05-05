@@ -12,16 +12,25 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using UITests.Shared.Helpers;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
 [Sample("Image")]
-public sealed partial class SvgImageSource_Icons : Page
+public sealed partial class SvgImageSource_Icons : Page, IWaitableSample
 {
+	private readonly Task _samplePreparedTask;
+
 	public SvgImageSource_Icons()
 	{
 		this.InitializeComponent();
+		_samplePreparedTask = Task.WhenAll(
+			WaitableSampleImageHelpers.WaitAllImages(image1),
+			WaitableSampleImageHelpers.WaitAllImages((SvgImageSource)imageIcon1.Source)
+		);
 	}
+
+	public Task SamplePreparedTask => _samplePreparedTask;
 
 	private async void OnClick(object sender, RoutedEventArgs args)
 	{

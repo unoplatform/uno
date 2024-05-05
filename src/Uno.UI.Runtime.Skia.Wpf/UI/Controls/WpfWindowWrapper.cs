@@ -3,11 +3,12 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media;
+using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
-using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
@@ -19,7 +20,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	private readonly UnoWpfWindow _wpfWindow;
 	private bool _isFullScreen;
 
-	public WpfWindowWrapper(UnoWpfWindow wpfWindow)
+	public WpfWindowWrapper(UnoWpfWindow wpfWindow, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
 		_wpfWindow.Host.SizeChanged += OnHostSizeChanged;
@@ -28,7 +29,13 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
 		_wpfWindow.Closing += OnNativeClosing;
 		_wpfWindow.Closed += OnNativeClosed;
+		_wpfWindow.DpiChanged += OnNativeDpiChanged;
+		_wpfWindow.StateChanged += OnNativeStateChanged;
 	}
+
+	private void OnNativeStateChanged(object? sender, EventArgs e) => UpdateIsVisible();
+
+	private void OnNativeDpiChanged(object sender, DpiChangedEventArgs e) => RasterizationScale = (float)e.NewDpi.DpiScaleX;
 
 	public override string Title
 	{
@@ -38,11 +45,21 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override object NativeWindow => _wpfWindow;
 
-	protected override void ShowCore() => _wpfWindow.Show();
+	protected override void ShowCore()
+	{
+		RasterizationScale = (float)VisualTreeHelper.GetDpi(_wpfWindow.Host).DpiScaleX;
+		_wpfWindow.Show();
+	}
 
 	public override void Activate() => _wpfWindow.Activate();
 
 	public override void Close() => _wpfWindow.Close();
+
+	public override void ExtendContentIntoTitleBar(bool extend)
+	{
+		base.ExtendContentIntoTitleBar(extend);
+		_wpfWindow.ExtendContentIntoTitleBar(extend);
+	}
 
 	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
 	{
@@ -81,9 +98,16 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	private void OnNativeActivated(object? sender, EventArgs e) =>
 		ActivationState = CoreWindowActivationState.PointerActivated;
 
-	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) => UpdateIsVisible();
+
+	private void UpdateIsVisible()
 	{
-		var isVisible = (bool)e.NewValue;
+		var isVisible = _wpfWindow.IsVisible && _wpfWindow.WindowState != WindowState.Minimized;
+		if (isVisible == Visible)
+		{
+			return;
+		}
+
 		if (isVisible)
 		{
 			WinUIApplication.Current?.RaiseLeavingBackground(() => Visible = isVisible);

@@ -46,39 +46,6 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	/// <summary>
-	/// Gets the width and height of the content area.
-	/// </summary>
-	public Size Size
-	{
-		get
-		{
-			if (VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
-			{
-				return Content?.RenderSize ?? Size.Empty;
-			}
-
-			var rootElement = VisualTree.RootElement;
-			if (rootElement is RootVisual)
-			{
-				if (Window.CurrentSafe is null)
-				{
-					throw new InvalidOperationException("Window.Current must be set.");
-				}
-
-				return Window.CurrentSafe.Bounds.Size;
-			}
-			else if (rootElement is XamlIsland xamlIslandRoot)
-			{
-				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
-				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
-				return new Size(width, height);
-			}
-
-			return default;
-		}
-	}
-
 	internal Rect Bounds
 	{
 		get
@@ -106,16 +73,6 @@ public sealed partial class XamlRoot
 
 	internal Microsoft.UI.Composition.Compositor Compositor => Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
-	/// <summary>
-	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
-	/// </summary>
-	public double RasterizationScale => GetDisplayInformation(this).RawPixelsPerViewPixel;
-
-	/// <summary>
-	/// Gets a value that indicates whether the XamlRoot is visible.
-	/// </summary>
-	public bool IsHostVisible => VisualTree.IsVisible;
-
 #if !HAS_UNO_WINUI // This is a UWP-only property
 	/// <summary>
 	/// Gets the context identifier for the view.
@@ -127,21 +84,6 @@ public sealed partial class XamlRoot
 
 	internal static DisplayInformation GetDisplayInformation(XamlRoot? root)
 		=> root?.HostWindow?.AppWindow.Id is { } id ? DisplayInformation.GetOrCreateForWindowId(id) : DisplayInformation.GetForCurrentViewSafe();
-
-	internal void NotifyChanged() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
-
-	internal static XamlRoot? GetForElement(DependencyObject element)
-	{
-		XamlRoot? result = null;
-
-		var visualTree = VisualTree.GetForElement(element);
-		if (visualTree is not null)
-		{
-			result = visualTree.GetOrCreateXamlRoot();
-		}
-
-		return result;
-	}
 
 	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
 	{

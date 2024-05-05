@@ -298,9 +298,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private static bool IsRelevantProperty(XamlMember? member)
+		private static bool IsRelevantProperty(XamlMember? member, XamlObjectDefinition objectDefinition)
 		{
 			if (member?.Name == "Phase") // Phase is not relevant as it's not an actual property
+			{
+				return false;
+			}
+
+			if (member?.Name == "IsNativeStyle" && objectDefinition.Type.Name == "Style")
 			{
 				return false;
 			}
@@ -558,7 +563,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (ns.Equals(@namespace.Prefix.AsSpan(), StringComparison.Ordinal))
 						{
-							if (_metadataHelper.FindTypeByFullName($"{@namespace.Namespace}.{name.Substring(indexOfColon + 1)}") is INamedTypeSymbol namedType)
+							if (_metadataHelper.FindTypeByFullName($"{GetTrimmedNamespace(@namespace.Namespace)}.{name.Substring(indexOfColon + 1)}") is INamedTypeSymbol namedType)
 							{
 								return namedType;
 							}

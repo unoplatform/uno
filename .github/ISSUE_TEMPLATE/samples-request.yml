@@ -25,12 +25,13 @@ body:
         - WebAssembly
         - Android
         - iOS
-        - macOS (AppKit)
         - Mac Catalyst
         - Skia (WPF)
-        - Skia (GTK on Linux/macOS/Windows)
+        - Skia (Linux X11)
+        - Skia (macOS)
         - Skia (Linux Framebuffer)
-        - Windows
+        - Skia (GTK)
+        - Windows (WinAppSDK)
 
   - type: textarea
     id: samples-request-additional-info

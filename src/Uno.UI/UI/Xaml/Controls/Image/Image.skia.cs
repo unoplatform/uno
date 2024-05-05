@@ -52,10 +52,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_svgCanvas = source.GetCanvas();
 			AddChild(_svgCanvas);
 			source.SourceLoaded += OnSvgSourceLoaded;
+			source.OpenFailed += OnSvgSourceFailed;
 			_sourceDisposable.Disposable = Disposable.Create(() =>
 			{
 				RemoveChild(_svgCanvas);
 				source.SourceLoaded -= OnSvgSourceLoaded;
+				source.OpenFailed -= OnSvgSourceFailed;
 				_svgCanvas = null;
 			});
 		}
@@ -63,6 +65,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnSvgSourceLoaded(object sender, EventArgs args)
 		{
 			InvalidateMeasure();
+			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+		}
+
+		private void OnSvgSourceFailed(SvgImageSource sender, SvgImageSourceFailedEventArgs args)
+		{
+			InvalidateMeasure();
+			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Failed to load Svg source"));
 		}
 
 		private void InitializeImageSource(ImageSource source)

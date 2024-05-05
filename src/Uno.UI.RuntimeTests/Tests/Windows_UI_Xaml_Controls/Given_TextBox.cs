@@ -1,17 +1,21 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
+using FluentAssertions;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml;
-using Windows.UI;
-using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
-using System.Runtime.InteropServices;
+using Uno.UI.Helpers;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.UI;
+
+using static Private.Infrastructure.TestServices;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -852,6 +856,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 			Assert.AreEqual(0, SUT.VerticalOffset);
+		}
+
+		[TestMethod]
+		public async Task When_VerticalContentAlignment_Is_Changed()
+		{
+			// This test ensures that setting VerticalContentAlignment on the TextBox doesn't flow to:
+			// 1) PlaceholderTextContentPresenter.VerticalContentAlignment
+			// 2) ContentElement.VerticalContentAlignment
+			// 3) PlaceholderTextContentPresenter.VerticalAlignment
+			// 4) ContentElement.VerticalAlignment
+			// This matches the behavior observed on Windows
+			var xaml = """
+				    <Grid>
+				        <Grid.Resources>
+				            <Style x:Key="TextBoxAlignmentTestStyle" TargetType="TextBox">
+				                <Setter Property="Template">
+				                    <Setter.Value>
+				                        <ControlTemplate TargetType="TextBox">
+				                            <Grid x:Name="RootGrid">
+				                                <Grid VerticalAlignment="Stretch">
+				                                    <ContentControl x:Name="PlaceholderTextContentPresenter" />
+				                                    <ContentControl x:Name="ContentElement" />
+				                                </Grid>
+				                            </Grid>
+				                        </ControlTemplate>
+				                    </Setter.Value>
+				                </Setter>
+				            </Style>
+				        </Grid.Resources>
+
+				        <TextBox Style="{StaticResource TextBoxAlignmentTestStyle}" />
+				    </Grid>
+				""";
+			var grid = XamlHelper.LoadXaml<Grid>(xaml);
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			var textBox = (TextBox)grid.Children.Single();
+
+			Assert.AreEqual(VerticalAlignment.Center, textBox.VerticalContentAlignment);
+			textBox.VerticalContentAlignment = VerticalAlignment.Bottom;
+
+#if WINAPPSDK
+			var getTemplateChild = typeof(Control).GetMethod("GetTemplateChild", BindingFlags.Instance | BindingFlags.NonPublic);
+			var placeHolder = (ContentControl)getTemplateChild.Invoke(textBox, new object[] { "PlaceholderTextContentPresenter" });
+			var contentElement = (ContentControl)getTemplateChild.Invoke(textBox, new object[] { "ContentElement" });
+#else
+			var placeHolder = (ContentControl)textBox.GetTemplateChild("PlaceholderTextContentPresenter");
+			var contentElement = (ContentControl)textBox.GetTemplateChild("ContentElement");
+#endif
+			Assert.AreEqual(VerticalAlignment.Top, placeHolder.VerticalContentAlignment);
+			Assert.AreEqual(VerticalAlignment.Top, contentElement.VerticalContentAlignment);
+			Assert.AreEqual(VerticalAlignment.Stretch, placeHolder.VerticalAlignment);
+			Assert.AreEqual(VerticalAlignment.Stretch, contentElement.VerticalAlignment);
 		}
 	}
 }

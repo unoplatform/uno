@@ -6,11 +6,14 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Windowing.Native;
+using Microsoft.UI.Content;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal interface INativeWindowWrapper : INativeAppWindow
 {
+	ContentSiteView ContentSiteView { get; }
+
 	Rect Bounds { get; }
 
 	Rect VisibleBounds { get; }
@@ -18,6 +21,8 @@ internal interface INativeWindowWrapper : INativeAppWindow
 	object? NativeWindow { get; }
 
 	CoreWindowActivationState ActivationState { get; }
+
+	float RasterizationScale { get; }
 
 	bool Visible { get; }
 
@@ -40,4 +45,6 @@ internal interface INativeWindowWrapper : INativeAppWindow
 	void Show();
 
 	void Close();
+
+	void ExtendContentIntoTitleBar(bool extend);
 }

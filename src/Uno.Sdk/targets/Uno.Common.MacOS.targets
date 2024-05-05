@@ -11,5 +11,5 @@
 		<EnableDefaultMacOSItems Condition="$(EnableDefaultMacOSItems) == ''">false</EnableDefaultMacOSItems>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacOS.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 </Project>

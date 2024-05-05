@@ -203,6 +203,11 @@ namespace Microsoft.UI.Xaml.Controls
 						// https://github.com/unoplatform/uno/issues/11957
 						container.PrepareForRecycle();
 					}
+
+					if (container.Parent is Panel parent)
+					{
+						parent.Children.Remove(container);
+					}
 				}
 				else
 				{

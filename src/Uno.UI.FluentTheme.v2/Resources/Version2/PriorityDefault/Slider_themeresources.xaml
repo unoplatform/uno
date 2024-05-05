@@ -199,7 +199,7 @@
         <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
         <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
         
-        <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
+        <!-- Uno specific (LinearGradientBrush borders): Use solid border brush #6457 -->
         <win:Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}"/>
         <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
        

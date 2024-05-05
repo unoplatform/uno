@@ -38,6 +38,7 @@ using _ViewGroup = Android.Views.ViewGroup;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.UI.Composition;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
@@ -444,11 +445,15 @@ namespace Microsoft.UI.Xaml.Media
 			return default;
 		}
 
+		/// <param name="position">
+		/// On skia: The absolute position relative to the window origin.
+		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
+		/// </param>
 		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
-			Point posRelToParent,
+			Point position,
 			UIElement element,
 			GetHitTestability getVisibility,
-			StalePredicate? isStale = null)
+			StalePredicate? isStale)
 		{
 			var stale = default(Branch?);
 			HitTestability elementHitTestVisibility;
@@ -482,6 +487,27 @@ namespace Microsoft.UI.Xaml.Media
 			if (element.RenderTransform is { } tr)
 				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
 
+#if __SKIA__
+			var transformToElement = UIElement.GetTransform(element, null);
+
+			// The maximum region where the current element and its children might draw themselves
+			// This is expressed in the window (absolute) coordinate space.
+			var clippingBounds = element.Visual.GetViewBoxRectInElementCoordinateSpace() is { } rect
+				? transformToElement.Transform(rect)
+				: Rect.Infinite;
+
+			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
+			{
+				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;
+			}
+			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
+
+			// The region where the current element draws itself.
+			// Be aware that children might be out of this rendering bounds if no clipping defined.
+			// This is expressed in the window (absolute) coordinate space.
+			var renderingBounds = transformToElement.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
+			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
+#else
 			// First compute the transformation between the element and its parent coordinate space
 			var matrix = Matrix3x2.Identity;
 			element.ApplyRenderTransform(ref matrix);
@@ -492,8 +518,8 @@ namespace Microsoft.UI.Xaml.Media
 			TRACE($"- transform to parent: [{matrix.M11:F2},{matrix.M12:F2} / {matrix.M21:F2},{matrix.M22:F2} / {matrix.M31:F2},{matrix.M32:F2}]");
 
 			// Build 'position' in the current element coordinate space
-			var posRelToElement = matrix.Inverse().Transform(posRelToParent);
-			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {posRelToParent.ToDebugString()}");
+			var posRelToElement = matrix.Inverse().Transform(position);
+			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {position.ToDebugString()}");
 
 			// Second compute the transformations applied locally.
 			// This is somehow the difference between the "XAML coordinate space" and the effective coordinate space.
@@ -515,9 +541,15 @@ namespace Microsoft.UI.Xaml.Media
 			var renderingBounds = matrix.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size));
 			renderingBounds = renderingBounds.IntersectWith(clippingBounds) ?? Rect.Empty;
 			TRACE($"- rendering (rel to element): {renderingBounds.ToDebugString()}");
+#endif
 
+#if __SKIA__
+			var testPosition = position;
+#else
+			var testPosition = posRelToElement;
+#endif
 			// Validate that the pointer is in the bounds of the element
-			if (!clippingBounds.Contains(posRelToElement))
+			if (!clippingBounds.Contains(testPosition))
 			{
 				// Even if out of bounds, if the element is stale, we search down for the real stale leaf
 				if (isStale is not null)
@@ -540,7 +572,6 @@ namespace Microsoft.UI.Xaml.Media
 
 			// Validate if any child is an acceptable target
 			var children = GetManagedVisualChildren(element);
-
 			var isChildStale = isStale;
 
 			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
@@ -560,7 +591,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			while (child.MoveNext())
 			{
-				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
+				var childResult = SearchDownForTopMostElementAt(testPosition, child.Current!, getVisibility, isChildStale);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
 				if (childResult.stale is not null)
@@ -630,7 +661,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
 			// and the position is in actual bounds (which might be different than the clipping bounds)
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(posRelToElement))
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);
@@ -772,6 +803,22 @@ namespace Microsoft.UI.Xaml.Media
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
 #endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> GetManagedVisualChildren(view).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseEnumerator GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> view._children.GetReverseEnumerator();
+#endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> GetManagedVisualChildren(view).Where(elt => predicate(elt)).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseReduceEnumerator GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> view._children.GetReverseEnumerator(predicate);
+#endif
 		#endregion
 
 		#region HitTest tracing
@@ -872,6 +919,31 @@ namespace Microsoft.UI.Xaml.Media
 
 					yield return current;
 				}
+			}
+
+			public bool Contains(UIElement element)
+			{
+				var current = Leaf;
+				if (current == element)
+				{
+					return true;
+				}
+
+				while (current != Root)
+				{
+					var parentDo = GetParent(current);
+					while ((current = parentDo as UIElement) is null)
+					{
+						parentDo = GetParent(parentDo!);
+					}
+
+					if (current == element)
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 
 			public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";

@@ -29,6 +29,9 @@
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
 	<ItemGroup>
+		<UnoSupportedLanguage Include="en-US" />
+	</ItemGroup>
+	<ItemGroup>
 		<!--
 		This item group is required by the project template because of the
 		new SDK-Style project, otherwise some files are not added automatically.
@@ -48,7 +51,6 @@
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(GITVERSION_SemVer)" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.20" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.20" />
-		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.0" />
 	</ItemGroup>
 	<Import Project="..\MyAppXamlTrim.Shared\MyAppXamlTrim.Shared.projitems" Label="Shared" />
 </Project>

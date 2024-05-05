@@ -4,8 +4,10 @@ using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
+using System.Windows.Shell;
+using Windows.ApplicationModel.Core;
 using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Core;
 using Windows.UI.ViewManagement;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
@@ -16,16 +18,15 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindow : WpfWindow
 {
 	private readonly ApplicationView _applicationView;
+	private readonly WinUI.Window _winUIWindow;
 
 	private bool _shown;
 
 	private static readonly ConcurrentDictionary<WinUI.Window, WpfWindow> _windowToWpfWindow = new();
 
-	public static WpfWindow? GetGtkWindowFromWindow(WinUI.Window window)
-		=> _windowToWpfWindow.TryGetValue(window, out var gtkWindow) ? gtkWindow : null;
-
 	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
+		_winUIWindow = winUIWindow;
 		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
 		winUIWindow.Closed += (_, _) => _windowToWpfWindow.TryRemove(winUIWindow, out _);
 
@@ -41,12 +42,19 @@ internal class UnoWpfWindow : WpfWindow
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+
 		Closed += UnoWpfWindow_Closed;
 		Activated += UnoWpfWindow_Activated;
 
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
+		UpdateWindowPropertiesFromCoreApplication();
 	}
+
+	public static WpfWindow? GetFromWinUIWindow(WinUI.Window window)
+		=> _windowToWpfWindow.TryGetValue(window, out var wpfWindow) ? wpfWindow : null;
 
 	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
 	{
@@ -63,19 +71,21 @@ internal class UnoWpfWindow : WpfWindow
 	private void UnoWpfWindow_Closed(object? sender, EventArgs e)
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
 	internal UnoWpfWindowHost Host { get; private set; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
 		MinWidth = _applicationView.PreferredMinSize.Width;
 		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
 
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{
@@ -112,6 +122,35 @@ internal class UnoWpfWindow : WpfWindow
 		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
 			Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+	}
+
+	private void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
+	}
+
+	internal void ExtendContentIntoTitleBar(bool extend)
+	{
+		if (extend)
+		{
+			WindowStyle = WindowStyle.None;
+			WindowChrome.SetWindowChrome(this, new WindowChrome
+			{
+				UseAeroCaptionButtons = false,
+				// this removes the thin white bar at the top, but this causes the window to grow a little.
+				// No work around has been found for this yet.
+				CaptionHeight = 0
+			});
+
+			// for some reason touchpad physical presses work without this, but not "taps"
+			WindowChrome.SetIsHitTestVisibleInChrome((IInputElement)Content, true);
+		}
+		else
+		{
+			WindowStyle = WindowStyle.SingleBorderWindow;
+			ClearValue(WindowChrome.WindowChromeProperty);
 		}
 	}
 }

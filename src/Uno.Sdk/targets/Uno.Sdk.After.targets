@@ -5,7 +5,7 @@
 	</ItemGroup>
 
 	<!-- Sanity check ensure that platform files for other targets are not included -->
-	<ItemGroup Condition="$(SingleProject) == 'true' and $(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
+	<ItemGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' and $(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
@@ -14,38 +14,80 @@
 	</ItemGroup>
 
 	<!--
-		Adjust the first target framework to be browserwasm, if the current debugging
-		target is browserwasm. This portion is linked to the TryReloadWebAssemblyTargetAsync in
+		Adjust the first target framework to be browserwasm or desktop or windows, if the current debugging
+		target is either of those. This portion is linked to the TryReloadTargetAsync in
 		the Uno.UI.RemoteControl.VS project.
+		
+		The _UnoSelectedTargetFramework is defined as a csproj.user property, set when the IDE
+		changes the active target framework.
 	
-		This is required by a WebAssembly support issue in VS, where both Publishing/Debugging and other 
-		targets hot reload is not supported. See https://aka.platform.uno/singleproject-vs-wasm-reload.
+		This is required by a WebAssembly/Desktop support issue in VS, where both Publishing/Debugging and other 
+		targets hot reload or mobile targets debugging is not supported. See https://aka.platform.uno/singleproject-vs-reload.
 	-->
-	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">
+	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' == 'true' AND '$(TargetFrameworks)' != '' ">
 		<_UnoTargetFrameworkCount>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries).Length)</_UnoTargetFrameworkCount>
-		<_UnoFirstOriginalTargetFramework>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries)[0])</_UnoFirstOriginalTargetFramework>
+		<_UnoFirstOriginalTargetFramework>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries)[0].Trim())</_UnoFirstOriginalTargetFramework>
 	</PropertyGroup>
 
 	<PropertyGroup
 		Condition="
-			$([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'browserwasm'
-			AND !$(TargetFrameworks.StartsWith($(ActiveDebugFramework)))
-			AND '$(BuildingInsideVisualStudio)' == 'true'">
+			'$(BuildingInsideVisualStudio)' == 'true'
+			AND (
+				$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
+				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
+				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
+			)
+			AND '$(TargetFrameworks)' != ''
+			AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'">
 
-		<_UnoTargetFrameworksWasmFiltered>$(TargetFrameworks.Replace($(ActiveDebugFramework),''))</_UnoTargetFrameworksWasmFiltered>
+		<_UnoTargetFrameworksFiltered>
+			$(TargetFrameworks
+			.Replace($(_UnoSelectedTargetFramework),'**PLACEHOLDER**')
+			.Replace('$(_UnoFirstOriginalTargetFramework)',$(_UnoSelectedTargetFramework))
+			.Replace('**PLACEHOLDER**','$(_UnoFirstOriginalTargetFramework)')
+			)
+		</_UnoTargetFrameworksFiltered>
 
-		<TargetFrameworks>$([MSBuild]::Unescape('$(ActiveDebugFramework);$(_UnoTargetFrameworksWasmFiltered)'))</TargetFrameworks>
+		<TargetFrameworks>$([MSBuild]::Unescape('$(_UnoTargetFrameworksFiltered)'))</TargetFrameworks>
 	</PropertyGroup>
 
-	<Target Name="_UnoVSWarnBrowserNotFirst"
+	<Target Name="_UnoVSWarnBrowserIsFirst"
 			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
 			Condition=" 
-			'$(UnoDisableVSWarnBrowserNotFirst)' != 'true'
+			'$(UnoDisableVSWarnBrowserIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(_UnoTargetFrameworkCount)' != ''
+			AND $(_UnoTargetFrameworkCount) &gt; 1
 			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'browserwasm'">
 
 		<Warning Code="UNOB0010"
 				 Text="The browserwasm TargetFramework must not be placed first in the TargetFrameworks property in order for HotReload to work properly. (See https://aka.platform.uno/UNOB0010)" />
+	</Target>
+
+	<Target Name="_UnoVSWarnDesktopIsFirst"
+				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+				Condition="
+				'$(UnoDisableVSWarnDesktopIsFirst)' != 'true'
+				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(_UnoTargetFrameworkCount)' != ''
+				AND $(_UnoTargetFrameworkCount) &gt; 1
+				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'desktop'">
+
+		<Warning Code="UNOB0011"
+					Text="The desktop TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0011)" />
+	</Target>
+
+	<Target Name="_UnoVSWarnWindowsIsFirst"
+				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+				Condition="
+				'$(UnoDisableVSWarnWindowsIsFirst)' != 'true'
+				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(_UnoTargetFrameworkCount)' != ''
+				AND $(_UnoTargetFrameworkCount) &gt; 1
+				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'windows'">
+
+		<Warning Code="UNOB0012"
+					Text="The windows TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0012)" />
 	</Target>
 
 	<!-- Include any additional targets that packages defined by other packages -->

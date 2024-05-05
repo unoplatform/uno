@@ -10,6 +10,11 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
+	public NativeWindowWrapper()
+	{
+		RasterizationScale = 1f;
+	}
+
 	public override object NativeWindow => null;
 
 	internal void OnNativeClosed() => RaiseClosed();

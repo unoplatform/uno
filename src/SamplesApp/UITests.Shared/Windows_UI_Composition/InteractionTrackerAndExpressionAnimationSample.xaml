@@ -9,7 +9,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel Spacing="20">
-		<Border x:Name="border1" Width="100" Height="100" Background="Red" />
+		<Border x:Name="border1" Width="100" Height="100" Background="Red" ManipulationMode="All" ManipulationStarting="OnManipulationStarting" ManipulationStarted="OnManipulationStarted" ManipulationDelta="OnManipulationDelta" ManipulationCompleted="OnManipulationCompleted" ManipulationInertiaStarting="OnManipulationInertiaStarting" />
 		<Border x:Name="border2" Width="100" Height="100" Background="Blue" />
+		<TextBlock x:Name="logTB" />
 	</StackPanel>
 </Page>

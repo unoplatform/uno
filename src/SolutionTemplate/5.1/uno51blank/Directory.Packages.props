@@ -19,6 +19,10 @@
     <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" />
     <PackageVersion Include="SkiaSharp.Skottie" Version="2.88.7" />
     <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.Views" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.Views.Gtk2" Version="2.88.7" />
+    <PackageVersion Include="OpenTK" Version="3.1.0" />
+    <PackageVersion Include="OpenTK.GLControl" Version="3.1.0" />
     <PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
     <PackageVersion Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
     <PackageVersion Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />

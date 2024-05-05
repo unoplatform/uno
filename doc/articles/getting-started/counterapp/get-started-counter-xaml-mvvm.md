@@ -4,7 +4,7 @@ uid: Uno.Workshop.Counter.XAML.MVVM
 
 # Counter App using XAML and MVVM
 
-[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM)  
+[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM)  
 
 [!INCLUDE [Intro](includes/include-intro.md)]
 
@@ -34,7 +34,7 @@ To complete this tutorial you don't need any prior knowledge of the Uno Platform
 
 At this point you'll enter the **Uno Platform Template Wizard**, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
 
-- Select **Blank** and click **Customize**
+- Select **Blank** in **Presets** selection
 
 - Select the **Presentation** tab and choose **MVVM**
 
@@ -44,7 +44,7 @@ Before completing the wizard, take a look through each of the sections and see w
 
 - Click **Create** to complete the wizard
 
-The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
+The template will create a solution with a single cross-platform project, named `Counter`, ready to run.
 
 ## [Command Line](#tab/cli)
 
@@ -168,4 +168,4 @@ The final code for **MainPage.xaml** should look like this:
 
 [!INCLUDE [View Model](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM).

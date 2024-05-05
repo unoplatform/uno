@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelSmallImage")]
+	[SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelSmallImage", Description = "UniformAlignmentCenterInDoubleStackPanelSmallImage")]
 	public sealed partial class UniformAlignmentCenterInDoubleStackPanelSmallImage : UserControl
 	{
 		public UniformAlignmentCenterInDoubleStackPanelSmallImage()

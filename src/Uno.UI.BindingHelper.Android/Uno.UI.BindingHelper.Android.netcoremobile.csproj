@@ -9,7 +9,7 @@
 		<!-- generated\src\Uno.UI.UnoRecyclerView.cs(168,25): Error CA1812: 'UnoRecyclerViewInvoker' is an internal class that is apparently never instantiated. -->
 		<!-- generated\src\Java.Interop.__TypeRegistrations.cs(16,6): Error CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array -->
 		<!-- TODO: Figure out a way to enable these analyzers back and exclude those generated files only -->
-		<NoWarn>$(NoWarn);CA1825;CA1812;CA1852;CA1861</NoWarn>
+		<NoWarn>$(NoWarn);CA1825;CA1812;CA1852;CA1861;IDE0051;IDE0055</NoWarn>
 		<AssemblyName>Uno.UI.BindingHelper.Android</AssemblyName>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -136,12 +136,5 @@
 		</CreateItem>
 	</Target>
 
-
-
-	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="$(IsAndroid)">
-		<Compile Remove="**\*.cs" />
-	</ItemGroup>
-	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsAndroid)" />
 
 </Project>

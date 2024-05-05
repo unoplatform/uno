@@ -1,7 +1,7 @@
 ﻿#nullable enable
-using SkiaSharp;
 using System.Collections.Generic;
 using System.Linq;
+using SkiaSharp;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -55,5 +55,22 @@ public partial class ContainerVisual : Visual
 		{
 			children[i].Render(in session);
 		}
+	}
+
+	internal override bool SetMatrixDirty()
+	{
+		if (base.SetMatrixDirty())
+		{
+			// We use InnerList to avoid boxing the enumerator.
+			// Currently, VisualCollection.GetEnumerator returns IEnumerator<Visual> instead of a concrete struct type to match WinUI API surface.
+			foreach (var child in Children.InnerList)
+			{
+				child.SetMatrixDirty();
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }

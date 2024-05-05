@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Content;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -249,8 +250,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 				// Fire updated event
 				ChildChanged?.Invoke(this, new EventArgs());
-
-				UpdateUnoSize();
 			}
 		}
 
@@ -282,6 +281,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		public bool IsDisposed { get; private set; }
 
 		private System.Windows.Window _parentWindow;
+		private ContentIsland _contentIsland;
 
 		//     /// <summary>
 		//     /// Creates <see cref="WUX.Application" /> object, wrapped <see cref="WUX.Hosting.DesktopWindowXamlSource" /> instance; creates and
@@ -325,7 +325,12 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			if (_xamlSource != null)
 			{
 				_xamlSource.Content = _childInternal;
-				_xamlSource.XamlIsland.IsSiteVisible = true;
+				_contentIsland ??= new ContentIsland(_contentSite.View);
+				_xamlSource.XamlIsland.XamlRoot.VisualTree.ContentRoot.SetContentIsland(_contentIsland);
+
+				UpdateContentSiteVisible();
+				UpdateContentSiteScale();
+
 				TryLoadContent();
 			}
 		}
@@ -336,6 +341,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			if (IsLoaded && _childInternal.XamlRoot is not null)
 			{
 				ContentManager.TryLoadRootVisual(_xamlSource.XamlIsland.XamlRoot);
+				InvalidateMeasure();
 			}
 		}
 

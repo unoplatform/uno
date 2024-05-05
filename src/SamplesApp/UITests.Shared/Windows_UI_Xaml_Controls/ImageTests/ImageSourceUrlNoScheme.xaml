@@ -7,18 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     	xmlns:controls="using:Uno.UI.Samples.Controls"
     mc:Ignorable="d">
-    
-    <controls:SampleControl SampleDescription="ImageNoScheme">
-        <controls:SampleControl.SampleContent>
-            <DataTemplate>
-                <StackPanel>
-                    <TextBlock Text="Image with no scheme"/>
-                    <Image Width="100" 
-                           Height="100"
-                           Source="/Assets/Diagnostics/avatar.png"
-                           Stretch="UniformToFill"/>
-                </StackPanel>
-            </DataTemplate>
-        </controls:SampleControl.SampleContent>
-    </controls:SampleControl>
+
+	<StackPanel>
+		<TextBlock Text="Image with no scheme"/>
+		<Image Width="100" 
+           Height="100"
+           Source="/Assets/Diagnostics/avatar.png"
+           Stretch="UniformToFill"/>
+	</StackPanel>
 </Page>

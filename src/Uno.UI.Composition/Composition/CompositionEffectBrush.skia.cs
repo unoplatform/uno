@@ -41,8 +41,8 @@ public partial class CompositionEffectBrush : CompositionBrush
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter,
-				new(UseBlurPadding ?
+			return SkiaCompat.SKImageFilter_CreateBlur(sigma, sigma, sourceFilter,
+				UseBlurPadding ?
 				bounds with
 				{
 					Left = -100,
@@ -50,7 +50,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 					Right = bounds.Right + 100,
 					Bottom = bounds.Bottom + 100
 				}
-				: bounds));
+				: bounds);
 		}
 
 		return null;
@@ -68,7 +68,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 			_isCurrentInputBackdrop = false;
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // Grayscale Matrix
 					{
@@ -77,7 +77,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 						0.21f, 0.72f, 0.07f, 0, 0,
 						0,     0,     0,     1, 0
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -95,7 +95,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 			_isCurrentInputBackdrop = false;
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // Invert Matrix
 					{
@@ -104,7 +104,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 						0,  0,  -1, 0, 1,
 						0,  0,  0,  1, 0,
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -130,7 +130,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 				angle *= 180.0f / MathF.PI;
 			}
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // Hue Rotation Matrix
 					{
@@ -139,7 +139,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 						0.2127f - MathF.Cos(angle) * 0.213f - MathF.Sin(angle) * 0.787f,   0.715f - MathF.Cos(angle) * 0.715f + MathF.Sin(angle) * 0.715f, 0.072f + MathF.Cos(angle) * 0.928f + MathF.Sin(angle) * 0.072f, 0, 0,
 						0,                                                                 0,                                                              0,                                                              1, 0
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -167,7 +167,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 				}
 				else
 				{
-					return SKImageFilter.CreateOffset(0, 0, null, new(bounds));
+					return SkiaCompat.SKImageFilter_CreateOffset(0, 0, null, bounds);
 				}
 			}
 
@@ -189,7 +189,7 @@ $$"""
 				}
 """;
 
-			SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+			SKRuntimeEffect runtimeEffect = SkiaCompat.SKRuntimeEffect_CreateShader(shader, out string errors);
 			if (errors is not null)
 			{
 				return null;
@@ -199,12 +199,11 @@ $$"""
 			{
 				{ "color", new float[] { color.R * (1.0f / 255.0f), color.G * (1.0f / 255.0f), color.B * (1.0f / 255.0f), color.A * (1.0f / 255.0f) } }
 			};
-			SKRuntimeEffectChildren children = new(runtimeEffect)
-			{
-				{ "input", null }
-			};
 
-			return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+			SKRuntimeEffectChildren children = new(runtimeEffect);
+			SkiaCompat.SKRuntimeEffectChildren_Add_WithNull(children, "input");
+
+			return SkiaCompat.SKImageFilter_CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, bounds);
 		}
 
 		return null;
@@ -239,7 +238,7 @@ $$"""
 				skMode = SKBlendMode.Multiply;
 			}
 
-			return SKImageFilter.CreateBlendMode(skMode, bgFilter, fgFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateBlendMode(skMode, bgFilter, fgFilter, bounds);
 		}
 
 		return null;
@@ -273,7 +272,7 @@ $$"""
 
 				if (nextFilter is not null && !_isCurrentInputBackdrop)
 				{
-					currentFilter = SKImageFilter.CreateBlendMode(skMode, currentFilter, nextFilter, new(bounds));
+					currentFilter = SkiaCompat.SKImageFilter_CreateBlendMode(skMode, currentFilter, nextFilter, bounds);
 				}
 
 				_isCurrentInputBackdrop = false;
@@ -294,7 +293,7 @@ $$"""
 			effectInterop.GetNamedPropertyMapping("Color", out uint colorProp, out _);
 			Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			return SKImageFilter.CreatePaint(new SKPaint() { Color = color.ToSKColor() }, new(bounds));
+			return SkiaCompat.SKImageFilter_CreatePaint(new SKPaint() { Color = color.ToSKColor() }, bounds);
 		}
 
 		return null;
@@ -316,7 +315,7 @@ $$"""
 			float opacity = (float)(effectInterop.GetProperty(opacityProp) ?? throw new InvalidOperationException("The effect property was null"));
 
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // Opacity Matrix
 					{
@@ -325,7 +324,7 @@ $$"""
 						0, 0, 1, 0,       0,
 						0, 0, 0, opacity, 0
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -353,7 +352,7 @@ $$"""
 				}
 				else
 				{
-					return SKImageFilter.CreateOffset(0, 0, null, new(bounds));
+					return SkiaCompat.SKImageFilter_CreateOffset(0, 0, null, bounds);
 				}
 			}
 
@@ -410,7 +409,7 @@ $$"""
 				}
 """;
 
-			SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+			SKRuntimeEffect runtimeEffect = SkiaCompat.SKRuntimeEffect_CreateShader(shader, out string errors);
 			if (errors is not null)
 			{
 				return null;
@@ -420,12 +419,11 @@ $$"""
 			{
 				{ "contrastValue", contrast }
 			};
-			SKRuntimeEffectChildren children = new(runtimeEffect)
-			{
-				{ "input", null }
-			};
 
-			return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+			SKRuntimeEffectChildren children = new(runtimeEffect);
+			SkiaCompat.SKRuntimeEffectChildren_Add_WithNull(children, "input");
+
+			return SkiaCompat.SKImageFilter_CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, bounds);
 		}
 
 		return null;
@@ -486,7 +484,7 @@ $$"""
 				}
 			}
 
-			return SKImageFilter.CreateArithmetic(multiplyAmount.Value, source1Amount.Value, source2Amount.Value, offset.Value, false, bgFilter, fgFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateArithmetic(multiplyAmount.Value, source1Amount.Value, source2Amount.Value, offset.Value, false, bgFilter, fgFilter, bounds);
 		}
 
 		return null;
@@ -512,7 +510,7 @@ $$"""
 			float exposure = (float)(effectInterop.GetProperty(exposureProp) ?? throw new InvalidOperationException("The effect property was null"));
 			float multiplier = MathF.Pow(2.0f, exposure);
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // Exposure Matrix
 					{
@@ -521,7 +519,7 @@ $$"""
 						0,          0,          multiplier, 0, 0,
 						0,          0,          0,          1, 0,
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -559,7 +557,7 @@ $$"""
 				}
 				else
 				{
-					return SKImageFilter.CreateOffset(0, 0, null, new(bounds));
+					return SkiaCompat.SKImageFilter_CreateOffset(0, 0, null, bounds);
 				}
 			}
 
@@ -576,7 +574,7 @@ $$"""
 				return sourceFilter2;
 			}
 
-			SKImageFilter fbFilter = SKImageFilter.CreateColorFilter(
+			SKImageFilter fbFilter = SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[]
 					{
@@ -599,7 +597,7 @@ $$"""
 					}
 """;
 
-			SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+			SKRuntimeEffect runtimeEffect = SkiaCompat.SKRuntimeEffect_CreateShader(shader, out string errors);
 			if (errors is not null)
 			{
 				return null;
@@ -609,14 +607,13 @@ $$"""
 			{
 				{ "crossfade", crossfade }
 			};
-			SKRuntimeEffectChildren children = new(runtimeEffect)
-			{
-				{ "input", null }
-			};
 
-			SKImageFilter amafFilter = SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter1);
+			SKRuntimeEffectChildren children = new(runtimeEffect);
+			SkiaCompat.SKRuntimeEffectChildren_Add_WithNull(children, "input");
 
-			return SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, new(bounds));
+			SKImageFilter amafFilter = SkiaCompat.SKImageFilter_CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter1);
+
+			return SkiaCompat.SKImageFilter_CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, bounds);
 		}
 
 		return null;
@@ -634,7 +631,7 @@ $$"""
 
 			_isCurrentInputBackdrop = false;
 
-			return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateColorFilter(SKColorFilter.CreateLumaColor(), sourceFilter, bounds);
 		}
 
 		return null;
@@ -662,7 +659,7 @@ $$"""
 				}
 				else
 				{
-					return SKImageFilter.CreateOffset(0, 0, null, new(bounds));
+					return SkiaCompat.SKImageFilter_CreateOffset(0, 0, null, bounds);
 				}
 			}
 
@@ -744,7 +741,7 @@ $$"""
 					}
 """;
 
-			SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+			SKRuntimeEffect runtimeEffect = SkiaCompat.SKRuntimeEffect_CreateShader(shader, out string errors);
 			if (errors is not null)
 			{
 				return null;
@@ -764,12 +761,11 @@ $$"""
 				{ "alphaOffset", alphaOffset },
 				{ "alphaSlope", alphaSlope }
 			};
-			SKRuntimeEffectChildren children = new(runtimeEffect)
-			{
-				{ "input", null }
-			};
 
-			return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+			SKRuntimeEffectChildren children = new(runtimeEffect);
+			SkiaCompat.SKRuntimeEffectChildren_Add_WithNull(children, "input");
+
+			return SkiaCompat.SKImageFilter_CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, bounds);
 		}
 
 		return null;
@@ -797,7 +793,7 @@ $$"""
 				}
 				else
 				{
-					return SKImageFilter.CreateOffset(0, 0, null, new(bounds));
+					return SkiaCompat.SKImageFilter_CreateOffset(0, 0, null, bounds);
 				}
 			}
 
@@ -891,7 +887,7 @@ $$"""
 					}
 """;
 
-			SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+			SKRuntimeEffect runtimeEffect = SkiaCompat.SKRuntimeEffect_CreateShader(shader, out string errors);
 			if (errors is not null)
 			{
 				return null;
@@ -915,12 +911,11 @@ $$"""
 				{ "alphaExponent", alphaExponent },
 				{ "alphaOffset", alphaOffset }
 			};
-			SKRuntimeEffectChildren children = new(runtimeEffect)
-			{
-				{ "input", null }
-			};
 
-			return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+			SKRuntimeEffectChildren children = new(runtimeEffect);
+			SkiaCompat.SKRuntimeEffectChildren_Add_WithNull(children, "input");
+
+			return SkiaCompat.SKImageFilter_CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, bounds);
 		}
 
 		return null;
@@ -957,7 +952,7 @@ $$"""
 				}
 			}
 
-			return SKImageFilter.CreateMerge(new[] { SKImageFilter.CreateMatrix(matrix.Value.ToSKMatrix(), SKFilterQuality.High, sourceFilter) }, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateMerge([SKImageFilter.CreateMatrix(matrix.Value.ToSKMatrix(), SKFilterQuality.High, sourceFilter)], bounds);
 		}
 
 		return null;
@@ -1013,14 +1008,14 @@ $$"""
 			}
 			else
 			{
-				float[] identityKernel = new float[9]
-				{
+				ReadOnlySpan<float> identityKernel =
+				[
 					0,0,0,
 					0,1,0,
 					0,0,0
-				};
+				];
 
-				return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new(1, 1), mode, true, sourceFilter, new(bounds));
+				return SkiaCompat.SKImageFilter_CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new(1, 1), mode, true, sourceFilter, bounds);
 			}
 		}
 
@@ -1045,7 +1040,7 @@ $$"""
 			float intensity = (float)(effectInterop.GetProperty(intensityProp) ?? throw new InvalidOperationException("The effect property was null"));
 
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // Sepia Matrix
 					{
@@ -1054,7 +1049,7 @@ $$"""
 						0.272f - 0.272f * (1 - intensity), 0.534f - 0.534f * (1 - intensity), 0.131f + 0.869f * (1 - intensity), 0, 0,
 						0,                                 0,                                 0,                                 1, 0
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -1080,7 +1075,7 @@ $$"""
 
 			var gains = TempAndTintHelpers.TempTintToGains(temp, tint);
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // TemperatureAndTint Matrix
 					{
@@ -1089,7 +1084,7 @@ $$"""
 						0,             0,          gains.BlueGain, 0, 0,
 						0,             0,          0,              1, 0,
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -1112,7 +1107,7 @@ $$"""
 			effectInterop.GetNamedPropertyMapping("ColorMatrix", out uint matrixProp, out _);
 			float[] matrix = (float[])(effectInterop.GetProperty(matrixProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[]
 					{
@@ -1121,7 +1116,7 @@ $$"""
 						matrix[8],  matrix[9],  matrix[10], matrix[11], matrix[18],
 						matrix[12], matrix[13], matrix[14], matrix[15], matrix[19],
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -1161,7 +1156,7 @@ $$"""
 
 			Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
 
-			return SKImageFilter.CreateDistantLitDiffuse(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateDistantLitDiffuse(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1203,7 +1198,7 @@ $$"""
 
 			Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
 
-			return SKImageFilter.CreateDistantLitSpecular(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateDistantLitSpecular(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1242,7 +1237,7 @@ $$"""
 
 			Vector3 lightTarget = EffectHelpers.CalculateLightTargetVector(position, target);
 
-			return SKImageFilter.CreateSpotLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), focus, angle, color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateSpotLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), focus, angle, color.ToSKColor(), 1.0f, amount, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1283,7 +1278,7 @@ $$"""
 
 			Vector3 lightTarget = EffectHelpers.CalculateLightTargetVector(position, target);
 
-			return SKImageFilter.CreateSpotLitSpecular(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), exponent, angle, color.ToSKColor(), 1.0f, amount, focus, sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateSpotLitSpecular(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), exponent, angle, color.ToSKColor(), 1.0f, amount, focus, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1309,7 +1304,7 @@ $$"""
 			float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new InvalidOperationException("The effect property was null"));
 			Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			return SKImageFilter.CreatePointLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreatePointLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1337,7 +1332,7 @@ $$"""
 			float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new InvalidOperationException("The effect property was null"));
 			Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			return SKImageFilter.CreatePointLitSpecular(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreatePointLitSpecular(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1363,7 +1358,7 @@ $$"""
 
 			_isCurrentInputBackdrop = false;
 
-			return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, new(bounds));
+			return SkiaCompat.SKImageFilter_CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1385,7 +1380,7 @@ $$"""
 
 			float saturation = MathF.Min((float)(effectInterop.GetProperty(saturationProp) ?? throw new InvalidOperationException("The effect property was null")), 2);
 
-			return SKImageFilter.CreateColorFilter(
+			return SkiaCompat.SKImageFilter_CreateColorFilter(
 				SKColorFilter.CreateColorMatrix(
 					new float[] // Saturation Matrix
 					{
@@ -1394,7 +1389,7 @@ $$"""
 						0.2126f - 0.2126f * saturation, 0.7152f - 0.7152f * saturation, 0.0722f + 0.9278f * saturation, 0.0f, 0.0f,
 						0.0f,                           0.0f,                           0.0f,                           1.0f, 0.0f
 					}),
-				sourceFilter, new(bounds));
+				sourceFilter, bounds);
 		}
 
 		return null;
@@ -1410,7 +1405,7 @@ $$"""
 		{
 			if (Compositor.IsSoftwareRenderer is true)
 			{
-				return SKImageFilter.CreateOffset(0, 0, null, new(bounds));
+				return SkiaCompat.SKImageFilter_CreateOffset(0, 0, null, bounds);
 			}
 
 			effectInterop.GetNamedPropertyMapping("Frequency", out uint frequencyProp, out _);
@@ -1448,7 +1443,7 @@ $$"""
 					}
 """;
 
-			SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+			SKRuntimeEffect runtimeEffect = SkiaCompat.SKRuntimeEffect_CreateShader(shader, out string errors);
 			if (errors is not null)
 			{
 				return null;
@@ -1460,7 +1455,7 @@ $$"""
 				{ "offset", new float[2] { offset.X, offset.Y } }
 			};
 
-			return SKImageFilter.CreatePaint(new SKPaint() { Shader = runtimeEffect.ToShader(false, uniforms), IsAntialias = true, FilterQuality = SKFilterQuality.High }, new(bounds));
+			return SkiaCompat.SKImageFilter_CreatePaint(new SKPaint() { Shader = SkiaCompat.SKRuntimeEffect_ToShader(runtimeEffect, false, uniforms), IsAntialias = true, FilterQuality = SKFilterQuality.High }, bounds);
 		}
 
 		return null;
@@ -1495,7 +1490,7 @@ $$"""
 						SKPaint paint = new SKPaint() { IsAntialias = true, IsAutohinted = true, FilterQuality = SKFilterQuality.High };
 						brush.UpdatePaint(paint, srcBounds);
 
-						return SKImageFilter.CreatePaint(paint, new(srcBounds));
+						return SkiaCompat.SKImageFilter_CreatePaint(paint, srcBounds);
 					}
 
 					return null;

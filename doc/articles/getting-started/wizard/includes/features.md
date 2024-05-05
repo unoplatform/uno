@@ -53,18 +53,6 @@ Enables Uno Platform debugging in Visual Studio Code. This is included by defaul
 dotnet new unoapp -vscode
 ```
 
-#### Central Package Management
-
-This option enables [Central Package Management](https://learn.microsoft.com/nuget/consume-packages/Central-Package-Management) in the generated Uno Platform solution.  
-
-It adds a *Directory.Packages.props* file which enables configuring the dependencies of all projects instead of configuring them in each *.csproj* file individually, which is more complex and tedious.
-
-This is included by default in both the blank and recommended presets.
-
-```dotnetcli
-dotnet new unoapp -cpm
-```
-
 #### WASM Multi-Threading
 
 Enables multi-threading in the WASM project.  

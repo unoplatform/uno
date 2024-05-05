@@ -26,6 +26,8 @@ using ScrollingZoomMode = Microsoft.UI.Xaml.Controls.ScrollingZoomMode;
 using ScrollingAnchorRequestedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs;
 //using MUXControlsTestHooksLoggingMessageEventArgs = Microsoft.UI.Private.Controls.MUXControlsTestHooksLoggingMessageEventArgs;
 using ScrollViewTestHooks = Microsoft.UI.Private.Controls.ScrollViewTestHooks;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -107,14 +109,14 @@ public class ScrollViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies the ScrollView properties after template application.")]
-	public void VerifyScrollPresenterAttachedProperties()
+	public async Task VerifyScrollPresenterAttachedProperties()
 	{
 		//using (PrivateLoggingHelper privateSVLoggingHelper = new PrivateLoggingHelper("ScrollView", "ScrollPresenter"))
 		{
 			ScrollView scrollView = null;
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -124,7 +126,7 @@ public class ScrollViewTests : MUXApiTestBase
 				SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent, scrollViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -165,9 +167,9 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -178,14 +180,14 @@ public class ScrollViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies the ScrollPresenter attached properties.")]
-	public void VerifyPropertyValuesAfterTemplateApplication()
+	public async Task VerifyPropertyValuesAfterTemplateApplication()
 	{
 		//using (PrivateLoggingHelper privateSVLoggingHelper = new PrivateLoggingHelper("ScrollView", "ScrollPresenter"))
 		{
 			ScrollView scrollView = null;
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -195,7 +197,7 @@ public class ScrollViewTests : MUXApiTestBase
 				SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent, scrollViewUnloadedEvent);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -216,9 +218,9 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollView = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Garbage collecting...");
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -230,7 +232,7 @@ public class ScrollViewTests : MUXApiTestBase
 	[TestMethod]
 	[TestProperty("Description", "Verifies the ScrollView visual state changes based on the AutoHideScrollBars, IsEnabled and ScrollBarVisibility settings.")]
 	[TestProperty("Ignore", "True")] // Disabled due to #41343576
-	public void VerifyVisualStates()
+	public async Task VerifyVisualStates()
 	{
 		UISettings settings = new UISettings();
 		if (!settings.AnimationsEnabled)
@@ -243,17 +245,17 @@ public class ScrollViewTests : MUXApiTestBase
 		{
 			//MUXControlsTestHooks.LoggingMessage += MUXControlsTestHooks_LoggingMessageForVisualStateChange;
 
-			VerifyVisualStates(ScrollBarVisibility.Auto, autoHideScrollControllers: true);
-			VerifyVisualStates(ScrollBarVisibility.Visible, autoHideScrollControllers: true);
+			await VerifyVisualStates(ScrollBarVisibility.Auto, autoHideScrollControllers: true);
+			await VerifyVisualStates(ScrollBarVisibility.Visible, autoHideScrollControllers: true);
 
-			VerifyVisualStates(ScrollBarVisibility.Auto, autoHideScrollControllers: false);
-			VerifyVisualStates(ScrollBarVisibility.Visible, autoHideScrollControllers: false);
+			await VerifyVisualStates(ScrollBarVisibility.Auto, autoHideScrollControllers: false);
+			await VerifyVisualStates(ScrollBarVisibility.Visible, autoHideScrollControllers: false);
 
 			//MUXControlsTestHooks.LoggingMessage -= MUXControlsTestHooks_LoggingMessageForVisualStateChange;
 		}
 	}
 
-	private void VerifyVisualStates(ScrollBarVisibility scrollBarVisibility, bool autoHideScrollControllers)
+	private async Task VerifyVisualStates(ScrollBarVisibility scrollBarVisibility, bool autoHideScrollControllers)
 	{
 		ScrollView scrollView = null;
 
@@ -267,8 +269,8 @@ public class ScrollViewTests : MUXApiTestBase
 		using (ScrollViewTestHooksHelper scrollViewTestHooksHelper = new ScrollViewTestHooksHelper(scrollView, autoHideScrollControllers))
 		{
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewUnloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewUnloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -285,7 +287,7 @@ public class ScrollViewTests : MUXApiTestBase
 					useParentGrid: true);
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -310,7 +312,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollView.IsEnabled = false;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -335,7 +337,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollView.IsEnabled = true;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -358,7 +360,7 @@ public class ScrollViewTests : MUXApiTestBase
 				m_scrollViewVisualStateCounts = null;
 			});
 
-			WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
+			await WaitForEvent("Waiting for Unloaded event", scrollViewUnloadedEvent);
 		}
 	}
 
@@ -441,7 +443,7 @@ public class ScrollViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies anchor candidate registration and unregistration.")]
-	public void VerifyAnchorCandidateRegistration()
+	public async Task VerifyAnchorCandidateRegistration()
 	{
 		//using (PrivateLoggingHelper privateSVLoggingHelper = new PrivateLoggingHelper("ScrollView", "ScrollPresenter"))
 		{
@@ -449,8 +451,8 @@ public class ScrollViewTests : MUXApiTestBase
 			ScrollPresenter scrollPresenter = null;
 			ScrollView scrollView = null;
 			Rectangle rectangleScrollViewContent = null;
-			AutoResetEvent scrollViewLoadedEvent = new AutoResetEvent(false);
-			AutoResetEvent scrollViewAnchorRequestedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+			UnoAutoResetEvent scrollViewAnchorRequestedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -470,7 +472,7 @@ public class ScrollViewTests : MUXApiTestBase
 				};
 			});
 
-			WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+			await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -485,7 +487,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollPresenter.InvalidateArrange();
 			});
 
-			WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
+			await WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -497,7 +499,7 @@ public class ScrollViewTests : MUXApiTestBase
 				scrollPresenter.InvalidateArrange();
 			});
 
-			WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
+			await WaitForEvent("Waiting for AnchorRequested event", scrollViewAnchorRequestedEvent);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -511,8 +513,8 @@ public class ScrollViewTests : MUXApiTestBase
 	private void SetupDefaultUI(
 		ScrollView scrollView,
 		Rectangle rectangleScrollViewContent = null,
-		AutoResetEvent scrollViewLoadedEvent = null,
-		AutoResetEvent scrollViewUnloadedEvent = null,
+		UnoAutoResetEvent scrollViewLoadedEvent = null,
+		UnoAutoResetEvent scrollViewUnloadedEvent = null,
 		bool setAsContentRoot = true,
 		bool useParentGrid = false)
 	{
@@ -588,19 +590,19 @@ public class ScrollViewTests : MUXApiTestBase
 		}
 	}
 
-	private void WaitForEvent(string logComment, EventWaitHandle eventWaitHandle)
+	private async Task WaitForEvent(string logComment, UnoManualOrAutoResetEvent eventWaitHandle)
 	{
 		Log.Comment(logComment);
 		if (!UnoIsDebuggerPresent())
 		{
-			if (!eventWaitHandle.WaitOne(TimeSpan.FromMilliseconds(c_MaxWaitDuration)))
+			if (!await eventWaitHandle.WaitOne(TimeSpan.FromMilliseconds(c_MaxWaitDuration)))
 			{
 				throw new Exception("Timeout expiration in WaitForEvent.");
 			}
 		}
 		else
 		{
-			eventWaitHandle.WaitOne();
+			await eventWaitHandle.WaitOne();
 		}
 	}
 

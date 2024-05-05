@@ -18,7 +18,9 @@ internal static partial class PlatformImageHelpers
 			var filename = Path.GetFileNameWithoutExtension(path);
 			var extension = Path.GetExtension(path);
 
+#pragma warning disable RS0030 // Do not use banned APIs // TODO MZ: Avoid this by using XamlRoot
 			var resolutionScale = scaleOverride == null ? (int)DisplayInformation.GetForCurrentView().ResolutionScale : (int)scaleOverride;
+#pragma warning restore RS0030 // Do not use banned APIs
 
 			// On Windows, the minimum scale is 100%, however, on Wasm, we can have lower scales.
 			// This condition is to allow Wasm to use the .scale-100 image when the scale is < 100%

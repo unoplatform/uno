@@ -42,6 +42,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private readonly TaskCompletionSource _closed; // To keep it simple, only SetResult if you have the lock
 	private readonly ApplicationView _applicationView;
+	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
 
 	private X11Window? _x11Window;
@@ -49,8 +50,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public X11Window X11Window => _x11Window!.Value;
 
-	public X11XamlRootHost(Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
+		_wrapper = wrapper;
 		_window = winUIWindow;
 
 		_resizeCallback = resizeCallback;
@@ -60,8 +62,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
-		var coreApplicationView = CoreApplication.GetCurrentView();
-		coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
@@ -81,7 +83,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				X11Manager.XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
-				coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 			}
 		});
 
@@ -118,8 +121,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	{
 		var coreApplicationView = CoreApplication.GetCurrentView();
 
-		X11Helper.SetMotifWMDecorations(X11Window, !coreApplicationView.TitleBar.ExtendViewIntoTitleBar, 0xFF);
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
 	}
+
+	internal void ExtendContentIntoTitleBar(bool extend) => X11Helper.SetMotifWMDecorations(X11Window, !extend, 0xFF);
 
 	private void UpdateWindowPropertiesFromPackage()
 	{

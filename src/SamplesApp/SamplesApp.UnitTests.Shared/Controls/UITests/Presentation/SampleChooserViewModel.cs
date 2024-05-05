@@ -35,6 +35,7 @@ using SamplesApp;
 using Uno.UI.Extensions;
 using Private.Infrastructure;
 using System.Reflection.Metadata;
+using UITests.Shared.Helpers;
 
 namespace SampleControl.Presentation
 {
@@ -122,22 +123,20 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
-			_ = UnitTestDispatcherCompat
-				.From(SamplesApp.App.MainWindow.Content)
-				.RunAsync(
-				async () =>
-				{
-					// Initialize favorites and recents list as soon as possible.
-					if (FavoriteSamples == null || !FavoriteSamples.Any())
+			_ = _dispatcher.RunAsync(
+					async () =>
 					{
-						FavoriteSamples = await GetFavoriteSamples(CancellationToken.None, true);
+						// Initialize favorites and recents list as soon as possible.
+						if (FavoriteSamples == null || !FavoriteSamples.Any())
+						{
+							FavoriteSamples = await GetFavoriteSamples(CancellationToken.None, true);
+						}
+						if (RecentSamples == null || !RecentSamples.Any())
+						{
+							RecentSamples = await GetRecentSamples(CancellationToken.None);
+						}
 					}
-					if (RecentSamples == null || !RecentSamples.Any())
-					{
-						RecentSamples = await GetRecentSamples(CancellationToken.None);
-					}
-				}
-			);
+				);
 		}
 
 		public event EventHandler SampleChanging;
@@ -331,7 +330,7 @@ namespace SampleControl.Presentation
 
 							SelectedLibrarySample = sample;
 
-							var content = await UpdateContent(ct, sample) as FrameworkElement;
+							var (content, control) = await UpdateContent(ct, sample);
 
 							ContentPhone = content;
 
@@ -342,11 +341,29 @@ namespace SampleControl.Presentation
 							await Task.Delay(500, ct);
 #endif
 
+							if (control is IWaitableSample waitableSample)
+							{
+								await waitableSample.SamplePreparedTask;
+							}
+
 							Console.WriteLine($"Generating screenshot for {fileName}");
 							var file = await rootFolder.CreateFileAsync(fileName + ".png",
 								CreationCollisionOption.ReplaceExisting
 								).AsTask(ct);
 							await GenerateBitmap(ct, target, file, content);
+
+							try
+							{
+								UseDarkTheme = true;
+								file = await rootFolder.CreateFileAsync(fileName + "-dark.png",
+									CreationCollisionOption.ReplaceExisting
+									).AsTask(ct);
+								await GenerateBitmap(ct, target, file, content);
+							}
+							finally
+							{
+								UseDarkTheme = false;
+							}
 						}
 						catch (Exception e)
 						{
@@ -435,7 +452,8 @@ namespace SampleControl.Presentation
 				throw new InvalidOperationException($"Unable to find UnitTestsPage");
 			}
 
-			var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+			var (content, _) = await UpdateContent(ct, runtimeTests);
+
 			if (!Equals(SelectedLibrarySample, runtimeTests))
 			{
 				SelectedLibrarySample = null;
@@ -499,14 +517,14 @@ namespace SampleControl.Presentation
 						return;
 					}
 					_ = UnitTestDispatcherCompat
-						.From(SamplesApp.App.MainWindow.Content)
+						.From(Owner)
 						.RunAsync(
 						async () =>
 						{
 							if (newContent != null)
 							{
 								CurrentSelectedSample = newContent;
-								ContentPhone = await UpdateContent(CancellationToken.None, newContent);
+								(ContentPhone, _) = await UpdateContent(CancellationToken.None, newContent);
 							}
 						}
 					);
@@ -791,7 +809,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task UpdateFavorites(CancellationToken ct, bool getAllSamples = false, List<SampleChooserContent> favoriteSamples = null)
+		private void UpdateFavorites(bool getAllSamples = false, List<SampleChooserContent> favoriteSamples = null)
 		{
 			// If true, load all samples and not just those of a selected category
 			var samples = getAllSamples
@@ -804,7 +822,7 @@ namespace SampleControl.Presentation
 
 			foreach (var sample in samples)
 			{
-				await UpdateFavoriteForSample(ct, sample, favorites.Contains(sample));
+				UpdateFavoriteForSample(sample, favorites.Contains(sample));
 			}
 
 			SampleContents = samples;
@@ -820,7 +838,7 @@ namespace SampleControl.Presentation
 			}
 			else
 			{
-				await UpdateFavoriteForSample(ct, sample, true);
+				UpdateFavoriteForSample(sample, true);
 				favorites.Add(sample);
 			}
 
@@ -828,14 +846,14 @@ namespace SampleControl.Presentation
 
 			FavoriteSamples = favorites;
 
-			await UpdateFavorites(ct);
+			UpdateFavorites();
 		}
 
 		private async Task LoadPreviousTest(CancellationToken ct)
 		{
 			if (PreviousSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, PreviousSample);
+				(ContentPhone, _) = await UpdateContent(ct, PreviousSample);
 			}
 		}
 
@@ -843,7 +861,7 @@ namespace SampleControl.Presentation
 		{
 			if (CurrentSelectedSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, CurrentSelectedSample);
+				(ContentPhone, _) = await UpdateContent(ct, CurrentSelectedSample);
 			}
 		}
 
@@ -851,18 +869,14 @@ namespace SampleControl.Presentation
 		{
 			if (NextSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, NextSample);
+				(ContentPhone, _) = await UpdateContent(ct, NextSample);
 			}
 		}
 
-		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
+		private void UpdateFavoriteForSample(SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
-			_ = UnitTestDispatcherCompat
-				.From(SamplesApp.App.MainWindow.Content)
-				.RunAsync(() => sample.IsFavorite = isFavorite);
-
-			await Task.Yield();
+			sample.IsFavorite = isFavorite;
 		}
 
 		/// <summary>
@@ -878,7 +892,7 @@ namespace SampleControl.Presentation
 				var favoriteSamples = await GetFile(SampleChooserFavoriteConstant, () => new List<SampleChooserContent>());
 
 				// Update the Sample List to set the IsFavorite to True
-				await UpdateFavorites(ct, getAllSamples, favoriteSamples);
+				UpdateFavorites(getAllSamples, favoriteSamples);
 
 				return favoriteSamples;
 			}
@@ -898,12 +912,13 @@ namespace SampleControl.Presentation
 		/// <param name="ct"></param>
 		/// <param name="newContent"></param>
 		/// <returns>The updated content</returns>
-		public async Task<object> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
+		public async Task<(FrameworkElement Content, object Control)> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
 		{
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
 			FrameworkElement container = null;
 
+			object control;
 			var frameRequested =
 				newContent.UsesFrame &&
 				typeof(Page).IsAssignableFrom(newContent.ControlType);
@@ -912,11 +927,12 @@ namespace SampleControl.Presentation
 				var frame = new Frame();
 				frame.Navigate(newContent.ControlType);
 				container = frame;
+				control = frame.Content;
 			}
 			else
 			{
 				//Activator is used here in order to generate the view and bind it directly with the proper view model
-				var control = Activator.CreateInstance(newContent.ControlType);
+				control = Activator.CreateInstance(newContent.ControlType);
 
 				if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
 				{
@@ -989,7 +1005,7 @@ namespace SampleControl.Presentation
 				RecentSamples = recents;
 			}
 
-			return container;
+			return (container, control);
 		}
 
 		private SampleChooserCategory GetCategory(SampleChooserContent content)
@@ -1195,7 +1211,7 @@ namespace SampleControl.Presentation
 #if __WASM__
 			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
 #else
-			var element = SamplesApp.App.MainWindow.Content;
+			var element = Owner.XamlRoot.Content;
 
 			try
 			{
@@ -1214,13 +1230,8 @@ namespace SampleControl.Presentation
 						BitmapAlphaMode.Ignore,
 						(uint)targetBitmap.PixelWidth,
 						(uint)targetBitmap.PixelHeight,
-#if HAS_UNO
-						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiX,
-						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiY,
-#else
-						GetDpi(),
-						GetDpi(),
-#endif
+						content.XamlRoot.RasterizationScale,
+						content.XamlRoot.RasterizationScale,
 						pixels.ToArray()
 					);
 

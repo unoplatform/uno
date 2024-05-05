@@ -53,7 +53,7 @@ public class TeachingTipTests
 		TeachingTip teachingTip = null, teachingTipLightDismiss = null;
 		SolidColorBrush blueBrush = null;
 		Brush lightDismissBackgroundBrush = null;
-		var loadedEvent = new AutoResetEvent(false);
+		var loadedEvent = new UnoAutoResetEvent(false);
 		RunOnUIThread.Execute(() =>
 		{
 			Grid root = new Grid();
@@ -79,9 +79,9 @@ public class TeachingTipTests
 			MUXControlsTestApp.App.TestContentRoot = root;
 		});
 
-		IdleSynchronizer.Wait();
-		loadedEvent.WaitOne();
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
+		await loadedEvent.WaitOne();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -141,7 +141,7 @@ public class TeachingTipTests
 			teachingTip.IsLightDismissEnabled = true;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -177,7 +177,7 @@ public class TeachingTipTests
 	}
 
 	[TestMethod]
-	public void TeachingTipWithContentAndWithoutHeroContentDoesNotCrash()
+	public async Task TeachingTipWithContentAndWithoutHeroContentDoesNotCrash()
 	{
 		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
@@ -187,7 +187,7 @@ public class TeachingTipTests
 
 		try
 		{
-			var loadedEvent = new AutoResetEvent(false);
+			var loadedEvent = new UnoAutoResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				Grid contentGrid = new Grid();
@@ -200,8 +200,8 @@ public class TeachingTipTests
 				TestServices.WindowHelper.WindowContent = teachingTip;
 			});
 
-			IdleSynchronizer.Wait();
-			loadedEvent.WaitOne();
+			await TestServices.WindowHelper.WaitForIdle();
+			await loadedEvent.WaitOne();
 		}
 		finally
 		{
@@ -210,7 +210,7 @@ public class TeachingTipTests
 	}
 
 	[TestMethod]
-	public void TeachingTipWithContentAndWithoutIconSourceDoesNotCrash()
+	public async Task TeachingTipWithContentAndWithoutIconSourceDoesNotCrash()
 	{
 		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
@@ -220,7 +220,7 @@ public class TeachingTipTests
 
 		try
 		{
-			var loadedEvent = new AutoResetEvent(false);
+			var loadedEvent = new UnoAutoResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				Grid contentGrid = new Grid();
@@ -232,8 +232,8 @@ public class TeachingTipTests
 				TestServices.WindowHelper.WindowContent = teachingTip;
 			});
 
-			IdleSynchronizer.Wait();
-			loadedEvent.WaitOne();
+			await TestServices.WindowHelper.WaitForIdle();
+			await loadedEvent.WaitOne();
 		}
 		finally
 		{
@@ -242,7 +242,7 @@ public class TeachingTipTests
 	}
 
 	[TestMethod]
-	public void PropagatePropertiesDown()
+	public async Task PropagatePropertiesDown()
 	{
 		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
@@ -277,7 +277,7 @@ public class TeachingTipTests
 				tip.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{

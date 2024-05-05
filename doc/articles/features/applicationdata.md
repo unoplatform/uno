@@ -12,14 +12,14 @@ Legend
 
 - ✔  Supported
 
-| Picker         | WinUI/UWP   | WebAssembly | Android | iOS/Mac Catalyst   | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `LocalFolder` | ✔   | ✔   | ✔     | ✔    | ✔   | ✔  | ✔  |
-| `RoamingFolder` | ✔   | ✔  | ✔     | ✔    | ✔   | ✔  | ✔  |
-| `LocalCacheFolder`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
-| `TemporaryFolder`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
-| `LocalSettings`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
-| `RoamingSettings`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
+| Picker             | WinUI/UWP | WebAssembly | Android | iOS/Mac Catalyst   | macOS | Skia Desktop |
+|--------------------|-----------|-------------|---------|--------------------|-------|--------------|
+| `LocalFolder`      | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `RoamingFolder`    | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `LocalCacheFolder` | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `TemporaryFolder`  | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `LocalSettings`    | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `RoamingSettings`  | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
 
 Please note that `RoamingFolder` and `RoamingSettings` are not roamed automatically across devices, they only provide a logical separation between data that you intend to roam and that you intend to keep local.
 
@@ -62,9 +62,9 @@ localSettings.Values["name"] = "Martin";
 string value = (string)localSettings.Values["name"];
 ```
 
-## Data location on GTK and WPF
+## Data location on Skia Desktop
 
-In the case of GTK and WPF targets, the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system.
+In the case of Skia Desktop targets, the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system.
 
 ### Windows
 
@@ -92,6 +92,6 @@ The default paths above can be overridden using the following feature flags:
 - `WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride` - affects `LocalCacheFolder` location
 - `WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride` - affects `LocalFolder`, `RoamingFolder`, `LocalCaheFolder`, `LocalSettings` and `RoamingSettings`
 
-These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `WpfHost` or `GtkHost` instance is created.
+These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `SkiaHostBuilder` instance is created.
 
-If you intend to support both Windows and Unix-based systems for GTK target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.
+If you intend to support both Windows and Unix-based systems for the Desktop target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.

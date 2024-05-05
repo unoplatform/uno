@@ -1,11 +1,10 @@
 using System.ComponentModel;
-
 using Microsoft.UI.Windowing;
-using Windows.Foundation;
-using Windows.UI.Core.Preview;
-
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.UI.Core.Preview;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -13,13 +12,21 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 {
 	private readonly MacOSWindowNative _window;
 
-	public MacOSWindowWrapper(MacOSWindowNative window)
+	public MacOSWindowWrapper(MacOSWindowNative window, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_window = window;
 
 		window.Host.SizeChanged += OnHostSizeChanged;
 		window.Host.Closing += OnWindowClosing;
 		window.Host.Closed += OnWindowClosed;
+		window.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
+
+		RasterizationScale = (float)_window.Host.RasterizationScale;
+	}
+
+	private void Host_RasterizationScaleChanged(object? sender, EventArgs args)
+	{
+		RasterizationScale = (float)_window.Host.RasterizationScale;
 	}
 
 	public override object NativeWindow => _window;

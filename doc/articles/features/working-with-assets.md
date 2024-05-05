@@ -4,9 +4,9 @@ uid: Uno.Features.Assets
 
 # Assets and image display
 
-Uno Platform automatically processes assets from your app's **Class Library Project** and makes them available on all platforms.
+Uno Platform automatically processes assets from your app's project and makes them available on all platforms.
 
-Support for automatic generation of assets multiple resolutions from SVG or PNG is also provided using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
+Support for the automatic generation of assets in multiple resolutions from SVG or PNG is also provided using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
 Platform-specific assets such as [`BundleResource`](https://learn.microsoft.com/xamarin/ios/user-interface/controls/image) and [`AndroidAssets`](https://learn.microsoft.com/xamarin/android/app-fundamentals/resources-in-android/android-assets) are also supported on the heads, when required.
 
@@ -31,14 +31,14 @@ At the moment, the following image file types are supported as `Content` assets:
 
 ## Adding an asset to your project
 
-This is just like adding an asset to a WinUI project, except assets must be added to the shared project to make them available on all platforms.
+This is just like adding an asset to a WinUI project.
 
-1. Add an image file to the `Assets` directory of the solution's shared project.
-2. Select the item and set the build action to `Content`.
+1. Add an image file to the `Assets` directory of the solution's app project.
+2. Select the item and set the build action to `Content`, if not already set.
 
 ## Referencing an asset
 
-Use assets added to your shared project with the `ms-appx:///` scheme.
+Use assets added to your project with the `ms-appx:///` scheme.
 
 See the examples below for XAML:
 

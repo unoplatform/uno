@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
@@ -528,6 +530,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive();
+			}
+
 			var SUT = new ScrollViewer
 			{
 				Height = 300,
@@ -1225,6 +1232,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			nested.PointerExited += (snd, e) => events.Add("exited");
 			nested.PointerPressed += (snd, e) => events.Add("pressed");
 			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCaptureLost += (snd, e) => events.Add("capturelost");
 			nested.PointerCanceled += (snd, e) => events.Add("cancel");
 
 			WindowHelper.WindowContent = new Grid { Children = { sut } };
@@ -1237,7 +1245,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
-			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
+			// The expected proper sequence when all sub-elements are ManipulationMode=System should be "Enter", "Pressed", "PointerCaptureLost", "Exited"
+			// This is caused by the Windows' Direct Manipulation.
+			// The important thing is to not get Released as it can cause a click on the nested element while it's being scrolled.
+			events.Should().BeEquivalentTo("enter", "pressed", "exited");
 		}
 
 		[TestMethod]
@@ -1265,6 +1276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			nested.PointerExited += (snd, e) => events.Add("exited");
 			nested.PointerPressed += (snd, e) => events.Add("pressed");
 			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCaptureLost += (snd, e) => events.Add("capturelost");
 			nested.PointerCanceled += (snd, e) => events.Add("cancel");
 
 			WindowHelper.WindowContent = new Grid { Children = { sut } };
@@ -1275,7 +1287,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var finger = input.GetFinger();
 
 			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
-			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
+			finger.Press(sutLocation.Offset(5, 5));
+			finger.Release();
 
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
 		}
@@ -1326,5 +1339,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.VerticalOffset.Should().Be(0);
 #endif
 		}
+
+#if HAS_UNO // uses internal ToMatrix
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		public async Task When_SCP_TransformToVisual()
+		{
+			var SUT = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = new Border
+				{
+					Height = 4192,
+					Width = 256,
+					Background = new SolidColorBrush(Colors.DeepPink)
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			var ttv = ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero);
+			var childTtvMatrix = ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero);
+
+			SUT.ScrollToVerticalOffset(100);
+			await WindowHelper.WaitForIdle();
+
+			// The content inside the SCP should move, not the SCP itself
+#if __SKIA__ || __WASM__
+			// "Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child."
+			Assert.AreEqual(ttv, ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
+#else
+			Assert.AreEqual(ttv * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
+#endif
+
+#if __WASM__ // incorrect
+			Assert.AreEqual(childTtvMatrix, ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero));
+#else
+			Assert.AreEqual(childTtvMatrix * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero));
+#endif
+		}
+#endif
 	}
 }

@@ -114,7 +114,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 
-			ProtectedCursor = Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam);
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
 
@@ -196,7 +195,6 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextAlignmentChanged(TextAlignment);
 			OnTextWrappingChanged();
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
-			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
 			OnTextCharacterCasingChanged(CharacterCasing);
 			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();
@@ -229,6 +227,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
 			{
 				_deleteButton = new WeakReference<Button>(button);
+			}
+
+			if (_contentElement is { })
+			{
+				_contentElement.SetProtectedCursor(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam));
 			}
 
 			UpdateTextBoxView();
@@ -1155,24 +1158,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override string GetAccessibilityInnerText() => Text;
 
-		protected override void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment)
-		{
-			base.OnVerticalContentAlignmentChanged(oldVerticalContentAlignment, newVerticalContentAlignment);
-
-			if (_contentElement != null)
-			{
-				_contentElement.VerticalContentAlignment = newVerticalContentAlignment;
-			}
-
-			if (_placeHolder != null)
-			{
-				_placeHolder.VerticalAlignment = newVerticalContentAlignment;
-			}
-
-			OnVerticalContentAlignmentChangedPartial(oldVerticalContentAlignment, newVerticalContentAlignment);
-		}
-
-		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
+		// TODO: Remove as a breaking change for Uno 6
+		// Also, make OnVerticalContentAlignmentChanged private protected.
+		protected override void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment) { }
 
 		public void Select(int start, int length)
 		{

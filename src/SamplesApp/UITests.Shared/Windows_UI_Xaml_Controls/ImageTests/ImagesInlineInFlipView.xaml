@@ -15,33 +15,27 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-    <controls:SampleControl SampleDescription="ImagesInlineInFlipView - the image view will be loaded after the Source has been set.">
-        <controls:SampleControl.SampleContent>
-            <DataTemplate>
-                <StackPanel
-                    Orientation="Horizontal">
-                    <StackPanel
-                    Orientation="Vertical">
-                        <FlipView>
-                            <Image Source="http://lh5.ggpht.com/mKuevNSOL2rtQ932ZamBfXPkvBd-YIo6Odv7wXeQt8U-DW4c6zFutDbLMr6tWuaD6kappbIcgnPK-9TNKs9HRPwF5K1-cH20YOqx5WRO"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-                            <TextBlock Text="image TEXT text text image"
-                                   Width="400"
-                                   Height="200"/>
-                            <TextBlock Text="image text TEXT text image"
-                                   Width="400"
-                                   Height="200"/>
-                            <TextBlock Text="image text text TEXT image"
-                                   Width="400"
-                                   Height="200"/>
-                            <Image Source="http://lh4.ggpht.com/C7mtHaKoVyLzz6x8P2GCMmGASSiw5NEiKSid0dVEhI6_GcRB80fY5U2rkyNgy64GlSmcQT1SMl48BSoObGhWqU3xehC8I4QIXG-Py04o"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-                        </FlipView>
-                    </StackPanel>
-                </StackPanel>
-            </DataTemplate>
-        </controls:SampleControl.SampleContent>
-    </controls:SampleControl>
+	<StackPanel
+    Orientation="Horizontal">
+		<StackPanel
+    Orientation="Vertical">
+			<FlipView>
+				<Image Source="http://lh5.ggpht.com/mKuevNSOL2rtQ932ZamBfXPkvBd-YIo6Odv7wXeQt8U-DW4c6zFutDbLMr6tWuaD6kappbIcgnPK-9TNKs9HRPwF5K1-cH20YOqx5WRO"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"/>
+				<TextBlock Text="image TEXT text text image"
+                   Width="400"
+                   Height="200"/>
+				<TextBlock Text="image text TEXT text image"
+                   Width="400"
+                   Height="200"/>
+				<TextBlock Text="image text text TEXT image"
+                   Width="400"
+                   Height="200"/>
+				<Image Source="http://lh4.ggpht.com/C7mtHaKoVyLzz6x8P2GCMmGASSiw5NEiKSid0dVEhI6_GcRB80fY5U2rkyNgy64GlSmcQT1SMl48BSoObGhWqU3xehC8I4QIXG-Py04o"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"/>
+			</FlipView>
+		</StackPanel>
+	</StackPanel>
 </UserControl>

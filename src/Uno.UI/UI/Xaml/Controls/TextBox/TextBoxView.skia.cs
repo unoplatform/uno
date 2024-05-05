@@ -1,12 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using Windows.System;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -14,18 +16,19 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
-		private readonly WeakReference<TextBox> _textBox;
+		private readonly ManagedWeakReference _textBox;
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 		public TextBoxView(TextBox textBox)
 		{
+			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
+			_isPasswordBox = textBox is PasswordBox;
+
 			DisplayBlock = new TextBlock();
 			SetFlowDirectionAndTextAlignment();
 
-			_textBox = new WeakReference<TextBox>(textBox);
-			_isPasswordBox = textBox is PasswordBox;
 			if (!_isSkiaTextBox && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -42,17 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
-		public TextBox? TextBox
-		{
-			get
-			{
-				if (_textBox.TryGetTarget(out var target))
-				{
-					return target;
-				}
-				return null;
-			}
-		}
+		public TextBox? TextBox => !_textBox.IsDisposed ? _textBox.Target as TextBox : null;
 
 		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
 
@@ -62,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetTextNative(string text)
 		{
-			SetDisplayBlockText(text);
+			UpdateDisplayBlockText(text);
 
 			_textBoxExtension?.SetText(text);
 		}
@@ -74,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetFlowDirectionAndTextAlignment()
 		{
-			if (_textBox?.GetTarget() is not { } textBox)
+			if (TextBox is not { } textBox)
 			{
 				return;
 			}
@@ -97,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetWrapping()
 		{
-			if (_textBox?.GetTarget() is { } textBox)
+			if (TextBox is { } textBox)
 			{
 				DisplayBlock.TextWrapping = textBox.TextWrapping;
 			}
@@ -145,8 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UpdateFont()
 		{
-			var textBox = _textBox?.GetTarget();
-			if (textBox != null)
+			if (TextBox is { } textBox)
 			{
 				DisplayBlock.FontFamily = textBox.FontFamily;
 				DisplayBlock.FontSize = textBox.FontSize;
@@ -161,25 +153,43 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
 			_textBoxExtension?.SetPasswordRevealState(revealState);
+			if (TextBox is { } textBox)
+			{
+				UpdateDisplayBlockText(textBox.Text);
+			}
 		}
 
 		internal void UpdateTextFromNative(string newText)
 		{
-			var textBox = _textBox?.GetTarget();
-			if (textBox != null)
+			if (TextBox is { } textBox)
 			{
-				var text = textBox.ProcessTextInput(newText);
-				SetDisplayBlockText(text);
-				if (text != newText)
+				var oldText = textBox.Text; // preexisting text
+				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
+				var modifiedText = textBox.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				UpdateDisplayBlockText(modifiedText);
+				if (modifiedText != newText)
 				{
-					SetTextNative(text);
+					SetTextNative(modifiedText);
+					if (modifiedText == oldText)
+					{
+						// The native textbox received new input -> sent it to uno -> uno changed it back to the original value
+						// In that case, SetTextNative will reset the selection and we need to reapply it.
+						// You would think that this would break the selection direction (i.e. start to end or end to start), but in fact
+						// the direction also breaks on WinUI itself (i.e. the new direction will always be start to end).
+						DispatcherQueue.Main.TryEnqueue(() =>
+						{
+							// Enqueuing instead of synchronously selecting is problematic on Gtk, which fires the Changed event and then
+							// changes the selection later. This will still fail (on Gtk) when pasting text or selecting some text then typing (replacing).
+							Select(oldSelection.start, oldSelection.length);
+						});
+					}
 				}
 			}
 		}
 
 		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
 
-		private void SetDisplayBlockText(string text)
+		private void UpdateDisplayBlockText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.

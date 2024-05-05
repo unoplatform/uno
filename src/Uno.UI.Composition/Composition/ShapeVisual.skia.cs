@@ -1,11 +1,10 @@
 ﻿#nullable enable
 
 using System.Numerics;
-using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
-using System.Xml.Xsl;
 using Uno.UI.Composition;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -21,10 +20,14 @@ public partial class ShapeVisual
 		// First we render the shapes (a.k.a. the "local content")
 		// For UIElement, those are background and border or shape's content
 		// WARNING: As we are overriding the "Render" method, at this point we are still in the parent's coordinate system
+
+		// This shouldn't be inside the if condition.
+		// When inside the if, the session.Dispose will be called before base.Render,
+		// which can cause clipping to be removed before rendering children.
+		using var session = BeginShapesDrawing(in parentSession);
+
 		if (_shapes is { Count: not 0 } shapes)
 		{
-			using var session = BeginShapesDrawing(in parentSession);
-
 			for (var i = 0; i < shapes.Count; i++)
 			{
 				// TODO: If the shape will end up being not in Window bounds,
@@ -44,41 +47,46 @@ public partial class ShapeVisual
 		base.Render(in parentSession);
 	}
 
-	/// <inheritdoc />
-	internal override void Draw(in DrawingSession session)
-	{
-		if (ViewBox is { } viewBox)
-		{
-			session.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
-		}
-
-		base.Draw(in session);
-	}
-
 	private DrawingSession BeginShapesDrawing(in DrawingSession parentSession)
 	{
 		parentSession.Canvas.Save();
-
-		var totalOffset = this.GetTotalOffset();
-		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		parentSession.Canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
 
 		var transform = this.GetTransform().ToSKMatrix();
 
 		if (ViewBox is { } viewBox)
 		{
+			if (!viewBox.IsAncestorClip)
+			{
+				ApplyTranslation(parentSession.Canvas);
+			}
+
 			// We apply the transformed viewbox clipping
 			if (transform.IsIdentity)
 			{
-				parentSession.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
+				parentSession.Canvas.ClipRect(viewBox.GetSKRect(), antialias: true);
 			}
 			else
 			{
 				var shape = new SKPath();
-				shape.AddRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
-				shape.Transform(transform);
+				var clipRect = new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y);
+
+				shape.AddRect(clipRect);
+				if (!viewBox.IsAncestorClip)
+				{
+					shape.Transform(transform);
+				}
+
 				parentSession.Canvas.ClipPath(shape, antialias: true);
 			}
+
+			if (viewBox.IsAncestorClip)
+			{
+				ApplyTranslation(parentSession.Canvas);
+			}
+		}
+		else
+		{
+			ApplyTranslation(parentSession.Canvas);
 		}
 
 		if (!transform.IsIdentity)
@@ -87,14 +95,38 @@ public partial class ShapeVisual
 			parentSession.Canvas.Concat(ref transform);
 		}
 
-		// Note: We don't apply the clip here, as it is already applied on the shapes (i.e. CornerRadius)
-		//		 The Clip property is only used to apply the clip on the children (i.e. the UIElement's content)
-		// Clip?.Apply(parentSession.Surface);
+		// Note: Here only the `Clip` is relevant for the shapes, `CornerRadiusClip` applies only for children (i.e. UIElement's content)
+		Clip?.Apply(parentSession.Canvas, this);
 
 		var session = parentSession; // Creates a new session (clone the struct)
 
 		DrawingSession.PushOpacity(ref session, Opacity);
 
 		return session;
+	}
+
+	private void ApplyTranslation(SKCanvas canvas)
+	{
+		var totalOffset = this.GetTotalOffset();
+		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
+		canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
+	}
+
+	internal Rect? GetViewBoxRectInElementCoordinateSpace()
+	{
+		if (ViewBox is null)
+		{
+			return null;
+		}
+
+		var rect = ViewBox.GetRect();
+		if (ViewBox.IsAncestorClip)
+		{
+			var totalOffset = this.GetTotalOffset();
+			rect.X -= totalOffset.X;
+			rect.Y -= totalOffset.Y;
+		}
+
+		return rect;
 	}
 }

@@ -14,6 +14,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
 using Uno.Disposables;
+using Windows.Graphics.Display;
 using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
@@ -21,6 +22,8 @@ namespace Uno.UI.Xaml.Controls;
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
+
+	private readonly DisplayInformation _displayInformation;
 
 	private Uno.UI.Controls.Window _window;
 
@@ -48,6 +51,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 
 		ObserveOrientationAndSize();
+
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
 	}
 
 	public override string Title
@@ -71,6 +78,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	public override Uno.UI.Controls.Window NativeWindow => _window;
 
 	internal RootViewController MainController => _mainController;
+
+	private void DispatchDpiChanged() =>
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	protected override void ShowCore()
 	{
