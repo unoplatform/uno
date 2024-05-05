@@ -4,17 +4,14 @@
 
 using System;
 using System.Collections.Generic;
-using Uno;
 using Uno.UI;
 using Uno.UI.DirectUI;
 using System.Linq;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using static Uno.FoundationFeatureConfiguration;
-using Uno.UI.Xaml.Core;
-using System.Collections;
 using Rect = Windows.Foundation.Rect;
+using Uno.UI.Xaml.Core.Scaling;
 
 
 
