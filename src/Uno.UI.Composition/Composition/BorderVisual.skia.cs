@@ -19,7 +19,9 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	private BorderStateWrapper _borderShapeAndBackgroundState;
 	private CompositionSpriteShape? _backgroundShape;
 	private CompositionSpriteShape? _borderShape;
+	// Note how we don't need to get notified when these properties change since they only get set in OnPropertyChangedCore.
 	private CompositionClip? _backgroundClip;
+	private RectangleClip? _childClipCausedByCornerRadius;
 
 	public BorderStateWrapper BorderShapeAndBackgroundState
 	{
@@ -60,6 +62,9 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			return _borderShape!;
 		}
 	}
+
+	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
+		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
 
 	internal override void Paint(in PaintingSession session)
 	{
@@ -124,7 +129,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		//         a non-empty CornerRadius will clip the child(ren). This matches WinUI even though it's not intuitive.
 		if (!fullCornerRadius.IsEmpty)
 		{
-			CornerRadiusClip = Compositor.CreateRectangleClip(
+			_childClipCausedByCornerRadius = Compositor.CreateRectangleClip(
 				innerArea.Left, innerArea.Top, innerArea.Right, innerArea.Bottom,
 				fullCornerRadius.Inner.TopLeft, fullCornerRadius.Inner.TopRight, fullCornerRadius.Inner.BottomRight, fullCornerRadius.Inner.BottomLeft);
 
@@ -143,7 +148,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		}
 		else
 		{
-			CornerRadiusClip = null;
+			_childClipCausedByCornerRadius = null;
 		}
 	}
 
