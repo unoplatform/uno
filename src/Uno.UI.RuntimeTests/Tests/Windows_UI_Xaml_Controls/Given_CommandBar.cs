@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !__IOS__
+#if __IOS__
 		[Ignore("VerticalAlignment asserts fail. Might be because of different timing.")]
 #endif
 		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
