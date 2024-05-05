@@ -1,4 +1,5 @@
-﻿using Uno.Disposables;
+﻿using System;
+using Uno.Disposables;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
@@ -53,7 +54,11 @@ partial class BorderLayerRenderer
 			return;
 		}
 
-		var visual = _owner.Visual;
+		if (_owner.Visual is not BorderVisual visual)
+		{
+			throw new InvalidOperationException($"{nameof(BorderLayerRenderer)} should only be used with UIElements that use a {nameof(BorderVisual)}.");
+		}
+
 		visual.BorderShapeAndBackgroundState = new BorderVisual.BorderStateWrapper(
 			state.CornerRadius.ToUnoCompositionCornerRadius(),
 			state.BorderThickness.ToUnoCompositionThickness(),

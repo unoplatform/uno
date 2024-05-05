@@ -13,6 +13,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using System.Collections;
+using Microsoft.UI.Composition;
 
 #if __IOS__
 using __View = UIKit.UIView;
@@ -43,6 +44,10 @@ public partial class Panel : FrameworkElement, IPanel
 		_borderRenderer = new BorderLayerRenderer(this);
 		_children = new UIElementCollection(this);
 	}
+
+#if __SKIA__
+	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
 
 	private protected override void OnLoaded()
 	{

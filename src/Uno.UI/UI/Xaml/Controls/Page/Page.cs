@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Xaml.Controls;
@@ -15,6 +16,10 @@ public partial class Page : UserControl
 	{
 		_borderRenderer = new BorderLayerRenderer(this);
 	}
+
+#if __SKIA__
+	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
 
 	private void UpdateBorder() => _borderRenderer.Update();
 

@@ -13,6 +13,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
+using Microsoft.UI.Composition;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
@@ -73,6 +74,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		InitializePlatform();
 	}
+
+#if __SKIA__
+	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
 
 	partial void InitializePlatform();
 

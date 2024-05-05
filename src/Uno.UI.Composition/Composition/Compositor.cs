@@ -46,7 +46,7 @@ namespace Microsoft.UI.Composition
 			=> new ShapeVisual(this);
 
 #if __SKIA__
-		internal BorderVisual CreateBorderShapeVisual()
+		internal BorderVisual CreateBorderVisual()
 			=> new BorderVisual(this);
 #endif
 

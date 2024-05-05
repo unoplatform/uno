@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Xaml.Controls;
@@ -51,6 +52,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			base.OnArrangeVisual(rect, clip);
 		}
+
+		private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
 		private void UpdateChromeIfNeeded(Rect rect)

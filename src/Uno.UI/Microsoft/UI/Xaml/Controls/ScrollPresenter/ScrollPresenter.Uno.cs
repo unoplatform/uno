@@ -1,4 +1,5 @@
 ﻿#if __SKIA__
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 
@@ -12,6 +13,10 @@ partial class ScrollPresenter : IBorderInfoProvider
 	{
 		_borderRenderer = new BorderLayerRenderer(this);
 	}
+
+#if __SKIA__
+	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
 
 	Brush IBorderInfoProvider.Background => Background;
 

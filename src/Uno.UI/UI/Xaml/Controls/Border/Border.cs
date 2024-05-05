@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Composition;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
@@ -43,6 +44,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_borderRenderer = new BorderLayerRenderer(this);
 		}
+
+#if __SKIA__
+		private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
 
 		/// <summary>
 		/// Support for the C# collection initializer style.
