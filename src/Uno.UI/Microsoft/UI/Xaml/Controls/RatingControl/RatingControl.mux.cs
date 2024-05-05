@@ -26,7 +26,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 partial class RatingControl
 {
-#if !HAS_UNO // TODO Uno: Unused on Uno currently
+#if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
 	private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
 #endif
 	private const float c_verticalScaleAnimationCenterPoint = 0.8f;
@@ -35,7 +35,7 @@ partial class RatingControl
 	private const int c_defaultItemSpacing = 8;
 
 	private const float c_mouseOverScale = 0.8f;
-#if !HAS_UNO // TODO Uno: Unused on Uno currently
+#if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
 	private const float c_touchOverScale = 1.0f;
 #endif
 	private const float c_noPointerOverMagicNumber = -100;
@@ -375,7 +375,7 @@ partial class RatingControl
 
 	private void ApplyScaleExpressionAnimation(UIElement uiElement, int starIndex)
 	{
-#if HAS_UNO // TODO: Uno specific - Expression animation throwing exception
+#if !__SKIA__ // TODO Uno: Expression animation is only supported on Skia
 		var scaleTransform = new ScaleTransform()
 		{
 			ScaleX = 0.5,
@@ -934,7 +934,7 @@ partial class RatingControl
 		return ratingStarsWidth + textSpacing + captionWidth;
 	}
 
-#if !HAS_UNO // TODO Uno: Unused on Uno currently
+#if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
 	private double CalculateStarCenter(int starIndex)
 	{
 		// TODO: MSFT sub in real API DP values
