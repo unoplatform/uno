@@ -57,6 +57,7 @@
         <!-- Transitive library asset -->
         <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\test.xml" />
         <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\icon_lib.png" />
+        <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\Svg\myimage.svg" />
       </ItemGroup>
 
       <ItemGroup
