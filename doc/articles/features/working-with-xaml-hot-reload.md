@@ -137,9 +137,6 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. Changing the MSBuild build output verbosity in `Tools/Options/Projects and Solutions/Build And Run` controls the log level.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
-- The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
-  - Ensure you have the latest version of the Visual Studio extension installed.
-  - Rebuild the app until the number is different than zero.
 
 ### VS Code
 
