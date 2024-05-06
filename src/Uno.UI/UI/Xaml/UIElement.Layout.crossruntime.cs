@@ -7,7 +7,6 @@ using Uno.UI.Xaml;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {
