@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if __WASM__ || __IOS__ || __MACOS__
+#nullable enable
 
 using System;
 using Windows.UI;
@@ -15,9 +16,9 @@ public partial class LinearGradientBrush
 
 	internal override bool CanApplyToBorder(CornerRadius cornerRadius)
 	{
-#if __WASM__
+#if __WASM__ // On WASM, linear gradient borders work only if there is no CornerRadius applied to the control
 		return cornerRadius == CornerRadius.None;
-#elif __IOS__ || __MACOS__
+#elif __IOS__ || __MACOS__ // On iOS and macOS, we can apply linear gradient borders reliably only when there is no RelativeTransform applied
 		return RelativeTransform == null;
 #else
 		return true;
@@ -83,3 +84,4 @@ public partial class LinearGradientBrush
 		return new SolidColorBrush(fauxColor) { Opacity = Opacity };
 	}
 }
+#endif
