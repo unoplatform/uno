@@ -21,7 +21,7 @@ public partial class LinearGradientBrush
 #elif __IOS__ || __MACOS__ // On iOS and macOS, we can apply linear gradient borders reliably only when there is no RelativeTransform applied
 		return RelativeTransform == null;
 #else
-		return true;
+		throw new NotSupportedException("This target does not have a LinearGradientBrush.CanApplyToBorder check yet.");
 #endif
 	}
 
