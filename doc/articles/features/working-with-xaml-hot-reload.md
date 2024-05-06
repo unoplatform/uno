@@ -140,6 +140,7 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
   - Ensure you have the latest version of the Visual Studio extension installed.
   - Rebuild the app until the number is different than zero.
+- For `net8.0-windows` [a VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
 
 ### VS Code
 
