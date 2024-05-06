@@ -1,5 +1,4 @@
-﻿//#if __WASM__ || __IOS__ || __MACOS__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -16,11 +15,30 @@ public partial class LinearGradientBrush
 	private Color? _majorStopColor;
 	private SolidColorBrush? _fauxOverlayBrush;
 
+	/// <summary>
+	/// Gets or sets a flag indicating whether this brush should use
+	/// major gradient solid brush color in case the target platform
+	/// cannot apply the linear gradient to border correctly.
+	/// </summary>
+	public bool SupportsFauxBorder
+	{
+		get => (bool)GetValue(SupportsFauxBorderProperty);
+		set => SetValue(SupportsFauxBorderProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the SupportsFauxBorder dependency property.
+	/// </summary>
+	public static DependencyProperty SupportsFauxBorderProperty { get; } =
+		DependencyProperty.Register(
+			nameof(SupportsFauxBorder),
+			typeof(bool),
+			typeof(LinearGradientBrush),
+			new FrameworkPropertyMetadata(false));
+
 	internal Color? MajorStopColor => _majorStopColor ??= GetMajorStop()?.Color.WithOpacity(Opacity);
 
 	internal SolidColorBrush? FauxOverlayBrush => _fauxOverlayBrush ??= CreateFauxOverlayBrush();
-
-	internal bool SupportsFauxGradientBorder() => GradientStops.Count == 2;
 
 	internal override bool CanApplyToBorder(CornerRadius cornerRadius)
 	{
@@ -39,7 +57,7 @@ public partial class LinearGradientBrush
 	/// <returns>Gradient stop.</returns>
 	internal GradientStop? GetMajorStop()
 	{
-		if (!SupportsFauxGradientBorder())
+		if (!SupportsFauxBorder)
 		{
 			return null;
 		}
@@ -81,7 +99,7 @@ public partial class LinearGradientBrush
 
 	private SolidColorBrush? CreateFauxOverlayBrush()
 	{
-		if (!SupportsFauxGradientBorder())
+		if (!SupportsFauxBorder)
 		{
 			return null;
 		}
@@ -100,4 +118,3 @@ public partial class LinearGradientBrush
 		return new SolidColorBrush(faux) { Opacity = Opacity };
 	}
 }
-//#endif
