@@ -34,7 +34,8 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		[DllImport("libc")]
 		static extern void setlocale(int type, string s);
 
-		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls.
+		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
+		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
 		setlocale(/* LC_ALL */ 6, "");
 		if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
 		{

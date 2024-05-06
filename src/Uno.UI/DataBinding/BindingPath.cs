@@ -18,14 +18,30 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
 	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
-	internal partial class BindingPath : IDisposable, IValueChangedListener
+	internal partial class BindingPath : IDisposable, IValueChangedListener, IEquatable<BindingPath>
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
 		private readonly string _path;
+
+		// A BindingPath is a path to a property starting from the DataContext.
+		// This is represented internally as a linked list (BindingItem) where the tail of the path is the target value.
+		// _chain is the "head" of the list. _value is the tail i.e. the target.
+		// Each node in the linked list will have a different DataContext to reflect its nesting level.
+		// E.g. BindingPath("Level1.Level2.Level3") will be represented as
+		//  BindingItem("Level1")   DataContext = the actual DC set on the BindingPath (i.e. BindingPath.DataContext)    <---- _chain
+		//        |
+		//        |
+		//        v
+		//  BindingItem("Level2")   DataContext = BindingPath.DataContext.Level1
+		//        |
+		//        |
+		//        v
+		//  BindingItem("Level3")   DataContext = BindingPath.DataContext.Level1.Level2                                  <---- _value
 
 		private BindingItem? _chain;
 		private BindingItem? _value;
@@ -306,6 +322,17 @@ namespace Uno.UI.DataBinding
 		{
 			Dispose(false);
 		}
+
+		public bool Equals(BindingPath? that)
+		{
+			return that != null
+				&& this.Path == that.Path
+				&& !DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext);
+		}
+
+		// We define Equals to be based on Path, so `RuntimeHelpers.GetHashCode(path)` doesn't work,
+		// since we need the hashes must match if the two BindingPaths are Equal.
+		public override int GetHashCode() => RuntimeHelpers.GetHashCode(Path);
 
 		public void Dispose()
 		{
