@@ -5,7 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Uno.UI.DirectUI;
+namespace DirectUI;
 
 internal class ScrollItemAdapter
 {

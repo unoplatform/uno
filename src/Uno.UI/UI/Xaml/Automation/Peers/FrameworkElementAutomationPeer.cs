@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using Uno.UI;
-using Uno.UI.DirectUI;
+using DirectUI;
 using System.Linq;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;

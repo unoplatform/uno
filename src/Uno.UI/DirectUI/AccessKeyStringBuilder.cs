@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Documents;
 
-namespace Uno.UI.DirectUI;
+namespace DirectUI;
 
 internal class AccessKeyStringBuilder
 {
