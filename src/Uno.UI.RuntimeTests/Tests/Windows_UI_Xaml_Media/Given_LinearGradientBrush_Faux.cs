@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __WASM__ || __IOS__ || __MACOS__
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -160,3 +161,4 @@ public class Given_LinearGradientBrush_Faux
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 }
+#endif
