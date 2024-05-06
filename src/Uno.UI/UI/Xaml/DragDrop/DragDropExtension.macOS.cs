@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private void OnDraggingExited(NSDraggingInfo draggingInfo)
 		{
-			_ = _manager.ProcessAborted(new DragEventSource(_fakePointerId, draggingInfo, _window));
+			_ = _manager.ProcessAborted(_fakePointerId);
 			return;
 		}
 
