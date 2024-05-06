@@ -6,6 +6,8 @@
   <PropertyGroup>
     <!-- fixed for self-testing inside the Uno Solution -->
     <UnoRemoteControlPort>53487</UnoRemoteControlPort>
+
+    <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
   </PropertyGroup>
 
 </Project>
