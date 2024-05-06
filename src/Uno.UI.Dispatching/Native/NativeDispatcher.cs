@@ -114,7 +114,7 @@ namespace Uno.UI.Dispatching
 						{
 							didEnqueue = true;
 
-							EnqueueNative();
+							EnqueueNative(_currentPriority);
 						}
 
 						break;
@@ -390,14 +390,14 @@ namespace Uno.UI.Dispatching
 
 			if (shouldEnqueue)
 			{
-				EnqueueNative();
+				EnqueueNative(priority);
 			}
 		}
 
 		/// <summary>
 		/// Enqueues an operation on the native UI thread.
 		/// </summary>
-		partial void EnqueueNative();
+		partial void EnqueueNative(NativeDispatcherPriority priority);
 
 		partial void Initialize();
 
@@ -435,7 +435,7 @@ namespace Uno.UI.Dispatching
 
 			if (Interlocked.Increment(ref _globalCount) == 1)
 			{
-				EnqueueNative();
+				EnqueueNative(NativeDispatcherPriority.Normal);
 			}
 
 			Interlocked.Decrement(ref _globalCount);
