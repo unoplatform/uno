@@ -152,8 +152,6 @@ internal class X11DragDropExtension : IDragDropExtension
 		XWindowAttributes windowAttrs = default;
 		var _2 = XLib.XGetWindowAttributes(display, _host.X11Window.Window, ref windowAttrs);
 		XLib.XTranslateCoordinates(display, root, _host.X11Window.Window, rootX, rootY, out var x, out var y, out _);
-		x += windowAttrs.x;
-		y += windowAttrs.y;
 
 		if (!_currentSession.Value.EnterFired)
 		{
@@ -188,7 +186,7 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"XDndPosition: sent ProcessMoved to DragDropManager: acceptedOperations={acceptedOperations}.");
+			this.Log().Trace($"XDndPosition: sent ProcessMoved({x}, {y}) to DragDropManager: acceptedOperations={acceptedOperations}.");
 		}
 
 		XClientMessageEvent m = default;
