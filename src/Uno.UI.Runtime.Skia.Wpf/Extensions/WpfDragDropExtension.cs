@@ -85,6 +85,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			var allowedOperations = ToDataPackageOperation(e.AllowedEffects);
 			var info = new CoreDragInfo(src, data.GetView(), allowedOperations);
 
+			// TODO: Adjust for multi window. Using GetForCurrentView doesn't look right.
 			CoreDragDropManager.GetForCurrentView()?.DragStarted(info);
 
 			// Note: No needs to _manager.ProcessMove, the DragStarted will actually have the same effect
