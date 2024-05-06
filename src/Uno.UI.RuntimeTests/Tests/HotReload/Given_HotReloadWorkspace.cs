@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 #if !__SKIA__
 [Ignore("Hot reload tests are only available on Skia targets")]
 #endif
-internal partial class Given_HotReloadWorkspace
+public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
 	private static int _remoteControlPort;

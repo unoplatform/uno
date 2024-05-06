@@ -20,7 +20,7 @@ using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	class Given_ProgressRing
+	public class Given_ProgressRing
 	{
 		[TestMethod]
 		[RunsOnUIThread]
