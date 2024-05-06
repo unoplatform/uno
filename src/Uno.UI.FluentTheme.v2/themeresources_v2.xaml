@@ -432,7 +432,7 @@
       <StaticResource x:Key="TextControlButtonForeground" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TextControlButtonForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TextControlButtonForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
-      <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:SupportsFauxBorder="True">
+      <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>
@@ -441,7 +441,7 @@
           <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
-      <LinearGradientBrush x:Key="TextControlElevationBorderFocusedBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:SupportsFauxBorder="True">
+      <LinearGradientBrush x:Key="TextControlElevationBorderFocusedBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>
@@ -2233,7 +2233,7 @@
       <StaticResource x:Key="TextControlButtonForeground" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TextControlButtonForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TextControlButtonForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
-      <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:SupportsFauxBorder="True">
+      <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>
@@ -2242,7 +2242,7 @@
           <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
-      <LinearGradientBrush x:Key="TextControlElevationBorderFocusedBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:SupportsFauxBorder="True">
+      <LinearGradientBrush x:Key="TextControlElevationBorderFocusedBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>
@@ -4023,7 +4023,7 @@
       <StaticResource x:Key="TextControlButtonForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
       <StaticResource x:Key="TextControlForegroundFocused" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="TextControlPlaceholderForegroundFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
-      <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:SupportsFauxBorder="True">
+      <LinearGradientBrush x:Key="TextControlElevationBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>
@@ -4032,7 +4032,7 @@
           <GradientStop Offset="1.0" Color="{StaticResource ControlStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
-      <LinearGradientBrush x:Key="TextControlElevationBorderFocusedBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:SupportsFauxBorder="True">
+      <LinearGradientBrush x:Key="TextControlElevationBorderFocusedBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,2" not_win:FallbackColor="{StaticResource ControlStrokeColorDefault}">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
         </LinearGradientBrush.RelativeTransform>

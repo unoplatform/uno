@@ -96,9 +96,6 @@ partial class BorderLayerRenderer
 						("border-width", borderWidth),
 						("border-image-slice", "1"));
 					break;
-				case LinearGradientBrush linearGradientBrush when linearGradientBrush.SupportsFauxBorder:
-					ApplySolidColorBorder(element, borderWidth, linearGradientBrush.MajorStopColorWithOpacity ?? linearGradientBrush.FallbackColorWithOpacity);
-					break;
 				case GradientBrush unsupportedGradientBrush:
 					ApplySolidColorBorder(element, borderWidth, unsupportedGradientBrush.FallbackColorWithOpacity);
 					break;

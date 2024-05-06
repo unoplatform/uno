@@ -100,8 +100,8 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 		var requestedCornerRadius = RequestedCornerRadius;
 
 		if (requestedBorderBrush is not LinearGradientBrush gradientBrush ||
-			!gradientBrush.SupportsFauxBorder ||
-			gradientBrush.CanApplyToBorder(requestedCornerRadius))
+			gradientBrush.CanApplyToBorder(requestedCornerRadius) ||
+			!gradientBrush.SupportsFauxGradientBorder)
 		{
 			_displayBorder.Visibility = Visibility.Collapsed;
 			return;

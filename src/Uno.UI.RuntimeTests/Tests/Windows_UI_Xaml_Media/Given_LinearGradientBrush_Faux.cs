@@ -1,5 +1,4 @@
-﻿#if __WASM__ || __IOS__ || __MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -73,7 +72,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(255, brush.FauxOverlayBrush.Color.R);
 		Assert.AreEqual(VerticalAlignment.Top, brush.GetMinorStopAlignment());
 	}
 
@@ -90,7 +89,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(255, brush.FauxOverlayBrush.Color.R);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -106,7 +105,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(255, brush.FauxOverlayBrush.Color.R);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -122,7 +121,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Microsoft.UI.Colors.Blue });
 		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Microsoft.UI.Colors.Red });
 
-		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(255, brush.FauxOverlayBrush.Color.R);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -139,7 +138,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 1.0, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(255, brush.FauxOverlayBrush.Color.R);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 
@@ -157,8 +156,7 @@ public class Given_LinearGradientBrush_Faux
 		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 1.0, Color = Microsoft.UI.Colors.Blue });
 
-		Assert.AreEqual(Microsoft.UI.Colors.Blue, brush.GetMajorStop().Color);
+		Assert.AreEqual(255, brush.FauxOverlayBrush.Color.R);
 		Assert.AreEqual(VerticalAlignment.Bottom, brush.GetMinorStopAlignment());
 	}
 }
-#endif

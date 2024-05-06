@@ -1,44 +1,17 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using Uno.UI.Xaml.Media;
-using Windows.Foundation.Collections;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class LinearGradientBrush
 {
-	private Color? _majorStopColor;
 	private SolidColorBrush? _fauxOverlayBrush;
 
-	/// <summary>
-	/// Gets or sets a flag indicating whether this brush should use
-	/// major gradient solid brush color in case the target platform
-	/// cannot apply the linear gradient to border correctly.
-	/// </summary>
-	public bool SupportsFauxBorder
-	{
-		get => (bool)GetValue(SupportsFauxBorderProperty);
-		set => SetValue(SupportsFauxBorderProperty, value);
-	}
-
-	/// <summary>
-	/// Identifies the SupportsFauxBorder dependency property.
-	/// </summary>
-	public static DependencyProperty SupportsFauxBorderProperty { get; } =
-		DependencyProperty.Register(
-			nameof(SupportsFauxBorder),
-			typeof(bool),
-			typeof(LinearGradientBrush),
-			new FrameworkPropertyMetadata(false));
-
-	internal Color? MajorStopColorWithOpacity => _majorStopColor ??= GetMajorStop()?.Color.WithOpacity(Opacity);
-
 	internal SolidColorBrush? FauxOverlayBrush => _fauxOverlayBrush ??= CreateFauxOverlayBrush();
+
+	internal bool SupportsFauxGradientBorder => GradientStops.Count == 2;
 
 	internal override bool CanApplyToBorder(CornerRadius cornerRadius)
 	{
@@ -51,42 +24,30 @@ public partial class LinearGradientBrush
 #endif
 	}
 
-	/// <summary>
-	/// Returns major stop of given border gradient.
-	/// </summary>
-	/// <returns>Gradient stop.</returns>
-	internal GradientStop? GetMajorStop()
+	private (GradientStop minor, GradientStop major) GetMinorMajorStops()
 	{
-		if (!SupportsFauxBorder)
+		if (!SupportsFauxGradientBorder)
 		{
-			return null;
+			throw new InvalidOperationException("Method should not be called when faux gradient border is not supported.");
 		}
 
+		var fallbackColor = FallbackColor;
 		var firstStop = GradientStops[0];
 		var secondStop = GradientStops[1];
 
-		if (MappingMode == BrushMappingMode.Absolute)
-		{
-			// When absolute, the major stop is either the one with
-			// larger offset or the second stop in order if same.
-			return firstStop.Offset <= secondStop.Offset ?
-				secondStop : firstStop;
-		}
-		else
-		{
-			if (secondStop.Offset < firstStop.Offset)
-			{
-				(firstStop, secondStop) = (secondStop, firstStop);
-			}
-			return firstStop.Offset > (1 - secondStop.Offset) ?
-				firstStop : secondStop;
-		}
+		return secondStop.Color == fallbackColor ? (firstStop, secondStop) : (secondStop, firstStop);
 	}
 
 	internal VerticalAlignment GetMinorStopAlignment()
 	{
+		if (!SupportsFauxGradientBorder)
+		{
+			return default;
+		}
+
 		var scaleTransform = RelativeTransform as ScaleTransform;
-		var majorStopFirst = GetMajorStop()?.Offset < GradientStops.Where(s => s != GetMajorStop()).First().Offset;
+		var (minor, major) = GetMinorMajorStops();
+		var majorStopFirst = major.Offset < minor.Offset;
 		if (majorStopFirst)
 		{
 			return scaleTransform?.ScaleY != -1 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
@@ -99,22 +60,26 @@ public partial class LinearGradientBrush
 
 	private SolidColorBrush? CreateFauxOverlayBrush()
 	{
-		if (!SupportsFauxBorder)
+		if (!SupportsFauxGradientBorder)
 		{
 			return null;
 		}
 
-		var majorStop = GetMajorStop()!;
-		var minorStop = GradientStops.First(s => s != majorStop)!;
+		(var minorStop, var majorStop) = GetMinorMajorStops();
 
-		// As both major and minor colors may be semi-transparent, we need
-		// to calculate an approximate color, where minor = major + faux if possible
-		var faux = Color.FromArgb(
-			(byte)(Math.Max(0, minorStop.Color.A - majorStop.Color.A)),
-			(byte)(Math.Max(0, minorStop.Color.R - majorStop.Color.R)),
-			(byte)(Math.Max(0, minorStop.Color.G - majorStop.Color.G)),
-			(byte)(Math.Max(0, minorStop.Color.B - majorStop.Color.B)));
+		var fauxColor = minorStop.Color;
 
-		return new SolidColorBrush(faux) { Opacity = Opacity };
+		// If minor color is semi-transparent, we calculate
+		// an approximate color, where minor = major + faux
+		if (minorStop.Color.A < 255)
+		{
+			fauxColor = Color.FromArgb(
+				(byte)(Math.Max(0, minorStop.Color.A - majorStop.Color.A)),
+				minorStop.Color.R,
+				minorStop.Color.G,
+				minorStop.Color.B);
+		}
+
+		return new SolidColorBrush(fauxColor) { Opacity = Opacity };
 	}
 }

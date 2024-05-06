@@ -256,7 +256,7 @@ partial class BorderLayerRenderer
 			{
 				Action onInvalidateRender = () =>
 				{
-					CGColor color = GetNonGradientBorderColor(borderBrush);
+					CGColor color = Brush.GetFallbackColor(borderBrush);
 					outerLayer.StrokeColor = color;
 					outerLayer.FillColor = color;
 
@@ -402,7 +402,7 @@ partial class BorderLayerRenderer
 				}
 				else
 				{
-					Action onInvalidateRender = () => layer.FillColor = GetNonGradientBorderColor(borderBrush);
+					Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
 
 					onInvalidateRender();
 					borderBrush.InvalidateRender += onInvalidateRender;
@@ -441,18 +441,6 @@ partial class BorderLayerRenderer
 		}
 		);
 		return disposables;
-	}
-
-	private static Color GetNonGradientBorderColor(Brush borderBrush)
-	{
-		if (borderBrush is LinearGradientBrush linearGradientBrush && linearGradientBrush.SupportsFauxBorder)
-		{
-			return linearGradientBrush.MajorStopColorWithOpacity ?? linearGradientBrush.FallbackColorWithOpacity;
-		}
-		else
-		{
-			return Brush.GetFallbackColor(borderBrush);
-		}
 	}
 
 	/// <summary>
