@@ -123,6 +123,8 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
+		internal string FallbackValueThemeResource { get; set; }
+
 		/// <summary>
 		/// Gets or sets a value that indicates the direction of the data flow in the binding.
 		/// </summary>
@@ -179,6 +181,10 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		/// <value>The target null value.</value>
 		public object TargetNullValue { get; set; }
+
+		internal string TargetNullValueThemeResource { get; set; }
+
+		internal object ParseContext { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value that determines the timing of binding source updates for two-way bindings.
