@@ -182,6 +182,8 @@ internal class X11DragDropExtension : IDragDropExtension
 			_currentSession = _currentSession.Value with { EnterFired = true, Package = package, Operations = operations, LastPosition = new Point(x, y) };
 		}
 
+		_currentSession = _currentSession.Value with { LastPosition = new Point(x, y) };
+
 		var acceptedOperations = _manager.ProcessMoved(new DragEventSource(x, y));
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
