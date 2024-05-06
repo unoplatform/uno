@@ -138,8 +138,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		/// The last accepted operation.
 		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 		/// </returns>
-		internal DataPackageOperation ProcessAborted(IDragEventSource src)
-			=> _manager?.ProcessAborted(src) ?? DataPackageOperation.None;
+		internal DataPackageOperation ProcessAborted(long pointerId)
+			=> _manager?.ProcessAborted(pointerId) ?? DataPackageOperation.None;
 
 		internal interface IDragDropManager
 		{
@@ -180,7 +180,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// The last accepted operation.
 			/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 			/// </returns>
-			DataPackageOperation ProcessAborted(IDragEventSource src);
+			DataPackageOperation ProcessAborted(long pointerId);
 		}
 	}
 }

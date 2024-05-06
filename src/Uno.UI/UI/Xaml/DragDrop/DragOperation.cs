@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml
 			return _acceptedOperation;
 		}
 
-		internal DataPackageOperation Aborted(IDragEventSource src)
+		internal DataPackageOperation Aborted()
 		{
 			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
 			if (_state >= State.Completing)
@@ -92,7 +92,6 @@ namespace Microsoft.UI.Xaml
 				return _acceptedOperation;
 			}
 
-			Update(src);
 			Enqueue(RaiseFinalLeave);
 
 			return _acceptedOperation;

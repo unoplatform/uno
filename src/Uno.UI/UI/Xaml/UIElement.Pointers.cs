@@ -1149,7 +1149,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 				if (GestureRecognizer.IsDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args.Pointer.PointerId);
 				}
 			}
 

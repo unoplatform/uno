@@ -217,7 +217,7 @@ internal class X11DragDropExtension : IDragDropExtension
 	private void ProcessXdndLeave(XClientMessageEvent ev)
 	{
 		var pos = _currentSession!.Value.LastPosition!.Value;
-		_manager.ProcessAborted(new DragEventSource((int)pos.X, (int)pos.Y));
+		_manager.ProcessAborted(_fakePointerId);
 		_currentSession = null;
 
 		if (this.Log().IsEnabled(LogLevel.Trace))

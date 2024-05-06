@@ -68,7 +68,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			=> e.Effects = ToDropEffects(_manager.ProcessMoved(new DragEventSource(_fakePointerId, e)));
 
 		private void OnHostDragLeave(object sender, DragEventArgs e)
-			=> e.Effects = ToDropEffects(_manager.ProcessAborted(new DragEventSource(_fakePointerId, e)));
+			=> e.Effects = ToDropEffects(_manager.ProcessAborted(_fakePointerId));
 
 		private void OnHostDrop(object sender, DragEventArgs e)
 			=> e.Effects = ToDropEffects(_manager.ProcessDropped(new DragEventSource(_fakePointerId, e)));
@@ -91,7 +91,9 @@ namespace Uno.UI.Runtime.Skia.Wpf
 					var data = await ToDataObject(info.Data, CancellationToken.None);
 					var effects = ToDropEffects(info.AllowedOperations);
 
-					DragDrop.DoDragDrop(_rootControl, data, effects);
+					var acceptedEffect = DragDrop.DoDragDrop(_rootControl, data, effects);
+					_manager.ProcessAborted(_fakePointerId);
+					// info.Complete(ToDataPackageOperation(acceptedEffect));
 				}
 				catch (Exception e)
 				{
