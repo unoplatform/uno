@@ -8,6 +8,9 @@
 		<Content Include="$(AssetsFolder)**"
 			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.svg;**\*.cs;@(Content)"
 			IsDefaultItem="true" />
+		<Content Include="$(AssetsFolder)\**\Svg\**\*.svg"
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.cs;@(Content)"
+			IsDefaultItem="true" />
 		<Content Include="**\*.png"
 			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Content)"
 			IsDefaultItem="true" />
