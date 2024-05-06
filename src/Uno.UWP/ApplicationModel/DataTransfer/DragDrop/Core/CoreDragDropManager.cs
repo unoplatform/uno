@@ -41,6 +41,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		{
 		}
 
+		internal IDragDropManager DragDrop => _manager ?? throw new InvalidOperationException("The DragDropManager has not been initialized.");
+
 		internal void SetUIManager(IDragDropManager manager)
 			=> _manager ??= manager ?? throw new ArgumentNullException(nameof(manager));
 
