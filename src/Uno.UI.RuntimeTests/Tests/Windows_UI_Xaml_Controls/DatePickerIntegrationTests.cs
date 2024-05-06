@@ -32,13 +32,13 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		private const long ManagedUtcTicksAtNativeZero = 504911232000000000;
 
 		[TestInitialize]
-		void ClassSetup()
+		public void ClassSetup()
 		{
 			TestServices.EnsureInitialized();
 		}
 
 		[TestCleanup]
-		void TestCleanup()
+		public void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 
