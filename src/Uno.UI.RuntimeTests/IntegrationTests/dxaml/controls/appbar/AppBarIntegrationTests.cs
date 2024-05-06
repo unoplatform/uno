@@ -38,13 +38,13 @@ namespace Windows.UI.Tests.Enterprise
 	public class AppBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
-		public void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		public void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}

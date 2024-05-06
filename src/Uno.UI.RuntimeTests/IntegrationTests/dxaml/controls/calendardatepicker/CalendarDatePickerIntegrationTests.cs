@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
-		public void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
