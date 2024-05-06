@@ -445,9 +445,9 @@ partial class BorderLayerRenderer
 
 	private static Color GetNonGradientBorderColor(Brush borderBrush)
 	{
-		if (borderBrush is LinearGradientBrush linearGradientBrush && linearGradientBrush.SupportsFauxGradientBorder())
+		if (borderBrush is LinearGradientBrush linearGradientBrush && linearGradientBrush.SupportsFauxBorder)
 		{
-			return linearGradientBrush.MajorStopColor ?? linearGradientBrush.FallbackColorWithOpacity;
+			return linearGradientBrush.MajorStopColorWithOpacity ?? linearGradientBrush.FallbackColorWithOpacity;
 		}
 		else
 		{

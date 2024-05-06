@@ -36,7 +36,7 @@ public partial class LinearGradientBrush
 			typeof(LinearGradientBrush),
 			new FrameworkPropertyMetadata(false));
 
-	internal Color? MajorStopColor => _majorStopColor ??= GetMajorStop()?.Color.WithOpacity(Opacity);
+	internal Color? MajorStopColorWithOpacity => _majorStopColor ??= GetMajorStop()?.Color.WithOpacity(Opacity);
 
 	internal SolidColorBrush? FauxOverlayBrush => _fauxOverlayBrush ??= CreateFauxOverlayBrush();
 
