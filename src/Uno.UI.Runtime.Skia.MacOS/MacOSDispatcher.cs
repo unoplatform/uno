@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -30,7 +31,7 @@ internal static class MacOSDispatcher
 		}
 	}
 
-	internal static unsafe void DispatchNativeSingle(Action d)
+	internal static unsafe void DispatchNativeSingle(Action d, NativeDispatcherPriority p)
 	{
 		if (typeof(MacOSDispatcher).Log().IsEnabled(LogLevel.Trace))
 		{

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using SkiaSharp;
+using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Composition;
@@ -43,9 +44,22 @@ public partial class Compositor
 
 		rootVisual.RenderRootVisual(surface);
 
+		RecursiveDispatchAnimationFrames();
+	}
+
+	private void RecursiveDispatchAnimationFrames()
+	{
 		if (_runningAnimations.Count > 0)
 		{
-			InvalidateRender(rootVisual);
+			foreach (var animation in _runningAnimations.ToArray())
+			{
+				animation.RaiseAnimationFrame();
+			}
+
+			if (_runningAnimations.Count > 0)
+			{
+				NativeDispatcher.Main.Enqueue(RecursiveDispatchAnimationFrames, NativeDispatcherPriority.Idle);
+			}
 		}
 	}
 

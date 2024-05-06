@@ -4,6 +4,7 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHost.cs
 
 using System;
+using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Microsoft.UI.Xaml;
@@ -36,11 +37,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		static UnoXamlHostBase()
 		{
 			//TODO: These lines should be set in a different location, possibly in a more general way (for multi-window support) https://github.com/unoplatform/uno/issues/8978
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = d =>
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d, p) =>
 			{
 				if (global::System.Windows.Application.Current is { } app)
 				{
-					app.Dispatcher.BeginInvoke(d);
+					app.Dispatcher.BeginInvoke(d, p == Dispatching.NativeDispatcherPriority.Idle ? DispatcherPriority.SystemIdle : DispatcherPriority.Normal);
 				}
 				else
 				{
