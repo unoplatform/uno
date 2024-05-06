@@ -95,8 +95,17 @@
 		<PageExclusions>$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml</PageExclusions>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 
-		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<CompileTypeScriptDependsOn>_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
+
+	<Target Name="_AdjustCompileDependsOn" AfterTargets="BeforeBuild">
+		<ItemGroup>
+			<_AdjustedCompileDependsOn Include="$(CompileDependsOn)" Exclude="CompileTypeScript;CompileTypeScriptWithTSConfig;GetTypeScriptOutputForPublishing" />
+		</ItemGroup>
+		<PropertyGroup>
+			<CompileDependsOn>@(_AdjustedCompileDependsOn)</CompileDependsOn>
+		</PropertyGroup>
+	</Target>
 
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>
@@ -105,28 +114,19 @@
 		<MakeDir Directories="$(OutputPath)/javascript" />
 	</Target>
 
-	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'" BeforeTargets="_UnoEmbeddedResourcesInjection">
-		<PropertyGroup>
-			<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
-		</PropertyGroup>
-		<ItemGroup>
-			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
-		</ItemGroup>
-		<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
+			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+			DependsOnTargets="CompileTypeScriptWithTSConfig"
+			BeforeTargets="_UnoEmbeddedResourcesInjection">
+			<PropertyGroup>
+				<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
+			</PropertyGroup>
+			<ItemGroup>
+				<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
+				<_UnoInjectedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+			</ItemGroup>
+			<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
 	</Target>
-
-	<Target Name="_AdjustTypeScriptOutputForPublishing" AfterTargets="GetTypeScriptOutputForPublishing">
-		<ItemGroup>
-			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
-			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
-			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
-		</ItemGroup>
-	</Target>
-
-	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="MixinGeneration.targets" />
