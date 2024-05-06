@@ -459,7 +459,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
-		public static async Task When_ScrollWheel()
+		public async Task When_ScrollWheel()
 		{
 			var flipView = new FlipView()
 			{
