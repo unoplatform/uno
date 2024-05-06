@@ -1001,6 +1001,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				IsType(_xClassName.Symbol, frameworkElementSymbol)              // The current type may not have a base type as it is defined in XAML,
 				|| IsType(controlBaseType, frameworkElementSymbol);    // so look at the control base type extracted from the XAML.
 
+			var isWindow = IsWindow(controlBaseType);
+
 			if (hasXBindExpressions || hasResourceExtensions)
 			{
 				var activator = _isHotReloadEnabled
@@ -1010,7 +1012,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"Bindings = {activator};");
 			}
 
-			if (isFrameworkElement && (hasXBindExpressions || hasResourceExtensions))
+			if ((isFrameworkElement || isWindow) && (hasXBindExpressions || hasResourceExtensions))
 			{
 				if (_isHotReloadEnabled)
 				{
@@ -1018,7 +1020,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__that, \"owner\", __that);");
 				}
 
-				using (writer.BlockInvariant($"Loading += (s, e) => "))
+				var eventSubscription = isFrameworkElement
+					? "Loading += (s, e) =>"
+					: "Activated += (s, e) =>";
+
+				using (writer.BlockInvariant(eventSubscription))
 				{
 					if (_isHotReloadEnabled && _xClassName.Symbol != null)
 					{
