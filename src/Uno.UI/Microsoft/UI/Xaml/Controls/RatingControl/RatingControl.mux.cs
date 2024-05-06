@@ -35,9 +35,7 @@ partial class RatingControl
 	private const int c_defaultItemSpacing = 8;
 
 	private const float c_mouseOverScale = 0.8f;
-#if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
-	private const float c_touchOverScale = 1.0f;
-#endif
+	// private const float c_touchOverScale = 1.0f; // Unused even in WinUI code
 	private const float c_noPointerOverMagicNumber = -100;
 
 	// 22 = 20(compensate for the -20 margin on StackPanel) + 2(magic number makes the text and star center-aligned)
