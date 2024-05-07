@@ -157,7 +157,7 @@ namespace TestRepro
 
 			Bindings = ((IMainPage_Bindings)global::Uno.UI.Helpers.TypeMappings.CreateInstance<MainPage_Bindings>(this));
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__that, "owner", __that);
-			Loading += (s, e) => 
+			Loading += (s, e) =>
 			{
 				var __that = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<global::TestRepro.MainPage>(s, "owner");
 				__that.Bindings.UpdateResources();
