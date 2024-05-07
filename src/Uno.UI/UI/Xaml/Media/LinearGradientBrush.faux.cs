@@ -12,7 +12,9 @@ public partial class LinearGradientBrush
 
 	internal SolidColorBrush? FauxOverlayBrush => _fauxOverlayBrush ??= CreateFauxOverlayBrush();
 
-	internal bool SupportsFauxGradientBorder => GradientStops.Count == 2;
+	internal bool SupportsFauxGradientBorder =>
+		GradientStops.Count == 2 &&
+		(GradientStops[0].Color == FallbackColor || GradientStops[1].Color == FallbackColor);
 
 	internal override bool CanApplyToBorder(CornerRadius cornerRadius)
 	{

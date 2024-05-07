@@ -8,6 +8,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
+using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
@@ -66,9 +67,10 @@ public class Given_LinearGradientBrush_Faux
 	{
 		var brush = new LinearGradientBrush
 		{
+			FallbackColor = Microsoft.UI.Colors.Blue,
 			MappingMode = BrushMappingMode.Absolute,
 			StartPoint = new Point(0, 0),
-			EndPoint = new Point(0, 3)
+			EndPoint = new Point(0, 3),
 		};
 		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
@@ -82,10 +84,11 @@ public class Given_LinearGradientBrush_Faux
 	{
 		var brush = new LinearGradientBrush
 		{
+			FallbackColor = Microsoft.UI.Colors.Blue,
 			MappingMode = BrushMappingMode.Absolute,
 			StartPoint = new Point(0, 0),
 			EndPoint = new Point(0, 3),
-			RelativeTransform = new ScaleTransform { ScaleY = -1, CenterY = 0.5 }
+			RelativeTransform = new ScaleTransform { ScaleY = -1, CenterY = 0.5 },
 		};
 		brush.GradientStops.Add(new GradientStop { Offset = 0.33, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 1, Color = Microsoft.UI.Colors.Blue });
@@ -99,9 +102,10 @@ public class Given_LinearGradientBrush_Faux
 	{
 		var brush = new LinearGradientBrush
 		{
+			FallbackColor = Microsoft.UI.Colors.Blue,
 			MappingMode = BrushMappingMode.RelativeToBoundingBox,
 			StartPoint = new Point(0, 0),
-			EndPoint = new Point(0, 1)
+			EndPoint = new Point(0, 1),
 		};
 		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Microsoft.UI.Colors.Red });
 		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Microsoft.UI.Colors.Blue });
@@ -115,9 +119,10 @@ public class Given_LinearGradientBrush_Faux
 	{
 		var brush = new LinearGradientBrush
 		{
+			FallbackColor = Microsoft.UI.Colors.Blue,
 			MappingMode = BrushMappingMode.RelativeToBoundingBox,
 			StartPoint = new Point(0, 0),
-			EndPoint = new Point(0, 1)
+			EndPoint = new Point(0, 1),
 		};
 		brush.GradientStops.Add(new GradientStop { Offset = 0.5, Color = Microsoft.UI.Colors.Blue });
 		brush.GradientStops.Add(new GradientStop { Offset = 0.7, Color = Microsoft.UI.Colors.Red });
@@ -131,6 +136,7 @@ public class Given_LinearGradientBrush_Faux
 	{
 		var brush = new LinearGradientBrush
 		{
+			FallbackColor = Microsoft.UI.Colors.Blue,
 			MappingMode = BrushMappingMode.Absolute,
 			StartPoint = new Point(0, 0),
 			EndPoint = new Point(0, 3),
@@ -149,6 +155,7 @@ public class Given_LinearGradientBrush_Faux
 	{
 		var brush = new LinearGradientBrush
 		{
+			FallbackColor = Microsoft.UI.Colors.Blue,
 			MappingMode = BrushMappingMode.Absolute,
 			StartPoint = new Point(0, 0),
 			EndPoint = new Point(0, 3),
