@@ -13,10 +13,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnIsFocusableChanged()
 		{
-			if (OperatingSystem.IsBrowser())
+			if (OnIsFocusableChangedCallback is { } callback)
 			{
 				var isFocusable = IsFocusable && !IsDelegatingFocusToTemplateChild();
-				OnIsFocusableChangedCallback?.Invoke(this, isFocusable);
+				callback.Invoke(this, isFocusable);
 			}
 		}
 	}
