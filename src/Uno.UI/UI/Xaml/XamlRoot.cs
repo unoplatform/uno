@@ -8,9 +8,6 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Windows.UI.Composition;
-using Uno.Disposables;
-using Uno.Foundation.Extensibility;
-using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
@@ -118,25 +115,5 @@ public sealed partial class XamlRoot
 		}
 
 		return VisualTree.PopupRoot.OpenPopup(popup);
-	}
-
-	public object? GetGL()
-	{
-		if (ApiExtensibility.CreateInstance<XamlRootMap<IXamlRootHost>>(this, out var map) && map.GetHostForRoot(this) is { } host)
-		{
-			return host.GetGL();
-		}
-
-		return null;
-	}
-
-	public IDisposable LockGL()
-	{
-		if (ApiExtensibility.CreateInstance<XamlRootMap<IXamlRootHost>>(this, out var map) && map.GetHostForRoot(this) is { } host)
-		{
-			return host.LockGL();
-		}
-
-		return Disposable.Empty;
 	}
 }

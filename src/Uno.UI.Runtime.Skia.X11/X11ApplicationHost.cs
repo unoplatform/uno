@@ -52,7 +52,6 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => new X11PointerInputSource(o));
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => new X11KeyboardInputSource(o));
-		ApiExtensibility.Register(typeof(XamlRootMap<IXamlRootHost>), _ => X11Manager.XamlRootMap);
 
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new X11NativeWindowFactoryExtension());
 
@@ -67,6 +66,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension(o));
 
 		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new X11DragDropExtension(o));
+
+		ApiExtensibility.Register(typeof(GLGetProcAddress), _ => new GLGetProcAddress(GlxInterface.glXGetProcAddress));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)
