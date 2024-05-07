@@ -1289,13 +1289,31 @@ namespace Microsoft.UI.Xaml
 				throw new ArgumentException();
 			}
 
+			ResourceDictionary[]? dictionariesInScope = null;
+
+			if (updateReason == ResourceUpdateReason.ThemeResource)
+			{
+				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
+				{
+					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
+				}
+
+				_properties.UpdateBindingExpressions();
+
+				foreach (var dict in dictionariesInScope)
+				{
+					ResourceResolver.PopSourceFromScope();
+				}
+			}
+
 			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
 				UpdateChildResourceBindings(updateReason);
 				return;
 			}
 
-			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
 			var bindings = _resourceBindings.GetAllBindings();
 
@@ -1428,6 +1446,8 @@ namespace Microsoft.UI.Xaml
 					// Call OnThemeChanged after bindings of descendants have been updated
 					themeChangeAware.OnThemeChanged();
 				}
+
+				_properties.OnThemeChanged();
 			}
 		}
 

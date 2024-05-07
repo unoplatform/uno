@@ -4048,6 +4048,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 
+						foreach (var option in bindingOptions)
+						{
+							var themeResourceCandidate = option.Objects.FirstOrDefault();
+							if (themeResourceCandidate?.Type is { PreferredXamlNamespace: XamlConstants.PresentationXamlXmlNamespace, Name: "ThemeResource" })
+							{
+								if (option.Member.Name == "TargetNullValue" && themeResourceCandidate.Members.FirstOrDefault().Value is string targetNullValueKey)
+								{
+									writer.AppendLineIndented($".ApplyTargetNullValueThemeResource(@\"{targetNullValueKey}\", {ParseContextPropertyAccess})");
+								}
+								else if (option.Member.Name == "FallbackValue" && themeResourceCandidate.Members.FirstOrDefault().Value is string fallbackValueKey)
+								{
+									writer.AppendLineIndented($".ApplyFallbackValueThemeResource(@\"{fallbackValueKey}\", {ParseContextPropertyAccess})");
+								}
+							}
+						}
+
 						// xbind initialization
 						if (bindNode != null && !isBindingType)
 						{
