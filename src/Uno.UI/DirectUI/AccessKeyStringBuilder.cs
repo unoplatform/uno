@@ -50,7 +50,7 @@ internal class AccessKeyStringBuilder
 		}
 	}
 
-	static string GetAccessKeyMessageFromElement(DependencyObject spOwner)
+	internal static string GetAccessKeyMessageFromElement(DependencyObject spOwner)
 	{
 		GetAccessKeyFromOwner(spOwner, out var accessKey, out var akScopeOwner);
 
