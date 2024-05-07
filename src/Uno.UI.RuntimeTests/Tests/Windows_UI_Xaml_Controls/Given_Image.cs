@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -20,6 +21,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+
+#if __SKIA__
+using SkiaSharp;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -514,6 +519,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => imageFailedRaised);
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Png_Should_Have_High_Quality()
+		{
+			var image = new Image() { Width = 100, Height = 100 };
+			await UITestHelper.Load(image);
+			bool imageOpenedRaised = false;
+			image.ImageOpened += (s, e) =>
+			{
+				imageOpenedRaised = true;
+			};
+
+			image.Source = new BitmapImage(new Uri("ms-appx:///Assets/Icons/star_empty.png"));
+
+			await WindowHelper.WaitFor(() => imageOpenedRaised);
+
+			var storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Icons/star_empty.png"));
+			var buffer = await FileIO.ReadBufferAsync(storageFile);
+			var data = buffer.ToArray();
+
+			var skBitmap = SKBitmap.FromImage(SKImage.FromEncodedData(data));
+
+			var bitmap = await UITestHelper.ScreenShot(image);
+
+			Assert.AreEqual(72, skBitmap.Width);
+			Assert.AreEqual(72, skBitmap.Height);
+
+
+			var skBitmapScaled = new SKBitmap(skBitmap.Info with { Width = 100, Height = 100 });
+
+			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, SKFilterQuality.High));
+
+			for (int x = 0; x < 100; x++)
+			{
+				for (int y = 0; y < 100; y++)
+				{
+					var skColor = skBitmapScaled.GetPixel(x, y);
+					var color1 = new Color(skColor.Alpha, skColor.Red, skColor.Green, skColor.Blue);
+					var color2 = bitmap.GetPixel(x, y);
+					if (color1 != color2)
+					{
+						Assert.Fail($"Color mismatch at {x}, {y}: {color1} != {color2}");
+					}
+				}
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
