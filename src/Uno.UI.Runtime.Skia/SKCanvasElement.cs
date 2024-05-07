@@ -97,7 +97,7 @@ public abstract class SKCanvasElement : FrameworkElement
 		var oldMatrix = _skiaVisual.TransformMatrix;
 		if (FlowDirection == FlowDirection.RightToLeft && !MirroredWhenRightToLeft)
 		{
-			_skiaVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)LayoutInformation.GetLayoutSlot(this).Width, 0.0f));
+			_skiaVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, Visual.Size.X, 0.0f));
 		}
 		else
 		{
