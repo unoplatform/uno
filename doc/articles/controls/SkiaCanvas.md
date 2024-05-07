@@ -4,17 +4,17 @@ uid: Uno.Controls.SKCanvasElement
 
 # Introduction
 
-In creating an Uno application, users might want to create elaborate 2D graphics that are more suitable to a 2D graphics library such as [Skia](https://skia.org) or [Cairo](https://www.cairographics.org), rather than using, for example, a simple [Canvas](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.canvas). To support this use case, SkiaSharp comes with an [SKXamlCanvas](https://learn.microsoft.com/en-us/dotnet/api/skiasharp.views.windows.skxamlcanvas?view=skiasharp-views-2.88) element that allows for drawing in an area using SkiaSharp.
+During creating an Uno application, users might want to create elaborate 2D graphics that are more suitable to a 2D graphics library such as [Skia](https://skia.org) or [Cairo](https://www.cairographics.org), rather than using, for example, a simple [Canvas](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.canvas). To support this use case, SkiaSharp comes with an [SKXamlCanvas](https://learn.microsoft.com/en-us/dotnet/api/skiasharp.views.windows.skxamlcanvas?view=skiasharp-views-2.88) element that allows for drawing in an area using SkiaSharp.
 
 On Uno Skia targets, we can utilize the pre-existing Skia canvas that is used internally by Uno to render the application instead of creating additional Skia surfaces and then copying the resulting renderings to the application (e.g. using a [BitmapImage](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.media.imaging.bitmapimage)). This way, a lot of Skia functionally can be acquired "for free". For example, no additional setup for OpenGL is needed if the Uno application is already using OpenGL to render.
 
-This functionality is exposed in two parts. `SkiaVisual` is a [Visual](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.visual) that can be given an [SKCanvas](https://learn.microsoft.com/en-us/dotnet/api/skiasharp.skcanvas) to draw on. For more streamlined usage, an `SKCanvasElement` is provided that internally wraps a `SkiaVisual` and can be used like any FrameworkElement, with support for sizing, clipping, RTL, etc. You should use `SKCanvasElement` for most scenarios. Only use a raw `SkiaVisual` if your use case is not covered by `SKCanvasElement`.
+This functionality is exposed in two parts. `SkiaVisual` is a [Visual](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.visual) that gets a [SKCanvas](https://learn.microsoft.com/en-us/dotnet/api/skiasharp.skcanvas) to draw on and is almost completely unmanaged. For more streamlined usage, an `SKCanvasElement` is provided that internally wraps a `SkiaVisual` and can be used like any FrameworkElement, with support for sizing, clipping, RTL, etc. You should use `SKCanvasElement` for most scenarios. Only use a raw `SkiaVisual` if your use case is not covered by `SKCanvasElement`.
 
-We stress that this functionality is only available on Uno targets that are based on Skia (Gtk and Wpf).
+We stress that this functionality is only available on Uno targets that are based on Skia.
 
 # SkiaVisual
 
-A `SkiaVisual` is a abstract Visual that provides Uno applications the ability to utilize SkiaSharp to draw directly on the Skia canvas that is used internally by Uno. To use `SkiaVisual`, create a subclass of `SkiaVisual` and override the `RenderOverride` method.
+A `SkiaVisual` is a abstract Visual that provides Uno applications the ability to utilize SkiaSharp to draw directly on the Skia canvas that is used internally by Uno to draw the window. To use `SkiaVisual`, create a subclass of `SkiaVisual` and override the `RenderOverride` method.
 
 ```csharp
 protected abstract void RenderOverride(SKCanvas canvas);
@@ -36,9 +36,9 @@ Additionally, `SkiaVisual` has an `Invalidate` method that can be used at any ti
 protected abstract void RenderOverride(SKCanvas canvas, Size area);
 ```
 
-By default, `SKCanvasElement` takes all the available space given to it in the `Measure` cycke. If you want to customize how much space the element takes, you can override its `MeasureOverride` method.
+By default, `SKCanvasElement` takes all the available space given to it in the `Measure` cycle. If you want to customize how much space the element takes, you can override its `MeasureOverride` method.
 
-Note that since `SKCanvasElement` takes as much space as it can, unexpected behavior will occur if you attempt to place an `SKCanvasElement` inside a [StackPanel](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.stackpanel), a `Grid` with `Auto` sizing, or any other element that provides its child(ren) with infinite space. To work around this, you can explicitly set the `Width` and/or `Height` of the `SKCanvasElement`.
+Note that since `SKCanvasElement` takes as much space as it can, it's not allowed to place an `SKCanvasElement` inside a `StackPanel`, a `Grid` with `Auto` sizing, or any other element that provides its child(ren) with infinite space. To work around this, you can explicitly set the `Width` and/or `Height` of the `SKCanvasElement`.
 
 `SKCanvasElement` also comes with a `MirroredWhenRightToLeftProperty`. If `true`, the drawing will be reflected horizontally when the `FlowDirection` of the `SKCanvasElement` is right-to-left. By default, this property is set to `false`, meaning that the drawing will be the same regardless of the `FlowDirection`.
 

@@ -13,7 +13,7 @@ public abstract class SkiaVisual(Compositor compositor) : Visual(compositor)
 	/// <summary>
 	/// Queue a rendering cycle that will call <see cref="RenderOverride"/>.
 	/// </summary>
-	public void Invalidate() => Compositor.InvalidateRender();
+	public void Invalidate() => Compositor.InvalidateRender(this);
 
 	/// <summary>
 	/// The SkiaSharp drawing logic goes here.
