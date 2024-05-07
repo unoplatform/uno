@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference FrameworkElementAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
+// MUX Reference FrameworkElementAutomationPeer_Partial.cpp, tag winui3/release/1.5.3
 
 using System;
 using System.Collections.Generic;
@@ -93,7 +93,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	}
 
 	//UNO TODO: GetAutomationControlType should be protected override
-	public new AutomationControlType GetAutomationControlType()
+	internal new AutomationControlType GetAutomationControlType()
 	{
 		// If AutomationProperties.AutomationControlType is set, we'll return that value.
 		// Otherwise, we'll fall back to the GetAutomationControlTypeCore override.
@@ -191,7 +191,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 #endif
 	}
 
-	public IList<AutomationPeer> GetAutomationPeersForChildrenOfElement(UIElement element)
+	internal IList<AutomationPeer> GetAutomationPeersForChildrenOfElement(UIElement element)
 	{
 		var automationPeers = new List<AutomationPeer>();
 
@@ -226,7 +226,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	}
 
 	//UNO TODO: GetLocalizedControlType should be protected override
-	public new string GetLocalizedControlType()
+	internal new string GetLocalizedControlType()
 	{
 		//If AutomationProperties.LocalizedControlType is set, we'll return that value.
 		//Otherwise, we'll fall back to the GetLocalizedControlTypeCore override.
@@ -282,7 +282,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return base.GetNameCore();
 	}
 
-	public object GetDefaultPattern(PatternInterface patternInterface)
+	internal object GetDefaultPattern(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.ScrollItem)
 		{
@@ -403,7 +403,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return peers;
 	}
 
-	public IReadOnlyList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
+	internal IReadOnlyList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
 	{
 		var annotations = new List<AutomationPeerAnnotation>();
 
@@ -443,17 +443,17 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return annotations;
 	}
 
-	public void SetControlType(AutomationControlType controlType)
+	internal void SetControlType(AutomationControlType controlType)
 	{
 		m_ControlType = controlType;
 	}
 
-	public void SetLocalizedControlType(string localizedControlType)
+	internal void SetLocalizedControlType(string localizedControlType)
 	{
 		m_LocalizedControlType = localizedControlType;
 	}
 
-	public void SetClassName(string className)
+	internal void SetClassName(string className)
 	{
 		m_ClassName = className;
 	}
@@ -532,7 +532,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return childIsAcceptable;
 	}
 
-	public IReadOnlyList<AutomationPeer> GetAutomationPeerCollection(DependencyProperty eProperty)
+	internal IReadOnlyList<AutomationPeer> GetAutomationPeerCollection(DependencyProperty eProperty)
 	{
 		var peers = new List<AutomationPeer>();
 

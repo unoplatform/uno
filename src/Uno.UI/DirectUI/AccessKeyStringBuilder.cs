@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference AccessKeyStringBuilder.cpp, tag winui3/release/1.5-stable
+// MUX Reference AccessKeyStringBuilder.cpp, tag winui3/release/1.5.3
 
 using System;
 using Microsoft.UI.Xaml;
@@ -50,7 +50,7 @@ internal class AccessKeyStringBuilder
 		}
 	}
 
-	public static string GetAccessKeyMessageFromElement(DependencyObject spOwner)
+	static string GetAccessKeyMessageFromElement(DependencyObject spOwner)
 	{
 		GetAccessKeyFromOwner(spOwner, out var accessKey, out var akScopeOwner);
 
