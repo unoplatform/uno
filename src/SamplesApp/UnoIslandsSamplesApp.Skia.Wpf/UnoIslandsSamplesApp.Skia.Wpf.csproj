@@ -30,7 +30,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSTest" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="SkiaSharp.Views.WPF" />
 	</ItemGroup>
 

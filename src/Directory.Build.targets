@@ -79,6 +79,9 @@
 		<PackageReference Update="Uno.Wasm.Bootstrap" Version="8.0.0-dev.252" />
 		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.252" />
 		<PackageReference Update="MSTest" Version="3.3.1" />
+		<PackageReference Update="MSTest.TestFramework" Version="3.3.1" />
+		<PackageReference Update="MSTest.TestAdapter" Version="3.3.1" />
+		<PackageReference Update="MSTest.Analyzers" Version="3.3.1" />
 		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 		<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
