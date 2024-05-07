@@ -2,7 +2,7 @@
 uid: Uno.Controls.SKCanvasElement
 ---
 
-# Introduction
+## Introduction
 
 During creating an Uno application, users might want to create elaborate 2D graphics that are more suitable to a 2D graphics library such as [Skia](https://skia.org) or [Cairo](https://www.cairographics.org), rather than using, for example, a simple [Canvas](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.canvas). To support this use case, SkiaSharp comes with an [SKXamlCanvas](https://learn.microsoft.com/dotnet/api/skiasharp.views.windows.skxamlcanvas) element that allows for drawing in an area using SkiaSharp.
 
@@ -12,7 +12,7 @@ This functionality is exposed in two parts. `SkiaVisual` is a [Visual](https://l
 
 We stress that this functionality is only available on Uno targets that are based on Skia.
 
-# SkiaVisual
+## SkiaVisual
 
 A `SkiaVisual` is an abstract `Visual` that provides Uno applications the ability to utilize SkiaSharp to draw directly on the Skia canvas that is used internally by Uno to draw the window. To use `SkiaVisual`, create a subclass of `SkiaVisual` and override the `RenderOverride` method.
 
@@ -28,7 +28,7 @@ When adding your drawing logic in `RenderOverride` on the provided canvas, you c
 
 Additionally, `SkiaVisual` has an `Invalidate` method that can be used at any time to tell the Uno runtime to redraw the visual, calling `RenderOverride` in the process.
 
-# SKCanvasElement
+## SKCanvasElement
 
 `SKCanvasElement` is a ready-made `FrameworkElement` that creates an internal `SkiaVisual` and maintains its state as one would expect. To use `SKCanvasElement`, create a subclass of `SKCanvasElement` and override the `RenderOverride` method, which takes the canvas that will be drawn on and the clipping area inside the canvas. Drawing outside this area will be clipped.
 
@@ -42,15 +42,18 @@ Note that since `SKCanvasElement` takes as much space as it can, it's not allowe
 
 `SKCanvasElement` also comes with a `MirroredWhenRightToLeftProperty`. If `true`, the drawing will be reflected horizontally when the `FlowDirection` of the `SKCanvasElement` is right-to-left. By default, this property is set to `false`, meaning that the drawing will be the same regardless of the `FlowDirection`.
 
-# Full example
+## Full example
 
 To see this in action, here's a complete sample that uses `SKCanvasElement` to draw 1 of 3 different drawings based on the value of a [Slider](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.slider). Note how you have to be careful with surrounding all the Skia-related logic in platform-specific guards. This is the case for both [xaml](platform-specific-xaml) and the [code-behind](platform-specific-csharp).
 
 Xaml:
+
 ```xaml
+
 ```
 
 Code-behind:
+
 ```csharp
 
 ```
