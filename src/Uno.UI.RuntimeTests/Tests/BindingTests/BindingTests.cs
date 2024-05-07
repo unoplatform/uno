@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -70,4 +71,61 @@ public class BindingTests
 		}
 	}
 #endif
+
+	[TestMethod]
+	public async Task When_TargetNullValueThemeResource()
+	{
+		var SUT = new TargetNullValueThemeResource();
+		await UITestHelper.Load(SUT);
+
+		var myBtn = SUT.myBtn;
+		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+
+		using (ThemeHelper.UseDarkTheme())
+		{
+			Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
+		}
+
+		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+	}
+
+	[TestMethod]
+	public async Task When_FallbackValueThemeResource_NoDataContext()
+	{
+		var SUT = new FallbackValueThemeResource();
+		await UITestHelper.Load(SUT);
+
+		var myBtn = SUT.myBtn;
+		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+
+		using (ThemeHelper.UseDarkTheme())
+		{
+#if WINAPPSDK
+			Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
+#else
+			// WRONG behavior!
+			Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+#endif
+		}
+
+		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+	}
+
+	[TestMethod]
+	public async Task When_FallbackValueThemeResource_WithDataContext()
+	{
+		var SUT = new FallbackValueThemeResource();
+		await UITestHelper.Load(SUT);
+
+		var myBtn = SUT.myBtn;
+		myBtn.DataContext = "Hello";
+		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+
+		using (ThemeHelper.UseDarkTheme())
+		{
+			Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
+		}
+
+		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+	}
 }
