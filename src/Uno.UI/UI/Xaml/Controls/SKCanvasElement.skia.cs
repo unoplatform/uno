@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -61,7 +62,17 @@ public abstract class SKCanvasElement : FrameworkElement
 	/// By default, SKCanvasElement uses all the <see cref="availableSize"/> given. Subclasses of SKCanvasElement
 	/// should override this method if they need something different.
 	/// </summary>
-	protected override Size MeasureOverride(Size availableSize) => availableSize;
+	protected override Size MeasureOverride(Size availableSize)
+	{
+		if (availableSize.Width == Double.PositiveInfinity ||
+			availableSize.Height == Double.PositiveInfinity ||
+			availableSize.Width.IsNaN() ||
+			availableSize.Height.IsNaN())
+		{
+			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be measured with infinite or NaN values, but received availableSize={availableSize}.");
+		}
+		return availableSize;
+	}
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
@@ -70,7 +81,14 @@ public abstract class SKCanvasElement : FrameworkElement
 
 		ApplyFlowDirection(); // if FlowDirection Changes, it will cause an InvalidateArrange, so we recalculate the TransformMatrix here
 
-		return base.ArrangeOverride(finalSize);
+		if (finalSize.Width == Double.PositiveInfinity ||
+			finalSize.Height == Double.PositiveInfinity ||
+			finalSize.Width.IsNaN() ||
+			finalSize.Height.IsNaN())
+		{
+			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
+		}
+		return finalSize;
 	}
 
 	private bool ApplyFlowDirection()
