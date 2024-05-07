@@ -58,7 +58,7 @@ public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 			RuntimeTestPlatform.SkiaWpf => IsSkiaWpf(),
 			RuntimeTestPlatform.SkiaX11 => IsSkiaX11(),
 			RuntimeTestPlatform.SkiaMacOS => IsSkiaMacOS(),
-			RuntimeTestPlatform.SkiaIslands => TestServices.WindowHelper.IsXamlIsland,
+			RuntimeTestPlatform.SkiaIslands => Microsoft.UI.Xaml.Application.Current.Host is null,
 			RuntimeTestPlatform.Wasm => IsWasm(),
 			RuntimeTestPlatform.Android => IsAndroid(),
 			RuntimeTestPlatform.iOS => IsIOS(),
