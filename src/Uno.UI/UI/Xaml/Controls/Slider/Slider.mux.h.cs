@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference Slider_Partial.h
+// MUX reference dxaml\xcp\dxaml\lib\Slider_Partial.h, tag winui3/release/1.5.3, commit 2a60e27c591846556fa9ec4d8f305afdf0f96dc1
 
 using Uno.Disposables;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
+using System;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -114,4 +115,8 @@ public partial class Slider
 
 	private bool _disengagedWithA;
 
+	// MTC specific value for when the slider is used as a seek bar used by SeekSliderAutomationPeer.
+	private bool _isSeekSlider;
+	private TimeSpan _currentPosition;
+	private TimeSpan _currentDuration;
 }

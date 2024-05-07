@@ -42,7 +42,8 @@ public partial class Slider
 		_usingDefaultToolTipForHorizontalThumb = false;
 		_usingDefaultToolTipForVerticalThumb = false;
 		_capturedPointerId = 0;
-
+		_currentPosition = TimeSpan.Zero;
+		_currentDuration = TimeSpan.Zero;
 		// TODO Uno specific: This is called by DirectUI automatically,
 		// we have to do it manually here.
 		PrepareState();
@@ -511,9 +512,10 @@ public partial class Slider
 
 		_isPressed = false;
 
-		// when pointer move out of the control but OnPointerExit() would not be invoked so the control might remain in PointerOver visual state.
+		// when pointer moves out of the control but OnPointerExit() would not be invoked so the control might remain in PointerOver visual state.
 		// change it to false here
 		_isPointerOver = false;
+		UpdateThumbToolTipVisibility(false);
 
 		if (hasStateChanged)
 		{
@@ -524,7 +526,17 @@ public partial class Slider
 	}
 
 	// Create SliderAutomationPeer to represent the Slider.
-	protected override AutomationPeer OnCreateAutomationPeer() => new SliderAutomationPeer(this);
+	protected override AutomationPeer OnCreateAutomationPeer()
+	{
+		if (_isSeekSlider)
+		{
+			return new SeekSliderAutomationPeer(this);
+		}
+		else
+		{
+			return new SliderAutomationPeer(this);
+		}
+	}
 
 	//---------------------------------------------------------------------------
 	//
