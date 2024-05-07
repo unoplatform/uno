@@ -1340,6 +1340,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		public async Task When_SizeChanged_Offsets_Adjusted()
+		{
+			Rectangle rect;
+			var SUT = new ScrollViewer
+			{
+				Height = 100,
+				Content = rect = new Rectangle
+				{
+					Fill = new LinearGradientBrush
+					{
+						StartPoint = new Point(0.5, 0),
+						EndPoint = new Point(0.5, 1),
+						GradientStops = new GradientStopCollection()
+							.Apply(stops => stops.AddRange(new[]
+							{
+								new GradientStop { Color = Microsoft.UI.Colors.Yellow, Offset = 0.0 },
+								new GradientStop { Color = Microsoft.UI.Colors.Red, Offset = 0.25 },
+								new GradientStop { Color = Microsoft.UI.Colors.Blue, Offset = 0.75 },
+								new GradientStop { Color = Microsoft.UI.Colors.LimeGreen, Offset = 1.0 },
+							}))
+					},
+					Height = 200,
+					Width = 100
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ScrollToVerticalOffset(50);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(new Point(0, -50), rect.TransformToVisual(SUT).TransformPoint(new Point(0, 0)));
+
+			SUT.Height = 200;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(new Point(0, 0), rect.TransformToVisual(SUT).TransformPoint(new Point(0, 0)));
+		}
+
 #if HAS_UNO // uses internal ToMatrix
 		[TestMethod]
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER

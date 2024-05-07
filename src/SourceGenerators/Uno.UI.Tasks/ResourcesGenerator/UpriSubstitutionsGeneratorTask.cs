@@ -29,7 +29,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 		{
 			// Debugger.Launch();
 
-			if (!string.IsNullOrEmpty(AssemblyName) && Resources != null && !string.IsNullOrEmpty(OutputFile))
+			if (!string.IsNullOrEmpty(AssemblyName) && Resources?.Length > 0 && !string.IsNullOrEmpty(OutputFile))
 			{
 				var xml = new XmlDocument();
 

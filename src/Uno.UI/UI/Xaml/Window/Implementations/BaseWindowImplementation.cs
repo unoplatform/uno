@@ -118,7 +118,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeShown(object? sender, EventArgs e) => ContentManager.TryLoadRootVisual(XamlRoot!);
 
-	private void OnNativeClosed(object? sender, EventArgs args) => Closed?.Invoke(this, new WindowEventArgs());
+	private void OnNativeClosed(object? sender, EventArgs args) => Closed?.Invoke(Window, new WindowEventArgs());
 
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
@@ -145,7 +145,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 #if !HAS_UNO_WINUI // CoreWindow has a different WindowSizeChangedEventArgs type, let's skip raising it completely.
 		CoreWindow?.OnSizeChanged(coreWindowSizeChangedEventArgs);
 #endif
-		SizeChanged?.Invoke(this, windowSizeChanged);
+		SizeChanged?.Invoke(Window, windowSizeChanged);
 
 		XamlRoot?.RaiseChangedEvent();
 	}
@@ -174,7 +174,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		var args = new VisibilityChangedEventArgs() { Visible = isVisible };
 
 		CoreWindow?.OnVisibilityChanged(args);
-		VisibilityChanged?.Invoke(this, args);
+		VisibilityChanged?.Invoke(Window, args);
 		SystemThemeHelper.RefreshSystemTheme();
 	}
 
@@ -211,7 +211,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		var coreWindowActivatedEventArgs = activatedEventArgs;
 #endif
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
-		Activated?.Invoke(this, activatedEventArgs);
+		Activated?.Invoke(Window, activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
 	}
 

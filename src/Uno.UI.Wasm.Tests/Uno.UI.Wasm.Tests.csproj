@@ -19,12 +19,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="tsconfig.json" />
-		<Content Include="tsconfig.json" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
@@ -48,8 +42,17 @@
 
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<CompileTypeScriptDependsOn>_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
+
+	<Target Name="_AdjustCompileDependsOn" AfterTargets="BeforeBuild">
+		<ItemGroup>
+			<_AdjustedCompileDependsOn Include="$(CompileDependsOn)" Exclude="CompileTypeScript;CompileTypeScriptWithTSConfig;GetTypeScriptOutputForPublishing" />
+		</ItemGroup>
+		<PropertyGroup>
+			<CompileDependsOn>@(_AdjustedCompileDependsOn)</CompileDependsOn>
+		</PropertyGroup>
+	</Target>
 
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>
@@ -64,19 +67,11 @@
 
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
 			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+			DependsOnTargets="CompileTypeScriptWithTSConfig"
 			BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
 			<_generatedTSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
-		</ItemGroup>
-	</Target>
-
-	<Target Name="_AdjustTypeScriptOutputForPublishing"
-			AfterTargets="GetTypeScriptOutputForPublishing">
-		<ItemGroup>
-			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
-			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
-			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
+			<_UnoInjectedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 	</Target>
 

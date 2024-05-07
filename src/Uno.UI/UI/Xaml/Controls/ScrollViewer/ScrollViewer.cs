@@ -824,6 +824,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
+
+			TrimOverscroll(Orientation.Vertical);
+			TrimOverscroll(Orientation.Horizontal);
 		}
 
 		private void UpdateComputedVerticalScrollability(bool invalidate)

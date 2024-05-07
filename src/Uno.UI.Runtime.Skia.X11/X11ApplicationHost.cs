@@ -70,9 +70,9 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		_appBuilder = appBuilder;
 
 		_eventLoop = new EventLoop();
-		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
+		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; }, UI.Dispatching.NativeDispatcherPriority.Normal);
 
-		_eventLoop.Schedule(() => _isDispatcherThread = true);
+		_eventLoop.Schedule(() => _isDispatcherThread = true, UI.Dispatching.NativeDispatcherPriority.Normal);
 		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
@@ -80,7 +80,7 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
-		_eventLoop.Schedule(StartApp);
+		_eventLoop.Schedule(StartApp, UI.Dispatching.NativeDispatcherPriority.Normal);
 
 		while (!X11XamlRootHost.AllWindowsDone())
 		{
