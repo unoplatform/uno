@@ -29,7 +29,7 @@ public abstract class SKCanvasElement : FrameworkElement
 		nameof(MirroredWhenRightToLeft),
 		typeof(bool),
 		typeof(SKCanvasElement),
-		new PropertyMetadata((dO, _) => ((SKCanvasElement)dO).RespectFlowDirectionChanged()));
+		new PropertyMetadata((dO, _) => ((SKCanvasElement)dO).OnMirroredWhenRightToLeftChanged()));
 
 	/// <summary>
 	/// By default, SKCanvasElement will have the origin at the top-left of the drawing area with the normal directions increasing down and right.
@@ -41,7 +41,7 @@ public abstract class SKCanvasElement : FrameworkElement
 		set => SetValue(MirroredWhenRightToLeftProperty, value);
 	}
 
-	private void RespectFlowDirectionChanged()
+	private void OnMirroredWhenRightToLeftChanged()
 	{
 		if (ApplyFlowDirection())
 		{
