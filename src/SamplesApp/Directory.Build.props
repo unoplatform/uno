@@ -8,6 +8,7 @@
     <UnoRemoteControlPort>53487</UnoRemoteControlPort>
 
     <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
+    <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
 
 </Project>
