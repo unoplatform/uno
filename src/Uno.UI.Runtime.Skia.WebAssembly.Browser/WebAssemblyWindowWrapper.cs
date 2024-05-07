@@ -26,6 +26,7 @@ namespace Uno.UI.Runtime.Skia;
 internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<WebAssemblyWindowWrapper> _instance = new Lazy<WebAssemblyWindowWrapper>(() => new());
+	private DisplayInformation _displayInformation;
 
 	internal static WebAssemblyWindowWrapper Instance => _instance.Value;
 
@@ -37,13 +38,17 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 
 		NativeMethods.Initialize(this);
+
+		_displayInformation = DisplayInformation.GetForCurrentView();
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
+		_displayInformation.DpiChanged += (_, _) => RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 	}
 
 	public override object? NativeWindow => null;
 
 	internal Window? Window { get; private set; }
 
-	internal XamlRoot? XamlRoot { get; private set; }
+	internal new XamlRoot? XamlRoot { get; private set; }
 
 	public override string Title
 	{

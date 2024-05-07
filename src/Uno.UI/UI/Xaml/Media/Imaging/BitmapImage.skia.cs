@@ -43,7 +43,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					if (uri.IsLocalResource())
+					// TODO: It's quite important to support scaled images on Wasm Skia.
+					if (uri.IsLocalResource() && !OperatingSystem.IsBrowser())
 					{
 						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
 					}
