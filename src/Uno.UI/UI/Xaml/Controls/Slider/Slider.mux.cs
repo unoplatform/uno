@@ -1512,16 +1512,16 @@ public partial class Slider
 						szFormat = "{0:0}";
 						break;
 					case 1:
-						szFormat = "{0:0.0}f";
+						szFormat = "{0:0.0}";
 						break;
 					case 2:
-						szFormat = "{0:0.00}f";
+						szFormat = "{0:0.00}";
 						break;
 					case 3:
-						szFormat = "{0:0.000}f";
+						szFormat = "{0:0.000}";
 						break;
 					default:
-						szFormat = "{0:0.0000}f";
+						szFormat = "{0:0.0000}";
 						break;
 				}
 			}
