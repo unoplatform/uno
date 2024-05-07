@@ -3,6 +3,7 @@ using System.Numerics;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using SkiaSharp;
 using Uno.Disposables;
@@ -23,7 +24,7 @@ public abstract class SKCanvasElement : FrameworkElement
 
 	protected SKCanvasElement()
 	{
-		_skiaVisual = new SKCanvasVisual(this, Visual.Compositor);
+		_skiaVisual = new SKCanvasVisual(this, ElementCompositionPreview.GetElementVisual(this).Compositor);
 		ElementCompositionPreview.SetElementChildVisual(this, _skiaVisual!);
 	}
 
@@ -31,7 +32,7 @@ public abstract class SKCanvasElement : FrameworkElement
 		nameof(MirroredWhenRightToLeft),
 		typeof(bool),
 		typeof(SKCanvasElement),
-		new FrameworkPropertyMetadata((dO, _) => ((SKCanvasElement)dO).RespectFlowDirectionChanged()));
+		new PropertyMetadata((dO, _) => ((SKCanvasElement)dO).RespectFlowDirectionChanged()));
 
 	/// <summary>
 	/// By default, SKCanvasElement will have the origin at the top-left of the drawing area with the normal directions increasing down and right.
@@ -66,8 +67,8 @@ public abstract class SKCanvasElement : FrameworkElement
 	{
 		if (availableSize.Width == Double.PositiveInfinity ||
 			availableSize.Height == Double.PositiveInfinity ||
-			availableSize.Width.IsNaN() ||
-			availableSize.Height.IsNaN())
+			double.IsNaN(availableSize.Width) ||
+			double.IsNaN(availableSize.Height))
 		{
 			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be measured with infinite or NaN values, but received availableSize={availableSize}.");
 		}
@@ -83,8 +84,8 @@ public abstract class SKCanvasElement : FrameworkElement
 
 		if (finalSize.Width == Double.PositiveInfinity ||
 			finalSize.Height == Double.PositiveInfinity ||
-			finalSize.Width.IsNaN() ||
-			finalSize.Height.IsNaN())
+			double.IsNaN(finalSize.Width) ||
+			double.IsNaN(finalSize.Height))
 		{
 			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
 		}
@@ -96,7 +97,7 @@ public abstract class SKCanvasElement : FrameworkElement
 		var oldMatrix = _skiaVisual.TransformMatrix;
 		if (FlowDirection == FlowDirection.RightToLeft && !MirroredWhenRightToLeft)
 		{
-			_skiaVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)LayoutSlot.Width, 0.0f));
+			_skiaVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)LayoutInformation.GetLayoutSlot(this).Width, 0.0f));
 		}
 		else
 		{
