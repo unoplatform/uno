@@ -29,7 +29,7 @@ namespace Uno.UI.Controls;
 public partial class Window : UIWindow
 {
 	//Impediment # 19821 A way the bypass the processing done in the HitTest override when third party controls are used.
-	public static bool BypassCheckToCloseKeyboard { get; set; }
+	public static bool BypassCheckToCloseKeyboard { get; set; } = true;
 
 	private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
