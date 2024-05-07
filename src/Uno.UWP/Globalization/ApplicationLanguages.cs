@@ -78,10 +78,7 @@ namespace Windows.Globalization
 			}
 			set
 			{
-				if (value is null)
-				{
-					throw new ArgumentNullException(nameof(value), "Value cannot be null.");
-				}
+				value ??= string.Empty;
 
 				_primaryLanguageOverride = value;
 				ApplyLanguages();
