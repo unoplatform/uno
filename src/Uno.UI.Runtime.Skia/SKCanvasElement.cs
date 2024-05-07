@@ -1,12 +1,9 @@
-using System;
 using System.Numerics;
 using Windows.Foundation;
-using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using SkiaSharp;
-using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -25,7 +22,7 @@ public abstract class SKCanvasElement : FrameworkElement
 	protected SKCanvasElement()
 	{
 		_skiaVisual = new SKCanvasVisual(this, ElementCompositionPreview.GetElementVisual(this).Compositor);
-		ElementCompositionPreview.SetElementChildVisual(this, _skiaVisual!);
+		Visual.Children.InsertAtTop(_skiaVisual);
 	}
 
 	public static DependencyProperty MirroredWhenRightToLeftProperty { get; } = DependencyProperty.Register(
@@ -72,12 +69,15 @@ public abstract class SKCanvasElement : FrameworkElement
 		{
 			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be measured with infinite or NaN values, but received availableSize={availableSize}.");
 		}
+
 		return availableSize;
 	}
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
 		_skiaVisual.Size = new Vector2((float)finalSize.Width, (float)finalSize.Height);
+		// clipping is necessary in case a user does a canvas clear without any clipping defined.
+		// In that case. the entire window will be cleared.
 		_skiaVisual.Clip = _skiaVisual.Compositor.CreateRectangleClip(0, 0, (float)finalSize.Width, (float)finalSize.Height);
 
 		ApplyFlowDirection(); // if FlowDirection Changes, it will cause an InvalidateArrange, so we recalculate the TransformMatrix here

@@ -70,13 +70,4 @@
 		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Reference Include="Silk.NET.Core">
-	    <HintPath>..\..\..\..\..\..\.nuget\packages\silk.net.core\2.16.0\lib\net6.0\Silk.NET.Core.dll</HintPath>
-	  </Reference>
-	  <Reference Include="Silk.NET.OpenGL">
-	    <HintPath>..\..\..\..\..\..\.nuget\packages\silk.net.opengl\2.16.0\lib\net5.0\Silk.NET.OpenGL.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-
 </Project>

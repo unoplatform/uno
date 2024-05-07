@@ -31,4 +31,8 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+	</ItemGroup>
+
 </Project>
