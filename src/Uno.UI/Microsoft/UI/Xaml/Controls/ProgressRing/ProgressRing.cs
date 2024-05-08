@@ -305,7 +305,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var txt = new TextBlock
 				{
 					Text = "⚠️ UNOX0001: https://aka.platform.uno/UNOX0001 ⚠️",
-					Foreground = SolidColorBrushHelper.Red
+					Foreground = SolidColorBrushHelper.Red,
 					FontSize = 8
 				};
 
