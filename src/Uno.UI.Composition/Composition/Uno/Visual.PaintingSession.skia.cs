@@ -18,7 +18,7 @@ public partial class Visual
 	/// Accessing Surface.Canvas is slow due to SkiaSharp interop.
 	/// Avoid using .Surface.Canvas and use .Canvas right away.
 	/// </remarks>
-	internal readonly struct PaintingSession: IDisposable
+	internal readonly struct PaintingSession : IDisposable
 	{
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
@@ -33,7 +33,7 @@ public partial class Visual
 
 		private PaintingSession(Visual visual, SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform)
 		{
-			_saveCount = visual.ShadowState is { } shadow ? canvas.SaveLayer(shadow.Paint) : canvas.Save();;
+			_saveCount = visual.ShadowState is { } shadow ? canvas.SaveLayer(shadow.Paint) : canvas.Save();
 			Surface = surface;
 			Canvas = canvas;
 			Filters = filters;
