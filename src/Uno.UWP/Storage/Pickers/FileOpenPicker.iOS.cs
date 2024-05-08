@@ -165,7 +165,10 @@ namespace Windows.Storage.Pickers
 			public override async void DidFinishPicking(PHPickerViewController picker, PHPickerResult[] results)
 			{
 				var storageFiles = await ConvertPickerResults(results);
-				_taskCompletionSource.SetResult(storageFiles.ToArray());
+
+				// This callback can be called multiple times, user tapping multiple times over the "add" button,
+				// we need to ensure that we only set the result once.
+				_taskCompletionSource.TrySetResult(storageFiles.ToArray());
 			}
 			private async Task<IEnumerable<StorageFile>> ConvertPickerResults(PHPickerResult[] results)
 			{
