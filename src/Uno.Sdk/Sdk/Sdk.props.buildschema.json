@@ -286,12 +286,12 @@
 	],
 	"items": {
 		"UnoDspImportColors": {
-			"description": "Imports a DSP file with color definitions.",
+			"description": "Imports a theme file with color definitions.",
 			"metadata": {
 				"Generator": {
 					"type": { "$ref": "#/types/unoDspGenerator" },
 					"isRequired": true,
-					"description": "The type of generator to use for the DSP file."
+					"description": "The type of generator to use for the theme file (a .json/.zip extracted from Material Theme Builder)."
 				}
 			}
 		},
@@ -370,10 +370,10 @@
 			"caseSensitive": true,
 			"values": {
 				"Xaml": {
-					"description": "Generates a XAML file from the DSP file."
+					"description": "Generates a XAML file from the theme file."
 				},
 				"CSharp": {
-					"description": "Generates a C# file from the DSP file."
+					"description": "Generates a C# file from the theme file."
 				}
 			}
 		},
@@ -474,7 +474,7 @@
 					"helpUrl": "https://aka.platform.uno/feature-cupertino"
 				},
 				"Dsp": {
-					"description": "Adds support for the Uno.Dsp package.",
+					"description": "Adds support for the Uno.Dsp.Tasks package.",
 					"helpUrl": "https://aka.platform.uno/feature-dsp"
 				},
 				"Mvvm": {
