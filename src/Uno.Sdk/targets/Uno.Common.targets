@@ -118,6 +118,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
+		<!-- New Material Theme Builder export format (Uno.Dsp 1.3+) -->
+		<UnoDspImportColors Include="Styles\*.json" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.json" Generator="CSharp" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+
+		<!-- Legacy old DSP format for backward compatibility -->
 		<UnoDspImportColors Include="Styles\*.zip" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
 		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
 	</ItemGroup>
