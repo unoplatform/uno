@@ -10,16 +10,11 @@ public class SKCanvasElementImpl : SKCanvasElement
 {
 	public static int SampleCount => 3;
 
-	public SKCanvasElementImpl()
-	{
-		Sample = 0;
-	}
-
 	public static DependencyProperty SampleProperty { get; } = DependencyProperty.Register(
 		nameof(Sample),
 		typeof(int),
 		typeof(SKCanvasElementImpl),
-		new PropertyMetadata(-1, (o, args) => ((SKCanvasElementImpl)o).SampleChanged((int)args.NewValue)));
+		new PropertyMetadata(0, (o, args) => ((SKCanvasElementImpl)o).SampleChanged((int)args.NewValue)));
 
 	public int Sample
 	{
@@ -29,21 +24,14 @@ public class SKCanvasElementImpl : SKCanvasElement
 
 	private void SampleChanged(int newIndex)
 	{
-		var coercedIndex = Math.Min(Math.Max(0, newIndex), SampleCount - 1);
-		if (coercedIndex != Sample)
-		{
-			Sample = coercedIndex;
-		}
+		Sample = Math.Min(Math.Max(0, newIndex), SampleCount - 1);
 	}
 
 	protected override void RenderOverride(SKCanvas canvas, Size area)
 	{
 		var minDim = Math.Min(area.Width, area.Height);
-		if (minDim > 250)
-		{
-			// scale up if area is bigger than needed, assuming each drawing takes is 260x260
-			canvas.Scale((float)(minDim / 260), (float)(minDim / 260));
-		}
+		// rescale to fit the given area, assuming each drawing takes is 260x260
+		canvas.Scale((float)(minDim / 260), (float)(minDim / 260));
 
 		switch (Sample)
 		{
