@@ -123,6 +123,12 @@ On iOS and Catalyst, calling `Dispose()` or `Dispose(bool)` on a type inheriting
 
 Invocations to `Dispose` can cause the application to crash in `__NSObject_Disposer drain`, cause `ObjectDisposedException` exception to be thrown. More information can be found in [xamarin/xamarin-macios#19493](https://github.com/xamarin/xamarin-macios/issues/19493).
 
+## XAML Errors
+
+### UNOX0001
+
+The `ProgressRing` control [needs an additional Lottie](xref:Uno.Features.Lottie) dependency to be enabled.
+
 ## VS Code Errors
 
 ### UVSC0001
