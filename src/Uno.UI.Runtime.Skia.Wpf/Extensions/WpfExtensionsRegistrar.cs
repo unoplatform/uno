@@ -21,6 +21,7 @@ using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Silk.NET.Core.Contexts;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 using Microsoft.Web.WebView2.Core;
@@ -57,6 +58,7 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new WpfNativeWebViewProvider(o));
+		ApiExtensibility.Register(typeof(INativeContext), _ => new WpfGlNativeContext());
 
 		_registered = true;
 	}
