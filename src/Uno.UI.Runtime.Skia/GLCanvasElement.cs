@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
+using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using SkiaSharp;
 using Uno.Foundation.Extensibility;
@@ -67,9 +68,18 @@ public abstract class GLCanvasElement : FrameworkElement
 	{
 		base.OnLoaded();
 
-		ApiExtensibility.CreateInstance<GLGetProcAddress>(this, out var getProcAddress);
-		getProcAddress = getProcAddress ?? throw new InvalidOperationException($"Couldn't get GetProcAddress for {nameof(GLCanvasElement)}. Make sure you are running on a platform with {nameof(GLCanvasElement)} support.");
-		_gl = GL.GetApi(getProcAddress.Invoke);
+		if (ApiExtensibility.CreateInstance<INativeContext>(this, out var nativeContext))
+		{
+			_gl = GL.GetApi(nativeContext);
+		}
+		else if (ApiExtensibility.CreateInstance<GLGetProcAddress>(this, out var getProcAddress))
+		{
+			_gl = GL.GetApi(getProcAddress.Invoke);
+		}
+		else
+		{
+			throw new InvalidOperationException($"Couldn't create a {nameof(GL)} object for {nameof(GLCanvasElement)}. Make sure you are running on a platform with {nameof(GLCanvasElement)} support.");
+		}
 
 		if (_firstLoad)
 		{
