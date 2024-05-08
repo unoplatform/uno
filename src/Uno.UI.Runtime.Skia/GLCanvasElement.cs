@@ -127,7 +127,7 @@ public abstract class GLCanvasElement : FrameworkElement
 
 			// Can we do without this copy?
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
-			_gl.ReadPixels(0,  0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, _pixels);
+			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, _pixels);
 		}
 	}
 
@@ -158,7 +158,7 @@ public abstract class GLCanvasElement : FrameworkElement
 		}
 		return finalSize;
 	}
-	
+
 	private readonly struct GLStateDisposable : IDisposable
 	{
 		private readonly GL _gl;
