@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -73,6 +74,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, slider.VerticalDecreaseRect.Height);
 			Assert.AreEqual(0, slider.VerticalDecreaseRect.ActualHeight);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Value_Decimal()
+		{
+			if (!FeatureConfiguration.ToolTip.UseToolTips)
+			{
+				Assert.Inconclusive("ToolTips are not enabled on this target");
+				return;
+			}
+
+			var slider = new Slider()
+			{
+				Value = 0.5,
+				Minimum = 0,
+				Maximum = 1,
+				StepFrequency = 0.01,
+				Orientation = Orientation.Horizontal,
+			};
+			WindowHelper.WindowContent = slider;
+			await WindowHelper.WaitForLoaded(slider);
+
+			var thumb = VisualTreeUtils.FindVisualChildByName(slider, "HorizontalThumb");
+			var toolTip = ToolTipService.GetToolTipReference(thumb);
+			var tb = (TextBlock)toolTip.Content;
+			var text = tb.Text;
+			Assert.AreEqual("0.50", text);
+		}
+#endif
 
 #if HAS_UNO
 		[TestMethod]
