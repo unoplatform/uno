@@ -23,9 +23,6 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 
-
-
-
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -1260,6 +1257,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				comboBox.IsDropDownOpen = false;
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ComboPopup_Rearrange_ScrollShouldNotReset()
+		{
+			var SUT = new ComboBox()
+			{
+				ItemsSource = Enumerable.Range(0, 50).Select(x => $"Item {x}").ToArray(),
+				SelectedIndex = 0,
+			};
+			await UITestHelper.Load(SUT);
+
+			// open down-drop
+			SUT.IsDropDownOpen = true;
+			var host = SUT.GetTemplateChild<Border>("PopupBorder") ?? throw new InvalidOperationException("Failed to find Border#PopupBorder");
+			await WindowHelper.WaitForLoaded(host);
+			await UITestHelper.WaitForIdle();
+
+			// scroll to 2 screens away
+			var sv = host.Child as ScrollViewer ?? throw new InvalidOperationException("Failed to find Border#PopupBorder>ScrollViewer");
+			var origin = sv.VerticalOffset;
+			var destination = origin + sv.ViewportHeight * 2;
+			sv.ChangeView(null, verticalOffset: destination, null, disableAnimation: true);
+			await UITestHelper.WaitForIdle();
+			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+
+			// force an arrange
+			var cbi = sv.FindFirstChild<ComboBoxItem>();
+			cbi.InvalidateArrange();
+			await UITestHelper.WaitForIdle();
+			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+		}
+#endif
 
 #if __SKIA__ // Requires input injection
 		[TestMethod]

@@ -1096,7 +1096,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var layouter = ((ILayouterElement)fwe).Layouter;
-			layouter.Arrange(finalRect);
+			layouter.Arrange(finalRect.DeflateBy(fwe.Margin));
 			layouter.ArrangeChild(fwe, finalRect);
 #endif
 		}
