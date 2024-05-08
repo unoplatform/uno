@@ -13,7 +13,7 @@ public abstract class GLCanvasElement : FrameworkElement
 {
 	private class GLVisual(GLCanvasElement owner, Compositor compositor) : Visual(compositor)
 	{
-		private unsafe SKPixmap _pixmap = new SKPixmap(new SKImageInfo((int)owner._width, (int)owner._height, SKColorType.Bgra8888), (IntPtr)owner._pixels);
+		private readonly SKPixmap _pixmap = new SKPixmap(new SKImageInfo((int)owner._width, (int)owner._height, SKColorType.Bgra8888), owner._pixels);
 		internal override void Draw(in DrawingSession session)
 		{
 			owner.Render();
@@ -25,21 +25,21 @@ public abstract class GLCanvasElement : FrameworkElement
 
 	private readonly uint _width;
 	private readonly uint _height;
-	private bool _firstLoad = true;
-
+	private readonly IntPtr _pixels;
 	private readonly GLVisual _visual;
+
+	private bool _firstLoad = true;
 
 	private GL? _gl;
 	private uint _framebuffer;
 	private uint _textureColorBuffer;
-	private unsafe readonly void* _pixels;
 	private uint _renderBuffer;
 
-	unsafe protected GLCanvasElement(Size resolution)
+	protected GLCanvasElement(Size resolution)
 	{
 		_width = (uint)resolution.Width;
 		_height = (uint)resolution.Height;
-		_pixels = (void*)Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
+		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
 
 		_visual = new GLVisual(this, Visual.Compositor);
 		Visual.Children.InsertAtTop(_visual);
@@ -127,7 +127,7 @@ public abstract class GLCanvasElement : FrameworkElement
 
 			// Can we do without this copy?
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
-			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, _pixels);
+			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 		}
 	}
 
@@ -167,10 +167,12 @@ public abstract class GLCanvasElement : FrameworkElement
 		private readonly int _oldFramebuffer;
 		private readonly int _oldTextureColorBuffer;
 		private readonly int _oldRbo;
+		private readonly int[] _oldViewport = new int[4];
 
 		public GLStateDisposable(GL gl)
 		{
 			_gl = gl;
+			gl.GetInteger(GLEnum.Viewport, new Span<int>(_oldViewport));
 			gl.GetInteger(GLEnum.ArrayBufferBinding, out _oldArrayBuffer);
 			gl.GetInteger(GLEnum.VertexArrayBinding, out _oldVertexArray);
 			gl.GetInteger(GLEnum.FramebufferBinding, out _oldFramebuffer);
@@ -185,6 +187,7 @@ public abstract class GLCanvasElement : FrameworkElement
 			_gl.BindFramebuffer(GLEnum.Framebuffer, (uint)_oldFramebuffer);
 			_gl.BindTexture(GLEnum.Texture2D, (uint)_oldTextureColorBuffer);
 			_gl.BindRenderbuffer(GLEnum.Renderbuffer, (uint)_oldRbo);
+			_gl.Viewport(_oldViewport[0], _oldViewport[1], (uint)_oldViewport[2], (uint)_oldViewport[3]);
 		}
 	}
 }
