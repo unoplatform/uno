@@ -91,6 +91,7 @@ namespace Microsoft.UI.Xaml
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
+					_visual.Owner = this;
 				}
 
 				return _visual;

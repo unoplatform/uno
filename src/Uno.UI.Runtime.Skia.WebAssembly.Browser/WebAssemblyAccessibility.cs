@@ -3,13 +3,17 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 
@@ -36,6 +40,11 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	}
 
 	public bool IsAccessibilityEnabled { get; private set; }
+
+	private Vector3 GetVisualOffset(Visual visual)
+	{
+		return visual.GetTotalOffset();
+	}
 
 	private void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
@@ -70,7 +79,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			}
 			else
 			{
-				var totalOffset = visual.GetTotalOffset();
+				var totalOffset = GetVisualOffset(visual);
 				NativeMethods.UpdateSemanticElementPositioning(shapeVisual.Handle, shapeVisual.Size.X, shapeVisual.Size.Y, totalOffset.X, totalOffset.Y);
 			}
 		}
@@ -103,6 +112,26 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		@this.IsAccessibilityEnabled = true;
 		@this.CreateAOM(rootElement);
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+	}
+
+	[JSExport]
+	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
+	{
+		Console.WriteLine($"Managed OnScroll {horizontalOffset}, {verticalOffset}");
+		var @this = Instance;
+		if (GCHandle.FromIntPtr(handle).Target is ShapeVisual { Owner: UIElement owner })
+		{
+			// TODO: We shouldn't check individual scrollers.
+			// Instead, we should scroll using automation peers once they are implemented correctly for SCP and ScrollPresenter
+			if (owner is ScrollContentPresenter scp)
+			{
+				scp.Set(horizontalOffset, verticalOffset);
+			}
+			else if (owner is ScrollPresenter sp)
+			{
+				sp.ScrollTo(horizontalOffset, verticalOffset);
+			}
+		}
 	}
 
 	private void UpdateIsFocusable(Control control, bool isFocusable)
@@ -142,7 +171,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		// https://wicg.github.io/aom/explainer.html
 		var rootHandle = rootElement.Visual.Handle;
 
-		var totalOffset = rootElement.Visual.GetTotalOffset();
+		var totalOffset = GetVisualOffset(rootElement.Visual);
 		NativeMethods.AddRootElementToSemanticsRoot(rootHandle, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y, IsAccessibilityFocusable(rootElement, rootElement.IsFocusable));
 		foreach (var child in rootElement.GetChildren())
 		{
@@ -165,11 +194,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 	private bool AddSemanticElement(IntPtr parentHandle, UIElement child, int? index)
 	{
-		var totalOffset = child.Visual.GetTotalOffset();
+		var totalOffset = GetVisualOffset(child.Visual);
 		var role = AutomationProperties.FindHtmlRole(child);
 		var automationId = AutomationProperties.GetAutomationId(child);
 		var automationPeer = child.GetOrCreateAutomationPeer();
-
+		var horizontallyScrollable = false;
+		var verticallyScrollable = false;
 		if (automationPeer is not null)
 		{
 			// TODO: Verify if this is the right behavior.
@@ -177,6 +207,29 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			{
 				automationId = automationPeer.GetName();
 			}
+		}
+
+		if (automationPeer is IScrollProvider scrollProvider)
+		{
+			//horizontallyScrollable = scrollProvider.HorizontallyScrollable;
+			//verticallyScrollable = scrollProvider.VerticallyScrollable;
+			horizontallyScrollable = true;
+			verticallyScrollable = true;
+		}
+		else if (child.IsScrollPort)
+		{
+			// Workaround: ScrollViewerAutomationPeer isn't implemented.
+			//var extentWidth = sv.ExtentWidth;
+			//var viewportWidth = sv.ViewportWidth;
+			//var minHorizontalOffset = sv.MinHorizontalOffset;
+			//horizontallyScrollable = DoubleUtil.GreaterThan(extentWidth, viewportWidth + minHorizontalOffset);
+
+			//var extentHeight = sv.ExtentHeight;
+			//var viewportHeight = sv.ViewportHeight;
+			//var minVerticalOffset = sv.MinVerticalOffset;
+			//verticallyScrollable = DoubleUtil.GreaterThan(extentHeight, viewportHeight + minVerticalOffset);
+			horizontallyScrollable = true;
+			verticallyScrollable = true;
 		}
 
 		string? ariaChecked = null;
@@ -190,7 +243,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		}
 		// TODO: aria-valuenow, aria-valuemin, aria-valuemax for Slider
 
-		return NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible);
+		return NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name);
 	}
 
 	private void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle)
@@ -244,6 +297,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		{
 			OnAutomationNameChanged(element, (string)newValue);
 		}
+		else if ((automationProperty == ScrollPatternIdentifiers.HorizontalScrollPercentProperty ||
+			automationProperty == ScrollPatternIdentifiers.VerticalScrollPercentProperty) &&
+			TryGetPeerOwner(peer, out element) && element is ScrollViewer { Presenter: { } presenter } sv)
+		{
+			NativeMethods.UpdateNativeScrollOffsets(presenter.Visual.Handle, sv.HorizontalOffset, sv.VerticalOffset);
+		}
 	}
 
 	public bool ListenerExistsHelper(AutomationEvents eventId)
@@ -267,7 +326,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		internal static partial void AddRootElementToSemanticsRoot(IntPtr rootHandle, float width, float height, float x, float y, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.addSemanticElement")]
-		internal static partial bool AddSemanticElement(IntPtr parentHandle, IntPtr handle, int? index, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked, bool isVisible);
+		internal static partial bool AddSemanticElement(IntPtr parentHandle, IntPtr handle, int? index, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked, bool isVisible, bool horizontallyScrollable, bool verticallyScrollable, string temporary);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.removeSemanticElement")]
 		internal static partial void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle);
@@ -277,6 +336,9 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaChecked")]
 		internal static partial void UpdateAriaChecked(IntPtr handle, string? ariaChecked);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateNativeScrollOffsets")]
+		internal static partial void UpdateNativeScrollOffsets(IntPtr handle, double horizontalOffset, double verticalOffset);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateSemanticElementPositioning")]
 		internal static partial void UpdateSemanticElementPositioning(IntPtr handle, float width, float height, float x, float y);

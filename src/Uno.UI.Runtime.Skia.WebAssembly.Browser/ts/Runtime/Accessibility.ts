@@ -6,6 +6,7 @@ namespace Uno.UI.Runtime.Skia {
 		private static enableAccessibilityButton: HTMLDivElement;
 		private static semanticsRoot: HTMLDivElement;
 		private static managedEnableAccessibility: any;
+		private static managedOnScroll: any;
 		private static containerElement: HTMLElement;
 
 		private constructor() {
@@ -18,6 +19,7 @@ namespace Uno.UI.Runtime.Skia {
 				const browserExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
 				this.managedEnableAccessibility = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.EnableAccessibility;
+				this.managedOnScroll = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.OnScroll;
 			}
 		}
 
@@ -50,9 +52,19 @@ namespace Uno.UI.Runtime.Skia {
 			this.containerElement.appendChild(this.semanticsRoot);
 		}
 
-		public static createSemanticElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
+		private static createSemanticElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
 			let element = document.createElement("div");
 			element.style.position = "absolute";
+
+			element.addEventListener('wheel', (e) => {
+				// When scrolling with wheel, we want to prevent scroll events.
+				e.preventDefault();
+			});
+
+			element.addEventListener('scroll', (e) => {
+				let element = e.target as HTMLElement;
+				this.managedOnScroll(handle, element.scrollLeft, element.scrollTop);
+			});
 
 			Accessibility.updateElementFocusability(element, isFocusable);
 
@@ -69,9 +81,11 @@ namespace Uno.UI.Runtime.Skia {
 			if (isFocusable) {
 				element.tabIndex = 0;
 				element.style.pointerEvents = "all";
+				element.style.touchAction = "";
 			} else {
 				element.removeAttribute("tabIndex");
 				element.style.pointerEvents = "none";
+				element.style.touchAction = "none";
 			}
 		}
 
@@ -112,14 +126,29 @@ namespace Uno.UI.Runtime.Skia {
 			this.semanticsRoot.appendChild(element);
 		}
 
-		public static addSemanticElement(parentHandle: number, handle: number, index: number, width: number, height: number, x: number, y: number, role: string, automationId: string, isFocusable: boolean, ariaChecked: string, isVisible: boolean): boolean {
+		public static addSemanticElement(
+			parentHandle: number,
+			handle: number,
+			index: number,
+			width: number,
+			height: number,
+			x: number,
+			y: number,
+			role: string,
+			automationId: string,
+			isFocusable: boolean,
+			ariaChecked: string,
+			isVisible: boolean,
+			horizontallyScrollable: boolean,
+			verticallyScrollable: boolean,
+			temporary: string): boolean {
 			const parent = Accessibility.getSemanticElementByHandle(parentHandle);
 			if (!parent) {
 				return false;
 			}
 
 			let element = Accessibility.createSemanticElement(x, y, width, height, handle, isFocusable);
-
+			element.setAttribute('ElementType', temporary);
 			if (!isVisible) {
 				element.hidden = true;
 			}
@@ -134,6 +163,14 @@ namespace Uno.UI.Runtime.Skia {
 
 			if (automationId) {
 				element.setAttribute("aria-label", automationId);
+			}
+
+			if (horizontallyScrollable) {
+				element.style.overflowX = "scroll";
+			}
+
+			if (verticallyScrollable) {
+				element.style.overflowY = "scroll";
 			}
 
 			if (index != null && index < parent.childElementCount) {
@@ -174,6 +211,14 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.scrollLeft = horizontalOffset;
+				element.scrollTop = verticalOffset;
+			}
+		}
+
 		public static hideSemanticElement(handle: number) {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
@@ -181,7 +226,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		public static updateSemanticElementPositioning(owner: any, handle: number, width: number, height: number, x: number, y: number) {
+		public static updateSemanticElementPositioning(handle: number, width: number, height: number, x: number, y: number) {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.hidden = false;

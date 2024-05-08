@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Uno;
@@ -155,6 +156,8 @@ namespace Microsoft.UI.Xaml.Controls
 			OnUnloadedPartial();
 		}
 		private partial void OnUnloadedPartial();
+
+		protected override AutomationPeer OnCreateAutomationPeer() => new ScrollViewerAutomationPeer(this);
 
 
 		#region -- Common DP callbacks --
@@ -1164,6 +1167,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isVerticalScrollBarMaterialized;
 		private bool _isHorizontalScrollBarMaterialized;
 
+		internal ScrollBar? ElementHorizontalScrollBar => _horizontalScrollbar;
+		internal ScrollBar? ElementVerticalScrollBar => _verticalScrollbar;
+
 		private void MaterializeVerticalScrollBarIfNeeded(Visibility computedVisibility)
 		{
 			if (!_isTemplateApplied || _isVerticalScrollBarMaterialized || computedVisibility != Visibility.Visible)
@@ -1420,8 +1426,26 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_hasPendingUpdate = false;
 
+			var oldHorizontalOffset = HorizontalOffset;
+			var oldVerticalOffset = VerticalOffset;
+
 			HorizontalOffset = _pendingHorizontalOffset;
 			VerticalOffset = _pendingVerticalOffset;
+
+			// Not ideal, and doesn't match WinUI. This can miss raising some automation events.
+			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
+				GetAutomationPeer() is ScrollViewerAutomationPeer peer)
+			{
+				peer.RaiseAutomationEvents(
+					ExtentWidth,
+					ExtentHeight,
+					ViewportWidth,
+					ViewportHeight,
+					MinHorizontalOffset,
+					MinVerticalOffset,
+					oldHorizontalOffset,
+					oldVerticalOffset);
+			}
 
 			UpdatePartial(isIntermediate);
 
