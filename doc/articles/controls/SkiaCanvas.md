@@ -41,13 +41,11 @@ By default, `SKCanvasElement` takes all the available space given to it in the `
 
 Note that since `SKCanvasElement` takes as much space as it can, it's not allowed to place an `SKCanvasElement` inside a `StackPanel`, a `Grid` with `Auto` sizing, or any other element that provides its child(ren) with infinite space. To work around this, you can explicitly set the `Width` and/or `Height` of the `SKCanvasElement`.
 
-`SKCanvasElement` also comes with a `MirroredWhenRightToLeftProperty`. If `true`, the drawing will be reflected horizontally when the `FlowDirection` of the `SKCanvasElement` is right-to-left. By default, this property is set to `false`, meaning that the drawing will be the same regardless of the `FlowDirection`.
-
 ## Full example
 
-To see this in action, here's a complete sample that uses `SKCanvasElement` to draw 1 of 3 different drawings based on the value of a [Slider](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.slider). Note how you have to be careful with surrounding all the Skia-related logic in platform-specific guards. This is the case for both [xaml](platform-specific-xaml) and the [code-behind](platform-specific-csharp).
+To see this in action, here's a complete sample that uses `SKCanvasElement` to draw 1 of 3 different drawings based on the value of a [Slider](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.slider). Note how you have to be careful with surrounding all the Skia-related logic in platform-specific guards. This is the case for both the [XAML](platform-specific-xaml) and the [code-behind](platform-specific-csharp).
 
-Xaml:
+XAML:
 
 ```xaml
 
