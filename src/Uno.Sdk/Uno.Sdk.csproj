@@ -26,6 +26,7 @@
 	<ItemGroup>
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
 		<TargetFile Include="targets\**\*.props;targets\**\*.targets" />
+		<None Include="**\*.buildschema.json" Pack="true" PackagePath="%(RecursiveDir)%(Filename)%(Extension)" />
 
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
