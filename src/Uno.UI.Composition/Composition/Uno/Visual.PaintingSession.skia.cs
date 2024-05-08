@@ -8,7 +8,7 @@ public partial class Visual
 {
 	private interface IPrivateSessionFactory
 	{
-		PaintingSession CreateInstance(Visual visual, SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform);
+		PaintingSession CreateInstance(in Visual visual, in SKSurface surface, in SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform);
 	}
 
 	/// <summary>
@@ -23,7 +23,7 @@ public partial class Visual
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
 		{
-			PaintingSession IPrivateSessionFactory.CreateInstance(Visual visual, SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform)
+			PaintingSession IPrivateSessionFactory.CreateInstance(in Visual visual, in SKSurface surface, in SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform)
 			{
 				return new PaintingSession(visual, surface, canvas, filters, rootTransform);
 			}

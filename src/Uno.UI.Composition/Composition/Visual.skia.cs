@@ -14,6 +14,8 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
+
 	private CompositionClip? _clip;
 	private RectangleClip? _cornerRadiusClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
@@ -157,10 +159,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = translation * initialTransform;
 		}
 
-		using (var wrapper =
-			((IPrivateSessionFactory)new PaintingSession.SessionFactory()).CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
+		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
 		{
-			Render(wrapper.Session);
+			Render(session);
 		}
 
 		if (offsetOverride is { })
@@ -187,9 +188,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		using (var wrapper = CreateLocalSession(in parentSession))
+		using (var session = CreateLocalSession(in parentSession))
 		{
-			var session = wrapper.Session;
 			Paint(session);
 
 			// The CornerRadiusClip doesn't affect the visual itself, only its children
@@ -234,7 +234,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates,
 	/// clipping and opacity.
 	/// </summary>
-	private PaintingSessionWrapper CreateLocalSession(in PaintingSession parentSession)
+	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
 	{
 		var surface = parentSession.Surface;
 		var canvas = parentSession.Canvas;
@@ -244,7 +244,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			? parentSession.Filters
 			: parentSession.Filters with { Opacity = parentSession.Filters.Opacity * Opacity };
 
-		var session = ((IPrivateSessionFactory)new PaintingSession.SessionFactory()).CreateInstance(this, surface, canvas, filters, rootTransform);
+		var session = _factory.CreateInstance(this, surface, canvas, filters, rootTransform);
 
 		if (rootTransform.IsIdentity)
 		{
