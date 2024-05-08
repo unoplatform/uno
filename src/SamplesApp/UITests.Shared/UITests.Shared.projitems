@@ -4694,7 +4694,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SkiaVisualShowcase.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElement_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -6036,6 +6036,7 @@
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\GlCanvasElementImpl.skia.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElementImpl.skia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Core\CloseRequestedTests.xaml.cs">
       <DependentUpon>CloseRequestedTests.xaml</DependentUpon>
     </Compile>
@@ -8287,8 +8288,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\VisualSurfaceTests.xaml.cs">
       <DependentUpon>VisualSurfaceTests.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SkiaVisualShowcase.xaml.cs">
-      <DependentUpon>SkiaVisualShowcase.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElement_Simple.xaml.cs">
+      <DependentUpon>SKCanvasElement_Simple.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\GLCanvasElement_Simple.xaml.cs">
       <DependentUpon>GLCanvasElement_Simple.xaml</DependentUpon>
