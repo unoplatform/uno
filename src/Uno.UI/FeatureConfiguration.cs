@@ -572,7 +572,7 @@ namespace Uno.UI
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
-#if __WASM__
+#if __WASM__ || __SKIA__
 				= true;
 #endif
 

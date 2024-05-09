@@ -87,7 +87,7 @@ WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyl
 
 ## ToolTips
 
-By default, `ToolTips` are disabled on all platforms except for WebAssembly (see [#10791](https://github.com/unoplatform/uno/issues/10791)). To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. You can add the following in the end of the `App` constructor:
+By default, `ToolTips` are disabled on all platforms except for WebAssembly and Skia (see [#10791](https://github.com/unoplatform/uno/issues/10791)). To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. You can add the following in the end of the `App` constructor:
 
 ```csharp
 Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
