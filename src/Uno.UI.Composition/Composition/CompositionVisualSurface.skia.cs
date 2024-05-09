@@ -16,16 +16,14 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
-		private DrawingSession? _drawingSession;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
 		void ISkiaSurface.UpdateSurface(bool recreateSurface)
 		{
 			SKCanvas? canvas = null;
-			if (_surface is null || _drawingSession is null || recreateSurface)
+			if (_surface is null || recreateSurface)
 			{
-				_drawingSession?.Dispose();
 				_surface?.Dispose();
 
 				Vector2 size = SourceSize switch
@@ -41,7 +39,6 @@ namespace Microsoft.UI.Composition
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				canvas = _surface.Canvas;
-				_drawingSession = new DrawingSession(_surface, canvas, DrawingFilters.Default, Matrix4x4.Identity);
 			}
 
 			canvas ??= _surface.Canvas;
@@ -50,45 +47,27 @@ namespace Microsoft.UI.Composition
 			{
 				canvas.Clear();
 
-				// similar logic to Visual.RenderRootVisual
-				var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
-				if (SourceVisual.Parent?.TotalMatrix is { } parentTotalMatrix)
-				{
-					Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
-					initialTransform = invertedParentTotalMatrix;
-				}
-
-				if (SourceOffset != default)
-				{
-					var translation = Matrix4x4.Identity with { M41 = -(SourceOffset.X), M42 = -(SourceOffset.Y) };
-					initialTransform = translation * initialTransform;
-				}
-
-				var totalOffset = SourceVisual.GetTotalOffset();
-				var translation2 = Matrix4x4.Identity with { M41 = -(totalOffset.X + SourceVisual.AnchorPoint.X), M42 = -(totalOffset.Y + SourceVisual.AnchorPoint.Y) };
-				initialTransform = translation2 * initialTransform;
-
-				bool? previousCompMode = Compositor.IsSoftwareRenderer;
+				var previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
-
-				SourceVisual.Draw(_drawingSession.Value with { RootTransform = initialTransform });
-
+				SourceVisual.RenderRootVisual(_surface, SourceOffset);
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}
 
-		void ISkiaSurface.UpdateSurface(in DrawingSession session)
+		void ISkiaSurface.UpdateSurface(in Visual.PaintingSession session)
 		{
 			if (SourceVisual is not null && session.Canvas is not null)
 			{
 				int save = session.Canvas.Save();
 				if (SourceOffset != default)
 				{
-					session.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
-					session.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Canvas.DeviceClipBounds.Width, session.Canvas.DeviceClipBounds.Height));
+					// clip to the left of and above the origin (in local coordinates).
+					// Note that this is applied before the SourceOffset translates the canvas' matrix, so
+					// when the translation happens, the drawing will be clipped by the SourceOffset.
+					session.Canvas.ClipRect(new SKRect(0, 0, int.MaxValue, int.MaxValue));
 				}
 
-				SourceVisual.Draw(in session);
+				SourceVisual.RenderRootVisual(session.Surface, SourceOffset);
 				session.Canvas.RestoreToCount(save);
 			}
 		}
@@ -97,7 +76,6 @@ namespace Microsoft.UI.Composition
 		{
 			base.Dispose();
 
-			_drawingSession?.Dispose();
 			_surface?.Dispose();
 		}
 

@@ -1,6 +1,8 @@
 ﻿#nullable enable
 //#define TRACE_COMPOSITION
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using SkiaSharp;
@@ -12,6 +14,8 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
+
 	private CompositionClip? _clip;
 	private RectangleClip? _cornerRadiusClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
@@ -20,7 +24,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 
 	/// <returns>true if wasn't dirty</returns>
-	internal virtual bool SetMatrixDirty() => _matrixDirty = true;
+	internal virtual bool SetMatrixDirty()
+	{
+		var matrixDirty = _matrixDirty;
+		_matrixDirty = true;
+		return !matrixDirty;
+	}
 
 	/// <summary>
 	/// This is the final transformation matrix from the origin to this Visual.
@@ -46,7 +55,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
 
 				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-				var totalOffset = this.GetTotalOffset();
+				var totalOffset = GetTotalOffset();
 				var offsetMatrix = new Matrix4x4(
 					1, 0, 0, 0,
 					0, 1, 0, 0,
@@ -120,8 +129,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Render a visual as if it's the root visual.
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
-	/// <param name="ignoreLocation">A boolean that indicates if the location of the root visual should be ignored (so it will be rendered at 0,0).</param>
-	internal void RenderRootVisual(SKSurface surface, bool ignoreLocation = false)
+	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
+	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -134,26 +143,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
 		// from this visual.
 		// It's important to set the default to canvas.TotalMatrix not SKMatrix.Identity in case there's
-		// an initial global transformation set (e.g. if the renderer sets scaling for dpi)
+		// an initial global transformation set (e.g. if the renderer sets scaling for dpi or we're rendering from a VisualSurface)
 		var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
 		if (Parent?.TotalMatrix is { } parentTotalMatrix)
 		{
 			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
-			initialTransform = invertedParentTotalMatrix;
+			initialTransform = invertedParentTotalMatrix * initialTransform;
 		}
 
-		if (ignoreLocation)
+		if (offsetOverride is { } offset)
 		{
 			canvas.Save();
-			var totalOffset = this.GetTotalOffset();
-			var translation = Matrix4x4.Identity with { M41 = -(totalOffset.X + AnchorPoint.X), M42 = -(totalOffset.Y + AnchorPoint.Y) };
+			var totalOffset = GetTotalOffset();
+			var translation = Matrix4x4.Identity with { M41 = -(offset.X + totalOffset.X + AnchorPoint.X), M42 = -(offset.Y + totalOffset.Y + AnchorPoint.Y) };
 			initialTransform = translation * initialTransform;
 		}
 
-		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default, initialTransform);
-		Render(in session);
+		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
+		{
+			Render(session);
+		}
 
-		if (ignoreLocation)
+		if (offsetOverride is { })
 		{
 			canvas.Restore();
 		}
@@ -163,7 +174,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	internal virtual void Render(in DrawingSession parentSession)
+	private void Render(in PaintingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -177,52 +188,74 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		using var session = BeginDrawing(in parentSession);
-		Draw(in session);
+		using (var session = CreateLocalSession(in parentSession))
+		{
+			Paint(session);
+
+			// The CornerRadiusClip doesn't affect the visual itself, only its children
+			CornerRadiusClip?.Apply(session.Canvas, this);
+
+			foreach (var child in GetChildrenInRenderOrder())
+			{
+				child.Render(in session);
+			}
+		}
 	}
 
 	/// <summary>
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
-	internal virtual void Draw(in DrawingSession session)
+	internal virtual void Paint(in PaintingSession session) { }
+
+	private Vector3 GetTotalOffset()
 	{
+		if (IsTranslationEnabled && Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
+		{
+			return Offset + translation;
+		}
+
+		return Offset;
 	}
 
-	private DrawingSession BeginDrawing(in DrawingSession parentSession)
-		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.RootTransform);
-
-	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 initialTransform)
+	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
+	private protected virtual void ApplyClipping(in SKCanvas canvas)
 	{
-		if (ShadowState is { } shadow)
-		{
-			canvas.SaveLayer(shadow.Paint);
-		}
-		else
-		{
-			canvas.Save();
-		}
+		// Apply the clipping defined on the element
+		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
+		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
+		Clip?.Apply(canvas, this);
+	}
 
-		if (initialTransform.IsIdentity)
+	private protected virtual IList<Visual> GetChildrenInRenderOrder() => Array.Empty<Visual>();
+	internal IList<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+
+	/// <summary>
+	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates,
+	/// clipping and opacity.
+	/// </summary>
+	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
+	{
+		var surface = parentSession.Surface;
+		var canvas = parentSession.Canvas;
+		var rootTransform = parentSession.RootTransform;
+		// We try to keep the filter ref as long as possible in order to share the same filter.OpacityColorFilter
+		var filters = Opacity is 1.0f
+			? parentSession.Filters
+			: parentSession.Filters with { Opacity = parentSession.Filters.Opacity * Opacity };
+
+		var session = _factory.CreateInstance(this, surface, canvas, filters, rootTransform);
+
+		if (rootTransform.IsIdentity)
 		{
 			canvas.SetMatrix(TotalMatrix.ToSKMatrix());
 		}
 		else
 		{
-			canvas.SetMatrix((TotalMatrix * initialTransform).ToSKMatrix());
+			canvas.SetMatrix((TotalMatrix * rootTransform).ToSKMatrix());
 		}
 
-		// Apply the clipping defined on the element
-		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
-		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		Clip?.Apply(canvas, this);
-
-		// CornerRadiusClip applies to the children only.
-		CornerRadiusClip?.Apply(canvas, this);
-
-		var session = new DrawingSession(surface, canvas, in filters, in initialTransform);
-
-		DrawingSession.PushOpacity(ref session, Opacity);
+		ApplyClipping(canvas);
 
 		return session;
 	}

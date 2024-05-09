@@ -39,13 +39,13 @@ namespace Microsoft.UI.Composition
 			UpdatePaint();
 		}
 
-		internal override void Draw(in DrawingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
-			base.Draw(in session);
+			base.Paint(in session);
 
 			if (Brush is IOnlineBrush onlineBrush && onlineBrush.IsOnline)
 			{
-				onlineBrush.Draw(session, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+				onlineBrush.Paint(session, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 				return;
 			}
 

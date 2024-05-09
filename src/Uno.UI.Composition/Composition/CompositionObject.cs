@@ -16,7 +16,6 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionObject : IDisposable
 	{
-		private readonly ContextStore _contextStore = new ContextStore();
 		private CompositionPropertySet? _properties;
 		private Dictionary<string, CompositionAnimation>? _animations;
 
@@ -156,16 +155,6 @@ namespace Microsoft.UI.Composition
 		internal virtual bool StartAnimationCore(string propertyName, CompositionAnimation animation)
 			=> false;
 #endif
-
-		internal void AddContext(CompositionObject context, string? propertyName)
-		{
-			_contextStore.AddContext(context, propertyName);
-		}
-
-		internal void RemoveContext(CompositionObject context, string? propertyName)
-		{
-			_contextStore.RemoveContext(context, propertyName);
-		}
 
 		private protected void SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
 		{
@@ -344,7 +333,7 @@ namespace Microsoft.UI.Composition
 		private protected void OnPropertyChanged(string? propertyName, bool isSubPropertyChange)
 		{
 			OnPropertyChangedCore(propertyName, isSubPropertyChange);
-			_contextStore.RaiseChanged();
+			PropagateChanged();
 		}
 
 		private protected virtual void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)

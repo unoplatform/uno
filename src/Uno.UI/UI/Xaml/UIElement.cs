@@ -581,6 +581,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+#if !__SKIA__
 		/// <summary>
 		/// Applies to the given matrix the transformation needed to convert from parent to local element coordinates space.
 		/// </summary>
@@ -588,20 +589,9 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ApplyLayoutTransform(ref Matrix3x2 matrix)
 		{
-			// This is equivalent to matrix * Matrix3x2.CreateTranslation(X, Y);
-#if __SKIA__
-			// On Skia, we want to consider Visual.Offset
-			// While arranging, it's equivalent to LayoutSlotWithMarginsAndAlignments PLUS UIElement.Translation.
-			// But also, if the user does ElementCompositionPreview.GetElementVisual(uiElement) and modifies
-			// the offset, we want to consider the user-modified value.
-			var totalOffset = Visual.GetTotalOffset();
-			matrix.M31 += (float)totalOffset.X;
-			matrix.M32 += (float)totalOffset.Y;
-#else
 			var layoutSlot = LayoutSlotWithMarginsAndAlignments;
 			matrix.M31 += (float)layoutSlot.X;
 			matrix.M32 += (float)layoutSlot.Y;
-#endif
 		}
 
 		/// <summary>
@@ -664,6 +654,7 @@ namespace Microsoft.UI.Xaml
 			}
 #endif
 		}
+#endif
 
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
