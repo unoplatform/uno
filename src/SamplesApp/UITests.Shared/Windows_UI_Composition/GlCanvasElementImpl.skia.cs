@@ -1,9 +1,21 @@
+// MIT License
+//
+// Copyright (c) 2019-2020 Ultz Limited
+// Copyright (c) 2021- .NET Foundation and Contributors
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// https://github.com/dotnet/Silk.NET/tree/c27224cce6b8136224c01d40de2d608879d709b5/examples/CSharp/OpenGL%20Tutorials
+
 using System;
 using System.Diagnostics;
 using System.Numerics;
 using Microsoft.UI.Xaml.Controls;
 using Size = Windows.Foundation.Size;
-
 using Silk.NET.OpenGL;
 
 namespace UITests.Shared.Windows_UI_Composition
@@ -22,7 +34,6 @@ namespace UITests.Shared.Windows_UI_Composition
 			-0.5f, 0.5f, 0.5f, 1.0f, 0.9f, 0.2f,
 			-0.5f, -0.5f, 0.5f, 0.7f, 0.3f, 0.8f,
 			0.5f, -0.5f, 0.5f, 0.5f, 0.3f, 1.0f,
-
 			// Back face       // colors
 			0.5f, 0.5f, -0.5f, 0.2f, 0.6f, 1.0f,
 			-0.5f, 0.5f, -0.5f, 0.6f, 1.0f, 0.4f,
@@ -30,7 +41,8 @@ namespace UITests.Shared.Windows_UI_Composition
 			0.5f, -0.5f, -0.5f, 0.4f, 0.8f, 0.8f,
 		};
 
-		private static readonly uint[] _triangleIndices = {
+		private static readonly uint[] _triangleIndices =
+		{
 			// Front
 			0, 1, 2,
 			2, 3, 0,
@@ -104,6 +116,7 @@ void main() {
 			_shader.Dispose();
 		}
 
+		// somewhat follows https://github.com/c2d7fa/opengl-cube
 		protected override void RenderOverride(GL Gl)
 		{
 			Gl.ClearColor(0.1f, 0.12f, 0.2f, 1);
@@ -121,7 +134,7 @@ void main() {
 				Perspective();
 
 			_shader.SetUniform("transform", transform);
-			Gl.DrawElements(PrimitiveType.Triangles, (uint) _triangleIndices.Length, DrawElementsType.UnsignedInt, null);
+			Gl.DrawElements(PrimitiveType.Triangles, (uint)_triangleIndices.Length, DrawElementsType.UnsignedInt, null);
 
 			static Matrix4x4 Perspective()
 			{
@@ -141,7 +154,7 @@ void main() {
 
 			Invalidate(); // continuous redrawing
 		}
-		
+
 		public class Shader : IDisposable
 		{
 			private readonly uint _handle;
@@ -191,7 +204,7 @@ void main() {
 				{
 					throw new Exception($"{name} uniform not found on shader.");
 				}
-				_gl.UniformMatrix4(location, 1, false, (float*) &value);
+				_gl.UniformMatrix4(location, 1, false, (float*)&value);
 			}
 
 			public void SetUniform(string name, float value)
@@ -239,7 +252,7 @@ void main() {
 				Bind();
 				fixed (void* d = data)
 				{
-					_gl.BufferData(bufferType, (nuint) (data.Length * sizeof(TDataType)), d, BufferUsageARB.StaticDraw);
+					_gl.BufferData(bufferType, (nuint)(data.Length * sizeof(TDataType)), d, BufferUsageARB.StaticDraw);
 				}
 			}
 
@@ -266,7 +279,7 @@ void main() {
 
 			public unsafe void VertexAttributePointer(uint index, int count, VertexAttribPointerType type, uint vertexSize, int offSet)
 			{
-				_gl.VertexAttribPointer(index, count, type, false, vertexSize * (uint) sizeof(TVertexType), (void*) (offSet * sizeof(TVertexType)));
+				_gl.VertexAttribPointer(index, count, type, false, vertexSize * (uint)sizeof(TVertexType), (void*)(offSet * sizeof(TVertexType)));
 				_gl.EnableVertexAttribArray(index);
 			}
 
