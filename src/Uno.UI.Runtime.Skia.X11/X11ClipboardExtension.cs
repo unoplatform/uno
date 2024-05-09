@@ -65,16 +65,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 {
 	private readonly ImmutableList<IntPtr> _supportedAtoms;
 
-	// TODO: fill these as we encounter new formats
-	// Order from most to least preferable as the first available format will be used.
-	public static readonly ImmutableList<string> ImageFormats = ImmutableList.Create(
-		"image/png",
-		"image/jpeg",
-		"image/bmp",
-		"image/tiff",
-		"image/avif",
-		"image/ico");
-
 	public static readonly ImmutableDictionary<string, Encoding> TextFormats = new Dictionary<string, Encoding>
 	{
 		{ "UTF8_STRING", Encoding.UTF8 },
@@ -578,15 +568,11 @@ internal class X11ClipboardExtension : IClipboardExtension
 			.ToList();
 
 		var clipboardAtom = X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD);
-		// Supported formats will use a StandardDataFormats string, so we filter them out here.
+		// Bmp will fail on Linux since skia isn't compiled with a Bmp codec by default. https://github.com/mono/SkiaSharp/issues/320#issuecomment-310805723
+		// So on X11, we only support image/png and image/jpeg for images.
 		foreach (var format in formats)
 		{
 			dataPackage.SetDataProvider(format.name, async ct => await Task.Run(() => WaitForBytes(_x11Window, format.atom, clipboardAtom), ct));
-		}
-
-		if (formats.FirstOrDefault(f => ImageFormats.Contains(f.name)) is var f1 && f1.atom != IntPtr.Zero)
-		{
-			dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromStream(new MemoryStream(WaitForBmp(_x11Window, f1.atom, clipboardAtom)).AsRandomAccessStream()));
 		}
 
 		if (formats.FirstOrDefault(f => TextFormats.ContainsKey(f.name)) is var f2 && f2.atom != IntPtr.Zero)
@@ -892,7 +878,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		return null;
 	}
 
-	private static byte[] WaitForBmp(X11Window x11Window, IntPtr format, IntPtr selection)
+	private static SKBitmap WaitForImage(X11Window x11Window, IntPtr format, IntPtr selection)
 	{
 		var bytes = WaitForBytes(x11Window, format, selection);
 
@@ -918,9 +904,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			return null;
 		}
 
-		// This will throw on Linux as of 2024/03/25. It seems that Skia by default don't come with bmp codecs.
-		// https://github.com/mono/SkiaSharp/issues/320#issuecomment-310805723
-		return bitmap.Encode(SKEncodedImageFormat.Bmp, 100).ToArray();
+		return bitmap;
 	}
 
 	private IntPtr GetTimestamp()
