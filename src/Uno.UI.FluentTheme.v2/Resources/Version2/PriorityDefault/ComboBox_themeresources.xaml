@@ -358,8 +358,6 @@
     </Style>
     <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBoxStyle}" />
     <Style x:Key="DefaultComboBoxStyle" TargetType="ComboBox">
-        <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
-        <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
         <Setter Property="Padding" Value="{ThemeResource ComboBoxPadding}" />
         <Setter Property="MaxDropDownHeight" Value="504" />
         <Setter Property="Foreground" Value="{ThemeResource ComboBoxForeground}" />

@@ -184,8 +184,6 @@
     <x:Double x:Key="TextBoxIconFontSize">12</x:Double>
     <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
     <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
-        <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
-        <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />

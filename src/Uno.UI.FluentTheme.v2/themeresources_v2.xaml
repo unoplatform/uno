@@ -9191,8 +9191,6 @@
   <x:Double x:Key="TextBoxIconFontSize">12</x:Double>
   <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
   <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
-    <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
-    <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
@@ -12401,8 +12399,6 @@
   </Style>
   <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBoxStyle}" />
   <Style x:Key="DefaultComboBoxStyle" TargetType="ComboBox">
-    <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
-    <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Padding" Value="{ThemeResource ComboBoxPadding}" />
     <Setter Property="MaxDropDownHeight" Value="504" />
     <Setter Property="Foreground" Value="{ThemeResource ComboBoxForeground}" />
@@ -21774,9 +21770,7 @@
   <Style x:Key="DefaultSliderStyle" TargetType="Slider">
     <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
     <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush #6457 -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}" />
     <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -21796,67 +21790,71 @@
                 <Setter Property="Template">
                   <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                      <!-- Uno specific: WinUI uses Margin -2 here, which causes clipping for us. #16484 -->
-                      <!-- Uno specific (LinearGradientBrush borders): Use solid border brush #6457 -->
-                      <Border Margin="0" Background="{ThemeResource SliderOuterThumbBackground}" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
-                        <Ellipse x:Name="SliderInnerThumb" RenderTransformOrigin="0.5, 0.5" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderInnerThumbWidth}" Height="{ThemeResource SliderInnerThumbHeight}">
-                          <Ellipse.RenderTransform>
-                            <CompositeTransform />
-                          </Ellipse.RenderTransform>
-                        </Ellipse>
-                        <VisualStateManager.VisualStateGroups>
-                          <VisualStateGroup x:Name="CommonStates">
-                            <VisualState x:Name="Normal">
-                              <Storyboard>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                                  <!-- 0.86 is relative scale from 14px to 12px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.86" />
-                                </DoubleAnimationUsingKeyFrames>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                                  <!-- 0.86 is relative scale from 14px to 12px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.86" />
-                                </DoubleAnimationUsingKeyFrames>
-                              </Storyboard>
-                            </VisualState>
-                            <VisualState x:Name="PointerOver">
-                              <Storyboard>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                                  <!-- 1.167 is relative scale from 12px to 14px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
-                                </DoubleAnimationUsingKeyFrames>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                                  <!-- 1.167 is relative scale from 12px to 14px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
-                                </DoubleAnimationUsingKeyFrames>
-                              </Storyboard>
-                            </VisualState>
-                            <VisualState x:Name="Pressed">
-                              <Storyboard>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                                  <!-- 0.71 is relative scale from 14px to 10px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.71" />
-                                </DoubleAnimationUsingKeyFrames>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                                  <!-- 0.71 is relative scale from 14px to 10px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.71" />
-                                </DoubleAnimationUsingKeyFrames>
-                              </Storyboard>
-                            </VisualState>
-                            <VisualState x:Name="Disabled">
-                              <Storyboard>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                                  <!-- 1.167 is relative scale from 12px to 14px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
-                                </DoubleAnimationUsingKeyFrames>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                                  <!-- 1.167 is relative scale from 12px to 14px -->
-                                  <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
-                                </DoubleAnimationUsingKeyFrames>
-                              </Storyboard>
-                            </VisualState>
-                          </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                      </Border>
+                      <!-- Uno specific (LinearGradientBrush borders): We need additional Grid here #6457 -->
+                      <Grid>
+                        <!-- Uno specific: WinUI uses Margin -2 here, which causes clipping for us. #16484 -->
+                        <Border x:Name="ThumbBorder" Margin="0" Background="{ThemeResource SliderOuterThumbBackground}" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
+                          <Ellipse x:Name="SliderInnerThumb" RenderTransformOrigin="0.5, 0.5" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderInnerThumbWidth}" Height="{ThemeResource SliderInnerThumbHeight}">
+                            <Ellipse.RenderTransform>
+                              <CompositeTransform />
+                            </Ellipse.RenderTransform>
+                          </Ellipse>
+                          <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                              <VisualState x:Name="Normal">
+                                <Storyboard>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                    <!-- 0.86 is relative scale from 14px to 12px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.86" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                    <!-- 0.86 is relative scale from 14px to 12px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.86" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                              </VisualState>
+                              <VisualState x:Name="PointerOver">
+                                <Storyboard>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                              </VisualState>
+                              <VisualState x:Name="Pressed">
+                                <Storyboard>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                    <!-- 0.71 is relative scale from 14px to 10px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.71" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                    <!-- 0.71 is relative scale from 14px to 10px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlNormalAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="0.71" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                              </VisualState>
+                              <VisualState x:Name="Disabled">
+                                <Storyboard>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                  <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SliderInnerThumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                                    <!-- 1.167 is relative scale from 12px to 14px -->
+                                    <SplineDoubleKeyFrame KeyTime="{StaticResource ControlFastAnimationDuration}" KeySpline="{StaticResource ControlFastOutSlowInKeySpline}" Value="1.167" />
+                                  </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                              </VisualState>
+                            </VisualStateGroup>
+                          </VisualStateManager.VisualStateGroups>
+                        </Border>
+                        <!-- Uno specific (LinearGradientBrush borders): #6457 -->
+                        <uc:FauxGradientBorderPresenter RequestedBorderBrush="{Binding ElementName=ThumbBorder, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=ThumbBorder, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=ThumbBorder, Path=CornerRadius}" />
+                      </Grid>
                     </ControlTemplate>
                   </Setter.Value>
                 </Setter>
