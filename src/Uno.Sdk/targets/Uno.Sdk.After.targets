@@ -38,7 +38,8 @@
 				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
 			)
 			AND '$(TargetFrameworks)' != ''
-			AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'">
+			AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'
+			AND $(TargetFrameworks.Contains($(_UnoSelectedTargetFramework)))">
 
 		<_UnoTargetFrameworksFiltered>
 			$(TargetFrameworks
