@@ -177,7 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
-		// [DataRow(typeof(MediaPlayerElement), 15)] // Commented out temporarily.
+		[DataRow(typeof(MediaPlayerElement), 15)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
 		{
 			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
