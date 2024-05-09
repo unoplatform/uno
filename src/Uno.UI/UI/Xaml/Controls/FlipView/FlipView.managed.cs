@@ -120,18 +120,29 @@ namespace Microsoft.UI.Xaml.Controls
 			m_itemsAreSized = false;
 		}
 
-		private protected override void OnLoaded()
+		internal override void Enter(EnterParams @params, int depth)
 		{
-			base.OnLoaded();
+			base.Enter(@params, depth);
 
 			HookTemplate();
 		}
 
-		private protected override void OnUnloaded()
+		internal override void Leave(LeaveParams @params)
 		{
-			base.OnUnloaded();
+			base.Leave(@params);
 
 			UnhookTemplate();
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			var oldSV = m_tpScrollViewer;
+			base.OnApplyTemplate();
+
+			// Uno docs: Due to differences in Uno's FlipView and WinUI's FlipView (i.e, when the ScrollViewer is
+			// initialized - related to OnItemsHostAvailable which is missing in Uno), the base OnApplyTemplate can
+			// mess up with m_tpScrollViewer. So, we bring it back.
+			m_tpScrollViewer ??= oldSV;
 		}
 
 		private void HookTemplate()
@@ -438,7 +449,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void InitializeScrollViewer()
 		{
-			if (m_tpScrollViewer == null)
+			// Uno-specific: The way we call InitializeScrollViewer is different from WinUI.
+			// In WinUI, this is called in OnItemsHostAvailable, which isn't available in Uno.
+			// In Uno, we call this in HookTemplate, which is called in Enter.
+			// If the FlipView enters the visual tree, then leaves it, then enters again, what will happen is:
+			// 1) The first Enter will set the m_tpScrollViewer and subscribe to SizeChanged and ViewChanged.
+			// 2) The leave will UnhookTemplate which will unsubscribe from SizeChanged and ViewChanged.
+			// 3) The second Enter will call InitializeScrollViewer again, but this time m_tpScrollViewer is not null.
+			// 4) This means we won't subscribe to SizeChanged and ViewChanged again if we have the following null check.
+			//if (m_tpScrollViewer == null)
 			{
 				ScrollViewer spScrollViewer;
 

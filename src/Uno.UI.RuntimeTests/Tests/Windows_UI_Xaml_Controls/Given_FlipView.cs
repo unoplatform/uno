@@ -60,6 +60,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Given_Infinite_Width()
+		{
+			var stackPanel = new StackPanel()
+			{
+				Children =
+				{
+					new FlipView()
+					{
+						Height = 100,
+						Items =
+						{
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Red),
+							},
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Green),
+							},
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Blue),
+							},
+						}
+					}
+				},
+			};
+
+			await UITestHelper.Load(stackPanel);
+			var bitmap = await UITestHelper.ScreenShot(stackPanel);
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Red);
+			Assert.AreEqual(redBounds.Width, bitmap.Width - 1);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new(default, new(bitmap.Width, bitmap.Height)), Microsoft.UI.Colors.Green);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new(default, new(bitmap.Width, bitmap.Height)), Microsoft.UI.Colors.Blue);
+		}
+
+		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #elif __IOS__
