@@ -1,6 +1,9 @@
 <Project>
 
 	<PropertyGroup>
+		<!-- We do this to make sure that we include Resizetizer by default. Libraries using Uno.Sdk should have this set to true -->
+		<IsPackable Condition=" '$(IsPackable)' == '' ">$([MSBuild]::ValueOrDefault('$(GeneratePackageOnBuild)', 'false'))</IsPackable>
+
 		<_IsUnoSingleProjectAndLegacy>false</_IsUnoSingleProjectAndLegacy>
 		<_IsUnoSingleProjectAndLegacy Condition=" $(SingleProject) == 'true' OR $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProjectAndLegacy>
 
