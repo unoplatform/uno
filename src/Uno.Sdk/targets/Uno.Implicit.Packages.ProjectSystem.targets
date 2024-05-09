@@ -6,17 +6,28 @@
 	-->
 	<ItemGroup>
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(_ImplicitRestoreOutputType) == 'Exe'">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsPackable) != 'true'">
-		<_UnoProjectSystemPackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Extensions.Logging.Console" ProjectSystem="true" />
-	</ItemGroup>
+	<Choose>
+		<When Condition="$(UnoSingleProject) == 'true'">
+			<ItemGroup Condition="$(IsUnoHead) == 'true'">
+				<_UnoProjectSystemPackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" ProjectSystem="true" />
+				<_UnoProjectSystemPackageReference Include="Microsoft.Extensions.Logging.Console" ProjectSystem="true" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup Condition="$(IsPackable) != 'true'">
+				<_UnoProjectSystemPackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" ProjectSystem="true" />
+				<_UnoProjectSystemPackageReference Include="Microsoft.Extensions.Logging.Console" ProjectSystem="true" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Maps;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Maps" ProjectSystem="true" />
