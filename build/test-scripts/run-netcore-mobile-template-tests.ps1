@@ -207,6 +207,11 @@ $projects =
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-maccatalyst"), $true),
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-desktop"), $true),
 
+     #
+    # 5.2 Uno NuGet Lib
+    #
+    @("5.2/uno52Lib/uno52Lib.csproj", @(), $true, $true),
+
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     # Disabled until agent supports net8 in msbuild
     # @("5.2/uno52Lib/uno52Lib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false)
