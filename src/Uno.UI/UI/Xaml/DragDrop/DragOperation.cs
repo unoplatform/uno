@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml
 			if (!isOver)
 			{
 				await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
-				// No Task.Yield here. This is similar to what happens on WinUI.
+				// No waiting for Idle here. This is similar to what happens on WinUI.
 			}
 			var acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
 
@@ -212,7 +212,8 @@ namespace Microsoft.UI.Xaml
 #endif
 				{
 					await _target.OverAsync(Info, _viewOverride).AsTask(ct);
-					await Task.Yield(); // give a chance for layout updates, etc. This is similar to what happens on WinUI.
+					// give a chance for layout updates, etc. This is similar to what happens on WinUI.
+					await NativeDispatcher.Main.EnqueueAsync(() => { }, NativeDispatcherPriority.Idle);
 				}
 				result = await _target.DropAsync(Info).AsTask(ct);
 				result &= Info.AllowedOperations;
