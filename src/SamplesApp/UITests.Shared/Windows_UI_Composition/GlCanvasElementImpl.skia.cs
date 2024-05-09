@@ -1,5 +1,6 @@
 using System;
-using System.Drawing;
+using System.Diagnostics;
+using System.Numerics;
 using Microsoft.UI.Xaml.Controls;
 using Size = Windows.Foundation.Size;
 
@@ -7,104 +8,270 @@ using Silk.NET.OpenGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	public class GlCanvasElementImpl() : GLCanvasElement(new Size(800, 600))
+	public class GlCanvasElementImpl() : GLCanvasElement(new Size(1200, 800))
 	{
-		private int _counter;
-		private uint _vao;
-		private uint _vbo;
-		private uint _program;
+		private static BufferObject<float> _vbo;
+		private static BufferObject<uint> _ebo;
+		private static VertexArrayObject<float, uint> _vao;
+		private static Shader _shader;
 
-		unsafe protected override void Init(GL gl)
+		private static readonly float[] _vertices =
 		{
-			_vao = gl.GenVertexArray();
-	        gl.BindVertexArray(_vao);
+			// Front face     // colors
+			0.5f, 0.5f, 0.5f, 1.0f, 0.4f, 0.6f,
+			-0.5f, 0.5f, 0.5f, 1.0f, 0.9f, 0.2f,
+			-0.5f, -0.5f, 0.5f, 0.7f, 0.3f, 0.8f,
+			0.5f, -0.5f, 0.5f, 0.5f, 0.3f, 1.0f,
 
-			float[] vertices =
+			// Back face       // colors
+			0.5f, 0.5f, -0.5f, 0.2f, 0.6f, 1.0f,
+			-0.5f, 0.5f, -0.5f, 0.6f, 1.0f, 0.4f,
+			-0.5f, -0.5f, -0.5f, 0.6f, 0.8f, 0.8f,
+			0.5f, -0.5f, -0.5f, 0.4f, 0.8f, 0.8f,
+		};
+
+		private static readonly uint[] _triangleIndices = {
+			// Front
+			0, 1, 2,
+			2, 3, 0,
+			// Right
+			0, 3, 7,
+			7, 4, 0,
+			// Bottom
+			2, 6, 7,
+			7, 3, 2,
+			// Left
+			1, 5, 6,
+			6, 2, 1,
+			// Back
+			4, 7, 6,
+			6, 5, 4,
+			// Top
+			5, 1, 0,
+			0, 4, 5,
+		};
+
+		private const string vertexShaderSource = @"
+#version 450
+
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 vertex_color;
+
+uniform mat4 transform;
+
+out vec3 color;
+
+void main() {
+  mat4 M = mat4(
+    vec4(2.000000, 0.000000, 0.000000, 0.000000),
+    vec4(0.000000, 1.782013, -0.680986, -0.453991),
+    vec4(0.000000, -0.907981, -1.336510, -0.891007),
+    vec4(0.000000, 0.000000, 2.000000, 3.000000)
+  );
+
+  gl_Position = transform * vec4(pos, 1.0);
+  color = vertex_color;
+}";
+
+		private const string fragmentShaderSource = @"
+#version 450
+
+in vec3 color;
+
+out vec4 frag_color;
+
+void main() {
+  frag_color = vec4(color, 1.0);
+}";
+
+		protected override void Init(GL Gl)
+		{
+			_ebo = new BufferObject<uint>(Gl, _triangleIndices, BufferTargetARB.ElementArrayBuffer);
+			_vbo = new BufferObject<float>(Gl, _vertices, BufferTargetARB.ArrayBuffer);
+			_vao = new VertexArrayObject<float, uint>(Gl, _vbo, _ebo);
+
+			_vao.VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 6, 0);
+			_vao.VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 6, 3);
+
+			_shader = new Shader(Gl, vertexShaderSource, fragmentShaderSource);
+		}
+
+		protected override void OnDestroy(GL Gl)
+		{
+			_vbo.Dispose();
+			_ebo.Dispose();
+			_vao.Dispose();
+			_shader.Dispose();
+		}
+
+		protected override void RenderOverride(GL Gl)
+		{
+			Gl.ClearColor(0.1f, 0.12f, 0.2f, 1);
+			Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+			// Gl.Enable(EnableCap.DepthTest);
+			_vao.Bind();
+			_shader.Use();
+
+			const double duration = 4;
+			var transform =
+				Matrix4x4.CreateRotationY((float)(2 * Math.PI * (float)(Stopwatch.GetTimestamp() * 1.0 / 1000000000 / duration % 1))) *
+				Matrix4x4.CreateRotationX((float)(0.15 * Math.PI)) *
+				Matrix4x4.CreateTranslation(0, 0, -3) *
+				Perspective();
+
+			_shader.SetUniform("transform", transform);
+			Gl.DrawElements(PrimitiveType.Triangles, (uint) _triangleIndices.Length, DrawElementsType.UnsignedInt, null);
+
+			static Matrix4x4 Perspective()
 			{
-				0.5f, -0.5f, 0.0f,  // bottom right
-				-0.5f, -0.5f, 0.0f,  // bottom left
-				0.0f,  0.5f, 0.0f   // top
-			};
+				const float
+					r = 0.5f, // Half of the viewport width (at the near plane)
+					t = 0.5f, // Half of the viewport height (at the near plane)
+					n = 1, // Distance to near clipping plane
+					f = 5; // Distance to far clipping plane
 
-	        _vbo = gl.GenBuffer();
-	        gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
-	        gl.BufferData(BufferTargetARB.ArrayBuffer, new ReadOnlySpan<float>(vertices), BufferUsageARB.StaticDraw);
-
-			gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 3 * sizeof(float), (void*)0);
-			gl.EnableVertexAttribArray(0);
-
-		    const string vertexCode = @"
-#version 330 core
-
-layout (location = 0) in vec3 aPosition;
-out vec4 vertexColor;
-
-void main()
-{
-    gl_Position = vec4(aPosition, 1.0);
-	vertexColor = vec4(aPosition.x + 0.5, aPosition.y + 0.5, aPosition.z + 0.5, 1.0);
-}";
-
-	        const string fragmentCode = @"
-#version 330 core
-
-out vec4 out_color;
-in vec4 vertexColor;
-
-void main()
-{
-	out_color = vertexColor;
-}";
-
-	        uint vertexShader = gl.CreateShader(ShaderType.VertexShader);
-	        gl.ShaderSource(vertexShader, vertexCode);
-	        gl.CompileShader(vertexShader);
-
-	        gl.GetShader(vertexShader, ShaderParameterName.CompileStatus, out int vStatus);
-	        if (vStatus != (int) GLEnum.True)
-	            throw new Exception("Vertex shader failed to compile: " + gl.GetShaderInfoLog(vertexShader));
-
-	        uint fragmentShader = gl.CreateShader(ShaderType.FragmentShader);
-	        gl.ShaderSource(fragmentShader, fragmentCode);
-	        gl.CompileShader(fragmentShader);
-
-	        gl.GetShader(fragmentShader, ShaderParameterName.CompileStatus, out int fStatus);
-	        if (fStatus != (int) GLEnum.True)
-	            throw new Exception("Fragment shader failed to compile: " + gl.GetShaderInfoLog(fragmentShader));
-
-	        _program = gl.CreateProgram();
-	        gl.AttachShader(_program, vertexShader);
-	        gl.AttachShader(_program, fragmentShader);
-	        gl.LinkProgram(_program);
-
-	        gl.GetProgram(_program, ProgramPropertyARB.LinkStatus, out int lStatus);
-	        if (lStatus != (int) GLEnum.True)
-	            throw new Exception("Program failed to link: " + gl.GetProgramInfoLog(_program));
-
-	        gl.DetachShader(_program, vertexShader);
-	        gl.DetachShader(_program, fragmentShader);
-	        gl.DeleteShader(vertexShader);
-	        gl.DeleteShader(fragmentShader);
-		}
-
-		protected override void OnDestroy(GL gl)
-		{
-			gl.DeleteVertexArray(_vao);
-			gl.DeleteBuffer(_vbo);
-			gl.DeleteProgram(_program);
-		}
-
-		protected override void RenderOverride(GL gl)
-		{
-			gl.ClearColor(Color.FromArgb(_counter++ % 255, 0, 0));
-			gl.Clear(ClearBufferMask.ColorBufferBit);
-
-			gl.UseProgram(_program);
-
-			gl.BindVertexArray(_vao);
-			gl.DrawArrays(PrimitiveType.Triangles, 0, 3);
+				return new Matrix4x4(
+					n / r, 0, 0, 0,
+					0, n / t, 0, 0,
+					0, 0, (-f - n) / (f - n), -1,
+					0, 0, (2 * f * n) / (n - f), 0
+				);
+			}
 
 			Invalidate(); // continuous redrawing
+		}
+		
+		public class Shader : IDisposable
+		{
+			private readonly uint _handle;
+			private readonly GL _gl;
+
+			public Shader(GL gl, string vertexShaderSource, string fragmentShaderSource)
+			{
+				_gl = gl;
+
+				uint vertex = LoadShader(ShaderType.VertexShader, vertexShaderSource);
+				uint fragment = LoadShader(ShaderType.FragmentShader, fragmentShaderSource);
+				_handle = _gl.CreateProgram();
+				_gl.AttachShader(_handle, vertex);
+				_gl.AttachShader(_handle, fragment);
+				_gl.LinkProgram(_handle);
+				_gl.GetProgram(_handle, GLEnum.LinkStatus, out var status);
+				if (status == 0)
+				{
+					throw new Exception($"Program failed to link with error: {_gl.GetProgramInfoLog(_handle)}");
+				}
+				_gl.DetachShader(_handle, vertex);
+				_gl.DetachShader(_handle, fragment);
+				_gl.DeleteShader(vertex);
+				_gl.DeleteShader(fragment);
+			}
+
+			public void Use()
+			{
+				_gl.UseProgram(_handle);
+			}
+
+			public void SetUniform(string name, int value)
+			{
+				int location = _gl.GetUniformLocation(_handle, name);
+				if (location == -1)
+				{
+					throw new Exception($"{name} uniform not found on shader.");
+				}
+				_gl.Uniform1(location, value);
+			}
+
+			public unsafe void SetUniform(string name, Matrix4x4 value)
+			{
+				//A new overload has been created for setting a uniform so we can use the transform in our shader.
+				int location = _gl.GetUniformLocation(_handle, name);
+				if (location == -1)
+				{
+					throw new Exception($"{name} uniform not found on shader.");
+				}
+				_gl.UniformMatrix4(location, 1, false, (float*) &value);
+			}
+
+			public void SetUniform(string name, float value)
+			{
+				int location = _gl.GetUniformLocation(_handle, name);
+				if (location == -1)
+				{
+					throw new Exception($"{name} uniform not found on shader.");
+				}
+				_gl.Uniform1(location, value);
+			}
+
+			public void Dispose()
+			{
+				_gl.DeleteProgram(_handle);
+			}
+
+			private uint LoadShader(ShaderType type, string src)
+			{
+				uint handle = _gl.CreateShader(type);
+				_gl.ShaderSource(handle, src);
+				_gl.CompileShader(handle);
+				string infoLog = _gl.GetShaderInfoLog(handle);
+				if (!string.IsNullOrWhiteSpace(infoLog))
+				{
+					throw new Exception($"Error compiling shader of type {type}, failed with error {infoLog}");
+				}
+
+				return handle;
+			}
+		}
+
+		public class BufferObject<TDataType> : IDisposable where TDataType : unmanaged
+		{
+			private readonly uint _handle;
+			private readonly BufferTargetARB _bufferType;
+			private readonly GL _gl;
+
+			public unsafe BufferObject(GL gl, Span<TDataType> data, BufferTargetARB bufferType)
+			{
+				_gl = gl;
+				_bufferType = bufferType;
+
+				_handle = _gl.GenBuffer();
+				Bind();
+				fixed (void* d = data)
+				{
+					_gl.BufferData(bufferType, (nuint) (data.Length * sizeof(TDataType)), d, BufferUsageARB.StaticDraw);
+				}
+			}
+
+			public void Bind() => _gl.BindBuffer(_bufferType, _handle);
+			public void Dispose() => _gl.DeleteBuffer(_handle);
+		}
+
+		public class VertexArrayObject<TVertexType, TIndexType> : IDisposable
+			where TVertexType : unmanaged
+			where TIndexType : unmanaged
+		{
+			private readonly uint _handle;
+			private readonly GL _gl;
+
+			public VertexArrayObject(GL gl, BufferObject<TVertexType> vbo, BufferObject<TIndexType> ebo)
+			{
+				_gl = gl;
+
+				_handle = _gl.GenVertexArray();
+				Bind();
+				vbo.Bind();
+				ebo.Bind();
+			}
+
+			public unsafe void VertexAttributePointer(uint index, int count, VertexAttribPointerType type, uint vertexSize, int offSet)
+			{
+				_gl.VertexAttribPointer(index, count, type, false, vertexSize * (uint) sizeof(TVertexType), (void*) (offSet * sizeof(TVertexType)));
+				_gl.EnableVertexAttribArray(index);
+			}
+
+			public void Bind() => _gl.BindVertexArray(_handle);
+			public void Dispose() => _gl.DeleteVertexArray(_handle);
 		}
 	}
 }
