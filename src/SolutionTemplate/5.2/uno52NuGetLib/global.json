@@ -1,0 +1,5 @@
+{
+  "msbuild-sdks": {
+    "Uno.Sdk": "5.2.0-dev.2002"
+  }
+}

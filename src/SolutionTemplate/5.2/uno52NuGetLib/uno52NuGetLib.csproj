@@ -9,10 +9,10 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<UnoSingleProject>true</UnoSingleProject>
-		<OutputType>Library</OutputType>
 		<UnoSdkDebugging>true</UnoSdkDebugging>
+		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
@@ -31,7 +31,7 @@
 	</ItemGroup>
 	<Target Name="ValidateIsPackable"
 			AfterTargets="CoreCompile;Build">
-		<Error Text="Expected IsPackable='false', however it actually equals '$(IsPackable)'."
-		Condition="$(IsPackable) == 'true'" />
+		<Error Text="Expected IsPackable='true', however it actually equals '$(IsPackable)'."
+			Condition="$(IsPackable) != 'true'" />
 	</Target>
 </Project>
