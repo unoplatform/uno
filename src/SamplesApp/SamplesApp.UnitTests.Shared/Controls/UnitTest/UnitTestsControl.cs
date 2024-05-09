@@ -987,11 +987,11 @@ namespace Uno.UI.Samples.Tests
 
 			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)
 			{
-				void Run()
+				async Task Run()
 				{
 					try
 					{
-						testClassInfo.Cleanup?.Invoke(instance, Array.Empty<object>());
+						await WaitResult(testClassInfo.Cleanup?.Invoke(instance, Array.Empty<object>()), "cleanup");
 					}
 					catch (Exception e)
 					{
@@ -1002,13 +1002,57 @@ namespace Uno.UI.Samples.Tests
 
 				if (runsOnUIThread)
 				{
-					await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Run);
+					await ExecuteOnDispatcher(Run, CancellationToken.None); // No CT for cleanup!
 				}
 				else
 				{
-					Run();
+					await Run();
 				}
 			}
+
+			async ValueTask WaitResult(object returnValue, string step)
+			{
+				if (returnValue is Task asyncResult)
+				{
+					var timeoutTask = Task.Delay(DefaultUnitTestTimeout, ct);
+					var resultingTask = await Task.WhenAny(asyncResult, timeoutTask);
+
+					if (resultingTask == timeoutTask)
+					{
+						throw new TimeoutException($"Test {step} timed out after {DefaultUnitTestTimeout}");
+					}
+
+					// Rethrow exception if failed OR task cancelled if task **internally** raised
+					// a TaskCancelledException (we don't provide any cancellation token).
+					await resultingTask;
+				}
+			}
+		}
+
+		private async ValueTask ExecuteOnDispatcher(Func<Task> asyncAction, CancellationToken ct = default)
+		{
+			var tcs = new TaskCompletionSource<object>();
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(async () =>
+			{
+				try
+				{
+					if (ct.IsCancellationRequested)
+					{
+						tcs.TrySetCanceled();
+					}
+
+					using var ctReg = ct.Register(() => tcs.TrySetCanceled());
+					await asyncAction();
+
+					tcs.TrySetResult(default);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
+			});
+
+			await tcs.Task;
 		}
 
 		private static object[] ExpandArgumentsWithDefaultValues(object[] methodArguments, ParameterInfo[] methodParameters)
