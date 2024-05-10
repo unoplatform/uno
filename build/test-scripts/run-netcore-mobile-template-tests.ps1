@@ -110,8 +110,7 @@ if ($IsWindows)
 
     # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
     # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-    # Note that the dashdash% is present to avoid pwsh to interpret the `;` in the parameter
-    & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" --% "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041"
+    & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041"
     Assert-ExitCodeIsZero
 }
 
