@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HtmlElementAttributeTests
 {
 	[TestClass]
-	class Given_HtmlElementAttribute
+	public class Given_HtmlElementAttribute
 	{
 		[TestMethod]
 		public void Given_TagOverride()
