@@ -88,7 +88,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 
-		if (propertyName is not nameof(BorderShapeAndBackgroundState) && propertyName is not nameof(Size))
+		if (propertyName is not nameof(BorderShapeAndBackgroundState) and not nameof(Size))
 		{
 			return;
 		}

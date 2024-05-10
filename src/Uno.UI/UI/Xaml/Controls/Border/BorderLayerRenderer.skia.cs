@@ -82,10 +82,9 @@ partial class BorderLayerRenderer
 
 		// Border shape (if any)
 		_borderShapeBrushDisposable.Disposable = null;
-		if (borderThickness != Thickness.Empty)
+		if (borderThickness != Thickness.Empty && state.BorderBrush is { } borderBrush)
 		{
 			var borderShape = visual.BorderShape;
-			var borderBrush = state.BorderBrush;
 			// Border brush
 			_borderShapeBrushDisposable.Disposable = Brush.AssignAndObserveBrush(borderBrush, compositor, brush => borderShape.FillBrush = brush);
 		}

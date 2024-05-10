@@ -184,9 +184,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			// Rendering shouldn't depend on matrix or clip adjustments having in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
-			var count = canvas.Save();
+#if DEBUG
+			var saveCount = canvas.SaveCount;
+#endif
 			Paint(session);
-			canvas.RestoreToCount(count);
+#if DEBUG
+			Debug.Assert(saveCount == canvas.SaveCount);
+#endif
 
 			ApplyPostPaintingClipping(canvas);
 
