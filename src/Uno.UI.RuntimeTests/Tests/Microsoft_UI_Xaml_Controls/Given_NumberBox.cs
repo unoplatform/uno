@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-internal class Given_NumberBox
+public class Given_NumberBox
 {
 	[TestMethod]
 	public async Task When_Fluent_And_Theme_Changed()
