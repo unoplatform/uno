@@ -59,10 +59,9 @@ partial class BorderLayerRenderer
 			throw new InvalidOperationException($"{nameof(BorderLayerRenderer)} should only be used with UIElements that use a {nameof(BorderVisual)}.");
 		}
 
-		visual.BorderShapeAndBackgroundState = new BorderVisual.BorderStateWrapper(
-			state.CornerRadius.ToUnoCompositionCornerRadius(),
-			state.BorderThickness.ToUnoCompositionThickness(),
-			state.BackgroundSizing == BackgroundSizing.InnerBorderEdge);
+		visual.CornerRadius = state.CornerRadius.ToUnoCompositionCornerRadius();
+		visual.BorderThickness = state.BorderThickness.ToUnoCompositionThickness();
+		visual.UseInnerBorderBoundsAsAreaForBackground = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge;
 
 		var borderThickness = state.BorderThickness;
 		if (_owner.GetUseLayoutRounding())

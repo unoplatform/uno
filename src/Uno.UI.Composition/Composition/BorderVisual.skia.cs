@@ -12,21 +12,34 @@ namespace Microsoft.UI.Composition;
 /// </summary>
 internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 {
-	// we use this instead of 3 separate properties so that we don't have do the calculations in OnPropertyChangedCore
-	// repeatedly if more than one of properties is changed (i.e. during the initial load).
-	internal readonly record struct BorderStateWrapper(CornerRadius CornerRadius, Thickness Thickness, bool UseInnerBorderBoundsAsAreaForBackground);
-
-	private BorderStateWrapper _borderShapeAndBackgroundState;
+	// state received from BorderLayerRenderer
+	private bool _borderStateValid;
+	private CornerRadius _cornerRadius;
+	private Thickness _borderThickness;
+	private bool _useInnerBorderBoundsAsAreaForBackground;
+	// State set and used inside the class
 	private CompositionSpriteShape? _backgroundShape;
 	private CompositionSpriteShape? _borderShape;
-	// Note how we don't need to get notified when these properties change since they only get set in OnPropertyChangedCore.
 	private CompositionClip? _backgroundClip;
+	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
-	public BorderStateWrapper BorderShapeAndBackgroundState
+	public CornerRadius CornerRadius
 	{
-		private get => _borderShapeAndBackgroundState;
-		set => SetObjectProperty(ref _borderShapeAndBackgroundState, value);
+		private get => _cornerRadius;
+		set => SetObjectProperty(ref _cornerRadius, value);
+	}
+
+	public Thickness BorderThickness
+	{
+		private get => _borderThickness;
+		set => SetObjectProperty(ref _borderThickness, value);
+	}
+
+	public bool UseInnerBorderBoundsAsAreaForBackground
+	{
+		private get => _useInnerBorderBoundsAsAreaForBackground;
+		set => SetProperty(ref _useInnerBorderBoundsAsAreaForBackground, value);
 	}
 
 	// BackgroundShape and BorderShape are NOT added to this.Shapes, which both makes it easier
@@ -68,6 +81,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 	internal override void Paint(in PaintingSession session)
 	{
+		UpdateBorderBackgroundShapes();
 		if (_backgroundShape is { } backgroundShape)
 		{
 			session.Canvas.Save();
@@ -88,27 +102,34 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 
-		if (propertyName is not nameof(BorderShapeAndBackgroundState) and not nameof(Size))
+		if (propertyName is nameof(CornerRadius) or nameof(BorderThickness) or nameof(UseInnerBorderBoundsAsAreaForBackground) or nameof(Size))
+		{
+			_borderStateValid = false;
+		}
+	}
+
+	private void UpdateBorderBackgroundShapes()
+	{
+		if (_borderStateValid)
 		{
 			return;
 		}
+		_borderStateValid = false;
 
-		// Note: To reduce allocations, we don't start with a fresh BorderShape and BackgroundShape, but
-		// we modify their properties. This means that the properties might be outdated and we need to set
-		// all relevant properties every time. Any state being set conditionally needs to be accompanied
-		// by an else branch that resets the state to its default value (see CornerRadiusClip below).
-
-		var (cornerRadius, borderThickness, useInnerBorderBoundsAsAreaForBackground) = BorderShapeAndBackgroundState;
+		// clear old state
+		_childClipCausedByCornerRadius = null;
+		((_borderShape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as SkiaGeometrySource2D)?.Geometry.Reset();
+		((_backgroundShape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as SkiaGeometrySource2D)?.Geometry.Reset();
 
 		var outerArea = new SKRect(0, 0, Size.X, Size.Y);
 		var innerArea = new SKRect(
-			borderThickness.Left,
-			borderThickness.Top,
-			borderThickness.Left + Math.Max(0, Size.X - (borderThickness.Left + borderThickness.Right)),
-			borderThickness.Top + Math.Max(0, Size.Y - (borderThickness.Top + borderThickness.Bottom)));
+			_borderThickness.Left,
+			_borderThickness.Top,
+			_borderThickness.Left + Math.Max(0, Size.X - (_borderThickness.Left + _borderThickness.Right)),
+			_borderThickness.Top + Math.Max(0, Size.Y - (_borderThickness.Top + _borderThickness.Bottom)));
 
 		// note that we're sending (the full) Size, not size
-		var fullCornerRadius = cornerRadius.GetRadii(Size.ToSize(), borderThickness);
+		var fullCornerRadius = _cornerRadius.GetRadii(Size.ToSize(), _borderThickness);
 
 		unsafe
 		{
@@ -117,7 +138,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			fullCornerRadius.Outer.GetRadii(outerRadii);
 			fullCornerRadius.Inner.GetRadii(innerRadii);
 
-			UpdateBackground(useInnerBorderBoundsAsAreaForBackground, innerArea, outerArea, outerRadii, innerRadii);
+			UpdateBackground(_useInnerBorderBoundsAsAreaForBackground, innerArea, outerArea, outerRadii, innerRadii);
 			UpdateBorderShape(innerArea, outerArea, outerRadii, innerRadii);
 		}
 
@@ -133,7 +154,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				innerArea.Left, innerArea.Top, innerArea.Right, innerArea.Bottom,
 				fullCornerRadius.Inner.TopLeft, fullCornerRadius.Inner.TopRight, fullCornerRadius.Inner.BottomRight, fullCornerRadius.Inner.BottomLeft);
 
-			if (useInnerBorderBoundsAsAreaForBackground)
+			if (_useInnerBorderBoundsAsAreaForBackground)
 			{
 				_backgroundClip = Compositor.CreateRectangleClip(
 					innerArea.Left, innerArea.Top, innerArea.Right, innerArea.Bottom,
@@ -146,10 +167,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 					fullCornerRadius.Outer.TopLeft, fullCornerRadius.Outer.TopRight, fullCornerRadius.Outer.BottomRight, fullCornerRadius.Outer.BottomLeft);
 			}
 		}
-		else
-		{
-			_childClipCausedByCornerRadius = null;
-		}
 	}
 
 	private unsafe void UpdateBackground(bool useInnerBorderBoundsAsAreaForBackground, SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
@@ -157,7 +174,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		var backgroundGeometry = (CompositionPathGeometry)(BackgroundShape.Geometry ??= Compositor.CreatePathGeometry());
 		backgroundGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D());
 		var backgroundPathGeometry = ((SkiaGeometrySource2D)backgroundGeometry.Path.GeometrySource).Geometry;
-		backgroundPathGeometry.Reset();
 		var roundRect = new SKRoundRect();
 		UnoSkiaApi.sk_rrect_set_rect_radii(
 			roundRect.Handle,
@@ -173,8 +189,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		borderGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D(new SKPath()));
 		var borderGeometrySource = (SkiaGeometrySource2D)borderGeometry.Path.GeometrySource;
 		var borderPathGeometry = borderGeometrySource.Geometry;
-
-		borderPathGeometry.Reset();
 
 		// It's important to set this every time, since borderPathGeometry.Reset will reset it.
 		borderGeometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
