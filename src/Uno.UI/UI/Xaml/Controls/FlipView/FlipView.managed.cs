@@ -412,9 +412,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_tpScrollViewer.SizeChanged -= OnScrollingHostPartSizeChanged;
 
-#if !__WASM__
 				m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
-#endif
 			}
 
 			m_tpButtonsFadeOutTimer?.Stop();
@@ -486,9 +484,7 @@ namespace Microsoft.UI.Xaml.Controls
 					//	return OnScrollViewerViewChanged(pSender, pArgs);
 					//}));
 
-#if !__WASM__ // Workaround for https://github.com/unoplatform/uno/issues/14488
 					m_tpScrollViewer.ViewChanged += OnScrollViewerViewChanged;
-#endif
 				}
 			}
 		}
