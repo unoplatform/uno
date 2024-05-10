@@ -4,7 +4,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace Uno.UI.DirectUI;
+namespace DirectUI;
 
 internal class TextAdapter
 {

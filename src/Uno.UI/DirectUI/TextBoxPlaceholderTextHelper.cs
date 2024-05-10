@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-namespace Uno.UI.DirectUI;
+namespace DirectUI;
 
 internal class TextBoxPlaceholderTextHelper
 {
