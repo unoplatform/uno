@@ -37,11 +37,14 @@ To package your app:
 
 #### Install unsigned the app
 
-To install the app, you'll need to use the following powershell command:
+To install the app:
 
-```pwsh
-Add-AppPackage -Path ".\MyApp.appx" -AllowUnsigned
-```
+- Start an elevated powershell command prompt (Search for powershell in the start menu, right click on it then Run as administrator):
+- In the folder contaning the `.msix` file, execute the following command :
+
+    ```pwsh
+    Add-AppPackage -AllowUnsigned ".\MyApp.appx"
+    ```
 
 For more information, see the [official documentation](https://learn.microsoft.com/en-us/windows/msix/package/unsigned-package#install-an-unsigned-package).
 
