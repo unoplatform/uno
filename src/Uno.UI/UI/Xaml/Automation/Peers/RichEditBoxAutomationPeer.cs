@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RichEditBoxAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
 using System.Collections.Generic;
-using Uno.UI.DirectUI;
+using DirectUI;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 

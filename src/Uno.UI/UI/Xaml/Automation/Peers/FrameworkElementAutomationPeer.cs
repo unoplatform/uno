@@ -598,7 +598,8 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 			return null;
 		}
 
-		protected IEnumerable<AutomationPeer> GetAutomationPeerCollection(AutomationProperties eProperty)
+		// protected in the winui source
+		internal IEnumerable<AutomationPeer> GetAutomationPeerCollection(AutomationProperties eProperty)
 		{
 			// UNO TODO: Port GetAutomationPeerCollection for FrameworkElementAutomationPeer
 			return null;

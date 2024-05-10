@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
-using Uno.UI.DirectUI;
+using DirectUI;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
