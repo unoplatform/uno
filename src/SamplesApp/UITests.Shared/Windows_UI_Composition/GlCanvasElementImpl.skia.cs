@@ -117,7 +117,7 @@ void main() {
 		}
 
 		// somewhat follows https://github.com/c2d7fa/opengl-cube
-		protected override void RenderOverride(GL Gl)
+		protected unsafe override void RenderOverride(GL Gl)
 		{
 			Gl.ClearColor(0.1f, 0.12f, 0.2f, 1);
 			Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -128,7 +128,7 @@ void main() {
 
 			const double duration = 4;
 			var transform =
-				Matrix4x4.CreateRotationY((float)(2 * Math.PI * (float)(Stopwatch.GetTimestamp() * 1.0 / 1000000000 / duration % 1))) *
+				Matrix4x4.CreateRotationY((float)(2 * Math.PI * (float)(Stopwatch.GetElapsedTime(0).Milliseconds * 1.0 / 1000 / duration % 1))) *
 				Matrix4x4.CreateRotationX((float)(0.15 * Math.PI)) *
 				Matrix4x4.CreateTranslation(0, 0, -3) *
 				Perspective();
