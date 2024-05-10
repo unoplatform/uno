@@ -231,6 +231,13 @@
         topicHref: guides/silverlight-migration/silverlight-migration-landing.md
         href: guides/silverlight-migration/toc.yml
 
+    - name: Publishing
+      items:
+        - name: Overview
+          href: xref:uno.publishing.overview
+        - name: Publishing for Windows
+          href: xref:uno.publishing.windows            
+
     - name: Performance
       items:
         - name: Improving Build Times
