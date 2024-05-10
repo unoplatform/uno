@@ -12,6 +12,7 @@ using Uno;
 using Uno.UI.Helpers;
 using Uno.UI.Extensions;
 using Windows.Foundation;
+using Windows.UI;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -84,14 +85,9 @@ partial class BorderLayerRenderer
 			switch (brush)
 			{
 				case SolidColorBrush solidColorBrush:
-					var borderColor = solidColorBrush.ColorWithOpacity;
-					element.SetStyle(
-						("border", ""),
-						("border-style", "solid"),
-						("border-color", borderColor.ToHexString()),
-						("border-width", borderWidth));
+					ApplySolidColorBorder(element, borderWidth, solidColorBrush.ColorWithOpacity);
 					break;
-				case GradientBrush gradientBrush:
+				case GradientBrush gradientBrush when gradientBrush.CanApplyToBorder(cornerRadius):
 					var border = gradientBrush.ToCssString(element.RenderSize);
 					element.SetStyle(
 						("border-style", "solid"),
@@ -99,6 +95,9 @@ partial class BorderLayerRenderer
 						("border-image", border),
 						("border-width", borderWidth),
 						("border-image-slice", "1"));
+					break;
+				case GradientBrush unsupportedGradientBrush:
+					ApplySolidColorBorder(element, borderWidth, unsupportedGradientBrush.FallbackColorWithOpacity);
 					break;
 				case RadialGradientBrush radialGradientBrush:
 					var radialBorder = radialGradientBrush.ToCssString(element.RenderSize);
@@ -124,6 +123,15 @@ partial class BorderLayerRenderer
 		}
 
 		SetCornerRadius(_owner, cornerRadius, thickness);
+	}
+
+	private static void ApplySolidColorBorder(FrameworkElement element, string borderWidth, Color borderColor)
+	{
+		element.SetStyle(
+			("border", ""),
+			("border-style", "solid"),
+			("border-color", borderColor.ToHexString()),
+			("border-width", borderWidth));
 	}
 
 	internal static void SetCornerRadius(
