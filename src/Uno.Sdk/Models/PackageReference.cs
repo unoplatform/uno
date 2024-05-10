@@ -15,7 +15,7 @@ internal record PackageReference(string PackageId, string Version, IDictionary<s
 			ItemSpec = PackageId,
 		};
 
-		foreach(var data in MetaData)
+		foreach (var data in MetaData)
 		{
 			if (data.Key == "ProjectSystem")
 				continue;
