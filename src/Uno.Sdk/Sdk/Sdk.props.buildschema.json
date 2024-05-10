@@ -290,8 +290,14 @@
 			"metadata": {
 				"Generator": {
 					"type": { "$ref": "#/types/unoDspGenerator" },
-					"isRequired": true,
+					"isRequired": false,
+					"defaultValue": "Xaml",
 					"description": "The type of generator to use for the theme file (a .json/.zip extracted from Material Theme Builder)."
+				},
+				"OutputPath": {
+					"type":"file-or-folder",
+					"isRequired": false,
+					"description": "The path that the theme files should be outputted to."
 				}
 			}
 		},
