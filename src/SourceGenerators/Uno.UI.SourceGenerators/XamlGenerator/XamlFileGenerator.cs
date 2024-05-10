@@ -6304,10 +6304,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 										{
 											writer.AppendLineIndented($"that.Bindings.UpdateResources();");
-										if (nameMember?.Value is string xName)
-												{
-													writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
-												}}
+											if (nameMember?.Value is string xName)
+											{
+												writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
+											}
+										}
 									}
 								}
 
