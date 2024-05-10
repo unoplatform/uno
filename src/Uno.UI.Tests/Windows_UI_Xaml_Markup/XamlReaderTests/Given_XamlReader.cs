@@ -1074,7 +1074,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var builder = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
 			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
 			{
-				Assert.AreEqual(42, owner.Test);
+				Assert.AreEqual(42, owner.Test.Value);
 			}
 		}
 
