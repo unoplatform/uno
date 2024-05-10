@@ -59,4 +59,8 @@ public partial class FlipView : Selector
 	protected override void OnPointerCanceled(PointerRoutedEventArgs pArgs)
 	{
 	}
+
+	protected override void OnApplyTemplate()
+	{
+	}
 }
