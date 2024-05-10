@@ -60,14 +60,15 @@ To package your app:
   - Open the solution in Visual Studio 2022
   - Double-click on the `Package.appxmanifest` file
   - Navigate to the `Packaging` tab
+  - Click the **Choose certificate** button
   - Click the **Create** button, then set a **publisher common name**, then OK. Do not set a password.
   - Close the **Choose a Certificate** window by clicking OK.
   - Click the **Save file** button in the Visual Studio toolbar
 - Build the app on the command line in the folder of the app's `.csproj`, use the following command:
 
-```cmd
-msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundlePlatforms="x86|x64|arm64" /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:\temp\output\\" /p:AppxPackageSigningEnabled=true
-    ```
+  ```cmd
+  msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundlePlatforms="x86|x64|arm64" /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:\temp\output\\" /p:AppxPackageSigningEnabled=true
+  ```
 
 In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX
 
