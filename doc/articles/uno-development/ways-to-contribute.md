@@ -68,7 +68,7 @@ Whatever you do, let us know [through Twitter](https://twitter.com/unoplatform) 
 
 ## Contributing code
 
-The WinUI are pretty big, but many hands make light work. We welcome code and content contributions from the community, and the core team is more than happy to help new contributors ramp up and familiarize themselves with Uno Platforms's codebase.
+The WinUI framework is pretty big, but many hands make light work. We welcome code and content contributions from the community, and the core team is more than happy to help new contributors ramp up and familiarize themselves with Uno Platform's codebase.
 
 ### Diving into the code
 
@@ -101,8 +101,8 @@ If there's anything you need, [ping us on our Discord Server](https://platform.u
 ## Sponsors & Grants
 Please consider sponsoring Uno Platform development, especially if your company benefits from this library.
  
-Your contribution will go towards adding new features and closing issues raised by community at Uno Platform backlog on GitHub (Issues · unoplatform/uno (github.com)) and making sure all functionality continues to meet our high quality standards.
+Your contribution will go towards adding new features and closing issues raised by the community at Uno Platform backlog on GitHub ([Issues · unoplatform/uno (github.com)](https://github.com/unoplatform/uno/issues)) and making sure all functionality continues to meet our high-quality standards.
  
-A grant for continuous full-time development has the biggest impact for progress. Periods of 2 to 5 days allow a contributor to tackle substantial complex issues which are otherwise left to linger until somebody can’t afford to not fix them.
+A grant for continuous full-time development has the biggest impact on progress. Periods of 2 to 5 days allow a contributor to tackle substantial complex issues that are otherwise left to linger until somebody can’t afford to not fix them.
  
 Contact [@jlaban](https://github.com/jeromelaban) or [@sasakrsmanovic](https://github.com/sasakrsmanovic) to arrange a grant to Uno Platform and its core contributors.
