@@ -167,6 +167,7 @@ public partial class Given_HotReloadWorkspace
 				"build",
 				$"-p:UnoRemoteControlPort={_remoteControlPort}",
 				$"-p:UnoRemoteControlHost=127.0.0.1",
+				$"-p:NoWarn=CS8619", // Workaround https://github.com/unoplatform/uno.ui.runtimetests.engine/issues/174#issuecomment-2104088957
 				"--configuration",
 
 				// Use the debug configuration so that remote control
