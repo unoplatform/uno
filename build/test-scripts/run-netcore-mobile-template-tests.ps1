@@ -139,7 +139,7 @@ if ($IsWindows)
 
     # Uno Library
     # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-    & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj /p:TargetFrameworks="net7.0-windows10.0.19041%3Bnet7.0`"
+    & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj /p:TargetFrameworks="net7.0-windows10.0.19041%3Bnet7.0"
     Assert-ExitCodeIsZero
 
     # Uno Cross-Runtime Library
