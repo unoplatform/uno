@@ -349,8 +349,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// This would however not include scrolling due to the inertia which should also be flagged as intermediate.
 			// The main issue is that the IsPointerPressed be true ONLY when dragging the scrollbars with the mouse, 
 			// as for finger and pen we will get a PointerCancelled which will reset the pressed state to false.
-			// And it would also requires us to explicitly invoke OnScroll in PointerRelease in order to raise the
-			// final SV.ViewChanged event with a IsIntermediate == false.
+			// And it would also require us to explicitly invoke OnScroll in PointerRelease in order to raise the
+			// final SV.ViewChanged event with an IsIntermediate == false.
 			// As a best-effort guess, we will consider the scroll as intermediate if the native offset is different from the last ScrollTo request.
 			var horizontalOffset = GetNativeHorizontalOffset();
 			var verticalOffset = GetNativeVerticalOffset();
