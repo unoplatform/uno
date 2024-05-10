@@ -8,7 +8,7 @@ uid: uno.publishing.windows
 
 ## Building your app
 
-Building your app require using the msbuild command (`dotnet build` is not compatible as of WinAppSDK 1.5).
+Building your app requires using the msbuild command (`dotnet build` is not compatible as of WinAppSDK 1.5).
 
 ### Side loading (without signing)
 
@@ -39,8 +39,8 @@ To package your app:
 
 To install the app:
 
-- Start an elevated powershell command prompt (Search for powershell in the start menu, right click on it then Run as administrator):
-- In the folder contaning the `.msix` file, execute the following command :
+- Start an elevated PowerShell command prompt (Search for PowerShell in the start menu, right-click on it then Run as administrator):
+- In the folder containing the `.msix` file, execute the following command :
 
     ```pwsh
     Add-AppPackage -AllowUnsigned ".\MyApp.appx"
@@ -58,15 +58,15 @@ To package your app:
 
 - Create a self-signed certificate:
   - Open the solution in Visual Studio 2022
-  - Double click on the `Package.appxmanifest` file
+  - Double-click on the `Package.appxmanifest` file
   - Navigate to the `Packaging` tab
-  - Click the **Create** button, then set a **publisher common name**, then OK. Do not se  password.
+  - Click the **Create** button, then set a **publisher common name**, then OK. Do not set a password.
   - Close the **Choose a Certificate** window by clicking OK.
   - Click the **Save file** button in the Visual Studio toolbar
 - Build the app on the command line in the folder of the app's `.csproj`, use the following command:
 
-    ```cmd
-    msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundlePlatforms="x86|x64|arm64" /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:\temp\output\\" /p:AppxPackageSigningEnabled=true
+```cmd
+msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundlePlatforms="x86|x64|arm64" /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:\temp\output\\" /p:AppxPackageSigningEnabled=true
     ```
 
 In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX
@@ -76,7 +76,7 @@ In order to build for additional platforms, change the `Platform` parameter to `
 To install the app:
 
 - Install the certificate on the machine:
-  - In the file explorer, right click on the `.msix` file, then **Show More Options** on Windows 11, then **Properties**
+  - In the file explorer, right-click on the `.msix` file, then **Show More Options** on Windows 11, then **Properties**
   - Open the **Digital signatures** tab
   - Click on your certificate then **Details**
   - Click the **View Certificate** button
@@ -86,7 +86,7 @@ To install the app:
   - Select **Trusted People** then **OK**
   - Click **Next**, then **Finish**
   - Close all the opened properties windows.
-- Install the `.msix` by double clicking on it
+- Install the `.msix` by double-clicking on it
 
 The app will start automatically once installed.
 

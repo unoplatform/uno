@@ -236,7 +236,7 @@
         - name: Overview
           href: xref:uno.publishing.overview
         - name: Publishing for Windows
-          href: xref:uno.publishing.windows            
+          href: xref:uno.publishing.windows
 
     - name: Performance
       items:
