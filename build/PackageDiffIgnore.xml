@@ -1861,6 +1861,7 @@
 
 			<!-- AutomationPeers -->
 			<Member fullName="System.Void Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
 		</Methods>
 	</IgnoreSet>
   <!--
