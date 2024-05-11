@@ -147,7 +147,7 @@ if ($IsWindows)
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
-    & $msbuild @build.rsp
+    & $msbuild "@build.rsp"
     Assert-ExitCodeIsZero
 
     # Uno Cross-Runtime Library
@@ -168,7 +168,7 @@ if ($IsWindows)
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
-    & $msbuild @build.rsp
+    & $msbuild "@build.rsp"
     Assert-ExitCodeIsZero
 
     mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip
