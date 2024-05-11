@@ -11,7 +11,8 @@ namespace UITests.Windows_UI_Xaml.XamlRoot;
 	Description =
 		"Shows current values of various XamlRoot properties and their changes in time." +
 		"Test RasterizationScale by changing the display DPI scaling in OS settings.",
-	IsManualTest = true)]
+	IsManualTest = true,
+	IgnoreInSnapshotTests = true)]
 public sealed partial class XamlRoot_Properties : UserControl
 {
 	public XamlRoot_Properties()

@@ -88,6 +88,5 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 				_tcs.SetResult();
 			}
 		}
-
 	}
 }

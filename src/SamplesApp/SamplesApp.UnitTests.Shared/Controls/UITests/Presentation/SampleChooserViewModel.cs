@@ -334,17 +334,17 @@ namespace SampleControl.Presentation
 
 							ContentPhone = content;
 
+							if (control is IWaitableSample waitableSample)
+							{
+								await waitableSample.SamplePreparedTask;
+							}
+
 #if HAS_UNO
 							await _dispatcher.RunIdleAsync(_ => { });
 							await _dispatcher.RunIdleAsync(_ => { });
 #else
 							await Task.Delay(500, ct);
 #endif
-
-							if (control is IWaitableSample waitableSample)
-							{
-								await waitableSample.SamplePreparedTask;
-							}
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
 							var file = await rootFolder.CreateFileAsync(fileName + ".png",
