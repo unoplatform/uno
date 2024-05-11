@@ -1,6 +1,5 @@
 ﻿using System;
 using Uno.Disposables;
-using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -10,9 +9,6 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class BorderLayerRenderer
 {
-	private readonly SerialDisposable _borderShapeBrushDisposable = new SerialDisposable();
-	private readonly SerialDisposable _borderBackgroundBrushDisposable = new SerialDisposable();
-
 	/// <summary>
 	/// Updates or creates the owner's Visual to render a border-like shape.
 	/// </summary>
@@ -23,47 +19,64 @@ partial class BorderLayerRenderer
 	/// </summary>
 	partial void ClearPlatform()
 	{
-		_borderBackgroundBrushDisposable.Disposable = null;
-		_borderShapeBrushDisposable.Disposable = null;
+		_borderInfoProvider.BackgroundBrushSubscriptionDisposable.Disposable = null;
+		_borderInfoProvider.BorderBrushSubscriptionDisposable.Disposable = null;
 	}
 
 	private void UpdateBorderAndBackground()
 	{
-		var area = new Rect(default, new Size(_owner.ActualWidth, _owner.ActualHeight));
+		_borderInfoProvider.UpdateCornerRadius();
+		_borderInfoProvider.UpdateBorderThickness();
+		_borderInfoProvider.UpdateBorderSizing();
+		_borderInfoProvider.UpdateBackground();
+		_borderInfoProvider.UpdateBorderBrush();
+	}
+}
 
-		// In case the element has no size, skip everything!
-		if (area is { Width: 0, Height: 0 })
+internal static class BorderHelper
+{
+	public static void UpdateCornerRadius<T>(this T @this) where T : IBorderInfoProvider
+	{
+		if ((@this as UIElement)!.Visual is not BorderVisual visual)
 		{
-			return;
+			throw new InvalidOperationException($"UIElements that have a corner radius should use a {nameof(BorderVisual)}.");
 		}
+		visual.CornerRadius = @this.CornerRadius.ToUnoCompositionCornerRadius();
+	}
 
-		if (_owner.Visual is not BorderVisual visual)
+	public static void UpdateBorderThickness<T>(this T @this) where T : IBorderInfoProvider
+	{
+		if ((@this as UIElement)!.Visual is not BorderVisual visual)
 		{
-			throw new InvalidOperationException($"{nameof(BorderLayerRenderer)} should only be used with UIElements that use a {nameof(BorderVisual)}.");
+			throw new InvalidOperationException($"UIElements that have a border thickness should use a {nameof(BorderVisual)}.");
 		}
+		visual.BorderThickness = @this.BorderThickness.ToUnoCompositionThickness();
+	}
 
-		visual.CornerRadius = _borderInfoProvider.CornerRadius.ToUnoCompositionCornerRadius();
-		visual.BorderThickness = _borderInfoProvider.BorderThickness.ToUnoCompositionThickness();
-		visual.UseInnerBorderBoundsAsAreaForBackground = _borderInfoProvider.BackgroundSizing == BackgroundSizing.InnerBorderEdge;
-
-		var borderThickness = _borderInfoProvider.BorderThickness;
-		if (_owner.GetUseLayoutRounding())
+	public static void UpdateBorderSizing<T>(this T @this) where T : IBorderInfoProvider
+	{
+		if ((@this as UIElement)!.Visual is not BorderVisual visual)
 		{
-			borderThickness = _owner.LayoutRound(borderThickness);
+			throw new InvalidOperationException($"UIElements that have a border sizing should use a {nameof(BorderVisual)}.");
 		}
+		visual.UseInnerBorderBoundsAsAreaForBackground = @this.BackgroundSizing == BackgroundSizing.InnerBorderEdge;
+	}
 
-		var compositor = visual.Compositor;
-
-		_borderBackgroundBrushDisposable.Disposable = null;
-		if (_borderInfoProvider.Background is { } background)
+	public static void UpdateBackground<T>(this T @this) where T : IBorderInfoProvider
+	{
+		if ((@this as UIElement)!.Visual is not BorderVisual visual)
 		{
-			_borderBackgroundBrushDisposable.Disposable = Brush.AssignAndObserveBrush(background, compositor, brush => visual.BackgroundBrush = brush);
+			throw new InvalidOperationException($"UIElements that have a background should use a {nameof(BorderVisual)}.");
 		}
+		@this.BorderBrushSubscriptionDisposable.Disposable = Brush.AssignAndObserveBrush(@this.Background, visual.Compositor, brush => visual.BackgroundBrush = brush);
+	}
 
-		_borderShapeBrushDisposable.Disposable = null;
-		if (borderThickness != Thickness.Empty && _borderInfoProvider.BorderBrush is { } borderBrush)
+	public static void UpdateBorderBrush<T>(this T @this) where T : IBorderInfoProvider
+	{
+		if ((@this as UIElement)!.Visual is not BorderVisual visual)
 		{
-			_borderShapeBrushDisposable.Disposable = Brush.AssignAndObserveBrush(borderBrush, compositor, brush => visual.BorderBrush = brush);
+			throw new InvalidOperationException($"UIElements that have a background should use a {nameof(BorderVisual)}.");
 		}
+		@this.BorderBrushSubscriptionDisposable.Disposable = Brush.AssignAndObserveBrush(@this.BorderBrush, visual.Compositor, brush => visual.BorderBrush = brush);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿#if __SKIA__
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,5 +28,8 @@ partial class ScrollPresenter : IBorderInfoProvider
 	Thickness IBorderInfoProvider.BorderThickness => default;
 
 	CornerRadius IBorderInfoProvider.CornerRadius => default;
+
+	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
+	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
 }
 #endif

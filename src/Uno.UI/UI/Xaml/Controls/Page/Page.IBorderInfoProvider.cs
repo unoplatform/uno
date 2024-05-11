@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -16,4 +17,7 @@ public partial class Page : IBorderInfoProvider
 	Thickness IBorderInfoProvider.BorderThickness => Thickness.Empty;
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius.None;
+
+	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
+	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
 }

@@ -2,6 +2,7 @@
 
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -16,4 +17,7 @@ partial class Panel : IBorderInfoProvider
 	Thickness IBorderInfoProvider.BorderThickness => BorderThicknessInternal;
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadiusInternal;
+
+	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
+	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
 }

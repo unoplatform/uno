@@ -3,6 +3,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -35,4 +36,9 @@ internal partial interface IBorderInfoProvider
 	/// Gets the corner radius.
 	/// </summary>
 	CornerRadius CornerRadius { get; }
+
+#if __SKIA__
+	SerialDisposable BorderBrushSubscriptionDisposable { get; set; }
+	SerialDisposable BackgroundBrushSubscriptionDisposable { get; set; }
+#endif
 }

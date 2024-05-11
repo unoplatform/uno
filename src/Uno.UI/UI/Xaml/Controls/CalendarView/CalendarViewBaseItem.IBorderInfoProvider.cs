@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -64,4 +65,7 @@ partial class CalendarViewBaseItem : IBorderInfoProvider
 	Thickness IBorderInfoProvider.BorderThickness => GetItemBorderThickness();
 
 	CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
+
+	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
+	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
 }
