@@ -26,7 +26,9 @@ namespace Microsoft.UI.Xaml.Controls
 			Initialize_CalendarViewBaseItemChrome();
 			this.Loaded += (_, _) =>
 			{
+#if !__SKIA__
 				_borderRenderer ??= new(this);
+#endif
 				EnterImpl();
 			};
 		}

@@ -11,7 +11,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
+#if !__SKIA__
 		private BorderLayerRenderer _borderRenderer;
+#endif
 
 		private Size _lastSize;
 
@@ -67,7 +69,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
+#if !__SKIA__
 			_borderRenderer ??= new BorderLayerRenderer(this);
+#endif
 
 			// DrawBackground			=> General background for all items
 			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
@@ -90,7 +94,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
+#if __SKIA__
+			this.UpdateAllBorderProperties();
+#else
 			_borderRenderer.Update();
+#endif
 		}
 
 

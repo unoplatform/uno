@@ -57,7 +57,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	, ICustomClippingElement
 #endif
 {
+#if !__SKIA__
 	private readonly BorderLayerRenderer _borderRenderer;
+#endif
 
 	private bool _firstLoadResetDone;
 	private View _contentTemplateRoot;
@@ -69,7 +71,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public ContentPresenter()
 	{
+#if !__SKIA__
 		_borderRenderer = new BorderLayerRenderer(this);
+#endif
 		SetDefaultForeground(ForegroundProperty);
 
 		InitializePlatform();
@@ -201,7 +205,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
+#if __SKIA__
+		this.UpdateBackgroundSizing();
+#else
 		UpdateBorder();
+#endif
 		base.OnBackgroundSizingChangedInner(e);
 	}
 
@@ -513,7 +521,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			)
 		);
 
-	private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+	{
+#if __SKIA__
+		// TODO: should we update something here?
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -537,7 +552,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			)
 		);
 
-	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+	{
+#if __SKIA__
+		this.UpdateBorderThickness();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -569,7 +591,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			(Content as UIElement)?.InvalidateArrange();
 		}
 #endif
+#if __SKIA__
+		this.UpdateBorderBrush();
+#else
 		UpdateBorder();
+#endif
 	}
 
 
@@ -587,7 +613,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		set => SetCornerRadiusValue(value);
 	}
 
-	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
+	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+	{
+#if __SKIA__
+		this.UpdateCornerRadius();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -823,7 +856,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// as it may have been reset during the last unload.
 		SynchronizeContentTemplatedParent();
 
+#if !__SKIA__
 		UpdateBorder();
+#endif
 
 		TryAttachNativeElement();
 	}
@@ -1010,7 +1045,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>
 	/// Don't call base, the UpdateBorder() method handles drawing the background.
 	/// </remarks>
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+#if __SKIA__
+		this.UpdateBackground();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
@@ -1179,7 +1221,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </summary>
 	partial void ArrangeNativeElement(Rect arrangeRect);
 
+#if !__SKIA__
 	private void UpdateBorder() => _borderRenderer.Update();
+#endif
 
 	private void SetUpdateTemplate()
 	{

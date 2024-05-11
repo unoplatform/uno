@@ -24,6 +24,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
@@ -141,6 +142,9 @@ namespace Microsoft.UI.Xaml
 		{
 			InternalBackgroundSizing = (BackgroundSizing)e.NewValue;
 			OnBackgroundSizingChangedPartial(e);
+#if __SKIA__
+			(this as IBorderInfoProvider)?.UpdateBackgroundSizing();
+#endif
 		}
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs);

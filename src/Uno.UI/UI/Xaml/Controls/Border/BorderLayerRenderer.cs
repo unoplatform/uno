@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !__SKIA__
+using System;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 
@@ -55,3 +56,4 @@ internal partial class BorderLayerRenderer
 
 	partial void ClearPlatform();
 }
+#endif

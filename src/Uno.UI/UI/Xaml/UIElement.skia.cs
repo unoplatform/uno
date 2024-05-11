@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml
 				nameof(UseLayoutRounding),
 				typeof(bool),
 				typeof(UIElement),
-				new FrameworkPropertyMetadata(true));
+				new FrameworkPropertyMetadata(true, propertyChangedCallback: (o, _) => (o as IBorderInfoProvider)?.UpdateBorderThickness()));
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{

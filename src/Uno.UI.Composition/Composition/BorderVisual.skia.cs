@@ -18,7 +18,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	// state received from BorderLayerRenderer
 	private CornerRadius _cornerRadius;
 	private Thickness _borderThickness;
-	private bool _useInnerBorderBoundsAsAreaForBackground;
+	private bool _useInnerBorderBoundsAsAreaForBackground = true;
 	private CompositionBrush? _backgroundBrush;
 	private CompositionBrush? _borderBrush;
 	// State set and used inside the class
@@ -71,7 +71,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		_sharedPathGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D());
 		var geometrySource = (SkiaGeometrySource2D)_sharedPathGeometry.Path.GeometrySource;
 
-		UpdateBorderAndBackgroundPaths();
+		UpdatePathsAndCornerClip();
 
 		if (_backgroundShape is { } backgroundShape && _backgroundPath is { } backgroundPath)
 		{
@@ -141,7 +141,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		}
 	}
 
-	private void UpdateBorderAndBackgroundPaths()
+	private void UpdatePathsAndCornerClip()
 	{
 		if (_borderPathValid && _backgroundPathValid)
 		{
@@ -150,6 +150,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 		// clear old state
 		_childClipCausedByCornerRadius = null;
+		_backgroundClip = null;
 
 		var outerArea = new SKRect(0, 0, Size.X, Size.Y);
 		var innerArea = new SKRect(

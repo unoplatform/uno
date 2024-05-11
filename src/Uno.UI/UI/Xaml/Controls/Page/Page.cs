@@ -10,18 +10,27 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Page : UserControl
 {
+#if !__SKIA__
 	private readonly BorderLayerRenderer _borderRenderer;
+#endif
 
 	public Page()
 	{
+#if !__SKIA__
 		_borderRenderer = new BorderLayerRenderer(this);
+#endif
 	}
 
 #if __SKIA__
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
-	private void UpdateBorder() => _borderRenderer.Update();
+#if !__SKIA__
+	private void UpdateBorder()
+	{
+		_borderRenderer.Update();
+	}
+#endif
 
 	protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
 
@@ -98,5 +107,12 @@ public partial class Page : UserControl
 
 	public NavigationCacheMode NavigationCacheMode { get; set; }
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+#if __SKIA__
+		this.UpdateBackground();
+#else
+		UpdateBorder();
+#endif
+	}
 }

@@ -29,7 +29,9 @@ public partial class Panel : FrameworkElement, IPanel
 	, ICustomClippingElement
 #endif
 {
+#if !__SKIA__
 	private readonly BorderLayerRenderer _borderRenderer;
+#endif
 
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 	private new UIElementCollection _children;
@@ -41,7 +43,9 @@ public partial class Panel : FrameworkElement, IPanel
 
 	public Panel()
 	{
+#if !__SKIA__
 		_borderRenderer = new BorderLayerRenderer(this);
+#endif
 		_children = new UIElementCollection(this);
 	}
 
@@ -186,13 +190,41 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected virtual void OnChildrenChanged() { }
 
-	protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
+	protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+	{
+#if __SKIA__
+		this.UpdateCornerRadius();
+#else
+		UpdateBorder();
+#endif
+	}
 
-	protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+	{
+#if __SKIA__
+		// TODO: should we update something here?
+#else
+		UpdateBorder();
+#endif
+	}
 
-	protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+	{
+#if __SKIA__
+		this.UpdateBorderThickness();
+#else
+		UpdateBorder();
+#endif
+	}
 
-	protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue) => UpdateBorder();
+	protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
+	{
+#if __SKIA__
+		this.UpdateBorderBrush();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
 
@@ -200,7 +232,11 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
+#if __SKIA__
+		this.UpdateBackground();
+#else
 		UpdateBorder();
+#endif
 		OnBackgroundChangedPartial();
 	}
 
@@ -210,13 +246,18 @@ public partial class Panel : FrameworkElement, IPanel
 	{
 		base.OnBackgroundSizingChangedInner(e);
 
+#if __SKIA__
+		this.UpdateBackgroundSizing();
+#else
 		UpdateBorder();
+#endif
 	}
 
 	internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 
+#if !__SKIA__
 	private void UpdateBorder() => _borderRenderer.Update();
-
+#endif
 
 	/// <summary>        
 	/// Support for the C# collection initializer style.

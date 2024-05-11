@@ -38,11 +38,15 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
+#if !__SKIA__
 		private readonly BorderLayerRenderer _borderRenderer;
+#endif
 
 		public Border()
 		{
+#if !__SKIA__
 			_borderRenderer = new BorderLayerRenderer(this);
+#endif
 		}
 
 #if __SKIA__
@@ -118,7 +122,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+		{
+#if __SKIA__
+			this.UpdateCornerRadius();
+#else
+			UpdateBorder();
+#endif
+		}
 
 		#endregion
 
@@ -180,7 +191,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+		{
+#if __SKIA__
+			// TODO: should we update something here?
+#else
+			UpdateBorder();
+#endif
+		}
 
 		#endregion
 
@@ -195,7 +213,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
+#if __SKIA__
+			this.UpdateBackgroundSizing();
+#else
 			UpdateBorder();
+#endif
 			base.OnBackgroundSizingChangedInner(e);
 		}
 		#endregion
@@ -212,7 +234,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+		{
+#if __SKIA__
+			this.UpdateBorderThickness();
+#else
+			UpdateBorder();
+#endif
+		}
 
 		#endregion
 
@@ -245,7 +274,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => UpdateBorder()));
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
+			{
+#if __SKIA__
+				this.UpdateBorderBrush();
+#else
+				UpdateBorder();
+#endif
+			}));
 #if __WASM__
 			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 			{
@@ -259,7 +295,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
+#if __SKIA__
+			this.UpdateBackground();
+#else
 			UpdateBorder();
+#endif
 			OnBackgroundChangedPartial();
 		}
 
@@ -279,6 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return element.Background != null;
 		}
 
+#if !__SKIA__
 		private void UpdateBorder()
 		{
 			_borderRenderer.Update();
@@ -286,5 +327,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void AfterUpdateBorderPartial();
+#endif
 	}
 }

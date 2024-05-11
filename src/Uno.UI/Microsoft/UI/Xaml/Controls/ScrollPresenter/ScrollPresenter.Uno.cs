@@ -8,11 +8,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class ScrollPresenter : IBorderInfoProvider
 {
+#if !__SKIA__
 	private BorderLayerRenderer _borderRenderer;
+#endif
 
 	partial void InitializePartial()
 	{
+#if !__SKIA__
 		_borderRenderer = new BorderLayerRenderer(this);
+#endif
 	}
 
 #if __SKIA__
