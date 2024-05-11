@@ -115,7 +115,7 @@ namespace Uno.UI.Tests.BinderTests
 			// the UpdateSource invocation as a two-way binding is still happening.
 			//
 			// This behavior is different with a normal binding.
-			Assert.AreEqual("¤42.00", dp2.MyString);
+			Assert.AreEqual("$42.00", dp2.MyString);
 			Assert.AreEqual(42, dp1.MyDouble);
 			Assert.AreEqual(2, conv.ConvertCount);
 			Assert.AreEqual(1, conv.ConvertBackCount);
