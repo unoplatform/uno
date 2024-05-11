@@ -75,17 +75,14 @@ partial class BorderLayerRenderer
 		_borderBackgroundBrushDisposable.Disposable = null;
 		if (state.Background is { } background)
 		{
-			var backgroundShape = visual.BackgroundShape;
-			_borderBackgroundBrushDisposable.Disposable = Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush);
+			_borderBackgroundBrushDisposable.Disposable = Brush.AssignAndObserveBrush(background, compositor, brush => visual.BackgroundBrush = brush);
 		}
 
 		// Border shape (if any)
 		_borderShapeBrushDisposable.Disposable = null;
 		if (borderThickness != Thickness.Empty && state.BorderBrush is { } borderBrush)
 		{
-			var borderShape = visual.BorderShape;
-			// Border brush
-			_borderShapeBrushDisposable.Disposable = Brush.AssignAndObserveBrush(borderBrush, compositor, brush => borderShape.FillBrush = brush);
+			_borderShapeBrushDisposable.Disposable = Brush.AssignAndObserveBrush(borderBrush, compositor, brush => visual.BorderBrush = brush);
 		}
 	}
 }

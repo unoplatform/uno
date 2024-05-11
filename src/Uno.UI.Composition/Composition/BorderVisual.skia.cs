@@ -16,11 +16,14 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	private static CompositionPathGeometry? _sharedPathGeometry;
 
 	// state received from BorderLayerRenderer
-	private bool _borderStateValid;
 	private CornerRadius _cornerRadius;
 	private Thickness _borderThickness;
 	private bool _useInnerBorderBoundsAsAreaForBackground;
+	private CompositionBrush? _backgroundBrush;
+	private CompositionBrush? _borderBrush;
 	// State set and used inside the class
+	private bool _borderPathValid;
+	private bool _backgroundPathValid;
 	private CompositionSpriteShape? _backgroundShape;
 	private CompositionSpriteShape? _borderShape;
 	private CompositionClip? _backgroundClip;
@@ -47,38 +50,16 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		set => SetProperty(ref _useInnerBorderBoundsAsAreaForBackground, value);
 	}
 
-	// BackgroundShape and BorderShape are NOT added to this.Shapes, which both makes it easier
-	// to reason about (no external tampering) and is also closer to what WinUI does.
-	public CompositionSpriteShape BackgroundShape
+	public CompositionBrush? BackgroundBrush
 	{
-		get
-		{
-			if (_backgroundShape is null)
-			{
-				// we need this to track get notified on brush updates.
-				SetProperty(ref _backgroundShape, Compositor.CreateSpriteShape());
-#if DEBUG
-				_backgroundShape!.Comment = "#borderBackground";
-#endif
-			}
-			return _backgroundShape!;
-		}
+		private get => _backgroundBrush;
+		set => SetProperty(ref _backgroundBrush, value);
 	}
 
-	public CompositionSpriteShape BorderShape
+	public CompositionBrush? BorderBrush
 	{
-		get
-		{
-			if (_borderShape is null)
-			{
-				// we need this to track get notified on brush updates.
-				SetProperty(ref _borderShape, Compositor.CreateSpriteShape());
-#if DEBUG
-				_borderShape!.Comment = "#borderShape";
-#endif
-			}
-			return _borderShape!;
-		}
+		private get => _borderBrush;
+		set => SetProperty(ref _borderBrush, value);
 	}
 
 	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
@@ -95,7 +76,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		if (_backgroundShape is { } backgroundShape && _backgroundPath is { } backgroundPath)
 		{
 			backgroundShape.Geometry = _sharedPathGeometry; // will only do something the first time
-			geometrySource.Geometry = backgroundPath; // changing Geometry doesn't raise OnPropertyChangedCore or invalidate render.
+			geometrySource.Geometry = backgroundPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
 			session.Canvas.Save();
 			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
@@ -109,7 +90,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		if (_borderShape is { } borderShape && _borderPath is { } borderPath)
 		{
 			borderShape.Geometry = _sharedPathGeometry; // will only do something the first time
-			geometrySource.Geometry = borderPath; // changing Geometry doesn't raise OnPropertyChangedCore or invalidate render.
+			geometrySource.Geometry = borderPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
 			_borderShape?.Render(in session);
 		}
 	}
@@ -119,19 +100,53 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 
-		if (propertyName is nameof(CornerRadius) or nameof(BorderThickness) or nameof(UseInnerBorderBoundsAsAreaForBackground) or nameof(Size))
+		switch (propertyName)
 		{
-			_borderStateValid = false;
+			case nameof(CornerRadius) or nameof(BorderThickness) or nameof(UseInnerBorderBoundsAsAreaForBackground) or nameof(Size):
+				_borderPathValid = false;
+				_backgroundPathValid = false;
+				break;
+			// BackgroundShape and BorderShape are NOT added to this.Shapes, which both makes it easier
+			// to reason about (no external tampering) and is also closer to what WinUI does.
+			case nameof(BorderBrush):
+				_borderPathValid = false; // to update _borderPath if previously skipped
+				if (BorderBrush is not null && _borderShape is null)
+				{
+					// we need this to track get notified on brush updates.
+					SetProperty(ref _borderShape, Compositor.CreateSpriteShape());
+#if DEBUG
+					_borderShape!.Comment = "#borderShape";
+#endif
+				}
+				if (_borderShape is { })
+				{
+					_borderShape.FillBrush = BorderBrush;
+				}
+				break;
+			case nameof(BackgroundBrush):
+				_backgroundPathValid = false; // to update _backgroundPath if previously skipped
+				if (BackgroundBrush is not null && _backgroundShape is null)
+				{
+					// we need this to track get notified on brush updates.
+					SetProperty(ref _backgroundShape, Compositor.CreateSpriteShape());
+#if DEBUG
+					_backgroundShape!.Comment = "#backgroundShape";
+#endif
+				}
+				if (_backgroundShape is { })
+				{
+					_backgroundShape.FillBrush = BackgroundBrush;
+				}
+				break;
 		}
 	}
 
 	private void UpdateBorderAndBackgroundPaths()
 	{
-		if (_borderStateValid)
+		if (_borderPathValid && _backgroundPathValid)
 		{
 			return;
 		}
-		_borderStateValid = false;
 
 		// clear old state
 		_childClipCausedByCornerRadius = null;
@@ -153,8 +168,16 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			fullCornerRadius.Outer.GetRadii(outerRadii);
 			fullCornerRadius.Inner.GetRadii(innerRadii);
 
-			UpdateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea, outerArea, outerRadii, innerRadii);
-			UpdateBorderPath(innerArea, outerArea, outerRadii, innerRadii);
+			if (_backgroundBrush is { } && !_backgroundPathValid)
+			{
+				_backgroundPathValid = true;
+				UpdateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea, outerArea, outerRadii, innerRadii);
+			}
+			if (_borderBrush is { } && !_borderPathValid)
+			{
+				_borderPathValid = true;
+				UpdateBorderPath(innerArea, outerArea, outerRadii, innerRadii);
+			}
 		}
 
 		// Note: The clipping is used to determine the location where the children of current element can be rendered.
