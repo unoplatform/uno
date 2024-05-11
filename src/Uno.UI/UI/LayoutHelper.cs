@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -29,13 +28,10 @@ namespace Uno.UI
 			height = size.Height;
 		}
 
-		[Pure]
 		internal static Size GetMinSize(this IFrameworkElement e) => new Size(e.MinWidth, e.MinHeight).NumberOrDefault(new Size(0, 0));
 
-		[Pure]
 		internal static Size GetMaxSize(this IFrameworkElement e) => new Size(e.MaxWidth, e.MaxHeight).NumberOrDefault(new Size(PositiveInfinity, PositiveInfinity));
 
-		[Pure]
 		internal static (Size min, Size max) GetMinMax(this IFrameworkElement e)
 		{
 			double minWidth;
@@ -108,7 +104,6 @@ namespace Uno.UI
 				.AtLeast(min.Subtract(extraPadding)); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 		}
 
-		[Pure]
 		internal static Size GetMarginSize(this IFrameworkElement frameworkElement)
 		{
 			var margin = frameworkElement.Margin;
@@ -121,7 +116,6 @@ namespace Uno.UI
 			return new Size(marginWidth, marginHeight);
 		}
 
-		[Pure]
 		internal static Point GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
 		{
 			double offsetX = 0;
@@ -159,7 +153,6 @@ namespace Uno.UI
 			return new Point(offsetX, offsetY);
 		}
 
-		[Pure]
 		internal static Size Min(Size val1, Size val2)
 		{
 			return new Size(
@@ -168,7 +161,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Size Max(Size val1, Size val2)
 		{
 			return new Size(
@@ -177,7 +169,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Size Add(this Size left, Size right)
 		{
 			if (right == default)
@@ -191,7 +182,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Size Add(this Size left, Thickness right)
 		{
 			if (right == default)
@@ -205,7 +195,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Size Subtract(this Size size, double width, double height)
 		{
 			if (width == default && height == default)
@@ -219,7 +208,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Size Subtract(this Size left, Size right)
 		{
 			if (right == default)
@@ -233,7 +221,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Size Subtract(this Size left, Thickness right)
 		{
 			if (right == Thickness.Empty)
@@ -250,19 +237,16 @@ namespace Uno.UI
 		/// <summary>
 		/// a.k.a. Scale
 		/// </summary>
-		[Pure]
 		internal static Size Multiply(this Size left, double right)
 		{
 			return new Size(left.Width * right, left.Height * right);
 		}
 
-		[Pure]
 		internal static Size Divide(this Size left, double right)
 		{
 			return new Size(left.Width / right, left.Height / right);
 		}
 
-		[Pure]
 		internal static Rect InflateBy(this Rect left, Thickness right)
 		{
 			var newWidth = right.Left + left.Width + right.Right;
@@ -275,10 +259,8 @@ namespace Uno.UI
 			return new Rect(newX, newY, Math.Max(newWidth, 0d), Math.Max(newHeight, 0d));
 		}
 
-		[Pure]
 		internal static Rect DeflateBy(this Rect left, Thickness right) => left.InflateBy(right.GetInverse());
 
-		[Pure]
 		internal static double NumberOrDefault(this double value, double defaultValue)
 		{
 			return IsNaN(value)
@@ -286,7 +268,6 @@ namespace Uno.UI
 				: value;
 		}
 
-		[Pure]
 		internal static Size NumberOrDefault(this Size value, Size defaultValue)
 		{
 			return new Size(
@@ -295,7 +276,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static double FiniteOrDefault(this double value, double defaultValue)
 		{
 #if XAMARIN
@@ -309,7 +289,6 @@ namespace Uno.UI
 #endif
 		}
 
-		[Pure]
 		internal static Point FiniteOrDefault(this Point value, Point defaultValue)
 		{
 			return new Point(
@@ -317,7 +296,6 @@ namespace Uno.UI
 				value.Y.FiniteOrDefault(defaultValue.Y));
 		}
 
-		[Pure]
 		internal static Size FiniteOrDefault(this Size value, Size defaultValue)
 		{
 			return new Size(
@@ -326,7 +304,6 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Rect FiniteOrDefault(this Rect value, Rect defaultValue)
 		{
 			return new Rect(
@@ -336,13 +313,9 @@ namespace Uno.UI
 				value.Height.FiniteOrDefault(defaultValue.Height));
 		}
 
-
-
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static double AtMost(this double value, double most) => Math.Min(value, most);
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Size AtMost(this Size value, Size most)
 		{
@@ -352,14 +325,11 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Rect AtMost(this Rect value, Size most) => new Rect(value.Location, value.Size.AtMost(most));
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static double AtLeast(this double value, double least) => Math.Max(value, least);
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Size AtLeast(this Size value, Size least)
 		{
@@ -369,10 +339,8 @@ namespace Uno.UI
 			);
 		}
 
-		[Pure]
 		internal static Rect AtLeast(this Rect value, Size least) => new Rect(value.Location, value.Size.AtLeast(least));
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Size AtLeastZero(this Size value)
 		{
@@ -386,7 +354,6 @@ namespace Uno.UI
 		/// Return overlapped zone, if any
 		/// </summary>
 		/// <returns>null means no overlap</returns>
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Rect? IntersectWith(this Rect rect1, Rect rect2)
 		{
@@ -419,7 +386,6 @@ namespace Uno.UI
 			}
 		}
 
-		[Pure]
 		internal static Rect UnionWith(this Rect rect1, Rect rect2)
 		{
 			rect1.Union(rect2);
@@ -429,7 +395,6 @@ namespace Uno.UI
 		/// <summary>
 		/// Test if a Rect "fits" totally in another one.
 		/// </summary>
-		[Pure]
 		internal static bool IsEnclosedBy(this Rect enclosee, Rect encloser)
 		{
 			if (enclosee.Equals(encloser))
@@ -443,10 +408,8 @@ namespace Uno.UI
 				&& enclosee.Bottom <= encloser.Bottom;
 		}
 
-		[Pure]
 		internal static double AspectRatio(this Rect rect) => rect.Size.AspectRatio();
 
-		[Pure]
 		internal static Rect GetBoundsRectRelativeTo(this FrameworkElement element, FrameworkElement relativeTo)
 		{
 			var elementToTarget = element.TransformToVisual(relativeTo);
@@ -457,7 +420,6 @@ namespace Uno.UI
 			return elementRectRelToTarget;
 		}
 
-		[Pure]
 		internal static Rect GetAbsoluteBoundsRect(this FrameworkElement element)
 		{
 			var root = (element.XamlRoot?.VisualTree.RootElement ?? Window.CurrentSafe?.RootElement) as FrameworkElement;
