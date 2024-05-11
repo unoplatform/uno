@@ -12,6 +12,9 @@ namespace Microsoft.UI.Composition;
 /// </summary>
 internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 {
+	[ThreadStatic] // just in case we eventually use multiple ui threads.
+	private static CompositionPathGeometry? _sharedPathGeometry;
+
 	// state received from BorderLayerRenderer
 	private bool _borderStateValid;
 	private CornerRadius _cornerRadius;
@@ -21,6 +24,8 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	private CompositionSpriteShape? _backgroundShape;
 	private CompositionSpriteShape? _borderShape;
 	private CompositionClip? _backgroundClip;
+	private SKPath? _borderPath;
+	private SKPath? _backgroundPath;
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
@@ -81,9 +86,16 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 	internal override void Paint(in PaintingSession session)
 	{
-		UpdateBorderBackgroundShapes();
-		if (_backgroundShape is { } backgroundShape)
+		_sharedPathGeometry ??= Compositor.CreatePathGeometry();
+		_sharedPathGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D());
+		var geometrySource = (SkiaGeometrySource2D)_sharedPathGeometry.Path.GeometrySource;
+
+		UpdateBorderAndBackgroundPaths();
+
+		if (_backgroundShape is { } backgroundShape && _backgroundPath is { } backgroundPath)
 		{
+			backgroundShape.Geometry = _sharedPathGeometry; // will only do something the first time
+			geometrySource.Geometry = backgroundPath; // changing Geometry doesn't raise OnPropertyChangedCore or invalidate render.
 			session.Canvas.Save();
 			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
@@ -94,7 +106,12 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 		base.Paint(in session);
 
-		_borderShape?.Render(in session);
+		if (_borderShape is { } borderShape && _borderPath is { } borderPath)
+		{
+			borderShape.Geometry = _sharedPathGeometry; // will only do something the first time
+			geometrySource.Geometry = borderPath; // changing Geometry doesn't raise OnPropertyChangedCore or invalidate render.
+			_borderShape?.Render(in session);
+		}
 	}
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
@@ -108,7 +125,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		}
 	}
 
-	private void UpdateBorderBackgroundShapes()
+	private void UpdateBorderAndBackgroundPaths()
 	{
 		if (_borderStateValid)
 		{
@@ -118,8 +135,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 		// clear old state
 		_childClipCausedByCornerRadius = null;
-		((_borderShape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as SkiaGeometrySource2D)?.Geometry.Reset();
-		((_backgroundShape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as SkiaGeometrySource2D)?.Geometry.Reset();
 
 		var outerArea = new SKRect(0, 0, Size.X, Size.Y);
 		var innerArea = new SKRect(
@@ -138,8 +153,8 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			fullCornerRadius.Outer.GetRadii(outerRadii);
 			fullCornerRadius.Inner.GetRadii(innerRadii);
 
-			UpdateBackground(_useInnerBorderBoundsAsAreaForBackground, innerArea, outerArea, outerRadii, innerRadii);
-			UpdateBorderShape(innerArea, outerArea, outerRadii, innerRadii);
+			UpdateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea, outerArea, outerRadii, innerRadii);
+			UpdateBorderPath(innerArea, outerArea, outerRadii, innerRadii);
 		}
 
 		// Note: The clipping is used to determine the location where the children of current element can be rendered.
@@ -169,42 +184,39 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		}
 	}
 
-	private unsafe void UpdateBackground(bool useInnerBorderBoundsAsAreaForBackground, SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+	private unsafe void UpdateBackgroundPath(bool useInnerBorderBoundsAsAreaForBackground, SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
-		var backgroundGeometry = (CompositionPathGeometry)(BackgroundShape.Geometry ??= Compositor.CreatePathGeometry());
-		backgroundGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D());
-		var backgroundPathGeometry = ((SkiaGeometrySource2D)backgroundGeometry.Path.GeometrySource).Geometry;
+		_backgroundPath ??= new SKPath();
+		_backgroundPath.Reset();
 		var roundRect = new SKRoundRect();
 		UnoSkiaApi.sk_rrect_set_rect_radii(
 			roundRect.Handle,
 			useInnerBorderBoundsAsAreaForBackground ? &innerArea : &outerArea,
 			useInnerBorderBoundsAsAreaForBackground ? innerRadii : outerRadii);
-		backgroundPathGeometry.AddRoundRect(roundRect);
-		backgroundPathGeometry.Close();
+		_backgroundPath.AddRoundRect(roundRect);
+		_backgroundPath.Close();
 	}
 
-	private unsafe void UpdateBorderShape(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+	private unsafe void UpdateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
-		var borderGeometry = (CompositionPathGeometry)(BorderShape.Geometry ??= Compositor.CreatePathGeometry());
-		borderGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D(new SKPath()));
-		var borderGeometrySource = (SkiaGeometrySource2D)borderGeometry.Path.GeometrySource;
-		var borderPathGeometry = borderGeometrySource.Geometry;
+		_borderPath ??= new SKPath();
+		_borderPath.Reset();
 
 		// It's important to set this every time, since borderPathGeometry.Reset will reset it.
-		borderGeometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
+		_borderPath.FillType = SKPathFillType.EvenOdd;
 
 		// The order here (outer then inner) is important because of the SKPathFillType.
 		{
 			var outerRect = new SKRoundRect();
 			UnoSkiaApi.sk_rrect_set_rect_radii(outerRect.Handle, &outerArea, outerRadii);
-			borderPathGeometry.AddRoundRect(outerRect);
-			borderPathGeometry.Close();
+			_borderPath.AddRoundRect(outerRect);
+			_borderPath.Close();
 		}
 		{
 			var innerRect = new SKRoundRect();
 			UnoSkiaApi.sk_rrect_set_rect_radii(innerRect.Handle, &innerArea, innerRadii);
-			borderPathGeometry.AddRoundRect(innerRect);
-			borderPathGeometry.Close();
+			_borderPath.AddRoundRect(innerRect);
+			_borderPath.Close();
 		}
 	}
 }
