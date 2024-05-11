@@ -16,24 +16,7 @@ partial class BorderLayerRenderer
 	/// <summary>
 	/// Updates or creates the owner's Visual to render a border-like shape.
 	/// </summary>
-	partial void UpdatePlatform()
-	{
-		var newState = new BorderLayerState(
-			new Size(_owner.ActualWidth, _owner.ActualHeight),
-			_borderInfoProvider.Background,
-			_borderInfoProvider.BackgroundSizing,
-			_borderInfoProvider.BorderBrush,
-			_borderInfoProvider.BorderThickness,
-			_borderInfoProvider.CornerRadius);
-
-		if (newState.Background != null ||
-			newState.CornerRadius != CornerRadius.None ||
-			(newState.BorderThickness != Thickness.Empty && newState.BorderBrush != null))
-		{
-
-			UpdateBorderAndBackground(newState);
-		}
-	}
+	partial void UpdatePlatform() => UpdateBorderAndBackground();
 
 	/// <summary>
 	/// Removes the added brush subscriptions during a call to <see cref="UpdatePlatform" />.
@@ -44,12 +27,12 @@ partial class BorderLayerRenderer
 		_borderShapeBrushDisposable.Disposable = null;
 	}
 
-	private void UpdateBorderAndBackground(BorderLayerState state)
+	private void UpdateBorderAndBackground()
 	{
-		var area = new Rect(default, state.ElementSize);
+		var area = new Rect(default, new Size(_owner.ActualWidth, _owner.ActualHeight));
 
 		// In case the element has no size, skip everything!
-		if (area.Width == 0 && area.Height == 0)
+		if (area is { Width: 0, Height: 0 })
 		{
 			return;
 		}
@@ -59,11 +42,11 @@ partial class BorderLayerRenderer
 			throw new InvalidOperationException($"{nameof(BorderLayerRenderer)} should only be used with UIElements that use a {nameof(BorderVisual)}.");
 		}
 
-		visual.CornerRadius = state.CornerRadius.ToUnoCompositionCornerRadius();
-		visual.BorderThickness = state.BorderThickness.ToUnoCompositionThickness();
-		visual.UseInnerBorderBoundsAsAreaForBackground = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge;
+		visual.CornerRadius = _borderInfoProvider.CornerRadius.ToUnoCompositionCornerRadius();
+		visual.BorderThickness = _borderInfoProvider.BorderThickness.ToUnoCompositionThickness();
+		visual.UseInnerBorderBoundsAsAreaForBackground = _borderInfoProvider.BackgroundSizing == BackgroundSizing.InnerBorderEdge;
 
-		var borderThickness = state.BorderThickness;
+		var borderThickness = _borderInfoProvider.BorderThickness;
 		if (_owner.GetUseLayoutRounding())
 		{
 			borderThickness = _owner.LayoutRound(borderThickness);
@@ -71,16 +54,14 @@ partial class BorderLayerRenderer
 
 		var compositor = visual.Compositor;
 
-		// Border background (if any)
 		_borderBackgroundBrushDisposable.Disposable = null;
-		if (state.Background is { } background)
+		if (_borderInfoProvider.Background is { } background)
 		{
 			_borderBackgroundBrushDisposable.Disposable = Brush.AssignAndObserveBrush(background, compositor, brush => visual.BackgroundBrush = brush);
 		}
 
-		// Border shape (if any)
 		_borderShapeBrushDisposable.Disposable = null;
-		if (borderThickness != Thickness.Empty && state.BorderBrush is { } borderBrush)
+		if (borderThickness != Thickness.Empty && _borderInfoProvider.BorderBrush is { } borderBrush)
 		{
 			_borderShapeBrushDisposable.Disposable = Brush.AssignAndObserveBrush(borderBrush, compositor, brush => visual.BorderBrush = brush);
 		}
