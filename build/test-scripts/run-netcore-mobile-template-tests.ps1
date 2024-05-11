@@ -143,7 +143,7 @@ if ($IsWindows)
         "$debug",
         "/t:pack",
         "MyUnoLib\MyUnoLib.csproj",
-        "/p:TargetFrameworks=net7.0-windows10.0.19041;net7.0"
+        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
@@ -164,7 +164,7 @@ if ($IsWindows)
         "/p:IncludeContentInPack=false",
         "MyUnoLib2\MyUnoLib2.csproj",
         "-bl",
-        "/p:TargetFrameworks=net7.0-windows10.0.19041;net7.0"
+        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
