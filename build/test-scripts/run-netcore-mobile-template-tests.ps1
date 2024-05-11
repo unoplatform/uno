@@ -139,8 +139,15 @@ if ($IsWindows)
 
     # Uno Library
     # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-    # Note that the dashdash% is present to avoid pwsh to interpret the `;` in the parameter
-    & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj --% "/p:TargetFrameworks=net7.0-windows10.0.19041;net7.0"
+    $responseFile = @(
+        "$debug",
+        "/t:pack",
+        "MyUnoLib\MyUnoLib.csproj",
+        "/p:TargetFrameworks=net7.0-windows10.0.19041;net7.0"
+    )
+    $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
+
+    & $msbuild @build.rsp
     Assert-ExitCodeIsZero
 
     # Uno Cross-Runtime Library
@@ -151,8 +158,17 @@ if ($IsWindows)
     # Uno Library with assets, Validate assets count
     #
     # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-    # Note that the dashdash% is present to avoid pwsh to interpret the `;` in the parameter
-    & $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl --% "/p:TargetFrameworks=net7.0-windows10.0.19041;net7.0"
+    $responseFile = @(
+        "$debug",
+        "/t:pack",
+        "/p:IncludeContentInPack=false",
+        "MyUnoLib2\MyUnoLib2.csproj",
+        "-bl",
+        "/p:TargetFrameworks=net7.0-windows10.0.19041;net7.0"
+    )
+    $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
+
+    & $msbuild @build.rsp
     Assert-ExitCodeIsZero
 
     mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip
