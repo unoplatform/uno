@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
@@ -67,6 +68,8 @@ partial class CalendarViewBaseItem : IBorderInfoProvider
 	CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
 
 #if __SKIA__
+	BorderVisual IBorderInfoProvider.BorderVisual => Visual as BorderVisual ?? throw new InvalidCastException($"{nameof(IBorderInfoProvider)}s should use a {nameof(BorderVisual)}.");
+
 	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
 	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
 #endif

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -38,6 +39,8 @@ internal partial interface IBorderInfoProvider
 	CornerRadius CornerRadius { get; }
 
 #if __SKIA__
+	BorderVisual BorderVisual { get; }
+
 	SerialDisposable BorderBrushSubscriptionDisposable { get; set; }
 	SerialDisposable BackgroundBrushSubscriptionDisposable { get; set; }
 #endif
