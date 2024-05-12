@@ -110,7 +110,7 @@ if ($IsWindows)
 
     # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
     # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-    & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
+    & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041"
     Assert-ExitCodeIsZero
 }
 
@@ -139,7 +139,15 @@ if ($IsWindows)
 
     # Uno Library
     # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-    & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
+    $responseFile = @(
+        "$debug",
+        "/t:pack",
+        "MyUnoLib\MyUnoLib.csproj",
+        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
+    )
+    $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
+
+    & $msbuild "@build.rsp"
     Assert-ExitCodeIsZero
 
     # Uno Cross-Runtime Library
@@ -150,7 +158,17 @@ if ($IsWindows)
     # Uno Library with assets, Validate assets count
     #
     # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-    & $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
+    $responseFile = @(
+        "$debug",
+        "/t:pack",
+        "/p:IncludeContentInPack=false",
+        "MyUnoLib2\MyUnoLib2.csproj",
+        "-bl",
+        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
+    )
+    $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
+
+    & $msbuild "@build.rsp"
     Assert-ExitCodeIsZero
 
     mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip
