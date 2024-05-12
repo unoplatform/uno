@@ -71,7 +71,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:UseRidGraph=true /p:RuntimeIdentifiers=win10-x86;win10-x64 /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

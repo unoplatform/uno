@@ -37,7 +37,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:RuntimeIdentifier=win10-x64 /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -46,7 +46,7 @@ jobs:
   - task: CopyFiles@2
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/Release/net8.0-windows10.0.19041.0/win-x64/AppPackages
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false
