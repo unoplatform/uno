@@ -8,7 +8,15 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    CombinedConfiguration: Release|Any CPU
+    # Using x64 to workaround this error:
+    # ---
+    # Microsoft.Build.Msix.Packaging.targets(1036,5): Error : Packaged .NET applications with an
+    # app host exe cannot be ProcessorArchitecture neutral. Please specify a RuntimeIdentifier
+    # or a Platform other than AnyCPU.
+    # ---
+    # NOTE: The error says to specify a RuntimeIdentifier *OR* platform other than AnyCPU.
+    # We already specify RuntimeIdentifier=win-x64 in the build below. Still, the error pops up.
+    CombinedConfiguration: Release|x64
     CI_Build: true
 
     # Use pre-defined local nuget cache for restore
