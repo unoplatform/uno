@@ -52,7 +52,7 @@ public class Given_NoFuzzyMatching
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70Android.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net80Android.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
@@ -105,7 +105,7 @@ public class Given_NoFuzzyMatching
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 

@@ -139,7 +139,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				}
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
 
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net70;
+				ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
 
 #if WRITE_EXPECTED
 				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
