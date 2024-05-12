@@ -66,6 +66,8 @@ partial class CalendarViewBaseItem : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
 
+#if __SKIA__
 	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
 	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
+#endif
 }

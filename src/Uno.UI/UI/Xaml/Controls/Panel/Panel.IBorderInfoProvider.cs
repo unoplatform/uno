@@ -18,6 +18,8 @@ partial class Panel : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadiusInternal;
 
+#if __SKIA__
 	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
 	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
+#endif
 }

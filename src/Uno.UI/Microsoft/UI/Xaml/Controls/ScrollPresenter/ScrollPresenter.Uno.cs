@@ -33,7 +33,9 @@ partial class ScrollPresenter : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => default;
 
+#if __SKIA__
 	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
 	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
+#endif
 }
 #endif
