@@ -20,7 +20,6 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-using Uno.UI.Xaml.Controls;
 
 #if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
@@ -3688,8 +3687,6 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			// We use BorderLayerRenderer to draw the background.
 #if __SKIA__
 			this.UpdateBackground();
-#else
-			_borderRenderer.Update();
 #endif
 
 			//Panel thisAsPanel = this;
