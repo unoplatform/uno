@@ -41,7 +41,6 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("XamlGenerationTests.Core")]
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
-[assembly: InternalsVisibleTo("Uno.UI.Tests.Performance")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Dispatching")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

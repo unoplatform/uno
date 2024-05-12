@@ -6,7 +6,6 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
 [assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
-[assembly: InternalsVisibleTo("Uno.UI.Tests.Performance")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
