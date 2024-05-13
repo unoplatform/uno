@@ -116,3 +116,11 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
+      ArtifactName: template-tests-binlogs
+      ArtifactType: Container

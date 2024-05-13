@@ -76,13 +76,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $projectOptions=$projects[$i][1];
 
     Write-Host "Building Debug $projectPath with $projectOptions"
-    dotnet build $debug "$projectPath" $projectOptions
+    dotnet build $debug "$projectPath" $projectOptions -bl:binlogs/$projectPath/debug.binlog
     Assert-ExitCodeIsZero
 
     dotnet clean $debug "$projectPath"
 
     Write-Host "Building Release $projectPath with $projectOptions"
-    dotnet build $release "$projectPath" $projectOptions
+    dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/release.binlog
     Assert-ExitCodeIsZero
 
     dotnet clean $release "$projectPath"
