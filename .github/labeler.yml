@@ -5,8 +5,6 @@ area/automation:
   - src/SamplesApp/**/*
   - src/Uno.UI.Tests/*
   - src/Uno.UI.Tests/**/*
-  - src/Uno.UI.Tests.Performance/*
-  - src/Uno.UI.Tests.Performance/**/*
   - src/Uno.UI.Wasm.Tests/*
   - src/Uno.UI.Wasm.Tests/**/*
 
