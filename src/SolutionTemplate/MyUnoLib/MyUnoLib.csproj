@@ -4,6 +4,8 @@
     <TargetFrameworks>$(TargetFrameworks);net8.0;net8.0-ios;net8.0-maccatalyst;net8.0-android</TargetFrameworks>
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
+
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Uno.WinUI" Version="$(GITVERSION_SemVer)" />
