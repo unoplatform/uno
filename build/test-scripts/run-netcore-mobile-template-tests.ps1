@@ -206,10 +206,13 @@ $projects =
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst", $sdkFeatures), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop"), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", $sdkFeatures), $true, $true),
+<<<<<<< HEAD
     
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-browserwasm", "-p:ImplicitUsings=disable"), $true, $true),
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", "-p:ImplicitUsings=disable"), $true, $true),
 >>>>>>> b932eba76d (fix: Validate disable implicit using)
+=======
+>>>>>>> 3ebfbbadbc (chore: adjust regression tests)
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     # Disabled until agent supports net8 in msbuild
