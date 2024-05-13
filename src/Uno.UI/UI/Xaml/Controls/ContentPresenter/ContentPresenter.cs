@@ -524,7 +524,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
 #if __SKIA__
-		// TODO: should we update something here?
+		// TODO: https://github.com/unoplatform/uno/issues/16705
 #else
 		UpdateBorder();
 #endif
