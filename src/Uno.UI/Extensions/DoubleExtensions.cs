@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.Contracts;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace Uno.Extensions
 {
 	internal static class DoubleExtensions
 	{
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static bool IsFinite(this double value)
 		{
@@ -16,7 +14,6 @@ namespace Uno.Extensions
 #endif
 		}
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static bool IsFinite(this float value)
 		{

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 using Windows.Devices.Input;
@@ -405,13 +404,11 @@ namespace Windows.UI.Input
 				}
 			}
 
-			[Pure]
 			private Point GetPosition()
 			{
 				return _inertia?.GetPosition() ?? _currents.Center;
 			}
 
-			[Pure]
 			private ManipulationDelta GetCumulative()
 			{
 				if (_inertia is { } inertia)
@@ -476,7 +473,6 @@ namespace Windows.UI.Input
 				};
 			}
 
-			[Pure]
 			private ManipulationDelta GetDelta(ManipulationDelta cumulative)
 			{
 				var deltaSum = _lastPublishedState.sumOfDelta;
@@ -609,7 +605,6 @@ namespace Windows.UI.Input
 				}
 			}
 
-			[Pure]
 			private bool ShouldStartInertia(ManipulationVelocities velocities)
 				=> _inertia is null
 					&& !IsDragManipulation
