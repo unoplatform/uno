@@ -154,10 +154,10 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 		var outerArea = new SKRect(0, 0, Size.X, Size.Y);
 		var innerArea = new SKRect(
-			_borderThickness.Left,
-			_borderThickness.Top,
-			_borderThickness.Left + Math.Max(0, Size.X - (_borderThickness.Left + _borderThickness.Right)),
-			_borderThickness.Top + Math.Max(0, Size.Y - (_borderThickness.Top + _borderThickness.Bottom)));
+			(float)_borderThickness.Left,
+			(float)_borderThickness.Top,
+			(float)(_borderThickness.Left + Math.Max(0, Size.X - (_borderThickness.Left + _borderThickness.Right))),
+			(float)(_borderThickness.Top + Math.Max(0, Size.Y - (_borderThickness.Top + _borderThickness.Bottom))));
 
 		// note that we're sending (the full) Size, not size
 		var fullCornerRadius = _cornerRadius.GetRadii(Size.ToSize(), _borderThickness);

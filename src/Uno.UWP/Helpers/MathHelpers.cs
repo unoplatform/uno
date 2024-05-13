@@ -7,7 +7,7 @@
 using System;
 using Windows.Foundation;
 
-namespace Uno.UI.Helpers.WinUI
+namespace Uno.Helpers
 {
 	internal static class MathHelpers
 	{

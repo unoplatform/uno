@@ -1,16 +1,20 @@
 ﻿using Uno.Extensions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Globalization;
-using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
+using Uno.Helpers;
 
+#if IS_UNO_COMPOSITION
+namespace Uno.UI.Composition;
+#else
 namespace Microsoft.UI.Xaml;
+#endif
 
 /// <summary>Defines the radius of a rectangle's corners. </summary>
+#if !IS_UNO_COMPOSITION
 [TypeConverter(typeof(CornerRadiusConverter))]
+#endif
 public partial struct CornerRadius : IEquatable<CornerRadius>
 {
 	/// <summary>Gets or sets the radius of the top-left corner.</summary>
@@ -44,6 +48,13 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 		BottomLeft = bottomLeft;
 		BottomRight = bottomRight;
 	}
+
+#if !IS_UNO_COMPOSITION
+	internal Uno.UI.Composition.CornerRadius ToUnoCompositionCornerRadius()
+	{
+		return new Uno.UI.Composition.CornerRadius(TopLeft, TopRight, BottomRight, BottomLeft);
+	}
+#endif
 
 	private static bool Equals(CornerRadius left, CornerRadius right)
 		=> left.TopLeft == right.TopLeft
@@ -93,10 +104,6 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	/// </summary>
 	public static bool operator !=(CornerRadius cr1, CornerRadius cr2) => !Equals(cr1, cr2);
 
-	internal Uno.UI.Composition.CornerRadius ToUnoCompositionCornerRadius()
-		=> new Uno.UI.Composition.CornerRadius(TopLeft, TopRight, BottomRight, BottomLeft);
-
-#if !__SKIA__ // On skia, use Uno.UI.Composition.CornerRadius instead
 	/// <summary>
 	/// Retrieves the actual inner and outer radii.
 	/// </summary>
@@ -209,5 +216,4 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 			new((float)rightBottomArc, (float)bottomRightArc),
 			new((float)leftBottomArc, (float)bottomLeftArc));
 	}
-#endif
 }
