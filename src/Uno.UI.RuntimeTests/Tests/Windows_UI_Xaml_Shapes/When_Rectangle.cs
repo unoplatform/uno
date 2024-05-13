@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Shapes;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
 	[TestClass]
-	class When_Rectangle
+	public class When_Rectangle
 	{
 		[TestMethod]
 		[RunsOnUIThread]

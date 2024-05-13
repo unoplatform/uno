@@ -66,7 +66,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			BindingOperations.SetBinding(dp2, MyDP.MyStringProperty, binding);
 
-			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual("$0.00", dp2.MyString);
 			Assert.AreEqual(1, conv.ConvertCount);
 			Assert.AreEqual(0, conv.ConvertBackCount);
 
@@ -101,7 +101,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			dp2.ApplyXBind();
 
-			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual("$0.00", dp2.MyString);
 			Assert.AreEqual(1, conv.ConvertCount);
 			Assert.AreEqual(0, conv.ConvertBackCount);
 
@@ -115,7 +115,7 @@ namespace Uno.UI.Tests.BinderTests
 			// the UpdateSource invocation as a two-way binding is still happening.
 			//
 			// This behavior is different with a normal binding.
-			Assert.AreEqual("¤42.00", dp2.MyString);
+			Assert.AreEqual("$42.00", dp2.MyString);
 			Assert.AreEqual(42, dp1.MyDouble);
 			Assert.AreEqual(2, conv.ConvertCount);
 			Assert.AreEqual(1, conv.ConvertBackCount);

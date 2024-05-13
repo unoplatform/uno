@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Collections
 {
 	[TestClass]
-	internal class Given_StringMap
+	public class Given_StringMap
 	{
 
 		StringMap _testSet = new();

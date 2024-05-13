@@ -41,13 +41,13 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[ClassInitialize]
-		void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}

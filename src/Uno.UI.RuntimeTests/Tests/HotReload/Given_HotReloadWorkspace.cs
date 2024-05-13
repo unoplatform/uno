@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 #if !__SKIA__
 [Ignore("Hot reload tests are only available on Skia targets")]
 #endif
-internal partial class Given_HotReloadWorkspace
+public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
 	private static int _remoteControlPort;
@@ -167,6 +167,7 @@ internal partial class Given_HotReloadWorkspace
 				"build",
 				$"-p:UnoRemoteControlPort={_remoteControlPort}",
 				$"-p:UnoRemoteControlHost=127.0.0.1",
+				$"-p:NoWarn=CS8619", // Workaround https://github.com/unoplatform/uno.ui.runtimetests.engine/issues/174#issuecomment-2104088957
 				"--configuration",
 
 				// Use the debug configuration so that remote control

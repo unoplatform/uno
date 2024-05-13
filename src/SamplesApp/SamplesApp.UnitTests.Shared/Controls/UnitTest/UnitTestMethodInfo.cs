@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Tests;
 
 internal record UnitTestMethodInfo
 {
-	private readonly List<object[]> _casesParameters;
+	private readonly List<object?[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
 
 	private readonly bool _ignoredBecauseOfConditionalTestAttribute;

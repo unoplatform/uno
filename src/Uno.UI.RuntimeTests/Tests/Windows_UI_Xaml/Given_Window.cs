@@ -173,7 +173,7 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async void When_Secondary_Window_From_Xaml()
+	public async Task When_Secondary_Window_From_Xaml()
 	{
 		if (!NativeWindowFactory.SupportsMultipleWindows)
 		{

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 {
 	[TestClass]
-	class Given_UnitTest
+	public class Given_UnitTest
 	{
 		static int When_UnhandledException_Count;
 
@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	}
 
 	[TestClass]
-	class Given_UnitTest_Initialize
+	public class Given_UnitTest_Initialize
 	{
 		static int Initialize_Count;
 

@@ -15,6 +15,7 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
 	</ItemGroup>
 

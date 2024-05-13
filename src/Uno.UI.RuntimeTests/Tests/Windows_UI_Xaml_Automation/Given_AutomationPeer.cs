@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
 	[TestClass]
-	class Given_AutomationPeer
+	public class Given_AutomationPeer
 	{
 		[TestMethod]
 		[RunsOnUIThread]
