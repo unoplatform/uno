@@ -57,7 +57,7 @@
 			`DefiningProjectDirectory` is not available when used from a global itemgroup, but is 
 			available from an target.
 			-->
-			<_RemoveWebSDKUsing Include="@(Using)" Condition="$([System.String]::Copy(%(Using.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.Web'))" />
+			<_RemoveWebSDKUsing Include="@(Using)" Condition="'%(Using.DefiningProjectDirectory)'!='' AND $([System.String]::Copy(%(Using.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.Web'))" />
 			<Using Remove="@(_RemoveWebSDKUsing)" />
 			<_RemoveWebSDKUsing Remove="@(_RemoveWebSDKUsing)"/>
 		</ItemGroup>
