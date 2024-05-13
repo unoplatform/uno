@@ -3,7 +3,6 @@
 #if !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -167,14 +166,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		[Pure]
 		private static bool IsCloseReal(double a, double b)
 		{
 			var x = Math.Abs((a - b) / (b == 0d ? 1d : b));
 			return x < 1.85e-3d;
 		}
 
-		[Pure]
 		private static bool IsLessThanAndNotCloseTo(double a, double b)
 		{
 			return (a < b) && !IsCloseReal(a, b);

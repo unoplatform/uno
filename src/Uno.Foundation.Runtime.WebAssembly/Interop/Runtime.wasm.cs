@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using Uno.Foundation.Interop;
 using System.Text;
@@ -407,7 +406,6 @@ namespace Uno.Foundation
 			return listener.task;
 		}
 
-		[Pure]
 		public static string EscapeJs(string s)
 		{
 			if (s == null)
