@@ -65,6 +65,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			OnFillBrushChanged();
 			OnStrokeBrushChanged();
 			UpdateStrokeThickness();
+			UpdateStrokeDashArray();
 		}
 
 		private void OnFillBrushChanged()
@@ -79,6 +80,24 @@ namespace Microsoft.UI.Xaml.Shapes
 		private void UpdateStrokeThickness()
 		{
 			_shape.StrokeThickness = (float)ActualStrokeThickness;
+		}
+
+		private void UpdateStrokeDashArray()
+		{
+			var compositionStrokeDashArray = new CompositionStrokeDashArray();
+			var strokeDashArray = StrokeDashArray;
+			if (strokeDashArray is null)
+			{
+				_shape.StrokeDashArray = null;
+				return;
+			}
+
+			for (int i = 0; i < strokeDashArray.Count; i++)
+			{
+				compositionStrokeDashArray.Add((float)strokeDashArray[i]);
+			}
+
+			_shape.StrokeDashArray = compositionStrokeDashArray;
 		}
 
 		private void OnStrokeBrushChanged()

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Linq;
 using SkiaSharp;
 using Uno;
 using Uno.Extensions;
@@ -56,8 +57,10 @@ namespace Microsoft.UI.Composition
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
-					// TODO: Add support for dashes here
-					// strokePaint.PathEffect = SKPathEffect.CreateDash();
+					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
+					{
+						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), 0);
+					}
 
 					// Generate stroke geometry for bounds that will be passed to a brush.
 					// - [Future]: This generated geometry should also be used for hit testing.
@@ -116,6 +119,12 @@ namespace Microsoft.UI.Composition
 				{
 					paint.Shader.Dispose();
 					paint.Shader = null;
+				}
+
+				if (paint.PathEffect != null)
+				{
+					paint.PathEffect.Dispose();
+					paint.PathEffect = null;
 				}
 			}
 
