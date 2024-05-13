@@ -323,7 +323,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			using (new AssertionScope())
 			{
 				text2.Should().Be(text1, because: "Text content should not change at max length.");
-				text3.Should().Be("TextChanged: 1");
+				text3.Should().Be("TextChanged: 2");
 			}
 		}
 

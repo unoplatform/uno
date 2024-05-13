@@ -13,6 +13,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
@@ -23,7 +24,7 @@ using AppKit;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class AutoSuggestBox : ItemsControl, IValueChangedListener
+	public partial class AutoSuggestBox : ItemsControl
 	{
 		private TextBox _textBox;
 		private Popup _popup;
@@ -31,9 +32,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private ListView _suggestionsList;
 		private Button _queryButton;
 		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-		private string userInput;
-		private BindingPath _textBoxBinding;
+		private string _userInput;
 		private FrameworkElement _suggestionsContainer;
+		private IDisposable _textChangedDisposable;
 
 		public AutoSuggestBox() : base()
 		{
@@ -75,7 +76,12 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);
 
-			_textBoxBinding = new BindingPath("Text", null) { DataContext = _textBox, ValueChangedListener = this };
+			_textChangedDisposable?.Dispose();
+			if (_textBox is { })
+			{
+				_textBox.TextChanged += OnTextBoxTextChanged;
+				_textChangedDisposable = Disposable.Create(() => _textBox.TextChanged -= OnTextBoxTextChanged);
+			}
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -86,13 +92,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object value)
+		private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
 		{
-			if (value is string str)
+			if (args.IsTextChangedPending)
 			{
-				// If TextBox's Text value is null, we ignore it.
-				Text = str;
+				// just respond to the last TextChanged event. This is not exactly what WinUI does, but it should be close enough.
+				return;
 			}
+			Text = _textBox.Text;
+			OnTextChanged(args.IsUserModifyingText);
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -159,7 +167,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateUserInput(Object o)
 		{
-			userInput = GetObjectText(o);
+			_userInput = GetObjectText(o);
 		}
 
 		private void LayoutPopup()
@@ -287,6 +295,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void UnregisterEvents()
 		{
+			_textChangedDisposable?.Dispose();
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
@@ -306,6 +315,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_popup.Closed -= OnPopupClosed;
 			}
+
+			_textChangedDisposable?.Dispose();
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
@@ -456,7 +467,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_suggestionsList.SelectedIndex = -1;
 			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 
-			Text = userInput ?? "";
+			Text = _userInput ?? "";
 		}
 
 		private string GetObjectText(Object o)
@@ -477,43 +488,38 @@ namespace Microsoft.UI.Xaml.Controls
 			return value?.ToString() ?? "";
 		}
 
-		private static void OnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnTextChanged(bool isUserModifyingText)
 		{
-			var newValue = args.NewValue as string ?? string.Empty;
-
-			if (dependencyObject is AutoSuggestBox tb)
+			// On some platforms, the TextChangeReason is not updated
+			// as KeyDown is not triggered (e.g. Android)
+			if (_textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && _textBox is not null)
 			{
-				// On some platforms, the TextChangeReason is not updated
-				// as KeyDown is not triggered (e.g. Android)
-				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && tb._textBox is not null)
+				if (isUserModifyingText)
 				{
-					if (tb._textBox.IsUserModifying)
-					{
-						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
-					}
-					else
-					{
-						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-					}
+					_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
 				}
-
-				tb.UpdateTextBox();
-				tb.UpdateSuggestionList();
-
-				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+				else
 				{
-					tb.UpdateUserInput(newValue);
+					_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 				}
-
-				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs()
-				{
-					Reason = tb._textChangeReason,
-					Owner = tb
-				});
-
-				// Reset the default - otherwise SuggestionChosen could remain set.
-				tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 			}
+
+
+			UpdateSuggestionList();
+
+			if (_textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+			{
+				UpdateUserInput(Text);
+			}
+
+			TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs
+			{
+				Reason = _textChangeReason,
+				Owner = this
+			});
+
+			// Reset the default - otherwise SuggestionChosen could remain set.
+			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		}
 
 		private void UpdateDescriptionVisibility(bool initialization)

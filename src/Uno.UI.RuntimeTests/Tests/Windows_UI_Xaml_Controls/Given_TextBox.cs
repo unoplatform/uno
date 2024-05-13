@@ -532,8 +532,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			int update = 0;
 			var initialText = "Text";
-			string GetCurrentText() => initialText + update;
-			string GetNewText() => initialText + ++update;
 
 			var textBox = new TextBox
 			{
@@ -543,13 +541,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 
+			// make sure the initial (''->'Waiting') TextChanged event had time to be dispatched
+			await WindowHelper.WaitForIdle();
+
 			int textChangedInvokeCount = 0;
 			int textChangingInvokeCount = 0;
 
 			bool failedCheck = false;
 			bool finished = false;
 
-			void OnTextChanged(object sender, TextChangedEventArgs e)
+			string GetCurrentText() => initialText + update;
+			string GetNewText() => initialText + ++update;
+			async void OnTextChanged(object sender, TextChangedEventArgs e)
 			{
 				textChangedInvokeCount++;
 				if (GetCurrentText() != textBox.Text)

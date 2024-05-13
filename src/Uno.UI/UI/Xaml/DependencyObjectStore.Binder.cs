@@ -425,7 +425,7 @@ namespace Microsoft.UI.Xaml
 			if (fullBinding != null)
 			{
 				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty)
-					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.CompiledSource != null);
+					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.IsXBind);
 
 				if (boundProperty != null)
 				{
