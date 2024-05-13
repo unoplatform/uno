@@ -399,24 +399,32 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_tpPreviousButtonHorizontalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpPreviousButtonHorizontalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpPreviousButtonHorizontalPart.Click -= OnPreviousButtonPartClick;
 			}
 
 			if (m_tpNextButtonHorizontalPart != null)
 			{
 				m_tpNextButtonHorizontalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpNextButtonHorizontalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpNextButtonHorizontalPart.Click -= OnNextButtonPartClick;
 			}
 
 			if (m_tpPreviousButtonVerticalPart != null)
 			{
 				m_tpPreviousButtonVerticalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpPreviousButtonVerticalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpPreviousButtonVerticalPart.Click -= OnPreviousButtonPartClick;
 			}
 
 			if (m_tpNextButtonVerticalPart != null)
 			{
 				m_tpNextButtonVerticalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpNextButtonVerticalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpNextButtonVerticalPart.Click -= OnNextButtonPartClick;
 			}
 
 			if (m_tpScrollViewer != null)
