@@ -28,7 +28,7 @@ internal static class BorderHelper
 
 	public static void UpdateBackground(this IBorderInfoProvider @this)
 	{
-		@this.BorderBrushSubscriptionDisposable.Disposable = Brush.AssignAndObserveBrush(@this.Background, @this.BorderVisual.Compositor, brush => @this.BorderVisual.BackgroundBrush = brush);
+		@this.BackgroundBrushSubscriptionDisposable.Disposable = Brush.AssignAndObserveBrush(@this.Background, @this.BorderVisual.Compositor, brush => @this.BorderVisual.BackgroundBrush = brush);
 	}
 
 	public static void UpdateBorderBrush(this IBorderInfoProvider @this)
