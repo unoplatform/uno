@@ -28,10 +28,10 @@ $release = $default + '/p:Configuration=Release' + '/r'
 ## Configurations are split to work around UWP not building with .NET new
 $dotnetBuildConfigurations =
 @(
-    @("Mobile", "-f:net7.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
-    @("Mobile", "-f:net7.0-ios", ""),
-    @("Mobile", "-f:net7.0-maccatalyst", ""),
-    # @("Mobile", "-f:net7.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
+    @("Mobile", "-f:net8.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
+    @("Mobile", "-f:net8.0-ios", ""),
+    @("Mobile", "-f:net8.0-maccatalyst", ""),
+    # @("Mobile", "-f:net8.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", "")
@@ -79,10 +79,10 @@ popd
 
 $dotnetBuildNet6Configurations =
 @(
-    @("Mobile", "-f:net7.0-android", ""),
-    @("Mobile", "-f:net7.0-ios", ""),
-    @("Mobile", "-f:net7.0-maccatalyst", ""),
-    # @("Mobile", "-f:net6.0-macos", ""),  # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
+    @("Mobile", "-f:net8.0-android", ""),
+    @("Mobile", "-f:net8.0-ios", ""),
+    @("Mobile", "-f:net8.0-maccatalyst", ""),
+    # @("Mobile", "-f:net8.0-macos", ""),  # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
     @("Server", "", ""),
     @("Skia.Gtk", "", ""),
@@ -110,7 +110,7 @@ if ($IsWindows)
 
     # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
     # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-    & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041"
+    & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net8.0-windows10.0.19041;TargetFramework=net8.0-windows10.0.19041"
     Assert-ExitCodeIsZero
 }
 
@@ -143,7 +143,7 @@ if ($IsWindows)
         "$debug",
         "/t:pack",
         "MyUnoLib\MyUnoLib.csproj",
-        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
+        "/p:TargetFrameworks=""net8.0-windows10.0.19041;net8.0"""
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
@@ -164,7 +164,7 @@ if ($IsWindows)
         "/p:IncludeContentInPack=false",
         "MyUnoLib2\MyUnoLib2.csproj",
         "-bl",
-        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
+        "/p:TargetFrameworks=""net8.0-windows10.0.19041;net8.0"""
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
