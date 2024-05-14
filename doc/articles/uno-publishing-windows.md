@@ -35,7 +35,7 @@ To package your app:
 In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX files.
 
 > [!IMPORTANT]
-> IF your solution contains `net8.0` projects, you will need to split the above build command in two, one to restore NuGet packages, the other one to create the package.
+> IF your solution contains `net8.0` projects, you will need to split the above build command in two, one to restore NuGet packages, and the other one to create the package.
 >
 > First run this command:
 >
@@ -45,7 +45,7 @@ In order to build for additional platforms, change the `Platform` parameter to `
 >
 > Then run the package creation command without the `/r` parameter.
 
-#### Install unsigned the app
+#### Install the unsigned app
 
 To install the app:
 
@@ -80,7 +80,7 @@ To package your app:
   msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
 
 > [!IMPORTANT]
-> IF your solution contains `net8.0` projects, you will need to split the above build command in two, one to restore NuGet packages, the other one to create the package.
+> IF your solution contains `net8.0` projects, you will need to split the above build command in two, one to restore NuGet packages, and the other one to create the package.
 >
 > First run this command:
 >
@@ -95,7 +95,7 @@ In order to build for additional platforms, change the `Platform` parameter to `
 > [!IMPORTANT]
 > Single package msix bundling is [not yet supported from msbuild the command line](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/single-project-msix?tabs=csharp#automate-building-and-packaging-your-single-project-msix-app).
 
-#### Install signed the app
+#### Install the signed app
 
 To install the app:
 
