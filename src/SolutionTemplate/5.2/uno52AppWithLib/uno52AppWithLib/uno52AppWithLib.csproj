@@ -81,8 +81,8 @@
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
 
         <!-- Validate json files handling -->
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)test_root_asset.json" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)test_root_asset_not_included.json" MustNotExist="true" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset.json" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset_not_included.json" MustNotExist="true" />
 
         <!-- Transitive library asset -->
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\test.xml" />
