@@ -41,6 +41,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -63,6 +64,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 // https://jameshunt.us/writings/managing-the-x11-clipboard/
 internal class X11ClipboardExtension : IClipboardExtension
 {
+	private const uint IncrMaxDelayMS = 500;
 	private readonly ImmutableList<IntPtr> _supportedAtoms;
 
 	public static readonly ImmutableDictionary<string, Encoding> TextFormats = new Dictionary<string, Encoding>
@@ -696,9 +698,9 @@ internal class X11ClipboardExtension : IClipboardExtension
 		return formats;
 	}
 
-	private static byte[] WaitForBytes(X11Window x11Window, IntPtr format, IntPtr selection)
+	private static byte[] WaitForBytes(X11Window x11Window, IntPtr format, IntPtr selection, CancellationToken ct = default)
 	{
-		using var _1 = X11Helper.XLock(x11Window.Display);
+		using var xLock = X11Helper.XLock(x11Window.Display);
 
 		if (!HasOwner(x11Window, selection))
 		{
@@ -795,6 +797,16 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 			while (true)
 			{
+				var start = Stopwatch.GetTimestamp();
+				SpinWait.SpinUntil(() =>
+				{
+					return XLib.XPending(x11Window.Display) > 0 || Stopwatch.GetElapsedTime(start).Milliseconds > IncrMaxDelayMS;
+				});
+				if (ct.IsCancellationRequested || Stopwatch.GetElapsedTime(start).Milliseconds > IncrMaxDelayMS)
+				{
+					return null;
+				}
+
 				var _10 = XLib.XNextEvent(x11Window.Display, out event_);
 
 				if (event_.type != XEventName.PropertyNotify || event_.PropertyEvent.state != X11Helper.PropertyNewValue)
