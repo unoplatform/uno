@@ -60,6 +60,7 @@
 
         <!-- Validate json files handling -->
         <_AssetsToValidate Include="$(OutputPath)test_root_asset.json" />
+        <_AssetsToValidate Include="$(OutputPath)test_root_asset_not_included.json" MustNotExist="true" />
 
         <!-- Transitive library asset -->
         <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\test.xml" />
