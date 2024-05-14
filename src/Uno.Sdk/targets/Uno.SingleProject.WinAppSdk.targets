@@ -49,7 +49,7 @@
 
 	<Target Name="EnsureDefaultPlatformForAnyCPU"
 			BeforeTargets="ResolveReferences;ResolveProjectReferences;BeforeBuild"
-			Condition="'$(Platform)' == 'AnyCPU' AND $(Optimize) != 'true'">
+			Condition="'$(Platform)' == 'AnyCPU'">
 		<!-- Required to allow `dotnet build` to work without extra parameters -->
 		<PropertyGroup>
 			<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
