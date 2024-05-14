@@ -384,11 +384,28 @@ partial class ClientHotReloadProcessor
 
 	public static void UpdateApplication(Type[] types)
 	{
-		foreach (var t in types)
+		foreach (var type in types)
 		{
-			if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
+			try
 			{
-				TypeMappings.RegisterMapping(t, update.OriginalType);
+				// Look up the attribute by name rather than by type.
+				// This would allow netstandard targeting libraries to define their own copy without having to cross-compile.
+				var attr = type.GetCustomAttributesData().FirstOrDefault(data => data is { AttributeType.FullName: "System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute" });
+				if (attr is { ConstructorArguments: [{ Value: Type originalType }] })
+				{
+					TypeMappings.RegisterMapping(type, originalType);
+				}
+				else if (attr is not null && _log.IsEnabled(LogLevel.Warning))
+				{
+					_log.Warn($"Found invalid MetadataUpdateOriginalTypeAttribute for {type}");
+				}
+			}
+			catch (Exception error)
+		{
+				if (_log.IsEnabled(LogLevel.Error))
+			{
+					_log.Error($"Error while processing MetadataUpdateOriginalTypeAttribute for {type}", error);
+				}
 			}
 		}
 
