@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
@@ -23,7 +24,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private unsafe void DecodeStreamIntoBuffer()
 		{
-			_stream.Seek(0);
 			using var img = SKImage.FromEncodedData(_stream.AsStream());
 			var info = img.Info;
 
