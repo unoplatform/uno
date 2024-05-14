@@ -32,8 +32,18 @@ To package your app:
     msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=false
     ```
 
+In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX files.
+
 > [!IMPORTANT]
-> Single package msix bundling is [not yet supported from msbuild the command line](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/single-project-msix?tabs=csharp#automate-building-and-packaging-your-single-project-msix-app).
+> IF your solution contains `net8.0` projects, you will need to split the above build command in two, one to restore NuGet packages, the other one to create the package.
+>
+> First run this command:
+>
+> ```pwsh
+> msbuild /r /t:Restore /p:Configuration=Release
+> ```
+>
+> Then run the package creation command without the `/r` parameter.
 
 #### Install unsigned the app
 
@@ -67,10 +77,23 @@ To package your app:
 - Build the app on the command line in the folder of the app's `.csproj`, use the following command:
 
   ```cmd
-  msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundlePlatforms="x86|x64|arm64" /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
-  ```
+  msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
 
-In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX
+> [!IMPORTANT]
+> IF your solution contains `net8.0` projects, you will need to split the above build command in two, one to restore NuGet packages, the other one to create the package.
+>
+> First run this command:
+>
+> ```pwsh
+> msbuild /r /t:Restore /p:Configuration=Release
+> ```
+>
+> Then run the package creation command without the `/r` parameter.
+
+In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX files.
+
+> [!IMPORTANT]
+> Single package msix bundling is [not yet supported from msbuild the command line](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/single-project-msix?tabs=csharp#automate-building-and-packaging-your-single-project-msix-app).
 
 #### Install signed the app
 
