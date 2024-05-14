@@ -49,7 +49,7 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 		BottomRight = bottomRight;
 	}
 
-#if !IS_UNO_COMPOSITION
+#if __SKIA__ && !IS_UNO_COMPOSITION
 	internal Uno.UI.Composition.CornerRadius ToUnoCompositionCornerRadius()
 	{
 		return new Uno.UI.Composition.CornerRadius(TopLeft, TopRight, BottomRight, BottomLeft);

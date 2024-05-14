@@ -39,7 +39,7 @@ public partial struct Thickness : IEquatable<Thickness>
 		Bottom = topBottom;
 	}
 
-#if !IS_UNO_COMPOSITION
+#if __SKIA__ && !IS_UNO_COMPOSITION
 	internal Uno.UI.Composition.Thickness ToUnoCompositionThickness()
 	{
 		return new Uno.UI.Composition.Thickness(Left, Top, Right, Bottom);
