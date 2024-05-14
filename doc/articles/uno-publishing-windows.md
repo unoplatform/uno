@@ -68,6 +68,7 @@ To package your app:
 
 - Create a self-signed certificate:
   - Open the solution in Visual Studio 2022
+  - Ensure that the active debugging target framework is `net8.0-windows10.xxx` (Please upvote [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Double-clicking-on-a-PackageAppxmanifes/10658683))
   - Double-click on the `Package.appxmanifest` file
   - Navigate to the `Packaging` tab
   - Click the **Choose certificate** button
