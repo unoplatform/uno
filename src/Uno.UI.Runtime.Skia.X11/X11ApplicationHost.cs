@@ -15,10 +15,11 @@ using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
+public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private readonly EventLoop _eventLoop;
@@ -30,9 +31,6 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
 		var _ = X11Helper.XInitThreads();
-
-		[DllImport("libc")]
-		static extern void setlocale(int type, string s);
 
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
 		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
@@ -76,6 +74,9 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
+
+	[LibraryImport("libc", StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
+	private static partial void setlocale(int type, string s);
 
 	protected override Task RunLoop()
 	{

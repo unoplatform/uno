@@ -35,7 +35,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// <summary>
 /// This class includes missing bindings, atoms and other helper methods for X11.
 /// </summary>
-internal static class X11Helper
+internal static partial class X11Helper
 {
 	private const string libX11 = "libX11.so.6";
 	private const string libX11Randr = "libXrandr.so.2";
@@ -302,58 +302,58 @@ internal static class X11Helper
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
 	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false) => _getAtom(display, name, only_if_exists);
 
-	[DllImport("libc")]
-	public unsafe static extern int poll(Pollfd* __fds, IntPtr __nfds, int __timeout);
+	[LibraryImport("libc")]
+	public unsafe static partial int poll(Pollfd* __fds, IntPtr __nfds, int __timeout);
 
-	[DllImport(libX11)]
-	public static extern int XPutImage(IntPtr display, IntPtr drawable, IntPtr gc, IntPtr image,
+	[LibraryImport(libX11)]
+	public static partial int XPutImage(IntPtr display, IntPtr drawable, IntPtr gc, IntPtr image,
 		int srcx, int srcy, int destx, int desty, uint width, uint height);
 
-	[DllImport(libX11)]
-	public static extern IntPtr XCreateImage(IntPtr display, IntPtr visual, uint depth, int format, int offset,
+	[LibraryImport(libX11)]
+	public static partial IntPtr XCreateImage(IntPtr display, IntPtr visual, uint depth, int format, int offset,
 		IntPtr data, uint width, uint height, int bitmap_pad, int bytes_per_line);
 
-	[DllImport(libX11)]
-	public static extern int XPending(IntPtr display);
+	[LibraryImport(libX11)]
+	public static partial int XPending(IntPtr display);
 
-	[DllImport(libX11)]
-	public static extern IntPtr XDefaultGC(IntPtr display, int screen_number);
+	[LibraryImport(libX11)]
+	public static partial IntPtr XDefaultGC(IntPtr display, int screen_number);
 
-	[DllImport(libX11)]
-	public static extern int XInitThreads();
+	[LibraryImport(libX11)]
+	public static partial int XInitThreads();
 
-	[DllImport(libX11)]
-	public static extern int XWidthMMOfScreen(IntPtr screen);
+	[LibraryImport(libX11)]
+	public static partial int XWidthMMOfScreen(IntPtr screen);
 
-	[DllImport(libX11)]
-	public static extern int XWidthOfScreen(IntPtr screen);
+	[LibraryImport(libX11)]
+	public static partial int XWidthOfScreen(IntPtr screen);
 
-	[DllImport(libX11)]
-	public static extern int XHeightMMOfScreen(IntPtr screen);
+	[LibraryImport(libX11)]
+	public static partial int XHeightMMOfScreen(IntPtr screen);
 
-	[DllImport(libX11)]
-	public static extern int XHeightOfScreen(IntPtr screen);
+	[LibraryImport(libX11)]
+	public static partial int XHeightOfScreen(IntPtr screen);
 
-	[DllImport(libX11Randr)]
-	public unsafe static extern XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
+	[LibraryImport(libX11Randr)]
+	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
 
-	[DllImport(libX11Randr)]
-	public unsafe static extern void XRRFreeScreenResources(XRRScreenResources* resources);
+	[LibraryImport(libX11Randr)]
+	public unsafe static partial void XRRFreeScreenResources(XRRScreenResources* resources);
 
-	[DllImport(libX11Randr)]
-	public unsafe static extern XRROutputInfo* XRRGetOutputInfo(IntPtr dpy, IntPtr resources, IntPtr output);
+	[LibraryImport(libX11Randr)]
+	public unsafe static partial XRROutputInfo* XRRGetOutputInfo(IntPtr dpy, IntPtr resources, IntPtr output);
 
-	[DllImport(libX11Randr)]
-	public unsafe static extern void XRRFreeOutputInfo(XRROutputInfo* outputInfo);
+	[LibraryImport(libX11Randr)]
+	public unsafe static partial void XRRFreeOutputInfo(XRROutputInfo* outputInfo);
 
-	[DllImport(libX11Randr)]
-	public unsafe static extern XRRCrtcInfo* XRRGetCrtcInfo(IntPtr dpy, IntPtr resources, IntPtr crtc);
+	[LibraryImport(libX11Randr)]
+	public unsafe static partial XRRCrtcInfo* XRRGetCrtcInfo(IntPtr dpy, IntPtr resources, IntPtr crtc);
 
-	[DllImport(libX11Randr)]
-	public unsafe static extern void XRRFreeCrtcInfo(XRRCrtcInfo* crtcInfo);
+	[LibraryImport(libX11Randr)]
+	public unsafe static partial void XRRFreeCrtcInfo(XRRCrtcInfo* crtcInfo);
 
-	[DllImport(libX11Randr)]
-	public unsafe static extern int XRRGetCrtcTransform(IntPtr dpy, IntPtr crtc, ref XRRCrtcTransformAttributes* attributes);
+	[LibraryImport(libX11Randr)]
+	public unsafe static partial int XRRGetCrtcTransform(IntPtr dpy, IntPtr crtc, ref XRRCrtcTransformAttributes* attributes);
 
 	[StructLayout(LayoutKind.Sequential)]
 #pragma warning disable CA1815 // Override equals and operator equals on value types
