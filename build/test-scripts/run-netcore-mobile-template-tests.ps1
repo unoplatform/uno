@@ -50,7 +50,7 @@ pushd UnoAppAll
 for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
 {
     $platform=$dotnetBuildConfigurations[$i][0];
-    & dotnet build -c Debug $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj"
+    & dotnet build -c Debug $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj" -bl:binlogs/UnoAppAll.$platform/debug/$i/msbuild.binlog
     Assert-ExitCodeIsZero
 }
 
@@ -63,7 +63,7 @@ if ($IsWindows)
 for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
 {
     $platform=$dotnetBuildConfigurations[$i][0];
-    & dotnet build -c Release $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj"
+    & dotnet build -c Release $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj" -bl:binlogs/UnoAppAll.$platform/release/$i/msbuild.binlog
     Assert-ExitCodeIsZero
 }
 
@@ -99,7 +99,7 @@ pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 {
     $platform=$dotnetBuildNet6Configurations[$i][0];
-    & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj"
+    & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj" -bl:binlogs/UnoAppWinUI.$platform/debug/$i/msbuild.binlog
     Assert-ExitCodeIsZero
 }
 
@@ -128,7 +128,7 @@ popd
 
 if ($IsWindows) 
 {
-    dotnet build MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj -c Release -p:UnoXamlResourcesTrimming=true -p:WasmShellGenerateCompressedFiles=false -p:WasmShellILLinkerEnabled=true
+    dotnet build MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj -c Release -p:UnoXamlResourcesTrimming=true -p:WasmShellGenerateCompressedFiles=false -p:WasmShellILLinkerEnabled=true -bl:binlogs/MyAppXamlTrim.Wasm/release/msbuild.binlog
     Assert-ExitCodeIsZero
 
     dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem MyAppXamlTrim.Wasm.clr -Recurse).FullName -r Strings.en.Resources.upri -x Strings.fr.Resources.upri
@@ -315,13 +315,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
     if ($buildWithNetCore)
     {
         Write-Host "NetCore Building Debug $projectPath with $projectOptions"
-        dotnet build $debug "$projectPath" $projectOptions
+        dotnet build $debug "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/debug/msbuild.binlog
         Assert-ExitCodeIsZero
 
         dotnet clean $debug "$projectPath"
 
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
-        dotnet build $release "$projectPath" $projectOptions
+        dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
  
         dotnet clean $release "$projectPath"
