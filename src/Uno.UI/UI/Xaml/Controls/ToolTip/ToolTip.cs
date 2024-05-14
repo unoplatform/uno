@@ -49,8 +49,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal long CurrentHoverId { get; set; }
-
 		internal IDisposable? OwnerEventSubscriptions { get; set; }
 
 		internal IDisposable? OwnerVisibilitySubscription { get; set; }
