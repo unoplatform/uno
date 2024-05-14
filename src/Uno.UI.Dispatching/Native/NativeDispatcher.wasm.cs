@@ -19,7 +19,7 @@ namespace Uno.UI.Dispatching
 				typeof(NativeDispatcher).Log().Trace($"[tid:{Environment.CurrentManagedThreadId}]: NativeDispatcher.DispatcherCallback()");
 			}
 
-			Main.DispatchItems();
+			DispatchItems();
 		}
 
 		partial void Initialize()
@@ -77,7 +77,7 @@ namespace Uno.UI.Dispatching
 			}
 			else
 			{
-				DispatchOverride(() => DispatchItems(), priority);
+				DispatchOverride(NativeDispatcher.DispatchItems, priority);
 			}
 		}
 

@@ -44,6 +44,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				stackPanel.DataContext = "DataContext2";
 
+				// This might not be needed when ToolTips are ported from WinUI?
+				await TestServices.WindowHelper.WaitForIdle();
+
 				Assert.AreEqual("DataContext2", textBlock.DataContext);
 				Assert.AreEqual("DataContext2", SUT.DataContext);
 			}
@@ -94,6 +97,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.IsOpen = true;
 
 				stackPanel.DataContext = "DataContext2";
+
+				// This might not be needed when ToolTips are ported from WinUI?
+				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.AreEqual("DataContext2", toggleButton.DataContext);
 				Assert.AreEqual("DataContext2", SUT.DataContext);
@@ -148,11 +154,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.IsOpen = true;
 
+				// This might not be needed when ToolTips are ported from WinUI?
+				await TestServices.WindowHelper.WaitForIdle();
+
 				Assert.AreEqual("DataContext2", toggleButton.DataContext);
 				Assert.AreEqual("DataContext2", SUT.DataContext);
 				Assert.AreEqual("DataContext2", textBlock.DataContext);
 
 				stackPanel.DataContext = "DataContext3";
+
+				// This might not be needed when ToolTips are ported from WinUI?
+				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.AreEqual("DataContext3", toggleButton.DataContext);
 				Assert.AreEqual("DataContext3", SUT.DataContext);
@@ -160,9 +172,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.IsOpen = false;
 
+				// This might not be needed when ToolTips are ported from WinUI?
+				await TestServices.WindowHelper.WaitForIdle();
+
 				stackPanel.DataContext = "DataContext4";
 
 				SUT.IsOpen = true;
+
+				// This might not be needed when ToolTips are ported from WinUI?
+				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.AreEqual("DataContext4", toggleButton.DataContext);
 				Assert.AreEqual("DataContext4", SUT.DataContext);
@@ -222,6 +240,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.IsOpen = true;
 
 				stackPanel.DataContext = "DataContext2";
+
+				// This might not be needed when ToolTips are ported from WinUI?
+				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.AreEqual("DataContext2", toggleButton.DataContext);
 				Assert.AreEqual("DataContext2", SUT.DataContext);

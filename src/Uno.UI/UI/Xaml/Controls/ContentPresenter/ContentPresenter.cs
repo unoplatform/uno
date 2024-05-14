@@ -796,9 +796,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	private protected override void OnLoaded()
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	internal override void Enter(EnterParams @params, int depth)
 	{
-		base.OnLoaded();
+		base.Enter(@params, depth);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
@@ -812,6 +813,29 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		UpdateBorder();
 
 		TryAttachNativeElement();
+	}
+#endif
+
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+		{
+			SetUpdateTemplate();
+		}
+#endif
+
+		// When the control is loaded, set the TemplatedParent
+		// as it may have been reset during the last unload.
+		SynchronizeContentTemplatedParent();
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		UpdateBorder();
+
+		TryAttachNativeElement();
+#endif
 	}
 
 	private protected override void OnUnloaded()

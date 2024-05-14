@@ -83,6 +83,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Begin()
 		{
+			// It's important to keep this line here, and not
+			// inside the if (!_wasBeginScheduled)
+			// If Begin(), Stop(), Begin() are called successively in sequence,
+			// we want _wasRequestedToStop to be false.
+			_wasRequestedToStop = false;
+
 			if (!_wasBeginScheduled)
 			{
 				// We dispatch the begin so that we can use bindings on ColorKeyFrame.Value from RelativeParent.
@@ -90,7 +96,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// WARNING: This does not allow us to bind ColorKeyFrame.Value with ViewModel properties.
 
 				_wasBeginScheduled = true;
-				_wasRequestedToStop = false;
 
 #if !IS_UNIT_TESTS
 #if __ANDROID__

@@ -32,6 +32,8 @@ using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
+using Uno.UI.Dispatching;
+
 #if __ANDROID__
 using Android.Views;
 #endif
@@ -362,7 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnOverflowPopupClosed(object? sender, object e)
 		{
-			IsOpen = false;
+			NativeDispatcher.Main.Enqueue(() => IsOpen = false, NativeDispatcherPriority.Idle);
 		}
 
 #if __IOS__ || __ANDROID__

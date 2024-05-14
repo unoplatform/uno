@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using System.Threading.Tasks;
-using Uno.Extensions;
-using Uno;
-using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation;
-using View = Microsoft.UI.Xaml.UIElement;
-using System.Collections;
+﻿#if DEBUG
+#define ENABLE_CONTAINER_VISUAL_TRACKING
+#endif
 
-using Uno.UI.Xaml;
-using System.Numerics;
+using System;
+using System.Collections;
 using Uno.UI;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml
 {
@@ -107,5 +100,15 @@ namespace Microsoft.UI.Xaml
 				_unloaded -= value;
 			}
 		}
+
+#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
+		partial void OnLoading()
+		{
+			if (_visual is not null)
+			{
+				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+			}
+		}
+#endif
 	}
 }

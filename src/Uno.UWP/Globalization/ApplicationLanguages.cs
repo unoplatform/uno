@@ -108,14 +108,17 @@ namespace Windows.Globalization
 
 		private static string[] GetManifestLanguages()
 		{
+			string AdjustCultureName(string name)
+				=> string.IsNullOrEmpty(name) ? "en-US" : name;
+
 			var languages = new[]
 			{
 #if __ANDROID__
 				ContextHelper.Current?.Resources?.Configuration?.Locales?.Get(0)?.ToLanguageTag(),
 #endif
-				CultureInfo.InstalledUICulture?.Name,
-				CultureInfo.CurrentUICulture?.Name,
-				CultureInfo.CurrentCulture?.Name
+				AdjustCultureName(CultureInfo.InstalledUICulture?.Name),
+				AdjustCultureName(CultureInfo.CurrentUICulture?.Name),
+				AdjustCultureName(CultureInfo.CurrentCulture?.Name)
 			};
 
 			return languages

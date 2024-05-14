@@ -129,6 +129,8 @@ public partial class TextBox
 		_currentlyTyping = newValue;
 	}
 
+	partial void OnUnloadedPartial() => _timer.Stop();
+
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);

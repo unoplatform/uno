@@ -11,6 +11,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation.TestPages;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 
@@ -49,5 +52,13 @@ public class Given_DoubleAnimationUsingKeyFrames
 		var passed = sut.RootGrid.Children.OfType<Border>()
 			.Count(x => x.Opacity == 1.0);
 		Assert.AreEqual(total, passed, $"Only {passed} of {total} Border.Opacity is at expected value of 1.0");
+	}
+
+	[TestMethod]
+	public async Task When_Begin_Stop_Begin()
+	{
+		var SUT = new BeginStopBegin();
+		await UITestHelper.Load(SUT);
+		await TestServices.WindowHelper.WaitFor(() => SUT.MyAnimatedTranslateTransform.X == 500);
 	}
 }

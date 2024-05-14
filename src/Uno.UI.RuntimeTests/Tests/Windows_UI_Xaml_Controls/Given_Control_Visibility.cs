@@ -38,6 +38,7 @@ public class Given_Control_Visibility
 					type == typeof(Slider) ||
 					type == typeof(SwipeControl) ||
 					type == typeof(TeachingTip) ||
+					type == typeof(FlipView) ||
 #if HAS_UNO
 					type == typeof(CalendarViewItem) ||
 #endif

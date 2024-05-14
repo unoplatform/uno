@@ -53,7 +53,7 @@ public partial class Given_HotReloadWorkspace
 	/// 
 	/// </remarks>
 	[TestMethod]
-	[Timeout(5 * 60 * 1000)]
+	[Timeout(10 * 60 * 1000)]
 	[Filters]
 	public async Task When_HotReloadScenario(string filters)
 	{

@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public partial class ColorPickerTests : MUXApiTestBase
 	{
 		[TestMethod]

@@ -12,6 +12,7 @@ using WpfControl = global::System.Windows.Controls.Control;
 using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Content;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {

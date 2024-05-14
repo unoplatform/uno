@@ -58,7 +58,7 @@ public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 			RuntimeTestPlatform.SkiaWpf => IsSkiaWpf(),
 			RuntimeTestPlatform.SkiaX11 => IsSkiaX11(),
 			RuntimeTestPlatform.SkiaMacOS => IsSkiaMacOS(),
-			RuntimeTestPlatform.SkiaIslands => TestServices.WindowHelper.IsXamlIsland,
+			RuntimeTestPlatform.SkiaIslands => IsSkiaIslands(),
 			RuntimeTestPlatform.Wasm => IsWasm(),
 			RuntimeTestPlatform.Android => IsAndroid(),
 			RuntimeTestPlatform.iOS => IsIOS(),
@@ -85,6 +85,13 @@ public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 
 	private static bool IsSkiaMacOS()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.MacOS");
+
+	private static bool IsSkiaIslands()
+#if __SKIA__
+		=> Microsoft.UI.Xaml.Application.Current.Host is null;
+#else
+		=> false;
+#endif
 
 	private static bool IsWasm()
 	{

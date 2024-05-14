@@ -30,7 +30,6 @@ using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RecyclePoolTests : MUXApiTestBase
 	{
 

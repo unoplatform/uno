@@ -25,8 +25,8 @@ namespace Uno.UI.Xaml
 		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
 		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
 
-		internal static Task InitAsync(bool isLoadEventsEnabled)
-			=> NativeMethods.InitAsync(isLoadEventsEnabled);
+		internal static Task InitAsync()
+			=> NativeMethods.InitAsync();
 
 		internal static void SetBodyCursor(string value)
 			=> NativeMethods.SetBodyCursor(value);
@@ -1130,7 +1130,7 @@ namespace Uno.UI.Xaml
 			internal static partial string GetProperty(IntPtr htmlId, string name);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.init")]
-			internal static partial Task InitAsync(bool isLoadEventsEnabled);
+			internal static partial Task InitAsync();
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);

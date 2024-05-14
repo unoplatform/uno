@@ -70,10 +70,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(false));
 
-		private protected override void OnUnloaded()
+		partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
-
 			if (_textBoxView != null)
 			{
 				_textBoxView.OnFocusChangeListener = null;
