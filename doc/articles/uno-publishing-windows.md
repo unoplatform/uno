@@ -26,7 +26,8 @@ To package your app:
             Version="1.0.0.0" />
   ```
 
-- Build your app in the folder of the app's `.csproj` by using the following command:
+- Navigate to the folder of the app's `.csproj` (Building at the solution level is not supported)
+- Build your app using the following command:
 
     ```pwsh
     msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=false
@@ -75,7 +76,8 @@ To package your app:
   - Click the **Create** button, then set a **publisher common name**, then OK. Do not set a password.
   - Close the **Choose a Certificate** window by clicking OK.
   - Click the **Save file** button in the Visual Studio toolbar
-- Build the app on the command line in the folder of the app's `.csproj`, use the following command:
+- Navigate to the folder of the app's `.csproj` (Building at the solution level is not supported)
+- Build the app on the command line with the following command:
 
   ```cmd
   msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
