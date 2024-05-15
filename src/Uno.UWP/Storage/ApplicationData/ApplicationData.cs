@@ -5,7 +5,9 @@
 #pragma warning disable 114 // new keyword hiding
 #pragma warning disable 67 // new keyword hiding
 using System;
-using Uno;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Foundation;
 
 namespace Windows.Storage;
 
@@ -86,8 +88,10 @@ public sealed partial class ApplicationData
 	[Uno.NotImplemented]
 	public ulong RoamingStorageQuota => 0;
 
-	[Uno.NotImplemented]
-	public uint Version => 0;
+	/// <summary>
+	/// Gets the version number of the application data in the app data store.
+	/// </summary>
+	public uint Version { get; private set; } //TODO:MZ: This should be persisted.
 
 	[Uno.NotImplemented]
 	public void SignalDataChanged()
@@ -115,6 +119,38 @@ public sealed partial class ApplicationData
 
 	[Uno.NotImplemented]
 	public event Foundation.TypedEventHandler<ApplicationData, object>? DataChanged;
+
+	/// <summary>
+	/// Sets the version number of the application data in the app data store.
+	/// </summary>
+	/// <param name="desiredVersion">The new version number.</param>
+	/// <param name="handler">The set version event handler.</param>
+	/// <returns>An object that is used to manage the asynchronous set version operation.</returns>
+	public IAsyncAction SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler)
+	{
+		if (handler is null)
+		{
+			throw new ArgumentNullException(nameof(handler));
+		}
+
+		if (desiredVersion < Version)
+		{
+			//TODO:MZ: Does this happen?
+			throw new ArgumentException("The desired version must be greater than the current version.", nameof(desiredVersion));
+		}
+
+		return AsyncAction.FromTask(async ct => await SetVersionTaskAsync(desiredVersion, handler, ct));
+	}
+
+	private async Task SetVersionTaskAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler, CancellationToken ct)
+	{
+		//TODO:MZ: Is the request handled version by version?
+		var request = new SetVersionRequest(Version, desiredVersion);
+		handler?.Invoke(request);
+		request.DeferralManager.EventRaiseCompleted();
+		await request.DeferralManager.WhenAllCompletedAsync();
+		Version = desiredVersion;
+	}
 
 	private static StorageFolder CreateStorageFolder(string folder)
 	{
