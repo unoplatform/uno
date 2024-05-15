@@ -175,7 +175,9 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			foreach (var reference in ImplicitPackageReferences)
 			{
 				var packageId = reference.ItemSpec;
-				var metadata = reference.MetadataNames.Cast<string>()
+				var metadata = reference.CloneCustomMetadata()
+					.Keys
+					.Cast<string>()
 					.ToDictionary(x => x, x => reference.GetMetadata(x));
 				AddPackage(packageId, metadata);
 			}
