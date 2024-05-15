@@ -236,7 +236,12 @@
         - name: Overview
           href: xref:uno.publishing.overview
         - name: Publishing for Windows
-          href: xref:uno.publishing.windows
+          topicHref: xref:uno.publishing.windows
+          items:
+            - name: Build Packaged Unsigned Apps
+              href: xref:uno.publishing.windows.sideload.packaged.unsigned
+            - name: Build Packaged Signed Apps
+              href: xref:uno.publishing.windows.sideload.packaged.signed
 
     - name: Performance
       items:
