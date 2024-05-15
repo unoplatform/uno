@@ -197,7 +197,7 @@ partial class Window
 	{
 		get
 		{
-			if (_current is null)
+			if (_current is null && CoreApplication.IsFullFledgedApp)
 			{
 				EnsureWindowCurrent();
 			}
