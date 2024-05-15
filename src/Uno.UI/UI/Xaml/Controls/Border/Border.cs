@@ -44,6 +44,8 @@ public partial class Border : FrameworkElement
 		_borderRenderer = new BorderLayerRenderer(this);
 	}
 
+	internal BorderLayerRenderer BorderRenderer => _borderRenderer;
+
 	/// <summary>
 	/// Support for the C# collection initializer style.
 	/// Allows items to be added like this
@@ -103,6 +105,8 @@ public partial class Border : FrameworkElement
 		{
 			AddChild(newValue);
 		}
+
+		AfterUpdateBorderPartial();
 	}
 
 	#endregion
@@ -260,7 +264,7 @@ public partial class Border : FrameworkElement
 
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-		UpdateBorder();
+		_borderRenderer.Update();
 		OnBackgroundChangedPartial();
 	}
 
@@ -279,12 +283,4 @@ public partial class Border : FrameworkElement
 
 		return element.Background != null;
 	}
-
-	private void UpdateBorder()
-	{
-		_borderRenderer.Update();
-		AfterUpdateBorderPartial();
-	}
-
-	partial void AfterUpdateBorderPartial();
 }

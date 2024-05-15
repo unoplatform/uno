@@ -25,26 +25,10 @@ partial class Border
 	protected override void OnAfterArrange()
 	{
 		base.OnAfterArrange();
-		UpdateBorder();
-	}
-
-	partial void AfterUpdateBorderPartial()
-	{
-		if (_borderRenderer.BoundsPath is CGPath updated) // UpdateLayer may return null if there is no update
-		{
-			BoundsPath = updated;
-			BoundsPathUpdated?.Invoke(this, default);
-		}
-
-		_borderRenderer.BoundsPath = null;
-
-		this.SetNeedsDisplay();
+		_borderRenderer.Update();
 	}
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 	bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
-
-	internal event EventHandler BoundsPathUpdated;
-	internal CGPath BoundsPath { get; private set; }
 }
 #endif
