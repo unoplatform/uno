@@ -395,9 +395,9 @@ partial class ClientHotReloadProcessor
 				}
 			}
 			catch (Exception error)
-		{
-				if (_log.IsEnabled(LogLevel.Error))
 			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
 					_log.Error($"Error while processing MetadataUpdateOriginalTypeAttribute for {type}", error);
 				}
 			}
