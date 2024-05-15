@@ -26,7 +26,13 @@
 						if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
 							BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
 							input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
-							return;
+						}
+						else {
+							if (input.selectionDirection == "backward") {
+								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
+							} else {
+								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+							}
 						}
 
 						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
