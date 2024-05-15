@@ -31,6 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _eventsRegistered;
 
 		private (double? horizontal, double? vertical)? _pendingScrollTo;
+		private (double? horizontal, double? vertical) _lastScrollToRequest;
 		private FrameworkElement _rootEltUsedToProcessScrollTo;
 
 		internal Size ScrollBarSize
@@ -263,6 +264,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_pendingScrollTo = (horizontalOffset, verticalOffset);
+			_lastScrollToRequest = (horizontalOffset, verticalOffset);
 
 			WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
 
@@ -347,14 +349,18 @@ namespace Microsoft.UI.Xaml.Controls
 			// This would however not include scrolling due to the inertia which should also be flagged as intermediate.
 			// The main issue is that the IsPointerPressed be true ONLY when dragging the scrollbars with the mouse, 
 			// as for finger and pen we will get a PointerCancelled which will reset the pressed state to false.
-			// And it would also requires us to explicitly invoke OnScroll in PointerRelease in order to raise the
-			// final SV.ViewChanged event with a IsIntermediate == false.
-			// This is probably safer for now to always consider the scroll as final, even if it introduce a performance cost
-			// (the SV updates mode is always sync when isIntermediate is false).
-			var isIntermediate = false;
-
+			// And it would also require us to explicitly invoke OnScroll in PointerRelease in order to raise the
+			// final SV.ViewChanged event with an IsIntermediate == false.
+			// As a best-effort guess, we will consider the scroll as intermediate if the native offset is different from the last ScrollTo request.
 			var horizontalOffset = GetNativeHorizontalOffset();
 			var verticalOffset = GetNativeVerticalOffset();
+			var isIntermediate =
+				(_lastScrollToRequest.horizontal.HasValue && _lastScrollToRequest.horizontal.Value != horizontalOffset) ||
+				(_lastScrollToRequest.vertical.HasValue && _lastScrollToRequest.vertical.Value != verticalOffset);
+			if (!isIntermediate)
+			{
+				_lastScrollToRequest = (null, null);
+			}
 
 			if (IsArrangeDirty
 				&& _pendingScrollTo is { } pending

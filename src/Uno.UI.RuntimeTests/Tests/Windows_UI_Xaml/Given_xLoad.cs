@@ -122,13 +122,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_xLoad_xBind_xLoad_Initial()
+		public async Task When_xLoad_xBind_xLoad_Initial()
 		{
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 
 			var SUT = new When_xLoad_xBind_xLoad_Initial();
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNotNull(SUT.tb01);
 			Assert.AreEqual(1, SUT.tb01.Tag);
@@ -140,13 +142,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_xLoad_xBind_xLoad_While_Loading()
+		public async Task When_xLoad_xBind_xLoad_While_Loading()
 		{
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 
 			var SUT = new When_xLoad_xBind_xLoad_While_Loading();
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNotNull(SUT.tb01);
 			Assert.AreEqual(1, SUT.tb01.Tag);
@@ -200,6 +204,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNull(SUT.tb01);
 			Assert.IsNull(SUT.tb02);
@@ -313,6 +319,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNull(SUT.tb01);
 			Assert.IsNull(SUT.tb02);

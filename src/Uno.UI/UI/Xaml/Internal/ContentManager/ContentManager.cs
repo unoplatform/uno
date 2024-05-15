@@ -50,6 +50,10 @@ internal partial class ContentManager
 			// TODO: Add RootScrollViewer everywhere
 			visualTree.SetPublicRootVisual(newContent, rootScrollViewer: null, rootContentPresenter: null);
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			WinUICoreServices.Instance.RaisePendingLoadedRequests();
+#endif
+
 			if (_rootVisual is null)
 			{
 				// Initialize root visual and attach it to owner window.

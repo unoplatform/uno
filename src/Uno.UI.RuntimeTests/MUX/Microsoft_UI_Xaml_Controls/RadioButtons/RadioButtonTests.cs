@@ -23,7 +23,6 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RadioButtonsTests : MUXApiTestBase
 	{
 		[TestMethod]

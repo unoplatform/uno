@@ -191,12 +191,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Opened -= OnPopupOpened;
 			}
 
-			if (XamlRoot is null)
+			if (XamlRoot is not null)
 			{
-				throw new InvalidOperationException("XamlRoot must be set on Loaded");
+				XamlRoot.Changed -= OnXamlRootChanged;
 			}
-
-			XamlRoot.Changed -= OnXamlRootChanged;
 		}
 
 		protected virtual void OnDropDownClosed(object e)
@@ -1322,12 +1320,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (combo.IsPopupFullscreen)
 				{
-					// Size : Note we set both Min and Max to match the UWP behavior which alter only those
-					//        properties. The MinHeight is not set to allow the the root child control to specificy
-					//		  one and provide a VerticalAlignment.
+					// In full screen mode, we want the popup to stretch horizontally, so we set MinWidth and MaxWidth to the available width.
+					// However, we don't want it to stretch vertically.
+					// We want the height to exactly show all the items, i.e, combo.ActualHeight * combo.Items.Count. However, we want to limit that by
+					// both MaxDropDownHeight and visible height (quite similar to non-fullscreen mode).
+					// This also allows the child to set MinHeight and provide a VerticalAlignment
+					var maxHeight = Math.Min(visibleSize.Height, Math.Min(combo.MaxDropDownHeight, combo.ActualHeight * combo.Items.Count));
+
 					child.MinWidth = available.Width;
 					child.MaxWidth = available.Width;
-					child.MaxHeight = available.Height;
+					child.MinHeight = combo.ActualHeight;
+					child.MaxHeight = maxHeight;
 				}
 				else
 				{

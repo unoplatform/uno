@@ -106,7 +106,22 @@ Where you can use which brushes
 | Usage                                        | SolidColorBrush | ImageBrush           | GradientBrush   |
 | -------------------------------------------- | --------------- | -------------------- | --------------- |
 | `Background` property (many controls/panels) | Yes             | Yes (except on Wasm) | Yes             |
-| `BorderBrush` (`Border`, `Panel`)            | Yes             | No                   | Yes (Wasm only) |
+| `BorderBrush` (`Border`, `Panel`)            | Yes             | No                   | Yes (Skia, Android), partial (iOS, WASM) [see below] |
 | `Foreground` (`TextBlock`)                   | Yes             | No                   | Yes (Wasm only) |
 | `Fill` (Shapes)                              | Yes             | Yes (except on Wasm) | Yes             |
 | `Stroke` (Shapes)                            | Yes             | No                   | Yes (Wasm only) |
+
+## Gradient border brush limitations on WASM and iOS
+
+There are limitations to support for gradient border brushes on some targets. Currently these are:
+
+- WebAssembly - gradient borders cannot be applied properly on an element which uses `CornerRadius`
+- iOS/macOS - gradient borders cannot be applied reliably when `RelativeTransform` is applied on it
+
+If these conditions apply, the border will instead be rendered using `SolidColorBrush` provided by the `FallbackColor` property.
+
+As default WinUI Fluent styles are using `ElevationBorder` brushes in many places, so we created a presenter that provides a "fake" gradient for these cases - `Uno.UI.Controls.FauxGradientBorderPresenter`. For custom styles we suggest you provide a custom "layered" approach that simulates the border, as this presenter is specifically built to support WinUI style-specific scenarios where:
+
+- Exactly two gradient stops are present
+- `FallbackColor` of the brush is equal to the "major" gradient stop
+- The brush is applied "vertical" - so the "minor" stop is either on top or on the bottom of the control

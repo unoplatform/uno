@@ -32,6 +32,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
+
 #endif
 
 #if __WASM__
@@ -308,6 +309,22 @@ namespace Microsoft.UI.Xaml.Documents
 				}
 			}
 		}
+
+		// WASM specific as on WASM BaseClass is UIElement
+
+#if !__WASM__
+		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
+		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
+		{
+			return null;
+		}
+
+		//UNO TODO: Implement GetAccessKeyScopeOwner on TextElement
+		internal DependencyObject GetAccessKeyScopeOwner()
+		{
+			return null;
+		}
+#endif
 
 		partial void OnNameChangedPartial(string newValue);
 

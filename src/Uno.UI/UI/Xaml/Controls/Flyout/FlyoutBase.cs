@@ -474,7 +474,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// UNO-FIX: Defer the raising of the Opened event to ensure everything is well
 			// initialized before opening it.
 			// **************************************************************************************
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
 			// **************************************************************************************
 			{
 				if (IsOpen)

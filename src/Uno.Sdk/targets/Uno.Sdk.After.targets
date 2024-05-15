@@ -32,13 +32,16 @@
 	<PropertyGroup
 		Condition="
 			'$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(UnoDisableFirstTargetFrameworkRewrite)' == ''
+			AND '$(_InitialOutputType)' == 'Exe'
 			AND (
 				$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
 				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
 				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
 			)
 			AND '$(TargetFrameworks)' != ''
-			AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'">
+			AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'
+			AND $(TargetFrameworks.Contains($(_UnoSelectedTargetFramework)))">
 
 		<_UnoTargetFrameworksFiltered>
 			$(TargetFrameworks

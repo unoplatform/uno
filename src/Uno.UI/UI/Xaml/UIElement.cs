@@ -526,7 +526,7 @@ namespace Microsoft.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			if (from == to || !from.IsInLiveTree || (!to?.IsInLiveTree ?? false))
+			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))
 			{
 				return Matrix3x2.Identity;
 			}
@@ -791,7 +791,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var bounds = root.XamlRoot.VisualTree.VisibleBounds;
+			var bounds = root.XamlRoot.Bounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);
@@ -810,7 +810,7 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 			}
-#else
+#elif !__NETSTD_REFERENCE__
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
@@ -820,7 +820,19 @@ namespace Microsoft.UI.Xaml
 				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
+#if !IS_UNIT_TESTS
+					// Workaround: Without this, the managed Skia TextBox breaks.
+					// For example, keyboard selection or double clicking to select breaks
+					// It's probably an issue with TextBox implementation itself, but for now we workaround it here.
+					root.XamlRoot.RaiseInvalidateRender();
+#endif
 				}
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				else if (root.GetContext().EventManager.HasPendingViewportChangedEvents)
+				{
+					root.GetContext().EventManager.RaiseEffectiveViewportChangedEvents();
+				}
+#endif
 				else
 				{
 					return;

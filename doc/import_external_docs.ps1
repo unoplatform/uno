@@ -7,7 +7,7 @@ Set-PSDebug -Trace 1
 
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = "9b559fc9a8b5e939fd99fa119a243e760ae3770d" #latest main commit
+    "uno.wasm.bootstrap" = "0a56349323e4aa03b004cd11292f7d441458783b" #latest main commit
     "uno.themes"         = "722dd3386d16523d1e1139d916aa89610f7118ac" #latest release branch commit
     "uno.toolkit.ui"     = "e8821e38a8a0fe8225211a80fd5c74481b9243d1" #latest release branch commit
     "uno.check"          = "4a7dd7290daf0aabfbb8efabcd2b067898b7f45e" #latest main commit
@@ -17,7 +17,7 @@ $external_docs = @{
     "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
     "uno.extensions"     = "30b86afe55fab1f964bbe30c594cf9c7ea72d7a3" #latest release branch commit
     "workshops"          = "f87cb67d9fd9cb3e78c740b62d40fe8d3201182a" #latest master commit
-    "uno.samples"        = "4599f4e09d12cfef46f5f70e65347e93600af499" #latest master commit
+    "uno.samples"        = "ad049bef2e55a485df23d8e38c40aea903aa5cf1" #latest master commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"

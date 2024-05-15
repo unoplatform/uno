@@ -20,7 +20,7 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Xaml.Data
 {
-	public partial class BindingExpression : IDisposable, IValueChangedListener
+	public partial class BindingExpression : IDisposable
 	{
 		private readonly Type _boundPropertyType;
 		private readonly ManagedWeakReference _view;
@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml.Data
 				path: ParentBinding.Path,
 				fallbackValue: ParentBinding.FallbackValue,
 				precedence: null,
-				allowPrivateMembers: ParentBinding.CompiledSource != null
+				allowPrivateMembers: ParentBinding.IsXBind
 			);
 			_boundPropertyType = targetPropertyDetails.Property.Type;
 
@@ -295,7 +295,7 @@ namespace Microsoft.UI.Xaml.Data
 
 			if (
 				// If a listener is set, ApplyBindings has been invoked
-				_bindingPath.ValueChangedListener is not null
+				_bindingPath.Expression is not null
 
 				// If this is not an x:Bind
 				&& _updateSources is null
@@ -363,6 +363,12 @@ namespace Microsoft.UI.Xaml.Data
 
 		private void ApplyFallbackValue(bool useTypeDefaultValue = true)
 		{
+			if (ParentBinding.IsXBind && DataContext is null)
+			{
+				// On WinUI, the generated code for x:Bind doesn't do anything if the DC is null.
+				// It doesn't even set the fallback value.
+				return;
+			}
 			if (ParentBinding.FallbackValue != null
 				|| (ParentBinding.CompiledSource != null && ParentBinding.IsFallbackValueSet))
 			{
@@ -514,7 +520,7 @@ namespace Microsoft.UI.Xaml.Data
 				{
 					foreach (var bindingPath in _updateSources)
 					{
-						bindingPath.ValueChangedListener = this;
+						bindingPath.Expression = this;
 
 						if (ParentBinding.CompiledSource != null)
 						{
@@ -530,16 +536,16 @@ namespace Microsoft.UI.Xaml.Data
 					{
 						foreach (var bindingPath in _updateSources)
 						{
-							bindingPath.ValueChangedListener = null;
+							bindingPath.Expression = null;
 						}
 					});
 
 				}
 				else
 				{
-					_bindingPath.ValueChangedListener = this;
+					_bindingPath.Expression = this;
 					_bindingPath.SetWeakDataContext(weakDataContext);
-					_subscription.Disposable = new DisposableAction(() => _bindingPath.ValueChangedListener = null);
+					_subscription.Disposable = new DisposableAction(() => _bindingPath.Expression = null);
 				}
 			}
 			else
@@ -569,7 +575,7 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object o)
+		internal void OnValueChanged(object o)
 		{
 			if (ParentBinding.XBindSelector != null)
 			{
@@ -591,6 +597,13 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			void SetTargetValue()
 			{
+				if (DataContext is null)
+				{
+					// On WinUI, the generated code for x:Bind doesn't do anything if the DC is null.
+					// It doesn't even set the fallback value.
+					return;
+				}
+
 				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
 				if (canSetTarget)
 				{
@@ -747,7 +760,13 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				_IsCurrentlyPushing = true;
 				// Get the source value and place it in the target property
-				var convertedValue = ConvertValue(v);
+
+				// Only call the converted with null if the final segment (i.e. the tail of the chain) is null
+				// In other words, if Path == "Outer.Inner" and Outer is null, don't call the converter.
+				// Only call the converter with null if Outer is not null and Inner is null.
+				// If the Binding path is empty and DataContext is null, the converter is still NOT called
+				// https://github.com/unoplatform/uno/issues/16016
+				var convertedValue = DataContext is { } && (v is { } || _bindingPath.OnlyLeafNodeNull()) ? ConvertValue(v) : DependencyProperty.UnsetValue;
 
 				if (convertedValue == DependencyProperty.UnsetValue)
 				{
@@ -755,6 +774,10 @@ namespace Microsoft.UI.Xaml.Data
 				}
 				else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
 				{
+					// The TargetNullValue is only used when the "leaf node" is null. Meaning
+					// 1. binding to anything with a null DataContext does NOT use TargetNullValue
+					// 2. binding to OuterNode.LeafNode with DC != null && DC.OuterNode == null does NOT use TargetNullValue
+					// 3. binding to OuterNode.LeafNode with DC.OuterNode != null && DC.OuterNode.LeafNode == null will use TargetNullValue
 					SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
 				}
 				else

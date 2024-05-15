@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 
@@ -25,10 +24,8 @@ namespace Microsoft.UI.Xaml
 			IsTunnelingEvent = flag.IsTunnelingEvent();
 		}
 
-		[Pure]
 		internal string Name { get; }
 
-		[Pure]
 		internal RoutedEventFlag Flag { get; }
 
 		/// <summary>
@@ -45,19 +42,12 @@ namespace Microsoft.UI.Xaml
 		/// Basically all routed events that are implementing the 'PrepareManaged***EventBubbling' to maintain local
 		/// state should opt-in for that.
 		/// </remarks>
-		[Pure]
 		internal bool IsTunnelingEvent { get; }
-		[Pure]
 		internal bool IsPointerEvent { get; }
-		[Pure]
 		internal bool IsKeyEvent { get; }
-		[Pure]
 		internal bool IsFocusEvent { get; }
-		[Pure]
 		internal bool IsManipulationEvent { get; }
-		[Pure]
 		internal bool IsGestureEvent { get; }
-		[Pure]
 		internal bool IsDragAndDropEvent { get; }
 
 		/// <inheritdoc />

@@ -1,4 +1,7 @@
 ﻿<Project>
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);MSTEST0010</NoWarn>
+	</PropertyGroup>
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 
 	<ItemGroup>

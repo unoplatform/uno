@@ -42,17 +42,4 @@ internal static class InputHelper
 	public static string WindowsKeyCodeToUnicode(uint keyCode) => InputToUnicode(keyCode, MapVirtualKey(keyCode, 0));
 	// For a scancode table, see https://www.win.tue.nl/~aeb/linux/kbd/scancodes-10.html
 	public static string WindowsScancodeToUnicode(uint scanCode) => InputToUnicode(MapVirtualKey(scanCode, 1), scanCode);
-
-	public static bool TryConvertKeyCodeToScanCode(uint keyCode, out uint scanCode)
-	{
-		if (OperatingSystem.IsWindows())
-		{
-			scanCode = MapVirtualKey(keyCode, 0);
-			return true;
-		}
-
-		// Uno TODO: get scan codes on other platforms
-		scanCode = keyCode;
-		return false;
-	}
 }

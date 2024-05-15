@@ -661,36 +661,27 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
-		if (oldValue != null && newValue == null)
-		{
-			// The content is being reset, remove the existing content properly.
-			ContentTemplateRoot = null;
-		}
-		else if (oldValue is View || newValue is View)
+		if (oldValue is View || newValue is View)
 		{
 			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
 		}
 
-		if (newValue is not null)
-		{
-			TryRegisterNativeElement(newValue);
+		TryRegisterNativeElement(newValue);
 
-			TrySetDataContextFromContent(newValue);
+		TrySetDataContextFromContent(newValue);
 
-			SetUpdateTemplate();
-		}
-		else
-		{
-			// Restore the inherited data context as it may have been overridden by TrySetDataContextFromContent
-			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
-		}
+		SetUpdateTemplate();
 	}
 
 	private void TrySetDataContextFromContent(object value)
 	{
-		if (value != null)
+		if (value == null)
+		{
+			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
+		}
+		else
 		{
 			if (!(value is View))
 			{
@@ -843,9 +834,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	private protected override void OnLoaded()
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	internal override void Enter(EnterParams @params, int depth)
 	{
-		base.OnLoaded();
+		base.Enter(@params, depth);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
@@ -861,6 +853,29 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #endif
 
 		TryAttachNativeElement();
+	}
+#endif
+
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+		{
+			SetUpdateTemplate();
+		}
+#endif
+
+		// When the control is loaded, set the TemplatedParent
+		// as it may have been reset during the last unload.
+		SynchronizeContentTemplatedParent();
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		UpdateBorder();
+
+		TryAttachNativeElement();
+#endif
 	}
 
 	private protected override void OnUnloaded()

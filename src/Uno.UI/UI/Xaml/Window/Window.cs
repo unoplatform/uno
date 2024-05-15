@@ -52,6 +52,11 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
+		if (_current is null)
+		{
+			windowType = WindowType.CoreWindow;
+		}
+
 		InitialWindow ??= this;
 		_current ??= this; // TODO:MZ: Do we want this?
 

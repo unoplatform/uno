@@ -76,7 +76,13 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ToolTip);
 
 			SizeChanged += OnToolTipSizeChanged;
-			Loading += (sender, e) => PerformPlacementInternal(); // Update placement on Loading, because this is the point at which Uno sets the default Style
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			Loaded
+#else
+			Loading
+#endif
+				+= (sender, e) => PerformPlacementInternal();
 		}
 
 		public static DependencyProperty PlacementProperty { get; } =

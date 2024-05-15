@@ -16,7 +16,7 @@
 	<StackPanel Spacing="12">
 		<Ellipse Width="300" Height="100" Stroke="SteelBlue" >
 			<Ellipse.Fill>
-				<ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
+				<ImageBrush x:Name="imageBrush1"  ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
 				            AlignmentX="Right"
 				            AlignmentY="Bottom"/>
 			</Ellipse.Fill>
@@ -24,7 +24,7 @@
 
 		<Border Width="300" Height="100" BorderBrush="SteelBlue" BorderThickness="3" CornerRadius="35">
 			<Border.Background>
-				<ImageBrush ImageSource="https://uno-assets.platform.uno/tests/images/uno-overalls.bmp"
+				<ImageBrush x:Name="imageBrush2" ImageSource="https://uno-assets.platform.uno/tests/images/uno-overalls.bmp"
 				            Stretch="None"
 				            AlignmentX="Right"
 				            AlignmentY="Bottom"/>

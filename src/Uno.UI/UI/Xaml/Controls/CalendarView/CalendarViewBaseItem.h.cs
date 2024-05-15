@@ -24,13 +24,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
+#if !__NETSTD_REFERENCE__
 			this.Loaded += (_, _) =>
 			{
 #if !__SKIA__
 				_borderRenderer ??= new(this);
 #endif
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				EnterImpl();
+#endif
 			};
+#endif
 		}
 
 

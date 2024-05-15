@@ -177,6 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
+		[DataRow(typeof(MediaPlayerElement), 15)] // Commented out temporarily.
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
 		{
 			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
@@ -384,7 +385,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public void When_Control_Loaded_Then_HardReferences()
+		public async Task When_Control_Loaded_Then_HardReferences()
 		{
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
@@ -396,6 +397,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.IsNotNull(SUT.GetParent());
 
 				TestServices.WindowHelper.WindowContent = root;
+				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.IsTrue((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
 				Assert.IsNotNull(SUT.GetParent());

@@ -4,7 +4,7 @@ using System;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
-internal partial class Given_InteractionTracker
+public partial class Given_InteractionTracker
 {
 	private class TrackerAssertHelper
 	{

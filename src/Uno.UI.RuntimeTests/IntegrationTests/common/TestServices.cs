@@ -45,25 +45,13 @@ namespace Private.Infrastructure
 #endif
 		}
 
-		internal static
-#if !__WASM__
-			async
-#endif
-			Task RunOnUIThread(Action action)
+		internal static async Task RunOnUIThread(Action action)
 		{
-#if __WASM__ // TODO Uno: To be adjusted for #2302
-			action();
-			return Task.CompletedTask;
-#else
 			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
-#endif
 		}
 
 		internal static async Task RunOnUIThread(Func<Task> asyncAction)
 		{
-#if __WASM__
-			await asyncAction();
-#else
 			var tsc = new TaskCompletionSource<bool>();
 
 			await WindowHelper.RootElementDispatcher.RunAsync(async () =>
@@ -80,7 +68,6 @@ namespace Private.Infrastructure
 			});
 
 			await tsc.Task;
-#endif
 		}
 
 		internal static bool HasDispatcherAccess

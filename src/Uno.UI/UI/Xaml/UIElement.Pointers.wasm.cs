@@ -18,6 +18,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
@@ -379,6 +380,11 @@ public partial class UIElement : DependencyObject
 	/// <returns></returns>
 	private object CoerceHitTestVisibility(object baseValue)
 	{
+		if (this is RootVisual or XamlIsland)
+		{
+			return HitTestability.Visible;
+		}
+
 		// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
 		var baseHitTestVisibility = (HitTestability)baseValue;
 
@@ -431,19 +437,6 @@ public partial class UIElement : DependencyObject
 		{
 			UpdateDOMProperties();
 		}
-	}
-
-	internal void SetHitTestVisibilityForRoot()
-	{
-		// Root element must be visible to hit testing, regardless of the other properties values.
-		// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
-		// Collapsed.
-		HitTestVisibility = HitTestability.Visible;
-	}
-
-	internal void ClearHitTestVisibilityForRoot()
-	{
-		this.ClearValue(HitTestVisibilityProperty);
 	}
 
 	#endregion

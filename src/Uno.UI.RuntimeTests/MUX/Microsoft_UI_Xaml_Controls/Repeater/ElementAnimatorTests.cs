@@ -35,7 +35,6 @@ using Private.Infrastructure;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class ElementAnimatorTests : MUXApiTestBase
 	{
 		[TestMethod]

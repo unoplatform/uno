@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -29,7 +30,7 @@ public class Given_RedirectVisual
 			Width = 200,
 			Height = 200,
 			Stretch = Stretch.UniformToFill,
-			Source = ImageSource.TryCreateUriFromString("https://uno-assets.platform.uno/logos/uno.png")
+			Source = new BitmapImage(new Uri("https://uno-assets.platform.uno/logos/uno.png")),
 		};
 		var sut = new ContentControl
 		{

@@ -120,18 +120,29 @@ namespace Microsoft.UI.Xaml.Controls
 			m_itemsAreSized = false;
 		}
 
-		private protected override void OnLoaded()
+		internal override void Enter(EnterParams @params, int depth)
 		{
-			base.OnLoaded();
+			base.Enter(@params, depth);
 
 			HookTemplate();
 		}
 
-		private protected override void OnUnloaded()
+		internal override void Leave(LeaveParams @params)
 		{
-			base.OnUnloaded();
+			base.Leave(@params);
 
 			UnhookTemplate();
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			var oldSV = m_tpScrollViewer;
+			base.OnApplyTemplate();
+
+			// Uno docs: Due to differences in Uno's FlipView and WinUI's FlipView (i.e, when the ScrollViewer is
+			// initialized - related to OnItemsHostAvailable which is missing in Uno), the base OnApplyTemplate can
+			// mess up with m_tpScrollViewer. So, we bring it back.
+			m_tpScrollViewer ??= oldSV;
 		}
 
 		private void HookTemplate()
@@ -388,33 +399,39 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_tpPreviousButtonHorizontalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpPreviousButtonHorizontalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpPreviousButtonHorizontalPart.Click -= OnPreviousButtonPartClick;
 			}
 
 			if (m_tpNextButtonHorizontalPart != null)
 			{
 				m_tpNextButtonHorizontalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpNextButtonHorizontalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpNextButtonHorizontalPart.Click -= OnNextButtonPartClick;
 			}
 
 			if (m_tpPreviousButtonVerticalPart != null)
 			{
 				m_tpPreviousButtonVerticalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpPreviousButtonVerticalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpPreviousButtonVerticalPart.Click -= OnPreviousButtonPartClick;
 			}
 
 			if (m_tpNextButtonVerticalPart != null)
 			{
 				m_tpNextButtonVerticalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpNextButtonVerticalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpNextButtonVerticalPart.Click -= OnNextButtonPartClick;
 			}
 
 			if (m_tpScrollViewer != null)
 			{
 				m_tpScrollViewer.SizeChanged -= OnScrollingHostPartSizeChanged;
 
-#if !__WASM__
 				m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
-#endif
 			}
 
 			m_tpButtonsFadeOutTimer?.Stop();
@@ -440,7 +457,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void InitializeScrollViewer()
 		{
-			if (m_tpScrollViewer == null)
+			// Uno-specific: The way we call InitializeScrollViewer is different from WinUI.
+			// In WinUI, this is called in OnItemsHostAvailable, which isn't available in Uno.
+			// In Uno, we call this in HookTemplate, which is called in Enter.
+			// If the FlipView enters the visual tree, then leaves it, then enters again, what will happen is:
+			// 1) The first Enter will set the m_tpScrollViewer and subscribe to SizeChanged and ViewChanged.
+			// 2) The leave will UnhookTemplate which will unsubscribe from SizeChanged and ViewChanged.
+			// 3) The second Enter will call InitializeScrollViewer again, but this time m_tpScrollViewer is not null.
+			// 4) This means we won't subscribe to SizeChanged and ViewChanged again if we have the following null check.
+			//if (m_tpScrollViewer == null)
 			{
 				ScrollViewer spScrollViewer;
 
@@ -486,9 +511,7 @@ namespace Microsoft.UI.Xaml.Controls
 					//	return OnScrollViewerViewChanged(pSender, pArgs);
 					//}));
 
-#if !__WASM__ // Workaround for https://github.com/unoplatform/uno/issues/14488
 					m_tpScrollViewer.ViewChanged += OnScrollViewerViewChanged;
-#endif
 				}
 			}
 		}

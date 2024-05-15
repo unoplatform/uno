@@ -108,7 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"Text", typeof(string),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: "", OnTextChanged)
+			new FrameworkPropertyMetadata(defaultValue: "", propertyChangedCallback: (dO, _) => ((AutoSuggestBox)dO).UpdateTextBox())
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty UpdateTextOnSelectProperty { get; } =

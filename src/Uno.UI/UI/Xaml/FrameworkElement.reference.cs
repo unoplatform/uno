@@ -37,12 +37,13 @@ namespace Microsoft.UI.Xaml
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 #pragma warning disable 67
-		private event TypedEventHandler<FrameworkElement, object> _loading;
+#pragma warning disable IDE0051
 		private event RoutedEventHandler _loaded;
 		private event RoutedEventHandler _unloaded;
 		public event TypedEventHandler<FrameworkElement, object> Loading;
 		public event RoutedEventHandler Loaded;
 		public event RoutedEventHandler Unloaded;
+#pragma warning restore IDE0051
 #pragma warning restore 67
 	}
 }

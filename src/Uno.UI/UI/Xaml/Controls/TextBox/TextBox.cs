@@ -100,9 +100,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInputClearingText;
 		/// <summary>
-		/// Set when <see cref="RaiseTextChanged"/> has been dispatched but not yet called.
+		/// Indicates how many TextChanged events are pending. This is needed for AutoSuggestBox, which needs to
+		/// respond only to the last TextChange event, not all of them.
 		/// </summary>
-		private bool _isTextChangedPending;
+		private int _textChangedPendingCount;
 		/// <summary>
 		/// True if Text has changed while the TextBox has had focus, false otherwise
 		///
@@ -169,7 +170,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			OnUnloadedPartial();
+		}
+
+		partial void OnUnloadedPartial();
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -310,11 +318,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 
-			if (!_isTextChangedPending)
-			{
-				_isTextChangedPending = true;
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
-			}
+			var isUserModifyingText = _isInputModifyingText | _isInputClearingText;
+			_textChangedPendingCount++;
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTextChanged(isUserModifyingText));
 		}
 
 		partial void OnTextChangedPartial();
@@ -341,8 +347,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// be performed in this method to avoid potential race conditions
 		/// (see #6289)
 		/// </summary>
-		private void RaiseTextChanged()
+		private void RaiseTextChanged(bool isUserModifyingText)
 		{
+			_textChangedPendingCount--;
 			if (_isInvokingTextChanged)
 			{
 				return;
@@ -351,10 +358,9 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				_isInvokingTextChanged = true;
-				_isTextChangedPending = false;
 				if (!_suppressTextChanged) // This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 				{
-					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+					TextChanged?.Invoke(this, new TextChangedEventArgs(this, isUserModifyingText, _textChangedPendingCount > 0));
 				}
 			}
 			finally

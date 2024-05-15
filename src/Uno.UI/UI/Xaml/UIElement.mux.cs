@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using DirectUI;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -117,7 +118,7 @@ namespace Microsoft.UI.Xaml
 			return true;
 		}
 
-		private protected AutomationPeer? GetOrCreateAutomationPeer()
+		internal protected AutomationPeer? GetOrCreateAutomationPeer()
 		{
 			bool isPopupOpen = true;
 
@@ -160,6 +161,12 @@ namespace Microsoft.UI.Xaml
 				//}
 				//RRETURN(S_FALSE);
 			}
+		}
+
+		//UNO TODO: Implement GetClickablePointRasterizedClient on UIElement
+		internal Point GetClickablePointRasterizedClient()
+		{
+			return new Point();
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)
@@ -473,6 +480,17 @@ namespace Microsoft.UI.Xaml
 			//return pParent;
 		}
 
+		//UNO TODO: Implement GetUIElementParentInternal on UIElement
+		internal DependencyObject GetAccessKeyScopeOwner()
+		{
+			throw new NotImplementedException("GetUIElementParentInternal is not implemented on UIElement");
+		}
+
+		/// <summary>
+		/// Override this method and return TRUE in order to navigate among automation children in reverse order.
+		/// </summary>
+		internal virtual bool AreAutomationPeerChildrenReversed() => false;
+
 		/// <summary>
 		/// Default to FALSE and expose as needed.  Elements that don't support having children will never
 		/// allocate children collections.  Elements that do support children may do so as an implementation
@@ -590,5 +608,88 @@ namespace Microsoft.UI.Xaml
 		/// <param name="uiElement">UIElement.</param>
 		/// <returns>True if the element is a ScrollViewer.</returns>
 		internal bool IsScroller() => this is ScrollViewer;
+
+		//UNO TODO: Implement GetGlobalBoundsWithOptions on UIElement
+		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
+		{
+			return new Rect();
+		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// Doesn't exactly match WinUI code.
+		internal virtual void Enter(EnterParams @params, int depth)
+		{
+			Depth = depth;
+
+			if (@params.IsLive)
+			{
+				IsActiveInVisualTree = true;
+			}
+
+			foreach (var child in _children)
+			{
+				if (child == this)
+				{
+					// In some cases, we end up with ContentPresenter having itself as a child.
+					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
+					// ContentPresenter sets its Content as the ScrollViewer Content.
+					// Skip this case for now.
+					// TODO: Investigate this more deeply.
+					continue;
+				}
+
+				child.Enter(@params, depth + 1);
+			}
+
+			if (@params.IsLive)
+			{
+				var core = this.GetContext();
+				core.EventManager.AddRequestsInOrder(this);
+			}
+
+			// Make sure that we propagate OnDirtyPath bits to the new parent.
+			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+		}
+
+		internal virtual void Leave(LeaveParams @params)
+		{
+			foreach (var child in _children)
+			{
+				if (child == this)
+				{
+					// In some cases, we end up with ContentPresenter having itself as a child.
+					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
+					// ContentPresenter sets its Content as the ScrollViewer Content.
+					// Skip this case for now.
+					// TODO: Investigate this more deeply.
+					continue;
+				}
+
+				child.Leave(@params);
+			}
+
+			if (IsActiveInVisualTree)
+			{
+				if (IsLoaded)
+				{
+					// This doesn't match WinUI.
+					// On WinUI, Unloaded can be fired even if Loaded is not fired.
+					// However, currently this is problematic due to bugs in ContentControl.
+					// Mainly, when we set ContentControl.Content, the content is added as a direct child to ContentControl
+					// Then, at some point later, we'll need to attach the Content to ContentPresenter instead of ContentControl directly.
+					// This "re-attaching" of Content will cause it to leave the visual tree and fire unloaded, which is not correct.
+					// In WinUI, ContentControl works differently.
+					//
+					// Another reason why we may not want to match WinUI behavior is that we rely on Loaded/Unloaded for event subscriptions/unsubscriptions in many controls
+					// Matching WinUI behavior can make those control go into bad state and/or memory leaks in niche cases.
+					// This can be revisited in the future if it caused issues.
+					OnElementUnloaded();
+				}
+
+				var eventManager = this.GetContext().EventManager;
+				eventManager.RemoveRequest(this);
+			}
+		}
+#endif
 	}
 }

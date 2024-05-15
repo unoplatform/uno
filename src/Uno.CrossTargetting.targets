@@ -63,11 +63,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_ENHANCED_LIFECYCLE</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
-		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
+		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL;UNO_HAS_ENHANCED_LIFECYCLE</DefineConstants>
 		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
