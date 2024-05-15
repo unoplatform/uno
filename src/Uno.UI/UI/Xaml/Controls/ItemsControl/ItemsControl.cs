@@ -995,7 +995,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
-			if (ItemsPanelRoot == null || !ShouldItemsControlManageChildren)
+			if (ItemsPanelRoot == null
+				|| !ShouldItemsControlManageChildren
+#if __ANDROID__
+				// workaround for INCC callback on disposed object
+				// see: Given_xBind.When_XBind_TargetDisposed_Test()
+				|| (Handle == nint.Zero || ItemsPanelRoot.Handle == nint.Zero)
+#endif
+				)
 			{
 				return;
 			}
