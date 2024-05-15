@@ -4,7 +4,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Uno.UI.Helpers;
@@ -14,14 +13,21 @@ internal sealed class WeakEventManager
 	private readonly ConditionalWeakTable<object, Dictionary<string, List<Action>>> _handlersPerTarget = new();
 	private Dictionary<string, List<Action>>? _staticHandlers;
 	private string? _enumeratingHandlersOfEvent;
+	private Stack<string>? _enumeratingHandlersOfEventStack;
 
-	public void AddEventHandler(Action handler, [CallerMemberName] string eventName = "")
+	public void AddEventHandler(Action? handler, [CallerMemberName] string eventName = "")
 	{
 		if (string.IsNullOrEmpty(eventName))
+		{
 			throw new ArgumentNullException(nameof(eventName));
+		}
 
-		if (handler == null)
-			throw new ArgumentNullException(nameof(handler));
+		if (handler is null)
+		{
+			// Allow handler to be nullable to not having to deal with nullability checks in callsites, but this indicates a bug.
+			Debug.Fail($"Got a null event handler for event {eventName}.");
+			return;
+		}
 
 		var target = handler.Target;
 		if (target is null)
@@ -34,13 +40,19 @@ internal sealed class WeakEventManager
 		}
 	}
 
-	public void RemoveEventHandler(Action handler, [CallerMemberName] string eventName = "")
+	public void RemoveEventHandler(Action? handler, [CallerMemberName] string eventName = "")
 	{
 		if (string.IsNullOrEmpty(eventName))
+		{
 			throw new ArgumentNullException(nameof(eventName));
+		}
 
-		if (handler == null)
-			throw new ArgumentNullException(nameof(handler));
+		if (handler is null)
+		{
+			// Allow handler to be nullable to not having to deal with nullability checks in callsites, but this indicates a bug.
+			Debug.Fail($"Got a null event handler for event {eventName}.");
+			return;
+		}
 
 		var target = handler.Target;
 		if (target is null)
@@ -58,7 +70,13 @@ internal sealed class WeakEventManager
 
 	public void HandleEvent(string eventName)
 	{
-		_enumeratingHandlersOfEvent = eventName; // Note: We do not support re-entrancy!
+		if (_enumeratingHandlersOfEvent is not null)
+		{
+			_enumeratingHandlersOfEventStack ??= new();
+			_enumeratingHandlersOfEventStack.Push(_enumeratingHandlersOfEvent);
+		}
+		_enumeratingHandlersOfEvent = eventName;
+
 		try
 		{
 			foreach (var kvp in _handlersPerTarget)
@@ -78,7 +96,7 @@ internal sealed class WeakEventManager
 		}
 		finally
 		{
-			_enumeratingHandlersOfEvent = null;
+			_enumeratingHandlersOfEvent = (_enumeratingHandlersOfEventStack?.TryPop(out var previous) ?? false) ? previous : null;
 		}
 	}
 
