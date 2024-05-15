@@ -169,29 +169,34 @@ namespace MUXControlsTestApp.Utilities
 			{
 				FrameworkElement rootElement = MUXControlsTestApp.App.TestContentRoot as FrameworkElement;
 
+				Console.WriteLine("ClearVisualTreeRoot: rootElement: " + rootElement);
+
 				if (rootElement != null
 				//UNO: // In MUXControlsTestApp.App.TestContentRoot setter, we set the content to MainPage if value is null.
 				//UNO: // Therefore UnloadedEvent will never be triggered if rootElement type is MainPage, no need to add event here.
 				//UNO: && !(rootElement is MainPage)
 				)
 				{
+					Console.WriteLine("ClearVisualTreeRoot: Subscribing to Unloaded. IsLoaded? " + rootElement.IsLoaded);
 					rootElement.Unloaded += (sender, args) => unloadedEvent.Set();
 				}
 				else
 				{
 					// If we don't have a FrameworkElement root, then we'll just set the unloaded event
 					// to make sure that we don't wait on an event that won't actually come.
+					Console.WriteLine("ClearVisualTreeRoot: Setting AutoResetEvent");
 					unloadedEvent.Set();
 				}
 
-				Log.Comment("Clearing visual tree root and waiting for Unloaded to be raised...");
+				Console.WriteLine("ClearVisualTreeRoot: Clearing visual tree root and waiting for Unloaded to be raised...");
 				MUXControlsTestApp.App.TestContentRoot = null;
 
 			});
 
+			Console.WriteLine("ClearVisualTreeRoot: Waiting for event");
 			await WaitForEvent(unloadedEvent);
 			await TestServices.WindowHelper.WaitForIdle();
-			Log.Comment("Unloaded raised.");
+			Console.WriteLine("ClearVisualTreeRoot: Unloaded raised.");
 		}
 
 		public static async Task WaitForEvent(UnoAutoResetEvent e)
