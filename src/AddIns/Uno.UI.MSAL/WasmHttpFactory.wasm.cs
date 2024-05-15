@@ -1,6 +1,5 @@
 ﻿using System.Net.Http;
 using Microsoft.Identity.Client;
-using Uno.UI.Wasm;
 
 namespace Uno.UI.MSAL
 {
@@ -8,6 +7,6 @@ namespace Uno.UI.MSAL
 	{
 		public static readonly WasmHttpFactory Instance = new WasmHttpFactory();
 
-		public HttpClient GetHttpClient() => new HttpClient(new WasmHttpHandler());
+		public HttpClient GetHttpClient() => new HttpClient();
 	}
 }

@@ -4,6 +4,7 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <SharedGUID>f4581f51-40d6-4035-8a1d-65cc6917d0a9</SharedGUID>
+    <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>SamplesApp.Benchmarks</Import_RootNamespace>
@@ -23,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Suite\SpanBench\SimpleSpanBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetControl.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetTestsPage.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Collections\HashtableBench.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI\ColorBench\XamlControlsResourcesCreationBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesCreationBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesReadBenchmark.cs" />

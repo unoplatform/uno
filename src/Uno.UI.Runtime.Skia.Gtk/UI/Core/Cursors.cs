@@ -4,7 +4,7 @@ using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.GTK.UI.Core
+namespace Uno.UI.Runtime.Skia.Gtk.UI.Core
 {
 	internal static class Cursors
 	{
@@ -35,8 +35,12 @@ namespace Uno.UI.Runtime.Skia.GTK.UI.Core
 		private static Cursor _wait;
 		public static Cursor Wait => _wait;
 
-		public static void Reload()
+		public static void EnsureLoaded()
 		{
+			if (_default is not null)
+			{
+				return;
+			}
 			// Name based on this: https://developer.gnome.org/gdk3/stable/gdk3-Cursors.html#gdk-cursor-new-from-name
 			// Fallback based on this list: https://developer.gnome.org/gdk3/stable/gdk3-Cursors.html#GdkCursorType
 			Set(ref _default, "default", CursorType.Arrow);
@@ -58,7 +62,7 @@ namespace Uno.UI.Runtime.Skia.GTK.UI.Core
 		{
 			try
 			{
-				var display = GtkHost.Window.Window.Display;
+				var display = GtkHost.Current.InitialWindow.Display;
 				if (display != null)
 				{
 					cursor = new Cursor(display, name);

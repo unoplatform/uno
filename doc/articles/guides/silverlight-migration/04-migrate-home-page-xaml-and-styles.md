@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.MigrateHomePageAndStyles
+---
+
 # Migrating the home page XAML and styles
 
 The general approach for migrating a Silverlight page to UWP is to start by creating a new UWP page (as demonstrated earlier) and then copying the content XAML and associated styles from the Silverlight page to UWP. The approach would then be:
@@ -264,7 +268,7 @@ The next steps will show how migrate the Silverlight styles to work in the Uno a
     > [!TIP]
     > You can learn more about the available XAML theme resources here:
     >
-    > * [XAML theme resources](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-theme-resources)
+    > * [XAML theme resources](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-theme-resources)
 
 1. To add the **HomeNavButtonsBackground** style using the **SystemAccentColor** resource, insert the following below the **ContentPanelBackground** definition:
 
@@ -300,7 +304,7 @@ The next steps will show how migrate the Silverlight styles to work in the Uno a
     </Style>
     ```
 
-    Save the resource and the designer should now display the rectangle background and the approrpiate foreground text color.
+    Save the resource and the designer should now display the rectangle background and the appropriate foreground text color.
 
 ## Adding the images
 
@@ -363,7 +367,7 @@ As mentioned earlier, the navigation implementation differs between Silverlight 
     > [!TIP]
     > You can learn more about the UWP page class here:
     >
-    > * [Page class](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Page)
+    > * [Page class](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Page)
 
 1. Update the remaining two **HyperlinkButton** declarations to use **Click** events and add the methods to the code-behind:
 

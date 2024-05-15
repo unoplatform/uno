@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TwoPaneView.h, commit b3a2e45
+// MUX Reference TwoPaneView.h, tag winui3/release/1.4.2
 
 #nullable enable
 
 using Uno.Disposables;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class TwoPaneView
 {
@@ -42,5 +42,5 @@ public partial class TwoPaneView
 	private RowDefinition? m_rowTop = null;
 	private RowDefinition? m_rowMiddle = null;
 	private RowDefinition? m_rowBottom = null;
-	private readonly SerialDisposable m_windowSizeChangedRevoker = new();
+	private readonly SerialDisposable m_xamlRootChangedRevoker = new();
 }

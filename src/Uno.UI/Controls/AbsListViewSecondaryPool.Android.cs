@@ -101,7 +101,7 @@ namespace Uno.UI.Controls
 			_recycler.Remove(view);
 
 			_pools[GetItemType(position)].Add(view);
-		} 
+		}
 
 		/// <summary>
 		/// To be called from ViewGroup.RemoveDetachedView, which is

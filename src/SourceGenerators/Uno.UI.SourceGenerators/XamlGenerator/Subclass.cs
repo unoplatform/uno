@@ -17,7 +17,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			DefaultBindMode = defaultBindMode;
 		}
 
-		public XamlMemberDefinition ContentOwner { get;}
+		public XamlMemberDefinition ContentOwner { get; }
 
 		public string ReturnType { get; }
 

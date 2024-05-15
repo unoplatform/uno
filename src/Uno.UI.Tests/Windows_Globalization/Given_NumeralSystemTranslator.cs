@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,29 +17,37 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_NumeralSystemIsInvalid_Then_Throw(string numeralSystem)
 		{
 			var sut = new NumeralSystemTranslator();
+
+			try
+			{
+				sut.NumeralSystem = numeralSystem;
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nnumeralSystem", ex.Message);
+			}
+
 			Assert.ThrowsException<ArgumentException>(() => sut.NumeralSystem = numeralSystem);
 		}
 
-		[TestMethod]
-		public void When_NumeralSystemIsNull_Then_Throw()
-		{
-			Assert.ThrowsException<ArgumentNullException>(() => new NumeralSystemTranslator { NumeralSystem = null });
-		}
-
-
 		[DataTestMethod]
+#pragma warning disable MSTEST0014 // DataRow should be valid - Works in our case
 		[DataRow(new string[0])]
 		[DataRow(new string[] { "abcd" })]
 		[DataRow(new string[] { "en-US", "abcd" })]
+#pragma warning restore MSTEST0014 // DataRow should be valid
 		public void When_LanguagesIsInvalid_Then_Throw(IEnumerable<string> languages)
 		{
-			Assert.ThrowsException<ArgumentException>(() => new NumeralSystemTranslator(languages));
-		}
+			try
+			{
+				new NumeralSystemTranslator(languages);
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nlanguages", ex.Message);
+			}
 
-		[TestMethod]
-		public void When_LanguagesIsNull_Then_Throw()
-		{
-			Assert.ThrowsException<NullReferenceException>(() => new NumeralSystemTranslator(null));
+			Assert.ThrowsException<ArgumentException>(() => new NumeralSystemTranslator(languages));
 		}
 
 		[DataTestMethod]
@@ -143,7 +152,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("ca-FR", "Latn", "ca-FR")]
 		[DataRow("ca-IT", "Latn", "ca-IT")]
 		[DataRow("ca-ES", "Latn", "ca")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ceb", "ArabExt", "fa")]
 		[DataRow("ceb-Latn", "ArabExt", "fa")]
 		[DataRow("ceb-Latn-PH", "ArabExt", "fa")]
@@ -153,7 +162,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("ku", "Arab", "ku")]
 		[DataRow("ku-Arab", "Arab", "ku-Arab")]
 		[DataRow("ku-Arab-IQ", "Arab", "ku-Arab")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ccp", "ArabExt", "fa")]
 		[DataRow("ccp-Cakm", "ArabExt", "fa")]
 		[DataRow("ccp-Cakm-BD", "ArabExt", "fa")]
@@ -174,7 +183,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("zh-MO", "Latn", "zh-Hant-MO")]
 		[DataRow("zh-TW", "Latn", "zh-Hant-TW")]
 		[DataRow("cu-RU", "Latn", "cu-Cyrl-RU")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("swc", "ArabExt", "fa")]
 #endif
 		[DataRow("swc-CD", "Latn", "swc-CD")]
@@ -305,7 +314,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("en-TC", "Latn", "en-TC")]
 		[DataRow("en-TV", "Latn", "en-TV")]
 		[DataRow("en-UG", "Latn", "en-UG")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("en-AE", "Latn", "en")]
 #endif
 		[DataRow("en-GB", "Latn", "en-GB")]
@@ -447,7 +456,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("id", "Latn", "id")]
 		[DataRow("id-ID", "Latn", "id")]
 		[DataRow("ia", "Latn", "ia")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ia-FR", "ArabExt", "fa")]
 #endif
 		[DataRow("ia-001", "Latn", "ia-001")]
@@ -627,7 +636,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("os-RU", "Latn", "os-Cyrl-RU")]
 		[DataRow("ps", "ArabExt", "ps")]
 		[DataRow("ps-AF", "ArabExt", "ps")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ps-PK", "ArabExt", "ps")]
 #endif
 		[DataRow("fa", "ArabExt", "fa")]
@@ -889,7 +898,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("dje-NE", "Latn", "dje-Latn-NE")]
 		[DataRow("zu", "Latn", "zu")]
 		[DataRow("zu-ZA", "Latn", "zu")]
-#endregion
+		#endregion
 		public void When_UsingLanguage_Then_InitializeCorrectly(string languageTag, string numeralSystem, string resolveLanguage)
 		{
 			var sut = new NumeralSystemTranslator(new string[] { languageTag });

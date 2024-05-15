@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation;
+
+using NativeMethods = __Windows.Gaming.Input.Gamepad.NativeMethods;
 
 namespace Windows.Gaming.Input;
 
 public partial class Gamepad
 {
-	private const string JsType = "Windows.Gaming.Input.Gamepad";
 	private const char IdSeparator = ';';
 
 	private readonly static Dictionary<long, Gamepad> _gamepadCache =
@@ -26,7 +28,9 @@ public partial class Gamepad
 	public GamepadReading GetCurrentReading()
 	{
 		var reading = new GamepadReading();
-		var result = WebAssemblyRuntime.InvokeJS($"{JsType}.getReading({_id})");
+
+		var result = NativeMethods.GetReading(_id);
+
 		if (string.IsNullOrEmpty(result))
 		{
 			// Gamepad is not connected
@@ -84,9 +88,8 @@ public partial class Gamepad
 		return reading;
 	}
 
-
-	[Preserve]
-	public static int DispatchGamepadAdded(long id)
+	[JSExport]
+	internal static int DispatchGamepadAdded(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)
@@ -101,8 +104,8 @@ public partial class Gamepad
 		return 0;
 	}
 
-	[Preserve]
-	public static int DispatchGamepadRemoved(long id)
+	[JSExport]
+	internal static int DispatchGamepadRemoved(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)
@@ -131,12 +134,12 @@ public partial class Gamepad
 
 	private static IReadOnlyList<Gamepad> GetGamepadsInternal()
 	{
-		var getConnectedGamepadIdsCommand = $"{JsType}.getConnectedGamepadIds()";
-		var serializedIds = WebAssemblyRuntime.InvokeJS(getConnectedGamepadIdsCommand);
+		var serializedIds = NativeMethods.GetConnectedGamepadIds();
+
 		var connectedGamepadIds =
 			serializedIds
 				.Split(new[] { IdSeparator }, StringSplitOptions.RemoveEmptyEntries)
-				.Select(id => long.Parse(id))
+				.Select(id => long.Parse(id, CultureInfo.InvariantCulture))
 				.ToList();
 
 		lock (_gamepadCache)
@@ -163,25 +166,21 @@ public partial class Gamepad
 
 	private static void StartGamepadAdded()
 	{
-		var startGamepadAddedCommand = $"{JsType}.startGamepadAdded()";
-		WebAssemblyRuntime.InvokeJS(startGamepadAddedCommand);
+		NativeMethods.StartGamepadAdded();
 	}
 
 	private static void EndGamepadAdded()
 	{
-		var endGamepadAddedCommand = $"{JsType}.endGamepadAdded()";
-		WebAssemblyRuntime.InvokeJS(endGamepadAddedCommand);
+		NativeMethods.EndGamepadAdded();
 	}
 
 	private static void StartGamepadRemoved()
 	{
-		var startGamepadRemovedCommand = $"{JsType}.startGamepadRemoved()";
-		WebAssemblyRuntime.InvokeJS(startGamepadRemovedCommand);
+		NativeMethods.StartGamepadRemoved();
 	}
 
 	private static void EndGamepadRemoved()
 	{
-		var endGamepadRemovedCommand = $"{JsType}.endGamepadRemoved()";
-		WebAssemblyRuntime.InvokeJS(endGamepadRemovedCommand);
+		NativeMethods.EndGamepadRemoved();
 	}
 }

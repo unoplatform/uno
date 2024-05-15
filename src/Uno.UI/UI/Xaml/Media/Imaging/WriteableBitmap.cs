@@ -1,27 +1,30 @@
-using System;
+﻿using System;
+using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public partial class WriteableBitmap : BitmapSource
 	{
-		internal event EventHandler Invalidated;
-
-		private readonly UwpBuffer _buffer;
+		private UwpBuffer _buffer;
 
 		public IBuffer PixelBuffer => _buffer;
 
 		public WriteableBitmap(int pixelWidth, int pixelHeight) : base()
 		{
-			var pixelsBufferSize = (uint)(pixelWidth * pixelHeight * 4);
+			PixelWidth = pixelWidth;
+			PixelHeight = pixelHeight;
+			UpdateBuffer();
+		}
+
+		private void UpdateBuffer()
+		{
+			var pixelsBufferSize = (uint)(PixelWidth * PixelHeight * 4);
 			_buffer = new UwpBuffer(pixelsBufferSize)
 			{
 				Length = pixelsBufferSize
 			};
-
-			PixelWidth = pixelWidth;
-			PixelHeight = pixelHeight;
 		}
 
 		public void Invalidate()
@@ -29,7 +32,20 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if __WASM__ || __SKIA__
 			InvalidateSource();
 #endif
-			Invalidated?.Invoke(this, EventArgs.Empty);
+			InvalidateImageSource();
+		}
+
+		private protected
+#if __SKIA__
+			unsafe
+#endif
+			override void OnSetSource()
+		{
+			UpdateBuffer();
+
+#if __ANDROID__ || __SKIA__ // TODO: Other platforms.
+			DecodeStreamIntoBuffer();
+#endif
 		}
 	}
 }

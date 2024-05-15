@@ -7,7 +7,7 @@ using Uno.UI.DataBinding;
 using AppKit;
 using CoreGraphics;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{

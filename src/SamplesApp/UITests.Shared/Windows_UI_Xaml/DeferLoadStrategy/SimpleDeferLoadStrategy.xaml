@@ -15,20 +15,14 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="SimpleDeferLoadStrategy - content should load after a brief delay">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel >
-					<TextBlock Text="Immediate content"/>
-					<Border Visibility="{Binding [LateVisibility], TargetNullValue=Collapsed, FallbackValue=Collapsed}"
-							x:Name="LazyLoadedBorder"
-							x:DeferLoadStrategy="Lazy"
-							Loaded="OnBorderLoaded">
-						<TextBlock Text="Content created when it becomes visible" />
-					</Border>
-					<TextBlock x:Name="loadedResult" Text="Should say loaded after 3s" />
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel >
+		<TextBlock Text="Immediate content"/>
+		<Border Visibility="{Binding [LateVisibility], TargetNullValue=Collapsed, FallbackValue=Collapsed}"
+						x:Name="LazyLoadedBorder"
+						x:DeferLoadStrategy="Lazy"
+						Loaded="OnBorderLoaded">
+			<TextBlock Text="Content created when it becomes visible" />
+		</Border>
+		<TextBlock x:Name="loadedResult" Text="Should say loaded after 3s" />
+	</StackPanel>
 </UserControl>

@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Globalization;
-using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media.Imaging;
-using Uno.Disposables;
-using Windows.Storage.Streams;
-using System.Runtime.InteropServices;
-
-using Windows.UI;
-using Windows.UI.Composition;
+using System.Linq;
 using System.Numerics;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Media;
+using Windows.Foundation;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Image : FrameworkElement
 	{
@@ -23,11 +18,7 @@ namespace Windows.UI.Xaml.Controls
 		private SkiaCompositionSurface _currentSurface;
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
-
-#pragma warning disable CS0067 // not used in skia
-		public event RoutedEventHandler ImageOpened;
-		public event ExceptionRoutedEventHandler ImageFailed;
-#pragma warning restore CS0067
+		private ImageData _pendingImageData;
 
 		public Image()
 		{
@@ -35,33 +26,78 @@ namespace Windows.UI.Xaml.Controls
 			Visual.Children.InsertAtTop(_imageSprite);
 		}
 
-		partial void OnSourceChanged(ImageSource newValue)
+		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
-			if (newValue is ImageSource source)
+			// We clear the old image first. We do NOT wait for the new image to load
+			// for it to replace the old one. This is what happens on WinUI.
+			_sourceDisposable.Disposable = null;
+			_lastMeasuredSize = default;
+			_imageSprite.Brush = null;
+			_currentSurface = null;
+			_pendingImageData = new();
+			InvalidateMeasure();
+
+			if (newValue is SvgImageSource svgImageSource)
 			{
-				_sourceDisposable.Disposable = source.Subscribe(img =>
-				{
-					_currentSurface = img.Value;
-					_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
-					_imageSprite.Brush = _surfaceBrush;
-					InvalidateMeasure();
-				});
+				InitializeSvgSource(svgImageSource);
 			}
+			else if (newValue is ImageSource source)
+			{
+				InitializeImageSource(source);
+			}
+		}
+
+		private void InitializeSvgSource(SvgImageSource source)
+		{
+			_svgCanvas = source.GetCanvas();
+			AddChild(_svgCanvas);
+			source.SourceLoaded += OnSvgSourceLoaded;
+			source.OpenFailed += OnSvgSourceFailed;
+			_sourceDisposable.Disposable = Disposable.Create(() =>
+			{
+				RemoveChild(_svgCanvas);
+				source.SourceLoaded -= OnSvgSourceLoaded;
+				source.OpenFailed -= OnSvgSourceFailed;
+				_svgCanvas = null;
+			});
+		}
+
+		private void OnSvgSourceLoaded(object sender, EventArgs args)
+		{
+			InvalidateMeasure();
+			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+		}
+
+		private void OnSvgSourceFailed(SvgImageSource sender, SvgImageSourceFailedEventArgs args)
+		{
+			InvalidateMeasure();
+			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Failed to load Svg source"));
+		}
+
+		private void InitializeImageSource(ImageSource source)
+		{
+			_sourceDisposable.Disposable = source.Subscribe(img =>
+			{
+				_pendingImageData = img;
+
+				InvalidateMeasure();
+			});
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			if (_currentSurface?.Image != null)
-			{
+			TryProcessPendingSource();
 
-				_lastMeasuredSize = new Size(_currentSurface.Image.Width, _currentSurface.Image.Height);
+			if (IsSourceReady())
+			{
+				_lastMeasuredSize = GetSourceSize();
 
 				Size ret;
 
-				if (Source is BitmapSource bitmapSource)
+				if (Source is BitmapImage bitmapImage)
 				{
-					bitmapSource.PixelWidth = (int)_lastMeasuredSize.Width;
-					bitmapSource.PixelHeight = (int)_lastMeasuredSize.Height;
+					bitmapImage.PixelWidth = (int)_lastMeasuredSize.Width;
+					bitmapImage.PixelHeight = (int)_lastMeasuredSize.Height;
 				}
 
 				if (
@@ -95,9 +131,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void TryProcessPendingSource()
+		{
+			var currentData = _pendingImageData;
+			_pendingImageData = new();
+			if (currentData.HasData)
+			{
+				_currentSurface = currentData.CompositionSurface;
+				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
+				_surfaceBrush.UsePaintColorToColorSurface = MonochromeColor is not null;
+				_imageSprite.SetPaintColor(MonochromeColor);
+				_imageSprite.Brush = _surfaceBrush;
+				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+			}
+			else if (currentData is { Kind: ImageDataKind.Error })
+			{
+				ImageFailed?.Invoke(this, new(
+					this,
+					currentData.Error?.Message ?? "Unknown error"));
+			}
+		}
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (_currentSurface?.Image != null)
+			if (IsSourceReady())
 			{
 				// Calculate the resulting space required on screen for the image;
 				var containerSize = this.MeasureSource(finalSize, _lastMeasuredSize);
@@ -105,27 +162,62 @@ namespace Windows.UI.Xaml.Controls
 				// Calculate the position of the image to follow stretch and alignment requirements
 				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
 
-				_imageSprite.Size = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
-				_imageSprite.Offset = new Vector3((float)finalPosition.X, (float)finalPosition.Y, 0);
-
-				var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / _currentSurface.Image.Width, _imageSprite.Size.Y / _currentSurface.Image.Height);
-
-				_surfaceBrush.TransformMatrix = transform;
+				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} position:{finalPosition} finalSize:{finalSize}");
 				}
 
-				// Image has no direct child that needs to be arranged explicitly
-				return finalSize;
+				if (Source is SvgImageSource)
+				{
+					_svgCanvas?.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
+					return finalSize;
+				}
+				else
+				{
+					_imageSprite.Size = roundedSize;
+					_imageSprite.Offset = new Vector3((float)finalPosition.X, (float)finalPosition.Y, 0);
+
+					var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / _currentSurface.Image.Width, _imageSprite.Size.Y / _currentSurface.Image.Height);
+
+					_surfaceBrush.TransformMatrix = transform;
+
+					// Image has no direct child that needs to be arranged explicitly
+					return finalSize;
+				}
 			}
 			else
 			{
 				_imageSprite.Size = default;
-				return default;
+				return ArrangeFirstChild(finalSize);
 			}
 		}
 
+		private bool IsSourceReady()
+		{
+			if (Source is SvgImageSource svgImageSource)
+			{
+				return svgImageSource.IsParsed;
+			}
+			else if (Source is ImageSource imageSource)
+			{
+				return _currentSurface?.Image != null;
+			}
+
+			return false;
+		}
+
+		private Size GetSourceSize()
+		{
+			if (Source is SvgImageSource svgImageSource)
+			{
+				return svgImageSource.SourceSize;
+			}
+			else
+			{
+				return new Size(_currentSurface.Image.Width, _currentSurface.Image.Height);
+			}
+		}
 	}
 }

@@ -3,7 +3,7 @@ using SystemXmlNode = System.Xml.XmlNode;
 
 namespace Windows.Data.Xml.Dom
 {
-	public  partial class XmlDocumentFragment : IXmlNode, IXmlNodeSerializer, IXmlNodeSelector
+	public partial class XmlDocumentFragment : IXmlNode, IXmlNodeSerializer, IXmlNodeSelector
 	{
 		private readonly XmlDocument _owner;
 		internal readonly SystemXmlDocumentFragment _backingDocumentFragment;

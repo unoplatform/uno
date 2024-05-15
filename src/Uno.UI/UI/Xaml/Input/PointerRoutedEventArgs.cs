@@ -9,6 +9,7 @@ using Uno;
 using Uno.UI.Xaml.Input;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.UI.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -17,7 +18,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs, CoreWindow.IPointerEventArgs, IDragEventSource
 	{
@@ -27,28 +28,41 @@ namespace Windows.UI.Xaml.Input
 		internal const bool PlatformSupportsNativeBubbling = true;
 #endif
 
-		public PointerRoutedEventArgs()
+		internal PointerRoutedEventArgs()
 		{
-			// This is acceptable as all ctors of this class are internal
-			CoreWindow.GetForCurrentThread().LastPointerEvent = this;
+			LastPointerEvent = this;
+			if (CoreWindow.GetForCurrentThreadSafe() is { } coreWindow)
+			{
+				coreWindow.LastPointerEvent = this;
+			}
 
 			CanBubbleNatively = PlatformSupportsNativeBubbling;
 		}
 
+		internal static PointerRoutedEventArgs LastPointerEvent { get; private set; }
+
 		/// <inheritdoc />
-		Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
-			=> (Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
+		global::Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
+			=> (global::Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
-			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
+			=> new List<PointerPoint>(1) { GetCurrentPoint(relativeTo) };
 
 		internal uint FrameId { get; }
 
 		internal bool CanceledByDirectManipulation { get; set; }
 
-		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
+		public bool IsGenerated { get; } // Generated events are not supported by UNO
 
 		public bool Handled { get; set; }
+
+		/// <summary>
+		/// This signals that a child element with a gesture recognizer has already detected and
+		/// raised certain Gesture-related events, so parents shouldn't raise these events again.
+		/// This is a GestureSettings, but we're actually only interested in a few gesture event-related
+		/// flags like Tapped and Hold.
+		/// </summary>
+		internal GestureSettings GestureEventsAlreadyRaised { get; set; }
 
 		public VirtualKeyModifiers KeyModifiers { get; }
 
@@ -61,6 +75,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			CanBubbleNatively = canBubbleNatively;
 			Handled = false;
+			GestureEventsAlreadyRaised = GestureSettings.None;
 
 			return this;
 		}
@@ -72,7 +87,7 @@ namespace Windows.UI.Xaml.Input
 		public override string ToString()
 			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";
 
-		Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
+		global::Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
 
 		long IDragEventSource.Id => Pointer.UniqueId;
 		uint IDragEventSource.FrameId => FrameId;
@@ -108,16 +123,15 @@ namespace Windows.UI.Xaml.Input
 				mods |= DragDropModifiers.RightButton;
 			}
 
-			var window = Window.Current.CoreWindow;
-			if (window.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Shift;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Control;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Alt;
 			}

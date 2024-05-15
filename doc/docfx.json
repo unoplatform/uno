@@ -8,19 +8,22 @@
                 "files": [
                     "articles/**.md",
                     "articles/**/toc.yml",
-                    "toc.yml",
                     "*.md"
+                ],
+                "exclude": [
+                    "**/includes/**"
                 ]
             }
         ],
         "resource": [
             {
-                "files": [
-                    "images/**",
-                    "articles/**.png",
-                    "articles/**.jpg",
-                    "articles/**.gif"
-                ]
+				"files": [
+					"images/**",
+					"articles/**.png",
+					"articles/**.jpg",
+					"articles/**.gif",
+					"articles/**.svg"
+				]
             }
         ],
         "overwrite": [
@@ -41,8 +44,47 @@
         "disableGitFeatures": false,
         "globalMetadata": {
             "_appLogoPath": "images/uno-logo.png",
-            "_enableSearch": "true",
-            "_appFaviconPath": "images/UnoLogoSmall.png"
+            "_enableSearch": false,
+            "_appFaviconPath": "images/UnoLogoSmall.png",
+            "_disableContribution": false,
+            "_gitContribute": {
+              "branch": "master"
+            },
+            "_gitUrlPattern": "github"
+        },
+        "fileMetadata": {
+          "_gitContribute": {
+            "articles/external/uno.wasm.bootstrap/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.themes/**.md": {
+              "branch": "master"
+            },
+            "articles/external/uno.toolkit.ui/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.check/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.xamlmerge.task/**.md": {
+              "branch": "main"
+            },
+            "articles/external/figma-docs/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.resizetizer/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.uitest/**.md": {
+              "branch": "master"
+            },
+            "articles/external/uno.extensions/**.md": {
+              "branch": "main"
+            }
+          }
+        },
+        "sitemap": {
+          "baseUrl": "https://platform.uno/docs/"
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// Discrete key frames like DiscreteDoubleKeyFrame create sudden "jumps" between values (no Interpolation). 
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		internal override IEasingFunction GetEasingFunction()
 		{
 			return _easingFunction;
-        }
+		}
 
 		private static readonly IEasingFunction _easingFunction = new DiscreteDoubleKeyFrameEasingFunction();
 

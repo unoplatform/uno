@@ -1,18 +1,17 @@
-namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml;
+
+/// <summary>
+/// Declares the theme preference for an app.
+/// </summary>
+public enum ApplicationTheme
 {
 	/// <summary>
-	/// Declares the theme preference for an app.
+	/// Use the Light default theme.
 	/// </summary>
-	public enum ApplicationTheme
-	{
-		/// <summary>
-		/// Use the Light default theme.
-		/// </summary>
-		Light,
+	Light,
 
-		/// <summary>
-		/// Use the Dark default theme.
-		/// </summary>
-		Dark
-	}
+	/// <summary>
+	/// Use the Dark default theme.
+	/// </summary>
+	Dark
 }

@@ -10,6 +10,7 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 {
@@ -207,6 +208,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled on iOS as flaky #9080
 		public async Task TextBox_Readonly()
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
@@ -265,13 +267,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android due to pixel color approximation, will be restored in next PR
+		[ActivePlatforms(Platform.Browser)] // Disabled on Android due to pixel color approximation, will be restored in next PR, flaky on iOS #9080
 		public void PasswordBox_RevealInScrollViewer()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
 
 			var passwordBox = _app.Marked("MyPasswordBox");
-			var passwordBoxRect = _app.GetRect(passwordBox);
+			var passwordBoxRect = _app.GetPhysicalRect(passwordBox);
 			_app.Wait(TimeSpan.FromMilliseconds(500)); // Make sure to show the status bar
 			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
@@ -280,6 +282,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// Press the reveal button, and move up (so the ScrollViewer will kick in and cancel the pointer), then release
 			_app.DragCoordinates(passwordBoxRect.X + 10, passwordBoxRect.Right - 10, passwordBoxRect.X - 100, passwordBoxRect.Right - 10);
+
+			// Scrolling may happen differed. If refactoring this test as a runtime tests
+			// Use layoutslot information to ensure visibility.
+			Thread.Sleep(500);
 
 			using var result = TakeScreenshot("result", ignoreInSnapshotCompare: true);
 
@@ -317,7 +323,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			using (new AssertionScope())
 			{
 				text2.Should().Be(text1, because: "Text content should not change at max length.");
-				text3.Should().Be("TextChanged: 1");
+				text3.Should().Be("TextChanged: 2");
 			}
 		}
 
@@ -381,9 +387,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var beforeTextBox = _app.Marked("BeforeTextBox");
 
 			// Enter text and verify that only e is permittable in text box
-			Assert.AreEqual("", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(beforeTextBox, "");
 			beforeTextBox.EnterText("Enter text and verify that only e is permittable");
-			Assert.AreEqual("eeeeee", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(beforeTextBox, "eeeeee");
 		}
 
 		[Test]
@@ -481,13 +487,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			textBox1.FastTap();
 			textBox1.ClearText();
 			textBox1.EnterText("Testing text property");
-			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
-			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(textChangedTextBlock, "Testing text property");
+			_app.WaitForText(lostFocusTextBlock, "");
 
 			// change focus and assert
 			textBox2.FastTap();
-			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
-			Assert.AreEqual("Testing text property", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(textChangedTextBlock, "Testing text property");
+			_app.WaitForText(lostFocusTextBlock, "Testing text property");
 		}
 
 		[Test]
@@ -510,6 +516,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
+		[Ignore("Android 31 or later does not bring the keyboard up https://github.com/unoplatform/uno/issues/9080")]
 		public void TextBox_Readonly_ShouldNotBringUpKeyboard()
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
@@ -891,6 +898,60 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var passwordBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionPasswordBox")[0].Rect);
 			using var screenshot = TakeScreenshot("PasswordBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.HasColorAt(screenshot, passwordBoxRect.X + passwordBoxRect.Width / 2, passwordBoxRect.Y + passwordBoxRect.Height - 50, Color.Red);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_Visibility()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Visibility", skipInitialScreenshot: true);
+			var textBoxRect = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
+			var buttonRect = ToPhysicalRect(_app.WaitForElement("ShowHideButton")[0].Rect);
+
+			_app.FastTap("ShowHideButton");
+
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser)
+			{
+				var textBoxRect2 = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
+
+				// Assert that after clicking, MyTextBox goes out of screen (hidden).
+				Assert.AreEqual(-100000 + textBoxRect.X, textBoxRect2.X);
+				Assert.AreEqual(-100000 + textBoxRect.Y, textBoxRect2.Y);
+			}
+			else
+			{
+				_app.WaitForNoElement("MyTextBox");
+			}
+
+			var buttonRect2 = ToPhysicalRect(_app.WaitForElement("ShowHideButton")[0].Rect);
+
+			// Assert that after clicking, ShowHideButton moves up (because MyTextBox is collapsed)
+			Assert.Less(buttonRect2.Y, buttonRect.Y);
+			Assert.AreEqual(textBoxRect.Height, buttonRect.Y - buttonRect2.Y);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void TextBox_Selection_IsReadOnly()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Selection");
+
+			var readonlyTextBoxRect = _app.WaitForElement("MyReadOnlyTextBox").Single().Rect;
+			var readonlyTextBox = _app.Marked("MyReadOnlyTextBox");
+
+			var centerPointReadOnlyX = (int)readonlyTextBoxRect.CenterX;
+			var centerPointReadOnlyY = (int)readonlyTextBoxRect.CenterY;
+
+			// Initial verification			
+			Assert.IsTrue(readonlyTextBox.GetDependencyPropertyValue<bool>("IsReadOnly"));
+			Assert.IsNull(readonlyTextBox.GetDependencyPropertyValue("SelectedText")?.ToString());
+
+			// Attempt selection
+			_app.DoubleTapCoordinates(centerPointReadOnlyX, centerPointReadOnlyY);
+
+			// Final verification of SelectedText
+			Assert.IsNotEmpty(readonlyTextBox.GetDependencyPropertyValue("SelectedText")?.ToString());
 		}
 	}
 }

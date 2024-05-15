@@ -100,7 +100,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Content_Margin");
 			_app.WaitForElement("ChildStatusTextBlock");
 			var rect = _app.GetPhysicalRect("OuterBorder");
-            var outsideColor = Color.LightBlue;
+			var outsideColor = Color.LightBlue;
 			var insideColor = Color.Pink;
 
 			AssertCurrentColors("Before-Scrolled", insideColor, outsideColor, outsideColor, outsideColor, insideColor);

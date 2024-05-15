@@ -4,14 +4,17 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Disposables;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Uno.Extensions;
 using Uno.UI.Lottie;
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 // **********************************************************
 // *                        ? WHY ?                         *
@@ -27,7 +30,11 @@ using Uno.UI.Lottie;
 // *                                                        *
 // **********************************************************
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	[Bindable]
 	public partial class ThemableLottieVisualSource : LottieVisualSourceBase, IThemableAnimatedVisualSource
@@ -49,7 +56,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			_updateCallback = updateCallback;
 
-			var t = LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
+			LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
 
 			return Disposable.Create(() =>
 			{
@@ -58,7 +65,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			});
 		}
 
-		private async Task LoadAndUpdate(
+		private void LoadAndUpdate(
 			CancellationToken ct,
 			string sourceCacheKey,
 			IInputStream sourceJson)
@@ -130,7 +137,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			void ParseShape(JObject shapeElement)
 			{
-				var typeValue = shapeElement.GetValue("ty");
+				var typeValue = shapeElement.GetValue("ty")!;
 				if (typeValue.Type != JTokenType.String)
 				{
 					return; // potentially invalid lottie file
@@ -158,14 +165,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					return;
 				}
 
-				var nameProperty = shapeElement.GetValue("nm");
+				var nameProperty = shapeElement.GetValue("nm")!;
 
 				if (nameProperty.Type != JTokenType.String)
 				{
 					return; // No name
 				}
 
-				var name = nameProperty.Value<string>();
+				var name = nameProperty.Value<string>()!;
 
 				if (!string.IsNullOrWhiteSpace(name))
 				{

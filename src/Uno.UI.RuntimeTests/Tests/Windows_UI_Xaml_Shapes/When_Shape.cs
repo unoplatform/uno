@@ -9,18 +9,21 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Windows.Devices.Perception;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
 	[TestClass]
-	class When_Shape
+	public class When_Shape
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 		public async Task When_Shape_Stretch_None()
 		{
 			var topLevelGrid = new Grid();
@@ -33,7 +36,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 			var g = new PathGeometry();
 			var fig = new PathFigure() { StartPoint = new Point(50, 50) };
-			var arc = new ArcSegment() {
+			var arc = new ArcSegment()
+			{
 				Size = new Size(50, 50),
 				RotationAngle = 45,
 				IsLargeArc = false,

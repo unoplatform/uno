@@ -1,11 +1,12 @@
 ﻿using static Uno.Foundation.WebAssemblyRuntime;
 
+using NativeMethods = __Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.NativeMethods;
+
 namespace Windows.Security.ExchangeActiveSyncProvisioning
 {
 	public partial class EasClientDeviceInformation
 	{
 		private const string BrowserVersionFallback = "Unknown";
-		private const string JsType = "Windows.System.Profile.AnalyticsVersionInfo";
 
 		partial void Initialize()
 		{
@@ -15,7 +16,8 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 
 		private string GetUserAgent()
 		{
-			var userAgent = InvokeJS(JsType + ".getUserAgent()");
+			var userAgent = NativeMethods.GetUserAgent();
+
 			if (!string.IsNullOrEmpty(userAgent))
 			{
 				return userAgent;

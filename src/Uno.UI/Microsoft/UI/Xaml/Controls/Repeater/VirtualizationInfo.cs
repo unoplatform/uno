@@ -1,19 +1,19 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal partial class VirtualizationInfo
 	{
 		public const int PhaseNotSpecified = int.MinValue;
 		public const int PhaseReachedEnd = -1;
 
-		private uint m_pinCounter ;
+		private uint m_pinCounter;
 		private int m_index = -1;
 		private string m_uniqueId;
 		private ElementOwner m_owner = ElementOwner.ElementFactory;
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public IDataTemplateComponent DataTemplateComponent => m_dataTemplateComponent?.GetTarget();
 
-		public void UpdatePhasingInfo(int phase,  object data, IDataTemplateComponent component)
+		public void UpdatePhasingInfo(int phase, object data, IDataTemplateComponent component)
 		{
 			m_phase = phase;
 			m_data = new WeakReference<object>(data);

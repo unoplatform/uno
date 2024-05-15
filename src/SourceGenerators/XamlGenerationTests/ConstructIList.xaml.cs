@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 
 namespace XamlGenerationTests.Shared
 {
-    public sealed partial class ConstructIList : UserControl
-    {
-        public ConstructIList()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class ConstructIList : UserControl
+	{
+		public ConstructIList()
+		{
+			this.InitializeComponent();
+		}
+	}
 
 	[ContentProperty(Name = nameof(TabItems))]
 	public partial class TestTabControl : Control

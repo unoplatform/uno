@@ -14,16 +14,22 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using System.IO;
 using Uno.UI;
+using Windows.Graphics.Display;
+using Private.Infrastructure;
+
+#if !WINAPPSDK
+using Uno.UI.Controls.Legacy;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -35,7 +41,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 	public sealed partial class Basic_Shapes : Page
 	{
 		#region Shapes
-		private readonly Factory[] _shapes = new []
+		private readonly Factory[] _shapes = new[]
 		{
 			Factory.New(() => new Rectangle
 			{
@@ -62,7 +68,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				Y2 = 100
 			}),
 
-			Factory.New(() => new Windows.UI.Xaml.Shapes.Path
+			Factory.New(() => new Microsoft.UI.Xaml.Shapes.Path
 			{
 				Fill = new SolidColorBrush(Color.FromArgb(160, 0, 128, 0)),
 				Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
@@ -171,7 +177,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		#endregion
 
 		#region Test automation support
-		public static DependencyProperty RunTestProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty RunTestProperty { get; } = DependencyProperty.Register(
 			"RunTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd).RunTests((string)e.NewValue)));
 
 		public string RunTest
@@ -180,7 +186,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			set => SetValue(RunTestProperty, value);
 		}
 
-		public static DependencyProperty TestResultProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty TestResultProperty { get; } = DependencyProperty.Register(
 			"TestResult", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string)));
 
 		public string TestResult
@@ -189,7 +195,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			set { SetValue(TestResultProperty, value); }
 		}
 
-		public static DependencyProperty RunningTestProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty RunningTestProperty { get; } = DependencyProperty.Register(
 			"RunningTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd)._runningTest.Text = e.NewValue?.ToString()));
 
 		public string RunningTest
@@ -259,7 +265,26 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 		private async void GenerateScreenshots(object sender, RoutedEventArgs e)
 		{
-#if WINDOWS_UWP
+#if __SKIA__
+			// Workaround to avoid issue #7829
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, GenerateScreenshots);
+#else
+			await GenerateScreenshots();
+#endif
+		}
+
+		private
+#if !__MACOS__
+		async
+#endif
+#if __SKIA__
+		void
+#else
+		Task
+#endif
+		GenerateScreenshots()
+		{
+#if !__MACOS__
 			_root.Visibility = Visibility.Collapsed;
 
 			var folder = await new FolderPicker { FileTypeFilter = { "*" } }.PickSingleFolderAsync();
@@ -271,81 +296,49 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			var alteratorsMap = _stretches.SelectMany(stretch => _sizes.Select(size => new[] { stretch, size })).ToArray();
 
 			foreach (var shape in _shapes)
-			foreach (var alterators in alteratorsMap)
-			{
-				var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
-				var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
-				_testZone.Child = grid;
-				await Task.Yield();
-
-				var renderer = new RenderTargetBitmap();
-				await renderer.RenderAsync(grid);
-
-				var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-				using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
+				foreach (var alterators in alteratorsMap)
 				{
-					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
-					encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
-					await encoder.FlushAsync();
-					await output.FlushAsync();
+					var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
+					var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
+					var loaded = new TaskCompletionSource<object>();
+					grid.SizeChanged += (snd, e) =>
+					{
+						if (e.NewSize != default)
+						{
+							loaded.SetResult(default);
+						}
+					};
+					_testZone.Child = grid;
+					await loaded.Task;
+					await Task.Yield();
+
+					var renderer = new RenderTargetBitmap();
+					await renderer.RenderAsync(grid, (int)grid.ActualWidth, (int)grid.ActualHeight); // We explicitly set the size to ignore the screen scaling
+
+					var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
+					{
+						var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
+						encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
+						await encoder.FlushAsync();
+						await output.FlushAsync();
+					}
 				}
-			}
 
 			_root.Visibility = Visibility.Visible;
 			_testZone.Child = null;
+#elif !__SKIA__
+			return Task.CompletedTask;
 #endif
 		}
-
-#if __IOS__ // This is the base work for a fix in the UITests in order to highly increase Screenshot speed. It will be removed by https://github.com/unoplatform/Uno.UITest/issues/39
-		private static byte[] RenderAsPng(FrameworkElement elt)
-		{
-			UIImage img;
-			try
-			{
-				UIGraphics.BeginImageContextWithOptions(new Size(elt.ActualWidth, elt.ActualHeight), true, UIScreen.MainScreen.Scale);
-				var ctx = UIGraphics.GetCurrentContext();
-				ctx.SetFillColor(Colors.White);
-				elt.Layer.RenderInContext(ctx);
-				img = UIGraphics.GetImageFromCurrentImageContext();
-			}
-			finally
-			{
-				UIGraphics.EndImageContext();
-			}
-
-			using (img)
-			{
-				return img.AsPNG().ToArray();
-			}
-		}
-#elif __ANDROID__
-		private static byte[] RenderAsPng(FrameworkElement elt)
-		{
-			Android.Graphics.Bitmap b = Android.Graphics.Bitmap.CreateBitmap((int)ViewHelper.LogicalToPhysicalPixels(elt.ActualWidth), (int)ViewHelper.LogicalToPhysicalPixels(elt.ActualHeight), Android.Graphics.Bitmap.Config.Argb8888);
-			Android.Graphics.Canvas c = new Android.Graphics.Canvas(b);
-			var view = elt as Android.Views.View;
-
-			view.Layout(0, 0, (int)ViewHelper.LogicalToPhysicalPixels(elt.ActualWidth), (int)ViewHelper.LogicalToPhysicalPixels(elt.ActualHeight));
-			c.DrawColor(Android.Graphics.Color.White);
-			view.Draw(c);
-			using var stream = new MemoryStream();
-			b.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
-
-			return stream.ToArray();
-		}
-#else
-		private static byte[] RenderAsPng(FrameworkElement elt)
-			=> throw new NotImplementedException("Not supported yet on this platform");
-#endif
-
 		public string RunTests(string testNames)
 		{
 			TestResult = "";
 
-			var tests = testNames.Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
+			var tests = testNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			var id = Guid.NewGuid().ToString("N");
 
-			_ = ((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = RunTestsCore(tests));
+			_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _ = RunTestsCore(tests));
 
 			return id;
 
@@ -353,7 +346,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			{
 				var result = new StringBuilder();
 				result.AppendLine(id);
-
+				var renderer = new RenderTargetBitmap();
 				foreach (var test in strings)
 				{
 					result.Append(test);
@@ -361,8 +354,25 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					try
 					{
 						var elt = await RenderById(test);
-						var testResult = RenderAsPng(elt);
+						await renderer.RenderAsync(elt, (int)elt.ActualWidth, (int)elt.ActualHeight); // We explicitly set the size to ignore the screen scaling
+						var pixels = await renderer.GetPixelsAsync();
+						byte[] testResult = default;
 
+						using var ms = new MemoryStream();
+						var ra = ms.AsRandomAccessStream();
+						var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ra);
+						encoder.SetPixelData(BitmapPixelFormat.Bgra8
+							, BitmapAlphaMode.Premultiplied
+							, (uint)renderer.PixelWidth
+							, (uint)renderer.PixelHeight
+							, XamlRoot.RasterizationScale
+							, XamlRoot.RasterizationScale
+							, pixels.ToArray()
+							);
+						await encoder.FlushAsync();
+						await ra.FlushAsync();
+						ms.Position = 0;
+						testResult = ms.ToArray();
 						result.Append("SUCCESS;");
 						result.Append(Convert.ToBase64String(testResult));
 					}
@@ -382,6 +392,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		private void RenderById(object sender, RoutedEventArgs e)
 			=> RunTests(_idInput.Text);
 
+		static readonly IdleDispatchedHandler idleDispatchedHandler = e => { };
 		private async Task<FrameworkElement> RenderById(string id)
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -393,17 +404,19 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				_root.Visibility = Visibility.Collapsed;
 
 				var elt = GetElement();
-				elt.SizeChanged += (snd, args) =>
+				SizeChangedEventHandler sh = default;
+				sh = (snd, args) =>
 				{
 					if (args.NewSize != default)
 					{
+						elt.SizeChanged -= sh;
 						tcs.SetResult(default);
 					}
 				};
+				elt.SizeChanged += sh;
 				_testZone.Child = elt;
 
 				await tcs.Task;
-
 				RunningTest = id;
 
 				return elt;
@@ -411,10 +424,12 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			FrameworkElement GetElement()
 			{
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				var parsedId = Regex.Match(id, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				if (!parsedId.Success)
 				{
-					return new TextBlock {Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red)};
+					return new TextBlock { Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red) };
 				}
 
 				try
@@ -429,7 +444,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				}
 				catch (Exception error)
 				{
-					return new TextBlock {Text = $"Failed to render {parsedId}: {error.Message}", Foreground = new SolidColorBrush(Colors.Red)};
+					return new TextBlock { Text = $"Failed to render {parsedId}: {error.Message}", Foreground = new SolidColorBrush(Colors.Red) };
 				}
 			}
 		}
@@ -450,12 +465,12 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			grid.HorizontalAlignment = HorizontalAlignment.Left;
 
 			// We set clip and add wrapping container so the rendering engine won't generate screenshots with a transparent padding.
-			grid.Clip = new RectangleGeometry {Rect = new Rect(0, 0, grid.Width, grid.Height)};
+			grid.Clip = new RectangleGeometry { Rect = new Rect(0, 0, grid.Width, grid.Height) };
 			var containerGrid = new Grid
 			{
 				Width = grid.Width,
 				Height = grid.Height,
-				Children = {grid}
+				Children = { grid }
 			};
 
 			return containerGrid;
@@ -464,16 +479,16 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		private static Grid BuildHoriVertTestGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
 		{
 			var isLabelEnabled = title != null;
-			var horizontalAlignments = new[] {HorizontalAlignment.Left, HorizontalAlignment.Center, HorizontalAlignment.Right, HorizontalAlignment.Stretch};
-			var verticalAlignments = new[] {VerticalAlignment.Top, VerticalAlignment.Center, VerticalAlignment.Bottom, VerticalAlignment.Stretch};
+			var horizontalAlignments = new[] { HorizontalAlignment.Left, HorizontalAlignment.Center, HorizontalAlignment.Right, HorizontalAlignment.Stretch };
+			var verticalAlignments = new[] { VerticalAlignment.Top, VerticalAlignment.Center, VerticalAlignment.Bottom, VerticalAlignment.Stretch };
 			var grid = new Grid();
 			var itemDimensions = new Size(itemSize + 2, itemSize + 20 + 2);
 			(int x, int y) labels;
 			if (isLabelEnabled)
 			{
-				grid.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
-				grid.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
-				grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(75)});
+				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(75) });
 
 				labels = (1, 2);
 
@@ -491,40 +506,40 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				grid.Height = verticalAlignments.Length * itemDimensions.Height;
 			}
 
-			grid.ColumnDefinitions.AddRange(horizontalAlignments.Select(_ => new ColumnDefinition {Width = new GridLength(itemDimensions.Width)}));
-			grid.RowDefinitions.AddRange(verticalAlignments.Select(_ => new RowDefinition {Height = new GridLength(itemDimensions.Height)}));
+			grid.ColumnDefinitions.AddRange(horizontalAlignments.Select(_ => new ColumnDefinition { Width = new GridLength(itemDimensions.Width) }));
+			grid.RowDefinitions.AddRange(verticalAlignments.Select(_ => new RowDefinition { Height = new GridLength(itemDimensions.Height) }));
 
 			for (var x = 0; x < horizontalAlignments.Length; x++)
-			for (var y = 0; y < verticalAlignments.Length; y++)
-			{
-				var item = template();
-				var container = new Border
+				for (var y = 0; y < verticalAlignments.Length; y++)
 				{
-					Width = itemDimensions.Width,
-					Height = itemDimensions.Height,
-					BorderBrush = new SolidColorBrush(Colors.HotPink),
-					BorderThickness = new Thickness(1, 1, 1, 1),
-					Child = item
-				};
-
-				item.HorizontalAlignment = horizontalAlignments[x];
-				item.VerticalAlignment = verticalAlignments[y];
-
-				grid.Children.Add(container.GridColumn(x + labels.x).GridRow(y + labels.y));
-
-				if (isLabelEnabled)
-				{ 
-					var sizeOverlay = new TextBlock
+					var item = template();
+					var container = new Border
 					{
-						VerticalAlignment = VerticalAlignment.Top,
-						HorizontalAlignment = HorizontalAlignment.Left,
-						Foreground = new SolidColorBrush(Colors.Gray),
+						Width = itemDimensions.Width,
+						Height = itemDimensions.Height,
+						BorderBrush = new SolidColorBrush(Colors.HotPink),
+						BorderThickness = new Thickness(1, 1, 1, 1),
+						Child = item
 					};
-					item.Loaded += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
-					item.SizeChanged += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
-					grid.Children.Add(sizeOverlay.GridColumn(x + labels.x).GridRow(y + labels.y));
+
+					item.HorizontalAlignment = horizontalAlignments[x];
+					item.VerticalAlignment = verticalAlignments[y];
+
+					grid.Children.Add(container.GridColumn(x + labels.x).GridRow(y + labels.y));
+
+					if (isLabelEnabled)
+					{
+						var sizeOverlay = new TextBlock
+						{
+							VerticalAlignment = VerticalAlignment.Top,
+							HorizontalAlignment = HorizontalAlignment.Left,
+							Foreground = new SolidColorBrush(Colors.Gray),
+						};
+						item.Loaded += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
+						item.SizeChanged += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
+						grid.Children.Add(sizeOverlay.GridColumn(x + labels.x).GridRow(y + labels.y));
+					}
 				}
-			}
 
 			return grid;
 
@@ -534,7 +549,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Text = text?.ToString() ?? "N/A",
 					VerticalAlignment = VerticalAlignment.Center,
 					HorizontalAlignment = HorizontalAlignment.Stretch,
-					TextAlignment = Windows.UI.Xaml.TextAlignment.Center
+					TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center
 				};
 		}
 
@@ -579,9 +594,11 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			{
 				_alter = alter;
 				Name = name;
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				Id = Regex.Replace(name, @"([^\w]|[ ])(?<first>[a-z])", m => m.Groups["first"].Value.ToUpperInvariant());
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 
-				var desc = details?.HasValue() ?? false ? $"{name} ({details})" : name;
+				var desc = !details.IsNullOrEmpty() ? $"{name} ({details})" : name;
 				Option = new ToggleSwitch { OnContent = desc, OffContent = desc, IsOn = isEnabled };
 			}
 
@@ -592,7 +609,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 	}
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 	// This is a clone of src\Uno.UI\UI\Xaml\Controls\Grid\GridExtensions.cs,
 	// but we prefer to not multi target this to not conflict with other efforts for fluent declaration
 	internal static class GridExtensions

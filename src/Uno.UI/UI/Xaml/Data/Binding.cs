@@ -13,7 +13,7 @@ using _NativeObject = Foundation.NSObject;
 using _NativeObject = System.Object;
 #endif
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 
 	public partial class Binding : BindingBase
@@ -40,6 +40,16 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		private object _source;
 
+		/// <summary>
+		/// Storage for the FallbackValue property
+		/// </summary>
+		private object _fallbackValue;
+
+		/// <summary>
+		/// A set of flags for this instance
+		/// </summary>
+		private BindingFlags _flags;
+
 		public Binding()
 		{
 
@@ -61,9 +71,9 @@ namespace Windows.UI.Xaml.Data
 			Mode = BindingMode.OneWay;
 		}
 
-		public static implicit operator Binding (string path)
+		public static implicit operator Binding(string path)
 		{
-			return new Binding (path);
+			return new Binding(path);
 		}
 
 		/// <summary>
@@ -100,7 +110,20 @@ namespace Windows.UI.Xaml.Data
 		/// Gets or sets the value to use when the binding is unable to return a value.
 		/// </summary>
 		/// <value>The fallback value.</value>
-		public object FallbackValue { get; set; }
+		public object FallbackValue
+		{
+			get => _fallbackValue;
+			set
+			{
+				_fallbackValue = value;
+
+				// Mark the value as set, regardless of the value itself
+				// so x:Bind can set that value to the target.
+				_flags |= BindingFlags.FallbackValueSet;
+			}
+		}
+
+		internal string FallbackValueThemeResource { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value that indicates the direction of the data flow in the binding.
@@ -159,6 +182,10 @@ namespace Windows.UI.Xaml.Data
 		/// <value>The target null value.</value>
 		public object TargetNullValue { get; set; }
 
+		internal string TargetNullValueThemeResource { get; set; }
+
+		internal object ParseContext { get; set; }
+
 		/// <summary>
 		/// Gets or sets a value that determines the timing of binding source updates for two-way bindings.
 		/// </summary>
@@ -177,12 +204,11 @@ namespace Windows.UI.Xaml.Data
 		{ get; set; }
 #endif
 
-
 		/// <summary>
 		/// Provides the method used in the context of x:Bind expressions to
 		/// get the resulting value.
 		/// </summary>
-		internal Func<object, object> XBindSelector
+		internal Func<object, (bool, object)> XBindSelector
 		{ get; private set; }
 
 		/// <summary>
@@ -196,12 +222,33 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		internal string[] XBindPropertyPaths { get; private set; }
 
-		internal void SetBindingXBindProvider(object compiledSource, Func<object, object> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
+		// Each of these values could be null and the Binding could still be an x:Bind, but they can't all be null
+		internal bool IsXBind => XBindSelector is not null || XBindPropertyPaths is not null || CompiledSource is not null || XBindBack is not null;
+
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
 		{
 			CompiledSource = compiledSource;
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
 			XBindBack = xBindBack;
+		}
+
+		/// <summary>
+		/// Determines if the FallbackValue has been set
+		/// </summary>
+		/// <remarks>To be used for x:Bind only</remarks>
+		internal bool IsFallbackValueSet
+			=> _flags.HasFlag(BindingFlags.FallbackValueSet);
+
+		[Flags]
+		private enum BindingFlags
+		{
+			None = 0,
+
+			/// <summary>
+			/// Determines if the FallbackValue has been set.
+			/// </summary>
+			FallbackValueSet = 1,
 		}
 	}
 }

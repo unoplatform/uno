@@ -7,12 +7,12 @@ using System.Text;
 using UIKit;
 using System.ComponentModel;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.UI.Xaml.Controls.Layouter;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
@@ -36,7 +36,10 @@ namespace Windows.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 
-			SetSuperviewNeedsLayout();
+			if (FeatureConfiguration.FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews || !_inLayoutSubviews)
+			{
+				SetSuperviewNeedsLayout();
+			}
 		}
 
 		public override void LayoutSubviews()
@@ -62,11 +65,7 @@ namespace Windows.UI.Xaml
 
 						Rect finalRect;
 						var parent = Superview;
-						if (parent is UIElement
-						    || parent is ISetLayoutSlots
-						    // In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
-						    || parent?.Superview is ISetLayoutSlots
-						   )
+						if (parent is UIElement or ISetLayoutSlots)
 						{
 							finalRect = LayoutSlotWithMarginsAndAlignments;
 						}

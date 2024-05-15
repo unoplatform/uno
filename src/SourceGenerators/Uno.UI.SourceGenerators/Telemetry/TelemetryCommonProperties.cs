@@ -54,7 +54,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 				{ProductVersion, GetProductVersion()},
 				{TelemetryProfile, Environment.GetEnvironmentVariable(TelemetryProfileEnvironmentVariable)},
 				{MachineId, GetMachineId()},
-				{CurrentPathHash, HashBuilder.Build(_getCurrentDirectory(), SHA256.Create())},
+				{CurrentPathHash, HashBuilder.Build(_getCurrentDirectory())},
 				{KernelVersion, GetKernelVersion()},
 			};
 
@@ -69,9 +69,9 @@ namespace Uno.UI.SourceGenerators.Telemetry
 					select nic.GetPhysicalAddress().ToString()
 				).FirstOrDefault();
 
-				return HashBuilder.Build(macAddr, SHA256.Create());
+				return HashBuilder.Build(macAddr);
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Debug.Fail($"Failed to get Mac address: {e}");
 
@@ -81,7 +81,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 
 		private string GetProductVersion()
 		{
-			if(this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute)).FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
+			if (this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute)).FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
 			{
 				return attribute.InformationalVersion;
 			}

@@ -7,7 +7,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal sealed class NotSupportedAnimator : IValueAnimator, IDisposable
 	{
@@ -37,14 +37,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			this.Log().Error("NotSupportedAnimator.Cancel");
 
 			IsRunning = false;
-		}
-
-		/// <summary>
-		/// Stop this instance.
-		/// </summary>
-		private void Stop()
-		{
-			this.Log().Error("NotSupportedAnimator.Stop");
 		}
 
 		/// <summary>

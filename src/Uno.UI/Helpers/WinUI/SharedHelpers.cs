@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+ï»¿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 //
@@ -14,30 +14,25 @@ using Windows.System;
 using Windows.System.Profile;
 using Windows.System.Threading;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-
-#if HAS_UNO_WINUI
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using ITextSelection = Microsoft.UI.Text.ITextSelection;
-#else
-using ITextSelection = Windows.UI.Text.ITextSelection;
-#endif
 
 namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-#pragma warning disable CS0414
-		private static bool s_isOnXboxInitialized = false;
-		private static bool s_isOnXbox = false;
-#pragma warning restore CS0414
+#if HAS_UNO && !(IS_UNIT_TESTS || __NETSTD_REFERENCE__)
+		private static bool s_isOnXboxInitialized;
+		private static bool s_isOnXbox;
+#endif
 
-		private static bool s_isMouseModeEnabledInitialized = false;
-		private static bool s_isMouseModeEnabled = false;
+		private static bool s_isMouseModeEnabledInitialized;
+		private static bool s_isMouseModeEnabled;
 
 		static SharedHelpers()
 		{
@@ -161,7 +156,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			if (s_IsXamlCompositionBrushBaseAvailable_isAvailable == null)
 			{
-				s_IsXamlCompositionBrushBaseAvailable_isAvailable = IsRS3OrHigher() || ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.XamlCompositionBrushBase");
+				s_IsXamlCompositionBrushBaseAvailable_isAvailable = IsRS3OrHigher() || ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.XamlCompositionBrushBase");
 			}
 
 			// On RS3 we know XamlCompositionBrushBase was always present, so short circuit the check there.
@@ -214,7 +209,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isFlyoutShowOptionsAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsTypePresent("Windows.UI.Xaml.Primitives.FlyoutShowOptions");
+					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Primitives.FlyoutShowOptions");
 			}
 			return s_isFlyoutShowOptionsAvailable.Value;
 		}
@@ -229,7 +224,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_areInteractionTrackerPointerWheelRedirectionModesAvailable =
 					IsSystemDll() ||
 					IsRS5OrHigher() ||
-					(IsRS4OrHigher() && ApiInformation.IsEnumNamedValuePresent("Windows.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode", "PointerWheelOnly"));
+					(IsRS4OrHigher() && ApiInformation.IsEnumNamedValuePresent("Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode", "PointerWheelOnly"));
 			}
 
 			return s_areInteractionTrackerPointerWheelRedirectionModesAvailable.Value;
@@ -243,7 +238,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ScrollViewer", "ReduceViewportForCoreInputViewOcclusions");
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ScrollViewer", "ReduceViewportForCoreInputViewOcclusions");
 			}
 			return s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable.Value;
 		}
@@ -256,9 +251,21 @@ namespace Uno.UI.Helpers.WinUI
 				s_isScrollContentPresenterSizesContentToTemplatedParentAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ScrollContentPresenter", "SizesContentToTemplatedParent");
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "SizesContentToTemplatedParent");
 			}
 			return s_isScrollContentPresenterSizesContentToTemplatedParentAvailable.Value;
+		}
+
+		static bool? s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable;
+		public static bool IsBringIntoViewOptionsVerticalAlignmentRatioAvailable()
+		{
+			if (s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable == null)
+			{
+				s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable =
+					IsRS4OrHigher() ||
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.BringIntoViewOptions", "VerticalAlignmentRatio");
+			}
+			return s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable.Value;
 		}
 
 		static bool? s_isFrameworkElementInvalidateViewportAvailable;
@@ -284,11 +291,11 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isDisplayRegionGetForCurrentViewAvailable.Value;
 		}
 
-		static bool s_areFacadesAvailable = false;
+		static bool s_areFacadesAvailable;
 		public static bool IsTranslationFacadeAvailable(UIElement element)
 		{
-			// s_areFacadesAvailable = (element.try_as<Windows.UI.Xaml.IUIElement9>() != null)
-			s_areFacadesAvailable = true; // (element is Windows.UI.Xaml.IUIElement9>() != null)
+			// s_areFacadesAvailable = (element.try_as<Microsoft.UI.Xaml.IUIElement9>() != null)
+			s_areFacadesAvailable = true; // (element is Microsoft.UI.Xaml.IUIElement9>() != null)
 			return s_areFacadesAvailable;
 		}
 
@@ -300,7 +307,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsIconSourceElementAvailable_isAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.IconSourceElement");
+					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.IconSourceElement");
 			}
 			return s_IsIconSourceElementAvailable_isAvailable.Value;
 		}
@@ -313,24 +320,10 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsStandardUICommandAvailable_isAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					(ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand") &&
-						ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.StandardUICommand"));
+					(ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand") &&
+						ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.StandardUICommand"));
 			}
 			return s_IsStandardUICommandAvailable_isAvailable.Value;
-		}
-
-		static bool? s_IsDispatcherQueueAvailable_isAvailable;
-		public static bool IsDispatcherQueueAvailable()
-		{
-			if (s_IsDispatcherQueueAvailable_isAvailable == null)
-			{
-				s_IsDispatcherQueueAvailable_isAvailable =
-					IsSystemDll() ||
-					IsRS4OrHigher() ||
-					ApiInformation.IsTypePresent("Windows.System.DispatcherQueue");
-			}
-
-			return s_IsDispatcherQueueAvailable_isAvailable.Value;
 		}
 
 		static bool? s_IsXamlRootAvailable;
@@ -341,7 +334,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsXamlRootAvailable =
 				   IsSystemDll() ||
 				   IsVanadiumOrHigher() ||
-				   ApiInformation.IsTypePresent("Windows.UI.Xaml.XamlRoot");
+				   ApiInformation.IsTypePresent("Microsoft.UI.Xaml.XamlRoot");
 
 			}
 			return s_IsXamlRootAvailable.Value;
@@ -356,7 +349,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isThemeShadowAvailable =
 					(IsSystemDll() ||
 					IsVanadiumOrHigher()) &&
-					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
+					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.ThemeShadow");
 			}
 			return s_isThemeShadowAvailable.Value;
 		}
@@ -369,7 +362,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsIsLoadedAvailable =
 					IsSystemDll() ||
 					IsRS5OrHigher() ||
-					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.FrameworkElement", "IsLoaded");
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.FrameworkElement", "IsLoaded");
 			}
 			return s_IsIsLoadedAvailable.Value;
 		}
@@ -447,7 +440,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			try
 			{
-				var scaleFactor = (float)DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+				var scaleFactor = (float)xamlRootReference.XamlRoot.RasterizationScale;
 
 				return new Rect()
 				{
@@ -470,7 +463,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			try
 			{
-				var scaleFactor = (float)(DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+				var scaleFactor = xamlRootReference.XamlRoot.RasterizationScale;
 
 				return new Rect
 				{
@@ -491,7 +484,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsOnXbox()
 		{
-#if HAS_UNO && !(NET461 || __NETSTD_REFERENCE__)
+#if HAS_UNO && !(IS_UNIT_TESTS || __NETSTD_REFERENCE__)
 			if (!s_isOnXboxInitialized)
 			{
 				var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
@@ -531,16 +524,18 @@ namespace Uno.UI.Helpers.WinUI
 			Action action,
 			uint millisecondWait)
 		{
-			// The callback that is given to CreateTimer is called off of the UI thread.
-			// In order to make this useful by making it so we can interact with XAML objects,
-			// we'll use the dispatcher to first post our work to the UI thread before executing it.
-			ThreadPoolTimer.CreateTimer(t =>
+			if (DispatcherQueue.GetForCurrentThread() is { } dispatcherQueue)
+			{
+				// The callback that is given to CreateTimer is called off of the UI thread.
+				// In order to make this useful by making it so we can interact with XAML objects,
+				// we'll use the dispatcher to first post our work to the UI thread before executing it.
+				ThreadPoolTimer.CreateTimer(t =>
 				{
-					new DispatcherHelper().RunAsync(action);
+					dispatcherQueue.TryEnqueue(new DispatcherQueueHandler(action));
 				},
 				TimeSpan.FromMilliseconds(millisecondWait));
+			}
 		}
-
 
 		// Stream helpers
 		//InMemoryRandomAccessStream CreateStreamFromBytes(const array_view<const byte>& bytes)
@@ -561,6 +556,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static void QueueCallbackForCompositionRendering(Action callback)
 		{
+			//TODO:MZ:Make this work on non-Skia targets!
 			try
 			{
 				void OnRender(object sender, object e)
@@ -598,18 +594,12 @@ namespace Uno.UI.Helpers.WinUI
 			return doIntersect;
 		}
 
-		object FindResourceOrNull(string resource, ResourceDictionary resources)
-		{
-			object boxedResource = resource;
-			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : null;
-		}
-
 		// When checkVisibility is True, IsAncestor additionally checks if any UIElement from the 'child'
 		// to the 'parent' chain is Collapsed. It returns False when that is the case.
 		public static bool IsAncestor(
 			DependencyObject child,
 			DependencyObject parent,
-			bool checkVisibility)
+			bool checkVisibility = false)
 		{
 			if (child == null || parent == null || child == parent)
 			{
@@ -657,9 +647,22 @@ namespace Uno.UI.Helpers.WinUI
 			return false;
 		}
 
-		public static IconElement MakeIconElementFrom(Microsoft.UI.Xaml.Controls.IconSource iconSource)
+		public static bool IsFocusableElement(
+			UIElement element)
 		{
-			if (iconSource is Microsoft.UI.Xaml.Controls.FontIconSource fontIconSource)
+			if (element.Visibility == Visibility.Collapsed)
+			{
+				return false;
+			}
+
+			var control = element as Control;
+
+			return control is not null && (control.IsEnabled || control.AllowFocusWhenDisabled) && control.IsTabStop;
+		}
+
+		public static IconElement MakeIconElementFrom(Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource iconSource)
+		{
+			if (iconSource is Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource fontIconSource)
 			{
 				FontIcon fontIcon = new FontIcon();
 
@@ -683,7 +686,7 @@ namespace Uno.UI.Helpers.WinUI
 
 				return fontIcon;
 			}
-			else if (iconSource is Microsoft.UI.Xaml.Controls.SymbolIconSource symbolIconSource)
+			else if (iconSource is Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource symbolIconSource)
 			{
 				SymbolIcon symbolIcon = new SymbolIcon();
 				symbolIcon.Symbol = symbolIconSource.Symbol;
@@ -695,7 +698,7 @@ namespace Uno.UI.Helpers.WinUI
 
 				return symbolIcon;
 			}
-			else if (iconSource is Microsoft.UI.Xaml.Controls.BitmapIconSource bitmapIconSource)
+			else if (iconSource is Microsoft/* UWP don't rename */.UI.Xaml.Controls.BitmapIconSource bitmapIconSource)
 			{
 				BitmapIcon bitmapIcon = new BitmapIcon();
 
@@ -709,14 +712,14 @@ namespace Uno.UI.Helpers.WinUI
 					bitmapIcon.Foreground = bitmapIconSource.Foreground;
 				}
 
-				if (IsSystemDll() || ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
+				if (IsSystemDll() || ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
 				{
 					bitmapIcon.ShowAsMonochrome = bitmapIconSource.ShowAsMonochrome;
 				}
 
 				return bitmapIcon;
 			}
-			else if (iconSource is Microsoft.UI.Xaml.Controls.PathIconSource pathIconSource)
+			else if (iconSource is Microsoft/* UWP don't rename */.UI.Xaml.Controls.PathIconSource pathIconSource)
 			{
 				PathIcon pathIcon = new PathIcon();
 
@@ -752,7 +755,7 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// Be cautious: this function may introduce memory leak because Source holds strong reference to target too
-		// There’s an intermediary object – the BindingExpression when BindingOperations::SetBinding
+		// Thereï¿½s an intermediary object ï¿½ the BindingExpression when BindingOperations::SetBinding
 		// For example, if source is NavigationView and target is content control,
 		// and there is strong reference: NavigationView -> ContentControl
 		// BindingExpression.Source also make a strong reference to NavigationView

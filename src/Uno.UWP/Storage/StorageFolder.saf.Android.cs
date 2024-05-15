@@ -33,14 +33,14 @@ namespace Windows.Storage
 			internal SafFolder(Android.Net.Uri uri) : base(uri.Path ?? string.Empty)
 			{
 				_folderUri = uri ?? throw new ArgumentNullException(nameof(uri));
-				_directoryDocument = DocumentFile.FromTreeUri(Application.Context, uri);
+				_directoryDocument = DocumentFile.FromTreeUri(Application.Context, uri)!;
 				if (string.IsNullOrEmpty(Path))
 				{
-					Path = _directoryDocument.Name;
+					Path = _directoryDocument.Name ?? "";
 				}
 			}
 
-			internal SafFolder(DocumentFile directoryDocument) : base(directoryDocument.Uri.Path ?? directoryDocument.Name)
+			internal SafFolder(DocumentFile directoryDocument) : base(directoryDocument.Uri.Path ?? directoryDocument.Name ?? "")
 			{
 				_directoryDocument = directoryDocument ?? throw new ArgumentNullException(nameof(directoryDocument));
 				_folderUri = _directoryDocument.Uri;
@@ -104,7 +104,7 @@ namespace Windows.Storage
 
 					var extension = IOPath.GetExtension(actualName);
 					var mimeType = MimeTypeService.GetFromExtension(extension);
-					var file = _directoryDocument.CreateFile("", actualName);
+					var file = _directoryDocument.CreateFile("", actualName)!;
 					return StorageFile.GetFromSafDocument(file);
 				}, cancellationToken);
 			}
@@ -157,7 +157,7 @@ namespace Windows.Storage
 					}
 
 					var directoryDocument = _directoryDocument.CreateDirectory(folderName);
-					return GetFromSafDocument(directoryDocument);
+					return GetFromSafDocument(directoryDocument!);
 				}, token);
 			}
 

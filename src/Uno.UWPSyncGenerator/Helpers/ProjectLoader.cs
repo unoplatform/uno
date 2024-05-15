@@ -15,6 +15,7 @@ using System.Linq;
 using System.Collections.Concurrent;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UWPSyncGenerator;
 
 namespace Uno.SourceGeneration.Host
 {
@@ -30,9 +31,9 @@ namespace Uno.SourceGeneration.Host
 			var key = Tuple.Create(projectFile, configuration);
 			ProjectDetails details;
 
-			if(_allProjects.TryGetValue(key, out details))
+			if (_allProjects.TryGetValue(key, out details))
 			{
-				if(!details.HasChanged())
+				if (!details.HasChanged())
 				{
 					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -65,7 +66,9 @@ namespace Uno.SourceGeneration.Host
 			properties["Configuration"] = configuration;
 			properties["UseHostCompilerIfAvailable"] = "true";
 			properties["UseSharedCompilation"] = "true";
-			properties["LangVersion"] = "8.0";
+			properties["LangVersion"] = Generator.CSharpLangVersion;
+			properties["UnoDisableNetCurrentMobile"] = "true";
+			properties["UnoDisableNetCurrent"] = "true";
 
 			// Platform is intentionally kept as not defined, to avoid having 
 			// dependent projects being loaded with a platform they don't support.
@@ -106,10 +109,10 @@ namespace Uno.SourceGeneration.Host
 			var hostServices = new Microsoft.Build.Execution.HostServices();
 
 			// connect the host "callback" object with the host services, so we get called back with the exact inputs to the compiler task.
-			hostServices.RegisterHostObject(loadedProject.FullPath, "CoreCompile", "Csc", null);
+			hostServices.RegisterHostObject(loadedProject.FullPath, "CoreCompile", "Csc", hostObject: null);
 
 			var buildParameters = new Microsoft.Build.Execution.BuildParameters(loadedProject.ProjectCollection);
-			
+
 			// This allows for the loggers to 
 			buildParameters.Loggers = collection.Loggers;
 
@@ -122,10 +125,10 @@ namespace Uno.SourceGeneration.Host
 				ValidateOutputPath(details.ExecutedProject);
 
 				var projectFilePath = Path.GetFullPath(Path.GetDirectoryName(projectFile));
-				
+
 				details.References = details.ExecutedProject.GetItems("ReferencePath").Select(r => r.EvaluatedInclude).ToArray();
 
-				if(details.References.None())
+				if (details.References.None())
 				{
 					LogFailedTargets(projectFile, result);
 					return details;

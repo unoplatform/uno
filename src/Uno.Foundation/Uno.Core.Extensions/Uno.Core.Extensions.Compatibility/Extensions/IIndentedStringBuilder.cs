@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,11 +32,6 @@ namespace Uno.Extensions
 		void Append(string text);
 
 		/// <summary>
-		/// Appends formatted text using the current indentation level
-		/// </summary>
-		void AppendFormat(IFormatProvider formatProvider, string pattern, params object[] replacements);
-
-		/// <summary>
 		/// Appends a line using the current indentation level 
 		/// </summary>
 		void AppendLine();
@@ -44,7 +39,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Writes the provided text and adds line using the current indentation level 
 		/// </summary>
-		void AppendLine(string text);
+		void AppendMultiLineIndented(string text);
 
 		/// <summary>
 		/// Creates an indentation block
@@ -70,5 +65,11 @@ namespace Uno.Extensions
 		/// Provides a string representing the complete builder.
 		/// </summary>
 		string ToString();
+
+		public void AppendIndented(string text);
+
+		public void AppendIndented(ReadOnlySpan<char> text);
+
+		void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements);
 	}
 }

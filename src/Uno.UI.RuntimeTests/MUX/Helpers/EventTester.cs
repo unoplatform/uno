@@ -12,10 +12,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
+using MUXControlsTestApp.Utilities;
 
-namespace Microsoft.UI.Xaml.Tests.Common
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 {
 	[Flags]
 	public enum EventTesterOptions : int
@@ -46,7 +47,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		protected readonly String eventName;
 		protected readonly Delegate handlerInvocationDelegate;
 		private readonly List<Tuple<object, TEventArgs>> eventData;
-		private readonly AutoResetEvent resetEvent;
+		private readonly UnoAutoResetEvent resetEvent;
 		private readonly Action<object, TEventArgs> Action;
 		private Action<object> removeMethod;
 		private readonly EventTesterOptions options;
@@ -57,7 +58,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			this.eventName = eventName;
 			this.eventData = new List<Tuple<object, TEventArgs>>();
 			this.sender = sender;
-			this.resetEvent = new AutoResetEvent(false);
+			this.resetEvent = new UnoAutoResetEvent(false);
 			this.Action = action;
 			this.options = options;
 			if (setBVTflags)
@@ -253,14 +254,14 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		}
 
 
-		public bool Wait()
+		public async Task<bool> Wait()
 		{
-			return this.Wait(this.Timeout);
+			return await this.Wait(this.Timeout);
 		}
 
-		public bool Wait(TimeSpan timeout)
+		public async Task<bool> Wait(TimeSpan timeout)
 		{
-			var result = this.resetEvent.WaitOne(timeout);
+			var result = await this.resetEvent.WaitOne(timeout);
 			if (!result)
 			{
 				Verify.Fail($"Event '{eventName}' was not raised before timeout.");
@@ -273,9 +274,9 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			this.resetEvent.Reset();
 		}
 
-		public bool WaitForNoThrow(TimeSpan timeout)
+		public async Task<bool> WaitForNoThrow(TimeSpan timeout)
 		{
-			return this.resetEvent.WaitOne(timeout);
+			return await this.resetEvent.WaitOne(timeout);
 		}
 
 		private async Task CaptureScreenAsync(string prefix = "")
@@ -335,18 +336,34 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		public async Task<bool> WaitAsync(TimeSpan timeout)
 		{
 			var tcs = new TaskCompletionSource<bool>();
-			await Task.Factory.StartNew(() =>
+
+#if __WASM__
+			var sw = Stopwatch.StartNew();
+
+			var result = false;
+			while (!(result = await this.resetEvent.WaitOne(0)) && sw.Elapsed < timeout)
+			{
+				Console.WriteLine("waiting...");
+				await Task.Delay(100);
+			}
+
+#else
+			Console.WriteLine("Before StartNew...");
+			await Task.Factory.StartNew(async () =>
 			{
 				try
 				{
-					tcs.SetResult(this.WaitForNoThrow(timeout));
+					tcs.SetResult(await this.WaitForNoThrow(timeout));
 				}
 				catch
 				{
 					tcs.SetResult(false);
 				}
 			});
+
 			var result = await tcs.Task;
+#endif
+
 			if (!result)
 			{
 				if (this.options.HasFlag(EventTesterOptions.CaptureWindowOnTimeout))
@@ -396,8 +413,8 @@ namespace Microsoft.UI.Xaml.Tests.Common
 
 		#region IDisposable Support
 
-		private bool disposedValue = false; // To detect redundant calls
-		private bool isDisposing = false;
+		private bool disposedValue; // To detect redundant calls
+		private bool isDisposing;
 
 		private void Dispose(bool disposing)
 		{
@@ -411,7 +428,8 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					{
 						this.RemoveEvent();
 					});
-					TestServices.WindowHelper.WaitForIdle();
+
+					_ = TestServices.WindowHelper.WaitForIdle();
 
 					//if (XamlTestsBase.IsBVT)
 					//{

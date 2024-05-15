@@ -1,11 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 //  Abstract:
 //      Contains common logic between the stacking and wrapping layout
 //      strategies.
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class LayoutStrategyBase
 	{
@@ -77,8 +77,8 @@ namespace Windows.UI.Xaml.Controls
 		//    static int GetRemainingGroups( int referenceGroupIndex,  int totalGroups,  RelativePosition positionOfReference);
 		//    static int GetRemainingItems( int referenceItemIndex,  int totalItems,  RelativePosition positionOfReference);
 
-		protected static int c_specialGroupIndex = 0;
-		protected static int c_specialItemIndex = 0;
+		protected static int c_specialGroupIndex;
+		protected static int c_specialItemIndex;
 
 		//private:
 		// direction in which we layout out items

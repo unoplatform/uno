@@ -7,24 +7,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
 using Uno.UITest;
 using static Private.Infrastructure.TestServices.WindowHelper;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Input_Preview_Injection;
 
 [TestClass]
-internal class Given_InputInjector
+public class Given_InputInjector
 {
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_InjectTouch()
 	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			// Input injection is not supported in XamlIslands
+			return;
+		}
+
 		var target = new Border
 		{
 			Background = new SolidColorBrush(Colors.DeepPink),
@@ -47,7 +54,7 @@ internal class Given_InputInjector
 		var injector = InputInjector.TryCreate();
 
 		injector.InitializeTouchInjection(InjectedInputVisualizationMode.Default);
-		injector.InjectTouchInput(new []
+		injector.InjectTouchInput(new[]
 		{
 			new InjectedInputTouchInfo
 			{

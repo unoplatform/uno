@@ -1,5 +1,5 @@
-﻿using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 
 namespace XamlGenerationTests.Shared
 {
@@ -11,18 +11,18 @@ namespace XamlGenerationTests.Shared
 		}
 	}
 
-    [MarkupExtensionReturnType(ReturnType = typeof(int))]
-    public class FontIcon : MarkupExtension
-    {
-        public string Glyph { get; set; }
+	[MarkupExtensionReturnType(ReturnType = typeof(int))]
+	public class FontIcon : MarkupExtension
+	{
+		public string Glyph { get; set; }
 
-        protected override object ProvideValue()
-        {
-            return new Windows.UI.Xaml.Controls.FontIcon()
-            {
-                Glyph = Glyph,
-                FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe UI")
-            };
-        }
-    }
+		protected override object ProvideValue()
+		{
+			return new Microsoft.UI.Xaml.Controls.FontIcon()
+			{
+				Glyph = Glyph,
+				FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI")
+			};
+		}
+	}
 }

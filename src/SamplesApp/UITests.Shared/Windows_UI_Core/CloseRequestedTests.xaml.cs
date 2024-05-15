@@ -2,18 +2,18 @@
 using Uno.UI.Samples.Controls;
 using Windows.UI.Core.Preview;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Core
 {
 	[SampleControlInfo("Windows.UI.Core")]
 	public sealed partial class CloseRequestedTests : Page
-    {
-        public CloseRequestedTests()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public CloseRequestedTests()
+		{
+			this.InitializeComponent();
+		}
 
 		private void AddHandler_Click(object sender, RoutedEventArgs args)
 		{

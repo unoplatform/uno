@@ -1,13 +1,7 @@
-﻿using Microsoft.Build.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Uno.Extensions;
-using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 namespace Uno.UI.SourceGenerators.Tests
 {
@@ -20,10 +14,10 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("System.Collections.Generic.IList<int>", "global::System.Collections.Generic.IList<int>")]
 		[DataRow("System.Collections.Generic.IList<System.Disposable>", "global::System.Collections.Generic.IList<global::System.Disposable>")]
 		[DataRow("System.Collections.Generic.IDictionary<int, System.Disposable>", "global::System.Collections.Generic.IDictionary<int, global::System.Disposable>")]
-		[DataRow("(int, int)", "(int, int)")]
-		[DataRow("(int, System.Disposable)", "(int, global::System.Disposable)")]
-		[DataRow("System.Collections.Generic.IList<(int, System.Disposable)>", "global::System.Collections.Generic.IList<(int, global::System.Disposable)>")]
-		[DataRow("System.Collections.Generic.IList<(string, string, double)>", "global::System.Collections.Generic.IList<(string, string, double)>")]
+		[DataRow("(int, int)", "global::System.ValueTuple<int, int>")]
+		[DataRow("(int, System.Disposable)", "global::System.ValueTuple<int, global::System.Disposable>")]
+		[DataRow("System.Collections.Generic.IList<(int, System.Disposable)>", "global::System.Collections.Generic.IList<global::System.ValueTuple<int, global::System.Disposable>>")]
+		[DataRow("System.Collections.Generic.IList<(string, string, double)>", "global::System.Collections.Generic.IList<global::System.ValueTuple<string, string, double>>")]
 		public void When_GetFullyQualifiedString(string input, string expected)
 		{
 			var compilation = CreateTestCompilation(input);
@@ -32,7 +26,7 @@ namespace Uno.UI.SourceGenerators.Tests
 			{
 				if (testSymbol.GetAllMembersWithName("_myField").FirstOrDefault() is IPropertySymbol myField)
 				{
-					var actual = myField.Type.GetFullyQualifiedType();
+					var actual = myField.Type.GetFullyQualifiedTypeIncludingGlobal();
 					Assert.AreEqual<string>(expected, actual);
 				}
 				else
@@ -49,141 +43,137 @@ namespace Uno.UI.SourceGenerators.Tests
 		[TestMethod]
 		public void When_Generating_Nested_Class()
 		{
-			var compilation = CreateCompilationWithProgramText(@"
-namespace A.B
-{
-    namespace C
-    {
-        partial class D
-        {
-            partial class E
-            {
-            }
-        }
-    }
-}");
+			var compilation = CreateCompilationWithProgramText("""
+				namespace A.B
+				{
+				    namespace C
+				    {
+				        partial class D
+				        {
+				            partial class E
+				            {
+				            }
+				        }
+				    }
+				}
+				""");
 			var type = compilation.GetTypeByMetadataName("A.B.C.D+E");
 			Assert.IsNotNull(type);
 			var builder = new IndentedStringBuilder();
-			var disposables = type.AddToIndentedStringBuilder(builder);
-			Assert.AreEqual(@"namespace A.B.C
-{
-	partial class D
-	{
-		partial class E
-		{
-", builder.ToString());
-
-			while (disposables.Count > 0)
+			using (type.AddToIndentedStringBuilder(builder))
 			{
-				disposables.Pop().Dispose();
+				builder.AppendLineIndented("// Comment");
 			}
 
-			Assert.AreEqual(@"namespace A.B.C
-{
-	partial class D
-	{
-		partial class E
-		{
-		}
-	}
-}
-", builder.ToString());
+			Assert.AreEqual("""
+				namespace A.B.C
+				{
+					partial class D
+					{
+						partial class E
+						{
+							// Comment
+						}
+					}
+				}
+
+				""", builder.ToString());
 		}
 
 		[TestMethod]
 		public void When_Generating_Nested_Class_With_Action()
 		{
-			var compilation = CreateCompilationWithProgramText(@"
-namespace A.B
-{
-    namespace C
-    {
-        partial class D
-        {
-            partial struct E
-            {
-            }
-        }
-    }
-}");
+			var compilation = CreateCompilationWithProgramText("""
+				namespace A.B
+				{
+				    namespace C
+				    {
+				        partial class D
+				        {
+				            partial struct E
+				            {
+				            }
+				        }
+				    }
+				}
+				""");
 			var type = compilation.GetTypeByMetadataName("A.B.C.D+E");
 			Assert.IsNotNull(type);
 			var builder = new IndentedStringBuilder();
-			var disposables = type.AddToIndentedStringBuilder(builder, builder => builder.AppendLineInvariant("[MyAttribute]"));
-			Assert.AreEqual(@"namespace A.B.C
-{
-	partial class D
-	{
-		[MyAttribute]
-		partial struct E
-		{
-", builder.ToString());
-
-			while (disposables.Count > 0)
+			using (type.AddToIndentedStringBuilder(builder, builder => builder.AppendLineIndented("[MyAttribute]"), " : IMyInterface"))
 			{
-				disposables.Pop().Dispose();
+				builder.AppendLineIndented("// Comment");
 			}
 
-			Assert.AreEqual(@"namespace A.B.C
-{
-	partial class D
-	{
-		[MyAttribute]
-		partial struct E
-		{
-		}
-	}
-}
-", builder.ToString());
+
+			Assert.AreEqual("""
+				namespace A.B.C
+				{
+					partial class D
+					{
+						[MyAttribute]
+						partial struct E : IMyInterface
+						{
+							// Comment
+						}
+					}
+				}
+
+				""", builder.ToString());
 		}
 
 		[TestMethod]
 		public void When_Generating_Generic_Type()
 		{
-			var compilation = CreateCompilationWithProgramText(@"
-class C<T1, T2>
-{
-}");
+			var compilation = CreateCompilationWithProgramText("""
+				class C<T1, T2>
+				{
+				}
+				""");
 			var type = compilation.GetTypeByMetadataName("C`2");
 			Assert.IsNotNull(type);
 			var builder = new IndentedStringBuilder();
-			var disposables = type.AddToIndentedStringBuilder(builder);
-			while (disposables.Count > 0)
+			using (type.AddToIndentedStringBuilder(builder))
 			{
-				disposables.Pop().Dispose();
+				builder.AppendLineIndented("// Comment");
 			}
 
-			Assert.AreEqual(@"partial class C<T1, T2>
-{
-}
-", builder.ToString());
+			Assert.AreEqual("""
+				partial class C<T1, T2>
+				{
+					// Comment
+				}
+
+				""", builder.ToString());
 		}
 
 		[TestMethod]
 		public void When_Generating_Generic_Type_With_Variance()
 		{
-			var compilation = CreateCompilationWithProgramText(@"
-interface I<in T1, out T2, T3>
-{
-	class C { }
-}");
+			var compilation = CreateCompilationWithProgramText("""
+				interface I<in T1, out T2, T3>
+				{
+					class C { }
+				}
+				""");
 			var type = compilation.GetTypeByMetadataName("I`3+C");
 			Assert.IsNotNull(type);
 			var builder = new IndentedStringBuilder();
-			var disposables = type.AddToIndentedStringBuilder(builder);
-			while (disposables.Count > 0)
+			using (type.AddToIndentedStringBuilder(builder))
 			{
-				disposables.Pop().Dispose();
+				builder.AppendLineIndented("// Comment");
 			}
 
-			Assert.AreEqual(@"partial interface I<in T1, out T2, T3>
-{
-	partial class C
-	{
-	}
-}
-", builder.ToString());
+			Assert.AreEqual("""
+				partial interface I<in T1, out T2, T3>
+				{
+					partial class C
+					{
+						// Comment
+					}
+				}
+
+				""", builder.ToString());
 		}
 
 		private static Compilation CreateTestCompilation(string type)

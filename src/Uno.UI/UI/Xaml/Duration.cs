@@ -1,16 +1,13 @@
 ﻿using Uno.UI.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial struct Duration : IEquatable<Duration>, IComparable<Duration>
 	{
 		private static readonly string __automatic = "Automatic";
 		private static readonly string __forever = "Forever";
-
 
 		public Duration(TimeSpan timeSpan)
 		{
@@ -18,56 +15,73 @@ namespace Windows.UI.Xaml
 			TimeSpan = timeSpan;
 		}
 
-		public DurationType Type { get; private set; }
-
-		public TimeSpan TimeSpan { get; private set; }
+		public DurationType Type;
+		public TimeSpan TimeSpan;
 
 		public static implicit operator Duration(string timeSpan)
-			=> timeSpan != null ? new Duration(TimeSpan.Parse(timeSpan)) : new Duration(TimeSpan.Zero);
+			=> timeSpan != null ? new Duration(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture)) : new Duration(TimeSpan.Zero);
 
-		public bool HasTimeSpan
-		{
-			get
-			{
-				return this.Type == DurationType.TimeSpan &&
-					this.TimeSpan.CompareTo(TimeSpan.Zero) > 0;
-			}
-		}
+		public bool HasTimeSpan => Type == DurationType.TimeSpan;
 
-		public static Duration Forever
-		{
-			get
-			{
-				return new Duration() { Type = DurationType.Forever };
-			}
-		}
+		public static Duration Forever => new Duration() { Type = DurationType.Forever };
 
-		public static Duration Automatic
-		{
-			get
-			{
-				return new Duration() { Type = DurationType.Automatic };
-			}
-		}
+		public static Duration Automatic => new Duration() { Type = DurationType.Automatic };
 
 		public Duration Add(Duration duration)
 		{
+			// We have 9 cases:
+			// (1) TimeSpan + TimeSpan
+			// (2) TimeSpan + Automatic
+			// (3) TimeSpan + Forever
+			// (4) Automatic + TimeSpan
+			// (5) Automatic + Automatic
+			// (6) Automatic + Forever
+			// (7) Forever + TimeSpan
+			// (8) Forever + Automatic
+			// (9) Forever + Forever
+
+			// Case (1)
 			if (this.Type == DurationType.TimeSpan && duration.Type == DurationType.TimeSpan)
 			{
 				return new Duration(this.TimeSpan.Add(duration.TimeSpan));
 			}
 
-			return this;
+			// Case (2), (4), (5), (6), (8)
+			if (this.Type == DurationType.Automatic || duration.Type == DurationType.Automatic)
+			{
+				return Automatic;
+			}
+
+			// Case (3), (7), (9)
+			return Forever;
 		}
 
 		public Duration Subtract(Duration duration)
 		{
+			// We have 9 cases:
+			// (1) TimeSpan - TimeSpan     ===> Subtract spans
+			// (2) TimeSpan - Automatic    ===> Automatic
+			// (3) TimeSpan - Forever	   ===> Automatic
+			// (4) Automatic - TimeSpan    ===> Automatic
+			// (5) Automatic - Automatic   ===> Automatic
+			// (6) Automatic - Forever	   ===> Automatic
+			// (7) Forever - TimeSpan      ===> Forever
+			// (8) Forever - Automatic     ===> Automatic
+			// (9) Forever - Forever       ===> Automatic
+
+			// Case (1)
 			if (this.Type == DurationType.TimeSpan && duration.Type == DurationType.TimeSpan)
 			{
 				return new Duration(this.TimeSpan.Subtract(duration.TimeSpan));
 			}
 
-			return this;
+			// Case (7)
+			if (this.Type == DurationType.Forever && duration.Type == DurationType.TimeSpan)
+			{
+				return Forever;
+			}
+
+			return Automatic;
 		}
 
 		#region Operator overrides
@@ -84,22 +98,67 @@ namespace Windows.UI.Xaml
 
 		public static bool operator >(Duration t1, Duration t2)
 		{
-			return Compare(t1, t2) > 0;
+			if (t1.HasTimeSpan && t2.HasTimeSpan)
+			{
+				return t1.TimeSpan > t2.TimeSpan;
+			}
+
+			if (t1.HasTimeSpan && t2.Type == DurationType.Forever)
+			{
+				return false;
+			}
+
+			if (t1.Type == DurationType.Forever && t2.HasTimeSpan)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		public static bool operator >=(Duration t1, Duration t2)
 		{
-			return Compare(t1, t2) >= 0;
+			if (t1.Type == DurationType.Automatic && t2.Type == DurationType.Automatic)
+			{
+				return true;
+			}
+
+			if (t1.Type == DurationType.Automatic || t2.Type == DurationType.Automatic)
+			{
+				return false;
+			}
+
+			return !(t1 < t2);
 		}
 
 		public static bool operator <(Duration t1, Duration t2)
 		{
-			return Compare(t1, t2) < 0;
+			if (t1.HasTimeSpan && t2.HasTimeSpan)
+			{
+				return t1.TimeSpan < t2.TimeSpan;
+			}
+
+			if (t1.HasTimeSpan && t2.Type == DurationType.Forever)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		public static bool operator <=(Duration t1, Duration t2)
 		{
-			return Compare(t1, t2) <= 0;
+			if (t1.Type == DurationType.Automatic && t2.Type == DurationType.Automatic)
+			{
+				return true;
+			}
+
+			if (t1.Type == DurationType.Automatic || t2.Type == DurationType.Automatic)
+			{
+				return false;
+			}
+
+			return !(t1 > t2);
 		}
 
 		public static Duration operator +(Duration t1, Duration t2)
@@ -140,38 +199,38 @@ namespace Windows.UI.Xaml
 
 		public override bool Equals(object value)
 		{
-            if (value == null)
-            {
-                return false;
-            }
-            else if (value is Duration)
-            {
-                return Equals((Duration)value);
-            }
-            return false;            
+			if (value == null)
+			{
+				return false;
+			}
+			else if (value is Duration)
+			{
+				return Equals((Duration)value);
+			}
+			return false;
 		}
 
 		public bool Equals(Duration duration)
 		{
-            if (HasTimeSpan)
-            {
-                if (duration.HasTimeSpan)
-                {
-                    return TimeSpan == duration.TimeSpan;
-                }
-                return false;
-            }
-            else
-            {
-                return Type == duration.Type;
-            }
-        }
+			if (HasTimeSpan)
+			{
+				if (duration.HasTimeSpan)
+				{
+					return TimeSpan == duration.TimeSpan;
+				}
+				return false;
+			}
+			else
+			{
+				return Type == duration.Type;
+			}
+		}
 
 		public static bool Equals(Duration first, Duration second)
 		{
-            return first.Equals(second);
+			return first.Equals(second);
 
-        }
+		}
 
 		public int CompareTo(Duration other)
 		{

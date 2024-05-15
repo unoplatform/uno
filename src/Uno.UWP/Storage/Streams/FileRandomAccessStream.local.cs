@@ -4,7 +4,7 @@ using System.IO;
 namespace Windows.Storage.Streams
 {
 	public partial class FileRandomAccessStream
-    {
+	{
 		internal static FileRandomAccessStream CreateLocal(string path, FileAccess access, FileShare share) =>
 			new FileRandomAccessStream(Local.Create(path, access, share));
 
@@ -36,7 +36,7 @@ namespace Windows.Storage.Streams
 
 				return new Local(File.Open(path, FileMode.OpenOrCreate, access, share), path, access, share);
 			}
-		
+
 			public override IInputStream GetInputStreamAt(ulong position)
 			{
 				if (!CanRead)
@@ -66,5 +66,5 @@ namespace Windows.Storage.Streams
 			public override IRandomAccessStream CloneStream()
 				=> CreateLocal(_path, _access, _share);
 		}
-    }
+	}
 }

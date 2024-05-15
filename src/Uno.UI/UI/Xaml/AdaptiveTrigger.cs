@@ -1,16 +1,12 @@
-using System;
 using Uno.Disposables;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class AdaptiveTrigger : StateTriggerBase
 	{
@@ -18,15 +14,20 @@ namespace Windows.UI.Xaml
 
 		public AdaptiveTrigger()
 		{
-			UpdateState();
 		}
 
-		private void OnCurrentWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) =>
-			UpdateState();
+		public XamlRoot XamlRoot => XamlRoot.GetForElement(this);
+
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e) => UpdateState();
 
 		private void UpdateState()
 		{
-			var size = Window.Current.Bounds;
+			if (XamlRoot is not { } xamlRoot)
+			{
+				return;
+			}
+
+			var size = xamlRoot.Bounds;
 
 			var w = size.Width;
 			var h = size.Height;
@@ -35,23 +36,10 @@ namespace Windows.UI.Xaml
 
 			var isActive = w >= mw && h >= mh;
 
-			if (isActive && mw >= 0)
-			{
-				// If we have 'mw' and 'mh' we activate using the 'MinWidthTrigger' as it's higher ranked by 'ViusalStateGroup.GetActiveTrigger()'
-				SetActivePrecedence(StateTriggerPrecedence.MinWidthTrigger);
-			}
-			else if (isActive)
-			{
-				// We don't validate that 'mh > 0' so we are able to activate trigger with 'MinWindowWidth = 0' and 'MinWindowHeight = 0'
-				SetActivePrecedence(StateTriggerPrecedence.MinHeightTrigger);
-			}
-			else
-			{
-				SetActivePrecedence(StateTriggerPrecedence.Inactive);
-			}
+			SetActivePrecedence(isActive ? StateTriggerPrecedence.AdaptiveTrigger : StateTriggerPrecedence.Inactive);
 		}
 
-#region MinWindowHeight DependencyProperty
+		#region MinWindowHeight DependencyProperty
 
 		public double MinWindowHeight
 		{
@@ -60,7 +48,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowHeight.  This enables animation, styling, binding, etc...
-		public static DependencyProperty MinWindowHeightProperty { get ; } =
+		public static DependencyProperty MinWindowHeightProperty { get; } =
 			DependencyProperty.Register("MinWindowHeight", typeof(double), typeof(AdaptiveTrigger), new FrameworkPropertyMetadata(-1d, (s, e) => ((AdaptiveTrigger)s)?.OnMinWindowHeightChanged(e)));
 
 		private void OnMinWindowHeightChanged(DependencyPropertyChangedEventArgs e)
@@ -68,9 +56,9 @@ namespace Windows.UI.Xaml
 			UpdateState();
 		}
 
-#endregion
+		#endregion
 
-#region MinWindowWidth DependencyProperty
+		#region MinWindowWidth DependencyProperty
 
 		public double MinWindowWidth
 		{
@@ -79,7 +67,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowWidthProperty.  This enables animation, styling, binding, etc...
-		public static DependencyProperty MinWindowWidthProperty { get ; } =
+		public static DependencyProperty MinWindowWidthProperty { get; } =
 			DependencyProperty.Register("MinWindowWidthProperty", typeof(double), typeof(AdaptiveTrigger), new FrameworkPropertyMetadata(-1d, (s, e) => ((AdaptiveTrigger)s)?.OnMinWindowWidthChanged(e)));
 
 
@@ -88,18 +76,49 @@ namespace Windows.UI.Xaml
 			UpdateState();
 		}
 
-#endregion
+		#endregion
 
 		internal override void OnOwnerChanged()
 		{
 			base.OnOwnerChanged();
 
-			_sizeChangedSubscription.Disposable = null;
+			DetachSizeChanged();
+			AttachSizeChanged();
+		}
 
-			if (Owner != null)
+		internal override void OnOwnerElementChanged()
+		{
+			base.OnOwnerElementChanged();
+
+			DetachSizeChanged();
+			AttachSizeChanged();
+		}
+
+		internal override void OnOwnerElementLoaded()
+		{
+			base.OnOwnerElementLoaded();
+
+			AttachSizeChanged();
+		}
+
+		internal override void OnOwnerElementUnloaded()
+		{
+			base.OnOwnerElementUnloaded();
+
+			DetachSizeChanged();
+		}
+
+		private void AttachSizeChanged()
+		{
+			if (XamlRoot is { } xamlRoot)
 			{
-				_sizeChangedSubscription.Disposable = Window.Current.RegisterSizeChangedEvent(OnCurrentWindowSizeChanged);
+				xamlRoot.Changed += OnXamlRootChanged;
+				UpdateState();
+
+				_sizeChangedSubscription.Disposable = Disposable.Create(() => xamlRoot.Changed -= OnXamlRootChanged);
 			}
 		}
+
+		private void DetachSizeChanged() => _sizeChangedSubscription.Disposable = null;
 	}
 }

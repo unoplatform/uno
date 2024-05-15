@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Uno.Disposables;
 using System.Text;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using Uno.Extensions;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Input;
+using Windows.Foundation;
+using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Content")]
+	[ContentProperty(Name = nameof(Content))]
 	public partial class SplitView : Control
 	{
 		public event TypedEventHandler<SplitView, object> PaneClosed;
@@ -30,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(SplitView);
 		}
 
-#if XAMARIN_IOS
+#if __IOS__
 		public override void LayoutSubviews()
 		{
 			base.LayoutSubviews();
@@ -47,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(CompactPaneLengthProperty, value); }
 		}
 
-		public static DependencyProperty CompactPaneLengthProperty { get ; } =
+		public static DependencyProperty CompactPaneLengthProperty { get; } =
 			DependencyProperty.Register(
 				"CompactPaneLength",
 				typeof(double), typeof(SplitView),
@@ -73,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static DependencyProperty ContentProperty { get ; } =
+		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(UIElement),
@@ -100,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PaneProperty, value); }
 		}
 
-		public static DependencyProperty PaneProperty { get ; } =
+		public static DependencyProperty PaneProperty { get; } =
 			DependencyProperty.Register(
 				"Pane",
 				typeof(UIElement),
@@ -126,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(DisplayModeProperty, value); }
 		}
 
-		public static DependencyProperty DisplayModeProperty { get ; } =
+		public static DependencyProperty DisplayModeProperty { get; } =
 			DependencyProperty.Register(
 				"DisplayMode",
 				typeof(SplitViewDisplayMode),
@@ -154,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		//There is an error in the MSDN docs saying that the default value for IsPaneOpen is true, it is actually false
-		public static DependencyProperty IsPaneOpenProperty { get ; } =
+		public static DependencyProperty IsPaneOpenProperty { get; } =
 			DependencyProperty.Register(
 				"IsPaneOpen",
 				typeof(bool),
@@ -181,7 +182,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(OpenPaneLengthProperty, value); }
 		}
 
-		public static DependencyProperty OpenPaneLengthProperty { get ; } =
+		public static DependencyProperty OpenPaneLengthProperty { get; } =
 			DependencyProperty.Register(
 				"OpenPaneLength",
 				typeof(double),
@@ -208,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PaneBackgroundProperty, value); }
 		}
 
-		public static DependencyProperty PaneBackgroundProperty { get ; } =
+		public static DependencyProperty PaneBackgroundProperty { get; } =
 			DependencyProperty.Register(
 				"PaneBackground",
 				typeof(Brush),
@@ -233,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(PanePlacementProperty, value); }
 		}
 
-		public static DependencyProperty PanePlacementProperty { get ; } =
+		public static DependencyProperty PanePlacementProperty { get; } =
 			DependencyProperty.Register(
 				"PanePlacement",
 				typeof(SplitViewPanePlacement),
@@ -259,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 			private set { this.SetValue(TemplateSettingsProperty, value); }
 		}
 
-		public static DependencyProperty TemplateSettingsProperty { get ; } =
+		public static DependencyProperty TemplateSettingsProperty { get; } =
 			DependencyProperty.Register(
 				"TemplateSettings",
 				typeof(SplitViewTemplateSettings),
@@ -419,8 +420,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			_needsVisualStateUpdate = true;
 
-			Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
 				() =>
 				{
 					UpdateVisualStates(true);

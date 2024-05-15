@@ -1,11 +1,13 @@
 ﻿using System.Drawing;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.ComponentModel;
 using Uno.Media;
 using Windows.Foundation;
 
-#if XAMARIN_IOS_UNIFIED
+using Rect = Windows.Foundation.Rect;
+
+#if __IOS__
 using Foundation;
 using UIKit;
 using CoreGraphics;
@@ -16,11 +18,11 @@ using UIImage = AppKit.NSImage;
 using UIColor = AppKit.NSColor;
 using UIGraphics = AppKit.NSGraphics;
 using Path = AppKit.NSBezierPath;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Graphics;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(GeometryConverter))]
 	public partial class Geometry : DependencyObject, IDisposable
@@ -29,6 +31,11 @@ namespace Windows.UI.Xaml.Media
 		{
 			InitializeBinder();
 		}
+
+		internal event Action GeometryChanged;
+
+		private protected void RaiseGeometryChanged()
+			=> GeometryChanged?.Invoke();
 
 		public static implicit operator Geometry(string data)
 		{
@@ -39,9 +46,9 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		public Windows.Foundation.Rect Bounds => ComputeBounds();
+		public Rect Bounds => ComputeBounds();
 
-		private protected virtual Windows.Foundation.Rect ComputeBounds()
+		private protected virtual Rect ComputeBounds()
 		{
 			throw new NotImplementedException($"Bounds property is not implemented on {GetType().Name}.");
 		}
@@ -54,18 +61,36 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(TransformProperty, value);
 		}
 
-		public static DependencyProperty TransformProperty { get ; } =
+		public static DependencyProperty TransformProperty { get; } =
 			DependencyProperty.Register(
 				"Transform",
 				typeof(Transform),
 				typeof(Geometry),
-				new FrameworkPropertyMetadata(default(Transform))
+				new FrameworkPropertyMetadata(default(Transform), propertyChangedCallback: (s, args) => ((Geometry)s).OnTransformChanged(args))
 			);
+
+		private void OnTransformChanged(DependencyPropertyChangedEventArgs args)
+		{
+			RaiseGeometryChanged();
+
+			if (args.OldValue is Transform oldValue)
+			{
+				oldValue.Changed -= OnTransformSubChanged;
+			}
+
+			if (args.NewValue is Transform newValue)
+			{
+				newValue.Changed += OnTransformSubChanged;
+			}
+		}
+
+		private void OnTransformSubChanged(object sender, EventArgs e)
+			=> RaiseGeometryChanged();
 
 		#endregion
 
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
-		public static implicit operator UIImage (Geometry g)
+#if __IOS__ || __MACOS__
+		public static implicit operator UIImage(Geometry g)
 		{
 			return g.ToNativeImage();
 		}
@@ -81,7 +106,7 @@ namespace Windows.UI.Xaml.Media
 
 		public virtual CGPath ToCGPath() { throw new InvalidOperationException(); }
 
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 		public virtual Path ToPath() { throw new InvalidOperationException(); }
 #endif
 		public virtual void Dispose() { throw new InvalidOperationException(); }

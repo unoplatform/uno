@@ -1,11 +1,14 @@
 ﻿using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
-		private bool _forceFocusedVisualState = false;
-		private bool _isPointerOver = false;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+		private bool _forceFocusedVisualState;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+
+		private bool _isPointerOver;
 
 		internal override void UpdateVisualState(bool useTransitions = true)
 		{

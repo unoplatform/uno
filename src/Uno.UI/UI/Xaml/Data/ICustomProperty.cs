@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
 	/// Implements custom property definition support for data binding sources that are implemented using COM.
@@ -55,6 +55,6 @@ namespace Windows.UI.Xaml.Data
 		/// <param name="target">The owning instance.</param>
 		/// <param name="value">The value to set.</param>
 		/// <param name="index">The index location to set to.</param>
-		void SetIndexedValue( object target,  object value,  object index);
+		void SetIndexedValue(object target, object value, object index);
 	}
 }

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -6,9 +6,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using Uno;
 using Uno.Foundation.Interop;
@@ -17,26 +18,28 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
+using PointerIdentifierDeviceType = Windows.Devices.Input.PointerDeviceType; // PointerIdentifier always uses Windows.Devices as it does noe have access to Microsoft.UI.Input (Uno.UI assembly)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.Devices.Input;
 using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public partial class UIElement : DependencyObject
 {
 	private static TSInteropMarshaller.HandleRef<NativePointerEventArgs> _pointerEventArgs;
 	private static TSInteropMarshaller.HandleRef<NativePointerEventResult> _pointerEventResult;
 
-	static partial void InitializePointersStaticPartial()
-	{
-		_pointerEventArgs = TSInteropMarshaller.Allocate<NativePointerEventArgs>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventArgs");
-		_pointerEventResult = TSInteropMarshaller.Allocate<NativePointerEventResult>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventResult");
-	}
+	private static Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape? _lastSetCursor;
 
 	// Ref:
 	// https://www.w3.org/TR/pointerevents/
@@ -56,6 +59,12 @@ public partial class UIElement : DependencyObject
 
 	partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 	{
+		if (_pointerEventArgs == null)
+		{
+			_pointerEventArgs = TSInteropMarshaller.Allocate<NativePointerEventArgs>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventArgs");
+			_pointerEventResult = TSInteropMarshaller.Allocate<NativePointerEventResult>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventResult");
+		}
+
 		if (handlersCount != 1
 			|| routedEvent == PointerCaptureLostEvent) // Captures are handled in managed code only
 		{
@@ -130,11 +139,11 @@ public partial class UIElement : DependencyObject
 	#endregion
 
 	#region Native event dispatch
-	[Preserve]
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static void OnNativePointerEvent()
+	[JSExport]
+	internal static void OnNativePointerEvent()
 	{
-		var stopPropagation = false;
+		var result = new HtmlEventDispatchResultHelper();
 		try
 		{
 			_logTrace?.Trace("Receiving native pointer event.");
@@ -154,73 +163,123 @@ public partial class UIElement : DependencyObject
 
 			_logTrace?.Trace($"Dispatching to {element.GetDebugName()} pointer arg: {args}.");
 
+			PointerRoutedEventArgs? routedArgs = null;
 			switch ((NativePointerEvent)args.Event)
 			{
 				case NativePointerEvent.pointerover:
-				{
-					// On WASM we do get 'pointerover' event for sub elements,
-					// so we can avoid useless work by validating if the pointer is already flagged as over element.
-					// If so, we stop bubbling since our parent will do the same!
-					var ptArgs = ToPointerArgs(element, args);
-					stopPropagation = element.IsOver(ptArgs.Pointer) || element.OnNativePointerEnter(ptArgs);
-					break;
-				}
-
-				case NativePointerEvent.pointerout: // No needs to check IsOver (leaving vs. bubbling), it's already done in native code
-					stopPropagation = element.OnNativePointerExited(ToPointerArgs(element, args));
-					break;
-
-				case NativePointerEvent.pointerdown:
-					stopPropagation = element.OnNativePointerDown(ToPointerArgs(element, args));
-					break;
-
-				case NativePointerEvent.pointerup:
-				{
-					var routedArgs = ToPointerArgs(element, args);
-					stopPropagation = element.OnNativePointerUp(routedArgs);
-
-					if (stopPropagation)
 					{
-						RootVisual.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+						// On WASM we do get 'pointerover' event for sub elements,
+						// so we can avoid useless work by validating if the pointer is already flagged as over element.
+						// If so, we stop bubbling since our parent will do the same!
+						routedArgs = ToPointerArgs(element, args);
+						if (element.IsOver(routedArgs.Pointer))
+						{
+							result.Add(HtmlEventDispatchResult.StopPropagation);
+						}
+						else
+						{
+							result.Add(routedArgs, element.OnNativePointerEnter(routedArgs));
+						}
+
+						break;
 					}
 
-					break;
-				}
+				case NativePointerEvent.pointerout: // No needs to check IsOver (leaving vs. bubbling), it's already done in native code
+					{
+						routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerExited(routedArgs);
+						result.Add(routedArgs, handled);
+
+						break;
+					}
+
+				case NativePointerEvent.pointerdown:
+					{
+						routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerDown(routedArgs);
+						result.Add(routedArgs, handled);
+
+						break;
+					}
+
+				case NativePointerEvent.pointerup:
+					{
+						routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerUp(routedArgs);
+						result.Add(routedArgs, handled);
+
+						if (result.ShouldStop)
+						{
+							element.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+						}
+
+						break;
+					}
 
 				case NativePointerEvent.pointermove:
-				{
-					var ptArgs = ToPointerArgs(element, args);
-
-					// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
-					// this means that we need to validate the isOver to raise enter and exit like on UWP.
-					var needsToCheckIsOver = ptArgs.Pointer.PointerDeviceType switch
 					{
-						PointerDeviceType.Touch => ptArgs.Pointer.IsInRange, // If pointer no longer in range, isOver is always false
-						PointerDeviceType.Pen => ptArgs.Pointer.IsInContact, // We can ignore check when only hovering elements, browser does its job in that case
-						PointerDeviceType.Mouse => PointerCapture.TryGet(ptArgs.Pointer, out _), // Browser won't raise pointerenter/out as soon has we have an active capture
-						_ => true // For safety
-					};
-					stopPropagation = needsToCheckIsOver
-						? element.OnNativePointerMoveWithOverCheck(ptArgs, isOver: ptArgs.IsPointCoordinatesOver(element))
-						: element.OnNativePointerMove(ptArgs);
-					break;
-				}
+						routedArgs = ToPointerArgs(element, args);
+
+						// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
+						// this means that we need to validate the isOver to raise enter and exit like on UWP.
+						var needsToCheckIsOver = routedArgs.Pointer.PointerDeviceType switch
+						{
+							PointerDeviceType.Touch => routedArgs.Pointer.IsInRange, // If pointer no longer in range, isOver is always false
+							PointerDeviceType.Pen => routedArgs.Pointer.IsInContact, // We can ignore check when only hovering elements, browser does its job in that case
+							PointerDeviceType.Mouse => PointerCapture.TryGet(routedArgs.Pointer, out _), // Browser won't raise pointerenter/out as soon has we have an active capture
+							_ => true // For safety
+						};
+						var handled = needsToCheckIsOver
+							? element.OnNativePointerMoveWithOverCheck(routedArgs, isOver: routedArgs.IsPointCoordinatesOver(element))
+							: element.OnNativePointerMove(routedArgs);
+						result.Add(routedArgs, handled);
+
+						break;
+					}
 
 				case NativePointerEvent.pointercancel:
-					stopPropagation = element.OnNativePointerCancel(ToPointerArgs(element, args), isSwallowedBySystem: true);
-					break;
+					{
+						routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerCancel(routedArgs, isSwallowedBySystem: true);
+						result.Add(routedArgs, handled);
+
+						break;
+					}
 
 				case NativePointerEvent.wheel:
 					if (args.wheelDeltaX is not 0)
 					{
-						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX)));
+						routedArgs = ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX));
+						var handled = element.OnNativePointerWheel(routedArgs);
+						result.Add(routedArgs, handled);
 					}
+
 					if (args.wheelDeltaY is not 0)
 					{
 						// Note: Web browser vertical scrolling is the opposite compared to WinUI!
-						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY)));
+						routedArgs = ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY));
+						var handled = element.OnNativePointerWheel(routedArgs);
+						result.Add(routedArgs, handled);
 					}
+
 					break;
+			}
+
+			if (routedArgs is { } && (NativePointerEvent)args.Event is not NativePointerEvent.pointerout)
+			{
+				// This corresponds to SetSourceCursor in InputManager.Pointers.managed.cs
+				if ((routedArgs.OriginalSource as UIElement)?.CalculatedFinalCursor is { } cursorShape)
+				{
+					if (_lastSetCursor is not { } c || c != cursorShape)
+					{
+						WindowManagerInterop.SetBodyCursor(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShapeExtensions.ToCssProtectedCursor(cursorShape));
+						_lastSetCursor = cursorShape;
+					}
+				}
+				else
+				{
+					WindowManagerInterop.SetBodyCursor("none"); // hides the cursor
+				}
 			}
 		}
 		catch (Exception error)
@@ -234,9 +293,7 @@ public partial class UIElement : DependencyObject
 		{
 			_pointerEventResult.Value = new NativePointerEventResult
 			{
-				Result = (byte)(stopPropagation
-					? HtmlEventDispatchResult.StopPropagation
-					: HtmlEventDispatchResult.Ok)
+				Result = (byte)result.Value
 			};
 		}
 	}
@@ -249,8 +306,9 @@ public partial class UIElement : DependencyObject
 		const int cancel = (int)NativePointerEvent.pointercancel;
 		const int exitOrUp = (int)(NativePointerEvent.pointerout | NativePointerEvent.pointerup);
 
-		var pointerId = (uint)args.pointerId;
 		var pointerType = (PointerDeviceType)args.deviceType;
+		var pointerId = PointerIdentifierPool.RentManaged(new PointerIdentifier((PointerIdentifierDeviceType)pointerType, (uint)args.pointerId));
+
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);
 		var isInContact = args.buttons != 0;
@@ -276,7 +334,6 @@ public partial class UIElement : DependencyObject
 		return new PointerRoutedEventArgs(
 			args.timestamp,
 			pointerId,
-			pointerType,
 			position,
 			isInContact,
 			isInRange,
@@ -289,9 +346,9 @@ public partial class UIElement : DependencyObject
 	}
 	#endregion
 
-	partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
+	partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 	{
-		if (newMode is ManipulationModes.None or ManipulationModes.System)
+		if (newMode == ManipulationModes.System)
 		{
 			ResetStyle("touch-action");
 		}
@@ -301,20 +358,6 @@ public partial class UIElement : DependencyObject
 			SetStyle("touch-action", "none");
 		}
 	}
-
-	#region Capture
-	partial void CapturePointerNative(Pointer pointer)
-	{
-		var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-		WebAssemblyRuntime.InvokeJS(command);
-	}
-
-	partial void ReleasePointerNative(Pointer pointer)
-	{
-		var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-		WebAssemblyRuntime.InvokeJS(command);
-	}
-	#endregion
 
 	#region HitTestVisibility
 	internal void UpdateHitTest()
@@ -337,6 +380,11 @@ public partial class UIElement : DependencyObject
 	/// <returns></returns>
 	private object CoerceHitTestVisibility(object baseValue)
 	{
+		if (this is RootVisual or XamlIsland)
+		{
+			return HitTestability.Visible;
+		}
+
 		// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
 		var baseHitTestVisibility = (HitTestability)baseValue;
 
@@ -362,7 +410,7 @@ public partial class UIElement : DependencyObject
 		// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.		
 		if (IsViewHit())
 		{
-			return HitTestability.Visible; 
+			return HitTestability.Visible;
 		}
 
 		// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
@@ -389,19 +437,6 @@ public partial class UIElement : DependencyObject
 		{
 			UpdateDOMProperties();
 		}
-	}
-
-	internal void SetHitTestVisibilityForRoot()
-	{
-		// Root element must be visible to hit testing, regardless of the other properties values.
-		// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
-		// Collapsed.
-		HitTestVisibility = HitTestability.Visible;
-	}
-
-	internal void ClearHitTestVisibilityForRoot()
-	{
-		this.ClearValue(HitTestVisibilityProperty);
 	}
 
 	#endregion

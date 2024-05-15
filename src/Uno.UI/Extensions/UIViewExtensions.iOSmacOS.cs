@@ -7,16 +7,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using ObjCRuntime;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using CoreGraphics;
 using _View = UIKit.UIView;
 using _Controller = UIKit.UIViewController;
@@ -35,7 +31,7 @@ using _Color = AppKit.NSColor;
 using _Event = AppKit.NSEvent;
 #endif
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 namespace UIKit
 #elif __MACOS__
 namespace AppKit
@@ -138,7 +134,7 @@ namespace AppKit
 				{
 					var t = v as T;
 					return t != null && selector(t);
-				}; 
+				};
 			}
 
 			if (includeCurrent
@@ -384,7 +380,7 @@ namespace AppKit
 				// Sometimes, a view is not part of the visual tree (or doesn't have a next responder) but is part of the logical tree.
 				// Here, we substitute the view with the first logical parent that's part of the visual tree (or has a next responder).
 				view = (view as DependencyObject)
-					.GetParents()
+					?.GetParents()
 					.OfType<_View>()
 					.Where(parent => parent.NextResponder != null)
 					.FirstOrDefault();
@@ -401,6 +397,10 @@ namespace AppKit
 				else if (responder is _Controller controller)
 				{
 					return controller;
+				}
+				else
+				{
+					responder = null;
 				}
 
 			} while (responder != null);
@@ -508,7 +508,7 @@ namespace AppKit
 			this _View thisView
 			, CGPoint point
 #if __IOS__
-			, _Event uievent
+				, _Event uievent
 #endif
 		)
 		{
@@ -636,7 +636,7 @@ namespace AppKit
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
 						.Append($" ds:{desiredSize}")
 #if __IOS__
-						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
+							.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
@@ -691,7 +691,7 @@ namespace AppKit
 		static readonly NativeHandle selSubviewsHandle = Selector.GetHandle("subviews");
 #endif
 
-		[DllImport("/usr/lib/libobjc.dylib", EntryPoint="objc_msgSendSuper")]
+		[DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSendSuper")]
 		private extern static NativeHandle NativeHandle_objc_msgSendSuper(NativeHandle receiver, IntPtr selector);
 
 		private static NativeHandle GetSubviewsHandle(this _View view)

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using UIKit;
 using Windows.UI.Text;
 
 namespace Uno.UI.Extensions
 {
-    public static class FontWeightExtensions
-    {
-	    public static UIFontWeight ToUIFontWeight(this FontWeight fontWeight)
-	    {
+	public static class FontWeightExtensions
+	{
+		public static UIFontWeight ToUIFontWeight(this FontWeight fontWeight)
+		{
 			if (fontWeight == FontWeights.Black ||
 				fontWeight == FontWeights.ExtraBlack)
 			{
@@ -54,5 +54,5 @@ namespace Uno.UI.Extensions
 
 			return UIFontWeight.Regular;
 		}
-    }
+	}
 }

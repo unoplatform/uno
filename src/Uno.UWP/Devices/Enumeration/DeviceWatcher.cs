@@ -12,8 +12,8 @@ namespace Windows.Devices.Enumeration
 	public partial class DeviceWatcher
 	{
 		private readonly IDeviceClassProvider[] _providers;
-		private int _stopCounter = 0;
-		private int _enumerationCounter = 0;
+		private int _stopCounter;
+		private int _enumerationCounter;
 
 		internal DeviceWatcher(IDeviceClassProvider[] providers)
 		{

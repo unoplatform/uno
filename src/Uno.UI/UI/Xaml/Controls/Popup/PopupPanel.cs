@@ -7,219 +7,293 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives;
+
+internal partial class PopupPanel : Panel
 {
-	internal partial class PopupPanel : Panel
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
+	private ManagedWeakReference _popup;
+
+	public Popup Popup
 	{
-		private ManagedWeakReference _popup;
-
-		public Popup Popup
+		get => _popup?.Target as Popup;
+		set
 		{
-			get => _popup?.Target as Popup;
-			set
-			{
-				WeakReferencePool.ReturnWeakReference(this, _popup);
-				_popup = WeakReferencePool.RentWeakReference(this, value);
-			}
+			WeakReferencePool.ReturnWeakReference(this, _popup);
+			_popup = WeakReferencePool.RentWeakReference(this, value);
+		}
+	}
+#else
+	public Popup Popup { get; }
+#endif
+
+	public PopupPanel(Popup popup)
+	{
+		Popup = popup ?? throw new ArgumentNullException(nameof(popup));
+		Visibility = Visibility.Collapsed;
+		PointerPressed += OnPointerPressed;
+	}
+
+	protected Size _lastMeasuredSize;
+
+	protected override Size MeasureOverride(Size availableSize)
+	{
+		// Usually this check is achieved by the parent, but as this Panel
+		// is injected at the root (it's a subView of the Window), we make sure
+		// to enforce it here.
+		var isOpen = Visibility != Visibility.Collapsed;
+		if (!isOpen)
+		{
+			availableSize = default; // 0,0
 		}
 
-		public PopupPanel(Popup popup)
+		var child = this.GetChildren().FirstOrDefault();
+		if (child == null)
 		{
-			Popup = popup ?? throw new ArgumentNullException(nameof(popup));
-			Visibility = Visibility.Collapsed;
-			PointerPressed += OnPointerPressed;
+			return availableSize;
 		}
 
-		protected Size _lastMeasuredSize;
-
-		protected override Size MeasureOverride(Size availableSize)
+		if (!isOpen || Popup.CustomLayouter == null)
 		{
-			// Usually this check is achieved by the parent, but as this Panel
-			// is injected at the root (it's a subView of the Window), we make sure
-			// to enforce it here.
-			var isOpen = Visibility != Visibility.Collapsed;
-			if (!isOpen)
+			_lastMeasuredSize = MeasureElement(child, availableSize);
+		}
+		else
+		{
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
+			visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
+			visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
+
+			_lastMeasuredSize = Popup.CustomLayouter.Measure(availableSize, visibleBounds.Size);
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"Measured PopupPanel #={GetHashCode()} ({(Popup.CustomLayouter == null ? "" : "**using custom layouter**")}) DC={Popup.DataContext} child={child} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} availableSize={availableSize} measured={_lastMeasuredSize}");
+		}
+
+		// Note that we return the availableSize and not the _lastMeasuredSize. This is because this
+		// Panel always take the whole screen for the dismiss layer, but it's content will not.
+		return availableSize;
+	}
+
+	protected override Size ArrangeOverride(Size finalSize)
+	{
+		// Note: Here finalSize is expected to be the be the size of the window
+
+		var size = _lastMeasuredSize;
+
+		// Usually this check is achieved by the parent, but as this Panel
+		// is injected at the root (it's a subView of the Window), we make sure
+		// to enforce it here.
+		var isOpen = Visibility != Visibility.Collapsed;
+		if (!isOpen)
+		{
+			size = finalSize = default;
+		}
+
+		var child = this.GetChildren().FirstOrDefault();
+		if (child == null)
+		{
+			return finalSize;
+		}
+
+		if (!isOpen)
+		{
+			ArrangeElement(child, default);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				availableSize = default; // 0,0
+				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} **closed** DC={Popup.DataContext} child={child} finalSize={finalSize}");
+			}
+		}
+		else if (Popup.CustomLayouter == null)
+		{
+			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
+			// against the placement target approach.
+			var isFlyoutManagedDatePicker =
+				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
+#if __ANDROID__ || __IOS__
+				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
+#endif
+				;
+
+			if (!isFlyoutManagedDatePicker &&
+				Popup.PlacementTarget is not null
+#if __ANDROID__ || __IOS__
+				|| NativeAnchor is not null
+#endif
+				)
+			{
+				return PlacementArrangeOverride(Popup, finalSize);
 			}
 
-			var child = this.GetChildren().FirstOrDefault();
-			if (child == null)
+			// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
+			// Note: we do not prevent overflow of the popup on any side as UWP does not!
+			//		 (And actually it also lets the view appear out of the window ...)
+			Point anchorLocation = default;
+			if (Popup.PlacementTarget is { } anchor)
 			{
-				return availableSize;
-			}
-
-			if (!isOpen || Popup.CustomLayouter == null)
-			{
-				_lastMeasuredSize = MeasureElement(child, availableSize);
+				anchorLocation = anchor.TransformToVisual(this).TransformPoint(default);
 			}
 			else
 			{
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-				visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
-				visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
+				anchorLocation = Popup.TransformToVisual(null).TransformPoint(default);
+			}
 
-				_lastMeasuredSize = Popup.CustomLayouter.Measure(availableSize, visibleBounds.Size);
+#if __ANDROID__
+			// for android, the above line returns the absolute coordinates of anchor on the screen
+			// because the parent view of this PopupPanel is a PopupWindow and GetLocationInWindow will be (0,0)
+			// therefore, we need to make the relative adjustment
+			if (this.NativeVisualParent is Android.Views.View view)
+			{
+				var windowLocation = Point.From(view.GetLocationInWindow);
+				var screenLocation = Point.From(view.GetLocationOnScreen);
+
+				if (windowLocation == default)
+				{
+					anchorLocation -= ViewHelper.PhysicalToLogicalPixels(screenLocation);
+				}
+			}
+#endif
+
+			var finalFrame = new Rect(
+				anchorLocation.X + (float)Popup.HorizontalOffset,
+				anchorLocation.Y + (float)Popup.VerticalOffset,
+				size.Width,
+				size.Height);
+
+			ArrangeElement(child, finalFrame);
+
+			var updatedFinalFrame = new Rect(
+				anchorLocation.X + (float)Popup.HorizontalOffset,
+				anchorLocation.Y + (float)Popup.VerticalOffset,
+				size.Width,
+				size.Height);
+
+			if (updatedFinalFrame != finalFrame)
+			{
+				// Workraround:
+				// The HorizontalOffset is updated to the correct value in CascadingMenuHelper.OnPresenterSizeChanged
+				// This update appears to be happening *during* ArrangeElement which was already passed wrong finalFrame.
+				// We re-arrange with the new updated finalFrame.
+				// Note: This might be a lifecycle issue, so this workaround needs to be revised in the future and deleted if possible.
+				// See MenuFlyoutSubItem_Placement sample.
+				ArrangeElement(child, updatedFinalFrame);
 			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Measured PopupPanel #={GetHashCode()} ({(Popup.CustomLayouter == null ? "" : "**using custom layouter**")}) DC={Popup.DataContext} child={child} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} availableSize={availableSize} measured={_lastMeasuredSize}");
+				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} DC={Popup.DataContext} child={child} popupLocation={anchorLocation} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} finalSize={finalSize} childFrame={finalFrame}");
 			}
-
-			// Note that we return the availableSize and not the _lastMeasuredSize. This is because this
-			// Panel always take the whole screen for the dismiss layer, but it's content will not.
-			return availableSize;
 		}
-
-		protected override Size ArrangeOverride(Size finalSize)
+		else
 		{
-			// Note: Here finalSize is expected to be the be the size of the window
+			// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
-			var size = _lastMeasuredSize;
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
-			// Usually this check is achieved by the parent, but as this Panel
-			// is injected at the root (it's a subView of the Window), we make sure
-			// to enforce it here.
-			var isOpen = Visibility != Visibility.Collapsed;
-			if (!isOpen)
+			visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
+			visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
+
+			Popup.CustomLayouter.Arrange(
+				finalSize,
+				visibleBounds,
+				_lastMeasuredSize
+			);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				size = finalSize = default;
+				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} **using custom layouter** DC={Popup.DataContext} child={child} finalSize={finalSize}");
 			}
-
-			var child = this.GetChildren().FirstOrDefault();
-			if (child == null)
-			{
-				return finalSize;
-			}
-
-			if (!isOpen)
-			{
-				ArrangeElement(child, default);
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} **closed** DC={Popup.DataContext} child={child} finalSize={finalSize}");
-				}
-			}
-			else if (Popup.CustomLayouter == null)
-			{
-				// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
-				// Note: we do not prevent overflow of the popup on any side as UWP does not!
-				//		 (And actually it also lets the view appear out of the window ...)
-				var anchor = Popup.Anchor ?? Popup;
-				var anchorLocation = anchor.TransformToVisual(this).TransformPoint(new Point());
-
-#if __ANDROID__
-				// for android, the above line returns the absolute coordinates of anchor on the screen
-				// because the parent view of this PopupPanel is a PopupWindow and GetLocationInWindow will be (0,0)
-				// therefore, we need to make the relative adjustment
-				if (this.NativeVisualParent is Android.Views.View view)
-				{
-					var windowLocation = Point.From(view.GetLocationInWindow);
-					var screenLocation = Point.From(view.GetLocationOnScreen);
-
-					if (windowLocation == default)
-					{
-						anchorLocation -= ViewHelper.PhysicalToLogicalPixels(screenLocation);
-					}
-				}
-#endif
-
-				var finalFrame = new Rect(
-					anchorLocation.X + (float)Popup.HorizontalOffset,
-					anchorLocation.Y + (float)Popup.VerticalOffset,
-					size.Width,
-					size.Height);
-
-				ArrangeElement(child, finalFrame);
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} DC={Popup.DataContext} child={child} popupLocation={anchorLocation} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} finalSize={finalSize} childFrame={finalFrame}");
-				}
-			}
-			else
-			{
-				// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
-
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-				visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
-				visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
-
-				Popup.CustomLayouter.Arrange(
-					finalSize,
-					visibleBounds,
-					_lastMeasuredSize
-#if __ANDROID__
-					, visibleBounds.Location
-#endif
-				);
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} **using custom layouter** DC={Popup.DataContext} child={child} finalSize={finalSize}");
-				}
-			}
-
-			return finalSize;
 		}
 
-		private protected override void OnLoaded()
+		return finalSize;
+	}
+
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+		// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
+		// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
+		this.SetLogicalParent(Popup);
+
+		this.XamlRoot.Changed += XamlRootChanged;
+	}
+
+	private protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+		this.SetLogicalParent(null);
+
+		if (XamlRoot is { } xamlRoot)
 		{
-			base.OnLoaded();
-			// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
-			// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
-			this.SetLogicalParent(Popup);
+			xamlRoot.Changed -= XamlRootChanged;
 		}
+	}
 
-		private protected override void OnUnloaded()
+	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
+	// need to support native popups on Android that don't use PopupRoot.
+	private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
+	{
+		// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
+		if (args.OriginalSource == this && Popup is { } popup)
 		{
-			base.OnUnloaded();
-			this.SetLogicalParent(null);
-		}
-
-		// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
-		// need to support native popups on Android that don't use PopupRoot.
-		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
-		{
-			// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
-			if (args.OriginalSource == this && Popup is { } popup
-			)
+			// CommandBars in WinUI don't rely on IsLightDismissEnabled, instead there's IsSticky.
+			// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
+			// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
+			// rely on this workaround to close CommandBar's popup.
+			if (popup.TemplatedParent is CommandBar cb)
 			{
-				// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
-				// disabled for ContentDialogs
-				if (popup.IsLightDismissEnabled)
-				{
-					ClosePopup(popup);
-				}
-				args.Handled = true;
+				cb.TryDismissInlineAppBarInternal();
 			}
-		}
-
-		private static void ClosePopup(Popup popup)
-		{
-			// Give the popup an opportunity to cancel closing.
-			var cancel = false;
-			popup.OnClosing(ref cancel);
-			if (!cancel)
+			// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
+			// disabled for ContentDialogs.
+			else if (popup.IsLightDismissEnabled)
 			{
-				popup.IsOpen = false;
+				OnPointerPressedDismissed(args);
+				ClosePopup(popup);
 			}
+			args.Handled = true;
+		}
+	}
+
+	private protected virtual void OnPointerPressedDismissed(PointerRoutedEventArgs args) { }
+
+	private static void ClosePopup(Popup popup)
+	{
+		// Give the popup an opportunity to cancel closing.
+		var cancel = false;
+		popup.OnClosing(ref cancel);
+		if (!cancel)
+		{
+			popup.IsOpen = false;
+		}
+	}
+
+	internal override bool IsViewHit()
+	{
+		// CommandBars in WinUI don't rely on IsLightDismissEnabled, instead there's IsSticky.
+		// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
+		// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
+		// rely on this workaround to close CommandBar's popup.
+		if (Popup is { TemplatedParent: CommandBar { IsSticky: false } })
+		{
+			return true;
 		}
 
-		internal override bool IsViewHit() => Popup?.IsLightDismissEnabled ?? false;
+		return Popup?.IsLightDismissEnabled ?? false;
 	}
 }

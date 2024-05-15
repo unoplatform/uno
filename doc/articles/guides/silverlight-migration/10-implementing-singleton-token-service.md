@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ImplementingSingletonTokenService
+---
+
 # Implementing a singleton token service
 
 It is common to use the **Singleton** pattern when creating services that are consumed in multiple places in an application's codebase. The singleton pattern helps enforce the notion that only one instance of a service should exist. The following steps will walk through the implementation of generic abstract base class for a singleton and the use of it in the creation of the **TokenService**.
@@ -160,7 +164,7 @@ The next task will discuss an approach to initializing the service.
 
 ## TokenService initialization
 
-As the **TokenService** utilizes asynchronous initialization, there is an advantage to starting the initialization process as early as feasible in the application lifecycle. An example would be adding it to the **App.xaml.cs OnLaunched** method, as shown below:
+As the **TokenService** utilizes asynchronous initialization, there is an advantage to starting the initialization process as early as feasible in the application lifecycle. An example would be adding it to the `App.cs` `OnLaunched` method, as shown below:
 
 ```csharp
 protected override void OnLaunched(LaunchActivatedEventArgs e)

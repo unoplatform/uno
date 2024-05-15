@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
+﻿namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	/// <summary>
 	/// This API supports infrastructure and is not intended to be used
@@ -13,4 +12,3 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		void Error(string message);
 	}
 }
-#endif

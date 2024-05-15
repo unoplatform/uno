@@ -2,8 +2,15 @@
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+
+#if __SKIA__
+using SkiaSharp;
+using Uno.Media;
+#endif
+
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -31,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var geometry = new RectangleGeometry
 			{
 				Rect = new Rect(0, 0, 100, 100),
-				Transform = new TranslateTransform { X=20, Y=40 }
+				Transform = new TranslateTransform { X = 20, Y = 40 }
 			};
 
 			geometry.Bounds.Should().Be(new Rect(20, 40, 100, 100));
@@ -106,7 +113,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var geometry2 = new RectangleGeometry
 			{
 				Rect = new Rect(200, 200, 100, 100),
-				Transform = new CompositeTransform { CenterX = 350, CenterY = 350, ScaleX=2, ScaleY = 0.5 }
+				Transform = new CompositeTransform { CenterX = 350, CenterY = 350, ScaleX = 2, ScaleY = 0.5 }
 			};
 
 			var geometry = new GeometryGroup();
@@ -132,5 +139,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		{
 			Console.WriteLine(Geometry.Empty.Bounds);
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public void StreamGeometry_GetSKPath_CheckFillType()
+		{
+			var streamGeometry = new StreamGeometry();
+			using (var context = streamGeometry.Open())
+			{
+				context.BeginFigure(new Point(0, 0), isFilled: true);
+				context.LineTo(new Point(10, 10), isStroked: true, isSmoothJoin: true);
+			}
+
+			var skPath = streamGeometry.GetSKPath();
+			skPath.FillType.Should().Be(SKPathFillType.EvenOdd);
+		}
+#endif
 	}
 }

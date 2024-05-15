@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -24,7 +24,6 @@ namespace Uno.UI.Controls
 		private readonly SerialDisposable _orientationSubscription = new SerialDisposable();
 		private WeakReference<CommandBar?>? _commandBar;
 
-		private UINavigationBar? _navigationBar;
 		private readonly bool _isPhone = UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone;
 
 		private protected override void OnLoaded()
@@ -40,23 +39,38 @@ namespace Uno.UI.Controls
 			{
 				commandBar = TemplatedParent as CommandBar;
 				_commandBar = new WeakReference<CommandBar?>(commandBar);
-
-				_navigationBar = commandBar?.GetRenderer(RendererFactory).Native;
-
 			}
-			else
+
+			if ((commandBar?.TryGetNative<CommandBar, CommandBarRenderer, UINavigationBar>(out var nativeBar) ?? false)
+				&& nativeBar is { })
 			{
-				_navigationBar = commandBar?.ResetRenderer(RendererFactory).Native;
+				LayoutNativeBar(nativeBar);
 			}
-
-			if (_navigationBar == null)
+			else if (commandBar is { } && FeatureConfiguration.CommandBar.AllowNativePresenterContent)
 			{
-				throw new InvalidOperationException("No NavigationBar from renderer");
+				var commandBarRenderer = new CommandBarRenderer(commandBar);
+				commandBar.SetRenderer(commandBarRenderer);
+
+
+				var commandBarItemRenderer = new CommandBarNavigationItemRenderer(commandBar);
+				commandBar.SetRenderer(commandBarItemRenderer);
+
+				var navigationItem = new UINavigationItem();
+				var navBar = new UINavigationBar();
+				navBar.PushNavigationItem(navigationItem, false);
+
+				commandBarItemRenderer.Native = navigationItem;
+				commandBarRenderer.Native = navBar;
+
+				LayoutNativeBar(navBar);
 			}
+		}
 
-			_navigationBar.SetNeedsLayout();
+		private void LayoutNativeBar(UINavigationBar nativeBar)
+		{
+			nativeBar.SetNeedsLayout();
 
-			var navigationBarSuperview = _navigationBar?.Superview;
+			var navigationBarSuperview = nativeBar.Superview;
 
 			// Allows the UINavigationController's NavigationBar instance to be moved to the Page. This feature
 			// is used in the context of the sample application to test NavigationBars outside of a NativeFramePresenter for 
@@ -64,7 +78,7 @@ namespace Uno.UI.Controls
 			// another page is already visible, making this bar overlay on top of another.			
 			if (FeatureConfiguration.CommandBar.AllowNativePresenterContent && (navigationBarSuperview == null || navigationBarSuperview is NativeCommandBarPresenter))
 			{
-				Content = _navigationBar;
+				Content = nativeBar;
 			}
 
 			var statusBar = StatusBar.GetForCurrentView();
@@ -81,18 +95,10 @@ namespace Uno.UI.Controls
 			// iOS doesn't automatically update the navigation bar position when the status bar visibility changes.
 			void OnStatusBarChanged(StatusBar sender, object args)
 			{
-				_navigationBar!.SetNeedsLayout();
-				_navigationBar!.Superview.SetNeedsLayout();
+				nativeBar.SetNeedsLayout();
+				nativeBar.Superview.SetNeedsLayout();
 			}
 		}
-
-		CommandBarRenderer RendererFactory()
-		{
-			CommandBar? target = null;
-			_commandBar?.TryGetTarget(out target);
-			return new CommandBarRenderer(target);
-		}
-
 		protected override Size MeasureOverride(Size size)
 		{
 			var measuredSize = base.MeasureOverride(size);

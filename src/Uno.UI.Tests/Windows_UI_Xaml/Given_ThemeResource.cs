@@ -9,12 +9,12 @@ using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -206,7 +206,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("DoubleAnimation not supported by Uno.NET461")]
 		public async Task When_Visual_States_DoubleAnimation_Theme_Changed_Reapplied()
 		{
 			var page = new ThemeResource_In_Visual_States_Page();
@@ -563,13 +562,86 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			}
 		}
 
+		[TestMethod]
+		public void ThemeResource_When_Setter_Override_From_Visual_Parent()
+		{
+			var SUT = new ThemeResource_When_Setter_Override_From_Visual_Parent();
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+		}
+
+		[TestMethod]
+		public void ThemeResource_When_Setter_Override_State_From_Visual_Parent()
+		{
+			var SUT = new ThemeResource_When_Setter_Override_State_From_Visual_Parent();
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			VisualStateManager.GoToState(SUT.SubjectToggleButton, "Checked", false);
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
+		}
+
+		[TestMethod]
+		public void When_TemplateBinding_And_VisualState_Setter_ClearValue()
+		{
+			var SUT = new When_TemplateBinding_And_VisualState_Setter_ClearValue();
+			SUT.topLevel.Content = "test";
+			SUT.topLevel.ApplyTemplate();
+
+			var inner = SUT.FindName("innerContent") as ContentPresenter;
+			Assert.IsNotNull(inner);
+			Assert.AreEqual("Default Value", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "NewState", true);
+			Assert.AreEqual("42", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "DefaultState", true);
+			Assert.AreEqual("Default Value", inner.Tag);
+
+			SUT.topLevel.Tag = "Updated value";
+			Assert.AreEqual("Updated value", inner.Tag);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_And_VisualState_Setter_ClearValue()
+		{
+			var SUT = new When_StaticResource_And_VisualState_Setter_ClearValue();
+			SUT.topLevel.Content = "test";
+			SUT.topLevel.ApplyTemplate();
+
+			var inner = SUT.FindName("innerContent") as ContentPresenter;
+			Assert.IsNotNull(inner);
+			Assert.AreEqual("my static resource", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "NewState", true);
+			Assert.AreEqual("42", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "DefaultState", true);
+			Assert.AreEqual("my static resource", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "NewState", true);
+			Assert.AreEqual("42", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "DefaultState", true);
+			Assert.AreEqual("my static resource", inner.Tag);
+		}
+
 		/// <summary>
 		/// Use Fluent styles for the duration of the test.
 		/// </summary>
 		private IDisposable UseFluentResources()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			app.Resources.MergedDictionaries.Insert(0, xcr);
 			return new DisposableAction(() => Application.Current.Resources.MergedDictionaries.Remove(xcr));
 
@@ -590,7 +662,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #endif
 
 		[TestMethod]
-		public async Task When_Direct_Assignment_Incompatible()
+		public void When_Direct_Assignment_Incompatible()
 		{
 			var page = new ThemeResource_Direct_Assignment_Incompatible_Page();
 			var transform = page.Resources["MyTransform"] as TranslateTransform;

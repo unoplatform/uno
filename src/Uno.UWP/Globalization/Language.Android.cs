@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.Content;
+﻿using Android.Content;
 using Android.Views.InputMethods;
 using Java.Interop;
 using Uno.UI;
@@ -21,4 +20,3 @@ namespace Windows.Globalization
 		public static bool TrySetInputMethodLanguageTag(string languageTag) => false;
 	}
 }
-#endif

@@ -1,42 +1,62 @@
 parameters:
   vmMacOSImage: ''
   vmWindowsImage: ''
+  vmLinuxImage: ''
+  vmLinuxPool: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
+  automatedTestsBuckets:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+
+  runtimeTestsGroups:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+
 jobs:
 
-- job: Android_Build_Net6_For_Tests
-  displayName: 'Android UI Tests (Net6 Build)'
+- job: Android_Build_NetCoreMobile_For_Tests
+  displayName: 'Build .NET Mobile Android UI Tests'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
-
-  dependsOn: Pipeline_Validations
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
   steps:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet6-install-mac.yml
+  - template: templates/dotnet7-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - template: templates/gitversion.yml
+
   - bash: |
-      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.net6mobile
-      dotnet publish -f net6.0-android -c Release
+      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
+      dotnet publish -f net7.0-android -c Release -p:UnoTargetFrameworkOverride=net7.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Android samples app
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.net6mobile/bin/Release/net6.0-android/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-android/publish
       Contents: 'uno.platform.unosampleapp-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
@@ -45,72 +65,27 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-android-net6-build
-      ArtifactType: Container
-
-- job: Android_Build_For_Tests
-  displayName: 'Android UI Tests (Build)'
-
-  pool:
-    vmImage: ${{ parameters.vmMacOSImage }}
-
-  dependsOn: Pipeline_Validations
-
-  variables:
-    CI_Build: true
-    SourceLinkEnabled: false
-    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
-    VS_MSBUILD: '/Applications/Visual Studio.app/Contents/MonoBundle/MSBuild/Current/bin/MSBuild.dll'
-
-  steps:
-  - checkout: self
-    clean: true
-
-  - template: templates/dotnet-install.yml
-  - template: templates/jdk-setup.yml
-
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
-  - script: |
-      mono '$(VS_MSBUILD)' '$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj' /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /p:AndroidUseLatestPlatformSdk=true /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
-    displayName: Build Android App
-
-
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/bin/Release/
-      Contents: 'uno.platform.unosampleapp-Signed.apk'
-      TargetFolder: $(build.artifactstagingdirectory)/android
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-android-build
+      ArtifactName: uitests-android-netcoremobile-build
       ArtifactType: Container
 
 - job: Android_Tests
-  displayName: 'Android UI Tests (Run)'
+  displayName: 'Run Android UI Tests'
   dependsOn:
-  - Android_Build_For_Tests
-  - Android_Build_Net6_For_Tests
-  - SamplesApp_UITests_Build
+  - Android_Build_NetCoreMobile_For_Tests
 
-  timeoutInMinutes: 120
+  timeoutInMinutes: 45
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-  pool:
-    vmImage: ${{ parameters.vmMacOSImage }}
+    UNO_UITEST_BUCKET_COUNT: 5
+
+  pool: ${{ parameters.vmLinuxPool }}
+    # vmImage: ${{ parameters.vmLinuxImage }}
 
   strategy:
     matrix:
@@ -119,86 +94,59 @@ jobs:
       #  ANDROID_SIMULATOR_APILEVEL: 21
       #  UITEST_TEST_MODE_NAME: Automated
 
-      Android_9.0_Group_01:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 1 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: true
-        UITEST_TEST_TIMEOUT: '270000'
+      ${{ each testBucket in parameters.automatedTestsBuckets }}:
+        Android_9.0_Group_${{ testBucket }}_net7:
+          ANDROID_SIMULATOR_APILEVEL: 28
+          UITEST_TEST_MODE_NAME: Automated
+          UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
+          SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
+          TARGETPLATFORM_NAME: net7
+          FAILBUILD_ON_FAILURE: true
+          ALLOW_RERUN: true
+          UITEST_TEST_TIMEOUT: '270s'
 
-      Android_9.0_Group_02:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 2 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: true
-        UITEST_TEST_TIMEOUT: '270000'
+      ${{ each testGroup in parameters.runtimeTestsGroups }}:
+        Android_9.0_RuntimeTests_${{ testGroup }}_net7:
+          ANDROID_SIMULATOR_APILEVEL: 28
+          UITEST_TEST_MODE_NAME: RuntimeTests
+          UNO_UITEST_BUCKET_ID: RuntimeTests
+          UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
+          UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+          SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
+          TARGETPLATFORM_NAME: net7
+          FAILBUILD_ON_FAILURE: true
+          ALLOW_RERUN: false
+          UITEST_TEST_TIMEOUT: '2600s'
 
-      Android_9.0_Group_03:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 3 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        UITEST_TEST_TIMEOUT: '270000'
-        ALLOW_RERUN: true
-
-      Android_9.0_Snapshots:
+      Android_9.0_Snapshots_net7:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
+        TARGETPLATFORM_NAME: net7
         FAILBUILD_ON_FAILURE: true
         ALLOW_RERUN: true
-        UITEST_TEST_TIMEOUT: '270000'
-
-      Android_9.0_RuntimeTests:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: false
-        UITEST_TEST_TIMEOUT: '2600000'
-
-      # Disabled because of layout instabilities: https://github.com/unoplatform/uno/issues/7996
-      #
-      # Android_9.0_RuntimeTests_Net6:
-      #   ANDROID_SIMULATOR_APILEVEL: 28
-      #   UITEST_TEST_MODE_NAME: RuntimeTests
-      #   UNO_UITEST_BUCKET_ID: RuntimeTests
-      #   SAMPLEAPP_ARTIFACT_NAME: uitests-android-net6-build
-      #   TARGETPLATFORM_NAME: net6
-      #   ALLOW_RERUN: false
-      #   UITEST_TEST_TIMEOUT: '2600000'
-      #   FAILBUILD_ON_FAILURE: false # false until https://github.com/unoplatform/uno/issues/5873 and https://github.com/dotnet/runtime/pull/55681 are released
+        UITEST_TEST_TIMEOUT: '270s'
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
       # Android_10.0:
-      #   ANDROID_SIMULATOR_APILEVEL: 29
+      #   ANDROID_SIMULATOR_APILEVEL: 28
       #   UITEST_TEST_MODE_NAME: Automated
 
   steps:
   - checkout: self
     clean: true
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-        artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
-        downloadPath: '$(build.sourcesdirectory)/build'
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM'
 
   - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
+    displayName: 'Download SamplesApp UnitTests'
     inputs:
-        artifactName: samplesapp-uitest-binaries
+        artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
@@ -209,21 +157,14 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/optimize-roslyn-mono.yml
-
   - template: templates/dotnet-install.yml
 
-  - template: templates/ios-build-select-version.yml
-    parameters:
-      xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
-
-  - task: PowerShell@2
-    displayName: 'Install coreutils'
-    inputs:
-      targetType: inline
-      script: |
-        brew install coreutils
+  # - task: PowerShell@2
+  #   displayName: 'Install coreutils'
+  #   inputs:
+  #     targetType: inline
+  #     script: |
+  #       brew install coreutils
 
   - task: PowerShell@2
     displayName: 'Fill Rerun Variable'
@@ -246,20 +187,10 @@ jobs:
 
     displayName: Run Android Tests
 
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
-      UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
-      UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
-      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
-      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
-      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
-
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test Run (FAIL_TESTS_ON_NO_RERUN $(FAIL_TESTS_ON_NO_RERUN))'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME)/$(UITEST_RUNTIME_TEST_GROUP) Test Run (FAIL_TESTS_ON_NO_RERUN $(FAIL_TESTS_ON_NO_RERUN))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       # don't fail on failed tests, second run will do it
@@ -272,16 +203,6 @@ jobs:
 
     displayName: Run Android Tests
     condition: eq(variables.ALLOW_RERUN, 'true')
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
-      UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
-      UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
-      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
-      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
-      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
 
   - task: PublishTestResults@2
     condition: eq(variables.ALLOW_RERUN, 'true')
@@ -302,6 +223,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -309,6 +231,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: uitests-failure-results

@@ -1,36 +1,28 @@
-﻿#if __WASM__
+﻿using System;
+using System.Globalization;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno;
 using Uno.Foundation;
-using System;
-using System.Globalization;
+
+using NativeMethods = __Windows.Graphics.Display.DisplayInformation.NativeMethods;
 
 namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
-
-		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
-
-		private const string JsType = "Windows.Graphics.Display.DisplayInformation";
-
-		[Preserve]
-		public static int DispatchDpiChanged()
+		[JSExport]
+		internal static int DispatchDpiChanged()
 		{
-			if (_lazyInstance.IsValueCreated)
-			{
-				_lazyInstance.Value.OnDisplayMetricsChanged();
-			}
+			GetForCurrentViewSafe().OnDisplayMetricsChanged();
 			return 0;
 		}
 
-		[Preserve]
-		public static int DispatchOrientationChanged()
+		[JSExport]
+		internal static int DispatchOrientationChanged()
 		{
-			if (_lazyInstance.IsValueCreated)
-			{
-				_lazyInstance.Value.OnDisplayMetricsChanged();
-			}
+			GetForCurrentViewSafe().OnDisplayMetricsChanged();
 			return 0;
 		}
 
@@ -38,8 +30,47 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				var jsOrientation = ReadJsString("window.screen.orientation.type");
+				var jsOrientation = ReadOrientationType();
 				return ParseJsOrientation(jsOrientation);
+			}
+		}
+
+		/// <summary>
+		/// Gets the native orientation of the display monitor,
+		/// which is typically the orientation where the buttons
+		/// on the device match the orientation of the monitor.
+		/// </summary>
+		public DisplayOrientations NativeOrientation
+		{
+			get
+			{
+				if (TryReadOrientationAngle(out var angle))
+				{
+					var jsOrientation = ReadOrientationType();
+
+					var isCurrentlyPortrait = jsOrientation.StartsWith("portrait", StringComparison.Ordinal);
+					var isCurrentlyLandscape = jsOrientation.StartsWith("landscape", StringComparison.Ordinal);
+
+					if (!isCurrentlyLandscape && !isCurrentlyPortrait)
+					{
+						// JavaScript returned some unexpected string.
+						return DisplayOrientations.None;
+					}
+
+					switch (angle)
+					{
+						case 0:
+						case 180:
+							return isCurrentlyPortrait ? DisplayOrientations.Portrait : DisplayOrientations.Landscape;
+						case 90:
+						case 270:
+							return isCurrentlyPortrait ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+						default:
+							return DisplayOrientations.None;
+					}
+				}
+
+				return DisplayOrientations.None;
 			}
 		}
 
@@ -47,7 +78,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				if (TryReadJsFloat("window.screen.height", out var height))
+				if (TryReadScreenHeight(out var height))
 				{
 					var scale = (double)LogicalDpi / BaseDpi;
 					return (uint)(height * scale);
@@ -60,7 +91,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				if (TryReadJsFloat("window.screen.width", out var width))
+				if (TryReadScreenWidth(out var width))
 				{
 					var scale = (double)LogicalDpi / BaseDpi;
 					return (uint)(width * scale);
@@ -73,7 +104,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				if (TryReadJsFloat("window.devicePixelRatio", out var devicePixelRatio))
+				if (TryReadDevicePixelRatio(out var devicePixelRatio))
 				{
 					return devicePixelRatio * BaseDpi;
 				}
@@ -97,7 +128,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				if (TryReadJsFloat("window.devicePixelRatio", out var devicePixelRatio))
+				if (TryReadDevicePixelRatio(out var devicePixelRatio))
 				{
 					return (ResolutionScale)(int)(devicePixelRatio * 100);
 				}
@@ -111,33 +142,66 @@ namespace Windows.Graphics.Display
 		partial void StartOrientationChanged()
 		{
 			_lastKnownOrientation = CurrentOrientation;
-			var command = $"{JsType}.startOrientationChanged()";
-			WebAssemblyRuntime.InvokeJS(command);
+
+			NativeMethods.StartOrientationChanged();
 		}
 
 		partial void StopOrientationChanged()
 		{
-			var command = $"{JsType}.stopOrientationChanged()";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StopOrientationChanged();
 		}
 
 		partial void StartDpiChanged()
 		{
 			_lastKnownDpi = LogicalDpi;
-			var command = $"{JsType}.startDpiChanged()";
-			WebAssemblyRuntime.InvokeJS(command);
+
+			NativeMethods.StartDpiChanged();
 		}
 
 		partial void StopDpiChanged()
 		{
-			var command = $"{JsType}.stopDpiChanged()";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StopDpiChanged();
 		}
 
-		private static bool TryReadJsFloat(string property, out float value) =>
-			float.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
+		static partial void SetOrientationPartial(DisplayOrientations orientations)
+		{
+			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(
+				() => SetOrientationAsync(orientations),
+				Uno.UI.Dispatching.NativeDispatcherPriority.High);
+		}
 
-		private static string ReadJsString(string property) => WebAssemblyRuntime.InvokeJS(property);
+		private static bool TryReadDevicePixelRatio(out float value)
+		{
+			value = NativeMethods.GetDevicePixelRatio();
+
+			return true;
+		}
+
+		private static bool TryReadScreenWidth(out float value)
+		{
+			value = NativeMethods.GetScreenWidth();
+
+			return true;
+		}
+
+		private static bool TryReadScreenHeight(out float value)
+		{
+			value = NativeMethods.GetScreenHeight();
+
+			return true;
+		}
+
+		private static bool TryReadOrientationAngle(out int value)
+		{
+			var angle = NativeMethods.GetScreenOrientationAngle();
+
+			value = angle ?? default;
+
+			return angle.HasValue;
+		}
+
+		private static string ReadOrientationType()
+			=> NativeMethods.GetScreenOrientationType();
 
 		private static DisplayOrientations ParseJsOrientation(string jsOrientation)
 		{
@@ -152,6 +216,10 @@ namespace Windows.Graphics.Display
 				_ => DisplayOrientations.None,
 			};
 		}
+
+		private static Task SetOrientationAsync(DisplayOrientations orientations)
+		{
+			return NativeMethods.SetOrientationAsync((int)orientations);
+		}
 	}
 }
-#endif

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 using Windows.Devices.Input;
@@ -11,7 +10,6 @@ using Windows.Foundation;
 using Windows.System;
 using Uno;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
@@ -34,9 +32,9 @@ namespace Windows.UI.Input
 			internal static readonly Thresholds DeltaMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
 
 			// Inertia thresholds are expressed in 'unit / millisecond' (unit being either 'logical px' or 'degree')
-			internal static readonly Thresholds InertiaTouch = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
-			internal static readonly Thresholds InertiaPen = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
-			internal static readonly Thresholds InertiaMouse = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
+			internal static readonly Thresholds InertiaTouch = new Thresholds { TranslateX = 15d / 1000, TranslateY = 15d / 1000, Rotate = 5d / 1000, Expansion = 15d / 1000 };
+			internal static readonly Thresholds InertiaPen = new Thresholds { TranslateX = 15d / 1000, TranslateY = 15d / 1000, Rotate = 5d / 1000, Expansion = 15d / 1000 };
+			internal static readonly Thresholds InertiaMouse = new Thresholds { TranslateX = 15d / 1000, TranslateY = 15d / 1000, Rotate = 5d / 1000, Expansion = 15d / 1000 };
 
 			private enum ManipulationState
 			{
@@ -78,8 +76,8 @@ namespace Windows.UI.Input
 			public GestureSettings Settings => _settings;
 			public bool IsTranslateXEnabled => _isTranslateXEnabled;
 			public bool IsTranslateYEnabled => _isTranslateYEnabled;
-			public bool IsRotateEnabled	  => _isRotateEnabled;
-			public bool IsScaleEnabled	  => _isScaleEnabled;
+			public bool IsRotateEnabled => _isRotateEnabled;
+			public bool IsScaleEnabled => _isScaleEnabled;
 
 			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
 			{
@@ -291,7 +289,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-#if NET461
+#if IS_UNIT_TESTS
 			public void RunInertiaSync()
 				=> _inertia?.RunSync();
 #endif
@@ -404,13 +402,11 @@ namespace Windows.UI.Input
 				}
 			}
 
-			[Pure]
 			private Point GetPosition()
 			{
 				return _inertia?.GetPosition() ?? _currents.Center;
 			}
 
-			[Pure]
 			private ManipulationDelta GetCumulative()
 			{
 				if (_inertia is { } inertia)
@@ -429,7 +425,7 @@ namespace Windows.UI.Input
 				float scale, expansion;
 				if (_currents.HasPointer2)
 				{
-					rotation = _isRotateEnabled ? MathEx.ToDegree(_currents.Angle - _origins.Angle) : 0;
+					rotation = _isRotateEnabled ? Uno.Extensions.MathEx.ToDegree(_currents.Angle - _origins.Angle) : 0;
 					scale = _isScaleEnabled ? _currents.Distance / _origins.Distance : 1;
 					expansion = _isScaleEnabled ? _currents.Distance - _origins.Distance : 0;
 
@@ -475,7 +471,6 @@ namespace Windows.UI.Input
 				};
 			}
 
-			[Pure]
 			private ManipulationDelta GetDelta(ManipulationDelta cumulative)
 			{
 				var deltaSum = _lastPublishedState.sumOfDelta;
@@ -608,7 +603,6 @@ namespace Windows.UI.Input
 				}
 			}
 
-			[Pure]
 			private bool ShouldStartInertia(ManipulationVelocities velocities)
 				=> _inertia is null
 					&& !IsDragManipulation
@@ -643,7 +637,7 @@ namespace Windows.UI.Input
 					Pointer1 = point;
 					_pointer2 = default;
 
-					Identifiers = new[] {point.Pointer};
+					Identifiers = new[] { point.Pointer };
 					Timestamp = point.Timestamp;
 					Center = point.RawPosition; // RawPosition => cf. Note in UpdateComputedValues().
 					Distance = 0;
@@ -657,7 +651,7 @@ namespace Windows.UI.Input
 				public void SetPointer2(PointerPoint point)
 				{
 					_pointer2 = point;
-					Identifiers = new[] {Pointer1.Pointer, _pointer2.Pointer};
+					Identifiers = new[] { Pointer1.Pointer, _pointer2.Pointer };
 					UpdateComputedValues();
 				}
 
@@ -705,7 +699,7 @@ namespace Windows.UI.Input
 						var p2 = _pointer2.RawPosition;
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
-						Distance = Vector2.Distance(p1.ToVector(), p2.ToVector());
+						Distance = Vector2.Distance(p1.ToVector2(), p2.ToVector2());
 						Angle = Math.Atan2(p1.Y - p2.Y, p1.X - p2.X);
 					}
 				}

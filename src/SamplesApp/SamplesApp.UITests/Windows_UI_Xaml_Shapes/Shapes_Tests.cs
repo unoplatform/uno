@@ -82,7 +82,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			_app.Marked("ChangeShape").FastTap();
 			var widthzize = _app.Query(_app.Marked("DPolyline")).First().Rect.Width;
 
-			if(widthzize == 0)
+			if (widthzize == 0)
 				Assert.Fail("Shape not changed");
 
 			TakeScreenshot($"PolylinePage - ChangeShape-After clear");
@@ -128,7 +128,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			var screenshot = TakeScreenshot("Complete");
 
-			var bounds = _app.GetRect("TargetRectangle");
+			var bounds = _app.GetPhysicalRect("TargetRectangle");
 
 			ImageAssert.HasColorAt(screenshot, bounds.CenterX, bounds.CenterY, Color.Blue);
 		}
@@ -266,7 +266,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		private struct ShapeExpectation
 		{
-			public string Name  { get; set; }
+			public string Name { get; set; }
 			public int[] Offsets { get; set; }
 			public string Colors { get; set; }
 

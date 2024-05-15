@@ -1,27 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using UITests.Shared.Helpers;
 using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-namespace Uno.UI.Samples.UITests.ImageBrushTestControl
+namespace Uno.UI.Samples.UITests.ImageBrushTestControl;
+
+[Sample("Brushes", Description = "Effect of ImageBrush.Stretch on the visual result")]
+public sealed partial class ImageBrushAlignmentXY2 : UserControl, IWaitableSample
 {
-	[SampleControlInfo("Brushes", "ImageBrushAlignmentXY2")]
-	public sealed partial class ImageBrushAlignmentXY2 : UserControl
+	private readonly Task _samplePreparedTask;
+
+	public ImageBrushAlignmentXY2()
 	{
-		public ImageBrushAlignmentXY2()
-		{
-			this.InitializeComponent();
-		}
+		this.InitializeComponent();
+		_samplePreparedTask = WaitableSampleImageHelpers.WaitAllImages(imageBrush1, imageBrush2, imageBrush3, imageBrush4);
 	}
+
+	public Task SamplePreparedTask => _samplePreparedTask;
 }

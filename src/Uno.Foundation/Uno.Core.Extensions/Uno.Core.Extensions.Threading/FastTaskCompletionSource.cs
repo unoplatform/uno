@@ -1,7 +1,7 @@
 #nullable disable
 
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ namespace Uno.Threading
 		/// <summary>
 		/// Current state of the object
 		/// </summary>
-		public TerminationType Termination => (TerminationType) _terminationType;
+		public TerminationType Termination => (TerminationType)_terminationType;
 
 		/// <summary>
 		/// If any termination has been set
@@ -92,7 +92,7 @@ namespace Uno.Threading
 		/// </remarks>
 		public Exception Exception => ExceptionInfo?.SourceException;
 
-		private static SpinWait _spin = new SpinWait();
+		private static SpinWait _spin;
 
 		/// <summary>
 		/// Set the termination as "Canceled"

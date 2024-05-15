@@ -29,6 +29,7 @@ using System.Reflection;
 using System.Windows.Markup;
 using Uno.Xaml.Schema;
 using System.Xml.Serialization;
+using System.Globalization;
 
 namespace Uno.Xaml
 {
@@ -66,7 +67,7 @@ namespace Uno.Xaml
 				PreferredXamlNamespace = XamlLanguage.Xaml2006Namespace;
 			} else {
 				Name = GetXamlName (type);
-				PreferredXamlNamespace = schemaContext.GetXamlNamespace (type.Namespace) ?? String.Format ("clr-namespace:{0};assembly={1}", type.Namespace, type.Assembly.GetName ().Name);
+				PreferredXamlNamespace = schemaContext.GetXamlNamespace (type.Namespace) ?? String.Format (CultureInfo.InvariantCulture, "clr-namespace:{0};assembly={1}", type.Namespace, type.Assembly.GetName ().Name);
 			}
 			if (type.IsGenericType) {
 				TypeArguments = new List<XamlType> ();
@@ -442,7 +443,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		static readonly XamlMember [] empty_array = new XamlMember [0];
+		static readonly XamlMember [] empty_array = Array.Empty<XamlMember>();
 
 		protected virtual IEnumerable<XamlMember> LookupAllMembers ()
 		{
@@ -747,6 +748,12 @@ namespace Uno.Xaml
 
 		protected virtual bool LookupTrimSurroundingWhitespace ()
 		{
+			// Uno specific: We are not adding TrimSurroundingWhitespaceAttribute to LineBreak, so we special-case it here.
+			if (PreferredXamlNamespace.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal) && Name == "LineBreak")
+			{
+				return true;
+			}
+
 			return this.GetCustomAttribute<TrimSurroundingWhitespaceAttribute> () != null;
 		}
 
@@ -787,7 +794,7 @@ namespace Uno.Xaml
 			return a != null && a.Usable;
 		}
 
-#if NET461
+#if IS_UNIT_TESTS
 		static XamlValueConverter<ValueSerializer> string_value_serializer;
 #endif
 
@@ -801,7 +808,7 @@ namespace Uno.Xaml
 			if (provider == null)
 				return null;
 
-#if NET461
+#if IS_UNIT_TESTS
             var a = provider.GetCustomAttribute<ValueSerializerAttribute> (true);
 			if (a != null)
 				return new XamlValueConverter<ValueSerializer> (a.ValueSerializerType ?? Type.GetType (a.ValueSerializerTypeName), targetType);

@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -82,11 +82,11 @@ namespace Uno.Extensions
 				.Select(group => new BindableGroup<TKey, TItem>(group.Key, group.ToArray()));
 
 			var result = from descriptor in descriptors
-			             join gItem in groupedItems on descriptor.Key equals gItem.Key into descrWithItems
-			             from descrIncludingEmptyItems in descrWithItems.DefaultIfEmpty()
-			             let groupItemsNoNull = descrIncludingEmptyItems ?? new BindableGroup<TKey, TItem>(descriptor.Key, new TItem[0])
-			             where descriptor.Required || groupItemsNoNull.Any()
-			             select new BindableGroup<TKey, TItem>(descriptor.Key, groupItemsNoNull.ToArray());
+						 join gItem in groupedItems on descriptor.Key equals gItem.Key into descrWithItems
+						 from descrIncludingEmptyItems in descrWithItems.DefaultIfEmpty()
+						 let groupItemsNoNull = descrIncludingEmptyItems ?? new BindableGroup<TKey, TItem>(descriptor.Key, Array.Empty<TItem>())
+						 where descriptor.Required || groupItemsNoNull.Any()
+						 select new BindableGroup<TKey, TItem>(descriptor.Key, groupItemsNoNull.ToArray());
 
 			return result
 				.OrderBy(group => group.Key, new GroupDescriptorComparer<TKey>(descriptors.Select(descriptor => descriptor.Key)))

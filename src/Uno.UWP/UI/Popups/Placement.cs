@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Windows.UI.Popups
 {
-    public enum Placement
-    {
+	public enum Placement
+	{
 		/// <summary>
 		/// Place the context menu above the selection rectangle. 
 		/// </summary>
@@ -30,5 +30,5 @@ namespace Windows.UI.Popups
 		/// Place the context menu to the right of the selection rectangle.
 		/// </summary>
 		Right = 4,
-    }
+	}
 }

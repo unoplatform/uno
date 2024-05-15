@@ -10,10 +10,10 @@ using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -41,7 +41,7 @@ namespace Uno.UI.Behaviors
 	/// <remarks>
 	/// This class is located in the same source file as the VisibleBoundsPadding class to avoid code duplication.
 	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Toolkit) can use this behavior
-	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside 
+	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside
 	/// of the Uno.UI assembly, Uno.UI.Toolkit.VisibleBoundsPadding should be used by dependents.
 	/// </remarks>
 	internal static class InternalVisibleBoundsPadding
@@ -49,7 +49,7 @@ namespace Uno.UI.Behaviors
 namespace Uno.UI.Toolkit
 {
 	/// <summary>
-	/// A behavior which automatically adds padding to a control that ensures its content will always be inside 
+	/// A behavior which automatically adds padding to a control that ensures its content will always be inside
 	/// the <see cref="ApplicationView.VisibleBounds"/> of the application. Set PaddingMask to 'All' to enable this behavior,
 	/// or set PaddingMask to another value to enable it only on a particular side or sides.
 	/// </summary>
@@ -86,9 +86,22 @@ namespace Uno.UI.Toolkit
 #if WINUI
 				return new();
 #else
+				var window =
+#if HAS_UNO
+					Microsoft.UI.Xaml.Window.CurrentSafe;
+#else
+					Microsoft.UI.Xaml.Window.Current;
+#endif
+
+				if (window is null)
+				{
+					return new();
+				}
+
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-				var bounds = Window.Current?.Bounds ?? Rect.Empty;
-				var result = new Thickness {
+				var bounds = window.Bounds;
+				var result = new Thickness
+				{
 					Left = visibleBounds.Left - bounds.Left,
 					Top = visibleBounds.Top - bounds.Top,
 					Right = bounds.Right - visibleBounds.Right,
@@ -107,37 +120,13 @@ namespace Uno.UI.Toolkit
 			}
 		}
 
-		/// <summary>
-		/// VisibleBounds offset to the reference frame of the window Bounds.
-		/// </summary>
-		private static Rect OffsetVisibleBounds
-		{
-			get
-			{
-#if WINUI
-				return new();
-#else
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-
-				if (Window.Current is Window window)
-				{
-					var bounds = window.Bounds;
-					visibleBounds.X -= bounds.X;
-					visibleBounds.Y -= bounds.Y;
-				}
-
-				return visibleBounds;
-#endif
-			}
-		}
-
 		public static PaddingMask GetPaddingMask(DependencyObject obj)
 			=> (PaddingMask)obj.GetValue(PaddingMaskProperty);
 
 		/// <summary>
-		/// Set the <see cref="PaddingMask"/> to use on this property. A mask of <see cref="PaddingMask.All"/> will apply visible bounds 
-		/// padding on all sides, a mask of <see cref="PaddingMask.Bottom"/> will adjust only the bottom padding, etc. The different options 
-		/// can be combined as bit flags. 
+		/// Set the <see cref="PaddingMask"/> to use on this property. A mask of <see cref="PaddingMask.All"/> will apply visible bounds
+		/// padding on all sides, a mask of <see cref="PaddingMask.Bottom"/> will adjust only the bottom padding, etc. The different options
+		/// can be combined as bit flags.
 		/// </summary>
 		public static void SetPaddingMask(DependencyObject obj, PaddingMask value)
 			=> obj.SetValue(PaddingMaskProperty, value);
@@ -169,13 +158,6 @@ namespace Uno.UI.Toolkit
 		}
 
 #if !WINUI
-		/// <summary>
-		/// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which 
-		/// might arise transiently when the screen orientation changes.
-		/// </summary>
-		private static bool AreBoundsAspectRatiosConsistent
-			=> ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == Window.Current?.Bounds.GetOrientation();
-
 		public class VisibleBoundsDetails
 		{
 			private static readonly ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails> _instances =
@@ -211,14 +193,63 @@ namespace Uno.UI.Toolkit
 
 			private FrameworkElement? Owner => _owner.Target as FrameworkElement;
 
+			/// <summary>
+			/// VisibleBounds offset to the reference frame of the window Bounds.
+			/// </summary>
+			private Rect OffsetVisibleBounds
+			{
+				get
+				{
+					Rect visibleBounds = default;
+					if (GetOwnerWindow() is Window window)
+					{
+						visibleBounds = GetApplicationView(window).VisibleBounds;
+						var bounds = window.Bounds;
+						visibleBounds.X -= bounds.X;
+						visibleBounds.Y -= bounds.Y;
+					}
+
+					return visibleBounds;
+				}
+			}
+
+			private ApplicationView GetApplicationView(Window window)
+			{
+#if HAS_UNO
+				return ApplicationView.GetForWindowId(window.AppWindow.Id);
+#else
+				return ApplicationView.GetForCurrentView();
+#endif
+			}
+
+			private Microsoft.UI.Xaml.Window? GetOwnerWindow()
+			{
+#if HAS_UNO
+				return Owner?.XamlRoot?.HostWindow ?? Microsoft.UI.Xaml.Window.CurrentSafe;
+#else
+				return Microsoft.UI.Xaml.Window.Current;
+#endif
+			}
+
 			private void UpdatePadding()
 			{
-				if (Window.Current?.Content == null)
+				var window = GetOwnerWindow();
+
+				if (window?.Content == null)
 				{
 					return;
 				}
 
-				if (!AreBoundsAspectRatiosConsistent)
+#if HAS_UNO
+				var areBoundsConsistent =
+					window.Bounds.GetOrientation() == ApplicationView.GetForWindowId(window.AppWindow.Id).VisibleBounds.GetOrientation();
+#else
+				var areBoundsConsistent =
+					ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == GetOwnerWindow()?.Bounds.GetOrientation();
+#endif
+				// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which
+				// might arise transiently when the screen orientation changes.
+				if (!areBoundsConsistent)
 				{
 					return;
 				}
@@ -229,7 +260,7 @@ namespace Uno.UI.Toolkit
 				}
 
 				Thickness visibilityPadding;
-				
+
 				if (WindowPadding.Left != 0
 					|| WindowPadding.Right != 0
 					|| WindowPadding.Top != 0
@@ -240,7 +271,9 @@ namespace Uno.UI.Toolkit
 					// If the owner view is scrollable, the visibility of interest is that of the scroll viewport.
 					var fixedControl = scrollAncestor ?? Owner;
 
-					var controlBounds = GetRelativeBounds(fixedControl, Window.Current.Content);
+					// Using relativeTo: null instead of Window.Current.Content since there are cases when the current UIElement
+					// may be outside the bounds of the current Window content, for example, when the element is hosted in a modal window.
+					var controlBounds = GetRelativeBounds(fixedControl, relativeTo: null);
 
 					visibilityPadding = CalculateVisibilityPadding(OffsetVisibleBounds, controlBounds);
 
@@ -273,7 +306,8 @@ namespace Uno.UI.Toolkit
 				var right = Math.Min(controlBounds.Right - visibleBounds.Right, windowPadding.Right);
 				var bottom = Math.Min(controlBounds.Bottom - visibleBounds.Bottom, windowPadding.Bottom);
 
-				return new Thickness {
+				return new Thickness
+				{
 					Left = left,
 					Top = top,
 					Right = right,
@@ -290,7 +324,7 @@ namespace Uno.UI.Toolkit
 #if XAMARIN
 				if (scrollableRoot is ItemsPresenter)
 				{
-					// This implies we're probably inside a ListView, in which case the reasoning breaks down in Uno (because ItemsPresenter 
+					// This implies we're probably inside a ListView, in which case the reasoning breaks down in Uno (because ItemsPresenter
 					// is *outside* the scrollable region); we skip the adjustment and hope for the best.
 					scrollableRoot = null;
 				}
@@ -336,7 +370,8 @@ namespace Uno.UI.Toolkit
 					? Math.Max(_originalPadding.Bottom, visibilityPadding.Bottom)
 					: _originalPadding.Bottom;
 
-				return new Thickness {
+				return new Thickness
+				{
 					Left = left,
 					Top = top,
 					Right = right,
@@ -347,11 +382,20 @@ namespace Uno.UI.Toolkit
 			private void ApplyPadding(Thickness padding)
 			{
 #if HAS_UNO // Is building using Uno.UI
-				if (Owner is { } owner
-					&& owner.SetPadding(padding)
-					&& _log.IsEnabled(LogLevel.Debug))
+				if (Owner is { } owner &&
+					!owner.GetPadding().Equals(padding) &&
+					owner.SetPadding(padding))
 				{
-					_log.LogDebug($"ApplyPadding={padding}");
+					if (_log.IsEnabled(LogLevel.Debug))
+					{
+						_log.Log(LogLevel.Debug, $"ApplyPadding={padding}");
+					}
+
+#if __ANDROID__
+					// Dispatching on Android prevents issues where layout/render changes occurring
+					// during initial loading of the view are not always properly picked up by the layouting/rendering engine.
+					_ = owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, owner.InvalidateMeasure);
+#endif
 				}
 #endif
 			}
@@ -371,7 +415,7 @@ namespace Uno.UI.Toolkit
 				return Owner?.FindFirstParent<ScrollViewer>();
 			}
 
-			private static Rect GetRelativeBounds(FrameworkElement boundsOf, UIElement relativeTo)
+			private static Rect GetRelativeBounds(FrameworkElement boundsOf, UIElement? relativeTo)
 			{
 				return boundsOf
 					.TransformToVisual(relativeTo)

@@ -1,13 +1,13 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Windows.Input;
 using Windows.Devices.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToggleMenuFlyoutItem : MenuFlyoutItem
 	{
@@ -168,5 +168,7 @@ namespace Windows.UI.Xaml.Controls
 		// Create ToggleMenuFlyoutItemAutomationPeer to represent the 
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new ToggleMenuFlyoutItemAutomationPeer(this);
+
+		internal override bool HasToggle() => true;
 	}
 }

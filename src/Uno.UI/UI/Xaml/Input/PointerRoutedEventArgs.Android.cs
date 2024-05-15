@@ -5,7 +5,7 @@ using Android.Views;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Extensions;
+using Microsoft.UI.Xaml.Extensions;
 using Android.OS;
 using Uno.Extensions;
 
@@ -16,7 +16,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Input
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
-			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
+			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var (rawPosition, position) = GetPositions(relativeTo);
 
 			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);

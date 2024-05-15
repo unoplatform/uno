@@ -56,6 +56,7 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Assets\logo.lang-fr-CA.scale-200.png", @"Assets\logo.png", "200", "fr-CA", null)]
 		[DataRow(@"Assets\logo.scale-200.lang-fr-CA.png", @"Assets\logo.png", "200", "fr-CA", null)]
 		[DataRow(@"Assets\sr-Cyrl\logo.png", @"Assets\logo.png", null, "sr-Cyrl", null)]
+		[DataRow(@"fr\Assets\sr-Cyrl\logo.png", @"Assets\logo.png", null, "sr-Cyrl", null)]
 		[TestMethod]
 		public void When_Parse(string relativePath, string logicalPath, string scale, string language, string custom)
 		{

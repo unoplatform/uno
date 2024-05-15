@@ -3,105 +3,104 @@
 // MUX reference NavigationViewItemBase.cpp, commit 574e5ed 
 
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+public partial class NavigationViewItemBase : ContentControl
 {
-	public partial class NavigationViewItemBase : ContentControl
+	protected override void OnApplyTemplate()
 	{
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
+		base.OnApplyTemplate();
 
-			// TODO Uno specific - unsubscribe Loaded event handler to avoid multiple subscriptions
-			// as OnApplyTemplate will be called repeatedly.
-			Loaded -= OnLoaded;
-			Loaded += OnLoaded;
+		// TODO Uno specific - unsubscribe Loaded event handler to avoid multiple subscriptions
+		// as OnApplyTemplate will be called repeatedly.
+		Loaded -= OnLoaded;
+		Loaded += OnLoaded;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs args)
+	{
+		// If the NavViewItem is not prepared in an ItemPresenter it will be missing a reference to NavigationView, so adding that here.
+		if (m_navigationView == null)
+		{
+			SetNavigationViewParent(SharedHelpers.GetAncestorOfType<NavigationView>(this));
 		}
+	}
 
-		private void OnLoaded(object sender, RoutedEventArgs args)
+	internal NavigationViewRepeaterPosition Position
+	{
+		get => m_position;
+		set
 		{
-			// If the NavViewItem is not prepared in an ItemPresenter it will be missing a reference to NavigationView, so adding that here.
-			if (m_navigationView == null)
+			if (m_position != value)
 			{
-				SetNavigationViewParent(SharedHelpers.GetAncestorOfType<NavigationView>(this));
+				m_position = value;
+				OnNavigationViewItemBasePositionChanged();
 			}
 		}
+	}
 
-		internal NavigationViewRepeaterPosition Position
-		{
-			get => m_position;
-			set
-			{
-				if (m_position != value)
-				{
-					m_position = value;
-					OnNavigationViewItemBasePositionChanged();
-				}
-			}
-		}
+	internal NavigationView GetNavigationView()
+	{
+		return m_navigationView;
+	}
 
-		internal NavigationView GetNavigationView()
-		{
-			return m_navigationView;
-		}
-
-		// TODO: MZ Uno specific: existing Depth property inherited from base class
-		internal
+	// TODO: MZ Uno specific: existing Depth property inherited from base class
+	internal
 #if __NETSTD_REFERENCE__ || __SKIA__ || __WASM__
-			new
+		new
 #endif
-			int Depth
+		int Depth
+	{
+		get => m_depth;
+		set
 		{
-			get => m_depth;
-			set
+			if (m_depth != value)
 			{
-				if (m_depth != value)
-				{
-					m_depth = value;
-					OnNavigationViewItemBaseDepthChanged();
-				}
+				m_depth = value;
+				OnNavigationViewItemBaseDepthChanged();
 			}
 		}
+	}
 
-		protected SplitView GetSplitView()
+	protected SplitView GetSplitView()
+	{
+		SplitView splitView = null;
+		var navigationView = GetNavigationView();
+		if (navigationView != null)
 		{
-			SplitView splitView = null;
-			var navigationView = GetNavigationView();
-			if (navigationView != null)
-			{
-				splitView = navigationView.GetSplitView();
-			}
-			return splitView;
+			splitView = navigationView.GetSplitView();
 		}
+		return splitView;
+	}
 
-		internal void SetNavigationViewParent(NavigationView navigationView)
-		{
-			m_navigationView = navigationView;
-		}
+	internal void SetNavigationViewParent(NavigationView navigationView)
+	{
+		m_navigationView = navigationView;
+	}
 
-		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+	{
+		if (args.Property == IsSelectedProperty)
 		{
-			if (args.Property == IsSelectedProperty)
-			{
-				OnNavigationViewItemBaseIsSelectedChanged();
-			}
+			OnNavigationViewItemBaseIsSelectedChanged();
 		}
+	}
 
 #if IS_UNO
-		// TODO: Uno specific: Remove when #4689 is fixed
+	// TODO: Uno specific: Remove when #4689 is fixed
 
-		protected bool _fullyInitialized = false;
+	protected bool _fullyInitialized = false;
 
-		internal void Reinitialize()
+	internal void Reinitialize()
+	{
+		if (!_fullyInitialized)
 		{
-			if (!_fullyInitialized)
-			{
-				OnApplyTemplate();
-			}
-			UpdateVisualState(false);
+			OnApplyTemplate();
 		}
-#endif
+		UpdateVisualState(false);
 	}
+#endif
 }

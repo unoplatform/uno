@@ -1,4 +1,4 @@
-﻿#if XAMARIN_ANDROID
+﻿#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,20 +9,23 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;
 using Uno.Extensions;
-
+using Windows.Foundation.Metadata;
 using System.ComponentModel;
 using Uno.Foundation.Logging;
+using Windows.UI.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public class NativeApplication : Android.App.Application
 	{
 		private readonly Application _app;
 		private Intent _lastHandledIntent;
 
-		private bool _isRunning = false;
+		private bool _isRunning;
 
-		public delegate Windows.UI.Xaml.Application AppBuilder();
+		public delegate Microsoft.UI.Xaml.Application AppBuilder();
 
 		/// <summary>
 		/// Creates an android Application instance
@@ -31,12 +34,16 @@ namespace Windows.UI.Xaml
 		public NativeApplication(AppBuilder appBuilder, IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)
 			: base(javaReference, transfer)
 		{
-			// Delay create the Windows.UI.Xaml.Application in order to get the
+			// Register assemblies earlier than Application itself, otherwise
+			// ApiInformation may return APIs as not implemented incorrectly.
+			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
+			ApiInformation.RegisterAssembly(typeof(global::Windows.Storage.ApplicationData).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
+
+			// Delay create the Microsoft.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
 			_app = appBuilder();
-
-			ResourceHelper.ResourcesService = new ResourcesService(this);
 		}
 
 		public override void OnCreate()
@@ -62,6 +69,7 @@ namespace Windows.UI.Xaml
 				{
 					_app.OnLaunched(new LaunchActivatedEventArgs());
 				}
+
 				_isRunning = true;
 			}
 		}
@@ -114,14 +122,11 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// This method is used by UI Test frameworks to get 
+		/// This method is used by UI Test frameworks to get
 		/// the Xamarin compatible name for a control in Java.
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
-#if !NET6_0_OR_GREATER
-		[Android.Runtime.Preserve]
-#endif
 		[Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;

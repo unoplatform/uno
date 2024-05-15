@@ -1,14 +1,14 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using DirectUI;
 using Uno.Extensions;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewGeneratorYearViewHost
 	{
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spContainer = (CalendarViewItem)(pContainer);
 
-			date = (DateTime) pItem;
+			date = (DateTime)pItem;
 			GetCalendar().SetDateTime(date);
 			spContainer.DateBase = date;
 
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			//This code enables the focus visuals on the CalendarViewItems in the Year Pane in the correct position.
 			{
 				Thickness focusMargin = new Thickness(
-					- 2.0, -2.0, -2.0, -2.0
+					-2.0, -2.0, -2.0, -2.0
 				);
 				spContainer.FocusVisualMargin = focusMargin;
 

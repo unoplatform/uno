@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
-using static Uno.Foundation.WebAssemblyRuntime;
 
 namespace Uno.Devices.Midi.Internal
 {
 	/// <summary>
 	/// Handles WASM MIDI access permission request
 	/// </summary>
-	public static class WasmMidiAccess
+	public static partial class WasmMidiAccess
 	{
-		private const string JsType = "Uno.Devices.Midi.Internal.WasmMidiAccess";
-
-		private static bool _webMidiAccessible = false;
+		private static bool _webMidiAccessible;
 
 		public static async Task<bool> RequestAsync()
 		{
@@ -23,11 +21,18 @@ namespace Uno.Devices.Midi.Internal
 			}
 
 			var systemExclusiveRequested = WinRTFeatureConfiguration.Midi.RequestSystemExclusiveAccess;
-			var serializedRequest = systemExclusiveRequested.ToString().ToLowerInvariant();
-			var command = $"{JsType}.request({serializedRequest})";
-			var result = await InvokeAsync(command);
+
+			var result = await NativeMethods.RequestAsync(systemExclusiveRequested);
+
 			_webMidiAccessible = bool.Parse(result);
+
 			return _webMidiAccessible;
+		}
+
+		internal static partial class NativeMethods
+		{
+			[JSImport("globalThis.Uno.Devices.Midi.Internal.WasmMidiAccess.request")]
+			internal static partial Task<string> RequestAsync(bool exclusive);
 		}
 	}
 }

@@ -3,23 +3,35 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {
 	public static class FeatureConfigurationHelper
 	{
+#if !WINAPPSDK
+		private class MockProvider : FrameworkTemplatePoolDefaultPlatformProvider
+		{
+			public override bool CanUseMemoryManager => false;
+		}
+#endif
+
 		/// <summary>
 		/// Enable <see cref="FrameworkTemplate"/> pooling (Uno only) for the duration of a single test.
 		/// </summary>
 		public static IDisposable UseTemplatePooling()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return null;
 #else
-			var originallyEnabled = FrameworkTemplatePool.IsPoolingEnabled;
-			FrameworkTemplatePool.IsPoolingEnabled = true;
-			return Disposable.Create(() => FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled); 
+			var originallyEnabled = FrameworkTemplatePool.InternalIsPoolingEnabled;
+			FrameworkTemplatePool.InternalIsPoolingEnabled = true;
+			FrameworkTemplatePool.Instance.SetPlatformProvider(new MockProvider());
+			return Disposable.Create(() =>
+			{
+				FrameworkTemplatePool.InternalIsPoolingEnabled = originallyEnabled;
+				FrameworkTemplatePool.Instance.SetPlatformProvider(null);
+			});
 #endif
 		}
 
@@ -35,16 +47,16 @@ namespace Uno.UI.RuntimeTests.Helpers
 		}
 
 		/// <summary>
-		/// On Android, ensure that managed popups are used for the duration of the test. On other platforms this is a no-op.
+		/// On Android, ensure that native popups are used for the duration of the test. On other platforms this is a no-op.
 		/// </summary>
-		public static IDisposable UseManagedPopups()
+		public static IDisposable UseNativePopups()
 		{
 #if !__ANDROID__
 			return null;
 #else
-			Assert.IsTrue(FeatureConfiguration.Popup.UseNativePopup); // If/when the default changes in SamplesApp, supplementary tests should be modified to test the new non-default
-			FeatureConfiguration.Popup.UseNativePopup = false;
-			return Disposable.Create(() => FeatureConfiguration.Popup.UseNativePopup = true);
+			Assert.IsFalse(FeatureConfiguration.Popup.UseNativePopup);
+			FeatureConfiguration.Popup.UseNativePopup = true;
+			return Disposable.Create(() => FeatureConfiguration.Popup.UseNativePopup = false);
 #endif
 		}
 	}

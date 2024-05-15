@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Security.Authentication.Web;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 #if !NET6_0_OR_GREATER
@@ -33,7 +33,7 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 				// Create options for endpoint discovery
 				var options = new OidcClientOptions()
 				{
-					Authority = "https://demo.identityserver.io",
+					Authority = "https://demo.duendesoftware.com/",
 					ClientId = "interactive.confidential",
 					ClientSecret = "secret",
 					Scope = "openid profile email api offline_access",
@@ -64,7 +64,7 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 
 				resultTxt.Text = $"Initialization completed.\nStart={_loginState.StartUrl}\nCallback={_loginState.RedirectUri}\nLogout={_logoutUrl}";
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				resultTxt.Text = $"Error {ex}";
 
@@ -77,7 +77,11 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 		}
 #endif
 
-		private async void SignIn_Clicked(object sender, RoutedEventArgs e)
+		private
+#if !NET6_0_OR_GREATER
+			async
+#endif
+			void SignIn_Clicked(object sender, RoutedEventArgs e)
 		{
 #if !NET6_0_OR_GREATER
 			var startUri = new Uri(_loginState.StartUrl);
@@ -114,7 +118,11 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 #endif
 		}
 
-		private async void SignOut_Clicked(object sender, RoutedEventArgs e)
+		private
+#if !NET6_0_OR_GREATER
+			async
+#endif
+			void SignOut_Clicked(object sender, RoutedEventArgs e)
 		{
 #if !NET6_0_OR_GREATER
 			var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _logoutUrl);

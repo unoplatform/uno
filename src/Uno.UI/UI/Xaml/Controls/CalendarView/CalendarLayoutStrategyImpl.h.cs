@@ -1,11 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 
 	internal partial class CalendarLayoutStrategyImpl : LayoutStrategyBase
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			//    1. MonthPanel can set ElementStartAt to push all items to the right
 			//    2. MonthPanel can have up to one skipped day, where we should push all items after this date to the right
 			// both correction should be positive number.
-			private (int first, int second)[] m_indexCorrectionTable => uno_m_indexCorrectionTable ??= new(int, int)[2];
+			private (int first, int second)[] m_indexCorrectionTable => uno_m_indexCorrectionTable ??= new (int, int)[2];
 			private (int first, int second)[] uno_m_indexCorrectionTable;
 		};
 
@@ -37,8 +37,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Layout related methods
 
-		public void BeginMeasure() {}
-		public void EndMeasure() {}
+		public void BeginMeasure() { }
+		public void EndMeasure() { }
 
 		//// returns the size we should use to measure a container or header with
 		//// itemIndex - indicates an index of valid item or -1 for general, non-special items

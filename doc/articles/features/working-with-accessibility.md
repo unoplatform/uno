@@ -1,9 +1,13 @@
+---
+uid: Uno.Features.Accessibility
+---
+
 # Accessibility (a11y)
 
 Windows uses the UI Automation framework to provide accessibility information to screen readers.
 
 > Microsoft UI Automation is an accessibility framework for Windows. It provides programmatic access to most UI elements on the desktop. It enables assistive technology products, such as screen readers, to provide information about the UI to end users and to manipulate the UI by means other than standard input. UI Automation also allows automated test scripts to interact with the UI.\
-[UI Automation Overview](https://docs.microsoft.com/en-us/windows/desktop/WinAuto/uiauto-uiautomationoverview)
+[UI Automation Overview](https://learn.microsoft.com/windows/desktop/WinAuto/uiauto-uiautomationoverview)
 
 Uno.UI implements a subset of UWP's UI Automation APIs, to make your applications work with each platform's built-in screen reader or accessibility support:
 
@@ -11,7 +15,7 @@ Uno.UI implements a subset of UWP's UI Automation APIs, to make your application
 |----------|----------|-----------|-----------|------------------------------|
 | Narrator | TalkBack | VoiceOver | VoiceOver | OS or Web Browser Integrated |
 
-Read [this guide](https://docs.microsoft.com/en-us/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
+Read [Expose basic accessibility information](https://learn.microsoft.com/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
 
 - `AutomationProperties.AutomationId`
 - `AutomationProperties.Name`
@@ -31,7 +35,7 @@ Instead of trying to replicate UWP's behavior on iOS (which *might* be doable us
 Here's how to enable it:
 
 ```csharp
-// App's constructor (App.xaml.cs)
+// App's constructor (`App.cs` or `App.xaml.cs`)
 #if __IOS__ || __ANDROID__ || __MACOS__ || __WASM__
 FeatureConfiguration.AutomationPeer.UseSimpleAccessibility = true;
 #endif
@@ -46,8 +50,8 @@ You have the option to disable accessibility text scaling of iOS and Android dev
 Here's how to disable it
 
 ```csharp
-// App's constructor (App.xaml.cs)
-Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true;
+// App's constructor (`App.cs` or `App.xaml.cs`)
+Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor = true;
 ```
 
 ## AutomationId
@@ -63,13 +67,13 @@ Setting this property does the following:
 - On **macOS**, it sets the [`NSView.AccessibilityIdentifier`](https://developer.apple.com/documentation/appkit/nsaccessibility/1535023-accessibilityidentifier) property
 - On **WebAssembly**, it sets [`aria-label`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) and the `xamlautomationid` property on the HTML element. The [`role`](https://www.w3.org/WAI/PF/HTML/wiki/RoleAttribute) HTML Attribute is also set based on the XAML view type whose `AutomationProperties.AutomationId` was set.
 
-This property is generally used alongside [Uno.UITest](https://github.com/unoplatform/Uno.UITest) to create UI Tests, and is particularly useful to select items using databound identifiers.
+This property is generally used alongside [Uno.UITest](https://github.com/unoplatform/Uno.UITest) to create UI Tests, and is particularly useful to select items using data-bound identifiers.
 
 ## Windows.UI.ViewManagement.AccessibilitySettings
 
 Some external libraries or UI toolkits may depend on the `AccessibilitySettings` class to check for high contrast settings. As Uno Platform targets cannot check for this via accessible APIs, the properties only return predefined defaults, unless you override them manually via `WinRTFeatureConfiguration.Accessibility`:
 
-```
+```csharp
 var accessibilitySettings = new AccessibilitySettings();
 accessibilitySettings.HighContrast; // default - false
 accessibilitySettings.HighContrastScheme; // default - High Contrast Black
@@ -82,7 +86,7 @@ accessibilitySettings.HighContrast; // true
 accessibilitySettings.HighContrastScheme; // High Contrast White
 ```
 
-When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is changed, the `AccessibilitySettings.HighContrastChanged` event is raised.
+When the value of `WinRTFeatureConfiguration.Accessibility.HighContrast` is changed, the `AccessibilitySettings.HighContrastChanged` event is raised.
 
 ## Known issues
 
@@ -93,13 +97,13 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
 - A child with the same accessible name as its parent is accessibility focusable.
 - `Control` doesn't receive focus when accessibility focused.
 - `TabIndex` is not supported.
-- [iOS] Nested accessible elements are not accessibility focusable.
-- [Android] Both `ToggleSwitch` and its native `Switch` can be accessibility focused.
-- [Android] Both `TextBox` and its native `EditText` can be accessibility focused.
-- [Android] `Control` without a non-empty accessible name is not accessibility focusable.
-- [Android] The accessible name of the native back button can't be customized.
-- [Android] `TextBox` and `PasswordBox` don't hint "double tap to edit".
-- [Android] You can tap to focus an accessible child of an accessible element that has never been focused even if `UseSimpleAccessibility` is enabled.
+- On iOS, nested accessible elements are not accessibility focusable.
+- On Android, both `ToggleSwitch` and its native `Switch` can be accessibility focused.
+- On Android, both `TextBox` and its native `EditText` can be accessibility focused.
+- On Android, `Control` without a non-empty accessible name is not accessibility focusable.
+- On Android, the accessible name of the native back button can't be customized.
+- On Android, `TextBox` and `PasswordBox` don't hint at "double tap to edit".
+- On Android, you can tap to focus an accessible child of an accessible element that has never been focused even if `UseSimpleAccessibility` is enabled.
 - `AutomationPeer.GetLocalizedControlType()` is not localized.
 - `FlipViewItem` reads "double tap to activate" even if it's not interactive.
 - Navigating through accessible elements can slow down when the UI is complex.
@@ -125,7 +129,7 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
   - `LabeledBy`
   - `Name`
 
-- [WASM] Only the following elements support accessibility:
+- On Wasm, only the following elements support accessibility:
   - `Button`
   - `CheckBox`
   - `Image`
@@ -134,7 +138,7 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
   - `TextBox`
   - `Slider`
 
-- [WASM] `PasswordBox` is not currently supported due to external limitations.
+- On Wasm, `PasswordBox` is not currently supported due to external limitations.
 
 ## Tips
 

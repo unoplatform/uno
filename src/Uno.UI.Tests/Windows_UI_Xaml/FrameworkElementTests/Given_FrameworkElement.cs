@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
 	[TestClass]
-#if !NET461
+#if !IS_UNIT_TESTS
 	[RuntimeTests.RunsOnUIThread]
 #endif
 	public partial class Given_FrameworkElement
@@ -79,36 +79,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void When_MaxWidth_NaN()
 		{
-			var SUT = new ContentControl
+			Assert.ThrowsException<ArgumentException>(() => new ContentControl
 			{
 				MaxWidth = double.NaN,
 				MaxHeight = double.NaN,
 				Content = new Border { Width = 10, Height = 15 }
-			};
-
-			var grid = new Grid
-			{
-				Width = 32,
-				Height = 47
-			};
-
-			grid.Children.Add(SUT);
-
-			for(var i=0; i == 0 || (SUT.IsMeasureDirtyOrMeasureDirtyPath && i < 10); i++)
-			{
-				grid.Measure(new Size(1000, 1000));
-			}
-
-			grid.DesiredSize.Should().Be(new Size(32, 47), because: "Desired Size before Arrange");
-
-			grid.Arrange(new Rect(default(Point), grid.DesiredSize));
-
-			using (new AssertionScope())
-			{
-				grid.DesiredSize.Should().Be(new Size(32, 47), because: "Desired Size");
-				grid.ActualWidth.Should().Be(32d, "ActualWidth");
-				grid.ActualHeight.Should().Be(47d, "ActualHeight");
-			}
+			});
 		}
 
 		[TestMethod]
@@ -136,7 +112,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		{
 			var grid = new UserControl();
 
-			grid.SetValue(FrameworkElement.IsEnabledProperty, null);
+			grid.SetValue(Control.IsEnabledProperty, null);
 		}
 	}
 

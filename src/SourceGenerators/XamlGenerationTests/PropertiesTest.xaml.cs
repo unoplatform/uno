@@ -4,15 +4,15 @@ using System.Text;
 
 namespace XamlGenerationTests.Shared
 {
-    public partial class PropertiesTest
+	public partial class PropertiesTest
 	{
 		public PropertiesTest()
 		{
-#if XAMARIN_IOS
+#if __IOS__
 			iOSUILabel.ToString();
 #endif
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			AndroidTextView.ToString();
 #endif
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// EntranceThemeTransition : Based on WinRT EntranceThemeTransition
@@ -20,29 +20,29 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		#region FromHorizontalOffset Property
 
-		public float FromHorizontalOffset
+		public double FromHorizontalOffset
 		{
-			get { return (float)this.GetValue(FromHorizontalOffsetProperty); }
+			get { return (double)this.GetValue(FromHorizontalOffsetProperty); }
 			set { this.SetValue(FromHorizontalOffsetProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for FromHorizontalOffset.  This enables animation, styling, binding, etc...
-		public static DependencyProperty FromHorizontalOffsetProperty { get ; } =
-			DependencyProperty.Register("FromHorizontalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40f));
+		public static DependencyProperty FromHorizontalOffsetProperty { get; } =
+			DependencyProperty.Register("FromHorizontalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40.0));
 
 		#endregion
 
 		#region FromVerticalOffset Property
 
-		public float FromVerticalOffset
+		public double FromVerticalOffset
 		{
-			get { return (float)this.GetValue(FromVerticalOffsetProperty); }
+			get { return (double)this.GetValue(FromVerticalOffsetProperty); }
 			set { this.SetValue(FromVerticalOffsetProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for FromVerticalOffset.  This enables animation, styling, binding, etc...
-		public static DependencyProperty FromVerticalOffsetProperty { get ; } =
-			DependencyProperty.Register("FromVerticalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0f));
+		public static DependencyProperty FromVerticalOffsetProperty { get; } =
+			DependencyProperty.Register("FromVerticalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0.0));
 
 		#endregion
 
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		// Using a DependencyProperty as the backing store for IsStaggeringEnabled.  This enables animation, styling, binding, etc...
-		public static DependencyProperty IsStaggeringEnabledProperty { get ; } =
+		public static DependencyProperty IsStaggeringEnabledProperty { get; } =
 			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			storyBoard.Children.Add(animation);
 		}
 
-		internal override void AttachToStoryboardAnimation(Storyboard sb, IFrameworkElement element, TimeSpan beginTime, int xOffset,int yOffset)
+		internal override void AttachToStoryboardAnimation(Storyboard sb, IFrameworkElement element, TimeSpan beginTime, int xOffset, int yOffset)
 		{
 			if (!IsStaggeringEnabled)
 			{

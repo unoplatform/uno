@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	partial class FlowLayout
 	{
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get { return (Orientation)GetValue(OrientationProperty); }
 			set { SetValue(OrientationProperty, value); }
-		} 
+		}
 		#endregion
 	}
 }

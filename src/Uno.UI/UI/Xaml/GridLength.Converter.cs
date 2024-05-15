@@ -8,10 +8,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[TypeConverter(typeof(GridLength.Converter))]
-    public partial struct GridLength
+	public partial struct GridLength
 	{
 		public class Converter : TypeConverter
 		{
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 
 				if (value is ValueType)
 				{
-					return GridLengthHelper.FromPixels(Convert.ToDouble(value));
+					return GridLengthHelper.FromPixels(Convert.ToDouble(value, CultureInfo.InvariantCulture));
 				}
 
 				return base.ConvertFrom(context, culture, value);

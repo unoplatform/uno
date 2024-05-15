@@ -1,10 +1,12 @@
-namespace Windows.UI.Xaml.Documents
+﻿using Windows.UI.Text;
+
+namespace Microsoft.UI.Xaml.Documents
 {
 	public partial class Italic : Span
 	{
 		public Italic()
 		{
-			FontStyle = Windows.UI.Text.FontStyle.Italic;
+			FontStyle = FontStyle.Italic;
 		}
 	}
 }

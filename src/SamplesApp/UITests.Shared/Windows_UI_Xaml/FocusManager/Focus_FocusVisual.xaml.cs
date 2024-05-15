@@ -4,23 +4,23 @@ using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml.FocusTests
 {
 	[Sample("Focus", ViewModelType = typeof(Focus_FocusVisualViewModel))]
 	internal sealed partial class Focus_FocusVisual : Page
-    {
-        public Focus_FocusVisual()
-        {
-            InitializeComponent();
+	{
+		public Focus_FocusVisual()
+		{
+			InitializeComponent();
 			DataContextChanged += Focus_FocusVisual_DataContextChanged;
-        }
+		}
 
 		public Focus_FocusVisualViewModel ViewModel { get; private set; }
 
-		private void Focus_FocusVisual_DataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void Focus_FocusVisual_DataContextChanged(DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as Focus_FocusVisualViewModel;
 		}
@@ -28,11 +28,11 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 
 	internal class Focus_FocusVisualViewModel : ViewModelBase
 	{
-		public Focus_FocusVisualViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public Focus_FocusVisualViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
-		public FocusState[] FocusStates { get; } = Enum.GetValues(typeof(FocusState)).OfType<FocusState>().ToArray();
+		public FocusState[] FocusStates { get; } = Enum.GetValues<FocusState>();
 
 		public FocusState SelectedFocusState { get; set; } = FocusState.Unfocused;
 

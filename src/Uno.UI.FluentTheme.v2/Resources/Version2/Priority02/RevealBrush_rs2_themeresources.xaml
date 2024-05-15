@@ -2,8 +2,9 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Microsoft.UI.Xaml.Media"
+    xmlns:localMedia="using:Microsoft.UI.Xaml.Media"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     >
@@ -22,7 +23,7 @@
             <Thickness x:Key="ComboBoxItemRevealThemePadding">10,4,10,6</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeTouchPadding">10,10,10,12</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeGameControllerPadding">10,10,10,12</Thickness>
-            
+
             <!-- These values are copied from generic.xaml and adjusted by 5% -->
             <Color x:Key="SystemRevealAltHighColor">#F2000000</Color>
             <Color x:Key="SystemRevealAltLowColor">#30000000</Color>
@@ -49,195 +50,195 @@
             <Color x:Key="SystemRevealListMediumColor">#30FFFFFF</Color>
 
             <!-- Background Brushes -->
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlTransparentRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundAltHighRevealBackgroundBrush"
-                TargetTheme="Dark" 
-                Color="{StaticResource SystemAltHighColor}" 
+                not_mux:TargetTheme="Dark"
+                Color="{StaticResource SystemAltHighColor}"
                 FallbackColor="{StaticResource SystemAltHighColor}" />
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccentRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
-             <local:RevealBackgroundBrush
+             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark3}"
                 FallbackColor="{ThemeResource SystemAccentColorDark3}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent2RevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark2}"
                 FallbackColor="{ThemeResource SystemAccentColorDark2}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListLowRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark2}"
                 FallbackColor="{ThemeResource SystemAccentColorDark3}"/>
 
             <!-- Border Brushes -->
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundAccentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeBlackHighColor}"
                 FallbackColor="{StaticResource SystemChromeBlackHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackMediumRevealChromeBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeBlackMediumColor}"
                 FallbackColor="{StaticResource SystemChromeBlackMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeMediumColor}"
                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeMediumLowColor}"
                 FallbackColor="{StaticResource SystemChromeMediumLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeWhiteRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeWhiteColor}"
                 FallbackColor="{StaticResource SystemChromeWhiteColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealListLowBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlForegroundRevealTransparentBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAltTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAccentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
 
-            <!-- Resources for Windows.UI.Xaml.Controls.Button -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Button -->
             <StaticResource x:Key="ButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -246,7 +247,7 @@
             <StaticResource x:Key="ButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="ButtonRevealBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="ButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
             <StaticResource x:Key="RepeatButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="RepeatButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="RepeatButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -255,7 +256,7 @@
             <StaticResource x:Key="RepeatButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="RepeatButtonRevealBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="RepeatButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.ToggleButton -->
             <StaticResource x:Key="ToggleButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ToggleButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ToggleButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -280,7 +281,7 @@
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminatePointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminatePressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminateDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
-            <!-- Resources for ellipsis button in Windows.UI.Xaml.Controls.CommandBar -->
+            <!-- Resources for ellipsis button in Microsoft.UI.Xaml.Controls.CommandBar -->
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
@@ -289,7 +290,7 @@
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushPressed" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.AppBarButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.AppBarButton -->
             <StaticResource x:Key="AppBarButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -298,7 +299,7 @@
             <StaticResource x:Key="AppBarButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
             <StaticResource x:Key="AppBarButtonRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
             <StaticResource x:Key="AppBarButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.AppBarToggleButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.AppBarToggleButton -->
             <StaticResource x:Key="AppBarToggleButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBackgroundHighLightOverlay" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
@@ -314,7 +315,7 @@
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedPointerOver" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.ListViewItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.ListViewItem -->
             <StaticResource x:Key="ListViewItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="ListViewItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="ListViewItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -325,7 +326,7 @@
             <StaticResource x:Key="ListViewItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
             <StaticResource x:Key="ListViewItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
             <StaticResource x:Key="ListViewItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.GridViewItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.GridViewItem -->
             <StaticResource x:Key="GridViewItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -334,7 +335,7 @@
             <StaticResource x:Key="GridViewItemRevealBackgroundSelectedPressed" ResourceKey="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealPlaceholderBackground" ResourceKey="ControlStrongFillColorDisabledBrush" />
             <StaticResource x:Key="GridViewItemRevealBorderBrush" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.ComboBoxItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.ComboBoxItem -->
             <StaticResource x:Key="ComboBoxItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="ComboBoxItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
             <StaticResource x:Key="ComboBoxItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
@@ -371,7 +372,7 @@
             <Thickness x:Key="ComboBoxItemRevealThemePadding">10,4,10,6</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeTouchPadding">10,10,10,12</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeGameControllerPadding">10,10,10,12</Thickness>
-            
+
             <!-- These values are copied from generic.xaml and adjusted by 10% -->
             <Color x:Key="SystemRevealAltHighColor">#E6FFFFFF</Color>
             <Color x:Key="SystemRevealAltLowColor">#2EFFFFFF</Color>
@@ -398,195 +399,195 @@
             <Color x:Key="SystemRevealListMediumColor">#2E000000</Color>
 
             <!-- Background Brushes -->
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlTransparentRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundAltHighRevealBackgroundBrush"
-                TargetTheme="Light" 
-                Color="{StaticResource SystemAltHighColor}" 
+                not_mux:TargetTheme="Light"
+                Color="{StaticResource SystemAltHighColor}"
                 FallbackColor="{StaticResource SystemAltHighColor}" />
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccentRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight3}"
                 FallbackColor="{ThemeResource SystemAccentColorLight3}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent2RevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight2}"
                 FallbackColor="{ThemeResource SystemAccentColorLight2}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListLowRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
-            <local:RevealBackgroundBrush
+            <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight2}"
                 FallbackColor="{ThemeResource SystemAccentColorLight3}"/>
 
             <!-- Border Brushes -->
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundAccentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeBlackHighColor}"
                 FallbackColor="{StaticResource SystemChromeBlackHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackMediumRevealChromeBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeBlackMediumColor}"
                 FallbackColor="{StaticResource SystemChromeBlackMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeMediumColor}"
                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeMediumLowColor}"
                 FallbackColor="{StaticResource SystemChromeMediumLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeWhiteRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeWhiteColor}"
                 FallbackColor="{StaticResource SystemChromeWhiteColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealListLowBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlForegroundRevealTransparentBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAltTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAccentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
-            <local:RevealBorderBrush
+            <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
 
-            <!-- Resources for Windows.UI.Xaml.Controls.Button -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Button -->
             <StaticResource x:Key="ButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -595,7 +596,7 @@
             <StaticResource x:Key="ButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="ButtonRevealBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="ButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
             <StaticResource x:Key="RepeatButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="RepeatButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="RepeatButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -604,7 +605,7 @@
             <StaticResource x:Key="RepeatButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="RepeatButtonRevealBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="RepeatButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.ToggleButton -->
             <StaticResource x:Key="ToggleButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ToggleButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ToggleButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -629,7 +630,7 @@
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminatePointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminatePressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminateDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
-            <!-- Resources for ellipsis button in Windows.UI.Xaml.Controls.CommandBar -->
+            <!-- Resources for ellipsis button in Microsoft.UI.Xaml.Controls.CommandBar -->
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
@@ -638,7 +639,7 @@
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushPressed" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.AppBarButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.AppBarButton -->
             <StaticResource x:Key="AppBarButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -647,7 +648,7 @@
             <StaticResource x:Key="AppBarButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
             <StaticResource x:Key="AppBarButtonRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
             <StaticResource x:Key="AppBarButtonRevealBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.AppBarToggleButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.AppBarToggleButton -->
             <StaticResource x:Key="AppBarToggleButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBackgroundHighLightOverlay" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
@@ -663,7 +664,7 @@
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedPointerOver" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.ListViewItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.ListViewItem -->
             <StaticResource x:Key="ListViewItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="ListViewItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="ListViewItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -674,7 +675,7 @@
             <StaticResource x:Key="ListViewItemRevealBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
             <StaticResource x:Key="ListViewItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
             <StaticResource x:Key="ListViewItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.GridViewItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.GridViewItem -->
             <StaticResource x:Key="GridViewItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -683,7 +684,7 @@
             <StaticResource x:Key="GridViewItemRevealBackgroundSelectedPressed" ResourceKey="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealPlaceholderBackground" ResourceKey="ControlStrongFillColorDisabledBrush" />
             <StaticResource x:Key="GridViewItemRevealBorderBrush" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.ComboBoxItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.ComboBoxItem -->
             <StaticResource x:Key="ComboBoxItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="ComboBoxItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
             <StaticResource x:Key="ComboBoxItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
@@ -720,7 +721,7 @@
             <Thickness x:Key="ComboBoxItemRevealThemePadding">10,4,10,6</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeTouchPadding">10,10,10,12</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeGameControllerPadding">10,10,10,12</Thickness>
-            
+
             <!-- These values are copied from generic.xaml -->
             <Color x:Key="SystemRevealAltHighColor">#FF000000</Color>
             <Color x:Key="SystemRevealAltLowColor">#33000000</Color>
@@ -787,7 +788,7 @@
             <SolidColorBrush x:Key="SystemControlHighlightBaseMediumHighRevealBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
-            <!-- Resources for Windows.UI.Xaml.Controls.Button -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Button -->
             <StaticResource x:Key="ButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -796,7 +797,7 @@
             <StaticResource x:Key="ButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="ButtonRevealBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="ButtonRevealBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
             <StaticResource x:Key="RepeatButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="RepeatButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="RepeatButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -805,7 +806,7 @@
             <StaticResource x:Key="RepeatButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="RepeatButtonRevealBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="RepeatButtonRevealBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.Primitives.ToggleButton -->
             <StaticResource x:Key="ToggleButtonRevealBackground" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ToggleButtonRevealBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowRevealBackgroundBrush" />
             <StaticResource x:Key="ToggleButtonRevealBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" />
@@ -830,7 +831,7 @@
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminatePointerOver" ResourceKey="SystemControlHighlightBaseMediumLowRevealBorderBrush" />
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminatePressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="ToggleButtonRevealBorderBrushIndeterminateDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-            <!-- Resources for ellipsis button in Windows.UI.Xaml.Controls.CommandBar -->
+            <!-- Resources for ellipsis button in Microsoft.UI.Xaml.Controls.CommandBar -->
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealBackgroundBrush" />
@@ -839,7 +840,7 @@
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushPressed" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.AppBarButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.AppBarButton -->
             <StaticResource x:Key="AppBarButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -848,7 +849,7 @@
             <StaticResource x:Key="AppBarButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
             <StaticResource x:Key="AppBarButtonRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
             <StaticResource x:Key="AppBarButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.AppBarToggleButton -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.AppBarToggleButton -->
             <StaticResource x:Key="AppBarToggleButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBackgroundHighLightOverlay" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
@@ -864,7 +865,7 @@
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedPointerOver" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedPressed" ResourceKey="SystemControlHighlightTransparentRevealBorderBrush" />
             <StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedDisabled" ResourceKey="SystemControlTransparentBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.ListViewItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.ListViewItem -->
             <StaticResource x:Key="ListViewItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="ListViewItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="ListViewItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -875,7 +876,7 @@
             <StaticResource x:Key="ListViewItemRevealBorderBrush" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ListViewItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
             <StaticResource x:Key="ListViewItemRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.GridViewItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.GridViewItem -->
             <StaticResource x:Key="GridViewItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
@@ -884,7 +885,7 @@
             <StaticResource x:Key="GridViewItemRevealBackgroundSelectedPressed" ResourceKey="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" />
             <StaticResource x:Key="GridViewItemRevealPlaceholderBackground" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
             <StaticResource x:Key="GridViewItemRevealBorderBrush" ResourceKey="SystemControlTransparentRevealBorderBrush" />
-            <!-- Resources for Windows.UI.Xaml.Controls.ComboBoxItem -->
+            <!-- Resources for Microsoft.UI.Xaml.Controls.ComboBoxItem -->
             <StaticResource x:Key="ComboBoxItemRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
             <StaticResource x:Key="ComboBoxItemRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
             <StaticResource x:Key="ComboBoxItemRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
@@ -936,7 +937,7 @@
                                 </VisualState>
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}"/>
@@ -947,7 +948,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPressed}"/>
@@ -1006,7 +1007,7 @@
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource RepeatButtonRevealBackgroundPointerOver}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource RepeatButtonRevealBorderBrushPointerOver}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource RepeatButtonForegroundPointerOver}"/>
@@ -1014,7 +1015,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource RepeatButtonRevealBackgroundPressed}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource RepeatButtonRevealBorderBrushPressed}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource RepeatButtonForegroundPressed}"/>
@@ -1075,7 +1076,7 @@
                                 </VisualState>
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundPointerOver}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPointerOver}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundPointerOver}"/>
@@ -1086,7 +1087,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundPressed}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPressed}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundPressed}"/>
@@ -1114,7 +1115,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedPointerOver}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedPointerOver}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundCheckedPointerOver}"/>
@@ -1125,7 +1126,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPressed">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedPressed}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedPressed}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundCheckedPressed}"/>
@@ -1153,7 +1154,7 @@
                                 </VisualState>
                                 <VisualState x:Name="IndeterminatePointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminatePointerOver}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminatePointerOver}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundIndeterminatePointerOver}"/>
@@ -1164,7 +1165,7 @@
                                 </VisualState>
                                 <VisualState x:Name="IndeterminatePressed">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminatePressed}"/>
                                         <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminatePressed}"/>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ToggleButtonForegroundIndeterminatePressed}"/>
@@ -1325,7 +1326,7 @@
                                 </VisualState>
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="Root.Background" Value="{ThemeResource AppBarButtonRevealBackgroundPointerOver}"/>
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarButtonRevealBorderBrushPointerOver}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarButtonForegroundPointerOver}"/>
@@ -1338,7 +1339,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="Root.Background" Value="{ThemeResource AppBarButtonRevealBackgroundPressed}"/>
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarButtonRevealBorderBrushPressed}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarButtonForegroundPressed}"/>
@@ -1572,7 +1573,7 @@
                                 </VisualState>
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="AccentOverlayBackground.Fill" Value="{ThemeResource AppBarToggleButtonRevealBackgroundHighLightOverlayPointerOver}"/>
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushPointerOver}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundPointerOver}"/>
@@ -1583,7 +1584,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="AccentOverlayBackground.Fill" Value="{ThemeResource AppBarToggleButtonRevealBackgroundHighLightOverlayPressed}"/>
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushPressed}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundPressed}"/>
@@ -1614,7 +1615,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="ContentRoot.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushCheckedPointerOver}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPointerOver}" />
                                         <Setter Target="TextLabel.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPointerOver}" />
@@ -1628,7 +1629,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPressed">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushCheckedPressed}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPressed}"/>
                                         <Setter Target="TextLabel.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPressed}"/>
@@ -1659,7 +1660,7 @@
                                 </VisualState>
                                 <VisualState x:Name="OverflowPointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="AccentOverlayBackground.Fill" Value="{ThemeResource AppBarToggleButtonRevealBackgroundHighLightOverlayPointerOver}"/>
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushPointerOver}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundPointerOver}"/>
@@ -1673,7 +1674,7 @@
                                 </VisualState>
                                 <VisualState x:Name="OverflowPressed">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="AccentOverlayBackground.Fill" Value="{ThemeResource AppBarToggleButtonRevealBackgroundHighLightOverlayPressed}"/>
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushPressed}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundPressed}"/>
@@ -1700,7 +1701,7 @@
                                 </VisualState>
                                 <VisualState x:Name="OverflowCheckedPointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushCheckedPointerOver}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPointerOver}"/>
                                         <Setter Target="TextLabel.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPointerOver}"/>
@@ -1717,7 +1718,7 @@
                                 </VisualState>
                                 <VisualState x:Name="OverflowCheckedPressed">
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="Pressed" />
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarToggleButtonRevealBorderBrushCheckedPressed}"/>
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPressed}"/>
                                         <Setter Target="TextLabel.Foreground" Value="{ThemeResource AppBarToggleButtonForegroundCheckedPressed}"/>
@@ -1873,7 +1874,7 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
@@ -1890,7 +1891,7 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                     <VisualState.Setters>
-                                        <Setter Target="Root.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="Root.(localMedia:RevealBrush.State)" Value="Pressed" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -1930,7 +1931,7 @@
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <Setter Property="Foreground" Value="{ThemeResource ListViewItemForeground}" />
-        <Setter Property="TabNavigation" Value="Local" />
+        <Setter Property="TabNavigation" Value="localMedia" />
         <Setter Property="IsHoldingEnabled" Value="True" />
         <Setter Property="Padding" Value="11,-1,11,-1" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -1983,7 +1984,7 @@
         <Setter Property="Background" Value="{ThemeResource GridViewItemRevealBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource GridViewItemRevealBorderBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource GridViewItemRevealBorderThemeThickness}" />
-        <Setter Property="TabNavigation" Value="Local" />
+        <Setter Property="TabNavigation" Value="localMedia" />
         <Setter Property="IsHoldingEnabled" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -2023,7 +2024,7 @@
                                         <Setter Target="ContentBorder.FocusVisualSecondaryBrush" Value="{ThemeResource SubtleFillColorSecondaryBrush}"/>
                                         <Setter Target="ContentBorder.FocusVisualSecondaryThickness" Value="2"/>
                                         <Setter Target="ContentBorder.Background" Value="{ThemeResource GridViewItemRevealBackgroundPointerOver}"/>
-                                        <Setter Target="ContentBorder.(local:RevealBrush.State)" Value="PointerOver"/>
+                                        <Setter Target="ContentBorder.(localMedia:RevealBrush.State)" Value="PointerOver"/>
                                     </VisualState.Setters>
 
                                     <Storyboard>
@@ -2039,7 +2040,7 @@
                                         <Setter Target="ContentBorder.FocusVisualSecondaryBrush" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
                                         <Setter Target="ContentBorder.FocusVisualSecondaryThickness" Value="2"/>
                                         <Setter Target="ContentBorder.Background" Value="{ThemeResource GridViewItemRevealBackgroundPressed}"/>
-                                        <Setter Target="ContentBorder.(local:RevealBrush.State)" Value="Pressed"/>
+                                        <Setter Target="ContentBorder.(localMedia:RevealBrush.State)" Value="Pressed"/>
                                     </VisualState.Setters>
 
                                     <Storyboard>
@@ -2074,7 +2075,7 @@
                                         <Setter Target="ContentBorder.FocusVisualSecondaryThickness" Value="2"/>
                                         <Setter Target="MultiSelectSquare.Background" Value="{ThemeResource AccentFillColorDefaultBrush}"/>
                                         <Setter Target="ContentBorder.Background" Value="{ThemeResource GridViewItemRevealBackgroundSelectedPointerOver}"/>
-                                        <Setter Target="ContentBorder.(local:RevealBrush.State)" Value="PointerOver"/>
+                                        <Setter Target="ContentBorder.(localMedia:RevealBrush.State)" Value="PointerOver"/>
                                     </VisualState.Setters>
 
                                     <Storyboard>
@@ -2092,7 +2093,7 @@
                                         <Setter Target="ContentBorder.FocusVisualSecondaryThickness" Value="2"/>
                                         <Setter Target="MultiSelectSquare.Background" Value="{ThemeResource AccentFillColorDefaultBrush}"/>
                                         <Setter Target="ContentBorder.Background" Value="{ThemeResource GridViewItemRevealBackgroundSelectedPressed}"/>
-                                        <Setter Target="ContentBorder.(local:RevealBrush.State)" Value="Pressed"/>
+                                        <Setter Target="ContentBorder.(localMedia:RevealBrush.State)" Value="Pressed"/>
                                     </VisualState.Setters>
 
                                     <Storyboard>
@@ -2213,26 +2214,26 @@
 
                                 <VisualState x:Name="Reordering">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"  
-                                            Storyboard.TargetProperty="Opacity"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderThemeOpacity}" />
                                     </Storyboard>
                                 </VisualState>
 
                                 <VisualState x:Name="ReorderingTarget">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"  
-                                            Storyboard.TargetProperty="Opacity"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderTargetThemeOpacity}" />
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"  
-                                            Storyboard.TargetProperty="ScaleX"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
+                                            Storyboard.TargetProperty="ScaleX"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"  
-                                            Storyboard.TargetProperty="ScaleY"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
+                                            Storyboard.TargetProperty="ScaleY"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
                                     </Storyboard>
                                 </VisualState>
@@ -2246,9 +2247,9 @@
                                     </VisualState.Setters>
 
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"  
-                                            Storyboard.TargetProperty="Opacity"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemDragThemeOpacity}" />
                                         <FadeInThemeAnimation TargetName="MultiArrangeOverlayText" />
                                         <FadeInThemeAnimation TargetName="MultiArrangeOverlayTextBorder" />
@@ -2277,59 +2278,59 @@
                             <ScaleTransform x:Name="ContentBorderScale" />
                         </Grid.RenderTransform>
 
-                        <ContentPresenter x:Name="ContentPresenter"  
-                            ContentTransitions="{TemplateBinding ContentTransitions}"  
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"  
+                        <ContentPresenter x:Name="ContentPresenter"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             Margin="{TemplateBinding Padding}" />
-                        <!-- The 'Xg' text simulates the amount of space one line of text will occupy.  
-                             In the DataPlaceholder state, the Content is not loaded yet so we  
+                        <!-- The 'Xg' text simulates the amount of space one line of text will occupy.
+                             In the DataPlaceholder state, the Content is not loaded yet so we
                              approximate the size of the item using placeholder text. -->
-                        <TextBlock x:Name="PlaceholderTextBlock"  
-                            Visibility="Collapsed"  
-                            Text="Xg"  
-                            Foreground="{x:Null}"  
-                            Margin="{TemplateBinding Padding}"  
-                            IsHitTestVisible="False"  
+                        <TextBlock x:Name="PlaceholderTextBlock"
+                            Visibility="Collapsed"
+                            Text="Xg"
+                            Foreground="{x:Null}"
+                            Margin="{TemplateBinding Padding}"
+                            IsHitTestVisible="False"
                             AutomationProperties.AccessibilityView="Raw" />
                         <Rectangle x:Name="PlaceholderRect" Visibility="Collapsed" Fill="{ThemeResource GridViewItemRevealPlaceholderBackground}" />
-                        <Rectangle x:Name="BorderRectangle"  
-                            IsHitTestVisible="False"  
-                            Stroke="{ThemeResource SubtleFillColorTertiaryBrush}"  
-                            StrokeThickness="2"  
+                        <Rectangle x:Name="BorderRectangle"
+                            IsHitTestVisible="False"
+                            Stroke="{ThemeResource SubtleFillColorTertiaryBrush}"
+                            StrokeThickness="2"
                             Visibility="Collapsed"/>
-                        <Border x:Name="MultiSelectSquare"  
-                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"  
-                            Width="20"  
-                            Height="20"  
-                            Margin="0,2,2,0"  
-                            VerticalAlignment="Top"  
-                            HorizontalAlignment="Right"  
+                        <Border x:Name="MultiSelectSquare"
+                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                            Width="20"
+                            Height="20"
+                            Margin="0,2,2,0"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
                             Visibility="Collapsed">
-                            <FontIcon x:Name="MultiSelectCheck"  
-                                FontFamily="{ThemeResource SymbolThemeFontFamily}"  
-                                Glyph="&#xE73E;"  
-                                FontSize="16"  
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"  
+                            <FontIcon x:Name="MultiSelectCheck"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                Glyph="&#xE73E;"
+                                FontSize="16"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Visibility="Collapsed" />
                         </Border>
-                        <Border x:Name="MultiArrangeOverlayTextBorder"  
-                            Visibility="Collapsed"  
-                            IsHitTestVisible="False"  
-                            MinWidth="20"  
-                            Height="20"  
-                            VerticalAlignment="Center"  
-                            HorizontalAlignment="Center"  
-                            Background="{ThemeResource AccentFillColorDefaultBrush}"  
-                            BorderThickness="2"  
+                        <Border x:Name="MultiArrangeOverlayTextBorder"
+                            Visibility="Collapsed"
+                            IsHitTestVisible="False"
+                            MinWidth="20"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Background="{ThemeResource AccentFillColorDefaultBrush}"
+                            BorderThickness="2"
                             BorderBrush="{ThemeResource TextOnAccentFillColorPrimaryBrush}">
-                            <TextBlock x:Name="MultiArrangeOverlayText"  
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}"  
-                                Style="{ThemeResource CaptionTextBlockStyle}"  
-                                IsHitTestVisible="False"  
-                                Visibility="Collapsed"  
-                                VerticalAlignment="Center"  
-                                HorizontalAlignment="Center"  
+                            <TextBlock x:Name="MultiArrangeOverlayText"
+                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                IsHitTestVisible="False"
+                                Visibility="Collapsed"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" />
                         </Border>
                     </Grid>
@@ -2343,7 +2344,7 @@
         <Setter Property="Background" Value="{ThemeResource ComboBoxItemRevealBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource ComboBoxItemRevealBorderBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource ComboBoxItemRevealBorderThemeThickness}" />
-        <Setter Property="TabNavigation" Value="Local" />
+        <Setter Property="TabNavigation" Value="localMedia" />
         <Setter Property="Padding" Value="{ThemeResource ComboBoxItemRevealThemePadding}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="UseSystemFocusVisuals" Value="True" />
@@ -2364,7 +2365,7 @@
                                 </VisualState>
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.(local:RevealBrush.State)" Value="PointerOver"/>
+                                        <Setter Target="LayoutRoot.(localMedia:RevealBrush.State)" Value="PointerOver"/>
                                         <Setter Target="LayoutRoot.Background" Value="{ThemeResource ComboBoxItemRevealBackgroundPointerOver}" />
                                         <Setter Target="LayoutRoot.BorderBrush" Value="{ThemeResource ComboBoxItemRevealBorderBrushPointerOver}" />
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ComboBoxItemForegroundPointerOver}" />
@@ -2385,7 +2386,7 @@
                                         <Setter Target="LayoutRoot.Background" Value="{ThemeResource ComboBoxItemRevealBackgroundPressed}" />
                                         <Setter Target="LayoutRoot.BorderBrush" Value="{ThemeResource ComboBoxItemRevealBorderBrushPressed}" />
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ComboBoxItemForegroundPressed}" />
-                                        <Setter Target="LayoutRoot.(local:RevealBrush.State)" Value="Pressed"/>
+                                        <Setter Target="LayoutRoot.(localMedia:RevealBrush.State)" Value="Pressed"/>
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <PointerDownThemeAnimation Storyboard.TargetName="LayoutRoot" />
@@ -2420,7 +2421,7 @@
                                         <Setter Target="LayoutRoot.Background" Value="{ThemeResource ComboBoxItemRevealBackgroundSelectedPointerOver}" />
                                         <Setter Target="LayoutRoot.BorderBrush" Value="{ThemeResource ComboBoxItemRevealBorderBrushSelectedPointerOver}" />
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ComboBoxItemForegroundSelectedPointerOver}" />
-                                        <Setter Target="LayoutRoot.(local:RevealBrush.State)" Value="PointerOver"/>
+                                        <Setter Target="LayoutRoot.(localMedia:RevealBrush.State)" Value="PointerOver"/>
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <PointerUpThemeAnimation Storyboard.TargetName="LayoutRoot" />
@@ -2431,7 +2432,7 @@
                                         <Setter Target="LayoutRoot.Background" Value="{ThemeResource ComboBoxItemRevealBackgroundSelectedPressed}" />
                                         <Setter Target="LayoutRoot.BorderBrush" Value="{ThemeResource ComboBoxItemRevealBorderBrushSelectedPressed}" />
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ComboBoxItemForegroundSelectedPressed}" />
-                                        <Setter Target="LayoutRoot.(local:RevealBrush.State)" Value="Pressed"/>
+                                        <Setter Target="LayoutRoot.(localMedia:RevealBrush.State)" Value="Pressed"/>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
@@ -2638,7 +2639,7 @@
 
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="PointerOver" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
@@ -2656,7 +2657,7 @@
 
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
-                                        <Setter Target="RootGrid.(local:RevealBrush.State)" Value="Pressed" />
+                                        <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="Pressed" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
@@ -2782,7 +2783,7 @@
 
                                                         <VisualState x:Name="PointerOver">
                                                             <VisualState.Setters>
-                                                                <Setter Target="RootGrid.(local:RevealBrush.State)" Value="PointerOver" />
+                                                                <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="PointerOver" />
                                                                 <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}"/>
                                                                 <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}"/>
                                                                 <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SplitButtonForegroundPointerOver}"/>
@@ -2794,7 +2795,7 @@
 
                                                         <VisualState x:Name="Pressed">
                                                             <VisualState.Setters>
-                                                                <Setter Target="RootGrid.(local:RevealBrush.State)" Value="Pressed" />
+                                                                <Setter Target="RootGrid.(localMedia:RevealBrush.State)" Value="Pressed" />
                                                                 <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}"/>
                                                                 <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}"/>
                                                                 <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SplitButtonForegroundPressed}"/>

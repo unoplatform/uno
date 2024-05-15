@@ -1,15 +1,15 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Foundation;
+
+using NativeMethods = __Windows.UI.ViewManagement.ApplicationViewTitleBar.NativeMethods;
 
 namespace Windows.UI.ViewManagement
 {
 	public partial class ApplicationViewTitleBar
 	{
-		private const string JsClassName = "Windows.UI.ViewManagement.ApplicationViewTitleBar";
-		private Color? _backgroundColor = null;
+		private Color? _backgroundColor;
 
 		public Color? BackgroundColor
 		{
@@ -26,14 +26,7 @@ namespace Windows.UI.ViewManagement
 
 		private void UpdateBackgroundColor()
 		{
-			string colorString = "null";
-			if (_backgroundColor != null)
-			{
-				colorString = $"\"{_backgroundColor.Value.ToHexString()}\"";
-			}
-			var command = $"{JsClassName}.setBackgroundColor({colorString})";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.SetBackgroundColor(_backgroundColor?.ToHexString());
 		}
 	}
 }
-#endif

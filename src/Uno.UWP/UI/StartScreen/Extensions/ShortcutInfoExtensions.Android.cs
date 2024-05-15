@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using Android.Content.PM;
 using Windows.UI.StartScreen;
 
@@ -39,4 +38,3 @@ namespace Uno.UI.StartScreen.Extensions
 		}
 	}
 }
-#endif

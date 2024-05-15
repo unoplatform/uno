@@ -1,5 +1,3 @@
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,7 +34,7 @@ namespace Windows.Storage
 		internal ImplementationBase Implementation { get; }
 
 #if !__WASM__
-		private static async Task TryInitializeStorage() { }
+		private static Task TryInitializeStorage() => Task.CompletedTask;
 #endif
 
 		public bool IsOfType(StorageItemTypes type) =>
@@ -58,14 +56,14 @@ namespace Windows.Storage
 			}
 		);
 
-		public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName) =>
-			CreateFolderAsync(folderName, CreationCollisionOption.FailIfExists);
+		public IAsyncOperation<StorageFolder> CreateFolderAsync(string desiredName) =>
+			CreateFolderAsync(desiredName, CreationCollisionOption.FailIfExists);
 
-		public IAsyncOperation<StorageFolder> CreateFolderAsync(string folderName, CreationCollisionOption option) =>
-			AsyncOperation.FromTask(token => Implementation.CreateFolderAsync(folderName, option, token));
+		public IAsyncOperation<StorageFolder> CreateFolderAsync(string desiredName, CreationCollisionOption options) =>
+			AsyncOperation.FromTask(token => Implementation.CreateFolderAsync(desiredName, options, token));
 
-		public IAsyncOperation<StorageFile> GetFileAsync(string path) =>
-			AsyncOperation.FromTask(ct => Implementation.GetFileAsync(path, ct));
+		public IAsyncOperation<StorageFile> GetFileAsync(string name) =>
+			AsyncOperation.FromTask(ct => Implementation.GetFileAsync(name, ct));
 
 		public IAsyncOperation<IStorageItem> GetItemAsync(string name) =>
 			AsyncOperation.FromTask(ct => Implementation.GetItemAsync(name, ct));
@@ -73,8 +71,8 @@ namespace Windows.Storage
 		public IAsyncOperation<StorageFolder> GetFolderAsync(string name) =>
 			AsyncOperation.FromTask(ct => Implementation.GetFolderAsync(name, ct));
 
-		public IAsyncOperation<IStorageItem> TryGetItemAsync(string path) =>
-			AsyncOperation.FromTask(ct => Implementation.TryGetItemAsync(path, ct));
+		public IAsyncOperation<IStorageItem> TryGetItemAsync(string name) =>
+			AsyncOperation.FromTask(ct => Implementation.TryGetItemAsync(name, ct));
 
 		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName) =>
 			CreateFileAsync(desiredName, CreationCollisionOption.FailIfExists);

@@ -13,7 +13,7 @@ namespace Windows.Storage.Streams
 		private readonly static ArrayPool<byte> _pool = ArrayPool<byte>.Create();
 		private readonly Buffer _buffer;
 
-		private int _bufferPosition = 0;
+		private int _bufferPosition;
 
 		private DataReader(IBuffer buffer)
 		{
@@ -90,7 +90,7 @@ namespace Windows.Storage.Streams
 			long ticks = ReadInt64();
 			var date = new DateTimeOffset(1601, 1, 1, 0, 0, 0, TimeSpan.Zero);
 			date = date.AddTicks(ticks);
-			
+
 			return date.ToLocalTime();
 		}
 

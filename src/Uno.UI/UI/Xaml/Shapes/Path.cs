@@ -1,20 +1,11 @@
-﻿#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
-#define LEGACY_SHAPE_MEASURE
-#endif
+﻿#nullable enable
 
-#nullable enable
-using Windows.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Path
-#if LEGACY_SHAPE_MEASURE
-		: ArbitraryShapeBase
-#endif
 	{
 		#region Data
 
@@ -24,35 +15,22 @@ namespace Windows.UI.Xaml.Shapes
 			set => this.SetValue(DataProperty, value);
 		}
 
-		public static DependencyProperty DataProperty { get ; } =
+		public static DependencyProperty DataProperty { get; } =
 			DependencyProperty.Register(
 				"Data",
-				typeof(Geometry), 
+				typeof(Geometry),
 				typeof(Path),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					propertyChangedCallback: (s, e) => ((Path)s).OnDataChanged()
+					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange
 				)
 			);
 
-		partial void OnDataChanged();
-
 		#endregion
 
-#if LEGACY_SHAPE_MEASURE
-		protected internal override IEnumerable<object?> GetShapeParameters()
-		{
-			if (Data is { } data)
-			{
-				yield return data;
-			}
-
-			foreach (var p in base.GetShapeParameters())
-			{
-				yield return p;
-			}
-		}
+#if __NETSTD_REFERENCE__
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
 #endif
 	}
 }

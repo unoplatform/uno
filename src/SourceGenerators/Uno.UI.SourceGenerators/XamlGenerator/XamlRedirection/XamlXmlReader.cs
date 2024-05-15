@@ -7,20 +7,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlXmlReader : IDisposable
 	{
-		private XmlReader document;
-		private XamlSchemaContext context;
-		private XamlXmlReaderSettings settings;
-
 		private __uno::Uno.Xaml.XamlXmlReader _unoReader;
 
-		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings)
+		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings, __uno::Uno.Xaml.IsIncluded isIncluded)
 		{
-			this.document = document;
-			this.context = context;
-			this.settings = settings;
-
-			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner);
+			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner, isIncluded);
 		}
+
+		public bool DisableCaching => _unoReader.DisableCaching;
 
 		public XamlNodeType NodeType => Convert(_unoReader.NodeType);
 
@@ -47,11 +41,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 
 		public XamlMember Member => XamlMember.FromMember(_unoReader.Member);
 
-		public NamespaceDeclaration Namespace 
+		public NamespaceDeclaration Namespace
 			=> new NamespaceDeclaration(_unoReader.Namespace);
 
 		public void Dispose() => ((IDisposable)_unoReader).Dispose();
 
 		internal bool Read() => _unoReader.Read();
+
+		internal bool PreserveWhitespace => _unoReader.PreserveWhitespace;
 	}
 }

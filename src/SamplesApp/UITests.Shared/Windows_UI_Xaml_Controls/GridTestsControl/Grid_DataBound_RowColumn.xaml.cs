@@ -1,9 +1,9 @@
-using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Helper;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
@@ -23,8 +23,8 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 				{
 					var border = new Border();
 					border.Background = new SolidColorBrush(Colors.Yellow);
-					border.SetBinding(Grid.RowProperty, new Windows.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentRow") });
-					border.SetBinding(Grid.ColumnProperty, new Windows.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentColumn") });
+					border.SetBinding(Grid.RowProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentRow") });
+					border.SetBinding(Grid.ColumnProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentColumn") });
 
 					for (int i = 0; !ct.IsCancellationRequested; i++)
 					{
@@ -64,7 +64,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for CurrentColumn.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CurrentColumnProperty { get ; } =
+		public static DependencyProperty CurrentColumnProperty { get; } =
 			DependencyProperty.Register("CurrentColumn", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new PropertyMetadata(0));
 
 		public int CurrentRow
@@ -74,7 +74,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for CurrentColumn.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CurrentRowProperty { get ; } =
+		public static DependencyProperty CurrentRowProperty { get; } =
 			DependencyProperty.Register("CurrentRow", typeof(int), typeof(Grid_DataBound_RowColumn_Data), new PropertyMetadata(0));
 
 	}

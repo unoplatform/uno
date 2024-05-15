@@ -2,10 +2,10 @@
 using Windows.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
@@ -23,7 +23,7 @@ namespace SamplesApp.Windows_UI_Xaml.Clipping
 		{
 			var sut = MainContent.FindFirstChild<Rectangle>(x => x.Name == "SUT");
 
-			var colors = new [] {Colors.Blue, Colors.Pink, Colors.Yellow, Colors.Lime};
+			var colors = new[] { Colors.Blue, Colors.Pink, Colors.Yellow, Colors.Lime };
 			var color = colors[random.Next(colors.Length)];
 
 			sut.Fill = new SolidColorBrush(color);

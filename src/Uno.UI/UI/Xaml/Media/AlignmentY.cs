@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	/// <summary>
 	/// Describes how content is positioned vertically in a container.
 	/// </summary>
 	public enum AlignmentY
-    {
+	{
 		/// <summary>
 		/// The contents align toward the upper edge of the container.
 		/// </summary>

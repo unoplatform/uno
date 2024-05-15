@@ -3,7 +3,7 @@
 
 using System;
 using Windows.Globalization;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace DirectUI
 {
@@ -11,22 +11,22 @@ namespace DirectUI
 	{
 		private Calendar m_spCalendar;
 
-		public Func<DateTime, DateTime, bool> LessThanComparer
+		public Func<DateTimeOffset, DateTimeOffset, bool> LessThanComparer
 		{
 			get
 			{
-				return (DateTime lhs, DateTime rhs) =>
+				return (DateTimeOffset lhs, DateTimeOffset rhs) =>
 				{
 					return LessThan(lhs, rhs);
 				};
 			}
 		}
 
-		public Func<DateTime, DateTime, bool> AreEquivalentComparer
+		public Func<DateTimeOffset, DateTimeOffset, bool> AreEquivalentComparer
 		{
 			get
 			{
-				return (DateTime lhs, DateTime rhs) =>
+				return (DateTimeOffset lhs, DateTimeOffset rhs) =>
 				{
 					return AreEquivalent(lhs, rhs);
 				};
@@ -101,12 +101,9 @@ namespace DirectUI
 			int sign = 1;
 			var pResult = 1;
 
-			global::System.Diagnostics.Debug.Assert(m_spCalendar is {});
+			global::System.Diagnostics.Debug.Assert(m_spCalendar is { });
 
-			lhs = lhs.ToUniversalTime(); // UNO
-			rhs = rhs.ToUniversalTime(); // UNO
-
-			long delta = lhs.Ticks - rhs.Ticks;
+			long delta = lhs.UniversalTime - rhs.UniversalTime;
 			if (delta < 0)
 			{
 				delta = -delta;

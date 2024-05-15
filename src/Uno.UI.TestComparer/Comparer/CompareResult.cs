@@ -9,7 +9,7 @@ namespace Uno.UI.TestComparer.Comparer
 
 		public int TotalTests { get; internal set; }
 		public int UnchangedTests { get; internal set; }
-		public List<CompareResultFile> Tests { get;} = new List<CompareResultFile>();
+		public List<CompareResultFile> Tests { get; } = new List<CompareResultFile>();
 		public List<(int index, string path)> Folders { get; } = new List<(int index, string path)>();
 		public string Platform { get; }
 	}

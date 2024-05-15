@@ -9,7 +9,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 	{
 		private const string _clearDataSample = "UITests.Windows_UI_Xaml_Shapes.Path_ClearData";
 
-		private static readonly ScreenshotOptions _opts = new ScreenshotOptions {IgnoreInSnapshotCompare = true};
+		private static readonly ScreenshotOptions _opts = new ScreenshotOptions { IgnoreInSnapshotCompare = true };
 
 		[Test]
 		[AutoRetry]

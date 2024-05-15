@@ -7,23 +7,23 @@ using System.Windows.Input;
 using DirectUI;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using AppBarToggleButtonAutomationPeer = Windows.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer;
-using AppBarToggleButtonTemplateSettings = Windows.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using AppBarToggleButtonAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer;
+using AppBarToggleButtonTemplateSettings = Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings;
+using System.Globalization;
 
-
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement
 	{
 		// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
-		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle. 
+		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle.
 		Storyboard? m_widthAdjustmentsForLabelOnRightStyleStoryboard;
 
 		CommandBarDefaultLabelPosition m_defaultLabelPosition;
@@ -41,8 +41,8 @@ namespace Windows.UI.Xaml.Controls
 		bool m_isWithIcons;
 
 		// We need to adjust our visual state to account for CommandBarElements that have keyboard accelerator text.
-		bool m_isWithKeyboardAcceleratorText = false;
-		double m_maxKeyboardAcceleratorTextWidth = 0;
+		bool m_isWithKeyboardAcceleratorText;
+		double m_maxKeyboardAcceleratorTextWidth;
 
 		// If we have a keyboard accelerator attached to us and the app has not set a tool tip on us,
 		// then we'll create our own tool tip.  We'll use this flag to indicate that we can unset or
@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// If there are other buttons that have open sub-menus, then we should
 				// close those on a delay, since they no longer have mouse-over.
-			
+
 				CommandBar.FindParentCommandBarForElement(this, out var parentCommandBar);
 
 				if (parentCommandBar is { })
@@ -491,7 +491,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
-					SetValue(ToolTipService.ToolTipProperty, string.Format(toolTipFormatString, labelText, keyboardAcceleratorText));
+					SetValue(ToolTipService.ToolTipProperty, string.Format(CultureInfo.CurrentCulture, toolTipFormatString, labelText, keyboardAcceleratorText));
 				}
 				else
 				{

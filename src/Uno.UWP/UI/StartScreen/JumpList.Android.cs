@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Linq;
 using Android.App;
 using Android.Content;
@@ -28,7 +27,10 @@ namespace Windows.UI.StartScreen
 		{
 			var shortcuts = _manager.DynamicShortcuts.ToArray();
 			Items.Clear();
-			Items.AddRange(shortcuts.Select(s => s.ToJumpListItem()));
+			foreach (var shortcut in shortcuts)
+			{
+				Items.Add(shortcut.ToJumpListItem());
+			}
 		}
 
 		private IAsyncAction InternalSaveAsync()
@@ -47,4 +49,3 @@ namespace Windows.UI.StartScreen
 		}
 	}
 }
-#endif

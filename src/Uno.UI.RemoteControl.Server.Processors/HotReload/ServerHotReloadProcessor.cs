@@ -18,8 +18,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private FileSystemWatcher[] _watchers;
-		private CompositeDisposable _watcherEventsDisposable;
+		private FileSystemWatcher[]? _watchers;
+		private CompositeDisposable? _watcherEventsDisposable;
 		private IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
@@ -27,22 +27,24 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			_remoteControlServer = remoteControlServer;
 		}
 
-		public string Scope => "hotreload";
+		public string Scope => HotReloadConstants.HotReload;
 
-		public async Task ProcessFrame(Frame frame)
+		public Task ProcessFrame(Frame frame)
 		{
 			switch (frame.Name)
 			{
 				case ConfigureServer.Name:
-					await ProcessConfigureServer(JsonConvert.DeserializeObject<ConfigureServer>(frame.Content));
+					ProcessConfigureServer(JsonConvert.DeserializeObject<ConfigureServer>(frame.Content)!);
 					break;
 				case XamlLoadError.Name:
-					await ProcessXamlLoadError(JsonConvert.DeserializeObject<XamlLoadError>(frame.Content));
+					ProcessXamlLoadError(JsonConvert.DeserializeObject<XamlLoadError>(frame.Content)!);
 					break;
 			}
+
+			return Task.CompletedTask;
 		}
 
-		private async Task ProcessXamlLoadError(XamlLoadError xamlLoadError)
+		private void ProcessXamlLoadError(XamlLoadError xamlLoadError)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -53,7 +55,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task ProcessConfigureServer(ConfigureServer configureServer)
+		private void ProcessConfigureServer(ConfigureServer configureServer)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -61,9 +63,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				this.Log().LogDebug($"Xaml Search Paths: {string.Join(", ", configureServer.XamlPaths)}");
 			}
 
-#if NET6_0_OR_GREATER
 			InitializeMetadataUpdater(configureServer);
-#endif
 
 			_watchers = configureServer.XamlPaths
 				.Select(p => new FileSystemWatcher
@@ -89,7 +89,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
 				// Visual Studio uses to save files.
 
-				var changes = Observable.Create<string>(o => {
+				var changes = Observable.Create<string>(o =>
+				{
 
 					void changed(object s, FileSystemEventArgs args) => o.OnNext(args.FullPath);
 					void renamed(object s, RenamedEventArgs args) => o.OnNext(args.FullPath);
@@ -98,7 +99,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					watcher.Created += changed;
 					watcher.Renamed += renamed;
 
-					return Disposable.Create(() => {
+					return Disposable.Create(() =>
+					{
 						watcher.Changed -= changed;
 						watcher.Created -= changed;
 						watcher.Renamed -= renamed;
@@ -109,9 +111,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					.Buffer(TimeSpan.FromMilliseconds(250))
 					.Subscribe(filePaths =>
 					{
-						foreach (var file in filePaths.Distinct().Where(f => Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)))
+						var files = filePaths
+							.Distinct()
+							.Where(f =>
+								Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)
+								|| Path.GetExtension(f).Equals(".cs", StringComparison.OrdinalIgnoreCase));
+
+						foreach (var file in filePaths)
 						{
-							OnXamlFileChanged(file);
+							OnSourceFileChanged(file);
 						}
 					}, e => Console.WriteLine($"Error {e}"));
 
@@ -119,7 +127,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void OnXamlFileChanged(string fullPath)
+		private void OnSourceFileChanged(string fullPath)
 			=> Task.Run(async () =>
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -147,7 +155,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-#if NET6_0_OR_GREATER
 			_solutionWatcherEventsDisposable?.Dispose();
 			if (_solutionWatchers != null)
 			{
@@ -156,7 +163,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					watcher.Dispose();
 				}
 			}
-#endif
+
+			_hotReloadService?.EndSession();
 		}
 	}
 }

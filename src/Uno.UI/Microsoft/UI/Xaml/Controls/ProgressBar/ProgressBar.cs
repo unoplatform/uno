@@ -1,13 +1,15 @@
-﻿using System;
-using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+﻿#nullable enable
 
-namespace Microsoft.UI.Xaml.Controls
+using System;
+using Windows.Foundation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ProgressBar : RangeBase
 	{
@@ -19,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string s_DeterminateStateName = "Determinate";
 		private const string s_UpdatingStateName = "Updating";
 
-		public static DependencyProperty IsIndeterminateProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty IsIndeterminateProperty { get; } = DependencyProperty.Register(
 			nameof(IsIndeterminate), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnIsIndeterminateChanged));
 
 		public bool IsIndeterminate
@@ -28,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsIndeterminateProperty, value);
 		}
 
-		public static DependencyProperty ShowErrorProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ShowErrorProperty { get; } = DependencyProperty.Register(
 			nameof(ShowError), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowErrorChanged));
 
 		public bool ShowError
@@ -37,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowErrorProperty, value);
 		}
 
-		public static DependencyProperty ShowPausedProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ShowPausedProperty { get; } = DependencyProperty.Register(
 			nameof(ShowPaused), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowPausedChanged));
 
 		public bool ShowPaused
@@ -46,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowPausedProperty, value);
 		}
 
-		public static DependencyProperty TemplateSettingsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty TemplateSettingsProperty { get; } = DependencyProperty.Register(
 			nameof(TemplateSettings), typeof(ProgressBarTemplateSettings), typeof(ProgressBar), new FrameworkPropertyMetadata(default(ProgressBarTemplateSettings)));
 
 		public ProgressBarTemplateSettings TemplateSettings
@@ -55,10 +57,11 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(TemplateSettingsProperty, value);
 		}
 
-		private Grid m_layoutRoot;
-		private Rectangle m_determinateProgressBarIndicator;
-		private Rectangle m_indeterminateProgressBarIndicator;
-		private Rectangle m_indeterminateProgressBarIndicator2;
+		private Grid? m_layoutRoot;
+		private Rectangle? m_determinateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator2;
+		private Size? m_previousMeasuredWidths;
 
 		public ProgressBar()
 		{
@@ -94,7 +97,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnSizeChange()
 		{
-			SetProgressBarIndicatorWidth();
+#if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
+			if (m_layoutRoot is not null &&
+				m_determinateProgressBarIndicator is not null &&
+				m_previousMeasuredWidths != new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth))
+#endif
+			{
+				SetProgressBarIndicatorWidth();
+			}
+
 			UpdateWidthBasedTemplateSettings();
 		}
 
@@ -167,6 +178,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var templateSettings = TemplateSettings;
 
 			var progressBar = m_layoutRoot;
+			m_previousMeasuredWidths = new Size(double.NaN, double.NaN);
 
 			if (progressBar != null)
 			{
@@ -178,6 +190,8 @@ namespace Microsoft.UI.Xaml.Controls
 					var maximum = Maximum;
 					var minimum = Minimum;
 					var padding = Padding;
+
+					m_previousMeasuredWidths = new Size(progressBarWidth, prevIndicatorWidth);
 
 					// Adds "Updating" state in between to trigger RepositionThemeAnimation Visual Transition
 					// in ProgressBar.xaml when reverting back to previous state

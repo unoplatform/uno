@@ -12,7 +12,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class PivotPanel : Panel
 	{
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			var scroll = this.FindFirstParent<ScrollViewer>();
-			
+
 			if (scroll == null)
 			{
 				this.Log().Warn("Failed to find expected parent ScrollViewer of this PivotPanel");
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			foreach (UIElement child in Children)
 			{
 				MeasureElement(child, availableSize);
-				if(child.DesiredSize.Height > maxHeight)
+				if (child.DesiredSize.Height > maxHeight)
 				{
 					maxHeight = child.DesiredSize.Height;
 				}

@@ -3,25 +3,24 @@
 using Android.Content.Res;
 using Android.OS;
 
-namespace Uno.Helpers.Theming
+namespace Uno.Helpers.Theming;
+
+internal static partial class SystemThemeHelper
 {
-	internal static partial class SystemThemeHelper
+	private static SystemTheme GetSystemTheme()
 	{
-		private static SystemTheme GetSystemTheme()
+		if ((int)Build.VERSION.SdkInt >= 28)
 		{
-			if ((int)Build.VERSION.SdkInt >= 28)
+			var uiMode = Android.App.Application.Context.Resources?.Configuration?.UiMode;
+			if (uiMode != null)
 			{
-				var uiMode = Android.App.Application.Context.Resources?.Configuration?.UiMode;
-				if (uiMode != null)
+				var uiModeFlags = uiMode & UiMode.NightMask;
+				if (uiModeFlags == UiMode.NightYes)
 				{
-					var uiModeFlags = uiMode & UiMode.NightMask;
-					if (uiModeFlags == UiMode.NightYes)
-					{
-						return SystemTheme.Dark;
-					}
+					return SystemTheme.Dark;
 				}
 			}
-			return SystemTheme.Light;
 		}
+		return SystemTheme.Light;
 	}
 }

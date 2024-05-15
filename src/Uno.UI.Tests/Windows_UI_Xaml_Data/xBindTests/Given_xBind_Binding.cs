@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Windows.Foundation.Collections;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -17,6 +19,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 	public class Given_xBind_Binding
 	{
 		private const int V = 42;
+		private bool _previousPoolingEnabled;
+
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+
+			_previousPoolingEnabled = FrameworkTemplatePool.IsPoolingEnabled;
+			FrameworkTemplatePool.IsPoolingEnabled = false;
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+		{
+			FrameworkTemplatePool.IsPoolingEnabled = _previousPoolingEnabled;
+			FrameworkTemplatePool.Scavenge();
+		}
 
 		[TestMethod]
 		public void When_Initial_Value()
@@ -364,7 +383,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			list.SelectedItem = list.Items[1];
 
 			Assert.AreEqual(1, list.SelectedIndex);
-			 Assert.IsFalse(cb.IsChecked.Value);
+			Assert.IsFalse(cb.IsChecked.Value);
 
 			list.SelectedItem = list.Items[0];
 
@@ -393,8 +412,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.ForceLoaded();
 
-			var myTextBlock = SUT.FindName("myTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
-			var myTextBlock2 = SUT.FindName("myTextBlock2") as Windows.UI.Xaml.Controls.TextBlock;
+			var myTextBlock = SUT.FindName("myTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
+			var myTextBlock2 = SUT.FindName("myTextBlock2") as Microsoft.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual("v:0 p:test", myTextBlock.Text);
 			Assert.AreEqual("v:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.Binding_Converter_DataTempate_Model p:test", myTextBlock2.Text);
@@ -938,7 +957,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
 		}
-		 
+
 		[TestMethod]
 		public void When_xLoad_Event()
 		{
@@ -1014,7 +1033,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public void When_xLoad_FallbackValue_Converter()
+		public async Task When_xLoad_FallbackValue_Converter()
 		{
 			var SUT = new Binding_xLoad_FallbackValue_Converter();
 
@@ -1030,8 +1049,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.Model = null;
 
-			AssertIsNullAsync(() => SUT.topLevelContent);
-			AssertIsNullAsync(() => SUT.innerTextBlock);
+			await AssertIsNullAsync(() => SUT.topLevelContent);
+			await AssertIsNullAsync(() => SUT.innerTextBlock);
 		}
 
 		[TestMethod]
@@ -1088,8 +1107,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.IsTestGridLoaded = false;
 
-			AssertIsNullAsync(() => SUT.TestGrid);
-			AssertIsNullAsync(() => SUT.contentControl);
+			await AssertIsNullAsync(() => SUT.TestGrid);
+			await AssertIsNullAsync(() => SUT.contentControl);
 
 			SUT.IsTestGridLoaded = true;
 
@@ -1104,7 +1123,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_xLoad_Setter();
 
 			SUT.ForceLoaded();
-			
+
 			Assert.IsNull(SUT.ellipse);
 			Assert.IsNotNull(SUT.square);
 			Assert.AreEqual(4, SUT.square.StrokeThickness);
@@ -1112,19 +1131,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 
 			SUT.IsEllipseLoaded = false;
 
-			AssertIsNullAsync(() => SUT.ellipse);
+			await AssertIsNullAsync(() => SUT.ellipse);
 			Assert.IsNotNull(SUT.square);
 			Assert.AreEqual(4, SUT.square.StrokeThickness);
 
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 		}
 
@@ -1143,24 +1162,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 
 			SUT.IsEllipseLoaded = false;
 
-			AssertIsNullAsync(() => SUT.ellipse);
+			await AssertIsNullAsync(() => SUT.ellipse);
 			Assert.IsNotNull(SUT.square);
 			Assert.AreEqual(4, SUT.square.StrokeThickness);
 
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 		}
 
 		[TestMethod]
-		public async Task When_xLoad_xBind_xLoad_Initial()
+		public void When_xLoad_xBind_xLoad_Initial()
 		{
 			var grid = new Grid();
 			grid.ForceLoaded();
@@ -1228,13 +1247,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			{
 				SUT.TopLevelVisiblity = false;
 
-				AssertIsNullAsync(() => SUT.tb01);
-				AssertIsNullAsync(() => SUT.tb02);
+				await AssertIsNullAsync(() => SUT.tb01);
+				await AssertIsNullAsync(() => SUT.tb02);
 			}
 		}
 
 		[TestMethod]
-		public async Task When_Binding_xNull()
+		public void When_Binding_xNull()
 		{
 			var SUT = new Binding_xNull();
 
@@ -1251,7 +1270,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public async Task When_NullableRecordStruct()
+		public void When_NullableRecordStruct()
 		{
 			var SUT = new xBind_NullableRecordStruct();
 
@@ -1264,7 +1283,194 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("42", SUT.tb1.Text);
 		}
 
-		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
+		[TestMethod]
+		public void When_TypeCast()
+		{
+			var SUT = new Binding_TypeCast();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("42", SUT.tb01.Text);
+			Assert.AreEqual("42", SUT.tb02.Text);
+			Assert.AreEqual("4242", SUT.tb03.Text);
+			Assert.AreEqual(2, SUT.tb04.Tag);
+		}
+
+		[TestMethod]
+		public void When_TypeCast_DataTemplate()
+		{
+			var SUT = new Binding_TypeCast_DataTemplate();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_TypeCast_DataTemplate_Data();
+			root.DataContext = dc;
+
+			SUT.ForceLoaded();
+			root.ForceLoaded();
+
+			var tb01 = SUT.FindName("tb01") as TextBlock;
+			var tb02 = SUT.FindName("tb02") as TextBlock;
+			var tb03 = SUT.FindName("tb03") as TextBlock;
+			var tb04 = SUT.FindName("tb04") as TextBlock;
+
+			Assert.AreEqual("42", tb01.Text);
+			Assert.AreEqual("42", tb02.Text);
+			Assert.AreEqual("4242", tb03.Text);
+			Assert.AreEqual(2, tb04.Tag);
+		}
+
+		[TestMethod]
+		public void When_PathLessCasting()
+		{
+			var SUT = new xBind_PathLessCasting();
+
+			SUT.ForceLoaded();
+			const string CastResult = "ExplicitConversion_Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.xBind_PathLessCasting";
+			Assert.AreEqual(SUT, SUT.tb1.Tag);
+			Assert.AreEqual(CastResult, SUT.tb2.Text);
+			Assert.AreEqual($"{CastResult}-{CastResult}", SUT.tb3.Text);
+		}
+
+		[TestMethod]
+		public void When_PathLessCasting_Template()
+		{
+			var SUT = new xBind_PathLessCasting_Template();
+
+			SUT.ForceLoaded();
+
+			var rootData = new xBind_PathLessCasting_Template_Model();
+			SUT.root.Content = rootData;
+
+			var myObject = SUT.FindName("tb1") as TextBlock;
+
+			Assert.AreEqual(rootData, myObject.Tag);
+		}
+
+		[TestMethod]
+		public void When_AttachedProperty()
+		{
+			var SUT = new xBind_AttachedProperty();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(42, SUT.tb1.Tag);
+			Assert.AreEqual("TextBlockTag", SUT.tb3.Tag);
+			Assert.AreEqual("Formatted TextBlockTag", SUT.tb4.Tag);
+			Assert.AreEqual("Hello World!!!", SUT.tb5.Text);
+		}
+
+		[TestMethod]
+		public void When_ValueType()
+		{
+			var SUT = new xBind_ValueType();
+			var date1 = new DateTime(2022, 10, 01);
+
+			SUT.VM.Model2 = new() { MyDateTime = date1 };
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(date1, SUT.tb1.Tag);
+
+			SUT.VM.Model2 = null;
+
+			Assert.IsNull(SUT.tb1.Tag);
+		}
+
+		[TestMethod]
+		public void When_Indexer()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+
+			SUT.VM.List = new ObservableCollection<string>() { "UpdatedList" };
+			SUT.VM.Dict = new PropertySet() { ["Key"] = "UpdatedDic" };
+
+			Assert.AreEqual("UpdatedList", SUT.tbList.Text);
+			Assert.AreEqual("UpdatedDic", SUT.tbDict.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Update_Collection()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+
+			SUT.VM.List[0] = "Updated1";
+			SUT.VM.Dict["Key"] = "Updated2";
+
+			Assert.AreEqual("Updated1", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2 = new ObservableCollection<PersonViewModel>() { new PersonViewModel() { Name = "UpdatedList" } };
+			SUT.VM.Dict2 = new MyCustomMap() { ["Key"] = new PersonViewModel() { Name = "UpdatedDic" } };
+
+			Assert.AreEqual("UpdatedList", SUT.tbList2.Text);
+			Assert.AreEqual("UpdatedDic", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access_Update_Collection()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2[0] = new PersonViewModel() { Name = "Updated1" };
+			SUT.VM.Dict2["Key"] = new PersonViewModel() { Name = "Updated2" };
+
+			Assert.AreEqual("Updated1", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access_Update_Collection_Element()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2[0].Name = "Updated1";
+			SUT.VM.Dict2["Key"].Name = "Updated2";
+
+			Assert.AreEqual("Updated1", SUT.tbList2.Text);
+			Assert.AreEqual("Updated2", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_XBind_In_ResourceDictionary()
+		{
+			var SUT = new XBind_ResourceDictionary_Control();
+			SUT.ForceLoaded();
+
+			Assert.IsTrue(SUT.ElementLoadedInvoked);
+		}
+
+		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T : class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);
 
@@ -1272,6 +1478,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			while (sw.Elapsed < timeout)
 			{
+				void validate()
 				{
 					var value = getter();
 
@@ -1283,12 +1490,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 					value = null;
 				}
 
+				validate();
+
 				await Task.Yield();
 
 				// Wait for the ElementNameSubject and ComponentHolder
 				// instances to release their references.
 				GC.Collect(2);
-				//GC.WaitForPendingFinalizers();
+				GC.WaitForPendingFinalizers();
 			}
 
 			{

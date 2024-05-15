@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
+using Uno.UI.Helpers;
+using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Uno.UI.Xaml;
+using Windows.Storage.Pickers.Provider;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 #if __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.FrameworkElement;
+using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 #if __IOS__
@@ -26,70 +33,199 @@ using AppKit;
 using Uno.UI;
 #endif
 
+[assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor))]
+
 namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private async Task ReloadFile(FileReload fileReload)
-		{
-			Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				async () =>
-			{
-				try
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"Reloading changed file [{fileReload.FilePath}]");
-					}
+		private string? _lastUpdatedFilePath;
+		private bool _supportsXamlReader;
 
-					var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
-
-					Application.RegisterComponent(uri, fileReload.Content);
-
-					foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
-					{
-						switch (instance)
-						{
-#if __IOS__
-							case UserControl userControl:
-								SwapViews(userControl, XamlReader.LoadUsingXClass(fileReload.Content) as UIKit.UIView);
-								break;
+#if __IOS__ || __CATALYST__ || __ANDROID__
+		private bool? _isIssue93860Fixed;
 #endif
-							case ContentControl content:
-								SwapViews(content, XamlReader.LoadUsingXClass(fileReload.Content) as ContentControl);
-								break;
-						}
-					}
 
-					if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
-					{
-						var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileReload.Content);
-						targetDictionary.CopyFrom(replacementDictionary);
-						Application.Current.UpdateResourceBindingsForHotReload();
-					}
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().LogError($"Failed reloading changed file [{fileReload.FilePath}]", e);
-					}
+		private void InitializeXamlReader()
+		{
+			var targetFramework = GetMSBuildProperty("TargetFramework");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 
-					await _rcClient.SendMessage(
-						new HotReload.Messages.XamlLoadError(
-							filePath: fileReload.FilePath,
-							exceptionType: e.GetType().ToString(),
-							message: e.Message,
-							stackTrace: e.StackTrace));
-				}
-			});
+			// As of VS 17.8, the only target which supports 
+			//
+			// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
+			//
+			_supportsXamlReader =
+				!IsIssue93860Fixed()
+				&& (targetFramework.Contains("-android", StringComparison.OrdinalIgnoreCase)
+					|| targetFramework.Contains("-ios", StringComparison.OrdinalIgnoreCase)
+					|| targetFramework.Contains("-maccatalyst", StringComparison.OrdinalIgnoreCase));
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"XamlReader Hot Reload Enabled:{_supportsXamlReader} " +
+					$"targetFramework:{targetFramework}");
+			}
 		}
 
-		private IEnumerable<UIElement> EnumerateInstances(object instance, Uri baseUri)
+		private bool IsIssue93860Fixed()
 		{
-			if (
-				instance is FrameworkElement fe && baseUri.OriginalString == fe.BaseUri?.OriginalString)
+#if __IOS__ || __CATALYST__ || __ANDROID__
+
+#if __IOS__ || __CATALYST__
+			var assembly = typeof(global::Foundation.NSObject).GetTypeInfo().Assembly;
+#elif __ANDROID__
+			var assembly = typeof(global::Android.Views.ViewGroup).GetTypeInfo().Assembly;
+#endif
+			if (_isIssue93860Fixed is null)
+			{
+				// If we can't find or parse the version attribute, we're assuming #93860 is fixed.
+				_isIssue93860Fixed = true;
+
+				if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+				{
+#if __IOS__ || __CATALYST__
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"iOS/Catalyst do not support C# based XAML hot reload: https://github.com/unoplatform/uno/issues/15918");
+					}
+
+					return false;
+#else
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($".NET Platform Bindings Version: {aiva.InformationalVersion}");
+					}
+
+					// From 8.0.100 assemblies:
+					// 34.0.1.42; git-rev-head:f1b7113; git-branch:release/8.0.1xx
+
+					var parts = aiva.InformationalVersion.Split(';');
+
+					if (parts.Length > 0 && Version.TryParse(parts[0], out var version))
+					{
+						_isIssue93860Fixed = version >=
+#if __ANDROID__
+							new Version(34, 0, 1, 52); // 8.0.102
+#endif
+
+						if (!_isIssue93860Fixed.Value && this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn(
+								$"The .NET Platform Bindings version {version} is too old " +
+								$"and contains this issue: https://github.com/dotnet/runtime/issues/93860. " +
+								$"Make sure to upgrade to .NET 8.0.102 or later");
+						}
+					}
+#endif
+				}
+			}
+
+			return _isIssue93860Fixed.Value;
+#else
+			// XAML Reader should not be used for non-mobile targets.
+			return false;
+#endif
+		}
+
+		private void ReloadFileWithXamlReader(FileReload fileReload)
+		{
+			if (!fileReload.IsValid())
+			{
+				if (fileReload.FilePath.IsNullOrEmpty() && this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"FileReload is missing a file path");
+				}
+
+				if (fileReload.Content is null && this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"FileReload is missing content");
+				}
+
+				return;
+			}
+
+			_lastUpdatedFilePath = fileReload.FilePath;
+
+			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				async () =>
+				{
+					await ReloadWithFileAndContent(fileReload.FilePath, fileReload.Content);
+
+					RemoteControlClient.Instance?.NotifyOfEvent(nameof(FileReload), fileReload.FilePath);
+				});
+		}
+
+		private async Task ReloadWithFileAndContent(string filePath, string fileContent)
+		{
+			try
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"XamlReader reloading changed file [{filePath}]");
+				}
+
+				var uri = new Uri("file:///" + filePath.Replace('\\', '/'));
+
+				Application.RegisterComponent(uri, fileContent);
+
+				bool IsSameBaseUri(FrameworkElement i)
+				{
+					return uri.OriginalString == i.DebugParseContext?.LocalFileUri
+
+						// Compatibility with older versions of Uno, where BaseUri is set to the
+						// local file path instead of the component Uri.
+						|| uri.OriginalString == i.BaseUri?.OriginalString;
+				}
+
+				foreach (var window in ApplicationHelper.Windows)
+				{
+					if (window.Content is null)
+					{
+						return;
+					}
+
+					foreach (var instance in EnumerateInstances(window.Content, IsSameBaseUri).OfType<FrameworkElement>())
+					{
+						if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
+						{
+							SwapViews(instance, newContent);
+						}
+					}
+				}
+
+				if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
+				{
+					var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileContent);
+					targetDictionary.CopyFrom(replacementDictionary);
+					Application.Current.UpdateResourceBindingsForHotReload();
+				}
+			}
+			catch (Exception e)
+			{
+				if (e is TargetInvocationException { InnerException: { } innerException })
+				{
+					e = innerException;
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Failed reloading changed file [{filePath}]", e);
+				}
+
+				await _rcClient.SendMessage(
+					new HotReload.Messages.XamlLoadError(
+						filePath: filePath,
+						exceptionType: e.GetType().ToString(),
+						message: e.Message,
+						stackTrace: e.StackTrace));
+			}
+		}
+
+		private static IEnumerable<UIElement> EnumerateInstances(object instance, Func<FrameworkElement, bool> predicate)
+		{
+			if (instance is FrameworkElement fe && predicate(fe))
 			{
 				yield return fe;
 			}
@@ -102,24 +238,24 @@ namespace Uno.UI.RemoteControl.HotReload
 						case Panel panel:
 							foreach (var child in panel.Children)
 							{
-								yield return EnumerateInstances(child, baseUri);
+								yield return EnumerateInstances(child, predicate);
 							}
 							break;
 
 						case Border border:
-							yield return EnumerateInstances(border.Child, baseUri);
+							yield return EnumerateInstances(border.Child, predicate);
 							break;
 
 						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null:
-							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, baseUri);
+							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, predicate);
 							break;
 
 						case Control control:
-							yield return EnumerateInstances(control.TemplatedRoot, baseUri);
+							yield return EnumerateInstances(control.TemplatedRoot, predicate);
 							break;
 
 						case ContentPresenter presenter:
-							yield return EnumerateInstances(presenter.Content, baseUri);
+							yield return EnumerateInstances(presenter.Content, predicate);
 							break;
 					}
 				}
@@ -131,37 +267,6 @@ namespace Uno.UI.RemoteControl.HotReload
 						yield return validElement;
 					}
 				}
-			}
-		}
-
-		private static void SwapViews(_View oldView, _View newView)
-		{
-			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
-			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
-
-			if (parentAsContentControl?.Content == oldView)
-			{
-				parentAsContentControl.Content = newView;
-			}
-			else
-			{
-				VisualTreeHelper.SwapViews(oldView, newView);
-			}
-
-			PropagateProperties(oldView as FrameworkElement, newView as FrameworkElement);
-		}
-
-		private static void PropagateProperties(FrameworkElement oldView, FrameworkElement newView)
-		{
-			if (oldView == null || newView == null)
-			{
-				return;
-			}
-			newView.BaseUri = oldView.BaseUri;
-
-			if (oldView is Page oldPage && newView is Page newPage)
-			{
-				newPage.Frame = oldPage.Frame;
 			}
 		}
 	}

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Represents a button that allows a user to select a single option from a group of options.

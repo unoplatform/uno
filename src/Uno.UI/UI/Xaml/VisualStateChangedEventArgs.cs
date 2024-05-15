@@ -1,12 +1,12 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-    public partial class VisualStateChangedEventArgs
-    {
+	public partial class VisualStateChangedEventArgs
+	{
 		public Control Control { get; set; }
 
 		public VisualState NewState { get; set; }

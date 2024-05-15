@@ -1,26 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
-  <ItemGroup>
-    <None Remove="tsconfig.json" />
-    <Content Include="tsconfig.json" />
- 		<ConfigFiles Include="tsconfig.json" />
- </ItemGroup>
+	<ItemGroup>
+		<CompilerVisibleProperty Include="TSBindingsPath" />
+		<CompilerVisibleProperty Include="TSBindingAssemblySource" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ConfigFiles Include="tsconfig.json" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,14 +36,46 @@
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
-		<EmbeddedResource Include="WasmScripts\*.js" />
+
+		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
+		<TypeScriptCompile Include="tsBindings\**\*.ts;tsBindings\**\*.tsx" />
 	</ItemGroup>
 
 	<PropertyGroup>
-		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+		<CompileTypeScriptDependsOn>_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
 
+	<Target Name="_AdjustCompileDependsOn" AfterTargets="BeforeBuild">
+		<ItemGroup>
+			<_AdjustedCompileDependsOn Include="$(CompileDependsOn)" Exclude="CompileTypeScript;CompileTypeScriptWithTSConfig;GetTypeScriptOutputForPublishing" />
+		</ItemGroup>
+		<PropertyGroup>
+			<CompileDependsOn>@(_AdjustedCompileDependsOn)</CompileDependsOn>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="_UnoSetupTSCompilation">
+		<PropertyGroup>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(OutputPath)/javascript/UnitTests.js</TypeScriptConfigFileAdditionalFlags>
+		</PropertyGroup>
+		<ItemGroup>
+			<_UnoTSDefinitions Include="..\Uno.UI\bin\Uno.UI.Wasm\$(Configuration)\$(TargetFramework)\*.d.ts" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_UnoTSDefinitions)" DestinationFolder="ts" />
+		<MakeDir Directories="$(OutputPath)/javascript" />
+	</Target>
+
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
+			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+			DependsOnTargets="CompileTypeScriptWithTSConfig"
+			BeforeTargets="_UnoEmbeddedResourcesInjection">
+		<ItemGroup>
+			<_generatedTSFiles Include="$(OutputPath)/javascript/*.js" />
+			<_UnoInjectedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+		</ItemGroup>
+	</Target>
+
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-
-
 </Project>

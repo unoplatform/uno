@@ -13,7 +13,7 @@ namespace Windows.Storage.Pickers
 		// Workaround for NSApplication.ModalResponse not being available in Xamarin.Mac
 		private const int ModalResponseOk = 1;
 
-		private async Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
+		private Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
 		{
 			var openPanel = new NSOpenPanel();
 			openPanel.AllowedFileTypes = new[] { "none" };
@@ -26,10 +26,10 @@ namespace Windows.Storage.Pickers
 				var path = openPanel.Urls[0]?.Path;
 				if (path != null)
 				{
-					return new StorageFolder(path);
+					return Task.FromResult<StorageFolder?>(new StorageFolder(path));
 				}
 			}
-			return null;
+			return Task.FromResult<StorageFolder?>(null);
 		}
 	}
 }

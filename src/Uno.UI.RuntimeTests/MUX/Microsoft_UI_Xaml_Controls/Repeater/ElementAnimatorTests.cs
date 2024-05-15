@@ -1,18 +1,18 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using MUXControlsTestApp.Utilities;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using System.Threading.Tasks;
 using System.Threading;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Common;
 
 #if USING_TAEF
@@ -24,26 +24,27 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using AnimationContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationContext;
+using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class ElementAnimatorTests : MUXApiTestBase
 	{
 		[TestMethod]
 		[Ignore("UNO: ManualResetEvent not supported on WASM for now")]
-		public void ValidateElementAnimator()
+		public async Task ValidateElementAnimator()
 		{
 			ItemsRepeater repeater = null;
 			ElementAnimatorDerived animator = null;
 			var data = new ObservableCollection<string>(Enumerable.Range(0, 10).Select(i => string.Format("Item #{0}", i)));
-			var renderingEvent = new ManualResetEvent(false);
+			var renderingEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -76,8 +77,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			List<CallInfo> showCalls = new List<CallInfo>();
 			List<CallInfo> hideCalls = new List<CallInfo>();
@@ -111,8 +112,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				data.RemoveAt(2);
 			});
 
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Verify.AreEqual(1, showCalls.Count);
 			var call = showCalls[0];
@@ -147,8 +148,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				data.RemoveAt(2);
 			});
 
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Verify.AreEqual(1, showCalls.Count);
 			call = showCalls[0];

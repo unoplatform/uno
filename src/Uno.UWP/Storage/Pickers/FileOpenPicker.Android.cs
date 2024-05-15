@@ -1,7 +1,7 @@
 ﻿#nullable enable
-
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,12 +12,16 @@ using Uno.UI;
 
 namespace Windows.Storage.Pickers
 {
-    public partial class FileOpenPicker
-    {
+	public partial class FileOpenPicker
+	{
 		internal const int RequestCode = 6002;
 		private static TaskCompletionSource<Intent?>? _currentFileOpenPickerRequest;
 
 		private const string StorageIdentifierFormatString = "Uno.FileOpenPicker.{0}";
+		private const string AnyWildcard = "*/*";
+		private const string ImageWildcard = "image/*";
+		private const string VideoWildcard = "video/*";
+		private Action<Intent>? _intentAction;
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
@@ -25,6 +29,7 @@ namespace Windows.Storage.Pickers
 			{
 				return false;
 			}
+
 			if (resultCode == Result.Canceled)
 			{
 				_currentFileOpenPickerRequest.SetResult(null);
@@ -33,13 +38,14 @@ namespace Windows.Storage.Pickers
 			{
 				_currentFileOpenPickerRequest.SetResult(intent);
 			}
+
 			return true;
 		}
 
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var files = await PickFilesAsync(false, token);
-			return files.FirstOrDefault();
+			return files.Count == 0 ? null : files[0];
 		}
 
 		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
@@ -49,7 +55,7 @@ namespace Windows.Storage.Pickers
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
-			if (!(ContextHelper.Current is Activity appActivity))
+			if (ContextHelper.Current is not Activity appActivity)
 			{
 				throw new InvalidOperationException("Application activity is not yet set, API called too early.");
 			}
@@ -59,42 +65,67 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FileOpenPicker requires Android KitKat (API level 19) or newer");
 			}
 
-			var action = Intent.ActionOpenDocument;
+			Intent GetIntent()
+			{
+				if (SuggestedStartLocation == PickerLocationId.VideosLibrary
+					|| SuggestedStartLocation == PickerLocationId.PicturesLibrary)
+				{
+					// For images and videos we want to use the ACTION_GET_CONTENT since this allows
+					// apps related to Photos and Videos to be suggested on the picker.
+					var intent = new Intent(Intent.ActionGetContent);
+					intent.AddCategory(Intent.CategoryOpenable);
 
-			var intent = new Intent(action);
+					return intent;
+				}
+
+				return new Intent(Intent.ActionOpenDocument);
+			}
+
+			var intent = GetIntent();
+
 			intent.PutExtra(Intent.ExtraAllowMultiple, multiple);
 
-			var settingName = string.Format(StorageIdentifierFormatString, SettingsIdentifier);
+			var settingName = string.Format(CultureInfo.InvariantCulture, StorageIdentifierFormatString, SettingsIdentifier);
 			if (ApplicationData.Current.LocalSettings.Values.ContainsKey(settingName))
 			{
 				var uri = ApplicationData.Current.LocalSettings.Values[settingName].ToString();
 				intent.PutExtra(Android.Provider.DocumentsContract.ExtraInitialUri, uri);
 			}
 
-			intent.SetType("*/*");
-
-			var mimeTypes = GetMimeTypes();
-			intent.PutExtra(Intent.ExtraMimeTypes, mimeTypes);
+			intent.SetType(GetMimeType());
+			// We have already set the intent type based on the SuggestedStartLocation from above,
+			// which constraints to the broad category of any-file, any-image or any-video.
+			// To preserve the picture or video ones, we must not include any extra mime type,
+			// that is less restrictive than what is suggested by SuggestedStartLocation.
+			if (GetExtraMimeTypes() is { } extraMimeTypes)
+			{
+				intent.PutExtra(Intent.ExtraMimeTypes, extraMimeTypes);
+			}
 
 			_currentFileOpenPickerRequest = new TaskCompletionSource<Intent?>();
 
-			appActivity.StartActivityForResult(intent, RequestCode);
+			_intentAction?.Invoke(intent);
+
+			var pickerIntent = Intent.CreateChooser(intent, "");
+
+			appActivity.StartActivityForResult(pickerIntent, RequestCode);
 
 			var resultIntent = await _currentFileOpenPickerRequest.Task;
 			_currentFileOpenPickerRequest = null;
 
-			if (resultIntent?.ClipData != null)
+			if (resultIntent?.ClipData is { } clipData)
 			{
-				List<StorageFile> files = new List<StorageFile>();
-				bool wasPath = false;
+				var files = new List<StorageFile>();
+				var wasPath = false;
 
-				for (var i = 0; i < resultIntent.ClipData.ItemCount; i++)
+				for (var i = 0; i < clipData.ItemCount; i++)
 				{
-					var item = resultIntent.ClipData.GetItemAt(i);
-					if (item?.Uri == null)
+					var item = clipData.GetItemAt(i);
+					if (item?.Uri is null)
 					{
 						continue;
 					}
+
 					var file = StorageFile.GetFromSafUri(item.Uri);
 					files.Add(file);
 
@@ -106,50 +137,61 @@ namespace Windows.Storage.Pickers
 					}
 				}
 
-				if(!wasPath)
+				if (!wasPath)
 				{   // if we have no path in any of files, remove setting - next call to Picker will not have InitialDir
 					ApplicationData.Current.LocalSettings.Values.Remove(settingName);
 				}
+
 				return new FilePickerSelectedFilesArray(files.ToArray());
 			}
-			else if (resultIntent?.Data != null)
+			else if (resultIntent?.Data is { } data)
 			{
-				var file = StorageFile.GetFromSafUri(resultIntent.Data);
-				return new FilePickerSelectedFilesArray(new[] { file });
+				var file = StorageFile.GetFromSafUri(data);
+				return new FilePickerSelectedFilesArray([file]);
 			}
 
 			return FilePickerSelectedFilesArray.Empty;
 		}
 
-		private string[] GetMimeTypes()
+		private string GetMimeType()
+		{
+			return SuggestedStartLocation switch
+			{
+				PickerLocationId.PicturesLibrary => ImageWildcard,
+				PickerLocationId.VideosLibrary => VideoWildcard,
+				_ => AnyWildcard,
+			};
+		}
+
+		private string[]? GetExtraMimeTypes()
 		{
 			if (FileTypeFilter.Contains("*"))
 			{
-				return new[] { "*/*" };
+				return null;
 			}
 
 			List<string> mimeTypes = new List<string>();
 
 			using Android.Webkit.MimeTypeMap? mimeTypeMap = Android.Webkit.MimeTypeMap.Singleton;
-			if (mimeTypeMap is null )
+			if (mimeTypeMap is null)
 			{
 				// when map is unavailable (probably never happens, but Singleton returns nullable)
-				return new[] { "*/*" };
+				return null;
 			}
 
 			foreach (string oneExtensionForLoop in FileTypeFilter)
-            {
+			{
 				bool unknownExtensionPresent = false;
 
 				string oneExtension = oneExtensionForLoop;
-				if (oneExtension.StartsWith("."))
+				if (oneExtension.StartsWith('.'))
 				{
 					// Supported format from UWP, e.g. ".jpg"
 					oneExtension = oneExtension.Substring(1);
 				}
 
-				if(!mimeTypeMap.HasExtension(oneExtension))
-                {
+				if (!mimeTypeMap.HasExtension(oneExtension))
+				{
 					// when there is unknown extension, we should show all files
 					unknownExtensionPresent = true;
 				}
@@ -178,25 +220,25 @@ namespace Windows.Storage.Pickers
 						.Select(extension => MimeTypeService.GetFromExtension(extension))
 						.Distinct();
 
-					if (mimeTypesFromUno is null || mimeTypesFromUno.Count() < 1)
+					if (!mimeTypesFromUno.Any())
 					{
-						return new[] { "*/*" };
+						return null;
 					}
 
-					foreach(var oneUnoMimeType in mimeTypesFromUno)
+					foreach (var oneUnoMimeType in mimeTypesFromUno)
 					{
 						if (!mimeTypes.Contains(oneUnoMimeType))
 						{
 							mimeTypes.Add(oneUnoMimeType);
 						}
 					}
-
 				}
-
 			}
-
 
 			return mimeTypes.ToArray();
 		}
+
+		internal void RegisterOnBeforeStartActivity(Action<Intent> intentAction)
+			=> _intentAction = intentAction;
 	}
 }

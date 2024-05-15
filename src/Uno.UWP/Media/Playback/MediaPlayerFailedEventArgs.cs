@@ -1,15 +1,28 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
 using System;
 
-namespace Windows.Media.Playback
+namespace Windows.Media.Playback;
+
+public partial class MediaPlayerFailedEventArgs
 {
-	public  partial class MediaPlayerFailedEventArgs 
+	internal MediaPlayerFailedEventArgs(MediaPlayerError error, string errorMessage, Exception extendedErrorCode)
 	{
-		public MediaPlayerError Error { get; internal set; }
+		Error = error;
+		ErrorMessage = errorMessage;
+		ExtendedErrorCode = extendedErrorCode;
+	}
 
-		public string ErrorMessage { get; internal set; }
+	public global::Windows.Media.Playback.MediaPlayerError Error
+	{
+		get;
+	}
 
-		public Exception ExtendedErrorCode { get; internal set; }
+	public string ErrorMessage
+	{
+		get;
+	}
+
+	public global::System.Exception ExtendedErrorCode
+	{
+		get;
 	}
 }
-#endif

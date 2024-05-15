@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -12,19 +12,19 @@ using System.Threading;
 using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 using System.Collections;
+using System.Globalization;
+using Windows.ApplicationModel.Calls;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a delegate to be called when a property value changes.
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
-		private static long _propertyChangedToken = 0;
+		private static long _propertyChangedToken;
 		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
 
 		private bool _registeringInheritedProperties;
@@ -219,6 +219,8 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
+		internal bool IsTemplatedParentFrozen { get; set; }
+
 		/// <summary>
 		/// Gets a unique identifier for the current DependencyObject.
 		/// </summary>
@@ -309,7 +311,9 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
+			// There is no need to force-create property details here.
+			// If it's not yet created, then simply the precedence is DefaultValue
+			return _properties.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
 		}
 
 		/// <summary>
@@ -438,6 +442,11 @@ namespace Windows.UI.Xaml
 
 		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 		{
+			if (IsTemplatedParentFrozen && property == FrameworkElement.TemplatedParentProperty)
+			{
+				return;
+			}
+
 			if (precedence == DependencyPropertyValuePrecedences.Coercion)
 			{
 				throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
@@ -449,11 +458,9 @@ namespace Windows.UI.Xaml
 			{
 				var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
-					if ((value is UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
+					if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
 					{
 						throw new InvalidOperationException("The default value must be a valid value");
 					}
@@ -463,12 +470,15 @@ namespace Windows.UI.Xaml
 					// Resolve the stack once for the instance, for performance.
 					propertyDetails ??= _properties.GetPropertyDetails(property);
 
+					TryClearBinding(value, propertyDetails);
+
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
-					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
+					// Coercion must be applied before we set the new value
+					// see https://github.com/unoplatform/uno/pull/12884
+					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value, precedence);
 
-					// Set even if they are different to make sure the value is now set on the right precedence
 					SetValueInternal(value, precedence, propertyDetails);
 
 					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
@@ -486,6 +496,8 @@ namespace Windows.UI.Xaml
 						OnDataContextChanged(value, newValue, precedence);
 					}
 
+					TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
 					TryUpdateInheritedAttachedProperty(property, propertyDetails);
 
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -500,9 +512,7 @@ namespace Windows.UI.Xaml
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					overrideDisposable?.Dispose();
 				}
@@ -511,6 +521,92 @@ namespace Windows.UI.Xaml
 			{
 				// The store has lost its current instance, renove it from its parent.
 				Parent = null;
+			}
+		}
+
+		/// <summary>
+		/// Tries to apply the DataContext to the new and previous values when DataContext Value is inherited
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void TryApplyDataContextOnPrecedenceChange(
+			DependencyProperty property,
+			DependencyPropertyDetails propertyDetails,
+			object? previousValue,
+			DependencyPropertyValuePrecedences previousPrecedence,
+			object? newValue,
+			DependencyPropertyValuePrecedences newPrecedence)
+		{
+			if (property.IsUnoType
+				&& propertyDetails.HasValueInherits
+				&& !propertyDetails.HasValueDoesNotInherit)
+			{
+				// This block is used to synchronize the DataContext property of DependencyProperty values marked as
+				// being able to inherit the DataContext.
+				// When a DependencyProperty has a bindable default value instance (e.g. ContentControl.Foreground), and that the
+				// ContentControl has a DataContext, setting a local precedence value should clear the default value instance DataContext
+				// property. This avoid inaccessible DataContext instances to be strongly kept alive by a lower precedence that
+				// may never be used again.
+
+				// If a value is set with a higher precedence, the lower precedence DataContext must be cleared
+				if (newPrecedence < previousPrecedence)
+				{
+					if (previousValue is IDependencyObjectStoreProvider childProviderClear)
+					{
+						// Clears the DataContext of the previous precedence value
+						childProviderClear.Store.ClearInheritedDataContext();
+					}
+
+					if (newValue is IDependencyObjectStoreProvider childProviderClearNewValue
+						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
+					{
+						// Sets the DataContext of the new precedence value
+						childProviderClearNewValue.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+					}
+				}
+
+				// If a value is set with a lower precedence, the higher precedence DataContext must be set to the current DataContext
+				if (newPrecedence > previousPrecedence)
+				{
+					if (newValue is IDependencyObjectStoreProvider childProviderSet
+						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
+					{
+						// Sets the DataContext of the new precedence value
+						childProviderSet.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+					}
+
+					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
+					{
+						// Clears the DataContext of the previous precedence value
+						childProviderSetNewValue.Store.ClearInheritedDataContext();
+					}
+				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ClearInheritedDataContext()
+		{
+			ClearValue(_dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RestoreInheritedDataContext(object? dataContext)
+		{
+			SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void TryClearBinding(object? value, DependencyPropertyDetails propertyDetails)
+		{
+			if (object.ReferenceEquals(value, DependencyProperty.UnsetValue))
+			{
+				var hasTemplatedParentBinding =
+					propertyDetails.GetBinding()?.ParentBinding.RelativeSource?.Mode == RelativeSourceMode.TemplatedParent;
+
+				if (!hasTemplatedParentBinding)
+				{
+					propertyDetails.ClearBinding();
+				}
 			}
 		}
 
@@ -528,9 +624,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails, object? previousValue, object? baseValue)
+		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails,
+			object? previousValue, object? baseValue, DependencyPropertyValuePrecedences precedence)
 		{
-			if (baseValue is UnsetValue)
+			if (baseValue == DependencyProperty.UnsetValue)
 			{
 				// Removing any previously applied coercion
 				SetValueInternal(DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
@@ -546,14 +643,16 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (!propertyDetails.Metadata.CoerceWhenUnchanged && Equals(previousValue, baseValue))
+			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
+
+			if (Equals(previousValue, baseValue) && ((options & FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged) != 0))
 			{
 				// Value hasn't changed, don't coerce.
 				return;
 			}
 
-			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue);
-			if (coercedValue is UnsetValue)
+			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue, precedence);
+			if (coercedValue == DependencyProperty.UnsetValue)
 			{
 				// The property system will treat any CoerceValueCallback that returns the value UnsetValue as a special case.
 				// This special case means that the property change that resulted in the CoerceValueCallback being called
@@ -562,7 +661,7 @@ namespace Windows.UI.Xaml
 				// Source: https://msdn.microsoft.com/en-us/library/ms745795%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
 				SetValueInternal(previousValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
-			else if (!Equals(coercedValue, baseValue))
+			else if (!Equals(coercedValue, baseValue) || ((options & FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals) != 0))
 			{
 				// The base value and the coerced value are different, which means that coercion must be applied.
 				// Set value using DependencyPropertyValuePrecedences.Coercion, which has the highest precedence.
@@ -687,13 +786,13 @@ namespace Windows.UI.Xaml
 
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
-				return propertyDetails.CallbackManager.RegisterCallback(callback);
+				return propertyDetails.RegisterCallback(callback);
 			}
 			else
 			{
 				CreateWeakDelegate(callback, out var weakCallback, out var weakDelegateRelease);
 
-				var cookie = propertyDetails.CallbackManager.RegisterCallback(weakCallback);
+				var cookie = propertyDetails.RegisterCallback(weakCallback);
 
 				return new RegisterPropertyChangedCallbackForPropertyConditionalDisposable(
 					callback,
@@ -901,7 +1000,7 @@ namespace Windows.UI.Xaml
 				var weakCallbackRef = WeakReferencePool.RentWeakReference(this, callback);
 
 				ParentChangedCallback weakCallback =
-					(s, _, e) => (weakCallbackRef.Target as ParentChangedCallback)?.Invoke(s, key, e);
+					(s, _, e) => (!weakCallbackRef.IsDisposed ? weakCallbackRef.Target as ParentChangedCallback : null)?.Invoke(s, key, e);
 
 				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakCallback);
 
@@ -985,9 +1084,9 @@ namespace Windows.UI.Xaml
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
-		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
+		HashSet<DependencyProperty>? _updatedProperties;
 
-		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, DependencyPropertyChangedEventArgs args)
+		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
@@ -998,13 +1097,13 @@ namespace Windows.UI.Xaml
 				if (
 					localProperty != _dataContextProperty &&
 					localProperty != _templatedParentProperty &&
-					!_updatedProperties.Contains(localProperty)
+					(_updatedProperties is null || !_updatedProperties.Contains(localProperty))
 				)
 				{
-					_updatedProperties.Add(localProperty);
+					(_updatedProperties ??= new HashSet<DependencyProperty>(DependencyPropertyComparer.Default)).Add(localProperty);
 				}
 
-				SetValue(localProperty, args.NewValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
+				SetValue(localProperty, newValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
 			}
 			else
 			{
@@ -1013,10 +1112,11 @@ namespace Windows.UI.Xaml
 				_inheritedForwardedProperties[parentProperty] = sourceInstance;
 
 				// If not, propagate the DP down to the child listeners, if any.
-				for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
+				var localChildrenStores = _childrenStores;
+				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 				{
-					var child = _childrenStores[storeIndex];
-					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, args);
+					var child = localChildrenStores[storeIndex];
+					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
 				}
 			}
 		}
@@ -1046,19 +1146,13 @@ namespace Windows.UI.Xaml
 
 				if (parentProvider != null)
 				{
-#if !HAS_EXPENSIVE_TRYFINALLY
-					// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-					// See https://github.com/dotnet/runtime/issues/50783 for more details.
 					try
-#endif
 					{
 						_registeringInheritedProperties = true;
 
 						_inheritedProperties.Disposable = RegisterInheritedProperties(parentProvider);
 					}
-#if !HAS_EXPENSIVE_TRYFINALLY
 					finally
-#endif
 					{
 						_registeringInheritedProperties = false;
 					}
@@ -1109,11 +1203,7 @@ namespace Windows.UI.Xaml
 
 		private void CleanupInheritedProperties()
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY
-			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
-#endif
 			{
 				_unregisteringInheritedProperties = true;
 
@@ -1121,22 +1211,27 @@ namespace Windows.UI.Xaml
 
 				if (ActualInstance != null)
 				{
-					// This block is a manual enumeration to avoid the foreach pattern
-					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var propertiesEnumerator = _updatedProperties.GetEnumerator();
-					while (propertiesEnumerator.MoveNext())
+					if (_updatedProperties is not null)
 					{
-						var dp = propertiesEnumerator.Current;
-						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						// This block is a manual enumeration to avoid the foreach pattern
+						// See https://github.com/dotnet/runtime/issues/56309 for details
+						var propertiesEnumerator = _updatedProperties.GetEnumerator();
+						while (propertiesEnumerator.MoveNext())
+						{
+							var dp = propertiesEnumerator.Current;
+							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						}
 					}
 
+
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-					SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					if (!IsTemplatedParentFrozen)
+					{
+						SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					}
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				_unregisteringInheritedProperties = false;
 			}
@@ -1162,7 +1257,7 @@ namespace Windows.UI.Xaml
 				{
 					var propertyDetails = _properties.GetPropertyDetails(localProperty);
 
-					if (HasInherits(propertyDetails))
+					if (propertyDetails.HasInherits)
 					{
 						return (localProperty, propertyDetails);
 					}
@@ -1175,8 +1270,7 @@ namespace Windows.UI.Xaml
 				else if (
 					property.IsAttached
 					&& _properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
-					&& HasInherits(attachedDetails)
-				)
+					&& attachedDetails.HasInherits)
 				{
 					return (property, attachedDetails);
 				}
@@ -1195,19 +1289,37 @@ namespace Windows.UI.Xaml
 				throw new ArgumentException();
 			}
 
+			ResourceDictionary[]? dictionariesInScope = null;
+
+			if (updateReason == ResourceUpdateReason.ThemeResource)
+			{
+				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
+				{
+					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
+				}
+
+				_properties.UpdateBindingExpressions();
+
+				foreach (var dict in dictionariesInScope)
+				{
+					ResourceResolver.PopSourceFromScope();
+				}
+			}
+
 			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
 				UpdateChildResourceBindings(updateReason);
 				return;
 			}
 
-			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
-			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
+			var bindings = _resourceBindings.GetAllBindings();
 
-			foreach (var (property, binding) in bindings)
+			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 			}
 
 			UpdateChildResourceBindings(updateReason);
@@ -1248,6 +1360,17 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
+			{
+				// Add the current dictionaries to the resolver scope,
+				// this allows for StaticResource.ResourceKey to resolve properly
+
+				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
+				{
+					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
+				}
+			}
+
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
@@ -1266,23 +1389,27 @@ namespace Windows.UI.Xaml
 					SetResourceBindingValue(property, binding, value);
 				}
 			}
+
+			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
+			{
+				foreach (var dict in dictionariesInScope)
+				{
+					ResourceResolver.PopSourceFromScope();
+				}
+			}
 		}
 
 		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
 		{
-			var convertedValue = BindingPropertyHelper.Convert(() => property.Type, value);
+			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
 			if (binding.SetterBindingPath != null)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isSettingPersistentResourceBinding = binding.IsPersistent;
 					binding.SetterBindingPath.Value = convertedValue;
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					_isSettingPersistentResourceBinding = false;
 				}
@@ -1319,6 +1446,8 @@ namespace Windows.UI.Xaml
 					// Call OnThemeChanged after bindings of descendants have been updated
 					themeChangeAware.OnThemeChanged();
 				}
+
+				_properties.OnThemeChanged();
 			}
 		}
 
@@ -1331,24 +1460,7 @@ namespace Windows.UI.Xaml
 		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			_isUpdatingChildResourceBindings = true;
-			foreach (var child in GetChildrenDependencyObjects())
-			{
-				if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
-				{
-					storeProvider.Store.UpdateResourceBindings(updateReason);
-				}
-			}
-		}
 
-		/// <summary>
-		/// Returns all discoverable child dependency objects.
-		/// </summary>
-		/// <remarks>
-		/// This method is potentially slow and should only be used where performance isn't a concern (eg updating resource bindings
-		/// when the app theme changes).
-		/// </remarks>
-		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
-		{
 			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
 				if (propertyDetail == null
@@ -1367,7 +1479,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in dependencyObjectCollection)
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
@@ -1375,23 +1487,31 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
 				if (propertyValue is DependencyObject dependencyObject)
 				{
-					yield return dependencyObject;
+					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason);
 				}
+			}
+		}
+
+		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason)
+		{
+			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
+			{
+				storeProvider.Store.UpdateResourceBindings(updateReason);
 			}
 		}
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
+		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
 		{
-			if (containingDictionary != null)
+			if (containingDictionary is not null)
 			{
 				yield return containingDictionary;
 			}
@@ -1399,13 +1519,13 @@ namespace Windows.UI.Xaml
 			var candidate = ActualInstance;
 			var candidateFE = candidate as FrameworkElement;
 
-			while (candidate != null)
+			while (candidate is not null)
 			{
 				var parent = candidate.GetParent() as DependencyObject;
 
-				if (candidateFE != null)
+				if (candidateFE is not null)
 				{
-					if (candidateFE.Resources != null) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (candidateFE.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
 						yield return candidateFE.Resources;
 					}
@@ -1427,6 +1547,7 @@ namespace Windows.UI.Xaml
 					candidate = parent;
 				}
 			}
+
 			if (includeAppResources && Application.Current != null)
 			{
 				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
@@ -1453,8 +1574,14 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Propagate the current inheritable properties to the registered children.
 		/// </summary>
-		internal void PropagateInheritedProperties(DependencyObjectStore? childStore = null)
+		private void PropagateInheritedProperties(DependencyObjectStore? childStore = null)
 		{
+			if (childStore is null && _childrenStores.Count == 0)
+			{
+				// Avoid doing any unnecessary work.
+				return;
+			}
+
 			// Raise the property change for the current values
 			var props = DependencyProperty.GetFrameworkPropertiesForType(_originalObjectType, FrameworkPropertyMetadataOptions.Inherits);
 
@@ -1466,14 +1593,10 @@ namespace Windows.UI.Xaml
 				for (var propertyIndex = 0; propertyIndex < props.Length; propertyIndex++)
 				{
 					var prop = props[propertyIndex];
-
-					store.OnParentPropertyChangedCallback(instanceRef, prop, new DependencyPropertyChangedEventArgs(
-						prop,
-						null,
-						DependencyPropertyValuePrecedences.DefaultValue,
-						GetValue(prop),
-						DependencyPropertyValuePrecedences.Inheritance
-					));
+					if (!IsTemplatedParentFrozen || prop != TemplatedParentProperty)
+					{
+						store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
+					}
 				}
 			}
 
@@ -1483,9 +1606,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				for (var childStoreIndex = 0; childStoreIndex < _childrenStores.Count; childStoreIndex++)
+				var localChildrenStores = _childrenStores;
+				for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
 				{
-					var child = _childrenStores[childStoreIndex];
+					var child = localChildrenStores[childStoreIndex];
 					Propagate(child);
 				}
 			}
@@ -1495,6 +1619,12 @@ namespace Windows.UI.Xaml
 
 		private void PropagateInheritedNonLocalProperties(DependencyObjectStore? childStore)
 		{
+			if (_inheritedForwardedProperties.Count == 0)
+			{
+				// Avoid unnecessary AncestorsDictionary allocation and ActualInstance resolution.
+				return;
+			}
+
 			// Propagate the properties that have been inherited from an other
 			// parent, but that are not defined in the current instance.
 			// This is used when a child is being added after the parent has already set its inheritable
@@ -1527,15 +1657,9 @@ namespace Windows.UI.Xaml
 						store.OnParentPropertyChangedCallback(
 							sourceInstanceProperties.Value,
 							sourceInstanceProperties.Key,
-							new DependencyPropertyChangedEventArgs(
-								sourceInstanceProperties.Key,
-								null,
-								DependencyPropertyValuePrecedences.DefaultValue,
 
-								// Get the value from the parent that holds the master value
-								(sourceInstanceProperties.Value.Target as DependencyObject)?.GetValue(sourceInstanceProperties.Key),
-								DependencyPropertyValuePrecedences.Inheritance
-							)
+							// Get the value from the parent that holds the master value
+							(sourceInstanceProperties.Value.Target as DependencyObject)?.GetValue(sourceInstanceProperties.Key)
 						);
 					}
 
@@ -1545,9 +1669,10 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						for (var i = 0; i < _childrenStores.Count; i++)
+						var localChildrenStores = _childrenStores;
+						for (var i = 0; i < localChildrenStores.Count; i++)
 						{
-							Propagate(_childrenStores[i]);
+							Propagate(localChildrenStores[i]);
 						}
 					}
 				}
@@ -1585,11 +1710,7 @@ namespace Windows.UI.Xaml
 #if DEBUG
 					if (instance != null)
 					{
-						if (!hashSet.Contains(instance!))
-						{
-							hashSet.Add(instance);
-						}
-						else
+						if (!hashSet.Add(instance))
 						{
 							throw new Exception($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
 						}
@@ -1627,19 +1748,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return isAncestor;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool HasInherits(DependencyPropertyDetails propertyDetails)
-		{
-			var metadata = propertyDetails.Metadata;
-
-			if (metadata is FrameworkPropertyMetadata frameworkMetadata)
-			{
-				return frameworkMetadata.Options.HasInherits();
-			}
-
-			return false;
 		}
 
 		public DependencyObject? ActualInstance
@@ -1692,7 +1800,7 @@ namespace Windows.UI.Xaml
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
 			weakDelegate =
-				(instance, s, e) => (wr.Target as ExplicitPropertyChangedCallback)?.Invoke(instance, s, e);
+				(instance, s, e) => (!wr.IsDisposed ? wr.Target as ExplicitPropertyChangedCallback : null)?.Invoke(instance, s, e);
 
 			weakRelease = new WeakReferenceReturnDisposable(wr);
 		}
@@ -1790,15 +1898,21 @@ namespace Windows.UI.Xaml
 
 				if (frameworkPropertyMetadata.Options.HasAffectsRender())
 				{
-					actualInstanceAlias.InvalidateRender();
+					// Uno TODO: What should we do here for non-UIElements (if anything is needed)?
+					if (actualInstanceAlias is UIElement elt)
+					{
+						var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt);
+						visual.Compositor.InvalidateRender(visual);
+					}
 				}
 
 				// Raise the property change for generic handlers for inheritance
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
-					for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
+					var localChildrenStores = _childrenStores;
+					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 					{
-						CallChildCallback(_childrenStores[storeIndex], instanceRef, property, eventArgs);
+						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
 					}
 				}
 			}
@@ -1835,12 +1949,13 @@ namespace Windows.UI.Xaml
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
-			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 			// Raise the property change for generic handlers
-			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
+			var currentCallbacks = _genericCallbacks.Data;
+			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
-				var callback = _genericCallbacks.Data[callbackIndex];
+				var callback = currentCallbacks[callbackIndex];
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
 		}
@@ -1848,19 +1963,16 @@ namespace Windows.UI.Xaml
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				if (propagateUnregistering)
 				{
 					childStore._parentUnregisteringInheritedProperties = true;
 				}
-				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+
+				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs.NewValue);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				if (propagateUnregistering)
 				{
@@ -1907,7 +2019,7 @@ namespace Windows.UI.Xaml
 			{
 				if (value?.GetType() != propertyDetails.Property.Type)
 				{
-					value = Convert.ChangeType(value, propertyDetails.Property.Type);
+					value = Convert.ChangeType(value, propertyDetails.Property.Type, CultureInfo.CurrentCulture);
 				}
 			}
 
@@ -1946,9 +2058,10 @@ namespace Windows.UI.Xaml
 				{
 					var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
 
-					for (var parentCallbackIndex = 0; parentCallbackIndex < _parentChangedCallbacks.Data.Length; parentCallbackIndex++)
+					var currentCallbacks = _parentChangedCallbacks.Data;
+					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Length; parentCallbackIndex++)
 					{
-						var handler = _parentChangedCallbacks.Data[parentCallbackIndex];
+						var handler = currentCallbacks[parentCallbackIndex];
 						handler.Invoke(actualInstanceAlias, null, args);
 					}
 				}

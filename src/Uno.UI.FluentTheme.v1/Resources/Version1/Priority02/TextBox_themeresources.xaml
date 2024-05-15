@@ -105,7 +105,6 @@
         <!--UNO TODO: TextCommandBarFlyout isn't implemented but ContextFlyout is mapped to long-press on some platforms, causing an undismissable invisible popup to appear-->
         <!--<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />-->
         <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
-        <Setter Property="ErrorTemplate" Value="{StaticResource DefaultInputValidationErrorTemplate}" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>

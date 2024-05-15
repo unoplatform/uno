@@ -1,43 +1,57 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 using SkiaSharp;
+using Uno.UI.Composition;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition;
+
+public partial class ShapeVisual
 {
-	public partial class ShapeVisual
+	private protected override void ApplyClipping(in SKCanvas canvas)
 	{
-		internal override void Render(SKSurface surface)
+		base.ApplyClipping(in canvas);
+		if (GetViewBoxPathInElementCoordinateSpace() is { } path)
 		{
-			foreach(var shape in Shapes)
+			canvas.ClipPath(path, antialias: true);
+		}
+	}
+
+	/// <inheritdoc />
+	internal override void Paint(in PaintingSession session)
+	{
+		if (_shapes is { Count: not 0 } shapes)
+		{
+			for (var i = 0; i < shapes.Count; i++)
 			{
-				surface.Canvas.Save();
-
-				var visualMatrix = surface.Canvas.TotalMatrix;
-
-				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(shape.Offset.X, shape.Offset.Y));
-
-				if (shape.Scale != new Vector2(1, 1))
-				{
-					visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateScale(shape.Scale.X, shape.Scale.Y));
-				}
-
-				if (shape.RotationAngleInDegrees != 0)
-				{
-					visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateRotationDegrees(shape.RotationAngleInDegrees, shape.CenterPoint.X, shape.CenterPoint.Y));
-				}
-
-				if (shape.TransformMatrix != Matrix3x2.Identity)
-				{
-					visualMatrix = visualMatrix.PreConcat(shape.TransformMatrix.ToSKMatrix44().Matrix);
-				}
-
-				surface.Canvas.SetMatrix(visualMatrix);
-
-				shape.Render(surface);
-
-				surface.Canvas.Restore();
+				shapes[i].Render(in session);
 			}
 		}
+
+		base.Paint(in session);
+	}
+
+	internal SKPath? GetViewBoxPathInElementCoordinateSpace()
+	{
+		if (ViewBox is not { } viewBox)
+		{
+			return null;
+		}
+
+		var shape = new SKPath();
+		var clipRect = new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y);
+		shape.AddRect(clipRect);
+		if (viewBox.IsAncestorClip)
+		{
+			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
+			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
+			if (!childToParentTransform.IsIdentity)
+			{
+
+				shape.Transform(childToParentTransform.ToSKMatrix());
+			}
+		}
+
+		return shape;
 	}
 }

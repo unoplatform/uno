@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
 	[TestClass]
-	class Given_MatrixTranform
+	public class Given_MatrixTranform
 	{
 		[TestMethod]
 		public Task When_Identity_And_TransformPoint() =>
@@ -124,7 +124,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	public class MatrixHelper
 	{
 		public static Matrix FromMatrix3x2(Matrix3x2 m) =>
-			new Matrix {
+			new Matrix
+			{
 				M11 = m.M11,
 				M12 = m.M12,
 				M21 = m.M21,
@@ -145,7 +146,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		internal static Matrix Create(int M11, int M12, int M21, int M22, int OffsetX, int OffsetY)
 		{
-			return new Matrix {
+			return new Matrix
+			{
 				M11 = M11,
 				M12 = M12,
 				M21 = M21,

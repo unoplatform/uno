@@ -1,14 +1,17 @@
-﻿using System;
+﻿
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
-#if NETFX_CORE
+using MUXControlsTestApp.Utilities;
+using System.Linq;
+
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -24,22 +27,35 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static UIElement _originalWindowContent = null;
+			private static UIElement _originalWindowContent;
+
+			public static XamlRoot XamlRoot { get; set; }
+
+			public static bool IsXamlIsland { get; set; }
+
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
 
 			public static bool UseActualWindowRoot { get; set; }
 
 			public static UIElement WindowContent
 			{
 				get => UseActualWindowRoot
-					? Windows.UI.Xaml.Window.Current.Content
+					? (IsXamlIsland ? GetXamlIslandRootContentControl().Content as UIElement : CurrentTestWindow.Content)
 					: EmbeddedTestRoot.getContent?.Invoke();
 				internal set
 				{
 					if (UseActualWindowRoot)
 					{
-						Windows.UI.Xaml.Window.Current.Content = value;
+						if (IsXamlIsland)
+						{
+							GetXamlIslandRootContentControl().Content = value;
+						}
+						else
+						{
+							CurrentTestWindow.Content = value;
+						}
 					}
-					else if (EmbeddedTestRoot.setContent is {} setter)
+					else if (EmbeddedTestRoot.setContent is { } setter)
 					{
 						setter(value);
 					}
@@ -50,25 +66,55 @@ namespace Private.Infrastructure
 				}
 			}
 
+			private static ContentControl GetXamlIslandRootContentControl()
+			{
+				var islandContentRoot = EmbeddedTestRoot.control.XamlRoot.Content;
+				if (islandContentRoot is not ContentControl contentControl)
+				{
+					contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(islandContentRoot);
+				}
+
+				return contentControl;
+			}
+
 			public static void SaveOriginalWindowContent()
 			{
-				_originalWindowContent = Windows.UI.Xaml.Window.Current.Content;
+				if (IsXamlIsland)
+				{
+					_originalWindowContent = GetXamlIslandRootContentControl().Content as UIElement;
+				}
+				else
+				{
+					_originalWindowContent = CurrentTestWindow.Content;
+				}
 			}
 
 			public static void RestoreOriginalWindowContent()
 			{
 				if (_originalWindowContent != null)
 				{
-					Windows.UI.Xaml.Window.Current.Content = _originalWindowContent;
+					if (IsXamlIsland)
+					{
+						GetXamlIslandRootContentControl().Content = _originalWindowContent;
+					}
+					else
+					{
+						CurrentTestWindow.Content = _originalWindowContent;
+					}
 					_originalWindowContent = null;
 				}
 			}
 
 			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
-			public static UIElement RootElement => UseActualWindowRoot
-				? Windows.UI.Xaml.Window.Current.Content
-				: EmbeddedTestRoot.control;
+			public static UIElement RootElement => UseActualWindowRoot ?
+				XamlRoot.Content : EmbeddedTestRoot.control;
+
+			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
+			// not on the UI thread will throw an exception in WinUI.
+			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
+				? (CurrentTestWindow is { } ? UnitTestDispatcherCompat.From(CurrentTestWindow) : UnitTestDispatcherCompat.Instance)
+				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -85,8 +131,8 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
-				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
-				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
 
 			/// <summary>
@@ -98,7 +144,7 @@ namespace Private.Infrastructure
 			/// This method assumes that the control will have a non-zero size once loaded, so it's not appropriate for elements that are
 			/// collapsed, empty, etc.
 			/// </remarks>
-			internal static async Task WaitForLoaded(FrameworkElement element)
+			internal static async Task WaitForLoaded(FrameworkElement element, int timeoutMS = 1000)
 			{
 				async Task Do()
 				{
@@ -123,12 +169,14 @@ namespace Private.Infrastructure
 						return true;
 					}
 
-					await WaitFor(IsLoaded, message: $"{element} loaded");
+					await WaitFor(IsLoaded, message: $"{element} loaded", timeoutMS: timeoutMS);
 				}
 #if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
 				await Do();
 #else
-				if (element.Dispatcher.HasThreadAccess)
+				var dispatcher = UnitTestDispatcherCompat.From(element);
+
+				if (dispatcher.HasThreadAccess)
 				{
 					await Do();
 				}
@@ -136,7 +184,7 @@ namespace Private.Infrastructure
 				{
 					TaskCompletionSource<bool> cts = new();
 
-					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+					_ = dispatcher.RunAsync(() =>
 					{
 						try
 						{
@@ -366,6 +414,20 @@ namespace Private.Infrastructure
 			internal static void ResetWindowContentAndWaitForIdle()
 			{
 
+			}
+
+			internal static void CloseAllSecondaryWindows()
+			{
+#if HAS_UNO_WINUI && !WINAPPSDK
+				var windows = Uno.UI.ApplicationHelper.Windows.ToArray();
+				foreach (var window in windows)
+				{
+					if (window != TestServices.WindowHelper.XamlRoot.HostWindow)
+					{
+						window.Close();
+					}
+				}
+#endif
 			}
 		}
 	}

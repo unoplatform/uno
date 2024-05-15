@@ -20,20 +20,20 @@ namespace SamplesApp.UITests.Runtime
 	public partial class RuntimeTests : SampleControlUITestBase
 	{
 		private const string PendingTestsText = "Pending...";
-		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
+		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(5);
 		private const string TestResultsOutputFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH";
 		private const string TestResultsOutputTempFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_TEMP_FILE_PATH";
 		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
 		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 
 		[Test]
-		[AutoRetry(tryCount: 1)]
+		[AutoRetry(tryCount: 2)]
 		// [Timeout(3000000)] // Timeout is now moved to individual platorms runners configuration in CI
 		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
 
-			IAppQuery AllQuery(IAppQuery query) 
+			IAppQuery AllQuery(IAppQuery query)
 				// .All() is not yet supported for wasm.
 				=> AppInitializer.GetLocalPlatform() == Platform.Browser ? query : query.All();
 
@@ -67,12 +67,13 @@ namespace SamplesApp.UITests.Runtime
 			var lastChange = DateTimeOffset.Now;
 			var lastValue = "";
 
-			while(DateTimeOffset.Now - lastChange < TestRunTimeout)
+			while (DateTimeOffset.Now - lastChange < TestRunTimeout)
 			{
 				var newValue = await GetWithRetry("GetRunTestCount", () => unitTestsControl.GetDependencyPropertyValue("RunTestCountForUITest")?.ToString());
 
 				if (lastValue != newValue)
 				{
+					lastValue = newValue;
 					lastChange = DateTimeOffset.Now;
 				}
 
@@ -103,7 +104,7 @@ namespace SamplesApp.UITests.Runtime
 				Assert.Fail($"{tests.Length} unit test(s) failed (count={count}).\n\tFailing Tests:\n{string.Join("", tests)}\n\n---\n\tDetails:\n{details}");
 			}
 
-			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
+			TakeScreenshot("Runtime Tests Results", ignoreInSnapshotCompare: true);
 		}
 
 		async Task<T> GetWithRetry<T>(string logName, Func<T> getter, int timeoutSeconds = 120)

@@ -6,7 +6,7 @@ namespace Windows.Data.Xml.Dom
 	public partial class XmlProcessingInstruction : IXmlNode, IXmlNodeSerializer, IXmlNodeSelector
 	{
 		private readonly XmlDocument _owner;
-		internal readonly SystemProcessingInstruction _backingProcessingInstruction = null;
+		internal readonly SystemProcessingInstruction _backingProcessingInstruction;
 
 		public XmlProcessingInstruction(XmlDocument owner, SystemProcessingInstruction backingProcessingInstruction)
 		{

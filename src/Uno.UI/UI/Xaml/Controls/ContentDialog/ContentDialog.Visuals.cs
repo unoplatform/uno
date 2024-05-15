@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 //// Copyright (c) Microsoft Corporation. All rights reserved.
 //// Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -6,10 +6,11 @@ using System;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ContentDialog
 	{
@@ -25,12 +26,15 @@ namespace Windows.UI.Xaml.Controls
 		};
 
 		PlacementMode m_placementMode = PlacementMode.Undetermined;
-		bool m_hideInProgress = false;
-		bool m_hasPreparedContent = false;
-		bool m_isShowing = false;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+		bool m_hideInProgress;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+
+		bool m_hasPreparedContent;
+		bool m_isShowing;
 		Storyboard? m_layoutAdjustmentsForInputPaneStoryboard;
 
-		double m_dialogMinHeight = 0;
+		double m_dialogMinHeight;
 		#endregion
 
 		private protected override void ChangeVisualState(bool useTransitions)
@@ -160,6 +164,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private void ResetAndPrepareContent()
 		{
 			// Uno TODO: understand when this is applicable (seemingly while dialog is open?)
@@ -169,6 +174,7 @@ namespace Windows.UI.Xaml.Controls
 			//	PrepareContent();
 			//}
 		}
+#endif
 
 		private void PrepareContent()
 		{
@@ -201,7 +207,23 @@ namespace Windows.UI.Xaml.Controls
 			double xOffset = 0;
 			double yOffset = 0;
 
-			var windowBounds = Xaml.Window.Current.Bounds;
+			if (XamlRoot is null)
+			{
+				if (this is not MessageDialogContentDialog)
+				{
+					throw new InvalidOperationException(
+						"Trying to set position of the dialog before it is associated with a visual tree. " +
+						"This can happen if the dialog's XamlRoot was not set.");
+				}
+				else
+				{
+					throw new InvalidOperationException(
+						"Trying to set position of the dialog before it is associated with a visual tree. " +
+						"Make sure to use InitializeWithWindow before calling ShowAsync.");
+				}
+			}
+
+			var xamlRootSize = XamlRoot.Size;
 
 			var flowDirection = FlowDirection;
 
@@ -211,13 +233,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if (m_placementMode == PlacementMode.EntireControlInPopup)
 			{
-				Height = windowBounds.Height;
-				Width = windowBounds.Width;
+				Height = xamlRootSize.Height;
+				Width = xamlRootSize.Width;
 			}
 			else if (m_tpLayoutRootPart != null)
 			{
-				m_tpLayoutRootPart.Height = windowBounds.Height;
-				m_tpLayoutRootPart.Width = windowBounds.Width;
+				m_tpLayoutRootPart.Height = xamlRootSize.Height;
+				m_tpLayoutRootPart.Width = xamlRootSize.Width;
 			}
 
 			// Uno - omitted code related to display regions, which aren't currently supported

@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.MigrateTimeEntryUI
+---
+
 # Migrating the time entry UI
 
 Migrate the time entry UI.

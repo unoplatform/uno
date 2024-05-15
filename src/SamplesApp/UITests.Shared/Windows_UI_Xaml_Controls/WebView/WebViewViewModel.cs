@@ -16,7 +16,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.WebView
 	</body>
 </html>";
 
-		public WebViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public WebViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

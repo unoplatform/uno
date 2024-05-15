@@ -4,12 +4,9 @@ using System.Text;
 using CoreGraphics;
 using UIKit;
 using Foundation;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// This is set as a placeholder in the constructor of <see cref="NativeListViewBase"/>. It should normally never be used when the list is actually visible.

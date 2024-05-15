@@ -5,6 +5,7 @@ steps:
     inputs:
       SourceFolder: $(build.sourcesdirectory)
       Contents: |
+        **/Uno.Sdk/bin/**/*.nupkg
         **/bin/**/*.dll
         **/bin/**/*.pdb
         **/bin/**/*.xml
@@ -12,10 +13,9 @@ steps:
         **/bin/**/*.xaml
         **/bin/**/*.pri
         **/bin/**/*.aar
-        **/bin/**/*.vsix
         **/bin/**/*.json
         **/bin/**/*.config
-      TargetFolder: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
+      TargetFolder: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false

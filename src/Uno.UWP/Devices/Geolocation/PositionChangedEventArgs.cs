@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	public  partial class PositionChangedEventArgs 
+	public partial class PositionChangedEventArgs
 	{
 		internal PositionChangedEventArgs(Geoposition position) =>
 			Position = position;

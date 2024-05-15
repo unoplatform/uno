@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Grid
 	{
@@ -10,7 +10,7 @@
 		{
 			get
 			{
-				if(m_pRowDefinitions == null)
+				if (m_pRowDefinitions == null)
 				{
 					m_pRowDefinitions = new RowDefinitionCollection(this);
 					m_pRowDefinitions.CollectionChanged += (snd, evt) => InvalidateDefinitions();

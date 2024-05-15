@@ -5,14 +5,14 @@
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:u="using:Uno.UI.Controls"
-					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:ios="http://uno.ui/ios"
 					xmlns:android="http://uno.ui/android"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					xmlns:wasm="http://uno.ui/wasm"
-					mc:Ignorable="d xamarin ios android not_wasm wasm">
+					mc:Ignorable="d not_win ios android not_wasm wasm">
 	
-	<!-- Resources for Windows.UI.Xaml.Controls.ContentDialog -->
+	<!-- Resources for Microsoft.UI.Xaml.Controls.ContentDialog -->
 	<StaticResource x:Key="ContentDialogForeground" ResourceKey="SystemControlPageTextBaseHighBrush" />
 	<StaticResource x:Key="ContentDialogBackground" ResourceKey="SystemControlPageBackgroundAltHighBrush" />
 	<StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -20,7 +20,7 @@
 	<Thickness x:Key="ContentDialogCommandSpaceMargin">0,24,0,0</Thickness>
 	<Thickness x:Key="ContentDialogPadding">24,18,24,24</Thickness>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ContentDialog -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ContentDialog -->
   <Style TargetType="ContentDialog">
 	<Setter Property="Foreground" Value="{ThemeResource ContentDialogForeground}" />
 	<Setter Property="Background" Value="{ThemeResource ContentDialogBackground}" />

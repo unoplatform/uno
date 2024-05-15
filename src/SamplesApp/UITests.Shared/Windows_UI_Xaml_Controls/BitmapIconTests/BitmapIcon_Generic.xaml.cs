@@ -1,17 +1,17 @@
 ﻿using Uno.UI.Samples.Controls;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.BitmapIconTests
 {
 	[Sample("Icons")]
 	public sealed partial class BitmapIcon_Generic : UserControl
-    {
-        public BitmapIcon_Generic()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public BitmapIcon_Generic()
+		{
+			this.InitializeComponent();
+		}
 
 		private void OnClick(object sender, object args)
 		{

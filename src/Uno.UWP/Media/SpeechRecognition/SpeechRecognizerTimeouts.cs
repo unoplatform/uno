@@ -2,7 +2,7 @@ using System;
 
 namespace Windows.Media.SpeechRecognition
 {
-	public  partial class SpeechRecognizerTimeouts
+	public partial class SpeechRecognizerTimeouts
 	{
 		public TimeSpan InitialSilenceTimeout { get; set; }
 

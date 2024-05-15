@@ -6,20 +6,26 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.UI;
+using Uno.Disposables;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageBrush : Brush
 	{
+		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+
+#pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
+#pragma warning restore CS0067 // The event 'ImageBrush.ImageFailed' is never used
 
 		#region AlignmentX DP
-		public static DependencyProperty AlignmentXProperty { get ; } =
+		public static DependencyProperty AlignmentXProperty { get; } =
 			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentX.Center));
 
 #if __WASM__
@@ -33,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region AlignmentY DP
-		public static DependencyProperty AlignmentYProperty { get ; } =
+		public static DependencyProperty AlignmentYProperty { get; } =
 			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentY.Center));
 
 #if __WASM__
@@ -47,12 +53,12 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region Stretch DP
-		public static DependencyProperty StretchProperty { get ; } =
+		public static DependencyProperty StretchProperty { get; } =
 		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
 
 #if __WASM__
 		[NotImplemented]
-#endif		
+#endif
 		public Stretch Stretch
 		{
 			get => (Stretch)this.GetValue(StretchProperty);
@@ -63,7 +69,7 @@ namespace Windows.UI.Xaml.Media
 		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
 			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
-			((ImageBrush)s).OnSourceChangedPartial((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
+			((ImageBrush)s).OnSourceChanged((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
 
 		public ImageSource ImageSource
 		{
@@ -71,8 +77,47 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(ImageSourceProperty, value);
 		}
 
-		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue); 
+		private void OnSourceChanged(ImageSource newValue, ImageSource oldValue)
+		{
+			if (newValue is BitmapImage bitmapImage)
+			{
+				_sourceDisposable.Disposable = bitmapImage.RegisterDisposablePropertyChangedCallback(
+					BitmapImage.UriSourceProperty,
+					(_, _) => OnSourceChangedPartial(newValue, null)
+				);
+			}
+			else
+			{
+				_sourceDisposable.Disposable = null;
+			}
+
+			OnSourceChangedPartial(newValue, oldValue);
+		}
+
+		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
 		#endregion
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == ImageSourceProperty)
+			{
+				OnImageSourceChanged(this, args);
+			}
+		}
+
+		private static void OnImageSourceChanged(ImageBrush brush, DependencyPropertyChangedEventArgs args)
+		{
+			if (args.OldValue is ImageSource oldSource)
+			{
+				oldSource.Invalidated -= brush.OnInvalidateRender;
+			}
+
+			if (args.NewValue is ImageSource newSource)
+			{
+				newSource.Invalidated += brush.OnInvalidateRender;
+			}
+		}
 
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
 		{
@@ -111,7 +156,7 @@ namespace Windows.UI.Xaml.Media
 		private Point GetArrangedImageLocation(Size finalSize, Size targetSize)
 		{
 			var location = new Point(
-				targetSize.Width - finalSize.Width, 
+				targetSize.Width - finalSize.Width,
 				targetSize.Height - finalSize.Height
 			);
 
@@ -146,6 +191,7 @@ namespace Windows.UI.Xaml.Media
 			return location;
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __CROSSRUNTIME__
 		private void OnImageOpened()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -165,5 +211,6 @@ namespace Windows.UI.Xaml.Media
 
 			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to open"));
 		}
+#endif
 	}
 }

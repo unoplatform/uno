@@ -4,7 +4,7 @@ using System;
 
 namespace Windows.Devices.Geolocation
 {
-	public  partial class Geocoordinate 
+	public partial class Geocoordinate
 	{
 		public Geocoordinate(
 			double latitude,
@@ -37,26 +37,26 @@ namespace Windows.Devices.Geolocation
 
 		public double Accuracy { get; }
 
-		public  double? Altitude { get; }
+		public double? Altitude { get; }
 
-		public  double? AltitudeAccuracy { get; }
+		public double? AltitudeAccuracy { get; }
 
-		public  double? Heading { get; }
+		public double? Heading { get; }
 
-		public  double Latitude { get; }
+		public double Latitude { get; }
 
-		public  double Longitude { get; }
+		public double Longitude { get; }
 
-		public  double? Speed { get; }
+		public double? Speed { get; }
 
-		public  global::System.DateTimeOffset Timestamp { get; }
+		public global::System.DateTimeOffset Timestamp { get; }
 
-		public  global::Windows.Devices.Geolocation.Geopoint Point { get; }
+		public global::Windows.Devices.Geolocation.Geopoint Point { get; }
 
-		public  global::Windows.Devices.Geolocation.PositionSource PositionSource { get; }
+		public global::Windows.Devices.Geolocation.PositionSource PositionSource { get; }
 
-		public  global::Windows.Devices.Geolocation.GeocoordinateSatelliteData SatelliteData { get; }
+		public global::Windows.Devices.Geolocation.GeocoordinateSatelliteData SatelliteData { get; }
 
-		public  global::System.DateTimeOffset? PositionSourceTimestamp { get; }
+		public global::System.DateTimeOffset? PositionSourceTimestamp { get; }
 	}
 }

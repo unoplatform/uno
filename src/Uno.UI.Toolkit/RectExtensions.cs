@@ -8,9 +8,25 @@ using Windows.Graphics.Display;
 
 namespace Uno.UI.Toolkit.Extensions
 {
-    internal static class RectExtensions
+	internal static class RectExtensions
 	{
-#if !XAMARIN && !UNO_REFERENCE_API
+#if !HAS_UNO
+		/// <summary>
+		/// Gets the center of the rectangle.
+		/// </summary>
+		/// <param name="rect">A rectangle.</param>
+		/// <returns>The center of the rectangle.</returns>
+		public static Point GetCenter(this Rect rect)
+			=> new(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+
+		/// <summary>
+		/// Gets the center of the rectangle.
+		/// </summary>
+		/// <param name="rect">A rectangle.</param>
+		/// <returns>The center of the rectangle.</returns>
+		public static Point GetLocation(this Rect rect)
+			=> new(rect.X, rect.Y);
+
 		/// <summary>
 		/// Returns the orientation of the rectangle.
 		/// </summary>
@@ -30,7 +46,7 @@ namespace Uno.UI.Toolkit.Extensions
 			{
 				return DisplayOrientations.None;
 			}
-		} 
+		}
 #endif
 	}
 }

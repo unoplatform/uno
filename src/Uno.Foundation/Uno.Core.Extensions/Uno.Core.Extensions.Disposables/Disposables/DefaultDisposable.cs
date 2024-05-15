@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,26 +18,26 @@ using System;
 
 namespace Uno.Disposables
 {
-    /// <summary>
-    /// Represents a disposable that does nothing on disposal.
-    /// </summary>
-    internal sealed class DefaultDisposable : IDisposable
-    {
-        /// <summary>
-        /// Singleton default disposable.
-        /// </summary>
-        public static readonly DefaultDisposable Instance = new DefaultDisposable();
+	/// <summary>
+	/// Represents a disposable that does nothing on disposal.
+	/// </summary>
+	internal sealed class DefaultDisposable : IDisposable
+	{
+		/// <summary>
+		/// Singleton default disposable.
+		/// </summary>
+		public static readonly DefaultDisposable Instance = new DefaultDisposable();
 
-        private DefaultDisposable()
-        {
-        }
+		private DefaultDisposable()
+		{
+		}
 
-        /// <summary>
-        /// Does nothing.
-        /// </summary>
-        public void Dispose()
-        {
-            // no op
-        }
-    }
+		/// <summary>
+		/// Does nothing.
+		/// </summary>
+		public void Dispose()
+		{
+			// no op
+		}
+	}
 }

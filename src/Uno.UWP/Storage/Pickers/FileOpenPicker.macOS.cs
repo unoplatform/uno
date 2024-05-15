@@ -12,12 +12,14 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
+		private static readonly string[] _asteriskArray = new string[] { "*" };
+
 		private const int ModalResponseOk = 1;
 
 		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var files = PickFiles(false, token);
-			return Task.FromResult<StorageFile?>(files.FirstOrDefault());
+			return Task.FromResult<StorageFile?>(files.Count == 0 ? null : files[0]);
 		}
 
 		private Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token) =>
@@ -52,7 +54,7 @@ namespace Windows.Storage.Pickers
 				{
 					var files = openPanel.Urls
 						.Where(url => url?.Path != null)
-						.Select(url => StorageFile.GetFileFromPath(url.Path))
+						.Select(url => StorageFile.GetFileFromPath(url.Path!))
 						.ToArray();
 					return new FilePickerSelectedFilesArray(files);
 				}
@@ -62,7 +64,7 @@ namespace Windows.Storage.Pickers
 
 		private string[] GetFileTypes()
 		{
-			return FileTypeFilter.Except(new[] {"*"}).Select(ext => ext.TrimStart(new []{'.'})).ToArray();
+			return FileTypeFilter.Except(_asteriskArray).Select(ext => ext.TrimStart('.')).ToArray();
 		}
 	}
 }

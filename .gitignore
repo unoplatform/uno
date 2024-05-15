@@ -3,6 +3,7 @@
 
 # Remove everything beginning with a dot
 .*/
+!.config/
 !.github/
 !.devcontainer/
 
@@ -14,6 +15,7 @@ thumbs.db
 umbrella_installlog.txt
 Resource.Designer.cs
 *.g.cs
+!**/XamlCodeGeneratorTests/Out/**/*.g.cs
 
 # User-specific files
 *.suo
@@ -257,3 +259,5 @@ src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts
 
 # external docs
 doc/articles/external
+
+mergedstyles.xaml

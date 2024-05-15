@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Common;
@@ -6,17 +6,20 @@ using MUXControlsTestApp.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -27,18 +30,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
-	using ElementFactoryGetArgs = Microsoft.UI.Xaml.Controls.ElementFactoryGetArgs;
-	using ElementFactoryRecycleArgs = Microsoft.UI.Xaml.Controls.ElementFactoryRecycleArgs;
-	using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-	using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-	using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
-	using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
+	using ElementFactoryGetArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryGetArgs;
+	using ElementFactoryRecycleArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryRecycleArgs;
+	using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+	using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+	using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
+	using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
 	using RepeaterTestHooks = Microsoft.UI.Private.Controls.RepeaterTestHooks;
-	using SelectTemplateEventArgs = Microsoft.UI.Xaml.Controls.SelectTemplateEventArgs;
-	using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-	using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
+	using SelectTemplateEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectTemplateEventArgs;
+	using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+	using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
 
 	[TestClass]
 	[RequiresFullWindow]
@@ -47,7 +50,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateRecycling()
 		{
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var elementFactory = new RecyclingElementFactory()
 				{
@@ -259,7 +262,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				);
 
 				await UpdateLayoutWithWaitAsync();
-				
+
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
 				{
@@ -381,14 +384,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		public async Task ValidateNoSizeWhenEmptyDataTemplate()
 		{
 			ItemsRepeater repeater = null;
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var elementFactory = new RecyclingElementFactory();
 				elementFactory.RecyclePool = new RecyclePool();
 				elementFactory.Templates["Item"] = (DataTemplate)XamlReader.Load(
 					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' />");
 
-				repeater = new ItemsRepeater() {
+				repeater = new ItemsRepeater()
+				{
 					ItemsSource = Enumerable.Range(0, 10).Select(i => string.Format("Item #{0}", i)),
 					ItemTemplate = elementFactory,
 					// Default is StackLayout, so do not have to explicitly set.
@@ -415,12 +419,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Height='0' /></DataTemplate>");
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
-				var selector = new MySelector() {
+				var selector = new MySelector()
+				{
 					TemplateOdd = dataTemplateOdd,
 					TemplateEven = dataTemplateEven
 				};
 
-				repeater = new ItemsRepeater() {
+				repeater = new ItemsRepeater()
+				{
 					ItemTemplate = selector,
 					Layout = new StackLayout(),
 					ItemsSource = Enumerable.Range(0, numItems)
@@ -459,7 +465,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateReyclingElementFactoryWithNoTemplate()
 		{
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var elementFactory = new RecyclingElementFactoryDerived()
 				{
@@ -523,7 +529,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			await RunOnUIThread.ExecuteAsync(async () =>
 			{
-				ValidateTemplateSwitchingRefreshesElements(new StackLayout());
+				await ValidateTemplateSwitchingRefreshesElements(new StackLayout());
 			});
 		}
 
@@ -532,7 +538,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			await RunOnUIThread.ExecuteAsync(async () =>
 			{
-				ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
+				await ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
 			});
 		}
 
@@ -595,7 +601,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				await UpdateLayoutWithWaitAsync();
 
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
-				
+
 				for (int i = 0; i < numItems; i++)
 				{
 					var element = (Button)repeater.TryGetElement(i);
@@ -625,7 +631,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						</DataTemplate>");
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
-				var selector = new MyContainerSelector() {
+				var selector = new MyContainerSelector()
+				{
 					TemplateOdd = dataTemplateOdd,
 					TemplateEven = dataTemplateEven
 				};
@@ -682,7 +689,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				try
 				{
 					await UpdateLayoutWithWaitAsync();
-				} catch(Exception e)
+				}
+				catch (Exception e)
 				{
 					threwException = true;
 					Verify.IsTrue(e.Message.Contains("Null encountered as data template. That is not a valid value for a data template, and can not be used."));
@@ -716,21 +724,21 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				Width = 400,
 				Height = 400,
-				ScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer()
+				ScrollViewer = new Microsoft.UI.Xaml.Controls.ScrollViewer()
 				{
 					Content = repeater
 				}
 			};
 		}
 
-		private List<UIElement> GetAllElementsFromPool(RecyclePool pool, string key="")
+		private List<UIElement> GetAllElementsFromPool(RecyclePool pool, string key = "")
 		{
 			List<UIElement> elements = new List<UIElement>();
 			bool poolEmpty = false;
-			while(!poolEmpty)
+			while (!poolEmpty)
 			{
 				var next = pool.TryGetElement(key);
-				if(next != null)
+				if (next != null)
 				{
 					elements.Add(next);
 				}

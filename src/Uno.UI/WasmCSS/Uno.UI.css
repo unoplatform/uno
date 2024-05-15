@@ -48,19 +48,18 @@ body {
     See WindowManager.ts on measureViewInternal() for more details.
   */
   transform: translate(0, 0);
-
   /*
     By default, the background of UWP controls is not drawn under the border of the control.
   */
   background-clip: padding-box;
 }
 
-.uno-uielement .noclip {
-  /* Used when we need to force the element to be unclipped.
+  .uno-uielement .noclip {
+    /* Used when we need to force the element to be unclipped.
       --> Used by the toolkit for elevation
   */
-  clip: auto !important;
-}
+    clip: auto !important;
+  }
 
 svg.uno-uielement {
   /*
@@ -69,8 +68,8 @@ svg.uno-uielement {
     This also ensure that we are HitTestVisible only for shapes that has a fill.
   */
   pointer-events: none;
-
   stroke-width: 1px; /* default value of Shape.StrokeThickness */
+  overflow: visible
 }
 
 .uno-frameworkelement.uno-unarranged {
@@ -130,15 +129,19 @@ embed.uno-frameworkelement.uno-unarranged {
 
 .uno-textblock {
   text-rendering: optimizeLegibility; /* iOS Safari */
-
   /* Following are required for gradient brush as Foreground on text. Should not affect normal rendering. */
   -ms-background-clip: text !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
-
   /* overflow:hidden is required for text-overflow: ellipsis to work correctly */
   overflow: hidden;
 }
+
+/* This fixes the issue for https://github.com/unoplatform/uno/issues/4563, but caused issues for ui tests */
+/*.uno-shape {
+    width: auto !important;
+    height: auto !important;
+}*/
 
 [data-use-hand-cursor-interaction="true"] .uno-buttonbase,
 [data-use-hand-cursor-interaction="true"] .uno-toggleswitch {
@@ -155,16 +158,33 @@ embed.uno-frameworkelement.uno-unarranged {
   background-color: transparent;
 }
 
+.uno-textbox {
+    cursor: text;
+}
+
+.uno-textboxview:-webkit-autofill,
+.uno-textboxview:-webkit-autofill:hover,
+.uno-textboxview:-webkit-autofill:focus {
+  /* Workaround based on https://stackoverflow.com/a/68240841 */
+  transition: background-color 600000s 0s, color 600000s 0s, background-image 600000s 0s, appearance 600000s 0s;
+}
+
 .uno-textelement {
   position: relative;
 }
 
-.uno-htmlimage {  
-  user-select: none;
+.uno-svgelement {
+  vector-effect: non-scaling-stroke
+}
+
+.uno-htmlimage {
   -moz-user-select: none;
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
 }
 
 .uno-scrollcontentpresenter {
@@ -188,9 +208,9 @@ embed.uno-frameworkelement.uno-unarranged {
     scrollbar-width: none; /* scrollbar-height has no effect on FF, using scrollbar-width works on all browsers (non standard property) */
   }
 
-  .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
-    height: 0;
-  }
+    .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
+      height: 0;
+    }
 
   .uno-scrollcontentpresenter.scroll-y-disabled {
     overflow-y: hidden;
@@ -201,9 +221,9 @@ embed.uno-frameworkelement.uno-unarranged {
     scrollbar-width: none;
   }
 
-  .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
-    width: 0;
-  }
+    .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
+      width: 0;
+    }
 
   .uno-scrollcontentpresenter.scroll-x-visible {
     overflow-x: scroll;
@@ -213,31 +233,33 @@ embed.uno-frameworkelement.uno-unarranged {
     overflow-y: scroll;
   }
 
+#uno-loading {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: var(--light-theme-bg-color, #F3F3F3);
+}
+
+@media (prefers-color-scheme: dark) {
+  #uno-loading {
+    background-color: var(--dark-theme-bg-color, #202020);
+  }
+}
+
+/* Splash image styling */
 .uno-splash {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-width: 620px;
-  width: calc(100vw - 10px);
+  max-width: min(90%, 620px);
+  max-height: min(90%, 300px);
+  width: auto;
   height: auto;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 620px 300px;
-}
-
-/* Bootstrapper logo override */
-.uno-loader .logo {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  max-width: 620px !important;
-  width: calc(100vw - 10px) !important;
-  height: auto !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: 620px 300px !important;
 }
 
 textarea {
@@ -248,4 +270,10 @@ textarea {
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
+}
+
+.selection-highlight::selection,
+.selection-highlight *::selection {
+  background: var(--selection-background);
+  color: var(--selection-color);
 }

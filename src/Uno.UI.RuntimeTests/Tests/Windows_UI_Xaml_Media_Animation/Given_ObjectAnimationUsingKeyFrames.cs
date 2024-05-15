@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE // Disabled on UWP as tests use Uno-specific APIs
+﻿#if !WINAPPSDK // Disabled on UWP as tests use Uno-specific APIs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +9,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using FluentAssertions;
 
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
+namespace Uno.UI.RuntimeTests
 {
 	[TestClass]
 	[RunsOnUIThread]
@@ -74,7 +74,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			await target.GetValue(ct, 3);
 			await Task.Yield();
 
-			target.History.Should().BeEquivalentTo(v1, v2, v3);
+			// v3 is repeated because the target property is not a DependencyProperty
+			// and no deduplication happens in the binding engine.
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -147,7 +149,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			await target.GetValue(ct, 3);
 			await Task.Yield();
 
-			target.History.Should().BeEquivalentTo(v1, v2, v3);
+			// v3 is repeated because the target property is not a DependencyProperty
+			// and no deduplication happens in the binding engine.
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -178,11 +182,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			await target.GetValue(ct, 9);
 			await Task.Yield();
 
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+			// v3 is repeated because the target property is not a DependencyProperty
+			// and no deduplication happens in the binding engine.
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3, v3);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
+#if __MACOS__ // #9282 for macOS
+		[Ignore]
+#endif
+#if __SKIA__
+		[Ignore("Flaky on Skia targets, see https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task When_RepeatDuration()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine

@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using System.Linq;
 using Uno.Disposables;
 using System.Collections.Specialized;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ItemCollection : IList<object>, IEnumerable<object>, IObservableVector<object>, IObservableVector
 	{
 		private readonly IList<object> _inner = new List<object>();
 
-		private IList<object> _itemsSource = null;
+		private IList<object> _itemsSource;
 		private readonly SerialDisposable _itemsSourceCollectionChangeDisposable = new SerialDisposable();
 
 		public event VectorChangedEventHandler<object> VectorChanged;
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count();
+		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count;
 
 		public uint Size => (uint)Count;
 

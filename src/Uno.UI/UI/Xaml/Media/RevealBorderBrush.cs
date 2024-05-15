@@ -1,11 +1,8 @@
-﻿
-namespace Windows.UI.Xaml.Media
-{
-	public partial class RevealBorderBrush : RevealBrush
-	{
-		public RevealBorderBrush()
-		{
+﻿namespace Microsoft.UI.Xaml.Media;
 
-		}
+public partial class RevealBorderBrush : RevealBrush
+{
+	public RevealBorderBrush()
+	{
 	}
 }

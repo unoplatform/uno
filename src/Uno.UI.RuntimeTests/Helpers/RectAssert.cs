@@ -8,12 +8,12 @@ namespace Uno.UI.RuntimeTests.Helpers
 {
 	internal static class RectAssert
 	{
-		public static void AreEqual(Rect expected, Rect actual, double delta = 1)
+		public static void AreEqual(Rect expected, Rect actual, double delta = 1, string message = default)
 		{
-			Assert.AreEqual(expected.Left, actual.Left, delta);
-			Assert.AreEqual(expected.Top, actual.Top, delta);
-			Assert.AreEqual(expected.Width, actual.Width, delta);
-			Assert.AreEqual(expected.Height, actual.Height, delta);
+			Assert.AreEqual(expected.Left, actual.Left, delta, $"[Left] {message}");
+			Assert.AreEqual(expected.Top, actual.Top, delta, $"[Top] {message}");
+			Assert.AreEqual(expected.Width, actual.Width, delta, $"[Width] {message}");
+			Assert.AreEqual(expected.Height, actual.Height, delta, $"[Height] {message}");
 		}
 
 		public static void AreNotEqual(Rect rect1, Rect rect2)

@@ -10,7 +10,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using AppKit;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
@@ -70,14 +70,15 @@ namespace Windows.UI.Xaml
 			{
 				_inLayoutSubviews = true;
 
+				var bounds = Bounds.Size;
 				if (IsMeasureDirty)
 				{
-					XamlMeasure(Bounds.Size);
+					XamlMeasure(bounds);
 				}
 
 				OnBeforeArrange();
 
-				var size = SizeFromUISize(Bounds.Size);
+				var size = SizeFromUISize(bounds);
 
 				_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
 

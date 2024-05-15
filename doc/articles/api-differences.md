@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.ApiDifferences
+---
+
 # Differences between Uno.UI and UWP/WinUI
 
 Uno Platform strives to closely replicate the UWP/WinUI API on all platforms and ensure that existing WinUI code is 100% compatible with Uno. This article covers areas where Uno.UI's implementation differs, typically to better integrate with the native platform, or where the capabilities of .NET differ due to inherent limitations of the native platform.
@@ -14,7 +18,7 @@ As for WinUI, all visual elements in Uno.UI inherit from `FrameworkElement`, whi
 
 On Android, iOS, and macOS, `UIElement` instead inherits from the native base view type for each platform, as exposed to .NET by Xamarin Native. So, `ViewGroup` for Android, `UIView` for iOS, and `NSView` for macOS.
 
-This allows native views (not defined by Uno.UI or inheriting from `FrameworkElement`) to be directly integrated into the visual tree, [in XAML markup or C# code](native-views.md). 
+This allows native views (not defined by Uno.UI or inheriting from `FrameworkElement`) to be directly integrated into the visual tree, [in XAML markup or C# code](native-views.md).
 
 ### `DependencyObject` type is an interface (all non-Windows platforms)
 
@@ -26,7 +30,7 @@ This is as transparent as possible to the application developer. For example, if
 
 ### iOS is AOT-only
 
-.NET code [must be Ahead-Of-Time (AOT) compiled to run on iOS](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations), as a fundamental platform limitation. As a result, a few APIs that require runtime code generation (eg `System.Reflection.Emit`) do not work. This includes code that uses the `dynamic` keyword.
+.NET code [must be Ahead-Of-Time (AOT) compiled to run on iOS](https://learn.microsoft.com/xamarin/ios/internals/limitations), as a fundamental platform limitation. As a result, a few APIs that require runtime code generation (eg `System.Reflection.Emit`) do not work. This includes code that uses the `dynamic` keyword.
 
 ### WebAssembly is single-threaded
 

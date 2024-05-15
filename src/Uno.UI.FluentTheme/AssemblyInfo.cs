@@ -7,14 +7,16 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
 
-#if NET6_0_OR_GREATER
-[assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
-#elif __IOS__
+[assembly: AssemblyMetadata("IsTrimmable", "True")]
+
+#if __IOS__
 #pragma warning disable CS0618 // Type or member is obsolete
 [assembly: Foundation.LinkerSafe]
 #pragma warning restore CS0618 // Type or member is obsolete
-[assembly: AssemblyMetadata("IsTrimmable", "True")]
 #elif __ANDROID__
+#pragma warning disable CS0618 // Type or member is obsolete
 [assembly: Android.LinkerSafe]
+#pragma warning restore CS0618 // Type or member is obsolete
 #endif

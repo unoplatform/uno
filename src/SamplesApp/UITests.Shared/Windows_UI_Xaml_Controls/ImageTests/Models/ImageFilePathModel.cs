@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using System.IO;
 using Windows.UI;
 using Uno.Extensions;
 using System.ComponentModel;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
+using Private.Infrastructure;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -48,7 +49,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 #pragma warning restore CS0109
 
 #if HAS_UNO
-		private static readonly Size ImageSize = new Size(200, 200); 
+		private static readonly Size ImageSize = new Size(200, 200);
 #endif
 		private static readonly _Color ShapeColor = Colors.Tomato;
 		private const string StoredFolderName = "SampleImages";
@@ -56,9 +57,10 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 
 		private Uri _filePathUri;
 
-		public ImageFilePathModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ImageFilePathModel(UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
-			var unused = dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => {
+			var unused = dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () =>
+			{
 				FilePath = await GetAndCreateFilePath(CancellationToken.None);
 			});
 		}
@@ -86,10 +88,14 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			}
 		}
 
-		private async Task<string> GetAndCreateFilePath(CancellationToken ct)
+		private
+#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+			async
+#endif
+			Task<string> GetAndCreateFilePath(CancellationToken ct)
 		{
 #if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
-			var bitmap = await CreateBitmap();
+			var bitmap = CreateBitmap();
 
 			_log.Warn(bitmap.ToString());
 
@@ -99,12 +105,12 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			FilePathUri = uri;
 			return uri.AbsoluteUri;
 #else
-			return "HAS_UNO-only sample.";
+			return Task.FromResult("HAS_UNO-only sample.");
 #endif
 		}
 
 #if __ANDROID__
-		private async Task<_Bitmap> CreateBitmap()
+		private _Bitmap CreateBitmap()
 		{
 			var size = ImageSize.LogicalToPhysicalPixels();
 			var bitmap = _Bitmap.CreateBitmap((int)size.Width, (int)size.Height, Android.Graphics.Bitmap.Config.Argb8888);
@@ -135,7 +141,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			}
 		}
 #elif __IOS__
-		private Task<_Bitmap> CreateBitmap()
+		private _Bitmap CreateBitmap()
 		{
 			UIGraphics.BeginImageContext(ImageSize);
 			var context = UIGraphics.GetCurrentContext();
@@ -143,7 +149,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			context.FillEllipseInRect(new CGRect(0, 0, ImageSize.Width, ImageSize.Height));
 			var bitmap = UIGraphics.GetImageFromCurrentImageContext();
 
-			return Task.FromResult(bitmap);
+			return bitmap;
 		}
 		private Task<string> StoreFile(_Bitmap bitmap)
 		{

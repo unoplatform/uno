@@ -7,15 +7,12 @@ using Uno.Foundation.Extensibility;
 namespace Windows.Devices.Haptics
 {
 	public partial class SimpleHapticsController
-    {
+	{
 		private ISimpleHapticsControllerExtension _simpleHapticsControllerExtension = null!;
 
 		partial void InitPlatform()
 		{
-			if (!ApiExtensibility.CreateInstance(typeof(SimpleHapticsController), out _simpleHapticsControllerExtension))
-			{
-				throw new InvalidOperationException($"Unable to find ISimpleHapticsControllerExtension extension");
-			}
+			_simpleHapticsControllerExtension = ApiExtensibility.CreateInstance<ISimpleHapticsControllerExtension>(typeof(SimpleHapticsController));
 		}
 
 		public IReadOnlyList<SimpleHapticsControllerFeedback> SupportedFeedback =>

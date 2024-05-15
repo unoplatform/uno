@@ -9,7 +9,7 @@ namespace Windows.Storage.Pickers
 	/// <summary>
 	/// Represents a UI element that lets the user choose and open files.
 	/// </summary>
-	public partial class FileOpenPicker
+	public partial class FileOpenPicker : IFilePicker
 	{
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
@@ -47,6 +47,10 @@ namespace Windows.Storage.Pickers
 			set => _commitButtonText = value ?? throw new ArgumentNullException(nameof(value));
 		}
 
+		string IFilePicker.CommitButtonTextInternal => CommitButtonText;
+		PickerLocationId IFilePicker.SuggestedStartLocationInternal => PickerLocationId.DocumentsLibrary;
+		IList<string> IFilePicker.FileTypeFilterInternal => new FileExtensionVector();
+
 #if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
 		public FileOpenPicker()
 		{
@@ -59,14 +63,14 @@ namespace Windows.Storage.Pickers
 		/// Shows the file picker so that the user can pick one file.
 		/// </summary>
 		/// <param name="pickerOperationId">This argument is ignored and has no effect.</param>
-		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/> 
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/>
 		/// object that represents the file that the user picked.</returns>
 		public IAsyncOperation<StorageFile?> PickSingleFileAsync(string pickerOperationId) => PickSingleFileAsync();
 
 		/// <summary>
 		/// Shows the file picker so that the user can pick one file.
 		/// </summary>
-		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/> 
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/>
 		/// object that represents the file that the user picked.</returns>
 		public IAsyncOperation<StorageFile?> PickSingleFileAsync()
 		{
@@ -86,7 +90,6 @@ namespace Windows.Storage.Pickers
 
 			return AsyncOperation.FromTask(cancellationToken => PickMultipleFilesTaskAsync(cancellationToken));
 		}
-#endif
 
 		private void ValidateConfiguration()
 		{
@@ -95,5 +98,6 @@ namespace Windows.Storage.Pickers
 				throw new InvalidOperationException("You must provide at least a general file type filter ('*')");
 			}
 		}
+#endif
 	}
 }

@@ -116,7 +116,7 @@ namespace Uno.Xaml
 				return (string) tc.ConvertTo (vsctx, CultureInfo.InvariantCulture, obj, typeof (string));
 			if (obj is string || obj == null)
 				return (string) obj;
-			throw new InvalidCastException (String.Format ("Cannot cast object '{0}' to string", obj.GetType ()));
+			throw new InvalidCastException (String.Format (CultureInfo.InvariantCulture, "Cannot cast object '{0}' to string", obj.GetType ()));
 		}
 		
 		public static TypeConverter GetTypeConverter (this Type type)

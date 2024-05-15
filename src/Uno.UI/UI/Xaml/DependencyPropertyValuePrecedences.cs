@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-    public enum DependencyPropertyValuePrecedences : int
-    {
+	public enum DependencyPropertyValuePrecedences : int
+	{
 		/// <summary>
 		/// Defined by the value returned by PropertyMetadata.CoerceValueCallback (only if it differs from the input/base value)
 		/// </summary>
@@ -51,5 +51,5 @@ namespace Windows.UI.Xaml
 		/// Defined on the dependency property metadata
 		/// </summary>
 		DefaultValue
-    }
+	}
 }

@@ -12,14 +12,54 @@ using Android.OS;
 using Android.Runtime;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 using Windows.Extensions;
+using Windows.Foundation;
 using Windows.UI.Core;
 
 namespace Windows.Devices.Geolocation;
 
-public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
+public sealed partial class Geolocator
 {
+	private sealed class LocationListener : Java.Lang.Object, ILocationListener
+	{
+		private readonly Geolocator _owner;
+
+		public LocationListener(Geolocator owner)
+		{
+			_owner = owner;
+		}
+
+		public void OnLocationChanged(Location location)
+		{
+			DateTimeOffset date = DateTimeOffset.FromUnixTimeMilliseconds(location.Time);
+			if (date.AddSeconds(MaxLocationAgeInSeconds) > DateTimeOffset.UtcNow)
+			{// only from last minute (we don't want to get some obsolete location)
+				_locationChanged = true;
+				_location = location;
+
+				BroadcastStatusChanged(PositionStatus.Ready);
+				_owner._positionChangedWrapper.Event?.Invoke(_owner, new PositionChangedEventArgs(location.ToGeoPosition()));
+			}
+		}
+
+		public void OnProviderDisabled(string provider)
+		{
+		}
+
+		public void OnProviderEnabled(string provider)
+		{
+		}
+
+		public void OnStatusChanged(string? provider, [GeneratedEnum] Availability status, Bundle? extras)
+		{
+			// This method was deprecated in API level 29 (Android 10). This callback will never be invoked.
+		}
+	}
+
+	private LocationListener _locationListener;
+
 	// Only locations not older than this const can be used as current
 	// (used only in GetGeopositionAsync with parameters, parameterless call can return older location)
 	private const int MaxLocationAgeInSeconds = 60;
@@ -29,7 +69,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	private readonly Criteria _locationCriteria = new() { HorizontalAccuracy = Accuracy.Medium };
 
-	private static bool _locationChanged = false;
+	private static bool _locationChanged;
 	private static Location? _location;
 
 	private LocationManager? _locationManager;
@@ -37,8 +77,13 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	private readonly SerialDisposable _resumingSubscription = new SerialDisposable();
 
-	private double _movementThreshold = 0;
+	private double _movementThreshold;
 	private uint _reportInterval = 1000;
+
+	partial void PlatformInitialize()
+	{
+		_locationListener = new(this);
+	}
 
 	partial void PlatformDestruct()
 	{
@@ -81,8 +126,30 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 	/// Requests permission to access location data.
 	/// </summary>
 	/// <returns>A GeolocationAccessStatus that indicates if permission to location data has been granted.</returns>
-	public static async Task<GeolocationAccessStatus> RequestAccessAsync()
+	public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
 	{
+		return RequestAccessCoreAsync().AsAsyncOperation();
+	}
+
+	private static Task<GeolocationAccessStatus> RequestAccessCoreAsync()
+	{
+		if (CoreDispatcher.Main.HasThreadAccess)
+		{
+			return RequestAccessCore();
+		}
+
+		return CoreDispatcher.Main.RunWithResultAsync(
+						priority: CoreDispatcherPriority.Normal,
+						task: RequestAccessCore);
+	}
+
+	private static async Task<GeolocationAccessStatus> RequestAccessCore()
+	{
+		if (!IsLocationEnabled())
+		{
+			return GeolocationAccessStatus.Denied;
+		}
+
 		var status = GeolocationAccessStatus.Allowed;
 
 		if (!await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
@@ -92,16 +159,17 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 				: GeolocationAccessStatus.Denied;
 
 			BroadcastStatusChanged(PositionStatus.Initializing);
+
 			if (status == GeolocationAccessStatus.Allowed)
 			{
-				BroadcastStatusChanged(PositionStatus.Ready);
-
 				// If geolocators subscribed to PositionChanged before the location permission was granted,
 				// make sure to initialize these geolocators now so they can start broadcasting.
 				foreach (var subscriber in _positionChangedSubscriptions)
 				{
 					subscriber.Key.TryInitialize();
 				}
+
+				BroadcastStatusChanged(PositionStatus.Ready);
 			}
 			else
 			{
@@ -117,11 +185,23 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		return status;
 	}
 
+	public static bool IsLocationEnabled()
+	{
+		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
+
+		return locationManager?.IsLocationEnabled ?? false;
+	}
+
 	/// <summary>
 	/// Starts an asynchronous operation to retrieve the current location of the device.
 	/// </summary>
 	/// <returns>An asynchronous operation that, upon completion, returns a Geoposition marking the found location.</returns>
-	public Task<Geoposition?> GetGeopositionAsync()
+	public IAsyncOperation<Geoposition?> GetGeopositionAsync()
+	{
+		return GetGeopositionCore().AsAsyncOperation();
+	}
+
+	private Task<Geoposition?> GetGeopositionCore()
 	{
 		// on UWP, "This method times out after 60 seconds, except when in Connected Standby. During Connected Standby, Geolocator objects can be instantiated but the Geolocator object will not find any sensors to aggregate and calls to GetGeopositionAsync will time out after 7 seconds."
 		// so we have discrepancy here.
@@ -129,21 +209,24 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		{
 			TryInitialize();
 
-			if (_locationProvider is null || _locationManager is null)
+			if (string.IsNullOrWhiteSpace(_locationProvider) || _locationManager is null)
 			{
 				return Task.FromResult<Geoposition?>(null);
 			}
 
 			BroadcastStatusChanged(PositionStatus.Initializing);
+
 			var location = _locationManager.GetLastKnownLocation(_locationProvider);
+
 			BroadcastStatusChanged(PositionStatus.Ready);
+
 			return Task.FromResult(location?.ToGeoPosition());
 		}
 		else
 		{
 			return CoreDispatcher.Main.RunWithResultAsync(
 				priority: CoreDispatcherPriority.Normal,
-				task: () => GetGeopositionAsync()
+				task: () => GetGeopositionCore()
 			);
 		}
 	}
@@ -155,7 +238,12 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 	/// <param name="timeout">The timeout. A TimeSpan is a time period expressed in 100-nanosecond units.</param>
 	/// <returns>An asynchronous operation that, upon completion, returns a Geoposition marking the found location.</returns>
 	/// <exception cref="TimeoutException">Thrown when the request times out.</exception>
-	public async Task<Geoposition?> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+	public IAsyncOperation<Geoposition?> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+	{
+		return GetGeopositionCore(maximumAge, timeout).AsAsyncOperation();
+	}
+
+	private async Task<Geoposition?> GetGeopositionCore(TimeSpan maximumAge, TimeSpan timeout)
 	{
 		_locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
 
@@ -203,11 +291,11 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		if (_locationManager == null)
 		{
 			_locationManager = InitializeLocationProvider();
-			if (_locationManager is null || _locationProvider is null)
+			if (_locationManager is null || string.IsNullOrWhiteSpace(_locationProvider))
 			{
 				return;
 			}
-			_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+			_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, _locationListener);
 			_resumingSubscription.Disposable = null;
 		}
 	}
@@ -221,9 +309,9 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	private void CoreApplication_Resuming(object? sender, object? e)
 	{
-		CoreDispatcher.Main.RunAsync(
+		_ = CoreDispatcher.Main.RunAsync(
 			priority: CoreDispatcherPriority.Normal,
-			handler: InitializeIfPermissionIsGranted
+			agileCallback: InitializeIfPermissionIsGranted
 		);
 	}
 
@@ -239,6 +327,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	private LocationManager? InitializeLocationProvider()
 	{
+		_locationProvider = null;
 		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
 
 		var criteriaForLocationService = new Criteria
@@ -246,15 +335,9 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 			Accuracy = Accuracy.Coarse
 		};
 
-		var acceptableLocationProviders = locationManager?.GetProviders(criteriaForLocationService, true);
-
-		if (acceptableLocationProviders != null && acceptableLocationProviders.Any())
+		if (locationManager?.GetProviders(criteriaForLocationService, true) is { } acceptableLocationProviders)
 		{
-			_locationProvider = acceptableLocationProviders.First();
-		}
-		else
-		{
-			_locationProvider = string.Empty;
+			_locationProvider = acceptableLocationProviders.FirstOrDefault();
 		}
 
 		return locationManager;
@@ -262,12 +345,24 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	partial void StartPositionChanged()
 	{
-		_positionChangedSubscriptions.TryAdd(this, 0);
-		TryInitialize();
-		RestartUpdates();
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			_positionChangedSubscriptions.TryAdd(this, 0);
+			TryInitialize();
+			RestartUpdates();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(StartPositionChanged, NativeDispatcherPriority.Normal);
+		}
 	}
 
-	partial void StopPositionChanged() => _positionChangedSubscriptions.TryRemove(this, out var _);
+	partial void StopPositionChanged()
+	{
+		_positionChangedSubscriptions.TryRemove(this, out _);
+		RemoveUpdates();
+		BroadcastStatusChanged(PositionStatus.Disabled);
+	}
 
 	private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout, DateTime earliestDate)
 	{
@@ -349,7 +444,12 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 			return;
 		}
 
-		_locationManager?.RemoveUpdates(this);
+		if (_locationManager is not null
+			// RemoveUpdates may be invoked from the finalizer and _locationListener may already have been collected.
+			&& _locationListener.Handle != IntPtr.Zero)
+		{
+			_locationManager.RemoveUpdates(_locationListener);
+		}
 	}
 
 	private void RequestUpdates()
@@ -364,7 +464,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 		foreach (var provider in providers)
 		{
-			_locationManager.RequestLocationUpdates(provider, _reportInterval, (float)_movementThreshold, this, Looper.MainLooper);
+			_locationManager.RequestLocationUpdates(provider, _reportInterval, (float)_movementThreshold, _locationListener, Looper.MainLooper);
 		}
 	}
 
@@ -381,32 +481,6 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 	{
 		// Reset request for updates from Android - with new desired accuracy
 		RestartUpdates();
-	}
-
-	public void OnLocationChanged(Location location)
-	{
-		DateTimeOffset date = DateTimeOffset.FromUnixTimeMilliseconds(location.Time);
-		if (date.AddSeconds(MaxLocationAgeInSeconds) > DateTimeOffset.UtcNow)
-		{// only from last minute (we don't want to get some obsolete location)
-			_locationChanged = true;
-			_location = location;
-
-			BroadcastStatusChanged(PositionStatus.Ready);
-			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
-		}
-	}
-
-	public void OnProviderDisabled(string provider)
-	{
-	}
-
-	public void OnProviderEnabled(string provider)
-	{
-	}
-
-	public void OnStatusChanged(string? provider, [GeneratedEnum] Availability status, Bundle? extras)
-	{
-		// This method was deprecated in API level 29 (Android 10). This callback will never be invoked.
 	}
 }
 

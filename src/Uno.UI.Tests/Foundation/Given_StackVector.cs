@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.Foundation
 
 			sut.Select(i => i.A)
 				.Should()
-				.BeEquivalentTo(new[] {1, 2});
+				.BeEquivalentTo(new[] { 1, 2 });
 
 			var ptr1 = Unsafe.AsPointer(ref item1);
 			var ptr2 = Unsafe.AsPointer(ref item2);
@@ -71,6 +71,26 @@ namespace Uno.UI.Tests.Foundation
 				{
 					Assert.Fail("Lost reference");
 				}
+			}
+		}
+
+		[TestMethod]
+		public void TestResizingShouldCopyOldElements()
+		{
+			var sut = new StackVector<int>(2);
+
+			for (int i = 0; i < 200; i++)
+			{
+				ref var item1 = ref sut.PushBack();
+				item1 = i;
+			}
+
+			sut.Count.Should().Be(200);
+			sut.Should().HaveCount(200);
+
+			for (int i = 0; i < 200; i++)
+			{
+				Assert.AreEqual(i, sut[i]);
 			}
 		}
 	}

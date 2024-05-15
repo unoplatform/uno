@@ -4,7 +4,7 @@ using System.Globalization;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Web.Syndication;
 using WG = Windows.Globalization;
 
@@ -14,12 +14,27 @@ namespace Uno.UI.Tests.Windows_Globalization
 	public class When_Calendar
 	{
 		[TestMethod]
+		public void When_DateTimeOffset_Is_Next_Day_If_Converted_To_Utc()
+		{
+			var calendar = new WG.Calendar();
+			var offset = new DateTimeOffset(year: 2023, month: 5, day: 1, hour: 21, minute: 0, second: 0, TimeSpan.FromHours(-5));
+			calendar.SetDateTime(offset);
+			Assert.AreEqual(2, calendar.Day);
+			Assert.AreEqual(2, offset.UtcDateTime.Day);
+
+			var comparer = new DirectUI.DateComparer();
+			comparer.SetCalendarForComparison(calendar);
+			var result = comparer.CompareDay(offset, new DateTimeOffset(year: 2023, month: 5, day: 1, hour: 4, minute: 0, second: 0, TimeSpan.FromHours(0)));
+			Assert.AreEqual(1, result);
+		}
+
+		[TestMethod]
 		public void When_Gregorian_FixedDate()
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
-				clock: WG.ClockIdentifiers.TwentyFourHourValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
+				clock: WG.ClockIdentifiers.TwentyFourHour,
 				new DateTimeOffset(2020, 01, 02, 03, 04, 05, 0, TimeSpan.Zero),
 				year: 2020,
 				month: 01,
@@ -61,8 +76,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
-				clock: WG.ClockIdentifiers.TwentyFourHourValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
+				clock: WG.ClockIdentifiers.TwentyFourHour,
 				new DateTimeOffset(2020, 08, 02, 03, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
 				month: 08,
@@ -108,7 +123,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
@@ -151,7 +166,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 08, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
@@ -198,7 +213,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
@@ -247,7 +262,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
@@ -296,13 +311,13 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
 				month: 01,
 				day: 03,
-				hours: 00,
+				hours: 12,
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
@@ -345,7 +360,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
@@ -394,7 +409,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2020,
@@ -443,7 +458,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			Validate(
 				culture: "en-US",
-				calendar: WG.CalendarIdentifiers.GregorianValue,
+				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
 				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				year: 2021,
@@ -493,7 +508,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_Gregorian_FixedDate_Format_12h(int year, string dayOfWeek)
 		{
 			ValidateFormat(culture: "en-US",
-				  calendar: WG.CalendarIdentifiers.GregorianValue,
+				  calendar: WG.CalendarIdentifiers.Gregorian,
 				  clock: WG.ClockIdentifiers.TwelveHour,
 				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
@@ -522,8 +537,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_Gregorian_FixedDate_Format_24h(int year, string dayOfWeek)
 		{
 			ValidateFormat(culture: "en-US",
-				  calendar: WG.CalendarIdentifiers.GregorianValue,
-				  clock: WG.ClockIdentifiers.TwentyFourHourValue,
+				  calendar: WG.CalendarIdentifiers.Gregorian,
+				  clock: WG.ClockIdentifiers.TwentyFourHour,
 				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
 				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
 				  yearAsString: year.ToString(CultureInfo.InvariantCulture),
@@ -697,26 +712,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
-		[DataRow(WG.CalendarIdentifiers.JulianValue)]
-		[DataRow(WG.CalendarIdentifiers.GregorianValue)]
-		[DataRow(WG.CalendarIdentifiers.HebrewValue)]
-		[DataRow(WG.CalendarIdentifiers.HijriValue)]
-		[DataRow(WG.CalendarIdentifiers.JapaneseValue)]
-		[DataRow(WG.CalendarIdentifiers.KoreanValue)]
-		[DataRow(WG.CalendarIdentifiers.TaiwanValue)]
-		[DataRow(WG.CalendarIdentifiers.ThaiValue)]
-		[DataRow(WG.CalendarIdentifiers.UmAlQuraValue)]
-		[DataRow(WG.CalendarIdentifiers.PersianValue)]
-		[DataRow(WG.CalendarIdentifiers.ChineseLunarValue)]
-		[DataRow(WG.CalendarIdentifiers.VietnameseLunarValue)]
-		[DataRow(WG.CalendarIdentifiers.TaiwanLunarValue)]
-		[DataRow(WG.CalendarIdentifiers.KoreanLunarValue)]
-		[DataRow(WG.CalendarIdentifiers.JapaneseLunarValue)]
+		[DynamicData(nameof(CalendarsData))]
 		public void TestCalendarLimits(string calendar)
 		{
 			using var _ = new AssertionScope();
 
-			var sut = new WG.Calendar(new [] {"en"}, WG.CalendarIdentifiers.Japanese, "24HourClock");
+			var sut = new WG.Calendar(new[] { "en" }, WG.CalendarIdentifiers.Japanese, "24HourClock");
 
 			sut.SetToMin();
 			CheckLimits($"Min");
@@ -741,6 +742,28 @@ namespace Uno.UI.Tests.Windows_Globalization
 				sut.LastEra.Should().BePositive(context);
 				sut.Period.Should().BePositive(context);
 				sut.ResolvedLanguage.Should().NotBeEmpty(context);
+			}
+		}
+
+		private static System.Collections.Generic.IEnumerable<object[]> CalendarsData
+		{
+			get
+			{
+				yield return new object[] { WG.CalendarIdentifiers.Julian };
+				yield return new object[] { WG.CalendarIdentifiers.Gregorian };
+				yield return new object[] { WG.CalendarIdentifiers.Hebrew };
+				yield return new object[] { WG.CalendarIdentifiers.Hijri };
+				yield return new object[] { WG.CalendarIdentifiers.Japanese };
+				yield return new object[] { WG.CalendarIdentifiers.Korean };
+				yield return new object[] { WG.CalendarIdentifiers.Taiwan };
+				yield return new object[] { WG.CalendarIdentifiers.Thai };
+				yield return new object[] { WG.CalendarIdentifiers.UmAlQura };
+				yield return new object[] { WG.CalendarIdentifiers.Persian };
+				yield return new object[] { WG.CalendarIdentifiers.ChineseLunar };
+				yield return new object[] { WG.CalendarIdentifiers.VietnameseLunar };
+				yield return new object[] { WG.CalendarIdentifiers.TaiwanLunar };
+				yield return new object[] { WG.CalendarIdentifiers.KoreanLunar };
+				yield return new object[] { WG.CalendarIdentifiers.JapaneseLunar };
 			}
 		}
 	}

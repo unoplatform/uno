@@ -4,7 +4,17 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
+using Windows.UI.Core;
+using CoreAnimation;
+using CoreGraphics;
+using Foundation;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
+
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -12,16 +22,8 @@ using _View = UIKit.UIView;
 using AppKit;
 using _View = AppKit.NSView;
 #endif
-using CoreGraphics;
-using Foundation;
-using CoreAnimation;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Windows.UI.Composition;
-using Uno.UI;
-using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// Animates a float property using a native <see cref="CoreAnimation"/>.
@@ -29,6 +31,8 @@ namespace Windows.UI.Xaml.Media.Animation
 	internal class GPUFloatValueAnimator : IValueAnimator
 	{
 		private static readonly string __notSupportedProperty = "This transform is not supported by GPU enabled animations.";
+		private static readonly List<ManagedWeakReference> _weakActiveInstanceCache = new();
+		private static bool _subscribedToVisibilityChanged;
 
 		private float _to;
 		private float _from;
@@ -38,41 +42,43 @@ namespace Windows.UI.Xaml.Media.Animation
 		private UnoCoreAnimation _coreAnimation;
 		private IEasingFunction _easingFunction;
 		private bool _isDisposed;
+		private bool _isPausedInBackground; // flag the animation to be resumed once foregrounded
+		private bool _coreStoppedNotFinished; // the animation came to an abrupt end; used by OnCoreWindowVisibilityChanged to confirm paused by backgrounding
 
-#region PropertyNameConstants
+		#region PropertyNameConstants
 		private const string TranslateTransformX = "TranslateTransform.X";
-		private const string TranslateTransformXWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.X";
+		private const string TranslateTransformXWithNamespace = "Microsoft.UI.Xaml.Media:TranslateTransform.X";
 		private const string TranslateTransformY = "TranslateTransform.Y";
-		private const string TranslateTransformYWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.Y";
+		private const string TranslateTransformYWithNamespace = "Microsoft.UI.Xaml.Media:TranslateTransform.Y";
 		private const string RotateTransformAngle = "RotateTransform.Angle";
-		private const string RotateTransformAngleWithNamespace = "Windows.UI.Xaml.Media:RotateTransform.Angle";
+		private const string RotateTransformAngleWithNamespace = "Microsoft.UI.Xaml.Media:RotateTransform.Angle";
 		private const string ScaleTransformX = "ScaleTransform.ScaleX";
-		private const string ScaleTransformXWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.ScaleX";
+		private const string ScaleTransformXWithNamespace = "Microsoft.UI.Xaml.Media:ScaleTransform.ScaleX";
 		private const string ScaleTransformY = "ScaleTransform.ScaleY";
-		private const string ScaleTransformYWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.ScaleY";
+		private const string ScaleTransformYWithNamespace = "Microsoft.UI.Xaml.Media:ScaleTransform.ScaleY";
 		private const string SkewTransformAngleX = "SkewTransform.AngleX";
-		private const string SkewTransformAngleXWithNamespace = "Windows.UI.Xaml.Media:SkewTransform.AngleX";
+		private const string SkewTransformAngleXWithNamespace = "Microsoft.UI.Xaml.Media:SkewTransform.AngleX";
 		private const string SkewTransformAngleY = "SkewTransform.AngleY";
-		private const string SkewTransformAngleYWithNamespace = "Windows.UI.Xaml.Media:SkewTransform.AngleY";
+		private const string SkewTransformAngleYWithNamespace = "Microsoft.UI.Xaml.Media:SkewTransform.AngleY";
 		private const string CompositeTransformCenterX = "CompositeTransform.CenterX";
-		private const string CompositeTransformCenterXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.CenterX";
+		private const string CompositeTransformCenterXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.CenterX";
 		private const string CompositeTransformCenterY = "CompositeTransform.CenterY";
-		private const string CompositeTransformCenterYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.CenterY";
+		private const string CompositeTransformCenterYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.CenterY";
 		private const string CompositeTransformTranslateX = "CompositeTransform.TranslateX";
-		private const string CompositeTransformTranslateXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.TranslateX";
+		private const string CompositeTransformTranslateXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.TranslateX";
 		private const string CompositeTransformTranslateY = "CompositeTransform.TranslateY";
-		private const string CompositeTransformTranslateYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.TranslateY";
+		private const string CompositeTransformTranslateYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.TranslateY";
 		private const string CompositeTransformRotation = "CompositeTransform.Rotation";
-		private const string CompositeTransformRotationWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.Rotation";
+		private const string CompositeTransformRotationWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.Rotation";
 		private const string CompositeTransformScaleX = "CompositeTransform.ScaleX";
-		private const string CompositeTransformScaleXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.ScaleX";
+		private const string CompositeTransformScaleXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.ScaleX";
 		private const string CompositeTransformScaleY = "CompositeTransform.ScaleY";
-		private const string CompositeTransformScaleYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.ScaleY";
+		private const string CompositeTransformScaleYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.ScaleY";
 		private const string CompositeTransformSkewX = "CompositeTransform.SkewX";
-		private const string CompositeTransformSkewXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewX";
+		private const string CompositeTransformSkewXWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.SkewX";
 		private const string CompositeTransformSkewY = "CompositeTransform.SkewY";
-		private const string CompositeTransformSkewYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewY";
-#endregion
+		private const string CompositeTransformSkewYWithNamespace = "Microsoft.UI.Xaml.Media:CompositeTransform.SkewY";
+		#endregion
 
 		internal static Point GetAnchorForAnimation(Transform transform, Point relativeOrigin, Size viewSize)
 		{
@@ -126,14 +132,45 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			InitializeCoreAnimation();
+			TrackCurrentInstance();
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Starting GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}
 
+			ResetBackgroundPauseTrackingStates();
 			_valueAnimator?.Start();
 			_coreAnimation?.Start();
+		}
+
+		public void Pause()
+		{
+			var pausedTime = _valueAnimator?.CurrentPlayTime;
+			var pausedValue = (float?)_valueAnimator?.AnimatedValue;
+
+			_valueAnimator?.Pause();
+			_coreAnimation?.Pause(pausedTime, pausedValue);
+
+			AnimationPause?.Invoke(this, EventArgs.Empty);
+		}
+
+		public void Resume()
+		{
+			ResetBackgroundPauseTrackingStates();
+			_valueAnimator?.Resume();
+			_coreAnimation?.Resume();
+		}
+
+		public void Cancel()
+		{
+			ResetBackgroundPauseTrackingStates();
+			_valueAnimator?.Cancel();
+			_coreAnimation?.Cancel();
+			AnimationCancel?.Invoke(this, EventArgs.Empty);
+
+			ReleaseCoreAnimation();
+			UntrackCurrentInstance();
 		}
 
 		private void InitializeCoreAnimation()
@@ -141,7 +178,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			var animatedItem = _bindingPath.LastOrDefault();
 			switch (animatedItem.DataContext)
 			{
-				case _View view when animatedItem.PropertyName.EndsWith("Opacity"):
+				case _View view when animatedItem.PropertyName.EndsWith("Opacity", StringComparison.Ordinal):
 					_coreAnimation = InitializeOpacityCoreAnimation(view);
 					return;
 
@@ -167,7 +204,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				// case TransformGroup group:
 				//  ==> No needs to validate the TransformGroup: there is no animatable property on it.
-				//		If a anmiation is declared on it (e.g. "(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"),
+				//		If a animation is declared on it (e.g. "(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"),
 				//		the _bindingPath should resolve the target child Transform, and animatedItem.DataContext should be the ScaleTransform.
 
 
@@ -176,30 +213,34 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		public void Pause()
+		private void TrackCurrentInstance()
 		{
-			var pausedTime = _valueAnimator?.CurrentPlayTime;
-			var pausedValue = (float?)_valueAnimator?.AnimatedValue;
-
-			_valueAnimator?.Pause();
-			_coreAnimation?.Pause(pausedTime, pausedValue);
-
-			AnimationPause?.Invoke(this, EventArgs.Empty);
+			lock (_weakActiveInstanceCache)
+			{
+				_weakActiveInstanceCache.Add(WeakReferencePool.RentWeakReference(this, this));
+			}
+			if (!_subscribedToVisibilityChanged &&
+				CoreWindow.GetForCurrentThread() is { } coreWindow)
+			{
+				coreWindow.VisibilityChanged += OnCoreWindowVisibilityChanged;
+				_subscribedToVisibilityChanged = true;
+			}
 		}
 
-		public void Resume()
+		private void UntrackCurrentInstance()
 		{
-			_valueAnimator?.Resume();
-			_coreAnimation?.Resume();
-		}
-
-		public void Cancel()
-		{
-			_valueAnimator?.Cancel();
-			_coreAnimation?.Cancel();
-			AnimationCancel?.Invoke(this, EventArgs.Empty);
-
-			ReleaseCoreAnimation();
+			lock (_weakActiveInstanceCache)
+			{
+				for (int i = _weakActiveInstanceCache.Count - 1; i >= 0; i--)
+				{
+					if (_weakActiveInstanceCache[i] is var pInstance &&
+						pInstance.Target == this)
+					{
+						_weakActiveInstanceCache.RemoveAt(i);
+						WeakReferencePool.ReturnWeakReference(this, pInstance);
+					}
+				}
+			}
 		}
 
 		public bool IsRunning => _valueAnimator?.IsRunning ?? false;
@@ -243,7 +284,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			_valueAnimator.SetEasingFunction(easingFunction);
 		}
 
-#region coreAnimationInitializers
+		#region coreAnimationInitializers
 		private UnoCoreAnimation InitializeOpacityCoreAnimation(_View view)
 		{
 			return CreateCoreAnimation(view, "opacity", value => new NSNumber(value));
@@ -371,14 +412,14 @@ namespace Windows.UI.Xaml.Media.Animation
 					throw new NotSupportedException(__notSupportedProperty);
 			}
 		}
-#endregion
+		#endregion
 
 		private UnoCoreAnimation CreateCoreAnimation(
 			Transform transform,
 			string property,
 			Func<float, NSValue> nsValueConversion)
 			=> CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
-		
+
 		private UnoCoreAnimation CreateCoreAnimation(
 			_View view,
 			string property,
@@ -395,7 +436,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			return prepareAnimation == null || endAnimation == null
 				? new UnoCoreAnimation(view.Layer, property, _from, _to, StartDelay, _duration, timingFunction, nsValueConversion, FinalizeAnimation, isDiscrete)
 				: new UnoCoreAnimation(view.Layer, property, _from, _to, StartDelay, _duration, timingFunction, nsValueConversion, FinalizeAnimation, isDiscrete, prepareAnimation, endAnimation);
-
 		}
 
 		private NSValue ToCASkewTransform(float angleX, float angleY)
@@ -404,17 +444,59 @@ namespace Windows.UI.Xaml.Media.Animation
 			var b = (float)Math.Tan(MathEx.ToRadians(angleY));
 			var c = (float)Math.Tan(MathEx.ToRadians(angleX));
 
-#if NET6_0_OR_GREATER
 			matrix.B = b;
 			matrix.C = c;
-#else
-#pragma warning disable CS0618
-			matrix.yx = b;
-			matrix.xy = c;
-#pragma warning restore CS0618
-#endif
 
 			return NSValue.FromCATransform3D(CATransform3D.MakeFromAffine(matrix));
+		}
+
+		private static void OnCoreWindowVisibilityChanged(CoreWindow sender, VisibilityChangedEventArgs args)
+		{
+			lock (_weakActiveInstanceCache)
+			{
+				for (int i = _weakActiveInstanceCache.Count - 1; i >= 0; i--)
+				{
+					if (_weakActiveInstanceCache[i] is var pInstance &&
+						pInstance.IsAlive &&
+						pInstance.Target is GPUFloatValueAnimator instance)
+					{
+						instance.OnCoreWindowVisibilityChangedImpl(args);
+					}
+					else // purge collected instance
+					{
+						_weakActiveInstanceCache.RemoveAt(i);
+						WeakReferencePool.ReturnWeakReference(pInstance.Owner, pInstance);
+					}
+				}
+			}
+		}
+
+		private void OnCoreWindowVisibilityChangedImpl(VisibilityChangedEventArgs args)
+		{
+			// note: There is no guarantee on which is called first between this (didEnterBackgroundNotification)
+			// and FinalizeAnimation (animationDidStop).
+			if (!args.Visible)
+			{
+				if (IsRunning || _coreStoppedNotFinished)
+				{
+					Pause();
+					_isPausedInBackground = true;
+				}
+			}
+			else
+			{
+				if (_isPausedInBackground)
+				{
+					if (_coreAnimation is { })
+					{
+						Resume();
+					}
+					else
+					{
+						Start();
+					}
+				}
+			}
 		}
 
 		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo completedInfo)
@@ -424,25 +506,48 @@ namespace Windows.UI.Xaml.Media.Animation
 				this.Log().DebugFormat("Finalizing animation for GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}
 
-			if (_valueAnimator?.IsRunning ?? false)
+			var wasRunning = _valueAnimator?.IsRunning ?? false;
+			if (wasRunning)
 			{
 				_valueAnimator.Cancel();
 			}
 
-			switch(completedInfo)
+			switch (completedInfo)
 			{
-				case UnoCoreAnimation.CompletedInfo.Sucesss: AnimationEnd?.Invoke(this, EventArgs.Empty); break;
-				case UnoCoreAnimation.CompletedInfo.Error: AnimationFailed?.Invoke(this, EventArgs.Empty); break;
+				case UnoCoreAnimation.CompletedInfo.Success:
+					AnimationEnd?.Invoke(this, EventArgs.Empty);
+					break;
+
+				case UnoCoreAnimation.CompletedInfo.Error:
+					// ref: https://developer.apple.com/documentation/quartzcore/caanimationdelegate/2097259-animationdidstop
+					// This callback from animationDidStop:finished with the finished=false (which is translated to Error here)
+					// means that the animation have ended because "it has been removed from the layer it is attached to."
+					// It could mean it was explicitly CoreAnimation::StopAnimation'd by us, or killed by the os as the app is background'd.
+					// Since we don't know which case it is, we are just setting another flag to be later confirmed in OnCoreWindowVisibilityChanged.
+					AnimationFailed?.Invoke(this, EventArgs.Empty);
+					if (wasRunning)
+					{
+						_coreStoppedNotFinished = true;
+					}
+					break;
+
 				default: throw new NotSupportedException($"{completedInfo} is not supported");
 			};
 
 			ReleaseCoreAnimation();
+			UntrackCurrentInstance();
 		}
 
 		private void ReleaseCoreAnimation()
 		{
 			_coreAnimation?.Dispose();
 			_coreAnimation = null;
+		}
+
+		private void ResetBackgroundPauseTrackingStates()
+		{
+			_coreStoppedNotFinished = false;
+			_isPausedInBackground = false;
 		}
 
 		public void Dispose()

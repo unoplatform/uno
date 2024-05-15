@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public sealed partial class IndexPath : IStringable
 	{
@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return result;
-		}		
+		}
 
 		internal bool IsValid()
 		{
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal IndexPath CloneWithChildIndex(int childIndex)
-		{			
+		{
 			var newPath = new IndexPath(m_path);
 			newPath.m_path.Add(childIndex);
 			return newPath;

@@ -1,134 +1,195 @@
-<Project ToolsVersion="15.0">
-  <Import Project="TargetFrameworkSelection.targets" />
+<Project>
+	<Import Project="uno.mobile-cross-targeting-disable.props" />
+	<Import Project="Uno.CrossTargetting.targets" />
 
-  <PropertyGroup>
-	<!-- Override the product attribute to include the UnoRuntimeIdentifier that is defined by projects -->
-	<Product>$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Product>$(AssemblyName) $(TargetFramework)</Product>
+		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
+		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
+	</PropertyGroup>
 
-  <Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android'">
-	<MakeDir Directories="obj\$(TargetFramework)\Resources" />
-	<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
-  </Target>
+	<PropertyGroup>
+		<!-- 
+ 		Ensures that AssignLinkMetadata runs before AssignTargetPaths. 
+ 		Otherwise, AssignTargetPath will generate a rooted path and will break embedded sources 
+ 		LogicalName metadata's behavior. 
+ 		-->
+		<!-- NOTE: This code already exists in Uno.UI.Tasks.targets, but inside of uno this targets file is imported very early -->
+		<!-- and then AssignTargetPathsDependsOn gets cleared by msbuild -->
+		<!-- This shouldn't be happening outside of Uno where Uno.UI.Tasks.targets is imported from NuGet package at the correct time -->
+		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
+	</PropertyGroup>
 
-  <Target Name="AndroidResourceGenWorkaround_16_2" AfterTargets="_UpdateAndroidResgen" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and !Exists($(_AndroidResourceDesignerFile))">
-	<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
-  </Target>
+	<ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
+		<Page Include="**/*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(PageExclusions)" />
+		<None Remove="**/*.xaml" />
+	</ItemGroup>
 
-  <ItemGroup>
-	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
-	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.0.2" />
-	<PackageReference Update="Uno.SourceGeneration" Version="4.0.2" />
-	<PackageReference Update="Uno.Core.Extensions" Version="4.0.1" />
-	<PackageReference Update="Uno.Core.Extensions.Logging" Version="4.0.1" />
-	<PackageReference Update="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-	<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
-	<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
-	<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
-	<PackageReference Update="Uno.Wasm.Bootstrap" Version="2.1.0" />
-	<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="2.1.0" />
-	<PackageReference Update="xamarin.build.download" Version="0.11.2" PrivateAssets="all" />
-	<PackageReference Update="MSTest.TestAdapter" Version="2.2.10" />
-	<PackageReference Update="MSTest.TestFramework" Version="2.2.8" />
-	<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
-	<PackageReference Update="System.Memory" Version="4.5.4" />
-	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
-	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
-	<PackageReference Update="NUnit" Version="3.13.3" />
-	<PackageReference Update="NUnit3TestAdapter" Version="4.2.1" />
-	<PackageReference Update="Uno.UITest" Version="1.1.0-dev.32" />
-	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
-	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
-	<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.24" />
-	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
-	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
-	<PackageReference Update="Xamarin.UITest" Version="3.2.8" />
-	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
-	<PackageReference Update="SkiaSharp.Views" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.80.3" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2" />
-	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.80.3" />
-	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
-	<PackageReference Update="System.Json" Version="4.7.1" />
-	<PackageReference Update="FluentAssertions" Version="5.10.3" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
-	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
-	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(XamlMergeOutputFile)'!=''">
+		<XamlMergeInput Include="@(Page)" Exclude="@(_NonMergedXamlResources)" />
+	</ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
-	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
-	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.1.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<UpToDateCheckInput Include="@(Page)" />
+	</ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
-	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
-	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
-	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-	<!-- <PackageReference Include="xamarin.androidx.vectordrawable" Version="1.1.0" excludeAssets="buildTransitive" />-->
-  </ItemGroup>
+	<!--
+	Comment out this section if you need to update Resource.designer.cs files.
+	See DEVELOPMENT.md#Android for details.
+	-->
+	<Choose>
+		<When Condition="'$(TargetPlatformIdentifier)' == 'Android' and '$(AndroidApplication)' != 'true'">
+			<PropertyGroup >
+				<AndroidGenerateResourceDesigner>false</AndroidGenerateResourceDesigner>
+				<AndroidUseIntermediateDesignerFile>false</AndroidUseIntermediateDesignerFile>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<!--
+				This works around the fact that AndroidResgenFile is
+				automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
+				is set to true.
+				-->
+				<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+				<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
-	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
-	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.0.1" />
-	<PackageReference Update="Xamarin.Build.Download" Version="0.11.2" />
-  </ItemGroup>
+	<Target Name="AndroidResourceGenWorkaround_16_2" AfterTargets="_UpdateAndroidResgen" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and !Exists($(_AndroidResourceDesignerFile))">
+		<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
+	</Target>
 
-  <Target Name="ValidateSolutionPath" BeforeTargets="Build">
-	<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
-		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
-  </Target>
+	<PropertyGroup>
+		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
+		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
+		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
+		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
+		<PackageReference Update="Uno.Core.Extensions" Version="4.0.1" />
+		<PackageReference Update="Uno.Core.Extensions.Logging" Version="4.0.1" />
+		<PackageReference Update="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+		<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
+		<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
+		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
+		<PackageReference Update="Uno.Wasm.Bootstrap" Version="8.0.0-dev.252" />
+		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.252" />
+		<PackageReference Update="MSTest" Version="3.3.1" />
+		<PackageReference Update="MSTest.TestFramework" Version="3.3.1" />
+		<PackageReference Update="MSTest.TestAdapter" Version="3.3.1" />
+		<PackageReference Update="MSTest.Analyzers" Version="3.3.1" />
+		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
+		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
+		<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
+		<PackageReference Update="NUnit" Version="3.14.0" />
+		<PackageReference Update="NUnit3TestAdapter" Version="4.5.0" />
+		<PackageReference Update="Uno.UITest" Version="1.1.0-dev.70" />
+		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
+		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
+		<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
+		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0" />
+		<PackageReference Update="Uno.Resizetizer" Version="1.2.0-dev.72" />
+		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
+		<PackageReference Update="Xamarin.UITest" Version="4.3.4" />
+		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
+		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
-  <PropertyGroup>
-	  <!--
-	  macOS needs an explicit override of the current compiler when running under mono.
-	  On other targets, .NET 6.0's compiler takes precedence.
-	  -->
-	  <MicrosoftNetCompilerVersionOverride Condition="'$(MSBuildRuntimeType)'!='Core' and ($([MSBuild]::IsOSPlatform('OSX')) or '$(MSBuildVersion)' &lt; '17.0')">4.0.1</MicrosoftNetCompilerVersionOverride>
-  </PropertyGroup>
+		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Harfbuzz" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
+		
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
-  <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
-  <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
+		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
+		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
+		<PackageReference Update="System.Json" Version="4.7.1" />
+		<PackageReference Update="FluentAssertions" Version="5.10.3" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
+		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
+		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
+		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
+		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageReference Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+	</ItemGroup>
 
-  <Target Name="WorkaroundMissingWinAppSDKDLL"
-				  BeforeTargets="BinPlaceBootstrapDll">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
+		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
+	</ItemGroup>
 
-	  <!-- Workaround for
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
+		<!-- Xamarin.AndroidX.Legacy.Support.v4 shouldn't be brought for any version after net7.0 -->
+		<!-- Remove this line once we are net8.0+ -->
+		<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
+	</ItemGroup>
+
+	<Target Name="ValidateSolutionPath" BeforeTargets="Build">
+		<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
+			 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
+	</Target>
+
+	<Target Name="WorkaroundMissingWinAppSDKDLL"
+					BeforeTargets="BinPlaceBootstrapDll">
+
+		<!-- Workaround for
 	  C:\a\.nuget\microsoft.windowsappsdk.foundation\1.0.0-experimental1\build\Microsoft.WindowsAppSDK.Bootstrap.targets(11,5):
 	  error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk.foundation\1.0.0-experimental1\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppSDK.Bootstrap.dll" because it was not found.
 	  -->
-	  <CreateProperty Value="x86">
-		  <Output
-			  TaskParameter="Value"
-			  PropertyName="_WindowsAppSDKFoundationPlatform" />
-	  </CreateProperty>
-  </Target>
+		<CreateProperty Value="x86">
+			<Output
+				TaskParameter="Value"
+				PropertyName="_WindowsAppSDKFoundationPlatform" />
+		</CreateProperty>
+	</Target>
 
-  <Target Name="WorkaroundMissingWinAppSDKDLL_2"
-				BeforeTargets="BeforeBuild">
+	<Target Name="WorkaroundMissingWinAppSDKDLL_2"
+				  BeforeTargets="BeforeBuild">
 
-	<!-- Workaround for
+		<!-- Workaround for
          C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(4559,5):
 				 error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk\1.0.0-preview3\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppRuntime.Bootstrap.dll" because it was not found.
 	  -->
-	<ItemGroup>
-	  <_itemToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)'=='Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
-	  <ReferenceCopyLocalPaths Remove="@(_itemToRemove)"/>
-	</ItemGroup>
-  </Target>
+		<ItemGroup>
+			<_itemToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)'=='Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
+			<ReferenceCopyLocalPaths Remove="@(_itemToRemove)"/>
+		</ItemGroup>
+	</Target>
+
+	<!-- Workaround for https://github.com/xamarin/xamarin-macios/issues/17005 -->
+	<Target Name="_DisableRemoteBuildForLibraries" BeforeTargets="_SayHello" Condition="'$(OutputType)'=='Library'">
+		<PropertyGroup>
+			<IsRemoteBuild>false</IsRemoteBuild>
+			<ServerAddress></ServerAddress>
+		</PropertyGroup>
+	</Target>
 </Project>

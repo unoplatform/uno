@@ -3,14 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using System.Text;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 using V = System.Collections.Generic.Dictionary<string, object>;
 
@@ -26,7 +28,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		private readonly List<(object evt, RoutedEventArgs args)> _hyperlinkResult = new List<(object, RoutedEventArgs)>();
 		private readonly List<(object evt, RoutedEventArgs args)> _listViewResult = new List<(object, RoutedEventArgs)>();
 
-		private static readonly object ClickEvent = new object();
+		private static readonly object ClickEvent = "ClickEvent";
 
 		[Flags]
 		private enum EventsKind
@@ -101,6 +103,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					break;
 			}
 
+			Log(args.Error);
 			TestTapResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
@@ -137,6 +140,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					break;
 			}
 
+			Log(args.Error);
 			TestClickResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
@@ -144,9 +148,30 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		private void ValidateTranslatedTapTest(object sender, RoutedEventArgs e)
 		{
 			var args = new EventSequenceValidator(_translatedTapResult);
+			var isInertialManip = _translatedTapResult.Any(arg => ReferenceEquals(arg.evt, ManipulationInertiaStartingEvent));
 			var result = false;
 			switch (PointerType)
 			{
+				case PointerDeviceType.Mouse when isInertialManip:
+				case PointerDeviceType.Pen when isInertialManip && PenSupportsHover:
+					result = args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerPressedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.One(PointerReleasedEvent)
+						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
 				case PointerDeviceType.Mouse:
 				case PointerDeviceType.Pen when PenSupportsHover:
 					result = args.One(PointerEnteredEvent)
@@ -157,12 +182,28 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.One(PointerReleasedEvent)
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
 						&& args.One(ManipulationCompletedEvent)
+						&& args.One(PointerReleasedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
+				case PointerDeviceType.Pen when isInertialManip:
+				case PointerDeviceType.Touch when isInertialManip:
+					result = args.One(PointerEnteredEvent)
+						&& args.One(PointerPressedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(ManipulationInertiaStartingEvent)
+						&& args.Some(ManipulationDeltaEvent)
+						&& args.One(PointerReleasedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.Some(ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.End();
 					break;
 
@@ -175,16 +216,14 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.One(PointerReleasedEvent)
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeOne(PointerExitedEvent)
-						&& args.MaybeSome(ManipulationDeltaEvent)
 						&& args.One(ManipulationCompletedEvent)
-						&& args.MaybeOne(PointerExitedEvent) // If no inertia
+						&& args.One(PointerReleasedEvent)
+						&& args.One(PointerExitedEvent)
 						&& args.End();
 					break;
 			}
 
+			Log(args.Error);
 			TestTranslatedTapResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
@@ -194,9 +233,30 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			// Pointer pressed and released are handled by the ButtonBase
 
 			var args = new EventSequenceValidator(_translatedClickResult);
+			var isInertialManip = _translatedClickResult.Any(arg => ReferenceEquals(arg.evt, ManipulationInertiaStartingEvent));
 			var result = false;
 			switch (PointerType)
 			{
+				case PointerDeviceType.Mouse when isInertialManip:
+				case PointerDeviceType.Pen when isInertialManip && PenSupportsHover:
+					result = args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.Click()
+						&& args.One(PointerCaptureLostEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
 				case PointerDeviceType.Mouse:
 				case PointerDeviceType.Pen when PenSupportsHover:
 					result = args.One(PointerEnteredEvent)
@@ -205,14 +265,30 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Some(PointerMovedEvent)
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
-						&& args.One(ManipulationCompletedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
+				case PointerDeviceType.Pen when isInertialManip:
+				case PointerDeviceType.Touch when isInertialManip:
+					result = args.One(PointerEnteredEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.Click()
+						&& args.One(PointerCaptureLostEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(PointerExitedEvent)
+						&& args.Some(ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.End();
 					break;
 
@@ -223,18 +299,15 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Some(PointerMovedEvent)
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
-						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeOne(PointerExitedEvent)
-						&& args.MaybeSome(ManipulationDeltaEvent)
-						&& args.One(ManipulationCompletedEvent)
-						&& args.MaybeOne(PointerExitedEvent) // If no inertia
+						&& args.One(PointerExitedEvent)
 						&& args.End();
 					break;
 			}
 
+			Log(args.Error);
 			TestTranslatedClickResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
@@ -254,7 +327,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					result =
 						args.One(PointerEnteredEvent)
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generates it and we want to validate it
-#if NETFX_CORE
+#if WINAPPSDK
 						&& args.One(PointerReleasedEvent)
 						&& args.Click()
 #else
@@ -276,17 +349,24 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					result =
 						args.Click()
 						&& args.End();
+#elif __ANDROID__
+					// KNOWN ISSUE: https://github.com/unoplatform/uno/issues/15734
+					// On Android the pointer clicked event is not raised properly
+					result =
+						args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerExitedEvent);
 #else
 					result =
 						args.One(PointerEnteredEvent)
 						&& args.MaybeSome(PointerMovedEvent)
-#if NETFX_CORE
+#if WINAPPSDK
 						&& args.One(PointerReleasedEvent)
 						&& args.Click()
 #elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
 						&& args.Click()
 #else
 						&& args.Click()
+						&& args.One(PointerExitedEvent)
 						&& args.One(PointerReleasedEvent)
 #endif
 						&& args.One(PointerExitedEvent)
@@ -295,6 +375,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					break;
 			}
 
+			Log(args.Error);
 			TestHyperlinkResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
@@ -332,6 +413,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					break;
 			}
 
+			Log(args.Error);
 			TestListViewResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
@@ -408,7 +490,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					+ $"| frame={point.FrameId}"
 					+ $"| type={e.Pointer.PointerDeviceType} "
 					+ $"| position={point.Position} "
+#if !WINAPPSDK
 					+ $"| rawPosition={point.RawPosition} "
+#endif
 					+ $"| inContact={point.IsInContact} "
 					+ $"| inRange={point.Properties.IsInRange} "
 					+ $"| primary={point.Properties.IsPrimary}"
@@ -432,36 +516,79 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		{
 			private readonly IList<(object evt, RoutedEventArgs args)> _args;
 			private int _index = 0;
+			private readonly StringBuilder _error;
 
 			public EventSequenceValidator(IList<(object evt, RoutedEventArgs args)> args)
 			{
 				_args = args;
+				_error = new StringBuilder();
+			}
+
+			public string Error => _error.ToString();
+
+			/// <summary>
+			/// [1..1]
+			/// </summary>
+			public bool Click([CallerLineNumber] int line = -1)
+				=> One($"at line {line}", ClickEvent);
+
+			/// <summary>
+			/// [1..1]
+			/// </summary>
+			private bool One(string debug, params object[] expected)
+			{
+				if (_index >= _args.Count)
+				{
+					_error.AppendLine($"Reach end of events ({_index}) while expecting {string.Join(" or ", expected.AsEnumerable())} {debug}. ");
+					return false;
+				}
+
+				var actual = _args[_index++].evt;
+				if (!expected.Contains(actual))
+				{
+					_error.AppendLine($"Event {_index} is {actual} while expecting {string.Join(" or ", expected.AsEnumerable())} {debug}. ");
+					return false;
+				}
+
+				return true;
 			}
 
 			/// <summary>
 			/// [1..1]
 			/// </summary>
-			public bool Click()
-				=> _index < _args.Count && _args[_index++].evt == ClickEvent;
+			public bool One(RoutedEvent evt, [CallerLineNumber] int line = -1)
+				=> One($"at line {line}", evt);
 
 			/// <summary>
 			/// [1..1]
 			/// </summary>
-			public bool One(params RoutedEvent[] evt)
-				=> _index < _args.Count && evt.Contains(_args[_index++].evt);
+			public bool One(RoutedEvent evt1, RoutedEvent evt2, [CallerLineNumber] int line = -1)
+				=> One($"at line {line}", evt1, evt2);
 
 			/// <summary>
 			/// [1..*]
 			/// </summary>
-			public bool Some(params RoutedEvent[] evt)
-				=> One(evt) && MaybeSome(evt);
+			public bool Some(RoutedEvent evt, [CallerLineNumber] int line = -1)
+				=> Some($"at line {line}", evt);
+
+			/// <summary>
+			/// [1..*]
+			/// </summary>
+			public bool Some(RoutedEvent evt1, RoutedEvent evt2, [CallerLineNumber] int line = -1)
+				=> Some($"at line {line}", evt1, evt2);
+
+			/// <summary>
+			/// [1..*]
+			/// </summary>
+			public bool Some(string debug, params RoutedEvent[] evt)
+				=> One(debug, evt) && MaybeSome(evt);
 
 			/// <summary>
 			/// [0..1]
 			/// </summary>
 			public bool MaybeOne(RoutedEvent evt)
 			{
-				if (_index < _args.Count &&  _args[_index].evt == evt)
+				if (_index < _args.Count && ReferenceEquals(_args[_index].evt, evt))
 				{
 					++_index;
 				}
@@ -480,9 +607,17 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 				return true;
 			}
 
-			public bool End()
-				=> _index >= _args.Count;
+			public bool End([CallerLineNumber] int line = -1)
+			{
+				if (_index < _args.Count)
+				{
+					_error.AppendLine($"Expected to have reach the end of events at line {line} but {_args.Count - _index} are remaining. ");
+					return false;
+				}
+
+				return true;
+			}
 		}
-#endregion
+		#endregion
 	}
 }

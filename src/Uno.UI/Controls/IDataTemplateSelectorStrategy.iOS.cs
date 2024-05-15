@@ -1,17 +1,12 @@
 ﻿using System;
 using Uno.Extensions;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
 
 namespace Uno.UI.Views.Controls
 {
 	public interface IDataTemplateSelectorStrategy
 	{
-		Func<UIView> SelectTemplateFactory (object item);
+		Func<UIView> SelectTemplateFactory(object item);
 	}
 
 	public partial class StrategyBasedDataTemplateSelectorControl : DataTemplateSelectorControl
@@ -20,26 +15,29 @@ namespace Uno.UI.Views.Controls
 
 		IDataTemplateSelectorStrategy _currentStrategy;
 
-		public IDataTemplateSelectorStrategy CurrentStrategy {
-			get {
+		public IDataTemplateSelectorStrategy CurrentStrategy
+		{
+			get
+			{
 				return _currentStrategy;
 			}
-			set {
+			set
+			{
 				_currentStrategy = value;
-				OnCurrentStrategyChanged ();
+				OnCurrentStrategyChanged();
 			}
 		}
 
-		void OnCurrentStrategyChanged ()
+		void OnCurrentStrategyChanged()
 		{
-			ContentTemplate = SelectTemplateFactory (Content);
+			ContentTemplate = SelectTemplateFactory(Content);
 		}
 
 		#endregion
 
-		protected override Func<UIView> SelectTemplateFactory (object item)
+		protected override Func<UIView> SelectTemplateFactory(object item)
 		{
-			return CurrentStrategy.SelectOrDefault (s => s.SelectTemplateFactory (item));
+			return CurrentStrategy.SelectOrDefault(s => s.SelectTemplateFactory(item));
 		}
 	}
 }

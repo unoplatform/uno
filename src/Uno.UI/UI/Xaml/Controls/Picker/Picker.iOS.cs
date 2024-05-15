@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.Extensions;
@@ -13,12 +13,9 @@ using System.Collections.Specialized;
 using System.Windows.Input;
 using CoreGraphics;
 using Uno.Extensions.Specialized;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// This class is mainly used for native looking ComboBox templates on iPhone.
@@ -93,12 +90,12 @@ namespace Windows.UI.Xaml.Controls
 			if (SelectedItem == null)
 			{
 				Items = new[] { (object)null }
-				  .Concat((collection as IEnumerable)?.ToObjectArray() ?? new object[0])
+				  .Concat((collection as IEnumerable)?.ToObjectArray() ?? Array.Empty<object>())
 				  .ToObjectArray();
 			}
 			else
 			{
-				Items = (collection as IEnumerable)?.ToObjectArray() ?? new object[0];
+				Items = (collection as IEnumerable)?.ToObjectArray() ?? Array.Empty<object>();
 			}
 
 			ReloadAllComponents();

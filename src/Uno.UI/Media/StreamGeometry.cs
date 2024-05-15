@@ -2,18 +2,16 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using Path = UIKit.UIBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using CoreGraphics;
@@ -21,14 +19,13 @@ using UIImage = AppKit.NSImage;
 using UIColor = AppKit.NSColor;
 using UIGraphics = AppKit.NSGraphics;
 using Path = AppKit.NSBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Graphics;
 #elif __SKIA__
-using Path = Windows.UI.Composition.SkiaGeometrySource2D;
+using Path = Microsoft.UI.Composition.SkiaGeometrySource2D;
 using SkiaSharp;
+using Uno.UI.UI.Xaml.Media;
 #else
 using Path = System.Object;
 #endif
@@ -55,52 +52,69 @@ namespace Uno.Media
 #if __SKIA__
 		internal override Path GetGeometrySource2D()
 		{
+			bezierPath.Geometry.FillType = FillRule.ToSkiaFillType();
 			return bezierPath;
 		}
 
-		internal override SKPath GetSKPath() => bezierPath.Geometry;
+		internal override SKPath GetSKPath()
+		{
+			bezierPath.Geometry.FillType = FillRule.ToSkiaFillType();
+			return bezierPath.Geometry;
+		}
 #endif
 
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
-		public override UIImage ToNativeImage ()
+#if __IOS__ || __MACOS__
+		public override UIImage ToNativeImage()
 		{
-			return (bezierPath == null) ? null : ToNativeImage (bezierPath.Bounds.Size);
+			return (bezierPath == null) ? null : ToNativeImage(bezierPath.Bounds.Size);
 		}
 
-		public override UIImage ToNativeImage (CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness))
+		public override UIImage ToNativeImage(CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness))
 		{
-			if (bezierPath == null) {
+			if (bezierPath == null)
+			{
 				return null;
 			}
 
 			CGSize imageSize = bezierPath.Bounds.Size;
-			if ((int)imageSize.Width <= 0 && (int)imageSize.Height <= 0) {
+			if ((int)imageSize.Width <= 0 && (int)imageSize.Height <= 0)
+			{
 				return null;
 			}
 
-			if (nfloat.IsNaN (targetSize.Width) && nfloat.IsNaN (targetSize.Height)) {
+			if (nfloat.IsNaN(targetSize.Width) && nfloat.IsNaN(targetSize.Height))
+			{
 				targetSize = new CGSize(0.85f * imageSize.Width, 0.85f * imageSize.Height);
-			} else if (nfloat.IsNaN (targetSize.Width)) {
+			}
+			else if (nfloat.IsNaN(targetSize.Width))
+			{
 				targetSize.Width = (imageSize.Width / imageSize.Height) * targetSize.Height;
-			} else if (nfloat.IsNaN (targetSize.Height)) {
+			}
+			else if (nfloat.IsNaN(targetSize.Height))
+			{
 				targetSize.Height = (imageSize.Height / imageSize.Width) * targetSize.Width;
 			}
 
-			if ((int)targetSize.Width <= 0 && (int)targetSize.Height <= 0) {
+			if ((int)targetSize.Width <= 0 && (int)targetSize.Height <= 0)
+			{
 				return null;
 			}
 
 			nfloat scale = 1f;
 			var translate = CGPoint.Empty;
 
-			if (!imageSize.Equals (targetSize)) {
+			if (!imageSize.Equals(targetSize))
+			{
 				var scaleX = targetSize.Width / imageSize.Width;
 				var scaleY = targetSize.Height / imageSize.Height;
-				scale = (nfloat)Math.Min (targetSize.Width / imageSize.Width, targetSize.Height / imageSize.Height);
+				scale = (nfloat)Math.Min(targetSize.Width / imageSize.Width, targetSize.Height / imageSize.Height);
 
-				if (scaleX > scaleY) {
+				if (scaleX > scaleY)
+				{
 					translate.X = (targetSize.Width - (imageSize.Width * scale)) * 0.5f;
-				} else if (scaleX < scaleY) {
+				}
+				else if (scaleX < scaleY)
+				{
 					translate.Y = (targetSize.Height - (imageSize.Height * scale)) * 0.5f;
 				}
 			}
@@ -108,18 +122,19 @@ namespace Uno.Media
 			UIImage image;
 
 #if __IOS__
-			UIGraphics.BeginImageContextWithOptions (targetSize, false, 0);
-			using (var context = UIGraphics.GetCurrentContext ()) {
-				context.TranslateCTM (translate.X, translate.Y);
-				context.ScaleCTM (scale, scale);
+			UIGraphics.BeginImageContextWithOptions(targetSize, false, 0);
+			using (var context = UIGraphics.GetCurrentContext())
+			{
+				context.TranslateCTM(translate.X, translate.Y);
+				context.ScaleCTM(scale, scale);
 
 				context.InterpolationQuality = CGInterpolationQuality.High;
-				context.SetFillColor ((color ?? UIColor.Black).CGColor);
+				context.SetFillColor((color ?? UIColor.Black).CGColor);
 				bezierPath.UsesEvenOddFillRule = (FillRule == FillRule.EvenOdd);
-				bezierPath.Fill ();
+				bezierPath.Fill();
 
-				image = UIGraphics.GetImageFromCurrentImageContext ();
-				UIGraphics.EndImageContext ();
+				image = UIGraphics.GetImageFromCurrentImageContext();
+				UIGraphics.EndImageContext();
 			}
 #elif __MACOS__
 			// macOS TODO
@@ -145,6 +160,6 @@ namespace Uno.Media
 #endif
 		}
 
-#endregion
+		#endregion
 	}
 }

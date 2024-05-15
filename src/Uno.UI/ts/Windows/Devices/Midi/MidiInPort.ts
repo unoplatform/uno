@@ -27,8 +27,12 @@
 
 		public static startMessageListener(managedId: string) {
 			if (!MidiInPort.dispatchMessage) {
-				MidiInPort.dispatchMessage = (<any>Module).mono_bind_static_method(
-					"[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessage;
+				} else {
+					MidiInPort.dispatchMessage = (<any>Module).mono_bind_static_method(
+						"[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+				}
 			}
 
 			const instance = MidiInPort.instanceMap[managedId];

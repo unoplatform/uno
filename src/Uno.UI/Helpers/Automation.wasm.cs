@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Helpers
 {
@@ -15,7 +16,8 @@ namespace Uno.UI.Helpers
 		/// Gets a dependency property value
 		/// </summary>
 		[Preserve]
-		public static string GetDependencyPropertyValue(int handle, string propertyName)
+		[JSExport]
+		internal static string GetDependencyPropertyValue(int handle, string propertyName)
 		{
 			// Dispatch to right object, if we can find it
 			if (UIElement.GetElementFromHandle(handle) is UIElement element)
@@ -33,18 +35,19 @@ namespace Uno.UI.Helpers
 		/// Sets the specified dependency property value using the format "name|value"
 		/// </summary>
 		/// <param name="dependencyPropertyNameAndValue">The name and value of the property</param>
-        /// <param name="handle">The GCHandle of the UIElement to use</param>
+		/// <param name="handle">The GCHandle of the UIElement to use</param>
 		/// <returns>The currenty set value at the Local precedence</returns>
 		[Preserve]
-		public static string SetDependencyPropertyValue(int handle, string dependencyPropertyNameAndValue)
+		[JSExport]
+		internal static string SetDependencyPropertyValue(int handle, string dependencyPropertyNameAndValue)
 		{
 			// Dispatch to right object, if we can find it
 			if (UIElement.GetElementFromHandle(handle) is UIElement element)
 			{
 				return UIElement.SetDependencyPropertyValueInternal(element, dependencyPropertyNameAndValue);
 			}
-            else
-            {
+			else
+			{
 				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
 				return "";
 			}

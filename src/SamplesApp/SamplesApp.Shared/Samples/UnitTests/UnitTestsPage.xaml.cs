@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Samples.UnitTests
 {
@@ -10,6 +10,7 @@ namespace SamplesApp.Samples.UnitTests
 		"Unit Tests",
 		Name = "Unit Tests Runner",
 		Description = "Test bench to run UI tests that does not require interaction (a.k.a. runtime tests)",
+		UsesFrame = false,
 		IgnoreInSnapshotTests = true)]
 	public sealed partial class UnitTestsPage : Page
 	{

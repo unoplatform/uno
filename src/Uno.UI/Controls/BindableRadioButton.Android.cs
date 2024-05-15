@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Widget;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
-    public partial class BindableRadioButton : AndroidX.AppCompat.Widget.AppCompatRadioButton, DependencyObject, INotifyPropertyChanged
-    {
+	public partial class BindableRadioButton : AndroidX.AppCompat.Widget.AppCompatRadioButton, DependencyObject, INotifyPropertyChanged
+	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public BindableRadioButton()

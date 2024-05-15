@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<uno:StarStackPanel Sizes="Auto,Auto,*">
-		<TextBox x:Name="address" Text="https://uno-platform.visualstudio.com/_apis/customerintelligence/Events" />
+		<TextBox x:Name="address" Text="https://api.nuget.org/v3/index.json" />
 		<Button HorizontalAlignment="Stretch" Click="Go">-GO- (make sure your url supports CORS!)</Button>
 		<ScrollViewer>
 			<TextBlock x:Name="log" />

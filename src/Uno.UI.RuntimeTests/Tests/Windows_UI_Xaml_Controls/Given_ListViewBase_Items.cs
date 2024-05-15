@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -15,10 +15,10 @@ using AppKit;
 #else
 using Uno.UI;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_ListViewBase_Items
 	{
 		[TestMethod]
-		public async Task When_Items_Added_Count_Updated()
+		public void When_Items_Added_Count_Updated()
 		{
 			var listView = new ListView();
 			listView.Items.Add(1);
@@ -37,7 +37,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Items_Added_ItemsSource_Stays_Null()
+		public void When_Items_Added_ItemsSource_Stays_Null()
 		{
 			var listView = new ListView();
 			listView.Items.Add(1);
@@ -45,7 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Used_Items_NotNull()
+		public void When_ItemsSource_Used_Items_NotNull()
 		{
 			var listView = new ListView();
 			listView.ItemsSource = new List<int>() { 1, 2 };
@@ -53,7 +53,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Unset_Items_NotNull()
+		public void When_ItemsSource_Unset_Items_NotNull()
 		{
 			var listView = new ListView();
 			listView.ItemsSource = new List<int>() { 1, 2 };
@@ -63,7 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Set_To_Empty_Items_Cleared()
+		public void When_ItemsSource_Set_To_Empty_Items_Cleared()
 		{
 			var listView = new ListView();
 			listView.Items.Add(1);
@@ -72,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Unset_Items_Not_Cleared()
+		public void When_ItemsSource_Unset_Items_Not_Cleared()
 		{
 			var listView = new ListView();
 			listView.Items.Add(1);
@@ -82,7 +82,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Unset_When_Already_Null_Items_Not_Cleared()
+		public void When_ItemsSource_Unset_When_Already_Null_Items_Not_Cleared()
 		{
 			var listView = new ListView();
 			listView.Items.Add(1);
@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Set_Items_Not_Modifiable()
+		public void When_ItemsSource_Set_Items_Not_Modifiable()
 		{
 			var listView = new ListView();
 			listView.ItemsSource = new List<int>() { 1 };
@@ -110,7 +110,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Unset_Items_Modifiable()
+		public void When_ItemsSource_Unset_Items_Modifiable()
 		{
 			var listView = new ListView();
 			listView.ItemsSource = new List<int>() { 1 };
@@ -119,18 +119,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_List_Modified_Change_Is_Reflected()
+#if !WINAPPSDK
+		[Ignore("#12183: ItemsControl.Items no longer map to ItemsSource for simple collection.")]
+#endif
+		public void When_ItemsSource_List_Modified_Change_Is_Reflected()
 		{
-			var listView = new ListView();
 			var items = new List<int>() { 1 };
-			listView.ItemsSource = items;
+			var listView = new ListView { ItemsSource = items };
+
 			Assert.AreEqual(1, listView.Items.Count);
 			items.Add(2);
 			Assert.AreEqual(2, listView.Items.Count);
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_List_Modified_VectorChange_Not_Triggered()
+		public void When_ItemsSource_List_Modified_VectorChange_Not_Triggered()
 		{
 			var listView = new ListView();
 			var items = new List<int>() { 1 };
@@ -142,12 +145,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				notified = true;
 			};
 			items.Add(2);
+#if WINAPPSDK // #12183: ItemsControl.Items no longer map to ItemsSource for simple collection.
 			Assert.AreEqual(2, listView.Items.Count);
+#endif
 			Assert.IsFalse(notified);
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Resets_ItemsCollection_Reference_Does_Not_Change()
+		public void When_ItemsSource_Resets_ItemsCollection_Reference_Does_Not_Change()
 		{
 			var listView = new ListView();
 			var oldItems = listView.Items;
@@ -162,7 +167,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_ObservableCollection_Modified_VectorChange_Triggered()
+		public void When_ItemsSource_ObservableCollection_Modified_VectorChange_Triggered()
 		{
 			var listView = new ListView();
 			var items = new ObservableCollection<int>() { 1 };
@@ -179,7 +184,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Set_Items_Sync()
+		public void When_ItemsSource_Set_Items_Sync()
 		{
 			var listView = new ListView();
 
@@ -191,7 +196,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Updated_Items_Sync()
+#if !WINAPPSDK
+		[Ignore("#12183: ItemsControl.Items no longer map to ItemsSource for simple collection.")]
+#endif
+		public void When_ItemsSource_Updated_Items_Sync()
 		{
 			var listView = new ListView();
 
@@ -209,7 +217,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
-		public async Task When_ItemsSource_Changes_Items_VectorChanged_Triggered()
+		public void When_ItemsSource_Changes_Items_VectorChanged_Triggered()
 		{
 			var listView = new ListView();
 
@@ -233,7 +241,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Enumerable_Changes_Items_Do_Not_Sync()
+		public void When_ItemsSource_Enumerable_Changes_Items_Do_Not_Sync()
 		{
 			var listView = new ListView();
 
@@ -251,7 +259,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
-		public async Task When_ItemsSource_ReadOnly_Items_ReadOnly_Does_Not_Change()
+		public void When_ItemsSource_ReadOnly_Items_ReadOnly_Does_Not_Change()
 		{
 			var listView = new ListView();
 			Assert.IsFalse(listView.Items.IsReadOnly);
@@ -260,7 +268,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_ICollection_Items_Do_Not_Sync()
+		public void When_ItemsSource_ICollection_Items_Do_Not_Sync()
 		{
 			var listView = new ListView();
 			var items = new Dictionary<int, string>() { { 1, "Hello" } };
@@ -295,7 +303,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			source.Add(10);
 
-#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+#if WINAPPSDK // CollectionView doesn't implement VectorChanged
 			Assert.AreEqual(11, listView.Items.Count);
 			Assert.AreEqual(1, timesRaised);
 			Assert.AreEqual(CollectionChange.ItemInserted, change);
@@ -350,7 +358,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var a = source.Single(g => g.Key == "A");
 			a.Add("Arendelle");
 
-#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+#if WINAPPSDK // CollectionView doesn't implement VectorChanged
 			Assert.AreEqual(CountriesABC.Length + 1, listView.Items.Count);
 			Assert.AreEqual(1, timesRaised);
 			Assert.AreEqual(CollectionChange.ItemInserted, change);
@@ -389,7 +397,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var d = new GroupingObservableCollection<string, string>("D", CountriesD);
 			source.Add(d);
 
-#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+#if WINAPPSDK // CollectionView doesn't implement VectorChanged
 			Assert.AreEqual(CountriesABC.Length + CountriesD.Length, listView.Items.Count);
 			Assert.AreEqual(4, timesRaised);
 			Assert.IsTrue(changeWasExpected);

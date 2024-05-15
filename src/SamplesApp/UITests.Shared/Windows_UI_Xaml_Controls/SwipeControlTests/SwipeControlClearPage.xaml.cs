@@ -5,9 +5,11 @@
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeControl_TestUI/SwipeControlClearPage.xaml.cs
 
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+
+using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
 
 namespace MUXControlsTestApp
 {
@@ -16,41 +18,41 @@ namespace MUXControlsTestApp
 	/// </summary>
 	[Sample("SwipeControl")]
 	public sealed partial class SwipeControlClearPage : Page //: TestPage
-    {
-        private string[] items = new string[] { "some text" };
+	{
+		private string[] items = new string[] { "some text" };
 
-        public SwipeControlClearPage()
-        {
-            this.InitializeComponent();
-            SwipeItemsChildSum.Text = (DefaultSwipeItemsHorizontal.Count + DefaultSwipeItemsVertical.Count).ToString();
+		public SwipeControlClearPage()
+		{
+			this.InitializeComponent();
+			SwipeItemsChildSum.Text = (DefaultSwipeItemsHorizontal.Count + DefaultSwipeItemsVertical.Count).ToString();
 
-            leftSwipe.ItemsSource = items;
-            topSwipe.ItemsSource = items;
-            rightSwipe.ItemsSource = items;
-            bottomSwipe.ItemsSource = items;
-        }
+			leftSwipe.ItemsSource = items;
+			topSwipe.ItemsSource = items;
+			rightSwipe.ItemsSource = items;
+			bottomSwipe.ItemsSource = items;
+		}
 
-        public void AddSwipeItemsButton_Click(object sender, RoutedEventArgs e)
-        {
-            DefaultSwipeItemsHorizontal.Clear();
-            DefaultSwipeItemsVertical.Clear();
+		public void AddSwipeItemsButton_Click(object sender, RoutedEventArgs e)
+		{
+			DefaultSwipeItemsHorizontal.Clear();
+			DefaultSwipeItemsVertical.Clear();
 
-            DefaultSwipeItemsHorizontal.Mode = SwipeMode.Reveal;
-            DefaultSwipeItemsHorizontal.Add(DefaultSwipeItemHorizontal);
+			DefaultSwipeItemsHorizontal.Mode = SwipeMode.Reveal;
+			DefaultSwipeItemsHorizontal.Add(DefaultSwipeItemHorizontal);
 
-            // Using swipecontrol inside datatemplate prevents us from setting that:
-            // Swipecontrol is in horizontal mode, can not add vertical swipe items...
-            //DefaultSwipeItemsVertical.Mode = Microsoft.UI.Xaml.Controls.SwipeMode.Reveal;
-            //DefaultSwipeItemsVertical.Add(DefaultSwipeItemVertical);
+			// Using swipecontrol inside datatemplate prevents us from setting that:
+			// Swipecontrol is in horizontal mode, can not add vertical swipe items...
+			//DefaultSwipeItemsVertical.Mode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode.Reveal;
+			//DefaultSwipeItemsVertical.Add(DefaultSwipeItemVertical);
 
-            SwipeItemsChildSum.Text = (DefaultSwipeItemsHorizontal.Count + DefaultSwipeItemsVertical.Count).ToString();
-        }
-        public void ClearSwipeItemsButton_Click(object sender, RoutedEventArgs e)
-        {
-            DefaultSwipeItemsHorizontal.Clear();
-            DefaultSwipeItemsVertical.Clear();
-            SwipeItemsChildSum.Text = (DefaultSwipeItemsHorizontal.Count + DefaultSwipeItemsVertical.Count).ToString();
-        }
+			SwipeItemsChildSum.Text = (DefaultSwipeItemsHorizontal.Count + DefaultSwipeItemsVertical.Count).ToString();
+		}
+		public void ClearSwipeItemsButton_Click(object sender, RoutedEventArgs e)
+		{
+			DefaultSwipeItemsHorizontal.Clear();
+			DefaultSwipeItemsVertical.Clear();
+			SwipeItemsChildSum.Text = (DefaultSwipeItemsHorizontal.Count + DefaultSwipeItemsVertical.Count).ToString();
+		}
 
-    }
+	}
 }

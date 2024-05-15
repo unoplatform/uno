@@ -1,9 +1,9 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
 	public partial class NonDefaultXamlNamespace : FrameworkElement
-    {
+	{
 		public int Test
 		{
 			get => (int)GetValue(TestProperty);

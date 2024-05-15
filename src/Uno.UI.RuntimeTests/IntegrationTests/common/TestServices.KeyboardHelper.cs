@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Windows.UI.Core;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 namespace Private.Infrastructure
 {
@@ -10,6 +14,14 @@ namespace Private.Infrastructure
 	{
 		public static class KeyboardHelper
 		{
+			static KeyboardHelper()
+			{
+				for (VirtualKey key = VirtualKey.A; key <= VirtualKey.Z; key++)
+				{
+					m_vKeyMapping.Add(char.ToLower((char)key).ToString(), key);
+				}
+			}
+
 			private static Dictionary<string, VirtualKey> m_vKeyMapping = new Dictionary<string, VirtualKey>()
 			{
 				{"cancel",                      VirtualKey.Cancel},
@@ -84,6 +96,7 @@ namespace Private.Infrastructure
 				{"rshift",                      VirtualKey.RightShift},
 				{"lctrl",                       VirtualKey.LeftControl},
 				{"rctrl",                       VirtualKey.RightControl},
+				{"alt",                         VirtualKey.Menu},
 				{"lalt",                        VirtualKey.LeftMenu},
 				{"ralt",                        VirtualKey.RightMenu},
 				{"space",                       VirtualKey.Space},
@@ -117,10 +130,16 @@ namespace Private.Infrastructure
 			};
 
 
-			public static void PressKeySequence(string keys, UIElement element = null)
+			public static async void PressKeySequence(string keys, UIElement element = null)
 			{
-#if !NETFX_CORE
-				if (string.IsNullOrEmpty(keys) || element == null)
+#if !WINAPPSDK
+				if (string.IsNullOrEmpty(keys))
+				{
+					return;
+				}
+
+				element ??= FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as UIElement;
+				if (element is null)
 				{
 					return;
 				}
@@ -152,7 +171,7 @@ namespace Private.Infrastructure
 						var key = keyInstruction.Substring(4, keyInstruction.Length - 4);
 						if (m_vKeyMapping.TryGetValue(key, out var vKey))
 						{
-							element.SafeRaiseEvent(keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey));
+							await RaiseOnElementDispatcherAsync(element, keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, VirtualKeyModifiers.None));
 						}
 					}
 					else
@@ -162,27 +181,28 @@ namespace Private.Infrastructure
 						{
 							var key = keyInstruction.Substring(i, 1);
 							bool shouldShift = char.IsUpper(key[0]);
-							key = char.ToLower(key[0]).ToString();
+							key = char.ToLower(key[0], CultureInfo.InvariantCulture).ToString();
 
 							if (shouldShift)
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey));
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
 								}
 							}
 
 							if (m_vKeyMapping.TryGetValue(key, out var vKey))
 							{
-								element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey));
-								element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey));
+								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
+								await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
+								await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
 							}
 
 							if (shouldShift)
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey));
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
 								}
 							}
 						}
@@ -190,6 +210,26 @@ namespace Private.Infrastructure
 
 					posStart = posEnd + 1;
 					posEnd = keys.IndexOf("#", posStart);
+				}
+
+				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, RoutedEventArgs args)
+				{
+					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
+#if __WASM__
+					if (!Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported)
+					{
+						raiseSynchronously = true;
+					}
+#endif
+
+					if (raiseSynchronously)
+					{
+						element.SafeRaiseEvent(routedEvent, args);
+					}
+					else
+					{
+						await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseEvent(routedEvent, args));
+					}
 				}
 #endif
 			}
@@ -278,6 +318,18 @@ namespace Private.Infrastructure
 			public static void GamepadDpadDown(UIElement element = null)
 			{
 				PressKeySequence("$d$_GamepadDpadDown#$u$_GamepadDpadDown", element);
+			}
+
+			/// <param name="text">Assuming lowercase text. To add capitalization, use <see cref="PressKeySequence"/></param>
+			public static void InputText(string text, UIElement element = null)
+			{
+				var sequence = text
+					.ToLower()
+					.Select(c => $"$d$_{c}#$u$_{c}#")
+					.Aggregate("", (a, b) => a + b)
+					[..^1]; // drop last #
+
+				PressKeySequence(sequence, element);
 			}
 		}
 	}

@@ -1,38 +1,66 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using CoreGraphics;
 using Foundation;
 using UIKit;
 using Uno.UI;
+using Uno.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{
+		private const int _bitsPerPixel = 32;
+		private const int _bitsPerComponent = 8;
+		private const int _bytesPerPixel = _bitsPerPixel / _bitsPerComponent;
+
 		/// <inheritdoc />
 		private protected override bool IsSourceReady => _buffer != null;
 
 		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out UIImage? image)
+		private static ImageData Open(UnmanagedArrayOfBytes buffer, int bufferLength, int width, int height)
 		{
-			image = UIImage.LoadFromData(NSData.FromArray(_buffer));
-			return image != null;
+			using var colorSpace = CGColorSpace.CreateDeviceRGB();
+			using var context = new CGBitmapContext(
+				buffer.Pointer,
+				width,
+				height,
+				_bitsPerComponent,
+				width * _bytesPerPixel,
+				colorSpace,
+				CGBitmapFlags.ByteOrder32Little | CGBitmapFlags.PremultipliedFirst);
+
+			using var cgImage = context.ToImage();
+			if (cgImage is not null)
+			{
+				return ImageData.FromNative(new UIImage(cgImage));
+			}
+
+			return default;
 		}
 
-		private byte[] RenderAsPng(UIElement element, Size? scaledSize = null)
+		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref UnmanagedArrayOfBytes? buffer, Size? scaledSize = null)
 		{
-			UIImage img;
+			var size = new Size(element.ActualSize.X, element.ActualSize.Y);
+			if (size == default)
+			{
+				return (0, 0, 0);
+			}
+
+			UIImage uiImage;
 			try
 			{
-				UIGraphics.BeginImageContextWithOptions(new Size(element.ActualSize.X, element.ActualSize.Y), false, 1f);
+				var scale = (float)(DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1.0);
+				UIGraphics.BeginImageContextWithOptions(size, false, scale);
 				var ctx = UIGraphics.GetCurrentContext();
 				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
 				element.Layer.RenderInContext(ctx);
-				img = UIGraphics.GetImageFromCurrentImageContext();
+				uiImage = UIGraphics.GetImageFromCurrentImageContext();
 			}
 			finally
 			{
@@ -41,13 +69,34 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			if (scaledSize.HasValue)
 			{
-				using var unscaled = img;
-				img = unscaled.Scale(scaledSize.Value);
+				using var unscaled = uiImage;
+				uiImage = unscaled.Scale(scaledSize.Value);
 			}
 
-			using (img)
+			using (uiImage)
 			{
-				return img.AsPNG().ToArray();
+				var cgImage = uiImage.CGImage!;
+				var width = cgImage.Width;
+				var height = cgImage.Height;
+				var bytesPerRow = width * _bytesPerPixel;
+				var bufferLength = (int)(bytesPerRow * height);
+
+				EnsureBuffer(ref buffer, bufferLength);
+
+				using var colorSpace = CGColorSpace.CreateDeviceRGB();
+				using var context = new CGBitmapContext(
+					buffer!.Pointer,
+					width,
+					height,
+					_bitsPerComponent,
+					bytesPerRow,
+					colorSpace,
+					CGBitmapFlags.ByteOrder32Little | CGBitmapFlags.PremultipliedFirst); // BGRA8
+
+				var rect = new CGRect(0, 0, width, height);
+				context.DrawImage(rect, cgImage);
+
+				return (bufferLength, (int)width, (int)height);
 			}
 		}
 	}

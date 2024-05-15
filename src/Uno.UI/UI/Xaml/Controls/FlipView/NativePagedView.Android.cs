@@ -4,13 +4,13 @@ using System.Text;
 using AndroidX.ViewPager.Widget;
 using Android.Views;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativePagedView : ViewPager, DependencyObject, ILayoutConstraints, ILayouterElement
 	{
@@ -41,10 +41,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var measuredSize = ((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
 
+			var logicalMeasuredSize = measuredSize.PhysicalToLogicalPixels();
+
 			//We call ViewPager.OnMeasure here, because it creates the page views.
 			base.OnMeasure(
-				ViewHelper.SpecFromLogicalSize(measuredSize.Width),
-				ViewHelper.SpecFromLogicalSize(measuredSize.Height)
+				ViewHelper.SpecFromLogicalSize(logicalMeasuredSize.Width),
+				ViewHelper.SpecFromLogicalSize(logicalMeasuredSize.Height)
 			);
 
 			IFrameworkElementHelper.OnMeasureOverride(this);
@@ -71,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_lastLayoutSize = newSize;
 
-				_layouter.Arrange(new Windows.Foundation.Rect(0, 0, newSize.Width, newSize.Height));
+				_layouter.Arrange(new global::Windows.Foundation.Rect(0, 0, newSize.Width, newSize.Height));
 			}
 		}
 

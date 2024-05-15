@@ -3,16 +3,16 @@
 
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace MUXControlsTestApp
 {
 	[Sample("NavigationView", "MUX")]
-    public sealed partial class NavigationViewBlankPage1 : Page
-    {
-        public NavigationViewBlankPage1()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class NavigationViewBlankPage1 : Page
+	{
+		public NavigationViewBlankPage1()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

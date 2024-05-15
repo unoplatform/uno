@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Input
 {
-	public sealed class InputLightDismissEventArgs
+	public sealed partial class InputLightDismissEventArgs
 	{
 	}
 }

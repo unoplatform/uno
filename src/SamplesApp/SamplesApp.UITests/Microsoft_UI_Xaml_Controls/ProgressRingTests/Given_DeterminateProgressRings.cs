@@ -7,22 +7,22 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.ProgressRingTests
 {
+#if !HAS_UNO_WINUI
+	[Ignore("Lottie for SkiaSharp is not available for UWP")]
+#endif
 	public partial class Given_DeterminateProgressRings : SampleControlUITestBase
 	{
 		private const string red = "#FF0000";
 		private const string green = "#008000";
-		private readonly ExpectedColor[] _expectedColors = new[]
-		{
-			new ExpectedColor { Value = 0, Colors = new [] { red, red, red, red } },
-			new ExpectedColor { Value = 25, Colors = new [] { red, green, red, red } },
-			new ExpectedColor { Value = 50, Colors = new [] { red, green, green, red } },
-			new ExpectedColor { Value = 75, Colors = new [] { red, green, green, green } },
-			new ExpectedColor { Value = 100, Colors = new [] { green, green, green, green } },
-		};
 
 		[Test]
 		[AutoRetry]
-		public void Detereminate_ProgressRing_Validation()
+		[TestCase(0, new[] { red, red, red, red })]
+		[TestCase(25, new[] { red, green, red, red })]
+		[TestCase(50, new[] { red, green, green, red })]
+		[TestCase(75, new[] { red, green, green, green })]
+		[TestCase(100, new[] { green, green, green, green })]
+		public void Detereminate_ProgressRing_Validation(float value, string[] colors)
 		{
 			Run("UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIDeterminateProgressRing");
 
@@ -33,34 +33,31 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.ProgressRingTests
 			var bottomLeftTargetRect = _app.GetPhysicalRect("BottomLeftTarget");
 			var bottomRightTargetRect = _app.GetPhysicalRect("BottomRightTarget");
 
-			foreach (var expected in _expectedColors)
-			{
-				SetComboBox("ProgressValue", expected.Value.ToString());
+			SetComboBox("ProgressValue", value.ToString());
 
-				_app.Wait(TimeSpan.FromSeconds(5)); //Wait for animations to finish
+			_app.Wait(TimeSpan.FromSeconds(1 + value / 25f)); //Wait for animations to finish
 
-				using var snapshot = TakeScreenshot($"Progress-Ring-Value-{expected.Value}");
+			using var snapshot = TakeScreenshot($"Progress-Ring-Value-{value}");
 
-				ImageAssert.HasPixels(
-					snapshot,
-					ExpectedPixels
-						.At($"top-left-{expected.Value}-progress", topLeftTargetRect.CenterX, topLeftTargetRect.CenterY)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[0]),
-					ExpectedPixels
-						.At($"top-right-{expected.Value}-progress", topRightTargetRect.CenterX, topRightTargetRect.CenterY)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[1]),
-					ExpectedPixels
-						.At($"bottom-right-{expected.Value}-progress", bottomRightTargetRect.CenterX, bottomRightTargetRect.CenterY)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[2]),
-					ExpectedPixels
-						.At($"bottom-left-{expected.Value}-progress", bottomLeftTargetRect.CenterX, bottomLeftTargetRect.CenterY)
-						.WithPixelTolerance(1, 1)
-						.Pixel(expected.Colors[3])
-				);
-			}
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels
+					.At($"top-left-{value}-progress", topLeftTargetRect.CenterX, topLeftTargetRect.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(colors[0]),
+				ExpectedPixels
+					.At($"top-right-{value}-progress", topRightTargetRect.CenterX, topRightTargetRect.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(colors[1]),
+				ExpectedPixels
+					.At($"bottom-right-{value}-progress", bottomRightTargetRect.CenterX, bottomRightTargetRect.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(colors[2]),
+				ExpectedPixels
+					.At($"bottom-left-{value}-progress", bottomLeftTargetRect.CenterX, bottomLeftTargetRect.CenterY)
+					.WithPixelTolerance(1, 1)
+					.Pixel(colors[3])
+			);
 		}
 
 		private void SetComboBox(string comboBoxName, string item)
@@ -70,16 +67,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.ProgressRingTests
 			var _ = comboBox.SetDependencyPropertyValue("SelectedItem", item);
 		}
 
-		private struct ExpectedColor
-		{
-			public int Value { get; set; }
-
-			//Expected colors at quadrants (top-left, top-right, bottom-left, bottom-right)
-			public string[] Colors { get; set; }
-		}
-
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // ImageAssert.AreEqual @ line 98 https://github.com/unoplatform/uno/issues/9080
 		public void TestProgressRing_InitialState()
 		{
 			Run("UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIProgressRing_Features");

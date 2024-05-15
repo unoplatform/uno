@@ -1,8 +1,8 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace UITests.Windows_UI_Xaml.FocusTests
 {
@@ -38,7 +38,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 				{
 					controlName = (nextElement as ContentControl)?.Content?.ToString() ?? "N/A";
 				}
-				MoveResultTextBlock.Text = $"Found focus target {nextElement.GetType().Name} with name {controlName}, focus {(focusMoved.Succeeded ? "moved" : "did not move" )}";
+				MoveResultTextBlock.Text = $"Found focus target {nextElement.GetType().Name} with name {controlName}, focus {(focusMoved.Succeeded ? "moved" : "did not move")}";
 			}
 			else
 			{

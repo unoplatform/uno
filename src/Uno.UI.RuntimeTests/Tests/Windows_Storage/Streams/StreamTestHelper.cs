@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			writeTo.SetLength(0);
 			ras?.Seek(0);
 
-			if (directWrapper && ras is {})
+			if (directWrapper && ras is { })
 			{
 				Assert.AreEqual((ulong)0, ras.Position);
 				Assert.AreEqual((ulong)writeTo.Position, ras.Position); // Those should always be equals
@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 
 			await WriteData(writeTo);
 
-			if (directWrapper && ras is {})
+			if (directWrapper && ras is { })
 			{
 				Assert.AreEqual((ulong)0, ras.Position);
 				Assert.AreEqual((ulong)writeTo.Position, ras.Position); // Those should always be equals
@@ -42,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 
 			Assert.AreEqual<string>(Data, actual);
 
-			if (directWrapper && ras is {})
+			if (directWrapper && ras is { })
 			{
 				Assert.AreEqual((ulong)writeTo.Position, ras.Position); // Those should always be equals
 				Assert.AreEqual((ulong)writeTo.Length, ras.Size);

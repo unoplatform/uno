@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation;
 
+
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
-	public static class MidiDeviceConnectionWatcher
+	public static partial class MidiDeviceConnectionWatcher
 	{
-		private const string JsType = "Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher";
-
 		private static readonly object _syncLock = new object();
 
 		private static readonly List<MidiDeviceClassProviderBase> _observers = new List<MidiDeviceClassProviderBase>();
@@ -22,9 +22,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				_observers.Add(provider);
 				if (_observers.Count == 1)
 				{
-					// start WASM device event subscription
-					var command = $"{JsType}.startStateChanged()";
-					WebAssemblyRuntime.InvokeJS(command);
+					NativeMethods.StartStateChanged();
 				}
 			}
 		}
@@ -36,14 +34,12 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				_observers.Remove(provider);
 				if (_observers.Count == 0)
 				{
-					// stop WASM device event subscription
-					var command = $"{JsType}.stopStateChanged()";
-					WebAssemblyRuntime.InvokeJS(command);
+					NativeMethods.StopStateChanged();
 				}
 			}
 		}
 
-		[Preserve]
+		[JSExport]
 		public static int DispatchStateChanged(string id, string name, bool isInput, bool isConnected)
 		{
 			if (isInput)
@@ -72,6 +68,15 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			}
 
 			return 0;
+		}
+
+		internal static partial class NativeMethods
+		{
+			[JSImport($"globalThis.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.startStateChanged")]
+			internal static partial void StartStateChanged();
+
+			[JSImport($"globalThis.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.stopStateChanged")]
+			internal static partial void StopStateChanged();
 		}
 	}
 }

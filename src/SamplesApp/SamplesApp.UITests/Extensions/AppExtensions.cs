@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Uno.UITest;
@@ -14,7 +15,10 @@ namespace SamplesApp.UITests.Extensions
 	{
 		public static void DragCoordinates(this IApp app, PointF from, PointF to) => app.DragCoordinates(from.X, from.Y, to.X, to.Y);
 
+#if !IS_RUNTIME_UI_TESTS
 		private static float? _scaling;
+#endif
+
 		public static float GetDisplayScreenScaling(this IApp app)
 		{
 #if IS_RUNTIME_UI_TESTS
@@ -36,6 +40,26 @@ namespace SamplesApp.UITests.Extensions
 					return 1f;
 				}
 			}
+#endif
+		}
+
+		public static FileInfo GetInAppScreenshot(this IApp app)
+		{
+#if IS_RUNTIME_UI_TESTS
+			return null;
+#else
+			var byte64Image = app.InvokeGeneric("browser:SampleRunner|GetScreenshot", "0")?.ToString();
+
+			var array = Convert.FromBase64String(byte64Image);
+
+			var outputFile = Path.GetTempFileName();
+			File.WriteAllBytes(outputFile, array);
+
+			var finalPath = Path.ChangeExtension(outputFile, ".png");
+
+			File.Move(outputFile, finalPath);
+
+			return new(finalPath);
 #endif
 		}
 	}

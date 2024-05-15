@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
@@ -7,26 +7,19 @@ using System.Windows.Input;
 using Foundation;
 using Uno.Client;
 using Uno.Extensions;
-using Uno.UI.Services;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MenuFlyout
 	{
 		private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions", "CancelTextIosOverride");
 
-#pragma warning disable CS0618 // Type or member is obsolete
 		private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit")
-#if NET6_0_OR_GREATER
 			.GetLocalizedString("Cancel", null);
-#else
-			.LocalizedString("Cancel", null);
-#endif
-#pragma warning restore CS0618 // Type or member is obsolete
 
 		internal protected override void Open()
 		{

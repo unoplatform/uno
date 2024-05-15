@@ -57,7 +57,7 @@
 //{
 //    CValue value;
 //    Xint nIndex = (XINT32)(index);
-    
+
 //    CheckThread();
 //    value = .Collection_GetItem((CCollection)(GetHandle()), nIndex);
 //    CValueBoxer.UnboxValue(&value, item);
@@ -102,7 +102,7 @@
 //        (CCollection)(GetHandle()),
 //        index,
 //        &boxedValue));
-            
+
 //}
 
 //IFACEMETHODIMP
@@ -126,7 +126,7 @@
 //{
 //    CValue value;
 //    Xint nIndex = (XINT32)(index);
-           
+
 //    CheckThread();
 //    value = .Collection_GetItem((CCollection)(GetHandle()), nIndex);
 //    CValueBoxer.UnboxValue(&value, item);
@@ -142,7 +142,7 @@
 
 //    CheckThread();
 //    CValueBoxer.BoxValue(&boxedValue, value);
-                
+
 //    if (SUCCEEDED(Collection_IndexOf(
 //        (CCollection)(GetHandle()),
 //        &boxedValue,
@@ -171,7 +171,7 @@
 //        (CCollection)(GetHandle()),
 //        index,
 //        &boxedValue));
-            
+
 //}
 
 //IFACEMETHODIMP
@@ -243,7 +243,7 @@
 //        (CCollection)(GetHandle()),
 //        index,
 //        &boxedValue));
-            
+
 //}
 
 //IFACEMETHODIMP

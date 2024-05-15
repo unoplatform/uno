@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
 	[TestClass]
-	class Given_AutomationPeer
+	public class Given_AutomationPeer
 	{
 		[TestMethod]
 		[RunsOnUIThread]
@@ -254,7 +254,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		public void When_AutomationPeer_Default_GetPeerFromPoint()
 		{
 			var automationPeer = new TestAutomationPeer();
+#pragma warning disable CS0618 // Type or member is obsolete
 			var result = automationPeer.GetPeerFromPoint(default);
+#pragma warning restore CS0618 // Type or member is obsolete
 			Assert.AreEqual(automationPeer, result);
 		}
 

@@ -8,19 +8,11 @@
 using System;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-#else
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
-#endif
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -52,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var parentSelector = this.FindFirstParent<SelectorItem>();
 
-					SetBinding(IsSelectedProperty, new Binding { Path = "IsSelected", Source = parentSelector, Mode=BindingMode.TwoWay });
+					SetBinding(IsSelectedProperty, new Binding { Path = "IsSelected", Source = parentSelector, Mode = BindingMode.TwoWay });
 				}
 			}
 		}

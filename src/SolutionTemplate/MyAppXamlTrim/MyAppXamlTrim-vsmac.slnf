@@ -1,0 +1,16 @@
+{
+  "solution": {
+    "path": "MyAppXamlTrim.sln",
+    "projects": [
+		"MyAppXamlTrim.Shared\\MyAppXamlTrim.Shared.shproj",
+
+		"MyAppXamlTrim.Mobile\\MyAppXamlTrim.Mobile.csproj",
+
+		"MyAppXamlTrim.Wasm\\MyAppXamlTrim.Wasm.csproj",
+
+		"MyAppXamlTrim.Skia.Gtk\\MyAppXamlTrim.Skia.Gtk.csproj",
+
+		"MyAppXamlTrim.Skia.Linux.FrameBuffer\\MyAppXamlTrim.Skia.Linux.FrameBuffer.csproj",
+    ]
+  }
+}

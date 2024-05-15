@@ -66,7 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 #if __SKIA__
 			enterResult.Should().Contain("ENTERED SUCCESS", "we should have received ENTER only on '_intermediate' which has subscribed to handled events too.");
 #else
-			enterResult.Should().BeOneOf(new []{"ENTERED", "ENTERED SUCCESS"}, "we should have received ENTER only on '_intermediate' which has subscribed to handled events too.");
+			enterResult.Should().BeOneOf(new[] { "ENTERED", "ENTERED SUCCESS" }, "we should have received ENTER only on '_intermediate' which has subscribed to handled events too.");
 #endif
 #if false
 			exitResult.Should().Be("EXITED SUCCESS", "we should have received EXIT only on '_intermediate' which has subscribed to handled events too.");

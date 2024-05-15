@@ -1,18 +1,16 @@
 ﻿using Android.Graphics;
 using Rect = Windows.Foundation.Rect;
+using Size = Windows.Foundation.Size;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class GradientBrush
 	{
-		protected override Paint GetPaintInner(Rect destinationRect)
+		private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 		{
-			var paint = new Paint();
-			paint.SetShader(GetShader(destinationRect));
-			paint.SetStyle(Paint.Style.Stroke);
-			return paint;
+			paint.SetShader(GetShader(destinationRect.Size));
 		}
 
-		protected internal abstract Shader GetShader(Rect destinationRect);
+		protected internal abstract Shader GetShader(Size size);
 	}
 }

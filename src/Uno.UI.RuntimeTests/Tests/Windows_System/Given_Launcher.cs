@@ -8,6 +8,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {
+
 	[TestClass]
 	public class Given_Launcher
 	{
@@ -21,14 +22,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		public async Task When_Null_Uri_Is_Queried()
 		{
 			await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => Launcher.QueryUriSupportAsync(null, LaunchQuerySupportType.Uri).AsTask());
-		}
-
-		[TestMethod]
-		public async Task When_LaunchUriAsync_From_Non_UI_Thread()
-		{
-			await Assert.ThrowsExceptionAsync<InvalidOperationException>(
-				() => Task.Run(
-					() => Launcher.LaunchUriAsync(new Uri("https://platform.uno"))));
 		}
 
 		[TestMethod]

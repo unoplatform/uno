@@ -2,11 +2,11 @@
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Devices.Sensors;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Orientation")]
+	[SampleControlInfo("Windows.Devices", "Orientation", ignoreInSnapshotTests: true)]
 
 	public sealed partial class OrientationTests : Page
 	{
@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_Devices
 			var diff = now - lastTime;
 			var s = diff / 1000;
 			var ms = diff % 1000;
-			timeSince.Text = $"~{s}.{ms} seconds since last orientation change.";
+			timeSince.Text = $"~{s}.{ms} seconds since last orientation changed to {args.Orientation}";
 			lastTime = now;
 		}
 	}

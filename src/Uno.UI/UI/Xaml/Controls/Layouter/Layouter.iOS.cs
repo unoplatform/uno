@@ -7,18 +7,15 @@ using Uno;
 using Uno.UI;
 using Uno.Foundation.Logging;
 using Uno.Collections;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using View = UIKit.UIView;
 using UIKit;
 using CoreGraphics;
 using Uno.Disposables;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	abstract partial class Layouter
 	{
@@ -39,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!(view is FrameworkElement) && view is IFrameworkElement ife)
 			{
-				if(!(view is Image)) // Except for Image
+				if (!(view is Image)) // Except for Image
 				{
 					// If the child is not a FrameworkElement, part of the "Measure"
 					// phase must be done by the parent element's layouter.

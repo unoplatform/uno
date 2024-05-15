@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Media.Playback
 {
-    public interface IVideoSurface
-    {
-    }
+	public interface IVideoSurface
+	{
+	}
 }

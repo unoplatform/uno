@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-#nullable disable // Not supported by WinUI yet
+﻿#nullable disable // Not supported by WinUI yet
 
 using Android.Content;
 using System;
@@ -28,9 +27,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			// 2. All async code is run in the same task to avoid potential threading concerns.
 			//    Otherwise, it would be possible to set the OS clipboard data (code at the end)
 			//    before one or more of the data formats is ready.
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetContentAsync(content));
+				() => _ = SetContentAsync(content));
 		}
 
 		internal static async Task SetContentAsync(DataPackage content)
@@ -69,7 +68,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var html = await data.GetHtmlFormatAsync();
 
 				// Matches all tags
-				Regex regex = new Regex("(<.*?>\\s*)+", RegexOptions.Singleline);
+				Regex regex = TagMatch();
 				// Replace tags by spaces and trim
 				var plainText = regex.Replace(html, " ").Trim();
 
@@ -146,9 +145,9 @@ namespace Windows.ApplicationModel.DataTransfer
 								out string webLink,
 								out string applicationLink);
 
-							clipWebLink         = webLink != null ? new Uri(webLink) : null;
+							clipWebLink = webLink != null ? new Uri(webLink) : null;
 							clipApplicationLink = applicationLink != null ? new Uri(applicationLink) : null;
-							clipUri             = new Uri(itemUriStr); // Deprecated but still added for compatibility
+							clipUri = new Uri(itemUriStr); // Deprecated but still added for compatibility
 						}
 
 						var itemHtml = item.HtmlText;
@@ -219,6 +218,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			OnContentChanged();
 		}
+
+		[GeneratedRegex("(<.*?>\\s*)+", RegexOptions.Singleline)]
+		private static partial Regex TagMatch();
 	}
 }
-#endif

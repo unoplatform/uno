@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		private static readonly Lazy<IDataTransferManagerExtension?> _dataTransferManagerExtension = new Lazy<IDataTransferManagerExtension?>(() =>
 		{
-			if (ApiExtensibility.CreateInstance(typeof(DataTransferManager), out IDataTransferManagerExtension dataTransferManagerExtension))
+			if (ApiExtensibility.CreateInstance(typeof(DataTransferManager), out IDataTransferManagerExtension? dataTransferManagerExtension))
 			{
 				return dataTransferManagerExtension;
 			}
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static async Task<bool> ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
 		{
 			var extension = _dataTransferManagerExtension.Value;
-			if(extension != null)
+			if (extension != null)
 			{
 				return await extension.ShowShareUIAsync(options, dataPackage);
 			}

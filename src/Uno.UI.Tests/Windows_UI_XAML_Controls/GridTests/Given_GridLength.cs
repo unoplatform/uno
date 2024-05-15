@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,19 +37,19 @@ namespace Uno.UI.Tests.GridTests
 				Assert.AreEqual(isAuto, gridLength.IsAuto);
 				Assert.AreEqual(length, gridLength.Value);
 
-				if(expectedException != null)
+				if (expectedException != null)
 				{
 					throw new InvalidOperationException($"Expected exception {expectedException}, got none");
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
-				if(e.GetType() != expectedException)
+				if (e.GetType() != expectedException)
 				{
 					throw new InvalidOperationException($"Expected exception {e}, got {e}");
 				}
 			}
-			
+
 		}
 	}
 }

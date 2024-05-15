@@ -12,7 +12,7 @@ using Windows.Storage;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 {
 	public abstract class Given_FileIO_Native_Base
-    {
+	{
 		protected abstract Task<StorageFolder> GetRootFolderAsync();
 
 		protected virtual Task CleanupRootFolderAsync() => Task.CompletedTask;
@@ -238,7 +238,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				};
 
 				targetFile = await rootFolder.CreateFileAsync(GetRandomTextFileName(), CreationCollisionOption.ReplaceExisting);
-				await FileIO.WriteLinesAsync(targetFile, firstLines, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);				
+				await FileIO.WriteLinesAsync(targetFile, firstLines, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);
 				await FileIO.AppendLinesAsync(targetFile, appendedLines);
 
 				var realContents = await FileIO.ReadLinesAsync(targetFile, Windows.Storage.Streams.UnicodeEncoding.Utf16BE);

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using CoreGraphics;
+﻿using CoreGraphics;
 using UIKit;
-using Windows.UI;
 
 namespace Uno.UI.Extensions
 {

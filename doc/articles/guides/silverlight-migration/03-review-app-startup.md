@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ReviewAppStartup
+---
+
 # Reviewing the app startup
 
 Part of the initial startup for an application creates and configures navigation. The startup code and resources for both the Silverlight and UWP apps are defined in the **App.xaml** and **App.xaml.cs** files in each project. As Silverlight and UWP have different application models and life-cycles, unfortunately there is little opportunity for code-reuse here.
@@ -10,8 +14,8 @@ Part of the initial startup for an application creates and configures navigation
 > [!TIP]
 > Resources for the Silverlight Application Model and Application class include:
 >
-> * [Application Model](https://docs.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/cc872869(v=vs.95))
-> * [Application Class](https://docs.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/ms588794(v=vs.95))
+> * [Application Model](https://learn.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/cc872869(v=vs.95))
+> * [Application Class](https://learn.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/ms588794(v=vs.95))
 
 Briefly reviewing the Silverlight **App.xaml.cs** will reveal the following structure:
 
@@ -31,13 +35,13 @@ Earlier application platforms had a simple lifecycle - once launched, they conti
 > [!TIP]
 > Resources that cover the UWP Application Lifecycle include:
 >
-> * [Launching, resuming, and background tasks](https://docs.microsoft.com/windows/uwp/launch-resume/)
-> * [App Lifecycle](https://docs.microsoft.com/windows/uwp/launch-resume/app-lifecycle)
-> * [Application Class](https://docs.microsoft.com/uwp/api/windows.ui.xaml.application?view=winrt-19041)
+> * [Launching, resuming, and background tasks](https://learn.microsoft.com/windows/uwp/launch-resume/)
+> * [App Lifecycle](https://learn.microsoft.com/windows/uwp/launch-resume/app-lifecycle)
+> * [Application Class](https://learn.microsoft.com/uwp/api/windows.ui.xaml.application?view=winrt-19041)
 
-The Uno template generates a basic **App.xaml.cs** file that satisfies the minimum needs for app startup and suspension, and then configures the app to use a **Frame** control as the equivalent of the the Silverlight RootVisual, and then navigates to the **MainPage**, which displays "Hello, World!".
+The Uno template generates a basic `App.cs` and `App.xaml.cs` file that satisfies the minimum needs for app startup and suspension, and then configures the app to use a **Frame** control as the equivalent of the Silverlight RootVisual, and then navigates to the **MainPage**, which displays "Hello, World!".
 
-Briefly reviewing the **App.xaml.cs** will reveal the following structure:
+Briefly reviewing the `App.cs` and `App.xaml.cs` files will reveal the following structure:
 
 * **Constructor** - as well as initializing the application component, the app logging configuration method **ConfigureFilters** is called, and a subscription to the **Suspending** event is added.
 * **OnLaunched** - this method is called if the application is launched by the user - other methods (not implemented in this template) are called for other scenarios (see resources above). The current window is retrieved and the content is checked to see if a **Frame** is already instantiated (see note below). If not, a new frame is configured and set as the window content. The code then checks to see if the app has been prelaunched (see note below) - if not, and the root frame isn't already showing content, it is navigated to the **MainPage**. Finally the window is activated, which brings it to the foreground and applying input focus.
@@ -47,10 +51,10 @@ Briefly reviewing the **App.xaml.cs** will reveal the following structure:
 
 > [!NOTE]
 >The **OnLaunched** method may appear more complex than expected, however this is due to the fact that if a user attempts to launch a UWP app more than once, subsequent launches are directed to the original running app. This means the code has to check to see if the app UI has already been setup. Additionally. as the app may have been terminated due to resource constraints, the code also provides the opportunity to reload the last saved app state.
-
+>
 > [!NOTE]
-> The **OnLaunched** method checks to see if the app has been prelaunched - this is a state where Windows has automatically started commonly used apps to speed the perceived launch time for the user. In this state, the app is not expected to be displaying any UI. You can learn more about Prelaunch here:
-> [Handle app prelaunch](https://docs.microsoft.com/windows/uwp/launch-resume/handle-app-prelaunch)
+> The **OnLaunched** method checks to see if the app has been pre-launched - this is a state where Windows has automatically started commonly used apps to speed the perceived launch time for the user. In this state, the app is not expected to be displaying any UI. You can learn more about Prelaunch here:
+> [Handle app prelaunch](https://learn.microsoft.com/windows/uwp/launch-resume/handle-app-prelaunch)
 
 In the next task, the Uno application will be configured so that it can navigate to each of the top-level pages.
 
@@ -62,7 +66,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 1. Return to the **TimeEntryUno** solution.
 
-1. In the **Shared** project, open the **App.xaml.cs** file
+1. In the **[MyApp]** project, open the **App.cs** file
 
 1. Locate the **OnLaunched** method and replace it with the following code:
 
@@ -93,7 +97,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 ### Adding navigation to MainPage
 
-1. In the **Shared** project, open the **MainPage.xaml** file
+1. In the **[MyApp]** project, open the **MainPage.xaml** file
 
    The current XAML should look similar to:
 
@@ -158,7 +162,6 @@ In order to better align with the behavior of the Silverlight version of the app
     </Grid>
     ```
 
-
 1. Review the **MainPage** XAML:
 
     As mentioned earlier, the **NavigationView** control can provide a similar navigation experience to that which is available within the Silverlight Business App template if `PaneDisplayMode="Top"`, and the **Frame** control is very similar to the Silverlight version. What may come as a surprise is that there is no out-of-the-box integration between **NavigationView** and **Frame** that synchronizes the selected navigation item with the content displayed and the back button. To achieve this, additional code must be written.
@@ -177,12 +180,12 @@ In order to better align with the behavior of the Silverlight version of the app
     > [!TIP]
     > You can learn more about the **NavigationView** and the **Frame** controls here:
     >
-    > * [NavigationView](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/navigationview)
-    > * [Frame](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Frame)
+    > * [NavigationView](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/navigationview)
+    > * [Frame](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Frame)
 
 ### Adding a class to help with navigation synchronization
 
-1. To create location for all helpers, add a new folder, **Helpers**, to the **Shared** project.
+1. To create a location for all helpers, add a new folder, **Helpers**, to the **[MyApp]** project.
 
 1. Add a new class, **NavigationSyncHelper**, to the **Helpers** folder.
 
@@ -207,7 +210,7 @@ In order to better align with the behavior of the Silverlight version of the app
         private Dictionary<string, Type> _pageMap;
     ```
 
-    Aside from maintaining references to the **NavigationView** and **Frame**, the last **NavigationViewItem** items is tracked to prevent duplicate navigations. The **_pageMap** dictionary is used to map a string descriptor for a page (stored in a **NavigationViewItem** **Tag** property) to the page **Type**.
+    Aside from maintaining references to the **NavigationView** and **Frame**, the last **NavigationViewItem** items is tracked to prevent duplicate navigation. The **_pageMap** dictionary is used to map a string descriptor for a page (stored in a **NavigationViewItem** **Tag** property) to the page **Type**.
 
 1. Add the following constructor:
 

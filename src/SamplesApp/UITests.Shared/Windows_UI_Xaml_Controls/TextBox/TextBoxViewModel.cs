@@ -23,7 +23,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		private string _header;
 		private string _placeholder;
 
-		public TextBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public TextBoxViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			ToggleHeader = new DelegateCommand(OnToggleHeader);
 		}
@@ -70,7 +70,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		private void OnToggleHeader()
 		{
-			if(Header == null)
+			if (Header == null)
 			{
 				Header = HeaderText;
 				Placeholder = HeaderVisible;

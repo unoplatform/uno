@@ -1,0 +1,23 @@
+steps:
+
+  - template: dotnet-install.yml
+
+  - template: jdk-setup.yml
+
+  - powershell: |
+      & dotnet tool update --global uno.check --version 1.17.0-dev.20 --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest https://raw.githubusercontent.com/unoplatform/uno.check/3b250f49b719d1cf5ab205f997c3959b5e9fed1d/manifests/uno.ui.manifest.json
+    displayName: Install .NET Workloads
+    errorActionPreference: continue
+    ignoreLASTEXITCODE: true
+    retryCountOnTaskFailure: 3
+    condition: and(succeeded(), eq(variables.UnoDisableNetPreviousMobile, 'true'))
+
+  - powershell: |
+      & dotnet tool update --global uno.check --version 1.14.1 --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest https://raw.githubusercontent.com/unoplatform/uno.check/8a14128754833984a0c83398e7dda6d995199e1b/manifests/uno.ui.manifest.json
+    displayName: Install .NET Workloads
+    errorActionPreference: continue
+    ignoreLASTEXITCODE: true
+    retryCountOnTaskFailure: 3
+    condition: and(succeeded(), ne(variables.UnoDisableNetPreviousMobile, 'true'))

@@ -1,4 +1,4 @@
-#pragma warning disable 649
+﻿#pragma warning disable 649
 #pragma warning disable 414 // assigned but its value is never used
 
 using System;
@@ -13,15 +13,15 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.Sockets;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
+	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuFlyout : FlyoutBase, IMenu
 	{
 		private readonly ObservableVector<MenuFlyoutItemBase> m_tpItems;
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool m_openWindowed = true;
 
-		private bool m_openingWindowedInProgress = false;
+		//private bool m_openingWindowedInProgress;
 
 		public MenuFlyout()
 		{
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetFlyoutItemsDataContext()
 		{
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
 			Items?.ForEach(item => item?.SetValue(
 				UIElement.DataContextProperty,
 				this.DataContext,
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => this.SetValue(ItemsProperty, value);
 		}
 
-		public static DependencyProperty ItemsProperty { get ; } =
+		public static DependencyProperty ItemsProperty { get; } =
 			DependencyProperty.Register(
 				"Items",
 				typeof(IList<MenuFlyoutItemBase>),
@@ -149,13 +149,18 @@ namespace Windows.UI.Xaml.Controls
 			Control presenter = GetPresenter();
 			MenuFlyoutPresenter menuFlyoutPresenter = presenter as MenuFlyoutPresenter;
 
-			if (menuFlyoutPresenter != null)
+			if (menuFlyoutPresenter is not null)
 			{
 				IMenu parentMenu = (this as IMenu).ParentMenu as IMenu;
 
 				(menuFlyoutPresenter as IMenuPresenter).OwningMenu = parentMenu != null ? parentMenu : this;
 				menuFlyoutPresenter.UpdateTemplateSettings();
+			}
 
+			base.OnOpening();
+
+			if (menuFlyoutPresenter is not null)
+			{
 				// Reset the presenter's ItemsSource.  Since Items is not an IObservableVector, we don't
 				// automatically respond to changes within the vector.  Clearing the property when the presenter
 				// unloads and resetting it before we reopen ensures any changes to Items are reflected
@@ -167,16 +172,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnClosing(ref bool cancel)
-		{
-			base.OnClosing(ref cancel);
-
-			if (!cancel)
-			{
-				CloseSubMenu();
-			}
-		}
-
 		private protected override void OnClosed()
 		{
 			base.OnClosed();
@@ -185,8 +180,11 @@ namespace Windows.UI.Xaml.Controls
 
 			AutomationPeer.RaiseEventIfListener(GetPresenter(), AutomationEvents.MenuClosed);
 
-			((MenuFlyoutPresenter)GetPresenter()).m_iFocusedIndex = -1;
-			((ItemsControl)GetPresenter()).ItemsSource = null;
+			if (GetPresenter() is MenuFlyoutPresenter presenter)
+			{
+				presenter.m_iFocusedIndex = -1;
+				presenter.ItemsSource = null;
+			}
 		}
 
 		void CloseSubMenu()
@@ -204,6 +202,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		void PreparePopupTheme(
 			Popup pPopup,
 			MajorPlacementMode placementMode,
@@ -237,7 +236,6 @@ namespace Windows.UI.Xaml.Controls
 			// UNO TODO
 			// (m_tpMenuPopupThemeTransition as MenuPopupThemeTransition).Direction = direction);
 		}
-
 
 		///*static*/
 		//Transition PreparePopupThemeTransitionsAndShadows(
@@ -323,6 +321,7 @@ namespace Windows.UI.Xaml.Controls
 				m_openingWindowedInProgress = false;
 			}
 		}
+#endif
 
 		void CacheInputDeviceTypeUsedToOpen(UIElement pTargetElement)
 		{
@@ -331,6 +330,7 @@ namespace Windows.UI.Xaml.Controls
 			//InputDeviceTypeUsedToOpen = contentRoot.GetInputManager().GetLastInputDeviceType();
 		}
 
+#if false
 		// Callback for ShowAt() from core layer
 		void ShowAtStatic(MenuFlyout pCoreMenuFlyout,
 			UIElement pCoreTarget,
@@ -356,6 +356,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+#endif
 
 		IMenu IMenu.ParentMenu
 		{
@@ -383,6 +384,7 @@ namespace Windows.UI.Xaml.Controls
 			Hide();
 		}
 
+#if false
 		bool IsWindowedPopup()
 		{
 			return false;
@@ -390,5 +392,6 @@ namespace Windows.UI.Xaml.Controls
 			// UNO TODO
 			// return CPopup.DoesPlatformSupportWindowedPopup(DXamlCore.GetCurrent().GetHandle()) && (FlyoutBase.IsWindowedPopup() || m_openingWindowedInProgress);
 		}
+#endif
 	}
 }

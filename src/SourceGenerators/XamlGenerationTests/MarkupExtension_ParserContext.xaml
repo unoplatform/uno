@@ -5,8 +5,11 @@
 
 	<StackPanel>
 
+		<!-- some of code below may not run, but we just care about the generated xaml source -->
+
 		<TextBlock x:Name="SimpleMarkupExtension" Text="{me:MyParserContextExtension}" />
 		<TextBlock x:Name="NestedMarkupExtension" Text="{Binding TargetNullValue={me:MyParserContextExtension}}" />
+		<TextBlock x:Name="AttachedMarkupExtension" Grid.Row="{me:MyParserContextExtension}" />
 
 	</StackPanel>
 

@@ -1,13 +1,13 @@
-﻿#if XAMARIN_ANDROID
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class UnoTimePickerDialog : TimePickerDialog
 	{
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 				minutePicker.Value = values.FindIndex(num => num == _minute);
 				minutePicker.MinValue = 0;
 				minutePicker.MaxValue = values.Count - 1;
-				minutePicker.SetDisplayedValues(values.Select(num => num.ToString("00")).ToArray());
+				minutePicker.SetDisplayedValues(values.Select(num => num.ToString("00", CultureInfo.CurrentCulture)).ToArray());
 			}
 			else
 			{
@@ -130,4 +130,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

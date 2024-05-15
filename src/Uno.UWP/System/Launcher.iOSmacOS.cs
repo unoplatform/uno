@@ -1,5 +1,4 @@
-﻿#if __IOS__ || __MACOS__
-using System;
+﻿using System;
 using System.Threading.Tasks;
 #if __IOS__
 using UIKit;
@@ -13,20 +12,20 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+		public static Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
 			{
-				return await HandleSpecialUriAsync(uri);
+				return Task.FromResult(HandleSpecialUri(uri));
 			}
 
 			var appleUrl = new AppleUrl(uri.OriginalString);
 #if __IOS__
-			return UIApplication.SharedApplication.OpenUrl(
-				appleUrl);
+			return Task.FromResult(UIApplication.SharedApplication.OpenUrl(
+				appleUrl));
 #else
-			return NSWorkspace.SharedWorkspace.OpenUrl(
-				appleUrl);
+			return Task.FromResult(NSWorkspace.SharedWorkspace.OpenUrl(
+				appleUrl));
 #endif
 		}
 
@@ -57,4 +56,3 @@ namespace Windows.System
 		}
 	}
 }
-#endif

@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Extensions
 {
-	public static class CollectionViewExtensions
+	internal static class CollectionViewExtensions
 	{
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 		public static IEnumerable<IEnumerable> GetCollectionGroups(this ICollectionView collectionView)
@@ -34,21 +34,6 @@ namespace Uno.UI.Extensions
 
 			// Not found
 			return IndexPath.FromRowSection(-1, 0);
-		}
-
-		public static object GetItemForIndexPath(this ICollectionView collectionView, IndexPath indexPath)
-		{
-			if (collectionView.CollectionGroups == null)
-			{
-				if (indexPath.Section > 0)
-				{
-					return null;
-				}
-
-				return collectionView[indexPath.Row];
-			}
-
-			return (collectionView.CollectionGroups[indexPath.Section] as ICollectionViewGroup).GroupItems[indexPath.Row];
 		}
 	}
 }

@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using System.Threading.Tasks;
-using Uno.Extensions;
-using Uno;
-using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls;
-using Windows.Foundation;
-using View = Windows.UI.Xaml.UIElement;
+﻿#if DEBUG
+#define ENABLE_CONTAINER_VISUAL_TRACKING
+#endif
+
+using System;
 using System.Collections;
-
+using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
-using System.Numerics;
+using Windows.Foundation;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		private readonly static Thickness _thicknessCache = Thickness.Empty;
-
-		public FrameworkElement()
+		protected FrameworkElement()
 		{
 			Initialize();
 		}
@@ -31,22 +23,10 @@ namespace Windows.UI.Xaml
 		partial void Initialize();
 
 
-		public bool HasParent()
+		internal bool HasParent()
 		{
 			return Parent != null;
 		}
-
-		internal void SetActualSize(Size size) => AssignedActualSize = size;
-
-		public double ActualWidth => GetActualWidth();
-
-		public double ActualHeight => GetActualHeight();
-
-		partial void OnMeasurePartial(Size slotSize)
-		{
-		}
-
-		public int InvalidateMeasureCallCount { get; private set; }
 
 		private bool IsTopLevelXamlView() => false;
 
@@ -55,175 +35,32 @@ namespace Windows.UI.Xaml
 		internal void ResumeRendering() => throw new NotSupportedException();
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		public event SizeChangedEventHandler SizeChanged;
+		#region Name Dependency Property
 
-		internal void RaiseSizeChanged(SizeChangedEventArgs args)
+		private void OnNameChanged(string oldValue, string newValue)
 		{
-			SizeChanged?.Invoke(this, args);
-			_renderTransform?.UpdateSize(args.NewSize);
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
 		}
 
-		#region Margin Dependency Property
-		[GeneratedDependencyProperty(
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty MarginProperty { get; } = CreateMarginProperty();
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
 
-		public virtual Thickness Margin
+		public string Name
 		{
-			get => GetMarginValue();
-			set => SetMarginValue(value);
+			get => GetNameValue();
+			set => SetNameValue(value);
 		}
-		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
+
 		#endregion
 
-		#region HorizontalAlignment Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = Xaml.HorizontalAlignment.Stretch,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty HorizontalAlignmentProperty { get; } = CreateHorizontalAlignmentProperty();
-
-		public HorizontalAlignment HorizontalAlignment
-		{
-			get => GetHorizontalAlignmentValue();
-			set => SetHorizontalAlignmentValue(value);
-		}
-		#endregion
-
-		#region HorizontalAlignment Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = Xaml.HorizontalAlignment.Stretch,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty VerticalAlignmentProperty { get; } = CreateVerticalAlignmentProperty();
-
-		public VerticalAlignment VerticalAlignment
-		{
-			get => GetVerticalAlignmentValue();
-			set => SetVerticalAlignmentValue(value);
-		}
-		#endregion
-
-		#region Width Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = double.NaN,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty WidthProperty { get; } = CreateWidthProperty();
-
-		public double Width
-		{
-			get => GetWidthValue();
-			set => SetWidthValue(value);
-		}
-		#endregion
-
-		#region Height Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = double.NaN,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty HeightProperty { get; } = CreateHeightProperty();
-
-		public double Height
-		{
-			get => GetHeightValue();
-			set => SetHeightValue(value);
-		}
-		#endregion
-
-		#region MinWidth Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = 0.0d,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty MinWidthProperty { get; } = CreateMinWidthProperty();
-
-		public double MinWidth
-		{
-			get => GetMinWidthValue();
-			set => SetMinWidthValue(value);
-		}
-		#endregion
-
-		#region MinHeight Dependency Property
-
-		[GeneratedDependencyProperty(
-			DefaultValue = 0.0d,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();
-
-		public double MinHeight
-		{
-			get => GetMinHeightValue();
-			set => SetMinHeightValue(value);
-		}
-		#endregion
-
-		#region MaxWidth Dependency Property
-		[GeneratedDependencyProperty(
-			DefaultValue = double.PositiveInfinity,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();
-
-		public double MaxWidth
-		{
-			get => GetMaxWidthValue();
-			set => SetMaxWidthValue(value);
-		}
-		#endregion
-
-		#region MaxHeight Dependency Property
-
-		[GeneratedDependencyProperty(
-			DefaultValue = double.PositiveInfinity,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-#if DEBUG
-			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
-#endif
-		)]
-		public static DependencyProperty MaxHeightProperty { get; } = CreateMaxHeightProperty();
-
-		public double MaxHeight
-		{
-			get => GetMaxHeightValue();
-			set => SetMaxHeightValue(value);
-		}
-		#endregion
-
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(args);
 		}
+#endif
 
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading
@@ -263,5 +100,15 @@ namespace Windows.UI.Xaml
 				_unloaded -= value;
 			}
 		}
+
+#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
+		partial void OnLoading()
+		{
+			if (_visual is not null)
+			{
+				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+			}
+		}
+#endif
 	}
 }

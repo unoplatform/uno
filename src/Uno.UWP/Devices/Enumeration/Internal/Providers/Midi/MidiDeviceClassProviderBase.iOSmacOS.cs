@@ -1,5 +1,4 @@
-﻿#if __IOS__ || __MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +12,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
 		// https://github.com/xamarin/ios-samples/tree/master/CoreMidiSample
-		private readonly bool _isInput = false;
+		private readonly bool _isInput;
 
 		private MidiClient _client;
 
@@ -183,4 +182,3 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private static string GetMidiDeviceId(MidiEndpoint endpoint) => endpoint.EndpointName;
 	}
 }
-#endif

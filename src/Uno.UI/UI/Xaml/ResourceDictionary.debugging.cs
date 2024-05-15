@@ -1,4 +1,4 @@
-#if DEBUG
+﻿#if DEBUG
 #nullable enable
 
 using System;
@@ -12,13 +12,14 @@ using System.Linq;
 using System.Diagnostics;
 using Windows.UI.Input.Spatial;
 
-using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
+using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class ResourceDictionary
 	{
+#if DEBUG && DEBUG_SET_RESOURCE_SOURCE
 		private void TryApplySource(object value, in ResourceKey resourceKey)
 		{
 			if (value is DependencyObject dependencyObject && GetResourceSource(dependencyObject) == null)
@@ -26,6 +27,7 @@ namespace Windows.UI.Xaml
 				SetResourceSource(dependencyObject, new DebugResourceSource(resourceKey, this));
 			}
 		}
+#endif
 
 		/// <summary>
 		/// Get the theme associated with this dictionary, if it's part of <see cref="ThemeDictionaries"/> of another dictionary

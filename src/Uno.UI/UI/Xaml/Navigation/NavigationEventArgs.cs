@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Windows.UI.Xaml.Navigation
+namespace Microsoft.UI.Xaml.Navigation
 {
 	public sealed partial class NavigationEventArgs
 	{
 		internal NavigationEventArgs(
-			object content, 
+			object content,
 			NavigationMode navigationMode,
 			NavigationTransitionInfo navigationTransitionInfo,
 			object parameter,
-			Type sourcePageType, 
+			Type sourcePageType,
 			Uri uri
 		)
 		{

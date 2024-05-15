@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class RadioButtons
 	{
@@ -31,6 +31,6 @@
 		private bool m_testHooksEnabled = false;
 
 		private const string s_repeaterName = "InnerRepeater";
-		private const string s_childHandlersPropertyName = "ChildHandlers";
+		//private const string s_childHandlersPropertyName = "ChildHandlers";
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		public VirtualKeyModifiers KeyModifiers { get; }
 
 		public IList<PointerPoint> GetIntermediatePoints()
-			=> new List<PointerPoint> {CurrentPoint};
+			=> new List<PointerPoint> { CurrentPoint };
 
 		/// <inheritdoc />
 		public override string ToString()

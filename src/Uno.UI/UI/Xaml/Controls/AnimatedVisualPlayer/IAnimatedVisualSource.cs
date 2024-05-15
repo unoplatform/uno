@@ -1,7 +1,8 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using System;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial interface IAnimatedVisualSource
 	{
@@ -15,6 +16,11 @@ namespace Windows.UI.Xaml.Controls
 
 		void SetProgress(double progress);
 
-		Size Measure(Size availableSize);		
+		Size Measure(Size availableSize);
+	}
+
+	internal partial interface IAnimatedVisualSourceWithUri
+	{
+		Uri UriSource { get; set; }
 	}
 }

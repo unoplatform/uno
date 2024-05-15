@@ -1,10 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Host.IdeChannel;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -31,9 +33,22 @@ namespace Uno.UI.RemoteControl.Host
 
 					try
 					{
-						using (var server = new RemoteControlServer(context.RequestServices.GetService<IConfiguration>()))
+						if (context.RequestServices.GetService<IConfiguration>() is { } configuration)
 						{
-							await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
+							using (var server = new RemoteControlServer(
+								configuration,
+								context.RequestServices.GetService<IIdeChannelServerProvider>() ?? throw new InvalidOperationException("IIDEChannelServerProvider is required"),
+								context.RequestServices))
+							{
+								await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
+							}
+						}
+						else
+						{
+							if (app.Log().IsEnabled(LogLevel.Error))
+							{
+								app.Log().LogError($"Unable to find configuration service");
+							}
 						}
 					}
 					finally

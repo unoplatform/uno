@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
 		private readonly Lazy<IList<string>> _fileTypes;
-		
+
 		internal DataPackagePropertySet()
 		{
 			_fileTypes = new Lazy<IList<string>>(() =>

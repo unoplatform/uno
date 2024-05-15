@@ -8,7 +8,7 @@ namespace SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests
 {
 	internal class NavigationViewItemsViewModel : ViewModelBase
 	{
-		public NavigationViewItemsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public NavigationViewItemsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			Items = new[]
 			{

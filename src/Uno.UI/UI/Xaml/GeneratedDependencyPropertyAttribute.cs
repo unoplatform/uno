@@ -3,14 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml
 {
 	/// <summary>
 	/// Attribute to control the automatic generation of dependency property generation
 	/// </summary>
-	[System.AttributeUsage(AttributeTargets.Property|AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
+	[System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 	internal sealed class GeneratedDependencyPropertyAttribute : Attribute
 	{
 		// This is a positional argument
@@ -46,7 +46,7 @@ namespace Uno.UI.Xaml
 		/// <summary>
 		/// Declares that the dependency property is attached
 		/// </summary>
-		public bool Attached { get; set; } = false;
+		public bool Attached { get; set; }
 
 		/// <summary>
 		/// Declares that the dependency property is attached

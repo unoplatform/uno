@@ -4,12 +4,12 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
 
-using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
-using ElementAnimator = Microsoft.UI.Xaml.Controls.ElementAnimator;
+using AnimationContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationContext;
+using ElementAnimator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementAnimator;
 
 namespace MUXControlsTestApp.Utils
 {
@@ -92,6 +92,7 @@ namespace MUXControlsTestApp.Utils
 
 		protected override void StartBoundsChangeAnimation(UIElement element, AnimationContext context, Rect oldBounds, Rect newBounds)
 		{
+#if false // CreateVector2KeyFrameAnimation not supported by uno yet
 			var visual = ElementCompositionPreview.GetElementVisual(element);
 			var compositor = visual.Compositor;
 			var batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
@@ -125,6 +126,7 @@ namespace MUXControlsTestApp.Utils
 				DefaultAnimationDurationInMs * ((HasHideAnimationsPending ? 1 : 0) + 1) * AnimationSlowdownFactor);
 
 			visual.StartAnimation("TransformMatrix._41_42", offsetAnimation);
+#endif
 		}
 	}
 }

@@ -1,10 +1,31 @@
-# Uno Support for Windows.Devices.Haptics
+---
+uid: Uno.Features.WDHaptics
+---
 
-## `VibrationDevice`
+# Haptics
 
-The `RequestAccessAsync` method is implemented on all platforms and returns `Allowed` on all platforms, except for Android and Tizen. In case of Android, the `android.permission.VIBRATE` permission needs to be declared. In case of Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared.
+> [!TIP]
+> This article covers Uno-specific information for the `Windows.Devices.Haptics` namespace. For a full description of the feature and instructions on using it, see [Windows.Devices.Haptics Namespace](https://learn.microsoft.com/uwp/api/windows.devices.haptics).
 
-The `GetDefaultAsync` method is implemented on all platforms and returns `null` for the unsupported platforms (WPF, GTK).
+* The `Windows.Devices.Haptics` namespace provides classes for accessing and managing vibration devices and haptic feedback.
+
+## `VibrationDevice` class
+
+The `GetDefaultAsync` method is implemented on all platforms and returns `null` for the unsupported platforms (Skia Desktop).
+
+### Platform-specific requirements
+
+#### Android
+
+For Android, there is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.VIBRATE" />
+```
+
+#### Tizen
+
+For Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared in `tizen-manifest.xml` file.
 
 ## `SimpleHapticsController`
 
@@ -12,7 +33,7 @@ The `SupportedFeedback` property returns the list of supported feedback types fo
 
 The following code snippet illustrates the usage of `VibrationDevice` and `SimpleHapticsController`:
 
-```
+```csharp
 var result = await VibrationDevice.RequestAccessAsync();
 if (result == VibrationAccessStatus.Allowed)
 {

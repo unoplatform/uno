@@ -3,56 +3,59 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
-  displayName: 'WebAssembly UI Tests (Build)'
+  displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
-  dependsOn: Pipeline_Validations
-
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+
+      WinUI:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
     clean: true
 
+  - template: templates/download-winui-converted-tree.yml
+
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
-  - task: CacheBeta@0
-    condition: eq(variables['enable_package_cache'], 'true')
-    inputs:
-      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
-      path: $(NUGET_PACKAGES)
-    displayName: Cache NuGet packages
-    
-  - template: templates/optimize-roslyn-mono.yml
-  - template: templates/dotnet-install.yml
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      sudo cert-sync /etc/ssl/certs/ca-certificates.crt
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net7-$(GitVersion.FullSemVer).binlog
 
-    displayName: 'Update the SSL trusted certificates'
-
-  - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net5-$(GitVersion.FullSemVer).binlog
-
-    displayName: 'Build sample app (net5.0)'
+    displayName: 'Build sample app (net7.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site (net5.0)'
+    displayName: 'Publish Wasm Site (net7.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net5.0/dist
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net7.0/dist
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/site-net5.0
+      TargetFolder: $(build.artifactstagingdirectory)/site-net7.0-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: wasm-uitest-binaries
@@ -60,19 +63,17 @@ jobs:
 
 
 - job: Wasm_UITests_Snap
-  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  displayName: 'Run WebAssembly Snapshots Tests'
   dependsOn:
   - Wasm_UITests_Build
-  - SamplesApp_UITests_Build
 
   container: nv-bionic-wasm
 
-  pool:
-    vmImage: 'ubuntu-20.04'
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    SITE_SUFFIX: 'net5.0'
+    SITE_SUFFIX: 'net7.0'
 
   steps:
   - checkout: self
@@ -85,24 +86,15 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
-
   - bash: |
       set -euo pipefail
       set -x
       IFS=$'\n\t'
       dotnet tool uninstall dotnet-serve -g || true
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
-      dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
+      dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net5.0" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net7.0-UWP" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -125,6 +117,7 @@ jobs:
       flattenFolders: false
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -132,31 +125,83 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'WebAssembly UI Tests (Automated Run)'
+  displayName: ' WebAssembly Tests'
   dependsOn:
   - Wasm_UITests_Build
-  - SamplesApp_UITests_Build
+
   container: nv-bionic-wasm
 
   strategy:
     matrix:
-      net5_default:
-        SITE_SUFFIX: 'net5.0'
+      net7_default:
+        SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
-        UITEST_TEST_TIMEOUT: '120000'
+        UITEST_TEST_TIMEOUT: '120s'
+        IS_RUNTIME_TESTS: false
+        IS_UI_TESTS: true
 
-      net5_runtimetests:
-        SITE_SUFFIX: 'net5.0'
-        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
-
-      net5_benchmarks:
-        SITE_SUFFIX: 'net5.0'
+      net7_benchmarks:
+        SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
-        UITEST_TEST_TIMEOUT: '120000'
+        UITEST_TEST_TIMEOUT: '15m'
+        IS_RUNTIME_TESTS: false
+        IS_UI_TESTS: true
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+      net7_uwp_runtimetests_group_00:
+        SITE_SUFFIX: 'net7.0-UWP'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '20m'
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
+
+      net7_uwp_runtimetests_group_01:
+        SITE_SUFFIX: 'net7.0-UWP'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '20m'
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
+
+      net7_uwp_runtimetests_group_02:
+        SITE_SUFFIX: 'net7.0-UWP'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '20m'
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
+
+      net7_winui_runtimetests_group_00:
+        SITE_SUFFIX: 'net7.0-WinUI'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '20m'
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
+
+      net7_winui_runtimetests_group_01:
+        SITE_SUFFIX: 'net7.0-WinUI'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '20m'
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
+
+      net7_winui_runtimetests_group_02:
+        SITE_SUFFIX: 'net7.0-WinUI'
+        UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '20m'
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
+
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -166,21 +211,18 @@ jobs:
     clean: true
 
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
@@ -210,6 +252,8 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
+      # This is the first run, we don't fail if there are failed tests, or if results file is missing. We'll wait for the second run.
+      # Note: failTaskOnMissingResultsFile default is false.
       failTaskOnFailedTests: false
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
@@ -232,6 +276,8 @@ jobs:
       testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
+      # This is the second run, if TestResult-original.xml is missing *and* this is a UI tests run, we fail.
+      failTaskOnMissingResultsFile: $(IS_UI_TESTS)
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
   - task: PublishTestResults@2
@@ -241,9 +287,12 @@ jobs:
       testRunTitle: 'WebAssembly Runtime Tests Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
+      # This is the second run, if RuntimeTestResults*.xml is missing *and* this is a runtime tests run, we fail.
+      failTaskOnMissingResultsFile: $(IS_RUNTIME_TESTS)
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -251,6 +300,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: uitests-failure-results

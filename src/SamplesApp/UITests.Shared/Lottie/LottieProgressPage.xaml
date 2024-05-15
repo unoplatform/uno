@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+	xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:winui="using:Microsoft.UI.Xaml.Controls"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -18,7 +18,7 @@
 		<!--#region IntroText-->
 		<TextBlock Grid.Row="0">
 					Here, instead of playing
-					<Span FontFamily="Consolas">AnimatedVisuals/LightBulb.json</Span> , 
+					<Span FontFamily="Consolas">AnimatedVisuals/LightBulb.json</Span> ,
 					we display individual frames from the Lottie animation.
 					<LineBreak/>
 					<Run FontWeight="SemiBold">Use</Run>
@@ -28,7 +28,7 @@
 		</TextBlock>
 		<!--#endregion-->
 
-		<Border Grid.Row="1">
+		<Border x:Name="container" Grid.Row="1">
 			<!--  AnimatedVisualPlayer  -->
 			<winui:AnimatedVisualPlayer x:Name="Progress_Player"
 											AutoPlay="False">
@@ -44,6 +44,7 @@
 		<Grid Grid.Row="2" RowSpacing="10">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 
@@ -55,8 +56,11 @@
 							  Toggled="LightToggle_Toggled">
 				Light Switch
 			</ToggleSwitch>
+			<Button Grid.Column="1"
+					Content="ReloadView"
+					Click="{x:Bind OnReloadView}" />
 			<!--  Progress Slider: Scrub animation frames  -->
-			<Grid Grid.Column="1">
+			<Grid Grid.Column="2">
 				<StackPanel>
 					<TextBlock Margin="40,20,0,5">Progress Slider</TextBlock>
 					<Slider x:Name="ProgressSlider"

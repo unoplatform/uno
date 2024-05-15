@@ -5,8 +5,9 @@
 #nullable enable
 
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Extensions
 {
@@ -22,7 +23,7 @@ namespace Uno.UI.Extensions
 		internal static DependencyObject? GetParentInternal(this DependencyObject dependencyObject, bool publicParentOnly = true)
 		{
 			//TODO Uno: Currently we return any parent, regardless of its "publicness".
-			return dependencyObject.GetParent() as DependencyObject;
+			return VisualTreeHelper.GetParent(dependencyObject);
 			// If the parent is for the inheritance context only the m_pParent field is being repurposed to store
 			// a weakref and is invalid.
 			// If we're asking for the public parent we don't return a parent if it's marked nonpublic

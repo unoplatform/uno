@@ -2,8 +2,8 @@
 using Foundation;
 using Windows.UI;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Documents;
 using UIKit;
 using Uno.Extensions;
 
@@ -77,6 +77,7 @@ namespace Uno.UI
 			var font = UIFontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily, tuple.preferredBodyFontSize);
 			var attributes = new UIStringAttributes()
 			{
+				// TODO: Handle other brushes.
 				ForegroundColor = Brush.GetColorWithOpacity(tuple.foreground),
 				Font = font,
 				BaselineOffset = GetBaselineOffset(),
@@ -85,7 +86,7 @@ namespace Uno.UI
 					: NSUnderlineStyle.None,
 				StrikethroughStyle = (tuple.textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough
 					? NSUnderlineStyle.Single
-					: NSUnderlineStyle.None,			
+					: NSUnderlineStyle.None,
 			};
 
 			if (tuple.characterSpacing != 0f)

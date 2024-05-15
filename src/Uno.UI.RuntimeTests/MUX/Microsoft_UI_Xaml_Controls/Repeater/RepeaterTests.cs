@@ -4,11 +4,11 @@
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Common;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -19,22 +19,24 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using Layout = Microsoft.UI.Xaml.Controls.Layout;
-using ItemsSourceView = Microsoft.UI.Xaml.Controls.ItemsSourceView;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using Layout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Layout;
+using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
@@ -89,9 +91,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void ValidateRepeaterDefaults()
+		public async Task ValidateRepeaterDefaults()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var repeater = new ItemsRepeater()
 				{
@@ -108,12 +110,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					}
 				};
 
-				Content.UpdateLayout();
+				while (repeater.TryGetElement(0) == null)
+				{
+					await Task.Delay(1000);
+					Content.UpdateLayout();
+				}
 
 				for (int i = 0; i < 10; i++)
 				{
 					var element = repeater.TryGetElement(i);
-					Verify.IsNotNull(element);
+					Verify.IsNotNull(element, $"Item {i} is null");
 					Verify.AreEqual(string.Format("Item #{0}", i), ((TextBlock)element).Text);
 					Verify.AreEqual(i, repeater.GetElementIndex(element));
 				}
@@ -167,12 +173,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				string errorMessage = string.Empty;
 				ItemsRepeater repeater = new ItemsRepeater();
+#if HAS_UNO //WinUI uses COMException here, we use InvalidOperationException instead.
 				try
+#endif
 				{
 					repeater.GetOrCreateElement(0);
 				}
 #if HAS_UNO //WinUI uses COMException here, we use InvalidOperationException instead.
 				catch (InvalidOperationException e)
+#else
+				catch (COMException e)
 #endif
 				{
 					errorMessage = e.Message;
@@ -231,7 +241,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[Ignore("Fails")]
-		public void VerifyCurrentAnchor()
+		public async Task VerifyCurrentAnchor()
 		{
 			//if (PlatformConfiguration.IsDebugBuildConfiguration())
 			//{
@@ -244,14 +254,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater rootRepeater = null;
 			ScrollViewer scrollViewer = null;
 			ItemsRepeaterScrollHost scrollhost = null;
-			ManualResetEvent viewChanged = new ManualResetEvent(false);
+			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
 			RunOnUIThread.Execute(() =>
 			{
 				scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
 				  @"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
                      xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                      xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                     xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                     xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                     <controls:ItemsRepeaterScrollHost.Resources>
                         <DataTemplate x:Key='ItemTemplate' >
                             <TextBlock Text='{Binding}' Height='50'/>
@@ -261,6 +271,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                         <controls:ItemsRepeater x:Name='rootRepeater' ItemTemplate='{StaticResource ItemTemplate}' VerticalCacheLength='0' />
                     </ScrollViewer>
                 </controls:ItemsRepeaterScrollHost>");
+
+				Content = scrollhost;
 
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("rootRepeater");
 				scrollViewer = (ScrollViewer)scrollhost.FindName("scrollviewer");
@@ -273,21 +285,20 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 
 				rootRepeater.ItemsSource = Enumerable.Range(0, 500);
-				Content = scrollhost;
 			});
 
 			// scroll down several times and validate current anchor
 			for (int i = 1; i < 10; i++)
 			{
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 				RunOnUIThread.Execute(() =>
 				{
 					scrollViewer.ChangeView(null, i * 200, null);
 				});
 
-				Verify.IsTrue(viewChanged.WaitOne(DefaultWaitTimeInMS));
+				Verify.IsTrue(await viewChanged.WaitOne(DefaultWaitTimeInMS));
 				viewChanged.Reset();
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -305,14 +316,22 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Ensure that scrolling a nested repeater works when the 
 		// Itemtemplates are data templates.
 		[TestMethod]
-		public void NestedRepeaterWithDataTemplateScenario()
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task NestedRepeaterWithDataTemplateScenario()
 		{
-			NestedRepeaterWithDataTemplateScenario(disableAnimation: true);
-			NestedRepeaterWithDataTemplateScenario(disableAnimation: false);
+			await NestedRepeaterWithDataTemplateScenario(disableAnimation: true);
+			await NestedRepeaterWithDataTemplateScenario(disableAnimation: false);
 		}
 
 		[TestMethod]
-		public void VerifyFocusedItemIsRecycledOnCollectionReset()
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS/Skia https://github.com/unoplatform/uno/issues/9080")]
+#endif
+		public async Task VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
 			List<Layout> layouts = new List<Layout>();
 			RunOnUIThread.Execute(() =>
@@ -339,7 +358,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Content = repeater;
 				});
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -349,7 +368,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					toFocus.Focus(FocusState.Keyboard);
 				});
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -360,7 +379,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					repeater.ItemsSource = new List<string>();
 				});
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -379,7 +398,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return (DataTemplate)XamlReader.Load(@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>" + content + @"</DataTemplate>");
 		}
 
-		private void NestedRepeaterWithDataTemplateScenario(bool disableAnimation)
+		private async Task NestedRepeaterWithDataTemplateScenario(bool disableAnimation)
 		{
 			if (!disableAnimation && PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 			{
@@ -392,14 +411,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			// {
 			ItemsRepeater rootRepeater = null;
 			ScrollViewer scrollViewer = null;
-			ManualResetEvent viewChanged = new ManualResetEvent(false);
-			RunOnUIThread.Execute(() =>
+			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var anchorProvider = (ItemsRepeaterScrollHost)XamlReader.Load(
 					@"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
                         xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                        xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                     <controls:ItemsRepeaterScrollHost.Resources>
                         <DataTemplate x:Key='ItemTemplate' >
                             <TextBlock Text='{Binding}' />
@@ -415,6 +434,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                         <controls:ItemsRepeater x:Name='rootRepeater' ItemTemplate='{StaticResource GroupTemplate}' VerticalCacheLength='0' />
                     </ScrollViewer>
                 </controls:ItemsRepeaterScrollHost>");
+
+				Content = anchorProvider;
+
+				await TestServices.WindowHelper.WaitForLoaded(anchorProvider);
 
 				rootRepeater = (ItemsRepeater)anchorProvider.FindName("rootRepeater");
 				rootRepeater.SizeChanged += (sender, args) =>
@@ -444,13 +467,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 
 				rootRepeater.ItemsSource = itemsSource;
-				Content = anchorProvider;
 			});
 
 			// scroll down several times to cause recycling of elements
 			for (int i = 1; i < 10; i++)
 			{
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 				RunOnUIThread.Execute(() =>
 				{
 					Log.Comment($"Size=({rootRepeater.ActualWidth} x {rootRepeater.ActualHeight})");
@@ -459,7 +481,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 
 				Log.Comment("Waiting for view change completion...");
-				Verify.IsTrue(viewChanged.WaitOne(DefaultWaitTimeInMS));
+				Verify.IsTrue(await viewChanged.WaitOne(DefaultWaitTimeInMS));
 				viewChanged.Reset();
 				Log.Comment("View change completed");
 
@@ -474,19 +496,24 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// ScrollViewer scrolls vertically, but there is an inner 
 		// repeater which flows horizontally which needs corrections to be handled.
 		[TestMethod]
-		public void VerifyCorrectionsInNonScrollableDirection()
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
+		public async Task VerifyCorrectionsInNonScrollableDirection()
 		{
 			ItemsRepeater rootRepeater = null;
 			ScrollViewer scrollViewer = null;
 			ItemsRepeaterScrollHost scrollhost = null;
-			ManualResetEvent viewChanged = new ManualResetEvent(false);
-			RunOnUIThread.Execute(() =>
+			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
 				  @"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
                      xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                      xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                     xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                     xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                     <ScrollViewer Width='400' Height='400' x:Name='scrollviewer'>
                         <controls:ItemsRepeater x:Name='repeater'>
                             <DataTemplate>
@@ -501,6 +528,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                         </controls:ItemsRepeater>
                     </ScrollViewer>
                 </controls:ItemsRepeaterScrollHost>");
+
+				Content = scrollhost;
+
+				await TestServices.WindowHelper.WaitForLoaded(scrollhost);
 
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("repeater");
 				scrollViewer = (ScrollViewer)scrollhost.FindName("scrollviewer");
@@ -518,35 +549,34 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					items.Add(Enumerable.Range(0, 4).ToList());
 				}
 				rootRepeater.ItemsSource = items;
-				Content = scrollhost;
 			});
 
 			// scroll down several times and validate no crash
 			for (int i = 1; i < 5; i++)
 			{
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 				RunOnUIThread.Execute(() =>
 				{
 					scrollViewer.ChangeView(null, i * 200, null);
 				});
 
-				Verify.IsTrue(viewChanged.WaitOne(DefaultWaitTimeInMS));
+				Verify.IsTrue(await viewChanged.WaitOne(DefaultWaitTimeInMS));
 				viewChanged.Reset();
 			}
 		}
 
 
 		[TestMethod]
-		public void VerifyStoreScenarioCache()
+		public async Task VerifyStoreScenarioCache()
 		{
 			ItemsRepeater rootRepeater = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
 				  @" <controls:ItemsRepeaterScrollHost Width='400' Height='200'
                         xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                        xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                         <controls:ItemsRepeaterScrollHost.Resources>
                             <DataTemplate x:Key='ItemTemplate' >
                                 <TextBlock Text='{Binding}' Height='100' Width='100'/>
@@ -571,6 +601,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                         </ScrollViewer>
                     </controls:ItemsRepeaterScrollHost>");
 
+				Content = scrollhost;
+
+				await TestServices.WindowHelper.WaitForLoaded(scrollhost);
+
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("rootRepeater");
 
 				List<List<int>> items = new List<List<int>>();
@@ -579,10 +613,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					items.Add(Enumerable.Range(0, 4).ToList());
 				}
 				rootRepeater.ItemsSource = items;
-				Content = scrollhost;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			// Verify that first items outside the visible range but in the realized range
 			// for the inner of the nested repeaters are realized.
@@ -601,17 +634,17 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
-		public void VerifyUIElementsInItemsSource()
+		public async Task VerifyUIElementsInItemsSource()
 		{
 			ItemsRepeater repeater = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
 				  @"<controls:ItemsRepeaterScrollHost  
                      xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                      xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                      xmlns:local='using:MUXControlsTestApp.Samples'
-                     xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                     xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                         <ScrollViewer>
                             <controls:ItemsRepeater x:Name='repeater'>
                                 <controls:ItemsRepeater.ItemsSource>
@@ -632,14 +665,19 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                         </ScrollViewer>
                     </controls:ItemsRepeaterScrollHost>");
 
-				repeater = (ItemsRepeater)scrollhost.FindName("repeater");
 				Content = scrollhost;
+
+				await TestServices.WindowHelper.WaitForLoaded(scrollhost);
+
+				// Get the control after entering the tree
+				repeater = (ItemsRepeater)scrollhost.FindName("repeater");
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
+
 				for (int i = 0; i < 10; i++)
 				{
 					var element = repeater.TryGetElement(i) as Button;
@@ -649,7 +687,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void VerifyRepeaterDoesNotLeakItemContainers()
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Fails")]
+#endif
+		public async Task VerifyRepeaterDoesNotLeakItemContainers()
 		{
 			ObservableCollection<int> items = new ObservableCollection<int>();
 			for (int i = 0; i < 10; i++)
@@ -680,7 +723,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -692,7 +735,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater = null;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -703,11 +746,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[Ignore("Fails")]
-		public void BringIntoViewOfExistingItemsDoesNotChangeScrollOffset()
+		public async Task BringIntoViewOfExistingItemsDoesNotChangeScrollOffset()
 		{
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			AutoResetEvent scrollViewerScrolledEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent scrollViewerScrolledEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -726,7 +769,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -746,17 +789,17 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			Log.Comment("Wait for scrolling");
 			if (Debugger.IsAttached)
 			{
-				scrollViewerScrolledEvent.WaitOne();
+				await scrollViewerScrolledEvent.WaitOne();
 			}
 			else
 			{
-				if (!scrollViewerScrolledEvent.WaitOne(TimeSpan.FromMilliseconds(5000)))
+				if (!await scrollViewerScrolledEvent.WaitOne(TimeSpan.FromMilliseconds(5000)))
 				{
 					throw new Exception("Timeout expiration in WaitForEvent.");
 				}
 			}
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			double endOfScrollOffset = 0;
 			RunOnUIThread.Execute(() =>
@@ -773,7 +816,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				lastItem.StartBringIntoView();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{

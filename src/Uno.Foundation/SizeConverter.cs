@@ -1,44 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
-namespace Windows.Foundation
+namespace Windows.Foundation;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+internal class SizeConverter : TypeConverter
 {
-	public class SizeConverter : TypeConverter
+#if NETSTANDARD
+	private static readonly char[] _commaArray = new[] { ',' };
+#endif
+	public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 	{
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		var canConvert = sourceType == typeof(string);
+
+		if (canConvert)
 		{
-			var canConvert = sourceType == typeof(string);
-
-			if (canConvert)
-			{
-				return true;
-			}
-
-			return base.CanConvertFrom(context, sourceType);
+			return true;
 		}
 
-		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		return base.CanConvertFrom(context, sourceType);
+	}
+
+	public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+	{
+		var stringValue = value as string;
+
+		if (stringValue != null)
 		{
-			var stringValue = value as string;
+#if NETSTANDARD
+			var values = stringValue
+				.Split(_commaArray)
+				.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
+				.ToArray();
 
-			if (stringValue != null)
+			if (values.Length == 2)
 			{
-				var values = stringValue
-					.Split(new[] { ',' })
-					.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
-					.ToArray();
-
-				if (values.Length == 2)
+				return new Size(values[0], values[1]);
+			}
+#else
+			// This is equivalent to the above code, but is more efficient.
+			// On .NET Standard (for source generators), there is no double.Parse overload that accepts ReadOnlySpan<char>
+			var firstIndexOfComma = stringValue.IndexOf(',');
+			if (firstIndexOfComma != -1)
+			{
+				var lastIndexOfComma = stringValue.LastIndexOf(',');
+				if (firstIndexOfComma == lastIndexOfComma)
 				{
-					return new Size(values[0], values[1]);
+					var span = stringValue.AsSpan();
+					var width = double.Parse(span.Slice(0, firstIndexOfComma), CultureInfo.InvariantCulture);
+					var height = double.Parse(span.Slice(start: firstIndexOfComma + 1), CultureInfo.InvariantCulture);
+					return new Size(width, height);
 				}
 			}
-
-			return base.ConvertFrom(context, culture, value);
+#endif
 		}
+
+		return base.ConvertFrom(context, culture, value);
 	}
 }

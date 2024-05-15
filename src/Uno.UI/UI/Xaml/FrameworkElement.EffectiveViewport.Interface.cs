@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	// Internal interface used to allow communication between the real FrameworkElement
 	// and presenters that are only implementing the IFrameworkElement interface (cf. FrameworkElementMixins.tt).
@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml
 	internal interface IFrameworkElement_EffectiveViewport
 	{
 		void InitializeEffectiveViewport();
-		IDisposable RequestViewportUpdates(bool isInternal, IFrameworkElement_EffectiveViewport? child = null);
+		IDisposable RequestViewportUpdates(bool isInternal, IFrameworkElement_EffectiveViewport child);
 		void OnParentViewportChanged(bool isInitial, bool isInternal, IFrameworkElement_EffectiveViewport parent, ViewportInfo viewport);
 		void OnLayoutUpdated();
 	}

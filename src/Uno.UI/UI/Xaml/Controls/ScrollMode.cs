@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Specifies the scroll behavior in ScrollViewer control.
 	/// </summary>
 	public enum ScrollMode
-    {
+	{
 		/// <summary>
 		/// Disables scrolling
 		/// </summary>
@@ -23,5 +23,5 @@ namespace Windows.UI.Xaml.Controls
 		/// Scrolling is enabled but behavior uses a "rails" manipulation mode
 		/// </summary>
 		Auto,
-    }
+	}
 }

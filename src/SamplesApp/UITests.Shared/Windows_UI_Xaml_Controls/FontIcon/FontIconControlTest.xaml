@@ -23,10 +23,21 @@
 						<TextBlock Text="Glyph Star" />
 						<FontIcon Glyph="&#xE082;" />
 
+						<TextBlock Text="Button with Symbols" />
+						<Button Content="&#xE082;"
+								HorizontalAlignment="Center"
+								FontFamily="Symbols" />
+
 						<TextBlock Text="Button with ms-appx: font-family" />
 						<Button Content="&#xE082;"
 								HorizontalAlignment="Center"
 								FontFamily="ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols" />
+
+						<TextBlock Text="Button IconFont with ms-appx: font-family" />
+						<Button HorizontalAlignment="Center">
+							<FontIcon Glyph="&#xE082;"
+									  FontFamily="ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols" />
+						</Button>
 
 						<TextBlock Text="Glyph World" />
 						<FontIcon Glyph="&#xE909;" />

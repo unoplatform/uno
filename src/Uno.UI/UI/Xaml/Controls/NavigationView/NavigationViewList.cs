@@ -7,21 +7,15 @@
 
 using System;
 using Windows.System;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
-#else
 using Windows.UI.Xaml.Input;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewList : ListView
+	public partial class NavigationViewList : ListView
 	{
 		NavigationViewListPosition m_navigationViewListPosition = NavigationViewListPosition.LeftNav;
 		bool m_showFocusVisual = true;
-		WeakReference<NavigationView> m_navigationView = null;
+		WeakReference<NavigationView> m_navigationView;
 
 		// For topnav, like alarm application, we may only need icon and no content for NavigationViewItem. 
 		// ListView raise ItemClicked event, but it only provides the content and not the container.
@@ -141,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 			return m_lastItemCalledInIsItemItsOwnContainerOverride;
 		}
 
-		void PropagateChangeToAllContainers<T>(Action<T> function) where T:class
+		void PropagateChangeToAllContainers<T>(Action<T> function) where T : class
 		{
 			var items = Items;
 			if (items != null)

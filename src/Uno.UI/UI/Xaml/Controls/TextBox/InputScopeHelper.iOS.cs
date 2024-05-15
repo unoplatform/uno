@@ -4,13 +4,13 @@ using System.Text;
 using Foundation;
 using UIKit;
 using CoreGraphics;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using System.Linq;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-    internal static class InputScopeHelper
-    {
+	internal static class InputScopeHelper
+	{
 		public static UITextAutocapitalizationType ConvertInputScopeToCapitalization(InputScope value)
 		{
 			switch (value.GetFirstInputScopeNameValue())
@@ -92,5 +92,5 @@ namespace Windows.UI.Xaml.Controls
 					return InputScopeNameValue.Search;
 			}
 		}
-    }
+	}
 }

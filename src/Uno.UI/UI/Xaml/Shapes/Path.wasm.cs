@@ -1,22 +1,26 @@
 ﻿#nullable enable
-using Windows.UI.Xaml.Wasm;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Path
 	{
-		private readonly SvgElement _root = new SvgElement("g");
-
-		public Path()
+		public Path() : base("g")
 		{
-			SvgChildren.Add(_root);
-
-			InitCommonShapeProperties();
 		}
 
-		protected override SvgElement GetMainSvgElement() => _root;
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			Data?.Invalidate();
+			return MeasureAbsoluteShape(availableSize, this);
+		}
 
-		partial void OnDataChanged() => InvalidateMeasure();
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			UpdateRender();
+			return ArrangeAbsoluteShape(finalSize, this);
+		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
@@ -24,17 +28,15 @@ namespace Windows.UI.Xaml.Shapes
 
 			var property = args.Property;
 
-			if(property == DataProperty)
+			if (property == DataProperty)
 			{
-				_root.ClearChildren();
+				_mainSvgElement.ClearChildren();
 
 				if (Data is { } data)
 				{
-					_root.AddChild(data.GetSvgElement());
+					_mainSvgElement.AddChild(data.GetSvgElement());
 				}
 			}
 		}
-
-		protected override void InvalidateShape() => Data?.Invalidate();
 	}
 }

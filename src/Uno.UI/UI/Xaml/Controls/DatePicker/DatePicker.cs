@@ -4,31 +4,29 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
+using DirectUI;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Disposables;
-using Windows.ApplicationModel.Resources;
+using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
-using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
 
-
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(Header))]
 	public partial class DatePicker : Control
 	{
 		internal const long DEFAULT_DATE_TICKS = 504910368000000000;
 
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
 		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
-			   
+
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
 		const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
 		const int DATEPICKER_SENTINELTIME_HOUR = 12;
@@ -131,8 +129,6 @@ namespace Windows.UI.Xaml.Controls
 
 		SerialDisposable m_epFlyoutButtonClickHandler = new SerialDisposable();
 
-		SerialDisposable m_epWindowActivatedHandler = new SerialDisposable();
-
 		// See the comment of AllowReactionToSelectionChange method for use of this variable.
 		bool m_reactionToSelectionChangeAllowed;
 
@@ -154,8 +150,9 @@ namespace Windows.UI.Xaml.Controls
 		// for cancellation.
 		IAsyncInfo m_tpAsyncSelectionInfo;
 
-		bool m_isPropagatingDate = false;
+		bool m_isPropagatingDate;
 
+#if false
 		// The selection of the selectors in our template can be changed by two sources. First source is
 		// the end user changing a field to select the desired date. Second source is us updating
 		// the itemssources and selected indices. We only want to react to the first source as the
@@ -167,6 +164,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			m_reactionToSelectionChangeAllowed = true;
 		}
+#endif
 
 		void PreventReactionToSelectionChange()
 		{
@@ -191,43 +189,44 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(DatePicker);
 
+			this.Loaded += DatePicker_Loaded;
+			this.Unloaded += DatePicker_Unloaded;
+
 			InitPartial();
 
 			PrepareState();
 		}
 
-		~DatePicker()
+#if HAS_UNO // TODO Uno specific: Window activation handling to accomodate for WinUI multiwindow, original implementation can be ported when DatePicker is updated from WinUI 3 sources.
+		private readonly SerialDisposable _windowActivatedToken = new();
+
+		private void DatePicker_Unloaded(object sender, RoutedEventArgs e)
 		{
+			// Uno specific: These operations are inside the destructor in WinUI 3, but we need to do them here
+			// to make sure they happen on the UI thread.
+
+			_windowActivatedToken.Disposable = null;
+
 			// This will ensure the pending async operation
 			// completes, closed the open dialog, and doesn't
 			// try to execute a callback to a DatePicker that
 			// no longer exists.
-			if (m_tpAsyncSelectionInfo != null)
-			{
-				/*VERIFYHR*/
-				m_tpAsyncSelectionInfo.Cancel();
-			}
-
-			m_epWindowActivatedHandler.Disposable = null;
+			m_tpAsyncSelectionInfo?.Cancel();
 		}
 
-		// Initialize the DatePicker
-		void PrepareState()
+		private void DatePicker_Loaded(object sender, RoutedEventArgs e)
 		{
-			Window pCurrentWindow = global::Windows.UI.Xaml.Window.Current;
-
-			// DatePickerGenerated.PrepareState();
-
-			// We should update our state during initialization because we still want our dps to function properly
-			// until we get applied a template, to do this we need our state information.
-			UpdateState();
-
-			if (pCurrentWindow != null)
+			// TODO: Uno Specific: This portion of code was originally in PrepareState,
+			// but was moved here as it requires XamlRoot for multiwindow purposes.
+			if (XamlRoot.HostWindow is { } window)
 			{
 				WeakReference wrWeakThis = new WeakReference(this);
 
-				pCurrentWindow.Activated += (s, pArgs) => {
+				window.Activated += OnWindowActivated;
+				_windowActivatedToken.Disposable = Disposable.Create(() => window.Activated -= OnWindowActivated);
 
+				void OnWindowActivated(object sender, WindowActivatedEventArgs args)
+				{
 					DatePicker spThis;
 
 					spThis = wrWeakThis.Target as DatePicker;
@@ -235,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						CoreWindowActivationState state =
 							CoreWindowActivationState.CodeActivated;
-						state = (pArgs.WindowActivationState);
+						state = (args.WindowActivationState);
 
 						if (state == CoreWindowActivationState.CodeActivated
 							|| state == CoreWindowActivationState.PointerActivated)
@@ -243,8 +242,19 @@ namespace Windows.UI.Xaml.Controls
 							spThis.RefreshSetup();
 						}
 					}
-				};
+				}
 			}
+		}
+#endif
+
+		// Initialize the DatePicker
+		void PrepareState()
+		{
+			// DatePickerGenerated.PrepareState();
+
+			// We should update our state during initialization because we still want our dps to function properly
+			// until we get applied a template, to do this we need our state information.
+			UpdateState();
 		}
 
 		// Called when the IsEnabled property changes.
@@ -254,7 +264,7 @@ namespace Windows.UI.Xaml.Controls
 		//	// UpdateVisualState();
 		//}
 
-		// Change to the correct visual state for the 
+		// Change to the correct visual state for the
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
 			if (!IsEnabled)
@@ -326,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 
 				string strAutomationName;
 				string strParentAutomationName;
-				// string strComboAutomationName;
+				string strComboAutomationName;
 
 				//Clean up existing parts
 				if (m_tpDayPicker != null)
@@ -443,8 +453,7 @@ namespace Windows.UI.Xaml.Controls
 					spHeaderAsInspectable = Header;
 					if (spHeaderAsInspectable != null)
 					{
-						// UNO TODO
-						// (FrameworkElement.GetStringFromObject(spHeaderAsInspectable, strParentAutomationName));
+						strParentAutomationName = FrameworkElement.GetStringFromObject(spHeaderAsInspectable);
 					}
 				}
 				// Hook up the selection changed events for selectors, we will be reacting to these events.
@@ -457,10 +466,9 @@ namespace Windows.UI.Xaml.Controls
 					strAutomationName = AutomationProperties.GetName(m_tpDayPicker);
 					if (strAutomationName == null)
 					{
-						// UNO TODO
-						//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_DAY, strAutomationName));
-						//strAutomationName += strParentAutomationName + strComboAutomationName;
-						//AutomationProperties.SetName(m_tpDayPicker as ComboBox, strComboAutomationName);
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_DAY");
+						strComboAutomationName = strAutomationName + strParentAutomationName;
+						AutomationProperties.SetName(m_tpDayPicker as ComboBox, strComboAutomationName);
 					}
 				}
 				if (m_tpMonthPicker != null)
@@ -472,10 +480,9 @@ namespace Windows.UI.Xaml.Controls
 					strAutomationName = AutomationProperties.GetName(m_tpMonthPicker as ComboBox);
 					if (strAutomationName == null)
 					{
-						// UNO TODO
-						//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_MONTH, strAutomationName));
-						//strAutomationName += strParentAutomationName + strComboAutomationName;
-						//AutomationProperties.SetName(m_tpMonthPicker as ComboBox, strComboAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_MONTH");
+						strComboAutomationName = strAutomationName + strParentAutomationName;
+						AutomationProperties.SetName(m_tpMonthPicker as ComboBox, strComboAutomationName);
 					}
 				}
 				if (m_tpYearPicker != null)
@@ -487,10 +494,9 @@ namespace Windows.UI.Xaml.Controls
 					strAutomationName = AutomationProperties.GetName(m_tpYearPicker as ComboBox);
 					if (strAutomationName == null)
 					{
-						// UNO TODO
-						//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_YEAR, strAutomationName);
-						//strAutomationName += strParentAutomationName + strComboAutomationName;
-						//AutomationProperties.SetName(m_tpYearPicker as ComboBox, strComboAutomationName);
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_YEAR");
+						strComboAutomationName = strAutomationName + strParentAutomationName;
+						AutomationProperties.SetName(m_tpYearPicker as ComboBox, strComboAutomationName);
 					}
 				}
 
@@ -878,8 +884,15 @@ namespace Windows.UI.Xaml.Controls
 				var asyncOperation = _flyout.ShowAtAsync(this);
 				m_tpAsyncSelectionInfo = asyncOperation;
 				var getOperation = asyncOperation.AsTask();
-				await getOperation;
-				OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+				try
+				{
+					await getOperation;
+					OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+				}
+				catch (TaskCanceledException)
+				{
+					// The user canceled the flyout or the control was unloaded. We don't need to do anything.
+				}
 			}
 		}
 
@@ -899,7 +912,7 @@ namespace Windows.UI.Xaml.Controls
 				selectedDate = getOperation.Result;
 
 				// A null IReference object is returned when the user cancels out of the
-				// 
+				//
 				if (selectedDate != null)
 				{
 					// We set SelectedDate instead of Date in order to ensure that the value
@@ -1085,15 +1098,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception /*e*/)
 			{
-				if (property == CalendarIdentifierProperty) {
+				if (property == CalendarIdentifierProperty)
+				{
 					CalendarIdentifier = strOldValue;
 				}
-				else if (property == DayFormatProperty) {
+				else if (property == DayFormatProperty)
+				{
 					DayFormat = strOldValue;
 				}
 				else if (property == MonthFormatProperty)
 					MonthFormat = strOldValue;
-				else if (property == YearFormatProperty) {
+				else if (property == YearFormatProperty)
+				{
 					YearFormat = strOldValue;
 				}
 			}
@@ -1370,7 +1386,8 @@ namespace Windows.UI.Xaml.Controls
 
 					if (args.Property == DayVisibleProperty
 					|| args.Property == MonthVisibleProperty
-					|| args.Property == YearVisibleProperty) {
+					|| args.Property == YearVisibleProperty)
+					{
 						UpdateOrderAndLayout();
 					}
 
@@ -1618,7 +1635,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					m_tpYearTextBlock.Text = ResourceLoader.GetForCurrentView().GetString("TEXT_DATEPICKER_YEAR_PLACEHOLDER");
+					m_tpYearTextBlock.Text = ResourceAccessor.GetLocalizedStringResource("TEXT_DATEPICKER_YEAR_PLACEHOLDER");
 				}
 			}
 			if (m_tpMonthTextBlock != null)
@@ -1632,7 +1649,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					m_tpMonthTextBlock.Text = ResourceLoader.GetForCurrentView().GetString("TEXT_DATEPICKER_MONTH_PLACEHOLDER");
+					m_tpMonthTextBlock.Text = ResourceAccessor.GetLocalizedStringResource("TEXT_DATEPICKER_MONTH_PLACEHOLDER");
 				}
 			}
 			if (m_tpDayTextBlock != null)
@@ -1647,7 +1664,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					m_tpDayTextBlock.Text = ResourceLoader.GetForCurrentView().GetString("TEXT_DATEPICKER_DAY_PLACEHOLDER");
+					m_tpDayTextBlock.Text = ResourceAccessor.GetLocalizedStringResource("TEXT_DATEPICKER_DAY_PLACEHOLDER");
 				}
 			}
 
@@ -1742,9 +1759,9 @@ namespace Windows.UI.Xaml.Controls
 				isRTL = szDate[0] == DATEPICKER_RTL_CHARACTER_CODE;
 
 				// We do string search to determine the order of the fields.
-				dayOccurence = szDate.IndexOf("{day");
-				monthOccurence = szDate.IndexOf("{month");
-				yearOccurence = szDate.IndexOf("{year");
+				dayOccurence = szDate.IndexOf("{day", StringComparison.Ordinal);
+				monthOccurence = szDate.IndexOf("{month", StringComparison.Ordinal);
+				yearOccurence = szDate.IndexOf("{year", StringComparison.Ordinal);
 
 				if (dayOccurence < monthOccurence)
 				{
@@ -2055,7 +2072,7 @@ namespace Windows.UI.Xaml.Controls
 			// Also move the spacers to the correct column.
 			if (m_tpFirstPickerSpacing != null)
 			{
-				m_tpFirstPickerSpacing.Visibility = 
+				m_tpFirstPickerSpacing.Visibility =
 					firstHostPopulated && (secondHostPopulated || thirdHostPopulated) ?
 					Visibility.Visible : Visibility.Collapsed;
 
@@ -2067,7 +2084,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (m_tpSecondPickerSpacing != null)
 			{
-				m_tpSecondPickerSpacing.Visibility = 
+				m_tpSecondPickerSpacing.Visibility =
 					secondHostPopulated && thirdHostPopulated ?
 					Visibility.Visible : Visibility.Collapsed;
 
@@ -2168,7 +2185,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateOrderAndLayout();
 		}
 
-		// Create DatePickerAutomationPeer to represent the 
+		// Create DatePickerAutomationPeer to represent the
 		//override void OnCreateAutomationPeer(out xaml_automation_peers.IAutomationPeer** ppAutomationPeer)
 		//{
 		//	HRESULT hr = S_OK;
@@ -2193,6 +2210,7 @@ namespace Windows.UI.Xaml.Controls
 		//	RRETURN(hr);
 		//}
 
+#if false
 		void GetSelectedDateAsString(out string strPlainText)
 		{
 			DateTimeFormatter spFormatter;
@@ -2205,7 +2223,7 @@ namespace Windows.UI.Xaml.Controls
 			CreateNewFormatter("day month.full year", strCalendarIdentifier, out spFormatter);
 			strPlainText = spFormatter.Format(date.Value);
 		}
-
+#endif
 
 		void RefreshFlyoutButtonAutomationName()
 		{
@@ -2248,12 +2266,12 @@ namespace Windows.UI.Xaml.Controls
 		/* static */
 
 		private static DateTimeOffset NullDateSentinel { get; } =
-			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+			default(WindowsFoundationDateTime);
 
 		/* static */
 
 		private static DateTimeOffset NullDateSentinelValue { get; } =
-			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+			default(WindowsFoundationDateTime);
 
 		void GetTodaysDate(out DateTimeOffset? todaysDate)
 		{

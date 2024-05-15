@@ -1,13 +1,14 @@
-using System;
+﻿using System;
 using System.Linq;
+using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal struct LayoutReference
 	{
-		internal Windows.UI.Xaml.Controls.ReferenceIdentity RelativeLocation { get; set; }
-		internal Windows.Foundation.Rect ReferenceBounds { get; set; }
-		Windows.Foundation.Rect HeaderBounds { get; set; }
-		bool ReferenceIsHeader { get; set; }
+		internal Microsoft.UI.Xaml.Controls.ReferenceIdentity RelativeLocation { get; set; }
+		internal Rect ReferenceBounds { get; set; }
+		//Rect HeaderBounds { get; set; }
+		//bool ReferenceIsHeader { get; set; }
 	};
 }

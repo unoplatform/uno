@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	public  partial class ContentDialogButtonClickEventArgs 
+	public partial class ContentDialogButtonClickEventArgs
 	{
 		private readonly Action<ContentDialogButtonClickEventArgs> _deferralAction;
 
@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		public bool Cancel { get; set; }
 		internal ContentDialogButtonClickDeferral Deferral { get; private set; }
 
-		public global::Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral GetDeferral()
+		public global::Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral GetDeferral()
 			=> Deferral = new ContentDialogButtonClickDeferral(() => _deferralAction(this));
 	}
 }

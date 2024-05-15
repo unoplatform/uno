@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class PivotItemFragment : Fragment
 	{
 		private readonly PivotItem _item;
-		private bool _created = false;
+		private bool _created;
 
 		// Don't delete. Prevents the following exception:
 		// System.NotSupportedException: Unable to find the default constructor on type ApplicationFramework.Controls.Tabs.TabFragment.  Please provide the missing constructor.
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public PivotItemFragment(PivotItem item)
 		{
-			if(item == null)
+			if (item == null)
 			{
 				throw new ArgumentNullException(nameof(item));
 			}
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 				Update();
 			}
 		}
-		
+
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
 			_created = true;

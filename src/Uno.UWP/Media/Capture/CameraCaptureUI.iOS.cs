@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AVFoundation;
@@ -39,7 +40,18 @@ namespace Windows.Media.Capture
 						break;
 
 					case CameraCaptureUIMode.Video:
+#pragma warning disable CA1416 // UTType.Image, UTType.Movie is supported on ios version 14 and above
+						picker.MediaTypes = new string[] { MobileCoreServices.UTType.Movie };
+#pragma warning restore CA1416
 						picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
+
+						if (VideoSettings.Format != CameraCaptureUIVideoFormat.Mp4)
+						{
+							throw new NotSupportedException("The capture format CameraCaptureUIVideoFormat.Mp4 is the only supported format");
+						}
+
+						await ValidateCameraAccess();
+						await ValidateMicrophoneAccess();
 						break;
 				}
 			}
@@ -69,36 +81,139 @@ namespace Windows.Media.Capture
 
 				if (result != null)
 				{
-					var image = result.ValueForKey(new NSString("UIImagePickerControllerOriginalImage")) as UIImage;
-					var metadata = result.ValueForKey(new NSString("UIImagePickerControllerOriginalImage")) as UIImage;
-
-					var correctedImage = await FixOrientation(ct, image);
-
-					(Stream data, string extension) GetImageStream()
+					if (result.ValueForKey(new NSString("UIImagePickerControllerOriginalImage")) is UIImage image)
 					{
-						switch (PhotoSettings.Format)
+						var correctedImage = FixOrientation(image);
+
+						(Stream data, string extension) GetImageStream()
 						{
-							case CameraCaptureUIPhotoFormat.Jpeg:
-								return (image.AsJPEG().AsStream(), ".jpg");
+							return PhotoSettings.Format switch
+							{
+								CameraCaptureUIPhotoFormat.Jpeg => (image.AsJPEG().AsStream(), ".jpg"),
+								CameraCaptureUIPhotoFormat.Png => (image.AsPNG().AsStream(), ".png"),
+								_ => throw new NotSupportedException($"{PhotoSettings.Format} is not supported"),
+							};
+						};
 
-							case CameraCaptureUIPhotoFormat.Png:
-								return (image.AsPNG().AsStream(), ".png");
+						var (data, extension) = GetImageStream();
+						return await CreateTempImage(data, extension);
+					}
+					else
+					{
+						var assetUrl = result[UIImagePickerController.MediaURL] as NSUrl;
+						PHAsset phAsset = null;
 
-							default:
-								throw new NotSupportedException($"{PhotoSettings.Format} is not supported");
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Asset url {assetUrl}");
 						}
-					};
 
-					var (data, extension) = GetImageStream();
-					return await CreateTempImage(data, extension);
+						if (assetUrl is not null)
+						{
+							if (OperatingSystem.IsIOSVersionAtLeast(11, 0))
+							{
+								if (!assetUrl.Scheme.Equals("assets-library", StringComparison.OrdinalIgnoreCase))
+								{
+									var doc = new UIDocument(assetUrl);
+									var fullPath = doc.FileUrl?.Path;
+
+									if (fullPath is null)
+									{
+										if (this.Log().IsEnabled(LogLevel.Warning))
+										{
+											this.Log().LogWarning($"Unable determine file path from asset library");
+										}
+
+										return null;
+									}
+									else
+									{
+										return await ConvertToMp4(fullPath);
+									}
+								}
+
+								phAsset = result.ValueForKey(UIImagePickerController.PHAsset) as PHAsset;
+							}
+						}
+
+						if (phAsset == null)
+						{
+#if !__MACCATALYST__
+							assetUrl = result[UIImagePickerController.ReferenceUrl] as NSUrl;
+
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().Debug($"Asset url {assetUrl}");
+							}
+
+							if (assetUrl != null)
+							{
+								phAsset = PHAsset.FetchAssets(new NSUrl[] { assetUrl }, null)?.LastObject as PHAsset;
+							}
+#endif
+						}
+
+						if (phAsset is not null)
+						{
+							var originalFilename = PHAssetResource.GetAssetResources(phAsset).FirstOrDefault()?.OriginalFilename;
+
+							if (originalFilename is null)
+							{
+								if (this.Log().IsEnabled(LogLevel.Warning))
+								{
+									this.Log().LogWarning($"Unable determine Asset Resources from PHAssetResource");
+								}
+							}
+							else
+							{
+								return await ConvertToMp4(originalFilename);
+							}
+						}
+						else
+						{
+							if (this.Log().IsEnabled(LogLevel.Warning))
+							{
+								this.Log().LogWarning($"Could not determine asset url");
+							}
+						}
+					}
 				}
-				else
-				{
-					return null;
-				}
+
+				return null;
 			}
 		}
 
+		private async Task<StorageFile> ConvertToMp4(string originalFilename)
+		{
+			if (originalFilename == null)
+			{
+				return null;
+			}
+
+			var outputFilePath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ".mp4");
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Converting {originalFilename} to {outputFilePath}");
+			}
+
+			var asset = AVAsset.FromUrl(NSUrl.FromFilename(originalFilename));
+
+			AVAssetExportSession export = new(asset, AVAssetExportSession.PresetPassthrough);
+
+			export.OutputUrl = NSUrl.FromFilename(outputFilePath);
+			export.OutputFileType = AVFileTypesExtensions.GetConstant(AVFileTypes.Mpeg4);
+			export.ShouldOptimizeForNetworkUse = true;
+
+			await export.ExportTaskAsync();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Done converting to {outputFilePath}");
+			}
+
+			return await StorageFile.GetFileFromPathAsync(outputFilePath);
+		}
 
 		// As of iOS 10, usage description keys are required for many more permissions
 		private static bool IsUsageKeyDefined(string usageKey)
@@ -108,6 +223,20 @@ namespace Windows.Media.Capture
 				: true;
 		}
 
+		private async Task ValidateMicrophoneAccess()
+		{
+			if (!IsUsageKeyDefined("NSMicrophoneUsageDescription"))
+			{
+				throw new InvalidOperationException("Info.plist must define NSMicrophoneUsageDescription");
+			}
+
+			var isAllowed = (await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVAuthorizationMediaType.Audio));
+			if (!isAllowed)
+			{
+				throw new UnauthorizedAccessException();
+			}
+		}
+
 		private async Task ValidateCameraAccess()
 		{
 			if (!IsUsageKeyDefined("NSCameraUsageDescription"))
@@ -115,7 +244,7 @@ namespace Windows.Media.Capture
 				throw new InvalidOperationException("Info.plist must define NSCameraUsageDescription");
 			}
 
-			var isAllowed = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaTypes.Video.GetConstant());
+			var isAllowed = (await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVAuthorizationMediaType.Video));
 			if (!isAllowed)
 			{
 				throw new UnauthorizedAccessException();
@@ -154,10 +283,9 @@ namespace Windows.Media.Capture
 		/// <summary>
 		/// Fixes orientation issues caused by taking an image straight from the camera
 		/// </summary>
-		/// <param name="ct">Cancellation token</param>
 		/// <param name="image">UI Image</param>
 		/// <returns>UI image</returns>
-		private async Task<UIImage> FixOrientation(CancellationToken ct, UIImage image)
+		private static UIImage FixOrientation(UIImage image)
 		{
 			if (image.Orientation == UIImageOrientation.Up)
 			{
@@ -196,9 +324,8 @@ namespace Windows.Media.Capture
 
 		public override void Canceled(UIImagePickerController picker)
 		{
-			base.Canceled(picker);
-
 			_cts.TrySetResult(null);
+			picker.DismissModalViewController(true);
 		}
 	}
 }

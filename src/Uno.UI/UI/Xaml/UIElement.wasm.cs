@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -14,10 +15,12 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.System;
+using Color = Windows.UI.Color;
+using Microsoft.UI.Input;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -38,9 +41,9 @@ namespace Windows.UI.Xaml
 
 		public UIElement() : this(null, false) { }
 
-		public UIElement(string htmlTag = DefaultHtmlTag) : this(htmlTag, false) { }
+		internal UIElement(string htmlTag = DefaultHtmlTag) : this(htmlTag, false) { }
 
-		public UIElement(string htmlTag, bool isSvg)
+		internal UIElement(string htmlTag, bool isSvg)
 		{
 			Initialize();
 
@@ -84,8 +87,6 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
 				}
 
-				Cleanup();
-
 				Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
 			}
 			catch (Exception e)
@@ -101,15 +102,15 @@ namespace Windows.UI.Xaml
 
 		public IntPtr Handle { get; }
 
-		public IntPtr HtmlId { get; }
+		internal IntPtr HtmlId { get; }
 
-		public string HtmlTag { get; }
+		internal string HtmlTag { get; }
 
-		public bool HtmlTagIsSvg => _wasmConfig.HasFlag(WasmConfig.IsSvg);
+		internal bool HtmlTagIsSvg => _wasmConfig.HasFlag(WasmConfig.IsSvg);
 
 		internal bool HtmlTagIsExternallyDefined => _wasmConfig.HasFlag(WasmConfig.IsExternalElement);
 
-		public Size MeasureView(Size availableSize, bool measureContent = true)
+		internal Size MeasureView(Size availableSize, bool measureContent = true)
 		{
 			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize, measureContent);
 		}
@@ -124,24 +125,17 @@ namespace Windows.UI.Xaml
 			return Uno.UI.Xaml.WindowManagerInterop.GetBBox(HtmlId);
 		}
 
-		private Rect GetBoundingClientRect()
+		internal void SetStyle(string name, string value)
 		{
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
-			var sizeParts = sizeString.Split(';');
-			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
+			Uno.UI.Xaml.WindowManagerInterop.SetStyleString(HtmlId, name, value);
 		}
 
-		protected internal void SetStyle(string name, string value)
-		{
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
-		}
-
-		protected internal void SetStyle(string name, double value)
+		internal void SetStyle(string name, double value)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
 		}
 
-		protected internal void SetStyle(params (string name, string value)[] styles)
+		internal void SetStyle(params (string name, string value)[] styles)
 		{
 			if (styles == null || styles.Length == 0)
 			{
@@ -151,13 +145,23 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
+		internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetSelectionHighlight(HtmlId, backgroundColor, foregroundColor);
+		}
+
+		internal void UnsetSelectionHighlight()
+		{
+			UnsetCssClasses("selection-highlight");
+		}
+
 		/// <summary>
 		/// Add/Set CSS classes to the HTML element.
 		/// </summary>
 		/// <remarks>
 		/// No effect for classes already present on the element.
 		/// </remarks>
-		protected internal void SetCssClasses(params string[] classesToSet)
+		internal void SetCssClasses(params string[] classesToSet)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, classesToSet, null);
 		}
@@ -168,7 +172,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// No effect for classes already absent from the element.
 		/// </remarks>
-		protected internal void UnsetCssClasses(params string[] classesToUnset)
+		internal void UnsetCssClasses(params string[] classesToUnset)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, null, classesToUnset);
 
@@ -180,7 +184,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// Identical to calling <see cref="SetCssClasses"/> followed by <see cref="UnsetCssClasses"/>.
 		/// </remarks>
-		protected internal void SetUnsetCssClasses(string[] classesToSet, string[] classesToUnset)
+		internal void SetUnsetCssClasses(string[] classesToSet, string[] classesToUnset)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetUnsetCssClasses(HtmlId, classesToSet, classesToUnset);
 		}
@@ -191,13 +195,13 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="cssClasses">All possible class values</param>
 		/// <param name="index">The index of the value to set (-1: unset)</param>
-		protected internal void SetClasses(string[] cssClasses, int index = -1)
+		internal void SetClasses(string[] cssClasses, int index = -1)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetClasses(HtmlId, cssClasses, index);
 		}
 
 #if DEBUG
-		private long _arrangeCount = 0;
+		private long _arrangeCount;
 #endif
 
 		/// <summary>
@@ -205,12 +209,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="rect">The dimensions to apply to the element</param>
 		/// <param name="clipRect">The Clip rect to set, if any</param>
-		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
+		internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
-			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent && parent is not RootVisual
-					? rect.DeflateBy(parent.GetBorderThickness())
-					: rect;
+			LayoutSlotWithMarginsAndAlignments = rect;
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
@@ -222,6 +223,14 @@ namespace Windows.UI.Xaml
 				// cf. OnVisibilityChanged
 				rect.X = rect.Y = -100000;
 			}
+			else if (VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			{
+				// HTML moves the origin along with the border thickness.
+				// Adjust this element based on this its parent border thickness.
+				_ = parent.TryGetActualBorderThickness(out var adjust);
+				rect.X = rect.X - adjust.Left;
+				rect.Y = rect.Y - adjust.Top;
+			}
 
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 			OnViewportUpdated(clipRect ?? Rect.Empty);
@@ -229,32 +238,32 @@ namespace Windows.UI.Xaml
 #if DEBUG
 			var count = ++_arrangeCount;
 
-			SetAttribute(("xamlArrangeCount", count.ToString()));
+			SetAttribute(("xamlArrangeCount", count.ToString(CultureInfo.InvariantCulture)));
 #endif
 		}
 
-		protected internal void SetNativeTransform(Matrix3x2 matrix)
+		internal void SetNativeTransform(Matrix3x2 matrix)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix);
 		}
 
-		protected internal void ResetStyle(params string[] names)
+		internal void ResetStyle(params string[] names)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.ResetStyle(HtmlId, names);
 
 		}
 
-		protected internal void SetAttribute(string name, string value)
+		internal void SetAttribute(string name, string value)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, name, value);
 		}
 
-		protected internal void RemoveAttribute(string name)
+		internal void RemoveAttribute(string name)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.RemoveAttribute(HtmlId, name);
 		}
 
-		protected internal void SetAttribute(params (string name, string value)[] attributes)
+		internal void SetAttribute(params (string name, string value)[] attributes)
 		{
 			if (attributes == null || attributes.Length == 0)
 			{
@@ -264,16 +273,15 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetAttributes(HtmlId, attributes);
 		}
 
-		protected internal string GetAttribute(string name)
+		internal string GetAttribute(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getAttribute(" + HtmlId + ", \"" + name + "\");";
-			return WebAssemblyRuntime.InvokeJS(command);
+			return WindowManagerInterop.GetAttribute(HtmlId, name);
 		}
 
-		protected internal void SetProperty(string name, string value)
-			=> SetProperty((name, value));
+		internal void SetProperty(string name, string value)
+			=> Uno.UI.Xaml.WindowManagerInterop.SetProperty(HtmlId, name, value);
 
-		protected internal void SetProperty(params (string name, string value)[] properties)
+		internal void SetProperty(params (string name, string value)[] properties)
 		{
 			if (properties == null || properties.Length == 0)
 			{
@@ -283,13 +291,12 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetProperty(HtmlId, properties);
 		}
 
-		protected internal string GetProperty(string name)
+		internal string GetProperty(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getProperty(" + HtmlId + ", \"" + name + "\");";
-			return WebAssemblyRuntime.InvokeJS(command);
+			return WindowManagerInterop.GetProperty(HtmlId, name);
 		}
 
-		protected internal void SetHtmlContent(string html)
+		internal void SetHtmlContent(string html)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
 		}
@@ -319,43 +326,24 @@ namespace Windows.UI.Xaml
 
 		internal static UIElement GetElementFromHandle(IntPtr handle)
 		{
-			var gcHandle = GCHandle.FromIntPtr(handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			if (handle != IntPtr.Zero)
 			{
-				return element;
-			}
+				var gcHandle = GCHandle.FromIntPtr(handle);
 
-			return null;
-		}
-
-		internal static UIElement GetElementFromHandle(int handle)
-		{
-			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
-			{
-				return element;
-			}
-
-			return null;
-		}
-
-		private Rect _arranged;
-		private string _name;
-
-		public string Name
-		{
-			get => _name;
-			set
-			{
-				_name = value;
-
-				if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+				if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
 				{
-					Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
+					return element;
 				}
 			}
+			else
+			{
+				if (typeof(UIElement).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					typeof(UIElement).Log().Debug($"Unable to get element handle for uninitialized handle");
+				}
+			}
+
+			return null;
 		}
 
 		partial void OnUidChangedPartial()
@@ -366,30 +354,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public int MeasureCallCount { get; protected set; }
-		public int ArrangeCallCount { get; protected set; }
-
-		public Size? RequestedDesiredSize { get; set; }
-		public Size AvailableMeasureSize { get; protected set; }
-
-		public Rect Arranged
-		{
-			get => _arranged;
-			set
-			{
-				ArrangeCallCount++;
-				_arranged = value;
-			}
-		}
-
-		public Func<Size, Size> DesiredSizeSelector { get; set; }
-
-		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newVisibility)
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			InvalidateMeasure();
 			UpdateHitTest();
 
-			WindowManagerInterop.SetVisibility(HtmlId, newVisibility == Visibility.Visible);
+			WindowManagerInterop.SetVisibility(HtmlId, newValue == Visibility.Visible);
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
@@ -445,11 +415,11 @@ namespace Windows.UI.Xaml
 			return base.ToString();
 		}
 
-		public UIElement FindFirstChild() => _children.FirstOrDefault();
+		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		public virtual IEnumerable<UIElement> GetChildren() => _children;
+		internal MaterializableList<UIElement> GetChildren() => _children;
 
-		public void AddChild(UIElement child, int? index = null)
+		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
 			{
@@ -476,8 +446,6 @@ namespace Windows.UI.Xaml
 
 			child.SetParent(this);
 
-			OnAddingChild(child);
-
 			if (index is { } i)
 			{
 				_children.Insert(i, child);
@@ -488,6 +456,9 @@ namespace Windows.UI.Xaml
 			}
 
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 
@@ -514,7 +485,7 @@ namespace Windows.UI.Xaml
 			InvalidateMeasure();
 		}
 
-		public void ClearChildren()
+		internal void ClearChildren()
 		{
 			for (var i = 0; i < _children.Count; i++)
 			{
@@ -542,29 +513,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void Cleanup()
-		{
-			if (this.GetParent() is UIElement originalParent)
-			{
-				originalParent.RemoveChild(this);
-			}
-
-			if (this is Windows.UI.Xaml.Controls.Panel panel)
-			{
-				panel.Children.Clear();
-			}
-			else
-			{
-				for (var i = 0; i < _children.Count; i++)
-				{
-					RemoveNativeView(_children[i]);
-				}
-
-				_children.Clear();
-			}
-		}
-
-		public bool RemoveChild(UIElement child)
+		internal bool RemoveChild(UIElement child)
 		{
 			if (child != null && _children.Remove(child))
 			{
@@ -581,7 +530,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		public UIElement ReplaceChild(int index, UIElement child)
+		internal UIElement ReplaceChild(int index, UIElement child)
 		{
 			var previous = _children[index];
 			RemoveChild(previous);
@@ -622,22 +571,32 @@ namespace Windows.UI.Xaml
 			_registeredRoutedEvents |= routedEvent.Flag;
 
 			string domEventName;
-			if (routedEvent.Flag == RoutedEventFlag.KeyDown)
+			bool onCapturePhase = false;
+			switch (routedEvent.Flag)
 			{
-				domEventName = "keydown";
-			}
-			else
-			{
-				domEventName = routedEvent.Flag == RoutedEventFlag.KeyUp
-					? "keyup"
-					: throw new ArgumentOutOfRangeException(nameof(routedEvent), "Not a keyboard event");
+				case RoutedEventFlag.PreviewKeyDown:
+					domEventName = "keydown";
+					onCapturePhase = true;
+					break;
+				case RoutedEventFlag.KeyDown:
+					domEventName = "keydown";
+					break;
+				case RoutedEventFlag.PreviewKeyUp:
+					domEventName = "keyup";
+					onCapturePhase = true;
+					break;
+				case RoutedEventFlag.KeyUp:
+					domEventName = "keyup";
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(routedEvent), "Not a keyboard event");
 			}
 
 			RegisterEventHandler(
 				domEventName,
 				handler: new RoutedEventHandlerWithHandled((snd, args) => RaiseEvent(routedEvent, args)),
 				invoker: GenericEventHandlers.RaiseRoutedEventHandlerWithHandled,
-				onCapturePhase: false,
+				onCapturePhase,
 				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: PayloadToKeyArgs
 			);
@@ -671,12 +630,38 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
+			var key = VirtualKey.None;
+			var modifiers = VirtualKeyModifiers.None;
+			if (payload.Length > 4)
+			{
+				// Modifiers are in this order Ctrl, Alt, Windows, Shift
+				if (payload[0] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Control;
+				}
+				if (payload[1] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Menu;
+				}
+				if (payload[2] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Windows;
+				}
+				if (payload[3] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Shift;
+				}
+
+				// Remaining characters are the pressed key
+				key = VirtualKeyHelper.FromKey(payload[4..]);
+
+			}
+			return new KeyRoutedEventArgs(src, key, modifiers) { CanBubbleNatively = true };
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
 		{
-			if (int.TryParse(payload, out int xamlHandle))
+			if (int.TryParse(payload, CultureInfo.InvariantCulture, out int xamlHandle))
 			{
 				if (GetElementFromHandle(xamlHandle) is UIElement element)
 				{

@@ -2,11 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ContentRoot.h
 
-namespace Uno.UI.Xaml.Core
+namespace Uno.UI.Xaml.Core;
+
+internal enum ContentRootType
 {
-	internal enum ContentRootType
-	{
-		CoreWindow,
-		XamlIsland
-	}
+	CoreWindow,
+	XamlIslandRoot
 }

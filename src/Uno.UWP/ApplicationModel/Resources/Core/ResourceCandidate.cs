@@ -5,55 +5,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.ApplicationModel.Resources.Core
+namespace Windows.ApplicationModel.Resources.Core;
+
+public partial class ResourceCandidate
 {
-	public partial class ResourceCandidate
+	private static readonly char[] _dotArray = new[] { '.' };
+
+	internal ResourceCandidate(IReadOnlyList<ResourceQualifier> qualifiers, string valueAsString, string logicalPath)
 	{
-		internal ResourceCandidate(IReadOnlyList<ResourceQualifier> qualifiers, string valueAsString, string logicalPath)
-		{
-			Qualifiers = qualifiers;
-			ValueAsString = valueAsString;
-			LogicalPath = logicalPath;
-		}
+		Qualifiers = qualifiers;
+		ValueAsString = valueAsString;
+		LogicalPath = logicalPath;
+	}
 
-		public IReadOnlyList<ResourceQualifier> Qualifiers { get; }
+	public IReadOnlyList<ResourceQualifier> Qualifiers { get; }
 
-		public string ValueAsString { get; }
+	public string ValueAsString { get; }
 
-		internal string LogicalPath { get; }
+	internal string LogicalPath { get; }
 
-		public string GetQualifierValue(string qualifierName)
-		{
-			return Qualifiers.FirstOrDefault(qualifier => qualifier.QualifierName == qualifierName)?.QualifierValue;
-		}
-		
-		internal static ResourceCandidate Parse(string fullPath, string relativePath)
-		{
-			var logicalPath = GetLogicalPath(relativePath);
+	public string GetQualifierValue(string qualifierName)
+	{
+		return Qualifiers.FirstOrDefault(qualifier => qualifier.QualifierName == qualifierName)?.QualifierValue;
+	}
 
-			var qualifiers = relativePath
-				.Split(Path.DirectorySeparatorChar, '_', '.')
-				.Select(ResourceQualifier.Parse)
-				.Where(p => p != null)
-				.ToArray();
+	internal static ResourceCandidate Parse(string fullPath, string relativePath)
+	{
+		var logicalPath = GetLogicalPath(relativePath);
 
-			return new ResourceCandidate(qualifiers, fullPath, logicalPath);
-		}
+		var qualifiers = relativePath
+			.Split(Path.DirectorySeparatorChar, '_', '.')
+			.Select(ResourceQualifier.Parse)
+			.Reverse()
+			.Where(p => p != null)
+			.ToArray();
 
-		private static string GetLogicalPath(string path)
-		{
-			var directoryNameWithoutQualifiers = Path
-				.GetDirectoryName(path)
-				.Split(new[] { Path.DirectorySeparatorChar })
-				.Where(x => ResourceQualifier.Parse(x) == null)
-				.ToArray();
+		return new ResourceCandidate(qualifiers, fullPath, logicalPath);
+	}
 
-			var fileNameWithoutQualifiers = Path
-				.GetFileName(path)
-				.Split(new[] { '.' })
-				.Where(x => ResourceQualifier.Parse(x) == null);
+	private static string GetLogicalPath(string path)
+	{
+		var directoryNameWithoutQualifiers = Path
+			.GetDirectoryName(path)
+			.Split(new[] { Path.DirectorySeparatorChar })
+			.Where(x => ResourceQualifier.Parse(x) == null)
+			.ToArray();
 
-			return Path.Combine(Path.Combine(directoryNameWithoutQualifiers), string.Join(".", fileNameWithoutQualifiers));
-		}
+		var fileNameWithoutQualifiers = Path
+			.GetFileName(path)
+			.Split(_dotArray)
+			.Where(x => ResourceQualifier.Parse(x) == null);
+
+		return Path.Combine(Path.Combine(directoryNameWithoutQualifiers), string.Join(".", fileNameWithoutQualifiers));
 	}
 }

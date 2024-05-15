@@ -6,12 +6,9 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter
 	{
@@ -61,16 +58,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				NativePanel.ContentOffset = contentOffset;
 			}
-		}
-
-		public void SetContentOffset(CGPoint contentOffset, bool animated)
-		{
-			NativePanel?.SetContentOffset(contentOffset, animated);
-		}
-
-		public void SetZoomScale(nfloat scale, bool animated)
-		{
-			NativePanel?.SetZoomScale(scale, animated);
 		}
 
 		bool INativeScrollContentPresenter.Set(

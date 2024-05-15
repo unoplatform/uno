@@ -11,6 +11,7 @@ namespace Windows.System
 	public static partial class Launcher
 	{
 		private const string MicrosoftSettingsUri = "ms-settings";
+		private static readonly string[] _systemPreferencesArray = new string[] { "/System/Applications/System Preferences.app" };
 
 		private static readonly Lazy<Dictionary<string, string>> _settingsHandlers = new Lazy<Dictionary<string, string>>(() =>
 		{
@@ -63,16 +64,16 @@ namespace Windows.System
 			}
 		}
 
-		private static Task<bool> HandleSpecialUriAsync(Uri uri)
+		private static bool HandleSpecialUri(Uri uri)
 		{
 			switch (uri.Scheme.ToLowerInvariant())
 			{
-				case MicrosoftSettingsUri: return HandleSettingsUriAsync(uri);
+				case MicrosoftSettingsUri: return HandleSettingsUri(uri);
 				default: throw new InvalidOperationException("This special URI is not supported on iOS");
 			}
 		}
 
-		private static Task<bool> HandleSettingsUriAsync(Uri uri)
+		private static bool HandleSettingsUri(Uri uri)
 		{
 			var settingsString = uri.AbsolutePath.ToLowerInvariant();
 			//get exact match first
@@ -89,15 +90,15 @@ namespace Windows.System
 			NSUrl url;
 			if (string.IsNullOrEmpty(launchAction))
 			{
-				url = NSUrl.CreateFileUrl(new string[] { "/System/Applications/System Preferences.app" });
+				url = NSUrl.CreateFileUrl(_systemPreferencesArray);
 			}
 			else
 			{
 				url = NSUrl.CreateFileUrl(new string[] { $@"/System/Library/PreferencePanes/{launchAction}.prefPane" });
 			}
 			NSWorkspace.SharedWorkspace.OpenUrl(url);
-			return Task.FromResult(true);
-		}	
+			return true;
+		}
 	}
 }
 #endif

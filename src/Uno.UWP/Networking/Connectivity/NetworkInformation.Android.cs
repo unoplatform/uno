@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -38,11 +37,13 @@ namespace Windows.Networking.Connectivity
 			else
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				_connectivityChangeBroadcastReceiver = new ConnectivityChangeBroadcastReceiver();
 
 				Application.Context.RegisterReceiver(
 					_connectivityChangeBroadcastReceiver,
 					new IntentFilter(AndroidConnectivityManager.ConnectivityAction));
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 			}
 
@@ -109,7 +110,7 @@ namespace Windows.Networking.Connectivity
 							string androCanonical = interfaceAddress.Address.CanonicalHostName;
 							// seems like == androCanonical
 							string androHostName = interfaceAddress.Address.HostName;
-							bool androIPv46 = (interfaceAddress.Address.GetAddress().Count() == 4);
+							bool androIPv46 = (interfaceAddress.Address.GetAddress().Length == 4);
 
 							// we have all required data from Android, and we can use them
 							HostName newHost = new HostName();
@@ -177,4 +178,3 @@ namespace Windows.Networking.Connectivity
 		}
 	}
 }
-#endif

@@ -4,8 +4,9 @@ using System.Text;
 using Uno.Disposables;
 using Uno.UI.Common;
 using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// A <see cref="ConditionalDisposable"/> class that executes the dispose action on the Dispatcher.
@@ -18,7 +19,7 @@ namespace Windows.UI.Xaml
 	/// capturing lambda to be passed as a callback, and not have to unintended memory leaks
 	/// on either the sender or receiver of the callback.
 	/// </remarks>
-    internal abstract class DispatcherConditionalDisposable : ConditionalDisposable
+	internal abstract class DispatcherConditionalDisposable : ConditionalDisposable
 	{
 		public DispatcherConditionalDisposable(object target, WeakReference conditionSource) : base(target, conditionSource)
 		{
@@ -26,18 +27,19 @@ namespace Windows.UI.Xaml
 
 		protected override void TargetFinalized()
 		{
-			if (CoreDispatcher.Main.HasThreadAccess)
+			if (CoreDispatcher.Main.HasThreadAccess
+#if __WASM__
+				|| !NativeDispatcher.IsThreadingSupported
+#endif
+				)
 			{
 				DispatchedTargetFinalized();
 			}
 			else
 			{
-				Uno.UI.Dispatching.CoreDispatcher.Main.RunIdleAsync(
-					delegate
-					{
-						DispatchedTargetFinalized();
-					}
-				);
+				Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(
+					DispatchedTargetFinalized,
+					Uno.UI.Dispatching.NativeDispatcherPriority.Idle);
 			}
 		}
 

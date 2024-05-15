@@ -2,45 +2,51 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# echo commands
+set -x
+
 export BUILDCONFIGURATION=Release
-export NUNIT_VERSION=3.12.0
 
 if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
 then
-	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+	export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Snap"
+
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-Snap
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
 then
 	export TEST_FILTERS="\
-		namespace != 'SamplesApp.UITests.Snap' \
-		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
-		and class != 'SamplesApp.UITests.Runtime.RuntimeTests' \
-		and cat =~ 'testBucket:$UNO_UITEST_BUCKET_ID'
+		Namespace !~ SamplesApp.UITests.Snap\
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests\
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests\
+		& Category~testBucket:$UNO_UITEST_BUCKET_ID
 	";
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
 then
-	export TEST_FILTERS="\
-		class == 'SamplesApp.UITests.Runtime.RuntimeTests' \
-	";
+	export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.RuntimeTests"
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 fi
 
+export UITEST_IS_LOCAL=${UITEST_IS_LOCAL=false}
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
+export UNO_UITEST_APP_ID="uno.platform.unosampleapp"
 export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
 export IsUiAutomationMappingEnabled=true
-
+export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
+export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$TARGETPLATFORM_NAME.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$TARGETPLATFORM_NAME.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-android-automated-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME.xml
 
-if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ];
+mkdir -p $UNO_UITEST_SCREENSHOT_PATH
+
+if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ];
 then
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
@@ -53,12 +59,18 @@ cd $BUILD_SOURCESDIRECTORY/build
 # This block allows to override the Android SDK
 # disabled until hosted agents move to macOS 11
 #
-# export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
-#wget https://dl.google.com/android/repository/commandlinetools-mac-7302050_latest.zip
-#unzip commandlinetools-mac-7302050_latest.zip
-#rm commandlinetools-mac-7302050_latest.zip
-#mkdir -p $ANDROID_HOME/cmdline-tools/latest
-#cp -R cmdline-tools/ $ANDROID_HOME/sdk/cmdline-tools/latest/
+export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
+export ANDROID_SDK_ROOT=$BUILD_SOURCESDIRECTORY/build/android-sdk
+export CMDLINETOOLS=commandlinetools-mac-8512546_latest.zip
+
+if [[ ! -d $ANDROID_HOME ]];
+then
+	mkdir -p $ANDROID_HOME
+	wget https://dl.google.com/android/repository/$CMDLINETOOLS
+	unzip $CMDLINETOOLS -d $ANDROID_HOME/cmdline-tools
+	rm $CMDLINETOOLS
+	mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+fi
 
 # uncomment the following lines to override the installed Xamarin.Android SDK
 # wget -nv https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android-d16-2/49/Azure/processDownloadRequest/xamarin-android/xamarin-android/bin/BuildRelease/Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg
@@ -69,14 +81,21 @@ AVD_CONFIG_FILE=~/.android/avd/$AVD_NAME.avd/config.ini
 
 if [[ ! -f $AVD_CONFIG_FILE ]];
 then
+	# Create a variable that sets x86_64 or aarch64 for the emulator based on the current architecture.
+	# Used for local tested.
+	EMU_ARCH=x86_64
+	if [[ $(uname -m) == "arm64" ]]; then
+		EMU_ARCH=arm64-v8a
+	fi
+
 	# Install AVD files
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;28.0.3' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'system-images;android-28;google_apis_playstore;x86' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;33.0.0' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-28;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
 
 	if [[ -f $ANDROID_HOME/platform-tools/platform-tools/adb ]]
 	then
@@ -85,9 +104,17 @@ then
 	fi
 
 	# Create emulator
-	echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" --sdcard 128M --force
+	echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$AVD_NAME" --abi $EMU_ARCH -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" --sdcard 128M --force
 
-	echo "hw.cpu.ncore=2" >> $AVD_CONFIG_FILE
+	# based on https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#hardware
+	# >> Agents that run macOS images are provisioned on Mac pros with a 3 core CPU, 14 GB of RAM, and 14 GB of SSD disk space.
+	echo "hw.cpu.ncore=3" >> $AVD_CONFIG_FILE
+
+	# Bump the heap size as the tests are stressing the application
+	echo "vm.heapSize=256M" >> $AVD_CONFIG_FILE
+
+	# Force the orentation to landscape as most tests expect it to be this way
+	echo "hw.initialOrientation=landscape" >> $AVD_CONFIG_FILE
 
 	echo $ANDROID_HOME/emulator/emulator -list-avds
 
@@ -99,8 +126,26 @@ then
 	# kickstart ADB
 	$ANDROID_HOME/platform-tools/adb devices
 
+	# Show the emulator when running locally
+	if [ "$UITEST_IS_LOCAL" == "true" ];
+	then
+		export EMU_NO_WINDOW=""
+	else
+		export EMU_NO_WINDOW="-no-window"
+	fi
+
 	# Start emulator in background
-	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
+	nohup $ANDROID_HOME/emulator/emulator \
+		-avd "$AVD_NAME" \
+		-skin 1280x800 \
+		-memory 4096 \
+		$EMU_NO_WINDOW \
+		-gpu swiftshader_indirect \
+		-no-snapshot \
+		-noaudio \
+		-no-boot-anim \
+		-prop ro.debuggable=1 \
+		> $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-emulator-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt 2>&1 &
 
 	# Wait for the emulator to finish booting
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
@@ -125,49 +170,92 @@ cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
-
-mkdir -p $UNO_UITEST_SCREENSHOT_PATH
-
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
-## Build the NUnit configuration file
-echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
-echo "--framework=mono" >> $UNO_TESTS_RESPONSE_FILE
-echo "--inprocess" >> $UNO_TESTS_RESPONSE_FILE
-echo "--agents=1" >> $UNO_TESTS_RESPONSE_FILE
-echo "--workers=1" >> $UNO_TESTS_RESPONSE_FILE
-echo "--result=$UNO_ORIGINAL_TEST_RESULTS" >> $UNO_TESTS_RESPONSE_FILE
-echo "--timeout=$UITEST_TEST_TIMEOUT" >> $UNO_TESTS_RESPONSE_FILE
+if [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
+then
+	UITEST_RUNTIME_AUTOSTART_RESULT_FILE="/sdcard/TestResult-`date +"%Y%m%d%H%M%S"`.xml"
 
-if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-    echo "--testlist \"$UNO_TESTS_FAILED_LIST\"" >> $UNO_TESTS_RESPONSE_FILE
+	# Install the app
+	$ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
+
+	# Create the environment file for the app to read
+	echo "UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP" > samplesapp-environment.txt
+	echo "UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT" >> samplesapp-environment.txt
+	echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" >> samplesapp-environment.txt
+
+	# Push the environment file to the device
+	$ANDROID_HOME/platform-tools/adb push samplesapp-environment.txt /sdcard/samplesapp-environment.txt
+
+	# grant the storage permission to the app to write the test results and read the environment file
+	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
+	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_EXTERNAL_STORAGE
+
+	# start the android app using environment variables using adb
+	$ANDROID_HOME/platform-tools/adb shell monkey -p $UNO_UITEST_APP_ID -c android.intent.category.LAUNCHER 1
+
+	# Set the timeout in seconds 
+	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
+	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+	INTERVAL=15
+	END_TIME=$((SECONDS+TIMEOUT))
+
+	echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
+
+	while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
+		# echo "Waiting $INTERVAL seconds for test results to be written to $UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
+		sleep $INTERVAL
+
+		# exit loop if the APP_PID is not running anymore
+		if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
+			echo "The app is not running anymore"
+			break
+		fi
+	done
+
+	$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
+
 else
-    echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
+
+	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+		UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
+	else
+		UNO_TESTS_FILTER=$TEST_FILTERS
+	fi
+
+	echo "Test Parameters:"
+	echo "  Timeout=$UITEST_TEST_TIMEOUT"
+	echo "  Test filters: $UNO_TESTS_FILTER"
+
+	cd $UNO_TESTS_LOCAL_TESTS_FILE
+
+	## Run NUnit tests
+	dotnet test \
+		-c Release \
+		-l:"console;verbosity=normal" \
+		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+		--filter "$UNO_TESTS_FILTER" \
+		--blame-hang-timeout 120m \
+		-v m || true
+
 fi
 
-echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
-
-## Show the tests list
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-    @$UNO_TESTS_RESPONSE_FILE --explore || true
-
-## Run NUnit tests
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-    @$UNO_TESTS_RESPONSE_FILE || true
-
 ## Dump the emulator's system log
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
-	return 1
 fi
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+
+# Fail the build on empty results
+dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+
+## Export the failed tests list for reuse in a pipeline retry
 dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 popd

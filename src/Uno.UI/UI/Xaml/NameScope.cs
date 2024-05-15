@@ -5,9 +5,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public class NameScope : INameScope
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 
 				var newParent = parent.GetParent() as DependencyObject;
 
-				if(newParent is null && !(parent is UIElement))
+				if (newParent is null && !(parent is UIElement))
 				{
 					// This case is about handling ElementName Bindings on non-UIElement
 					// dependency objects (e.g. XAML Behaviors triggers). Those objects
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml
 					// (DataTemplate inside a DataTemplate) we need to find a known ancestor
 					// through the NameScope owner.
 
-					if(scope?.Owner is DependencyObject owner)
+					if (scope?.Owner is DependencyObject owner)
 					{
 						return FindInNamescopes(owner, name);
 					}

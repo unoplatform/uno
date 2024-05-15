@@ -1,6 +1,5 @@
-#nullable enable
+﻿#nullable enable
 
-#if __IOS__
 using System;
 using System.Collections.Generic;
 using CoreAnimation;
@@ -9,7 +8,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
@@ -25,30 +24,32 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal override void StartAnimationCore(string propertyName, CompositionAnimation animation)
+		internal override bool StartAnimationCore(string propertyName, CompositionAnimation animation)
 		{
 			base.StartAnimationCore(propertyName, animation);
 
 			switch (animation)
 			{
-				case KeyFrameAnimation kfa:
+				case ScalarKeyFrameAnimation kfa:
 					AnimateKeyFrameAnimation(propertyName, kfa);
-					break;
+					return true;
 			}
+
+			return false;
 		}
 
-		private void AnimateKeyFrameAnimation(string propertyName, KeyFrameAnimation kfa)
+		private void AnimateKeyFrameAnimation(string propertyName, ScalarKeyFrameAnimation kfa)
 		{
-			switch(propertyName)
+			switch (propertyName)
 			{
 				case nameof(RotationAngleInDegrees):
 					var animations = new List<UnoCoreAnimation>();
-					for (int i = 0; i < kfa.Keys.Length-1; i++)
+					for (int i = 0; i < kfa.Keys.Length - 1; i++)
 					{
-						animations.Add(CreateCoreAnimation(NativeLayer, kfa.Keys[i], kfa.Keys[i+1], "transform.rotation", value => new NSNumber(ToRadians(value))));
+						animations.Add(CreateCoreAnimation(NativeLayer, kfa.Keys[i], kfa.Keys[i + 1], "transform.rotation", value => new NSNumber(ToRadians(value))));
 					}
 
-					foreach(var a in animations)
+					foreach (var a in animations)
 					{
 						a.Start();
 					}
@@ -57,22 +58,22 @@ namespace Windows.UI.Composition
 		}
 
 		private UnoCoreAnimation CreateCoreAnimation(
-			CALayer layer, 
-			KeyFrameAnimation.KeyFrame from,
-			KeyFrameAnimation.KeyFrame to, 
-			string property, 
+			CALayer layer,
+			ScalarKeyFrameAnimation.KeyFrame from,
+			ScalarKeyFrameAnimation.KeyFrame to,
+			string property,
 			Func<float, NSValue> nsValueConversion
 		)
 		{
 			var timingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.Linear);
 
 			return new UnoCoreAnimation(
-				layer, 
+				layer,
 				property,
 				from.Value,
 				to.Value,
 				from.NormalizedProgressKey,
-				from.NormalizedProgressKey - to.NormalizedProgressKey, 
+				from.NormalizedProgressKey - to.NormalizedProgressKey,
 				timingFunction,
 				nsValueConversion,
 				FinalizeAnimation,
@@ -83,4 +84,3 @@ namespace Windows.UI.Composition
 		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo info) { }
 	}
 }
-#endif

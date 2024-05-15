@@ -1,37 +1,31 @@
 ﻿using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Polygon
 	{
-		private readonly SvgElement _polygon = new SvgElement("polygon");
-
-		partial void InitializePartial()
-		{
-			SvgChildren.Add(_polygon);
-
-			InitCommonShapeProperties();
-		}
-
-		protected override SvgElement GetMainSvgElement()
-		{
-			return _polygon;
-		}
-
-		partial void OnPointsChanged()
+		protected override Size MeasureOverride(Size availableSize)
 		{
 			var points = Points;
 			if (points == null)
 			{
-				_polygon.RemoveAttribute("points");
+				_mainSvgElement.RemoveAttribute("points");
 			}
 			else
 			{
-				_polygon.SetAttribute("points", points.ToCssString());
+				_mainSvgElement.SetAttribute("points", points.ToCssString());
 			}
+
+			return MeasureAbsoluteShape(availableSize, this);
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			UpdateRender();
+			return ArrangeAbsoluteShape(finalSize, this);
 		}
 	}
 }

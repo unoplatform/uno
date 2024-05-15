@@ -5,10 +5,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using SamplesApp.Windows_UI_Xaml_Controls.ListView;
 using Uno.Extensions.Specialized;
 
@@ -20,7 +20,7 @@ namespace Uno.UI.Samples.UITests.Image
 		public ComboBoxItem[] HorizontalAlignments { get; } = GetValues<HorizontalAlignment>().ToArray();
 		public ComboBoxItem[] VerticalAlignments { get; } = GetValues<VerticalAlignment>().ToArray();
 
-		public static DependencyProperty ModeProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ModeProperty { get; } = DependencyProperty.Register(
 			"Mode", typeof(string), typeof(Image_Stretch_Modes_Picker), new PropertyMetadata(default(string), ModeChanged));
 
 		public string Mode
@@ -29,7 +29,7 @@ namespace Uno.UI.Samples.UITests.Image
 			set { SetValue(ModeProperty, value); }
 		}
 
-		public static DependencyProperty ItemsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ItemsProperty { get; } = DependencyProperty.Register(
 			"Items",
 			typeof(List<StretchModeItem>),
 			typeof(Image_Stretch_Modes_Picker),
@@ -103,7 +103,7 @@ namespace Uno.UI.Samples.UITests.Image
 
 			foreach (var mode in _allModes)
 			{
-				if(selectedStretch != null && selectedStretch != mode.Stretch)
+				if (selectedStretch != null && selectedStretch != mode.Stretch)
 				{
 					continue;
 				}
@@ -130,7 +130,7 @@ namespace Uno.UI.Samples.UITests.Image
 		{
 			var index = 0;
 
-			foreach (var stretch in StretchModes.Select(m=>m.Tag).OfType<Stretch>())
+			foreach (var stretch in StretchModes.Select(m => m.Tag).OfType<Stretch>())
 			{
 				foreach (var horizontalAlignment in HorizontalAlignments.Select(m => m.Tag).OfType<HorizontalAlignment>())
 				{
@@ -142,13 +142,13 @@ namespace Uno.UI.Samples.UITests.Image
 			}
 		}
 
-		private static IEnumerable<ComboBoxItem> GetValues<T>() where T : Enum
+		private static IEnumerable<ComboBoxItem> GetValues<T>() where T : struct, Enum
 		{
-			yield return new ComboBoxItem {Content = $"All {typeof(T).Name} Modes", Tag = null};
+			yield return new ComboBoxItem { Content = $"All {typeof(T).Name} Modes", Tag = null };
 
-			foreach (T t in Enum.GetValues(typeof(T)))
+			foreach (T t in Enum.GetValues<T>())
 			{
-				yield return new ComboBoxItem {Content = t.ToString(), Tag = t};
+				yield return new ComboBoxItem { Content = t.ToString(), Tag = t };
 			}
 		}
 

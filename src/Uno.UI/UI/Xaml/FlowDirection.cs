@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-	public enum FlowDirection 
+	public enum FlowDirection
 	{
 		LeftToRight,
 

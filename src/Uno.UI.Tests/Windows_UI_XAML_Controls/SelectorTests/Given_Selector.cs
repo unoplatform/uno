@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 {
@@ -150,7 +150,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			var SUT = new Selector();
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -182,7 +183,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			var SUT = new Selector();
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -217,7 +219,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 		[TestMethod]
 		public void When_SelectionChanged_And_SelectorItem_IsSelected_Changed()
 		{
-			var SUT = new Selector() {
+			var SUT = new Selector()
+			{
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 			};
@@ -225,7 +228,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -280,5 +284,6 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.IsFalse(source[1].IsSelected);
 			Assert.IsFalse(source[2].IsSelected);
 		}
+
 	}
 }

@@ -6,27 +6,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Linq;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using Uno.Buffers;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-#elif XAMARIN_IOS
+using Uno.UI.Controls;
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -41,38 +39,40 @@ using Font = AppKit.NSFont;
 using DependencyObject = System.Object;
 using AppKit;
 #elif METRO
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using System.Text;
+using System.Runtime.CompilerServices;
 #endif
 
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Provides an instance pool for FrameworkTemplates, when <see cref="FrameworkTemplate.LoadContentCached"/> is called.
 	/// </summary>
 	/// <remarks>
 	/// The pooling is particularly important on iOS and Android where the memory management is less than ideal because of the
-	/// pinning of native instances, and the inability of the GC to determine that two instances refer to each other via a 
+	/// pinning of native instances, and the inability of the GC to determine that two instances refer to each other via a
 	/// native storage (Subviews for instance), and reclaim their memory properly.
-	/// 
+	///
 	/// The pooling is also important because creating a control is particularly expensive on Android and iOS.
-	/// 
+	///
 	/// This Xaml implementation relies on unloaded controls to release their templated parent by setting it to null, which always resets
 	/// content template of a ContentControl, as well as the template of a Control. This forces recycled controls to re-create their
 	/// templates even if it was previously the same. This can make lists particularly jittery.
 	/// This class allows for templates to be reused, based on the fact that controls created via a FrameworkTemplate that lose their
 	/// DependencyObject.Parent value are considered orhpans. Those instances can then later on be reused.
-	/// 
+	///
 	///	This behavior is not following windows' implementation, as this requires a control to be stateless. This is pretty easy to do when controls
 	///	are strictly databound, but not if the control is using stateful code-behind. This is why this behavior can be disabled via <see cref="IsPoolingEnabled"/>
 	///	if the pooling interferes with the normal behavior of a control.
 	/// </remarks>
-	public class FrameworkTemplatePool
+	public partial class FrameworkTemplatePool
 	{
 		internal static FrameworkTemplatePool Instance { get; } = new FrameworkTemplatePool();
 		public static class TraceProvider
@@ -89,6 +89,7 @@ namespace Windows.UI.Xaml
 
 		private readonly Dictionary<FrameworkTemplate, List<TemplateEntry>> _pooledInstances = new Dictionary<FrameworkTemplate, List<TemplateEntry>>(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
 		private IFrameworkTemplatePoolPlatformProvider _platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
+		private static bool _isPoolingEnabled;
 
 #if USE_HARD_REFERENCES
 		/// <summary>
@@ -102,7 +103,7 @@ namespace Windows.UI.Xaml
 		/// The root of the behavior is linked to WeakReferences to objects pending for finalizers are considered
 		/// null, something that does not happen on Xamarin.iOS/Android.
 		/// </remarks>
-		private readonly HashSet<UIElement> _activeInstances = new HashSet<View>();
+		private readonly HashSet<View> _activeInstances = new();
 #endif
 
 		/// <summary>
@@ -113,7 +114,34 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Determines if the pooling is enabled. If false, all requested instances are new.
 		/// </summary>
-		public static bool IsPoolingEnabled { get; set; } = true;
+		/// <remarks>
+		/// This feature is currently disabled and has no effect. See: https://github.com/unoplatform/uno/issues/13969
+		/// </remarks>
+		public static bool IsPoolingEnabled
+		{
+			// Pooling is forced disabled, see InternalIsPoolingEnabled.
+			get => false;
+			set
+			{
+				if (typeof(FrameworkTemplatePool).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(FrameworkTemplatePool).Log().LogWarn($"Template pooling is disabled in this build of Uno Platform. See https://github.com/unoplatform/uno/issues/13969");
+				}
+			}
+		}
+
+		// Pooling is disabled until https://github.com/unoplatform/uno/issues/13969 is fixed, but we
+		// allow some runtime tests to use it.
+		internal static bool InternalIsPoolingEnabled
+		{
+			get => _isPoolingEnabled;
+			set => _isPoolingEnabled = value;
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether the pool is currently recycling a template.
+		/// </summary>
+		internal static bool IsRecycling { get; private set; }
 
 		/// <summary>
 		/// Defines the ratio of memory usage at which the pools starts to stop pooling elligible views.
@@ -138,12 +166,12 @@ namespace Windows.UI.Xaml
 
 		private FrameworkTemplatePool()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			_platformProvider.Schedule(Scavenger);
 #endif
 		}
 
-		private async void Scavenger(IdleDispatchedHandlerArgs e)
+		private async void Scavenger()
 		{
 			Scavenge(false);
 
@@ -159,7 +187,19 @@ namespace Windows.UI.Xaml
 
 			foreach (var list in _pooledInstances.Values)
 			{
-				removedInstancesCount += list.RemoveAll(t => isManual || now - t.CreationTime > TimeToLive);
+				removedInstancesCount += list.RemoveAll(t =>
+				{
+					var remove = isManual || now - t.CreationTime > TimeToLive;
+
+#if USE_HARD_REFERENCES
+					if (remove)
+					{
+						_activeInstances.Remove(t.Control);
+					}
+#endif
+
+					return remove;
+				});
 			}
 
 			if (removedInstancesCount > 0)
@@ -169,6 +209,11 @@ namespace Windows.UI.Xaml
 					for (int i = 0; i < removedInstancesCount; i++)
 					{
 						_trace.WriteEvent(TraceProvider.ReleaseTemplate);
+					}
+
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Released {removedInstancesCount} template instances");
 					}
 				}
 
@@ -186,6 +231,19 @@ namespace Windows.UI.Xaml
 		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
 		public static void Scavenge() => Instance.Scavenge(true);
 
+
+		internal int GetPooledTemplatesCount()
+		{
+			int count = 0;
+
+			foreach (var list in _pooledInstances.Values)
+			{
+				count += list.Count;
+			}
+
+			return count;
+		}
+
 		internal View? DequeueTemplate(FrameworkTemplate template)
 		{
 			var list = GetTemplatePool(template);
@@ -201,12 +259,12 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
+					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{_isPoolingEnabled}");
 				}
 
-				instance = template.LoadContent();
+				instance = ((IFrameworkTemplateInternal)template).LoadContent();
 
-				if (IsPoolingEnabled && instance is IFrameworkElement)
+				if (_isPoolingEnabled && instance is IFrameworkElement)
 				{
 					DependencyObjectExtensions.RegisterParentChangedCallback((DependencyObject)instance, template, OnParentChanged);
 				}
@@ -229,7 +287,7 @@ namespace Windows.UI.Xaml
 			}
 
 #if USE_HARD_REFERENCES
-			if (IsPoolingEnabled && instance is {})
+			if (_isPoolingEnabled && instance is { })
 			{
 				_activeInstances.Add(instance);
 			}
@@ -249,6 +307,70 @@ namespace Windows.UI.Xaml
 			return instances;
 		}
 
+		private Stack<object> _instancesToRecycle = new();
+
+		private void RaiseOnParentCollected(object instance)
+		{
+			var shouldEnqueue = false;
+
+			lock (_instancesToRecycle)
+			{
+				_instancesToRecycle.Push(instance);
+
+				shouldEnqueue = _instancesToRecycle.Count == 1;
+			}
+
+			if (shouldEnqueue)
+			{
+				NativeDispatcher.Main.Enqueue(Recycle);
+			}
+		}
+
+		private const int RecycleBatchSize = 32;
+
+		private void Recycle()
+		{
+			var array = ArrayPool<object>.Shared.Rent(RecycleBatchSize);
+
+			var count = 0;
+
+			var shouldRequeue = false;
+
+			lock (_instancesToRecycle)
+			{
+				while (_instancesToRecycle.TryPop(out var instance) && count < RecycleBatchSize)
+				{
+					array[count++] = instance;
+				}
+
+				shouldRequeue = _instancesToRecycle.Count > 0;
+			}
+
+			try
+			{
+				for (var x = 0; x < count; x++)
+				{
+#if __ANDROID__
+					if (((View)array[x]).Parent is BindableView bindableView)
+					{
+						bindableView.RemoveView((View)array[x]);
+					}
+#endif
+
+					array[x].SetParent(null);
+				}
+			}
+			finally
+			{
+				ArrayPool<object>.Shared.Return(array, clearArray: true);
+			}
+
+			if (shouldRequeue)
+			{
+				NativeDispatcher.Main.Enqueue(Recycle);
+			}
+		}
+
 		/// <summary>
 		/// Manually return an unused template root to the pool.
 		/// </summary>
@@ -263,7 +385,7 @@ namespace Windows.UI.Xaml
 
 		private void TryReuseTemplateRoot(object instance, object? key, object? newParent, bool shouldCleanUpTemplateRoot)
 		{
-			if (!IsPoolingEnabled)
+			if (!_isPoolingEnabled)
 			{
 				return;
 			}
@@ -295,7 +417,7 @@ namespace Windows.UI.Xaml
 				}
 				if (shouldCleanUpTemplateRoot)
 				{
-					PropagateOnTemplateReused(instance); 
+					PropagateOnTemplateReused(instance);
 				}
 
 				var item = instance as View;
@@ -320,6 +442,8 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				InstanceTracker.Add(newParent, instance);
+
 				var index = list.FindIndex(e => ReferenceEquals(e.Control, instance));
 
 				if (index != -1)
@@ -346,7 +470,9 @@ namespace Windows.UI.Xaml
 			// If DataContext is not null, it means it has been explicitly set (not inherited). Resetting the view could push an invalid value through 2-way binding in this case.
 			if (instance is IFrameworkTemplatePoolAware templateAwareElement && (instance as IFrameworkElement)!.DataContext == null)
 			{
+				IsRecycling = true;
 				templateAwareElement.OnTemplateRecycled();
+				IsRecycling = false;
 			}
 
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations

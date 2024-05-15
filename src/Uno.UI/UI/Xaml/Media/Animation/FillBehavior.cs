@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
-    public enum FillBehavior
-    {
+	public enum FillBehavior
+	{
 		HoldEnd = 0,
 		Stop = 1
-    }
+	}
 }

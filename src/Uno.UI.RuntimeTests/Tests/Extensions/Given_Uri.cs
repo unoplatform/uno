@@ -9,7 +9,7 @@ namespace Uno.UI.RuntimeTests.Tests.Extensions
 	public class Given_Uri
 	{
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		[TestMethod]
 		public void When_Do_TrimEndUriSlash()
 		{
@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Extensions
 
 			uri = uri.TrimEndUriSlash();
 
-			var actualLen = uri.ToString().Length;	
+			var actualLen = uri.ToString().Length;
 
 			Assert.AreNotEqual(initialLen, actualLen);
 		}

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,29 +11,17 @@ using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using System.ComponentModel;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 using Uno.Foundation.Logging;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using CoreAnimation;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using MonoTouch.CoreAnimation;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using nint = System.Int32;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -73,7 +61,7 @@ namespace Uno.UI.Controls.Legacy
 		/// <summary>
 		/// This property enables animations when using the ScrollIntoView Method.
 		/// </summary>
-		public bool AnimateScrollIntoView { get; set; } = false;
+		public bool AnimateScrollIntoView { get; set; } = Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView;
 		#endregion
 
 		#region Members
@@ -82,13 +70,13 @@ namespace Uno.UI.Controls.Legacy
 		private DataTemplateSelector _itemTemplateSelector;
 		private ICommand _itemClickCommand;
 		private DataTemplate _itemTemplate;
-		private bool _needsReloadData = false;
+		private bool _needsReloadData;
 		/// <summary>
 		/// ReloadData() has been called, but the layout hasn't been updated. During this window, in-place modifications to the
 		/// collection (InsertItems, etc) shouldn't be called because they will result in a NSInternalInconsistencyException
 		/// </summary>
-		private bool _needsLayoutAfterReloadData = false;
-		private bool _lastCollectionChangedActionWasReset = false;
+		private bool _needsLayoutAfterReloadData;
+		private bool _lastCollectionChangedActionWasReset;
 		#endregion
 
 		#region Properties
@@ -178,7 +166,7 @@ namespace Uno.UI.Controls.Legacy
 		public GroupStyle GroupStyle { get; set; }
 
 		#region Dependency Properties
-		public static DependencyProperty ItemsSourceProperty { get ; } =
+		public static DependencyProperty ItemsSourceProperty { get; } =
 			DependencyProperty.Register(
 				"ItemsSource",
 				typeof(object),
@@ -195,7 +183,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static DependencyProperty SelectedItemProperty { get ; } =
+		public static DependencyProperty SelectedItemProperty { get; } =
 			DependencyProperty.Register(
 				"SelectedItem",
 				typeof(object),
@@ -213,7 +201,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedItems.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SelectedItemsProperty { get ; } =
+		public static DependencyProperty SelectedItemsProperty { get; } =
 			DependencyProperty.Register(
 				"SelectedItems",
 				typeof(IList<object>),
@@ -230,7 +218,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(SelectedItemsProperty, value); }
 		}
 
-		public static DependencyProperty SelectionModeProperty { get ; } =
+		public static DependencyProperty SelectionModeProperty { get; } =
 			DependencyProperty.Register(
 				"SelectionMode",
 				typeof(ListViewSelectionMode),
@@ -247,7 +235,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(SelectionModeProperty, value); }
 		}
 
-		public static DependencyProperty HeaderProperty { get ; } =
+		public static DependencyProperty HeaderProperty { get; } =
 			DependencyProperty.Register(
 				"Header",
 				typeof(object),
@@ -264,7 +252,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(HeaderProperty, value); }
 		}
 
-		public static DependencyProperty FooterProperty { get ; } =
+		public static DependencyProperty FooterProperty { get; } =
 			DependencyProperty.Register(
 				"Footer",
 				typeof(object),
@@ -292,7 +280,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(UnselectOnClickProperty, value); }
 		}
 
-		public static DependencyProperty UnselectOnClickProperty { get ; } =
+		public static DependencyProperty UnselectOnClickProperty { get; } =
 			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(ListViewBase), new FrameworkPropertyMetadata(default(bool)));
 		private ListViewBaseLayoutTemplate _layoutTemplate;
 		#endregion
@@ -367,7 +355,7 @@ namespace Uno.UI.Controls.Legacy
 
 			SetItemSourceAndReload();
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSuperviewNeedsLayout());
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSuperviewNeedsLayout());
 		}
 
 		private void SetItemSourceAndReload()

@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Uno.UI.Runtime.Skia.Helpers.Windows;
+namespace Uno.UI.Runtime.Skia.Gtk.Helpers.Windows;
 
 // note this class considers dpix = dpiy
 internal static class DpiUtilities
@@ -44,7 +44,10 @@ internal static class DpiUtilities
 		if (ptr == IntPtr.Zero)
 			return GetDpiForDesktop();
 
+#pragma warning disable CA1420 // Remove with .NET 7 RC 2 https://github.com/dotnet/roslyn-analyzers/issues/6094
 		int hr = Marshal.GetDelegateForFunctionPointer<GetDpiForMonitorFn>(ptr)(monitor, type, out int x, out int y);
+#pragma warning restore CA1420 // Remove with .NET 7 RC 2 https://github.com/dotnet/roslyn-analyzers/issues/6094
+
 		if (hr < 0)
 			return GetDpiForDesktop();
 

@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Linq;
 using Android.Graphics;
 using Android.Hardware.Camera2;
@@ -18,9 +17,9 @@ namespace Windows.Devices.Lights
 		private CameraManager _cameraManager;
 #pragma warning disable CS0618
 		// using deprecated API for older Android versions
-		private Android.Hardware.Camera _camera = null;
+		private Android.Hardware.Camera _camera;
 #pragma warning restore CS0618
-		private SurfaceTexture _surfaceTexture = null;
+		private SurfaceTexture _surfaceTexture;
 
 		private float _brightness;
 		private bool _isEnabled;
@@ -54,7 +53,7 @@ namespace Windows.Devices.Lights
 			get => _brightness;
 			set
 			{
-				_brightness = value > 0 ? 1 : 0;
+				_brightness = value;
 				UpdateLampState();
 			}
 		}
@@ -85,11 +84,13 @@ namespace Windows.Devices.Lights
 			else
 			{
 #pragma warning disable CS0618
-				// using deprecated API for older Android versions				
+#pragma warning disable CA1422 // Validate platform compatibility
+				// using deprecated API for older Android versions
 				var surfaceTexture = new SurfaceTexture(0);
 				var camera = Android.Hardware.Camera.Open();
 				camera.SetPreviewTexture(surfaceTexture);
 				return new Lamp(camera, surfaceTexture);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618
 			}
 			return null;
@@ -111,14 +112,39 @@ namespace Windows.Devices.Lights
 			var isOn = _isEnabled && _brightness > 0;
 			lock (_lock)
 			{
+#if ANDROID33_0_OR_GREATER
+				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.Tiramisu)
+				{
+					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
+					if (!isOn)
+					{
+						return;
+					}
+					var characteristics = _cameraManager.GetCameraCharacteristics(_defaultCameraId);
+					const int minLevel = 1;
+					var maxLevel = (Java.Lang.Integer)characteristics.Get(CameraCharacteristics.FlashInfoStrengthMaximumLevel);
+					if (maxLevel is null)
+					{
+						// https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics#FLASH_INFO_STRENGTH_MAXIMUM_LEVEL
+						// The value for this key will be null for devices with no flash unit.
+						return;
+					}
+
+					// Android ranges from 1 (minLevel) to maxLevel
+					// _brightness ranges from 0 to 1
+					var nativeLevel = minLevel + _brightness * ((int)maxLevel - minLevel);
+					_cameraManager.TurnOnTorchWithStrengthLevel(_defaultCameraId, (int)Math.Round(nativeLevel));
+				}
+				else
+#endif
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.M)
 				{
 					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
 				}
 				else
 				{
-#pragma warning disable CS0618
 					// using deprecated API for older Android versions
+#pragma warning disable CS0618 // Type or member is obsolete
 					var param = _camera.GetParameters();
 					param.FlashMode = _isEnabled ?
 						Android.Hardware.Camera.Parameters.FlashModeTorch :
@@ -133,7 +159,7 @@ namespace Windows.Devices.Lights
 					{
 						_camera.StopPreview();
 					}
-#pragma warning restore CS0618
+#pragma warning restore CS0618 // Type or member is obsolete
 				}
 			}
 		}
@@ -144,7 +170,9 @@ namespace Windows.Devices.Lights
 			lock (_lock)
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				_camera?.Release();
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 				_camera?.Dispose();
 				_camera = null;
@@ -156,4 +184,3 @@ namespace Windows.Devices.Lights
 		}
 	}
 }
-#endif

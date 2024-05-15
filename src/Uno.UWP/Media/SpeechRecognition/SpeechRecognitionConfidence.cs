@@ -1,6 +1,6 @@
 namespace Windows.Media.SpeechRecognition
 {
-	public enum SpeechRecognitionConfidence 
+	public enum SpeechRecognitionConfidence
 	{
 		High,
 		Medium,

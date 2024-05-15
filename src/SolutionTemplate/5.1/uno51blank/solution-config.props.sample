@@ -1,0 +1,30 @@
+<Project>
+    <!--
+        This file is used to control the platforms compiled by Visual Studio, and allow for a faster
+        build when testing for a single platform. This will also result in better intellisense, as
+        the compiler will only load the assemblies for the platform that is being built. You do not
+        need to use this when compiling from Visual Studio Code, the command line or other IDEs.
+
+        Instructions:
+        1) Copy this file and remove the ".sample" name
+        2) Uncomment the single property below for the target you want to build
+        3) Make sure to do a Rebuild, so that nuget restores the proper packages for the new target
+
+        Notes:
+        - You may optionally close the solution before making changes and reload the solution afterwards. This will avoid Visual Studio
+          asking you to reload any projects, it will also ensure that the changes are picked up by Visual Studio, and trigger a restore of
+          the packages.
+        - You may want to unload the platform heads that you are not going to build for. This will ensure that Visual Studio does not
+          try to build them, and will speed up the build process.
+    -->
+
+    <PropertyGroup>
+        <!-- Uncomment each line for each platform that you want to build: -->
+
+        <!-- <OverrideTargetFramework Condition="''!='hint: Windows App Sdk (WinUI)'">$(DotNetVersion)-windows10.0.19041.0</OverrideTargetFramework> -->
+        <!-- <OverrideTargetFramework Condition="''!='hint: WASM, Skia'">$(DotNetVersion)</OverrideTargetFramework> -->
+        <!-- <OverrideTargetFramework Condition="''!='hint: iOS'">$(DotNetVersion)-ios</OverrideTargetFramework> -->
+        <!-- <OverrideTargetFramework Condition="''!='hint: Android'">$(DotNetVersion)-android</OverrideTargetFramework> -->
+        <!-- <OverrideTargetFramework Condition="''!='hint: MacCatalyst'">$(DotNetVersion)-maccatalyst</OverrideTargetFramework> -->
+    </PropertyGroup>
+</Project>

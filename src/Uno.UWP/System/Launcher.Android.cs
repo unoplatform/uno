@@ -1,19 +1,19 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using AndroidX.Core.Content.PM;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-
 
 namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+		public static Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			try
 			{
@@ -26,10 +26,10 @@ namespace Windows.System
 
 				if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
 				{
-					return await HandleSpecialUriAsync(uri);
+					return Task.FromResult(HandleSpecialUri(uri));
 				}
 
-				return await LaunchUriActivityAsync(uri);
+				return Task.FromResult(LaunchUriActivityAsync(uri));
 			}
 			catch (Exception exception)
 			{
@@ -38,7 +38,7 @@ namespace Windows.System
 					typeof(Launcher).Log().Error($"Failed to {nameof(LaunchUriAsync)}.", exception);
 				}
 
-				return false;
+				return Task.FromResult(false);
 			}
 		}
 
@@ -60,10 +60,29 @@ namespace Windows.System
 				var intent = new Intent(Intent.ActionView, androidUri);
 
 				var manager = Uno.UI.ContextHelper.Current.PackageManager;
-				var supportedResolvedInfos = manager.QueryIntentActivities(
+				var activity = intent.ResolveActivity(manager);
+
+				IList<ResolveInfo> supportedResolvedInfos = null;
+				// Use new overload of QueryIntentActivities on API 33 and newer
+				// to avoid obsolete warning
+				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Tiramisu)
+				{
+					supportedResolvedInfos = manager.QueryIntentActivities(
+						intent,
+						PackageManager.ResolveInfoFlags.Of((long)PackageInfoFlags.MatchDefaultOnly));
+				}
+				else
+				{
+#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
+					supportedResolvedInfos = manager.QueryIntentActivities(
 						intent,
 						PackageInfoFlags.MatchDefaultOnly);
-				canOpenUri = supportedResolvedInfos.Any();
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore CS0618 // Type or member is obsolete
+				}
+
+				canOpenUri = supportedResolvedInfos?.Any() == true;
 			}
 			else
 			{
@@ -76,16 +95,15 @@ namespace Windows.System
 			return Task.FromResult(supportStatus);
 		}
 
-		private static Task<bool> LaunchUriActivityAsync(Uri uri)
+		private static bool LaunchUriActivityAsync(Uri uri)
 		{
 			var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
 			var intent = new Intent(Intent.ActionView, androidUri);
 
 			StartActivity(intent);
-			return Task.FromResult(true);
+			return true;
 		}
 
 		private static void StartActivity(Intent intent) => ((Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
 	}
 }
-#endif

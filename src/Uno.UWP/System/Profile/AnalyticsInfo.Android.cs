@@ -43,14 +43,14 @@ public static partial class AnalyticsInfo
 			return UnoDeviceForm.Desktop;
 		}
 
-		if (SafeFormCheck(IsPhone))
-		{
-			return UnoDeviceForm.Mobile;
-		}
-
 		if (SafeFormCheck(IsTablet))
 		{
 			return UnoDeviceForm.Tablet;
+		}
+
+		if (SafeFormCheck(IsPhone))
+		{
+			return UnoDeviceForm.Mobile;
 		}
 
 		// If nothing is returned, we cannot determine the family.
@@ -101,12 +101,28 @@ public static partial class AnalyticsInfo
 
 	private static bool IsTablet()
 	{
-		var displayMetrics = Application.Context.Resources.DisplayMetrics;
-		var screenWidth = displayMetrics.WidthPixels / displayMetrics.Xdpi;
-		var screenHeight = displayMetrics.HeightPixels / displayMetrics.Ydpi;
-		var size = Math.Sqrt(Math.Pow(screenWidth, 2) +
-			                    Math.Pow(screenHeight, 2));
-		//assume tablets have at least 6-inch diagonal
-		return size >= 6;
+		// https://github.com/dotnet/maui/blob/1bbe79de61f241217f88207b1272179ff66e6733/src/Essentials/src/DeviceInfo/DeviceInfo.android.cs#L59-L75
+		const int tabletCrossover = 600;
+
+		if (Application.Context.Resources is not { } resources)
+		{
+			return false;
+		}
+
+		var configuration = resources.Configuration;
+		if (configuration != null)
+		{
+			return configuration.SmallestScreenWidthDp >= tabletCrossover;
+		}
+
+		// start clutching at straws
+		using var metrics = resources.DisplayMetrics;
+		if (metrics != null)
+		{
+			var minSize = Math.Min(metrics.WidthPixels, metrics.HeightPixels);
+			return minSize * metrics.Density >= tabletCrossover;
+		}
+
+		return false;
 	}
 }

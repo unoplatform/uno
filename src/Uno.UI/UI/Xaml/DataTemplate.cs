@@ -2,24 +2,21 @@
 
 using System;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using ViewGroup = MonoTouch.UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class DataTemplate : FrameworkTemplate
 	{
@@ -42,13 +39,16 @@ namespace Windows.UI.Xaml
 
 		public static implicit operator DataTemplate?(Func<View?>? obj)
 		{
-            if(obj == null)
-            {
-                return null;
-            }
+			if (obj == null)
+			{
+				return null;
+			}
 
-            return new DataTemplate(obj);
+			return new DataTemplate(obj);
 		}
+
+		public View? LoadContent()
+			=> ((IFrameworkTemplateInternal)this).LoadContent();
 	}
 }
 

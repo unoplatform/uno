@@ -1,4 +1,3 @@
-#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using CoreLocation;
 using Foundation;
 using Uno.Extensions;
 using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 namespace Windows.Devices.Geolocation
 {
@@ -17,14 +17,21 @@ namespace Windows.Devices.Geolocation
 
 		partial void PlatformInitialize()
 		{
-			_locationManager = new CLLocationManager
+			if (NativeDispatcher.Main.HasThreadAccess)
 			{
-				DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
-			};
+				_locationManager = new CLLocationManager
+				{
+					DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
+				};
 
-			_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
+				_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
 
-			_locationManager.StartUpdatingLocation();
+				_locationManager.StartUpdatingLocation();
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(PlatformInitialize, NativeDispatcherPriority.Normal);
+			}
 		}
 
 		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
@@ -40,11 +47,7 @@ namespace Windows.Devices.Geolocation
 
 		internal CLLocationManager LocationManager => _locationManager;
 
-#if __IOS__
-		public Task<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync(); //will be removed with #2240
-#else
 		public IAsyncOperation<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync().AsAsyncOperation();
-#endif
 
 		public Task<Geoposition> GetGeopositionInternalAsync()
 
@@ -92,22 +95,14 @@ namespace Windows.Devices.Geolocation
 				)
 			);
 
-#if __IOS__
-		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) //will be removed with #2240
-			=> await GetGeopositionAsync();
-#else
 		public IAsyncOperation<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 			=> GetGeopositionAsync();
-#endif
 
 
 		private static List<CLLocationManager> _requestManagers = new List<CLLocationManager>();
 
-#if __IOS__
-		public static Task<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync(); //will be removed with #2240
-#else
 		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync().AsAsyncOperation();
-#endif
+
 		private static async Task<GeolocationAccessStatus> RequestAccessInternalAsync()
 
 		{
@@ -180,10 +175,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		public static async Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime) { return new List<Geoposition>(); }
-
-		public static async Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime, TimeSpan duration) { return new List<Geoposition>(); }
-
 		private static GeolocationAccessStatus TranslateStatus(CLAuthorizationStatus status)
 		{
 			switch (status)
@@ -204,7 +195,7 @@ namespace Windows.Devices.Geolocation
 					return GeolocationAccessStatus.Denied;
 			}
 		}
-		
+
 #if __IOS__
 		private class CLLocationManagerDelegate : NSObject, ICLLocationManagerDelegate
 		{
@@ -219,4 +210,3 @@ namespace Windows.Devices.Geolocation
 #endif
 	}
 }
-#endif

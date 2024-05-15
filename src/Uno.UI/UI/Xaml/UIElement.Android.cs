@@ -5,25 +5,26 @@ using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using AndroidX.Core.View;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views;
-using Matrix = Windows.UI.Xaml.Media.Matrix;
+using Matrix = Microsoft.UI.Xaml.Media.Matrix;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{
 		/// <summary>
-		/// Keeps the count of native children (non-UIElements), for clipping purpoess.
+		/// Keeps the count of native children (non-UIElements), for clipping purposes.
 		/// </summary>
 		private int _nativeChildrenCount;
 		private bool _nativeClipChildren;
@@ -58,18 +59,12 @@ namespace Windows.UI.Xaml
 			ComputeAreChildrenNativeViewsOnly();
 		}
 
-		/// <summary>
-		/// Invoked when a child view has been added.
-		/// </summary>
-		/// <param name="view">The view being removed</param>
+		/// <inheritdoc />
 		protected override void OnChildViewAdded(View view)
 		{
 			if (view is UIElement uiElement)
 			{
-				uiElement.ResetLayoutFlags();
-				SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
+				OnChildManagedViewAddedOrRemoved(uiElement);
 			}
 			else
 			{
@@ -77,6 +72,29 @@ namespace Windows.UI.Xaml
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
+		}
+
+		/// <inheritdoc />
+		protected override void OnChildViewRemoved(View view)
+		{
+			if (view is UIElement uiElement)
+			{
+				OnChildManagedViewAddedOrRemoved(uiElement);
+			}
+			else
+			{
+				_nativeChildrenCount--;
+			}
+
+			ComputeAreChildrenNativeViewsOnly();
+		}
+
+		private void OnChildManagedViewAddedOrRemoved(UIElement uiElement)
+		{
+			uiElement.ResetLayoutFlags();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
 		}
 
 		public UIElement()
@@ -169,7 +187,18 @@ namespace Windows.UI.Xaml
 
 			ViewCompat.SetClipBounds(this, physicalRect);
 
-			SetClipChildren(NeedsClipToSlot);
+			if (FeatureConfiguration.UIElement.UseLegacyClipping)
+			{
+				// Old way: apply the clipping for each child on their assigned slot
+				SetClipChildren(NeedsClipToSlot);
+			}
+			else
+			{
+				// "New" correct way: apply the clipping on the parent,
+				// and let the children overflow inside the parent's bounds
+				// This is closer to the XAML way of doing clipping.
+				SetClipToPadding(NeedsClipToSlot);
+			}
 		}
 
 		/// <summary>
@@ -180,9 +209,7 @@ namespace Windows.UI.Xaml
 		{
 			if (cornerRadius != CornerRadius.None)
 			{
-				var rect = new RectF(canvas.ClipBounds);
-				var clipPath = cornerRadius.GetOutlinePath(rect);
-				canvas.ClipPath(clipPath);
+				UIElementNative.AdjustCornerRadius(canvas, cornerRadius.GetRadii());
 			}
 		}
 
@@ -239,10 +266,10 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'ViewGroup' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
-			switch (parent) 
+			switch (parent)
 			{
 				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
 
@@ -263,17 +290,17 @@ namespace Windows.UI.Xaml
 					// cf. https://github.com/unoplatform/uno/issues/2754
 
 					// 1. Undo what was done by the shared code
-					offsetX -= LayoutSlotWithMarginsAndAlignments.X;
-					offsetY -= LayoutSlotWithMarginsAndAlignments.Y;
+					matrix.M31 -= (float)LayoutSlotWithMarginsAndAlignments.X;
+					matrix.M32 -= (float)LayoutSlotWithMarginsAndAlignments.Y;
 
 					// 2.Natively compute the offset of this current item relative to this ScrollViewer and adjust offsets
 					var sv = lv.FindFirstParent<ScrollViewer>();
 					var offset = GetPosition(this, relativeTo: sv);
-					offsetX += offset.X;
-					offsetY += offset.Y;
+					matrix.M31 += (float)offset.X;
+					matrix.M32 += (float)offset.Y;
 
 					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
-					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref offsetX, ref offsetY);
+					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref matrix);
 
 				case View view: // Android.View and Android.IViewParent
 					var windowToFirstParent = new int[2];
@@ -293,8 +320,8 @@ namespace Windows.UI.Xaml
 								eltParent.GetLocationInWindow(windowToEltParent);
 
 								parentElement = eltParent;
-								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0] - windowToEltParent[0]);
-								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1] - windowToEltParent[1]);
+								matrix.M31 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0] - windowToEltParent[0]);
+								matrix.M32 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1] - windowToEltParent[1]);
 								return true;
 
 							case null:
@@ -302,8 +329,8 @@ namespace Windows.UI.Xaml
 								// so we adjust offsets using the X/Y position of the original 'view' in the window.
 
 								parentElement = null;
-								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0]);
-								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1]);
+								matrix.M31 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0]);
+								matrix.M32 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1]);
 								return false;
 						}
 					} while (true);
@@ -318,7 +345,7 @@ namespace Windows.UI.Xaml
 
 			if (bindableView != null)
 			{
-				// This cast is different for performance reasons. See the 
+				// This cast is different for performance reasons. See the
 				// UnoViewGroup java class for more details.
 				bindableView.Visibility = newNativeVisibility;
 				bindableView.RequestLayout();
@@ -397,7 +424,7 @@ namespace Windows.UI.Xaml
 			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);
 
 		/// <summary>
-		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
+		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type,
 		/// its native representation is returned. Otherwise, the <see cref="object.ToString"/> implementation is used/returned instead.
 		/// </summary>
 		/// <param name="dependencyPropertyName">The name of the target dependency property</param>
@@ -417,6 +444,9 @@ namespace Windows.UI.Xaml
 				return jObject;
 			}
 
+#pragma warning disable CS0618 // deprecated members
+#pragma warning disable CA1422 // Validate platform compatibility
+
 			var type = dpValue.GetType();
 			if (type == typeof(bool))
 			{
@@ -424,9 +454,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (type == typeof(sbyte))
 			{
-#pragma warning disable CS0618 // Byte.Byte(sbyte) is obsolete in API 31
 				return new Java.Lang.Byte((sbyte)dpValue);
-#pragma warning restore CS0618 // Byte.Byte(sbyte) is obsolete in API 31
 			}
 			else if (type == typeof(char))
 			{
@@ -434,9 +462,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (type == typeof(short))
 			{
-#pragma warning disable CS0618 // Short.Short(short) is obsolete in API 31
 				return new Java.Lang.Short((short)dpValue);
-#pragma warning restore CS0618 // Short.Short(short) is obsolete in API 31
 			}
 			else if (type == typeof(int))
 			{
@@ -461,6 +487,8 @@ namespace Windows.UI.Xaml
 
 			// If all else fails, just return the string representation of the DP's value
 			return new Java.Lang.String(dpValue.ToString());
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore CS0618 // deprecated members
 		}
 
 #if DEBUG
@@ -471,9 +499,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the first view matching <see cref="ViewOfInterestSelector"/> anywhere in the visual tree. Handy when debugging Uno.
 		/// </summary>
-		/// <remarks>This property is intended as a shortcut to inspect the properties of a specific view at runtime. Suggested usage: 
-		/// 1. Be debugging Uno. 2. Flag the view you want in xaml with 'Name = "TargetView", or set <see cref="ViewOfInterestSelector"/> 
-		/// to select the view you want. 3. Put a breakpoint in the <see cref="UIElement.NativeHitCheck"/> method. 4. Tap anywhere in the app. 
+		/// <remarks>This property is intended as a shortcut to inspect the properties of a specific view at runtime. Suggested usage:
+		/// 1. Be debugging Uno. 2. Flag the view you want in xaml with 'Name = "TargetView", or set <see cref="ViewOfInterestSelector"/>
+		/// to select the view you want. 3. Put a breakpoint in the <see cref="UIElement.NativeHitCheck"/> method. 4. Tap anywhere in the app.
 		/// 5. Inspect this property, or one of the typed versions below.</remarks>
 		public View ViewOfInterest
 		{

@@ -220,7 +220,7 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 				Interlocked.Add(ref _storageSize, temporaryFileSize);
 
 				// Creates a new file name
-				string now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+				string now = DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
 				string newFileName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}.trn", now, tempFileName);
 
 				// Renames the file
@@ -245,6 +245,7 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 			{
 				string message =
 					string.Format(
+						CultureInfo.InvariantCulture,
 						"Failed to save transmission to file. UnauthorizedAccessException. File path: {0}, FileName: {1}",
 						StorageFolder, file);
 				PersistenceChannelDebugLog.WriteLine(message);
@@ -267,6 +268,7 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 			{
 				string message =
 					string.Format(
+						CultureInfo.InvariantCulture,
 						"Failed to load transmission from file. File path: {0}, FileName: {1}, Exception: {2}",
 						"storageFolderName", file, e);
 				PersistenceChannelDebugLog.WriteLine(message);
@@ -319,7 +321,7 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 		{
 			string[] storageFiles = Directory.GetFiles(StorageFolder, "*.*");
 
-			_storageCountFiles = storageFiles.Count();
+			_storageCountFiles = storageFiles.Length;
 
 			long storageSizeInBytes = 0;
 			foreach (string file in storageFiles)

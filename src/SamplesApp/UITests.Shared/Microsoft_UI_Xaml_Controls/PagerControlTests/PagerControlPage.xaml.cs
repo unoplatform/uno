@@ -1,11 +1,11 @@
 ﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System.Collections.Specialized;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 {

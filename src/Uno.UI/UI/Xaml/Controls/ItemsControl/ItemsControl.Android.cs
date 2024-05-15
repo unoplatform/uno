@@ -6,9 +6,9 @@ using Uno.Extensions;
 using Uno.UI;
 using System.Linq;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsControl
 	{
@@ -20,11 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void RequestLayoutPartial()
 		{
 			RequestLayout();
-		}
-
-		partial void RemoveViewPartial(View current)
-		{
-			(current.Parent as ViewGroup).RemoveViewAndDispose(current);
 		}
 
 		/// <summary>

@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
 using System.Linq;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Diagnostics;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
 	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
+		private bool _wasBeginScheduled;
+		private bool _wasRequestedToStop;
 		private int _replayCount = 1;
-		private double? _startingValue = null;
+		private double? _startingValue;
 		private double _finalValue;
 
 		private List<IValueAnimator> _animators;
@@ -29,12 +31,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			get => (bool)this.GetValue(EnableDependentAnimationProperty);
 			set => this.SetValue(EnableDependentAnimationProperty, value);
 		}
-		public static DependencyProperty EnableDependentAnimationProperty { get ; } =
+		public static DependencyProperty EnableDependentAnimationProperty { get; } =
 			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new FrameworkPropertyMetadata(false));
 
 		public DoubleAnimationUsingKeyFrames()
 		{
-			KeyFrames = new DoubleKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false); 
+			KeyFrames = new DoubleKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false);
 		}
 
 		public DoubleKeyFrameCollection KeyFrames { get; }
@@ -55,40 +57,51 @@ namespace Windows.UI.Xaml.Media.Animation
 			return base.GetCalculatedDuration();
 		}
 
-		bool _wasBeginScheduled = false;
 		void ITimeline.Begin()
 		{
+			// It's important to keep this line here, and not
+			// inside the if (!_wasBeginScheduled)
+			// If Begin(), Stop(), Begin() are called successively in sequence,
+			// we want _wasRequestedToStop to be false.
+			_wasRequestedToStop = false;
+
 			if (!_wasBeginScheduled)
 			{
 				// We dispatch the begin so that we can use bindings on DoubleKeyFrame.Value from RelativeParent.
 				// This works because the template bindings are executed just after the constructor.
 				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
+
 				_wasBeginScheduled = true;
-#if !NET461
+
+#if !IS_UNIT_TESTS
 #if __ANDROID__
-				Dispatcher.RunAnimation(() =>
+				_ = Dispatcher.RunAnimation(() =>
 #else
-				Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+#endif
 #endif
 				{
-#endif
-					if (KeyFrames.Count < 1)
-					{
-						return; // nothing to do
-					}
 					_wasBeginScheduled = false;
+
+					if (KeyFrames.Count < 1 || // nothing to do
+						_wasRequestedToStop // was requested to stop, between Begin() and dispatched here
+					)
+					{
+						return;
+					}
 
 					_activeDuration.Restart();
 					_replayCount = 1;
 
 					//Start the animation
 					Play();
-#if !NET461
-				});
+				}
+#if !IS_UNIT_TESTS
+				);
 #endif
 			}
 		}
-		
+
 		void ITimeline.Pause()
 		{
 			if (State == TimelineState.Paused)
@@ -137,7 +150,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (State == TimelineState.Active || State == TimelineState.Paused)
 			{
-				CoreDispatcher.Main.RunAsync(
+				_ = CoreDispatcher.Main.RunAsync(
 					CoreDispatcherPriority.Normal,
 					() =>
 					{
@@ -174,7 +187,9 @@ namespace Windows.UI.Xaml.Media.Animation
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
 			}
+
 			State = TimelineState.Stopped;
+			_wasRequestedToStop = true;
 		}
 
 		void ITimeline.Stop()
@@ -182,7 +197,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
+
 			State = TimelineState.Stopped;
+			_wasRequestedToStop = true;
 		}
 
 		/// <summary>
@@ -211,7 +228,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Initializes the animators and 
+		/// Initializes the animators and
 		/// </summary>
 		private void InitializeAnimators()
 		{
@@ -232,7 +249,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					_finalValue = toValue;
 				}
-				var animator = AnimatorFactory.Create(this, fromValue, toValue);				
+				var animator = AnimatorFactory.Create(this, fromValue, toValue);
 				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
 				animator.SetDuration((long)duration.TotalMilliseconds);
 				animator.SetEasingFunction(keyFrame.GetEasingFunction());
@@ -251,10 +268,10 @@ namespace Windows.UI.Xaml.Media.Animation
 						OnFrame((IValueAnimator)sender);
 					};
 				}
-				
+
 				var i = index;
 
-#if __ANDROID_19__
+#if __ANDROID__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 				{
 					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
@@ -311,7 +328,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Replays the Animation if required, Sets the final state, Raises the Completed event. 
+		/// Replays the Animation if required, Sets the final state, Raises the Completed event.
 		/// </summary>
 		private void OnEnd()
 		{
@@ -336,12 +353,12 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			OnCompleted();
 		}
-		
+
 
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
@@ -358,7 +375,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if NET461
+#if IS_UNIT_TESTS
 		private bool ReportEachFrame() => true;
 #endif
 	}

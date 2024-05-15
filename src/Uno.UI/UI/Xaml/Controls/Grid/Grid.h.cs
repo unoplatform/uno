@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
@@ -8,13 +8,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Uno.Collections;
 using Uno.Helpers;
-using CRowDefinitionCollection = Windows.UI.Xaml.Controls.RowDefinitionCollection;
-using CColumnDefinitionCollection = Windows.UI.Xaml.Controls.ColumnDefinitionCollection;
+using CRowDefinitionCollection = Microsoft.UI.Xaml.Controls.RowDefinitionCollection;
+using CColumnDefinitionCollection = Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection;
 
 using Xuint = System.Int32;
 using XFLOAT = System.Double;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Grid : Panel
 	{
@@ -285,17 +285,17 @@ namespace Windows.UI.Xaml.Controls
 
 		// public
 
-		CRowDefinitionCollection m_pRowDefinitions = null; // User specified rows.
-		CColumnDefinitionCollection m_pColumnDefinitions = null; // User specified columns.
+		CRowDefinitionCollection m_pRowDefinitions; // User specified rows.
+		CColumnDefinitionCollection m_pColumnDefinitions; // User specified columns.
 
 		// private
-		CRowDefinitionCollection m_pRows = null; // Effective row collection.
-		CColumnDefinitionCollection m_pColumns = null; // Effective column collection.
+		CRowDefinitionCollection m_pRows; // Effective row collection.
+		CColumnDefinitionCollection m_pColumns; // Effective column collection.
 
 		// This is a temporary storage that is released after arrange.
 		// Note the ScopeExit in ArrangeOveride
-		DefinitionBase[] m_ppTempDefinitions = null; // Temporary definitions storage.
-		Xuint m_cTempDefinitions = 0; // Size in elements of temporary definitions storage
+		DefinitionBase[] m_ppTempDefinitions; // Temporary definitions storage.
+		Xuint m_cTempDefinitions; // Size in elements of temporary definitions storage
 
 
 		GridFlags

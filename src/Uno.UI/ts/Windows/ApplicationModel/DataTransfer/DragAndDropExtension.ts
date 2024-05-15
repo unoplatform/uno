@@ -15,7 +15,11 @@
 
 		public static enable(pArgs: number): void {
 			if (!DragDropExtension._dispatchDropEventMethod) {
-				DragDropExtension._dispatchDropEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					DragDropExtension._dispatchDropEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.OnNativeDropEvent;
+				} else {
+					DragDropExtension._dispatchDropEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+				}
 			}
 
 			if (DragDropExtension._current) {
@@ -59,6 +63,17 @@
 			document.removeEventListener("dragover", this._dropHandler);
 			document.removeEventListener("dragleave", this._dropHandler); // Seems to be raised also on drop?
 			document.removeEventListener("drop", this._dropHandler);
+		}
+
+		public static registerNoOp() {
+			let notifyDisabled = (evt: DragEvent) => {
+				evt.dataTransfer.dropEffect = "none";
+				console.debug("Drag and Drop from external sources is disabled. See the `UnoDragDropExternalSupport` msbuild property to enable it (https://aka.platform.uno/linker-configuration)");
+
+				document.removeEventListener("dragenter", notifyDisabled);
+			};
+
+			document.addEventListener("dragenter", notifyDisabled);
 		}
 
 		private dispatchDropEvent(evt: DragEvent): any {
@@ -149,20 +164,23 @@
 			});
 		}
 
-		public static async retrieveFiles(itemIds: number|number[]): Promise<string> {
+		public static async retrieveFiles(itemIds: number[]): Promise<string> {
 
 			const data = DragDropExtension._current?._pendingDropData;
 			if (data == null) {
 				throw new Error("No pending drag and drop data.");
 			}
 
-			const fileHandles: Array<FileSystemHandle|File> = [];
-			if (Array.isArray(itemIds)) {
-				for (const id of itemIds) {
-					fileHandles.push(await DragDropExtension.getAsFile(data.items[id]));
-				}
-			} else {
-				fileHandles.push(await DragDropExtension.getAsFile(data.items[itemIds]));
+			// Make sure to get **ALL** items content **before** going async
+			// (data.items and each instance of item will be cleared)
+			const asyncFileHandles: Array<Promise<FileSystemHandle | File>> = [];
+			for (const id of itemIds) {
+				asyncFileHandles.push(DragDropExtension.getAsFile(data.items[id]));
+			}
+
+			const fileHandles: Array<FileSystemHandle | File> = [];
+			for (const asyncFile of asyncFileHandles) {
+				fileHandles.push(await asyncFile);
 			}
 
 			const infos = Uno.Storage.NativeStorageItem.getInfos(...fileHandles);

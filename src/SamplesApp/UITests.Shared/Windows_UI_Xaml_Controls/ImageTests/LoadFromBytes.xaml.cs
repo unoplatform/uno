@@ -1,18 +1,17 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Controls;
-using Uno.Extensions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
 	[SampleControlInfo("Image", "LoadFromBytes")]
-	public sealed partial class LoadFromBytes: UserControl
+	public sealed partial class LoadFromBytes : UserControl
 	{
 		public LoadFromBytes()
 		{
@@ -42,13 +41,7 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 			}
 
 			var image = new BitmapImage();
-
-#if WINDOWS_UWP
 			await image.SetSourceAsync(stream.AsRandomAccessStream()).AsTask();
-#else
-			var copy = stream.ToMemoryStream();
-			await image.SetSourceAsync(copy);
-#endif
 			return image;
 		}
 	}

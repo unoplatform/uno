@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ConsideringNavigation
+---
+
 # Considering navigation
 
 Silverlight 3 was the first version that included a navigation framework. Given the fact that Silverlight was predominately deployed via web browsers, it is unsurprising that the implementation mirrored the browser style of navigating to pages via URIs, passing query parameters and maintaining a navigation history for back/forward traversal.
@@ -49,9 +53,9 @@ In UWP, there are 3 overloads of the **Navigate** method:
 
 > [!IMPORTANT]
 > Although the parameter is of type **Object**, it must have a basic type (string, char, numeric, or GUID) to support parameter serialization. More complex content can be passed if it serialized to/from JSON strings first.
-
+>
 > [!TIP]
-> Full details for the **Navigate** method and overloads can be viewed here - [https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate)
+> Full details for the **Navigate** method and overloads can be viewed here - [https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate)
 
 ## The navigation links
 
@@ -78,14 +82,14 @@ In Silverlight, there is no "out-of-the-box" control that renders a list of navi
 ```
 
 > [!NOTE]
-> In the **HyperLink** button code above, the **Content** properties are bound to a string resource that can provide support for different languages. UWP also has a similar capability - you can learn more here [https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest](https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest).
+> In the **HyperLink** button code above, the **Content** properties are bound to a string resource that can provide support for different languages. UWP also has a similar capability - you can learn more here [https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest).
 
 As mentioned above, in UWP, the **NavigationView** and **Frame** controls are often used together to achieve a similar effect.
 
 > [!TIP]
 > You aren't constrained to just using a **NavigationView** and adopting the same layout/approach as the original Silverlight app. Uwp and Uno supports other types of app layouts and navigation styles with supporting controls. You can review these guidelines here:
 >
-> * [Navigation design basics for Windows apps](https://docs.microsoft.com/windows/uwp/design/basics/navigation-basics)
+> * [Navigation design basics for Windows apps](https://learn.microsoft.com/windows/uwp/design/basics/navigation-basics)
 
 ## Creating the navigation structure in Uno
 
@@ -98,9 +102,9 @@ In the next series of tasks, the Uno solution will be updated to implement the b
 
 1. Return to the Uno solution in **Visual Studio**.
 
-1. Locate the **Shared** project in the solution.
+1. Locate the **[MyApp]** project in the solution.
 
-1. Add a folder to the **Shared** project and name it **Views**.
+1. Add a folder to the **[MyApp]** project and name it **Views**.
 
 1. Right-click the **Views** folder and select **Add > New Item...**
 
@@ -119,10 +123,10 @@ In the next series of tasks, the Uno solution will be updated to implement the b
 
     ```xml
     <Page
-        x:Class="TimeEntryUno.Shared.Views.HomePage"
+        x:Class="TimeEntryUno.Views.HomePage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="using:TimeEntryUno.Shared.Views"
+        xmlns:local="using:TimeEntryUno.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"

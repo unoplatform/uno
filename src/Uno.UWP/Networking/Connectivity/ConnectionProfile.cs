@@ -1,4 +1,4 @@
-﻿#if !NET461
+﻿#if !IS_UNIT_TESTS
 
 namespace Windows.Networking.Connectivity
 {
@@ -8,7 +8,7 @@ namespace Windows.Networking.Connectivity
 	/// about the connection status and connectivity statistics.
 	/// </summary>
 	public partial class ConnectionProfile
-    {
+	{
 		/// <summary>
 		/// Gets the network connectivity level for this connection.
 		/// This value indicates what network resources, if any, are currently available.

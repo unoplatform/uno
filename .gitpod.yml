@@ -1,22 +1,20 @@
-image: unoplatform/wasm-build:2.1.1
+image:
+  file: build/gitpod/.gitpod.Dockerfile
 
 ports:
   # Default port for the SampleApp
   - port: 8000
     onOpen: open-preview
 
-  # Port for the Remote Control server
-  - port: 53487
-
 tasks:
-  # This task is run during pre-build and it's log and built results are
-  # restored as part of the workspace initialization.
-  - prebuild: build/gitpod/build-wasm.sh
-    command: export NUGET_PACKAGES=/workspace/.nuget
-
-  - name: XAML Hot Reload Server
-    before: export NUGET_PACKAGES=/workspace/.nuget
-    command: echo "Once you've built the sources run build/gitpod/serve-remote-control.sh"
+  # Mitigation for https://github.com/gitpod-io/gitpod/issues/6460 
+  - name: Postinstall .NET and dev certificates
+    init: |
+      mkdir -p $DOTNET_ROOT && curl -fsSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel $DOTNET_VERSION --install-dir $DOTNET_ROOT 
+      mkdir -p $DOTNET_ROOT && curl -fsSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 7.0.302 --install-dir $DOTNET_ROOT 
+      dotnet dev-certs https 
+      build/gitpod/build-skia.sh
+      build/gitpod/build-wasm.sh
 
   - name: SampleApp Static Files Server
     before: export NUGET_PACKAGES=/workspace/.nuget

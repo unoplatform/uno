@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using AppKit;
 using Windows.UI.Text;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Extensions
 {
-    public static class FontWeightExtensions
-    {
-	    public static nfloat ToNSFontWeight(this FontWeight fontWeight)
-	    {
+	public static class FontWeightExtensions
+	{
+		public static nfloat ToNSFontWeight(this FontWeight fontWeight)
+		{
 			if (fontWeight == FontWeights.Black ||
 				fontWeight == FontWeights.ExtraBlack)
 			{
@@ -58,5 +55,5 @@ namespace Uno.UI.Extensions
 
 			return NSFontWeight.Regular;
 		}
-    }
+	}
 }

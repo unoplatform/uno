@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ArcSegment : PathSegment
 	{

@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -20,6 +25,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_ContentDialog
 	{
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Not_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -29,6 +37,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				PrimaryButtonText = "Accept",
 				SecondaryButtonText = "Nope"
 			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
 
 			try
 			{
@@ -47,6 +57,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -57,8 +70,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Nope"
 			};
 
-			SUT.FullSizeDesired = true;
+			SetXamlRootForIslandsOrWinUI(SUT);
 
+			SUT.FullSizeDesired = true;
 
 			try
 			{
@@ -78,6 +92,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -88,8 +105,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Nope"
 			};
 
-			Assert.AreEqual(ContentDialogButton.None, SUT.DefaultButton);
+			SetXamlRootForIslandsOrWinUI(SUT);
 
+			Assert.AreEqual(ContentDialogButton.None, SUT.DefaultButton);
 
 			try
 			{
@@ -109,6 +127,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -119,8 +140,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Nope"
 			};
 
-			SUT.DefaultButton = ContentDialogButton.Primary;
+			SetXamlRootForIslandsOrWinUI(SUT);
 
+			SUT.DefaultButton = ContentDialogButton.Primary;
 
 			try
 			{
@@ -140,6 +162,111 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Initial_Focus_With_Focusable_Content()
+		{
+			Button button = new Button() { Content = "Target" };
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = button,
+				PrimaryButtonText = "Target",
+				SecondaryButtonText = "Secondary"
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			SUT.DefaultButton = ContentDialogButton.None;
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+
+				Assert.AreEqual(button, focused);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Initial_Focus_With_DefaultButton_Not_Set()
+		{
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				PrimaryButtonText = "Target",
+				SecondaryButtonText = "Secondary"
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			SUT.DefaultButton = ContentDialogButton.None;
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+
+				Assert.IsInstanceOfType(focused, typeof(Button));
+				Assert.AreEqual("Target", ((Button)focused).Content);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Initial_Focus_With_DefaultButton_Set()
+		{
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				PrimaryButtonText = "Accept",
+				SecondaryButtonText = "Target"
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			SUT.DefaultButton = ContentDialogButton.Secondary;
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+
+				Assert.IsInstanceOfType(focused, typeof(Button));
+				Assert.AreEqual("Target", ((Button)focused).Content);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_CloseDeferred()
 		{
 			var SUT = new MyContentDialog
@@ -149,6 +276,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				PrimaryButtonText = "Accept",
 				SecondaryButtonText = "Nope"
 			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
 
 			bool triggered = false;
 			bool hideSecondTime = false;
@@ -219,6 +348,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					SecondaryButtonText = "Nope"
 				};
 
+				SetXamlRootForIslandsOrWinUI(SUT);
+
 				try
 				{
 					await ShowDialog(SUT);
@@ -252,23 +383,182 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+#if __SKIA__ || __WASM__
+		[Ignore("Currently fails on Skia/WASM, tracked by #15981")]
+#endif
+		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
+		{
+			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
+
+			using (ScreenHelper.OverrideVisibleBounds(new Thickness(27, 38, 14, 72), skipIfHasNativeUnsafeArea: (nativeUnsafeArea.Top + nativeUnsafeArea.Bottom) > 50))
+			{
+				var SUT = new MyContentDialog
+				{
+					Title = "Dialog title",
+					Content = "Hello",
+					PrimaryButtonText = "Accept",
+					SecondaryButtonText = "Nope"
+				};
+
+				SetXamlRootForIslandsOrWinUI(SUT);
+
+				try
+				{
+					await ShowDialog(SUT);
+
+					var layoutRootBounds = SUT.LayoutRoot.GetRelativeBounds((FrameworkElement)WindowHelper.EmbeddedTestRoot.control.XamlRoot.Content);
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					RectAssert.Contains(visibleBounds, layoutRootBounds);
+				}
+				finally
+				{
+					SUT.Hide();
+				}
+			}
+		}
+
+#if HAS_UNO
+		[DataTestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)
+		{
+			var closeButtonClickEvent = new Event();
+			var closedEvent = new Event();
+			var openedEvent = new Event();
+			var closeButtonClickRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>>("CloseButtonClick");
+			var closedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>>("Closed");
+			var openedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs>>("Opened");
+
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				CloseButtonText = "Close",
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			if (!isCloseButtonEnabled)
+			{
+				var disabledStyle = new Style(typeof(Button));
+				disabledStyle.Setters.Add(new Setter(Control.IsEnabledProperty, false));
+
+				SUT.CloseButtonStyle = disabledStyle;
+			}
+
+
+			closeButtonClickRegistration.Attach(SUT, (s, e) => closeButtonClickEvent.Set());
+			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
+			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				await openedEvent.WaitForDefault();
+				VERIFY_IS_TRUE(SUT._popup.IsOpen);
+
+				SystemNavigationManager.GetForCurrentView().RequestBack();
+
+				await closeButtonClickEvent.WaitForDefault();
+				await closedEvent.WaitForDefault();
+
+				Assert.AreEqual(isCloseButtonEnabled, closeButtonClickEvent.HasFired());
+				VERIFY_IS_TRUE(closedEvent.HasFired());
+				VERIFY_IS_FALSE(SUT._popup.IsOpen);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Popup_Closed()
+		{
+			var closedEvent = new Event();
+			var openedEvent = new Event();
+			var closedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>>("Closed");
+			var openedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs>>("Opened");
+
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				CloseButtonText = "Close",
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
+			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
+
+			try
+			{
+				var showAsyncResult = SUT.ShowAsync().AsTask();
+
+				await openedEvent.WaitForDefault();
+
+				SUT._popup.IsOpen = false;
+
+				await closedEvent.WaitForDefault();
+
+				VERIFY_IS_TRUE(closedEvent.HasFired());
+				VERIFY_IS_FALSE(SUT._popup.IsOpen);
+
+				if (await Task.WhenAny(showAsyncResult, Task.Delay(2000)) == showAsyncResult)
+				{
+					var dialogResult = showAsyncResult.Result;
+					VERIFY_ARE_EQUAL(ContentDialogResult.None, dialogResult);
+				}
+				else
+				{
+					Assert.Fail("Timed out waiting for ShowAsync");
+				}
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+#endif
+
 #if __ANDROID__
+		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
+		[Ignore()]
+		[TestMethod]
+		public async Task When_Soft_Keyboard_And_VisibleBounds_Native()
+		{
+			using (FeatureConfigurationHelper.UseNativePopups())
+			{
+				await When_Soft_Keyboard_And_VisibleBounds();
+			}
+		}
+
 		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
 		[Ignore()]
 		[TestMethod]
 		public async Task When_Soft_Keyboard_And_VisibleBounds_Managed()
 		{
-			using (FeatureConfigurationHelper.UseManagedPopups())
-			{
-				await When_Soft_Keyboard_And_VisibleBounds();
-			}
+			await When_Soft_Keyboard_And_VisibleBounds();
 		}
 #endif
-
 
 		private async Task FocusTextBoxWithSoftKeyboard(TextBox textBox)
 		{
 			var tcs = new TaskCompletionSource<bool>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => tcs.TrySetException(new TimeoutException()));
+
 			var inputPane = InputPane.GetForCurrentView();
 			void OnShowing(InputPane sender, InputPaneVisibilityEventArgs args)
 			{
@@ -295,15 +585,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				inputPane.Showing -= OnShowing;
 			}
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 		}
 
 		private static async Task ShowDialog(MyContentDialog dialog)
 		{
-			dialog.ShowAsync();
+			_ = dialog.ShowAsync();
 			await WindowHelper.WaitFor(() => dialog.BackgroundElement != null);
-#if !NETFX_CORE
-			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on current version of Uno because the template is materialized too early  
+#if !WINAPPSDK
+			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on the current version of Uno because the template is materialized too early
 #endif
+		}
+
+		private void SetXamlRootForIslandsOrWinUI(ContentDialog dialog)
+		{
+#if !HAS_UNO_WINUI
+			if (WindowHelper.IsXamlIsland)
+#endif
+			{
+				dialog.XamlRoot = WindowHelper.EmbeddedTestRoot.control.XamlRoot;
+			}
 		}
 	}
 
@@ -311,6 +612,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public Button PrimaryButton { get; private set; }
 		public Border BackgroundElement { get; private set; }
+		public Grid LayoutRoot { get; private set; }
 
 		protected override void OnApplyTemplate()
 		{
@@ -318,6 +620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
 			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
+			LayoutRoot = GetTemplateChild("LayoutRoot") as Grid;
 		}
 	}
 }

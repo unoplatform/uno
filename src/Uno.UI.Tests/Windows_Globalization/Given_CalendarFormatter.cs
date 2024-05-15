@@ -19,9 +19,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("day month year", "hu-HU", "{year.full}. {month.numeric}. {day.integer(2)}.")]
 		public void When_UsingVariousLanguages(string format, string language, string expectedPattern)
 		{
-			var sut = new DateTimeFormatter(format, new[] {language});
+			var sut = new DateTimeFormatter(format, new[] { language });
 
-			var firstPattern = sut.Patterns.First();
+			var firstPattern = sut.Patterns[0];
 
 			using var _ = new AssertionScope();
 
@@ -29,13 +29,16 @@ namespace Uno.UI.Tests.Windows_Globalization
 			firstPattern.Length.Should().Be(expectedPattern.Length);
 		}
 
+#if !NET7_0_OR_GREATER // https://github.com/unoplatform/uno/issues/9080
 		[TestMethod]
 		[DataRow("day", "en-US|fr-CA|ru-RU", "{day.integer}|{day.integer}|{day.integer}")]
 		[DataRow("day month year", "en-US|fr-CA", "{month.numeric}/{day.integer}/{year.full}|{year.full}-{month.numeric}-{day.integer(2)}")]
 		[DataRow("month year", "en-US|fr-CA", "{month.full} {year.full}|{month.full}, {year.full}")]
+
 		[DataRow("day month", "en-US|fr-CA", "{month.full} {day.integer}|{day.integer} {month.full}")]
 		[DataRow("hour minute second", "en-US|fr-CA", "{hour}:{minute}:{second} {period.abbreviated}|{hour}:{minute}:{second}")]
 		[DataRow("hour minute", "en-US|fr-CA", "{hour}:{minute} {period.abbreviated}|{hour}:{minute}")]
+#endif
 		public void When_UsingMultipleLanguages(string format, string languages, string expectedPatterns)
 		{
 			var sut = new DateTimeFormatter(format, languages.Split('|'));

@@ -1,27 +1,10 @@
-﻿#if XAMARIN_ANDROID
-using Android.Views;
-using Android.Graphics;
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using UIKit;
+﻿using System;
+using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-using MonoTouch.UIKit;
-#elif __MACOS__
-using Color = Windows.UI.Color;
-#else
-using Windows.UI;
-#endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
+	[ContentProperty(Name = nameof(Color))]
 	public partial class GradientStop : DependencyObject
 	{
 		public GradientStop()
@@ -29,17 +12,19 @@ namespace Windows.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-		public Windows.UI.Color Color
+		internal event Action InvalidateRender;
+
+		public Color Color
 		{
-			get { return (Windows.UI.Color)this.GetValue(ColorProperty); }
+			get { return (Color)this.GetValue(ColorProperty); }
 			set { this.SetValue(ColorProperty, value); }
 		}
-		public static DependencyProperty ColorProperty { get ; } =
+		public static DependencyProperty ColorProperty { get; } =
 			DependencyProperty.Register(
 				"Color",
-				typeof(Windows.UI.Color),
+				typeof(Color),
 				typeof(GradientStop),
-				new FrameworkPropertyMetadata(Colors.Transparent)
+				new FrameworkPropertyMetadata(Colors.Transparent, propertyChangedCallback: (s, _) => ((GradientStop)s).InvalidateRender?.Invoke())
 			);
 
 		public double Offset
@@ -47,12 +32,12 @@ namespace Windows.UI.Xaml.Media
 			get { return (double)this.GetValue(OffsetProperty); }
 			set { this.SetValue(OffsetProperty, value); }
 		}
-		public static DependencyProperty OffsetProperty { get ; } =
+		public static DependencyProperty OffsetProperty { get; } =
 			DependencyProperty.Register(
 				"Offset",
 				typeof(double),
 				typeof(GradientStop),
-				new FrameworkPropertyMetadata(default(double))
+				new FrameworkPropertyMetadata(default(double), propertyChangedCallback: (s, _) => ((GradientStop)s).InvalidateRender?.Invoke())
 			);
 	}
 }

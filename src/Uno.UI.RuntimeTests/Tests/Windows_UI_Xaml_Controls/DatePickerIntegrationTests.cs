@@ -1,20 +1,23 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Windows.Globalization;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
+using System.Threading;
+
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -27,16 +30,17 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 	[TestClass]
 	public class DatePickerIntegrationTests
 	{
-		private const long DEFAULT_DATE_TICKS = 504910368000000000;
+		// https://github.com/microsoft/CsWinRT/blob/7dc82799c7afeaf862c9fb7af78ad0e2fc03c48e/src/WinRT.Runtime/Projections/SystemTypes.cs#L71
+		private const long ManagedUtcTicksAtNativeZero = 504911232000000000;
 
 		[TestInitialize]
-		void ClassSetup()
+		public void ClassSetup()
 		{
 			TestServices.EnsureInitialized();
 		}
 
 		[TestCleanup]
-		void TestCleanup()
+		public void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 
@@ -75,7 +79,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		{
 			DatePicker datePicker = null;
 
-			await RunOnUIThread.ExecuteAsync(()=>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				datePicker = new DatePicker();
 
@@ -103,7 +107,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				today.SetToNow();
 
 				// Default value of Date should be the null sentinel value.
-				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS); // 1600-12-31, as per MS documentation
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 				datePicker.SelectedDate.Should().BeNull();
 
 				// Default value of MinYear should be 100 years ago.
@@ -124,6 +128,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			var datePickerValueChangedEvent = new TaskCompletionSource<object>();
 
 			var datePicker = await SetupDatePickerTest();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => datePickerValueChangedEvent.TrySetException(new TimeoutException()));
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -213,6 +220,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			var dateChangedEvent = new TaskCompletionSource<object>();
 
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
 
 			datePicker.DateChanged += OnDatePickerOnDateChanged;
 
@@ -243,6 +252,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			var loadedEvent = new TaskCompletionSource<object>();
 
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => loadedEvent.TrySetException(new TimeoutException()));
+
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var rootGrid = new Grid();
@@ -257,7 +269,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await loadedEvent.Task;
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			return datePicker;
 		}
@@ -287,10 +299,10 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		{
 			// This forces the app to use the specified language/locale:
 			this.Log().InfoFormat("VerifyDayMonthYearOrder: Setting ApplicationLanguages.PrimaryLanguageOverride to {0}", locale);
-			Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = locale;
+			global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = locale;
 
 			var datePicker = await SetupDatePickerTest();
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -440,6 +452,10 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			var datePicker = await SetupDatePickerTest();
 
 			var dateChangedEvent = new TaskCompletionSource<object>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
+
 			var dateChangedRegistration = CreateSafeEventRegistration(DatePicker, DateChanged);
 			dateChangedRegistration.Attach(datePicker, [&]() {
 				dateChangedEvent.Set();
@@ -516,7 +532,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.CalendarIdentifier = cid;
 				datePicker.SelectedDate = (calendar.GetDateTime());
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			TextBlock dayTextBlock;
 			TextBlock monthTextBlock;
@@ -556,7 +572,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.SelectedDate = (date);
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			TextBlock dayTextBlock;
 			TextBlock monthTextBlock;
@@ -584,7 +600,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.MonthFormat = monthFormat;
 				datePicker.YearFormat = yearFormat;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -640,7 +656,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			{
 				datePicker.DayVisible = false;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Assert.IsTrue(dayTextBlock.Visibility == Visibility.Collapsed);
@@ -649,7 +665,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.DayVisible = true;
 				datePicker.MonthVisible = false;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Assert.IsTrue(dayTextBlock.Visibility == Visibility.Visible);
@@ -661,7 +677,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.MonthVisible = true;
 				datePicker.YearVisible = false;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Assert.IsTrue(monthTextBlock.Visibility == Visibility.Visible);
@@ -737,20 +753,20 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				rootPanel.Children.Add(datePicker);
 				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
 			button = await GetFlyoutButtonFromDatePicker(datePicker);
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-#if NETFX_CORE
+#if WINAPPSDK
 				var flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current)[0];
 #else
 				var flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot)[0];
 #endif
-				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter();
+				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter(datePicker.XamlRoot);
 
 				// The flyout popup, the flyout presenter and the button should have an RTL flow direction.
 				// The DatePicker itself should remain in LTR flow direction.
@@ -769,7 +785,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				Assert.IsTrue(AreClose(flyoutPopup.HorizontalOffset, rightEdgeOfDatePicker, 1.0));
 			});
 
-			ControlHelper.ClickFlyoutCloseButton(datePicker, true /* isAccept */);
+			await ControlHelper.ClickFlyoutCloseButton(datePicker, true /* isAccept */);
 		}
 
 #if LOOPING_SELECTOR_AVAILABLE // TODO: Remove this when LoopingSelector is available https://github.com/unoplatform/uno/issues/4880
@@ -792,6 +808,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			calendar.Period = 1;
 
 			var dateChangedEvent = new TaskCompletionSource<object>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -907,7 +926,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				using var _ = new AssertionScope();
@@ -944,7 +963,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				Assert.IsNull(datePicker.SelectedDate);
 			});
 
-			VerifyHasPlaceholder(datePicker);
+			await VerifyHasPlaceholder(datePicker);
 		}
 
 #if LOOPING_SELECTOR_AVAILABLE // TODO: Remove this when LoopingSelector is available https://github.com/unoplatform/uno/issues/4880
@@ -991,7 +1010,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				this.Log().Info("Setting SelectedDate to null.  Date should be the null sentinel value.");
 				datePicker.SelectedDate = null;
 
-				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS);
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 
 				this.Log().Info("Setting SelectedDate to February 2, 2018. Date should change to this value.");
 				datePicker.SelectedDate = (date2);
@@ -1008,7 +1027,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date to the null sentinel value. SelectedDate should become null.");
-				datePicker.Date = new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+				datePicker.Date = new DateTimeOffset(ManagedUtcTicksAtNativeZero, TimeSpan.Zero).ToLocalTime();
 
 				datePicker.SelectedDate.Should().BeNull("SelectedDate should be back to null");
 			});
@@ -1019,21 +1038,21 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		{
 			var datePicker = await SetupDatePickerTest();
 
-			VerifyHasPlaceholder(datePicker);
+			await VerifyHasPlaceholder(datePicker);
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				datePicker.SelectedDate = (CreateDate(1, 1, 2018));
 			});
 
-			VerifyDoesNotHavePlaceholder(datePicker);
+			await VerifyDoesNotHavePlaceholder(datePicker);
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				datePicker.SelectedDate = null;
 			});
 
-			VerifyHasPlaceholder(datePicker);
+			await VerifyHasPlaceholder(datePicker);
 		}
 
 		private async Task<Button> GetFlyoutButtonFromDatePicker(DatePicker datePicker)
@@ -1081,7 +1100,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			{
 				datePicker.CalendarIdentifier = "JapaneseCalendar";
 
-				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS);
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 
 				this.Log().Info("Setting SelectedDate to January 9, 2019. Date should change to this value.");
 				datePicker.SelectedDate = (date);
@@ -1091,14 +1110,14 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date back to the null sentinel value. SelectedDate should become null.");
-				datePicker.Date = new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+				datePicker.Date = new DateTimeOffset(ManagedUtcTicksAtNativeZero, TimeSpan.Zero).ToLocalTime();
 				datePicker.SelectedDate.Should().BeNull();
 			});
 		}
 
-		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter()
+		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter(XamlRoot xamlRoot)
 		{
-			return FlyoutHelper.GetOpenFlyoutPresenter() as DatePickerFlyoutPresenter;
+			return FlyoutHelper.GetOpenFlyoutPresenter(xamlRoot) as DatePickerFlyoutPresenter;
 		}
 
 		private void VerifyDatesAreEqual(Calendar expected, DateTimeOffset actual)

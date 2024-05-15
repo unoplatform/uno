@@ -4,29 +4,32 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
 		private IDisposable? _directManipulationHandlerSubscription;
 
+		private bool m_isPointerLeftButtonPressed;
+
 		internal bool m_templatedParentHandlesMouseButton;
 
 		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
-		internal bool ArePointerWheelEventsIgnored { get; set; } = false;
+		internal bool ArePointerWheelEventsIgnored { get; set; }
 		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
 
 		/// <summary>
 		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
 		/// </summary>
 		///
-		private bool _forceChangeToCurrentView = false;
+		private bool _forceChangeToCurrentView;
 		internal bool ForceChangeToCurrentView
 		{
 			get => _forceChangeToCurrentView;
@@ -86,6 +89,38 @@ namespace Windows.UI.Xaml.Controls
 				if (weakHandler.Target is IDirectManipulationStateChangeHandler h)
 				{
 					h.NotifyStateChange(DMManipulationState.DMManipulationCompleted, default, default, default, default, default, default, default, default);
+				}
+			}
+		}
+
+		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
+		{
+			// If our templated parent is handling mouse button, we should not take
+			// focus away.  They're handling it, not us.
+			if (m_templatedParentHandlesMouseButton)
+			{
+				return;
+			}
+
+			var spPointerPoint = pArgs.GetCurrentPoint(this);
+			var spPointerProperties = spPointerPoint.Properties;
+			m_isPointerLeftButtonPressed = spPointerProperties.IsLeftButtonPressed;
+
+			// Don't handle PointerPressed event to raise up
+		}
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			if (m_isPointerLeftButtonPressed)
+			{
+				m_isPointerLeftButtonPressed = false;
+
+				// Uno Specific: On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
+				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
+				// skip focusing, or focus some child of this faux RootScrollViewer. To match the other platforms, we do the former.
+				if (this.GetParent() is UIElement { IsVisualTreeRoot: false })
+				{
+					args.Handled = Focus(FocusState.Pointer);
 				}
 			}
 		}

@@ -1,44 +1,32 @@
 ﻿using System;
 using Uno.Extensions;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Line
 	{
-		private readonly SvgElement _line = new SvgElement("line");
-
-		partial void InitializePartial()
+		public Line() : base("line")
 		{
-			SvgChildren.Add(_line);
-
-			InitCommonShapeProperties();
 		}
 
-		protected override SvgElement GetMainSvgElement()
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			return _line;
+			_mainSvgElement.SetAttribute(
+				("x1", X1.ToStringInvariant()),
+				("x2", X2.ToStringInvariant()),
+				("y1", Y1.ToStringInvariant()),
+				("y2", Y2.ToStringInvariant())
+			);
+			return MeasureAbsoluteShape(availableSize, this);
 		}
 
-		partial void OnX1PropertyChangedPartial(double oldValue, double newValue)
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			_line.SetAttribute("x1", newValue.ToStringInvariant());
-		}
-
-		partial void OnX2PropertyChangedPartial(double oldValue, double newValue)
-		{
-			_line.SetAttribute("x2", newValue.ToStringInvariant());
-		}
-
-		partial void OnY1PropertyChangedPartial(double oldValue, double newValue)
-		{
-			_line.SetAttribute("y1", newValue.ToStringInvariant());
-		}
-
-		partial void OnY2PropertyChangedPartial(double oldValue, double newValue)
-		{
-			_line.SetAttribute("y2", newValue.ToStringInvariant());
+			UpdateRender();
+			return ArrangeAbsoluteShape(finalSize, this);
 		}
 	}
 }

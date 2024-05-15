@@ -1,4 +1,4 @@
-declare const require: any;
+declare const require: unknown | undefined;
 declare const config: any;
 declare namespace Uno.UI {
     import AnimationData = Lottie.AnimationData;
@@ -19,6 +19,7 @@ declare namespace Uno.UI {
         private static _runningAnimations;
         private static _numberOfFrames;
         static setAnimationProperties(newProperties: LottieAnimationProperties, animationData?: AnimationData): string;
+        static setAnimationPropertiesNative(id: number, path: string, autoplay: boolean, stretch: string, rate: number, cacheKey: string, data?: string): void;
         static stop(elementId: number): string;
         static play(elementId: number, fromProgress: number, toProgress: number, looped: boolean): string;
         static kill(elementId: number): string;

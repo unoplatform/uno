@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 	public sealed partial class TemplatePartAttribute : Attribute
 	{
-		public string Name { get; set; }
+		public string Name;
 
-		public Type Type { get; set; }
+		public Type Type;
 	}
 }

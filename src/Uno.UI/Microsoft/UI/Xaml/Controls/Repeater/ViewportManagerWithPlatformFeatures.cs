@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ItemsRepeater.h, ItemsRepeater.cpp, commit 1cf9f1c
 
@@ -8,13 +8,13 @@ using System;
 using System.Diagnostics;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.Disposables;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal partial class ViewportManagerWithPlatformFeatures : ViewportManager
 	{
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rect m_layoutExtent;
 		// This is the expected shift by the layout.
 		private Point m_expectedViewportShift;
-		// This is what is pending and not been accounted for. 
+		// This is what is pending and not been accounted for.
 		// Sometimes the scrolling surface cannot service a shift (for example
 		// it is already at the top and cannot shift anymore.)
 		private Point m_pendingViewportShift;
@@ -69,7 +69,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable m_layoutUpdatedRevoker;
 		private IDisposable m_renderingToken;
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private Rect _uno_viewportUsedInLastMeasure;
+#endif
 
 		private bool HasScroller => m_scroller != null;
 
@@ -151,6 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override Point GetOrigin() => new Point(m_layoutExtent.X, m_layoutExtent.Y);
 
+#if false
 		Rect GetLayoutVisibleWindowDiscardAnchor()
 		{
 			var visibleWindow = m_visibleWindow;
@@ -163,6 +166,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return visibleWindow;
 		}
+#endif
 
 		public override Rect GetLayoutVisibleWindow()
 		{
@@ -227,10 +231,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// There are cases where we might be expecting a shift but not get it. We will
 				// be waiting for the effective viewport event but if the scroll viewer is not able
 				// to perform the shift (perhaps because it cannot scroll in negative offset),
-				// then we will end up not realizing elements in the visible 
-				// window. To avoid this, we register to layout updated for this layout pass. If we 
+				// then we will end up not realizing elements in the visible
+				// window. To avoid this, we register to layout updated for this layout pass. If we
 				// get an effective viewport, we know we have a new viewport and we unregister from
-				// layout updated. If we get the layout updated handler, then we know that the 
+				// layout updated. If we get the layout updated handler, then we know that the
 				// scroller was unable to perform the shift and we invalidate measure and unregister
 				// from the layout updated event.
 				if (m_layoutUpdatedRevoker == null)
@@ -268,8 +272,11 @@ namespace Microsoft.UI.Xaml.Controls
 				m_effectiveViewportChangedRevoker?.Dispose();
 			}
 			else if (m_effectiveViewportChangedRevoker == null
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
-				&& m_owner.ItemsSourceView?.Count > 0)
+				&& m_owner.ItemsSourceView?.Count > 0
+#endif
+				)
 			{
 				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 				{
@@ -297,13 +304,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override void OnOwnerMeasuring()
 		{
-			// This is because of a bug that causes effective viewport to not 
+			// This is because of a bug that causes effective viewport to not
 			// fire if you register during arrange.
 			// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 			EnsureScroller();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			// Uno workaround: Perf
 			_uno_viewportUsedInLastMeasure = m_visibleWindow;
+#endif
 		}
 
 		public override void OnOwnerArranged()
@@ -312,7 +321,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!m_managingViewportDisabled)
 			{
-				// This is because of a bug that causes effective viewport to not 
+				// This is because of a bug that causes effective viewport to not
 				// fire if you register during arrange.
 				// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 				// EnsureScroller();
@@ -416,10 +425,10 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_renderingToken = Disposable.Create(() =>
 					{
-						Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering;
+						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering;
 						m_renderingToken = null;
 					});
-					Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
+					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
 				}
 			}
 		}
@@ -495,7 +504,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_layoutExtent = default;
 			}
 
-			// We got a new viewport, we dont need to wait for layout updated anymore to 
+			// We got a new viewport, we dont need to wait for layout updated anymore to
 			// see if our request for a pending shift was handled.
 			m_layoutUpdatedRevoker?.Dispose();
 		}
@@ -506,11 +515,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ResetScrollers();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
 				if (m_owner.ItemsSourceView?.Count <= 0)
 				{
 					return;
 				}
+#endif
 
 				var parent = CachedVisualTreeHelpers.GetParent(m_owner);
 				while (parent != null)
@@ -569,7 +580,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				REPEATER_TRACE_INFO("%ls: \tViewport is invalid. visible window cleared. \n", GetLayoutId());
 				// We got cleared.
-				m_visibleWindow =  default;
+				m_visibleWindow = default;
 			}
 			else
 			{
@@ -580,11 +591,13 @@ namespace Microsoft.UI.Xaml.Controls
 				m_visibleWindow = currentVisibleWindow;
 			}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			// Uno workaround [BEGIN]: For perf considerations, do not invalidate the tree on each viewport update
 			// (Viewport updates are quite frequent, this would cause lot of unnecessary layout pass which would impact scroll perf, especially on Android).
 			if (m_owner.Layout is VirtualizingLayout vl // If not a VirtualizingLayout, we actually don't have to re-measure items!
 				&& vl.IsSignificantViewportChange(_uno_viewportUsedInLastMeasure, m_visibleWindow))
 			// Uno workaround [END]
+#endif
 			{
 				TryInvalidateMeasure();
 			}
@@ -630,8 +643,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Don't invalidate measure if we have an invalid window.
 			if (m_visibleWindow != new Rect()
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				// Uno workaround: [Perf] Do not invalidate measure if nothing to render!
-				&& m_owner.ItemsSourceView?.Count > 0)
+				&& m_owner.ItemsSourceView?.Count > 0
+#endif
+				)
 			{
 				// We invalidate measure instead of just invalidating arrange because
 				// we don't invalidate measure in UpdateViewport if the view is changing to
@@ -645,7 +661,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Note: We use RunAnimation to get it as soon as possible.
 				// Note: UpdateViewport might also be invoked on Load, but in that case we expect either the viewport to not change,
 				//		 either the layout is pending anyway, so we should not have an extra useless layout pass.
-				m_owner.Dispatcher.RunAnimation(() => m_owner.InvalidateMeasure());
+				_ = m_owner.Dispatcher.RunAnimation(() => m_owner.InvalidateMeasure());
 #else
 				m_owner.InvalidateMeasure();
 #endif

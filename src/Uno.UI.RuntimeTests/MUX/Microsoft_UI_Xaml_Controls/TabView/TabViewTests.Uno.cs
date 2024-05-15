@@ -1,20 +1,27 @@
 ﻿using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using System.Threading.Tasks;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	public partial class TabViewTests
 	{
-#if HAS_UNO && !__IOS__
+#if HAS_UNO
 		[TestMethod]
-		public void VerifyItemsAreCreatedOnlyOnce()
+#if __IOS__
+		[Ignore("Currently fails on iOS")]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task VerifyItemsAreCreatedOnlyOnce()
 		{
 			TabView tabView = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				tabView = new TabView();
 				TestServices.WindowHelper.WindowContent = tabView;
@@ -39,7 +46,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 				tabView.UpdateLayout();
 
-				TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				// Only one container should be generated for the first item.
 				Assert.AreEqual(1, containerContentChangingCounter);

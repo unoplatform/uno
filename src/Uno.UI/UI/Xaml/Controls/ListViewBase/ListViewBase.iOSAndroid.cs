@@ -1,18 +1,16 @@
-﻿#if XAMARIN_IOS || XAMARIN_ANDROID
+﻿#if __IOS__ || __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Uno.UI.Controls;
-#if XAMARIN_ANDROID
-using _View = Android.Views.View;
-#elif XAMARIN_IOS
-using _View = UIKit.UIView;
-#else
-using View = Windows.UI.Xaml.FrameworkElement;
+#if __ANDROID__
+using _ViewGroup = Android.Views.ViewGroup;
+#elif __IOS__
+using _ViewGroup = UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
@@ -84,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override _View ResolveInternalItemsPanel(_View itemsPanel)
+		protected override _ViewGroup ResolveInternalItemsPanel(_ViewGroup itemsPanel)
 		{
 			// If the items panel is a virtualizing panel, we substitute it with NativeListViewBase
 			var virtualizingPanel = itemsPanel as IVirtualizingPanel;
@@ -109,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected internal override void CleanUpInternalItemsPanel(_View panel)
+		protected internal override void CleanUpInternalItemsPanel(_ViewGroup panel)
 		{
 			if (panel is NativeListViewBase nativePanel)
 			{

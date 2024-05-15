@@ -1,8 +1,8 @@
-using Windows.Foundation;
+﻿using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
-	public  partial class LineSegment : PathSegment
+	public partial class LineSegment : PathSegment
 	{
 		public LineSegment()
 		{
@@ -18,9 +18,9 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty PointProperty { get; } =
 			DependencyProperty.Register(
-				"Point", 
-				typeof(Point), 
-				typeof(LineSegment), 
+				"Point",
+				typeof(Point),
+				typeof(LineSegment),
 				new FrameworkPropertyMetadata(
 					defaultValue: default(Point),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure

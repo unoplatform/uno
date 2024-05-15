@@ -6,21 +6,20 @@ using Uno.Client;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 using System;
 using AndroidX.RecyclerView.Widget;
 using AndroidX.AppCompat.Widget;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Windows.UI.Core;
 using Android.Views;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		private readonly SerialDisposable _collectionChangedSubscription = new SerialDisposable();
 		private readonly SerialDisposable _headerFooterSubscription = new SerialDisposable();
 
 		private void InitializeNativePanel(NativeListViewBase panel)
@@ -97,7 +96,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Add a group using the native in-place modifier.
 		/// </summary>
-		/// <param name="groupIndexInView">The index of the group from the native collection view's perspective, ie ignoring empty groups 
+		/// <param name="groupIndexInView">The index of the group from the native collection view's perspective, ie ignoring empty groups
 		/// if HidesIfEmpty=true.</param>
 		private void AddGroup(int groupIndexInView)
 		{
@@ -181,8 +180,9 @@ namespace Windows.UI.Xaml.Controls
 
 				if (selectorItem.LayoutParameters is RecyclerView.LayoutParams)
 				{
-					var displayPosition = NativePanel.GetChildLayoutPosition(selectorItem);
+					var displayPosition = NativePanel.GetChildAdapterPosition(selectorItem);
 					var index = ConvertDisplayPositionToIndex(displayPosition);
+
 					return index;
 				}
 			}
@@ -320,15 +320,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Dispatching ScrollIntoView on Android prevents issues where layout/render changes
 			// occurring during scrolling are not always properly picked up by the layouting/rendering engine.
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				var index = IndexFromItem(item);
-				if (index < 0)
+				if (IndexFromItem(item) is var index and >= 0)
 				{
-					return;
+					if (Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView)
+					{
+						NativePanel?.SmoothScrollToPosition(index);
+					}
+					else
+					{
+						var displayPosition = ConvertIndexToDisplayPosition(index);
+
+						NativePanel?.ScrollIntoView(displayPosition, alignment);
+					}
 				}
-				var displayPosition = ConvertIndexToDisplayPosition(index);
-				NativePanel?.ScrollIntoView(displayPosition, alignment);
 			});
 		}
 

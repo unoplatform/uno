@@ -1,71 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Uno.RoslynHelpers;
-using Uno.SourceGeneration;
+using Microsoft.CodeAnalysis.CSharp;
+using Uno.Extensions;
 
 namespace Uno.Samples.UITest.Generator
 {
-	public class SamplesListGenerator : SourceGenerator
+	[Generator]
+	public class SamplesListGenerator : IIncrementalGenerator
 	{
-		private INamedTypeSymbol _sampleControlInfoSymbol;
-		private INamedTypeSymbol _sampleSymbol;
-
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(IncrementalGeneratorInitializationContext context)
 		{
-#if DEBUG
-			// Debugger.Launch();
-#endif
-			if (context.Compilation.Assembly.Name != "SamplesApp.UITests")
-			{
-				GenerateTests(context);
-			}
+			var assemblyNameProvider = context.CompilationProvider.Select((compilation, _) => compilation.Assembly.Name);
+			var sampleControlInfoAttributeProvider = GetProviderForAttributedClasses(context, "Uno.UI.Samples.Controls.SampleControlInfoAttribute");
+			var sampleAttributeProvider = GetProviderForAttributedClasses(context, "Uno.UI.Samples.Controls.SampleAttribute");
+
+			sampleControlInfoAttributeProvider = IgnoreAssembly(assemblyNameProvider, "SamplesApp.UITests", sampleControlInfoAttributeProvider);
+			sampleAttributeProvider = IgnoreAssembly(assemblyNameProvider, "SamplesApp.UITests", sampleAttributeProvider);
+
+			var combined = sampleControlInfoAttributeProvider.Collect().Combine(sampleAttributeProvider.Collect());
+
+			context.RegisterSourceOutput(combined, GenerateSource);
 		}
 
-		private void GenerateTests(SourceGeneratorContext context)
+		private static IncrementalValuesProvider<string> GetProviderForAttributedClasses(IncrementalGeneratorInitializationContext context, string attributeFullyQualifiedMetadataName)
 		{
-			_sampleControlInfoSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
-			_sampleSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
-
-			var query = from typeSymbol in context.Compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
-						let info = typeSymbol.FindAttributeFlattened(_sampleSymbol) ?? typeSymbol.FindAttributeFlattened(_sampleControlInfoSymbol)
-						where info != null
-						select typeSymbol;
-
-			query = query.Distinct();
-
-			GenerateSamplesList(context, query);
+			return context.SyntaxProvider.ForAttributeWithMetadataName(
+				attributeFullyQualifiedMetadataName,
+				static (node, _) => node.IsKind(SyntaxKind.ClassDeclaration),
+				static (context, _) => context.TargetSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+			);
 		}
 
-		private void GenerateSamplesList(SourceGeneratorContext context, IEnumerable<INamedTypeSymbol> query)
+		private static IncrementalValuesProvider<string> IgnoreAssembly(IncrementalValueProvider<string> assemblyNameProvider, string assemblyName, IncrementalValuesProvider<string> classesProvider)
+			=> classesProvider.Combine(assemblyNameProvider).Where(x => x.Right != assemblyName).Select((x, _) => x.Left);
+
+		private static void GenerateSource(SourceProductionContext context, (ImmutableArray<string> Left, ImmutableArray<string> Right) attributedTypes)
 		{
 			var builder = new IndentedStringBuilder();
 
-			builder.AppendLineInvariant("using System;");
+			builder.AppendLineIndented("using System;");
 
-			using (builder.BlockInvariant($"namespace SampleControl.Presentation"))
+			using (builder.BlockInvariant("namespace SampleControl.Presentation"))
 			{
-				using (builder.BlockInvariant($"partial class SampleChooserViewModel"))
+				using (builder.BlockInvariant("partial class SampleChooserViewModel"))
 				{
-					using (builder.BlockInvariant($"internal Type[] _allSamples = new Type[]"))
+					using (builder.BlockInvariant("internal Type[] _allSamples = new Type[]"))
 					{
-						foreach (var type in query)
+						foreach (var type in attributedTypes.Left)
 						{
-							builder.AppendLineInvariant($"typeof({type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
+							builder.AppendLineIndented($"typeof({type}),");
+						}
+						foreach (var type in attributedTypes.Right)
+						{
+							builder.AppendLineIndented($"typeof({type}),");
 						}
 					}
 
-					builder.AppendLineInvariant(";");
+					builder.AppendLineIndented(";");
 				}
 			}
 
-			context.AddCompilationUnit("AllSamplesList", builder.ToString());
+			context.AddSource("AllSamplesList.g.cs", builder.ToString());
 		}
 	}
 }

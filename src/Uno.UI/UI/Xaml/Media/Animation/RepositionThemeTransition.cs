@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
-    public partial class RepositionThemeTransition : Transition
-    {
+	public partial class RepositionThemeTransition : Transition
+	{
 		private readonly Duration _duration = new Duration(TimeSpan.FromMilliseconds(120));
 
 		internal override void AttachToStoryboardAnimation(Storyboard sb, IFrameworkElement element, TimeSpan beginTime, int xOffset, int yOffset)
@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			};
 
 			AttachHorizontalTranslateAnimation(sb, element, beginTime, xOffset);
-			
+
 			AttachVerticalTranslateAnimation(sb, element, beginTime, yOffset);
 
 		}

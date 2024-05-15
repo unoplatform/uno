@@ -1,4 +1,4 @@
-﻿#if !NET461 && !__SKIA__ && !__NETSTD_REFERENCE__
+﻿#if !IS_UNIT_TESTS && !__SKIA__ && !__NETSTD_REFERENCE__
 using System;
 
 using Uno.Devices.Enumeration.Internal;
@@ -15,7 +15,7 @@ namespace Windows.Devices.Midi
 	public sealed partial class MidiInPort : IDisposable
 	{
 		private readonly static string MidiInAqsFilter =
-			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";		
+			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
 
 		private readonly object _syncLock = new object();
 		private readonly MidiMessageParser _parser = new MidiMessageParser();

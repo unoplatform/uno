@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
@@ -18,7 +18,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 
 		public List<string> Items { get; } = Enumerable.Range(0, 5).Select(i => $"item #{i}").ToList();
 
-		public static DependencyProperty SelectedValueProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty SelectedValueProperty { get; } = DependencyProperty.Register(
 			"SelectedValue", typeof(object), typeof(ComboBox_SelectedIndex), new PropertyMetadata(default));
 
 		public object SelectedValue

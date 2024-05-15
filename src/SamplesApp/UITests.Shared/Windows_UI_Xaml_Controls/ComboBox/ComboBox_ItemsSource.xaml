@@ -5,18 +5,17 @@
 			 xmlns:local="using:Uno.UI.Samples.Content.UITests.ComboBox"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:xamarin="http:///umbrella/ui/xamarin"
-			 mc:Ignorable="d xamarin"
+			 xmlns:not_win="http://uno.ui/not_win"
+			 mc:Ignorable="d not_win"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
 	<controls:SampleControl SampleDescription="ComboBox with ItemsSource">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-
 				<ComboBox x:Name="theComboBox"
-						  ItemsSource="{Binding [SampleItems]}" />
-
+						  ItemsSource="{Binding [SampleItems]}"
+						  SelectedItem="{Binding [SelectedItem]}" />
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>

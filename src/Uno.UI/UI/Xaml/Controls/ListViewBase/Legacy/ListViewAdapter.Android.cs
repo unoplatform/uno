@@ -14,17 +14,17 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Windows.Input;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Android.Util;
 using Java.Interop;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Android.Views.Accessibility;
 using System.Collections.ObjectModel;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -36,7 +36,7 @@ namespace Uno.UI.Controls.Legacy
 		private const int NumberOfStaticViewTypes = 4;
 
 		// Make sure these IDs match the order in which view types are added in 'InitializeTemplates'
-		private const int DefaultViewType = 0; // no template
+		//private const int DefaultViewType = 0; // no template
 		private const int HeaderViewType = 1;
 		private const int FooterViewType = 2;
 		private const int GroupHeaderViewType = 3;
@@ -60,7 +60,7 @@ namespace Uno.UI.Controls.Legacy
 		private Style _itemContainerStyle;
 		private GroupStyle _groupStyle;
 		private DataTemplate _headerTemplate;
-		private bool _needsRefresh = false;
+		private bool _needsRefresh;
 		private IEnumerable _items;
 		private HeaderWrapper _headerWrapper;
 		private FooterWrapper _footerWrapper;
@@ -190,7 +190,7 @@ namespace Uno.UI.Controls.Legacy
 
 			if (view == null)
 			{
-				// A single item may be mapped multiple times because of the recycling, and 
+				// A single item may be mapped multiple times because of the recycling, and
 				// we may not be able to know which one is actually displayed.
 				SecondaryPool?.GetAllViews()
 					.OfType<ItemContainerHolder>()
@@ -237,7 +237,7 @@ namespace Uno.UI.Controls.Legacy
 			}
 
 			_needsRefresh = true;
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() =>
 			{

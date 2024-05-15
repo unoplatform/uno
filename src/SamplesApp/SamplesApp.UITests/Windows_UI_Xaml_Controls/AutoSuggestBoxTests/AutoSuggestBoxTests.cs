@@ -44,5 +44,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 			//Missing SuggestionChosen
 			//Uno UI Test does not support keyboard yet
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android not working currently.
+		public void BasicAutoSuggestBox()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests.BasicAutoSuggestBox", skipInitialScreenshot: true);
+			var SUT = _app.Marked("box1");
+			_app.WaitForElement(SUT);
+			Assert.AreEqual(false, SUT.GetDependencyPropertyValue<bool>("IsSuggestionListOpen"));
+
+			SUT.EnterText("a");
+
+			Assert.AreEqual(true, SUT.GetDependencyPropertyValue<bool>("IsSuggestionListOpen"));
+
+			// Click away to lose focus.
+			_app.FastTap("textChanged");
+
+			Assert.AreEqual(false, SUT.GetDependencyPropertyValue<bool>("IsSuggestionListOpen"));
+		}
 	}
 }

@@ -1,11 +1,10 @@
-#if __MACOS__
 using System;
 using Foundation;
 using System.IO;
 
 namespace Windows.Storage
 {
-	partial class ApplicationData 
+	partial class ApplicationData
 	{
 		private const string SandboxContainerIdKey = "APP_SANDBOX_CONTAINER_ID";
 
@@ -15,7 +14,7 @@ namespace Windows.Storage
 			return url.Path;
 		}
 
-		private static string GetTemporaryFolder() 
+		private static string GetTemporaryFolder()
 			=> Path.GetTempPath();
 
 		private static string GetLocalFolder()
@@ -42,7 +41,7 @@ namespace Windows.Storage
 					NSBundle.MainBundle.BundleIdentifier,
 					"Local"));
 			}
-			
+
 			// Ensure LocalFolder directory exists
 			Directory.CreateDirectory(applicationDataPath);
 			return applicationDataPath;
@@ -61,4 +60,3 @@ namespace Windows.Storage
 		}
 	}
 }
-#endif

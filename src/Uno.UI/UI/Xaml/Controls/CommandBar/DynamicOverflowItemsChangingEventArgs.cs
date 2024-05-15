@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class DynamicOverflowItemsChangingEventArgs
 	{
-		public global::Windows.UI.Xaml.Controls.CommandBarDynamicOverflowAction Action
+		public global::Microsoft.UI.Xaml.Controls.CommandBarDynamicOverflowAction Action
 		{
 			get;
 			internal set;

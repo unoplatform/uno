@@ -10,9 +10,9 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using System.Collections.Specialized;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 			_oldBounds = Bounds;
 		}
 
-		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
+		private void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
 		{
 			if (CollectionView == null
 				// Don't snap if we are unsetting SelectedIndex

@@ -1,0 +1,13 @@
+steps:
+  - pwsh: |
+      cd $(Build.SourcesDirectory)
+      Get-ChildItem -Exclude ".git" | Remove-Item -Recurse -Force
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'true'))
+    displayName: Pre-cleanup for Restoring UWP Converted Source Tree
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring UWP Converted Source Tree
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'true'))
+    inputs:
+      artifact: uwp-converted-tree
+      path: $(Build.SourcesDirectory)

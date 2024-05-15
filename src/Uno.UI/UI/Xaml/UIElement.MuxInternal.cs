@@ -1,22 +1,24 @@
 ﻿using System;
 using Windows.System;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{
-#if __NETSTD__
-		internal bool IsInLiveTree => IsLoading || IsLoaded;
+#if __CROSSRUNTIME__
+		internal bool IsInLiveTree => IsActiveInVisualTree;
 #elif __ANDROID__
 		internal bool IsInLiveTree => base.IsAttachedToWindow;
 #elif __IOS__ || __MACOS__
 		internal bool IsInLiveTree => base.Window != null;
+#elif IS_UNIT_TESTS // There is no visual tree concept in unit tests. This is here just in case it's needed indirectly, e.g. in UIElement.GetTransform
+		internal bool IsInLiveTree => true;
 #else
 		internal bool IsInLiveTree => throw new NotSupportedException();
 #endif
 
-#if !__NETSTD__
+#if !__CROSSRUNTIME__
 		internal void RemoveChild(UIElement viewToRemove) => VisualTreeHelper.RemoveChild(this, viewToRemove);
 
 		internal void AddChild(UIElement viewToAdd) => VisualTreeHelper.AddChild(this, viewToAdd);
@@ -26,7 +28,7 @@ namespace Windows.UI.Xaml
 
 #if !HAS_UNO_WINUI
 		// This is to ensure forward compatibility with WinUI
-		private protected DispatcherQueue DispatcherQueue => DispatcherQueue.GetForCurrentThread();
+		protected internal DispatcherQueue DispatcherQueue => DispatcherQueue.GetForCurrentThread();
 #endif
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
@@ -8,7 +8,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 	[SampleControlInfo(category: "ScrollViewer")]
 	public sealed partial class ScrollViewer_Options : Page
 	{
-		private static string[] Sizes = new[] {"Small", "Large"};
+		private static string[] Sizes = new[] { "Small", "Large" };
 		public ScrollViewer_Options()
 		{
 			this.InitializeComponent();

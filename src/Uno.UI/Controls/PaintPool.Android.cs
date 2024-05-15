@@ -8,9 +8,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Color = Windows.UI.Color;
 
 namespace Uno.UI.Controls
@@ -32,7 +32,7 @@ namespace Uno.UI.Controls
 		{
 			public long Timestamp { get; set; }
 		}
-		
+
 		private class EntryComparer : IEqualityComparer<Entry>
 		{
 			public bool Equals(Entry x, Entry y) =>
@@ -79,7 +79,7 @@ namespace Uno.UI.Controls
 			if (shader != null)
 			{
 				// The "Shader" native object can't be use as a cache key
-				return InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground,  shader, baselineAlignment, textDecorations);
+				return InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, shader, baselineAlignment, textDecorations);
 			}
 
 			var key = new Entry(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, textDecorations);
@@ -99,7 +99,7 @@ namespace Uno.UI.Controls
 
 		private static void TryScavenge()
 		{
-			if(_entriesList.Count > MaxEntries)
+			if (_entriesList.Count > MaxEntries)
 			{
 				var cutoff = ((_entriesTime.ElapsedTicks - _minEntryTimestamp) / 2) + _minEntryTimestamp;
 
@@ -123,7 +123,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily,  double fontSize, double characterSpacing, Color foreground, Shader shader,  BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
+		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Color foreground, Shader shader, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
 			var paintSpecs = BuildPaintValueSpecs(fontSize, characterSpacing);
 

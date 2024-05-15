@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 
@@ -28,7 +28,7 @@ public class QueryEx : IAppQuery
 		=> this;
 
 	public QueryEx Marked(string marked)
-		=> new (elts => _query(elts).Where(result => result.Element.Name == marked));
+		=> new(elts => _query(elts).Where(result => result.Element.Name == marked));
 
 	public QueryEx AtIndex(int index)
 		=> new(elts => _query(elts).Skip(index).Take(1));

@@ -1,16 +1,11 @@
-﻿#if __ANDROID__
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 using Android.App;
-using Android.Util;
 using Android.Views;
-using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
-using Uno.Foundation.Logging;
-using System.Threading.Tasks;
 
 namespace Windows.UI.ViewManagement
 {
@@ -18,6 +13,10 @@ namespace Windows.UI.ViewManagement
 	{
 		private StatusBarForegroundType? _foregroundType;
 		private bool? _isShown;
+
+		private readonly DisplayInformation _displayInformation = DisplayInformation.GetForCurrentViewSafe(); // TODO Uno: Avoid using this #16404.
+
+		private int? _statusBarHeightResourceId;
 
 		private void SetStatusBarForegroundType(StatusBarForegroundType foregroundType)
 		{
@@ -38,7 +37,9 @@ namespace Windows.UI.ViewManagement
 			{
 				var activity = ContextHelper.Current as Activity;
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 				int uiVisibility = (int)activity.Window.DecorView.SystemUiVisibility;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 				var isForegroundDark = (int)SystemUiFlags.LightStatusBar == (uiVisibility & (int)SystemUiFlags.LightStatusBar);
@@ -61,10 +62,9 @@ namespace Windows.UI.ViewManagement
 			var occludedRect = new Rect();
 
 			// Height
-			int resourceId = activity.Resources.GetIdentifier("status_bar_height", "dimen", "android");
-			if (resourceId > 0)
+			if (StatusBarHeightResourceId > 0)
 			{
-				var physicalStatusBarHeight = activity.Resources.GetDimensionPixelSize(resourceId);
+				var physicalStatusBarHeight = activity.Resources.GetDimensionPixelSize(StatusBarHeightResourceId);
 				var logicalStatusBarHeight = PhysicalToLogicalPixels(physicalStatusBarHeight);
 				occludedRect.Height = logicalStatusBarHeight;
 			}
@@ -77,33 +77,29 @@ namespace Windows.UI.ViewManagement
 			return occludedRect;
 		}
 
-		private double PhysicalToLogicalPixels(int physicalPixels)
-		{
-			using (DisplayMetrics displayMetrics = Application.Context.Resources.DisplayMetrics)
-			{
-				return physicalPixels / displayMetrics.Density;
-			}
-		}
+		private double PhysicalToLogicalPixels(int physicalPixels) => physicalPixels / _displayInformation.RawPixelsPerViewPixel;
 
 		public IAsyncAction ShowAsync()
 		{
-			return AsyncAction.FromTask(async ct =>
+			return AsyncAction.FromTask(ct =>
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = true;
 				UpdateSystemUiVisibility();
 				Showing?.Invoke(this, null);
+				return Task.CompletedTask;
 			});
 		}
 
 		public IAsyncAction HideAsync()
 		{
-			return AsyncAction.FromTask(async ct =>
+			return AsyncAction.FromTask(ct =>
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = false;
 				UpdateSystemUiVisibility();
 				Hiding?.Invoke(this, null);
+				return Task.CompletedTask;
 			});
 		}
 
@@ -112,7 +108,9 @@ namespace Windows.UI.ViewManagement
 #pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
 			var decorView = activity.Window.DecorView;
+#pragma warning disable CA1422 // Validate platform compatibility
 			var uiOptions = (int)decorView.SystemUiVisibility;
+#pragma warning restore CA1422 // Validate platform compatibility
 			var newUiOptions = (int)uiOptions;
 
 			if (_isShown.HasValue)
@@ -141,10 +139,15 @@ namespace Windows.UI.ViewManagement
 				}
 			}
 
+#pragma warning disable CA1422 // Validate platform compatibility
 			decorView.SystemUiVisibility = (StatusBarVisibility)newUiOptions;
+#pragma warning restore CA1422 // Validate platform compatibility
 			activity.OnConfigurationChanged(activity.Resources.Configuration);
 #pragma warning restore 618
 		}
+
+		private int StatusBarHeightResourceId =>
+			_statusBarHeightResourceId ??=
+				((Activity)ContextHelper.Current).Resources.GetIdentifier("status_bar_height", "dimen", "android");
 	}
 }
-#endif

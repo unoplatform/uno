@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal enum SelectionState
 	{
@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 
 	internal partial class SelectionNode
-    {
+	{
 		private SelectionModel m_manager;
 
 		// Note that a node can contain children who are leaf as well as 

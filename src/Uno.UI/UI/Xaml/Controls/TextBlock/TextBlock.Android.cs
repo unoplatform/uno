@@ -2,8 +2,8 @@
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -12,24 +12,27 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Linq;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 using Android.Text;
 using Android.Text.Style;
 using Android.Widget;
 using Android.Views;
 using System.Collections.Specialized;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Android.Graphics.Drawables;
 using static Uno.UI.ViewHelper;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
+using Uno.Collections;
 
-namespace Windows.UI.Xaml.Controls
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
 	{
@@ -37,7 +40,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly static IEventProvider _frameworkElementTrace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private static readonly Logger _log = typeof(TextBlock).Log();
 
 		public new static class TraceProvider
 		{
@@ -48,6 +50,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private readonly static TextUtils.TruncateAt TruncateEnd = TextUtils.TruncateAt.End;
+
+		private readonly static Android.Text.Layout.Alignment LayoutAlignCenter = Android.Text.Layout.Alignment.AlignCenter;
+		private readonly static Android.Text.Layout.Alignment LayoutAlignOpposite = Android.Text.Layout.Alignment.AlignOpposite;
+		private readonly static Android.Text.Layout.Alignment LayoutAlignNormal = Android.Text.Layout.Alignment.AlignNormal;
+
 		private readonly static Java.Lang.String EmptyString = new Java.Lang.String();
 		private static Java.Lang.Reflect.Constructor _maxLinedStaticLayout;
 		private static Java.Lang.Object _textDirectionHeuristics;
@@ -61,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Finds a private constructor that allows for the specification of MaxLines. 
+		/// Finds a private constructor that allows for the specification of MaxLines.
 		/// </summary>
 		/// <remarks>
 		/// This code may fail in a newer version of android that
@@ -80,13 +87,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_textDirectionHeuristics == null)
 			{
-#if __ANDROID_18__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 				{
 					_textDirectionHeuristics = (Java.Lang.Object)TextDirectionHeuristics.FirststrongLtr;
 				}
 				else
-#endif
 				{
 					// This is required because this class was not exposed until API 18 but available before.
 
@@ -103,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The last build layout will be stored in this two fields.
 		/// Both exists as most of the time, the measured layout size will be different
-		/// from the imposed arrange size, particularly when a control is placed in a 
+		/// from the imposed arrange size, particularly when a control is placed in a
 		/// StackPanel or a Grid.
 		/// </summary>
 		private LayoutBuilder _measureLayout, _arrangeLayout;
@@ -175,21 +180,21 @@ namespace Windows.UI.Xaml.Controls
 			switch (TextAlignment)
 			{
 				case TextAlignment.Center:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignCenter;
+					_layoutAlignment = LayoutAlignCenter;
 					_justificationMode = JustificationMode.None;
 					break;
 
 				case TextAlignment.Right:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignOpposite;
+					_layoutAlignment = LayoutAlignOpposite;
 					_justificationMode = JustificationMode.None;
 					break;
 				case TextAlignment.Justify:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignNormal;
+					_layoutAlignment = LayoutAlignNormal;
 					_justificationMode = JustificationMode.InterWord;
 					break;
 				default:
 				case TextAlignment.Left:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignNormal;
+					_layoutAlignment = LayoutAlignNormal;
 					_justificationMode = JustificationMode.None;
 					break;
 			}
@@ -227,9 +232,13 @@ namespace Windows.UI.Xaml.Controls
 				.GetColorWithOpacity(Foreground, Colors.Transparent)
 				.Value;
 
-			var shader = Foreground is GradientBrush gb
-				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
-				: null;
+			// The size is incorrect at this point, we update it later in `UpdateLayout`.
+			var shader = Foreground switch
+			{
+				GradientBrush gb => gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				RadialGradientBrush rgb => rgb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				_ => null,
+			};
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
@@ -262,15 +271,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (UseInlinesFastPath)
 			{
-				return new Java.Lang.String(Text);
+				return JavaStringCache.GetNativeString(Text);
 			}
 			else
 			{
 				var textFormatted = new UnoSpannableString(Text);
-				foreach (var inline in GetEffectiveInlines())
-				{
-					textFormatted.SetPaintSpan(inline.inline.GetPaint(), inline.start, inline.end);
-				}
 				return textFormatted;
 			}
 		}
@@ -357,8 +362,8 @@ namespace Windows.UI.Xaml.Controls
 					_measureLayout.MeasuredSize.Width > arrangeSize.Width ||
 					_measureLayout.MeasuredSize.Height > arrangeSize.Height;
 
-				// If the unbound requested height is below the arrange height. In this case, 
-				// the rendered text height is below the arrange size, but since the text 
+				// If the unbound requested height is below the arrange height. In this case,
+				// the rendered text height is below the arrange size, but since the text
 				// does not need the whole height to render completely, we can reuse the measured
 				// layout as the arrangeLayout.
 				var isSameUnboundHeight = _measureLayout.MeasuredSize.Height <= arrangeSize.Height && MaxLines == 0;
@@ -382,6 +387,8 @@ namespace Windows.UI.Xaml.Controls
 				{
 					UpdateNativeTextBlockLayout();
 				}
+
+				UpdateIsTextTrimmed();
 
 				return finalSize;
 			}
@@ -423,7 +430,6 @@ namespace Windows.UI.Xaml.Controls
 			if (!newLayout.Equals(layout))
 			{
 				layout = newLayout;
-
 				using (
 					_trace.WriteEventActivity(
 						TraceProvider.TextBlock_MakeLayoutStart,
@@ -435,15 +441,41 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			if (Foreground is GradientBrush gb)
+			{
+				layout.Layout.Paint.SetShader(gb.GetShader(_measureLayout.MeasuredSize.LogicalToPhysicalPixels()));
+			}
+			else if (Foreground is RadialGradientBrush rgb)
+			{
+				layout.Layout.Paint.SetShader(rgb.GetShader(_measureLayout.MeasuredSize.LogicalToPhysicalPixels()));
+			}
+
+			if (_textFormatted is UnoSpannableString textFormatted)
+			{
+				foreach (var inline in GetEffectiveInlines())
+				{
+					// TODO: This doesn't work when the Inline background is a GradientBrush, but works for SolidColorBrush
+					textFormatted.SetPaintSpan(inline.inline.GetPaint(_measureLayout.MeasuredSize), inline.start, inline.end);
+				}
+			}
+
 			return layout.MeasuredSize;
+		}
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed = IsTextTrimmable && (
+				_measureLayout.MeasuredSize.Width > _arrangeLayout.MeasuredSize.Width ||
+				_measureLayout.MeasuredSize.Height > _arrangeLayout.MeasuredSize.Height
+			);
 		}
 
 		/// <summary>
 		/// A layout builder, used to perform change tracking and avoid creating the same layout multiple times.
 		/// </summary>
 		/// <remarks>
-		/// This class is intentionally left here for easier 
-		/// change tracking. This class can be moved later on with no other 
+		/// This class is intentionally left here for easier
+		/// change tracking. This class can be moved later on with no other
 		/// changes.
 		/// </remarks>
 		private class LayoutBuilder : IEquatable<LayoutBuilder>
@@ -532,7 +564,7 @@ namespace Windows.UI.Xaml.Controls
 			/// Updates the current TextBlock layout to use the provided width and height.
 			/// </summary>
 			/// <remarks>
-			/// Specifies if the provided width must be used for the new layout, and 
+			/// Specifies if the provided width must be used for the new layout, and
 			/// not "at most" of the widh.
 			/// </remarks>
 			/// <returns>The size of the new layout</returns>
@@ -591,7 +623,7 @@ namespace Windows.UI.Xaml.Controls
 				var measuredHeight = Layout.GetLineTop(lineCount);
 				if (_lineHeight != 0 && _addedSpacing > 0)
 				{
-					// Unlike Windows, Android by default doesn't add spacing to final line. However Android seems to add (Top-Ascent) and 
+					// Unlike Windows, Android by default doesn't add spacing to final line. However Android seems to add (Top-Ascent) and
 					// (Bottom-Descent) as 'padding' above the top and below the bottom lines. As a 'safe' approach, we take the greater of the two values.
 					var heightFromLineHeight = (int)(lineCount * _lineHeight);
 					measuredHeight = Math.Max(measuredHeight, heightFromLineHeight);
@@ -625,7 +657,7 @@ namespace Windows.UI.Xaml.Controls
 					measuredHeight = Layout.GetLineTop(Layout.LineCount);
 				}
 
-				if(_maxLines > 0 && Layout.LineCount > _maxLines)
+				if (_maxLines > 0 && Layout.LineCount > _maxLines)
 				{
 					MakeLayout(
 						desiredWidth,

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using Windows.UI.Core;
 
-namespace Uno.UI.Skia.Platform.Extensions
+namespace Uno.UI.Runtime.Skia.Wpf.Extensions
 {
 	internal static class CursorExtensions
 	{

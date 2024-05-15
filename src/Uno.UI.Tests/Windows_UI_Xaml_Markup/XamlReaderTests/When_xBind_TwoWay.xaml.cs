@@ -1,6 +1,6 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -12,7 +12,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-            private bool _myBool;
+			private bool _myBool;
 			public bool MyBool
 			{
 				get => _myBool;

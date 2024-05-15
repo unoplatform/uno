@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls
 {
 	/// <summary>
-	/// Defines how a <see cref="Windows.UI.Xaml.Controls.ComboBox"/> tries to place it drop down.
+	/// Defines how a <see cref="Microsoft.UI.Xaml.Controls.ComboBox"/> tries to place it drop down.
 	/// </summary>
 	public enum DropDownPlacement
 	{
@@ -34,7 +34,7 @@ namespace Uno.UI.Xaml.Controls
 	}
 
 	/// <summary>
-	/// The configurations of the <see cref="Windows.UI.Xaml.Controls.ComboBox"/> specific to the Uno platform.
+	/// The configurations of the <see cref="Microsoft.UI.Xaml.Controls.ComboBox"/> specific to the Uno platform.
 	/// </summary>
 	public static class ComboBox
 	{
@@ -45,10 +45,10 @@ namespace Uno.UI.Xaml.Controls
 		/// This is only the preferred placement, the combo will still ensure to keep its drop down in the visual bounds of the window
 		/// (When content cannot be rendered out of the current window ...)
 		/// </remarks>
-		public static DependencyProperty DropDownPreferredPlacementProperty { get ; } = DependencyProperty.RegisterAttached(
-			"DropDownPreferredLocation",
+		public static DependencyProperty DropDownPreferredPlacementProperty { get; } = DependencyProperty.RegisterAttached(
+			"DropDownPreferredPlacement",
 			typeof(DropDownPlacement),
-			typeof(ComboBox),
+			typeof(Microsoft.UI.Xaml.Controls.ComboBox),
 			new FrameworkPropertyMetadata(FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement));
 
 		/// <summary>
@@ -60,7 +60,7 @@ namespace Uno.UI.Xaml.Controls
 		/// </remarks>
 		/// <param name="combo">The target ComboBox to configure</param>
 		/// <param name="mode">The updates mode to set</param>
-		public static void SetDropDownPreferredPlacement(Windows.UI.Xaml.Controls.ComboBox combo, DropDownPlacement mode)
+		public static void SetDropDownPreferredPlacement(Microsoft.UI.Xaml.Controls.ComboBox combo, DropDownPlacement mode)
 			=> combo.SetValue(DropDownPreferredPlacementProperty, mode);
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace Uno.UI.Xaml.Controls
 		/// </remarks>
 		/// <param name="combo">The target ComboBox</param>
 		/// <returns>The updates mode of the <paramref name="combo"/>.</returns>
-		public static DropDownPlacement GetDropDownPreferredPlacement(Windows.UI.Xaml.Controls.ComboBox combo)
+		public static DropDownPlacement GetDropDownPreferredPlacement(Microsoft.UI.Xaml.Controls.ComboBox combo)
 			=> (DropDownPlacement)combo.GetValue(DropDownPreferredPlacementProperty);
 	}
 

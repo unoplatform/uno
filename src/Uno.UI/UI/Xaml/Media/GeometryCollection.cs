@@ -1,9 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
-	public  partial class GeometryCollection : DependencyObjectCollection<Geometry>
+	public partial class GeometryCollection : DependencyObjectCollection<Geometry>
 	{
 		private protected override void OnCollectionChanged()
 		{

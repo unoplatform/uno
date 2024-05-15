@@ -5,11 +5,23 @@ using System.Linq;
 
 namespace Windows.Media.SpeechRecognition
 {
-	public  partial class SpeechRecognitionResult
+	public partial class SpeechRecognitionResult
 	{
-		public double RawConfidence { get; set; }
+#if __WASM__
+		// TODO: Make a breaking change for Android and iOS and make the constructor internal unconditionally.
+		internal SpeechRecognitionResult()
+		{
+		}
+#endif
 
+#if __WASM__
+		// TODO: Make a breaking change for Android and iOS and make the setters internal unconditionally.
+		public double RawConfidence { get; internal set; }
+		public string Text { get; internal set; }
+#else
+		public double RawConfidence { get; set; }
 		public string Text { get; set; }
+#endif
 
 		internal IReadOnlyList<SpeechRecognitionResult> Alternates { get; set; }
 

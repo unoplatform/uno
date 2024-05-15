@@ -10,23 +10,42 @@ using Foundation;
 using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
+using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MultilineTextBoxView : UITextView, ITextBoxView, DependencyObject, IFontScalable, IUIScrollView
 	{
 		private MultilineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private WeakReference<Uno.UI.Controls.Window> _window;
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private Action _foregroundChanged;
+
+		public override void Paste(NSObject sender) => HandlePaste(() => base.Paste(sender));
+
+		public override void PasteAndGo(NSObject sender) => HandlePaste(() => base.PasteAndGo(sender));
+
+		public override void PasteAndMatchStyle(NSObject sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
+
+		public override void PasteAndSearch(NSObject sender) => HandlePaste(() => base.PasteAndSearch(sender));
+
+		public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+
+		private void HandlePaste(Action baseAction)
+		{
+			var args = new TextControlPasteEventArgs();
+			var textBox = _textBox.GetTarget();
+			textBox?.RaisePaste(args);
+			if (!args.Handled)
+			{
+				baseAction.Invoke();
+			}
+		}
 
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 
@@ -104,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 			SetNeedsLayout();
 			//We need to schedule the scrolling on the dispatcher so that we wait for the whole UI to be done before scrolling.
 			//Because the multiline must have its height set so we can set properly the scrollviewer insets
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() => ScrollToCursor()
 			);
@@ -209,22 +228,16 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundChanged.Disposable = null;
 			var textBox = _textBox.GetTarget();
-
 			if (textBox != null)
 			{
-				var scb = newValue as SolidColorBrush;
-
-				if (scb != null)
+				if (newValue is SolidColorBrush scb)
 				{
-					_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
-					ApplyColor();
+					Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
 
 					void ApplyColor()
 					{
-						this.TextColor = scb.Color;
-						this.TintColor = scb.Color;
+						TextColor = scb.Color;
 					}
 				}
 			}
@@ -240,17 +253,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public override UITextRange SelectedTextRange
+		/// <summary>
+		/// Workaround for https://github.com/unoplatform/uno/issues/9430
+		/// </summary>
+		[Export("selectedTextRange")]
+		public new IntPtr SelectedTextRange
 		{
 			get
 			{
-				return base.SelectedTextRange;
+				return SinglelineTextBoxView.IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
 			}
 			set
 			{
-				if (base.SelectedTextRange != value)
+				if (SelectedTextRange != value)
 				{
-					base.SelectedTextRange = value;
+					SinglelineTextBoxView.void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
 					_textBox.GetTarget()?.OnSelectionChanged();
 				}
 			}
@@ -262,6 +279,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
 	}
 }

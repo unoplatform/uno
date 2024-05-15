@@ -10,12 +10,13 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
+#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__
 		private const string MicrosoftUriPrefix = "ms-";
 
-		private static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
+		internal static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
+#endif
 
-
-		public static Task<bool> LaunchUriAsync(Uri uri)
+		public static IAsyncOperation<bool> LaunchUriAsync(Uri uri)
 		{
 #if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__ || __SKIA__
 
@@ -26,25 +27,28 @@ namespace Windows.System
 			}
 
 #if !__WASM__
-			if (!CoreDispatcher.Main.HasThreadAccess)
+			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(Launcher).Log().Error($"{nameof(LaunchUriAsync)} must be called on the UI thread");
-				}
-				// LaunchUriAsync throws the following exception if used on UI thread on UWP
-				throw new InvalidOperationException($"{nameof(LaunchUriAsync)} must be called on the UI thread");
+				return LaunchUriPlatformAsync(uri).AsAsyncOperation();
 			}
+			else
+			{
+				return CoreDispatcher.Main.RunWithResultAsync(
+					priority: CoreDispatcherPriority.Normal,
+					task: async () => await LaunchUriPlatformAsync(uri)
+				).AsAsyncOperation();
+			}
+#else
+			return LaunchUriPlatformAsync(uri).AsAsyncOperation();
 #endif
 
-			return LaunchUriPlatformAsync(uri);
 #else
 			if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
 			{
 				typeof(Launcher).Log().Error($"{nameof(LaunchUriAsync)} is not implemented on this platform.");
 			}
 
-			return Task.FromResult(false);
+			return Task.FromResult(false).AsAsyncOperation();
 #endif
 		}
 
@@ -60,11 +64,7 @@ namespace Windows.System
 			}
 
 			// this method may run on the background thread on UWP
-#if !__WASM__
 			if (CoreDispatcher.Main.HasThreadAccess)
-#else
-			if(true)
-#endif
 			{
 				return QueryUriSupportPlatformAsync(uri, launchQuerySupportType).AsAsyncOperation();
 			}

@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
@@ -31,7 +31,7 @@ namespace UITests.Shared.Windows_System
 		private string _error;
 		private LaunchQuerySupportStatus _supportResult;
 
-		public LauncherTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public LauncherTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

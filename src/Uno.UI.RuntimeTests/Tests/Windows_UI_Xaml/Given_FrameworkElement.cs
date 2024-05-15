@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,34 +8,304 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
+using Microsoft.UI.Xaml.Automation;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Foundation.Metadata;
+
+
+
+
+
+
 #if __IOS__
 using UIKit;
 #endif
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	public class Given_FrameworkElement
+	public partial class Given_FrameworkElement
 	{
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Two_Grids_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Children =
+				{
+					redEllipse,
+				},
+			};
+
+			var parentGrid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Children =
+				{
+					grid,
+				},
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 77, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 76, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Border_And_Clip_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Children =
+				{
+					redEllipse,
+				},
+			};
+
+			var parentBorder = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Child = grid,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 77, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 76, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Grid_And_Border_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+			};
+
+			var parentGrid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Children =
+				{
+					border,
+				},
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 96, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Two_Borders_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+			};
+
+			var parentBorder = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderThickness = new(1),
+				Child = border,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), blueBounds);
+			Assert.AreEqual(new Rect(22, 2, 96, 96), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Border_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(20, 0, 99, 99), blueBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Clip_Grid_With_Translate_And_Ellipse()
+		{
+			var redEllipse = new Ellipse()
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 120,
+				Height = 120,
+			};
+
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderThickness = new(1),
+				RenderTransform = new TranslateTransform() { X = 20 },
+				Child = redEllipse,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			await UITestHelper.Load(root);
+
+			var screenshot = await UITestHelper.ScreenShot(root);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			Assert.AreEqual(new Rect(20, 0, 99, 99), blueBounds);
+			Assert.AreEqual(new Rect(21, 1, 97, 97), redBounds);
+		}
+#endif
+
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
@@ -66,7 +334,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("0", "-0", 0d, 0d)]
 		[DataRow("21", "42", 21d, 42d)]
 		[DataRow("+21", "+42", 21d, 42d)]
-#if NETFX_CORE // Those values only works on UWP, not on Uno
+#if WINAPPSDK // Those values only works on UWP, not on Uno
 		[DataRow("", "\n", double.NaN, double.NaN)]
 		[DataRow("abc", "0\n", double.NaN, 0d)]
 		[DataRow("∞", "-∞", double.NaN, double.NaN)]
@@ -77,12 +345,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			using var _ = new AssertionScope();
 
-			var sut1 = new ContentControl {Tag = w};
+			var sut1 = new ContentControl { Tag = w };
 
 			// Bind sut1.Width to sut1.Tag
 			sut1.SetBinding(
 				FrameworkElement.WidthProperty,
-				new Binding {Source = sut1, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut1, Path = new PropertyPath("Tag") });
 
 			sut1.Width.Should().Be(expectedW, "sut1: Width bound after setting value");
 
@@ -91,19 +359,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Bind sut2.Width to sut2.Tag
 			sut2.SetBinding(
 				FrameworkElement.WidthProperty,
-				new Binding {Source = sut2, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut2, Path = new PropertyPath("Tag") });
 
 			// Set sut2.Tag AFTER the binding
 			sut2.Tag = w;
 
 			sut2.Width.Should().Be(expectedW, "sut2: Width bound before setting value");
 
-			var sut3 = new ContentControl {Tag = h};
+			var sut3 = new ContentControl { Tag = h };
 
 			// Bind sut3.Height to sut3.Tag
 			sut3.SetBinding(
 				FrameworkElement.HeightProperty,
-				new Binding {Source = sut3, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut3, Path = new PropertyPath("Tag") });
 
 			sut3.Height.Should().Be(expectedH, "sut3: Height bound after setting value");
 
@@ -112,7 +380,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Bind sut4.Height to sut4.Tag
 			sut4.SetBinding(
 				FrameworkElement.HeightProperty,
-				new Binding {Source = sut4, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut4, Path = new PropertyPath("Tag") });
 
 			// Set sut4.Tag AFTER the binding
 			sut4.Tag = h;
@@ -129,7 +397,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("-Infinity ")]
 		[DataRow("	Infinity")]
 		[ExpectedException(typeof(ArgumentException))]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[Ignore]
 #endif
 		public void When_Setting_Sizes_To_Invalid_Values_Then_Should_Throw(string variant)
@@ -141,6 +409,99 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.SetBinding(
 				FrameworkElement.WidthProperty,
 				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+		}
+
+		private sealed partial class MyPanel : Panel
+		{
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				var child = this.Children.Single();
+				if (child is FrameworkElement { Name: "second" } childAsFE)
+				{
+					childAsFE.HorizontalAlignment = HorizontalAlignment.Left;
+				}
+
+				if (child is FrameworkElement { Name: "third" } childAsFE2)
+				{
+					childAsFE2.HorizontalAlignment = HorizontalAlignment.Center;
+				}
+
+				child.Measure(availableSize);
+
+				return child.DesiredSize;
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				var child = this.Children.Single();
+				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+				return finalSize;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Alignment_Changes_During_Measure()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var first = new MyPanel()
+			{
+				Name = "first",
+				Width = 50,
+				Background = new SolidColorBrush(Colors.Gray),
+				Children =
+				{
+					new MyPanel()
+					{
+						Background = new SolidColorBrush(Colors.Pink),
+						Name = "second",
+						Width = 50,
+						Children =
+						{
+							new Grid()
+							{
+								Background = new SolidColorBrush(Colors.Green),
+								Name = "third",
+								Children =
+								{
+									new Rectangle()
+									{
+										Fill = new SolidColorBrush(Colors.Red),
+										Width = 20,
+										Height = 20,
+										Name = "rectangle",
+									},
+								},
+							},
+						}
+					},
+				}
+			};
+
+			await UITestHelper.Load(first);
+			var actualBitmap = await UITestHelper.ScreenShot(first);
+
+			var expected = new Border()
+			{
+				Width = 50,
+				Height = 20,
+				Background = new SolidColorBrush(Colors.Pink),
+				Child = new Border()
+				{
+					Width = 20,
+					Height = 20,
+					Background = new SolidColorBrush(Colors.Red),
+				}
+			};
+
+			await UITestHelper.Load(expected);
+			var expectedBitmap = await UITestHelper.ScreenShot(expected);
+
+			await ImageAssert.AreEqualAsync(actualBitmap, expectedBitmap);
 		}
 
 		[TestMethod]
@@ -163,7 +524,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__
+#if __ANDROID__ || __MACOS__ // #9282 for macOS
 		[Ignore]
 #endif
 		public async Task When_InvalidateDuringMeasure_Then_GetReMeasured()
@@ -181,13 +542,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = sut;
 			await TestServices.WindowHelper.WaitForIdle();
 
+			// count == 1 on WinUI
+#if __SKIA__ || __WASM__
+			Assert.AreEqual(1, count);
+#else
 			Assert.AreEqual(2, count);
+#endif
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 #if __ANDROID__ || __IOS__
 		[Ignore]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_InvalidateDuringArrange_Then_GetReArranged()
 		{
@@ -207,6 +576,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(2, count);
 		}
 
+#if !WINAPPSDK
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_InvalidateDuringArrange_Then_DoesNotInvalidateParents()
+		{
+			var sut = new Grid
+			{
+				Margin = new Thickness(0, 100, 0, 0),
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
+				BorderThickness = new Thickness(5),
+				MinWidth = 100,
+				MinHeight = 100,
+				RowDefinitions =
+				{
+					new RowDefinition{Height = 75},
+					new RowDefinition(),
+					//new RowDefinition{Height = 75}, // Not working on iOS when the line below is commented
+				},
+				Children =
+				{
+					new TextBlock{Text = "Hello world"},
+					new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater
+						{
+							ItemsSource="0123456789",
+							ItemTemplate = new DataTemplate(() => new Border
+							{
+								BorderBrush= new SolidColorBrush(Microsoft.UI.Colors.Red),
+								Margin= new Thickness(5),
+								BorderThickness=new Thickness(5),
+								Width=300,
+								Child = new TextBlock
+								{
+									TextWrapping= TextWrapping.Wrap,
+									Foreground = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse)
+								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							}),
+							Layout = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
+						}
+						.Apply(ir => Grid.SetRow(ir, 1))
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			sut.IsArrangeDirty.Should().BeFalse();
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+#endif
+
 		[TestMethod]
 		public Task MeasureWithNan() =>
 			RunOnUIThread.ExecuteAsync(() =>
@@ -217,9 +638,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
 
+#if __CROSSRUNTIME__
+				// Unlike WinUI, we don't crash.
+				SUT.Measure(new Size(double.NaN, double.NaN));
+				SUT.Measure(new Size(42.0, double.NaN));
+				SUT.Measure(new Size(double.NaN, 42.0));
+#else
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+#endif
 			});
 
 		[TestMethod]
@@ -276,29 +704,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 #endif
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
+		public partial class MyGrid : Grid
+		{
+			public Size AvailableSizeUsedForMeasure { get; private set; }
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				AvailableSizeUsedForMeasure = availableSize;
+				return base.MeasureOverride(availableSize);
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __ANDROID__ || __IOS__
+		[Ignore("Layouter doesn't work properly")]
+#endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
 		{
 			Border content = null;
 			ContentControl contentCtl = null;
-			Grid grid = null;
+			MyGrid grid = null;
 
 			content = new Border { Width = 100, Height = 15 };
 
 			contentCtl = new ContentControl { MinWidth = 110, Content = content };
 
-			grid = new Grid() { MinWidth = 120 };
+			grid = new MyGrid() { MinWidth = 120 };
 
 			grid.Children.Add(contentCtl);
 
 			grid.Measure(new Size(50, 50));
 
+			// This is matching Windows and is important to keep the behavior of this test like this.
+			Assert.AreEqual(new Size(120, 50), grid.AvailableSizeUsedForMeasure);
+
 			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
-#if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+
+#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
 			Assert.AreEqual(new Size(100, 15), content.DesiredSize);
 #endif
@@ -311,7 +756,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(10);
 			await TestServices.WindowHelper.WaitForIdle();
 
-#if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			var ls1 = LayoutInformation.GetLayoutSlot(grid);
 			Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
 			var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
@@ -351,7 +796,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("Right", "Top", null, null, 100d, 50d, null, null, "92;0;108;66|96;8;100;50|104;21;84;24")]
 		// Left/Bottom: Only sizes (width & height) defined
 		[DataRow("Left", "Bottom", null, null, 100d, 50d, null, null, "0;34;108;66|4;42;100;50|12;55;84;24")]
-#if NETFX_CORE // Those tests only works on UWP, not Uno yet
+#if WINAPPSDK // Those tests only works on UWP, not Uno yet
 		// Center: Only sizes (width & height) defined, but no breath space for margin
 		[DataRow("Center", "Center", null, null, 200d, 100d, null, null, "0;0;200;100|4;8;200;100|12;21;184;74")]
 		// Center: Only sizes(width & height) defined, but larger than available size
@@ -367,8 +812,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("Center", "Center", 25d, 5d, 100d, 50d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
 		[TestMethod]
 		[RunsOnUIThread]
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
 		public async Task TestVariousArrangedPosition(
 			string horizontal,
@@ -393,10 +838,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Name = "child",
 				Background = new SolidColorBrush(Colors.Blue),
 				Child = innerChild,
-				Margin = ThicknessHelper.FromLengths(4d, 8d, 4d, 8d),
-				BorderThickness = ThicknessHelper.FromLengths(3d, 6d, 3d, 6d),
+				Margin = new Thickness(4d, 8d, 4d, 8d),
+				BorderThickness = new Thickness(3d, 6d, 3d, 6d),
 				BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
-				Padding = ThicknessHelper.FromLengths(5d, 7d, 5d, 7d),
+				Padding = new Thickness(5d, 7d, 5d, 7d),
 			};
 
 			var childDecorator = new Border
@@ -484,11 +929,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_AreDimensionsConstrained_And_Margin()
 		{
 			const double setHeight = 45d;
-			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = ThicknessHelper.FromUniformLength(8) };
-#if !NETFX_CORE
+			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = new Thickness(8) };
+#if !WINAPPSDK
 			outerPanel.AreDimensionsConstrained = true;
 #endif
 			var innerView = new AspectRatioView { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
@@ -508,9 +956,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Negative_Margin_NonZero_Size()
 		{
-			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = ThicknessHelper.FromLengths(0, -16, 0, 0), Height = 120 };
+			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0), Height = 120 };
 
 			var hostPanel = new Grid();
 			hostPanel.Children.Add(SUT);
@@ -525,7 +976,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Negative_Margin_Zero_Size()
 		{
-			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = ThicknessHelper.FromLengths(0, -16, 0, 0) };
+			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0) };
 
 			var hostPanel = new Grid();
 			hostPanel.Children.Add(SUT);
@@ -552,13 +1003,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			hostPanel.Children.Add(sut);
 
+			await TestServices.WindowHelper.WaitForIdle();
+
 			Assert.AreEqual(1, loadingCount, "loading");
 			Assert.AreEqual(1, loadedCount, "loaded");
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Add_Native_Child_To_ElementCollection()
+		public void When_Add_Native_Child_To_ElementCollection()
 		{
 			var panel = new Grid();
 			var tbNativeTyped = (_View)new TextBlock();
@@ -569,12 +1022,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public void When_Set_Name()
+		{
+			var SUT = new Border();
+			SUT.Name = "Test";
+			var dpName = SUT.GetValue(FrameworkElement.NameProperty);
+			Assert.AreEqual("Test", dpName);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Set_NameProperty()
+		{
+			var SUT = new Border();
+			SUT.SetValue(FrameworkElement.NameProperty, "Test");
+			var name = SUT.Name;
+			Assert.AreEqual("Test", name);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Add_Element_Then_Unload_Raised()
 		{
 			var sut = new Border();
-			var hostPanel = new Grid {Children = {sut}};
+			var hostPanel = new Grid { Children = { sut } };
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
+
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var unloadCount = 0;
@@ -587,6 +1061,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(hostPanel._children.Contains(sut));
 #endif
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_BaseUri()
+		{
+			var sut = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ButtonUserControl();
+
+			Assert.AreEqual(
+				new Uri("ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ButtonUserControl.xaml"),
+				sut.BaseUri);
+		}
+
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HasNativeChildren_Should_Measure_And_Arrange()
+		{
+			var sut = new MyNativeContainer() { Width = 100, Height = 100 };
+			var nativeView = new UILabel() { Text = "Hello Uno Platform" };
+
+			sut.AddChild(nativeView);
+
+			var hostPanel = new Grid { Children = { sut } };
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, sut.Subviews.Length);
+
+			Assert.AreEqual(100, nativeView.Frame.Width);
+			Assert.AreEqual(100, nativeView.Frame.Height);
+
+			Assert.AreEqual(0, nativeView.Frame.X);
+			Assert.AreEqual(0, nativeView.Frame.Y);
+		}
+#endif
 
 #if UNO_REFERENCE_API
 		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
@@ -604,18 +1114,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.Loading += (snd, e) => loadingCount++;
 			sut.Loaded += (snd, e) => loadedCount++;
 
-			hostPanel.Loading += (snd, e) =>
+			hostPanel.Loading += async (snd, e) =>
 			{
 				hostPanel.Children.Add(sut);
 
-				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
-				//		 only after the completion of the current handler.
-				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(0, loadingCount, "loading");
 				Assert.AreEqual(0, loadedCount, "loaded");
 				success = true;
 			};
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
+
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(success);
@@ -639,24 +1148,133 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				hostPanel.Children.Add(sut);
 
-				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
-				//		 only after the completion of the current handler.
-				// Note 2: On UWP, when adding a child to the parent while in the parent's loading event handler (i.e. this case)
-				//		   the child will receive the Loaded ** BEFORE ** the Loading event.
-				Assert.AreEqual(1, loadingCount, "loading");
-				Assert.AreEqual(1, loadedCount, "loaded");
-
+				Assert.AreEqual(0, loadingCount, "loading");
+				Assert.AreEqual(0, loadedCount, "loaded");
 				success = true;
 			};
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
+
 			await TestServices.WindowHelper.WaitForIdle();
+
+			// NOTE: The following asserts are flaky on WinUI but not Uno.
+			// In WinUI, sometimes the above WaitForIdle isn't enough for Loaded to be raised.
 
 			Assert.IsTrue(success);
 			Assert.AreEqual(1, loadingCount, "loading");
 			Assert.AreEqual(1, loadedCount, "loaded");
 		}
 #endif
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		[Ignore("Works only with proper lifecycle.")]
+#endif
+		public async Task When_Removed_After_Add_But_Before_Loaded()
+		{
+			var sp = new StackPanel
+			{
+				Width = 200,
+				Height = 500,
+			};
+
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(sp);
+			List<string> events = new();
+
+			var sut = new Button() { Content = "Click me" };
+			sut.Loading += Sut_Loading;
+			sut.Loaded += Sut_Loaded;
+			sut.Unloaded += Sut_Unloaded;
+
+			sp.Children.Add(sut);
+			sp.Children.Remove(sut);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// NOTE: On WinUI, Unloaded is fired.
+			// In Uno, we only fire Unloaded if IsLoaded is true.
+			// See UIElement.Leave for more details.
+			Assert.AreEqual(0, events.Count);
+			//Assert.AreEqual("Unloaded", events[0]);
+
+			void Sut_Loading(FrameworkElement sender, object args)
+			{
+				events.Add("Loading");
+			}
+
+			void Sut_Loaded(object sender, RoutedEventArgs args)
+			{
+				events.Add("Loaded");
+			}
+
+			void Sut_Unloaded(object sender, RoutedEventArgs args)
+			{
+				events.Add("Unloaded");
+			}
+		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE || !HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task TestEventOrder()
+		{
+			var sut = new ControlLoggingEventsSequence();
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(sut);
+			var events = sut.Events;
+#if !HAS_UNO
+			Assert.AreEqual(8, events.Count);
+			Assert.AreEqual("Parent Loading", events[0]);
+			Assert.AreEqual("Child Loading", events[1]);
+			Assert.AreEqual("Parent SizeChanged", events[2]);
+			Assert.AreEqual("Child SizeChanged", events[3]);
+			Assert.AreEqual("Child LayoutUpdated", events[4]);
+			Assert.AreEqual("Parent LayoutUpdated", events[5]);
+			Assert.AreEqual("Child Loaded", events[6]);
+			Assert.AreEqual("Parent Loaded", events[7]);
+#else
+			Assert.AreEqual(9, events.Count);
+			Assert.AreEqual("Parent Loading", events[0]);
+			Assert.AreEqual("Child Loading", events[1]);
+			Assert.AreEqual("Child SizeChanged", events[2]);
+			Assert.AreEqual("Child LayoutUpdated", events[3]);
+			Assert.AreEqual("Parent SizeChanged", events[4]);
+			Assert.AreEqual("Parent LayoutUpdated", events[5]);
+			Assert.AreEqual("Child Loaded", events[6]);
+			Assert.AreEqual("Parent Loaded", events[7]);
+			Assert.AreEqual("Child LayoutUpdated", events[8]);
+#endif
+		}
+#endif
+	}
+
+	public partial class ControlLoggingEventsSequence : StackPanel
+	{
+		private readonly List<string> _events = new();
+
+		public IReadOnlyList<string> Events => _events.AsReadOnly();
+
+		public ControlLoggingEventsSequence()
+		{
+			var btn = new Button() { Content = "Click" };
+			btn.Loading += Btn_Loading;
+			btn.Loaded += Btn_Loaded;
+			btn.LayoutUpdated += Btn_LayoutUpdated;
+			btn.SizeChanged += Btn_SizeChanged;
+			Loading += ControlLoggingEventsSequence_Loading;
+			Loaded += ControlLoggingEventsSequence_Loaded;
+			LayoutUpdated += ControlLoggingEventsSequence_LayoutUpdated;
+			SizeChanged += ControlLoggingEventsSequence_SizeChanged;
+			this.Children.Add(btn);
+		}
+
+		private void Btn_SizeChanged(object sender, SizeChangedEventArgs args) => _events.Add("Child SizeChanged");
+		private void Btn_LayoutUpdated(object sender, object e) => _events.Add("Child LayoutUpdated");
+		private void Btn_Loaded(object sender, RoutedEventArgs e) => _events.Add("Child Loaded");
+		private void Btn_Loading(FrameworkElement sender, object args) => _events.Add("Child Loading");
+		private void ControlLoggingEventsSequence_SizeChanged(object sender, SizeChangedEventArgs args) => _events.Add("Parent SizeChanged");
+		private void ControlLoggingEventsSequence_LayoutUpdated(object sender, object e) => _events.Add("Parent LayoutUpdated");
+		private void ControlLoggingEventsSequence_Loaded(object sender, RoutedEventArgs e) => _events.Add("Parent Loaded");
+		private void ControlLoggingEventsSequence_Loading(FrameworkElement sender, object args) => _events.Add("Parent Loading");
 	}
 
 	public partial class MyControl01 : FrameworkElement
@@ -685,6 +1303,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 
+	public partial class MyNativeContainer : FrameworkElement { }
+
 	public partial class AspectRatioView : FrameworkElement
 	{
 		public double AspectRatio { get; set; } = 1.5;
@@ -699,7 +1319,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class ObservableLayoutingControl : FrameworkElement
 	{
-		public event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
+		public
+#if __ANDROID__
+		new
+#endif
+		event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
 
 		public event TypedEventHandler<ObservableLayoutingControl, Size> OnArrange;
 

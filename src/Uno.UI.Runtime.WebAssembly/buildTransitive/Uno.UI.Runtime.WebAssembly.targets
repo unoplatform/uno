@@ -1,21 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
-  </PropertyGroup>
+	<Target Name="_UnoSkiaWasmFeatureDefines" AfterTargets="PrepareForBuild">
 
-  <Target Name="_UnoSkiaWasmFeatureDefines"
-		  BeforeTargets="PrepareForBuild">
+		<PropertyGroup>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_WASM;__WASM__</DefineConstants>
+		</PropertyGroup>
 
-	<PropertyGroup>
-	  <UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API;HAS_UNO_WASM;__WASM__</UnoDefineConstants>
-	</PropertyGroup>
-
-	<!-- Merge the UnoDefineConstants with the existing constants -->
-	<CreateProperty Value="$(DefineConstants);$(UnoDefineConstants)">
-	  <Output TaskParameter="Value" PropertyName="DefineConstants" />
-	</CreateProperty>
-  </Target>
+	</Target>
 
   <Target Name="_ForceUnoUIRuntimeWasm"
 	  BeforeTargets="BeforeCompile">

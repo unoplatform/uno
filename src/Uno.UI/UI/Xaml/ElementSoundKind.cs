@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines constants that specify the sound played by the ElementSoundPlayer.Play method.

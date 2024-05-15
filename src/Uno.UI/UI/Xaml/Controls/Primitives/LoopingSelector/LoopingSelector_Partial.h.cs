@@ -1,17 +1,17 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 
 	public partial class LoopingSelector : Control
 	{
 
-	// public
+		// public
 		//public partial void OnPropertyChanged(
 		//	 xaml.IDependencyPropertyChangedEventArgs pArgs);
 
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		//public partial void VisualIndexToItemIndex( uint visualIndex, out uint itemIndex);
 
-	// protected
+		// protected
 
 		// FrameworkElementOverrides
 		//protected partial void MeasureOverrideImpl(wf.Size availableSize, out wf.Size returnValue);
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// IControlOverrides
 		//protected partial void OnKeyDownImpl( xaml_input.IKeyRoutedEventArgs pEventArgs);
 
-	// private
+		// private
 		private enum ListEnd
 		{
 			Head,

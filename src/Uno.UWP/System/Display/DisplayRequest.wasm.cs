@@ -5,22 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Foundation;
 
+using NativeMethods = __Windows.__System.Display.DisplayRequest.NativeMethods;
+
 namespace Windows.System.Display
 {
-    public partial class DisplayRequest
-    {
-		private const string JsType = "Windows.System.Display.DisplayRequest";
-
+	public partial class DisplayRequest
+	{
 		partial void ActivateScreenLock()
 		{
-			var command = $"{JsType}.activateScreenLock()";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.ActivateScreenLock();
 		}
 
 		partial void DeactivateScreenLock()
 		{
-			var command = $"{JsType}.deactivateScreenLock()";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.DeactivateScreenLock();
 		}
 	}
 }

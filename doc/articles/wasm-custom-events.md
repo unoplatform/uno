@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.WasmCustomEvents
+---
+
 # (Wasm) Handling custom HTML events
 
 There is a specification in HTML to create custom DOM events.

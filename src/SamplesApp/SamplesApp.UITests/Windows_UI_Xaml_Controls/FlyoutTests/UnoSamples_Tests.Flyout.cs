@@ -61,6 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test is flaky on iOS #9080
 		public void FlyoutTest_Target()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Target");
@@ -120,6 +121,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Very flaky on iOS #9080
 		public void FlyoutTest_Unloaded()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Unloaded");
@@ -197,7 +199,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		[ActivePlatforms(Platform.Android)] // Test authoring problem on iOS, flaky on WASM #9080
 		public void Flyout_TemplatedParent()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.Flyout.Flyout_TemplatedParent");

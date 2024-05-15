@@ -5,9 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
@@ -35,11 +35,7 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 
 		private static async Task<IRandomAccessStream> GetStream(string url)
 		{
-#if __WASM__
-			using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
-#else
 			using var httpClient = new HttpClient();
-#endif
 			var data = await httpClient.GetByteArrayAsync(url);
 
 			return new MemoryStream(data).AsRandomAccessStream();

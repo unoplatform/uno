@@ -1,65 +1,82 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.ApplicationModel;
-using Windows.Graphics.Display;
 using Windows.UI.Core;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Threading;
-using Uno.UI;
-using Uno.UI.Xaml;
-using Uno.Foundation.Extensibility;
+using System.Globalization;
+using Windows.ApplicationModel.Core;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
 	{
-		private static bool _startInvoked = false;
+		private static bool _startInvoked;
 		private static string _arguments = "";
 
-		private readonly IApplicationExtension? _applicationExtension;
-
-		internal ISkiaHost? Host { get; set; }
-
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
-			Package.SetEntryAssembly(this.GetType().Assembly);
+			SetCurrentLanguage();
 
 			if (!_startInvoked)
 			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
-			ApiExtensibility.CreateInstance(this, out _applicationExtension);
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+			CoreApplication.SetInvalidateRender(compositionTarget =>
+			{
+				Debug.Assert(compositionTarget is null or CompositionTarget);
+
+				if (compositionTarget is CompositionTarget { Root: { } root })
+				{
+					foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+					{
+						if (cRoot?.XamlRoot is { } xRoot && ReferenceEquals(xRoot.VisualTree.RootElement.Visual, root))
+						{
+							xRoot.QueueInvalidateRender();
+							return;
+						}
+					}
+				}
+			});
 		}
 
-		internal static void StartWithArguments(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
+		internal ISkiaApplicationHost? Host { get; set; }
+
+		internal static SynchronizationContext ApplicationSynchronizationContext { get; private set; }
+
+		private void SetCurrentLanguage()
+		{
+			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&
+				CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "iv")
+			{
+				try
+				{
+					// Fallback to English
+					var cultureInfo = CultureInfo.CreateSpecificCulture("en");
+					CultureInfo.CurrentUICulture = cultureInfo;
+					CultureInfo.CurrentCulture = cultureInfo;
+					Thread.CurrentThread.CurrentCulture = cultureInfo;
+					Thread.CurrentThread.CurrentUICulture = cultureInfo;
+				}
+				catch (Exception ex)
+				{
+					this.Log().Error($"Failed to set default culture", ex);
+				}
+			}
+		}
+
+		internal static void StartWithArguments(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
 			_arguments = GetCommandLineArgsWithoutExecutable();
 			Start(callback);
-		}
-
-		public void Exit()
-		{
-			if (_applicationExtension != null && _applicationExtension.CanExit)
-			{
-				_applicationExtension.Exit();
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning("This platform does not support application exit.");
-				}
-			}
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -67,7 +84,7 @@ namespace Windows.UI.Xaml
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(
-				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
+				ApplicationSynchronizationContext = new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
 
 			callback(new ApplicationInitializationCallbackParams());
@@ -77,35 +94,20 @@ namespace Windows.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				// Force init
-				Window.Current.ToString();
-
 				InitializationCompleted();
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+				// OnLaunched should execute only for full apps, not for individual islands.
+				if (CoreApplication.IsFullFledgedApp)
+				{
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+				}
 			}
 		}
 
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
-
-		partial void ObserveSystemThemeChanges()
-		{
-			if (_applicationExtension != null)
-			{
-				_applicationExtension.SystemThemeChanged += SystemThemeChanged;
-			}
-
-			_systemThemeChangesObserved = true;
-		}
-
-		private void SystemThemeChanged(object sender, EventArgs e) => OnSystemThemeChanged();
 	}
 
 	internal interface IApplicationEvents
-	{
-	}
-
-	internal interface ISkiaHost
 	{
 	}
 }

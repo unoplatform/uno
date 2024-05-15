@@ -95,7 +95,7 @@ namespace Windows.UI.ViewManagement
 			if (!args.EnsuredFocusedElementInView)
 			{
 				// Wait for proper element to be focused
-				UI.Core.CoreDispatcher.Main.RunAsync(
+				_ = UI.Core.CoreDispatcher.Main.RunAsync(
 					UI.Core.CoreDispatcherPriority.Normal,
 					() => EnsureFocusedElementInViewPartial()
 				);

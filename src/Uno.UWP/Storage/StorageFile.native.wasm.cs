@@ -10,6 +10,8 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using SystemPath = global::System.IO.Path;
 
+using NativeMethods = __Windows.Storage.StorageFile.NativeMethods;
+
 namespace Windows.Storage
 {
 	public partial class StorageFile
@@ -22,8 +24,6 @@ namespace Windows.Storage
 
 		internal sealed class NativeStorageFile : ImplementationBase
 		{
-			private const string JsType = "Uno.Storage.NativeStorageFile";
-
 			// Used to keep track of the File handle on the Typescript side.
 			private readonly Guid _id;
 			private readonly string _fileName;
@@ -56,10 +56,13 @@ namespace Windows.Storage
 
 			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 			{
-				var basicPropertiesString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getBasicPropertiesAsync(\"{_id}\")");
+				var basicPropertiesString = await NativeMethods.GetBasicPropertiesAsync(_id.ToString());
+
 				var parts = basicPropertiesString.Split('|');
 
+#pragma warning disable CA1806 // Do not ignore method results
 				ulong.TryParse(parts[0], out ulong size);
+#pragma warning restore CA1806 // Do not ignore method results
 
 				var dateTimeModified = DateTimeOffset.UtcNow;
 				if (long.TryParse(parts[1], out var dateModifiedUnixMilliseconds))

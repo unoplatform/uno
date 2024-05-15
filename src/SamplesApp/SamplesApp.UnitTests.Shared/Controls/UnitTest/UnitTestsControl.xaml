@@ -34,16 +34,14 @@
 				<Button
 					x:Name="runButton"
 					Grid.Column="0"
-					not_skia:Content="▶ Run"
-					skia:Content="Run"
+					Content="▶ Run"
 					Click="OnRunTests"
 					Margin="0,0,4,0"/>
 				<Button
 					x:Name="stopButton"
 					Grid.Column="1"
 					IsEnabled="False"
-					not_skia:Content="⏹️ Stop"
-					skia:Content="Stop"
+					Content="⏹️ Stop"
 					Click="OnStopTests"
 					Margin="0,0,4,0" />
 				<TextBox
@@ -60,17 +58,17 @@
 							<StackPanel>
 								<ToggleButton
 									x:Name="consoleOutput"
-									not_skia:Content="🖥️ Console Output"
-									skia:Content="Console Output" />
+									Content="🖥️ Console Output"
+									/>
 								<ToggleButton
 									x:Name="runIgnored"
-									not_skia:Content="🚫 Run [Ignore]"
-									skia:Content="Run [Ignore]" />
+									Content="🚫 Run [Ignore]"
+									/>
 								<ToggleButton
 									x:Name="retry"
 									IsChecked="True"
-									not_skia:Content="➰ Auto retry"
-									skia:Content="Auto retry" />
+									Content="➰ Auto retry"
+									/>
 							</StackPanel>
 						</Flyout>
 					</Button.Flyout>
@@ -85,8 +83,8 @@
 			<StackPanel Orientation="Horizontal">
 				<TextBlock
 					FontSize="15"
-					not_skia:Text="🏃‍: "
-					skia:Text="Run: "/>
+					Text="🏃‍: "
+					/>
 				<TextBlock
 					FontSize="15"
 					x:Name="runTestCount"
@@ -94,8 +92,8 @@
 
 				<TextBlock
 					FontSize="15"
-					not_skia:Text=" 🚫: "
-					skia:Text=" Ignored: " />
+					Text=" 🚫: "
+					/>
 				<TextBlock
 					FontSize="15"
 					x:Name="ignoredTestCount"
@@ -104,8 +102,8 @@
 
 				<TextBlock
 					FontSize="15"
-					not_skia:Text=" ✔️: "
-					skia:Text=" Success: " />
+					Text=" ✔️: "
+					/>
 				<TextBlock
 					FontSize="15"
 					x:Name="succeededTestCount"
@@ -114,8 +112,7 @@
 
 				<TextBlock
 					FontSize="15"
-					not_skia:Text=" ❌: "
-					skia:Text=" Failed: " />
+					Text=" ❌: " />
 				<TextBlock
 					FontSize="15"
 					x:Name="failedTestCount"

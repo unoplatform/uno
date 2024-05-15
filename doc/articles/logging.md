@@ -1,20 +1,24 @@
+---
+uid: Uno.Development.Logging
+---
+
 # Logging
 
 Virtually every production level application should utilize some form of logging. During development, especially when developing WASM applications where using a debugger can be more challenging, diagnostic logs can be invaluable for identifying issues. Once in production, capturing information about critical failures can be invaluable.
 
-## Logging in Uno
+## Logging in Uno Platform
 
 The Uno platform makes use of the Microsoft logging NuGet packages to provide comprehensive logging support.
 
 ### Configuring logging
 
-The standard Uno template configures logging in the **Shared** project **App.xaml.cs** file.
+The standard Uno template configures logging in the **App.xaml.cs** file.
 
 1. Add the [`Uno.UI.Adapter.Microsoft.Extensions.Logging`](https://www.nuget.org/packages/Uno.UI.Adapter.Microsoft.Extensions.Logging/) NuGet package to your platform projects.
 1. In the iOS project, add the [`Uno.Extensions.Logging.OSLog`](https://www.nuget.org/packages/Uno.Extensions.Logging.OSLog/) NuGet package to your platform projects.
 1. In the WebAssembly project, add the [`Uno.Extensions.Logging.WebAssembly.Console`](https://www.nuget.org/packages/Uno.Extensions.Logging.WebAssembly.Console/) NuGet package to your platform projects.
 
-1. In the **Shared** project and open the **App.xaml.cs** file.
+1. Open the **App.xaml.cs** file.
 
 1. Locate the **App** constructor and note that logging is configured first:
 
@@ -32,25 +36,26 @@ The standard Uno template configures logging in the **Shared** project **App.xam
 
     private static void InitializeLogging()
     {
-#if DEBUG
-		// Logging is disabled by default for release builds, as it incurs a significant
-		// initialization cost from Microsoft.Extensions.Logging setup. If startup performance
-		// is a concern for your application, keep this disabled. If you're running on web or 
-		// desktop targets, you can use url or command line parameters to enable it yourself.
-		//
-		// For more performance documentation: https://platform.uno/docs/articles/Uno-UI-Performance.html
+    #if DEBUG
+
+    // Logging is disabled by default for release builds, as it incurs a significant
+    // initialization cost from Microsoft.Extensions.Logging setup. If startup performance
+    // is a concern for your application, keep this disabled. If you're running on web or
+    // desktop targets, you can use url or command line parameters to enable it yourself.
+    //
+    // For more performance documentation: https://platform.uno/docs/articles/Uno-UI-Performance.html
 
         var factory = LoggerFactory.Create(builder =>
         {
-#if __WASM__
+    #if __WASM__
             builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#elif __IOS__
+    #elif __IOS__
             builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
-#elif NETFX_CORE
+    #elif NETFX_CORE
             builder.AddDebug();
-#else
+    #else
             builder.AddConsole();
-#endif
+    #endif
 
             // Exclude logs below this level
             builder.SetMinimumLevel(LogLevel.Information);
@@ -90,11 +95,11 @@ The standard Uno template configures logging in the **Shared** project **App.xam
 
         global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 
-#if HAS_UNO
-		global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
-#endif
+    #if HAS_UNO
+        global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+    #endif
 
-#endif // DEBUG
+    #endif // DEBUG
     }
     ```
 
@@ -205,26 +210,29 @@ The Uno platform also provides an extension that simplifies the use of logging b
     > [!TIP]
     > To learn more about the logging capabilities, review the Microsoft logging reference materials here:
     >
-    > * [Logging in .NET](https://docs.microsoft.com/dotnet/core/extensions/logging)
+    > * [Logging in .NET](https://learn.microsoft.com/dotnet/core/extensions/logging)
 
 ## Log output for not implemented member usage
 
-By default, when a member is invoked at runtime that's not implemented by Uno (ie, marked with the `[NotImplemented]` attribute), an error message is logged. 
+By default, when a member is invoked at runtime that's not implemented by Uno (ie, marked with the `[NotImplemented]` attribute), an error message is logged.
 
 > [!IMPORTANT]
 > This feature flag must be set before the `base.InitializeComponent()` call within the `App.xaml.cs` constructor.
 
 The logging behavior can be configured using feature flags:
 
- * By default, a message is only logged on the first usage of a given member. To log every time the member is invoked:
+* By default, a message is only logged on the first usage of a given member. To log every time the member is invoked:
+
     ```csharp
     Uno.UI.FeatureConfiguration.ApiInformation.AlwaysLogNotImplementedMessages = true;
     ```
 
- * By default the message is logged as an error. To change the logging level:
+* By default the message is logged as an error. To change the logging level:
+
     ```csharp
     Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```
+
     This can be used to suppress the not implemented output, if it's not useful.
 
 ## IOS Unhandled Exception
@@ -234,19 +242,19 @@ System.InvalidOperationException: A suitable constructor for type 'Microsoft.Ext
 ```
 
 If you are getting the above exception when running on iOS and the Linker Behavior is set to "Link All" it is likely that the IL linker is removing some logging classes.
-See [Linking Xamarin.iOS Apps](https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/linker?tabs=macos)
+See [Linking Xamarin.iOS Apps](https://learn.microsoft.com/xamarin/ios/deploy-test/linker?tabs=macos)
 
 One option is to use `linkskip` file to exclude the assemblies causing issues.
 Add the following to your `mtouch` arguments:
 
-```
+```console
 --linkskip=Uno.Extensions.Logging.OSLog 
 --linkskip=Microsoft.Extensions.Options
 ```
 
-The other option is to add a [custom linker definition file](https://docs.microsoft.com/en-us/xamarin/cross-platform/deploy-test/linker)
+The other option is to add a [custom linker definition file](https://learn.microsoft.com/xamarin/cross-platform/deploy-test/linker)
 
-```
+```xml
 <linker> 
   <assembly fullname="YOUR PROJECT ASSEMBLIES" />
   
@@ -260,4 +268,3 @@ The other option is to add a [custom linker definition file](https://docs.micros
   </assembly>
 </linker>
 ```
-

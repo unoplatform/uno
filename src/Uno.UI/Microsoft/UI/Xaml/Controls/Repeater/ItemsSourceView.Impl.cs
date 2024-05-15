@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Interop;
+using Microsoft.UI.Xaml.Interop;
 using _IBindableIterable = System.Collections.IEnumerable;
 // WinRT types that have a different name in .net
 using _IBindableVector = System.Collections.IList;
@@ -17,10 +17,10 @@ using INotifyCollectionChanged = global::System.Collections.Specialized.INotifyC
 using NotifyCollectionChangedAction = global::System.Collections.Specialized.NotifyCollectionChangedAction;
 // Conflicting types
 using NotifyCollectionChangedEventArgs = global::System.Collections.Specialized.NotifyCollectionChangedEventArgs;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class ItemsSourceView
 {

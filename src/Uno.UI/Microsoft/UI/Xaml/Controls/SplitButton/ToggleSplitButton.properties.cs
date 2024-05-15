@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ToggleSplitButton
 	{
@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { SetValue(IsCheckedProperty, value); }
 		}
 
-		public static DependencyProperty IsCheckedProperty { get ; } =
+		public static DependencyProperty IsCheckedProperty { get; } =
 			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(ToggleSplitButton), new FrameworkPropertyMetadata(false, OnIsCheckedPropertyChanged));
 
 		private static void OnIsCheckedPropertyChanged(

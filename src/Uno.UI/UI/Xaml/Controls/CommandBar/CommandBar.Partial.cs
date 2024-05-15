@@ -19,24 +19,28 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml;
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
+using Uno.UI.Dispatching;
+
 #if __ANDROID__
 using Android.Views;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CommandBar : IMenu
 	{
@@ -79,26 +83,26 @@ namespace Windows.UI.Xaml.Controls
 		ItemsPresenter? m_tpOverflowPresenterItemsPresenter;
 		FrameworkElement? m_tpWindowedPopupPadding;
 
-		double m_overflowContentMinWidth = 0;
-		double m_overflowContentTouchMinWidth = 0;
+		double m_overflowContentMinWidth;
+		double m_overflowContentTouchMinWidth;
 		double m_overflowContentMaxWidth = 480;
 
 		// Restorable primary command minimum width from overflow to the primary command collection
-		double m_restorablePrimaryCommandMinWidth = 0;
+		double m_restorablePrimaryCommandMinWidth;
 
 
 #pragma warning disable CS0414
 #pragma warning disable CS0649
-		bool m_skipProcessTabStopOverride = false;
+		bool m_skipProcessTabStopOverride;
 #pragma warning restore CS0414
 #pragma warning restore CS0649
 		// DirectUI::InputDeviceType m_inputDeviceTypeUsedToOpen = DirectUI::InputDeviceType::Touch;
 
 
-		bool m_hasAlreadyFiredOverflowChangingEvent = false;
-		bool m_hasAppBarSeparatorInOverflow = false;
+		bool m_hasAlreadyFiredOverflowChangingEvent;
+		bool m_hasAppBarSeparatorInOverflow;
 		bool m_isDynamicOverflowEnabled = true;
-		int m_SecondaryCommandStartIndex = 0;
+		int m_SecondaryCommandStartIndex;
 
 		OverflowInitialFocusItem m_overflowInitialFocusItem = OverflowInitialFocusItem.None;
 
@@ -109,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		ICommandBarElement? m_focusedElementPriorToCollectionOrSizeChange;
 		FocusState m_focusStatePriorToCollectionOrSizeChange;
 
-		double m_lastAvailableWidth = 0;
+		double m_lastAvailableWidth;
 
 		IMenu? IMenu.ParentMenu
 		{
@@ -183,10 +187,10 @@ namespace Windows.UI.Xaml.Controls
 			m_secondaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpSecondaryCommands.VectorChanged -= OnSecondaryCommandsChanged);
 
 			m_tpDynamicPrimaryCommands = new ObservableCollection<ICommandBarElement>();
-		//	m_tpDynamicPrimaryCommands.Init(this, notifyCollectionChanging: false);
+			//	m_tpDynamicPrimaryCommands.Init(this, notifyCollectionChanging: false);
 
 			m_tpDynamicSecondaryCommands = new ObservableCollection<ICommandBarElement>();
-		//	m_tpDynamicSecondaryCommands.Init(this, notifyCollectionChanging: false);
+			//	m_tpDynamicSecondaryCommands.Init(this, notifyCollectionChanging: false);
 
 			m_tpPrimaryCommandsInPreviousTransition = new TrackerCollection<ICommandBarElement>();
 			m_tpPrimaryCommandsInTransition = new TrackerCollection<ICommandBarElement>();
@@ -307,7 +311,7 @@ namespace Windows.UI.Xaml.Controls
 			m_overflowContentMinWidth = ResourceResolver.ResolveTopLevelResourceDouble("CommandBarOverflowMinWidth");
 			m_overflowContentTouchMinWidth = ResourceResolver.ResolveTopLevelResourceDouble("CommandBarOverflowTouchMinWidth");
 			m_overflowContentMaxWidth = ResourceResolver.ResolveTopLevelResourceDouble("CommandBarOverflowMaxWidth");
-			
+
 			// We set CommandBarTemplateSettings.OverflowContentMaxWidth immediately, rather than waiting for the CommandBar to open before setting it.
 			// If we don't initialize it here, it will default to 0, meaning the overflow will stay at size 0,0 and will never fire the SizeChanged event.
 			// The SizeChanged event is what triggers the call to UpdateTemplateSettings after the CommandBar opens.
@@ -360,7 +364,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnOverflowPopupClosed(object? sender, object e)
 		{
-			IsOpen = false;
+			NativeDispatcher.Main.Enqueue(() => IsOpen = false, NativeDispatcherPriority.Idle);
 		}
 
 #if __IOS__ || __ANDROID__
@@ -504,8 +508,8 @@ namespace Windows.UI.Xaml.Controls
 						ResetDynamicCommands();
 						SaveMovedPrimaryCommandsIntoPreviousTransitionCollection();
 						m_tpPrimaryItemsControlPart.SetNeedsUpdateItems();
-						
-						
+
+
 						SetOverflowStyleParams();
 
 						// At this point, we'll have modified our primary and secondary command collections, which
@@ -645,7 +649,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!isGamepadNavigationEvent || shouldHandleGamepadNavigationEvent)
 			{
 				bool wasHandled = false;
-				switch(key)
+				switch (key)
 				{
 					case VirtualKey.Right:
 					case VirtualKey.Left:
@@ -711,7 +715,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Only handle the up/down keys when focus is on the more/expand button.
-			var focusedElement = FocusManager.GetFocusedElement();
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
 			if (m_tpExpandButton == focusedElement)
 			{
 				bool isOpen = IsOpen;
@@ -756,7 +762,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ShiftFocusVerticallyInOverflow(bool topToBottom, bool allowFocusWrap = true)
 		{
-			var focusedElement = FocusManager.GetFocusedElement();
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
 			DependencyObject? referenceElement = null;
 
 			if (topToBottom)
@@ -785,7 +793,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				FocusManager.TryMoveFocus(topToBottom ? FocusNavigationDirection.Down : FocusNavigationDirection.Up);
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				focusManager?.TryMoveFocusInstance(topToBottom ? FocusNavigationDirection.Down : FocusNavigationDirection.Up);
 				DXamlCore.Current.GetElementSoundPlayerServiceNoRef().RequestInteractionSoundForElement(ElementSoundKind.Focus, this);
 			}
 		}
@@ -808,7 +817,9 @@ namespace Windows.UI.Xaml.Controls
 			// focus is currently on the first/last item depending on direction.
 			if (!shouldFocusLeaveOverflow)
 			{
-				var focusedElement = FocusManager.GetFocusedElement();
+				var focusedElement = XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot);
 				DependencyObject? referenceElement = null;
 
 				if (isShiftKeyPressed)
@@ -1033,13 +1044,14 @@ namespace Windows.UI.Xaml.Controls
 			return result;
 		}
 
-
 		private void ShiftFocusHorizontally(bool moveToRight)
 		{
 			// Determine whether we should shift focus horizontally.
 			if (m_tpContentControl is { })
 			{
-				var focusedElement = FocusManager.GetFocusedElement();
+				var focusedElement = XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot);
 
 				// Don't do it if focus is in the custom content area.
 				var isChildOfContentControl = m_tpContentControl.IsAncestorOf(focusedElement as DependencyObject);
@@ -1083,7 +1095,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			FocusManager.TryMoveFocus(moveToRight ? FocusNavigationDirection.Right : FocusNavigationDirection.Left);
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			focusManager?.TryMoveFocusInstance(moveToRight ? FocusNavigationDirection.Right : FocusNavigationDirection.Left);
 			DXamlCore.Current.GetElementSoundPlayerServiceNoRef().RequestInteractionSoundForElement(ElementSoundKind.Focus, this);
 		}
 
@@ -1169,33 +1182,33 @@ namespace Windows.UI.Xaml.Controls
 		//    return S_OK;
 		//}
 
-//		_Check_return_ HRESULT CommandBar::SetInputModeOnSecondaryCommand(UINT32 index, DirectUI::InputDeviceType inputType)
-//{
-//    ctl::ComPtr<xaml_controls::ICommandBarElement> spElement;
-//		ctl::ComPtr<xaml_controls::IAppBarButton> spElementAsAppBarButton;
-//		ctl::ComPtr<xaml_controls::IAppBarToggleButton> spElementAsAppBarToggleButton;
+		//		_Check_return_ HRESULT CommandBar::SetInputModeOnSecondaryCommand(UINT32 index, DirectUI::InputDeviceType inputType)
+		//{
+		//    ctl::ComPtr<xaml_controls::ICommandBarElement> spElement;
+		//		ctl::ComPtr<xaml_controls::IAppBarButton> spElementAsAppBarButton;
+		//		ctl::ComPtr<xaml_controls::IAppBarToggleButton> spElementAsAppBarToggleButton;
 
-//		IFC_RETURN(m_tpDynamicSecondaryCommands.Get()->GetAt(index, &spElement));
+		//		IFC_RETURN(m_tpDynamicSecondaryCommands.Get()->GetAt(index, &spElement));
 
-//    if (spElement)
-//    {
-//        // Only AppBarButton and AppBarToggleButton support SetInputMode.
-//        // We ignore other items such as AppBarSeparator.
-//        spElementAsAppBarToggleButton = spElement.AsOrNull<xaml_controls::IAppBarToggleButton>();
-//        if (spElementAsAppBarToggleButton)
-//        {
-//            static_cast<AppBarToggleButton*>(spElementAsAppBarToggleButton.Get())->SetInputMode(inputType);
-//	}
+		//    if (spElement)
+		//    {
+		//        // Only AppBarButton and AppBarToggleButton support SetInputMode.
+		//        // We ignore other items such as AppBarSeparator.
+		//        spElementAsAppBarToggleButton = spElement.AsOrNull<xaml_controls::IAppBarToggleButton>();
+		//        if (spElementAsAppBarToggleButton)
+		//        {
+		//            static_cast<AppBarToggleButton*>(spElementAsAppBarToggleButton.Get())->SetInputMode(inputType);
+		//	}
 
-//	spElementAsAppBarButton = spElement.AsOrNull<xaml_controls::IAppBarButton>();
-//        if (spElementAsAppBarButton)
-//        {
-//            static_cast<AppBarButton*>(spElementAsAppBarButton.Get())->SetInputMode(inputType);
-//}
-//    }
+		//	spElementAsAppBarButton = spElement.AsOrNull<xaml_controls::IAppBarButton>();
+		//        if (spElementAsAppBarButton)
+		//        {
+		//            static_cast<AppBarButton*>(spElementAsAppBarButton.Get())->SetInputMode(inputType);
+		//}
+		//    }
 
-//    return S_OK;
-//}
+		//    return S_OK;
+		//}
 
 		private void SetOverflowStyleParams()
 		{
@@ -1320,37 +1333,37 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-//		CommandBar::HasBottomLabel(BOOLEAN* hasBottomLabel)
-//{
-//    xaml_controls::CommandBarDefaultLabelPosition defaultLabelPosition = xaml_controls::CommandBarDefaultLabelPosition_Bottom;
-//    *hasBottomLabel = FALSE;
+		//		CommandBar::HasBottomLabel(BOOLEAN* hasBottomLabel)
+		//{
+		//    xaml_controls::CommandBarDefaultLabelPosition defaultLabelPosition = xaml_controls::CommandBarDefaultLabelPosition_Bottom;
+		//    *hasBottomLabel = FALSE;
 
-//    IFC_RETURN(get_DefaultLabelPosition(&defaultLabelPosition));
+		//    IFC_RETURN(get_DefaultLabelPosition(&defaultLabelPosition));
 
-//    if (defaultLabelPosition == xaml_controls::CommandBarDefaultLabelPosition_Bottom)
-//    {
-//        UINT32 primaryItemsCount = 0;
-//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->get_Size(&primaryItemsCount));
-//        for (UINT32 i = 0; i<primaryItemsCount; ++i)
-//        {
-//            ctl::ComPtr<xaml_controls::ICommandBarElement> element;
-//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->GetAt(i, &element));
+		//    if (defaultLabelPosition == xaml_controls::CommandBarDefaultLabelPosition_Bottom)
+		//    {
+		//        UINT32 primaryItemsCount = 0;
+		//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->get_Size(&primaryItemsCount));
+		//        for (UINT32 i = 0; i<primaryItemsCount; ++i)
+		//        {
+		//            ctl::ComPtr<xaml_controls::ICommandBarElement> element;
+		//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->GetAt(i, &element));
 
-//            auto elementAsLabeledElement = element.AsOrNull<xaml_controls::ICommandBarLabeledElement>();
-//            if (elementAsLabeledElement)
-//            {
-//                IFC_RETURN(elementAsLabeledElement->GetHasBottomLabel(hasBottomLabel));
+		//            auto elementAsLabeledElement = element.AsOrNull<xaml_controls::ICommandBarLabeledElement>();
+		//            if (elementAsLabeledElement)
+		//            {
+		//                IFC_RETURN(elementAsLabeledElement->GetHasBottomLabel(hasBottomLabel));
 
-//                if (* hasBottomLabel)
-//                {
-//                    break;
-//                }
-//}
-//        }
-//    }
+		//                if (* hasBottomLabel)
+		//                {
+		//                    break;
+		//                }
+		//}
+		//        }
+		//    }
 
-//    return S_OK;
-//}
+		//    return S_OK;
+		//}
 
 
 		private bool IsGamepadNavigationDirection(VirtualKey key)
@@ -1685,7 +1698,7 @@ namespace Windows.UI.Xaml.Controls
 				var visibleBounds = new Rect();
 				var availableBounds = new Rect();
 
-				visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
+				visibleBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 				bool windowed = false;
 				//windowed = m_tpOverflowPopup && m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
@@ -1882,7 +1895,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool GetShouldOverflowOpenInFullWidth()
 		{
-			var visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
+			var visibleBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
+
 			// IFC_RETURN(DXamlCore::GetCurrent()->GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds));
 
 			return visibleBounds.Width <= m_overflowContentMaxWidth;
@@ -2054,7 +2068,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		{
 			bool hasVisibleElements = false;
 
-			
+
 			int size = collection?.Count ?? 0;
 			for (int i = 0; i < size; ++i)
 			{
@@ -2463,7 +2477,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 			{
 				SetOverflowStyleUsage(transitionPrimaryElement, true /*isItemInOverflow*/);
 				m_tpDynamicSecondaryCommands?.Insert(indexForMovedPrimaryCommand, transitionPrimaryElement);
-			//	IFC_RETURN(SetInputModeOnSecondaryCommand(indexForMovedPrimaryCommand, m_inputDeviceTypeUsedToOpen));
+				//	IFC_RETURN(SetInputModeOnSecondaryCommand(indexForMovedPrimaryCommand, m_inputDeviceTypeUsedToOpen));
 
 				m_SecondaryCommandStartIndex++;
 			}
@@ -2620,7 +2634,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 
 			itemsCount = m_tpDynamicSecondaryCommands?.Count ?? 0;
 
-			for (int i = 0; i< itemsCount; ++i)
+			for (int i = 0; i < itemsCount; ++i)
 			{
 				var elementInOverflow = m_tpDynamicSecondaryCommands?[i];
 
@@ -3273,7 +3287,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 				element = primaryCommands[i];
 				elementAsSubMenuOwner = element as ISubMenuOwner;
 
-				if (elementAsSubMenuOwner is { } && (pMenuToLeaveOpen == null|| (pMenuToLeaveOpen != elementAsSubMenuOwner)))
+				if (elementAsSubMenuOwner is { } && (pMenuToLeaveOpen == null || (pMenuToLeaveOpen != elementAsSubMenuOwner)))
 				{
 					if (closeOnDelay)
 					{

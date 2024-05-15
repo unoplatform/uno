@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -282,7 +282,7 @@ namespace Uno.Extensions
 
 		public static int IndexOf<T>(this IReadOnlyList<T> list, T value) =>
 			list.IndexOf(value, EqualityComparer<T>.Default);
-			
+
 		public static int IndexOf<T>(this IReadOnlyList<T> list, T value, IEqualityComparer comparer)
 		{
 			if (comparer == null)

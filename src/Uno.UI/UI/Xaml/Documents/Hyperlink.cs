@@ -6,40 +6,28 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Windows.UI.Text;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	public sealed partial class Hyperlink : Span
 	{
+#if !__WASM__
 		private readonly IFocusable _focusableHelper;
-
-		#region Static
-		private static Brush _defaultForeground;
-		private static Brush DefaultForeground
-		{
-			get
-			{
-				if (_defaultForeground == null)
-				{
-#if __IOS__ || __MACOS__ || __ANDROID__
-					_defaultForeground = GetDefaultForeground();
-#else
-					_defaultForeground = null;
 #endif
-				}
 
-				return _defaultForeground;
-			}
-		}
-
-#endregion
+		private const string HyperlinkForegroundPressedKey = "HyperlinkForegroundPressed";
+		private const string HyperlinkForegroundPointerOverKey = "HyperlinkForegroundPointerOver";
+		private protected override Brush DefaultTextForegroundBrush => DefaultBrushes.HyperlinkForegroundBrush;
 
 		public
 #if __WASM__
@@ -58,7 +46,7 @@ namespace Windows.UI.Xaml.Documents
 			Hyperlink coreHyperlink = this;
 			if (coreHyperlink == null)
 			{
-				// Focus may be called on a disconnected element (when the framework 
+				// Focus may be called on a disconnected element (when the framework
 				// peer has been disassociated from its core peer).  If the core peer
 				// has already been disassociated, return 'unfocusable'.
 				return false;
@@ -107,12 +95,11 @@ namespace Windows.UI.Xaml.Documents
 		public Hyperlink()
 		{
 			OnUnderlineStyleChanged();
-			Foreground = DefaultForeground;
 			_focusableHelper = new FocusableHelper(this);
 		}
 #endif
 
-#region NavigateUri
+		#region NavigateUri
 
 		public Uri NavigateUri
 		{
@@ -133,9 +120,9 @@ namespace Windows.UI.Xaml.Documents
 			);
 		partial void OnNavigateUriChangedPartial(Uri newNavigateUri);
 
-#endregion
+		#endregion
 
-#region UnderlineStyle
+		#region UnderlineStyle
 
 		public UnderlineStyle UnderlineStyle
 		{
@@ -158,18 +145,41 @@ namespace Windows.UI.Xaml.Documents
 		private void OnUnderlineStyleChanged()
 		{
 			TextDecorations = UnderlineStyle == UnderlineStyle.Single
-				? Windows.UI.Text.TextDecorations.Underline
-				: Windows.UI.Text.TextDecorations.None;
+				? TextDecorations.Underline
+				: TextDecorations.None;
 		}
 
-#endregion
+		#endregion
 
-#region Click
+		#region Hover
+		private Pointer _hoveredPointer;
+		internal void SetPointerOver(Pointer pointer)
+		{
+			_hoveredPointer = pointer;
+			SetCurrentForeground();
+		}
+
+		internal bool ReleasePointerOver(Pointer pointer)
+		{
+			if (_hoveredPointer?.Equals(pointer) ?? false)
+			{
+				_hoveredPointer = null;
+				SetCurrentForeground();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		#endregion
+
+		#region Click
 		private Pointer _pressedPointer;
 		internal void SetPointerPressed(Pointer pointer)
 		{
 			_pressedPointer = pointer;
-			this.SetValue(ForegroundProperty, GetPressedForeground(), DependencyPropertyValuePrecedences.Animations);
+			SetCurrentForeground();
 		}
 
 		internal bool ReleasePointerPressed(Pointer pointer)
@@ -179,7 +189,7 @@ namespace Windows.UI.Xaml.Documents
 				OnClick();
 
 				_pressedPointer = null;
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				SetCurrentForeground();
 				return true;
 			}
 			else
@@ -193,7 +203,7 @@ namespace Windows.UI.Xaml.Documents
 			if (_pressedPointer?.Equals(pointer) ?? false)
 			{
 				_pressedPointer = null;
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				SetCurrentForeground();
 				return true;
 			}
 			else
@@ -202,9 +212,11 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		internal void AbortAllPointerPressed()
+		internal void AbortAllPointerState()
 		{
-			this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+			_pressedPointer = null;
+			_hoveredPointer = null;
+			SetCurrentForeground();
 		}
 
 		internal void OnClick()
@@ -214,22 +226,29 @@ namespace Windows.UI.Xaml.Documents
 #if !__WASM__  // handled natively in WASM/Html
 			if (NavigateUri != null)
 			{
-				Launcher.LaunchUriAsync(NavigateUri);
+				_ = Launcher.LaunchUriAsync(NavigateUri);
 			}
 #endif
 		}
+		#endregion
 
-		private Brush GetPressedForeground()
+		private void SetCurrentForeground()
 		{
-#if XAMARIN
-			var normalColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
-			var pressedColor = Color.FromArgb((byte)(normalColor.A / 2), normalColor.R, normalColor.G, normalColor.B);
-			return new SolidColorBrush(pressedColor);
-#else
-			return null;
-#endif
+			if (_pressedPointer is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush))
+			{
+				this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
+			}
+			else if (_hoveredPointer is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush))
+			{
+				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
+			}
+			else
+			{
+				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+			}
 		}
-#endregion
 
 #if !__WASM__
 		public FocusState FocusState

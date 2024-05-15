@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -13,10 +12,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-
-#if NET6_0_OR_GREATER
 using NSDraggingInfo = AppKit.INSDraggingInfo;
-#endif
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -130,7 +126,7 @@ namespace Windows.ApplicationModel.DataTransfer
 							image = NSImage.FromStream(ms);
 						}
 					}
-				}	
+				}
 
 				if (image != null)
 				{
@@ -244,9 +240,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 
 			// See notes in Clipboard.Android.cs on async code usage here
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetToNativeAsync(content, pasteboard));
+				() => _ = SetToNativeAsync(content, pasteboard));
 
 			return;
 		}
@@ -326,7 +322,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				pasteboard.SetStringForType(text ?? string.Empty, NSPasteboard.NSPasteboardTypeString);
 			}
 
-			if(string.IsNullOrEmpty(uri) == false)
+			if (string.IsNullOrEmpty(uri) == false)
 			{
 				pasteboard.SetStringForType(uri!.ToString(), NSPasteboard.NSPasteboardTypeUrl);
 			}
@@ -354,7 +350,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					// Therefore, create a data provider used to asynchronously fetch the image.
 					dataPackage.SetDataProvider(
 						StandardDataFormats.Bitmap,
-						async cancellationToken =>
+						cancellationToken =>
 						{
 							NSImage? image = null;
 
@@ -409,22 +405,22 @@ namespace Windows.ApplicationModel.DataTransfer
 									var imgRep = NSBitmapImageRep.ImageRepFromData(imageData!) as NSBitmapImageRep;
 									var data = imgRep!.RepresentationUsingTypeProperties(NSBitmapImageFileType.Png, null);
 
-									return new RandomAccessStreamReference(async ct =>
+									return Task.FromResult<object>(new RandomAccessStreamReference(ct =>
 									{
-										return data.AsStream().AsRandomAccessStream().TrySetContentType("image/png");
-									});
+										return Task.FromResult(data.AsStream().AsRandomAccessStream().TrySetContentType("image/png"));
+									}));
 								}
 							}
 							else
 							{
 								// Return an empty image
-								return new RandomAccessStreamReference(async ct =>
+								return Task.FromResult<object>(new RandomAccessStreamReference(ct =>
 								{
 									var stream = new MemoryStream();
 									stream.Position = 0;
 
-									return stream.AsRandomAccessStream().TrySetContentType("image/png");
-								});
+									return Task.FromResult(stream.AsRandomAccessStream().TrySetContentType("image/png"));
+								}));
 							}
 						});
 				}
@@ -460,12 +456,20 @@ namespace Windows.ApplicationModel.DataTransfer
 						{
 							// Convert from a temp Url (see above example) into an absolute file path
 							var fileUrl = new NSUrl(tempFileUrl);
-							var file = await StorageFile.GetFileFromPathAsync(fileUrl.FilePathUrl.AbsoluteString);
 
-							var storageItems = new List<IStorageItem>();
-							storageItems.Add(file);
+							if (fileUrl.FilePathUrl?.AbsoluteString != null)
+							{
+								var file = await StorageFile.GetFileFromPathAsync(fileUrl.FilePathUrl.AbsoluteString);
 
-							return storageItems.AsReadOnly();
+								var storageItems = new List<IStorageItem>();
+								storageItems.Add(file);
+
+								return storageItems.AsReadOnly();
+							}
+							else
+							{
+								throw new InvalidOperationException($"The url {tempFileUrl} is not valid");
+							}
 						});
 				}
 
@@ -508,5 +512,3 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 	}
 }
-
-#endif

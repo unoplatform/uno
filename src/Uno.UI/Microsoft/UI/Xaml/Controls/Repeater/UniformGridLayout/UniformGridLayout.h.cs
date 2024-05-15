@@ -1,20 +1,20 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 
 	partial class UniformGridLayout : VirtualizingLayout
 	{
-//		class UniformGridLayout :
-//    public ReferenceTracker<UniformGridLayout, implementation.UniformGridLayoutT, VirtualizingLayout>,
-//    public IFlowLayoutAlgorithmDelegates,
-//    public OrientationBasedMeasures,
-//    public UniformGridLayoutProperties
-//{
-// public
+		//		class UniformGridLayout :
+		//    public ReferenceTracker<UniformGridLayout, implementation.UniformGridLayoutT, VirtualizingLayout>,
+		//    public IFlowLayoutAlgorithmDelegates,
+		//    public OrientationBasedMeasures,
+		//    public UniformGridLayoutProperties
+		//{
+		// public
 		//UniformGridLayout();
 
 		#region IVirtualizingLayoutOverrides
@@ -78,15 +78,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-//		void OnPropertyChanged(const DependencyPropertyChangedEventArgs args);
+		//		void OnPropertyChanged(const DependencyPropertyChangedEventArgs args);
 
-//// private
-//		// Methods
-//		float GetMinorSizeWithSpacing(VirtualizingLayoutContext context);
-//		float GetMajorSizeWithSpacing(VirtualizingLayoutContext context);
+		//// private
+		//		// Methods
+		//		float GetMinorSizeWithSpacing(VirtualizingLayoutContext context);
+		//		float GetMajorSizeWithSpacing(VirtualizingLayoutContext context);
 
-//		Rect GetLayoutRectForDataIndex(const Size availableSize,  int index, const Rect lastExtent,  const
-//			VirtualizingLayoutContext context);
+		//		Rect GetLayoutRectForDataIndex(const Size availableSize,  int index, const Rect lastExtent,  const
+		//			VirtualizingLayoutContext context);
 
 		UniformGridLayoutState GetAsGridState(object state)
 		{

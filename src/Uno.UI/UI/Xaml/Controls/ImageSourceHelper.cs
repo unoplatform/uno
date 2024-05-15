@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 
 #if NETFX_CORE
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-    public static class ImageSourceHelper
-    {
+	public static class ImageSourceHelper
+	{
 #if NETFX_CORE
 		public static ImageSource Create(string source)
 		{
@@ -22,5 +22,5 @@ namespace Windows.UI.Xaml.Controls
 			return source;
 		}
 #endif
-    }
+	}
 }

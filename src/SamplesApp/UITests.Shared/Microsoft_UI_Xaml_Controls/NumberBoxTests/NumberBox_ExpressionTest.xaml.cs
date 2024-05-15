@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
@@ -80,7 +80,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				Status.Text = "Running";
 				Report("Starting tests...");
 
-				foreach(var expression in _expressions)
+				foreach (var expression in _expressions)
 				{
 					TestNumberBox.Text = "";
 					await Task.Yield();
@@ -91,7 +91,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 					{
 						if (expression.Value.IsNaN())
 						{
-							if(TestNumberBox.Text != "")
+							if (TestNumberBox.Text != "")
 							{
 								throw new InvalidOperationException($"Expected error, found {TestNumberBox.Text}.");
 							}
@@ -105,7 +105,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 						}
 						Report($"expression {expression.Key} = {expression.Value} Success.", isFailed: false);
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
 						Report($"expression {expression.Key} = {expression.Value} FAILED:  {ex.Message}", isFailed: true);
 						errorCount++;
@@ -129,7 +129,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			var color = new SolidColorBrush(Colors.LightGray);
 			var prefix = "";
 
-			if(isFailed == true)
+			if (isFailed == true)
 			{
 				color = new SolidColorBrush(Colors.Red);
 				prefix = "❌ ";
@@ -144,7 +144,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			{
 				Text = prefix + msg,
 				Foreground = color,
-				Margin = ThicknessHelper.FromLengths(8, 0, 0, 0),
+				Margin = new Thickness(8, 0, 0, 0),
 				FontFamily = new FontFamily("Courier New"),
 				FontSize = 11,
 				TextWrapping = TextWrapping.Wrap

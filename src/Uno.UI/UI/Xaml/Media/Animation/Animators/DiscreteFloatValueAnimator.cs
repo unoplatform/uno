@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal class DiscreteFloatValueAnimator : IValueAnimator
 	{
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			_to = to;
 
 			AnimatedValue = from;
-        }
+		}
 
 		public void Cancel()
 		{
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			_watch.Reset();
 
 			AnimationCancel?.Invoke(this, EventArgs.Empty);
-        }
+		}
 
 		public void Dispose()
 		{
@@ -81,8 +81,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void ScheduleCompleted(long elapsed)
 		{
-			_scheduledFrame.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-				Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+			_scheduledFrame.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueOperation(
 				async () =>
 				{
 					await Task.Delay(TimeSpan.FromMilliseconds(Duration - elapsed));
@@ -94,7 +93,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public void SetDuration(long duration)
 		{
 			Duration = duration;
-        }
+		}
 
 		public void SetEasingFunction(IEasingFunction easingFunction)
 		{
@@ -105,7 +104,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			Update?.Invoke(this, EventArgs.Empty);
 			ScheduleCompleted(Duration);
-            _watch.Start();
+			_watch.Start();
 
 			IsRunning = true;
 		}
@@ -116,6 +115,6 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			Update?.Invoke(this, EventArgs.Empty);
 			AnimationEnd?.Invoke(this, EventArgs.Empty);
-        }
+		}
 	}
 }

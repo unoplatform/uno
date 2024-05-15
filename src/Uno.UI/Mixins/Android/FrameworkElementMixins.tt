@@ -1,32 +1,34 @@
 ﻿<#@template language="C#" hostspecific="True" #>
-<#@output extension="g.cs" #>
+<#@output extension=".cs" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 
-<#@include file="..\..\UI\Xaml\IFrameworkElement.Partials.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
-		"Windows.UI.Xaml.Controls.NativeListViewBase",
-		"Windows.UI.Xaml.Controls.NativePagedView",
-		"Windows.UI.Xaml.Controls.NativeScrollContentPresenter",
-		"Windows.UI.Xaml.Controls.TextBoxView"
+		"Microsoft.UI.Xaml.Controls.NativeListViewBase",
+		"Microsoft.UI.Xaml.Controls.NativePagedView",
+		"Microsoft.UI.Xaml.Controls.NativeScrollContentPresenter",
+		"Uno.UI.Xaml.Controls.NativeRefreshControl",
+		"Microsoft.UI.Xaml.Controls.TextBoxView"
 	);
 #>
 
 #if __ANDROID__
 <#
-	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true, derivesFromFrameworkElement: false);
-	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true, derivesFromFrameworkElement: false);
-	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true, derivesFromFrameworkElement: false);
-	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true, derivesFromFrameworkElement: false);
+	AddClass("Microsoft.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
+	AddClass("Microsoft.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true, derivesFromFrameworkElement: false);
+	AddClass("Microsoft.UI.Xaml.Controls", "NativePagedView", hasLayouter: true, derivesFromFrameworkElement: false);
+	AddClass("Microsoft.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true, derivesFromFrameworkElement: false);
+	AddClass("Uno.UI.Xaml.Controls", "NativeRefreshControl", isUnoMotionTarget: false, derivesFromFrameworkElement: false, hasLayouter: true);
+	AddClass("Microsoft.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true, derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "GridView", derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListView", derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView", derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView", derivesFromFrameworkElement: false);
 #> 
-<#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.Android.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/IFrameworkElementImplementation.Android.tt"#>
 #endif

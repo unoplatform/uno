@@ -2,22 +2,12 @@ root = true
 
 [*]
 tab_width = 4
-trim_trailing_whitespace = true
 insert_final_newline = true
 
-[{*.xaml, *.xml, *.targets, *.props}]
+[*.{xaml,xml,targets,props,csproj,cs,tt,java,ts,json}]
 indent_style = tab
-
-[{*.cs, *.tt, *.java}]
-indent_style = tab
-
-[{*.ts, *.json}]
-indent_style = tab
-
-[*.csproj]
-indent_style = tab
-tab_width = 2
-indent_size = 2
+tab_width = 4
+indent_size = 4
 
 [*.js]
 indent_style = space
@@ -27,8 +17,9 @@ indent_style = space
 tab_width = 2
 indent_size = 2
 
-[{*.yml, *.yaml}]
+[*.{yml,yaml}]
 indent_style = space
+indent_size = 2
 
 [*.md]
 indent_style = space
@@ -42,6 +33,9 @@ csharp_indent_braces = false
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_case_contents
 csharp_indent_case_contents = true
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/csharp-formatting-options#csharp_indent_case_contents_when_block
+csharp_indent_case_contents_when_block = false:suggestion
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_labels
 csharp_indent_labels = one_less_than_current
@@ -223,6 +217,66 @@ dotnet_style_qualification_for_method = false:suggestion
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#dotnet_style_qualification_for_property
 dotnet_style_qualification_for_property = false:suggestion
 
-# RS0030: Do not used banned APIs
-# https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
-dotnet_diagnostic.RS0030.severity = error
+csharp_style_namespace_declarations = file_scoped
+
+## Naming styles
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+
+# PascalCase with I prefix
+dotnet_naming_style.interface_style.capitalization = pascal_case
+dotnet_naming_style.interface_style.required_prefix = I
+
+# PascalCase with T prefix
+dotnet_naming_style.type_parameter_style.capitalization = pascal_case
+dotnet_naming_style.type_parameter_style.required_prefix = T
+
+# camelCase with _ prefix
+dotnet_naming_style._camelCase.capitalization = camel_case
+dotnet_naming_style._camelCase.required_prefix = _
+
+## Rules
+# Interfaces
+dotnet_naming_symbols.interface_symbol.applicable_kinds = interface
+dotnet_naming_symbols.interface_symbol.applicable_accessibilities = *
+dotnet_naming_rule.interface_naming.symbols = interface_symbol
+dotnet_naming_rule.interface_naming.style = interface_style
+dotnet_naming_rule.interface_naming.severity = suggestion
+
+# Classes, Structs, Enums, Properties, Methods, Local Functions, Events, Namespaces
+dotnet_naming_symbols.class_symbol.applicable_kinds = class, struct, enum, property, method, local_function, event, namespace, delegate
+dotnet_naming_symbols.class_symbol.applicable_accessibilities = *
+dotnet_naming_rule.class_naming.symbols = class_symbol
+dotnet_naming_rule.class_naming.style = pascal_case_style
+dotnet_naming_rule.class_naming.severity = suggestion
+
+# Type Parameters
+dotnet_naming_symbols.type_parameter_symbol.applicable_kinds = type_parameter
+dotnet_naming_symbols.type_parameter_symbol.applicable_accessibilities = *
+
+dotnet_naming_rule.type_parameter_naming.symbols = type_parameter_symbol
+dotnet_naming_rule.type_parameter_naming.style = type_parameter_style
+dotnet_naming_rule.type_parameter_naming.severity = suggestion
+
+# Constant fields
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols = constant_fields
+dotnet_naming_rule.constant_fields_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = suggestion
+
+# Non-externally visible fields
+dotnet_naming_symbols.private_internal_fields.applicable_kinds = field
+dotnet_naming_symbols.private_internal_fields.applicable_accessibilities = private, internal, private_protected
+dotnet_naming_rule.camel_case_for_private_internal_fields.symbols = private_internal_fields
+dotnet_naming_rule.camel_case_for_private_internal_fields.style = _camelCase
+dotnet_naming_rule.camel_case_for_private_internal_fields.severity = suggestion
+
+# Parameters and locals
+dotnet_naming_symbols.parameters_and_locals.applicable_kinds = parameter,local
+dotnet_naming_symbols.parameters_and_locals.applicable_accessibilities = *
+
+dotnet_naming_rule.parameter_naming.symbols = parameters_and_locals
+dotnet_naming_rule.parameter_naming.style = camel_case_style
+dotnet_naming_rule.parameter_naming.severity = suggestion

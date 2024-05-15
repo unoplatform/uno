@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno;
+using Uno.Extensions;
+using Uno.Helpers;
 
 namespace Windows.Storage.Streams
 {
@@ -19,14 +21,20 @@ namespace Windows.Storage.Streams
 			=> new RandomAccessStreamReference(async ct
 				=>
 			{
+				if (uri.IsAppData())
+				{
+					var storageFile = StorageFile.GetFileFromPath(AppDataUriEvaluator.ToPath(uri));
+					return await storageFile.OpenReadAsync();
+				}
+
 				var downloader = await StreamedUriDataLoader.Create(ct, uri);
 				return new StreamedRandomAccessStream(downloader);
 			});
 
 		public static RandomAccessStreamReference CreateFromStream(IRandomAccessStream stream)
-			=> new RandomAccessStreamReference(async ct =>
+			=> new RandomAccessStreamReference(ct =>
 			{
-				return stream.TrySetContentType();
+				return Task.FromResult(stream.TrySetContentType());
 			});
 
 		private readonly Func<IAsyncOperation<IRandomAccessStreamWithContentType>> _open;

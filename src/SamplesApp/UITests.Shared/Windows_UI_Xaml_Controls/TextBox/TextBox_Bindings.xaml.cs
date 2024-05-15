@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox
 {
-	[Sample(IgnoreInSnapshotTests=true)]
+	[Sample(IgnoreInSnapshotTests = true)]
 	public sealed partial class TextBox_Bindings : Page
 	{
 		public TextBox_Bindings()
@@ -15,7 +15,7 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 
 	}
 
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	internal class TextBox_Bindings_Context : INotifyPropertyChanged
 	{
 		private string _text;

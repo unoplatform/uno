@@ -1,8 +1,7 @@
 ﻿#nullable enable
-
 // #define TRACE_EFFECTIVE_VIEWPORT
 
-#if !(IS_NATIVE_ELEMENT && __IOS__)
+#if !(IS_NATIVE_ELEMENT && __IOS__) && !UNO_HAS_ENHANCED_LIFECYCLE
 // On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
 // so avoid check of the '_isLayouted' flag
 #define CHECK_LAYOUTED
@@ -15,29 +14,42 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Extensions;
-using _This = Windows.UI.Xaml.FrameworkElement;
+using Microsoft.UI.Xaml;
+using _This = Microsoft.UI.Xaml.FrameworkElement;
+
 #if __IOS__
 using UIKit;
+using _View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
+using _View = AppKit.NSView;
+#elif __ANDROID__
+using _View = Android.Views.View;
+#else
+using _View = Microsoft.UI.Xaml.DependencyObject;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class FrameworkElement : IFrameworkElement_EffectiveViewport
 	{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
+		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnUnload = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
+#endif
+
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
-		private bool _hasNewHandler;
-		private int _childrenInterestedInViewportUpdates;
+		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
+		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
+		private Point? _lastScrollOffsets;
 #if CHECK_LAYOUTED
 		private bool _isLayouted;
 #endif
@@ -46,7 +58,6 @@ namespace Windows.UI.Xaml
 		{
 			add
 			{
-				_hasNewHandler = true;
 				_effectiveViewportChanged += value;
 				ReconfigureViewportPropagation(isInternal: true);
 			}
@@ -60,21 +71,44 @@ namespace Windows.UI.Xaml
 		// ctor (invoked by IFrameworkElement.Initialize())
 		void IFrameworkElement_EffectiveViewport.InitializeEffectiveViewport()
 		{
+#if IS_NATIVE_ELEMENT
 			Loaded += ReconfigureViewportPropagationOnLoad;
-			Unloaded += ReconfigureViewportPropagationOnLoad;
+			Unloaded += ReconfigureViewportPropagationOnUnload;
+#endif
 		}
+
+#if !IS_NATIVE_ELEMENT && !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__ // We rely on Enter/Leave with enhanced lifecycle instead of Loaded/Unloaded.
+		private partial void ReconfigureViewportPropagationPartial()
+			=> ReconfigureViewportPropagation();
+#endif
 
 		/// <summary>
 		/// Indicates if the effective viewport should/will be propagated to/by this element
 		/// </summary>
-		private bool IsEffectiveViewportEnabled => _childrenInterestedInViewportUpdates > 0 || _effectiveViewportChanged != null;
+		private bool IsEffectiveViewportEnabled => _childrenInterestedInViewportUpdates is { Count: > 0 } || _effectiveViewportChanged != null;
 
 		/// <summary>
 		/// Make sure to request or disable effective viewport changes from the parent
 		/// </summary>
-		private void ReconfigureViewportPropagation(bool isInternal = false, IFrameworkElement_EffectiveViewport? child = null)
+		private void ReconfigureViewportPropagation(
+			bool isInternal = false,
+			IFrameworkElement_EffectiveViewport? child = null,
+			bool isLeavingTree = false
+#if TRACE_EFFECTIVE_VIEWPORT
+			, [CallerMemberName] string? caller = null)
 		{
-			if (IsLoaded && IsEffectiveViewportEnabled)
+#else
+			)
+		{
+			const string caller = "--unavailable--";
+#endif
+			if (
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				!isLeavingTree
+#else
+				IsLoaded
+#endif
+				&& IsEffectiveViewportEnabled)
 			{
 #if CHECK_LAYOUTED
 				if (IsLoaded)
@@ -85,25 +119,23 @@ namespace Windows.UI.Xaml
 
 				if (_parentViewportUpdatesSubscription == null)
 				{
-					TRACE_EFFECTIVE_VIEWPORT("Enabling effective viewport propagation.");
+					TRACE_EFFECTIVE_VIEWPORT($"Enabling effective viewport propagation (reason: {caller} | child: {child.GetDebugName()} | local: {_effectiveViewportChanged?.GetInvocationList().Length} | children: {_childrenInterestedInViewportUpdates?.Count}).");
 
-					var parent = this.GetVisualTreeParent();
-					if (parent is IFrameworkElement_EffectiveViewport parentFwElt)
+					var parent = this.FindFirstAncestor<IFrameworkElement_EffectiveViewport>();
+					if (parent is null)
 					{
-						_parentViewportUpdatesSubscription = parentFwElt.RequestViewportUpdates(isInternal, this);
-					}
-					else
-					{
-						global::System.Diagnostics.Debug.Assert(IsVisualTreeRoot);
-
 						// We are the root of the visual tree, we update the effective viewport
 						// in order to initialize the _parentViewport of children.
 						PropagateEffectiveViewportChange(isInitial: true, isInternal: isInternal);
 					}
+					else
+					{
+						_parentViewportUpdatesSubscription = parent.RequestViewportUpdates(isInternal, this);
+					}
 				}
 				else if (child != null)
 				{
-					TRACE_EFFECTIVE_VIEWPORT("New child requested viewport propagation which has already been enabled, forwarding current viewport to it.");
+					TRACE_EFFECTIVE_VIEWPORT($"New child requested viewport propagation which has already been enabled, forwarding current viewport to it (reason: {caller} | child: {child.GetDebugName()} | local: {_effectiveViewportChanged?.GetInvocationList().Length} | children: {_childrenInterestedInViewportUpdates?.Count}).");
 
 					// We are already subscribed, the parent won't send any update (and our _parentViewport is expected to be up-to-date).
 					// But if this "reconfigure" was made for a new child (child != null), we have to initialize its own _parentViewport.
@@ -125,7 +157,7 @@ namespace Windows.UI.Xaml
 
 				if (_parentViewportUpdatesSubscription != null)
 				{
-					TRACE_EFFECTIVE_VIEWPORT("Disabling effective viewport propagation.");
+					TRACE_EFFECTIVE_VIEWPORT($"Disabling effective viewport propagation (reason: {caller} | loaded: {IsLoaded} | local: {_effectiveViewportChanged?.GetInvocationList().Length} | children: {_childrenInterestedInViewportUpdates?.Count}).");
 
 					_parentViewportUpdatesSubscription.Dispose();
 					_parentViewportUpdatesSubscription = null;
@@ -139,16 +171,27 @@ namespace Windows.UI.Xaml
 		/// Used by a child of this element, in order to subscribe to viewport updates
 		/// (so the OnParentViewportChanged will be invoked on this given child)
 		/// </summary>
-		IDisposable IFrameworkElement_EffectiveViewport.RequestViewportUpdates(bool isInternalUpdate, IFrameworkElement_EffectiveViewport? child)
+		IDisposable IFrameworkElement_EffectiveViewport.RequestViewportUpdates(bool isInternalUpdate, IFrameworkElement_EffectiveViewport child)
 		{
-			global::System.Diagnostics.Debug.Assert(Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child));
+			global::System.Diagnostics.Debug.Assert(
+				Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child)
+				|| (child as _View)?.FindFirstAncestor<IFrameworkElement_EffectiveViewport>() == this);
 
-			_childrenInterestedInViewportUpdates++;
+			var childrenInterestedInViewportUpdates = _childrenInterestedInViewportUpdates switch
+			{
+				null => (_childrenInterestedInViewportUpdates = new()),
+				_ when _isEnumeratingChildrenInterestedInViewportUpdates => (_childrenInterestedInViewportUpdates = new(_childrenInterestedInViewportUpdates)),
+				_ => _childrenInterestedInViewportUpdates,
+			};
+			childrenInterestedInViewportUpdates.Add(child);
 			ReconfigureViewportPropagation(isInternalUpdate, child);
 
 			return Disposable.Create(() =>
 			{
-				_childrenInterestedInViewportUpdates--;
+				var childrenInterestedInViewportUpdates = _isEnumeratingChildrenInterestedInViewportUpdates
+						? (_childrenInterestedInViewportUpdates = new(_childrenInterestedInViewportUpdates))
+						: _childrenInterestedInViewportUpdates!;
+				childrenInterestedInViewportUpdates.Remove(child);
 				ReconfigureViewportPropagation();
 			});
 		}
@@ -169,11 +212,6 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (!isInitial && viewport == _parentViewport)
-			{
-				return;
-			}
-
 			_parentViewport = viewport;
 			PropagateEffectiveViewportChange(isInitial, isInternal);
 		}
@@ -181,7 +219,7 @@ namespace Windows.UI.Xaml
 #if IS_NATIVE_ELEMENT
 		private bool IsScrollPort { get; } = false;
 		private bool IsVisualTreeRoot { get; } = false;
-		private Windows.Foundation.Point ScrollOffsets { get; } = default;
+		private global::Windows.Foundation.Point ScrollOffsets { get; } = default;
 
 		// Native elements cannot be clipped (using Uno), so the _localViewport will always be an empty rect, and we only react to LayoutSlot updates
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
@@ -194,13 +232,24 @@ namespace Windows.UI.Xaml
 #else
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
 
+#if __SKIA__
+		private protected sealed override void OnViewportUpdated() // a.k.a. OnLayoutUpdated / OnClippingApplied
+		{
+			base.OnViewportUpdated();
+#else
 		private protected sealed override void OnViewportUpdated(Rect viewport) // a.k.a. OnLayoutUpdated / OnClippingApplied
 		{
+			base.OnViewportUpdated(viewport);
+#endif
+
 			// The 'viewport' (a.k.a. the clipping) is actually not used to compute the EffectiveViewport ...
 			// except for element flagged as ScrollHost!
 			// For now we are using the LayoutSlot + ScrollOffsets (which is internal only!), but we should use that 'viewport'.
 
+#if CHECK_LAYOUTED
 			_isLayouted = true;
+#endif
+
 			PropagateEffectiveViewportChange();
 		}
 
@@ -250,10 +299,14 @@ namespace Windows.UI.Xaml
 				}
 
 				// The visible window of the SCP
-				// TODO: We should constrains the clip only on axis on which we can scroll
+				// TODO: We should constrain the clip to only the axes on which we can scroll
+#if __SKIA__ // The viewport on an IsScrollPort element should not be affected by its ScrollOffsets. Skia does this correctly, but the other platforms need this inaccuracy due to the way TransformToVisual works (which is only correct on skia).
+				var scrollport = LayoutInformation.GetLayoutSlot(this);
+#else
 				var scrollport = new Rect(
 					new Point(ScrollOffsets.X, ScrollOffsets.Y),
 					LayoutInformation.GetLayoutSlot(this).Size);
+#endif
 
 				if (viewport.IsInfinite)
 				{
@@ -270,7 +323,7 @@ namespace Windows.UI.Xaml
 			return parentViewport;
 		}
 
-		private ViewportInfo GetParentViewport()
+		internal ViewportInfo GetParentViewport()
 			// As the conversion form parent to local coordinates of the viewport is impacted by LayoutSlot and RenderTransforms,
 			// we do have to keep it in parent coordinates spaces, and convert it to local coordinate space on each use.
 			//
@@ -287,7 +340,8 @@ namespace Windows.UI.Xaml
 			bool isInitial = false,
 			bool isInternal = false
 #if TRACE_EFFECTIVE_VIEWPORT
-			, [CallerMemberName] string? caller = null) {
+			, [CallerMemberName] string? caller = null)
+		{
 #else
 			)
 		{
@@ -321,33 +375,42 @@ namespace Windows.UI.Xaml
 				+ $"| parent: {parentViewport} "
 				+ $"| scroll: {(IsScrollPort ? $"{ScrollOffsets.ToDebugString()}" : "--none--")} "
 				+ $"| reason: {caller} "
-				+ $"| children: {_childrenInterestedInViewportUpdates}");
+				+ $"| children: {_childrenInterestedInViewportUpdates?.Count ?? 0}");
 
-			if (viewportUpdated
-				&& (
-					!isInternal // We don't want to raise the event when we are only initializing the tree due to a new event handler somewhere in sub tree
-					|| _hasNewHandler // but if we have a new local handler, we do need to raise the event!
-				))
+			if (viewportUpdated)
 			{
-				_hasNewHandler = false;
-
 				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
 				//		 the "local effective viewport" is used only by our children.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				this.GetContext().EventManager.EnqueueForEffectiveViewportChanged(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+#else
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+#endif
 			}
 
-			if (_childrenInterestedInViewportUpdates > 0 && (isInitial || viewportUpdated))
+			// the ScrollOffsets check is only relevant on skia. It will only be true when viewportUpdated is also true on other platforms.
+			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated || _lastScrollOffsets != ScrollOffsets))
 			{
-				var children = Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this);
-				foreach (var child in children)
+				_isEnumeratingChildrenInterestedInViewportUpdates = true;
+				var enumerator = _childrenInterestedInViewportUpdates.GetEnumerator();
+				try
 				{
-					if (child is IFrameworkElement_EffectiveViewport childFwElt)
+					while (enumerator.MoveNext())
 					{
-						childFwElt.OnParentViewportChanged(isInitial, isInternal, this, viewport);
+						enumerator.Current!.OnParentViewportChanged(isInitial, isInternal, this, viewport);
 					}
 				}
+				finally
+				{
+					_isEnumeratingChildrenInterestedInViewportUpdates = false;
+					enumerator.Dispose();
+				}
 			}
+
+			_lastScrollOffsets = ScrollOffsets;
 		}
+
+		internal void RaiseEffectiveViewportChanged(EffectiveViewportChangedEventArgs args) => _effectiveViewportChanged?.Invoke(this, args);
 
 		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
 		private void TRACE_EFFECTIVE_VIEWPORT(string text)

@@ -6,8 +6,8 @@ using UIKit;
 
 namespace Uno.UI.Extensions
 {
-    internal static class UITextInputExtensions
-    {
+	internal static class UITextInputExtensions
+	{
 		public static UITextRange GetTextRange(this IUITextInput textInput, int start, int end)
 		{
 			if (textInput?.BeginningOfDocument == null)

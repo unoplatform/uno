@@ -12,18 +12,17 @@ using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Helpers.WinUI
 {
 	internal partial class ResourceAccessor
 	{
-		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
-		private const string c_resourceLoc = "Microsoft.UI.Xaml/Resources";
-
 #if !IS_UNO
+		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft" + /* UWP don't rename */ ".UI.Xaml.3.0";
+
 		private static ResourceMap s_resourceMap = GetPackageResourceMap();
 		private static ResourceContext s_resourceContext = ResourceContext.GetForViewIndependentUse();
 
@@ -49,14 +48,17 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			return s_resourceMap.GetSubtree(c_resourceLoc);
 		}
+#else
+		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft" + /* UWP don't rename */ ".UI.Xaml.3.0";
+		private const string c_resourceLoc = "Uno.UI/Resources";
 #endif
 
 		public static string GetLocalizedStringResource(string resourceName)
 		{
 #if !IS_UNO
-			return s_resourceMap.GetValue(resourceName, s_resourceContext).ToString ();
+			return s_resourceMap.GetValue(resourceName, s_resourceContext).ToString();
 #else
-			return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString(resourceName);
+			return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse(c_resourceLoc).GetString(resourceName);
 #endif
 		}
 
@@ -66,11 +68,11 @@ namespace Uno.UI.Helpers.WinUI
 			{
 				if (SharedHelpers.IsInFrameworkPackage())
 				{
-					return new Uri("ms-resource://" + MUXCONTROLS_PACKAGE_NAME + "/Files/Microsoft.UI.Xaml/Assets/" + assetName + ".png");
+					return new Uri("ms-resource://" + MUXCONTROLS_PACKAGE_NAME + "/Files/Microsoft" + /* UWP don't rename */ ".UI.Xaml/Assets/" + assetName + ".png");
 				}
 				else
 				{
-					return new Uri("ms-resource:///Files/Microsoft.UI.Xaml/Assets/" + assetName + ".png");
+					return new Uri("ms-resource:///Files/Microsoft" + /* UWP don't rename */ ".UI.Xaml/Assets/" + assetName + ".png");
 				}
 			}
 

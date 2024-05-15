@@ -1,21 +1,21 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace UITests.Windows_UI_Xaml_Input.RoutedEvents
 {
 	[Sample("Routed Events", Name = "IsEnabled")]
-    public sealed partial class RoutedEvent_IsEnabled : Page
-    {
-        public RoutedEvent_IsEnabled()
-        {
-            this.InitializeComponent();
+	public sealed partial class RoutedEvent_IsEnabled : Page
+	{
+		public RoutedEvent_IsEnabled()
+		{
+			this.InitializeComponent();
 			DisabledButton.RoutedEventTriggered += (s, e) => EventInfoTextBlock.Text = e;
 			DisabledButton.Click += (s, e) => EventInfoTextBlock.Text = "Clicked";
 		}
-    }
+	}
 
 	public partial class CustomButton : Button
 	{

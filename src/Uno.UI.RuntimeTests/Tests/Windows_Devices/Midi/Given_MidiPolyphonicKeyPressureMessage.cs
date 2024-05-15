@@ -8,8 +8,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 {
 	[TestClass]
 	public class Given_MidiPolyphonicKeyPressureMessage
-    {
-        [TestMethod]
+	{
+		[TestMethod]
 		public void When_RawData()
 		{
 			var message = new MidiPolyphonicKeyPressureMessage(6, 120, 103);

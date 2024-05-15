@@ -1,11 +1,3 @@
-function setNavbarHeight() {
-    let headerHeight = $("#header-container").outerHeight();
-    let intViewportHeight = window.innerHeight;
-    let maxHeightNavbar = intViewportHeight - headerHeight;
-    $("#navbar").css("max-height", maxHeightNavbar);
-}
-
-
 /**
  * Load the navbar from the uno website
  */
@@ -66,9 +58,6 @@ function initializeNavbar() {
 
         }
     });
-
-    setNavbarHeight();
-
 }
 
 /**
@@ -78,7 +67,7 @@ function initializeNavbar() {
 function updateLogo() {
     const curWidth = window.innerWidth;
     const headerLogo = document.getElementById('logo');
-    if (curWidth < 980) {
+    if (curWidth < 1024) {
         const mobileLogo = new URL('UnoLogoSmall.png', headerLogo.src).href;
         headerLogo.src = mobileLogo;
     } else {
@@ -90,13 +79,6 @@ function updateLogo() {
 function updateLogoOnResize() {
     $(window).on('resize', function () {
         updateLogo();
-    });
-}
-
-
-function updateNavbarHeightOnResize() {
-    $(window).on('resize', function () {
-        setNavbarHeight();
     });
 }
 

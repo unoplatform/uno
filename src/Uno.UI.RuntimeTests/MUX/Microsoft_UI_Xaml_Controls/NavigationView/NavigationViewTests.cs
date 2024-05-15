@@ -1,14 +1,15 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using MUXControlsTestApp.Utilities;
 
 using Common;
 using System;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Windows.UI.ViewManagement;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -19,18 +20,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using NavigationViewDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewDisplayMode;
-using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
-using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewItemHeader = Microsoft.UI.Xaml.Controls.NavigationViewItemHeader;
-using NavigationViewItemSeparator = Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator;
-using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewDisplayMode;
+using NavigationViewPaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
+using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItemHeader = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemHeader;
+using NavigationViewItemSeparator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemSeparator;
+using NavigationViewBackButtonVisible = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackButtonVisible;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Composition;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Composition;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI.RuntimeTests;
 using Private.Infrastructure;
 using System.Threading.Tasks;
@@ -40,13 +41,13 @@ using System.Threading.Tasks;
 // VerifyHeaderContentMarginOnMinimalNav
 // VerifyVisualTree
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[RequiresFullWindow]
-	public class NavigationViewTests : MUXApiTestBase
+	public partial class NavigationViewTests : MUXApiTestBase
 	{
-		private NavigationView SetupNavigationView(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto, bool wrapInScrollViewer = false)
+		private async Task<NavigationView> SetupNavigationView(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto, bool wrapInScrollViewer = false)
 		{
 			NavigationView navView = null;
 			RunOnUIThread.Execute(() =>
@@ -84,11 +85,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				//Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			return navView;
 		}
 
-		private NavigationView SetupNavigationViewScrolling(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto)
+		private async Task<NavigationView> SetupNavigationViewScrolling(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto)
 		{
 			NavigationView navView = null;
 			RunOnUIThread.Execute(() =>
@@ -120,14 +121,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				navView.Height = 200.0;
 				navView.Content = "This test should have enough NavigationViewItems to scroll.";
 				Content = navView;
-				Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+				ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			return navView;
 		}
 
-		private NavigationView SetupNavigationViewPaneContent(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto)
+		private async Task<NavigationView> SetupNavigationViewPaneContent(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto)
 		{
 			NavigationView navView = null;
 			RunOnUIThread.Execute(() =>
@@ -174,7 +175,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				//Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			return navView;
 		}
 
@@ -184,90 +185,88 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		//    using(VisualTreeVerifier visualTreeVerifier = new VisualTreeVerifier())
 		//    {
 		//        // Generate a basic NavigationView verification file for all the pane display modes
-		//        foreach (var paneDisplayMode in Enum.GetValues(typeof(NavigationViewPaneDisplayMode)))
+		//        foreach (var paneDisplayMode in Enum.GetValues<NavigationViewPaneDisplayMode>())
 		//        {
 		//            var filePrefix = "NavigationView" + paneDisplayMode;
-		//            NavigationViewPaneDisplayMode displayMode = (NavigationViewPaneDisplayMode)paneDisplayMode;
-
 		//            // We can skip generating a verification file for Left mode since Auto is achieving the same result.
-		//            if (displayMode == NavigationViewPaneDisplayMode.Left)
+		//            if (paneDisplayMode == NavigationViewPaneDisplayMode.Left)
 		//            {
 		//                continue;
 		//            }
 
 		//            Log.Comment($"Verify visual tree for NavigationViewPaneDisplayMode: {paneDisplayMode}");
-		//            var navigationView = SetupNavigationView(displayMode);
+		//            var navigationView = await SetupNavigationView(paneDisplayMode);
 		//            visualTreeVerifier.VerifyVisualTreeNoException(root: navigationView, verificationFileNamePrefix: filePrefix);
 		//        }
 
 		//        Log.Comment($"Verify visual tree for NavigationViewScrolling");
-		//        var leftNavViewScrolling = SetupNavigationViewScrolling(NavigationViewPaneDisplayMode.Left);
+		//        var leftNavViewScrolling = await SetupNavigationViewScrolling(NavigationViewPaneDisplayMode.Left);
 		//        visualTreeVerifier.VerifyVisualTreeNoException(root: leftNavViewScrolling, verificationFileNamePrefix: "NavigationViewScrolling");
 
 		//        Log.Comment($"Verify visual tree for NavigationViewLeftPaneContent");
-		//        var leftNavViewPaneContent = SetupNavigationViewPaneContent(NavigationViewPaneDisplayMode.Left);
+		//        var leftNavViewPaneContent = await SetupNavigationViewPaneContent(NavigationViewPaneDisplayMode.Left);
 		//        visualTreeVerifier.VerifyVisualTreeNoException(root: leftNavViewPaneContent, verificationFileNamePrefix: "NavigationViewLeftPaneContent");
 
 		//        Log.Comment($"Verify visual tree for NavigationViewTopPaneContent");
-		//        var topNavViewPaneContent = SetupNavigationViewPaneContent(NavigationViewPaneDisplayMode.Top);
+		//        var topNavViewPaneContent = await SetupNavigationViewPaneContent(NavigationViewPaneDisplayMode.Top);
 		//        visualTreeVerifier.VerifyVisualTreeNoException(root: topNavViewPaneContent, verificationFileNamePrefix: "NavigationViewTopPaneContent");
 		//    }
 		//}
 
 		[TestMethod]
 		[Ignore("This test requires wide enough viewport to function properly")]
-		public void VerifyPaneDisplayModeAndDisplayModeMapping()
+		public async Task VerifyPaneDisplayModeAndDisplayModeMappingAsync()
 		{
-			var navView = SetupNavigationView(wrapInScrollViewer: true);
+			var navView = await SetupNavigationView(wrapInScrollViewer: true);
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.AreEqual(navView.DisplayMode, NavigationViewDisplayMode.Expanded);
 				Verify.IsTrue(navView.IsPaneOpen, "Pane opened");
 				navView.PaneDisplayMode = NavigationViewPaneDisplayMode.Top;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.AreEqual(navView.DisplayMode, NavigationViewDisplayMode.Minimal, "Top Minimal");
 				navView.PaneDisplayMode = NavigationViewPaneDisplayMode.Left;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.AreEqual(navView.DisplayMode, NavigationViewDisplayMode.Expanded, "Left Expanded");
 				navView.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftCompact;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.AreEqual(navView.DisplayMode, NavigationViewDisplayMode.Compact, "LeftCompact Compact");
 				navView.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.AreEqual(navView.DisplayMode, NavigationViewDisplayMode.Minimal, "LeftMinimal Minimal");
 				navView.PaneDisplayMode = NavigationViewPaneDisplayMode.Auto;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.AreEqual(navView.DisplayMode, NavigationViewDisplayMode.Expanded, "Auto Expanded");
 				navView.Width = navView.ExpandedModeThresholdWidth - 10.0;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.AreEqual(navView.DisplayMode, NavigationViewDisplayMode.Compact, "Auto Compact");
 				navView.Width = navView.CompactModeThresholdWidth - 10.0;
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -277,11 +276,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[Ignore("This test requires wide enough viewport to function properly")]
-		public void VerifyPaneDisplayModeChangingPaneAccordingly()
+		public async Task VerifyPaneDisplayModeChangingPaneAccordinglyAsync()
 		{
-			var navView = SetupNavigationView();
+			var navView = await SetupNavigationView();
 
-			foreach (var paneDisplayMode in Enum.GetValues(typeof(NavigationViewPaneDisplayMode)))
+			foreach (var paneDisplayMode in Enum.GetValues<NavigationViewPaneDisplayMode>())
 			{
 				RunOnUIThread.Execute(() =>
 				{
@@ -292,37 +291,37 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 					Content.UpdateLayout();
 
-					navView.PaneDisplayMode = (NavigationViewPaneDisplayMode)paneDisplayMode;
+					navView.PaneDisplayMode = paneDisplayMode;
 
 					Content.UpdateLayout();
 
 					// We only want to open the pane when explicitly set, otherwise it should be closed
 					// since we set the width below the threshold width
-					Verify.AreEqual((NavigationViewPaneDisplayMode)paneDisplayMode == NavigationViewPaneDisplayMode.Left, navView.IsPaneOpen);
+					Verify.AreEqual(paneDisplayMode == NavigationViewPaneDisplayMode.Left, navView.IsPaneOpen);
 				});
 			}
 		}
 
 		[TestMethod]
 		[Ignore("Fails on WASM")]
-		public void VerifyPaneDisplayModeAndIsPaneOpenInterplayOnNavViewLaunch()
+		public async Task VerifyPaneDisplayModeAndIsPaneOpenInterplayOnNavViewLaunch()
 		{
 			Log.Comment("--- PaneDisplayMode: LeftMinimal ---");
-			VerifyForPaneDisplayModeLeftMinimal();
+			await VerifyForPaneDisplayModeLeftMinimal();
 
 			Log.Comment("--- PaneDisplayMode: LeftCompact ---");
-			VerifyForPaneDisplayModeLeftCompact();
+			await VerifyForPaneDisplayModeLeftCompact();
 
 			Log.Comment("--- PaneDisplayMode: Left ---");
-			VerifyForPaneDisplayModeLeft();
+			await VerifyForPaneDisplayModeLeft();
 
 			Log.Comment("--- PaneDisplayMode: Auto ---");
-			VerifyForPaneDisplayModeAuto();
+			await VerifyForPaneDisplayModeAuto();
 
-			void VerifyForPaneDisplayModeLeftMinimal()
+			async Task VerifyForPaneDisplayModeLeftMinimal()
 			{
 				Log.Comment("Verify pane is closed when IsPaneOpen=true");
-				var navView = SetupNavView(NavigationViewPaneDisplayMode.LeftMinimal, true);
+				var navView = await SetupNavView(NavigationViewPaneDisplayMode.LeftMinimal, true);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -330,7 +329,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is closed when IsPaneOpen=false");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.LeftMinimal, false);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.LeftMinimal, false);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -338,10 +337,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 			}
 
-			void VerifyForPaneDisplayModeLeftCompact()
+			async Task VerifyForPaneDisplayModeLeftCompact()
 			{
 				Log.Comment("Verify pane is closed when IsPaneOpen=true");
-				var navView = SetupNavView(NavigationViewPaneDisplayMode.LeftCompact, true);
+				var navView = await SetupNavView(NavigationViewPaneDisplayMode.LeftCompact, true);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -349,7 +348,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is closed when IsPaneOpen=false");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.LeftCompact, false);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.LeftCompact, false);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -357,10 +356,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 			}
 
-			void VerifyForPaneDisplayModeLeft()
+			async Task VerifyForPaneDisplayModeLeft()
 			{
 				Log.Comment("Verify pane is open when IsPaneOpen=true");
-				var navView = SetupNavView(NavigationViewPaneDisplayMode.Left, true);
+				var navView = await SetupNavView(NavigationViewPaneDisplayMode.Left, true);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -368,7 +367,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is closed when IsPaneOpen=false");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.Left, false);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.Left, false);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -376,10 +375,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 			}
 
-			void VerifyForPaneDisplayModeAuto()
+			async Task VerifyForPaneDisplayModeAuto()
 			{
 				Log.Comment("Verify pane is closed when launched in minimal state and IsPaneOpen=true");
-				var navView = SetupNavView(NavigationViewPaneDisplayMode.Auto, true, NavigationViewDisplayMode.Minimal);
+				var navView = await SetupNavView(NavigationViewPaneDisplayMode.Auto, true, NavigationViewDisplayMode.Minimal);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -387,7 +386,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is closed when launched in compact state and IsPaneOpen=true");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.Auto, true, NavigationViewDisplayMode.Compact);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.Auto, true, NavigationViewDisplayMode.Compact);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -395,7 +394,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is open when launched in expanded state and IsPaneOpen=true");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.Auto, true, NavigationViewDisplayMode.Expanded);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.Auto, true, NavigationViewDisplayMode.Expanded);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -403,7 +402,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is closed when launched in minimal state and IsPaneOpen=false");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.Auto, false, NavigationViewDisplayMode.Minimal);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.Auto, false, NavigationViewDisplayMode.Minimal);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -411,7 +410,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is closed when launched in compact state and IsPaneOpen=false");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.Auto, false, NavigationViewDisplayMode.Compact);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.Auto, false, NavigationViewDisplayMode.Compact);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -419,7 +418,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 
 				Log.Comment("Verify pane is closed when launched in expanded state and IsPaneOpen=false");
-				navView = SetupNavView(NavigationViewPaneDisplayMode.Auto, false, NavigationViewDisplayMode.Expanded);
+				navView = await SetupNavView(NavigationViewPaneDisplayMode.Auto, false, NavigationViewDisplayMode.Expanded);
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -427,7 +426,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				});
 			}
 
-			NavigationView SetupNavView(NavigationViewPaneDisplayMode paneDisplayMode, bool isPaneOpen, NavigationViewDisplayMode displayMode = NavigationViewDisplayMode.Expanded)
+			async Task<NavigationView> SetupNavView(NavigationViewPaneDisplayMode paneDisplayMode, bool isPaneOpen, NavigationViewDisplayMode displayMode = NavigationViewDisplayMode.Expanded)
 			{
 				NavigationView navView = null;
 				RunOnUIThread.Execute(() =>
@@ -459,13 +458,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 					Content = navView;
 				});
 
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 				return navView;
 			}
 		}
 
 		[TestMethod]
-		public void VerifyDefaultsAndBasicSetting()
+		public async Task VerifyDefaultsAndBasicSettingAsync()
 		{
 			NavigationView navView = null;
 			Rectangle footer = null;
@@ -526,7 +525,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				// TODO(test adding a MenuItem programmatically)
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -552,7 +551,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				navView.PaneToggleButtonStyle = null;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -604,7 +603,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[Ignore("VisualTreeHelper can't retrieve the children properly")]
-		public void VerifySingleSelection()
+		public async Task VerifySingleSelectionAsync()
 		{
 			string navItemPresenter1CurrentState = string.Empty;
 			string navItemPresenter2CurrentState = string.Empty;
@@ -666,7 +665,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				menuItem1.IsSelected = true;
 				Content.UpdateLayout();
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -680,7 +679,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				menuItem2.IsSelected = true;
 				Content.UpdateLayout();
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -695,25 +694,25 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[Ignore]
-		public void VerifyClosedCompactVisualState()
+		public async Task VerifyClosedCompactVisualStateAsync()
 		{
 			NavigationView navView = null;
 			RunOnUIThread.Execute(() =>
 			{
-				navView = new NavigationView();				
+				navView = new NavigationView();
 
 				var template = (DataTemplate)XamlReader.Load(@"
-                    <DataTemplate
-                        xmlns ='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-                        xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
-                        <controls:NavigationViewItem
-                            Content='Item'>
-                            <controls:NavigationViewItem.Icon>
-                                <SymbolIcon Symbol='Home' />
-                            </controls:NavigationViewItem.Icon>
-                         </controls:NavigationViewItem>
-                      </DataTemplate>");
+					<DataTemplate
+						xmlns ='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+						xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+						xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
+						<controls:NavigationViewItem
+							Content='Item'>
+							<controls:NavigationViewItem.Icon>
+								<SymbolIcon Symbol='Home' />
+							</controls:NavigationViewItem.Icon>
+						 </controls:NavigationViewItem>
+					  </DataTemplate>");
 				navView.MenuItemTemplate = template;
 				navView.IsPaneOpen = false;
 				navView.IsSettingsVisible = false;
@@ -730,7 +729,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = navView;
 				Content.UpdateLayout();
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -755,6 +754,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void VerifyNavigationItemUIAType()
 		{
 			RunOnUIThread.Execute(() =>
@@ -865,7 +867,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[Ignore("This test is disabled in WinUI")]
 		public void VerifyCanNotAddWUXItems()
 		{
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.NavigationViewItem"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.NavigationViewItem"))
 			{
 				Log.Warning("WUX version of NavigationViewItem only available starting in RS3.");
 				return;
@@ -875,15 +877,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				var navView = new NavigationView();
 
-				var muxItem = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "MUX Item" };
+				var muxItem = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem { Content = "MUX Item" };
 				navView.MenuItems.Add(muxItem);
 
-				navView.MenuItems.Add(new Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator());
+				navView.MenuItems.Add(new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemSeparator());
 
 				// No errors should occur here when we only use MUX items
 				navView.UpdateLayout();
 
-				var wuxItem = new Windows.UI.Xaml.Controls.NavigationViewItem { Content = "WUX Item" };
+				var wuxItem = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "WUX Item" };
 				navView.MenuItems.Add(wuxItem);
 
 				// But adding a WUX item should generate an exception (as soon as the new item gets processed)
@@ -1249,6 +1251,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __ANDROID__
+		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task VerifyNavigationViewItemToolTipPaneDisplayMode()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
@@ -1321,6 +1329,38 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 					Verify.AreEqual(expectedDefaultToolTip, ToolTipService.GetToolTip(menuItem1), $"Item 1's tooltip should have been \"{expectedDefaultToolTip ?? "null"}\".");
 					Verify.AreEqual(expectedCustomToolTip, ToolTipService.GetToolTip(menuItem2), $"Item 2's tooltip should have been {expectedCustomToolTip}.");
 				}
+			});
+		}
+
+		[TestMethod]
+		public async Task VerifyNVIOutlivingNVDoesNotCrashAsync()
+		{
+			NavigationViewItem menuItem1 = null;
+			RunOnUIThread.Execute(() =>
+			{
+				var navView = new NavigationView();
+				menuItem1 = new NavigationViewItem();
+				navView.MenuItems.Add(menuItem1);
+				Content = navView;
+				Content.UpdateLayout();
+				navView.MenuItems.Clear();
+				Content = menuItem1;
+				Content.UpdateLayout();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				GC.Collect();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				// NavigationView has a handler on NVI's IsSelected DependencyPropertyChangedEvent.
+				menuItem1.IsSelected = !menuItem1.IsSelected;
 			});
 		}
 	}

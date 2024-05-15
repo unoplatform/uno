@@ -4,7 +4,7 @@ using System.ComponentModel;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public abstract partial class SetterBase
 	{
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		internal abstract void ApplyTo (DependencyObject o);
+		internal abstract void ApplyTo(DependencyObject o);
 
 		/// <summary>
 		/// This method is present for binary backward compatibility with <see cref="Setter{T}"/>.

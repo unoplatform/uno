@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using System.Collections;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.DataBinding
 {
@@ -43,7 +43,7 @@ namespace Uno.UI.DataBinding
 		{
 			var property = _properties[name] as IBindableProperty;
 
-			if(property == null)
+			if (property == null)
 			{
 				var prop = DependencyPropertyDescriptor.Parse(name);
 

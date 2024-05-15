@@ -1,50 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
-namespace Uno
+namespace Uno;
+
+public static class FoundationFeatureConfiguration
 {
-	public static class FoundationFeatureConfiguration
+	/// <summary>
+	/// Used by tests cleanup to restore the default configuration for other tests!
+	/// </summary>
+	internal static void RestoreDefaults()
 	{
-		/// <summary>
-		/// Used by tests cleanup to restore the default configuration for other tests!
-		/// </summary>
+		Rect.RestoreDefaults();
+	}
+
+	public static class Rect
+	{
 		internal static void RestoreDefaults()
 		{
-			Rect.RestoreDefaults();
+			AllowNegativeWidthHeight = _defaultAllowNegativeWidthHeight;
 		}
 
-		public static class Rect
-		{
-			internal static void RestoreDefaults()
-			{
-				AllowNegativeWidthHeight = _defaultAllowNegativeWidthHeight;
-			}
-
-			private const bool _defaultAllowNegativeWidthHeight = true;
-			/// <summary>
-			/// If this flag is set to true, the <see cref="Windows.Foundation.Rect"/> won't throw an exception
-			/// if it's been created with a negative width / height.
-			/// This should be kept to `true` until https://github.com/unoplatform/uno/issues/606 get fixed.
-			/// </summary>
-			/// <remarks>This hides some errors from invalid measure/arrange which have to be fixed!</remarks>
-			[DefaultValue(_defaultAllowNegativeWidthHeight)]
-			public static bool AllowNegativeWidthHeight { get; set; } = _defaultAllowNegativeWidthHeight;
-		}
+		private const bool _defaultAllowNegativeWidthHeight = true;
+		/// <summary>
+		/// If this flag is set to true, the <see cref="Windows.Foundation.Rect"/> won't throw an exception
+		/// if it's been created with a negative width / height.
+		/// This should be kept to `true` until https://github.com/unoplatform/uno/issues/606 get fixed.
+		/// </summary>
+		/// <remarks>This hides some errors from invalid measure/arrange which have to be fixed!</remarks>
+		[DefaultValue(_defaultAllowNegativeWidthHeight)]
+		public static bool AllowNegativeWidthHeight { get; set; } = _defaultAllowNegativeWidthHeight;
+	}
 
 #if __WASM__
-		public static class Runtime
+	public static class Runtime
+	{
+		/// <summary>
+		/// Indicates if exception thrown in javascript should be rethrown in managed code.
+		/// </summary>
+		public static bool RethrowNativeExceptions
 		{
-			/// <summary>
-			/// Indicates if exception thrown in javascript should be rethrown in managed code.
-			/// </summary>
-			public static bool RethrowNativeExceptions
-			{
-				get => WebAssembly.Runtime.RethrowNativeExceptions;
-				set => WebAssembly.Runtime.RethrowNativeExceptions = value;
-			}
+			get => WebAssembly.Runtime.RethrowNativeExceptions;
+			set => WebAssembly.Runtime.RethrowNativeExceptions = value;
 		}
-#endif
 	}
+#endif
 }

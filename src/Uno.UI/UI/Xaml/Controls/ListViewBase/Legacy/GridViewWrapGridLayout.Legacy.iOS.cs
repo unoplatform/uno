@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.Disposables;
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls;
-
-#if NET6_0_OR_GREATER
+using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -68,7 +65,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for ItemMaxWidth.  This enables animation, styling, binding, etc...
-		public static DependencyProperty ItemMaxWidthProperty { get ; } =
+		public static DependencyProperty ItemMaxWidthProperty { get; } =
 			DependencyProperty.Register("ItemMaxWidth", typeof(double), typeof(GridViewWrapGridLayout), new FrameworkPropertyMetadata(0.0, (s, e) => ((GridViewWrapGridLayout)s)?.OnItemMaxWidthChanged(e)));
 
 		private void OnItemMaxWidthChanged(DependencyPropertyChangedEventArgs e)
@@ -88,7 +85,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for MaximumRowsOrColumns.  This enables animation, styling, binding, etc...
-		public static DependencyProperty MaximumRowsOrColumnsProperty { get ; } =
+		public static DependencyProperty MaximumRowsOrColumnsProperty { get; } =
 			DependencyProperty.Register("MaximumRowsOrColumns", typeof(int), typeof(GridViewWrapGridLayout), new FrameworkPropertyMetadata(0, (s, e) => ((GridViewWrapGridLayout)s)?.OnMaximumRowsOrColumnsChanged(e)));
 
 		private void OnMaximumRowsOrColumnsChanged(DependencyPropertyChangedEventArgs e)

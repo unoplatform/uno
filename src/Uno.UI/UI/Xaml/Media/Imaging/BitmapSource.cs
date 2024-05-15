@@ -1,12 +1,13 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public partial class BitmapSource : ImageSource
 	{
@@ -19,12 +20,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
-		public static DependencyProperty PixelHeightProperty { get ; } =
-			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelHeightChanged(e)));
-
-		private void OnPixelHeightChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+		public static DependencyProperty PixelHeightProperty { get; } =
+			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
 
 		#endregion
 
@@ -37,17 +34,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...
-		public static DependencyProperty PixelWidthProperty { get ; } =
-			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelWidthChanged(e)));
-
-
-		private void OnPixelWidthChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+		public static DependencyProperty PixelWidthProperty { get; } =
+			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
 
 		#endregion
 
-#if __NETSTD__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 		protected IRandomAccessStream _stream;
 #endif
 
@@ -95,22 +87,29 @@ namespace Windows.UI.Xaml.Media.Imaging
 				throw new ArgumentException(nameof(streamSource));
 			}
 
-			PixelWidth = 0;
-			PixelHeight = 0;
-
 			// The source has to be cloned before leaving the "SetSource[Async]".
 			var clonedStreamSource = streamSource.CloneStream();
 
-#if __NETSTD__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			_stream = clonedStreamSource;
+			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
 			Stream = clonedStreamSource.AsStream();
+			UpdatePixelWidthAndHeightPartial(clonedStreamSource.AsStream());
 #endif
+			OnSetSource();
 		}
 
-		private async Task ForceLoad(CancellationToken ct)
+		partial void UpdatePixelWidthAndHeightPartial(Stream stream);
+		private protected virtual void OnSetSource() { }
+
+		private
+#if __CROSSRUNTIME__
+			async
+#endif
+			Task ForceLoad(CancellationToken ct)
 		{
-#if __NETSTD__
+#if __CROSSRUNTIME__
 			var tcs = new TaskCompletionSource<object>();
 			using var r = ct.Register(() => tcs.TrySetCanceled());
 			using var s = Subscribe(OnChanged);
@@ -123,17 +122,24 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				tcs.TrySetResult(null);
 			}
+#else
+			StreamLoaded?.Invoke(this, EventArgs.Empty);
+			return Task.CompletedTask;
 #endif
 		}
 
+#if !__CROSSRUNTIME__
+		internal event EventHandler StreamLoaded;
+#endif
+
 		public override string ToString()
 		{
-			if (WebUri is { } uri)
+			if (AbsoluteUri is { } uri)
 			{
 				return $"{GetType().Name}/{uri}";
 			}
 
-#if __NETSTD__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			if (_stream is { } stream)
 			{
 				return $"{GetType().Name}/{stream.GetType()}";

@@ -1,22 +1,22 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[TypeConverter(typeof(ThicknessConverter))]
 	public partial struct Thickness : IEquatable<Thickness>
 	{
-		public static readonly Thickness Empty = new Thickness ();
+		public static readonly Thickness Empty;
 
-		public Thickness (double uniformLength)
-			: this ()
+		public Thickness(double uniformLength)
+			: this()
 		{
 			Left = Top = Right = Bottom = uniformLength;
 		}
 
-		public Thickness (double left, double top, double right, double bottom)
-			: this ()
+		public Thickness(double left, double top, double right, double bottom)
+			: this()
 		{
 			Left = left;
 			Top = top;
@@ -24,8 +24,8 @@ namespace Windows.UI.Xaml
 			Bottom = bottom;
 		}
 
-		public Thickness (double leftRight, double topBottom)
-			: this ()
+		public Thickness(double leftRight, double topBottom)
+			: this()
 		{
 			Left = leftRight;
 			Top = topBottom;
@@ -33,52 +33,49 @@ namespace Windows.UI.Xaml
 			Bottom = topBottom;
 		}
 
-		public double Left { get ; set; }
-
-		public double Top { get ; set; }
-
-		public double Right { get ; set; }
-
-		public double Bottom { get ; set; }
+		public double Left;
+		public double Top;
+		public double Right;
+		public double Bottom;
 
 		internal Thickness GetInverse() => new Thickness(-Left, -Top, -Right, -Bottom);
 
-		public bool Equals (Thickness other)
+		public bool Equals(Thickness other)
 		{
-			return  Math.Abs (Left - other.Left) < double.Epsilon
-			&& Math.Abs (Top - other.Top) < double.Epsilon
-			&& Math.Abs (Right - other.Right) < double.Epsilon
-			&& Math.Abs (Bottom - other.Bottom) < double.Epsilon;
+			return Math.Abs(Left - other.Left) < double.Epsilon
+			&& Math.Abs(Top - other.Top) < double.Epsilon
+			&& Math.Abs(Right - other.Right) < double.Epsilon
+			&& Math.Abs(Bottom - other.Bottom) < double.Epsilon;
 		}
 
-		public override bool Equals (object obj)
+		public override bool Equals(object obj)
 		{
-			return (obj is Thickness) && Equals ((Thickness)obj);
+			return (obj is Thickness) && Equals((Thickness)obj);
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
 			// Analysis disable NonReadonlyReferencedInGetHashCode
-			return Left.GetHashCode ()
-			^ Top.GetHashCode ()
-			^ Right.GetHashCode ()
-			^ Bottom.GetHashCode ();
+			return Left.GetHashCode()
+			^ Top.GetHashCode()
+			^ Right.GetHashCode()
+			^ Bottom.GetHashCode();
 			// Analysis restore NonReadonlyReferencedInGetHashCode
 		}
 
-		public override string ToString ()
+		public override string ToString()
 		{
-			return string.Format (CultureInfo.InvariantCulture, "[Thickness: {0}-{1}-{2}-{3}]", Left, Top, Right, Bottom);
+			return string.Format(CultureInfo.InvariantCulture, "[Thickness: {0}-{1}-{2}-{3}]", Left, Top, Right, Bottom);
 		}
 
-		public static bool operator == (Thickness t1, Thickness t2)
+		public static bool operator ==(Thickness t1, Thickness t2)
 		{
-			return t1.Equals (t2);
+			return t1.Equals(t2);
 		}
 
-		public static bool operator != (Thickness t1, Thickness t2)
+		public static bool operator !=(Thickness t1, Thickness t2)
 		{
-			return !t1.Equals (t2);
+			return !t1.Equals(t2);
 		}
 	}
 }

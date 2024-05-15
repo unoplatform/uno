@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Content;
@@ -24,7 +23,9 @@ namespace Windows.ApplicationModel.Calls
 			_telephonyManager = (TelephonyManager)ContextHelper.Current
 				.GetSystemService(Context.TelephonyService);
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
 			_telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 		}
 
@@ -32,12 +33,16 @@ namespace Windows.ApplicationModel.Calls
 
 		public static bool IsCallActive =>
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
 			_telephonyManager.CallState == CallState.Offhook;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 
 		public static bool IsCallIncoming =>
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
 			_telephonyManager.CallState == CallState.Ringing;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 
 		public static void ShowPhoneCallSettingsUI()
@@ -46,7 +51,7 @@ namespace Windows.ApplicationModel.Calls
 				.SetFlags(ActivityFlags.ClearTop)
 				.SetFlags(ActivityFlags.NewTask);
 			ContextHelper.Current.StartActivity(intent);
-		}		
+		}
 
 		internal static void RaiseCallStateChanged() => CallStateChanged?.Invoke(null, null);
 
@@ -54,9 +59,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
 			{
-#if __ANDROID_24__
 				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber, Java.Util.Locale.GetDefault(Java.Util.Locale.Category.Format).Country);
-#endif
 			}
 			else if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
 			{
@@ -65,7 +68,9 @@ namespace Windows.ApplicationModel.Calls
 			else
 			{
 #pragma warning disable CS0618
+#pragma warning disable CA1422 // Validate platform compatibility
 				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618
 			}
 
@@ -79,4 +84,3 @@ namespace Windows.ApplicationModel.Calls
 		}
 	}
 }
-#endif

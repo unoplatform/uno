@@ -1,14 +1,14 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class CalendarViewItem : CalendarViewBaseItem
 	{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarView spParentCalendarView = GetParentCalendarView();
 
-				if (spParentCalendarView is {})
+				if (spParentCalendarView is { })
 				{
 					spParentCalendarView.OnSelectMonthYearItem(this, FocusState.Pointer);
 					pArgs.Handled = true;
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarView spParentCalendarView = GetParentCalendarView();
 
-				if (spParentCalendarView is {})
+				if (spParentCalendarView is { })
 				{
 					VirtualKey key = VirtualKey.None;
 					key = pArgs.Key;
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <inheritdoc />
-		internal override DateTimeOffset DateBase { get; set; }
+		internal override DateTime DateBase { get; set; }
 
 #if DEBUG && false
 		public override DateTime Date

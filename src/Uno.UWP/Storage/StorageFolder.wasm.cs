@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Extensions;
@@ -54,6 +55,7 @@ namespace Windows.Storage
 			public string[] Paths;
 		}
 
+		[JSExport]
 		internal static void DispatchStorageInitialized()
 		{
 			if (typeof(StorageFolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

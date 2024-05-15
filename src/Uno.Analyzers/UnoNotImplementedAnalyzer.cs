@@ -5,10 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
@@ -18,18 +15,21 @@ namespace Uno.Analyzers
 	public class UnoNotImplementedAnalyzer : DiagnosticAnalyzer
 	{
 		internal const string Title = "Uno type or member is not implemented";
-		internal const string MessageFormat = "{0} is not implemented in Uno";
+		internal const string MessageFormat = "{0} is not implemented in Uno (https://aka.platform.uno/notimplemented?m={0})";
 		internal const string Description = "This member or type is not implemented and will fail when invoked.";
 		internal const string Category = "Compatibility";
 
 		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
 			"Uno0001",
+#pragma warning restore RS2008 // Enable analyzer release tracking
 			Title,
 			MessageFormat,
 			Category,
 			DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
-			description: Description
+			description: Description,
+			helpLinkUri: "https://aka.platform.uno/notimplemented"
 		);
 
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
@@ -47,7 +47,13 @@ namespace Uno.Analyzers
 					return;
 				}
 
-				context.RegisterOperationAction(c => AnalyzeOperation(c, notImplementedSymbol), OperationKind.Invocation, OperationKind.ObjectCreation, OperationKind.FieldReference, OperationKind.PropertyReference);
+				context.RegisterOperationAction(c =>
+					AnalyzeOperation(c, notImplementedSymbol)
+					, OperationKind.Invocation
+					, OperationKind.ObjectCreation
+					, OperationKind.FieldReference
+					, OperationKind.PropertyReference
+					, OperationKind.EventReference);
 			});
 		}
 
@@ -61,7 +67,7 @@ namespace Uno.Analyzers
 			var symbol = GetUnoSymbolFromOperation(context.Operation);
 			if (symbol != null)
 			{
-				var directives = GetDirectives(context.Operation.Syntax.SyntaxTree, context.CancellationToken);
+				var directives = GetDirectives(context.Operation.Syntax.SyntaxTree);
 
 				if (HasNotImplementedAttribute(notImplementedSymbol, symbol, directives) ||
 					(symbol.ContainingSymbol != null && HasNotImplementedAttribute(notImplementedSymbol, symbol.ContainingSymbol, directives)))
@@ -78,13 +84,14 @@ namespace Uno.Analyzers
 
 		private ISymbol? GetUnoSymbolFromOperation(IOperation operation)
 		{
-			
-			ISymbol symbol = operation switch
+
+			ISymbol? symbol = operation switch
 			{
 				IInvocationOperation invocationOperation => invocationOperation.TargetMethod,
 				IObjectCreationOperation objectCreation => objectCreation.Type,
 				IFieldReferenceOperation fieldReferenceOperation => fieldReferenceOperation.Field,
 				IPropertyReferenceOperation propertyReferenceOperation => propertyReferenceOperation.Property,
+				IEventReferenceOperation eventReferenceOperation => eventReferenceOperation.Event,
 				_ => throw new InvalidOperationException("This code path is unreachable.")
 			};
 
@@ -97,27 +104,14 @@ namespace Uno.Analyzers
 			return null;
 		}
 
-		private string[] GetDirectives(SyntaxTree tree, CancellationToken cancellationToken)
+		private static string[] GetDirectives(SyntaxTree tree)
 		{
-			var directives = tree.Options.PreprocessorSymbolNames.ToArray() ?? Array.Empty<string>();
-
-			if (directives.Length == 0)
-			{
-				// This case is only used during tests where explicit #define statements are
-				// present at the top of the file. In common cases, PreprocessorSymbolNames is
-				// not empty.
-				if (tree.GetRoot(cancellationToken).GetFirstDirective() is DefineDirectiveTriviaSyntax directive)
-				{
-					directives = new[] { directive.Name.Text };
-				}
-			}
-
-			return directives;
+			return tree.Options.PreprocessorSymbolNames.ToArray();
 		}
 
 		private static bool HasNotImplementedAttribute(INamedTypeSymbol notImplementedSymbol, ISymbol namedSymbol, string[] directives)
 		{
-			if (namedSymbol.GetAttributes().FirstOrDefault(a => Equals(a.AttributeClass, notImplementedSymbol)) is AttributeData data)
+			if (namedSymbol.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, notImplementedSymbol)) is AttributeData data)
 			{
 				if (
 					data.ConstructorArguments.FirstOrDefault() is TypedConstant constant
@@ -152,7 +146,7 @@ namespace Uno.Analyzers
 			return false;
 		}
 
-		private static bool IsUnoSymbol(ISymbol symbol)
+		private static bool IsUnoSymbol(ISymbol? symbol)
 		{
 			string name = symbol?.ContainingAssembly?.Name ?? "";
 

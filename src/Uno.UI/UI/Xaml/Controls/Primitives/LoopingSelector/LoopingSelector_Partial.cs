@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI;
 
@@ -18,15 +18,14 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	partial class LoopingSelector
 	{
 		private const string c_scrollViewerTemplatePart = "ScrollViewer";
 		private const string c_upButtonTemplatePart = "UpButton";
 		private const string c_downButtonTemplatePart = "DownButton";
-		private const double c_targetScreenWidth = 400.0;
-
+		//private const double c_targetScreenWidth = 400.0;
 
 		internal LoopingSelector()
 		{
@@ -97,7 +96,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			//(Private.SetDefaultStyleKey(
 			//        spInnerInspectable,
-			//        "Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector"));
+			//        "Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.LoopingSelector"));
 			DefaultStyleKey = typeof(LoopingSelector);
 
 			//QueryInterface(__uuidof(UIElement), &spUIElement);
@@ -427,7 +426,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// This event can be raised synchronously
 			// with the ScrollViewer's ChangeView().
 			// It must be delayed to prevent incorrect re-selection of another value.
-			Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			global::Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
 		}
 
 		void OnViewChanging(
@@ -483,7 +482,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//UNREFERENCED_PARAMETER(pEventArgs);
 			var nPointerDeviceType = PointerDeviceType.Touch;
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 
 			spPointerPoint = pEventArgs.GetCurrentPoint(null);
 			if (spPointerPoint == null)
@@ -673,10 +672,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				//spValue.As(spReferenceInt);
 				spReferenceInt = spValue;
 				oldIdx = spReferenceInt; //.Value;
-				// NOTE: This call only will be applied when the
-				// scrollviewer is not being manipulated. Once a
-				// manipulation has begun the user's eventual
-				// selection takes dominance.
+										 // NOTE: This call only will be applied when the
+										 // scrollviewer is not being manipulated. Once a
+										 // manipulation has begun the user's eventual
+										 // selection takes dominance.
 				SetSelectedIndex(oldIdx, newIdx);
 				Balance(false /* isOnSnapPoint */);
 			}
@@ -688,13 +687,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			result = false;
 
-			if(ItemHeight == 0)
+			if (ItemHeight == 0)
 			{
 				return; // not ready yet...
 			}
 
 			if (_tpScrollViewer is { } &&
-			    _tpPanel is { })
+				_tpPanel is { })
 			{
 				spItems = Items;
 				if (spItems is { })
@@ -1073,7 +1072,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// This will be in the middle of the currently selected item.
 			midpoint = (_unpaddedExtentTop + _unpaddedExtentBottom) / 2 - _realizedTop;
 			newIdx = (uint)_realizedTopIdx +
-			         (uint)midpoint / (uint)_scaledItemHeight;
+					 (uint)midpoint / (uint)_scaledItemHeight;
 
 			spItemsCollection = Items;
 			itemCount = (uint)spItemsCollection.Count;
@@ -1115,7 +1114,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// NOTE: Only called when the ScrollViewer is done Running (e.g. no scrolling is happening).
 		void UpdateVisualSelectedItem(uint oldIdx, uint newIdx)
 		{
-			if(oldIdx == newIdx)
+			if (oldIdx == newIdx)
 			{
 				return;
 			}
@@ -1287,7 +1286,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			lsi.SetVisualIndex((int)itemIdxToRealize);
 
 			if (_itemState == ItemState.Expanded || _itemState == ItemState.ManipulationInProgress ||
-			    _itemState == ItemState.LostFocus)
+				_itemState == ItemState.LostFocus)
 			{
 				lsi.SetState(LoopingSelectorItem.State.Expanded, false);
 			}
@@ -1705,7 +1704,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		void ShiftChildren(double delta)
 		{
-			if(delta == 0)
+			if (delta == 0)
 			{
 				return;
 			}
@@ -1795,6 +1794,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			FrameworkElement spPanelAsFE;
 			UIElement spThisAsUI;
+
+#if HAS_UNO
+			// Uno specific: Due to lifecycle differences, the ScrollViewer is may not be initialized at this point.
+			// If ViewportHeight is 0, we would temporarily size the panel incorrectly, which could cause the selected
+			// item to be changed.
+			if (_tpScrollViewer is null || _tpScrollViewer.ViewportHeight == 0)
+			{
+				return;
+			}
+#endif
 
 			var shouldLoop = false;
 			shouldLoop = ShouldLoop;
@@ -1888,7 +1897,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				//	wrl_wrappers.Hstring(RuntimeClass_Windows_System_DispatcherQueue),
 				//	&spDispatcherQueueStatics));
 				//spDispatcherQueueStatics.GetForCurrentThread(spDispatcherQueue);
-				spDispatcherQueue = Windows.System.DispatcherQueue.GetForCurrentThread();
+				spDispatcherQueue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
 				//(spDispatcherQueue.TryEnqueue(
 				//	WRLHelper.MakeAgileCallback<wsy.IDispatcherQueueHandler>([wrThis, spVerticalOffset]() mutable {
 
@@ -2025,7 +2034,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//iter = _realizedItemsForAP.find(moddeItemdIdx);
 			//var iter = _realizedItemsForAP[(int)moddeItemdIdx];
 			//if (iter != _realizedItemsForAP.Last().Value)
-			if(_realizedItemsForAP.TryGetValue((int)moddeItemdIdx, out var iter))
+			if (_realizedItemsForAP.TryGetValue((int)moddeItemdIdx, out var iter))
 			{
 				//ppItem = iter; //.Detach();
 				ppItem = iter;

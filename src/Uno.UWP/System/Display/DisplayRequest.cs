@@ -8,9 +8,9 @@ namespace Windows.System.Display
 	public partial class DisplayRequest
 	{
 		private static object _syncLock = new object();
-		private static int _globalRequestCount = 0;
+		private static int _globalRequestCount;
 
-		private int _instanceRequestCount = 0;
+		private int _instanceRequestCount;
 
 		public void RequestActive()
 		{

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	public partial class CollectionViewSource : DependencyObject
 	{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		// Using a DependencyProperty as the backing store for IsSourceGrouped.  This enables animation, styling, binding, etc...
-		public static DependencyProperty IsSourceGroupedProperty { get ; } =
+		public static DependencyProperty IsSourceGroupedProperty { get; } =
 			DependencyProperty.Register(nameof(IsSourceGrouped), typeof(bool), typeof(CollectionViewSource), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		public object Source
@@ -31,25 +31,25 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SourceProperty { get ; } =
+		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(object), typeof(CollectionViewSource), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		private void UpdateView()
 		{
-            if (Source is IEnumerable enumerable)
-            {
-                View = new CollectionView(enumerable, IsSourceGrouped, ItemsPath);
-            }
-            else
-            {
-                View = null;
-            }
+			if (Source is IEnumerable enumerable)
+			{
+				View = new CollectionView(enumerable, IsSourceGrouped, ItemsPath);
+			}
+			else
+			{
+				View = null;
+			}
 		}
 
 		#endregion
 
 		public static DependencyProperty ViewProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				name: nameof(View),
 				propertyType: typeof(ICollectionView),
 				ownerType: typeof(CollectionViewSource),
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Data
 			private set => SetValue(ViewProperty, value);
 		}
 
-		public global::Windows.UI.Xaml.PropertyPath ItemsPath
+		public global::Microsoft.UI.Xaml.PropertyPath ItemsPath
 		{
 			get => (PropertyPath)this.GetValue(ItemsPathProperty);
 			set => this.SetValue(ItemsPathProperty, value);

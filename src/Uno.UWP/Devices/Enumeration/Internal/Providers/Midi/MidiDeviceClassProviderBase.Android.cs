@@ -1,6 +1,8 @@
-﻿#if __ANDROID__
+﻿#pragma warning disable CS0618 // obsolete members
+
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.Content;
@@ -33,11 +35,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		public Task<DeviceInformation[]> FindAllAsync()
 		{
-			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
-			{
-				return Task.FromResult(
-					GetMidiDevices(midiManager).ToArray());
-			}
+			return Task.FromResult(GetMidiDevices().ToArray());
 		}
 
 		public void WatchStart()
@@ -47,16 +45,16 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				return;
 			}
 
-			_watchMidiManager = _watchMidiManager ?? ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
-
-			var devices = GetMidiDevices(_watchMidiManager).ToArray();
+			var devices = GetMidiDevices().ToArray();
 			foreach (var device in devices)
 			{
 				WatchAdded?.Invoke(this, device);
 			}
 			OnEnumerationCompleted(devices.LastOrDefault());
 
-			_watchMidiManager.RegisterDeviceCallback(_deviceCallback = new DeviceCallback(this), null);
+#pragma warning disable CA1422 // Validate platform compatibility
+			MidiManager.RegisterDeviceCallback(_deviceCallback = new DeviceCallback(this), null);
+#pragma warning restore CA1422 // Validate platform compatibility
 		}
 
 		public void WatchStop()
@@ -66,19 +64,22 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				return;
 			}
 
-			_watchMidiManager?.UnregisterDeviceCallback(_deviceCallback);
+			MidiManager?.UnregisterDeviceCallback(_deviceCallback);
 			_deviceCallback?.Dispose();
 			_deviceCallback = null;
-			_watchMidiManager?.Dispose();
 			_watchMidiManager = null;
 			WatchStopped?.Invoke(this, null);
 		}
+
+		private MidiManager MidiManager
+			=> _watchMidiManager ??= ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
 
 		internal (MidiDeviceInfo device, MidiDeviceInfo.PortInfo port) GetNativeDeviceInfo(string midiDeviceId)
 		{
 			var parsed = ParseMidiDeviceId(midiDeviceId);
 			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
 			{
+#pragma warning disable CA1422 // Validate platform compatibility
 				return midiManager
 					.GetDevices()
 					.Where(d => d.Id == parsed.id)
@@ -89,6 +90,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 								p.PortNumber == parsed.portNumber)
 							.Select(p => (device: d, port: p)))
 					.FirstOrDefault();
+#pragma warning restore CA1422 // Validate platform compatibility
 			}
 		}
 
@@ -99,30 +101,33 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private static (int id, int portNumber) ParseMidiDeviceId(string id)
 		{
 			var parts = id.Split("_");
-			var intId = int.Parse(parts[0]);
-			var portNumber = int.Parse(parts[1]);
+			var intId = int.Parse(parts[0], CultureInfo.InvariantCulture);
+			var portNumber = int.Parse(parts[1], CultureInfo.InvariantCulture);
 			return (intId, portNumber);
 		}
 
 		private static string GetMidiDeviceId(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo) =>
 			$"{deviceInfo.Id}_{portInfo.PortNumber}";
 
-		private IEnumerable<DeviceInformation> GetMidiDevices(MidiManager midiManager)
+		private IEnumerable<DeviceInformation> GetMidiDevices()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug("Retrieving MIDI devices");
 			}
-			return midiManager
+
+#pragma warning disable CA1422 // Validate platform compatibility
+			return MidiManager
 				.GetDevices()
 				.SelectMany(d => FilterMatchingPorts(d.GetPorts()).Select(p => (device: d, port: p)))
 				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
+#pragma warning restore CA1422 // Validate platform compatibility
 		}
 
 		private IEnumerable<MidiDeviceInfo.PortInfo> FilterMatchingPorts(IEnumerable<MidiDeviceInfo.PortInfo> port)
 		{
 			return port.Where(p => p.Type == _portType);
-		}		
+		}
 
 		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation) =>
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
@@ -177,8 +182,8 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 			var deviceInformation = new DeviceInformation(deviceIdentifier, properties)
 			{
-				Name = name,				
-			};						
+				Name = name,
+			};
 
 			return deviceInformation;
 		}
@@ -225,4 +230,3 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		}
 	}
 }
-#endif

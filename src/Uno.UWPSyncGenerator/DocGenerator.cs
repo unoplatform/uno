@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,7 @@ namespace Uno.UWPSyncGenerator
 		private IGrouping<INamespaceSymbol, PlatformSymbols<INamedTypeSymbol>>[] _viewsGrouped;
 		private HashSet<(string name, string namespaceString)> _kosherFrameworkViews;
 
-		public override void Build(string basePath, string baseName, string sourceAssembly)
+		public override async Task Build(string baseName, string sourceAssembly)
 		{
 			_sb = new MarkdownStringBuilder();
 
@@ -35,13 +36,13 @@ namespace Uno.UWPSyncGenerator
 
 			try
 			{
-				base.Build(basePath, baseName, sourceAssembly);
+				await base.Build(baseName, sourceAssembly);
 			}
 			catch (Exception e)
 			{
 				_sb.AppendComment($"Generation error: {e.Message}");
 #if !DEBUG
-				throw; 
+				throw;
 #endif
 			}
 
@@ -50,13 +51,13 @@ namespace Uno.UWPSyncGenerator
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
-				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the May 2019 Update (18362)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the WinUI API. Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/unoplatform/uno/issues")}.");
 
-				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
+				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS, and Skia)"))
 				{
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Main, true);
 				}
@@ -87,7 +88,7 @@ namespace Uno.UWPSyncGenerator
 				_sb.AppendHorizontalRule();
 
 				_sb.AppendParagraph();
-				_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f")}.");
+				_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f", CultureInfo.InvariantCulture)}.");
 			}
 			using (var fileWriter = new StreamWriter(Path.Combine(DocPath, ImplementedViewsFileName)))
 			{
@@ -109,7 +110,6 @@ namespace Uno.UWPSyncGenerator
 						continue;
 					}
 
-
 					var currentNamespace = group.Key.ToDisplayString();
 
 					foreach (var view in group.Where(ps => ps.ImplementedForMain != ImplementedFor.None).OrderBy(ps => ps.UAPSymbol.Name))
@@ -121,89 +121,131 @@ namespace Uno.UWPSyncGenerator
 						var formattedViewName = $"`{viewName}`";
 						using (_sb.Section($"{viewName} : {ConstructBaseClassString(view)}"))
 						{
-							_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
-
-							var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
-							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI and UWP documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
-
-							var customDocLink = GetCustomDocLink(viewName);
-							if (customDocLink != null)
+							// Our usage of obsolete attribte is for all platforms.
+							if (view.AndroidSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass.Name == "ObsoleteAttribute") is { } obsoleteAttribute)
 							{
-								_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
+								var message = (string)obsoleteAttribute.ConstructorArguments[0].Value;
+								_sb.AppendParagraph(message);
 							}
-
-							var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
-							var methods = view.UAPSymbol
-								.GetMembers()
-								.OfType<IMethodSymbol>()
-								.Where(m => m.MethodKind == MethodKind.Ordinary &&
-									!(m.Name.StartsWith("add_") || m.Name.StartsWith("remove_")) // Filter out explicit event add/remove methods (associated with routed events). These should already be filtered out by the MethodKind.Ordinary check but for some reason, on the build server only, aren't.
-								)
-								.Select(m => GetAllMatchingMethods(view, m))
-								.ToArray();
-							var events = view.UAPSymbol.GetMembers().OfType<IEventSymbol>().Select(e => GetAllMatchingEvents(view, e)).ToArray();
-
-							AppendImplementedMembers("properties", "Property", properties);
-							AppendImplementedMembers("methods", "Method", methods);
-							AppendImplementedMembers("events", "Event", events);
-
-							_sb.AppendHorizontalRule();
-
-							_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
-
-							AppendNotImplementedMembers("properties", "Property", properties);
-							AppendNotImplementedMembers("methods", "Method", methods);
-							AppendNotImplementedMembers("events", "Event", events);
-
-							_sb.AppendHorizontalRule();
-
-							_sb.AppendParagraph();
-							_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f")}.");
-
-							void AppendImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+							else
 							{
-								var implemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.None);
-								if (implemented.None())
+								_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
+
+								var baseDocLinkUrl = @"https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
+								_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
+
+								var customDocLink = GetCustomDocLink(viewName);
+								if (customDocLink != null)
 								{
-									return;
+									_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
 								}
-								using (_sb.Section($"Implemented {memberTypePlural} "))
+
+								List<string> options = new List<string>();
+								void AddOption(string text, string linkText, string link)
 								{
-									using (_sb.Table(memberTypeSingular, "*Supported on*"))
+									if (link is not null)
 									{
-										foreach (var member in implemented)
-										{
-											var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-											var implementedQualifier = $"*{ToDisplayString(member.ImplementedForMain)}*";
-											_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
-										}
-										_sb.AppendParagraph();
+										options.Add($"{text} {Hyperlink(linkText, link)}");
 									}
 								}
-							}
 
-							void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
-							{
-								var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
-								if (notImplemented.None())
+								var galleryLink = GetGalleryLink(viewName);
+								var playgroundLink = GetPlaygroundLink(viewName);
+
+								AddOption("use the", "Uno Gallery", galleryLink);
+								AddOption($"run your own tests on the", "Uno Playground", playgroundLink);
+
+								if (options.Count > 0)
 								{
-									return;
+									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can {string.Join(" or ", options)}.");
 								}
-								using (_sb.Section($"Not implemented {memberTypePlural}"))
+
+								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
+								var methods = view.UAPSymbol
+									.GetMembers()
+									.OfType<IMethodSymbol>()
+									.Where(m => m.MethodKind == MethodKind.Ordinary &&
+										!(m.Name.StartsWith("add_", StringComparison.Ordinal) || m.Name.StartsWith("remove_", StringComparison.Ordinal)) // Filter out explicit event add/remove methods (associated with routed events). These should already be filtered out by the MethodKind.Ordinary check but for some reason, on the build server only, aren't.
+									)
+									.Select(m => GetAllMatchingMethods(view, m))
+									.ToArray();
+								var events = view.UAPSymbol.GetMembers().OfType<IEventSymbol>().Select(e => GetAllMatchingEvents(view, e)).ToArray();
+
+								AppendImplementedMembers("properties", "Property", properties);
+								AppendImplementedMembers("methods", "Method", methods);
+								AppendImplementedMembers("events", "Event", events);
+
+								var notImplementedProperties = GetNotImplementedMembers(properties);
+								var notImplementedMethods = GetNotImplementedMembers(methods);
+								var notImplementedEvents = GetNotImplementedMembers(events);
+								if (notImplementedProperties.Any() || notImplementedMethods.Any() || notImplementedEvents.Any())
 								{
-									using (_sb.Table(memberTypeSingular, "Not supported on"))
+									_sb.AppendHorizontalRule();
+
+									_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
+
+									AppendNotImplementedMembers("properties", "Property", notImplementedProperties);
+									AppendNotImplementedMembers("methods", "Method", notImplementedMethods);
+									AppendNotImplementedMembers("events", "Event", notImplementedEvents);
+
+								}
+
+								_sb.AppendHorizontalRule();
+
+								_sb.AppendParagraph();
+								_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f", CultureInfo.InvariantCulture)}.");
+
+								void AppendImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+								{
+									var implemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.None);
+									if (implemented.None())
 									{
-										foreach (var member in notImplemented)
+										return;
+									}
+									using (_sb.Section($"Implemented {memberTypePlural} "))
+									{
+										using (_sb.Table(memberTypeSingular, "*Supported on*"))
 										{
-											var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-											var notImplementedQualifier = $"*{ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)}*";
-											_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
+											foreach (var member in implemented)
+											{
+												var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
+												var implementedQualifier = $"*{ToDisplayString(member.ImplementedForMain)}*";
+												_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
+											}
+											_sb.AppendParagraph();
 										}
-										_sb.AppendParagraph();
+									}
+								}
+
+								IEnumerable<PlatformSymbols<T>> GetNotImplementedMembers<T>(IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+								{
+									return members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+								}
+
+								void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> notImplemented) where T : ISymbol
+								{
+									if (notImplemented.None())
+									{
+										return;
+									}
+
+									using (_sb.Section($"Not implemented {memberTypePlural}"))
+									{
+										using (_sb.Table(memberTypeSingular, "Not supported on"))
+										{
+											foreach (var member in notImplemented)
+											{
+												var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
+												var notImplementedQualifier = $"*{ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)}*";
+												_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
+											}
+											_sb.AppendParagraph();
+										}
 									}
 								}
 							}
 						}
+
 						using (var fileWriter = new StreamWriter(Path.Combine(DocPath, GetImplementedMembersFilename(view.UAPSymbol))))
 						{
 							fileWriter.Write(_sb.ToString());
@@ -394,6 +436,162 @@ namespace Uno.UWPSyncGenerator
 			["controls/commandbar.md"] = new[] { "CommandBar" },
 			["controls/MenuFlyout.md"] = new[] { "MenuFlyout" },
 			["features/shapes-and-brushes.md"] = new[] { "Ellipse", "Line", "Path", "Polygon", "Polyline", "Rectangle", "ArbitraryShapeBase" },
+		};
+
+
+		private static string GetGalleryLink(string shortTypeName)
+		{
+			var galleryDocMapping = GalleryDocMapping.FirstOrDefault(kvp => kvp.Value.Contains(shortTypeName)).Key;
+			return galleryDocMapping != null ?
+				$"https://gallery.platform.uno/#{galleryDocMapping}" :
+				null;
+		}
+
+		private static readonly Dictionary<string, string[]> GalleryDocMapping = new Dictionary<string, string[]>
+		{
+			["ListView"] = new[] { "ListView", "ListViewItem" },
+			["InfoBadge"] = new[] { "InfoBadge" },
+			["Panel"] = new[] { "Panel" },
+			["Grid"] = new[] { "Grid" },
+			["GridView"] = new[] { "GridView" },
+			["StackPanel"] = new[] { "StackPanel" },
+			["RelativePanel"] = new[] { "RelativePanel" },
+			["RadioButton"] = new[] { "RadioButton" },
+			["PersonPicture"] = new[] { "PersonPicture" },
+			["ViewBox"] = new[] { "ViewBox" },
+			["TreeView"] = new[] { "TreeView", "TreeViewItem" },
+			["ColorPicker"] = new[] { "ColorPicker" },
+			["Button"] = new[] { "Button" },
+			["PasswordBox"] = new[] { "PasswordBox" },
+			["DatePicker"] = new[] { "DatePicker" },
+			["CalendarDatePicker"] = new[] { "CalendarDatePicker" },
+			["ToggleSwitch"] = new[] { "ToggleSwitch" },
+			["ComboBox"] = new[] { "ComboBox" },
+			["BreadcrumbBar"] = new[] { "BreadcrumbBar", "BreadcrumbBarItem" },
+			["Image"] = new[] { "Image" },
+			["CheckBox"] = new[] { "CheckBox" },
+			["MediaPlayerElement"] = new[] { "MediaPlayerElement" },
+			["ListView"] = new[] { "ListView", "ListViewItem" },
+			["Flyout"] = new[] { "MenuFlyout", "MenuFlyoutItem", "MenuFlyoutSubItem", "MenuFlyoutSeparator " },
+			["ContentDialog"] = new[] { "ContentDialog" },
+			["NumberBox"] = new[] { "NumberBox" },
+			["AutoSuggestBox"] = new[] { "AutoSuggestBox" },
+			["PipsPager"] = new[] { "PipsPager" },
+			["MenuBar"] = new[] { "MenuBar", "MenuBarItem" },
+			["Slider"] = new[] { "Slider" },
+			["HyperlinkButton"] = new[] { "HyperlinkButton" },
+			["CalendarView"] = new[] { "CalendarView" },
+			["RatingControl"] = new[] { "RatingControl" },
+			["CommandBar"] = new[] { "CommandBar" },
+			["TextBlock"] = new[] { "TextBlock" },
+			["Shape"] = new[] { "Shape" },
+			["TwoPaneView"] = new[] { "TwoPaneView" },
+			["TabBar"] = new[] { "TabBar" },
+			["DataGrid"] = new[] { "DataGrid" },
+			["SwipeControl"] = new[] { "SwipeControl" },
+			["RefreshContainer"] = new[] { "RefreshContainer" },
+			["Icon"] = new[] { "Icon" },
+			["Path"] = new[] { "Path" },
+			["Progress Ring/Bar"] = new[] { "ProgressBar", "ProgressRing" },
+			["TextBox"] = new[] { "TextBox" },
+			["VariableSizedWrapGrid"] = new[] { "VariableSizedWrapGrid" },
+
+			//Should we redirect NavigationView to NavigationBar?
+			//["NavigationView"] = new[] { "NavigationView" },
+			//["NavigationBar"] = new[] { "NavigationBar" },
+
+			//There is a gallery, but it is not on the list of references
+			//["Lottie"] = new[] { "Lottie" },
+			//["Chip"] = new[] { "Chip" },
+			//["Material Palette"] = new[] { "Material Palette" },
+			//["Animation"] = new[] { "Animation" },
+			//["ElevatedView"] = new[] { "ElevatedView" },
+			//["Launcher"] = new[] { "Launcher" },
+			//["Card"] = new[] { "Card" },
+			//["Cupertino Palette"] = new[] { "Cupertino Palette" },
+			//["PhoneCallManager"] = new[] { "PhoneCallManager" },
+			//["ShadowContainer"] = new[] { "ShadowContainer" },
+			//["SegmentedControl"] = new[] { "SegmentedControl" },
+			//["ChipGroup"] = new[] { "ChipGroup" },
+			//["Binding"] = new[] { "Binding" },
+			//["Simple Orientation"] = new[] { "Simple Orientation" },
+			//["Fluent Palette"] = new[] { "Fluent Palette" },
+			//["Divider"] = new[] { "Divider" },
+			//["Geolocator"] = new[] { "Geolocator" },
+			//["Sharing"] = new[] { "Sharing" },
+			//["Display Request"] = new[] { "Display Request" },
+			//["Light Sensor"] = new[] { "Light Sensor" },
+			//["Overview"] = new[] { "Overview" },
+			//["Clipboard"] = new[] { "Clipboard" },
+			//["Gyrometer"] = new[] { "Gyrometer" },
+			//["Acrylic"] = new[] { "Acrylic" },
+			//["Floating Action Button"] = new[] { "Floating Action Button" },
+			//["Typography"] = new[] { "Typography" },
+			//["Local Settings"] = new[] { "Local Settings" },
+			//["Email Manager"] = new[] { "Email Manager" },
+			//["Lightweight Styling"] = new[] { "Lightweight Styling" },
+			//["Network Information"] = new[] { "Network Information" },
+			//["Lamp"] = new[] { "Lamp" },
+			//["Pedometer"] = new[] { "Pedometer" },
+			//["Vibration"] = new[] { "Vibration" },
+			//["File and Folder Pickers"] = new[] { "File and Folder Pickers" },
+			//["Brush"] = new[] { "Brush" },
+			//["Magnetometer"] = new[] { "Magnetometer" },
+			//["Accelerometer"] = new[] { "Accelerometer" },
+			//["Gamepad"] = new[] { "Gamepad" },
+			//["Transforms"] = new[] { "Transforms" },
+
+		};
+
+		private static string GetPlaygroundLink(string shortTypeName)
+		{
+			var playgroundDocMapping = PlaygroundDocMapping.FirstOrDefault(kvp => kvp.Value.Contains(shortTypeName)).Key;
+			return playgroundDocMapping != null ?
+				$"https://playground.platform.uno/#{playgroundDocMapping}" :
+				null;
+		}
+
+		private static readonly Dictionary<string, string[]> PlaygroundDocMapping = new Dictionary<string, string[]>
+		{
+			//List of existing references in the Playground
+			["cards"] = new[] { "ListView", "ListViewItem" },
+			["combobox"] = new[] { "ComboBox" },
+			["animation-simple"] = new[] { "Animations" },
+			["borders"] = new[] { "Border" },
+			["button"] = new[] { "Button" },
+			["canvas"] = new[] { "Canvas" },
+			["checkbox"] = new[] { "CheckBox" },
+			["date-and-time"] = new[] { "DatePicker", "CalendarDatePicker", "CalendarView" },
+			["grid"] = new[] { "Grid" },
+			["hello-world"] = new[] { "TextBlock" },
+			["hyperlinkbutton"] = new[] { "HyperlinkButton" },
+			["image"] = new[] { "Image" },
+			["info-bar"] = new[] { "InfoBar" },
+			["menubar"] = new[] { "MenuBar", "MenuBarItem", "MenuFlyoutSubItem", "MenuFlyoutItem" },
+			["menuflyout"] = new[] { "Flyout", "MenuFlyoutItem", "MenuFlyoutSeparator" },
+			["numberbox"] = new[] { "NumberBox" },
+			["relativepanel"] = new[] { "RelativePanel" },
+			["panels"] = new[] { "Canvas", "Grid" },
+			["passwordbox"] = new[] { "PasswordBox" },
+			["path"] = new[] { "Path" },
+			["person-picture"] = new[] { "PersonPicture" },
+			["progressbar"] = new[] { "ProgressBar" },
+			["radiobutton"] = new[] { "RadioButton" },
+			["shapes"] = new[] { "Ellipse", "Rectangle", "Polygon" },
+			["slider"] = new[] { "Slider" },
+			["stackpanel"] = new[] { "StackPanel" },
+			["tabview"] = new[] { "TabView", "TabViewItem" },
+			["textblock"] = new[] { "TextBlock" },
+			["textbox"] = new[] { "TextBox" },
+			["toggle-button"] = new[] { "ToggleButton" },
+			["toggleswitch"] = new[] { "ToggleSwitch" },
+			["transforms"] = new[] { "FrameworkElement" },
+			["treeview"] = new[] { "TreeView", "TreeViewNode" },
+			["viewbox"] = new[] { "Viewbox" },
+
+			//New example creations
+			["fe7ad367"] = new[] { "Pivot" },
+			["89516e60"] = new[] { "AppBarButton" },
 		};
 	}
 }

@@ -1,8 +1,10 @@
-using Uno.UI;
+﻿using Uno.UI;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Media
+using Rect = Windows.Foundation.Rect;
+
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Children))]
 	public partial class GeometryGroup : Geometry
@@ -50,11 +52,11 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty ChildrenProperty { get; } =
 			DependencyProperty.Register(
-				nameof(Children), 
+				nameof(Children),
 				typeof(GeometryCollection),
 				typeof(GeometryGroup),
 				new FrameworkPropertyMetadata(
-					defaultValue: null, 
+					defaultValue: null,
 					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
@@ -65,9 +67,9 @@ namespace Windows.UI.Xaml.Media
 		{
 			Rect? bounds = default;
 
-			foreach(var geometry in Children)
+			foreach (var geometry in Children)
 			{
-				if(bounds is { } b)
+				if (bounds is { } b)
 				{
 					bounds = b.UnionWith(geometry.Bounds);
 				}
@@ -77,9 +79,9 @@ namespace Windows.UI.Xaml.Media
 				}
 			}
 
-			if(bounds is { } result)
+			if (bounds is { } result)
 			{
-				if(Transform is { } t)
+				if (Transform is { } t)
 				{
 					return t.TransformBounds(result);
 				}

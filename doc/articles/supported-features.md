@@ -1,18 +1,22 @@
+---
+uid: Uno.Development.SupportedFeatures
+---
+
 # Uno Platform Features
 
 ## Development Flow
 
-- Uno Platform's UWP XAML
-    - **Windows-first development**
-    - **Faster compilation** for most of the development cycle, including UI code. iOS, Android, WebAssembly, macOS and Linux can be tested for platform-specific features.
-    - Ability to develop responsive layout in Windowed mode using Windows 10.
-    - Allows for **edit and continue** support from VS2017+
-    - Allows for **UI and Non-UI code edit and continue** support
+- Uno Platform's WinUI/UWP XAML
+  - **Windows-first development**
+  - **Faster compilation** for most of the development cycle, including UI code. iOS, Android, WebAssembly, macOS and Linux can be tested for platform-specific features.
+  - Ability to develop responsive layout in Windowed mode using Windows 10.
+  - Allows for **edit and continue** support from VS2017+
+  - Allows for **UI and Non-UI code edit and continue** support
 - Conditional platform features access
-    - All XAML controls have **access to native properties** through conditional XAML
-    - Ability to **add native controls in XAML**
-- Full UWP availability at compile time
-  - Allows for the **compilation of open-source libraries** that depend only on UWP and multi-targeted nuget packages
+  - All XAML controls have **access to native properties** through conditional XAML
+  - Ability to **add native controls in XAML**
+- Full WinUI/UWP availability at compile time
+  - Allows for the **compilation of open-source libraries** that depend only on WinUI/UWP and multi-targeted nuget packages
     - **XamlBehaviors library** support
 - macOS Compilation
 
@@ -46,19 +50,20 @@
 - RelativeSource.Self
 
 ### Design Fidelity
+
 - Text Inlines Binding
 - Text Independent trimming and wrapping
 - Text Character Spacing
 - Text Spans (Bold, Italic, Underline)
 - [Path & Shapes support](features/shapes-and-brushes.md)
-- Updateable Shapes support
+- Updatable Shapes support
 - Image Brush support in shapes
 - `FontIcon` support
 - Merged Dictionary support
 
 ### Responsive Design
 
-- Layout constraints [Min/Max][Width/Height]
+- Layout constraints \[Min/Max][Width/Height]
 - Binding SourceTriggers (TextBox immediate vs. focus lost interactions)
 - DependencyProperty Inheritance (Color, text style propagation)
 
@@ -73,7 +78,7 @@
 - Binding suspension and restoration
 - Expando Binding
 - DynamicObject Binding
-- DataTemplate and ControlTemplate reuse, pooling and prefetching
+- DataTemplate and ControlTemplate reuse, pooling, and prefetching
 
 ### ListView
 
@@ -90,7 +95,7 @@
 
 ### Command Bar
 
-- UWP Command bar support
+- WinUI/UWP Command bar support
 - Native Command bar support (Image, title, back, Opacity, ...)
 - Global back button support
 
@@ -156,8 +161,9 @@
 - ScrollBar
 
 ## WinUI Specific Controls (Pre 3.0)
-- [NumberBox](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
-- [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
+
+- [NumberBox](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
+- [TwoPaneView](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
 
 ### Non-UI Features
 

@@ -6,13 +6,13 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,7 +30,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 	}
 
 	public partial class Binding_DefaultBindMode_DataTemplate_Model : DependencyObject
-	{ 
+	{
 		public string Default_undefined_Property
 		{
 			get { return (string)GetValue(Default_undefined_PropertyProperty); }
@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		public static readonly DependencyProperty Default_undefined_TwoWay_PropertyProperty =
 			DependencyProperty.Register("Default_undefined_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode_DataTemplate_Model), new FrameworkPropertyMetadata(null));
-			
+
 		public string Default_OneWay_Property
 		{
 			get { return (string)GetValue(Default_OneWay_PropertyProperty); }

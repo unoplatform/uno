@@ -1,9 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable enable
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Android.App;
-using Android.Content;
 using Android.Hardware;
 using Android.Runtime;
 using Uno.Devices.Sensors.Helpers;
@@ -12,20 +9,23 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Barometer
 	{
-		private readonly Sensor _sensor;
-		private BarometerListener _listener;
+		private Sensor? _sensor;
+		private BarometerListener? _listener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-		private Barometer(Sensor barometerSensor)
-		{
-			_sensor = barometerSensor;
-		}
-
+		/// <summary>
+		/// Gets or sets the current report interval for the barometer.
+		/// </summary>
 		public uint ReportInterval
 		{
 			get => _reportInterval;
 			set
 			{
+				if (_reportInterval == value)
+				{
+					return;
+				}
+
 				lock (_syncLock)
 				{
 					_reportInterval = value;
@@ -40,19 +40,19 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		private static Barometer TryCreateInstance()
+		private static Barometer? TryCreateInstance()
 		{
 			var sensorManager = SensorHelpers.GetSensorManager();
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
-			if (sensor != null)
-			{
-				return new Barometer(sensor);
-			}
-			return null;
+
+			return sensor == null ? null : new Barometer();
 		}
 
 		private void StartReading()
 		{
+			var sensorManager = SensorHelpers.GetSensorManager();
+			_sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
+
 			_listener = new BarometerListener(this);
 			SensorHelpers.GetSensorManager().RegisterListener(
 				_listener,
@@ -62,12 +62,15 @@ namespace Windows.Devices.Sensors
 
 		private void StopReading()
 		{
-			if ( _listener != null)
+			if (_listener != null)
 			{
 				SensorHelpers.GetSensorManager().UnregisterListener(_listener, _sensor);
 				_listener.Dispose();
 				_listener = null;
 			}
+
+			_sensor?.Dispose();
+			_sensor = null;
 		}
 
 		private class BarometerListener : Java.Lang.Object, ISensorEventListener, IDisposable
@@ -79,14 +82,19 @@ namespace Windows.Devices.Sensors
 				_barometer = barometer;
 			}
 
-			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum]SensorStatus accuracy)
+			void ISensorEventListener.OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
 			{
 			}
 
-			void ISensorEventListener.OnSensorChanged(SensorEvent e)
+			void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 			{
+				if (e?.Values is not { } values)
+				{
+					return;
+				}
+
 				var barometerReading = new BarometerReading(
-					e.Values[0],
+					values[0],
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 				_barometer._readingChanged?.Invoke(
 					_barometer,
@@ -95,4 +103,3 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
-#endif

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Samples.UITests.Helpers;
 
 using ICommand = System.Windows.Input.ICommand;
@@ -14,7 +14,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private string _header;
 		private const string HeaderText = "Please select:";
 
-		public ComboBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ComboBoxViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

@@ -11,7 +11,7 @@ using Uno.Extensions;
 using Uno.UI.DataBinding;
 using static System.Math;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
@@ -51,6 +51,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 			public override IEditable Replace(int start, int end, ICharSequence tb, int tbstart, int tbend)
 			{
+				if (Owner is { IsNativeViewReadOnly: true })
+				{
+					return this;
+				}
+
 				// Create a copy of this string builder to preview the change, allowing the TextBox's event handlers to act on the modified text.
 				var copy = new SpannableStringBuilder(this);
 				copy.Replace(start, end, tb, tbstart, tbend);

@@ -6,7 +6,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal static partial class AnimatorFactory
 	{
@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			if (timeline.GetIsDurationZero())
 			{
 				// Avoid unnecessary JS interop in the case of a zero-duration animation
-				return new ImmediateAnimator<double>(startingValue, targetValue);
+				return new ImmediateAnimator<double>(targetValue);
 			}
 
 			return new RenderingLoopFloatAnimator((float)startingValue, (float)targetValue);
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			if (timeline.GetIsDurationZero())
 			{
 				// Avoid unnecessary JS interop in the case of a zero-duration animation
-				return new ImmediateAnimator<ColorOffset>(startingValue, targetValue);
+				return new ImmediateAnimator<ColorOffset>(targetValue);
 			}
 
 			// TODO: GPU-bound color animations - https://github.com/unoplatform/uno/issues/2947

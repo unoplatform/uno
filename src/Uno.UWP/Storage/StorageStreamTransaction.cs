@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
 using System;
 using System.Collections.Generic;
@@ -38,10 +37,11 @@ namespace Windows.Storage
 
 		public IRandomAccessStream Stream { get; private set; } = null!;
 
-		public IAsyncAction CommitAsync() => AsyncAction.FromTask(async ct =>
+		public IAsyncAction CommitAsync() => AsyncAction.FromTask(ct =>
 		{
 			ct.ThrowIfCancellationRequested();
 			Commit();
+			return Task.CompletedTask;
 		});
 
 		private void Commit()
@@ -70,7 +70,8 @@ namespace Windows.Storage
 			src.CopyTo(dst);
 			dst.Seek(0, SeekOrigin.Begin);
 
-			Stream = new TransactionRandomStream(_tempFile);
+			// We don not close the underlying stream as it's acts as a lock
+			Stream = new RandomAccessStreamOverStream(_tempFile, disallowDispose: true);
 		}
 
 		private void CloseFiles()
@@ -113,20 +114,6 @@ namespace Windows.Storage
 			Dispose(false);
 		}
 
-		private class TransactionRandomStream : RandomAccessStreamOverStream
-		{
-			public TransactionRandomStream(Stream stream)
-				: base(stream)
-			{
-			}
-
-			/// <inheritdoc />
-			public override void Dispose()
-			{
-				// We don not close the underlying stream as it's acts as a lock
-			}
-		}
-
 		private class AutoCommitStream : Stream
 		{
 			private readonly StorageStreamTransaction _owner;
@@ -151,7 +138,7 @@ namespace Windows.Storage
 
 				base.Dispose(disposing);
 			}
-				
+
 
 			/// <inheritdoc />
 			public override void Flush()

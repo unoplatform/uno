@@ -22,28 +22,37 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_Disabled()
+		public async Task When_Disabled()
 		{
 			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView", skipInitialScreenshot: true);
 
 			var sut = _app.Marked("SUT");
 			var mode = _app.Marked("DragMode");
 
+			_app.WaitForElement(sut);
+			await Task.Delay(250); // wait out the EntranceThemeTransition (duration=100)
+
+			// Disable re-ordering
 			mode.SetDependencyPropertyValue("IsChecked", "False");
+
+			// Tap outside the ListView to get rid of PointerOver visual from the step above
+			var sutBounds = _app.Query(sut).Single().Rect;
+			_app.TapCoordinates(sutBounds.CenterX, sutBounds.Bottom + 10);
 
 			var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
-			// Attempt to re-order
-			var sutBounds = _app.Query(sut).Single().Rect;
+			// Attempt to re-order by dragging from item1 (orange) to item3 (green)
 			var x = sutBounds.X + 50;
 			var srcY = Item(sutBounds, 1);
 			var dstY = Item(sutBounds, 3);
-
 			_app.DragCoordinates(x, srcY, x, dstY);
+
+			// Tap outside the ListView to get rid of PointerOver visual from the step above
+			_app.TapCoordinates(sutBounds.CenterX, sutBounds.Bottom + 10);
 
 			var after = TakeScreenshot("After", ignoreInSnapshotCompare: true);
 
-			// note: we test only 100 pixels width to avoid failure due to scrollbar being visible in "after" screenshot
+			// note: we only test the left-most 100 pixels width to avoid failure due to scrollbar being visible in "after" screenshot
 			var testBounds = new Rectangle((int)sutBounds.X, (int)sutBounds.Y, 100, (int)sutBounds.Height);
 			ImageAssert.AreEqual(before, after, testBounds);
 		}
@@ -195,7 +204,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
-			ImageAssert.HasColorAt(result, x, expectedY, _items[from], tolerance: 10);
+			ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), expectedY * GetDisplayScreenScaling(), _items[from], tolerance: 10);
 			Assert.IsTrue(op.GetDependencyPropertyValue<string>("Text").Contains("Move"));
 		}
 
@@ -221,8 +230,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			if (from is 2 or 4)
 			{
-				ImageAssert.HasColorAt(result, x, expectedY, _items[2], tolerance: 10);
-				ImageAssert.HasColorAt(result, x, expectedY + _itemHeight, _items[4], tolerance: 10);
+				ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), expectedY * GetDisplayScreenScaling(), _items[2], tolerance: 10);
+				ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), (expectedY + _itemHeight) * GetDisplayScreenScaling(), _items[4], tolerance: 10);
 			}
 			else
 			{
@@ -249,10 +258,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var dstX = relativeX.HasValue
 				? (relativeX.Value >= 0 ? sutBounds.X + relativeX.Value : sutBounds.Right + relativeX.Value)
 				: srcX;
-			var dstY  = relativeY.HasValue
+			var dstY = relativeY.HasValue
 				? (relativeY.Value >= 0 ? sutBounds.Y + relativeY.Value : sutBounds.Bottom + relativeY.Value)
 				: sutBounds.Y + 50 + itemSize * (expectedTo + 1) + 25;
-			
+
 			_app.DragCoordinates(srcX, srcY, dstX, dstY);
 
 			var expectedOrder = GetExpected();

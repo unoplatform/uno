@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Foundation;
 using UIKit;
@@ -18,9 +17,9 @@ namespace Windows.ApplicationModel.DataTransfer
 				throw new ArgumentNullException(nameof(content));
 			}
 
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetContentAsync(content));
+				async () => await SetContentAsync(content));
 		}
 
 		internal static async Task SetContentAsync(DataPackage content)
@@ -51,7 +50,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void Clear()
 		{
-			UIPasteboard.General.Items = new NSDictionary[0];
+			UIPasteboard.General.Items = Array.Empty<NSDictionary>();
 		}
 
 		private static void StartContentChanged()
@@ -67,4 +66,3 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static void PasteboardChanged(NSNotification notification) => OnContentChanged();
 	}
 }
-#endif

@@ -6,9 +6,9 @@ using System.Text;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 #if XAMARIN
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.Samples.Presentation.SamplePages.GridView
@@ -16,7 +16,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 	internal class GridViewWithSelectionViewModel : ViewModelBase
 	{
 
-		public GridViewWithSelectionViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public GridViewWithSelectionViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			// TODO: restore commands
 			//Build(b => b

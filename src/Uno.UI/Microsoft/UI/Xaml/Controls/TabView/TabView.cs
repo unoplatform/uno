@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TabView.cpp, commit ed31e13
 
@@ -9,8 +9,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -20,17 +20,17 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(TabItems))]
 	public partial class TabView : Control
@@ -882,12 +882,12 @@ namespace Microsoft.UI.Xaml.Controls
 			TabDragStarting?.Invoke(this, myArgs);
 		}
 
-		private void OnListViewDragOver(object sender, Windows.UI.Xaml.DragEventArgs args)
+		private void OnListViewDragOver(object sender, Microsoft.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDragOver?.Invoke(this, args);
 		}
 
-		void OnListViewDrop(object sender, Windows.UI.Xaml.DragEventArgs args)
+		void OnListViewDrop(object sender, Microsoft.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDrop?.Invoke(this, args);
 		}
@@ -956,11 +956,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						// It is not ideal to call UpdateLayout here, but it is necessary to ensure that the ContentPresenter has expanded its content
 						// into the live visual tree.
-#if IS_UNO
-						// TODO: Uno specific - issue #4925 - Calling UpdateLayout here causes another Measure of TabListView, which is already in progress
-						// if this tab was added by data binding. As a result, two copies of each tab would be constructed.
-						//tabContentPresenter.UpdateLayout();
-#endif
+						tabContentPresenter.UpdateLayout();
 
 						if (shouldMoveFocusToNewTab)
 						{
@@ -1089,7 +1085,7 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								// Calculate the proportional width of each tab given the width of the ScrollViewer.
 								var tabWidthForScroller = (availableWidth - (padding.Left + padding.Right)) / (double)(TabItems.Count);
-								tabWidth = MathEx.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
+								tabWidth = Math.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
 							}
 							else
 							{
@@ -1114,7 +1110,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 								// Use current size to update items to fill the currently occupied space
 								var tabWidthUnclamped = availableTabViewSpace / (double)(TabItems.Count);
-								tabWidth = MathEx.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
+								tabWidth = Math.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
 							}
 
 
@@ -1125,12 +1121,9 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								tabColumn.Width = GridLengthHelper.FromPixels(availableWidth);
 								var listview = m_listView;
-								var tabListView = m_listView as TabViewListView;
 								if (listview != null)
 								{
-									// TODO: Uno specific: Apply visibility directly to scroll viewer
-									// until attached property template binding is supported (issue #4259)
-									tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Visible);
+									ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Visible);
 									UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 								}
 							}
@@ -1140,14 +1133,11 @@ namespace Microsoft.UI.Xaml.Controls
 								// tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 								tabColumn.Width = GridLengthHelper.FromPixels(requiredWidth);
 								var listview = m_listView;
-								var tabListView = m_listView as TabViewListView;
 								if (listview != null)
 								{
 									if (shouldUpdateWidths && fillAllAvailableSpace)
 									{
-										// TODO: Uno specific: Apply visibility directly to scroll viewer
-										// until attached property template binding is supported (issue #4259)
-										tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Hidden);
+										ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Hidden);
 									}
 									else
 									{
@@ -1171,7 +1161,6 @@ namespace Microsoft.UI.Xaml.Controls
 							tabColumn.MaxWidth = availableWidth;
 							tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 							var listview = m_listView;
-							var tabListView = m_listView as TabViewListView;
 							if (listview != null)
 							{
 								listview.MaxWidth = availableWidth;
@@ -1181,9 +1170,7 @@ namespace Microsoft.UI.Xaml.Controls
 								if (itemsPresenter != null)
 								{
 									var visible = itemsPresenter.ActualWidth > availableWidth;
-									// TODO: Uno specific: Apply visibility directly to scroll viewer
-									// until attached property template binding is supported (issue #4259)
-									tabListView?.SetHorizontalScrollBarVisibility(visible
+									ScrollViewer.SetHorizontalScrollBarVisibility(listview, visible
 										? ScrollBarVisibility.Visible
 										: ScrollBarVisibility.Hidden);
 									if (visible)
@@ -1338,7 +1325,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
-			var coreWindow = CoreWindow.GetForCurrentThread();
+			var coreWindow = CoreWindow.GetForCurrentThreadSafe();
 			if (coreWindow != null)
 			{
 				if (args.Key == VirtualKey.F4)

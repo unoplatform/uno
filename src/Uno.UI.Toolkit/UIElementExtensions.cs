@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 #if HAS_UNO
 using Uno.Extensions;
@@ -23,7 +23,7 @@ using Microsoft.UI;
 using CoreGraphics;
 #endif
 
-#if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
+#if __IOS__ || __MACOS__
 using ObjCRuntime;
 #endif
 
@@ -42,7 +42,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class UIElementExtensions
 	{
-#region Elevation
+		#region Elevation
 
 		public static void SetElevation(this UIElement element, double elevation)
 		{
@@ -75,7 +75,7 @@ namespace Uno.UI.Toolkit
 
 #if __IOS__ || __MACOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
 #else
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
@@ -85,7 +85,7 @@ namespace Uno.UI.Toolkit
 			if (element is Android.Views.View view)
 			{
 				AndroidX.Core.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
-				if(Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
+				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
 				{
 					view.SetOutlineAmbientShadowColor(shadowColor);
 					view.SetOutlineSpotShadowColor(shadowColor);
@@ -100,10 +100,9 @@ namespace Uno.UI.Toolkit
 			{
 				if (elevation > 0)
 				{
-					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
-					const float x = 0.25f;
-					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
-					const float blur = 0.5f;
+					const float x = 0.28f;
+					const float y = 0.92f * 0.5f;
+					const float blur = 0.18f;
 
 #if __MACOS__
 					view.WantsLayer = true;
@@ -120,7 +119,7 @@ namespace Uno.UI.Toolkit
 					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
 					view.Layer.ShadowPath = path;
 				}
-				else if(view.Layer != null)
+				else if (view.Layer != null)
 				{
 					view.Layer.ShadowOpacity = 0;
 				}
@@ -130,13 +129,11 @@ namespace Uno.UI.Toolkit
 			{
 				if (elevation > 0)
 				{
-					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const double x = 0.25d;
-					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
-					const double blur = 0.5f;
-					var color = Color.FromArgb((byte)(shadowColor.A * .35), shadowColor.R, shadowColor.G, shadowColor.B);
+					const double y = 0.92f * 0.5f;
+					const double blur = 0.3f;
 
-					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {color.ToCssString()}";
+					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {shadowColor.ToCssString()}";
 					uiElement.SetStyle("box-shadow", str);
 					uiElement.SetCssClasses("noclip");
 				}
@@ -150,20 +147,18 @@ namespace Uno.UI.Toolkit
 			if (element is UIElement uiElement)
 			{
 				var visual = uiElement.Visual;
-
-				const float SHADOW_SIGMA_X_MODIFIER = 1f / 3.5f;
-				const float SHADOW_SIGMA_Y_MODIFIER = 1f / 3.5f;
-				float x = 0.3f;
-				float y = 0.92f * 0.5f;
+				const float x = 0.28f;
+				const float y = 0.92f * 0.5f;
+				const float blur = 0.18f;
 
 				var dx = (float)elevation * x;
 				var dy = (float)elevation * y;
-				var sigmaX = (float)elevation * SHADOW_SIGMA_X_MODIFIER;
-				var sigmaY = (float)elevation * SHADOW_SIGMA_Y_MODIFIER;
+				var sigmaX = (float)(blur * elevation);
+				var sigmaY = (float)(blur * elevation);
 				var shadow = new ShadowState(dx, dy, sigmaX, sigmaY, shadowColor);
 				visual.ShadowState = shadow;
 			}
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 			if (element is UIElement uiElement)
 			{
 				var compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;
@@ -183,13 +178,12 @@ namespace Uno.UI.Toolkit
 				spriteVisual.Size = newSize;
 				if (elevation > 0)
 				{
-					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const float x = 0.25f;
-					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const float y = 0.92f * 0.5f;
 					const float blur = 0.5f;
 
 					var shadow = compositor.CreateDropShadow();
-					shadow.Offset = new Vector3((float)elevation*x, (float)elevation*y, -(float)elevation);
+					shadow.Offset = new Vector3((float)elevation * x, (float)elevation * y, -(float)elevation);
 					shadow.BlurRadius = (float)(blur * elevation);
 
 					shadow.Mask = uiElement switch
@@ -227,7 +221,6 @@ namespace Uno.UI.Toolkit
 					}
 
 					shadow.Color = shadowColor;
-					shadow.Opacity = shadowColor.A/255f;
 					spriteVisual.Shadow = shadow;
 				}
 

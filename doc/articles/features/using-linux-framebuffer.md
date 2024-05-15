@@ -1,42 +1,88 @@
-# Using the Linux Framebuffer and libinput
+---
+uid: Uno.Skia.Linux.Framebuffer
+---
 
-Uno supports the [Linux Framebuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://github.com/wayland-project/libinput) as a target, in the case where your target device does not provide a Window Manager.
+# Using the Linux FrameBuffer and `libinput`
 
-There are restrictions for the support for the Framebuffer:
-- The `TextBox` control is not supported. If you need text input, you will need to implement an on-screen keyboard manually using the Keyboard and Pointer events that Uno provides (in the `CoreWindow` class).
-- The mouse is supported through pointer events, but Uno does not show the pointer for your app. You'll need to display one using the pointer events provided by Uno (also in the `CoreWindow` class).
+Uno Platform supports the [Linux FrameBuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://github.com/wayland-project/libinput) as a target, in the case where your target device does not provide a Window Manager.
+
+There are some restrictions for the support for the FrameBuffer:
+
+- The mouse is supported through pointer events, but Uno Platform does not show the pointer for your app. You'll need to display one using the pointer events provided by Uno Platform (also in the `CoreWindow` class).
 - It is only supported on Linux where `/dev/fbXX` is available.
 
-## Get started with the Framebuffer
-- Follow the [getting started guide for linux](../get-started-with-linux.md)
-- Install the [`dotnet new` templates](../get-started-dotnet-new.md)
+## Get started with the FrameBuffer
 
-Create a new app using 
-```
+- Follow the [getting started guide](xref:Uno.GetStarted.vscode)
+
+Create a new app using:
+
+```dotnetcli
 dotnet new unoapp -o MyApp
 ```
 
-You'll get a set of projects, including one named `MyApp.Skia.Linux.FrameBuffer`.
+In the `Platforms/Desktop/Program.cs` file, the `SkiaHostBuilder` can be configured to use the Framebuffer support, in case X11 support is detected first:
 
-You can build this app by navigating to the `MyApp..Skia.Linux.FrameBuffer` and type the following:
+```csharp
+var host = SkiaHostBuilder.Create()
+    .App(() => new App())
+    .UseX11()
+    .UseLinuxFrameBuffer()
+    .UseMacOS()
+    .UseWindows()
+    .Build();
+```
 
+Each platform support is evaluated in order for availability and definition in builder. X11 is chosen when the `DISPLAY` variable is present.
+
+## Running the app
+
+You can build and run this app by navigating to the `MyApp` and type the following:
+
+```dotnetcli
+dotnet run -f net8.0-desktop
 ```
-dotnet run
-```
+
+The app will start and display on the first available framebuffer device. To change the active framebuffer, set the device name in the `FRAMEBUFFER` environment variable.
+
+By default, the `Debug` configuration is used, which will show logging information in the current terminal and may overwrite the UI content.
+
+To read the logging information, either:
+
+- Launch the application from a different terminal (through SSH, for instance)
+- Launch the app using `dotnet run -f net8.0-desktop > logging.txt 2>&1`, then launch `tail -f logging.txt` in another terminal.
+
+Once the application is running, you can exit the application with:
+
+- `Ctrl+C`
+- `F12`, a key configuration found in the `Program.cs` file of your project which invokes `Application.Current.Exit()`
+
+## Creating a standalone app
 
 You can create a standalone publication folder using the following:
 
-```
-dotnet publish -c Release -r linux-x64 --self-contained true
+```dotnetcli
+dotnet publish -c Release -f net8.0-desktop -r linux-x64 --self-contained true
 ```
 
-The app will start and display on the first available framebuffer device.
+> [!NOTE]
+> When using the `Release` configuration, logging is disabled for performance considerations. You can restore logging in the `App.xaml.cs` file.
 
-Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0-supported-os.md).
+Documentation on other hardware targets is [available here](https://github.com/dotnet/core/blob/main/release-notes/8.0/supported-os.md).
+
+## DPI Scaling support
+
+Whenever possible, the `FrameBufferHost` will try to detect the actual DPI scale to use when rendering the UI, based on the physical information provided by the FrameBuffer driver. If the value cannot be determined, a scale of `1.0` is used.
+
+The automatic scaling can be overridden in two ways:
+
+- Set a value using `FrameBufferHost.DisplayScale`.
+- Set a value through the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. This value has precedence over the value specified in `FrameBufferHost.DisplayScale`.
 
 ## Additional dependencies
 
-If your device is significantly trimmed down for installed packages, you'll need to install :
+If your device is significantly trimmed down for installed packages, you'll need to install:
+
 - `libfontconfig`
 - `libfreetype`
 - `libinput`

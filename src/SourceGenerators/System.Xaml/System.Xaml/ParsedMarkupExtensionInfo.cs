@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -32,6 +33,9 @@ namespace Uno.Xaml
 {
 	internal class ParsedMarkupExtensionInfo
 	{
+		private static readonly char[] _singleQuoteArray = new[] { '\'' };
+		private static readonly char[] _doubleQuoteArray = new[] { '\"' };
+
 		Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
 		{
@@ -49,12 +53,12 @@ namespace Uno.Xaml
 
 			if (raw.Length == 0 || raw[0] != '{')
 			{
-				throw Error("Invalid markup extension attribute. It should begin with '{{', but was {0}", raw);
+				throw Error("Invalid markup extension attribute. Expected '{{' not found at the start: \"{0}\"", raw);
 			}
 
 			if (raw.Length >= 2 && raw[1] == '}')
 			{
-				throw Error("Markup extension can not begin with an '{}' escape: '{0}'", raw);
+				throw Error("Markup extension can not begin with an '{}' escape: \"{0}\"", raw);
 			}
 
 			var ret = new ParsedMarkupExtensionInfo();
@@ -62,7 +66,13 @@ namespace Uno.Xaml
 			{
 				// Any character after the final closing bracket is not accepted. Therefore, the last character should be '}'.
 				// Ideally, we should still ran the entire markup through the parser to get a more meaningful error.
-				throw Error("Expected '}}' in the markup extension attribute: '{0}'", raw);
+				if (raw.TrimEnd() is string trimmed && trimmed[trimmed.Length - 1] == '}')
+				{
+					// Technically this is salvageable, but since uwp throws on this, we will do the same.
+					throw Error("White space is not allowed after end of markup extension: \"{0}\"", raw);
+				}
+
+				throw Error("Expected '}}' in the markup extension attribute: \"{0}\"", raw);
 			}
 
 			var nameSeparatorIndex = raw.IndexOf(' ');
@@ -140,25 +150,25 @@ namespace Uno.Xaml
 			if (stringValue != null && stringValue != string.Empty)
 			{
 				// Remove wrapping single quotes.
-				if (stringValue.StartsWith("'") && stringValue.EndsWith("'"))
+				if (stringValue.StartsWith("'", StringComparison.Ordinal) && stringValue.EndsWith("'", StringComparison.Ordinal))
 				{
-					return stringValue.Trim(new[] { '\'' });
+					return stringValue.Trim(_singleQuoteArray);
 				}
 				// Remove wrapping double quotes.
-				else if (stringValue.StartsWith("\"") && stringValue.EndsWith("\""))
+				else if (stringValue.StartsWith("\"", StringComparison.Ordinal) && stringValue.EndsWith("\"", StringComparison.Ordinal))
 				{
-					return stringValue.Trim(new[] { '\"' });
+					return stringValue.Trim(_doubleQuoteArray);
 				}
 			}
 
 			return stringValue;
 		}
 
-		private static bool IsValidMarkupExtension(string valueString) => valueString.StartsWith("{") && !valueString.StartsWith("{}");
+		private static bool IsValidMarkupExtension(string valueString) => valueString.StartsWith("{", StringComparison.Ordinal) && !valueString.StartsWith("{}", StringComparison.Ordinal);
 
 		static string UnescapeValue(string s)
 		{
-			if (s.StartsWith("{}"))
+			if (s.StartsWith("{}", StringComparison.Ordinal))
 			{
 				return s.Substring(2);
 			}
@@ -183,7 +193,7 @@ namespace Uno.Xaml
 
 		static Exception Error(string format, params object[] args)
 		{
-			return new XamlParseException(String.Format(format, args));
+			return new XamlParseException(String.Format(CultureInfo.InvariantCulture, format, args));
 		}
 
 		internal static IEnumerable<string> SliceParameters(string vargs, string raw)

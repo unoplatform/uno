@@ -1,5 +1,3 @@
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
 using System;
 using System.Globalization;
 using System.IO;
@@ -17,9 +15,10 @@ namespace Windows.Storage
 	{
 		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{
-			if(uri.Scheme != "ms-appx")
+			if (uri.Scheme != "ms-appx")
 			{
-				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
+				// ms-appdata is handled by the caller.
+				throw new InvalidOperationException("Uri is not using the ms-appx or ms-appdata scheme");
 			}
 
 			var path = Uri.UnescapeDataString(uri.PathAndQuery);

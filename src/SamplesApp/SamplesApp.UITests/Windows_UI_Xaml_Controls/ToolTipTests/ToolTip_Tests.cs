@@ -20,7 +20,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Initial state");
 
-			_app.Marked("rect2").FastTap();
+			float x1 = _app.GetLogicalRect("rect1").X;
+			float y1 = _app.GetLogicalRect("rect1").Y;
+			float x2 = _app.GetLogicalRect("rect2").X;
+			float y2 = _app.GetLogicalRect("rect2").Y;
+			_app.DragCoordinates(x1, y1, x2, y2);
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Right after first click");
 
@@ -30,7 +34,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			Thread.Sleep(200);
 
-			_app.Marked("rect2").FastTap();
+			_app.DragCoordinates(x1, y1, x2, y2);
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Right after second click");
 
@@ -44,7 +48,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("tooltip delay expired");
 
-			_app.Marked("rect1").FastTap();
+			_app.DragCoordinates(x1, y1, x2, y2);
 
 			Thread.Sleep(1200);
 
@@ -53,7 +57,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // Only WASM supports mouse-based tests for now
+		[ActivePlatforms(Platform.iOS, Platform.Browser)]
 		public void ToolTip_Large_Text()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_Long_Text");
@@ -62,15 +66,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			const string BorderInsideToolTip = "BorderInsideToolTip";
 
 			_app.WaitForElement(ButtonWithTooltip);
-			var buttonRect = _app.GetRect(ButtonWithTooltip);
+			var buttonRectPhysical = _app.GetPhysicalRect(ButtonWithTooltip);
+			var buttonRectLogical = _app.GetLogicalRect(ButtonWithTooltip);
 
-			var upperRect = _app.GetRect("UpperLocator");
-			var lowerRect = _app.GetRect("LowerLocator");
+			var upperRect = _app.GetPhysicalRect("UpperLocator");
+			var lowerRect = _app.GetPhysicalRect("LowerLocator");
 
 			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
-			var lowerHoverY = buttonRect.Bottom - buttonRect.Height / 10;
-			_app.TapCoordinates(buttonRect.CenterX, lowerHoverY);
+			var lowerHoverY = buttonRectLogical.Bottom - buttonRectLogical.Height / 10;
+
+			float x1 = buttonRectLogical.CenterX;
+			float y1 = buttonRectLogical.Bottom + 1;
+			float x2 = buttonRectLogical.CenterX;
+			float y2 = lowerHoverY;
+			_app.DragCoordinates(x1, y1, x2, y2);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
@@ -78,14 +88,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			ImageAssert.AreEqual(before, lowerToolTip, lowerRect);
 			ImageAssert.AreEqual(before, lowerToolTip, upperRect); // ToolTip should be just above mouse, shouldn't extend above Button bounds
-			ImageAssert.AreNotEqual(before, lowerToolTip, buttonRect);
+			ImageAssert.AreNotEqual(before, lowerToolTip, buttonRectPhysical);
 
 			_app.FastTap("DummyButton");
 
 			_app.WaitForNoElement(BorderInsideToolTip);
 
-			var upperHoverY = buttonRect.Y + buttonRect.Height / 10;
-			_app.TapCoordinates(buttonRect.CenterX, upperHoverY);
+			var upperHoverY = buttonRectLogical.Y + buttonRectLogical.Height / 10;
+			y1 = buttonRectLogical.Y - 1;
+			y2 = upperHoverY;
+			_app.DragCoordinates(x1, y1, x2, y2);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
@@ -93,7 +105,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			ImageAssert.AreEqual(before, upperToolTip, lowerRect);
 			ImageAssert.AreNotEqual(before, upperToolTip, upperRect); // Mouse is close to top of button, ToolTip should extend above Button bounds
-			ImageAssert.AreNotEqual(before, upperToolTip, buttonRect);
+			ImageAssert.AreNotEqual(before, upperToolTip, buttonRectPhysical);
 		}
 
 		[Test]

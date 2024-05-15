@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[TemplatePart(Name = "PART_HeaderBackground", Type = typeof(Windows.UI.Xaml.Controls.ScrollViewer))]
-	[TemplatePart(Name = "PART_HeaderForeground", Type = typeof(Windows.UI.Xaml.Controls.ScrollViewer))]
-	[TemplatePart(Name = "PART_ListView", Type = typeof(Windows.UI.Xaml.Controls.ListView))]
-	[TemplatePart(Name = "PART_CommandBar", Type = typeof(Windows.UI.Xaml.Controls.CommandBar))]
+	[TemplatePart(Name = "PART_HeaderBackground", Type = typeof(Microsoft.UI.Xaml.Controls.ScrollViewer))]
+	[TemplatePart(Name = "PART_HeaderForeground", Type = typeof(Microsoft.UI.Xaml.Controls.ScrollViewer))]
+	[TemplatePart(Name = "PART_ListView", Type = typeof(Microsoft.UI.Xaml.Controls.ListView))]
+	[TemplatePart(Name = "PART_CommandBar", Type = typeof(Microsoft.UI.Xaml.Controls.CommandBar))]
 	public partial class ParallaxListView : Control
 	{
 		private const int CommandBarHeight = 48;
@@ -22,11 +22,11 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		private const string ScrollViewerName = "PART_ListView";
 		private const string CommandBarName = "PART_CommandBar";
 
-		private Windows.UI.Xaml.Controls.ScrollViewer _headerBackground;
-		private Windows.UI.Xaml.Controls.ScrollViewer _headerForeground;
-		private Windows.UI.Xaml.Controls.ListView _mainListview;
-		private Windows.UI.Xaml.Controls.ScrollViewer _mainScrollViewer;
-		private Windows.UI.Xaml.Controls.CommandBar _commandBar;
+		private Microsoft.UI.Xaml.Controls.ScrollViewer _headerBackground;
+		private Microsoft.UI.Xaml.Controls.ScrollViewer _headerForeground;
+		private Microsoft.UI.Xaml.Controls.ListView _mainListview;
+		private Microsoft.UI.Xaml.Controls.ScrollViewer _mainScrollViewer;
+		private Microsoft.UI.Xaml.Controls.CommandBar _commandBar;
 
 		private double _screenHeight;
 
@@ -38,7 +38,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static DependencyProperty ItemsSourceProperty { get ; } =
+		public static DependencyProperty ItemsSourceProperty { get; } =
 			DependencyProperty.Register("ItemsSource", typeof(object), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -51,7 +51,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemTemplateSelectorProperty, value); }
 		}
 
-		public static DependencyProperty ItemTemplateSelectorProperty { get ; } =
+		public static DependencyProperty ItemTemplateSelectorProperty { get; } =
 			DependencyProperty.Register("ItemTemplateSelector", typeof(DataTemplateSelector), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -64,7 +64,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemContainerStyleProperty, value); }
 		}
 
-		public static DependencyProperty ItemContainerStyleProperty { get ; } =
+		public static DependencyProperty ItemContainerStyleProperty { get; } =
 			DependencyProperty.Register("ItemContainerStyle", typeof(Style), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -77,7 +77,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(ItemCommandProperty, value); }
 		}
 
-		public static DependencyProperty ItemCommandProperty { get ; } =
+		public static DependencyProperty ItemCommandProperty { get; } =
 			DependencyProperty.Register("ItemCommand", typeof(ICommand), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -90,7 +90,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(TitleProperty, value); }
 		}
 
-		public static DependencyProperty TitleProperty { get ; } =
+		public static DependencyProperty TitleProperty { get; } =
 			DependencyProperty.Register("Title", typeof(string), typeof(ParallaxListView), new PropertyMetadata(string.Empty));
 
 		#endregion
@@ -103,7 +103,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(VisibleTitleProperty, value); }
 		}
 
-		public static DependencyProperty VisibleTitleProperty { get ; } =
+		public static DependencyProperty VisibleTitleProperty { get; } =
 			DependencyProperty.Register("VisibleTitle", typeof(string), typeof(ParallaxListView), new PropertyMetadata("  "));
 
 		#endregion
@@ -116,7 +116,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(HeaderBackgroundImageProperty, value); }
 		}
 
-		public static DependencyProperty HeaderBackgroundImageProperty { get ; } =
+		public static DependencyProperty HeaderBackgroundImageProperty { get; } =
 			DependencyProperty.Register("HeaderBackgroundImage", typeof(string), typeof(ParallaxListView), new PropertyMetadata(string.Empty));
 
 		#endregion
@@ -129,7 +129,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			set { SetValue(HeaderForegroundTemplateProperty, value); }
 		}
 
-		public static DependencyProperty HeaderForegroundTemplateProperty { get ; } =
+		public static DependencyProperty HeaderForegroundTemplateProperty { get; } =
 			DependencyProperty.Register("HeaderForegroundTemplate", typeof(DataTemplate), typeof(ParallaxListView), new PropertyMetadata(null));
 
 		#endregion
@@ -142,13 +142,15 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			_screenHeight = Windows.UI.Xaml.Window.Current.Bounds.Height;
+			_screenHeight = Microsoft.UI.Xaml.Window.Current is not null ?
+				Microsoft.UI.Xaml.Window.Current.Bounds.Height :
+				XamlRoot.Size.Height;
 
 			var applied = _mainListview.ApplyTemplate();
-			_mainScrollViewer = _mainListview.FindFirstChild<Windows.UI.Xaml.Controls.ScrollViewer>();
-			var headerForegroundListView = this.GetTemplateChild(HeaderForegroundName) as Windows.UI.Xaml.Controls.ListView;
+			_mainScrollViewer = _mainListview.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var headerForegroundListView = this.GetTemplateChild(HeaderForegroundName) as Microsoft.UI.Xaml.Controls.ListView;
 			var applied2 = headerForegroundListView.ApplyTemplate();
-			_headerForeground = _headerForeground ?? headerForegroundListView.FindFirstChild<Windows.UI.Xaml.Controls.ScrollViewer>();
+			_headerForeground = _headerForeground ?? headerForegroundListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
 
 			_mainScrollViewer.ViewChanged -= UpdateHeaderPosition;
 			_mainScrollViewer.ViewChanged += UpdateHeaderPosition;
@@ -164,9 +166,9 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		{
 			base.OnApplyTemplate();
 
-			_headerBackground = this.GetTemplateChild(HeaderBackgroundName) as Windows.UI.Xaml.Controls.ScrollViewer;
-			_mainListview = this.GetTemplateChild(ScrollViewerName) as Windows.UI.Xaml.Controls.ListView;
-			_commandBar = this.GetTemplateChild(CommandBarName) as Windows.UI.Xaml.Controls.CommandBar;
+			_headerBackground = this.GetTemplateChild(HeaderBackgroundName) as Microsoft.UI.Xaml.Controls.ScrollViewer;
+			_mainListview = this.GetTemplateChild(ScrollViewerName) as Microsoft.UI.Xaml.Controls.ListView;
+			_commandBar = this.GetTemplateChild(CommandBarName) as Microsoft.UI.Xaml.Controls.CommandBar;
 		}
 
 		private const bool DisableAnimation = true;

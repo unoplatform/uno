@@ -11,13 +11,13 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	internal class GridView_Vertical_MaxItemWidthViewModel : ViewModelBase
 	{
-		public GridView_Vertical_MaxItemWidthViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public GridView_Vertical_MaxItemWidthViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
 		public object SampleItems { get; } = Enumerable.Range(1, 10).ToArray();
 
-		private async Task<int[]> GetSampleItems(CancellationToken ct)
+		private int[] GetSampleItems(CancellationToken ct)
 		{
 			return Enumerable
 				.Range(1, 10)

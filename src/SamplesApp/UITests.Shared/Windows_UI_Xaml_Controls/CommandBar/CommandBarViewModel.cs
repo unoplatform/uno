@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 
@@ -12,12 +13,15 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		private string _dynamicTitle;
 		private string _dynamicSubTitle1;
 		private string _dynamicSubTitle2;
+		private bool _isChecked;
 
-		public CommandBarViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public CommandBarViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
+			ToggleChecked = GetOrCreateCommand(() => IsChecked = !IsChecked);
 			StartData();
 		}
 
+		public ICommand ToggleChecked { get; }
 
 		private async void StartData()
 		{
@@ -57,6 +61,16 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			set
 			{
 				_dynamicSubTitle2 = value; RaisePropertyChanged();
+			}
+		}
+
+		public bool IsChecked
+		{
+			get { return _isChecked; }
+			set
+			{
+				_isChecked = value;
+				RaisePropertyChanged();
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
@@ -27,7 +27,7 @@ namespace Uno.UI.Controls
 
 		public CommandBarNavigationItemRenderer(CommandBar element) : base(element) { }
 
-		protected override UINavigationItem CreateNativeInstance() => new UINavigationItem();
+		protected override UINavigationItem CreateNativeInstance() => throw new NotSupportedException("The Native instance must be provided.");
 
 		protected override IEnumerable<IDisposable> Initialize()
 		{
@@ -107,7 +107,7 @@ namespace Uno.UI.Controls
 				navigationCommand.SetParent(element); // This ensures that Behaviors expecting this button to be in the logical tree work.
 				native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
 
-				 // offset to align the icon with the default back button position
+				// offset to align the icon with the default back button position
 				native.LeftBarButtonItem.ImageInsets = new UIEdgeInsets(0, -8, 0, 0);
 			}
 			else
@@ -162,6 +162,10 @@ namespace Uno.UI.Controls
 		private Size _childSize;
 		private Size? _lastAvailableSize;
 
+#pragma warning disable IDE0052 // Remove unread private members
+		private UIView? _superView;
+#pragma warning restore IDE0052 // Remove unread private members
+
 		public override void SetSuperviewNeedsLayout()
 		{
 			// Skip the base invocation because the base fetches the native parent
@@ -170,6 +174,17 @@ namespace Uno.UI.Controls
 			// to fail to release an already released native reference.
 			//
 			// See https://github.com/unoplatform/uno/issues/7012 for more details.
+		}
+
+		public override void MovedToSuperview()
+		{
+			// Store an explicit reference to the superview in order to avoid 
+			// generic access from the framework element infrastructure.
+			// This will avoid the superview from being natively released
+			// while this view may still try to use it and corrupt the heap, then
+			// cause NSObject_Disposer:Drain to fail randomly.
+			_superView = Superview;
+			base.MovedToSuperview();
 		}
 
 		internal TitleView()
@@ -237,7 +252,7 @@ namespace Uno.UI.Controls
 						&& !_childSize.Height.IsNaN()
 						&& _childSize.Height != 0
 						&& _childSize.Width != 0
-						&& ( (Frame.Width != _childSize.Width && _childSize.Width < Frame.Width)
+						&& ((Frame.Width != _childSize.Width && _childSize.Width < Frame.Width)
 						|| (Frame.Height != _childSize.Height && _childSize.Height < Frame.Height)))
 					{
 						// Set the frame size to the child size so that the OS centers properly.

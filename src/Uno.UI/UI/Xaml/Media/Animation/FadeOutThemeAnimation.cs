@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class FadeOutThemeAnimation : DoubleAnimation
 	{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty TargetNameProperty { get; } = DependencyProperty.Register(
-			"TargetName", typeof(string), typeof(FadeOutThemeAnimation), new FrameworkPropertyMetadata(null));
+			"TargetName", typeof(string), typeof(FadeOutThemeAnimation), new FrameworkPropertyMetadata(string.Empty));
 
 		public string TargetName
 		{
@@ -41,11 +41,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				Storyboard.SetTarget(this, depObj);
 			}
-		}
-
-		private static void OnTargetNameChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
-		{
-			Storyboard.SetTargetName(dependencyobject as Timeline, args.NewValue as string);
 		}
 	}
 }

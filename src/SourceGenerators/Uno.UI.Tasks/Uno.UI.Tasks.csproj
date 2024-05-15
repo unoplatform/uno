@@ -1,7 +1,7 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<!-- Projects that provide MSBuild tasks should be netstandard2.0 -->
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RootNamespace>Uno.UI.Tasks</RootNamespace>
@@ -9,35 +9,17 @@
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Build">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Framework">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Tasks.Core">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Utilities.Core">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Mono.Cecil" Version="0.11.3" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\AndroidResourceConverter.cs">
-			<Link>Resources\AndroidResourceConverter.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\iOSResourceConverter.cs">
-			<Link>Resources\iOSResourceConverter.cs</Link>
-		</Compile>
 		<Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceCandidate.cs">
 			<Link>Resources\ResourceCandidate.cs</Link>
 		</Compile>
@@ -51,9 +33,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="external\linker\" />
+		<Folder Include="external\linker\" />
 	</ItemGroup>
-	
+
 	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
 		<ItemGroup>
 			<_unoTasksFiles Include="$(OutputPath)\*.*" />
@@ -64,14 +46,13 @@
 		-->
 		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(OutputPath)\..\$(Configuration)_Shadow" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
-	<Import Project="..\..\Common.targets" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\buildTransitive\Uno.UI.Tasks</_TargetNugetFolder>
+			<_PackageId>Uno.UI</_PackageId>
+			<_PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_PackageId>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_PackageId)\$(UnoNugetOverrideVersion)\buildTransitive\Uno.UI.Tasks</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

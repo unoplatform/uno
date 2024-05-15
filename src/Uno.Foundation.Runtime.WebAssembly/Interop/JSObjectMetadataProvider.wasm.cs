@@ -27,10 +27,13 @@ namespace Uno.Foundation.Interop
 		private class ReflectionMetadata : IJSObjectMetadata
 		{
 			private readonly Type _type;
-			private static long _handles = 0L;
+			private static long _handles;
 
 			private bool _isPrototypeExported;
 			private Dictionary<string, MethodInfo> _methods;
+
+			private static readonly char[] _parametersTrimArray = new char[] { '{', '}', ' ' };
+			private static readonly char[] _doubleQuoteSpaceArray = new[] { '"', ' ' };
 
 			public ReflectionMetadata(Type type)
 			{
@@ -50,28 +53,28 @@ namespace Uno.Foundation.Interop
 				}
 
 				var id = Interlocked.Increment(ref _handles);
-				WebAssemblyRuntime.InvokeJS($"{_type.FullName}.createInstance(\"{managedHandle}\", \"{id}\")");
+				WebAssemblyRuntime.InvokeJS($"{_type.FullName}.createInstance({managedHandle}, {id})");
 
 				return id;
 			}
 
 			/// <inheritdoc />
-			public string GetNativeInstance(IntPtr managedHandle, long jsHandle) 
+			public string GetNativeInstance(IntPtr managedHandle, long jsHandle)
 				=> $"{_type.FullName}.getInstance(\"{managedHandle}\", \"{jsHandle}\")";
 
 			/// <inheritdoc />
-			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle) 
-				=> WebAssemblyRuntime.InvokeJS($"{_type.FullName}.destroyInstance(\"{managedHandle}\", \"{jsHandle}\")");
+			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)
+				=> WebAssemblyRuntime.InvokeJS($"{_type.FullName}.destroyInstance({managedHandle}, {jsHandle})");
 
 			/// <inheritdoc />
 			public object InvokeManaged(object instance, string method, string jsonParameters)
 			{
 				// TODO: Properly parse parameters
 				var parameters = jsonParameters
-					.Trim('{', '}', ' ')
-					.Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries)
+					.Trim(_parametersTrimArray)
+					.Split(',', StringSplitOptions.RemoveEmptyEntries)
 					.Where(parameter => parameter.HasValueTrimmed())
-					.Select(parameter => parameter.Split(new[] { ':' }, 2)[1].Trim('"', ' '))
+					.Select(parameter => parameter.Split(':', 2)[1].Trim(_doubleQuoteSpaceArray))
 					.ToArray();
 
 				return _methods[method].Invoke(instance, parameters);
@@ -102,9 +105,9 @@ namespace Uno.Foundation.Interop
 						// We log only methods, which are not declared by Uno/WinUI directly.
 						var reportMethods = duplicateMethods
 							.Where(m =>
-								!m.DeclaringType.FullName.StartsWith("Windows.UI.Xaml") &&
-								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml") &&
-								!m.DeclaringType.FullName.StartsWith("Uno"))
+								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal) &&
+								!m.DeclaringType.FullName.StartsWith("Microsoft" + /* UWP don't rename */ ".UI.Xaml", StringComparison.Ordinal) &&
+								!m.DeclaringType.FullName.StartsWith("Uno", StringComparison.Ordinal))
 							.Select(m => m.Name)
 							.Distinct();
 

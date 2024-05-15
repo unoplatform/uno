@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 //------------------------------------------------------------------------
 //
@@ -10,9 +10,9 @@
 //------------------------------------------------------------------------
 
 using Windows.UI.Core;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	partial class CalendarPanel
 	{
@@ -95,6 +95,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
+		internal override Orientation? PhysicalOrientation => Orientation;
+
 		internal static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(
 			"Orientation", typeof(Orientation), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(Orientation)));
 
@@ -113,6 +115,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { SetValue(RowsProperty, value); }
 		}
 
+#if false
 		private PanelScrollingDirection ScrollingDirection
 		{
 			get
@@ -122,6 +125,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return ((CalendarPanel)(this)).ScrollingDirectionImpl;
 			}
 		}
+#endif
 
 		internal static readonly DependencyProperty StartIndexProperty = DependencyProperty.Register(
 			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(int)));

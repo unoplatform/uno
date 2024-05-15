@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public enum NavigationViewPaneDisplayMode 
+	public enum NavigationViewPaneDisplayMode
 	{
 		Auto,
 		Left,

@@ -1,11 +1,10 @@
-﻿#if XAMARIN_ANDROID
-using Java.Interop;
+﻿using Java.Interop;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI.Controls;
 using Java.Lang.Reflect;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.DataBinding
 {
@@ -30,7 +29,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Determines if the binder details class monitoring is enabled by default.
 		/// </summary>
-		public static bool IsBinderDetailsEnabled { get; set; } = false;
+		public static bool IsBinderDetailsEnabled { get; set; }
 
 		public BinderDetails(DependencyObject owner)
 		{
@@ -55,7 +54,7 @@ namespace Uno.UI.DataBinding
 
 			List<Java.Lang.Object> properties = new List<Java.Lang.Object>();
 
-			foreach(var prop in _props)
+			foreach (var prop in _props)
 			{
 				var value = _owner.GetValue(prop);
 
@@ -118,4 +117,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

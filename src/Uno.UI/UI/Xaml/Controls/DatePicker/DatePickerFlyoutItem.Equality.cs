@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class DatePickerFlyoutItem : IEquatable<DatePickerFlyoutItem>
 	{
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 				return true;
 			}
 
-			return obj.GetType() == GetType() && Equals((DatePickerFlyoutItem) obj);
+			return obj.GetType() == GetType() && Equals((DatePickerFlyoutItem)obj);
 		}
 
 		public override int GetHashCode()

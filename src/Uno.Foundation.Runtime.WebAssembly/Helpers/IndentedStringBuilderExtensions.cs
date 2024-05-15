@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,13 +21,8 @@ using System.Text;
 
 namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 {
-    internal static class IndentedStringBuilderExtensions
-    {
-		public static IndentedStringBuilder AsIndented(this StringBuilder builder)
-		{
-			return new IndentedStringBuilder(builder);
-		}
-
+	internal static class IndentedStringBuilderExtensions
+	{
 		public static void AppendLine(this IndentedStringBuilder builder, IFormatProvider formatProvider, string pattern, params object[] replacements)
 		{
 			builder.AppendFormat(formatProvider, pattern, replacements);

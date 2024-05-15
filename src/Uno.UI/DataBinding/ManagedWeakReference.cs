@@ -153,15 +153,15 @@ namespace Uno.UI.DataBinding
 	}
 
 #if !__ANDROID__ && !__IOS__
-#if NET461
+#if IS_UNIT_TESTS
 	public
 #else
-		internal
+	internal
 #endif
-		// Dummy interface to compile on WASM and unit tests. (On WASM isn't implemented by anything, so IsNativeAlive will always return true)
-	interface INativeObject
-		{
-			IntPtr Handle { get; }
-		}
+// Dummy interface to compile on WASM and unit tests. (On WASM isn't implemented by anything, so IsNativeAlive will always return true)
+interface INativeObject
+	{
+		IntPtr Handle { get; }
+	}
 #endif
 }

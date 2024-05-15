@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using Uno.Foundation.Interop;
 using System.Text;
@@ -200,10 +199,12 @@ namespace Uno.Foundation
 			return res != IntPtr.Zero;
 		}
 
+#pragma warning disable CA2211
 		/// <summary>
 		/// Provides an override for javascript invokes.
 		/// </summary>
 		public static Func<string, string>? InvokeJSOverride;
+#pragma warning restore CA2211
 
 		public static string InvokeJS(string str)
 		{
@@ -279,7 +280,7 @@ namespace Uno.Foundation
 			string command;
 			if (formattable.ArgumentCount == 0)
 			{
-				command = formattable.ToString();
+				command = formattable.ToString(CultureInfo.InvariantCulture);
 			}
 			else
 			{
@@ -405,7 +406,6 @@ namespace Uno.Foundation
 			return listener.task;
 		}
 
-		[Pure]
 		public static string EscapeJs(string s)
 		{
 			if (s == null)
@@ -472,7 +472,7 @@ namespace Uno.Foundation
 					else
 					{
 						r.Append("\\u");
-						r.Append(((ushort)c).ToString("X4"));
+						r.Append(((ushort)c).ToString("X4", CultureInfo.InvariantCulture));
 					}
 				}
 

@@ -1,14 +1,16 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+
+#pragma warning disable CS0168 // Variable is declared but never used - Disabled the warning for TestCleanupWrapper
 
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Tests.Common;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
@@ -34,13 +36,13 @@ namespace Windows.UI.Tests.Enterprise.CalendarViewTests
 		};
 
 		[ClassInitialize]
-		void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}
@@ -529,11 +531,11 @@ namespace Windows.UI.Tests.Enterprise.CalendarViewTests
 				var aprilDayPeer = FrameworkElementAutomationPeer.CreatePeerForElement(aprilDay);
 				var mayDayPeer = FrameworkElementAutomationPeer.CreatePeerForElement(mayDay);
 
-				var marchRowHeaders = ((ITableItemProvider )marchDayPeer.GetPattern(
+				var marchRowHeaders = ((ITableItemProvider)marchDayPeer.GetPattern(
 					PatternInterface.TableItem)).GetRowHeaderItems();
-				var aprilRowHeaders = ((ITableItemProvider )aprilDayPeer.GetPattern(
+				var aprilRowHeaders = ((ITableItemProvider)aprilDayPeer.GetPattern(
 					PatternInterface.TableItem)).GetRowHeaderItems();
-				var mayRowHeaders = ((ITableItemProvider )mayDayPeer.GetPattern(
+				var mayRowHeaders = ((ITableItemProvider)mayDayPeer.GetPattern(
 					PatternInterface.TableItem)).GetRowHeaderItems();
 
 				VERIFY_ARE_EQUAL(1, marchRowHeaders.Length);

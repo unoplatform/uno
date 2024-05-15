@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Android.Content;
@@ -21,14 +20,14 @@ namespace Windows.Devices.Midi
 	public partial class MidiOutPort : IDisposable
 	{
 		private readonly MidiManager _midiManager;
-		private readonly MidiDeviceInfo _deviceInfo = null;
-		private readonly MidiDeviceInfo.PortInfo _portInfo = null;		
+		private readonly MidiDeviceInfo _deviceInfo;
+		private readonly MidiDeviceInfo.PortInfo _portInfo;
 
 		/// <summary>
 		/// This is not a bug, Android uses "input" for output.
 		/// </summary>
-		private MidiInputPort _midiPort = null;
-		private MidiDevice _midiDevice = null;
+		private MidiInputPort _midiPort;
+		private MidiDevice _midiDevice;
 
 		private MidiOutPort(
 			string deviceId,
@@ -82,7 +81,7 @@ namespace Windows.Devices.Midi
 		}
 
 		private static async Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
-		{			
+		{
 			var provider = new MidiOutDeviceClassProvider();
 			var nativeDeviceInfo = provider.GetNativeDeviceInfo(identifier.Id);
 			if (nativeDeviceInfo == (null, null))
@@ -96,4 +95,3 @@ namespace Windows.Devices.Midi
 		}
 	}
 }
-#endif

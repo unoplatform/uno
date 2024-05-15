@@ -8,9 +8,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using System.Diagnostics;
 using System.ComponentModel;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 using _NativeReference = global::Foundation.NSObject;
 using _NativeView = UIKit.UIView;
@@ -18,12 +18,12 @@ using _NativeView = UIKit.UIView;
 using AppKit;
 using _NativeReference = global::Foundation.NSObject;
 using _NativeView = AppKit.NSView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using _NativeReference = Android.Views.View;
 using _NativeView = Android.Views.View;
 #else
-using _NativeReference = Windows.UI.Xaml.UIElement;
-using _NativeView = Windows.UI.Xaml.UIElement;
+using _NativeReference = Microsoft.UI.Xaml.UIElement;
+using _NativeView = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -51,7 +51,7 @@ namespace Uno.UI.DataBinding
 		private readonly Dictionary<IntPtr, System.Tuple<Type, WeakReference>> _newReferences = new Dictionary<IntPtr, System.Tuple<Type, WeakReference>>();
 		private readonly IntPtr _handle;
 
-		public static bool IsEnabled { get; set; } = false;
+		public static bool IsEnabled { get; set; }
 
 		public BinderReferenceHolder(Type type, object target)
 		{
@@ -188,7 +188,7 @@ namespace Uno.UI.DataBinding
 				var q = from r in _holders.Concat(_nativeHolders.Values)
 						let holder = r.Target as BinderReferenceHolder
 						where holder != null
-						where holder._type == typeof(Windows.UI.Xaml.Controls.Grid)
+						where holder._type == typeof(Microsoft.UI.Xaml.Controls.Grid)
 						group holder by holder._type into types
 						let count = types.Count()
 						let parents = (
@@ -313,14 +313,14 @@ namespace Uno.UI.DataBinding
 		{
 			try
 			{
-#if XAMARIN_IOS
+#if __IOS__
 				var uiView = target as UIView;
 
 				if (uiView != null && ObjCRuntime.Runtime.TryGetNSObject(uiView.Handle) != null)
 				{
 					return uiView.Superview == null && uiView.Window == null;
 				}
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 				var uiView = target as Android.Views.View;
 
 				if (uiView != null)
@@ -335,7 +335,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			return false;
-        }
+		}
 
 		~BinderReferenceHolder()
 		{

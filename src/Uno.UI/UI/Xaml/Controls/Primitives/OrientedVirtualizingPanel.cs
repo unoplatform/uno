@@ -1,12 +1,18 @@
-#pragma warning disable 108 // new keyword hiding
-namespace Windows.UI.Xaml.Controls.Primitives
-{
-	[global::Uno.NotImplemented]
-	public  partial class OrientedVirtualizingPanel 
-	{
-		public OrientedVirtualizingPanel()
-		{
+﻿using System;
 
-		}
+namespace Microsoft.UI.Xaml.Controls.Primitives;
+
+[global::Uno.NotImplemented]
+public partial class OrientedVirtualizingPanel
+{
+	public OrientedVirtualizingPanel()
+	{
+	}
+
+	private protected override VirtualizingPanelLayout GetLayouterCore()
+	{
+		throw new NotSupportedException(
+			$"{GetType().Name} is not supported in Uno Platform yet. " +
+			"Use a non-virtualized panel (e.g. ItemsStackPanel) instead.");
 	}
 }

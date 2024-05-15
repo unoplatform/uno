@@ -1,35 +1,35 @@
 ﻿#if XAMARIN
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 #elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.DependencyObject;
+using View = Microsoft.UI.Xaml.DependencyObject;
 #endif
 
 namespace Uno.UI.Behaviors
 {
 	public class TextBoxBehavior
 	{
-#region Attached property: NextControl
+		#region Attached property: NextControl
 
 		public static object GetNextControl(TextBox obj)
 		{
 			return obj.GetValue(NextControlProperty);
 		}
-		
-		public static DependencyProperty NextControlProperty { get ; } =
+
+		public static DependencyProperty NextControlProperty { get; } =
 			DependencyProperty.RegisterAttached("NextControl", typeof(object), typeof(TextBoxBehavior),
-			new FrameworkPropertyMetadata( null,  new PropertyChangedCallback(OnNextControlChanged)));
+			new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnNextControlChanged)));
 
 		private static void OnNextControlChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
@@ -38,7 +38,7 @@ namespace Uno.UI.Behaviors
 			if (textBox == null)
 				return;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			if (textBox.IsLoaded())
 #else
 			if (textBox.Window != null)
@@ -76,7 +76,7 @@ namespace Uno.UI.Behaviors
 			{
 				var textBox = sender as TextBox;
 				var nextControl = GetNextControl(textBox) as View;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				nextControl?.RequestFocus();
 #elif __IOS__ || __MACOS__
 				nextControl?.BecomeFirstResponder();
@@ -85,24 +85,24 @@ namespace Uno.UI.Behaviors
 			}
 		}
 
-#endregion
+		#endregion
 
-#region Attached property: Text
+		#region Attached property: Text
 
-		public static DependencyProperty TextProperty { get ; } =
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.RegisterAttached("Text", typeof(string), typeof(TextBoxBehavior), new FrameworkPropertyMetadata(default(string), OnTextChanged));
 
 		private static void OnTextChanged(object d, DependencyPropertyChangedEventArgs e)
 		{
 			var textBox = d as TextBox;
-			
+
 			var newValueAsString = (string)e.NewValue;
 
 			if (newValueAsString != null)
 				textBox.Text = newValueAsString;
-		} 
+		}
 
-#endregion
+		#endregion
 	}
 }
 #endif

@@ -14,7 +14,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
 using Windows.UI.Core;
 using Windows.Storage;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.IO;
 using Windows.UI.Popups;
 using Uno.Extensions;
@@ -22,20 +22,20 @@ using Uno.UI.Samples.Tests;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
+using MUXControlsTestApp;
 #else
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 #endif
 
-#if XAMARIN || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
-#else
+using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
-using Windows.UI.Xaml.Controls;
-#endif
+using SamplesApp;
+using Uno.UI.Extensions;
+using Private.Infrastructure;
+using System.Reflection.Metadata;
+using UITests.Shared.Helpers;
 
 namespace SampleControl.Presentation
 {
@@ -48,6 +48,9 @@ namespace SampleControl.Presentation
 
 	public partial class SampleChooserViewModel
 	{
+		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
+		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
+
 #if DEBUG
 		private const int _numberOfRecentSamplesVisible = 10;
 #else
@@ -62,9 +65,11 @@ namespace SampleControl.Presentation
 
 
 		private List<SampleChooserCategory> _categories;
+		private List<SampleChooserCategory> _unfilteredCategories;
+		private List<SampleChooserCategory> _manualTestsCategories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 		private readonly string SampleChooserFileAddress = "SampleChooserFileAddress.";
 #endif
 
@@ -74,7 +79,8 @@ namespace SampleControl.Presentation
 
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
-		private bool _isRecordAllTests = false;
+
+		private readonly UnitTestDispatcherCompat _dispatcher;
 
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
@@ -88,9 +94,13 @@ namespace SampleControl.Presentation
 #endif
 		}
 
-		public SampleChooserViewModel()
+		public SampleChooserControl Owner { get; }
+
+		public SampleChooserViewModel(SampleChooserControl owner)
 		{
 			Instance = this;
+			Owner = owner;
+			_dispatcher = UnitTestDispatcherCompat.From(owner);
 
 #if TRACK_REFS
 			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
@@ -98,20 +108,35 @@ namespace SampleControl.Presentation
 
 #if HAS_UNO
 			// Disable all pooling so that controls get collected quickly.
-			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
+			Microsoft.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
-#if NETFX_CORE
+#if WINAPPSDK
 			UseFluentStyles = true;
 #endif
 			InitializeCommands();
 			ObserveChanges();
 
-			_categories = GetSamples();
+			RefreshSamples();
 
 			if (_log.IsEnabled(LogLevel.Information))
 			{
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
+
+			_ = _dispatcher.RunAsync(
+					async () =>
+					{
+						// Initialize favorites and recents list as soon as possible.
+						if (FavoriteSamples == null || !FavoriteSamples.Any())
+						{
+							FavoriteSamples = await GetFavoriteSamples(CancellationToken.None, true);
+						}
+						if (RecentSamples == null || !RecentSamples.Any())
+						{
+							RecentSamples = await GetRecentSamples(CancellationToken.None);
+						}
+					}
+				);
 		}
 
 		public event EventHandler SampleChanging;
@@ -122,7 +147,7 @@ namespace SampleControl.Presentation
 		/// <param name="ct"></param>
 		/// <param name="section">The page to go to.</param>
 		/// <returns></returns>
-		private async Task ShowNewSection(CancellationToken ct, Section section)
+		private void ShowNewSection(CancellationToken ct, Section section)
 		{
 			Console.WriteLine($"Section changed: {section}");
 
@@ -135,7 +160,7 @@ namespace SampleControl.Presentation
 				case Section.Favorites:
 				case Section.Search:
 					_previousSections.Push(_lastSection);
-					await ShowSelectedList(ct, section);
+					ShowSelectedList(ct, section);
 
 					return; // Return after a Tab is shown
 
@@ -154,12 +179,12 @@ namespace SampleControl.Presentation
 		/// </summary>
 		/// <param name="ct"></param>
 		/// <returns></returns>
-		private async Task ShowPreviousSection(CancellationToken ct)
+		private void ShowPreviousSection(CancellationToken ct)
 		{
 			if (_previousSections.Count == 0)
 			{
 				_lastSection = Section.Library;
-				await ShowSelectedList(ct, Section.Library);
+				ShowSelectedList(ct, Section.Library);
 				return;
 			}
 
@@ -172,7 +197,7 @@ namespace SampleControl.Presentation
 				case Section.Recents:
 				case Section.Favorites:
 				case Section.Search:
-					await ShowSelectedList(ct, priorPage);
+					ShowSelectedList(ct, priorPage);
 					break;
 
 				default:
@@ -180,7 +205,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task ShowSelectedList(CancellationToken ct, Section section)
+		private void ShowSelectedList(CancellationToken ct, Section section)
 		{
 			CategoryVisibility = section == Section.Library;
 			CategoriesSelected = section == Section.Library || section == Section.Samples;
@@ -195,9 +220,8 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
-				async () =>
+			await RunOnUIThreadAsync(
+				() =>
 				{
 					var currentContent = ContentPhone as Control;
 
@@ -221,69 +245,27 @@ namespace SampleControl.Presentation
 			IsAnyContentVisible = ContentVisibility;
 		}
 
-		private class SampleInfo
-		{
-			public SampleChooserCategory Category { get; set; }
-			public SampleChooserContent Sample { get; set; }
-
-			public bool Matches(string path)
-			{
-				var pathMembers = path.Split(new char[] { '.' });
-				return Matches(category: pathMembers.ElementAtOrDefault(0), sampleName: pathMembers.ElementAtOrDefault(1));
-			}
-
-			private bool Matches(string category, string sampleName)
-			{
-				return category.HasValue() &&
-						Category.Category.Equals(category, StringComparison.OrdinalIgnoreCase) &&
-						(sampleName.IsNullOrEmpty() || (Sample?.ControlName?.Equals(sampleName, StringComparison.OrdinalIgnoreCase) ?? false));
-			}
-		}
-
-		// Targets can either be a Category or a Sample (formatted as [Category].[SampleName])
-		private const string _firstTargetToRun = "";
-
-		private static readonly string[] _targetsToSkip =
-		{
-			/*Will be fixed along with bug #29117 */
-			"GridView.GridViewEmptyGroups",
-			"GridView.GridViewGrouped",
-			"GridView.GridViewGroupedMaxRowsTwo",
-
-			/*Will be fixed along with bug #29132 */
-			"ListView.ListViewGrouped_ItemContainerStyleSelector",
-
-			/*Will be fixed along with bug #29134 */
-			"TimePicker.TimePickerSelector_Simple",
-
-			"ScrollViewer.ScrollViewer_Padding",
-
-			/* Will befixed along with bug #118190 */
-			"Animations.DoubleAnimation_TranslateX",
-			"Animations.DoubleAnimationUsingKeyFrames_TranslateX",
-			"Animations.EasingDoubleKeyFrame_CompositeTransform",
-		};
-
-		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", Action doneAction = null)
+		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", int totalGroups = 1, int currentGroupIndex = 0, Action doneAction = null)
 		{
 			try
 			{
-				_isRecordAllTests = true;
+				IsRecordAllTests = true;
 				IsSplitVisible = false;
 
 				var folderName = Path.Combine(screenShotPath, "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture));
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await Window.Current.Dispatcher.RunAsync(
-					CoreDispatcherPriority.Normal,
+				await RunOnUIThreadAsync(
 					async () =>
 					{
-						try {
-						  await RecordAllTestsInner(folderName, ct, doneAction);
+						try
+						{
+							await RecordAllTestsInner(folderName, totalGroups, currentGroupIndex, ct, doneAction);
 						}
-						finally {
-						  _isRecordAllTests = false;
+						finally
+						{
+							IsRecordAllTests = false;
 						}
 					});
 			}
@@ -296,46 +278,34 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task RecordAllTestsInner(string folderName, CancellationToken ct, Action doneAction = null)
+		private async Task RecordAllTestsInner(string folderName, int totalGroups, int currentGroupIndex, CancellationToken ct, Action doneAction = null)
 		{
 			try
 			{
+				var rootFolder = await GetStorageFolderFromNameOrCreate(ct, folderName);
 #if TRACK_REFS
 				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
 				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
-				var testQuery = from category in _categories
-								from sample in category.SamplesContent
-								where !sample.IgnoreInSnapshotTests
-								// where sample.ControlName.Equals("GridViewVerticalGrouped")
-								select new SampleInfo
-								{
-									Category = category,
-									Sample = sample,
-								};
 
-				Debug.Assert(
-					_firstTargetToRun.IsNullOrEmpty() || testQuery.Any(testInfo => testInfo.Matches(_firstTargetToRun)),
-					"First target to run must be either a Category or a Sample that is present in the app."
-				);
-
-				Debug.Assert(
-					_targetsToSkip.Where(target => !target.IsNullOrWhiteSpace()).None(target => target.Equals(_firstTargetToRun, StringComparison.OrdinalIgnoreCase)),
-					"First test to run cannot be skipped"
-				);
-
-				var tests = testQuery
-					.SkipWhile(testInfo => _firstTargetToRun.HasValue() && !testInfo.Matches(_firstTargetToRun))
-					.Where(testInfo => _targetsToSkip.None(testInfo.Matches))
-					.ToArray();
+				var tests = GetSampleChooserContentsForSnapshotTests().ToArray();
 
 				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					_log.Debug($"Generating tests for {tests.Count()} test in {folderName}");
+					_log.Debug($"Generating tests for {tests.Length} test in {folderName}");
 				}
 
-				foreach (var sample in tests)
+				var target = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+
+				for (int i = 0; i < tests.Length; i++)
 				{
+					if ((i % totalGroups) != currentGroupIndex)
+					{
+						continue;
+					}
+
+					var sample = tests[i];
+
 					try
 					{
 #if TRACK_REFS
@@ -343,7 +313,7 @@ namespace SampleControl.Presentation
 						var activeStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
 
-						var fileName = $"{SanitizeScreenshotFileName(sample.Category.Category + "-" + sample.Sample.ControlName)}.png";
+						var fileName = $"{SanitizeScreenshotFileName(sample.ControlName)}.png";
 
 						try
 						{
@@ -356,19 +326,44 @@ namespace SampleControl.Presentation
 								_log.Debug($"Generating {folderName}\\{fileName}");
 							}
 
-							await ShowNewSection(ct, Section.SamplesContent);
+							ShowNewSection(ct, Section.SamplesContent);
 
-							SelectedLibrarySample = sample.Sample;
+							SelectedLibrarySample = sample;
 
-							var content = await UpdateContent(ct, sample.Sample) as FrameworkElement;
+							var (content, control) = await UpdateContent(ct, sample);
 
 							ContentPhone = content;
 
+							if (control is IWaitableSample waitableSample)
+							{
+								await waitableSample.SamplePreparedTask;
+							}
+
+#if HAS_UNO
+							await _dispatcher.RunIdleAsync(_ => { });
+							await _dispatcher.RunIdleAsync(_ => { });
+#else
 							await Task.Delay(500, ct);
+#endif
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
+							var file = await rootFolder.CreateFileAsync(fileName + ".png",
+								CreationCollisionOption.ReplaceExisting
+								).AsTask(ct);
+							await GenerateBitmap(ct, target, file, content);
 
-							await GenerateBitmap(ct, folderName, fileName, content);
+							try
+							{
+								UseDarkTheme = true;
+								file = await rootFolder.CreateFileAsync(fileName + "-dark.png",
+									CreationCollisionOption.ReplaceExisting
+									).AsTask(ct);
+								await GenerateBitmap(ct, target, file, content);
+							}
+							finally
+							{
+								UseDarkTheme = false;
+							}
 						}
 						catch (Exception e)
 						{
@@ -432,23 +427,47 @@ namespace SampleControl.Presentation
 				.Replace("\\", "_")
 				.Replace("\\", "_");
 
+		internal void CreateNewWindow()
+		{
+#if HAS_UNO || WINAPPSDK //TODO: Enable UWP-style new window #8978
+			var newWindow = new Window();
+			newWindow.Content = new MainPage();
+			newWindow.Activate();
+#endif
+		}
+
+		internal void OpenPlayground()
+		{
+			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
 
-			var testQuery = from category in _categories
-							from sample in category.SamplesContent
-							where sample.ControlType == typeof(SamplesApp.Samples.UnitTests.UnitTestsPage)
-							select sample;
-
-			var runtimeTests = testQuery.FirstOrDefault();
+			var runtimeTests = GetContent(typeof(SamplesApp.Samples.UnitTests.UnitTestsPage).GetTypeInfo());
 
 			if (runtimeTests == null)
 			{
 				throw new InvalidOperationException($"Unable to find UnitTestsPage");
 			}
 
-			var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+			var (content, _) = await UpdateContent(ct, runtimeTests);
+
+			if (!Equals(SelectedLibrarySample, runtimeTests))
+			{
+				SelectedLibrarySample = null;
+			}
+
+			if (!Equals(SelectedRecentSample, runtimeTests))
+			{
+				SelectedRecentSample = null;
+			}
+
+			if (!Equals(SelectedFavoriteSample, runtimeTests))
+			{
+				SelectedFavoriteSample = null;
+			}
 			ContentPhone = content;
 		}
 
@@ -461,7 +480,19 @@ namespace SampleControl.Presentation
 				if (ContentPhone is FrameworkElement fe
 					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
 				{
-					await unitTests.RunTests(ct, UnitTestEngineConfig.Default);
+#if IS_CI
+					// Used to disable showing the test output visually
+					unitTests.IsRunningOnCI = true;
+#endif
+
+					// Used to perform test grouping on CI to reduce the impact of re-runs
+					if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+					{
+						unitTests.CITestGroup = int.Parse(Environment.GetEnvironmentVariable(TestGroupVariable));
+						unitTests.CITestGroupCount = int.Parse(Environment.GetEnvironmentVariable(TestGroupCountVariable));
+					}
+
+					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 
 					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
 				}
@@ -485,15 +516,15 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
-					var unused = Window.Current.Dispatcher.RunAsync(
-						CoreDispatcherPriority.Normal,
+					_ = UnitTestDispatcherCompat
+						.From(Owner)
+						.RunAsync(
 						async () =>
 						{
-							CurrentSelectedSample = newContent;
-
-							if (CurrentSelectedSample != null)
+							if (newContent != null)
 							{
-								ContentPhone = await UpdateContent(CancellationToken.None, newContent);
+								CurrentSelectedSample = newContent;
+								(ContentPhone, _) = await UpdateContent(CancellationToken.None, newContent);
 							}
 						}
 					);
@@ -551,39 +582,65 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			var unused = Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal, async () =>
+			_ = RunOnUIThreadAsync(
+				async () =>
 				{
-					await Task.Delay(200);
+					// Delay the search to allow the user to type more characters
+					await Task.Delay(400);
 
-					if (!currentSearch.IsCancellationRequested)
+					if (currentSearch.IsCancellationRequested)
 					{
-						FilteredSamples = UpdateSearch(search, Categories);
+						return;
 					}
+
+					var results = await SearchAsync(search, _unfilteredCategories, currentSearch.Token);
+
+					if (results is null || currentSearch.IsCancellationRequested)
+					{
+						return;
+					}
+
+					FilteredSamples = results;
 				}
 			);
 		}
 
-		private List<SampleChooserContent> UpdateSearch(string search, List<SampleChooserCategory> categories)
+		private async Task<List<SampleChooserContent>> SearchAsync(string search, List<SampleChooserCategory> categories, CancellationToken cancellationToken)
 		{
 			if (string.IsNullOrEmpty(search))
 			{
-				return new List<SampleChooserContent>();
+				return [];
 			}
 
-			var starts = categories
-				.SelectMany(cat => cat.SamplesContent)
-				.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
+			return await Task.Run(() =>
+			{
+				var starts = categories
+					.SelectMany(cat => cat.SamplesContent)
+					.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
 
-			var contains = categories
-				.SelectMany(cat => cat.SamplesContent)
-				.Where(content => !starts.Contains(content) && content.ControlName.Contains(search));
+				if (cancellationToken.IsCancellationRequested)
+				{
+					return null;
+				}
 
-			// Order the results by showing the "start with" results
-			// followed by results that "contain" the search term
-			return starts.Concat(contains).ToList();
+				var contains = categories
+					.SelectMany(cat => cat.SamplesContent)
+					.Where(content => content.ControlName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+
+				// Order the results by showing the "start with" results
+				// followed by results that "contain" the search term
+				return starts.Concat(contains).Distinct().ToList();
+			});
 		}
 
+		public void TryOpenSample()
+		{
+			if (FilteredSamples is { } samples
+				&& samples.Count is 1)
+			{
+				SelectedSearchSample = samples[0];
+			}
+		}
 
 		/// <summary>
 		/// This method is used to get the list of samplechoosercontent that is present in the settings.
@@ -606,16 +663,16 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task<SampleChooserCategory> GetLatestCategory(CancellationToken ct)
+		private SampleChooserCategory GetLatestCategory(CancellationToken ct)
 		{
-			var latestSelected = await Get(SampleChooserLatestCategoryConstant, () => (string)null);
+			var latestSelected = Get(SampleChooserLatestCategoryConstant, () => (string)null);
 			return _categories.FirstOrDefault(c => c.Category == latestSelected) ??
 				_categories.FirstOrDefault();
 		}
 
 		private static Assembly[] GetAllAssembies()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			var assemblies = new List<Assembly>();
 
 			var files = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFilesAsync().AsTask().Result;
@@ -642,16 +699,47 @@ namespace SampleControl.Presentation
 #endif
 		}
 
+		private void RefreshSamples()
+		{
+			if (_unfilteredCategories is null)
+			{
+				_unfilteredCategories = GetSamples(false);
+				_manualTestsCategories = GetSamples(true);
+			}
+
+			if (_manualTestsOnly)
+			{
+				Categories = _manualTestsCategories;
+			}
+			else
+			{
+				Categories = _unfilteredCategories;
+			}
+		}
+
+		private IEnumerable<SampleChooserContent> GetSampleChooserContentsForSnapshotTests()
+		{
+			foreach (var sample in _allSamples)
+			{
+				var typeInfo = sample.GetTypeInfo();
+				var sampleAttribute = FindSampleAttribute(typeInfo);
+				if (sampleAttribute is { IgnoreInSnapshotTests: false })
+				{
+					yield return GetContent(typeInfo, sampleAttribute);
+				}
+			}
+		}
+
 		/// <summary>
 		/// This method retreives all the categories and sample contents associated with them throughout the app.
 		/// </summary>
 		/// <returns></returns>
-		private List<SampleChooserCategory> GetSamples()
+		private List<SampleChooserCategory> GetSamples(bool manualTestsOnly)
 		{
 			var categories =
 				from type in _allSamples
 				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
-				where sampleAttribute != null
+				where sampleAttribute != null && (!manualTestsOnly || sampleAttribute.IsManualTest)
 				let content = GetContent(type.GetTypeInfo(), sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
@@ -659,21 +747,25 @@ namespace SampleControl.Presentation
 				select new SampleChooserCategory(contentByCategory);
 
 			return categories.ToList();
-
-			SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
-				=> new SampleChooserContent
-				{
-					ControlName = attribute.Name ?? type.Name,
-					Categories = attribute.Categories?.Where(c => !string.IsNullOrWhiteSpace(c)).Any() ?? false
-						? attribute.Categories.Where(c => !string.IsNullOrWhiteSpace(c)).ToArray()
-						: new[] { type.Namespace.Split('.').Last().TrimStart("Windows_UI_Xaml").TrimStart("Windows_UI") },
-					ViewModelType = attribute.ViewModelType,
-					Description = attribute.Description,
-					ControlType = type.AsType(),
-					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
-					IsManualTest = attribute.IsManualTest
-				};
 		}
+
+		private static SampleChooserContent GetContent(TypeInfo type)
+			=> GetContent(type, FindSampleAttribute(type));
+
+		private static SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
+			=> new SampleChooserContent
+			{
+				ControlName = attribute.Name ?? type.Name,
+				Categories = attribute.Categories?.Where(c => !string.IsNullOrWhiteSpace(c)).Any() ?? false
+					? attribute.Categories.Where(c => !string.IsNullOrWhiteSpace(c)).ToArray()
+					: new[] { type.Namespace.Split('.').Last().TrimStart("Windows_UI_Xaml").TrimStart("Windows_UI") },
+				ViewModelType = attribute.ViewModelType,
+				Description = attribute.Description,
+				ControlType = type.AsType(),
+				IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
+				IsManualTest = attribute.IsManualTest,
+				UsesFrame = attribute.UsesFrame
+			};
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
 		{
@@ -683,7 +775,7 @@ namespace SampleControl.Presentation
 			}
 			catch (Exception)
 			{
-				return new TypeInfo[0];
+				return Array.Empty<TypeInfo>();
 			}
 		}
 
@@ -717,11 +809,11 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task UpdateFavorites(CancellationToken ct, bool getAllSamples = false, List<SampleChooserContent> favoriteSamples = null)
+		private void UpdateFavorites(bool getAllSamples = false, List<SampleChooserContent> favoriteSamples = null)
 		{
 			// If true, load all samples and not just those of a selected category
 			var samples = getAllSamples
-				? _categories.SelectMany(cat => cat.SamplesContent).ToList()
+				? _unfilteredCategories.SelectMany(cat => cat.SamplesContent).ToList()
 				: SampleContents;
 
 			var favorites = (favoriteSamples != null)
@@ -730,7 +822,7 @@ namespace SampleControl.Presentation
 
 			foreach (var sample in samples)
 			{
-				await UpdateFavoriteForSample(ct, sample, favorites.Contains(sample));
+				UpdateFavoriteForSample(sample, favorites.Contains(sample));
 			}
 
 			SampleContents = samples;
@@ -746,7 +838,7 @@ namespace SampleControl.Presentation
 			}
 			else
 			{
-				await UpdateFavoriteForSample(ct, sample, true);
+				UpdateFavoriteForSample(sample, true);
 				favorites.Add(sample);
 			}
 
@@ -754,14 +846,14 @@ namespace SampleControl.Presentation
 
 			FavoriteSamples = favorites;
 
-			await UpdateFavorites(ct);
+			UpdateFavorites();
 		}
 
 		private async Task LoadPreviousTest(CancellationToken ct)
 		{
 			if (PreviousSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, PreviousSample);
+				(ContentPhone, _) = await UpdateContent(ct, PreviousSample);
 			}
 		}
 
@@ -769,7 +861,7 @@ namespace SampleControl.Presentation
 		{
 			if (CurrentSelectedSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, CurrentSelectedSample);
+				(ContentPhone, _) = await UpdateContent(ct, CurrentSelectedSample);
 			}
 		}
 
@@ -777,29 +869,14 @@ namespace SampleControl.Presentation
 		{
 			if (NextSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, NextSample);
+				(ContentPhone, _) = await UpdateContent(ct, NextSample);
 			}
 		}
 
-		private async Task ShowTestInformation(CancellationToken ct)
-		{
-			var sample = CurrentSelectedSample;
-			if (sample != null)
-			{
-				var text = $@"
-query string: ?sample={sample.Categories.FirstOrDefault() ?? ""}/{sample.ControlName}
-view: {sample.ControlType.FullName}
-categories: {sample.Categories?.JoinBy(", ")}
-description: {sample.Description}";
-
-				await new MessageDialog(text.Trim(), sample.ControlName).ShowAsync();
-			}
-		}
-
-		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
+		private void UpdateFavoriteForSample(SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
-			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => sample.IsFavorite = isFavorite);
+			sample.IsFavorite = isFavorite;
 		}
 
 		/// <summary>
@@ -815,7 +892,7 @@ description: {sample.Description}";
 				var favoriteSamples = await GetFile(SampleChooserFavoriteConstant, () => new List<SampleChooserContent>());
 
 				// Update the Sample List to set the IsFavorite to True
-				await UpdateFavorites(ct, getAllSamples, favoriteSamples);
+				UpdateFavorites(getAllSamples, favoriteSamples);
 
 				return favoriteSamples;
 			}
@@ -829,34 +906,58 @@ description: {sample.Description}";
 			}
 		}
 
-
 		/// <summary>
 		/// This method receives a newContent and returns a newly built content. It also adds the content to the settings for the latest ran tests.
 		/// </summary>
 		/// <param name="ct"></param>
 		/// <param name="newContent"></param>
 		/// <returns>The updated content</returns>
-		public async Task<object> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
+		public async Task<(FrameworkElement Content, object Control)> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
 		{
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
-			//Activator is used here in order to generate the view and bind it directly with the proper view model
-			var control = Activator.CreateInstance(newContent.ControlType);
+			FrameworkElement container = null;
 
-			if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
+			object control;
+			var frameRequested =
+				newContent.UsesFrame &&
+				typeof(Page).IsAssignableFrom(newContent.ControlType);
+			if (frameRequested)
 			{
-				control = new Uno.UI.Samples.Controls.SampleControl
-				{
-					Content = control,
-					SampleDescription = newContent.Description
-				};
+				var frame = new Frame();
+				frame.Navigate(newContent.ControlType);
+				container = frame;
+				control = frame.Content;
 			}
+			else
+			{
+				//Activator is used here in order to generate the view and bind it directly with the proper view model
+				control = Activator.CreateInstance(newContent.ControlType);
 
-			var container = new Border { Child = control as UIElement };
+				if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
+				{
+					control = new Uno.UI.Samples.Controls.SampleControl
+					{
+						Content = control,
+						SampleDescription = newContent.Description
+					};
+				}
+
+				container = new Border { Child = control as UIElement };
+			}
 
 			if (newContent.ViewModelType != null)
 			{
-				var vm = Activator.CreateInstance(newContent.ViewModelType, container.Dispatcher);
+				var constructors = newContent.ViewModelType.GetConstructors();
+				object vm;
+				if (constructors.Any(c => c.GetParameters().Length == 1))
+				{
+					vm = Activator.CreateInstance(newContent.ViewModelType, UnitTestDispatcherCompat.From(container));
+				}
+				else
+				{
+					vm = Activator.CreateInstance(newContent.ViewModelType);
+				}
 				container.DataContext = vm;
 
 				if (vm is IDisposable disposable)
@@ -881,11 +982,11 @@ description: {sample.Description}";
 			var recents = await GetRecentSamples(ct);
 
 			// Get the selected category, else if null find it using the SampleContent passed in
-			var selectedCategory = SelectedCategory ?? await GetCategory(newContent);
+			var selectedCategory = SelectedCategory ?? GetCategory(newContent);
 
 			if (selectedCategory != null)
 			{
-				await Set(SampleChooserLatestCategoryConstant, selectedCategory.Category);
+				Set(SampleChooserLatestCategoryConstant, selectedCategory.Category);
 			}
 
 			CurrentSelectedSample = newContent;
@@ -904,15 +1005,12 @@ description: {sample.Description}";
 				RecentSamples = recents;
 			}
 
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-
-			return container;
+			return (container, control);
 		}
 
-		private async Task<SampleChooserCategory> GetCategory(SampleChooserContent content)
+		private SampleChooserCategory GetCategory(SampleChooserContent content)
 		{
-			return _categories.FirstOrDefault(cat =>
+			return _unfilteredCategories.FirstOrDefault(cat =>
 						cat.SamplesContent.Any(
 							sample => sample.Equals(content)));
 		}
@@ -928,7 +1026,8 @@ description: {sample.Description}";
 
 		public string GetAllSamplesNames()
 		{
-			var q = from category in _categories
+			// TODO: This might not be returning samples without a category (i.e, attributed just with [Sample] without any arguments)
+			var q = from category in _unfilteredCategories
 					from test in category.SamplesContent
 					where !test.IgnoreInSnapshotTests && !test.IsManualTest
 					select test.ControlType.FullName;
@@ -936,9 +1035,9 @@ description: {sample.Description}";
 			return string.Join(";", q.Distinct());
 		}
 
-		public async Task SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
+		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
 		{
-			var category = _categories.FirstOrDefault(
+			var category = _unfilteredCategories.FirstOrDefault(
 				c => c.Category != null &&
 				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
 
@@ -955,7 +1054,7 @@ description: {sample.Description}";
 				return;
 			}
 
-			await ShowNewSection(token, Section.SamplesContent);
+			ShowNewSection(token, Section.SamplesContent);
 
 			SelectedLibrarySample = sample;
 		}
@@ -966,7 +1065,7 @@ description: {sample.Description}";
 
 			try
 			{
-				var q = from category in _categories
+				var q = from category in _unfilteredCategories
 						from test in category.SamplesContent
 						where test.ControlType.FullName == metadataName
 						select test;
@@ -977,7 +1076,7 @@ description: {sample.Description}";
 				{
 					IsSplitVisible = false;
 
-					await ShowNewSection(ct, Section.SamplesContent);
+					ShowNewSection(ct, Section.SamplesContent);
 
 					SelectedLibrarySample = sample;
 
@@ -995,17 +1094,17 @@ description: {sample.Description}";
 			}
 		}
 
-		private async Task Set<T>(string key, T value)
+		private void Set<T>(string key, T value)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 			ApplicationData.Current.LocalSettings.Values[key] = json;
 #endif
 		}
 
-		private async Task<T> Get<T>(string key, Func<T> d = null)
+		private T Get<T>(string key, Func<T> d = null)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			var json = (string)ApplicationData.Current.LocalSettings.Values[key];
 			return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
 #else
@@ -1013,45 +1112,64 @@ description: {sample.Description}";
 #endif
 		}
 
-		private async Task SetFile<T>(string key, T value)
+		private
+#if !__NETSTD_REFERENCE__
+			async
+#endif
+			Task SetFile<T>(string key, T value)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 
 			using (await _fileLock.LockAsync(CancellationToken.None))
 			{
 				try
 				{
-					var folderPath = ApplicationData.Current.LocalFolder.Path;
-					File.WriteAllText(Path.Combine(folderPath, SampleChooserFileAddress + key), json);
+					var folder = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path);
+					var file = await folder.OpenStreamForWriteAsync(SampleChooserFileAddress + key, CreationCollisionOption.ReplaceExisting);
+					using (var writer = new StreamWriter(file, encoding: System.Text.Encoding.UTF8))
+					using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(writer))
+					{
+						var ser = Newtonsoft.Json.JsonSerializer.CreateDefault();
+						ser.Serialize(jsonWriter, value);
+						jsonWriter.Flush();
+					}
 				}
 				catch (IOException e)
 				{
-					_log.Error(e.Message);
+					_log.LogWarning(e.Message);
 				}
 			}
+#else
+			return Task.CompletedTask;
 #endif
 		}
 
-		private async Task<T> GetFile<T>(string key, Func<T> defaultValue = null)
+		private
+#if !__NETSTD_REFERENCE__
+			async
+#endif
+			Task<T> GetFile<T>(string key, Func<T> defaultValue = null)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			string json = null;
 
 			using (await _fileLock.LockAsync(CancellationToken.None))
 			{
 				try
 				{
-					var folderPath = ApplicationData.Current.LocalFolder.Path;
-					json = File.ReadAllText(Path.Combine(folderPath, SampleChooserFileAddress + key));
+					var folder = ApplicationData.Current.LocalFolder;
+					// GetFileAsync ensures the filesystem has been loaded on WASM.
+					var file = await folder.GetFileAsync(SampleChooserFileAddress + key);
+					json = await FileIO.ReadTextAsync(file);
 				}
 				catch (IOException e)
 				{
-					_log.Error(e.Message);
+					_log.LogWarning(e.Message);
 				}
 			}
 
-			if (json.HasValueTrimmed())
+			if (!json.IsNullOrWhiteSpace())
 			{
 				try
 				{
@@ -1062,8 +1180,76 @@ description: {sample.Description}";
 					_log.Error($"Could not deserialize Sample chooser file {key}.", ex);
 				}
 			}
-#endif
+
 			return defaultValue != null ? defaultValue() : default(T);
+#else
+			return Task.FromResult(defaultValue != null ? defaultValue() : default(T));
+#endif
+
+		}
+
+
+		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		{
+			var folder = await GetStorageFolderFromNameOrCreate(ct, folderName);
+
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.Debug($"Output folder for tests: {folder.Path}");
+			}
+		}
+
+		private
+#if !__WASM__
+			async
+#endif
+			Task GenerateBitmap(CancellationToken ct
+			, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
+			, StorageFile file
+			, FrameworkElement content)
+		{
+#if __WASM__
+			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
+#else
+			var element = Owner.XamlRoot.Content;
+
+			try
+			{
+				targetBitmap = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+
+				await targetBitmap.RenderAsync(element).AsTask(ct);
+
+				var pixels = await targetBitmap.GetPixelsAsync().AsTask(ct);
+
+				using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite).AsTask(ct))
+				{
+					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream).AsTask(ct);
+
+					encoder.SetPixelData(
+						BitmapPixelFormat.Bgra8,
+						BitmapAlphaMode.Ignore,
+						(uint)targetBitmap.PixelWidth,
+						(uint)targetBitmap.PixelHeight,
+						content.XamlRoot.RasterizationScale,
+						content.XamlRoot.RasterizationScale,
+						pixels.ToArray()
+					);
+
+					await encoder.FlushAsync().AsTask(ct);
+				}
+			}
+			catch (Exception ex)
+			{
+				_log.Error(ex.Message);
+			}
+#endif
+		}
+
+		private async Task RunOnUIThreadAsync(Action action)
+		{
+			await _dispatcher.RunAsync(
+					UnitTestDispatcherCompat.Priority.Normal,
+					() => action());
 		}
 	}
 }

@@ -8,10 +8,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -56,7 +56,7 @@ namespace MonoTests.Uno.Xaml
 			xm2 = new XamlMember (typeof (TestClass1).GetProperty ("TestProp1"), sctx);
 			xm3 = new XamlMember (typeof (TestClass1).GetProperty ("TestProp2"), sctx);
 		}
-		
+
 		public class TestClass1
 		{
 			public TestClass1 ()
@@ -80,7 +80,7 @@ namespace MonoTests.Uno.Xaml
 			public List<string> Baz { get; set; }
 			public string Ext { get; set; }
 		}
-		
+
 		[Test]
 		public void SchemaContextNull ()
 		{
@@ -621,7 +621,7 @@ namespace MonoTests.Uno.Xaml
 				xw.WriteStartObject(xt3);
 				xw.WriteStartMember(xm2);
 				xw.WriteNamespace(new NamespaceDeclaration("urn:foo", "y"));
-				// and here, NamespaceDeclaration is written as if it 
+				// and here, NamespaceDeclaration is written as if it
 				// were another value object( unlike XamlXmlWriter)
 				// and rejects further value.
 				xw.WriteValue("foo");
@@ -775,7 +775,7 @@ namespace MonoTests.Uno.Xaml
 		public void WriteAttachableProperty ()
 		{
 			Attached2 result = null;
-			
+
 			var rsettings = new XamlXmlReaderSettings ();
 			using (var reader = new XamlXmlReader (new StringReader (String.Format (@"<Attached2 AttachedWrapper3.Property=""Test"" xmlns=""clr-namespace:MonoTests.Uno.Xaml;assembly={0}""></Attached2>", typeof (AttachedWrapper3).Assembly.GetName ().Name)), rsettings)) {
 				var wsettings = new XamlObjectWriterSettings ();
@@ -787,7 +787,7 @@ namespace MonoTests.Uno.Xaml
 
 			Assert.AreEqual ("Test", result.Property, "#1");
 		}
-		
+
 		[Test]
 		public void OnSetValueAndHandledFalse () // part of bug #3003
 		{
@@ -819,7 +819,7 @@ namespace MonoTests.Uno.Xaml
 			var ret = xow.Result as TestClass3;
 			Assert.IsNotNull (ret.Nested, "#8");
 		}
-		
+
 		[Test] // bug #3003 repro
 		[Ignore("")]
 		public void EventsAndProcessingOrder ()
@@ -897,7 +897,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsFalse (o.Child.Invoked, "#2");
 			Assert.IsFalse (o.Child.Descendant.Invoked, "#3");
 		}
-		
+
 		[Test]
 		public void LookupCorrectEventBoundMethod2 ()
 		{
@@ -906,13 +906,13 @@ namespace MonoTests.Uno.Xaml
 				XamlServices.Load(GetReader("LookupCorrectEvent2.xml"));
 			});
 		}
-		
+
 		[Test]
 		public void LookupCorrectEventBoundMethod3 ()
 		{
 			XamlServices.Load (GetReader ("LookupCorrectEvent3.xml"));
 		}
-		
+
 		// common use case based tests (to other readers/writers).
 
 		XamlReader GetReader (string filename)
@@ -1144,7 +1144,7 @@ namespace MonoTests.Uno.Xaml
 				Assert.AreEqual (obj, des, "#1");
 			}
 		}
-		
+
 		[Test]
 		public void Write_ArgumentAttributed ()
 		{
@@ -1295,7 +1295,7 @@ namespace MonoTests.Uno.Xaml
 				Assert.AreEqual ("foo", des, "#1");
 			}
 		}
-		
+
 		[Test]
 		public void Write_PropertyDefinition ()
 		{
@@ -1307,7 +1307,7 @@ namespace MonoTests.Uno.Xaml
 				Assert.AreEqual (XamlLanguage.String, des.Type, "#3");
 			}
 		}
-		
+
 		[Test]
 		[Ignore ("this still does not give successful deserialization result - should there be any way?")]
 		public void Write_StaticExtensionWrapper ()
@@ -1319,7 +1319,7 @@ namespace MonoTests.Uno.Xaml
 				Assert.AreEqual ("Foo", des.Param.Member, "#2");
 			}
 		}
-		
+
 		[Test]
 		[Ignore ("this still does not give successful deserialization result - should there be any way?")]
 		public void Write_TypeExtensionWrapper ()
@@ -1332,7 +1332,7 @@ namespace MonoTests.Uno.Xaml
 				Assert.AreEqual (String.Empty, des.Param.TypeName, "#2");
 			}
 		}
-		
+
 		[Test]
 		public void Write_NamedItems ()
 		{
@@ -1355,7 +1355,7 @@ namespace MonoTests.Uno.Xaml
 				Assert.AreEqual (des, des.References [0].References [0], "#5");
 			}
 		}
-		
+
 		[Test]
 		public void Write_NamedItems2 ()
 		{

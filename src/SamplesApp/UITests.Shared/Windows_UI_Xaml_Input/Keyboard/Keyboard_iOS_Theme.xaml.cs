@@ -6,23 +6,23 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Input.Keyboard
 {
 	[SampleControlInfo("Keyboard", nameof(Keyboard_iOS_Theme),
-		description: Description,
+		description: SampleDescription,
 		ignoreInSnapshotTests: true,
 		isManualTest: true)]
 	public sealed partial class Keyboard_iOS_Theme : Page
 	{
-		private const string Description = "[iOS-only] Keyboard theme should be determined based on the following precedences: KeyboardAppearance > RequestedTheme > Device Theme.";
+		private const string SampleDescription = "[iOS-only] Keyboard theme should be determined based on the following precedences: KeyboardAppearance > RequestedTheme > Device Theme.";
 
 		public Keyboard_iOS_Theme()
 		{
@@ -31,7 +31,7 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 
 		private void UpdateTheme(object sender, RoutedEventArgs e)
 		{
-			var root = global::Windows.UI.Xaml.Window.Current.Content as FrameworkElement;
+			var root = XamlRoot?.Content as FrameworkElement;
 			var theme = (sender as RadioButton).Content switch
 			{
 				"Light" => ElementTheme.Light,

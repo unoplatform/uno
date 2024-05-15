@@ -2,6 +2,7 @@
 using System.Globalization;
 using FluentAssertions;
 using NUnit.Framework;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -34,10 +35,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			Assert.IsNotNull(theListView.GetDependencyPropertyValue("DataContext"));
 		}
 
-		// HorizontalListViewGrouped isn't present on WASM
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void ListView_ListViewWithHeader_InitializesTest()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewGrouped");
@@ -86,7 +85,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Fails on iOS - https://github.com/unoplatform/uno/issues/1955
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Fails on iOS - https://github.com/unoplatform/uno/issues/1955
 		public void ListView_Header_DataContextChanged()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView_Header_DataContextChanging");
@@ -98,7 +97,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // Currently fails on WASM, layout requests aren't swallowed properly
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Fails on Android - https://github.com/unoplatform/uno/issues/15829
 		public void Check_ListView_Swallows_Measure()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure");
@@ -139,6 +138,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // fails on iOS https://github.com/unoplatform/uno/issues/9080
 		public void ListView_ObservableCollection_Unused_Space()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_ObservableCollection_Unused_Space");
@@ -306,7 +306,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM: ListView.Header not implemented https://github.com/unoplatform/uno/issues/1979
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM: CheckBox border changes color when checked then unchecked https://github.com/unoplatform/uno/issues/13650
 		public void ListView_ExpandableItemLarge_ExpandHeader_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
@@ -330,8 +330,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
-		// WASM: ListView.Header not implemented https://github.com/unoplatform/uno/issues/1979
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // WASM: fails because AtIndex() isn't supported https://github.com/unoplatform/Uno.UITest/issues/47
 		public void ListView_ExpandableItemLarge_ExpandHeaderWithMultipleItems_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
@@ -361,8 +360,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
-		// WASM: ListView.Header not implemented https://github.com/unoplatform/uno/issues/1979
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // WASM: fails because AtIndex() isn't supported https://github.com/unoplatform/Uno.UITest/issues/47
 		public void ListView_ExpandableItemLarge_ExpandHeaderWithSingleItem_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
@@ -388,7 +386,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[Timeout(3*60*1000)] // On iOS, this test is slow
+		[Timeout(5 * 60 * 1000)] // On iOS, this test is slow
+#if __IOS__
+		[Ignore("Test is flaky on iOS: https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void ListView_SelectedItems()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
@@ -425,6 +426,31 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.FastTap("ClearSelectedItemButton");
 
 			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(3, 0, 1, 2, )");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListViewItem_Click_Focus()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListViewItem_Click_Focus");
+
+			var clearButton = _app.Marked("ClearButton");
+			var outputTextBlock = _app.Marked("OutputTextBlock");
+			var listViewItem = _app.Marked("TestListViewItem");
+
+			var listViewItemRect = listViewItem.FirstResult().Rect;
+
+			_app.WaitForElement(clearButton);
+
+			_app.Tap(clearButton);
+
+			_app.DragCoordinates(listViewItemRect.CenterX, listViewItemRect.CenterY, listViewItemRect.CenterX, listViewItemRect.Bottom + 50);
+
+			Assert.AreNotEqual("F", outputTextBlock.GetText());
+
+			_app.Tap(listViewItem);
+
+			Assert.AreEqual("F", outputTextBlock.GetText());
 		}
 
 		[Test]
@@ -493,7 +519,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.Tap("Item_1");
 			var logs = eventLogs.GetDependencyPropertyValue<string>("Text");
 			Assert.AreEqual(logs, GenerateItemSelectionLogs(1, "Item_1"));
-			
+
 			// selecting item 0 programmatically
 			clearLogsButton.FastTap(); // clear events from the step above
 			setSelectIndexTo0Button.FastTap();
@@ -555,7 +581,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			float listHeight = _app.GetPhysicalRect(heightStack).GetBottom();
 
 			addButton.FastTap();
-			
+
 			float newListHeight = _app.GetPhysicalRect(heightStack).GetBottom();
 
 			Assert.AreNotEqual(listHeight, newListHeight);

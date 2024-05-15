@@ -9,7 +9,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal static partial class AnimatorFactory
 	{
@@ -47,10 +47,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			// Performance : http://developer.android.com/guide/topics/graphics/hardware-accel.html#layers-anims
 			// Properties  : http://developer.android.com/guide/topics/graphics/prop-animation.html#views
 
-			var info = timeline.PropertyInfo.GetPathItems().Last();
-			var target = info.DataContext;
-			var property = info.PropertyName.Split(new[] { '.' }).Last().Replace("(", "").Replace(")", "");
+			var (target, property) = timeline.PropertyInfo.GetTargetContextAndPropertyName();
 
+			// note: implementation below should be mirrored in TryGetNativeAnimatedValue
 			if (target is View view)
 			{
 				switch (property)
@@ -332,10 +331,60 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Ensures that scale value is without the android accepted values
+		/// Ensures that scale value is within the android accepted values
 		/// </summary>
 		private static double ToNativeScale(double value)
 			=> double.IsNaN(value) ? 1 : value;
 
+		/// <summary>
+		/// Get the underlying native property value which the target dependency property is associated with when animating.
+		/// </summary>
+		/// <param name="timeline"></param>
+		/// <param name="value">The associated native animated value <b>in logical unit</b>.</param>
+		/// <returns>Whether a native animation value is present and active.</returns>
+		/// <remarks>The <paramref name="value"/> will be <b>in logical unit</b>, as the consumer of this method will have no idea which property are scaled or not.</remarks>
+		internal static bool TryGetNativeAnimatedValue(Timeline timeline, out object value)
+		{
+			value = null;
+
+			if (timeline.GetIsDependantAnimation() || timeline.GetIsDurationZero())
+			{
+				return false;
+			}
+
+			var (target, property) = timeline.PropertyInfo.GetTargetContextAndPropertyName();
+			if (target is Transform { IsAnimating: false })
+			{
+				// While not animating, these native properties will be reset.
+				// In that case, the dp actual value should be read instead (by returning false here).
+				return false;
+			}
+
+			value = property switch
+			{
+				// note: Implementation here should be mirrored in GetGPUAnimator
+				nameof(FrameworkElement.Opacity) when target is View view => (double)view.Alpha,
+
+				nameof(TranslateTransform.X) when target is TranslateTransform translate => ViewHelper.PhysicalToLogicalPixels(translate.View.TranslationX),
+				nameof(TranslateTransform.Y) when target is TranslateTransform translate => ViewHelper.PhysicalToLogicalPixels(translate.View.TranslationY),
+				nameof(RotateTransform.Angle) when target is RotateTransform rotate => (double)rotate.View.Rotation,
+				nameof(ScaleTransform.ScaleX) when target is ScaleTransform scale => (double)scale.View.ScaleX,
+				nameof(ScaleTransform.ScaleY) when target is ScaleTransform scale => (double)scale.View.ScaleY,
+				//nameof(SkewTransform.AngleX) when target is SkewTransform skew => ViewHelper.PhysicalToLogicalPixels(skew.View.ScaleX), // copied as is from GetGPUAnimator
+				//nameof(SkewTransform.AngleY) when target is SkewTransform skew => ViewHelper.PhysicalToLogicalPixels(skew.View.ScaleY),
+
+				nameof(CompositeTransform.TranslateX) when target is CompositeTransform composite => ViewHelper.PhysicalToLogicalPixels(composite.View.TranslationX),
+				nameof(CompositeTransform.TranslateY) when target is CompositeTransform composite => ViewHelper.PhysicalToLogicalPixels(composite.View.TranslationY),
+				nameof(CompositeTransform.Rotation) when target is CompositeTransform composite => (double)composite.View.Rotation,
+				nameof(CompositeTransform.ScaleX) when target is CompositeTransform composite => (double)composite.View.ScaleX,
+				nameof(CompositeTransform.ScaleY) when target is CompositeTransform composite => (double)composite.View.ScaleY,
+				//nameof(CompositeTransform.SkewX) when target is CompositeTransform composite => ViewHelper.PhysicalToLogicalPixels(composite.View.ScaleX), // copied as is from GetGPUAnimator
+				//nameof(CompositeTransform.SkewY) when target is CompositeTransform composite => ViewHelper.PhysicalToLogicalPixels(composite.View.ScaleY),
+
+				_ => null,
+			};
+
+			return value != null;
+		}
 	}
 }

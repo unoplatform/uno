@@ -7,22 +7,19 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
+[assembly: InternalsVisibleTo("Uno.UI.Lottie")]
+[assembly: InternalsVisibleTo("Uno.UI.Svg")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
+[assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
-
-#if NET6_0_OR_GREATER
+[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
-#elif __IOS__
-#pragma warning disable CS0618 // Type or member is obsolete
-[assembly: Foundation.LinkerSafe]
-#pragma warning restore CS0618 // Type or member is obsolete
-[assembly: AssemblyMetadata("IsTrimmable", "True")]
-#elif __ANDROID__
-[assembly: Android.LinkerSafe]
-#endif

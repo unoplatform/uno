@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public sealed partial class CalendarViewTemplateSettings : DependencyObject
 	{
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"HeaderText",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets the first day of the week.</summary>
 		/// <returns>The first day of the week.</returns>
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay1",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets the second day of the week.</summary>
 		/// <returns>The second day of the week.</returns>
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay2",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets the third day of the week.</summary>
 		/// <returns>The third day of the week.</returns>
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay3",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets the fourth day of the week.</summary>
 		/// <returns>The fourth day of the week.</returns>
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay4",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets the fifth day of the week.</summary>
 		/// <returns>The fifth day of the week.</returns>
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay5",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets the sixth day of the week.</summary>
 		/// <returns>The sixth day of the week.</returns>
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay6",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets the seventh day of the week.</summary>
 		/// <returns>The seventh day of the week.</returns>
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"WeekDay7",
 			typeof(string),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more content after the displayed content.</summary>
 		/// <returns>**true** if the CalendarView has more content after the displayed content; otherwise, **false**.</returns>

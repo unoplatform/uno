@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Tests.Common;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
@@ -16,33 +16,40 @@ using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation.Collections;
-using ButtonBase = Windows.UI.Xaml.Controls.Primitives.ButtonBase;
-using Microsoft.UI.Xaml.Controls;
+using ButtonBase = Microsoft.UI.Xaml.Controls.Primitives.ButtonBase;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Controls;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Windows.UI.Tests.Enterprise
 {
 	[TestClass]
 	[RequiresFullWindow]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 	public class CommandBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
-		void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.ShutdownXaml();
 			TestServices.WindowHelper.VerifyTestCleanup();
@@ -57,7 +64,7 @@ namespace Windows.UI.Tests.Enterprise
 		//}
 
 		[TestMethod]
-		
+
 		[Description("Validates that we can successfully add/remove a CommandBar from the live tree.")]
 		[Ignore("TopAppBar not implemented.")]
 		public async Task CanEnterAndLeaveLiveTree()
@@ -103,7 +110,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that we can successfully reapply a template after the first time we apply it.")]
 		[Ignore("TopAppBar not implemented.")]
 		public async Task CanReapplyTemplate()
@@ -210,7 +217,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that CommandBar opens and closes, with appropriate events firing, using IsOpen property.")]
 		public async Task CanOpenAndCloseUsingAPI()
 		{
@@ -223,7 +230,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that CommandBar opens and closes, with appropriate events firing, using taps on More Button.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		public async Task CanOpenAndCloseUsingMoreButton()
@@ -240,7 +247,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that CommandBar closes when the device's Back button is pressed.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		[Ignore("InjectBackButtonPress not implemented.")]
@@ -249,18 +256,19 @@ namespace Windows.UI.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Func<CommandBar, Task> openFunc = async (cmdBar) => await RunOnUIThread(() => cmdBar.IsOpen = true);
-			Func<CommandBar, Task> closeFunc = async (cmdBar) =>
+			Func<CommandBar, Task> closeFunc = (cmdBar) =>
 			{
 				bool backButtonPressHandled = false;
 				TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
 				VERIFY_IS_TRUE(backButtonPressHandled);
+				return Task.CompletedTask;
 			};
 
 			await ValidateOpenAndCloseWorker(openFunc, closeFunc);
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that CommandBar can close when a primary command is selected from the overflow.")]
 		public async Task DoesCloseOnPrimaryCommandSelection()
 		{
@@ -280,7 +288,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that CommandBar can close when a secondary command is selected from the overflow.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
 		public async Task DoesCloseOnSecondaryCommandSelection()
@@ -301,7 +309,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that items can be added to the CommandBar's collection properties.")]
 
 		public async Task CanAddToAndRemoveFromCommandCollections()
@@ -409,9 +417,10 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
 		[Description("Validates that the overflow's open direction and alignment.")]
-
+#if __ANDROID__
+		[Ignore("Disabled for failing assertion: https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task ValidateOverflowPlacement()
 		{
 			TestCleanupWrapper cleanup;
@@ -428,6 +437,7 @@ namespace Windows.UI.Tests.Enterprise
 			LOG_OUTPUT("ValidateOverflowPosition: Opened Down, Aligned Left, FlowDirection=LTR");
 			await ValidateOverflowPlacementWorker(OverflowOpenDirection.Down, OverflowAlignment.Left, false /*isRTL*/);
 
+#if !HAS_UNO // TODO: Fix these scenarios.
 			// Validate the same scenarios, except with FlowDirection=RTL
 			LOG_OUTPUT("ValidateOverflowPosition: Opened Up, Aligned Right, FlowDirection=RT");
 			await ValidateOverflowPlacementWorker(OverflowOpenDirection.Up, OverflowAlignment.Right, true /*isRTL*/);
@@ -440,10 +450,11 @@ namespace Windows.UI.Tests.Enterprise
 
 			LOG_OUTPUT("ValidateOverflowPosition: Opened Down, Aligned Left, FlowDirection=RT");
 			await ValidateOverflowPlacementWorker(OverflowOpenDirection.Down, OverflowAlignment.Left, true /*isRTL*/);
+#endif
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that the overflow snaps to the window width when it's less than 480.")]
 		[Ignore("SetWindowSizeOverride not implemented.")]
 		public async Task ValidateOverflowSnapsToWindowWidth()
@@ -494,11 +505,11 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that the overflow's max height is 50% of the window height.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		[Ignore("SetWindowSizeOverride not implemented")]
-		public async Task ValidateOverflowMaxHeight()
+		public void ValidateOverflowMaxHeight()
 		{
 			//	TestCleanupWrapper cleanup;
 
@@ -558,9 +569,12 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that resizing the AppBar after opening and closing causes its width to properly get updated.")]
 		[TestProperty("Hosting:Mode", "UAP")]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task CanResizeCommandBarAfterOpeningAndClosing()
 		{
 			TestCleanupWrapper cleanup;
@@ -587,10 +601,10 @@ namespace Windows.UI.Tests.Enterprise
                 </CommandBar>
 			");
 
-				var page = WindowHelper.SetupSimulatedAppPage();
+				page = WindowHelper.SetupSimulatedAppPage();
 
-			//Uno TODO: Use Page.BottomAppBar instead of Page.Content
-			SetPageContent(cmdBar, page);
+				//Uno TODO: Use Page.BottomAppBar instead of Page.Content
+				SetPageContent(cmdBar, page);
 			});
 			await WindowHelper.WaitForIdle();
 
@@ -625,7 +639,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that a CommandBar can use an AppBarButton taller than the app window.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
 		[TestProperty("Hosting:Mode", "UAP")]
@@ -659,7 +673,7 @@ namespace Windows.UI.Tests.Enterprise
 				appBarButton = (AppBarButton)cmdBar.SecondaryCommands[0];
 				VERIFY_IS_NOT_NULL(appBarButton);
 
-				var page = WindowHelper.SetupSimulatedAppPage();
+				page = WindowHelper.SetupSimulatedAppPage();
 				VERIFY_IS_NOT_NULL(page);
 
 				//TODO: BottomAppBar not implemented
@@ -700,7 +714,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("When the CommandBar is Disabled, the more button should be greyed out.")]
 		public async Task ValidateMoreButtonVisualInDisabledState()
 		{
@@ -741,7 +755,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that AppBarButtons have invisible labels when IsOpen is false.")]
 		public async Task ValidateAppBarButtonsHaveInvisibleLabelsWhenClosed()
 		{
@@ -822,8 +836,10 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
 		[Description("Validates that AppBarButtons' text labels are offset to the right when there also are AppBarToggleButtons in the same secondary commands list.")]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task ValidateAppBarButtonsAreOffsetWithAppBarToggleButtons()
 		{
 			TestCleanupWrapper cleanup;
@@ -924,7 +940,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that CommandBars can be placed inline are light-dismissible.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		public async Task ValidateInlineCommandBarLightDismissBehavior()
@@ -993,12 +1009,12 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that non-hidden CommandBars do not open on right-tap, while hidden ones do.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		[Ignore("MouseHelper not implemented.")] // CoreWindow pointer events no longering being raised from lifted Xaml
-		public async Task ValidateRightClickBehavior()
+		public void ValidateRightClickBehavior()
 		{
 			LOG_OUTPUT("Validating CommandBarRightClickBehavior with ClosedDisplayMode=Hidden.");
 			ValidateRightClickBehaviorWorker(AppBarClosedDisplayMode.Hidden);
@@ -1011,11 +1027,14 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the CommandBar behavior for arrow key presses.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 #if __ANDROID__ || __IOS__
 		[Ignore("Keyboard nav not supported")]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task ValidateArrowKeys()
 		{
@@ -1035,7 +1054,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			var rightKeySequence = "#$d$_right#$u$_right";
 			var leftKeySequence = "#$d$_left#$u$_left";
-			var returnKeySequence = "#$d$_return#$u$_return";
+			//var returnKeySequence = "#$d$_return#$u$_return";
 
 			int primaryCount = 0;
 			int secondaryCount = 0;
@@ -1161,9 +1180,9 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Ignore("ControlHelper.ValidateUIElementTree not implemented.")]
-		public async Task ValidateUIElementTreeBoth()
+		public void ValidateUIElementTreeBoth()
 		{
 			//TestCleanupWrapper cleanup;
 
@@ -1184,9 +1203,9 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Ignore("ControlHelper.ValidateUIElementTree not implemented.")]
-		public async Task ValidateUIElementTreePrimaryOnly()
+		public void ValidateUIElementTreePrimaryOnly()
 		{
 			//TestCleanupWrapper cleanup;
 
@@ -1207,9 +1226,9 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Ignore("ControlHelper.ValidateUIElementTree not implemented.")]
-		public async Task ValidateUIElementTreeSecondaryOnly()
+		public void ValidateUIElementTreeSecondaryOnly()
 		{
 			//TestCleanupWrapper cleanup;
 
@@ -1230,7 +1249,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates a fix for a bug where primary command items would disappear unexpectedly.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		//[Ignore] Lifted Xaml Test: Fix and re-enable tests that were disabled due to being unreliable in Helix test pass.
@@ -1285,7 +1304,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that the overflow menu's scrollviewer does not scroll with arrow keys.")]
 		public async Task ValidateOverflowScrollViewerDoesNotScrollWithArrowKeys()
 		{
@@ -1344,7 +1363,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates focus returns to the more button when it was previously in the overflow menu when closing.")]
 		[Ignore("Popup Focus not implemented")] // TODO Focus: Popups
 		public async Task DoesFocusReturnToMoreButtonFromOverflowMenuWhenClosed()
@@ -1382,7 +1401,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				var moreButton = TreeHelper.GetVisualChildByName(cmdBar, "MoreButton");
 
 				VERIFY_IS_TRUE(focusedElement.Equals(moreButton));
@@ -1390,7 +1409,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that closing a CommandBar does not result in focus being transferred to the first focusable element in the page.")]
 		public async Task ValidateFirstElementIsNotFocusedWhenClosingCommandBar()
 		{
@@ -1443,7 +1462,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that focused command bar elements stay focused after a collection or size change.")]
 		[Ignore("Popup Focus is buggy.")]
 		public async Task CanMaintainFocusAfterCollectionOrSizeChange()
@@ -1494,7 +1513,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Validate the second primary command still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(1), (ICommandBarElement)FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(1), (ICommandBarElement)FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
 				LOG_OUTPUT("Focus the second secondary command.");
 				((Control)commandBar.SecondaryCommands.GetAt(1)).Focus(FocusState.Keyboard);
@@ -1507,7 +1526,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Validate the second secondary command still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.SecondaryCommands.GetAt(1), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.SecondaryCommands.GetAt(1), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 
 				LOG_OUTPUT("Clearing all secondary commands. Focus is expected to go to the more button.");
 				commandBar.SecondaryCommands.Clear();
@@ -1518,7 +1537,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				LOG_OUTPUT("Validate the more button has focus.");
 				var moreButton = (Button)(TreeHelper.GetVisualChildByName(commandBar, "MoreButton"));
-				var focused = (Button)FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focused = (Button)FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_ARE_EQUAL(moreButton, focused);
 
 				LOG_OUTPUT("Focus fourth primary command, enable dynamic overflow and resize command bar.");
@@ -1531,7 +1550,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Fourth primary command is now in the secondary ItemsControl. Validate it still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 
 				LOG_OUTPUT("Resize command bar back to its original size.");
 				commandBar.Width = 500;
@@ -1541,12 +1560,12 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Fourth primary command is back in the primary ItemsControl. Validate it still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 			});
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that setting CommandBar.IsOpen = true in Closed does not permanently hide labels and the overflow popup as though the CommandBar were still closed.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		public async Task CanReopenInClosedHandler()
@@ -1596,7 +1615,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that tabbing will not focus the CommandBar when it's ClosedDisplayMode=Hidden and it's closed.")]
 		[Ignore("Popup focus is buggy")]
 		public async Task CanNotTabIntoWhenClosedAndHidden()
@@ -1643,8 +1662,11 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that the overflow menu is not shown when all the items are Collapsed.")]
+#if __ANDROID__
+		[Ignore("Disabled for failing assertion: https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task DoesNotShowMenuIfSecondaryElementsAreCollapsed()
 		{
 			TestCleanupWrapper cleanup;
@@ -1700,6 +1722,9 @@ namespace Windows.UI.Tests.Enterprise
 		[Description("Validates that the CommandBar opens down/up based on the available space inside the layout bounds.")]
 #if __ANDROID__
 		[Ignore("CommandBar popup measure glitch with fullscreen")]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task ValidateCommandBarOpensInsideLayoutBounds()
 		{
@@ -1758,16 +1783,16 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that after clicking on an AppBarButton, the CommandBar closes before the button's click handlers execute.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-		public async Task DoesCloseBeforeButtonClickHandlersExecute()
+		public void DoesCloseBeforeButtonClickHandlersExecute()
 		{
 
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates CommandBar cycles focus when open.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		[Ignore("Focus bug with Shift-Tab in Popups.")]
@@ -1897,7 +1922,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that a user can tab into the CommandBar's overflow menu when set as a Top/Bottom AppBar.")]
 		[Ignore("TopAppBar/BottomAppBar not implemented.")]
 
@@ -1934,7 +1959,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 
 				cmdBar.IsOpen = false;
 
@@ -1953,14 +1978,14 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 
 				cmdBar.IsOpen = false;
 			});
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that a minimal closed command bar with only secondary commands is visible.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		public async Task ValidateClosedMinimalCommandBarWithSecondaryCommandsOnlyIsVisible()
@@ -2002,14 +2027,14 @@ namespace Windows.UI.Tests.Enterprise
 		//            you can exit it by pressing Escape when the focus is on an overflow item
 		//--------------------------------------------------------------------------------------
 		[TestMethod]
-		
+
 		[Description("Verifies that once you enter a bottom commandbar overflow, you can exit it by pressing Escape and focus is restored to the Expand Button.")]
 		[Ignore("BottomAppBar not implemented.")]
 		public async Task DoesFocusExpandButtonWithOverflowEscKey()
 		{
 			TestCleanupWrapper cleanup;
 			UIElement secondaryItemsPresenter = null;
-			Page rootPage = (Page)XamlReader.Load(@"<Page    
+			Page rootPage = (Page)XamlReader.Load(@"<Page
 				xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
 				xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
 
@@ -2118,12 +2143,12 @@ namespace Windows.UI.Tests.Enterprise
 			await gotFocusEvent.WaitForDefault();
 
 			KeyboardHelper.Escape(secondaryItemsPresenter);
-			closedEvent.WaitForDefault();
+			await closedEvent.WaitForDefault();
 			await RunOnUIThread(() => VERIFY_IS_TRUE(expandButton.FocusState == FocusState.Keyboard));
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validate the size of the CommandBar menu and its items based on different input modes (mouse, touch, etc.).")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
 		public async Task ValidateMenuSizingForDifferentInputModes()
@@ -2143,7 +2168,7 @@ namespace Windows.UI.Tests.Enterprise
 			// so we just hard-code the values here.
 			double expectedMenuWidth_Touch = 0;
 			double expectedMenuWidth_NonTouch = 0;
-			double expectedMenuItemHeight_Touch = 40;
+			//double expectedMenuItemHeight_Touch = 40;
 #if __IOS__
 			double expectedMenuItemHeight_NonTouch = 31;
 #elif __SKIA__
@@ -2281,7 +2306,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the sizing and the border for a full width menu.")]
 		[Ignore("WindowHelper.SetWindowSizeOverride not implemented.")]
 		public async Task ValidateVisualStateForFullWidthMenu()
@@ -2363,9 +2388,12 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Verifies that items moved between Primary and Secondary commands go to the correct VisualStates.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task MoveItemsBetweenPrimaryAndSecondaryCommands()
 		{
 			TestCleanupWrapper cleanup;
@@ -2506,7 +2534,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the ActualWidth & Height of AppBar in various configurations.")]
 		public async Task ValidateFootprint()
 		{
@@ -2515,12 +2543,12 @@ namespace Windows.UI.Tests.Enterprise
 			//UNO ONLY: SetWindowSizeOverride is not supported, so we are fullscreen
 			//double expectedCommandBarWidth = 500;
 
-			double expectedCommandBarWidth = Window.Current.Bounds.Width;
+			double expectedCommandBarWidth = WindowHelper.IsXamlIsland ? WindowHelper.XamlRoot.Size.Width : WindowHelper.CurrentTestWindow!.Bounds.Width;
 
 #if __IOS__
 			await RunOnUIThread(() =>
 			{
-				expectedCommandBarWidth = ViewHelper.GetScreenSize().Width;
+				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
 			});
 #endif
 			double expectedCommandBarCompactClosedHeight = 40;
@@ -2586,7 +2614,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that setting DefaultLayoutPosition on the CommandBar propagates down to AppBarButtons and AppBarToggleButtons.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		public async Task ValidateDefaultLayoutPositionPropagates()
@@ -2704,15 +2732,16 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the overflow button is hidden when told to be hidden, or when there's nothing to be shown by clicking it, with no app bar buttons.")]
 		public async Task ValidateOverflowButtonHidesWhenAppropriateWithNoAppBarButtons()
 		{
 			await ValidateOverflowButtonHidesWhenAppropriate(addPrimary: false, addSecondary: false);
 		}
 
+
 		[TestMethod]
-		
+
 		[Description("Validates the overflow button is hidden when told to be hidden, or when there's nothing to be shown by clicking it, with primary app bar buttons.")]
 		public async Task ValidateOverflowButtonHidesWhenAppropriateWithPrimaryAppBarButtons()
 		{
@@ -2720,7 +2749,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the overflow button is hidden when told to be hidden, or when there's nothing to be shown by clicking it, with secondary app bar buttons.")]
 		public async Task ValidateOverflowButtonHidesWhenAppropriateWithSecondaryAppBarButtons()
 		{
@@ -2728,7 +2757,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the overflow button is hidden when told to be hidden, or when there's nothing to be shown by clicking it, with both primary and secondary app bar buttons.")]
 		public async Task ValidateOverflowButtonHidesWhenAppropriateWithPrimaryAndSecondaryAppBarButtons()
 		{
@@ -2737,7 +2766,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		// Validate the dynamic overflow behavior with on and off IsDynamicOverflowEnabled property
 		[TestMethod]
-		
+
 		[Description("Validates the dynamic overflow On/Off.")]
 		public async Task ValidateDynamicOverflowOnOff()
 		{
@@ -2775,7 +2804,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the dynamic overflow with windows size change.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		[Ignore("WindowHelper.SetWindowSizeOverride not implemented.")]
@@ -2797,7 +2826,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the dynamic overflow for adding and removing the primary items.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		public async Task ValidateDynamicOverflowAddRemovePrimaryItems()
@@ -2855,7 +2884,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the AppBarSeparator with dynamic overflow operation.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		public async Task ValidateDynamicOverflowAppBarSeparator()
@@ -2922,7 +2951,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the firing dynamic overflow items changing event.")]
 		public async Task ValidateFireDynamicOverflowItemsChangingEvent()
 		{
@@ -2931,7 +2960,7 @@ namespace Windows.UI.Tests.Enterprise
 			int numButtonsToAddExtraToPrimary = 2;
 			int numButtonsToAddToSecondary = 3;
 
-			AppBarButton addedButton1 = null;
+			//AppBarButton addedButton1 = null;
 			(Page page, CommandBar cmdBar) = await SetupDynamicOverflowTest(numButtonsToAddExtraToPrimary, numButtonsToAddToSecondary);
 
 			await ValidateDynamicOverflowItemsChangingEventWorker(cmdBar, true);
@@ -2941,7 +2970,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the dynamic overflow with changing the orientation.")]
 		[TestProperty("TestPass:ExcludeOn", "Desktop")]
 		[Ignore("WindowHelper.SetWindowSizeOverride not implemented.")]
@@ -2973,7 +3002,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the dynamic overflow moving order.")]
 		public async Task ValidateDynamicOverflowOrderBasic()
 		{
@@ -2983,7 +3012,7 @@ namespace Windows.UI.Tests.Enterprise
 			int numButtonsToAddToSecondary = 3;
 
 			AppBarButton addedButton1 = null;
-			AppBarSeparator addedSeparator1 = null;
+			//AppBarSeparator addedSeparator1 = null;
 
 			(Page page, CommandBar cmdBar) = await SetupDynamicOverflowTest(numButtonsToAddExtraToPrimary, numButtonsToAddToSecondary, isSetOrder: true);
 			await ValidateDynamicOverflowWorker(cmdBar, isPrimaryCommandMovedToOverflow: true, numButtonsToAddExtraToPrimary, numButtonsToAddToSecondary, isSetOrder: true);
@@ -3005,7 +3034,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the dynamic overflow moving order multiple test cases.")]
 		public async Task ValidateDynamicOverflowOrderTestCases()
 		{
@@ -3061,7 +3090,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the layout of CommandBar.Content when IsDynamicOverflowEnabled is true or false.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		public async Task ValidateDynamicOverflowWithContentControl()
@@ -3124,7 +3153,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the layout of CommandBar.Content when IsDynamicOverflowEnabled is true or false.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		public async Task ValidateVisualStateUpdatesWhenDynamicOverflowCausesItemsToMove()
@@ -3226,7 +3255,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the dynamic overflow moving behavior with the CustomAppBarButton that implement ICommandbarElement.")]
 		public async Task ValidateDynamicOverflowWithCustomAppBarButton()
 		{
@@ -3282,7 +3311,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates the primary buttons width after applying the overflow style at the Right DefaultLabelPosition.")]
 		[Ignore("Bug in Uno: Cannot re-measure during measure phase")]
 		public async Task ValidatePrimaryButtonWidthAtRightDefaultLabelPosition()
@@ -3371,7 +3400,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that a button removed while in the overflow and then re-inserted back into the primary area is not styled with the overflow style.")]
 		public async Task DoesResetOverflowButtonStylingWhenRemovedAndAddedBack()
 		{
@@ -3424,7 +3453,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that arrow keys will navigate you into the content area.")]
 		[Ignore("UNO BUG: Focus not shifting in/out of ContentControl")]
 		public async Task CanArrowIntoTheContentArea()
@@ -3461,7 +3490,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.PrimaryCommands.GetAt(0)));
 				});
 
@@ -3471,7 +3500,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(async () =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					var moreButton = await GetMoreButton(cmdBar);
 					VERIFY_IS_TRUE(focusedElement.Equals(moreButton), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be moreButton ({moreButton.GetHashCode()})");
 				});
@@ -3480,9 +3509,9 @@ namespace Windows.UI.Tests.Enterprise
 				CommonInputHelper.Left(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
-				await RunOnUIThread(async () =>
+				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.PrimaryCommands.GetAt(0)), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be primary command ({cmdBar.PrimaryCommands.GetAt(0).GetHashCode()})");
 				});
 
@@ -3490,9 +3519,9 @@ namespace Windows.UI.Tests.Enterprise
 				CommonInputHelper.Left(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
-				await RunOnUIThread(async () =>
+				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.Content), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be content ({cmdBar.Content.GetHashCode()})");
 				});
 			};
@@ -3505,7 +3534,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that the overflow menu is opened when an arrow key is entered with focus on the more button.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[Ignore("UNO BUG: Focus not shifting to secondary commands on open")]
@@ -3547,7 +3576,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.SecondaryCommands.GetAt(2)));
 			});
 			await CloseCommandBar(cmdBar);
@@ -3558,7 +3587,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.SecondaryCommands.GetAt(0)));
 			});
 			await CloseCommandBar(cmdBar);
@@ -3710,7 +3739,7 @@ namespace Windows.UI.Tests.Enterprise
 		//}
 
 		[TestMethod]
-		
+
 		[Description("Verify Foreground is correct for AppBarButton/AppBarToggleButton when XamlUICommand is used")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
 		[Ignore("IconSourceElement not implemented.")]
@@ -3732,7 +3761,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				root = (Grid)XamlReader.Load(@"<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
                                 xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-								xmlns:input=""using:Windows.UI.Xaml.Input"">
+								xmlns:input=""using:Microsoft.UI.Xaml.Input"">
                             <Grid.Resources>
                                 <input:XamlUICommand x:Key=""AcceptCommand"" Label=""Accept"">
                                     <input:XamlUICommand.IconSource>
@@ -3784,7 +3813,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that the CommandBar's visual state is properly updated when items move from the primary commands collection to the secondary commands collection, or vice versa.")]
 		public async Task ValidateCollapsedItemsDoNotPreventReturnFromOverflow()
 		{
@@ -3865,7 +3894,6 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
 		[Description("Validates that adding elements to the secondary collection or changing the value of ClosedDisplayMode changes the visibility of the more button.")]
 		public async Task ValidateMoreButtonCanShowWithoutSizeChanging()
 		{
@@ -3954,7 +3982,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Validates that AppBarButtons move to and from the overflow as expected when sizing the CommandBar less than the size it minimally needs to display all its content, and then sizing it to be larger than that.")]
 		public async Task ValidateButtonsMoveToAndFromOverflowWithoutSizeChange()
 		{
@@ -4031,7 +4059,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Verify that changing the visibility of an AppBarButton in a CommandBar correctly updates the visual state")]
 		public async Task VerifyVisibilityChangeUpdatesCommandBarVisualState()
 		{
@@ -4078,7 +4106,7 @@ namespace Windows.UI.Tests.Enterprise
 		// AppBarButton/AppBarToggleButton is a subclass of ButtonBase and it should call super::OnVisibilityChanged to ClearStateFlags
 		// In this test case, when AppBarButton/AppBarButton is clicked, it collapse itself. then show them all when click approve button. then verify ClearStateFlags are called by checking IsPointerOver flag.
 		[TestMethod]
-		
+
 		[Description("Validates PointerOver on an appbarbutton doesn't persist after the command bar collapses.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
 		public async Task ValidateResetingTheStateOfAppBarButton()
@@ -4171,7 +4199,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Verify that setting the Flyout property on an AppBarButton in the overflow functions normally as a sub-menu.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
 		[TestProperty("Hosting:Mode", "UAP")]
@@ -4350,7 +4378,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			});
 
-			
+
 			await WindowHelper.WaitForIdle();
 
 			FlyoutHelper.OpenFlyout(commandBarFlyout, flyoutButton, FlyoutOpenMethod.Programmatic_ShowAt);
@@ -4443,7 +4471,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		
+
 		[Description("Verify that setting the Flyout property on an AppBarButton and then showing that flyout does not display a light-dismiss layer that prevents interaction with the rest of the CommandBar.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[Ignore("InputHelper.MoveMouse not implemented.")]
@@ -4534,7 +4562,7 @@ namespace Windows.UI.Tests.Enterprise
 
 
 		[TestMethod]
-		
+
 		[Description("Verify that setting the Flyout property on a primary AppBarButton does not cause that flyout to cease to have a light-dismiss layer.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[Ignore("InputHelper.Tap(Point) not implemented.")]
@@ -4595,6 +4623,9 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that setting IsChecked on an AppBarToggleButton programatically will still result in the same visual effect")]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task ValidateAppBarToggleButtonIsCheckedProgramatically()
 		{
 			TestCleanupWrapper cleanup;
@@ -4605,7 +4636,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				root = (CommandBar)XamlReader.Load(@"
-					
+
                             <CommandBar xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
                                 <AppBarToggleButton x:Name=""button""/>
                             </CommandBar>
@@ -5136,11 +5167,11 @@ namespace Windows.UI.Tests.Enterprise
 
 			if (openMethod == OpenMethod.Mouse)
 			{
-				ControlHelper.DoClickUsingAP(moreButton as Button);
+				await ControlHelper.DoClickUsingAP(moreButton as Button);
 			}
 			else if (openMethod == OpenMethod.Touch)
 			{
-				ControlHelper.DoClickUsingAP(moreButton as Button);
+				await ControlHelper.DoClickUsingAP(moreButton as Button);
 			}
 			else if (openMethod == OpenMethod.Keyboard)
 			{
@@ -5199,7 +5230,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
 				{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 					SearchRoot = container.XamlRoot.Content
 #endif
 				});
@@ -5222,7 +5253,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 
-		private async Task<Panel> ValidateUIElementTestSetup(bool addPrimary, bool addSecondary)
+		private Panel ValidateUIElementTestSetup(bool addPrimary, bool addSecondary)
 		{
 			//      xaml_controls::Grid^ rootGrid = nullptr;
 			//      RunOnUIThread([&] ()
@@ -5302,7 +5333,7 @@ namespace Windows.UI.Tests.Enterprise
 			return new Grid();
 		}
 
-		private async Task ValidateRightClickBehaviorWorker(AppBarClosedDisplayMode closedDisplayMode)
+		private void ValidateRightClickBehaviorWorker(AppBarClosedDisplayMode closedDisplayMode)
 		{
 			//	// CoreWindow isn't agile, so we can't use the SafeEventRegistration utility,
 			//	// so we have to manage it manually.

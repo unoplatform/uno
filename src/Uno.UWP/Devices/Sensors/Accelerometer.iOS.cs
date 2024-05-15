@@ -1,4 +1,5 @@
-﻿#if __IOS__
+﻿#nullable enable
+
 using System;
 using CoreMotion;
 using Foundation;
@@ -9,17 +10,32 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private readonly CMMotionManager _motionManager;
+		private CMMotionManager? _motionManager;
 
-		private Accelerometer(CMMotionManager motionManager)
-		{
-			_motionManager = motionManager;
-		}
+		private uint _reportInterval;
 
+		/// <summary>
+		/// Gets or sets the current report interval for the accelerometer.
+		/// </summary>
 		public uint ReportInterval
 		{
-			get => (uint)_motionManager.AccelerometerUpdateInterval * 1000;
-			set => _motionManager.AccelerometerUpdateInterval = value / 1000.0;
+			get
+			{
+				if (_motionManager != null)
+				{
+					return (uint)_motionManager.AccelerometerUpdateInterval * 1000;
+				}
+
+				return _reportInterval;
+			}
+			set
+			{
+				_reportInterval = value;
+				if (_motionManager != null)
+				{
+					_motionManager.AccelerometerUpdateInterval = UpdateAccelerometer(value);
+				}
+			}
 		}
 
 		internal static void HandleShake()
@@ -27,22 +43,33 @@ namespace Windows.Devices.Sensors
 			_instance?.OnShaken(DateTimeOffset.UtcNow);
 		}
 
-		private static Accelerometer TryCreateInstance()
+		private static Accelerometer? TryCreateInstance()
 		{
 			var motionManager = new CMMotionManager();
 			return !motionManager.AccelerometerAvailable ?
 				null :
-				new Accelerometer(motionManager);
+				new Accelerometer();
 		}
 
 		private void StartReadingChanged()
 		{
+			_motionManager ??= new();
+
+			_motionManager.AccelerometerUpdateInterval = UpdateAccelerometer(_reportInterval);
 			_motionManager.StartAccelerometerUpdates(new NSOperationQueue(), AccelerometerDataReceived);
 		}
 
 		private void StopReadingChanged()
 		{
+			if (_motionManager == null)
+			{
+				return;
+			}
+
 			_motionManager.StopAccelerometerUpdates();
+
+			_motionManager.Dispose();
+			_motionManager = null;
 		}
 
 		private void StartShaken()
@@ -54,6 +81,8 @@ namespace Windows.Devices.Sensors
 		{
 			UIApplication.SharedApplication.ApplicationSupportsShakeToEdit = false;
 		}
+
+		private double UpdateAccelerometer(uint value) => value / 1000.0;
 
 		private void AccelerometerDataReceived(CMAccelerometerData data, NSError error)
 		{
@@ -72,4 +101,3 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
-#endif

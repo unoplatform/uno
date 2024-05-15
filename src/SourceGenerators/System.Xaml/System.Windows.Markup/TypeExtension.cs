@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using Uno.Xaml.Schema;
 
@@ -89,7 +90,7 @@ namespace System.Windows.Markup
 			var ret = p.Resolve (TypeName);
 			if (ret == null)
 			{
-				throw new InvalidOperationException (String.Format ("Type '{0}' is not resolved as a valid type by the type resolver '{1}'.", TypeName, p.GetType ()));
+				throw new InvalidOperationException (String.Format (CultureInfo.InvariantCulture, "Type '{0}' is not resolved as a valid type by the type resolver '{1}'.", TypeName, p.GetType ()));
 			}
 
 			return ret;

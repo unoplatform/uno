@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Private.Infrastructure
 {
@@ -15,7 +15,7 @@ namespace Private.Infrastructure
 
 		public class Utilities
 		{
-			internal static bool IsXBox { get; } = false;
+			internal static bool IsXBox { get; }
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison, string step) { }
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison) { }
 
@@ -37,7 +37,7 @@ namespace Private.Infrastructure
 
 			}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			internal static FrameworkElement GetPopupOverlayElement(Popup popup)
 			{
 				return null;
@@ -47,11 +47,39 @@ namespace Private.Infrastructure
 
 		internal static async Task RunOnUIThread(Action action)
 		{
-#if __WASM__
-			action();
+			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
+		}
+
+		internal static async Task RunOnUIThread(Func<Task> asyncAction)
+		{
+			var tsc = new TaskCompletionSource<bool>();
+
+			await WindowHelper.RootElementDispatcher.RunAsync(async () =>
+			{
+				try
+				{
+					await asyncAction();
+					tsc.TrySetResult(true);
+				}
+				catch (Exception e)
+				{
+					tsc.TrySetException(e);
+				}
+			});
+
+			await tsc.Task;
+		}
+
+		internal static bool HasDispatcherAccess
+		{
+			get
+			{
+#if __WASM__ // TODO Uno: To be adjusted for #2302
+				return false;
 #else
-			await WindowHelper.RootElement.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+				return WindowHelper.RootElementDispatcher.HasThreadAccess;
 #endif
+			}
 		}
 
 		internal static void EnsureInitialized() { }
@@ -64,6 +92,11 @@ namespace Private.Infrastructure
 		public static void VERIFY_IS_NULL(object value)
 		{
 			Assert.IsNull(value);
+		}
+
+		public static void THROW_IF_NULL(object value)
+		{
+			Assert.IsNotNull(value);
 		}
 
 		public static void THROW_IF_NULL_WITH_MSG(object value, string msg)
@@ -171,7 +204,7 @@ namespace Private.Infrastructure
 			if (arguments != null && arguments.Length != 0)
 			{
 				var offset = 0;
-				for (var i = 0;; i++)
+				for (var i = 0; ; i++)
 				{
 					offset = log.IndexOf('%', offset + 1);
 					if (offset < 0 || offset + 1 >= log.Length)
@@ -181,7 +214,7 @@ namespace Private.Infrastructure
 
 					string replacement = default;
 
-					switch(log[offset + 1])
+					switch (log[offset + 1])
 					{
 						case 's':
 						case 'd':

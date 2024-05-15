@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.ComponentModel;
@@ -12,9 +12,9 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public delegate object SetterValueProviderHandler();
 	public delegate object SetterValueProviderHandlerWithOwner(object? owner);
@@ -34,6 +34,15 @@ namespace Windows.UI.Xaml
 		private DependencyProperty? _property;
 		private TargetPropertyPath? _target;
 
+		// This property is not part of the WinUI API, but is 
+		// required to determine if the value has a binding set
+		private static DependencyProperty InternalValueProperty { get; }
+			= DependencyProperty.Register(
+				nameof(Value),
+				typeof(object),
+				typeof(Setter),
+				new FrameworkPropertyMetadata(default(object)));
+
 		public object? Value
 		{
 			get
@@ -47,11 +56,16 @@ namespace Windows.UI.Xaml
 			}
 			set
 			{
-				ValidateIsSealed();
+				if (!IsMutable)
+				{
+					ValidateIsSealed();
+				}
 
 				_value = value;
 			}
 		}
+
+		internal bool IsMutable { get; set; }
 
 		private void ValidateIsSealed()
 		{
@@ -130,7 +144,7 @@ namespace Windows.UI.Xaml
 				else
 				{
 					object? value = _valueProvider != null ? _valueProvider() : _value;
-					o.SetValue(Property, BindingPropertyHelper.Convert(() => Property.Type, value));
+					o.SetValue(Property, BindingPropertyHelper.Convert(Property.Type, value));
 				}
 			}
 			else
@@ -139,13 +153,15 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void ApplyValue(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
+		internal void ApplyValue(IFrameworkElement owner)
 		{
-			var path = TryGetOrCreateBindingPath(precedence, owner);
+			var path = TryGetOrCreateBindingPath(owner);
 
 			if (path != null)
 			{
-				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence, ResourceBindingUpdateReason))
+				RefreshBindingPath();
+
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, DependencyPropertyValuePrecedences.Animations, ResourceBindingUpdateReason))
 				{
 					// Applied as theme binding, no need to do more
 					return;
@@ -157,7 +173,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private BindingPath? TryGetOrCreateBindingPath(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
+		private void RefreshBindingPath()
+			// force binding value to re-evaluate the source and use converters
+			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
+
+		internal BindingPath? TryGetOrCreateBindingPath(IFrameworkElement owner)
 		{
 			if (_bindingPath != null)
 			{
@@ -193,7 +213,7 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Using Target [{Target.Target}] for Setter [{Target.TargetName}] from [{owner}]");
 			}
 
-			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: precedence, allowPrivateMembers: false);
+			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: DependencyPropertyValuePrecedences.Animations, allowPrivateMembers: false);
 
 			if (Target.Target is ElementNameSubject subject)
 			{
@@ -220,17 +240,6 @@ namespace Windows.UI.Xaml
 		internal void ClearValue()
 		{
 			_bindingPath?.ClearValue();
-		}
-
-		internal bool HasSameTarget(Setter other, DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
-		{
-			var path = TryGetOrCreateBindingPath(precedence, owner);
-			var otherPath = other.TryGetOrCreateBindingPath(precedence, owner);
-
-			return path != null
-				&& otherPath != null
-				&& path.Path == otherPath.Path
-				&& !DependencyObjectStore.AreDifferent(path.DataContext, otherPath.DataContext);
 		}
 
 		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";

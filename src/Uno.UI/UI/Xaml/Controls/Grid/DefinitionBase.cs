@@ -1,13 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
 using System;
 using System.Collections;
-using XGRIDLENGTH = Windows.UI.Xaml.GridLength;
+using XGRIDLENGTH = Microsoft.UI.Xaml.GridLength;
 using XFLOAT = System.Double;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// Abstract base class for Grid Row/Column Definitions.
 	internal interface DefinitionBase

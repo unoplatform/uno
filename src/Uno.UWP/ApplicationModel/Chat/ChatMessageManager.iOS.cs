@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,11 +30,11 @@ namespace Windows.ApplicationModel.Chat
 			var messageController = new MFMessageComposeViewController();
 
 			messageController.Body = message.Body;
-			messageController.Recipients = message?.Recipients?.ToArray() ?? new string[] { };
-			
+			messageController.Recipients = message?.Recipients?.ToArray() ?? Array.Empty<string>();
+
 			messageController.Finished += (sender, e) =>
 			{
-				messageController.DismissViewController(true, null);				
+				messageController.DismissViewController(true, null);
 			};
 
 			controller.PresentViewController(messageController, true, null);
@@ -45,4 +44,3 @@ namespace Windows.ApplicationModel.Chat
 		}
 	}
 }
-#endif

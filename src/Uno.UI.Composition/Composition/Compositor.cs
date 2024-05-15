@@ -1,27 +1,34 @@
-#nullable enable
+﻿#nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Numerics;
+using Windows.Graphics.Effects;
 using Windows.UI;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{
-		private static object _gate = new object();
+		private static Lazy<Compositor> _sharedCompositorLazy = new(() => new());
+
+		public Compositor()
+		{
+		}
+
+		public long TimestampInTicks => Stopwatch.GetTimestamp();
+
+		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
 
 		public ContainerVisual CreateContainerVisual()
-			=> new ContainerVisual(this)
-			{
-			};
+			=> new ContainerVisual(this);
 
 		public SpriteVisual CreateSpriteVisual()
-			=> new SpriteVisual(this)
-			{
-			};
+			=> new SpriteVisual(this);
 
 		public CompositionColorBrush CreateColorBrush()
-			=> new CompositionColorBrush(this)
-			{
-			};
+			=> new CompositionColorBrush(this);
 
 		public CompositionColorBrush CreateColorBrush(Color color)
 			=> new CompositionColorBrush(this)
@@ -81,11 +88,45 @@ namespace Windows.UI.Composition
 			=> new InsetClip(this);
 
 		public InsetClip CreateInsetClip(float leftInset, float topInset, float rightInset, float bottomInset)
-			=> new InsetClip(this) {
+			=> new InsetClip(this)
+			{
 				LeftInset = leftInset,
 				TopInset = topInset,
 				RightInset = rightInset,
 				BottomInset = bottomInset
+			};
+
+		public RectangleClip CreateRectangleClip()
+			=> new RectangleClip(this);
+
+		public RectangleClip CreateRectangleClip(float left, float top, float right, float bottom)
+			=> new RectangleClip(this)
+			{
+				Left = left,
+				Top = top,
+				Right = right,
+				Bottom = bottom
+			};
+
+		public RectangleClip CreateRectangleClip(
+			float left,
+			float top,
+			float right,
+			float bottom,
+			Vector2 topLeftRadius,
+			Vector2 topRightRadius,
+			Vector2 bottomRightRadius,
+			Vector2 bottomLeftRadius)
+			=> new RectangleClip(this)
+			{
+				Left = left,
+				Top = top,
+				Right = right,
+				Bottom = bottom,
+				TopLeftRadius = topLeftRadius,
+				TopRightRadius = topRightRadius,
+				BottomRightRadius = bottomRightRadius,
+				BottomLeftRadius = bottomLeftRadius
 			};
 
 		public CompositionLinearGradientBrush CreateLinearGradientBrush()
@@ -98,13 +139,55 @@ namespace Windows.UI.Composition
 			=> new CompositionColorGradientStop(this);
 
 		public CompositionColorGradientStop CreateColorGradientStop(float offset, Color color)
-			=> new CompositionColorGradientStop(this) {
+			=> new CompositionColorGradientStop(this)
+			{
 				Offset = offset,
 				Color = color
 			};
 
-		internal void InvalidateRender() => InvalidateRenderPartial();
+		public CompositionViewBox CreateViewBox()
+			=> new CompositionViewBox(this);
 
-		partial void InvalidateRenderPartial();
+		public RedirectVisual CreateRedirectVisual()
+			=> new RedirectVisual(this);
+
+		public RedirectVisual CreateRedirectVisual(Visual source)
+			=> new RedirectVisual(this) { Source = source };
+
+		public CompositionVisualSurface CreateVisualSurface()
+			=> new CompositionVisualSurface(this);
+
+		public CompositionMaskBrush CreateMaskBrush()
+			=> new CompositionMaskBrush(this);
+
+		public CompositionNineGridBrush CreateNineGridBrush()
+			=> new CompositionNineGridBrush(this);
+
+		public ExpressionAnimation CreateExpressionAnimation(string expression)
+			=> new ExpressionAnimation(this) { Expression = expression };
+
+		public ExpressionAnimation CreateExpressionAnimation()
+			=> new ExpressionAnimation(this);
+
+		public Vector2KeyFrameAnimation CreateVector2KeyFrameAnimation()
+			=> new Vector2KeyFrameAnimation(this);
+
+		public Vector3KeyFrameAnimation CreateVector3KeyFrameAnimation()
+			=> new Vector3KeyFrameAnimation(this);
+
+		public Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
+			=> new Vector4KeyFrameAnimation(this);
+
+		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
+		public CompositionBackdropBrush CreateBackdropBrush()
+			=> new CompositionBackdropBrush(this);
+
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect)
+			=> new CompositionEffectFactory(this, graphicsEffect);
+
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties)
+			=> new CompositionEffectFactory(this, graphicsEffect, animatableProperties);
+
+		partial void InvalidateRenderPartial(Visual visual);
 	}
 }

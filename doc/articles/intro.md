@@ -1,7 +1,18 @@
-# Uno Platform documentation
+---
+uid: Uno.Documentation.Intro
+---
+
+# Uno Platform Documentation
+
+<!-- markdownlint-disable MD001 -->
+
+Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
+
+<br/>
 
 <div class="row">
 
+<!-- Get Started -->
 <div class="col-md-6 col-xs-12 ">
 <a href="get-started.md">
 <div class="alert alert-info alert-hover">
@@ -14,18 +25,20 @@ Set up with your OS and IDE of choice.
 </a>
 </div>
 
+<!-- How-tos and Tutorials -->
 <div class="col-md-6 col-xs-12 ">
-<a href="tutorials-intro.md">
+<a href="getting-started/counterapp/get-started-counter.md">
 <div class="alert alert-info alert-hover">
 
 #### How-tos and Tutorials
 
-See real-world examples with working code.
+Six complete tutorials and hundreds of real-world samples.
 
 </div>
 </a>
 </div>
 
+<!-- Developing with Uno Platform -->
 <div class="col-md-6 col-xs-12 ">
 <a href="using-uno-ui.md">
 <div class="alert alert-info alert-hover">
@@ -38,6 +51,85 @@ Learn the principles of cross-platform development with Uno.
 </a>
 </div>
 
+<!-- C# Markup -->
+<div class="col-md-6 col-xs-12 ">
+<a href="xref:Uno.Extensions.Markup.Overview">
+<div class="alert alert-info alert-hover">
+
+#### C# Markup
+
+Write UI using C# instead of XAML
+
+</div>
+</a>
+</div>
+
+<!-- MVUX -->
+<div class="col-md-6 col-xs-12 ">
+<a href="xref:Uno.Extensions.Mvux.Overview">
+<div class="alert alert-info alert-hover">
+
+#### MVUX
+
+Reactive programming with Uno Platform
+
+</div>
+</a>
+</div>
+
+<!-- Uno Toolkit -->
+<div class="col-md-6 col-xs-12 ">
+<a href="xref:Toolkit.GettingStarted">
+<div class="alert alert-info alert-hover">
+
+#### Uno Toolkit
+
+Include new advanced UI controls
+
+</div>
+</a>
+</div>
+
+<!-- Figma -->
+<div class="col-md-6 col-xs-12 ">
+<a href="xref:Uno.Figma.GetStarted">
+<div class="alert alert-info alert-hover">
+
+#### Figma
+
+Design your app in Figma and easily import to XAML or C#
+
+</div>
+</a>
+</div>
+
+<!-- Uno Themes -->
+<div class="col-md-6 col-xs-12 ">
+<a href="external/uno.themes/doc/themes-overview.md">
+<div class="alert alert-info alert-hover">
+
+#### Uno Themes
+
+Use Material or Cupertino themes in your app
+
+</div>
+</a>
+</div>
+
+<!-- Uno Extensions -->
+<div class="col-md-6 col-xs-12 ">
+<a href="external/uno.extensions/doc/ExtensionsOverview.md">
+<div class="alert alert-info alert-hover">
+
+#### Uno Extensions
+
+Include large building blocks to complete your app faster
+
+</div>
+</a>
+</div>
+
+<!-- API Reference -->
 <div class="col-md-6 col-xs-12 ">
 <a href="implemented-views.md">
 <div class="alert alert-info alert-hover">
@@ -54,73 +146,22 @@ Browse the set of available controls and their properties.
 
 <br/>
 
-Uno Platform lets you write an application once in XAML and C#, and deploy it to any target platform. 
+## High level architecture
 
+Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](https://learn.microsoft.com/windows/apps/winui/winui3/) and the older [UWP application API](https://learn.microsoft.com/windows/uwp/get-started/). In fact, when your application runs on Windows, it's just an ordinary WinUI 3 (or UWP) application.
+
+This means that existing WinUI or UWP code is compatible with Uno Platform. Existing WinUI or UWP libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](xref:Uno.Development.SupportedLibraries) have been ported to Uno Platform.
+
+![High-level architecture diagram - WinUI on Windows, Uno.UI on other platforms](Assets/high-level-architecture-copy.png)
+
+Uno Platform is pixel-perfect by design, delivering consistent visuals on every platform. At the same time, it rests upon the native UI framework on most target platforms, making it easy to [integrate native views](xref:Uno.Development.NativeViews) and tap into native platform features.
+
+Learn more about [how Uno Platform works](xref:Uno.Development.HowItWorks).
+
+## Next Steps
+
+Once you’ve gone through our [Get Started](get-started.md) guides please visit our [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our team and community will be able to help you.
 <br/>
 <br/>
 
 ***
-
-
-## Top questions about Uno Platform
-
-#### What platforms can I target with Uno Platform?
-
-Uno Platform applications run on Web (via WebAssembly), Windows, Linux, macOS, iOS, Android and Tizen. [Check supported platform versions.](getting-started/requirements.md)
-
-#### Are Uno Platform applications native?
-
-Yes - Uno Platform taps into the native UI frameworks on most supported platforms, so your final product is a native app. [Read more about how Uno Platform works.](what-is-uno.md)
-
-#### Can applications look the same on all platforms?
-
-Yes. Unless you specify otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](what-is-uno.md)
-
-#### How is Uno Platform different from .NET MAUI?
-
-First, Uno Platform is available in production today to build single-codebase, pixel-perfect applications for Web, Desktop and Mobile. .NET MAUI is successor to Xamarin.Forms. 
-
-Second, Uno Platform can target additional platforms like Linux and the Web. 
-
-Third, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap in WinUI's rich styling engine to create pixel-perfect applications. 
-
-Fourth, Uno Platform provides an optional [Figma plugin](https://platform.uno/unofigma/) for pixel-perfect XAML export for Uno Platform apps.
-
-Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like DataGrid, TreeView, TabView, NavigationView and many others.
-
-At the practical level, we suggest you try both and see which works the best for your skillset and scenario.
-
-
-#### How is Uno Platform different from Blazor?
-
-Uno Platform applications are cross-platform, running on the web as well as mobile and desktop, equally, from a single codebase. Blazor is a feature of ASP.NET for primarily building web applications.
-
-Uno Platform applications are written in C# and XAML markup, whereas Blazor applications are written in 'Razor' syntax, a hybrid of HTML/CSS and C#.
-
-Uno Platform and Blazor both make use of .NET's WebAssembly support to run natively in the browser.
-
-#### How is Uno Platform different from Flutter?
-
-Uno Platform and Flutter solve a similar problem - pixel-perfect applications on all target platforms. However, Uno Platform leverages decades of Microsoft's investment made into developer tooling .NET and C# programming language for developing applications.
-
-#### Do I need to have an existing UWP/WinUI app or skills to use Uno Platform?
-
-No, there's no need to have an existing UWP or WinUI application, or have that specific skillset. The [Uno Platform templates](get-started.md) make it easy to create a new project in Visual Studio or from the command line for anyone familiar with C# and XAML. 
-
-#### What 3rd parties support Uno Platform?
-
-Uno Platform is supported by a number of 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](supported-libraries.md)
-
-#### Where do I get help if I have any questions?
-
-Free support is available via our [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.
-
-#### How do you sustain Uno Platform?
-
-The Uno Platform is free and open source under the Apache 2.0 license. Alongside valued contributions from the Uno community, development by the core team is sustained by paid professional support contracts offered to enterprises who use Uno Platform. [Learn more about our paid professional support.](https://platform.uno/contact/) 
-
-More details about sustainability are covered here: https://platform.uno/blog/sustaining-the-open-source-uno-platform/ 
-
-<br>
-
-[_See more frequently asked questions about the Uno Platform._](faq.md)

@@ -2,7 +2,7 @@
 
 using SkiaSharp;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionLinearGradientBrush
 	{
@@ -45,7 +45,7 @@ namespace Windows.UI.Composition
 			}
 
 			paint.Shader = shader;
-			paint.Color = SKColors.Black.WithAlpha((byte)(Compositor.CurrentOpacity * 255));
+			paint.Color = SKColors.Black;
 		}
 	}
 }

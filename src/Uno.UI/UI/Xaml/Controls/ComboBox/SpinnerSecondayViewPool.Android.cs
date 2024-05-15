@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A secondary view pool implementation for the Spinner control.
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_mRecyclerField = Owner.Class.Superclass.Superclass.GetDeclaredField("mRecycler");
 
-				if(_mRecyclerField == null)
+				if (_mRecyclerField == null)
 				{
 					throw new NotSupportedException("Unable to find field mRecycler in Spinner class. The current OS version may not be supported.");
 				}

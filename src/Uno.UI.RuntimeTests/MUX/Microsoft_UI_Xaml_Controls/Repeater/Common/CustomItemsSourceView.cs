@@ -4,14 +4,14 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-using IKeyIndexMapping = Microsoft.UI.Xaml.Controls.IKeyIndexMapping;
+using IKeyIndexMapping = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IKeyIndexMapping;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-	public class CustomItemsSourceView :  IList, INotifyCollectionChanged
+	public class CustomItemsSourceView : IList, INotifyCollectionChanged
 	{
 		#region IList
 
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 			get { return GetAtCore(index); }
 			set { throw new NotImplementedException(); }
 		}
-		
+
 
 		public bool IsFixedSize
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 		}
 	}
 
-	public class CustomItemsSourceViewWithUniqueIdMapping: CustomItemsSourceView, IKeyIndexMapping
+	public class CustomItemsSourceViewWithUniqueIdMapping : CustomItemsSourceView, IKeyIndexMapping
 	{
 		#region IKeyIndexMapping
 

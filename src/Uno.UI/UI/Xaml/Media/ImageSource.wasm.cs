@@ -1,9 +1,13 @@
 ﻿#nullable enable
 
-using Uno.Extensions;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Extensions;
+using Uno.Helpers;
+using Uno.UI.Xaml.Media;
+using Windows.Storage;
 using Windows.Storage.Streams;
 
 #if !IS_UNO
@@ -11,15 +15,10 @@ using Uno.Web.Query;
 using Uno.Web.Query.Cache;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{
-		partial void InitFromResource(Uri uri)
-		{
-			WebUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
-		}
-
 		private protected async Task<ImageData> OpenFromStream(IRandomAccessStreamWithContentType stream, Action<ulong, ulong?>? progress, CancellationToken ct)
 		{
 			try
@@ -29,17 +28,13 @@ namespace Windows.UI.Xaml.Media
 
 				ReportImageLoaded();
 
-				return new ImageData
-				{
-					Kind = ImageDataKind.DataUri,
-					Value = "data:" + stream.ContentType + ";base64," + encodedBytes
-				};
+				return ImageData.FromDataUri("data:" + stream.ContentType + ";base64," + encodedBytes);
 			}
 			catch (Exception ex)
 			{
 				ReportImageFailed(ex.Message);
 
-				return new ImageData {Kind = ImageDataKind.Error, Error = ex};
+				return ImageData.FromError(ex);
 			}
 		}
 
@@ -51,6 +46,20 @@ namespace Windows.UI.Xaml.Media
 		internal virtual void ReportImageFailed(string errorMessage)
 		{
 
+		}
+
+		internal virtual string? ContentType { get; }
+
+		internal async Task<ImageData> OpenMsAppData(Uri uri, CancellationToken ct)
+		{
+			var file = await StorageFile.GetFileFromPathAsync(AppDataUriEvaluator.ToPath(uri));
+			var stream = await file.OpenAsync(FileAccessMode.Read);
+
+			var streamWithContentType = ContentType is { } contentType
+				? stream.TrySetContentType(ContentType)
+				: stream.TrySetContentType();
+
+			return await OpenFromStream(streamWithContentType, null, ct);
 		}
 
 	}

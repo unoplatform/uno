@@ -1,7 +1,8 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class AnimatedIcon : IconElement
 	{
@@ -18,6 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 				OnApplyTemplate();
 				_applyTemplateCalled = true;
 			}
+
+			if (m_foregroundColorPropertyChangedRevoker.Disposable is null)
+			{
+				OnForegroundPropertyChanged(this, null);
+			}
 		}
 
 		private void InitializeVisualTree()
@@ -25,9 +31,14 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!_initialized)
 			{
 				// TODO Uno specific - We must add the child element manually.
-				AddIconElementView(new Grid());
+				InitializeRootGrid();
 				_initialized = true;
 			}
+		}
+
+		private void OnIconUnloaded(object sender, RoutedEventArgs args)
+		{
+			m_foregroundColorPropertyChangedRevoker.Disposable = null;
 		}
 	}
 }

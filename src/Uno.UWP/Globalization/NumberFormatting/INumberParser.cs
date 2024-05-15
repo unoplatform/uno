@@ -1,9 +1,10 @@
-namespace Windows.Globalization.NumberFormatting
+#nullable enable
+
+namespace Windows.Globalization.NumberFormatting;
+
+public partial interface INumberParser
 {
-	public partial interface INumberParser
-	{
-		long? ParseInt(string text);
-		ulong? ParseUInt(string text);
-		double? ParseDouble(string text);
-	}
+	long? ParseInt(string text);
+	ulong? ParseUInt(string text);
+	double? ParseDouble(string text);
 }

@@ -24,12 +24,12 @@ namespace Windows.ApplicationModel.Chat
 		}
 
 		public ChatItemKind ItemKind { get; }
-		public  bool IsIncoming { get; set; }
-		public  ChatMessageStatus Status { get; set; }
-		public  string From { get; set; }
-		public  DateTimeOffset LocalTimestamp { get; set; }
-		public  ChatMessageKind MessageKind { get; set; }
-		public  ChatMessageOperatorKind MessageOperatorKind { get; set; }
+		public bool IsIncoming { get; set; }
+		public ChatMessageStatus Status { get; set; }
+		public string From { get; set; }
+		public DateTimeOffset LocalTimestamp { get; set; }
+		public ChatMessageKind MessageKind { get; set; }
+		public ChatMessageOperatorKind MessageOperatorKind { get; set; }
 		public bool IsRead { get; set; }
 		public DateTimeOffset NetworkTimestamp { get; set; }
 		public bool IsSeen { get; set; }

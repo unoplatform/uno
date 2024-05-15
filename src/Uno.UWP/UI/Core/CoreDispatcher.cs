@@ -1,15 +1,12 @@
 ﻿#nullable enable
 
-using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Uno.Foundation.Logging;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
+
+using Uno.UI.Dispatching;
+using Windows.Foundation;
 
 namespace Windows.UI.Core
 {
@@ -29,36 +26,32 @@ namespace Windows.UI.Core
 	/// </remarks>
 	public sealed partial class CoreDispatcher
 	{
-		private Uno.UI.Dispatching.CoreDispatcher _inner = Uno.UI.Dispatching.CoreDispatcher.Main;
+		private NativeDispatcher _inner = NativeDispatcher.Main;
 
 		/// <summary>
 		/// Gets the dispatcher for the main thread.
 		/// </summary>
 		internal static CoreDispatcher Main { get; } = new CoreDispatcher();
 
-		public CoreDispatcher()
+		private CoreDispatcher()
 		{
+			Debug.Assert(
+				(int)CoreDispatcherPriority.High == 1 &&
+				(int)CoreDispatcherPriority.Normal == 0 &&
+				(int)CoreDispatcherPriority.Low == -1 &&
+				(int)CoreDispatcherPriority.Idle == -2 &&
+				Enum.GetValues<CoreDispatcherPriority>().Length == 4);
 		}
 
 		/// <summary>
 		/// Enforce access on the UI thread.
 		/// </summary>
-		internal static void CheckThreadAccess()
-		{
-#if !__WASM__
-			// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
-			if (!Main.HasThreadAccess)
-			{
-				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
-			}
-#endif
-		}
+		internal static void CheckThreadAccess() => NativeDispatcher.CheckThreadAccess();
 
 		/// <summary>
 		/// Determines if the current thread has access to this CoreDispatcher.
 		/// </summary>
-		public bool HasThreadAccess
-			=> _inner.HasThreadAccess;
+		public bool HasThreadAccess => _inner.HasThreadAccess;
 
 		/// <summary>
 		/// Gets the priority of the current task.
@@ -66,32 +59,31 @@ namespace Windows.UI.Core
 		/// <remarks>Sets has no effect on Uno</remarks>
 		public CoreDispatcherPriority CurrentPriority
 		{
-			get => (CoreDispatcherPriority)_inner.CurrentPriority;
-			[Uno.NotImplemented] set { } // Drop the set done by external code
+			get => (CoreDispatcherPriority)(~_inner.CurrentPriority + 2);
+			[Uno.NotImplemented]
+			set { } // Drop the set done by external code
 		}
 
 		/// <summary>
 		/// Schedules the provided handler on the dispatcher.
 		/// </summary>
 		/// <param name="priority">The execution priority for the handler</param>
-		/// <param name="handler">The handler to execute</param>
+		/// <param name="agileCallback">The handler to execute</param>
 		/// <returns>An async operation for the scheduled handler.</returns>
-		public IAsyncAction RunAsync(CoreDispatcherPriority priority, DispatchedHandler handler)
-			=> _inner.RunAsync((Uno.UI.Dispatching.CoreDispatcherPriority)priority, new Uno.UI.Dispatching.DispatchedHandler(handler));
+		public IAsyncAction RunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback)
+			=> _inner.EnqueueOperation(Unsafe.As<Action>(agileCallback), (NativeDispatcherPriority)(~priority + 2));
 
 		/// <summary>
 		/// Schedules the provided handler using the idle priority
 		/// </summary>
-		/// <param name="handler">The handler to execute</param>
+		/// <param name="agileCallback">The handler to execute</param>
 		/// <returns>An async operation for the scheduled handler.</returns>
-		public IAsyncAction RunIdleAsync(IdleDispatchedHandler handler)
-			=> _inner.RunIdleAsync(c => handler(new IdleDispatchedHandlerArgs(c)));
+		public IAsyncAction RunIdleAsync(IdleDispatchedHandler agileCallback)
+			=> _inner.EnqueueIdleOperation(d => agileCallback(new IdleDispatchedHandlerArgs(d)));
 
 #if __ANDROID__
-		internal Uno.UI.Dispatching.UIAsyncOperation RunAnimation(DispatchedHandler handler)
-		{
-			return _inner.RunAnimation(new Uno.UI.Dispatching.DispatchedHandler(handler));
-		}
+		internal UIAsyncOperation RunAnimation(Action handler)
+			=> _inner.RunAnimation(handler);
 #endif
 	}
 }

@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class NavigationViewBackRequestedEventArgs 
+	public partial class NavigationViewBackRequestedEventArgs
 	{
 	}
 }

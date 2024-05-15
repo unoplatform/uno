@@ -1,6 +1,6 @@
 ﻿using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ListPickerFlyout
 	{

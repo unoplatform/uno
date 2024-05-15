@@ -7,12 +7,26 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.Disposables;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Windows.Foundation.Metadata;
+using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
+using Uno.Extensions;
+
+#if HAS_UNO
+using DirectUI;
+using Uno.UI.Helpers;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -26,6 +40,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(-20, 20, 0, 60, 0, 0, 130, 20, 110, 0, 30, 20, 120, 0, 130, 20, 0, 40, 130, 260, 110, 40, 30, 120, 120, 40, 130, 120, 110, 180, 140, 120)]
 		[DataRow(20, -20, 70, 0, 0, 0, 90, 20, 110, 0, 30, 20, 160, 0, 90, 20, 0, 0, 90, 300, 110, 0, 30, 160, 160, 0, 90, 160, 110, 140, 140, 160)]
 		[DataRow(-20, -20, 0, 0, 0, 0, 130, 20, 110, 0, 30, 20, 120, 0, 130, 20, 0, 0, 130, 300, 110, 0, 30, 160, 120, 0, 130, 160, 110, 140, 140, 160)]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 		public async Task When_Has_ColumnSpacing(double columnSpacing,
 			double rowSpacing,
 			double gridDesiredWidthExpected, double gridDesiredHeightExpected,
@@ -166,8 +183,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Grid_Child_Canvas_ZIndex()
+		{
+			var btn = new Button();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				Width = 200,
+				Height = 200
+			};
+			var SUT = new Grid
+			{
+				Children =
+				{
+					btn,
+					border
+				}
+			};
+
+			btn.SetValue(Canvas.ZIndexProperty, 1);
+
+			var buttonClickCount = 0;
+			btn.Click += (_, _) => buttonClickCount++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(btn.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, buttonClickCount);
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 		public async Task When_ColumnDefinition_Width_Changed()
 		{
 			var outerShell = new Grid { Width = 290, Height = 220 };
@@ -225,6 +287,245 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Padding_Set_In_SizeChanged()
+		{
+			var SUT = new Grid
+			{
+				RowDefinitions =
+				{
+					new RowDefinition()
+					{
+						Height = new GridLength(200)
+					}
+				},
+				ColumnDefinitions =
+				{
+					new ColumnDefinition()
+					{
+						Width = new GridLength(200)
+					}
+				},
+				Children =
+				{
+					new Border()
+					{
+						Child = new Ellipse()
+						{
+							Fill = new SolidColorBrush(Colors.DarkOrange)
+						}
+					}
+				}
+			};
+
+			SUT.SizeChanged += (sender, args) => SUT.Padding = new Thickness(0, 200, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
+			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
+#if __IOS__ || __ANDROID__
+			SUT.InvalidateMeasure();
+			SUT.UpdateLayout();
+#endif
+
+			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_Row_After_Load()
+		{
+			Border firstBorder;
+			Border secondBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				RowDefinitions =
+				{
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+					(secondBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Green) }),
+				}
+			};
+
+			Grid.SetRow(firstBorder, 0);
+			Grid.SetRow(secondBorder, 1);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Point GetRelativePosition(FrameworkElement element)
+			{
+				var position = element.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
+				return position;
+			}
+
+			var firstPosition = GetRelativePosition(firstBorder);
+			var secondPosition = GetRelativePosition(secondBorder);
+			Assert.AreEqual(0, firstPosition.Y);
+			Assert.AreEqual(100, secondPosition.Y);
+
+			Grid.SetRow(firstBorder, 2);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			firstPosition = GetRelativePosition(firstBorder);
+			secondPosition = GetRelativePosition(secondBorder);
+
+			Assert.AreEqual(100, firstPosition.Y);
+			Assert.AreEqual(0, secondPosition.Y);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_Column_After_Load()
+		{
+			Border firstBorder;
+			Border secondBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+					(secondBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Green) }),
+				}
+			};
+
+			Grid.SetColumn(firstBorder, 0);
+			Grid.SetColumn(secondBorder, 1);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Point GetRelativePosition(FrameworkElement element)
+			{
+				var position = element.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
+				return position;
+			}
+
+			var firstPosition = GetRelativePosition(firstBorder);
+			var secondPosition = GetRelativePosition(secondBorder);
+			Assert.AreEqual(0, firstPosition.X);
+			Assert.AreEqual(100, secondPosition.X);
+
+			Grid.SetColumn(firstBorder, 2);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			firstPosition = GetRelativePosition(firstBorder);
+			secondPosition = GetRelativePosition(secondBorder);
+
+			Assert.AreEqual(100, firstPosition.X);
+			Assert.AreEqual(0, secondPosition.X);
+
+			await Task.Delay(1000);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_RowSpan_After_Load()
+		{
+			Border firstBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Background = new SolidColorBrush(Colors.Blue),
+				RowSpacing = 10,
+				RowDefinitions =
+				{
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) }
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+				}
+			};
+
+			Grid.SetRowSpan(firstBorder, 2);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(100, SUT.ActualHeight);
+
+			Grid.SetRowSpan(firstBorder, 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(110, SUT.ActualHeight);
+
+			await Task.Delay(1000);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_ColumnSpan_After_Load()
+		{
+			Border firstBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Background = new SolidColorBrush(Colors.Blue),
+				ColumnSpacing = 10,
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) }
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+				}
+			};
+
+			Grid.SetColumnSpan(firstBorder, 2);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(100, SUT.ActualWidth);
+
+			Grid.SetColumnSpan(firstBorder, 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(110, SUT.ActualWidth);
+
+			await Task.Delay(1000);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 		public async Task When_Child_Added_Measure_And_Visible_Arrange()
 		{
 			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT
@@ -245,9 +546,188 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !__ANDROID__ && !__IOS__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
 			Assert.AreEqual(27, SUT.ActualHeight);
-			NumberAssert.Greater(SUT.ActualWidth, 0); 
+			NumberAssert.Greater(SUT.ActualWidth, 0);
 #endif
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails on Android and iOS.")]
+#endif
+		public async Task When_Negative_Margin_Should_Not_Clip()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			var yellowGrid = new Grid()
+			{
+				Margin = new Thickness(0, -4, -4, 0),
+				Background = new SolidColorBrush(Colors.Yellow),
+				VerticalAlignment = VerticalAlignment.Top,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Children =
+						{
+							new Ellipse
+							{
+								Height = 30,
+								Width = 30,
+								Fill = new SolidColorBrush(Colors.Red),
+							},
+						},
+			};
+
+			var parentGrid = new Grid()
+			{
+				Padding = new Thickness(10),
+				Children =
+				{
+					new Grid()
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Colors.Purple),
+						Children =
+						{
+							yellowGrid,
+						}
+					}
+				},
+			};
+
+			TestServices.WindowHelper.WindowContent = parentGrid;
+			await TestServices.WindowHelper.WaitForLoaded(parentGrid);
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(parentGrid);
+			var bitmap = await RawBitmap.From(renderer, parentGrid);
+
+			var purpleBounds = ImageAssert.GetColorBounds(bitmap, Colors.Purple, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(10, 10), new Size(99, 99)), purpleBounds);
+
+			var yellowBounds = ImageAssert.GetColorBounds(bitmap, Colors.Yellow, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(84, 6), new Size(29, 29)), yellowBounds);
+
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(84, 6), new Size(29, 29)), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails on Android and iOS.")]
+#endif
+		public async Task When_RenderTransform_Ensure_Correct_Clipping()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var grid = new Grid
+			{
+				Padding = new Thickness(100),
+				Children =
+				{
+					new Grid
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Colors.Blue),
+						Children =
+						{
+							new Ellipse
+							{
+								Fill = new SolidColorBrush(Colors.Red),
+								Width = 120,
+								Height = 120,
+								RenderTransform = new RotateTransform
+								{
+									Angle = 45,
+								},
+							},
+						},
+					}
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = grid;
+			await TestServices.WindowHelper.WaitForLoaded(grid);
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(grid);
+			var bitmap = await RawBitmap.From(renderer, grid);
+
+			var blueBounds = ImageAssert.GetColorBounds(bitmap, Colors.Blue, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(100, 100), new Size(99, 99)), blueBounds);
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(41, 125), new Size(117, 114)), redBounds);
+		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Grid_Remeasure()
+		{
+			// uno#12315: rows/columns of Grid can sometimes fail to re-measure due to android measure caching
+			// causing incorrect measure/arrange for views belonging to that rows/columns.
+
+			// ensure the flag is active, and will be restored after test
+			var flag = FeatureConfiguration.FrameworkElement.InvalidateNativeCacheOnRemeasure;
+			using var restore = Disposable.Create(() => FeatureConfiguration.FrameworkElement.InvalidateNativeCacheOnRemeasure = flag);
+			FeatureConfiguration.FrameworkElement.InvalidateNativeCacheOnRemeasure = true;
+
+			var setup = XamlHelper.LoadXaml<Border>("""
+				<Border BorderThickness="5" BorderBrush="Red">
+					<Grid x:Name="SutGrid" Height="400" Width="600">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<StackPanel>
+							<!--<Button x:Name="ToggleVisibility" Content="ON|OFF" Style="{StaticResource BasicButtonStyle}" />-->
+							<Border x:Name="TogglableBorder" Height="50" Background="SkyBlue" />
+						</StackPanel>
+
+						<ListView x:Name="SutLV" Grid.Row="1" ItemsSource="{Binding}" />
+						<TextBlock Grid.Row="1" Text="TEXT MUST BE HERE" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+					</Grid>
+				</Border>
+				""");
+			setup.DataContext = Enumerable.Range(0, 50);
+
+			var grid = setup.FindFirstDescendant<Grid>(x => x.Name == "SutGrid");
+			var togglableBorder = setup.FindFirstDescendant<Border>(x => x.Name == "TogglableBorder");
+			var lv = setup.FindFirstDescendant<ListView>(x => x.Name == "SutLV");
+
+			TestServices.WindowHelper.WindowContent = setup;
+			await TestServices.WindowHelper.WaitForLoaded(setup);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var initial = lv.ActualHeight;
+
+			// On first cycle, everything will be normal.
+			togglableBorder.Visibility = Visibility.Collapsed; // C = 1
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(lv.ActualHeight > initial, $"C1: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			togglableBorder.Visibility = Visibility.Visible; // C = 2
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C2: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");
+
+			// On the following cycles, everything should still be normal.
+			// [Android:] However, in context of uno12315, it would fail on C4,C6,C8...
+			// due to measure caching of Android.Views.View.Measure inside the measure pass of Grid.
+			togglableBorder.Visibility = Visibility.Collapsed; // C = 3
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(lv.ActualHeight > initial, $"C3: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			togglableBorder.Visibility = Visibility.Visible; // C = 4
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C4: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");
+		}
+#endif
 
 		private static void AddChild(Grid parent, FrameworkElement child, int row, int col, int? rowSpan = null, int? colSpan = null)
 		{

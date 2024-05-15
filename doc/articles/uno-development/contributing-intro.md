@@ -1,8 +1,12 @@
+---
+uid: Uno.Contributing.Intro
+---
+
 # Contributing to Uno
 
 Everyone is welcome to contribute to the Uno Platform. Here you'll find useful information for new and returning contributors.
 
-For starters, please read our [Code of Conduct](https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md), which sets out our commitment to an open, welcoming, harrassment-free community.
+For starters, please read our [Code of Conduct](https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md), which sets out our commitment to an open, welcoming, harassment-free community.
 
 If you're wondering where to start, [read about ways to contribute to Uno](ways-to-contribute.md). Or, you can peruse the list of [first-timer-friendly open issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
@@ -14,13 +18,13 @@ Get an [in-depth introduction to how Uno works](uno-internals-overview.md), or j
 
 ## Building and debugging Uno
 
-For the prerequisites you'll need, as well as useful tips like using [solution filters](https://docs.microsoft.com/en-us/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.
+For the prerequisites you'll need, as well as useful tips like using [solution filters](https://learn.microsoft.com/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.
 
 If you're doing development for Uno's macOS support, you'll need to build and run Uno using Visual Studio for Mac. [There's a separate guide for that here](building-uno-macos.md).
 
 You can contribute to Uno directly from your browser using GitPod. [Find out how.](../features/working-with-gitpod.md)
 
-Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](debugging-inspect-visual-tree.md) is often a key step. 
+Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](debugging-inspect-visual-tree.md) is often a key step.
 
 ## Writing code in Uno
 
@@ -28,7 +32,15 @@ See [Uno's code conventions and common patterns here](../contributing/guidelines
 
 ## Implementing a new feature
 
-See how to implement a new [feature here](../contributing/guidelines/implementing-a-new winui-winrt-feature.md).
+See how to implement a new [feature here](../contributing/guidelines/implementing-a-new%20winui-winrt-feature.md).
+
+## Experimenting with Samples App
+
+The [Samples App](../../../src/SamplesApp) is the development app contained in the Uno.UI solution. It serves as a UI and Runtime Tests host, as well as a playground for validating other API scenarios.
+
+This app is available live at these locations, built from the default branch:
+
+- WebAssembly: https://aka.platform.uno/wasm-samples-app
 
 ## Adding tests
 
@@ -63,4 +75,4 @@ Build artifacts produced by the CI are documented [here](../contributing/build-a
 
 ### More questions?
 
-To discuss an issue you're working on or would like to work on, join us in Uno's [Discord channel #uno-platform](https://discord.gg/eBHZSKG).
+To discuss an issue you're working on or would like to work on, join us in Uno's [Discord Server](https://platform.uno/discord).

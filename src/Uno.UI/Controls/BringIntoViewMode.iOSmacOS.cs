@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Uno.UI.Extensions
 {
-    public enum BringIntoViewMode
-    {
+	public enum BringIntoViewMode
+	{
 		/// <summary>
 		/// ScrollView is scroll in order to get the view visible either at the top or the bottom of the view port.
 		/// </summary>
@@ -25,5 +25,5 @@ namespace Uno.UI.Extensions
 		/// ScrollView is scroll in order to get the view at the bottom / right of view port.
 		/// </summary>
 		BottomRightOfViewPort,
-    }
+	}
 }

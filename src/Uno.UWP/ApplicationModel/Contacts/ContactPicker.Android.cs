@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
@@ -302,7 +303,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static ContactPhoneKind TypeToContactPhoneKind(string? type)
 		{
-			if (int.TryParse(type, out var typeInt))
+			if (int.TryParse(type, CultureInfo.InvariantCulture, out var typeInt))
 			{
 				if (Enum.IsDefined(typeof(PhoneDataKind), typeInt))
 				{
@@ -330,7 +331,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static ContactEmailKind TypeToContactEmailKind(string? type)
 		{
-			if (int.TryParse(type, out var typeInt))
+			if (int.TryParse(type, CultureInfo.InvariantCulture, out var typeInt))
 			{
 				if (Enum.IsDefined(typeof(EmailDataKind), typeInt))
 				{
@@ -349,7 +350,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static ContactAddressKind TypeToContactAddressKind(string? type)
 		{
-			if (int.TryParse(type, out var typeInt))
+			if (int.TryParse(type, CultureInfo.InvariantCulture, out var typeInt))
 			{
 				if (Enum.IsDefined(typeof(AddressDataKind), typeInt))
 				{

@@ -1,25 +1,31 @@
-﻿#if !NET461
+﻿#if !IS_UNIT_TESTS
 #nullable enable
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+using DirectUI;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.Foundation;
+
 using Uno.Extensions;
 using Uno.UI;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using static System.Math;
-using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
 using Uno.UI.Extensions;
-using System.Collections.Specialized;
 using Uno.UI.Xaml.Controls;
-using DirectUI;
 using Uno.Foundation.Logging;
-using System.Diagnostics;
+
+using IndexPath = Uno.UI.IndexPath;
+using static System.Math;
+using static Microsoft.UI.Xaml.Controls.Primitives.GeneratorDirection;
+using Microsoft.UI.Xaml.Documents;
+
+
 #if __MACOS__
 using AppKit;
 #elif __IOS__
@@ -28,10 +34,10 @@ using UIKit;
 #if __IOS__ || __ANDROID__
 using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
 #else
-using _Panel = Windows.UI.Xaml.Controls.Panel;
+using _Panel = Microsoft.UI.Xaml.Controls.Panel;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 #if __IOS__ || __ANDROID__
 	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
@@ -89,27 +95,27 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private double? _scrollAdjustmentForCollectionChanges;
 
-		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
-			_availableSize.Width :
-			_availableSize.Height;
+		private bool IsHorizontal => ScrollOrientation == Orientation.Horizontal;
+
+		private double AvailableBreadth => IsHorizontal
+			? _availableSize.Height
+			: _availableSize.Width;
 
 		/// <summary>
 		/// The current offset from the original scroll position.
 		/// </summary>
-		private double ScrollOffset
-		{
-			get
-			{
-				if (ScrollViewer == null)
-				{
-					return 0;
-				}
+		private double ScrollOffset => (IsHorizontal
+			? ScrollViewer?.HorizontalOffset
+			: ScrollViewer?.VerticalOffset)
+			?? 0;
 
-				return ScrollOrientation == Orientation.Vertical ?
-					ScrollViewer.VerticalOffset :
-					ScrollViewer.HorizontalOffset;
-			}
-		}
+		/// <summary>
+		/// The size of all the scrollable content, whether visible or not.
+		/// </summary>
+		private double Extent => (IsHorizontal
+			? ScrollViewer?.ExtentWidth
+			: ScrollViewer?.ExtentHeight)
+			?? double.NaN;
 
 		/// <summary>
 		/// The size of the scroll viewport.
@@ -123,14 +129,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				if (ScrollViewer == null)
+				if (ScrollViewer is null)
 				{
 					return double.MaxValue / 1000;
 				}
 
-				return ScrollOrientation == Orientation.Vertical ?
-					ViewportSize.Height :
-					ViewportSize.Width;
+				return IsHorizontal
+					// note: the ViewportSize from above does not reflect the actual size of viewport.
+					// The measure/layout value is different than the actual value we need for calculation.
+					// However, we need the ViewportSize as a fallback, since the former is not yet assigned during 1st layout phase.
+					? NotZero(ScrollViewer.ViewportWidth, ViewportSize.Width)
+					: NotZero(ScrollViewer.ViewportHeight, ViewportSize.Height);
+
+				double NotZero(double value, double fallback) => value != 0 ? value : fallback;
 			}
 		}
 
@@ -196,6 +207,8 @@ namespace Windows.UI.Xaml.Controls
 				else if (parent is ItemsControl itemsControl)
 				{
 					ItemsControl = itemsControl;
+
+					OwnerPanel.InvalidateMeasure();
 					break;
 				}
 			}
@@ -216,6 +229,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// This case is for an ItemsPresenter hosted in a Popup
 				ItemsControl = popupItemsControl;
+
+				// If measure has already happened when ItemsControl was null, it should be invalidated.
+				OwnerPanel.InvalidateMeasure();
 			}
 		}
 
@@ -247,7 +263,7 @@ namespace Windows.UI.Xaml.Controls
 			if (isLargeScroll)
 			{
 				// In this case, a majority of the materialized items are
-                // removed, let's clear everything and materialize from the
+				// removed, let's clear everything and materialize from the
 				// new position.
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -260,13 +276,13 @@ namespace Windows.UI.Xaml.Controls
 
 				// We know that the scroll is outside the available
 				// breath, so all lines can be recycled
-				ClearLines();
+				ClearLines(clearContainer: false);
 
 				// Set the seed start to use the approximate position of
 				// the line based on the average line height.
 				var index = (int)(ScrollOffset / _averageLineHeight);
-				_dynamicSeedStart = ScrollOffset - _averageLineHeight;
-				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index - sign, 0);
+				_dynamicSeedStart = index * _averageLineHeight;
+				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index - 1, 0);
 			}
 
 			while (unappliedDelta > 0)
@@ -514,7 +530,7 @@ namespace Windows.UI.Xaml.Controls
 				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(firstMaterializedLine);
+					RecycleLine(firstMaterializedLine, clearContainer: false);
 					_materializedLines.RemoveFromFront();
 					firstMaterializedLine = GetFirstMaterializedLine();
 				}
@@ -526,7 +542,7 @@ namespace Windows.UI.Xaml.Controls
 				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(lastMaterializedLine);
+					RecycleLine(lastMaterializedLine, clearContainer: false);
 					_materializedLines.RemoveFromBack();
 					lastMaterializedLine = GetLastMaterializedLine();
 				}
@@ -536,11 +552,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Recycle all views for a given line.
 		/// </summary>
-		private void RecycleLine(Line line)
+		/// <param name="clearContainer">cleanup the container when an associated item is removed</param>
+		private void RecycleLine(Line line, bool clearContainer)
 		{
 			for (int i = 0; i < line.Items.Length; i++)
 			{
-				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i);
+				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i, clearContainer);
 			}
 		}
 
@@ -613,7 +630,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
 					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
-					ApplyScrollAdjustmentForCollectionChange(scrollAdjustment);
+					ApplyScrollAdjustment(scrollAdjustment);
 				}
 				// TODO: handle the case where seed was removed
 			}
@@ -624,7 +641,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update scroll offset for changes in position from collection change operation
 		/// </summary>
-		private void ApplyScrollAdjustmentForCollectionChange(double scrollAdjustment)
+		private void ApplyScrollAdjustment(double scrollAdjustment)
 		{
 			if (scrollAdjustment == 0)
 			{
@@ -746,20 +763,20 @@ namespace Windows.UI.Xaml.Controls
 			return estimatedExtent;
 		}
 
-		private void UpdateAverageLineHeight()
-		{
-			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetMeasuredExtent(l.FirstView)).Average()
+		private void UpdateAverageLineHeight() =>
+			_averageLineHeight = _materializedLines.Count > 0
+				? _materializedLines.Select(l => GetMeasuredExtent(l.FirstView)).Average()
 				: 0;
-		}
 
-		private double CalculatePanelMeasureBreadth() => _materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
+		private double CalculatePanelMeasureBreadth() =>
 #if __WASM__
-			+ GetBreadth(XamlParent?.ScrollViewer.ScrollBarSize ?? default)
+			GetBreadth(XamlParent?.ScrollViewer.ScrollBarSize ?? default) +
 #endif
-				;
+			_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault();
 
-		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					_materializedLines.Select(l => GetActualBreadth(l.FirstView)).MaxOrDefault();
+		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch
+			? AvailableBreadth
+			: _materializedLines.Select(l => GetActualBreadth(l.FirstView)).MaxOrDefault();
 
 		internal void AddItems(int firstItem, int count, int section)
 		{
@@ -798,7 +815,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"{GetMethodTag()}");
 			}
 
-			ClearLines();
+			ClearLines(clearContainer: true);
 
 			UpdateCompleted();
 			Generator.ClearIdCache();
@@ -806,7 +823,7 @@ namespace Windows.UI.Xaml.Controls
 			OwnerPanel?.InvalidateMeasure();
 		}
 
-		private void ClearLines()
+		private void ClearLines(bool clearContainer)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -815,7 +832,7 @@ namespace Windows.UI.Xaml.Controls
 
 			foreach (var line in _materializedLines)
 			{
-				RecycleLine(line);
+				RecycleLine(line, clearContainer);
 			}
 			_materializedLines.Clear();
 		}
@@ -849,7 +866,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout()"/>;
 		/// </summary>
-		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
+		private protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
 			var lastItem = ItemsControl?.GetLastItem();
 			if (lastItem == null ||
@@ -910,11 +927,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Create a new line.
 		/// </summary>
-		protected abstract Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem);
+		private protected abstract Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem);
 
 		protected abstract int GetItemsPerLine();
 
-		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl?.GetIndexFromIndexPath(indexPath) ?? -1;
+		private protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl?.GetIndexFromIndexPath(indexPath) ?? -1;
 
 		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
@@ -990,7 +1007,9 @@ namespace Windows.UI.Xaml.Controls
 				return GetMeasuredEnd(lastView);
 			}
 
-			// This will be null except immediately after ScrapLayout(), when it will be the previous start of materialized items
+			// This will be null except
+			// * immediately after ScrapLayout(), where it will be the previous start of materialized items
+			// * during OnScrollChanged if isLargeScroll, where it will be the start of a new layout after all the lines were cleared
 			return _dynamicSeedStart;
 		}
 
@@ -1023,7 +1042,6 @@ namespace Windows.UI.Xaml.Controls
 			return ScrollOrientation == Orientation.Vertical ?
 				bounds.Height :
 				bounds.Width;
-
 		}
 
 		private double GetActualExtent(FrameworkElement child)
@@ -1101,16 +1119,6 @@ namespace Windows.UI.Xaml.Controls
 			return $"Parent ItemsControl={ItemsControl} ItemsSource={ItemsControl?.ItemsSource} NoOfItems={ItemsControl?.NumberOfItems} FirstMaterialized={GetFirstMaterializedIndexPath()} LastMaterialized={GetLastMaterializedIndexPath()} ExtendedViewportStart={ExtendedViewportStart} ExtendedViewportEnd={ExtendedViewportEnd} GetItemsStart()={GetItemsStart()} GetItemsEnd()={GetItemsEnd()}";
 		}
 
-#if __WASM__ || __SKIA__
-		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
-#elif __NETSTD_REFERENCE__
-		private static Point GetRelativePosition(FrameworkElement child) => throw new NotSupportedException();
-#elif __MACOS__ || __IOS__
-		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
-#elif __ANDROID__
-		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
-#endif
-
 		private (double offset, double extent, object item, Uno.UI.IndexPath? index)? _pendingReorder;
 		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
 		{
@@ -1155,7 +1163,7 @@ namespace Windows.UI.Xaml.Controls
 		protected bool ShouldInsertReorderingView(double extentOffset)
 			=> _pendingReorder is { } reorder && reorder.offset > extentOffset && reorder.offset <= extentOffset + reorder.extent;
 
-		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex()
+		private protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex()
 		{
 			if (_pendingReorder is { } reorder)
 			{
@@ -1183,10 +1191,105 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal void ScrollIntoView(object item, ScrollIntoViewAlignment alignment = ScrollIntoViewAlignment.Default)
+		{
+			var index = ItemsControl?.IndexFromItem(item) ?? -1;
+			var path = Uno.UI.IndexPath.FromRowSection(index, 0);
+
+			if (index == -1) { return; }
+
+			var extent = Extent;
+			var viewportExtent = ViewportExtent;
+			var initialOffset = ScrollOffset;
+			var adjustedOffset = ScrollOffset;
+
+			// "scroll" until the target view comes into materialization range
+			if (FindViewByIndexPath(path) is not { } targetView)
+			{
+				// skip to an estimate offset of where the target could be
+				_dynamicSeedStart = adjustedOffset = index * _averageLineHeight;
+				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index - 1, 0);
+				UpdateLayout(adjustedOffset - initialOffset, isScroll: true);
+
+				// scroll forward or backward as needed
+				while (GetLastMaterializedIndexPath() is { } lm && path > lm && GetNextUnmaterializedItem(Forward, lm) is { })
+				{
+					adjustedOffset += viewportExtent;
+					UpdateLayout(adjustedOffset - initialOffset, isScroll: true);
+				}
+				while (GetFirstMaterializedIndexPath() is { } lm && path < lm && GetNextUnmaterializedItem(Backward, lm) is { })
+				{
+					adjustedOffset -= viewportExtent;
+					UpdateLayout(adjustedOffset - initialOffset, isScroll: true);
+				}
+
+				// failed to find the target view, abort
+				if ((targetView = FindViewByIndexPath(path)) is not { }) { return; }
+			}
+
+			var start = GetMeasuredStart(targetView);
+			var end = GetMeasuredEnd(targetView);
+
+			// if the item is already fully within viewport AND we didn't need to scroll, then we are done here.
+			if (ViewportStart <= start && end <= ViewportEnd) { return; }
+
+			// snap with alignment
+			// * if the item is larger than the viewport, follow the leading logic
+			// - default: snap to the edge where the items are coming into viewport
+			// - leading: snap to the top/left* edge
+			//     ^ When scrolled horizontally, the leading edge is the left edge if FlowDirection is LeftToRight, and the right edge if FlowDirection is RightToLeft.
+			var snapToStart =
+				alignment == ScrollIntoViewAlignment.Leading ||
+				(end - start) > viewportExtent ||
+				initialOffset > adjustedOffset || // backward scroll = snap to leading edge
+				initialOffset > start; // when materialized items wasn't culled properly, "scrolling" will not occur, so we need to use target position to gauge scroll direction
+
+			adjustedOffset = snapToStart
+				? start
+				: end - viewportExtent;
+
+			// the scrollable zone can contains a padding from the ItemsPresenter, in which case:
+			var padding = ItemsControl?.ItemsPresenter?.Padding ?? Thickness.Empty;
+			if (padding != default)
+			{
+				// add leading padding except for first item
+				if (index > 0)
+				{
+					adjustedOffset += IsHorizontal ? padding.Left : padding.Top;
+				}
+				// add trailing padding for last item
+				if (GetLastVisibleIndexPath() == path && GetNextUnmaterializedItem(Forward, path) is null)
+				{
+					adjustedOffset += IsHorizontal ? padding.Right : padding.Bottom;
+				}
+			}
+
+			// clamp offset within valid range
+			adjustedOffset = Clamp(adjustedOffset, 0, extent - viewportExtent);
+
+			ApplyScrollAdjustment(adjustedOffset - initialOffset);
+		}
+
+		private FrameworkElement? FindViewByIndexPath(Uno.UI.IndexPath indexPath)
+		{
+			foreach (var line in _materializedLines)
+			{
+				foreach (var (container, index) in line.Items)
+				{
+					if (index == indexPath)
+					{
+						return container;
+					}
+				}
+			}
+
+			return null;
+		}
+
 		/// <summary>
 		/// Represents a single row in a vertically-scrolling panel, or a column in a horizontally-scrolling panel.
 		/// </summary>
-		protected class Line
+		private protected class Line
 		{
 			public (FrameworkElement container, Uno.UI.IndexPath index)[] Items { get; }
 			public Uno.UI.IndexPath FirstItem { get; }

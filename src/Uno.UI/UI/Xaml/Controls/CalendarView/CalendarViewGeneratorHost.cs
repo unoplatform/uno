@@ -1,17 +1,17 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Globalization;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
-using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.Control, Windows.UI.Xaml.Controls.FocusEngagedEventArgs>;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs>;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	//struct VisibleIndicesUpdatedTraits
 	//{
@@ -82,6 +82,7 @@ namespace Windows.UI.Xaml.Controls
 		protected abstract int GetLastUnitInThisScope();
 		protected abstract void OnScopeChanged();
 
+#if false
 		// IGeneratorHost
 
 		private IVector<DependencyObject> View
@@ -90,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarViewGeneratorHost spThis = this;
 
-				return new TrackerCollection<DependencyObject>(){spThis};
+				return new TrackerCollection<DependencyObject>() { spThis };
 			}
 		}
 
@@ -112,6 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			var pIsOwnContainer = false;
 			return pIsOwnContainer;
 		}
+#endif
 
 		internal virtual DependencyObject GetContainerForItem(
 			object pItem,
@@ -142,7 +144,7 @@ namespace Windows.UI.Xaml.Controls
 				bool isToday = false;
 				int result = 0;
 
-				date = (DateTime) pItem;
+				date = (DateTime)pItem;
 
 				result = CompareDate(date, Owner.Today);
 				if (result == 0)
@@ -167,6 +169,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
+#if false
 		private bool IsHostForItemContainer(
 			DependencyObject pContainer)
 		{
@@ -211,6 +214,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new NotImplementedException();
 		}
+#endif
 
 		internal bool CanRecycleContainer(
 			DependencyObject pContainer)
@@ -219,13 +223,14 @@ namespace Windows.UI.Xaml.Controls
 			return pCanRecycleContainer;
 		}
 
+#if false
 		private DependencyObject SuggestContainerForContainerFromItemLookup()
 		{
 			// CalendarViewGeneratorHost has no clue
 			DependencyObject ppContainer = null;
 			return ppContainer;
 		}
-
+#endif
 
 		public CalendarViewGeneratorHost()
 		{
@@ -240,13 +245,13 @@ namespace Windows.UI.Xaml.Controls
 			DetachScrollViewerFocusEngagedEvent();
 			DetachVisibleIndicesUpdatedEvent();
 
-			if (m_tpPanel is {} panel)
+			if (m_tpPanel is { } panel)
 			{
 				(panel as CalendarPanel).Owner = null;
 				(panel as CalendarPanel).SetSnapPointFilterFunction(null);
 			}
 
-			if (m_tpScrollViewer is {} scrollviewer)
+			if (m_tpScrollViewer is { } scrollviewer)
 			{
 				(scrollviewer as ScrollViewer).SetDirectManipulationStateChangeHandler(null);
 			}
@@ -266,7 +271,7 @@ namespace Windows.UI.Xaml.Controls
 			m_pHeaderText = null;
 			m_lastVisibleIndicesPair[0] = -1;
 			m_lastVisibleIndicesPair[1] = -1;
-			m_lastVisitedDateAndIndex.first = default; // .ToUniversalTime() = 0; TODO UNO
+			m_lastVisitedDateAndIndex.first.UniversalTime = 0;
 			m_lastVisitedDateAndIndex.second = -1;
 
 		}
@@ -276,12 +281,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			int index = 0;
 
-			m_lastVisitedDateAndIndex.first = Owner.MinDate;
+			m_lastVisitedDateAndIndex.first = Owner.GetMinDate();
 			m_lastVisitedDateAndIndex.second = 0;
 
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, Owner.MinDate));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), Owner.GetMinDate()));
 
-			index = CalculateOffsetFromMinDate(Owner.MaxDate);
+			index = CalculateOffsetFromMinDate(Owner.GetMaxDate());
 
 			m_size = (uint)(index) + 1;
 
@@ -330,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 			date = pCalendar.GetDateTime();
 			m_lastVisitedDateAndIndex.first = date;
 			m_lastVisitedDateAndIndex.second = (int)(index);
-			var pDate = date.ToUniversalTime();
+			var pDate = date;
 
 			return pDate;
 		}
@@ -338,14 +343,15 @@ namespace Windows.UI.Xaml.Controls
 		// to get the distance of two days, here are the amortized O(1) method
 		//1. Estimate the offset of Date2 from Date1 by dividing their UTC difference by 24 hours
 		//2. Call Globalization API AddDays(Date1, offset) to get an estimated date, let’s say EstimatedDate, here offset comes from step1
-		//3. Compute the distance between EstimatedDate and Date2(keep adding 1 day on the smaller one, until we hit the another date), 
+		//3. Compute the distance between EstimatedDate and Date2(keep adding 1 day on the smaller one, until we hit the another date),
 		//   if this distance is still big, we can do step 1 and 2 one more time
 		//4. Return the sum of results from step1 and step3.
 
 		internal int CalculateOffsetFromMinDate(DateTime date)
 		{
 			var pIndex = 0;
-			DateTime estimatedDate = m_lastVisitedDateAndIndex.first.ToUniversalTime();
+			DateTime estimatedDate = m_lastVisitedDateAndIndex.first;
+
 			var pCalendar = GetCalendar();
 			global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
 
@@ -367,7 +373,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			while (true)
 			{
-				diffInUTC = date.ToUniversalTime().Ticks - estimatedDate.ToUniversalTime().Ticks;
+				diffInUTC = date.UniversalTime - estimatedDate.UniversalTime;
 
 				// round to the nearest integer
 				diffInUnit = (int)(diffInUTC / averageTicksPerUnit);
@@ -397,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 						AddUnits(diffInUnit);
 						break;
 					}
-					catch (Exception){}
+					catch (Exception) { }
 
 #if DEBUG
 					if (retryCount++ > maxReboundCount)
@@ -491,8 +497,8 @@ namespace Windows.UI.Xaml.Controls
 			firstDateOfNextScope = GetCalendar().GetDateTime();
 
 			// when the navigation button is enabled, we should always be able to navigate to the desired scope.
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.MinDate));
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, firstDateOfNextScope));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.GetMinDate()));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), firstDateOfNextScope));
 
 			//Cleanup:
 			pFirstDateOfNextScope = firstDateOfNextScope;
@@ -587,8 +593,8 @@ namespace Windows.UI.Xaml.Controls
 			Owner.CoerceDate(ref minDateOfCurrentScope);
 			Owner.CoerceDate(ref maxDateOfCurrentScope);
 
-			if (minDateOfCurrentScope.ToUniversalTime() != m_minDateOfCurrentScope.ToUniversalTime() ||
-				maxDateOfCurrentScope.ToUniversalTime() != m_maxDateOfCurrentScope.ToUniversalTime())
+			if (minDateOfCurrentScope.UniversalTime != m_minDateOfCurrentScope.UniversalTime ||
+				maxDateOfCurrentScope.UniversalTime != m_maxDateOfCurrentScope.UniversalTime)
 			{
 				m_minDateOfCurrentScope = minDateOfCurrentScope;
 				m_maxDateOfCurrentScope = maxDateOfCurrentScope;
@@ -649,7 +655,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//if (pUnit)
 			//{
-				pUnit = lastUnit;
+			pUnit = lastUnit;
 			//}
 		}
 
@@ -688,7 +694,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void AttachVisibleIndicesUpdatedEvent()
 		{
-			if (m_tpPanel is {})
+			if (m_tpPanel is { })
 			{
 				m_epVisibleIndicesUpdatedHandler ??= new VisibleIndicesUpdatedEventCallback((object pSender, object pArgs) =>
 				{
@@ -703,7 +709,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void DetachVisibleIndicesUpdatedEvent()
 		{
-			if (m_epVisibleIndicesUpdatedHandler is {} && m_tpPanel is {})
+			if (m_epVisibleIndicesUpdatedHandler is { } && m_tpPanel is { })
 			{
 				m_tpPanel.VisibleIndicesUpdated -= m_epVisibleIndicesUpdatedHandler;
 			}
@@ -728,7 +734,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void DetachScrollViewerFocusEngagedEvent()
 		{
-			if (m_epScrollViewerFocusEngagedEventHandler is {} && m_tpScrollViewer is {})
+			if (m_epScrollViewerFocusEngagedEventHandler is { } && m_tpScrollViewer is { })
 			{
 				m_tpScrollViewer.FocusEngaged -= m_epScrollViewerFocusEngagedEventHandler;
 			}
@@ -739,12 +745,12 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				var pPanel = value;
-				if (pPanel is {})
+				if (pPanel is { })
 				{
 					m_tpPanel = pPanel;
 					(m_tpPanel as CalendarPanel).Owner = this;
 				}
-				else if (m_tpPanel is {})
+				else if (m_tpPanel is { })
 				{
 					(m_tpPanel as CalendarPanel).Owner = null;
 					m_tpPanel = null;
@@ -763,7 +769,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				var pScrollViewer = value;
-				if (pScrollViewer is {})
+				if (pScrollViewer is { })
 				{
 					m_tpScrollViewer = pScrollViewer;
 				}
@@ -787,7 +793,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				global::System.Diagnostics.Debug.Assert(m_pOwnerNoRef is {});
+				global::System.Diagnostics.Debug.Assert(m_pOwnerNoRef is { });
 				return m_pOwnerNoRef;
 			}
 			set => m_pOwnerNoRef = value;

@@ -11,29 +11,29 @@ using System.Text;
 
 namespace SwipeControl_TestUI
 {
-    public class TestCommand : System.Windows.Input.ICommand
-    {
-        SwipeControlPage page;
-        public TestCommand(SwipeControlPage page)
-        {
-            this.page = page;
-        }
+	public class TestCommand : System.Windows.Input.ICommand
+	{
+		SwipeControlPage page;
+		public TestCommand(SwipeControlPage page)
+		{
+			this.page = page;
+		}
 
-        public event EventHandler CanExecuteChanged;
+		public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object parameter)
-        {
-            return (parameter as String).Equals("command's text");
-        }
+		public bool CanExecute(object parameter)
+		{
+			return (parameter as String).Equals("command's text");
+		}
 
-        public void Execute(object parameter)
-        {
-            page.ChangeText(parameter as String);
+		public void Execute(object parameter)
+		{
+			page.ChangeText(parameter as String);
 
-            if(CanExecuteChanged != null)
-            {
-                // do nothing
-            }
-        }
-    }
+			if (CanExecuteChanged != null)
+			{
+				// do nothing
+			}
+		}
+	}
 }

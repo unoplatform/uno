@@ -1,44 +1,36 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
 using Uno;
 using Uno.Devices.Sensors.Helpers;
+
+using NativeMethods = __Windows.Devices.Sensors.Magnetometer.NativeMethods;
 
 namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer
 	{
-		private const string JsType = "Windows.Devices.Sensors.Magnetometer";		
-
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		private Magnetometer()
-		{
-		}
-
+		/// <summary>
+		/// This method is not supported directly. An approximation in the form of raising the 
+		/// ReadingChanged event only when enough time has passed since the last report.
+		/// </summary>
 		public uint ReportInterval { get; set; }
 
 		private static Magnetometer TryCreateInstance()
 		{
-			var command = $"{JsType}.initialize()";
-			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-			if (bool.Parse(initialized) == true)
-			{
-				return new Magnetometer();
-			}
-			return null;
+			return NativeMethods.Initialize() ? new() : null;
 		}
 
 		private void StartReading()
-		{			
-			var command = $"{JsType}.startReading()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+		{
+			NativeMethods.StartReading();
 		}
-		
+
 		private void StopReading()
 		{
-			var command = $"{JsType}.stopReading()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StopReading();
 		}
 
 		/// <summary>
@@ -52,8 +44,8 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">Magnetic field Y</param>
 		/// <param name="z">Magnetic field Z</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
-		[Preserve]
-		public static int DispatchReading(float x, float y, float z)
+		[JSExport]
+		internal static int DispatchReading(float x, float y, float z)
 		{
 			if (_instance == null)
 			{
@@ -70,9 +62,8 @@ namespace Windows.Devices.Sensors
 						z,
 						MagnetometerAccuracy.Unknown,
 						now));
-			}			
+			}
 			return 0;
 		}
 	}
 }
-#endif

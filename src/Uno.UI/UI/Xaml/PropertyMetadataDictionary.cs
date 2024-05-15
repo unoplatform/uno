@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -12,7 +12,7 @@ using Uno;
 using System.Threading;
 using Uno.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal class PropertyMetadataDictionary
 	{
@@ -20,19 +20,20 @@ namespace Windows.UI.Xaml
 		/// This implementation of PropertyMetadataDictionary uses HashTable because it's generally faster than
 		/// Dictionary`ref/ref. 
 		/// </summary>
-		private readonly HashtableEx _table = new HashtableEx();
-
-		internal delegate PropertyMetadata CreationHandler();
+		/// <remarks>
+		/// This is created per dependency property instance. So there is a hashtable for each DP, and it's likely that all these instances live for the lifetime of the app.
+		/// So we don't use pooling to not cause pool exhaustion by renting without returning.
+		/// </remarks>
+		private readonly HashtableEx _table = new HashtableEx(usePooling: false);
 
 		internal void Add(Type ownerType, PropertyMetadata ownerTypeMetadata)
 			=> _table.Add(ownerType, ownerTypeMetadata);
 
 		internal bool TryGetValue(Type ownerType, out PropertyMetadata? metadata)
 		{
-			if(_table.TryGetValue(ownerType, out var value))
+			if (_table.TryGetValue(ownerType, out var value))
 			{
 				metadata = (PropertyMetadata)value!;
-
 				return true;
 			}
 
@@ -46,21 +47,18 @@ namespace Windows.UI.Xaml
 		internal bool ContainsValue(PropertyMetadata typeMetadata)
 			=> _table.ContainsValue(typeMetadata);
 
-		internal PropertyMetadata FindOrCreate(Type ownerType, CreationHandler createHandler)
+		internal PropertyMetadata FindOrCreate(Type ownerType, Type baseType, DependencyProperty property)
 		{
 			if (_table.TryGetValue(ownerType, out var value))
 			{
 				return (PropertyMetadata)value!;
 			}
 
-			var metadata = createHandler();
+			var metadata = property.GetMetadata(baseType);
 
 			_table[ownerType] = metadata;
 
 			return metadata;
 		}
-
-		internal void Dispose()
-			=> _table.Dispose();
 	}
 }

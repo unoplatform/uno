@@ -1,18 +1,18 @@
 ﻿using System.Linq;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace UITests.Shared.Windows_UI_Xaml.VisualStateTests
 {
 	[Sample("Visual states")]
-    public sealed partial class VisualState_Forever_Events : Page
-    {
-        public VisualState_Forever_Events()
-        {
+	public sealed partial class VisualState_Forever_Events : Page
+	{
+		public VisualState_Forever_Events()
+		{
 			this.InitializeComponent();
 			Loaded += (_, __) =>
 			{

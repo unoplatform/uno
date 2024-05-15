@@ -13,11 +13,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 	[DebuggerDisplay("Type: {_type.Name}")]
 #endif
-    internal class XamlObjectDefinition
+	internal class XamlObjectDefinition : IXamlLocation
 	{
 		private XamlType _type;
 
-		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition? owner)
+		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces)
 		{
 			LineNumber = lineNumber;
 			LinePosition = linePosition;
@@ -25,6 +25,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Owner = owner;
 			Members = new List<XamlMemberDefinition>();
 			Objects = new List<XamlObjectDefinition>();
+			Namespaces = namespaces;
 		}
 
 		public XamlType Type { get { return _type; } }
@@ -39,7 +40,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public int LinePosition { get; set; }
 
-		public XamlObjectDefinition? Owner { get; private set; }
+		public XamlObjectDefinition? Owner { get; }
+
+		public List<NamespaceDeclaration>? Namespaces { get; }
 	}
 
 }

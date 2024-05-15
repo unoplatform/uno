@@ -44,6 +44,11 @@ public sealed partial class MessageDialog
 		Commands = commands;
 	}
 
+	/// <summary>
+	/// This is used to associate the MessageDialog with a window in multi-window environment.
+	/// </summary>
+	internal object AssociatedWindow { get; set; }
+
 	public IAsyncOperation<IUICommand> ShowAsync()
 	{
 		VisualTreeHelperProxy.CloseAllFlyouts();
@@ -89,7 +94,7 @@ public sealed partial class MessageDialog
 	/// This is the command that fires by default when users press the ENTER key.
 	/// Add the commands before you set the index.
 	/// </summary>
-	public uint DefaultCommandIndex { get; set; } = 0;
+	public uint DefaultCommandIndex { get; set; }
 
 	/// <summary>
 	/// Gets or sets the options for a MessageDialog.
@@ -120,7 +125,7 @@ public sealed partial class MessageDialog
 
 	private void ValidateCommands()
 	{
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __ANDROID__
 		if (WinRTFeatureConfiguration.MessageDialog.UseNativeDialog)
 		{
 			ValidateCommandsNative();
@@ -135,6 +140,4 @@ public sealed partial class MessageDialog
 				"On WinUI/UWP adding more commands will cause an exception.");
 		}
 	}
-
-	partial void ValidateCommandsNative();
 }

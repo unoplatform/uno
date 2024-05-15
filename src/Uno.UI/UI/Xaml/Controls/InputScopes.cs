@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.Text;
 
 #if NETFX_CORE
-using Windows.UI.Xaml.Input;
-using NativeInputScope = Windows.UI.Xaml.Input.InputScopeNameValue;
+using Microsoft.UI.Xaml.Input;
+using NativeInputScope = Microsoft.UI.Xaml.Input.InputScopeNameValue;
 #else
-using Windows.UI.Xaml.Input;
-using NativeInputScope = Windows.UI.Xaml.Input.InputScopeNameValue;
+using Microsoft.UI.Xaml.Input;
+using NativeInputScope = Microsoft.UI.Xaml.Input.InputScopeNameValue;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-    public class InputScopes
-    {
-		public static InputScope Default {get{ return Convert(NativeInputScope.Default);}}
+	public class InputScopes
+	{
+		public static InputScope Default { get { return Convert(NativeInputScope.Default); } }
 
 		public static InputScope Number { get { return Convert(NativeInputScope.Number); } }
 		public static InputScope NumericPin { get { return Convert(NativeInputScope.NumericPin); } }
@@ -31,6 +31,6 @@ namespace Windows.UI.Xaml.Controls
 			inputScope.Names.Add(new InputScopeName(inputScopeNameValue));
 			return inputScope;
 		}
-    }
+	}
 }
 #endif

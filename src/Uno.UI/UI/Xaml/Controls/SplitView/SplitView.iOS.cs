@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class SplitView
 	{
@@ -21,9 +21,9 @@ namespace Windows.UI.Xaml.Controls
 				The patch here only ensure to invalidate the view to force a layouting cycle.
 			
 		*/
-		
+
 		private VisualStateGroup _patchDisplayModeStatesGroup;
-		
+
 		private void PatchInvalidFinalState(string targetStateName)
 		{
 			// Get the DisplayModeStates visual state group from the root element of the template
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 				timeline.Completed -= PatchInvalidFinalStateHandler;
 			}
 
-			Dispatcher.RunIdleAsync(_ => InvalidateMeasure());
+			_ = Dispatcher.RunIdleAsync(_ => InvalidateMeasure());
 		}
 	}
 }

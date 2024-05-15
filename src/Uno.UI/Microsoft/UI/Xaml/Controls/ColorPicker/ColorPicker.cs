@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 
 #if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ColorPicker : Control
 	{
@@ -342,6 +342,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnColorSpectrumComponentsChanged(args);
 			}
+			else if (property == OrientationProperty)
+			{
+				OnOrientationChanged(args);
+			}
 		}
 
 		internal Hsv GetCurrentHsv()
@@ -473,11 +477,17 @@ namespace Microsoft.UI.Xaml.Controls
 			SetThirdDimensionSliderChannel();
 		}
 
+		private void OnOrientationChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateVisualState(true);
+		}
+
 		private new void UpdateVisualState(bool useTransitions)
 		{
 			Color? previousColor = this.PreviousColor;
 			bool isAlphaEnabled = this.IsAlphaEnabled;
 			bool isColorSpectrumVisible = this.IsColorSpectrumVisible;
+			bool isVerticalOrientation = this.Orientation == Orientation.Vertical;
 
 			string previousColorStateName;
 
@@ -495,8 +505,9 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, this.IsColorPreviewVisible ? "ColorPreviewVisible" : "ColorPreviewCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, this.IsColorSliderVisible ? "ThirdDimensionSliderVisible" : "ThirdDimensionSliderCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, isAlphaEnabled && this.IsAlphaSliderVisible ? "AlphaSliderVisible" : "AlphaSliderCollapsed", useTransitions);
-			VisualStateManager.GoToState(this, this.IsMoreButtonVisible ? "MoreButtonVisible" : "MoreButtonCollapsed", useTransitions);
-			VisualStateManager.GoToState(this, !this.IsMoreButtonVisible || m_textEntryGridOpened ? "TextEntryGridVisible" : "TextEntryGridCollapsed", useTransitions);
+			// More button is disabled in horizontal orientation; only respect IsMoreButtonVisible states when switching to Vertical orientation.
+			VisualStateManager.GoToState(this, this.IsMoreButtonVisible && isVerticalOrientation ? "MoreButtonVisible" : "MoreButtonCollapsed", useTransitions);
+			VisualStateManager.GoToState(this, !this.IsMoreButtonVisible || m_textEntryGridOpened || !isVerticalOrientation ? "TextEntryGridVisible" : "TextEntryGridCollapsed", useTransitions);
 
 			if (m_colorRepresentationComboBox is ComboBox colorRepresentationComboBox)
 			{
@@ -507,6 +518,7 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, isAlphaEnabled && this.IsAlphaTextInputVisible ? "AlphaTextInputVisible" : "AlphaTextInputCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, this.IsHexInputVisible ? "HexInputVisible" : "HexInputCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, isAlphaEnabled ? "AlphaEnabled" : "AlphaDisabled", useTransitions);
+			VisualStateManager.GoToState(this, isVerticalOrientation ? "Vertical" : "Horizontal", useTransitions);
 		}
 
 		private void InitializeColor()
@@ -1057,9 +1069,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rgb GetRgbColorFromTextBoxes()
 		{
 			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_redTextBox?.Text, out int redValue);
-			_ = int.TryParse(m_greenTextBox?.Text, out int greenValue);
-			_ = int.TryParse(m_blueTextBox?.Text, out int blueValue);
+			_ = int.TryParse(m_redTextBox?.Text, CultureInfo.InvariantCulture, out int redValue);
+			_ = int.TryParse(m_greenTextBox?.Text, CultureInfo.InvariantCulture, out int greenValue);
+			_ = int.TryParse(m_blueTextBox?.Text, CultureInfo.InvariantCulture, out int blueValue);
 
 			return new Rgb(redValue / 255.0, greenValue / 255.0, blueValue / 255.0);
 		}
@@ -1067,9 +1079,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private Hsv GetHsvColorFromTextBoxes()
 		{
 			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_hueTextBox?.Text, out int hueValue);
-			_ = int.TryParse(m_saturationTextBox?.Text, out int saturationValue);
-			_ = int.TryParse(m_valueTextBox?.Text, out int valueValue);
+			_ = int.TryParse(m_hueTextBox?.Text, CultureInfo.InvariantCulture, out int hueValue);
+			_ = int.TryParse(m_saturationTextBox?.Text, CultureInfo.InvariantCulture, out int saturationValue);
+			_ = int.TryParse(m_valueTextBox?.Text, CultureInfo.InvariantCulture, out int valueValue);
 
 			return new Hsv(hueValue, saturationValue / 100.0, valueValue / 100.0);
 		}
@@ -1268,88 +1280,88 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				case ColorSpectrumComponents.HueValue:
 				case ColorSpectrumComponents.ValueHue:
-				{
-					int minSaturation = this.MinSaturation;
-					int maxSaturation = this.MaxSaturation;
-
-					thirdDimensionSlider.Minimum = minSaturation;
-					thirdDimensionSlider.Maximum = maxSaturation;
-					thirdDimensionSlider.Value = m_currentHsv.S * 100;
-
-					// If MinSaturation >= MaxSaturation, then by convention MinSaturation is the only value
-					// that the slider can take.
-					if (minSaturation >= maxSaturation)
 					{
-						maxSaturation = minSaturation;
-					}
+						int minSaturation = this.MinSaturation;
+						int maxSaturation = this.MaxSaturation;
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, minSaturation / 100.0, 1.0), 1.0);
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, maxSaturation / 100.0, 1.0), 1.0);
-				}
-				break;
+						thirdDimensionSlider.Minimum = minSaturation;
+						thirdDimensionSlider.Maximum = maxSaturation;
+						thirdDimensionSlider.Value = m_currentHsv.S * 100;
+
+						// If MinSaturation >= MaxSaturation, then by convention MinSaturation is the only value
+						// that the slider can take.
+						if (minSaturation >= maxSaturation)
+						{
+							maxSaturation = minSaturation;
+						}
+
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, minSaturation / 100.0, 1.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, maxSaturation / 100.0, 1.0), 1.0);
+					}
+					break;
 
 				case ColorSpectrumComponents.HueSaturation:
 				case ColorSpectrumComponents.SaturationHue:
-				{
-					int minValue = this.MinValue;
-					int maxValue = this.MaxValue;
-
-					thirdDimensionSlider.Minimum = minValue;
-					thirdDimensionSlider.Maximum = maxValue;
-					thirdDimensionSlider.Value = m_currentHsv.V * 100;
-
-					// If MinValue >= MaxValue, then by convention MinValue is the only value
-					// that the slider can take.
-					if (minValue >= maxValue)
 					{
-						maxValue = minValue;
-					}
+						int minValue = this.MinValue;
+						int maxValue = this.MaxValue;
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, m_currentHsv.S, minValue / 100.0), 1.0);
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, m_currentHsv.S, maxValue / 100.0), 1.0);
-				}
-				break;
+						thirdDimensionSlider.Minimum = minValue;
+						thirdDimensionSlider.Maximum = maxValue;
+						thirdDimensionSlider.Value = m_currentHsv.V * 100;
+
+						// If MinValue >= MaxValue, then by convention MinValue is the only value
+						// that the slider can take.
+						if (minValue >= maxValue)
+						{
+							maxValue = minValue;
+						}
+
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, m_currentHsv.S, minValue / 100.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, m_currentHsv.S, maxValue / 100.0), 1.0);
+					}
+					break;
 
 				case ColorSpectrumComponents.ValueSaturation:
 				case ColorSpectrumComponents.SaturationValue:
-				{
-					int minHue = this.MinHue;
-					int maxHue = this.MaxHue;
-
-					thirdDimensionSlider.Minimum = minHue;
-					thirdDimensionSlider.Maximum = maxHue;
-					thirdDimensionSlider.Value = m_currentHsv.H;
-
-					// If MinHue >= MaxHue, then by convention MinHue is the only value
-					// that the slider can take.
-					if (minHue >= maxHue)
 					{
-						maxHue = minHue;
-					}
+						int minHue = this.MinHue;
+						int maxHue = this.MaxHue;
 
-					double minOffset = minHue / 359.0;
-					double maxOffset = maxHue / 359.0;
+						thirdDimensionSlider.Minimum = minHue;
+						thirdDimensionSlider.Maximum = maxHue;
+						thirdDimensionSlider.Value = m_currentHsv.H;
 
-					// With unclamped hue values, we have six different gradient stops, corresponding to red, yellow, green, cyan, blue, and purple.
-					// However, with clamped hue values, we may not need all of those gradient stops.
-					// We know we need a gradient stop at the start and end corresponding to the min and max values for hue,
-					// and then in the middle, we'll add any gradient stops corresponding to the hue of those six pure colors that exist
-					// between the min and max hue.
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv((double)minHue, 1.0, 1.0), 1.0);
-
-					for (int sextant = 1; sextant <= 5; sextant++)
-					{
-						double offset = sextant / 6.0;
-
-						if (minOffset < offset && maxOffset > offset)
+						// If MinHue >= MaxHue, then by convention MinHue is the only value
+						// that the slider can take.
+						if (minHue >= maxHue)
 						{
-							AddGradientStop(thirdDimensionSliderGradientBrush, (offset - minOffset) / (maxOffset - minOffset), new Hsv(60.0 * sextant, 1.0, 1.0), 1.0);
+							maxHue = minHue;
 						}
-					}
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv((double)maxHue, 1.0, 1.0), 1.0);
-				}
-				break;
+						double minOffset = minHue / 359.0;
+						double maxOffset = maxHue / 359.0;
+
+						// With unclamped hue values, we have six different gradient stops, corresponding to red, yellow, green, cyan, blue, and purple.
+						// However, with clamped hue values, we may not need all of those gradient stops.
+						// We know we need a gradient stop at the start and end corresponding to the min and max values for hue,
+						// and then in the middle, we'll add any gradient stops corresponding to the hue of those six pure colors that exist
+						// between the min and max hue.
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv((double)minHue, 1.0, 1.0), 1.0);
+
+						for (int sextant = 1; sextant <= 5; sextant++)
+						{
+							double offset = sextant / 6.0;
+
+							if (minOffset < offset && maxOffset > offset)
+							{
+								AddGradientStop(thirdDimensionSliderGradientBrush, (offset - minOffset) / (maxOffset - minOffset), new Hsv(60.0 * sextant, 1.0, 1.0), 1.0);
+							}
+						}
+
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv((double)maxHue, 1.0, 1.0), 1.0);
+					}
+					break;
 			}
 		}
 

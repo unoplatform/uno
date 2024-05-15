@@ -1,36 +1,42 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
+using Uno.UI.DataBinding;
+using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
-using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
-
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "States")]
 	public sealed partial class VisualStateGroup : DependencyObject
 	{
 		/// <summary>
+		/// Reusable HashSet to check properties set by the current state and not set by the next state
+		/// in <see cref="GoToState"/>. Since changing visual states should happen on the UI thread, there
+		/// are no concurrency problems. Consider this not a part of the state. Use it instead of
+		/// new HashSet() and clear before each use.
+		/// </summary>
+		private static HashSet<BindingPath> _propertiesNotToClear;
+
+		/// <summary>
 		/// The xaml scope in force at the time the VisualStateGroup was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
+		private readonly SerialDisposable _parentLoadedDisposable = new();
+
 		private (VisualState state, VisualTransition transition) _current;
 
 		public event VisualStateChangedEventHandler CurrentStateChanging;
@@ -138,12 +144,49 @@ namespace Windows.UI.Xaml
 		//Modifies the Owner FrameworkElement when Collection is modified
 		private void VisualStateChanged(object sender, IVectorChangedEventArgs e)
 		{
+			OnOwnerElementChanged();
 			RefreshStateTriggers();
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
 			RefreshStateTriggers(force: true);
+
+			_parentLoadedDisposable.Disposable = null;
+			if (this.GetParent() is IFrameworkElement fe)
+			{
+				OnOwnerElementChanged();
+				fe.Loaded += OnOwnerElementLoaded;
+				fe.Unloaded += OnOwnerElementUnloaded;
+				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
+				{
+					fe.Loaded -= OnOwnerElementLoaded;
+					fe.Unloaded -= OnOwnerElementUnloaded;
+				});
+			}
+		}
+
+		private void OnOwnerElementChanged() =>
+			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
+
+		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args) =>
+			ExecuteOnTriggers(t => t.OnOwnerElementLoaded());
+
+		private void OnOwnerElementUnloaded(object sender, RoutedEventArgs args) =>
+			ExecuteOnTriggers(t => t.OnOwnerElementUnloaded());
+
+		private void ExecuteOnTriggers(Action<StateTriggerBase> action)
+		{
+			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
+			{
+				var state = States[stateIndex];
+				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				{
+					var trigger = state.StateTriggers[triggerIndex];
+
+					action(trigger);
+				}
+			}
 		}
 
 		internal void RaiseCurrentStateChanging(VisualState oldState, VisualState newState)
@@ -193,18 +236,14 @@ namespace Windows.UI.Xaml
 			// we ensure that this materialization occurs only in the right resource scope.
 			// Note: the "current" should have already been materialized.
 			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 
 				current = (currentValues.transition?.Storyboard, currentValues.state?.Storyboard, currentValues.state?.Setters);
 				target = (targetValues.transition?.Storyboard, targetValues.state?.Storyboard, targetValues.state?.Setters);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				ResourceResolver.PopScope();
 			}
@@ -230,40 +269,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			// Rollback setters that won't be re-set by the target state setters
-			// Note about setters and transition (as of 2021-08-16 win 19043):
-			//		* if current and target state have setters for the same property,
-			//		  the value of the current is kept as is and updated only once at the end of the transition
-			//		* if current has a setter which is not updated by the target state
-			//		  the value is rollbacked before the transition
-			//		* if the target has a setter for a property that was not affected by the current
-			//		  the value is applied only at the end of the transition
-			if (current.setters is { } currentSetters)
-			{
-				// This block is a manual enumeration to avoid the foreach pattern
-				// See https://github.com/dotnet/runtime/issues/56309 for details
-				var settersEnumerator = currentSetters.OfType<Setter>().GetEnumerator();
-				while(settersEnumerator.MoveNext())
-				{
-					var setter = settersEnumerator.Current;
-
-					if (element != null && (target.setters?.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
-					{
-						// We clear the value of the current setter only if there isn't any setter in the target state
-						// which changes the same target property (for perf ... and UWP behavior support regarding transition animation).
-
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().Debug($"Ignoring reset of setter of '{setter.Target?.Path}' as it will be updated again by '{state.Name}'");
-						}
-
-						continue;
-					}
-
-					setter.ClearValue();
-				}
-			}
-
 			_current = targetValues;
 
 			// For backward compatibility, we may apply the setters before the end of the transition.
@@ -275,6 +280,13 @@ namespace Windows.UI.Xaml
 			// Finally effectively apply the target state!
 			if (useTransitions && target.transition is { } transitionAnimation)
 			{
+				ClearPropertiesNotSetInNextState(
+					element,
+					current.setters,
+					runningAnimation,
+					null,
+					transitionAnimation);
+
 				// Note: As of 2021-08-16 win 19043, if the transitionAnimation is Repeat=Forever, we actually never apply the state!
 
 				transitionAnimation.Completed += OnTransitionCompleted;
@@ -289,11 +301,25 @@ namespace Windows.UI.Xaml
 						transitionAnimation.TurnOverAnimationsTo(stateAnimation);
 					}
 
+					ClearPropertiesNotSetInNextState(
+						element,
+						null,
+						transitionAnimation,
+						target.setters,
+						target.animation);
+
 					ApplyTargetState();
 				}
 			}
 			else
 			{
+				ClearPropertiesNotSetInNextState(
+					element,
+					current.setters,
+					runningAnimation,
+					target.setters,
+					target.animation);
+
 				ApplyTargetState();
 			}
 
@@ -321,9 +347,7 @@ namespace Windows.UI.Xaml
 					return;
 				}
 
-#if !HAS_EXPENSIVE_TRYFINALLY
 				try
-#endif
 				{
 					// Setter.ApplyValue can resolve some theme resources.
 					// We need to invoke them using the right resource context.
@@ -333,18 +357,96 @@ namespace Windows.UI.Xaml
 					// See https://github.com/dotnet/runtime/issues/56309 for details
 					var settersEnumerator = target.setters.OfType<Setter>().GetEnumerator();
 
-					while(settersEnumerator.MoveNext())
+					while (settersEnumerator.MoveNext())
 					{
-						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+						settersEnumerator.Current.ApplyValue(element);
 					}
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					ResourceResolver.PopScope();
 				}
 
+			}
+		}
+
+		// Older note from 17/08/2021
+		/*****************************************************************/
+		// Rollback setters that won't be re-set by the target state setters
+		// Note about setters and transition (as of 2021-08-16 win 19043):
+		//		* if current and target state have setters for the same property,
+		//		  the value of the current is kept as is and updated only once at the end of the transition
+		//		* if current has a setter which is not updated by the target state
+		//		  the value is rollbacked before the transition
+		//		* if the target has a setter for a property that was not affected by the current
+		//		  the value is applied only at the end of the transition
+		/*****************************************************************/
+
+		// Newer note from 25/04/2021
+		/*****************************************************************/
+		// WinUI rolls back properties that are set by the current state that won't be set by the
+		// setters of the next state and won't be set by the nextAnimation.
+		// It doesn't matter how it's set by the current state (setters or transition or animation) or
+		// how it will possibly be set by the new state. Simply put, if the ne doesn't touch
+		// the property in any way, roll it back. Similarly, if the animation of the new state
+		// doesn't set a property but it's set in the transition, it should be cleared after the
+		// transition.
+		// In other words, one can think of it as actually manipulating 3 states
+		// "Active" State (Setter & runningAnimation) --> Transition (if exists) --> New State (Setter & target.animation)
+		// Moving from one to the next rolls back the properties of the one before it.
+		/*****************************************************************/
+		private static void ClearPropertiesNotSetInNextState(
+			IFrameworkElement element,
+			SetterBaseCollection prevSetters,
+			Storyboard prevAnimation,
+			SetterBaseCollection nextSetters,
+			Storyboard nextAnimation)
+		{
+			if (element is null || (prevSetters is null && prevAnimation is null))
+			{
+				return;
+			}
+
+			(_propertiesNotToClear ??= new HashSet<BindingPath>(new PathComparer())).Clear();
+
+			if (nextSetters is { })
+			{
+				foreach (var setter in nextSetters.OfType<Setter>())
+				{
+					_propertiesNotToClear.Add(setter.TryGetOrCreateBindingPath(element));
+				}
+			}
+
+			if (nextAnimation is { })
+			{
+				foreach (var item in nextAnimation.Children.Items)
+				{
+					_propertiesNotToClear.Add(item.PropertyInfo);
+				}
+			}
+
+			if (prevSetters is { })
+			{
+				foreach (var setter in prevSetters.OfType<Setter>())
+				{
+					// Setters with a null path are always cleared.
+					if (setter.TryGetOrCreateBindingPath(element) is not { } path || !_propertiesNotToClear.Contains(path))
+					{
+						setter.ClearValue();
+					}
+				}
+			}
+
+			if (prevAnimation is { })
+			{
+				foreach (var item in prevAnimation.Children.Items)
+				{
+					// Animations with a null path are always cleared.
+					if (item.PropertyInfo is not { } path || !_propertiesNotToClear.Contains(path))
+					{
+						item.PropertyInfo.ClearValue();
+					}
+				}
 			}
 		}
 
@@ -354,28 +456,42 @@ namespace Windows.UI.Xaml
 			// The most specific transition wins (i.e. with matching From and To),
 			// then we validate for transitions that have only From or To defined which match.
 
-			var hasOld = oldStateName.HasValue();
-			var hasNew = newStateName.HasValue();
+			var hasOld = !oldStateName.IsNullOrEmpty();
+			var hasNew = !newStateName.IsNullOrEmpty();
 
-			if (hasOld && hasNew && Transitions.FirstOrDefault(Match(oldStateName, newStateName)) is { } perfectMatch)
+			if (hasOld && hasNew && GetFirstMatch(oldStateName, newStateName) is { } perfectMatch)
 			{
 				return perfectMatch;
 			}
 
-			if (hasOld && Transitions.FirstOrDefault(Match(oldStateName, null)) is { } fromMatch)
+			if (hasOld && GetFirstMatch(oldStateName, null) is { } fromMatch)
 			{
 				return fromMatch;
 			}
 
-			if (hasNew && Transitions.FirstOrDefault(Match(null, newStateName)) is { } newMatch)
+			if (hasNew && GetFirstMatch(null, newStateName) is { } newMatch)
 			{
 				return newMatch;
 			}
 
 			return default;
 
-			Func<VisualTransition, bool> Match(string from, string to)
-				=> tr => string.Equals(tr.From, oldStateName) && string.Equals(tr.To, newStateName);
+			VisualTransition GetFirstMatch(string from, string to)
+			{
+				// Avoid using Transitions.FirstOrDefault as it incurs unnecessary Func<VisualTransition, bool> allocations.
+				foreach (var transition in Transitions)
+				{
+					if (Match(transition, from, to))
+					{
+						return transition;
+					}
+				}
+
+				return null;
+			}
+
+			bool Match(VisualTransition transition, string from, string to)
+				=> string.Equals(transition.From, oldStateName) && string.Equals(transition.To, newStateName);
 		}
 
 		internal void RefreshStateTriggers(bool force = false)
@@ -432,8 +548,7 @@ namespace Windows.UI.Xaml
 			// If there are multiple active triggers at a time that have a conflict in scoring(i.e.two active custom
 			// triggers), then the first one declared in the markup file takes precedence.
 
-			var winningPrecedence2 = default(VisualState);
-			var winningPrecedence3 = default(VisualState);
+			(VisualState State, double MinWidth, double MinHeight) adaptiveCandidate = (default, -1, -1);
 
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
@@ -442,39 +557,51 @@ namespace Windows.UI.Xaml
 				{
 					var trigger = state.StateTriggers[triggerIndex];
 
+					// the first active CustomTrigger is an automatic winner.
 					if (trigger.CurrentPrecedence == StateTriggerPrecedence.CustomTrigger)
 					{
-						return state; // we have a winner!
+						return state;
 					}
-					if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinWidthTrigger && winningPrecedence2 == null)
-					{
-						winningPrecedence2 = state;
-						if (winningPrecedence3 != null)
-						{
-							break;
-						}
-					}
-					else if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinHeightTrigger && winningPrecedence3 == null)
-					{
-						winningPrecedence3 = state;
-						if (winningPrecedence2 != null)
-						{
-							break;
-						}
-					}
-				}
 
-				if (winningPrecedence2 != null && winningPrecedence3 != null)
-				{
-					break;
+					// between AdaptiveTriggers, they are ranked by MinWindowWidth (descending),
+					// then by MinWindowHeight (descending), and finally in the declaration order.
+					if (trigger.CurrentPrecedence == StateTriggerPrecedence.AdaptiveTrigger &&
+						trigger is AdaptiveTrigger adaptiveTrigger)
+					{
+						var minWidth = adaptiveTrigger.MinWindowWidth;
+						var minHeight = adaptiveTrigger.MinWindowHeight;
+
+						// compare by MinWindowWidth first
+						if (minWidth > adaptiveCandidate.MinWidth)
+						{
+							adaptiveCandidate = (state, minWidth, minHeight);
+							break;
+						}
+						// compare by MinWindowHeight only if MinWindowWidth are equal
+						if (minWidth == adaptiveCandidate.MinWidth &&
+							minHeight > adaptiveCandidate.MinHeight)
+						{
+							adaptiveCandidate = (state, minWidth, minHeight);
+							break;
+						}
+						// if MinWindowWidth and MinWindowHeight are both equal,
+						// then previous candidate wins for being declared first.
+					}
 				}
 			}
 
-			var winnerState = winningPrecedence2 ?? winningPrecedence3;
-			return winnerState;
+			return adaptiveCandidate.State;
 		}
 
 		public override string ToString()
 			=> Name ?? $"<unnamed group {GetHashCode()}>";
+
+		private class PathComparer : EqualityComparer<BindingPath>
+		{
+			public override bool Equals(BindingPath path1, BindingPath path2)
+				=> (path1 != null && path1.Equals(path2)) || (path1 == null && path2 == null);
+
+			public override int GetHashCode(BindingPath path) => path.GetHashCode();
+		}
 	}
 }

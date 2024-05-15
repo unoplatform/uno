@@ -8,17 +8,17 @@ using System.Text;
 
 namespace UnoNullableContextGeneratedBug
 {
-    public class TestViewModel
-    {
-        public TestViewModel()
-        {
-            ObjectInstance = new ThrowawayClass();
-        }
+	public class TestViewModel
+	{
+		public TestViewModel()
+		{
+			ObjectInstance = new ThrowawayClass();
+		}
 
-        public ThrowawayClass? ObjectInstance { get; set; } = new ThrowawayClass();
-    }
+		public ThrowawayClass? ObjectInstance { get; set; } = new ThrowawayClass();
+	}
 
-    public class ThrowawayClass
-    {
-    }
+	public class ThrowawayClass
+	{
+	}
 }

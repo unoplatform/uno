@@ -1,60 +1,60 @@
-﻿// MUX reference NavigationViewItem.h, commit fd22d7f
+﻿// MUX reference NavigationViewItem.h, commit d3fef08fd
 
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+public partial class NavigationViewItem
 {
-	public partial class NavigationViewItem
-	{
-		internal SerialDisposable EventRevoker { get; } = new SerialDisposable();
+	internal SerialDisposable EventRevoker { get; } = new();
 
-		internal ItemsRepeater GetRepeater() => m_repeater;
+	internal ItemsRepeater GetRepeater() => m_repeater;
 
-		private readonly SerialDisposable m_splitViewIsPaneOpenChangedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_splitViewDisplayModeChangedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_splitViewCompactPaneLengthChangedRevoker = new SerialDisposable();
+	private readonly SerialDisposable m_splitViewIsPaneOpenChangedRevoker = new();
+	private readonly SerialDisposable m_splitViewDisplayModeChangedRevoker = new();
+	private readonly SerialDisposable m_splitViewCompactPaneLengthChangedRevoker = new();
 
-		private readonly SerialDisposable m_presenterPointerPressedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_presenterPointerEnteredRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_presenterPointerMovedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_presenterPointerReleasedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_presenterPointerExitedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_presenterPointerCanceledRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_presenterPointerCaptureLostRevoker = new SerialDisposable();
+	private readonly SerialDisposable m_presenterPointerPressedRevoker = new();
+	private readonly SerialDisposable m_presenterPointerEnteredRevoker = new();
+	private readonly SerialDisposable m_presenterPointerMovedRevoker = new();
+	private readonly SerialDisposable m_presenterPointerReleasedRevoker = new();
+	private readonly SerialDisposable m_presenterPointerExitedRevoker = new();
+	private readonly SerialDisposable m_presenterPointerCanceledRevoker = new();
+	private readonly SerialDisposable m_presenterPointerCaptureLostRevoker = new();
 
-		private readonly SerialDisposable m_repeaterElementPreparedRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_repeaterElementClearingRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_itemsSourceViewCollectionChangedRevoker = new SerialDisposable();
+	private readonly SerialDisposable m_repeaterElementPreparedRevoker = new();
+	private readonly SerialDisposable m_repeaterElementClearingRevoker = new();
+	private readonly SerialDisposable m_itemsSourceViewCollectionChangedRevoker = new();
+	private readonly SerialDisposable m_menuItemsVectorChangedRevoker = new();
 
-		private readonly SerialDisposable m_flyoutClosingRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_isEnabledChangedRevoker = new SerialDisposable();
+	private readonly SerialDisposable m_flyoutClosingRevoker = new();
+	private readonly SerialDisposable m_isEnabledChangedRevoker = new();
 
-		private ToolTip m_toolTip = null;
-		private NavigationViewItemHelper<NavigationViewItem> backing_m_helper = null;
-		private NavigationViewItemHelper<NavigationViewItem> m_helper => backing_m_helper ??= new NavigationViewItemHelper<NavigationViewItem>(this);
+	private ToolTip m_toolTip;
+	private NavigationViewItemHelper<NavigationViewItem> backing_m_helper;
+	private NavigationViewItemHelper<NavigationViewItem> m_helper => backing_m_helper ??= new(this);
 
-		private NavigationViewItemPresenter m_navigationViewItemPresenter = null;
-		private object m_suggestedToolTipContent = null;
-		private ItemsRepeater m_repeater = null;
-		private Grid m_flyoutContentGrid = null;
-		private Grid m_rootGrid = null;
+	private NavigationViewItemPresenter m_navigationViewItemPresenter;
+	private object m_suggestedToolTipContent;
+	private ItemsRepeater m_repeater;
+	private Grid m_flyoutContentGrid;
+	private Grid m_rootGrid;
 
-		private bool m_isClosedCompact = false;
+	private bool m_isClosedCompact;
 
-		private bool m_appliedTemplate = false;
-		private bool m_hasKeyboardFocus = false;
+	private bool m_appliedTemplate;
+	private bool m_hasKeyboardFocus;
 
-		// Visual state tracking
-		private Pointer m_capturedPointer = null;
-		private uint m_trackedPointerId = 0;
-		private bool m_isPressed = false;
-		private bool m_isPointerOver = false;
+	// Visual state tracking
+	private Pointer m_capturedPointer;
+	private uint m_trackedPointerId;
+	private bool m_isPressed;
+	private bool m_isPointerOver;
 
-		private bool m_isRepeaterParentedToFlyout = false;
-	}
+	private bool m_isRepeaterParentedToFlyout;
+	// used to bypass all Chevron visual state logic in order to keep it unloaded 
+	private bool m_hasHadChildren;
 }

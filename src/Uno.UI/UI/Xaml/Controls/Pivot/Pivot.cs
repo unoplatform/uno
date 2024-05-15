@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Pivot : ItemsControl
 	{
@@ -204,7 +204,10 @@ namespace Windows.UI.Xaml.Controls
 				if (TemplatedRoot is NativePivotPresenter presenter)
 				{
 					presenter.Items.Clear();
-					presenter.Items.AddRange(Items);
+					foreach (var item in Items)
+					{
+						presenter.Items.Add(item);
+					}
 				}
 			}
 		}

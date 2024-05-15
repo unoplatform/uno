@@ -464,7 +464,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 			combo.FastTap();
 
 			// Assert After Selection 
-			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
+			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBoxItem_1");
 			TakeScreenshot("FocusManager - GetFocusedElement - ComboBox - 2 - After Selection");
 
 			// Close the combo to not pollute other tests
@@ -519,7 +519,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 			TakeScreenshot("FocusManager - GetFocusedElement - ComboBoxItem - 1 - Initial State");
 
 			comboBox.FastTap();
-			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
+			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBoxItem_1");
 
 			frameworkElement.FastTap();
 
@@ -547,7 +547,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 			TakeScreenshot("FocusManager - LostFocus - ComboBoxItem - 1 - Initial State");
 
 			comboBox.FastTap();
-			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");
+			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBoxItem_1");
 
 			item1.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyComboBox");

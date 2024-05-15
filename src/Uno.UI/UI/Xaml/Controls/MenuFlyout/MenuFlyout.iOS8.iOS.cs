@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using Uno.Client;
 using Uno.Extensions;
-using Uno.UI.Services;
 using UIKit;
 using Uno.UI.Controls;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MenuFlyout
 	{
@@ -71,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 				))
 				.ForEach(_alertController.AddAction);
 
-			Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 			{
 				switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
 				{

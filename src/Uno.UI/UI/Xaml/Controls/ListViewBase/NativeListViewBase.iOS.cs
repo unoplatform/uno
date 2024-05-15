@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,19 +12,17 @@ using Windows.UI.Core;
 using Uno.UI.Controls;
 using System.ComponentModel;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 using Uno.UI;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Extensions;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using CoreAnimation;
-#endif
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -33,7 +31,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase : UICollectionView
 	{
@@ -65,22 +63,22 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// This property enables animations when using the ScrollIntoView Method.
 		/// </summary>
-		public bool AnimateScrollIntoView { get; set; } = false;
+		public bool AnimateScrollIntoView { get; set; } = Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView;
 		#endregion
 
 		#region Members
-		private bool _needsReloadData = false;
+		private bool _needsReloadData;
 		/// <summary>
 		/// ReloadData() has been called, but the layout hasn't been updated. During this window, in-place modifications to the
 		/// collection (InsertItems, etc) shouldn't be called because they will result in a NSInternalInconsistencyException
 		/// </summary>
-		private bool _needsLayoutAfterReloadData = false;
+		private bool _needsLayoutAfterReloadData;
 		/// <summary>
 		/// List was empty last time ReloadData() was called. If inserting items into an empty collection we should do a refresh instead, 
 		/// to work around a UICollectionView bug https://stackoverflow.com/questions/12611292/uicollectionview-assertion-failure
 		/// </summary>
-		private bool _listEmptyLastRefresh = false;
-		private bool _isReloadDataDispatched = false;
+		private bool _listEmptyLastRefresh;
+		private bool _isReloadDataDispatched;
 
 		private readonly SerialDisposable _scrollIntoViewSubscription = new SerialDisposable();
 		#endregion
@@ -217,15 +215,15 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertItems(indexPaths);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
 				}
+			}
+			else
+			{
+				NativeLayout?.NeedsRelayout();
 			}
 		}
 
@@ -245,11 +243,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertSections(sections);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -273,11 +267,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteItems(indexPaths);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -301,11 +291,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteSections(sections);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -370,7 +356,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (UseCollectionAnimations)
 			{
-				return null;
+				return Disposable.Empty;
 			}
 
 			AnimationsEnabled = false;
@@ -762,7 +748,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			_isReloadDataDispatched = true;
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.High, setNeedsReloadData);
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, setNeedsReloadData);
 
 			void setNeedsReloadData()
 			{
@@ -777,7 +763,57 @@ namespace Windows.UI.Xaml.Controls
 			set { NativeLayout.Padding = value; }
 		}
 
-#region Touches
+		#region Touches
+		private UIElement _touchTarget;
+
+		/// <inheritdoc />
+		public override void TouchesBegan(NSSet touches, UIEvent evt)
+		{
+			base.TouchesBegan(touches, evt);
+
+			// We wait for the first touches to get the parent so we don't have to track Loaded/UnLoaded
+			// Like native dispatch on iOS, we do "implicit captures" of the target.
+			if (this.GetParent() is UIElement parent)
+			{
+				// canBubbleNatively: true => We let native bubbling occur properly as it's never swallowed by the system
+				//							  but blocking it would be breaking in a lot of aspects
+				//							  (e.g. it would prevent all subsequent events for the given pointer).
+
+				_touchTarget = parent;
+				_touchTarget.TouchesBegan(touches, evt, canBubbleNatively: true);
+			}
+		}
+
+		/// <inheritdoc />
+		public override void TouchesMoved(NSSet touches, UIEvent evt)
+		{
+			base.TouchesMoved(touches, evt);
+
+			// canBubbleNatively: false => The system might silently swallow pointers after a few moves so we prefer to bubble in managed.
+			_touchTarget?.TouchesMoved(touches, evt, canBubbleNatively: false);
+		}
+
+		/// <inheritdoc />
+		public override void TouchesEnded(NSSet touches, UIEvent evt)
+		{
+			base.TouchesEnded(touches, evt);
+
+			// canBubbleNatively: false => system might silently swallow the pointer after a few moves so we prefer to bubble in managed.
+			_touchTarget?.TouchesEnded(touches, evt, canBubbleNatively: false);
+			_touchTarget = null;
+		}
+
+		/// <inheritdoc />
+		public override void TouchesCancelled(NSSet touches, UIEvent evt)
+		{
+			base.TouchesCancelled(touches, evt);
+
+			// canBubbleNatively: false => system might silently swallow the pointer after a few moves so we prefer to bubble in managed.
+			_touchTarget?.TouchesCancelled(touches, evt, canBubbleNatively: false);
+			_touchTarget = null;
+		}
+
+
 		private TouchesManager _touchesManager;
 
 		internal TouchesManager TouchesManager => _touchesManager ??= new NativeListViewBaseTouchesManager(this);
@@ -808,6 +844,6 @@ namespace Windows.UI.Xaml.Controls
 			protected override void SetCanCancel(bool canCancel)
 				=> _listView.CanCancelContentTouches = canCancel;
 		}
-#endregion
+		#endregion
 	}
 }

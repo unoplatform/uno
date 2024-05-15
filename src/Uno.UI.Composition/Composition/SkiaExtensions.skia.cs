@@ -8,7 +8,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.UI;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public static class SkiaExtensions
 	{
@@ -16,7 +16,7 @@ namespace Windows.UI.Composition
 			=> new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom);
 
 		public static Rect ToRect(this SKRect rect)
-			=> new Rect(x: (float)rect.Left, y: (float)rect.Top, width:(float)rect.Width, height: (float)rect.Height);
+			=> new Rect(x: (float)rect.Left, y: (float)rect.Top, width: (float)rect.Width, height: (float)rect.Height);
 
 		public static Size ToSize(this SKSize size)
 			=> new Size(size.Width, size.Height);
@@ -96,6 +96,50 @@ namespace Windows.UI.Composition
 			ret.TransY = m.M32;
 
 			return ret;
+		}
+
+		public static Matrix3x2 ToMatrix3x2(this Matrix4x4 m)
+			=> new Matrix3x2(m.M11, m.M12, m.M21, m.M22, m.M41, m.M42);
+
+		public static SKMatrix ToSKMatrix(this Matrix4x4 m)
+			=> new(
+				m.M11, m.M21, m.M41,
+				m.M12, m.M22, m.M42,
+				m.M14, m.M24, m.M44);
+
+		public static Matrix4x4 ToMatrix4x4(this SKMatrix m)
+		{
+			var vals = m.Values;
+			return new(
+				vals[0], vals[3], 0, vals[6],
+				vals[1], vals[4], 0, vals[7],
+				/* */ 0, /* */ 0, 1, /* */ 0,
+				vals[2], vals[5], 0, vals[8]);
+		}
+
+		/// <summary>
+		/// This is an alternative to the built-in SKBitmap.FromImage.
+		/// The problem with SKBitmap.FromImage is that it ignores the color type of the input image, and
+		/// uses SKImageInfo.PlatformColorType.
+		/// The code is the same as SKBitmap.FromImage except for respecting color type.
+		/// See https://github.com/mono/SkiaSharp/blob/7d7766532a4666f56944e65bee1c2158c320f09c/binding/Binding/SKBitmap.cs#L830-L843
+		/// </summary>
+		public static SKBitmap ToSKBitmap(this SKImage image)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			var info = new SKImageInfo(image.Width, image.Height, image.ColorType, image.AlphaType);
+			var bmp = new SKBitmap(info);
+			if (!image.ReadPixels(info, bmp.GetPixels(), info.RowBytes, 0, 0))
+			{
+				bmp.Dispose();
+				bmp = null;
+			}
+
+			return bmp!;
 		}
 	}
 }

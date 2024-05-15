@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.App.Behaviors
 {
-    public static class AttachedPropertiesBehavior
-    {
+	public static class AttachedPropertiesBehavior
+	{
 		public static string GetCustomText(TextBlock obj) => (string)obj.GetValue(CustomTextProperty);
 
 		public static void SetCustomText(TextBlock obj, string value) => obj.SetValue(CustomTextProperty, value);

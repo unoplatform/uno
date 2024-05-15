@@ -15,13 +15,13 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	internal class UnoCoreAnimation : IDisposable
 	{
 		private const double __millisecondsPerSecond = 1000d;
 
-		private static int _id = 0;
+		private static int _id;
 
 		private readonly CALayer _layer;
 		private readonly string _property;
@@ -52,7 +52,7 @@ namespace Windows.UI.Composition
 			/// <summary>
 			/// The animation stopped successfully
 			/// </summary>
-			Sucesss = 0,
+			Success = 0,
 
 			/// <summary>
 			/// The animation got stopped (e.g. the animated layer is not in the visual tree)
@@ -153,15 +153,10 @@ namespace Windows.UI.Composition
 			if (_isDiscrete)
 			{
 				var discreteAnim = CAKeyFrameAnimation.FromKeyPath(_property);
-				discreteAnim.KeyTimes = new NSNumber[] {new NSNumber(0.0), new NSNumber(1.0)};
-				discreteAnim.Values = new NSObject[] {_nsValueConversion(to)};
+				discreteAnim.KeyTimes = new NSNumber[] { new NSNumber(0.0), new NSNumber(1.0) };
+				discreteAnim.Values = new NSObject[] { _nsValueConversion(to) };
 
-				discreteAnim.CalculationMode
-#if NET6_0_OR_GREATER
-					 = CAKeyFrameAnimation.AnimationDiscrete;
-#else
-					 = CAKeyFrameAnimation.AnimationDescrete;
-#endif
+				discreteAnim.CalculationMode = CAKeyFrameAnimation.AnimationDiscrete;
 
 				animation = discreteAnim;
 			}
@@ -186,7 +181,7 @@ namespace Windows.UI.Composition
 			animation.FillMode = CAFillMode.Forwards;
 			// Let the 'OnAnimationStop' forcefully apply the final value before removing the animation.
 			// That's required for Storyboards that animating multiple properties of the same object at once.
-			animation.RemovedOnCompletion = false; 
+			animation.RemovedOnCompletion = false;
 			animation.AnimationStarted += OnAnimationStarted(animation);
 			animation.AnimationStopped += OnAnimationStopped(animation);
 
@@ -221,7 +216,7 @@ namespace Windows.UI.Composition
 		private EventHandler OnAnimationStarted(CAAnimation animation)
 		{
 			EventHandler? handler = default;
-			handler= Handler;
+			handler = Handler;
 
 			return handler;
 
@@ -329,8 +324,7 @@ namespace Windows.UI.Composition
 					// We have to remove the animation only in case of 'StopReason.Completed',
 					// for other cases it's what we actually did to request the stop.
 					layer?.RemoveAnimation(_key);
-
-					_onCompleted(args.Finished ? CompletedInfo.Sucesss : CompletedInfo.Error);
+					_onCompleted(args.Finished ? CompletedInfo.Success : CompletedInfo.Error);
 				}
 			}
 		}

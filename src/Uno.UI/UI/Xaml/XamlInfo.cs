@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml
 {
@@ -38,7 +38,7 @@ namespace Uno.UI.Xaml
 		public static void SetXamlInfo(DependencyObject obj, XamlInfo owner)
 			=> obj.SetValue(XamlInfoProperty, owner);
 
-		public static DependencyProperty XamlInfoProperty { get ; } =
+		public static DependencyProperty XamlInfoProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				name: nameof(XamlInfo),
 				propertyType: typeof(XamlInfo),

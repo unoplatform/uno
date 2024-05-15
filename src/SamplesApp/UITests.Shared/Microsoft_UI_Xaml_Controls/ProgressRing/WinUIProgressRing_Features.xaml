@@ -5,8 +5,9 @@
 	xmlns:winui="using:Microsoft.UI.Xaml.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
-	mc:Ignorable="d"
+	xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
+	xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Page.Resources>
@@ -31,7 +32,7 @@
 			<winui:ProgressRing Foreground="Yellow" x:Name="indeterminate60" IsIndeterminate="True" />
 			<winui:ProgressRing Foreground="Orange" x:Name="indeterminate99" IsIndeterminate="True" />
 			<winui:ProgressRing Foreground="Red" x:Name="indeterminate100" IsIndeterminate="True" />
-			<winui:ProgressRing x:Name="indeterminateCustom" IsIndeterminate="True" IndeterminateSource="{StaticResource CustomIndeterminateSource}" />
+			<winui:ProgressRing x:Name="indeterminateCustom" IsIndeterminate="True" not_win:IndeterminateSource="{StaticResource CustomIndeterminateSource}" />
 		</StackPanel>
 		<TextBlock>Static Determinate mode:</TextBlock>
 		<StackPanel Spacing="4" Orientation="Horizontal">
@@ -42,7 +43,7 @@
 			<winui:ProgressRing Foreground="Yellow" x:Name="determinate60" IsIndeterminate="False" Value="60" />
 			<winui:ProgressRing Foreground="Orange" x:Name="determinate99" IsIndeterminate="False" Value="99" />
 			<winui:ProgressRing Foreground="Red" x:Name="determinate100" IsIndeterminate="False" Value="100" />
-			<winui:ProgressRing x:Name="determinateCustom" Width="80" IsIndeterminate="False" Value="75" DeterminateSource="{StaticResource CustomDeterminateSource}" />
+			<winui:ProgressRing x:Name="determinateCustom" Width="80" IsIndeterminate="False" Value="75" not_win:DeterminateSource="{StaticResource CustomDeterminateSource}" />
 		</StackPanel>
 		<TextBlock>Dynamic Determinate mode:</TextBlock>
 		<Slider Minimum="0" Maximum="100" Value="50" x:Name="dynamicValue" />
@@ -55,7 +56,7 @@
 			<winui:ProgressRing Foreground="Yellow" x:Name="dyn5" IsIndeterminate="False" Value="{Binding Value, ElementName=dynamicValue}" />
 			<winui:ProgressRing Foreground="Orange" x:Name="dyn6" IsIndeterminate="False" Value="{Binding Value, ElementName=dynamicValue}" />
 			<winui:ProgressRing Foreground="Red" x:Name="dyn7" IsIndeterminate="False" Value="{Binding Value, ElementName=dynamicValue}" />
-			<winui:ProgressRing x:Name="dyn8" Width="80" IsIndeterminate="False" Value="{Binding Value, ElementName=dynamicValue}" DeterminateSource="{StaticResource CustomDeterminateSource}" />
+			<winui:ProgressRing x:Name="dyn8" Width="80" IsIndeterminate="False" Value="{Binding Value, ElementName=dynamicValue}" not_win:DeterminateSource="{StaticResource CustomDeterminateSource}" />
 		</StackPanel>
 
 

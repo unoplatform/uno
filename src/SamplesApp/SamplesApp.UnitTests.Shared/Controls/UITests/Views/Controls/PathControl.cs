@@ -1,8 +1,8 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Samples.Controls
 {
@@ -31,7 +31,7 @@ namespace Uno.UI.Samples.Controls
 			get { return (Stretch)GetValue(StretchProperty); }
 			set { SetValue(StretchProperty, value); }
 		}
-		public static DependencyProperty StretchProperty { get ; } =
+		public static DependencyProperty StretchProperty { get; } =
 			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(PathControl), new PropertyMetadata(default(Stretch)));
 
 		public Geometry Data
@@ -40,7 +40,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(DataProperty, value); }
 		}
 
-		public static DependencyProperty DataProperty { get ; } =
+		public static DependencyProperty DataProperty { get; } =
 			DependencyProperty.Register("Data", typeof(Geometry), typeof(PathControl), new PropertyMetadata(default(Geometry)));
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
@@ -65,7 +65,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(AnimationStoppedProperty, value); }
 		}
 
-		public static DependencyProperty AnimationStoppedProperty { get ; } =
+		public static DependencyProperty AnimationStoppedProperty { get; } =
 			DependencyProperty.Register("AnimationStopped", typeof(bool), typeof(PathControl), new PropertyMetadata(false, OnAnimationStoppedChanged));
 
 		private static void OnAnimationStoppedChanged(object d, DependencyPropertyChangedEventArgs e)

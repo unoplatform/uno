@@ -1,35 +1,32 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 using Uno;
 
+using NativeMethods = __Windows.Networking.Connectivity.NetworkInformation.NativeMethods;
+
 namespace Windows.Networking.Connectivity
 {
-    public partial class NetworkInformation
-    {
-		private const string JsType = "Windows.Networking.Connectivity.NetworkInformation";
-
+	public partial class NetworkInformation
+	{
 		private static void StartNetworkStatusChanged()
 		{
-			var command = $"{JsType}.startStatusChanged()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StartStatusChanged();
 		}
 
 		private static void StopNetworkStatusChanged()
 		{
-			var command = $"{JsType}.stopStatusChanged()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StopStatusChanged();
 		}
-		
-		[Preserve]
-		public static int DispatchStatusChanged()
+
+		[JSExport]
+		internal static int DispatchStatusChanged()
 		{
 			OnNetworkStatusChanged();
 			return 0;
 		}
 	}
 }
-#endif

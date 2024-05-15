@@ -1,40 +1,38 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
 using System;
 using Windows.Foundation;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlaybackSession 
+	public partial class MediaPlaybackSession
 	{
 		public Windows.Media.Playback.MediaPlayer MediaPlayer { get; }
 
 		private TimeSpan _position;
 		public TimeSpan Position
 		{
-			get
-			{
-				return _position;
-			}
+			get => _position;
 			set
 			{
 				if (value < TimeSpan.Zero)
 				{
 					_position = TimeSpan.Zero;
+					UpdateTimePositionRate = 1;
 				}
 				else if (value > NaturalDuration)
 				{
 					_position = NaturalDuration;
+					UpdateTimePositionRate = 1;
 				}
 				else
 				{
 					_position = value;
 				}
-				
+
 				MediaPlayer.Position = _position;
 				PositionChanged?.Invoke(this, _position);
 			}
 		}
-		
+
 		internal TimeSpan PositionFromPlayer
 		{
 			set
@@ -42,10 +40,12 @@ namespace Windows.Media.Playback
 				if (value < TimeSpan.Zero)
 				{
 					_position = TimeSpan.Zero;
+					UpdateTimePositionRate = 1;
 				}
 				else if (value > NaturalDuration)
 				{
 					_position = NaturalDuration;
+					UpdateTimePositionRate = 1;
 				}
 				else
 				{
@@ -59,10 +59,7 @@ namespace Windows.Media.Playback
 		private TimeSpan _naturalDuration;
 		public TimeSpan NaturalDuration
 		{
-			get
-			{
-				return _naturalDuration;
-			}
+			get => _naturalDuration;
 			internal set
 			{
 				_naturalDuration = value;
@@ -70,13 +67,14 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		public bool IsUpdateTimePosition { get; set; }
+
+		public double UpdateTimePositionRate { get; set; }
+
 		private double _bufferingProgress;
 		public double BufferingProgress
 		{
-			get
-			{
-				return _bufferingProgress;
-			}
+			get => _bufferingProgress;
 			internal set
 			{
 				_bufferingProgress = value;
@@ -87,10 +85,7 @@ namespace Windows.Media.Playback
 		private double _playbackRate;
 		public double PlaybackRate
 		{
-			get
-			{
-				return _playbackRate;
-			}
+			get => _playbackRate;
 			set
 			{
 				_playbackRate = value;
@@ -101,16 +96,17 @@ namespace Windows.Media.Playback
 		private MediaPlaybackState _playbackState;
 		public MediaPlaybackState PlaybackState
 		{
-			get
-			{
-				return _playbackState;
-			}
+			get => _playbackState;
 			set
 			{
 				_playbackState = value;
 				PlaybackStateChanged?.Invoke(this, _playbackState);
 			}
 		}
+
+		internal bool IsPlaying => PlaybackState
+			is MediaPlaybackState.Playing
+			or MediaPlaybackState.Buffering;
 
 		public event TypedEventHandler<MediaPlaybackSession, object> BufferingProgressChanged;
 
@@ -128,4 +124,3 @@ namespace Windows.Media.Playback
 		}
 	}
 }
-#endif

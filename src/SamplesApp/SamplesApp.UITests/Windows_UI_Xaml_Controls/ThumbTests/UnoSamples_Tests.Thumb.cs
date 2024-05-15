@@ -59,7 +59,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ThumbTests
 
 			IEnumerable<(string name, (double x, double y) value)> GetValues()
 			{
-				while(result.Success)
+				while (result.Success)
 				{
 					var x = double.Parse(result.Groups["x"].Value, CultureInfo.InvariantCulture);
 					var y = double.Parse(result.Groups["y"].Value, CultureInfo.InvariantCulture);

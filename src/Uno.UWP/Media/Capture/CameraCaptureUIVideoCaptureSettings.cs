@@ -2,11 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-	public  partial class CameraCaptureUIVideoCaptureSettings 
+	public partial class CameraCaptureUIVideoCaptureSettings
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Media.Capture.CameraCaptureUIMaxVideoResolution MaxResolution
+		public global::Windows.Media.Capture.CameraCaptureUIMaxVideoResolution MaxResolution
 		{
 			get
 			{
@@ -17,10 +17,10 @@ namespace Windows.Media.Capture
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__
 		[global::Uno.NotImplemented]
-		public  float MaxDurationInSeconds
+		public float MaxDurationInSeconds
 		{
 			get
 			{
@@ -31,24 +31,16 @@ namespace Windows.Media.Capture
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "float CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Media.Capture.CameraCaptureUIVideoFormat Format
+#endif
+
+		public CameraCaptureUIVideoFormat Format
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CameraCaptureUIVideoFormat CameraCaptureUIVideoCaptureSettings.Format is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "CameraCaptureUIVideoFormat CameraCaptureUIVideoCaptureSettings.Format");
-			}
+			get; set;
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__
 		[global::Uno.NotImplemented]
-		public  bool AllowTrimming
+		public bool AllowTrimming
 		{
 			get
 			{
@@ -59,7 +51,7 @@ namespace Windows.Media.Capture
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "bool CameraCaptureUIVideoCaptureSettings.AllowTrimming");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Format.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Format.set
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxResolution.get

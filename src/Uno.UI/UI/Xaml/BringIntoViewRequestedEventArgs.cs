@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 /// <summary>
 /// Provides data for the UIElement.BringIntoViewRequested event.

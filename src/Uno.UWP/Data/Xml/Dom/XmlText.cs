@@ -105,7 +105,7 @@ namespace Windows.Data.Xml.Dom
 
 		public IXmlNode SelectSingleNode(string xpath) => (IXmlNode)_owner.Wrap(_backingText.SelectSingleNode(xpath));
 
-		public XmlNodeList SelectNodes(string xpath) => (XmlNodeList)_owner.Wrap(_backingText.SelectNodes(xpath));		
+		public XmlNodeList SelectNodes(string xpath) => (XmlNodeList)_owner.Wrap(_backingText.SelectNodes(xpath));
 
 		public string GetXml() => _backingText.OuterXml;
 	}

@@ -1,12 +1,41 @@
-﻿using DirectUI;
-using Uno.UI.Xaml.Core;
+﻿#nullable enable
 
-namespace Windows.UI.Xaml
+using Uno.UI.Xaml.Core;
+using Windows.Foundation;
+
+namespace Microsoft.UI.Xaml;
+
+public sealed partial class XamlRoot
 {
-	public sealed partial class XamlRoot
+	internal VisualTree VisualTree { get; set; }
+
+	/// <summary>
+	/// Gets the width and height of the content area.
+	/// </summary>
+	public Size Size => VisualTree.Size;
+
+	/// <summary>
+	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
+	/// </summary>
+	public double RasterizationScale => VisualTree.RasterizationScale;
+
+	/// <summary>
+	/// Gets a value that indicates whether the XamlRoot is visible.
+	/// </summary>
+	public bool IsHostVisible => VisualTree.IsVisible;
+
+	internal void RaiseChangedEvent() => Changed?.Invoke(this, new());
+
+	internal static XamlRoot? GetForElement(DependencyObject element)
 	{
-		//TODO Uno: This implementation does not match WinUI, but we currently support only
-		//a single XamlRoot and a single window. This will need to be adjusted later though.
-		internal VisualTree VisualTree => DXamlCore.Current.GetHandle().ContentRootCoordinator.CoreWindowContentRoot.VisualTree;
+		XamlRoot? result = null;
+
+		var visualTree = VisualTree.GetForElement(element);
+		if (visualTree is not null)
+		{
+			result = visualTree.GetOrCreateXamlRoot();
+		}
+
+		return result;
 	}
 }

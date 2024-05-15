@@ -98,7 +98,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
-		public async Task When_TextDecoration_Changed()
+		public void When_TextDecoration_Changed()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Decorations");
 
@@ -311,7 +311,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				(borderRect, textRect) = GetRects(borderName, textName);
 				textRect.X.Should()
 					.BeApproximately(
-						borderRect.X + (borderRect.Width - textRect.Width)/2f,
+						borderRect.X + (borderRect.Width - textRect.Width) / 2f,
 						precision,
 						"X - center");
 				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - center");
@@ -457,7 +457,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser | Platform.Android)] // Test timed-out on iOS
+		[ActivePlatforms(Platform.Browser, Platform.Android)] // Test timed-out on iOS
 		public void When_TextAlignment_Then_Layout_Is_Correct()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_LayoutAlignment");
@@ -559,6 +559,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			const float precision = 26f; // On iOS he result is 148 and MacOS it's 146
 			textBlockHeight.Should().BeApproximately(expectedHeight, precision);
 			textBoxHeight.Should().BeApproximately(expectedHeight, precision);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)]
+		public void When_Foreground_Is_Brush()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.Foreground_Brushes");
+			var rect1 = _app.GetPhysicalRect("test1");
+			var rect2 = _app.GetPhysicalRect("test2");
+			var rect3 = _app.GetPhysicalRect("test3");
+			var rect4 = _app.GetPhysicalRect("test4");
+			using var screenshot = TakeScreenshot(nameof(When_Foreground_Is_Brush));
+			ImageAssert.HasColorAt(screenshot, rect1.X + 5, rect1.CenterY, Color.Blue, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, rect2.X + 5, rect2.CenterY, Color.Blue, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, rect3.X + 5, rect3.CenterY, Color.Blue, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, rect4.X + 5, rect4.CenterY, Color.Blue, tolerance: 30);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)]
+		public void When_Foreground_Is_Brush_Should_Take_Correct_Width()
+		{
+			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Width");
+			var rect = _app.GetPhysicalRect("TextBlockShouldContainRed");
+			using var screenshot = TakeScreenshot(nameof(When_Foreground_Is_Brush_Should_Take_Correct_Width));
+			ImageAssert.HasColorInRectangle(screenshot, rect.ToRectangle(), Color.Red, tolerance: 30);
 		}
 	}
 }

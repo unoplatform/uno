@@ -1,19 +1,8 @@
 ﻿using System;
 using System.Drawing;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-#endif
 
 namespace Uno.UI.Extensions
 {
@@ -79,8 +68,8 @@ namespace Uno.UI.Extensions
 					break;
 
 				case BringIntoViewMode.CenterOfViewPort:
-					x = boundsOfViewInScrollViewCoordinatesSystem.Left - (viewPort.Width/2) + (boundsOfViewInScrollViewCoordinatesSystem.Width/2);
-					y = boundsOfViewInScrollViewCoordinatesSystem.Top - (viewPort.Height/2) + (boundsOfViewInScrollViewCoordinatesSystem.Height/2);
+					x = boundsOfViewInScrollViewCoordinatesSystem.Left - (viewPort.Width / 2) + (boundsOfViewInScrollViewCoordinatesSystem.Width / 2);
+					y = boundsOfViewInScrollViewCoordinatesSystem.Top - (viewPort.Height / 2) + (boundsOfViewInScrollViewCoordinatesSystem.Height / 2);
 					break;
 
 				case BringIntoViewMode.BottomRightOfViewPort:

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	public abstract partial class Inline : TextElement
 	{
 		internal void InvalidateInlines(bool updateText)
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			switch (this.GetParent())
 			{
 				case Span span:
@@ -24,5 +24,15 @@ namespace Windows.UI.Xaml.Documents
 			}
 #endif
 		}
+
+#if __WASM__ || __NETSTD_REFERENCE__
+		protected override void OnFontFamilyChanged() => base.OnFontFamilyChanged();
+
+		protected override void OnFontStyleChanged() => base.OnFontStyleChanged();
+
+		protected override void OnFontWeightChanged() => base.OnFontWeightChanged();
+
+		protected override void OnFontSizeChanged() => base.OnFontSizeChanged();
+#endif
 	}
 }

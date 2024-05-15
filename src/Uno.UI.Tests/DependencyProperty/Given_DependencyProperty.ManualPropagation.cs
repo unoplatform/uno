@@ -2,9 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,10 +14,10 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.ManualPropagation
@@ -280,7 +279,8 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 			var state = new VisualState();
 			object stateDataContextValue = null;
-			state.DataContextChanged += (_, e) => {
+			state.DataContextChanged += (_, e) =>
+			{
 				stateDataContextValue = e.NewValue;
 			};
 
@@ -307,7 +307,8 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			var columnDefinition = new ColumnDefinition();
 
 			object columnDefinitionDataContextValue = null;
-			columnDefinition.DataContextChanged += (_, e) => {
+			columnDefinition.DataContextChanged += (_, e) =>
+			{
 				columnDefinitionDataContextValue = e.NewValue;
 			};
 
@@ -316,7 +317,8 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			var rowDefinition = new RowDefinition();
 
 			object rowDefinitionDataContextValue = null;
-			rowDefinition.DataContextChanged += (_, e) => {
+			rowDefinition.DataContextChanged += (_, e) =>
+			{
 				rowDefinitionDataContextValue = e.NewValue;
 			};
 
@@ -349,10 +351,11 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 		{
 			var grid = new Grid();
 
-			var brush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+			var brush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
 
 			object brushDataContextValue = null;
-			brush.DataContextChanged += (_, e) => {
+			brush.DataContextChanged += (_, e) =>
+			{
 				brushDataContextValue = e.NewValue;
 			};
 
@@ -360,10 +363,10 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 			grid.DataContext = new { a = "#FF00ff00" };
 
-			brush.SetBinding(Windows.UI.Xaml.Media.SolidColorBrush.ColorProperty, new Binding { Path = "a" });
+			brush.SetBinding(Microsoft.UI.Xaml.Media.SolidColorBrush.ColorProperty, new Binding { Path = "a" });
 
 			Assert.IsNotNull(brushDataContextValue);
-			Assert.AreEqual(Windows.UI.Colors.Lime, brush.Color);
+			Assert.AreEqual(Microsoft.UI.Colors.Lime, brush.Color);
 		}
 	}
 
@@ -417,9 +420,9 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 		// Using a DependencyProperty as the backing store for SubObject.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty SubObjectProperty =
 			DependencyProperty.Register(
-				"SubObject", 
+				"SubObject",
 				typeof(SubObject),
-				typeof(MyObject), 
+				typeof(MyObject),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					options: FrameworkPropertyMetadataOptions.LogicalChild,
@@ -472,7 +475,7 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		private static void OnPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if(dependencyObject is SubObject so)
+			if (dependencyObject is SubObject so)
 			{
 				so.MyPropertyCounter++;
 			}

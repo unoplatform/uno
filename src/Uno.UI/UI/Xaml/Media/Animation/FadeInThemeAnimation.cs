@@ -1,9 +1,9 @@
 ﻿using System;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class FadeInThemeAnimation : DoubleAnimation, ITimeline
 	{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty TargetNameProperty { get; } = DependencyProperty.Register(
-			"TargetName", typeof(string), typeof(FadeInThemeAnimation), new FrameworkPropertyMetadata(null));
+			"TargetName", typeof(string), typeof(FadeInThemeAnimation), new FrameworkPropertyMetadata(string.Empty));
 
 		public string TargetName
 		{

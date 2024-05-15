@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +16,7 @@ using Android.Graphics.Drawables;
 using Android.Graphics;
 using System.Globalization;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions.Specialized;
 
 namespace Uno.UI.Controls
@@ -26,33 +26,33 @@ namespace Uno.UI.Controls
 		private IOnGridViewItemClickListener _itemClickListener;
 		private Color _dividerColor;
 
-		private readonly List<View> _createdRows = new List<View>();
+		//private readonly List<View> _createdRows = new List<View>();
 
 		public GridViewAdapter(Android.Content.Context context)
 			: base(context)
 		{
 			_columnOrRowCount = 1;
-			Orientation = Windows.UI.Xaml.Controls.Orientation.Vertical;
+			Orientation = Microsoft.UI.Xaml.Controls.Orientation.Vertical;
 		}
 
 		private int _columnOrRowCount;
 
-		public int ColumnOrRowCount 
+		public int ColumnOrRowCount
 		{
-			get { return _columnOrRowCount; } 
-			set 
+			get { return _columnOrRowCount; }
+			set
 			{
 				_columnOrRowCount = value;
- 				NotifyDataSetChanged();
+				NotifyDataSetChanged();
 			}
 		}
 
-		public Windows.UI.Xaml.Controls.Orientation Orientation { get; set; }
+		public Microsoft.UI.Xaml.Controls.Orientation Orientation { get; set; }
 
 		public int VerticalSpacing { get; set; }
 		public int HorizontalSpacing { get; set; }
 		public Drawable Background { get; set; }
-		
+
 
 		public Color DividerColor
 		{
@@ -62,7 +62,7 @@ namespace Uno.UI.Controls
 
 		public override int Count
 		{
-			get 
+			get
 			{
 				var list = ItemsSource as IList;
 
@@ -97,12 +97,12 @@ namespace Uno.UI.Controls
 				? CreateRow(position, templateId)
 				: UpdateRow(position, templateId, convertLayout);
 
-			switch(Orientation)
+			switch (Orientation)
 			{
-				case Windows.UI.Xaml.Controls.Orientation.Vertical:
+				case Microsoft.UI.Xaml.Controls.Orientation.Vertical:
 					rowView.SetPadding(0, position == 0 ? 0 : VerticalSpacing, 0, 0);
 					break;
-				case Windows.UI.Xaml.Controls.Orientation.Horizontal:
+				case Microsoft.UI.Xaml.Controls.Orientation.Horizontal:
 					rowView.SetPadding(position == 0 ? 0 : HorizontalSpacing, 0, 0, 0);
 					break;
 			}
@@ -110,12 +110,12 @@ namespace Uno.UI.Controls
 			return rowView;
 		}
 
-		private View CreateRow(int rowIndex, int templateId) 
+		private View CreateRow(int rowIndex, int templateId)
 		{
 			var rowLayout = new LinearLayout(Context)
 			{
-				Orientation = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal 
-					? Android.Widget.Orientation.Vertical 
+				Orientation = Orientation == Microsoft.UI.Xaml.Controls.Orientation.Horizontal
+					? Android.Widget.Orientation.Vertical
 					: Android.Widget.Orientation.Horizontal,
 				WeightSum = ColumnOrRowCount,
 				LayoutParameters = new AbsListView.LayoutParams(AbsListView.LayoutParams.MatchParent, AbsListView.LayoutParams.MatchParent)
@@ -174,9 +174,9 @@ namespace Uno.UI.Controls
 				var view = convertView;
 				var source = GetRawItem(position);
 
-				if(view == null)
+				if (view == null)
 				{
-					var template = Windows.UI.Xaml.DataTemplateHelper.ResolveTemplate(
+					var template = Microsoft.UI.Xaml.DataTemplateHelper.ResolveTemplate(
 						this.ItemTemplate,
 						this.ItemTemplateSelector,
 						source,
@@ -220,7 +220,7 @@ namespace Uno.UI.Controls
 		{
 			var view = sender as View;
 
-			if(view != null) 
+			if (view != null)
 			{
 				var position = int.Parse(view.Tag.ToString(), CultureInfo.InvariantCulture);
 				_itemClickListener?.OnItemClick(position, GetRawItem(position), view);
@@ -231,7 +231,7 @@ namespace Uno.UI.Controls
 		{
 			var view = sender as View;
 
-			if(view != null) 
+			if (view != null)
 			{
 				var position = int.Parse(view.Tag.ToString(), CultureInfo.InvariantCulture);
 				_itemClickListener?.OnItemLongClick(position, GetRawItem(position), view);
@@ -241,23 +241,23 @@ namespace Uno.UI.Controls
 		private void SetItemLayout(View view, bool isLastColumnOrRow)
 		{
 			if (view != null)
-				{
-					LinearLayout.LayoutParams layoutParameters;
+			{
+				LinearLayout.LayoutParams layoutParameters;
 
 				switch (Orientation)
-					{
-						case Windows.UI.Xaml.Controls.Orientation.Vertical:
-							layoutParameters = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MatchParent, 1);
-							layoutParameters.SetMargins(0, 0, isLastColumnOrRow ? 0 : VerticalSpacing, 0);
-							break;
-						case Windows.UI.Xaml.Controls.Orientation.Horizontal:
-							layoutParameters = new LinearLayout.LayoutParams(0, 1, LinearLayout.LayoutParams.MatchParent);
-							layoutParameters.SetMargins(0, 0, 0, isLastColumnOrRow ? 0 : HorizontalSpacing);
-							break;
-						default:
-							layoutParameters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MatchParent, LinearLayout.LayoutParams.MatchParent);
-							break;
-					}
+				{
+					case Microsoft.UI.Xaml.Controls.Orientation.Vertical:
+						layoutParameters = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MatchParent, 1);
+						layoutParameters.SetMargins(0, 0, isLastColumnOrRow ? 0 : VerticalSpacing, 0);
+						break;
+					case Microsoft.UI.Xaml.Controls.Orientation.Horizontal:
+						layoutParameters = new LinearLayout.LayoutParams(0, 1, LinearLayout.LayoutParams.MatchParent);
+						layoutParameters.SetMargins(0, 0, 0, isLastColumnOrRow ? 0 : HorizontalSpacing);
+						break;
+					default:
+						layoutParameters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MatchParent, LinearLayout.LayoutParams.MatchParent);
+						break;
+				}
 
 				view.LayoutParameters = layoutParameters;
 			}

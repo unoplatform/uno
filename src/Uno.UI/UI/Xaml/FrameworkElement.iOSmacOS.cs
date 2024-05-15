@@ -17,7 +17,7 @@ using _View = AppKit.NSView;
 using ObjCRuntime;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
@@ -27,10 +27,17 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
-		public FrameworkElement()
+		protected FrameworkElement()
 		{
 			Initialize();
 		}
+
+		partial void OnLoadedPartial()
+		{
+			ReconfigureViewportPropagationPartial();
+		}
+
+		private partial void ReconfigureViewportPropagationPartial();
 
 		internal CGSize? XamlMeasure(CGSize availableSize)
 		{
@@ -66,8 +73,8 @@ namespace Windows.UI.Xaml
 
 		protected Size SizeFromUISize(CGSize size)
 		{
-			var width = nfloat.IsNaN(size.Width) ? float.PositiveInfinity : size.Width;
-			var height = nfloat.IsNaN(size.Height) ? float.PositiveInfinity : size.Height;
+			var width = nfloat.IsNaN(size.Width) ? double.PositiveInfinity : (double)size.Width;
+			var height = nfloat.IsNaN(size.Height) ? double.PositiveInfinity : (double)size.Height;
 
 			return new Size(width, height).PhysicalToLogicalPixels();
 		}
@@ -76,8 +83,8 @@ namespace Windows.UI.Xaml
 		{
 			var size = SizeFromUISize(rect.Size);
 			var location = new Point(
-				nfloat.IsNaN(rect.X) ? float.PositiveInfinity : rect.X,
-				nfloat.IsNaN(rect.Y) ? float.PositiveInfinity : rect.Y);
+				nfloat.IsNaN(rect.X) ? double.PositiveInfinity : (double)rect.X,
+				nfloat.IsNaN(rect.Y) ? double.PositiveInfinity : (double)rect.Y);
 
 			return new Rect(location.LogicalToPhysicalPixels(), size.LogicalToPhysicalPixels());
 		}

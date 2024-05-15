@@ -11,19 +11,22 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Uno.UI.Xaml.Rendering;
 using Uno.UI.Xaml.Core.Rendering;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
+using Uno.UI;
+using DirectUI;
+using Microsoft.UI.Input;
 
 //TODO:MZ: Handle parameters in/out
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public partial class FocusManager : IFocusManager
 	{
@@ -45,7 +48,7 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// Focused element's AutomationPeer.
 		/// </summary>
-		private AutomationPeer? _focusedAutomationPeer = null;
+		private AutomationPeer? _focusedAutomationPeer;
 
 		/// <summary>
 		/// Represents the focus target.
@@ -85,32 +88,32 @@ namespace Windows.UI.Xaml.Input
 		/// "first" tab.  This is deemed better than getting stuck at the end.
 		/// (Reverse "first" and "last" for Shift-Tab.)
 		/// </summary>
-		private bool _canTabOutOfPlugin =
+		private const bool _canTabOutOfPlugin =
 #if !__WASM__
 				false;
 #else
 				true; // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
 #endif
 
-		private bool _isPrevFocusTextControl = false;
+		private bool _isPrevFocusTextControl;
 
 		// TODO Uno: Control engagement is not yet properly supported.
 		/// <summary>
 		/// Represents the control which is focus-engaged.
 		/// </summary>
-		private Control? _engagedControl = null;
+		private Control? _engagedControl;
 
 		/// <summary>
 		/// Represents a value indicating whether focus is currently locked.
 		/// </summary>
-		private bool _focusLocked = false;
+		private bool _focusLocked;
 
 		/// <summary>
 		/// During Window Activation/Deactivation, we lock focus. However, focus can move internally via the focused element becoming
 		/// unfocusable (ie. leaving the tree or changing visibility). This member will force focus manager to bypass the _focusLocked logic.
 		/// This should be used with care... if used irresponsibly, we can enable unsupported reentrancy scenarios.
 		/// </summary>
-		private bool _ignoreFocusLock = false;
+		private bool _ignoreFocusLock;
 
 		/// <summary>
 		/// It is possible to continue with a focus operation, even though focus is locked. In this case, we need to ensure
@@ -121,13 +124,13 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// Represents a valud indicating whether we are still to provide the initial focus.
 		/// </summary>
-		private bool _initialFocus = false;
+		private bool _initialFocus;
 
 		/// <summary>
 		/// This represents the async operation that can initiated through a public async FocusManager method, such as TryFocusAsync.
 		/// We store it as a memeber because the operation can continue to run even after the api has finished executing.
 		/// </summary>
-		private FocusAsyncOperation? _asyncOperation = null;
+		private FocusAsyncOperation? _asyncOperation;
 
 		internal FocusManager(ContentRoot contentRoot)
 		{
@@ -150,6 +153,11 @@ namespace Windows.UI.Xaml.Input
 		/// Focus rect manager.
 		/// </summary>
 		internal FocusRectManager FocusRectManager => _focusRectManager;
+
+		/// <summary>
+		/// Gets a value indicating whether the user can tab out of plugin.
+		/// </summary>
+		internal bool CanTabOutOfPlugin => _canTabOutOfPlugin;
 
 		/// <summary>
 		/// Represents the control which is focus-engaged.
@@ -1724,7 +1732,7 @@ namespace Windows.UI.Xaml.Input
 
 			lastInputDeviceType = _contentRoot.InputManager.LastInputDeviceType;
 
-			if (lastInputDeviceType == InputDeviceType.GamepadOrRemote)
+			if (lastInputDeviceType == InputDeviceType.GamepadOrRemote && __LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available)
 			{
 				var pElementAsTextBox = newFocusTarget as TextBox;
 				if (pElementAsTextBox != null)
@@ -1862,7 +1870,7 @@ namespace Windows.UI.Xaml.Input
 			// TODO Uno specific: We need to do a full redraw, as render loop does not yet check for focus visuals rendering.
 			UpdateFocusRect(focusNavigationDirection, false);
 			FocusNative(_focusedElement as UIElement);
-			RootVisual.NotifyFocusChanged();
+			_contentRoot.InputManager.Pointers.NotifyFocusChanged(); // Note: This sounds like a duplicate of the NotifyFocusChanged done a few lines below (1944). We need to evaluate if this is still relevant or if we can just remove that uno-specific call.
 
 			// At this point the focused pointer has been switched.  So success is true
 			// even in the case we run into trouble raising the event(s) to notify as such.
@@ -1914,7 +1922,7 @@ namespace Windows.UI.Xaml.Input
 					// Raise the FocusManagerLostFocus event asynchronously
 					// TODO Uno: We raise the events using dispatcher queue, which is a bit different from MUX
 					// which does everything via EventManager
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						LostFocus?.Invoke(null, new FocusManagerLostFocusEventArgs(null, correlationId));
 					});
@@ -1926,7 +1934,7 @@ namespace Windows.UI.Xaml.Input
 				}
 				else
 				{
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						GotFocus?.Invoke(null, new FocusManagerGotFocusEventArgs(_focusedElement, correlationId));
 					});
@@ -2044,20 +2052,20 @@ namespace Windows.UI.Xaml.Input
 			{
 				// In the case of an IFocusable raise both <IFocusable>_LostFocus and UIElement_LostFocus.
 				// UIElement_LostFocus is used internally for to decide where focus rects should be rendered.
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					lostFocusElementFocusable.OnLostFocus(spLostFocusEventArgs);
 				});
 			}
 
 			// Raise the LostFocus event to the new focused element asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				(pLostFocusElement as UIElement)?.RaiseEvent(UIElement.LostFocusEvent, spLostFocusEventArgs);
 			});
 
 			// Raise the FocusManagerLostFocus event to the focus manager asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				LostFocus?.Invoke(null, spFocusManagerLostFocusEventArgs);
 			});
@@ -2166,20 +2174,20 @@ namespace Windows.UI.Xaml.Input
 
 			if (FocusableHelper.GetIFocusableForDO(pGotFocusElement) is IFocusable gotFocusElementFocusable)
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					gotFocusElementFocusable.OnGotFocus(spGotFocusEventArgs);
 				});
 			}
 
 			// Raise the GotFocus event to the new focused element asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				(pGotFocusElement as UIElement)?.RaiseEvent(UIElement.GotFocusEvent, spGotFocusEventArgs);
 			});
 
 			// Raise the FocusManagerGotFocus event to the focus manager asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				GotFocus?.Invoke(null, spFocusManagerGotFocusEventArgs);
 			});
@@ -2467,7 +2475,7 @@ namespace Windows.UI.Xaml.Input
 			// don't draw focus rect for disabled FE(Got focus because of AllowFocusWhenDisabled is set)
 			if (candidate is FrameworkElement candidateAsFrameworkElement
 				&& candidateAsFrameworkElement.AllowFocusWhenDisabled
-				&& !candidateAsFrameworkElement.IsEnabled)
+				&& candidateAsFrameworkElement is Control { IsEnabled: false })
 			{
 				return null;
 			}
@@ -2598,9 +2606,7 @@ namespace Windows.UI.Xaml.Input
 		private void OnAccessKeyDisplayModeChanged()
 		{
 			// We should update the caret to visible/collapsed depending on if AK mode is active
-			var pTextBox = _focusedElement as TextBox;
-
-			if (pTextBox != null)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available && _focusedElement is TextBox pTextBox)
 			{
 				//TODO Uno: We don't support caret show/hide in TextBoxView yet
 				//pTextBox.GetView().ShowOrHideCaret();
@@ -3056,7 +3062,7 @@ namespace Windows.UI.Xaml.Input
 					{
 						// TODO Uno: We raise the events using dispatcher queue, which is a bit different from MUX
 						// which does everything via EventManager
-						CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+						_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 						{
 							// In the case of hyperlink raise both Hyperlink_GotFocus and UIElement_GotFocus. UIElement_GotFocus
 							// is used internally for to decide where focus rects should be rendered.
@@ -3131,7 +3137,7 @@ namespace Windows.UI.Xaml.Input
 
 					// TODO Uno: We raise the events using dispatcher queue, which is a bit different from MUX
 					// which does everything via EventManager
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						// In the case of hyperlink raise both Hyperlink_LostFocus and UIElement_LostFocus. UIElement_LostFocus
 						// is used internally for to decide where focus rects should be rendered.

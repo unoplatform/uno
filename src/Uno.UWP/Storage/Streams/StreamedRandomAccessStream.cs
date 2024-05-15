@@ -34,7 +34,7 @@ namespace Windows.Storage.Streams
 			}
 
 			var file = loader?.File ?? uploader!.File;
-			if (uploader?.File is {} upFile && file != upFile)
+			if (uploader?.File is { } upFile && file != upFile)
 			{
 				throw new InvalidOperationException(
 					"If StreamedRandomAccessStream can be Read and Write, "
@@ -43,12 +43,12 @@ namespace Windows.Storage.Streams
 
 			_temp = file.Open(FileAccess.ReadWrite);
 
-			if (_loader is {})
+			if (_loader is { })
 			{
 				_input = new StreamedInputStream(_temp, _loader);
 			}
 
-			if (_uploader is {})
+			if (_uploader is { })
 			{
 				_output = new StreamedOutputStream(_temp, _uploader);
 			}
@@ -58,7 +58,7 @@ namespace Windows.Storage.Streams
 		public string ContentType => _contentType ?? _loader?.ContentType ?? "application/octet-stream";
 
 		/// <inheritdoc />
-		public bool CanRead => _input is {};
+		public bool CanRead => _input is { };
 
 		/// <inheritdoc />
 		public bool CanWrite => _output is { };

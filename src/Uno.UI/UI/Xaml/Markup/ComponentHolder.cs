@@ -2,7 +2,7 @@
 
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Markup
+namespace Microsoft.UI.Xaml.Markup
 {
 	/// <summary>
 	/// Reference holder for XAML generated x:Name and other markup elements.
@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Markup
 	public class ComponentHolder
 	{
 		private ManagedWeakReference? _instanceRef;
-		private object? _instance; 
+		private object? _instance;
 
 		/// <summary>
 		/// Creates an instance of ComponentHolder

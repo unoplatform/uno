@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +11,7 @@ namespace Windows.Phone.Devices.Notification
 	public partial class VibrationDevice
 	{
 		private const int PopSoundId = 1520;
-		private static VibrationDevice _instance = null;
+		private static VibrationDevice _instance;
 
 		private VibrationDevice()
 		{
@@ -26,7 +25,7 @@ namespace Windows.Phone.Devices.Notification
 		/// we can produce only very short vibration and one second vibration
 		/// </summary>
 		/// <param name="duration"></param>
-		public async void Vibrate(TimeSpan duration)
+		public void Vibrate(TimeSpan duration)
 		{
 			if (duration.TotalMilliseconds < 200)
 			{
@@ -40,4 +39,3 @@ namespace Windows.Phone.Devices.Notification
 		}
 	}
 }
-#endif

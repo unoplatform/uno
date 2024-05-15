@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
-	public  partial interface ICompositionSurface 
+	public partial interface ICompositionSurface
 	{
 	}
 }

@@ -10,8 +10,8 @@
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:android="http://uno.ui/android"
-	xmlns:xamarin="http://uno.ui/xamarin"
-	mc:Ignorable="d ios android xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d ios android not_win"
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
@@ -27,7 +27,7 @@
 			</Grid.RenderTransform>
 			<Button HorizontalAlignment="Right"
 					VerticalAlignment="Top"
-							xamarin:Style="{StaticResource XamlDefaultButton}"
+							not_win:Style="{StaticResource XamlDefaultButton}"
 					Click="OnButtonClicked">
 				<Border Width="40"
 						Height="60"

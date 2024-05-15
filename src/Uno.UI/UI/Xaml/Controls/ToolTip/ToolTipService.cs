@@ -1,11 +1,18 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
+using Windows.System;
 
-namespace Windows.UI.Xaml.Controls
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ToolTipService
 	{
@@ -18,8 +25,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ToolTipService),
 				new FrameworkPropertyMetadata(default, OnToolTipChanged));
 
-		public static object GetToolTip(DependencyObject obj) => obj.GetValue(ToolTipProperty);
-		public static void SetToolTip(DependencyObject obj, object value) => obj.SetValue(ToolTipProperty, value);
+		public static object GetToolTip(DependencyObject element) => element.GetValue(ToolTipProperty);
+		public static void SetToolTip(DependencyObject element, object value) => element.SetValue(ToolTipProperty, value);
 
 		#endregion
 		#region DependencyProperty: Placement
@@ -30,8 +37,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(ToolTipService),
 			new FrameworkPropertyMetadata(PlacementMode.Top, OnPlacementChanged));
 
-		public static PlacementMode GetPlacement(DependencyObject obj) => (PlacementMode)obj.GetValue(PlacementProperty);
-		public static void SetPlacement(DependencyObject obj, PlacementMode value) => obj.SetValue(PlacementProperty, value);
+		public static PlacementMode GetPlacement(DependencyObject element) => (PlacementMode)element.GetValue(PlacementProperty);
+		public static void SetPlacement(DependencyObject element, PlacementMode value) => element.SetValue(PlacementProperty, value);
 
 		#endregion
 		#region DependencyProperty: ToolTipReference
@@ -167,6 +174,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				owner.PointerEntered += OnPointerEntered;
 				owner.PointerExited += OnPointerExited;
+				owner.Tapped += OnTapped;
+				owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+				if (owner is ButtonBase)
+				{
+					owner.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
+				}
 				var token = owner.RegisterPropertyChangedCallback(UIElement.VisibilityProperty, OnOwnerVisibilityChanged);
 				toolTip.OwnerVisibilitySubscription = Disposable.Create(() =>
 				{
@@ -182,6 +195,12 @@ namespace Windows.UI.Xaml.Controls
 				toolTip.IsOpen = false;
 				owner.PointerEntered -= OnPointerEntered;
 				owner.PointerExited -= OnPointerExited;
+				owner.Tapped -= OnTapped;
+				owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+				if (owner is ButtonBase)
+				{
+					owner.RemoveHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed));
+				}
 				toolTip.OwnerVisibilitySubscription?.Dispose();
 				toolTip.OwnerVisibilitySubscription = null;
 			}
@@ -220,6 +239,44 @@ namespace Windows.UI.Xaml.Controls
 			{
 				toolTip.IsOpen = false;
 				toolTip.CurrentHoverId++;
+			}
+		}
+
+		private static void OnTapped(object sender, TappedRoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				toolTip.IsOpen = false;
+				toolTip.CurrentHoverId++;
+			}
+		}
+
+		private static void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				switch (args.Key)
+				{
+					case VirtualKey.Up:
+					case VirtualKey.Down:
+					case VirtualKey.Left:
+					case VirtualKey.Right:
+						return;
+				}
+				toolTip.IsOpen = false;
+				toolTip.CurrentHoverId++;
+			}
+		}
+
+		private static void OnPointerPressed(object sender, PointerRoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
+				{
+					toolTip.IsOpen = false;
+					toolTip.CurrentHoverId++;
+				}
 			}
 		}
 	}

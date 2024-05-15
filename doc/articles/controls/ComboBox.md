@@ -1,21 +1,23 @@
-# ComboBox in Uno.UI
+---
+uid: Uno.Controls.ComboBox
+---
 
-The `ComboBox` is designed to select a value in a set of items. For more info about its usage, 
-[please refer the microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/combo-box)
+# ComboBox
 
-## Customize the placement of the Drop-Down **UNO ONLY feature**
+The `ComboBox` is designed to select a value in a set of items. For more information about its usage, see [Combo box and list box Microsoft documentation](https://learn.microsoft.com/windows/apps/design/controls/combo-box).
 
-By default when opening a combo, UWP aligns the drop down in order to keep the selected item at the same location.
-So it means that if the currently selected value is the last one in the list, the drop down will appear above the `ComboBox`.
-If there isn't any selected item, the drop down will appear centered over the `ComboBox`.
+## Customize the placement of the Drop-Down (UNO-only feature)
 
-On Uno you can change this behavior.
+By default, when opening a `ComboBox`, WinUI aligns its drop-down to keep the selected item at the same location. This means that, if the currently selected value is the last one in the list, the drop-down will appear above the `ComboBox`.
+If there isn't any selected item, the drop-down will appear centered over the `ComboBox`.
 
-### Change the default value for all the `ComboBox` in you application
+On Uno, you can change this behavior using `DefaultDropDownPreferredPlacement` or `DropDownPreferredPlacement`.
 
-The default placement for all `ComboBox` instances can be changed by setting the feature flag in the startup of your app (app.xaml.cs) :
+### Change the default value for all the `ComboBox` in your application
 
-```cs
+The default placement for all `ComboBox` instances can be changed by setting the feature flag in the startup of your app (`App.cs` or `App.xaml.cs`):
+
+```csharp
 Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement = DropDownPlacement.Below;
 ```
 
@@ -23,12 +25,12 @@ Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement = DropDow
 
 ```xml
 <Page
-	[...]
-	xmlns:not_win="using:Uno.UI.Xaml.Controls"
+    [...]
+    xmlns:not_win="using:Uno.UI.Xaml.Controls"
     mc:Ignorable="d not_win">
 
-	<ComboBox
-		ItemsSource="12345"
-		not_win:ComboBox.DropDownPreferredPlacement="Below" />
+    <ComboBox
+        ItemsSource="12345"
+        not_win:ComboBox.DropDownPreferredPlacement="Below" />
 
 ```

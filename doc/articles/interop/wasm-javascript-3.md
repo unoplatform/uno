@@ -1,18 +1,22 @@
+---
+uid: Uno.Interop.WasmJavaScript3
+---
+
 # Embedding Existing JavaScript Components Into Uno-WASM - Part 3
 
 In the previous article, a simple _syntax highlighter_ was used to enhance the display of text in HTML. But it is not enough for most apps: it's often required for JavaScript components to call back into the C# side of application. The easiest way to do that in Uno for WebAssembly is by using [_DOM Events_](https://developer.mozilla.org/docs/Web/Guide/Events/Creating_and_triggering_events). Applications using Uno can [consume DOM Events and CustomEvents](https://platform.uno/docs/articles/wasm-custom-events.html) very easily.
 
 Let's create an application illustrating how to use this feature.
 
-# Integration of Flatpickr - Callback to app from JavaScript
+## Integration of Flatpickr - Callback to app from JavaScript
 
 📝 [Flatpickr](https://flatpickr.js.org/) is a lightweight, self-contained date and time picker. It is an easy way to explore how JavaScript-side code can call back to the managed application using a `CustomEvent`. In this case, this will be used to report when the picker is opened and a date and time was picked.
 
-## 0. Before starting
+### 0. Before starting
 
 📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](https://platform.uno/docs/articles/get-started.html).
 
-## 1. Create the solution in Visual Studio
+### 1. Create the solution in Visual Studio
 
 📝 This part is very short because it is similar to the previous article ([part 2](wasm-javascript-2.md)):
 
@@ -21,7 +25,7 @@ Let's create an application illustrating how to use this feature.
 3. Update to latest _stable_ version of `Uno.*` dependencies.
 4. Compile & Run to make sure everything works.
 
-## 2. Inject Flatpickr from CDN
+### 2. Inject Flatpickr from CDN
 
 🎯 This section is using a CDN to get Flatpickr instead of hosting the JavaScript directly in the application. It is not always the best solution as it creates a dependency on the Internet availability. Any change made server-side could break the application.
 
@@ -53,11 +57,11 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    </ItemGroup>
    ```
 
-## 3. Uno controls and XAML
+### 3. Uno controls and XAML
 
 🎯 This section is creating a control used in the XAML. It will activate `Flatpickr` on the control's `<input>` element.
 
-1. Create a `FlatpickrView.cs` class in the `.Shared` project like this:
+1. Create a `FlatpickrView.cs` class in the `[MyApp]` project like this:
 
    ``` csharp
    using System;
@@ -128,8 +132,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    }
    ```
 
-
-2. Change the `MainPage.xaml` in the `.Shared` project like this:
+2. Change the `MainPage.xaml` in the `[MyApp]` project like this:
 
    ``` xml
    <Page
@@ -144,7 +147,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    
        <StackPanel Spacing="10" Padding="20">
          <TextBlock FontSize="15">
-   		   Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
+        Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
             <LineBreak />Picked Date/Time: <Run FontSize="20" FontWeight="Bold" Text="{Binding SelectedDateTime, ElementName=picker}" />
          </TextBlock>
          <TextBlock FontSize="20">Flatpickr control:</TextBlock>
@@ -160,7 +163,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 📝 Almost there, still need to _call back_ to the managed code portion of the application.
 
-## 4. Add a way to call managed code from JavaScript
+### 4. Add a way to call managed code from JavaScript
 
 🎯 This section will use `CustomEvent` to route Flatpickr's events to managed code.
 
@@ -226,21 +229,26 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
    ![Final result](assets/flatpickr-final.gif)
 
-## Troubleshooting
+### Troubleshooting
+
 If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
 
-### My JavaScript control does not accept pointer input
+#### My JavaScript control does not accept pointer input
+
 In the constructor of your wrapper control, add the following:
-```
+
+```csharp
 // XAML behavior: a non-null background is required on an element to be "visible to pointers".
 // Uno reproduces this behavior, so we must set it here even if we're not using the background.
 // Not doing this will lead to a `pointer-events: none` CSS style on the control.
 Background = new SolidColorBrush(Colors.Transparent);
 ```
 
-### `TextBlock` content is not visible in browsers with the dark theme
+#### `TextBlock` content is not visible in browsers with the dark theme
+
 `TextBlock` defaults the text color as White correctly but `Page` background needs to be set correctly.
-```
+
+```xml
 <Page 
     ...
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

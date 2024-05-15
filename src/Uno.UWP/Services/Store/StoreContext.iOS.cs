@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
@@ -13,6 +12,8 @@ namespace Windows.Services.Store
 {
 	public sealed partial class StoreContext
 	{
+		private static HttpClient _httpClient;
+
 		public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
 		{
 			return AsyncOperation.FromTask(async ct =>
@@ -22,10 +23,10 @@ namespace Windows.Services.Store
 					var bundleId = NSBundle.MainBundle.BundleIdentifier;
 					var url = $"http://itunes.apple.com/lookup?bundleId={bundleId}";
 
-					var httpClient = new HttpClient();
-					var json = await httpClient.GetStringAsync(url);
+					_httpClient ??= new HttpClient();
+					var json = await _httpClient.GetStringAsync(url);
 
-					var regex = new Regex("trackId[^0-9]*([0-9]*)");
+					var regex = TrackParser();
 					var match = regex.Match(json);
 					if (!match.Success)
 					{
@@ -52,6 +53,8 @@ namespace Windows.Services.Store
 				}
 			});
 		}
+
+		[GeneratedRegex("trackId[^0-9]*([0-9]*)")]
+		private static partial Regex TrackParser();
 	}
 }
-#endif

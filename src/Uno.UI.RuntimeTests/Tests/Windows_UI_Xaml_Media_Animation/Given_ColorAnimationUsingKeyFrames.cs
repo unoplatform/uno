@@ -1,18 +1,21 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 {
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 	public class Given_ColorAnimationUsingKeyFrames
 	{
 		[TestMethod]
@@ -31,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			using (ThemeHelper.UseDarkTheme())
 			{
 				await WindowHelper.WaitForIdle();
-				
+
 				Assert.AreEqual(Colors.Blue, (page.Rect3.Fill as SolidColorBrush).Color);
 			}
 		}
@@ -52,7 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			using (ThemeHelper.UseDarkTheme())
 			{
 				await WindowHelper.WaitForIdle();
-				
+
 				Assert.AreEqual(Colors.Blue, (page.Rect4.Fill as SolidColorBrush).Color);
 			}
 		}

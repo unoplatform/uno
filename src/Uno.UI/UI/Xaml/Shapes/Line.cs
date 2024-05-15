@@ -1,26 +1,9 @@
-﻿#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
-#define LEGACY_SHAPE_MEASURE
-#endif
+﻿using Windows.Foundation;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Line
-#if LEGACY_SHAPE_MEASURE
-		: ArbitraryShapeBase
-#endif
 	{
-		public Line()
-		{
-			InitializePartial();
-		}
-
-		partial void InitializePartial();
-
 		#region X1 (DP)
 		public double X1
 		{
@@ -35,9 +18,6 @@ namespace Windows.UI.Xaml.Shapes
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
-#if LEGACY_SHAPE_MEASURE
-				, propertyChangedCallback: OnX1PropertyChanged
-#endif
 			)
 		);
 		#endregion
@@ -56,9 +36,6 @@ namespace Windows.UI.Xaml.Shapes
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
-#if LEGACY_SHAPE_MEASURE
-				, propertyChangedCallback: OnX2PropertyChanged
-#endif
 			)
 		);
 		#endregion
@@ -77,9 +54,6 @@ namespace Windows.UI.Xaml.Shapes
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
-#if LEGACY_SHAPE_MEASURE
-				, propertyChangedCallback: OnY1PropertyChanged
-#endif
 			)
 		);
 		#endregion
@@ -98,65 +72,13 @@ namespace Windows.UI.Xaml.Shapes
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
-#if LEGACY_SHAPE_MEASURE
-				, propertyChangedCallback: OnY2PropertyChanged
-#endif
 			)
 		);
 		#endregion
 
-#if LEGACY_SHAPE_MEASURE
-
-		private static void OnX1PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is Line line)
-			{
-				line.OnX1PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
-			}
-		}
-		partial void OnX1PropertyChangedPartial(double oldValue, double newValue);
-
-		private static void OnX2PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is Line line)
-			{
-				line.OnX2PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
-			}
-		}
-		partial void OnX2PropertyChangedPartial(double oldValue, double newValue);
-
-		private static void OnY1PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is Line line)
-			{
-				line.OnY1PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
-			}
-		}
-
-		partial void OnY1PropertyChangedPartial(double oldValue, double newValue);
-
-		private static void OnY2PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is Line line)
-			{
-				line.OnY2PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
-			}
-		}
-
-		partial void OnY2PropertyChangedPartial(double oldValue, double newValue);
-
-		protected internal override IEnumerable<object> GetShapeParameters()
-		{
-			yield return X1;
-			yield return X2;
-			yield return Y1;
-			yield return Y2;
-
-			foreach (var p in base.GetShapeParameters())
-			{
-				yield return p;
-			}
-		}
+#if __NETSTD_REFERENCE__
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
 #endif
 	}
 }

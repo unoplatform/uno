@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Uno.UI.DataBinding;
 using System.Collections.Generic;
 using Uno.Extensions;
@@ -11,30 +11,28 @@ using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Describes the changes made to a dependency property
 	/// </summary>
-	public partial class DependencyPropertyChangedEventArgs : EventArgs
+	public sealed partial class DependencyPropertyChangedEventArgs : EventArgs
 	{
 		internal DependencyPropertyChangedEventArgs(
-            DependencyProperty property,
+			DependencyProperty property,
 			object oldValue,
 			DependencyPropertyValuePrecedences oldPrecedence,
 			object newValue,
 			DependencyPropertyValuePrecedences newPrecedence,
 			bool bypassesPropagation = false)
 		{
-            Property = property;
+			Property = property;
 			OldValue = oldValue;
 			OldPrecedence = oldPrecedence;
 			NewValue = newValue;
@@ -89,9 +87,9 @@ namespace Windows.UI.Xaml
 			private set;
 		}
 
-        public DependencyProperty Property
-        {
-            get;
-        }
-    }
+		public DependencyProperty Property
+		{
+			get;
+		}
+	}
 }

@@ -66,14 +66,22 @@ namespace Windows.Media {
 		private onResult = (event: SpeechRecognitionEvent) => {
 			if (event.results[0].isFinal) {
 				if (!SpeechRecognizer.dispatchResult) {
-					SpeechRecognizer.dispatchResult = (<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchResult");
+					if ((<any>globalThis).DotnetExports !== undefined) {
+						SpeechRecognizer.dispatchResult = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchResult;
+					} else {
+						SpeechRecognizer.dispatchResult = (<any>Module).mono_bind_static_method(
+							"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchResult");
+					}
 				}
 				SpeechRecognizer.dispatchResult(this.managedId, event.results[0][0].transcript, event.results[0][0].confidence);
 			} else {
 				if (!SpeechRecognizer.dispatchHypothesis) {
-					SpeechRecognizer.dispatchHypothesis = (<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchHypothesis");
+					if ((<any>globalThis).DotnetExports !== undefined) {
+						SpeechRecognizer.dispatchHypothesis = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchHypothesis;
+					} else {
+						SpeechRecognizer.dispatchHypothesis = (<any>Module).mono_bind_static_method(
+							"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchHypothesis");
+					}
 				}
 				SpeechRecognizer.dispatchHypothesis(this.managedId, event.results[0][0].transcript);
 			}
@@ -81,16 +89,24 @@ namespace Windows.Media {
 
 		private onSpeechStart = () => {
 			if (!SpeechRecognizer.dispatchStatus) {
-				SpeechRecognizer.dispatchStatus = (<any>Module).mono_bind_static_method(
-					"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchStatus");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					SpeechRecognizer.dispatchStatus = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchStatus;
+				} else {
+					SpeechRecognizer.dispatchStatus = (<any>Module).mono_bind_static_method(
+						"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchStatus");
+				}
 			}
 			SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected")
 		}
 
 		private onError = (event: SpeechSynthesisErrorEvent) => {
 			if (!SpeechRecognizer.dispatchError) {
-				SpeechRecognizer.dispatchError = (<any>Module).mono_bind_static_method(
-					"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					SpeechRecognizer.dispatchError = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchError;
+				} else {
+					SpeechRecognizer.dispatchError = (<any>Module).mono_bind_static_method(
+						"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");
+				}
 			}
 			SpeechRecognizer.dispatchError(this.managedId, event.error);
 		}

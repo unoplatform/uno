@@ -1,4 +1,4 @@
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Uno.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
@@ -8,9 +8,9 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
-	public  partial class RightTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
+	public partial class RightTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly UIElement _originalSource;
 		private readonly Point _position;
@@ -22,11 +22,14 @@ namespace Windows.UI.Xaml.Input
 			_originalSource = originalSource;
 			_position = args.Position;
 			PointerDeviceType = args.PointerDeviceType;
+			PointerId = args.PointerId;
 		}
 
 		public bool Handled { get; set; }
 
 		public PointerDeviceType PointerDeviceType { get; }
+
+		internal uint PointerId { get; }
 
 		public Point GetPosition(UIElement relativeTo)
 		{

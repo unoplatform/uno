@@ -16,7 +16,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	// This file is aimed to implement methods that should be implemented by the ModernCollectionBasePanel which is not present in Uno
 
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			// MinValue: We make sure to have the LastIndex lower than FirstIndex so enumerating from FirstIndex to i ** <= ** LastIndex
 			// (like in ForeachChildInPanel) we make sure to not consider -1 as a valid index.
-			internal int LastIndex { get; private set; } = int.MinValue; 
+			internal int LastIndex { get; private set; } = int.MinValue;
 
 			private bool IsInRange(int itemIndex)
 				=> itemIndex >= FirstIndex && itemIndex <= LastIndex;
@@ -77,7 +77,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_entries.Clear();
 				FirstIndex = -1;
 				LastIndex = int.MinValue;
-
+				_generationRecyclableBefore = default;
+				_generationUnusedInRange = default;
+				_generationRecyclableAfter = default;
 				_generationStartIndex = -1;
 				_generationCurrentIndex = -1;
 				_generationEndIndex = -1;
@@ -98,17 +100,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_generationEndIndex = endIndex;
 				_generationState = GenerationState.Before;
 
-				// Note: Fist and Last indexes are INCLUSIVE
-				startIndex = Math.Max(FirstIndex, startIndex);
-				endIndex = Math.Min(LastIndex, endIndex);
-
-				if (endIndex < 0)
-				{
-					return; // Cache is empty
-				}
-
-				var startEntryIndex = Math.Min(GetEntryIndex(startIndex), _entries.Count);
-				var endEntryIndex = Math.Max(0, GetEntryIndex(endIndex) + 1);
+				var startEntryIndex = Math.Max(0, Math.Min(GetEntryIndex(startIndex), _entries.Count));
+				var endEntryIndex = Math.Max(0, Math.Min(GetEntryIndex(endIndex) + 1, _entries.Count));
 
 				// Since the _generationEndIndex is only an estimation, we might have some items that was not flagged as recyclable which are not going to be not used.
 				// The easiest solution is to track them using the _generationUnusedInRange.
@@ -201,7 +194,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				switch (_generationState)
 				{
 					case GenerationState.Before when index >= FirstIndex:
-						if (index > LastIndex)
+						if (index > LastIndex || _generationUnusedInRange.count <= 0)
 						{
 							_generationState = GenerationState.After;
 							goto after;
@@ -211,75 +204,74 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							_generationState = GenerationState.InRange;
 							goto inRange;
 						}
-					case GenerationState.InRange when index > LastIndex
-						|| GetEntryIndex(index) >= _generationRecyclableAfter.at + _generationRecyclableAfter.count: // Unfortunately we had already recycled that container, we need to create a new one!
+					case GenerationState.InRange when _generationUnusedInRange.count <= 0: // Unfortunately we had already recycled all containers, we need to create new ones!
 						_generationState = GenerationState.After;
 						goto after;
 
 					case GenerationState.InRange:
 					inRange:
-					{
-						var entryIndex = GetEntryIndex(index);
-						var entry = _entries[entryIndex];
-
-						if (entryIndex == _generationRecyclableAfter.at && _generationRecyclableAfter.count > 0)
 						{
-							// Finally a container which was eligible for recycling is still valid ... we saved it in extremis!
-							_generationRecyclableAfter.at++;
-							_generationRecyclableAfter.count--;
-						}
-						else
-						{
-							_generationUnusedInRange.at++;
-							_generationUnusedInRange.count--;
-						}
+							var entryIndex = GetEntryIndex(index);
+							var entry = _entries[entryIndex];
 
-						global::System.Diagnostics.Debug.Assert(entry.Index == index);
+							if (entryIndex == _generationRecyclableAfter.at && _generationRecyclableAfter.count > 0)
+							{
+								// Finally a container which was eligible for recycling is still valid ... we saved it in extremis!
+								_generationRecyclableAfter.at++;
+								_generationRecyclableAfter.count--;
+							}
+							else
+							{
+								_generationUnusedInRange.at++;
+								_generationUnusedInRange.count--;
+							}
 
-						return (entry, CacheEntryKind.Kept);
-					}
+							global::System.Diagnostics.Debug.Assert(entry.Index == index);
+
+							return (entry, CacheEntryKind.Kept);
+						}
 
 					case GenerationState.Before:
 					case GenerationState.After:
 					after:
-					{
-						var item = _host![index];
-
-						CacheEntry entry;
-						CacheEntryKind kind;
-						if (_generationRecyclableBefore.count > 0)
 						{
-							entry = _entries[_generationRecyclableBefore.at];
-							kind = CacheEntryKind.Recycled;
+							var item = _host![index];
 
-							_generationRecyclableBefore.at++;
-							_generationRecyclableBefore.count--;
+							CacheEntry entry;
+							CacheEntryKind kind;
+							if (_generationRecyclableBefore.count > 0)
+							{
+								entry = _entries[_generationRecyclableBefore.at];
+								kind = CacheEntryKind.Recycled;
+
+								_generationRecyclableBefore.at++;
+								_generationRecyclableBefore.count--;
+							}
+							else if (_generationRecyclableAfter.count > 0)
+							{
+								entry = _entries[_generationRecyclableAfter.at + _generationRecyclableAfter.count - 1];
+								kind = CacheEntryKind.Recycled;
+
+								_generationRecyclableAfter.count--;
+
+								global::System.Diagnostics.Debug.Assert(entry.Index > index || _generationUnusedInRange.count == 0);
+							}
+							else
+							{
+								var container = (UIElement)_host.GetContainerForItem(item, null);
+								entry = new CacheEntry(container);
+								kind = CacheEntryKind.New;
+
+								_entries.Add(entry);
+							}
+
+							entry.Index = index;
+							entry.Item = item;
+
+							_host.PrepareItemContainer(entry.Container, item);
+
+							return (entry, kind);
 						}
-						else if (_generationRecyclableAfter.count > 0)
-						{
-							entry = _entries[_generationRecyclableAfter.at + _generationRecyclableAfter.count - 1];
-							kind = CacheEntryKind.Recycled;
-
-							_generationRecyclableAfter.count--;
-
-							global::System.Diagnostics.Debug.Assert(entry.Index > index);
-						}
-						else
-						{
-							var container = (UIElement)_host.GetContainerForItem(item, null);
-							entry = new CacheEntry(container);
-							kind = CacheEntryKind.New;
-
-							_entries.Add(entry);
-						}
-
-						entry.Index = index;
-						entry.Item = item;
-
-						_host.PrepareItemContainer(entry.Container, item);
-
-						return (entry, kind);
-					}
 				}
 
 				throw new InvalidOperationException("Non reachable case.");
@@ -345,6 +337,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private CalendarLayoutStrategy? _layoutStrategy;
 		private CalendarViewGeneratorHost? _host;
 		private Rect _effectiveViewport;
+		private bool _hasEffectiveViewport;
 		private Rect _lastLayoutedViewport = Rect.Empty;
 
 		private void base_Initialize()
@@ -449,6 +442,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				// Makes sure the container of the requested date is materialized before the end of this method
 				base_MeasureOverride(_lastLayoutedViewport.Size);
+				// We then invalidate arrange to make sure the containers are properly rendered, but async.
+				InvalidateArrange();
 			}
 		}
 
@@ -735,13 +730,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return finalSize;
 		}
-#endregion
+		#endregion
 
 		private static void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 			=> (sender as CalendarPanel)?.OnEffectiveViewportChanged(args);
 
 		private void OnEffectiveViewportChanged(EffectiveViewportChangedEventArgs args)
 		{
+			if (_hasEffectiveViewport && args.EffectiveViewport.IsEmpty)
+			{
+				// The panel is not visible at all, don't update the _effectiveLayout so any measure/arrange path would keep the current values.
+				// This also prevent a useless InvalidateMeasure() that causes lags but also implicit scroll (and header update) to the January 19XX.
+				return;
+			}
+
 			_effectiveViewport = args.EffectiveViewport;
 
 			if (_host is null || _layoutStrategy is null)
@@ -750,7 +752,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			var needsMeasure = ForceConfigViewport(GetLayoutViewport().Size);
-			if (needsMeasure || Math.Abs(_effectiveViewport.Y - _lastLayoutedViewport.Y) > (_lastLayoutedViewport.Height / Rows) * .75)
+			_hasEffectiveViewport = true;
+
+			if (!args.EffectiveViewport.IsEmpty
+				&& (needsMeasure || Math.Abs(_effectiveViewport.Y - _lastLayoutedViewport.Y) > (_lastLayoutedViewport.Height / Rows) * .75))
 			{
 				InvalidateMeasure();
 			}
@@ -793,7 +798,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public int TotalItemsCount => Host?.Count ?? 0;
 
-		public int TotalGroupCount = 0;
+		public int TotalGroupCount;
 
 		// Uno only
 		private readonly CalendarPanel _owner;

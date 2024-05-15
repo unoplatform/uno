@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
@@ -15,6 +15,12 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 		{
 			myTextBox.Focus(FocusState.Programmatic);
 			myTextBox.Select((int)startNumber.Value, (int)lengthNumber.Value);
+		}
+
+		private void SelectReadOnly_OnClick(object sender, RoutedEventArgs args)
+		{
+			MyReadOnlyTextBox.Focus(FocusState.Programmatic);
+			MyReadOnlyTextBox.Select((int)startNumber.Value, (int)lengthNumber.Value);
 		}
 
 		private void SelectAll_OnClick(object sender, RoutedEventArgs args)

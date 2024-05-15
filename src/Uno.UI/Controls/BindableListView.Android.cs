@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +15,8 @@ using System.Windows.Input;
 using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Core;
 
 namespace Uno.UI.Controls
@@ -52,7 +52,7 @@ namespace Uno.UI.Controls
 			base.OnAttachedToWindow();
 
 			SetupItemClickListener();
-        }
+		}
 
 		protected override void OnDetachedFromWindow()
 		{
@@ -107,7 +107,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static DependencyProperty ItemsSourceProperty { get ; } =
+		public static DependencyProperty ItemsSourceProperty { get; } =
 			DependencyProperty.Register("ItemsSource", typeof(object), typeof(BindableListView), new FrameworkPropertyMetadata(null, OnItemsSourceChanged));
 
 		private static void OnItemsSourceChanged(object d, DependencyPropertyChangedEventArgs e)
@@ -118,7 +118,7 @@ namespace Uno.UI.Controls
 			{
 				if (list.IsResetScrollOnItemsSourceChanged)
 				{
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => list.SetSelection(0));
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => list.SetSelection(0));
 				}
 				list.BindableAdapter.ItemsSource = e.NewValue as IEnumerable;
 			}

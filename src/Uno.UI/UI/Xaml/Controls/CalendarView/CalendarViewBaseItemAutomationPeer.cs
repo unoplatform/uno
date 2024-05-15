@@ -1,12 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using DateTime = System.DateTimeOffset;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
@@ -53,11 +53,13 @@ namespace Windows.UI.Xaml.Controls
 				return returnValue;
 			}
 
+#if false
 			private int ColumnSpanImpl()
 			{
 				var pValue = 1;
 				return pValue;
 			}
+#endif
 
 			protected IRawElementProviderSimple ContainingGridImpl()
 			{
@@ -74,6 +76,7 @@ namespace Windows.UI.Xaml.Controls
 				return ppValue;
 			}
 
+#if false
 			private int RowSpanImpl()
 			{
 				var pValue = 1;
@@ -96,6 +99,7 @@ namespace Windows.UI.Xaml.Controls
 
 				return;
 			}
+#endif
 
 			private bool IsItemVisible()
 			{
@@ -110,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 				parent.GetActiveGeneratorHost(out host);
 
 				var calendarPanel = host.Panel;
-				if (calendarPanel is {})
+				if (calendarPanel is { })
 				{
 					DateTime date = default;
 					date = (owner as CalendarViewBaseItem).DateBase;

@@ -1,7 +1,7 @@
 
 namespace Windows.Devices.Geolocation
 {
-	public   enum PositionSource 
+	public enum PositionSource
 	{
 		Cellular,
 		Satellite,

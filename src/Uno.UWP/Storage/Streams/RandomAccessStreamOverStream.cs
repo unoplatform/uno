@@ -10,13 +10,15 @@ using Uno;
 
 namespace Windows.Storage.Streams
 {
-	public partial class RandomAccessStreamOverStream : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
+	public sealed partial class RandomAccessStreamOverStream : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
 	{
 		private readonly Stream _stream;
+		private readonly bool _disallowDispose;
 
-		internal RandomAccessStreamOverStream(Stream stream)
+		internal RandomAccessStreamOverStream(Stream stream, bool disallowDispose = false)
 		{
 			_stream = stream;
+			_disallowDispose = disallowDispose;
 		}
 
 		Stream IStreamWrapper.FindStream() => _stream;
@@ -67,7 +69,7 @@ namespace Windows.Storage.Streams
 		/// <inheritdoc />
 		public IRandomAccessStream CloneStream()
 		{
-			if(_stream is MemoryStream memStream)
+			if (_stream is MemoryStream memStream)
 			{
 				var bytes = memStream.ToArray();
 				return new MemoryStream(bytes).AsRandomAccessStream();
@@ -79,6 +81,7 @@ namespace Windows.Storage.Streams
 				var memoryStream = new MemoryStream((int)Size);
 				_stream.Position = 0;
 				_stream.CopyTo(memoryStream);
+				memoryStream.Position = 0;
 				return memoryStream.AsRandomAccessStream();
 			}
 			finally
@@ -88,7 +91,14 @@ namespace Windows.Storage.Streams
 		}
 
 		/// <inheritdoc />
-		public virtual void Dispose()
-			=> _stream.Dispose();
+		public void Dispose()
+		{
+			if (_disallowDispose)
+			{
+				return;
+			}
+
+			_stream.Dispose();
+		}
 	}
 }

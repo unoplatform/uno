@@ -21,7 +21,7 @@ namespace Uno.UI.Controls
 			/**
 			 * @return return the color of the indicator used when {@code position} is selected.
 			 */
-			Color GetIndicatorColor(int position); 
+			Color GetIndicatorColor(int position);
 
 		}
 
@@ -155,7 +155,7 @@ namespace Uno.UI.Controls
 			textView.SetTextColor(_foregroundColor);
 
 			return textView;
-		} 
+		}
 
 		internal void Update()
 		{

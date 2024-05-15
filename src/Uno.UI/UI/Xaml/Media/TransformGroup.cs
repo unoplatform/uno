@@ -5,24 +5,21 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+
 #if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
-#elif __WASM__
-using _View = Windows.UI.Xaml.UIElement;
-#else
-using _View = System.Object;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
-	[ContentProperty(Name = "Children")]
+	[ContentProperty(Name = nameof(Children))]
 	public partial class TransformGroup : Transform
 	{
 		public TransformGroup()
@@ -33,7 +30,7 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// Backing dependency property for the <see cref="Children"/>
 		/// </summary>
-		public static DependencyProperty ChildrenProperty { get ; } =
+		public static DependencyProperty ChildrenProperty { get; } =
 			DependencyProperty.Register("Children", typeof(TransformCollection), typeof(TransformGroup), new FrameworkPropertyMetadata(OnChildrenChanged));
 
 		public TransformCollection Children
@@ -104,13 +101,17 @@ namespace Windows.UI.Xaml.Media
 
 		private void OnChildAdded(Transform transform)
 		{
+#if __ANDROID__ || __IOS__ || __MACOS__
 			transform.View = View; // Animation support
+#endif
 			transform.Changed += OnChildTransformChanged;
 		}
 
 		private void OnChildRemoved(Transform transform)
 		{
+#if __ANDROID__ || __IOS__ || __MACOS__
 			transform.View = null; // Animation support
+#endif
 			transform.Changed -= OnChildTransformChanged;
 		}
 
@@ -150,6 +151,7 @@ namespace Windows.UI.Xaml.Media
 		}
 #endif
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		internal override _View View
 		{
 			get => base.View;
@@ -162,6 +164,7 @@ namespace Windows.UI.Xaml.Media
 				}
 			}
 		}
+#endif
 		#endregion
 	}
 }

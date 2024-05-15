@@ -1,11 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference InspectingDataSource.cpp, commit 37ade09; ItemsSourceView.cpp, commit dc8d573
 
 using System;
 using System.Collections.Specialized;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 // In the source C++ code, this class is implemented in InspectingDataSource
 // and its constructor is then set to return InspectingDataSource instead.
@@ -20,7 +20,7 @@ public partial class ItemsSourceView : INotifyCollectionChanged
 {
 	public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-	private int m_cachedSize  =  -1;
+	private int m_cachedSize = -1;
 
 	#region IDataSource
 
@@ -44,14 +44,14 @@ public partial class ItemsSourceView : INotifyCollectionChanged
 	public object GetAt(int index)
 		=> GetAtCore(index);
 
-	public int IndexFromKey(string id)
-		=> IndexFromKeyCore(id);
+	public int IndexFromKey(string key)
+		=> IndexFromKeyCore(key);
 
 	public string KeyFromIndex(int index)
 		=> KeyFromIndexCore(index);
 
-	internal int IndexOf(object value)
-		=> IndexOfCore(value);
+	internal int IndexOf(object item)
+		=> IndexOfCore(item);
 	#endregion
 
 	#region IDataSourceProtected

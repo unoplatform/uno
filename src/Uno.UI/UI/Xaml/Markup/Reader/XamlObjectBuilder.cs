@@ -11,31 +11,32 @@ using Uno.UI;
 using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
 using Uno.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
 using Windows.UI.Text;
 using Windows.Foundation.Metadata;
 using Color = Windows.UI.Color;
+using Microsoft.UI.Xaml.Resources;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Markup.Reader
+namespace Microsoft.UI.Xaml.Markup.Reader
 {
-	internal class XamlObjectBuilder
+	internal partial class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
+		private readonly string? _fileUri;
 		private XamlTypeResolver TypeResolver { get; }
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
-		private static readonly Regex _attachedPropertMatch = new Regex(@"(\(.*?\))");
 
 		private static Type[] _genericConvertibles = new[]
 		{
@@ -52,9 +53,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 			typeof(FontWeight),
 		};
 
+		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
+
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
 		{
 			_fileDefinition = xamlFileDefinition;
+			TypeResolver = new XamlTypeResolver(_fileDefinition);
+		}
+
+		internal XamlObjectBuilder(XamlFileDefinition xamlFileDefinition, string fileUri)
+		{
+			_fileDefinition = xamlFileDefinition;
+			_fileUri = fileUri;
 			TypeResolver = new XamlTypeResolver(_fileDefinition);
 		}
 
@@ -89,7 +99,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			if (createInstanceFromXClass && TypeResolver.FindType(classMember?.Value?.ToString()) is { } classType)
 			{
-				return Activator.CreateInstance(classType);
+				var created = Activator.CreateInstance(classType);
+
+				if (created is FrameworkElement fe && _fileUri is not null)
+				{
+					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+				}
+
+				return created;
 			}
 
 			if (type == null)
@@ -112,24 +129,29 @@ namespace Windows.UI.Xaml.Markup.Reader
 					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance) as _View;
 				};
 
-				return Activator.CreateInstance(type, builder);
+				var created = Activator.CreateInstance(type, builder);
+
+				if (created is FrameworkElement fe && _fileUri is not null)
+				{
+					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+				}
+
+				return created;
 			}
-			else if (type.Is<ResourceDictionary>() && unknownContent != null)
+			else if (type.Is<ResourceDictionary>())
 			{
 				var contentOwner = unknownContent;
 
 				if (Activator.CreateInstance(type) is ResourceDictionary rd)
 				{
-					foreach (var xamlObjectDefinition in contentOwner.Objects)
+					foreach (var member in control.Members.Where(m => m != unknownContent))
 					{
-						var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
+						ProcessNamedMember(control, rd, member, rd);
+					}
 
-						var instance = LoadObject(xamlObjectDefinition, rootInstance: rootInstance);
-
-						if (key != null)
-						{
-							rd.Add(key, instance);
-						}
+					if (unknownContent is { })
+					{
+						ProcessResourceDictionaryContent(rd, unknownContent, rootInstance);
 					}
 
 					return rd;
@@ -147,6 +169,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
+			else if (type == typeof(Media.Geometry) && unknownContentValue is string geometryStringValue)
+			{
+				var generated = Uno.Media.Parsers.ParseGeometry(geometryStringValue);
+
+				return (Media.Geometry)generated;
+			}
 			else if (
 				_genericConvertibles.Contains(type)
 				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
@@ -157,6 +185,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var instance = component ?? Activator.CreateInstance(type)!;
 				rootInstance ??= instance;
+
+				var instanceAsFrameworkElement = instance as FrameworkElement;
+
+				if (instanceAsFrameworkElement is not null)
+				{
+					instanceAsFrameworkElement.IsParsing = true;
+
+					if (_fileUri is not null)
+					{
+						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+					}
+				}
 
 				IDisposable? TryProcessStyle()
 				{
@@ -196,6 +236,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 				}
 
+				instanceAsFrameworkElement?.CreationComplete();
+
 				return instance;
 			}
 		}
@@ -204,7 +246,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			value ??= "";
 
-			if (value.Contains("("))
+			if (value.Contains('('))
 			{
 				foreach (var ns in _fileDefinition.Namespaces)
 				{
@@ -216,18 +258,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 				}
 
-				var match = _attachedPropertMatch.Match(value);
+				var match = AttachedPropertyMatching().Match(value);
 
 				if (match.Success)
 				{
 					do
 					{
-						if (!match.Value.Contains(":"))
+						if (!match.Value.Contains(':'))
 						{
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
 
-							var parts = match.Value.Trim(new[] { '(', ')' }).Split(new[] { '.' });
+							var parts = match.Value.Trim(_parenthesesArray).Split('.');
 
 							if (parts.Length == 2)
 							{
@@ -494,7 +536,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Value is string targetPath)
 			{
 				// This builds property setters for specified member setter.
-				var separatorIndex = targetPath.IndexOf(".");
+				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
 				var propertyName = targetPath.Substring(separatorIndex + 1);
 
@@ -534,6 +576,39 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
+		private void ProcessResourceDictionaryContent(ResourceDictionary rd, XamlMemberDefinition unknownContent, object? rootInstance)
+		{
+			// note: In order for static resolution to work, the referenced resources must be already parsed & added, which means:
+			// - MergedDictionaries should be processed before this method call.
+			// - Member resources should be all processed prior the resolution can began.
+			var delayedResolutionList = new List<IDependencyObjectStoreProvider>();
+
+			foreach (var child in unknownContent.Objects)
+			{
+				var childInstance = LoadObject(child, rootInstance);
+				var resourceKey = GetResourceKey(child);
+				var styleTargetType = childInstance is Style
+					? GetResourceTargetType(child) ?? throw new InvalidOperationException($"No target type was specified (Line {child.LineNumber}:{child.LinePosition}")
+					: default;
+
+				if ((resourceKey ?? styleTargetType) is { } key)
+				{
+					rd.Add(key, childInstance);
+				}
+
+				if (HasAnyResourceMarkup(child) && childInstance is IDependencyObjectStoreProvider provider)
+				{
+					delayedResolutionList.Add(provider);
+				}
+			}
+
+			// Delay resolve static resources
+			foreach (var provider in delayedResolutionList)
+			{
+				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, rd);
+			}
+		}
+
 		private void ProcessMemberElements(DependencyObject instance, XamlMemberDefinition member, DependencyProperty property, object rootInstance)
 		{
 			if (TypeResolver.IsCollectionOrListType(property.Type))
@@ -566,35 +641,77 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
-				if (propertyInfo.PropertyType == typeof(ResourceDictionary))
+				if (propertyInfo.PropertyType.IsAssignableTo(typeof(ResourceDictionary)))
 				{
-					var methods = propertyInfo.PropertyType.GetMethods();
-					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
-						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
+					// A resource-dictionary property (typically FE.Resources) can only have two types of nested scenarios:
+					// 1. a single res-dict
+					// 2. zero-to-many non-res-dict resources
+					// Nesting multiple res-dict or a mix of (res-dict(s) + resource(s)) will throw:
+					// > Xaml Internal Error error WMC9999: This Member 'Resources' has more than one item, use the Items property
+					// It is also illegal to nested Page.Resources\ResourceDictionary.MergedDictionary without a ResourceDictionary node in between.
+					// > Xaml Xml Parsing Error error WMC9997: 'Unexpected 'PROPERTYELEMENT' in parse rule 'NonemptyPropertyElement ::= . PROPERTYELEMENT Content? ENDTAG.'.' Line number '13' and line position '5'.
 
-					foreach (var child in member.Objects)
+					// Case 1: a single res-dict
+					if (member.Objects is [var singleChild] &&
+						TypeResolver.FindType(singleChild.Type)?.IsAssignableTo(typeof(ResourceDictionary)) == true)
 					{
-						var item = LoadObject(child, rootInstance: rootInstance);
-
-						var resourceKey = GetResourceKey(child);
-						var resourceTargetType = GetResourceTargetType(child);
-
-						if (
-							item?.GetType() == typeof(Style)
-							&& resourceTargetType == null
-						)
+						if (propertyInfo.SetMethod == null)
 						{
-							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a setter (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						if(propertyInfo.GetMethod == null)
+						var rd = (ResourceDictionary)LoadObject(singleChild, rootInstance)!;
+						if (IsFrameworkElementResources(propertyInfo))
+						{
+							((FrameworkElement)instance).Resources = rd;
+						}
+						else
+						{
+							propertyInfo.SetMethod.Invoke(instance, new[] { rd });
+						}
+					}
+					// Case 2: zero-to-many non-res-dict resources
+					else if (member.Objects.All(x => TypeResolver.FindType(x.Type)?.IsAssignableTo(typeof(ResourceDictionary)) != true))
+					{
+						if (propertyInfo.GetMethod == null)
 						{
 							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
+						if (propertyInfo.GetMethod.Invoke(instance, null) is ResourceDictionary rd)
+						{
+							ProcessResourceDictionaryContent(rd, member, rootInstance);
+						}
+						else
+						{
+							throw new ArgumentNullException(
+								$"The property {propertyInfo} is not initialized (Line {member.LineNumber}:{member.LinePosition}). " +
+								$"Make sure the property is instanced from the constructor, or nest the resources under '{propertyInfo.PropertyType}'.");
+						}
+					}
+					else
+					{
+						throw new XamlParseException($"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property");
+					}
 
-						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? resourceTargetType, item });
+					static bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
+						propertyInfo.DeclaringType == typeof(FrameworkElement) &&
+						propertyInfo.Name == nameof(FrameworkElement.Resources);
+				}
+				else if (propertyInfo.DeclaringType?.IsAssignableTo(typeof(ResourceDictionary)) == true &&
+					propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries) or nameof(ResourceDictionary.MergedDictionaries))
+				{
+					foreach (var child in member.Objects)
+					{
+						var rd = (ResourceDictionary)LoadObject(child, rootInstance)!;
+						if (propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries))
+						{
+							((ResourceDictionary)instance).ThemeDictionaries.Add(GetResourceKey(child), rd);
+						}
+						else
+						{
+							((ResourceDictionary)instance).MergedDictionaries.Add(rd);
+						}
 					}
 				}
 				else if (propertyInfo.SetMethod?.IsPublic == true &&
@@ -661,7 +778,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				ProcessBindingMarkupNode(instance, rootInstance, member);
 			}
-			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member))
+			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member) || IsCustomResourceMarkupNode(member))
 			{
 				ProcessStaticResourceMarkupNode(instance, member, propertyInfo);
 			}
@@ -680,20 +797,35 @@ namespace Windows.UI.Xaml.Markup.Reader
 					&& dependencyProperty != null
 					&& instance is DependencyObject dependencyObject)
 				{
-					ResourceResolver.ApplyResource(
-						dependencyObject,
-						dependencyProperty,
-						keyName,
-						isThemeResourceExtension: IsThemeResourceMarkupNode(member),
-						isHotReloadSupported: true);
-
-					if (instance is FrameworkElement fe)
+					if (IsCustomResourceMarkupNode(member))
 					{
-						fe.Loading += delegate
+						var objectType = dependencyObject.GetType().FullName;
+						var propertyName = dependencyProperty.Name;
+						var propertyType = dependencyProperty.Type.FullName;
+						var resource = CustomXamlResourceLoader.Current?.GetResourceInternal(keyName, objectType, propertyName, propertyType);
+						if (resource != null && resource.GetType() == dependencyProperty.Type)
 						{
-							fe.UpdateResourceBindings();
-						};
+							dependencyObject.SetValue(dependencyProperty, resource);
+						}
 					}
+					else
+					{
+						ResourceResolver.ApplyResource(
+							dependencyObject,
+							dependencyProperty,
+							keyName,
+							isThemeResourceExtension: IsThemeResourceMarkupNode(member),
+							isHotReloadSupported: true);
+
+						if (instance is FrameworkElement fe)
+						{
+							fe.Loading += delegate
+							{
+								fe.UpdateResourceBindings();
+							};
+						}
+					}
+
 				}
 				else if (propertyInfo != null)
 				{
@@ -741,6 +873,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private bool IsThemeResourceMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "ThemeResource");
+
+		private bool IsCustomResourceMarkupNode(XamlMemberDefinition member)
+			=> member.Objects.Any(o => o.Type.Name == "CustomResource");
 
 		private bool IsResourcesProperty(PropertyInfo propertyInfo)
 			=> propertyInfo.Name == "Resources" && propertyInfo.PropertyType == typeof(ResourceDictionary);
@@ -795,11 +930,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (xBindNode != null)
 			{
 				binding.Source = rootInstance;
-				// TODO: here we should be setting Mode to OneTime by default, and we should also respect x:DefaultBindMode values set 
+				// TODO: here we should be setting Mode to OneTime by default, and we should also respect x:DefaultBindMode values set
 				// further up in the tree.
 			}
 
-			if(bindingNode == null && templateBindingNode == null && xBindNode == null)
+			if (bindingNode == null && templateBindingNode == null && xBindNode == null)
 			{
 				throw new InvalidOperationException("Unable to find Binding or TemplateBinding or x:Bind node");
 			}
@@ -810,7 +945,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					case "_PositionalParameters":
 					case nameof(Binding.Path):
-						binding.Path = RewriteAttachedPropertyPath(bindingProperty.Value?.ToString());
+						var path = bindingProperty.Value?.ToString();
+						if (templateBindingNode is not null && TypeResolver.IsAttachedProperty(member))
+						{
+							path = $"({path})";
+						}
+
+						binding.Path = RewriteAttachedPropertyPath(path);
 						break;
 
 					case nameof(Binding.ElementName):
@@ -917,6 +1058,27 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private bool IsBindingMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding" || o.Type.Name == "Bind");
 
+		private bool HasAnyResourceMarkup(XamlObjectDefinition member)
+		{
+			foreach (var childMember in member.Members)
+			{
+				if (IsStaticResourceMarkupNode(childMember) || IsThemeResourceMarkupNode(childMember))
+				{
+					return true;
+				}
+
+				foreach (var childObject in member.Objects)
+				{
+					if (HasAnyResourceMarkup(childObject))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
 		private static bool IsMarkupExtension(XamlMemberDefinition member)
 			=> member
 				.Objects
@@ -925,6 +1087,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					|| m.Type.Name == "Bind"
 					|| m.Type.Name == "StaticResource"
 					|| m.Type.Name == "ThemeResource"
+					|| m.Type.Name == "CustomResource"
 					|| m.Type.Name == "TemplateBinding"
 				)
 				.Any();
@@ -1006,19 +1169,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private object? GetResourceKey(XamlObjectDefinition child) =>
 			child.Members.FirstOrDefault(m =>
-				string.Equals(m.Member.Name, "Name", StringComparison.OrdinalIgnoreCase)
-				|| string.Equals(m.Member.Name, "Key", StringComparison.OrdinalIgnoreCase)
+				string.Equals(m.Member.Name, "Name", StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(m.Member.Name, "Key", StringComparison.OrdinalIgnoreCase)
 			)
 			?.Value
 			?.ToString();
 
-		private Type? GetResourceTargetType(XamlObjectDefinition child) =>
-				TypeResolver.FindType(child.Members.FirstOrDefault(m =>
-					string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase)
-				)
+		private Type? GetResourceTargetType(XamlObjectDefinition child) => TypeResolver.FindType(
+			child.Members
+				.FirstOrDefault(m => string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase))
 				?.Value
-				?.ToString() ?? ""
-			);
+				?.ToString() ??
+			""
+		);
 
 		private PropertyInfo? GetMemberProperty(XamlObjectDefinition control, XamlMemberDefinition member)
 		{
@@ -1059,15 +1222,40 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 					else if (propertyType == typeof(DependencyProperty) && member.Owner.Type.Name == "Setter")
 					{
-						var propertyOwner = _styleTargetTypeStack.Peek();
-
-						if (TypeResolver.FindDependencyProperty(propertyOwner, memberValue) is DependencyProperty property)
+						if (memberValue is { Length: > 0 } &&
+							PropertyPathPattern().Match(memberValue) is { Success: true, Groups: var g })
 						{
-							return property;
+							Type? declaringType;
+							if (g["type"].Success)
+							{
+								if (g["xmlns"].Success && g["xmlns"].Value is { } xmlns && xmlns.Length > 0)
+								{
+									declaringType = TypeResolver.FindType($"{xmlns}:{g["type"].Value}");
+								}
+								else
+								{
+									declaringType = TypeResolver.FindType(g["type"].Value);
+								}
+							}
+							else
+							{
+								declaringType = _styleTargetTypeStack.Peek();
+							}
+
+							var propertyName = g["property"].Value;
+
+							if (TypeResolver.FindDependencyProperty(declaringType, propertyName) is DependencyProperty property)
+							{
+								return property;
+							}
+							else
+							{
+								throw new Exception($"The property {declaringType?.ToString() ?? g["type"].Name}.{propertyName} does not exist");
+							}
 						}
 						else
 						{
-							throw new Exception($"The property {propertyOwner}.{memberValue} does not exist");
+							throw new Exception($"Invalid property path: {memberValue}");
 						}
 					}
 					else
@@ -1094,9 +1282,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var sourceType = propertyType;
 				var methodName = createFromString.MethodName;
-				if (createFromString.MethodName.Contains("."))
+				if (createFromString.MethodName.Contains('.'))
 				{
-					var splitIndex = createFromString.MethodName.LastIndexOf(".");
+					var splitIndex = createFromString.MethodName.LastIndexOf('.');
 					var typeName = createFromString.MethodName.Substring(0, splitIndex);
 					sourceType = TypeResolver.FindType(typeName);
 					methodName = createFromString.MethodName.Substring(splitIndex + 1);
@@ -1119,19 +1307,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 			}
 
-			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(() => propertyType, memberValue);
+			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(propertyType, memberValue);
 		}
 
 		private void ApplyPostActions(object? instance)
 		{
-			if (instance is FrameworkElement fe)
-			{
-				ResolveElementNames(fe);
-			}
-
 			while (_postActions.Count != 0)
 			{
 				_postActions.Dequeue()();
+			}
+
+			if (instance is FrameworkElement fe)
+			{
+				ResolveElementNames(fe);
 			}
 		}
 
@@ -1167,5 +1355,21 @@ namespace Windows.UI.Xaml.Markup.Reader
 				_method.Invoke(_instance, Array.Empty<object>());
 			}
 		}
+
+		[GeneratedRegex(@"(\(.*?\))")]
+		private static partial Regex AttachedPropertyMatching();
+
+		/// <summary>
+		/// Matches non-nested path like string: (xmlns:type.property)
+		/// where 'xmlns', 'type' and the parentheses are optional.
+		/// </summary>
+		/// <remarks>
+		/// The presence of both 'type' and 'property', doesnt automatically imply an attached property:
+		/// "The XAML parser also accepts dependency property names that include a qualifying class.
+		/// For example the parser interprets either "Button.Background" or "Control.Background"
+		/// as being a reference to the Background property in a style for a Button."
+		/// </remarks>
+		[GeneratedRegex(@"^\(?((?<xmlns>\w+):)?((?<type>\w+)\.)?(?<property>\w+)\)?$", RegexOptions.ExplicitCapture)]
+		private static partial Regex PropertyPathPattern();
 	}
 }

@@ -7,7 +7,7 @@ using Android.Views;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A <see cref="RecyclerView.ViewCacheExtension"/> implementation which temporarily 'detaches' views from the parent rather than removing them completely,
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void OnRecycled(UnoViewHolder unoViewHolder, Action action)
 		{
-			if(!_onRecycled.TryGetValue(unoViewHolder, out var actions))
+			if (!_onRecycled.TryGetValue(unoViewHolder, out var actions))
 			{
 				_onRecycled[unoViewHolder] = actions = new List<Action>();
 			}

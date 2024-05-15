@@ -1,25 +1,23 @@
 ﻿#if !SILVERLIGHT
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using Uno.Extensions;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI;
 
 #if NETFX_CORE
-using Windows.UI.Xaml;
-using IFrameworkElement = Windows.UI.Xaml.FrameworkElement;
-using IBinder = Windows.UI.Xaml.FrameworkElement;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using IFrameworkElement = Microsoft.UI.Xaml.FrameworkElement;
+using IBinder = Microsoft.UI.Xaml.FrameworkElement;
+using Microsoft.UI.Xaml.Data;
 #elif XAMARIN
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 #else
-using Windows.UI.Xaml.Data;
-using Uno.UI.DataBinding;
+using Microsoft.UI.Xaml.Data;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal static class FrameworkElementExtensions
 	{
@@ -30,17 +28,6 @@ namespace Windows.UI.Xaml
 #else
 			element.Style = style;
 #endif
-			return element;
-		}
-
-		public static T Binding<T>(this T element, string property, string propertyPath, string converter) where T : IDependencyObjectStoreProvider
-		{
-			var dependencyProperty = GetDependencyProperty(element, property);
-			var path = new PropertyPath(propertyPath.Replace("].[", "]["));
-			var binding = new Windows.UI.Xaml.Data.Binding { Path = path, Converter = ResourceHelper.FindConverter(converter) };
-
-			(element as IDependencyObjectStoreProvider).Store.SetBinding(dependencyProperty, binding);
-
 			return element;
 		}
 
@@ -129,7 +116,7 @@ namespace Windows.UI.Xaml
 
 			if (propertyInfo != null)
 			{
-				var dependencyProperty = (DependencyProperty)propertyInfo.GetMethod.Invoke(null, new object[0]);
+				var dependencyProperty = (DependencyProperty)propertyInfo.GetMethod.Invoke(null, Array.Empty<object>());
 				return dependencyProperty;
 			}
 
@@ -140,13 +127,13 @@ namespace Windows.UI.Xaml
 		public static T Binding<T>(this T element, string property, string propertyPath) where T : DependencyObject
 		{
 			var path = new PropertyPath(propertyPath.Replace("].[", "]["));
-			var binding = new Windows.UI.Xaml.Data.Binding { Path = path };
+			var binding = new Microsoft.UI.Xaml.Data.Binding { Path = path };
 
 			return element.Binding(property, binding);
 		}
 
-		public static Windows.UI.Xaml.Documents.Run Binding(
-			this Windows.UI.Xaml.Documents.Run element,
+		public static Microsoft.UI.Xaml.Documents.Run Binding(
+			this Microsoft.UI.Xaml.Documents.Run element,
 			string property,
 			string propertyPath
 		)
@@ -157,12 +144,12 @@ namespace Windows.UI.Xaml
 			{
 				var templateString = "<Run xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Text=\"{{Binding {0}}}\" />";
 
-				return (Windows.UI.Xaml.Documents.Run)Windows.UI.Xaml.Markup.XamlReader.Load(templateString.InvariantCultureFormat(propertyPath));
+				return (Microsoft.UI.Xaml.Documents.Run)Microsoft.UI.Xaml.Markup.XamlReader.Load(templateString.InvariantCultureFormat(propertyPath));
 			}
 			else
 			{
 				var path = new PropertyPath(propertyPath);
-				var binding = new Windows.UI.Xaml.Data.Binding { Path = path };
+				var binding = new Microsoft.UI.Xaml.Data.Binding { Path = path };
 
 				var dependencyProperty = GetDependencyProperty(element, property);
 
@@ -218,43 +205,58 @@ namespace Windows.UI.Xaml
 
 		internal static bool TryGetPadding(this IFrameworkElement frameworkElement, out Thickness padding)
 		{
-			switch (frameworkElement)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
 			{
-				case Grid g:
-					padding = g.Padding;
-					return true;
+				padding = g.Padding;
+				return true;
+			}
 
-				case StackPanel sp:
-					padding = sp.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
+			{
+				padding = sp.Padding;
+				return true;
+			}
 
-				case RelativePanel rp:
-					padding = rp.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
+			{
+				padding = rp.Padding;
+				return true;
+			}
 
-				case Microsoft.UI.Xaml.Controls.LayoutPanel lp:
-					padding = lp.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			{
+				padding = lp.Padding;
+				return true;
+			}
 
-				case Control c:
-					padding = c.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Control_Available && frameworkElement is Control c)
+			{
+				padding = c.Padding;
+				return true;
+			}
 
-				case ContentPresenter cp:
-					padding = cp.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			{
+				padding = cp.Padding;
+				return true;
+			}
 
-				case Border b:
-					padding = b.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			{
+				padding = b.Padding;
+				return true;
+			}
 
-				case ItemsPresenter ip:
-					padding = ip.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ItemsPresenter_Available && frameworkElement is ItemsPresenter ip)
+			{
+				padding = ip.Padding;
+				return true;
+			}
 
-				case TextBlock tb:
-					padding = tb.Padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBlock_Available && frameworkElement is TextBlock tb)
+			{
+				padding = tb.Padding;
+				return true;
 			}
 
 			padding = default;
@@ -263,71 +265,115 @@ namespace Windows.UI.Xaml
 
 		internal static bool TrySetPadding(this IFrameworkElement frameworkElement, Thickness padding)
 		{
-			switch (frameworkElement)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBlock_Available && frameworkElement is Grid g)
 			{
-				case Grid g:
-					g.Padding = padding;
-					return true;
+				g.Padding = padding;
+				return true;
+			}
 
-				case StackPanel sp:
-					sp.Padding = padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
+			{
+				sp.Padding = padding;
+				return true;
+			}
 
-				case RelativePanel rp:
-					rp.Padding = padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
+			{
+				rp.Padding = padding;
+				return true;
+			}
 
-				case Microsoft.UI.Xaml.Controls.LayoutPanel lp:
-					lp.Padding = padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			{
+				lp.Padding = padding;
+				return true;
+			}
 
-				case Control c:
-					c.Padding = padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Control_Available && frameworkElement is Control c)
+			{
+				c.Padding = padding;
+				return true;
+			}
 
-				case ContentPresenter cp:
-					cp.Padding = padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			{
+				cp.Padding = padding;
+				return true;
+			}
 
-				case Border b:
-					b.Padding = padding;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			{
+				b.Padding = padding;
+				return true;
 			}
 
 			return false;
 		}
 
+#if __WASM__
+		/// <summary>
+		/// This method retrieves the actual border thickness of given FrameworkElement.
+		/// Note that for Control.BorderThickness is not actually applied unless
+		/// it is used somewhere within the ControlTemplate.
+		/// </summary>
+		/// <param name="frameworkElement">Framework element.</param>
+		/// <param name="borderThickness">Thickness.</param>
+		/// <returns>Whether the given element has an actual border.</returns>
+		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
+		{
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel { BorderBrushInternal: not null } p)
+			{
+				borderThickness = p.BorderThicknessInternal;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter { BorderBrush: not null } cp)
+			{
+				borderThickness = cp.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Border_Available && frameworkElement is Border { BorderBrush: not null } b)
+			{
+				borderThickness = b.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CalendarViewDayItem_Available && frameworkElement is CalendarViewDayItem calendarViewDayItem)
+			{
+				borderThickness = calendarViewDayItem.EffectiveBorderThickness;
+				return true;
+			}
+
+			borderThickness = default;
+			return false;
+		}
+#endif
+
 		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
-			switch (frameworkElement)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
 			{
-				case Grid g:
-					borderThickness = g.BorderThickness;
-					return true;
+				borderThickness = p.BorderThicknessInternal;
+				return true;
+			}
 
-				case StackPanel sp:
-					borderThickness = sp.BorderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Control_Available && frameworkElement is Control c)
+			{
+				borderThickness = c.BorderThickness;
+				return true;
+			}
 
-				case RelativePanel rp:
-					borderThickness = rp.BorderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			{
+				borderThickness = cp.BorderThickness;
+				return true;
+			}
 
-				case Microsoft.UI.Xaml.Controls.LayoutPanel lp:
-					borderThickness = lp.BorderThickness;
-					return true;
-
-				case Control c:
-					borderThickness = c.BorderThickness;
-					return true;
-
-				case ContentPresenter cp:
-					borderThickness = cp.BorderThickness;
-					return true;
-
-				case Border b:
-					borderThickness = b.BorderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			{
+				borderThickness = b.BorderThickness;
+				return true;
 			}
 
 			borderThickness = default;
@@ -336,35 +382,46 @@ namespace Windows.UI.Xaml
 
 		internal static bool TrySetBorderThickness(this IFrameworkElement frameworkElement, Thickness borderThickness)
 		{
-			switch (frameworkElement)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
 			{
-				case Grid g:
-					g.BorderThickness = borderThickness;
-					return true;
+				g.BorderThickness = borderThickness;
+				return true;
+			}
 
-				case StackPanel sp:
-					sp.BorderThickness = borderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
+			{
+				sp.BorderThickness = borderThickness;
+				return true;
+			}
 
-				case RelativePanel rp:
-					rp.BorderThickness = borderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
+			{
+				rp.BorderThickness = borderThickness;
+				return true;
+			}
 
-				case Microsoft.UI.Xaml.Controls.LayoutPanel lp:
-					lp.BorderThickness = borderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			{
+				lp.BorderThickness = borderThickness;
+				return true;
+			}
 
-				case Control c:
-					c.BorderThickness = borderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Control_Available && frameworkElement is Control c)
+			{
+				c.BorderThickness = borderThickness;
+				return true;
+			}
 
-				case ContentPresenter cp:
-					cp.BorderThickness = borderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			{
+				cp.BorderThickness = borderThickness;
+				return true;
+			}
 
-				case Border b:
-					b.BorderThickness = borderThickness;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			{
+				b.BorderThickness = borderThickness;
+				return true;
 			}
 
 			return false;
@@ -372,35 +429,46 @@ namespace Windows.UI.Xaml
 
 		internal static bool TryGetCornerRadius(this IFrameworkElement frameworkElement, out CornerRadius cornerRadius)
 		{
-			switch (frameworkElement)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
 			{
-				case Grid g:
-					cornerRadius = g.CornerRadius;
-					return true;
+				cornerRadius = g.CornerRadius;
+				return true;
+			}
 
-				case StackPanel sp:
-					cornerRadius = sp.CornerRadius;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
+			{
+				cornerRadius = sp.CornerRadius;
+				return true;
+			}
 
-				case RelativePanel rp:
-					cornerRadius = rp.CornerRadius;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
+			{
+				cornerRadius = rp.CornerRadius;
+				return true;
+			}
 
-				case Microsoft.UI.Xaml.Controls.LayoutPanel lp:
-					cornerRadius = lp.CornerRadius;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			{
+				cornerRadius = lp.CornerRadius;
+				return true;
+			}
 
-				case Control c:
-					cornerRadius = c.CornerRadius;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Control_Available && frameworkElement is Control c)
+			{
+				cornerRadius = c.CornerRadius;
+				return true;
+			}
 
-				case ContentPresenter cp:
-					cornerRadius = cp.CornerRadius;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			{
+				cornerRadius = cp.CornerRadius;
+				return true;
+			}
 
-				case Border b:
-					cornerRadius = b.CornerRadius;
-					return true;
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			{
+				cornerRadius = b.CornerRadius;
+				return true;
 			}
 
 			cornerRadius = default;

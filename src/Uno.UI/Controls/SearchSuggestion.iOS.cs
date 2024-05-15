@@ -15,7 +15,7 @@ namespace Uno.UI.Controls
 
 		public static SearchSuggestion CreateSuggestion(string text, string group = null)
 		{
-			if(text == null)
+			if (text == null)
 			{
 				throw new ArgumentNullException(nameof(text));
 			}

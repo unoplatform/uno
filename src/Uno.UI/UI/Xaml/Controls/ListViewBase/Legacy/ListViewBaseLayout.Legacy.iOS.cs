@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Disposables;
@@ -12,12 +12,9 @@ using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath,
 using Uno.Diagnostics.Eventing;
 using Uno;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -120,7 +117,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(AreStickyGroupHeadersEnabledProperty, value); }
 		}
 
-		public static DependencyProperty AreStickyGroupHeadersEnabledProperty { get ; } =
+		public static DependencyProperty AreStickyGroupHeadersEnabledProperty { get; } =
 			DependencyProperty.Register("AreStickyGroupHeadersEnabled", typeof(bool), typeof(ListViewBaseLayout), new FrameworkPropertyMetadata(false, OnAreStickyGroupHeadersEnabledChanged));
 
 		private static void OnAreStickyGroupHeadersEnabledChanged(object o, DependencyPropertyChangedEventArgs e)

@@ -1,27 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using UITests.Shared.Helpers;
 using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-namespace Uno.UI.Samples.UITests.ImageTestsControl
+namespace Uno.UI.Samples.UITests.ImageTestsControl;
+
+[Sample("Image", Description = "StretchNoneBoundingBoxInDoubleStackPanel")]
+public sealed partial class StretchNoneBoundingBoxInDoubleStackPanel : UserControl, IWaitableSample
 {
-	[SampleControlInfo("Image", "StretchNoneBoundingBoxInDoubleStackPanel")]
-	public sealed partial class StretchNoneBoundingBoxInDoubleStackPanel : UserControl
-    {
-        public StretchNoneBoundingBoxInDoubleStackPanel()
-        {
-            this.InitializeComponent();
-        }
-    }
+	private readonly Task _samplePreparedTask;
+
+	public StretchNoneBoundingBoxInDoubleStackPanel()
+	{
+		this.InitializeComponent();
+		_samplePreparedTask = WaitableSampleImageHelpers.WaitAllImages(image1);
+	}
+
+	public Task SamplePreparedTask => _samplePreparedTask;
 }

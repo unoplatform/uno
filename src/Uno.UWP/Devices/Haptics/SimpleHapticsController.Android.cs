@@ -1,4 +1,5 @@
 ﻿#nullable enable
+#pragma warning disable CS0618 // obsolete members
 
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,9 @@ namespace Windows.Devices.Haptics
 			{
 				var activity = (Activity)ContextHelper.Current;
 				var androidFeedback = FeedbackToAndroidFeedback(feedback);
+#pragma warning disable CA1422 // Validate platform compatibility
 				bool hapticFeedbackEnabled = Settings.System.GetInt(activity.ContentResolver, Settings.System.HapticFeedbackEnabled, 0) != 0;
+#pragma warning restore CA1422 // Validate platform compatibility
 				if (hapticFeedbackEnabled)
 				{
 					var executed = activity.Window?.DecorView.PerformHapticFeedback(androidFeedback) ?? false;

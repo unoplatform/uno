@@ -8,13 +8,13 @@ using Uno.UI.Common;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 using ICommand = System.Windows.Input.ICommand;
 
@@ -32,7 +32,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests
 
 		public ICommand MyCommand => new DelegateCommand<object>(param => result.Text = $"command param:{param}");
 
-		public ICommand MyXamlUICommand => new XamlUICommand {
+		public ICommand MyXamlUICommand => new XamlUICommand
+		{
 			Label = "XamlCommand",
 			Description = "My XamlCommand Description",
 			Command = new DelegateCommand<object>(param => result.Text = $"xamluicommand param:{param}")

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
@@ -75,7 +75,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			Assert.AreEqual(2, callCounter);
 		}
 
-		private static async Task<bool> SwapSystemTheme()
+		private static void SwapSystemTheme()
 		{
 			var currentTheme = Application.Current.RequestedTheme;
 			var targetTheme = currentTheme == ApplicationTheme.Light ?
@@ -84,7 +84,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			Application.Current.SetExplicitRequestedTheme(targetTheme);
 
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
-			return true;
 		}
 	}
 }

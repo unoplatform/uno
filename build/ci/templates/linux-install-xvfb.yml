@@ -1,0 +1,6 @@
+steps:
+
+  - bash: |
+      sudo apt-get update
+      sudo apt-get install xvfb fluxbox -y
+    displayName: Install Xvfb along with a minimal X11 WM implementation (fluxbox)

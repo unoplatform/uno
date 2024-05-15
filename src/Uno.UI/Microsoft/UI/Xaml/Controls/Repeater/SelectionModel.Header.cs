@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal struct SelectedItemInfo
 	{
@@ -11,10 +11,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 	public partial class SelectionModel
 	{
+		internal bool SelectionInvalidatedDueToCollectionChange()
+		{
+			return m_selectionInvalidatedDueToCollectionChange;
+		}
+
 		internal SelectionNode SharedLeafNode => m_leafNode;
 
 		private SelectionNode m_rootNode = null;
 		private bool m_singleSelect = false;
+
+		private bool m_selectionInvalidatedDueToCollectionChange = false;
 
 		private IReadOnlyList<IndexPath> m_selectedIndicesCached = null;
 		private IReadOnlyList<object> m_selectedItemsCached = null;

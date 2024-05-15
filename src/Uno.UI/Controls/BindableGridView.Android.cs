@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ using Android.Widget;
 using Android.Util;
 using System.Collections;
 using System.Windows.Input;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
@@ -29,7 +29,7 @@ namespace Uno.UI.Controls
 		{
 			var adapter = new BindableListAdapter(context);
 			adapter.CustomViewTypeCount = _customViewTypeCount;
-            Adapter = adapter;
+			Adapter = adapter;
 
 			SetupItemClickListeners();
 
@@ -60,39 +60,26 @@ namespace Uno.UI.Controls
 			SetupItemClickListeners();
 		}
 
-#if !__ANDROID_16__
-		public override void SetColumnWidth(int columnWidth)
-		{
-			base.SetColumnWidth(columnWidth);
-			ColumnWidth = columnWidth;
-		}
-
-		public int ColumnWidth
-		{
-			get; private set;
-		}
-#endif
-
 		public IEnumerable ItemsSource
 		{
 			get { return (IEnumerable)this.GetValue(ItemsSourceProperty); }
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static DependencyProperty ItemsSourceProperty { get ; } =
-			DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(BindableGridView), new FrameworkPropertyMetadata(null, (s,e) => ((BindableGridView)s)?.InternalOnItemsSourceChanged(e)));
+		public static DependencyProperty ItemsSourceProperty { get; } =
+			DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(BindableGridView), new FrameworkPropertyMetadata(null, (s, e) => ((BindableGridView)s)?.InternalOnItemsSourceChanged(e)));
 
 		private void InternalOnItemsSourceChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if(BindableAdapter != null)
-			{ 
+			if (BindableAdapter != null)
+			{
 				var newItemsSource = args.NewValue as IEnumerable;
 				OnItemsSourceChanging(newItemsSource);
 				BindableAdapter.ItemsSource = newItemsSource;
 				OnItemsSourceChanged();
 			}
 		}
-		
+
 		public DataTemplate ItemTemplate
 		{
 			get { return (DataTemplate)this.GetValue(ItemTemplateProperty); }
@@ -116,7 +103,7 @@ namespace Uno.UI.Controls
 			set { BindableAdapter.ItemTemplateId = value; }
 		}
 
-		public Windows.UI.Xaml.Controls.DataTemplateSelector ItemTemplateSelector
+		public Microsoft.UI.Xaml.Controls.DataTemplateSelector ItemTemplateSelector
 		{
 			get { return BindableAdapter.ItemTemplateSelector; }
 			set { BindableAdapter.ItemTemplateSelector = value; }
@@ -158,7 +145,7 @@ namespace Uno.UI.Controls
 
 		protected virtual void OnItemsSourceChanged()
 		{
-            this.RequestLayout();
+			this.RequestLayout();
 		}
 
 		private int TryGetItemViewTypeFromItem(int position)

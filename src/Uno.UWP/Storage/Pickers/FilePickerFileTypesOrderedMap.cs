@@ -119,7 +119,7 @@ namespace Windows.Storage.Pickers
 					throw new ArgumentException("Extensions must not be null nor empty.", nameof(extensions));
 				}
 
-				if (!extension.StartsWith(".", StringComparison.InvariantCulture))
+				if (!extension.StartsWith('.'))
 				{
 					throw new ArgumentException($"All extensions must start with a dot ({extension}).");
 				}

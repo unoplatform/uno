@@ -11,9 +11,9 @@ using System.IO;
 
 namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 {
-    internal static class PersistenceChannelDebugLog
-    {
-        private static readonly bool _isEnabled = IsEnabledByEnvironment();
+	internal static class PersistenceChannelDebugLog
+	{
+		private static readonly bool _isEnabled = IsEnabledByEnvironment();
 
 		private static bool IsEnabledByEnvironment()
 		{
@@ -23,20 +23,20 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 			}
 
 			return false;
-        }
+		}
 
-        public static void WriteLine(string message)
-        {
-            if (_isEnabled)
-            {
-                Console.WriteLine(message);
-            }
-        }
+		public static void WriteLine(string message)
+		{
+			if (_isEnabled)
+			{
+				Console.WriteLine(message);
+			}
+		}
 
-        internal static void WriteException(Exception exception, string format, params string[] args)
-        {
-            var message = string.Format(CultureInfo.InvariantCulture, format, args);
-            WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} Exception: {1}", message, exception.ToString()));
-        }
-    }
+		internal static void WriteException(Exception exception, string format, params string[] args)
+		{
+			var message = string.Format(CultureInfo.InvariantCulture, format, args);
+			WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} Exception: {1}", message, exception.ToString()));
+		}
+	}
 }

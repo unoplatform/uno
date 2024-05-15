@@ -2,10 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
@@ -13,13 +13,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class XamlFileDefinition : IEquatable<XamlFileDefinition>
 	{
-		public XamlFileDefinition(string file)
+		public XamlFileDefinition(string file, string targetFilePath, ImmutableArray<byte> checksum)
 		{
 			Namespaces = new List<NamespaceDeclaration>();
 			Objects = new List<XamlObjectDefinition>();
 			FilePath = file;
+			TargetFilePath = targetFilePath;
 
 			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(FilePath);
+
+			Checksum = string.Concat(checksum.Select(c => c.ToString("x2", CultureInfo.InvariantCulture)));
 		}
 
 		private string SanitizedFileName => Path
@@ -30,31 +33,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<NamespaceDeclaration> Namespaces { get; private set; }
 		public List<XamlObjectDefinition> Objects { get; private set; }
 
-		public string FilePath { get; private set; }
+		public string FilePath { get; }
+
+		public string Checksum { get; }
+
+		public string? SourceLink { get; internal set; }
+
+		/// <summary>
+		/// Provides the path to the file using an actual target path in the project
+		/// </summary>
+		public string TargetFilePath { get; }
 
 		/// <summary>
 		/// Unique and human-readable file ID, used to name generated file.
 		/// </summary>
 		public string UniqueID { get; }
-
-		private int? _shortId;
-
-		/// <summary>
-		/// Compact unique ID, used to name associated global members.
-		/// </summary>
-		public int ShortId
-		{
-			get => _shortId ?? -1;
-			set
-			{
-				if (_shortId != null)
-				{
-					throw new InvalidOperationException($"{nameof(ShortId)} should not be set more than once.");
-				}
-
-				_shortId = value;
-			}
-		}
 
 		public bool Equals(XamlFileDefinition? other)
 		{
@@ -72,13 +65,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (obj is XamlFileDefinition xfd)
 			{
-				return ReferenceEquals(this, xfd)
-					|| string.Equals(UniqueID, xfd.UniqueID, StringComparison.InvariantCultureIgnoreCase);
+				return Equals(xfd);
 			}
 
 			return false;
 		}
 
-		public override int GetHashCode() => (UniqueID != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(UniqueID) : 0);
+		public override int GetHashCode() => UniqueID != null
+			? StringComparer.InvariantCultureIgnoreCase.GetHashCode(UniqueID)
+			: 0;
 	}
 }

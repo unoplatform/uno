@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public DataPackageOperation RequestedOperation { get; }
 
-		public IReadOnlyList<string> AvailableFormats => _data.Keys.Where(k => !k.StartsWith(DataPackage.UnoPrivateDataPrefix)).ToArray();
+		public IReadOnlyList<string> AvailableFormats => _data.Keys.Where(k => !k.StartsWith(DataPackage.UnoPrivateDataPrefix, StringComparison.Ordinal)).ToArray();
 
 		public IAsyncOperation<IReadOnlyDictionary<string, RandomAccessStreamReference>> GetResourceMapAsync()
 			=> Task.FromResult(_resourceMap as IReadOnlyDictionary<string, RandomAccessStreamReference>).AsAsyncOperation();

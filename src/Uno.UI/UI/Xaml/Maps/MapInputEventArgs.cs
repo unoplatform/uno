@@ -1,17 +1,20 @@
+﻿using Windows.Devices.Geolocation;
+using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls.Maps
+namespace Microsoft.UI.Xaml.Controls.Maps;
+
+public partial class MapInputEventArgs : DependencyObject
 {
-	public partial class MapInputEventArgs : DependencyObject
+	public Geopoint Location { get; }
+	public Point Position { get; }
+
+	public MapInputEventArgs()
 	{
-		public Windows.Devices.Geolocation.Geopoint Location { get; }
-		public Windows.Foundation.Point Position { get; }
+	}
 
-		public MapInputEventArgs() : base() => new MapInputEventArgs(null, new Windows.Foundation.Point());
-
-		internal MapInputEventArgs(Windows.Devices.Geolocation.Geopoint location, Windows.Foundation.Point position) : base()
-        {
-			Location = location;
-			Position = position;
-		}
+	internal MapInputEventArgs(Geopoint location, Point position)
+	{
+		Location = location;
+		Position = position;
 	}
 }

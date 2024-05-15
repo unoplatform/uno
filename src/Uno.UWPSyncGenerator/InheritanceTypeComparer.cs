@@ -6,11 +6,17 @@ namespace Uno.UWPSyncGenerator
 {
 	internal class InheritanceTypeComparer : IEqualityComparer<ITypeSymbol>
 	{
+		public static readonly InheritanceTypeComparer Instance = new InheritanceTypeComparer();
+
+		private InheritanceTypeComparer()
+		{
+		}
+
 		public bool Equals(ITypeSymbol x, ITypeSymbol y)
 		{
-			while(y?.BaseType?.Name != "Object")
+			while (y?.BaseType?.SpecialType != SpecialType.System_Object)
 			{
-				if(SymbolEqualityComparer.Default.Equals(x, y))
+				if (SymbolEqualityComparer.Default.Equals(x, y))
 				{
 					return true;
 				}
@@ -21,6 +27,6 @@ namespace Uno.UWPSyncGenerator
 			return false;
 		}
 
-		public int GetHashCode(ITypeSymbol obj) => obj.GetHashCode();
+		public int GetHashCode(ITypeSymbol obj) => throw new NotImplementedException();
 	}
 }

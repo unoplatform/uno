@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
@@ -17,7 +17,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private int _selectedIndex = -1;
 
 
-		public RotatedListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public RotatedListViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			SampleItems = CreatePerson();
 			AddItem = GetOrCreateCommand(AddPerson);

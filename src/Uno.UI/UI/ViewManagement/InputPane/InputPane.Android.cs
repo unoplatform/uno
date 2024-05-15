@@ -1,14 +1,13 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using Android.App;
 using Android.Content;
 using Android.Util;
 using Android.Views.InputMethods;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Windows.UI.ViewManagement
 {
@@ -44,14 +43,20 @@ namespace Windows.UI.ViewManagement
 
 			if (Visible && FocusManager.GetFocusedElement() is UIElement focusedElement)
 			{
-				var scrollContentViewer = focusedElement.FindFirstParent<ScrollContentPresenter>();
-				if (scrollContentViewer != null)
+				if (focusedElement.FindFirstParent<ScrollContentPresenter>() is { } scp)
 				{
-					_padScrollContentPresenter = scrollContentViewer.Pad(OccludedRect);
+					// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
+					// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
+					while (double.IsPositiveInfinity(scp.LastAvailableSize.Height)
+						&& scp.FindFirstParent<ScrollContentPresenter>(includeCurrent: false) is { } outerScv)
+					{
+						scp = outerScv;
+					}
+
+					_padScrollContentPresenter = scp.Pad(OccludedRect);
 				}
 				focusedElement.StartBringIntoView();
 			}
 		}
 	}
 }
-#endif

@@ -34,7 +34,7 @@
 					</Flyout>
 				</Button.Flyout>
 			</Button>
-			<win:Button
+			<Button
 				Content="Generate screenshots"
 				Click="GenerateScreenshots"
 				Margin="5,0,0,0" />

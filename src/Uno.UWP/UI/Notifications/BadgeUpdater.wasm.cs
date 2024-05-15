@@ -1,22 +1,23 @@
 ﻿#nullable enable
 
+using System.Globalization;
 using Uno.Foundation;
+
+using NativeMethods = __Windows.UI.Notifications.BadgeUpdater.NativeMethods;
 
 namespace Windows.UI.Notifications
 {
 	public partial class BadgeUpdater
 	{
-		private const string JsType = "Windows.UI.Notifications.BadgeUpdater";
-
 		partial void SetBadge(string? value)
 		{
-			if (int.TryParse(value, out var number))
+			if (int.TryParse(value, CultureInfo.InvariantCulture, out var number))
 			{
-				WebAssemblyRuntime.InvokeJS($"{JsType}.setNumber({number})");
+				NativeMethods.SetNumber(number);
 			}
 			else
 			{
-				WebAssemblyRuntime.InvokeJS($"{JsType}.clear()");
+				NativeMethods.Clear();
 			}
 		}
 	}

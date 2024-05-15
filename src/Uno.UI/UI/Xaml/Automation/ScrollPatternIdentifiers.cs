@@ -1,35 +1,42 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.UI.Xaml.Automation
+﻿namespace Microsoft.UI.Xaml.Automation;
+
+/// <summary>
+/// Contains values used as identifiers by IScrollProvider, and also contains the NoScroll constant.
+/// </summary>
+public partial class ScrollPatternIdentifiers
 {
-	[global::Uno.NotImplemented]
-	public  partial class ScrollPatternIdentifiers 
-	{
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty HorizontalScrollPercentProperty { get; }
-			= new AutomationProperty();
+	/// <summary>
+	/// Identifies the HorizontalScrollPercent automation property.
+	/// </summary>
+	public static AutomationProperty HorizontalScrollPercentProperty { get; } = new();
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty HorizontalViewSizeProperty { get; }
-			= new AutomationProperty();
+	/// <summary>
+	/// Identifies the HorizontalViewSize automation property.
+	/// </summary>
+	public static AutomationProperty HorizontalViewSizeProperty { get; } = new();
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty HorizontallyScrollableProperty { get; }
-			= new AutomationProperty();
+	/// <summary>
+	/// Identifies the HorizontallyScrollable automation property.
+	/// </summary>
+	public static AutomationProperty HorizontallyScrollableProperty { get; } = new();
 
-		[global::Uno.NotImplemented]
-		public static double NoScroll { get; } = 0;
+	/// <summary>
+	/// Specifies that scrolling should not be performed.
+	/// </summary>
+	public static double NoScroll { get; }
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty VerticalScrollPercentProperty { get; }
-			= new AutomationProperty();
+	/// <summary>
+	/// Identifies the VerticalScrollPercent automation property.
+	/// </summary>
+	public static AutomationProperty VerticalScrollPercentProperty { get; } = new();
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty VerticalViewSizeProperty { get; }
-			= new AutomationProperty();
+	/// <summary>
+	/// Identifies the VerticalViewSize automation property.
+	/// </summary>
+	public static AutomationProperty VerticalViewSizeProperty { get; } = new();
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty VerticallyScrollableProperty { get; }
-			= new AutomationProperty();
-	}
+	/// <summary>
+	/// Identifies the VerticallyScrollable automation property.
+	/// </summary>
+	public static AutomationProperty VerticallyScrollableProperty { get; } = new();
 }

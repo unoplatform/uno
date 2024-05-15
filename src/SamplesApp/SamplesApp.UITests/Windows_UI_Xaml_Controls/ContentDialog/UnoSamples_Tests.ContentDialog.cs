@@ -384,9 +384,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
 
 			var showDialogButton = _app.Marked("showDialog1");
-			var statusBarBackground = _app.Marked("statusBarBackground");
 			var dialogSpace = _app.Marked("DialogSpace"); // from ContentDialog default ControlTemplate
 			var primaryButton = _app.Marked("PrimaryButton");
+			var statusBarHeight = _app.Marked("statusBarHeight");
 
 			// initial state
 			_app.WaitForElement(showDialogButton);
@@ -398,7 +398,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dialogOpenedScreenshot = CurrentTestTakeScreenShot("1 ContentDialog Opened");
 
 			// tapping outside of dialog
-			var dialogRect = _app.GetRect(dialogSpace);
+			var dialogRect = _app.GetLogicalRect(dialogSpace);
+			var dialogRectangle = dialogRect.ToRectangle(); // we need this later after the dialog is closed
 			_app.TapCoordinates(dialogRect.CenterX, dialogRect.Bottom + 50);
 			var dialogStillOpenedScreenshot = CurrentTestTakeScreenShot("2 ContentDialog Still Opened");
 
@@ -407,32 +408,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			_app.Wait(seconds: 1);
 			var dialogClosedScreenshot = CurrentTestTakeScreenShot("3 ContentDialog Closed");
 
+			// Test only to the left of the TextBox, which can have a blinking cursor and might fail the screenshot tests
+			var testRect = new Rectangle(0, 0, (int)dialogRectangle.X + 10, dialogOpenedScreenshot.Height);
+
 			// compare
-			var comparableRect = GetOsComparableRect();
-			ImageAssert.AreNotEqual(initialScreenshot, dialogOpenedScreenshot, comparableRect);
-			ImageAssert.AreEqual(dialogOpenedScreenshot, dialogStillOpenedScreenshot, comparableRect);
-			ImageAssert.AreNotEqual(dialogStillOpenedScreenshot, dialogClosedScreenshot, comparableRect);
-
-			Rectangle? GetOsComparableRect()
-			{
-				if (AppInitializer.GetLocalPlatform() == Platform.Android)
-				{
-					// the status bar area needs to be excluded for image comparison
-					var screen = _app.GetScreenDimensions();
-					var statusBarRect = _app.GetRect(statusBarBackground);
-
-					return new Rectangle(
-						0,
-						(int)statusBarRect.Height,
-						(int)screen.Width,
-						(int)screen.Height - (int)statusBarRect.Height
-					);
-				}
-				else
-				{
-					return default;
-				}
-			}
+			ImageAssert.AreNotEqual(initialScreenshot, dialogOpenedScreenshot);
+			ImageAssert.AreEqual(dialogOpenedScreenshot, dialogStillOpenedScreenshot, testRect);
+			ImageAssert.AreNotEqual(dialogStillOpenedScreenshot, dialogClosedScreenshot);
 		}
 
 		[Test]

@@ -7,7 +7,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Uno.WinUI.Runtime.Skia.LinuxFB;
 
 namespace Uno.UI.Runtime.Skia.Native
 {
@@ -21,15 +20,25 @@ namespace Uno.UI.Runtime.Skia.Native
 
 		static int OpenRestricted(IntPtr path, int flags, IntPtr userData)
 		{
-			var fd = Libc.open(Marshal.PtrToStringAnsi(path), flags, 0);
+			if (!(Marshal.PtrToStringAnsi(path) is { } pathAsString))
+			{
+				return -1;
+			}
+
+			var fd = Libc.open(pathAsString, flags, 0);
+
 			if (fd == -1)
+			{
 				return -Marshal.GetLastWin32Error();
+			}
 
 			return fd;
 		}
 
 		static void CloseRestricted(int fd, IntPtr userData)
+#pragma warning disable CA1806 // Do not ignore method results
 			=> Libc.close(fd);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		private static readonly IntPtr* s_Interface;
 
@@ -37,7 +46,7 @@ namespace Uno.UI.Runtime.Skia.Native
 		{
 			s_Interface = (IntPtr*)Marshal.AllocHGlobal(IntPtr.Size * 2);
 
-			IntPtr Convert<TDelegate>(TDelegate del)
+			static IntPtr Convert<TDelegate>(TDelegate del) where TDelegate : notnull
 			{
 				GCHandle.Alloc(del);
 				return Marshal.GetFunctionPointerForDelegate(del);
@@ -120,7 +129,7 @@ namespace Uno.UI.Runtime.Skia.Native
 
 		[DllImport(LibInputName)]
 		public extern static double libinput_event_pointer_get_axis_value_discrete(IntPtr ev, libinput_pointer_axis axis);
-		
+
 		[DllImport(LibInputName)]
 		public extern static IntPtr libinput_event_get_keyboard_event(IntPtr ev);
 

@@ -11,12 +11,6 @@ using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.Telemetry;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-using ISourceGenerator = Uno.SourceGeneration.SourceGenerator;
-using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration
@@ -24,10 +18,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Telemetry.Telemetry _telemetry;
 
 		public bool IsRunningCI =>
-			Environment.GetEnvironmentVariable("TF_BUILD").HasValue() // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?tabs=yaml&view=azure-devops#system-variables
-			|| Environment.GetEnvironmentVariable("TRAVIS").HasValue() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-			|| Environment.GetEnvironmentVariable("JENKINS_URL").HasValue() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
-			|| Environment.GetEnvironmentVariable("APPVEYOR").HasValue(); // https://www.appveyor.com/docs/environment-variables/
+			!Environment.GetEnvironmentVariable("TF_BUILD").IsNullOrEmpty() // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?tabs=yaml&view=azure-devops#system-variables
+			|| !Environment.GetEnvironmentVariable("TRAVIS").IsNullOrEmpty() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+			|| !Environment.GetEnvironmentVariable("JENKINS_URL").IsNullOrEmpty() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
+			|| !Environment.GetEnvironmentVariable("APPVEYOR").IsNullOrEmpty(); // https://www.appveyor.com/docs/environment-variables/
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
@@ -113,7 +107,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_telemetry.TrackEvent(
 						"generate-xaml",
 						new[] {
-							("UnoXaml", XamlRedirection.XamlConfig.IsUnoXaml.ToString()),
 							("IsWasm", _isWasm.ToString()),
 							("IsDebug", _isDebug.ToString()),
 							("TargetFramework",  _generatorContext.GetMSBuildPropertyValue("TargetFramework")?.ToString()),
@@ -122,6 +115,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
 							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
 							("IsRunningCI", IsRunningCI.ToString()),
+							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString().ToLowerInvariant()),
+							("IDE", BuildIDEName()),
 						},
 						new[] { ("FileCount", (double)files.Length) }
 					);
@@ -130,10 +125,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				catch (Exception telemetryException)
 				{
 #if DEBUG
-					Console.Write($"Telemetry failure: {telemetryException}");
+					Console.WriteLine($"Telemetry failure: {telemetryException}");
 #endif
 				}
 #pragma warning restore CS0168 // unused parameter
+			}
+		}
+
+		private string BuildIDEName()
+		{
+			if (bool.TryParse(_generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString(), out var insideVS) && insideVS)
+			{
+				return "vswin";
+			}
+			else if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformIDE")?.ToString() is { } unoPlatformIDE)
+			{
+				return unoPlatformIDE;
+			}
+			else
+			{
+				return "unknown";
 			}
 		}
 
@@ -141,24 +152,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var constants = _generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty");
 
-			if (constants != null)
+			if (constants.Contains("__WASM__"))
 			{
-				if (constants.Contains("__WASM__"))
-				{
-					return "WebAssembly";
-				}
-				if (constants.Contains("__SKIA__"))
-				{
-					return "Skia";
-				}
-				if (constants.Contains("__TIZEN__"))
-				{
-					return "Tizen";
-				}
-				if (constants.Contains("UNO_REFERENCE_API"))
-				{
-					return "Reference";
-				}
+				return "WebAssembly";
+			}
+			if (constants.Contains("__SKIA__"))
+			{
+				return "Skia";
+			}
+			if (constants.Contains("__TIZEN__"))
+			{
+				return "Tizen";
+			}
+			if (constants.Contains("UNO_REFERENCE_API"))
+			{
+				return "Reference";
 			}
 
 			return "Unknown";

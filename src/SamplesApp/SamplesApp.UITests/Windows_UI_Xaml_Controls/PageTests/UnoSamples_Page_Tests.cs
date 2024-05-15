@@ -45,7 +45,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 
 			using var before = TakeScreenshot("Before SolidColorBrush.Color update", ignoreInSnapshotCompare: true);
 			ImageAssert.HasColorAt(before, rect.CenterX, rect.CenterY, Color.Blue);
-			
+
 			_app.FastTap("AdvanceTestButton");
 
 			_app.WaitForText("StatusTextBlock", "Color changed");

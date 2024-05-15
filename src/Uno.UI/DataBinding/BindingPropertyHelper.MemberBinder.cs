@@ -7,6 +7,7 @@ namespace Uno.UI.DataBinding
 
 	internal static partial class BindingPropertyHelper
 	{
+		[Preserve]
 		private class UnoGetMemberBinder : GetMemberBinder
 		{
 			public UnoGetMemberBinder(string name, bool ignoreCase) : base(name, ignoreCase) { }
@@ -15,6 +16,7 @@ namespace Uno.UI.DataBinding
 				=> throw new NotSupportedException();
 		}
 
+		[Preserve]
 		private class UnoSetMemberBinder : SetMemberBinder
 		{
 			public UnoSetMemberBinder(string name, bool ignoreCase) : base(name, ignoreCase) { }

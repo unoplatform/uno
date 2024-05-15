@@ -1,5 +1,3 @@
-#if __IOS__ || __MACOS__
-
 using Uno.Networking.Connectivity.Internal;
 #if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
 using CoreTelephony;
@@ -18,7 +16,7 @@ namespace Windows.Networking.Connectivity
 			var statuses = Reachability.GetActiveConnectionType();
 			foreach (var status in statuses)
 			{
-				if( status == NetworkStatus.ReachableViaCarrierDataNetwork)
+				if (status == NetworkStatus.ReachableViaCarrierDataNetwork)
 				{
 					IsWwanConnectionProfile = true;
 				}
@@ -51,4 +49,3 @@ namespace Windows.Networking.Connectivity
 		}
 	}
 }
-#endif

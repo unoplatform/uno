@@ -6,8 +6,8 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:controls="using:Uno.UI.Samples.Controls"
 			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:xamarin="http://uno.ui/xamarin"
-			 mc:Ignorable="d xamarin"
+			 xmlns:not_win="http://uno.ui/not_win"
+			 mc:Ignorable="d not_win"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
@@ -66,7 +66,7 @@
 								<ContentPresenter x:Name="ContentPresenter"
 												  ContentTransitions="{TemplateBinding ContentTransitions}"
 												  ContentTemplate="{TemplateBinding ContentTemplate}"
-												  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+												  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 												  Content="{TemplateBinding Content}"
 												  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 												  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -109,8 +109,7 @@
 								</Border.RenderTransform>
 								<FontIcon x:Name="MultiSelectCheck"
 										  FontFamily="{ThemeResource SymbolThemeFontFamily}"
-										  win:Glyph="&#xE73E;"
-										  xamarin:Glyph="&#xE081;"
+										  Glyph="&#xE73E;"
 										  FontSize="16"
 										  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
 										  Visibility="Collapsed"

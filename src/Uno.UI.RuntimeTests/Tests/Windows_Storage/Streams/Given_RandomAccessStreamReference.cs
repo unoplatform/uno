@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 {
@@ -18,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public async Task When_FromUri()
 		{
-			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://nv-assets.azurewebsites.net/uno-unit-tests.txt"));
+			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://uno-assets.platform.uno/uno-unit-tests.txt"));
 			var actual = await ReadToEnd(sut);
 
 			Assert.AreEqual(_unoStaticTestFileContent, actual);
@@ -27,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public async Task When_FlushReadOnly()
 		{
-			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://nv-assets.azurewebsites.net/uno-unit-tests.txt"));
+			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://uno-assets.platform.uno/uno-unit-tests.txt"));
 			using var readStream = await sut.OpenReadAsync();
 
 			try
@@ -41,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			}
 		}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[TestMethod]
 		public async Task When_FromFile()
 		{
@@ -75,6 +76,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			var actual = await ReadToEnd(sut);
 
 			Assert.AreEqual(tempContent, actual);
+		}
+
+		[TestMethod]
+		public async Task When_From_AppData_Should_Open_For_Read()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, "ingredient3.png", NameCollisionOption.ReplaceExisting);
+
+			var uri = new Uri("ms-appdata:///local/ingredient3.png");
+			var stream = (await RandomAccessStreamReference.CreateFromUri(uri).OpenReadAsync()).AsStreamForRead().ReadAllBytes();
+			var actual = (await file.OpenReadAsync()).AsStreamForRead().ReadAllBytes();
+			Assert.IsTrue(stream.SequenceEqual(actual));
 		}
 
 		private static async Task<StorageFile> GetTempFile()

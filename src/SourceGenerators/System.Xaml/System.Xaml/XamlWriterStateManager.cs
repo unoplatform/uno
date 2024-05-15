@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -181,7 +182,7 @@ namespace Uno.Xaml
 		public void Namespace ()
 		{
 			if (!allow_ns_at_value && (state == XamlWriteState.ValueWritten || state == XamlWriteState.ObjectStarted))
-				throw CreateError (String.Format ("Namespace declarations cannot be written at {0} state", state));
+				throw CreateError (String.Format (CultureInfo.InvariantCulture, "Namespace declarations cannot be written at {0} state", state));
 			ns_pushed = true;
 		}
 
@@ -248,14 +249,14 @@ namespace Uno.Xaml
 				}
 				break;
 			}
-			throw CreateError (String.Format ("{0} is not allowed at current state {1}", next, state));
+			throw CreateError (String.Format (CultureInfo.InvariantCulture, "{0} is not allowed at current state {1}", next, state));
 		}
 		
 		void RejectNamespaces (XamlNodeType next)
 		{
 			if (ns_pushed) {
 				// strange, but on WriteEndMember it throws XamlXmlWriterException, while for other nodes it throws IOE.
-				string msg = String.Format ("Namespace declarations cannot be written before {0}", next);
+				string msg = String.Format (CultureInfo.InvariantCulture, "Namespace declarations cannot be written before {0}", next);
 				if (next == XamlNodeType.EndMember)
 					throw CreateError (msg);
 				else

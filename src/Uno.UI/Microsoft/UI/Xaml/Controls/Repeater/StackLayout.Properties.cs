@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	partial class StackLayout
 	{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region Spacing - DP with common callback
-		public static DependencyProperty SpacingProperty = DependencyProperty.Register(
+		public static DependencyProperty SpacingProperty { get; } = DependencyProperty.Register(
 			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
 
 		public double Spacing
@@ -33,14 +33,14 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region DisableVirtualization
-		public static DependencyProperty DisableVirtualizationProperty = DependencyProperty.Register(
+		public static DependencyProperty DisableVirtualizationProperty { get; } = DependencyProperty.Register(
 			"DisableVirtualization ", typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(default(bool), OnDependencyPropertyChanged));
 
 		public bool DisableVirtualization
 		{
 			get { return (bool)GetValue(DisableVirtualizationProperty); }
 			set { SetValue(DisableVirtualizationProperty, value); }
-		} 
+		}
 		#endregion
 	}
 }

@@ -8,18 +8,49 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Helpers;
+using Uno.UI.Xaml.Media;
 using Windows.Graphics.Display;
 using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
 using Path = global::System.IO.Path;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
 		internal ResolutionScale? ScaleOverride { get; set; }
 
-		internal string ContentType { get; set; } = "application/octet-stream";
+		internal override string ContentType { get; } = "application/octet-stream";
+
+		internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride, CancellationToken ct)
+		{
+			try
+			{
+				// ms-appx comes in as a relative path
+				if (uri.IsAbsoluteUri)
+				{
+					if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+						uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
+					{
+						return ImageData.FromUrl(uri, source);
+					}
+
+					if (uri.IsAppData())
+					{
+						return await source.OpenMsAppData(uri, ct);
+					}
+
+					return ImageData.Empty;
+				}
+
+				return ImageData.FromUrl(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride), source);
+			}
+			catch (Exception e)
+			{
+				return ImageData.FromError(e);
+			}
+		}
 
 		private protected override bool TryOpenSourceAsync(
 			CancellationToken ct,
@@ -27,9 +58,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 			int? targetHeight,
 			out Task<ImageData> asyncImage)
 		{
-			if (WebUri is {} uri)
+			if (AbsoluteUri is { } uri)
 			{
-				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme == "file";
+				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
 				// Local files are assumed as coming from the remote server
 				var newUri = hasFileScheme switch
@@ -38,12 +69,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 					_ => uri
 				};
 
-				asyncImage = AssetResolver.ResolveImageAsync(this, newUri, ScaleOverride);
+				asyncImage = ResolveImageAsync(this, newUri, ScaleOverride, ct);
 
 				return true;
 			}
 
-			if (_stream is {} stream)
+			if (_stream is { } stream)
 			{
 				void OnProgress(ulong position, ulong? length)
 				{
@@ -60,120 +91,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return true;
 			}
-			
+
 			asyncImage = default;
 			return false;
 		}
 
-		internal static class AssetResolver
+		private void RaiseDownloadProgress(int progress = 0)
 		{
-			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(GetAssets);
-
-			private static async Task<HashSet<string>> GetAssets()
+			if (DownloadProgress is { } evt)
 			{
-				var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
-
-				var assets = await WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
-
-				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
+				evt?.Invoke(this, new DownloadProgressEventArgs { Progress = progress });
 			}
-
-			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride)
-			{
-				try
-				{
-					// ms-appx comes in as a relative path
-					if (uri.IsAbsoluteUri)
-					{
-						if (uri.Scheme == "http" || uri.Scheme == "https")
-						{
-							return new ImageData
-							{
-								Kind = ImageDataKind.Url,
-								Value = uri.AbsoluteUri,
-								Source = source
-							};
-						}
-
-						// TODO: Implement ms-appdata
-						return new ImageData();
-					}
-
-					// POTENTIAL BUG HERE: if the "fetch" failed, the application
-					// will never retry to fetch it again.
-					var assets = await _assets.Value;
-
-					return new ImageData
-					{
-						Kind = ImageDataKind.Url,
-						Value = GetScaledPath(uri.OriginalString, assets, scaleOverride),
-						Source = source
-					};
-				}
-				catch (Exception e)
-				{
-					return new ImageData { Kind = ImageDataKind.Error, Error = e };
-				}
-			}
-
-			private static string GetScaledPath(string path, HashSet<string> assets, ResolutionScale? scaleOverride)
-			{
-				if (!string.IsNullOrEmpty(path))
-				{
-					var directory = Path.GetDirectoryName(path);
-					var filename = Path.GetFileNameWithoutExtension(path);
-					var extension = Path.GetExtension(path);
-
-					var resolutionScale = scaleOverride == null ? (int)DisplayInformation.GetForCurrentView().ResolutionScale : (int)scaleOverride;
-
-					// On Windows, the minimum scale is 100%, however, on Wasm, we can have lower scales.
-					// This condition is to allow Wasm to use the .scale-100 image when the scale is < 100%
-					if (resolutionScale < 100)
-					{
-						resolutionScale = 100;
-					}
-
-
-					for (var i = KnownScales.Length - 1; i >= 0; i--)
-					{
-						var probeScale = KnownScales[i];
-					
-						if (resolutionScale >= probeScale)
-						{
-							var filePath = Path.Combine(directory, $"{filename}.scale-{probeScale}{extension}");
-
-							if (assets.Contains(filePath))
-							{
-								return AssetsPathBuilder.BuildAssetUri(filePath);
-							}
-						}
-					}
-
-					return AssetsPathBuilder.BuildAssetUri(path);
-				}
-
-				return path;
-			}
-
-			private static readonly int[] KnownScales =
-			{
-				(int)ResolutionScale.Scale100Percent,
-				(int)ResolutionScale.Scale120Percent,
-				(int)ResolutionScale.Scale125Percent,
-				(int)ResolutionScale.Scale140Percent,
-				(int)ResolutionScale.Scale150Percent,
-				(int)ResolutionScale.Scale160Percent,
-				(int)ResolutionScale.Scale175Percent,
-				(int)ResolutionScale.Scale180Percent,
-				(int)ResolutionScale.Scale200Percent,
-				(int)ResolutionScale.Scale225Percent,
-				(int)ResolutionScale.Scale250Percent,
-				(int)ResolutionScale.Scale300Percent,
-				(int)ResolutionScale.Scale350Percent,
-				(int)ResolutionScale.Scale400Percent,
-				(int)ResolutionScale.Scale450Percent,
-				(int)ResolutionScale.Scale500Percent
-			};
 		}
 
 		internal override void ReportImageLoaded()

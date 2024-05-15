@@ -1,7 +1,7 @@
 ﻿#if DEBUG
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -9,7 +9,7 @@ using Uno.Disposables;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.System;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
@@ -18,13 +18,13 @@ using System;
 using System.Collections;
 using System.Numerics;
 using System.Reflection;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
@@ -39,11 +39,11 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using AppKit;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement
 	{
@@ -207,12 +207,14 @@ namespace Windows.UI.Xaml
 			return current as FrameworkElement;
 		}
 
-		internal View[] GetAllAncestorsDebug()
+		internal View[] GetAllAncestorsDebug(bool includeSelf = false)
 		{
 			return GetInner().ToArray();
 
 			IEnumerable<View> GetInner()
 			{
+				yield return this;
+
 				var current = this.GetVisualTreeParent();
 				while (current != null)
 				{
@@ -222,16 +224,16 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal string[] GetAllAncestorsAsStrings()
+		internal string[] GetAllAncestorsAsStrings(bool includeSelf = false)
 		{
-			return GetAllAncestorsDebug().Select(v =>
+			return GetAllAncestorsDebug(includeSelf).Select(v =>
+			{
+				if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
 				{
-					if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
-					{
-						return $"{fe.Name}({fe.GetType().Name})";
-					}
-					return v.GetType().Name;
-				})
+					return $"{fe.Name}({fe.GetType().Name})";
+				}
+				return v.GetType().Name;
+			})
 				.ToArray();
 		}
 

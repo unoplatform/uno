@@ -7,10 +7,10 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
-	xmlns:xamarin="http://uno.ui/xamarin"
-	mc:Ignorable="d xamarin ios android">
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d not_win ios android">
 	
-	<!-- Resources for Windows.UI.Xaml.Controls.FlyoutPresenter -->
+	<!-- Resources for Microsoft.UI.Xaml.Controls.FlyoutPresenter -->
 	<StaticResource x:Key="FlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
 	<StaticResource x:Key="FlyoutBorderThemeBrush" ResourceKey="SystemControlTransientBorderBrush" />
 	<Thickness x:Key="FlyoutBorderThemeThickness">1</Thickness>
@@ -23,7 +23,7 @@
 	<x:Double x:Key="FlyoutThemeMinWidth">96</x:Double>
 	<x:Double x:Key="FlyoutThemeTouchMinWidth">240</x:Double>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.FlyoutPresenter -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.FlyoutPresenter -->
 	<Style x:Key="DefaultFlyoutPresenter"  TargetType="FlyoutPresenter">
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Stretch" />
@@ -40,7 +40,7 @@
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
 		<Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-		<win:Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+		<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="FlyoutPresenter">
@@ -52,8 +52,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{ThemeResource FlyoutBorderThemePadding}">
 						<ScrollViewer x:Name="ScrollViewer"
-                            xamarin:ZoomMode="Disabled"
-                            win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                             VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"

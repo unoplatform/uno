@@ -12,15 +12,14 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public sealed partial class FocusManager
 	{
 		private static readonly Lazy<Logger> _log = new Lazy<Logger>(() => typeof(FocusManager).Log());
-		private static readonly Dictionary<XamlRoot, object> _focusedElements = new Dictionary<XamlRoot, object>(1);
 
 		/// <summary>
 		/// Occurs when an element within a container element (a focus scope) receives focus.
@@ -206,6 +205,13 @@ namespace Windows.UI.Xaml.Input
 					"Undefined focus navigation direction was used.");
 			}
 
+			if (focusNavigationDirection == FocusNavigationDirection.None)
+			{
+				throw new ArgumentOutOfRangeException(
+					"Focus navigation direction None is not supported in TryMoveFocus",
+					nameof(focusNavigationDirection));
+			}
+
 			return TryMoveFocusImpl(focusNavigationDirection);
 		}
 
@@ -231,12 +237,10 @@ namespace Windows.UI.Xaml.Input
 					"Invalid value of focus navigation direction was used.");
 			}
 
-			if (focusNavigationDirection == FocusNavigationDirection.Next ||
-				focusNavigationDirection == FocusNavigationDirection.Previous ||
-				focusNavigationDirection == FocusNavigationDirection.None)
+			if (focusNavigationDirection == FocusNavigationDirection.None)
 			{
 				throw new ArgumentOutOfRangeException(
-					"Focus navigation directions Next, Previous, and None are not supported when using FindNextElementOptions",
+					"Focus navigation direction None is not supported in TryMoveFocus",
 					nameof(focusNavigationDirection));
 			}
 
@@ -245,7 +249,7 @@ namespace Windows.UI.Xaml.Input
 				throw new ArgumentNullException(nameof(focusNavigationOptions));
 			}
 
-			return TryMoveFocusImpl(focusNavigationDirection);
+			return TryMoveFocusWithOptionsImpl(focusNavigationDirection, focusNavigationOptions);
 		}
 
 		/// <summary>
@@ -261,6 +265,13 @@ namespace Windows.UI.Xaml.Input
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
 					"Undefined focus navigation direction was used.");
+			}
+
+			if (focusNavigationDirection == FocusNavigationDirection.None)
+			{
+				throw new ArgumentOutOfRangeException(
+					"Focus navigation direction None is not supported in TryMoveFocusAsync",
+					nameof(focusNavigationDirection));
 			}
 
 			return TryMoveFocusAsyncImpl(focusNavigationDirection);
@@ -282,12 +293,10 @@ namespace Windows.UI.Xaml.Input
 					"Invalid value of focus navigation direction was used.");
 			}
 
-			if (focusNavigationDirection == FocusNavigationDirection.Next ||
-				focusNavigationDirection == FocusNavigationDirection.Previous ||
-				focusNavigationDirection == FocusNavigationDirection.None)
+			if (focusNavigationDirection == FocusNavigationDirection.None)
 			{
 				throw new ArgumentOutOfRangeException(
-					"Focus navigation directions Next, Previous, and None are not supported when using FindNextElementOptions",
+					"Focus navigation direction None is not supported in TryMoveFocusAsync",
 					nameof(focusNavigationDirection));
 			}
 
@@ -296,7 +305,7 @@ namespace Windows.UI.Xaml.Input
 				throw new ArgumentNullException(nameof(focusNavigationOptions));
 			}
 
-			return TryMoveFocusAsyncImpl(focusNavigationDirection);
+			return TryMoveFocusWithOptionsAsyncImpl(focusNavigationDirection, focusNavigationOptions);
 		}
 	}
 }

@@ -3,7 +3,7 @@
 #if HAS_UNO_WINUI
 using Windows.ApplicationModel.Activation;
 
-namespace Microsoft.UI.Xaml
+namespace Microsoft/* UWP don't rename */.UI.Xaml
 {
 	public sealed partial class LaunchActivatedEventArgs
 	{
@@ -14,12 +14,12 @@ namespace Microsoft.UI.Xaml
 		internal LaunchActivatedEventArgs(ActivationKind kind, string? arguments)
 		{
 			Arguments = arguments;
-			UWPLaunchActivatedEventArgs = new Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(kind, arguments);
+			UWPLaunchActivatedEventArgs = new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(kind, arguments);
 		}
 
 		public string? Arguments { get; }
 
-		public Windows.ApplicationModel.Activation.LaunchActivatedEventArgs UWPLaunchActivatedEventArgs { get; }
+		public global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs UWPLaunchActivatedEventArgs { get; }
 	}
 }
 #endif

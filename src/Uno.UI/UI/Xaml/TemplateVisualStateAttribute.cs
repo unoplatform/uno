@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	//
 	// Summary:
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 	{
 		public string GroupName;
 		public string Name;
-		
+
 		public TemplateVisualStateAttribute()
 		{
 		}

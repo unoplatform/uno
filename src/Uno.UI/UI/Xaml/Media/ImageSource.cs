@@ -1,30 +1,30 @@
-﻿using Uno.Extensions;
-using Uno.Foundation.Logging;
+﻿#nullable enable
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Text;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Uno;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media.Imaging;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI;
+using Uno.UI.Xaml.Media;
 
-#if !IS_UNO
-using Uno.Web.Query;
-using Uno.Web.Query.Cache;
-#endif
-
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(ImageSourceConverter))]
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
-		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+		private protected ImageData _imageData = ImageData.Empty;
+
+		internal event Action? Invalidated;
+
+		private protected void InvalidateImageSource() => Invalidated?.Invoke();
 
 		public static class TraceProvider
 		{
@@ -35,31 +35,20 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
 
+#pragma warning disable CA2211
 		/// <summary>
 		/// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
 		/// </summary>
-		public static IImageSourceDownloader DefaultDownloader;
+		public static IImageSourceDownloader? DefaultDownloader;
 
 		/// <summary>
 		/// The image downloader for the current instance.
 		/// </summary>
-		public IImageSourceDownloader Downloader;
+		public IImageSourceDownloader? Downloader;
+#pragma warning restore CA2211
 
-		/// <summary>
-		/// Initializes the Uno image downloader.
-		/// </summary>
-		private void InitializeDownloader()
-		{
-			Downloader = DefaultDownloader;
-		}
-
-#if !(__NETSTD__)
-		internal Stream Stream { get; set; }
-#endif
-
-		internal string FilePath { get; private set; }
+		internal string? FilePath { get; private set; }
 
 		public bool UseTargetSize { get; set; }
 
@@ -67,17 +56,15 @@ namespace Windows.UI.Xaml.Media
 		{
 			var uri = TryCreateUriFromString(url);
 
-			if (uri != null)
-			{
-				InitFromUri(uri);
-			}
-			else
+			if (uri is null)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("The uri [{0}] is not valid, skipping.", url);
 				}
 			}
+
+			InitFromUri(uri);
 		}
 
 		protected ImageSource(Uri uri) : this()
@@ -85,14 +72,19 @@ namespace Windows.UI.Xaml.Media
 			InitFromUri(uri);
 		}
 
-		internal static Uri TryCreateUriFromString(string url)
+		internal static Uri? TryCreateUriFromString(string url)
 		{
-			if (url.StartsWith("/"))
+			if (url is null)
+			{
+				return null;
+			}
+
+			if (url.StartsWith('/'))
 			{
 				url = MsAppXScheme + "://" + url;
 			}
 
-			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			if (!url.IsNullOrWhiteSpace() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
 			{
 				if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
 				{
@@ -105,8 +97,17 @@ namespace Windows.UI.Xaml.Media
 			return null;
 		}
 
-		internal void InitFromUri(Uri uri)
+		internal void InitFromUri(Uri? uri)
 		{
+			CleanupResource();
+			FilePath = null;
+			AbsoluteUri = null;
+
+			if (uri is null)
+			{
+				return;
+			}
+
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
@@ -129,7 +130,7 @@ namespace Windows.UI.Xaml.Media
 				InitFromFile(uri.PathAndQuery);
 			}
 
-			WebUri = uri;
+			AbsoluteUri = uri;
 		}
 
 		private void InitFromFile(string filePath)
@@ -139,13 +140,37 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri);
 
-		public static implicit operator ImageSource(string url)
+		partial void CleanupResource();
+
+		public static implicit operator ImageSource?(string url)
 		{
-			//This check is done in order to force a null to return if a empty string is passed.
-			return url.IsNullOrWhiteSpace() ? null : new BitmapImage(url);
+			if (TryCreateUriFromString(url) is Uri uri)
+			{
+				return (ImageSource?)uri;
+			}
+
+			return null;
 		}
 
-		public static implicit operator ImageSource(Uri uri) => new BitmapImage(uri);
+		public static implicit operator ImageSource?(Uri uri)
+		{
+			if (uri is null)
+			{
+				return null;
+			}
+
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_Imaging_SvgImageSource_Available
+				&& (uri.LocalPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
+					uri.LocalPath.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
+			)
+			{
+				return new SvgImageSource(uri);
+			}
+			else
+			{
+				return new BitmapImage(uri);
+			}
+		}
 
 		public static implicit operator ImageSource(Stream stream)
 		{
@@ -154,38 +179,21 @@ namespace Windows.UI.Xaml.Media
 
 		partial void DisposePartial();
 
-		public void Dispose() => DisposePartial();
-
-		/// <summary>
-		/// Downloads an image from the provided Uri.
-		/// </summary>
-		/// <returns>n Uri containing a local path for the downloaded image.</returns>
-		private async Task<Uri> Download(CancellationToken ct, Uri uri)
+		public void Dispose()
 		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().DebugFormat("Initiated download from {0}", uri);
-			}
-
-			if (Downloader != null)
-			{
-				return await Downloader.Download(ct, uri);
-			}
-			else
-			{
-				throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
-			}
+			UnloadImageData();
+			DisposePartial();
 		}
 
-		private Uri _webUri;
+		private Uri? _absoluteUri;
 
-		internal Uri WebUri
+		internal Uri? AbsoluteUri
 		{
-			get { return _webUri; }
+			get => _absoluteUri;
 
 			private set
 			{
-				_webUri = value;
+				_absoluteUri = value;
 
 				if (value != null)
 				{
@@ -195,5 +203,58 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		partial void SetImageLoader();
+
+		internal void UnloadImageData()
+		{
+			UnloadImageDataPlatform();
+			UnloadImageSourceData();
+			_imageData = ImageData.Empty;
+		}
+
+		partial void UnloadImageDataPlatform();
+
+		/// <summary>
+		/// Override in concrete ImageSource implementations
+		/// to provide source-specific cleanup of image data.
+		/// </summary>
+		private protected virtual void UnloadImageSourceData()
+		{
+		}
+
+		#region Implementers API
+		/// <summary>
+		/// Override to provide the capability of concrete ImageSource to open synchronously.
+		/// </summary>
+		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
+		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
+		/// <param name="image">Returned image data.</param>
+		/// <returns>True if opening synchronously is possible.</returns>
+		/// <remarks>
+		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
+		/// Depending on stretching, only one of each can be provided.
+		/// </remarks>
+		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
+		{
+			image = default;
+			return false;
+		}
+
+		/// <summary>
+		/// Override to provide the capability of concrete ImageSource to open asynchronously.
+		/// </summary>
+		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
+		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
+		/// <param name="asyncImage">Async task for image data retrieval.</param>
+		/// <returns>True if opening asynchronously is possible.</returns>
+		/// <remarks>
+		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
+		/// Depending on stretching, only one of each can be provided.
+		/// </remarks>
+		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData>? asyncImage)
+		{
+			asyncImage = default;
+			return false;
+		}
+		#endregion
 	}
 }

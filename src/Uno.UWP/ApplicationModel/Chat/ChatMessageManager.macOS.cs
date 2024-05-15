@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Chat
 			var firstNumber = message.Recipients.First();
 			var uri = $"sms:{firstNumber}";
 
-			if(!string.IsNullOrEmpty(message.Body))
+			if (!string.IsNullOrEmpty(message.Body))
 			{
 				uri += $"&body={Uri.EscapeDataString(message.Body)}";
 			}

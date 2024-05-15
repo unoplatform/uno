@@ -1,4 +1,4 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
+using System.Globalization;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class VisualStateManager : DependencyObject
 	{
@@ -45,7 +46,7 @@ namespace Windows.UI.Xaml
 				typeof(IList<VisualStateGroup>),
 				typeof(VisualStateManager),
 				new FrameworkPropertyMetadata(
-					defaultValue: new VisualStateGroup[0],
+					defaultValue: Array.Empty<VisualStateGroup>(),
 					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
 					propertyChangedCallback: OnVisualStateGroupsChanged
 				)
@@ -191,7 +192,7 @@ namespace Windows.UI.Xaml
 					EventOpcode.Send,
 					new[] {
 						control.GetType()?.ToString(),
-						control?.GetDependencyObjectId().ToString(),
+						control?.GetDependencyObjectId().ToString(CultureInfo.InvariantCulture),
 						state.Name,
 						useTransitions ? "UseTransitions" : "NoTransitions"
 					}
@@ -256,11 +257,22 @@ namespace Windows.UI.Xaml
 				return null;
 			}
 
-			var group = GetVisualStateGroups(templateRoot)?
-				.Where(g => g.Name == groupName)
-				.FirstOrDefault();
+			// Avoid using groups.FirstOrDefault as it incurs unnecessary Func<VisualStateGroup, bool> allocations
+			var groups = GetVisualStateGroups(templateRoot);
+			if (groups is null)
+			{
+				return null;
+			}
 
-			return group?.CurrentState;
+			foreach (var group in groups)
+			{
+				if (group.Name == groupName)
+				{
+					return group.CurrentState;
+				}
+			}
+
+			return null;
 		}
 
 		private static (VisualStateGroup, VisualState) GetValidGroupAndState(string stateName, IList<VisualStateGroup> groups)

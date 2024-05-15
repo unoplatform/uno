@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
+	[ContentProperty(Name = nameof(Width))]
 	public partial class ColumnDefinition : DefinitionBase, DependencyObject
 	{
 		public ColumnDefinition()
@@ -51,8 +53,6 @@ namespace Windows.UI.Xaml.Controls
 			get => GetMinWidthValue();
 			set => SetMinWidthValue(value);
 		}
-
-		private static GridLength GetMaxWidthDefaultValue() => GridLengthHelper.OneStar;
 
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity)]
 		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();

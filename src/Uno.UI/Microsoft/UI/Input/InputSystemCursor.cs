@@ -1,18 +1,32 @@
-﻿#if HAS_UNO_WINUI
+﻿using System;
+namespace Microsoft.UI.Input;
 
-namespace Microsoft.UI.Input
-{
-	public sealed class InputSystemCursor : InputCursor
-	{
-		private InputSystemCursor(InputSystemCursorShape type)
-		{
-			CursorShape = type;
-		}
-
-		public InputSystemCursorShape CursorShape { get; }
-
-		public static InputSystemCursor Create(InputSystemCursorShape type)
-			=> new InputSystemCursor(type);
-	}
-}
+#if HAS_UNO_WINUI
+public sealed partial class InputSystemCursor : InputCursor
+#else
+internal sealed partial class InputSystemCursor : InputCursor
 #endif
+{
+	private readonly InputSystemCursorShape _cursorShape;
+
+	private InputSystemCursor(InputSystemCursorShape type)
+	{
+		_cursorShape = type;
+	}
+
+	public InputSystemCursorShape CursorShape
+	{
+		get
+		{
+			if (IsDisposed)
+			{
+				throw new ObjectDisposedException(nameof(CursorShape));
+			}
+
+			return _cursorShape;
+		}
+	}
+
+	public static InputSystemCursor Create(InputSystemCursorShape type)
+		=> new InputSystemCursor(type);
+}

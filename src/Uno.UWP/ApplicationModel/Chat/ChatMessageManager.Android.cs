@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 				.SetFlags(ActivityFlags.NewTask);
 
 			ContextHelper.Current.StartActivity(intent);
-			
+
 			return Task.FromResult(true).AsAsyncAction();
 		}
 
@@ -42,10 +41,10 @@ namespace Windows.ApplicationModel.Chat
 			{
 				intent.PutExtra(SmsBodyExtra, body);
 			}
-					   
+
 			var recipientUri = string.Join(
-                RecipientsSeparator,
-                recipients.Select(r => Android.Net.Uri.Encode(r)));					   
+				RecipientsSeparator,
+				recipients.Select(r => Android.Net.Uri.Encode(r)));
 			var uri = Android.Net.Uri.Parse($"{SmsProtocol}{recipientUri}");
 
 			intent.SetData(uri);
@@ -54,4 +53,3 @@ namespace Windows.ApplicationModel.Chat
 		}
 	}
 }
-#endif

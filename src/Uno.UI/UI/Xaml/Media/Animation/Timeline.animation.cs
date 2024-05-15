@@ -9,8 +9,9 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using System.Diagnostics;
+using Uno.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class Timeline
 	{
@@ -33,8 +34,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			private readonly Stopwatch _activeDuration = new Stopwatch();
 			private int _replayCount = 1;
-			private T? _startingValue = null;
-			private T? _endValue = null;
+			private T? _startingValue;
+			private T? _endValue;
 
 			// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
 			private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);
@@ -66,14 +67,15 @@ namespace Windows.UI.Xaml.Media.Animation
 			private T? By => AnimationOwner?.By;
 			private IEasingFunction EasingFunction => AnimationOwner?.EasingFunction;
 			private bool EnableDependentAnimation => AnimationOwner?.EnableDependentAnimation ?? false;
-			private DependencyObject Target => _owner?.Target;
 			private BindingPath PropertyInfo => _owner?.PropertyInfo;
 
 			private string[] GetTraceProperties() => _owner?.GetTraceProperties();
+
 			private void ClearValue() => _owner?.ClearValue();
 			private void SetValue(object value) => _owner?.SetValue(value);
-			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
 			private object GetValue() => _owner?.GetValue();
+			private object GetNonAnimatedValue() => _owner?.GetNonAnimatedValue();
+			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
 
 			public void Begin()
 			{
@@ -165,7 +167,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				if (State == TimelineState.Active || State == TimelineState.Paused)
 				{
-					CoreDispatcher.Main.RunAsync(
+					_ = CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
 						() =>
 						{
@@ -185,18 +187,20 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				if (_animator is { IsRunning: true })
 				{
-					_animator.Cancel();//Stop the animator if it is running
+					_animator.Cancel(); // Stop the animator if it is running
 					_startingValue = null;
 				}
 
-				SetValue(ComputeToValue());//Set property to its final value
+				// Set property to its final value
+				var value = ComputeToValue();
+				SetValue(value);
 
 				OnEnd();
 			}
 
 			public void Deactivate()
 			{
-				_animator?.Cancel();//Stop the animator if it is running
+				_animator?.Cancel(); // Stop the animator if it is running
 				_startingValue = null;
 
 				State = TimelineState.Stopped;
@@ -236,7 +240,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 				else
 				{
-#if __ANDROID_19__
+#if __ANDROID__
 					if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 					{
 						_animator.AnimationPause += OnAnimatorAnimationPause;
@@ -261,7 +265,6 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				OnEnd();
-				_startingValue = null;
 			}
 
 			private void OnAnimatorAnimationEndFrame(object sender, EventArgs e) => OnFrame();
@@ -276,6 +279,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private void Play()
 			{
 				_animator?.Dispose();
+
 				InitializeAnimator(); // Create the animator
 
 				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
@@ -293,8 +297,8 @@ namespace Windows.UI.Xaml.Media.Animation
 				_animator.Start();
 				State = TimelineState.Active;
 
-#if XAMARIN_IOS
-				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static 
+#if __IOS__
+				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static
 				// values out of syc with native presented values and Xaml values). As a workaround we fast-forward the animation to its final
 				// state. (The ideal would probably be to restart the animation when the app resumes.)
 				if (Application.Current?.IsSuspended ?? false)
@@ -327,20 +331,22 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			/// <summary>
-			/// Replays the Animation if required, Sets the final state, Raises the Completed event. 
+			/// Replays the Animation if required, Sets the final state, Raises the Completed event.
 			/// </summary>
 			private void OnEnd()
 			{
 				_animator?.Dispose();
 
 				// If the animation was GPU based, remove the animated value
+
 				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
 					return;
 				}
 
-				if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
+				// There are two types of fill behaviors:
+				if (FillBehavior == FillBehavior.HoldEnd) // HoldEnd: Keep displaying the last frame
 				{
 #if __IOS__ || __MACOS__
 					// iOS && macOS: Here we make sure that the final frame is applied properly (it may have been skipped by animator)
@@ -353,10 +359,9 @@ namespace Windows.UI.Xaml.Media.Animation
 					//		 cf. https://github.com/unoplatform/uno/issues/631
 					PropertyInfo.Value = ComputeToValue();
 #endif
-
 					State = TimelineState.Filling;
 				}
-				else // Stop -Put back the initial state
+				else // Stop: Put back the initial state
 				{
 					State = TimelineState.Stopped;
 
@@ -364,6 +369,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				_owner.OnCompleted();
+				_startingValue = null;
 			}
 
 			/// <summary>
@@ -396,10 +402,10 @@ namespace Windows.UI.Xaml.Media.Animation
 				// value in order to support deactivation scenarios.
 				State = TimelineState.Stopped;
 
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 				_startingValue = null;
 
-				// On Android, AnimationEnd is always called after AnimationCancel. We don't unset _startingValue yet to be able to calculate 
+				// On Android, AnimationEnd is always called after AnimationCancel. We don't unset _startingValue yet to be able to calculate
 				// the final value correctly.
 #endif
 			}
@@ -431,8 +437,9 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 				else
 				{
-					var value = GetValue();
-
+					var value = FeatureConfiguration.Timeline.DefaultsStartingValueFromAnimatedValue
+						? GetValueCore()
+						: GetNonAnimatedValue();
 					if (value != null)
 					{
 						return AnimationOwner.Convert(value);
@@ -440,6 +447,25 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				return null;
+			}
+
+			private object GetValueCore()
+			{
+#if !__ANDROID__
+				return GetValue();
+#else
+				// On android, animation may target a native property implementing the behavior instead of the specified dependency property.
+				// When starting a new animation midst another, in order to continue from the current animated value,
+				// we need to retrieve the value of that native property, as reading the dp value will just give the final value.
+				if (AnimatorFactory.TryGetNativeAnimatedValue(_owner, out var value))
+				{
+					return value;
+				}
+				else
+				{
+					return GetValue();
+				}
+#endif
 			}
 
 			/// <summary>
@@ -479,7 +505,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			partial void DisposePartial();
 
 			partial void OnFrame();
-			partial void HoldValue();
 			partial void UseHardware();
 		}
 	}

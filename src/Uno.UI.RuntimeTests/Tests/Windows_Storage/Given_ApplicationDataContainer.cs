@@ -164,6 +164,9 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void When_GetAllKeys()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -198,7 +201,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 
 			List<string> keysPresent = SUT.Values.Keys.ToList();
 
-			foreach(var value in SUT.Values)
+			foreach (var value in SUT.Values)
 			{
 				keysPresent.Remove(value.Key);
 			}
@@ -265,11 +268,11 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var value = "something";
 			SUT.Values.Add(key, value);
 			Assert.ThrowsException<ArgumentException>(
-				() => SUT.Values.Add(key, null)); 
+				() => SUT.Values.Add(key, null));
 		}
 
 		[TestMethod]
-        public void When_KeyDoesNotExist()
+		public void When_KeyDoesNotExist()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
 

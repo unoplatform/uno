@@ -50,9 +50,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 
 			var activityViewController = new UIActivityViewController(sharedData.ToArray(), null);
-			
+
 			if (activityViewController.PopoverPresentationController != null && rootViewController.View != null)
-			{				
+			{
 				activityViewController.PopoverPresentationController.SourceView = rootViewController.View;
 
 				if (options.SelectionRect != null)
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 				else
 				{
-					activityViewController.PopoverPresentationController.SourceRect = new CGRect(rootViewController.View.Bounds.Width / 2, rootViewController.View.Bounds.Height / 2, 0, 0);				
+					activityViewController.PopoverPresentationController.SourceRect = new CGRect(rootViewController.View.Bounds.Width / 2, rootViewController.View.Bounds.Height / 2, 0, 0);
 					activityViewController.PopoverPresentationController.PermittedArrowDirections = 0;
 				}
 			}

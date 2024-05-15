@@ -7,42 +7,28 @@ using Uno.Disposables;
 using System.Text;
 using System.Windows.Input;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.System;
-#if XAMARIN_IOS
+#if __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #elif __ANDROID__
 using View = Android.Views.View;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
-		static ButtonBase()
-		{
-			IsEnabledProperty.OverrideMetadata(
-				typeof(ButtonBase),
-				new FrameworkPropertyMetadata(
-					defaultValue: true,
-					propertyChangedCallback: null,
-					coerceValueCallback: CoerceIsEnabled
-				)
-			);
-		}
-
-		private readonly SerialDisposable _commandCanExecute = new SerialDisposable();
-
 		public
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			new
 #endif
 			event RoutedEventHandler Click;
@@ -155,36 +141,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void RegisterEvents();
 
+#if __ANDROID__ || __IOS__
 		private void OnCanExecuteChanged()
 		{
 			this.CoerceValue(IsEnabledProperty);
 		}
+#endif
 
-		private static object CoerceIsEnabled(DependencyObject dependencyObject, object baseValue)
+		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
-			if (dependencyObject is ButtonBase buttonBase
-				&& buttonBase.Command != null
-				&& !buttonBase.Command.CanExecute(buttonBase.CommandParameter))
+			if (Command != null
+				&& !Command.CanExecute(CommandParameter))
 			{
 				return false;
 			}
 
-			return baseValue;
+			return base.CoerceIsEnabled(baseValue, precedence);
 		}
 
-		public override View ContentTemplateRoot
-		{
-			get
-			{
-				return base.ContentTemplateRoot;
-			}
-			protected set
-			{
-				base.ContentTemplateRoot = value;
-
-				RegisterEvents();
-			}
-		}
+		private protected override void OnContentTemplateRootSet() => RegisterEvents();
 
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
@@ -205,12 +180,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnClick();
 		}
 
+#if false
 		private void OnClick(PointerRoutedEventArgs args = null)
 		{
 			Click?.Invoke(this, new RoutedEventArgs(args?.OriginalSource ?? this));
 
 			InvokeCommand();
 		}
+#endif
 
 		internal void InvokeCommand()
 		{
@@ -228,59 +205,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				this.Log().Error("Failed to execute command", e);
 			}
 		}
-
-		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
-		{
-			// Key presses can be ignored when disabled or in ClickMode.Hover
-			if (IsEnabled && ClickMode != ClickMode.Hover)
-			{
-				if (IsPressKey(args.Key))
-				{
-					if (!HasPointerCapture)
-					{
-						IsPressed = true;
-
-						if (ClickMode == ClickMode.Press)
-						{
-							OnClick();
-						}
-
-						args.Handled = true;
-					}
-				}
-				else
-				{
-					//Any other keys pressed are irrelevant
-					IsPressed = false;
-				}
-			}
-		}
-
-		private void OnKeyUp(object sender, KeyRoutedEventArgs args)
-		{
-			// Key presses can be ignored when disabled or in ClickMode.Hover
-			if (IsEnabled && ClickMode != ClickMode.Hover && IsPressKey(args.Key))
-			{
-				// If the pointer isn't in use, raise the Click event if we're in the
-				// correct click mode
-				if (!HasPointerCapture)
-				{
-					if (IsPressed && ClickMode == ClickMode.Release)
-					{
-						OnClick();
-					}
-
-					IsPressed = false;
-				}
-
-				args.Handled = true;
-			}
-		}
-
-		private bool IsPressKey(VirtualKey key) =>
-				key == VirtualKey.Space ||
-				key == VirtualKey.Enter ||
-				key == VirtualKey.Execute ||
-				key == VirtualKey.GamepadA;
 	}
 }

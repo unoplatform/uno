@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using SystemVersion = global::System.Version;
 
@@ -11,9 +10,11 @@ namespace Windows.ApplicationModel
 
 		partial void InitializePlatform()
 		{
+#pragma warning disable CS0618 // Type or member is obsolete
 			_packageInfo = Application.Context.PackageManager.GetPackageInfo(
 				Application.Context.PackageName,
 				PackageInfoFlags.MetaData);
+#pragma warning restore CS0618 // Type or member is obsolete
 		}
 
 		public string FamilyName => _packageInfo.PackageName;
@@ -41,12 +42,7 @@ namespace Windows.ApplicationModel
 
 		private long GetVersionCode()
 		{
-#if __ANDROID_28__
 			return AndroidX.Core.Content.PM.PackageInfoCompat.GetLongVersionCode(_packageInfo);
-#else
-			return _packageInfo.VersionCode;
-#endif
 		}
 	}
 }
-#endif

@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// Represents a control that a user can select (check) or clear (uncheck).
@@ -8,6 +8,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	/// </summary>
 	public partial class ToggleButton : ButtonBase, IFrameworkTemplatePoolAware
 	{
+		/// <summary>
+		/// This is a workaround for the template pooling issue where we change IsChecked when the template is recycled.
+		/// This prevents incorrect event raising but is not a "real" solution. Pooling could still cause issues.
+		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+		/// </summary>
+		private bool _suppressCheckedChanged;
+
 		/// <summary>
 		/// Initializes a new instance of the ToggleButton class.
 		/// </summary>
@@ -80,27 +87,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal bool CanRevertState { get; set; } = true;
 
-		protected virtual void OnIsCheckedChanged(bool? oldValue, bool? newValue)
+		public void OnTemplateRecycled()
 		{
-			if (IsChecked == null)
+			try
 			{
-				// Indeterminate
-				Indeterminate?.Invoke(this, new RoutedEventArgs(this));
+				_suppressCheckedChanged = true;
+				IsChecked = false;
 			}
-			else if (IsChecked.Value)
+			finally
 			{
-				// Checked
-				Checked?.Invoke(this, new RoutedEventArgs(this));
-			}
-			else
-			{
-				// Unchecked
-				Unchecked?.Invoke(this, new RoutedEventArgs(this));
+				_suppressCheckedChanged = false;
 			}
 		}
-
-		public void OnTemplateRecycled() => IsChecked = false;
-
-		internal void AutomationPeerToggle() => OnToggle();
 	}
 }

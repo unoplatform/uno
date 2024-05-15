@@ -62,5 +62,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual("Is not present", page.tilemixednotpresentTextBlock.Text);
 #endif
 		}
+
+		[TestMethod]
+		public void When_Conditional_Platform_For_Property()
+		{
+			var page = new Test_Page();
+			var tb = page.testConditionalTextBlock3;
+			Assert.AreEqual("Hello tests!", tb.Text);
+		}
 	}
 }

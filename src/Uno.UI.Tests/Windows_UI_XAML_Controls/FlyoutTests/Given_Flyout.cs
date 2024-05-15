@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.UI.Tests.Windows_UI_XAML_Controls.FlyoutTests.Controls;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.FlyoutTests
 {
@@ -31,7 +32,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			var flyout = new Flyout()
 			{
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
-				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
+				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
 			};
 
 			var button = new Button()
@@ -48,6 +49,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			//button.Click;
+			button.Focus(FocusState.Programmatic);
 			flyout.ShowAt(button);
 
 			Assert.AreEqual(button.LayoutSlot.X, flyout._popup.LayoutSlot.X);
@@ -76,7 +78,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			};
 
 			var flyoutOwner = new Button()
-			{				
+			{
 				Flyout = flyout
 			};
 
@@ -152,11 +154,11 @@ namespace Uno.UI.Tests.FlyoutTests
 		[TestMethod]
 		public void When_Placement_Full()
 		{
-			var SUT = new Grid() { Name = "test" };
+			var app = UnitTestsApp.App.EnsureApplication();
 
 			var flyout = new Flyout()
 			{
-				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
+				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
 				FlyoutPresenterStyle = new Style
 				{
 					Setters =
@@ -172,7 +174,10 @@ namespace Uno.UI.Tests.FlyoutTests
 				Flyout = flyout
 			};
 
+			button.ForceLoaded();
+
 			//button.Click;
+			button.Focus(FocusState.Programmatic);
 			flyout.ShowAt(button);
 
 			var presenter = flyout.GetPresenter();
@@ -193,11 +198,11 @@ namespace Uno.UI.Tests.FlyoutTests
 		[TestMethod]
 		public void When_Placement_Full_Max_Dims()
 		{
-			var SUT = new Grid() { Name = "test" };
+			var app = UnitTestsApp.App.EnsureApplication();
 
 			var flyout = new Flyout()
 			{
-				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
+				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
 				FlyoutPresenterStyle = new Style
 				{
 					Setters =
@@ -213,7 +218,10 @@ namespace Uno.UI.Tests.FlyoutTests
 				Flyout = flyout
 			};
 
+			button.ForceLoaded();
+
 			//button.Click;
+			button.Focus(FocusState.Programmatic);
 			flyout.ShowAt(button);
 
 			var presenter = flyout.GetPresenter();
@@ -229,6 +237,33 @@ namespace Uno.UI.Tests.FlyoutTests
 				Assert.AreEqual(214d, presenter.ActualWidth);
 				Assert.AreEqual(641d, presenter.ActualHeight);
 			}
+		}
+
+		[TestMethod]
+		public void When_Xaml_And_Conflicting_ClassName()
+		{
+			// This particular test is validating that the class is not using
+			// another type with the same non-qualified name, which can cause
+			// base type lookups to be invalid.
+
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var SUT = new Grid() { Name = "test" };
+
+			var flyout = new Windows_UI_XAML_Controls.FlyoutTests.Controls.SettingsFlyout()
+			{
+				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
+			};
+
+			var button = new Button()
+			{
+				Width = 5,
+				Flyout = flyout
+			};
+
+			SUT.AddChild(button);
+
+			app.HostView.Children.Add(SUT);
 		}
 	}
 }

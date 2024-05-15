@@ -1,6 +1,6 @@
 ﻿#if HAS_UNO
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
@@ -8,22 +8,22 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 	{
 		#region IsAttached ATTACHED PROPERTY
 
-		public static bool GetIsAttached(Windows.UI.Xaml.Controls.WebView obj)
+		public static bool GetIsAttached(Microsoft.UI.Xaml.Controls.WebView obj)
 		{
 			return (bool)obj.GetValue(IsAttachedProperty);
 		}
 
-		public static void SetIsAttached(Windows.UI.Xaml.Controls.WebView obj, bool value)
+		public static void SetIsAttached(Microsoft.UI.Xaml.Controls.WebView obj, bool value)
 		{
 			obj.SetValue(IsAttachedProperty, value);
 		}
 
-		public static DependencyProperty IsAttachedProperty { get ; } =
+		public static DependencyProperty IsAttachedProperty { get; } =
 			DependencyProperty.RegisterAttached("IsAttached", typeof(bool), typeof(WebViewObserverBehavior), new PropertyMetadata(false, OnIsAttachedChanged));
 
 		private static void OnIsAttachedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var webView = d as Windows.UI.Xaml.Controls.WebView;
+			var webView = d as Microsoft.UI.Xaml.Controls.WebView;
 
 			if (webView != null)
 			{
@@ -50,26 +50,26 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			obj.SetValue(MessageProperty, value);
 		}
 
-		public static DependencyProperty MessageProperty { get ; } =
+		public static DependencyProperty MessageProperty { get; } =
 			DependencyProperty.RegisterAttached("Message", typeof(string), typeof(WebViewObserverBehavior), new PropertyMetadata(null));
 
 		#endregion
 
-		private static void RegisterEvents(Windows.UI.Xaml.Controls.WebView webView)
+		private static void RegisterEvents(Microsoft.UI.Xaml.Controls.WebView webView)
 		{
 			webView.NavigationStarting += WebView_NavigationStarting;
 			webView.NavigationCompleted += WebView_NavigationCompleted;
 			webView.NavigationFailed += WebView_NavigationFailed;
 		}
 
-		private static void UnregisterEvents(Windows.UI.Xaml.Controls.WebView webView)
+		private static void UnregisterEvents(Microsoft.UI.Xaml.Controls.WebView webView)
 		{
 			webView.NavigationStarting -= WebView_NavigationStarting;
 			webView.NavigationCompleted -= WebView_NavigationCompleted;
 			webView.NavigationFailed -= WebView_NavigationFailed;
 		}
 
-		private static void WebView_NavigationStarting(Windows.UI.Xaml.Controls.WebView sender, Windows.UI.Xaml.Controls.WebViewNavigationStartingEventArgs args)
+		private static void WebView_NavigationStarting(Microsoft.UI.Xaml.Controls.WebView sender, Microsoft.UI.Xaml.Controls.WebViewNavigationStartingEventArgs args)
 		{
 			var message = $"NavigationStarting @ {args.Uri} [{sender.Source}]";
 
@@ -77,16 +77,16 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			sender.Log().Debug(message);
 		}
 
-		private static void WebView_NavigationFailed(object sender, Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs e)
+		private static void WebView_NavigationFailed(object sender, Microsoft.UI.Xaml.Controls.WebViewNavigationFailedEventArgs e)
 		{
-			var webView = sender as Windows.UI.Xaml.Controls.WebView;
+			var webView = sender as Microsoft.UI.Xaml.Controls.WebView;
 			var message = $"NavigationFailed {e.WebErrorStatus} @ {e.Uri} [{webView.Source}]";
 
 			SetMessage(webView, message);
 			sender.Log().Debug(message);
 		}
 
-		private static void WebView_NavigationCompleted(Windows.UI.Xaml.Controls.WebView sender, Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs args)
+		private static void WebView_NavigationCompleted(Microsoft.UI.Xaml.Controls.WebView sender, Microsoft.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs args)
 		{
 			var message = $"NavigationCompleted @ {args.Uri} [{sender.Source}]";
 

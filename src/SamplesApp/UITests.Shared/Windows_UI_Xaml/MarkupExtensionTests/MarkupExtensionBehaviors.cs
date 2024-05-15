@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.MarkupExtensionTests.Behaviors
 {
@@ -12,7 +12,7 @@ namespace UITests.Shared.Windows_UI_Xaml.MarkupExtensionTests.Behaviors
 
 		public static void SetCustomText(TextBlock obj, string value) => obj.SetValue(CustomTextProperty, value);
 
-		public static DependencyProperty CustomTextProperty { get ; } =
+		public static DependencyProperty CustomTextProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"CustomText",
 				typeof(string),

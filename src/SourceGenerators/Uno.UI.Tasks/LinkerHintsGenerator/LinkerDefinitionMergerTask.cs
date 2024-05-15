@@ -35,13 +35,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public Microsoft.Build.Framework.ITaskItem[]? DefinitionFiles { get; set; }
 
 		[Required]
-		public string TargetAssembly { get; set; } = "";
-
-		[Required]
-		public string TargetResourceName { get; set; } = "";
-
-		[Required]
-		public Microsoft.Build.Framework.ITaskItem[]? ReferencePath { get; set; }
+		public string TargetDefinitionFile { get; set; } = "";
 
 
 		public override bool Execute()
@@ -62,7 +56,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 				foreach (var definition in DefinitionFiles)
 				{
-					Log.LogMessage(DefaultLogMessageLevel, $"Merging substitution file {definition}");
+					Log.LogMessage(DefaultLogMessageLevel, $"Merging substitution file {definition.ItemSpec}");
 
 					var defDoc = new XmlDocument();
 					defDoc.Load(definition.ItemSpec);
@@ -70,57 +64,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					linkerNode.InnerXml += defDoc.DocumentElement.InnerXml;
 				}
 
-				var outputPath = Path.GetTempFileName();
-				doc.Save(outputPath);
-
-				Log.LogMessage(DefaultLogMessageLevel, $"Writing substitution file to {TargetAssembly}");
-
-				var tempFile = Path.GetTempFileName();
-
-				var resolver = new DefaultAssemblyResolver();
-				foreach(var path in BuildReferencesPaths())
-				{
-					resolver.AddSearchDirectory(path);
-				}
-
-				using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver } ))
-				{
-					asm.MainModule.Resources.Add(new EmbeddedResource(TargetResourceName, ManifestResourceAttributes.Public, File.ReadAllBytes(outputPath)));
-
-					asm.Write(tempFile);
-				}
-
-				WaitForUnlockedFile(TargetAssembly);
-
-				File.Delete(TargetAssembly);
-				File.Move(tempFile, TargetAssembly);
+				doc.Save(TargetDefinitionFile);
 			}
 
 			return true;
-		}
-
-		private string[] BuildReferencesPaths() => ReferencePath
-				.Select(p => Path.GetDirectoryName(p.ItemSpec))
-				.Distinct()
-				.ToArray();
-
-		private void WaitForUnlockedFile(string filePath)
-		{
-			var sw = Stopwatch.StartNew();
-
-			while (sw.Elapsed < TimeSpan.FromSeconds(5))
-			{
-				try
-				{
-					File.OpenWrite(filePath).Dispose();
-				}
-				catch
-				{
-					Log.LogMessage(MessageImportance.Low, $"Waiting for availability for {TargetAssembly}");
-				}
-
-				Thread.Sleep(100);
-			}
 		}
 	}
 }

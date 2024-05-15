@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
-using Windows.UI.Xaml.Input;
+using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers;
+using Uno.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private Action _foregroundChanged;
 
 		private bool _browserContextMenuEnabled = true;
-		private bool _isReadOnly = false;
+		private bool _isReadOnly;
 
 		public Brush Foreground
 		{
@@ -39,13 +42,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			_foregroundChanged.Disposable = null;
 			if (e.NewValue is SolidColorBrush scb)
 			{
-				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => this.SetForeground(e.NewValue));
+				Brush.SetupBrushChanged(e.OldValue as Brush, scb, ref _foregroundChanged, () => SetForeground(scb));
 			}
-
-			this.SetForeground(e.NewValue);
 		}
 
 		public TextBoxView(TextBox textBox, bool isMultiline)
@@ -72,6 +72,12 @@ namespace Windows.UI.Xaml.Controls
 			remove => UnregisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
 		}
 
+		private event RoutedEventHandlerWithHandled HtmlPaste
+		{
+			add => RegisterEventHandler("paste", value, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+			remove => UnregisterEventHandler("paste", value, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+		}
+
 		internal bool IsMultiline { get; }
 
 		private protected override void OnLoaded()
@@ -79,8 +85,16 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 
 			HtmlInput += OnInput;
+			HtmlPaste += OnPaste;
 
 			SetTextNative(_textBox.Text);
+		}
+
+		private bool OnPaste(object sender, RoutedEventArgs e)
+		{
+			var args = new TextControlPasteEventArgs();
+			_textBox.RaisePaste(args);
+			return args.Handled;
 		}
 
 		private protected override void OnUnloaded()
@@ -88,6 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			HtmlInput -= OnInput;
+			HtmlPaste -= OnPaste;
 		}
 
 		private void OnInput(object sender, EventArgs eventArgs)
@@ -112,17 +127,20 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal void Select(int start, int length)
-			=> WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({HtmlId}, {start}, {length})");
+			=> WindowManagerInterop.SelectInputRange(HtmlId, start, length);
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 
-		internal void SetIsPassword(bool isPassword)
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
+
+		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
 			if (IsMultiline)
 			{
 				throw new NotSupportedException("A PasswordBox cannot have multiple lines.");
 			}
-			SetAttribute("type", isPassword ? "password" : "text");
+			SetAttribute("type", revealState == PasswordRevealState.Obscured ? "password" : "text");
 		}
 
 		internal void SetEnabled(bool newValue) => SetProperty("disabled", newValue ? "false" : "true");
@@ -200,13 +218,13 @@ namespace Windows.UI.Xaml.Controls
 		public int SelectionStart
 		{
 			get => int.TryParse(GetProperty("selectionStart"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
-			set => SetProperty("selectionStart", value.ToString());
+			set => SetProperty("selectionStart", value.ToString(CultureInfo.InvariantCulture));
 		}
 
 		public int SelectionEnd
 		{
 			get => int.TryParse(GetProperty("selectionEnd"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
-			set => SetProperty("selectionEnd", value.ToString());
+			set => SetProperty("selectionEnd", value.ToString(CultureInfo.InvariantCulture));
 		}
 
 		internal override bool IsViewHit() => true;

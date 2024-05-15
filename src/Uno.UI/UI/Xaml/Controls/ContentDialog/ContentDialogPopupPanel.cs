@@ -1,19 +1,20 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class ContentDialogPopupPanel : PopupPanel
 	{
@@ -57,7 +58,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size CalculateDialogAvailableSize(Size availableSize)
 		{
-			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
+			// Skip calculation if in the context of Uno Islands.
+			if (!CoreApplication.IsFullFledgedApp)
+			{
+				return availableSize;
+			}
+
+			var visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
 
 			if (availableSize.Width > visibleBounds.Width)
 			{
@@ -73,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
 		{
-			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
+			Rect visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
 
 			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
 			var maximumHeight = Math.Min(visibleBounds.Height, finalSize.Height);
@@ -82,9 +89,12 @@ namespace Windows.UI.Xaml.Controls
 			var actualWidth = Math.Min(desiredSize.Width, maximumWidth);
 			var actualHeight = Math.Min(desiredSize.Height, maximumHeight);
 
+			var xOffset = Math.Max((maximumWidth - actualWidth) / 2, visibleBounds.X);
+			var yOffset = Math.Max((maximumHeight - actualHeight) / 2, visibleBounds.Y);
+
 			var finalRect = new Rect(
-				(maximumWidth - actualWidth) / 2,
-				(maximumHeight - actualHeight) / 2,
+				xOffset,
+				yOffset,
 				actualWidth,
 				actualHeight
 			);

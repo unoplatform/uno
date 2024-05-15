@@ -4,12 +4,15 @@
 
 #nullable enable
 
+using System;
 using Windows.Foundation;
 
 namespace Uno.UI.Helpers.WinUI
 {
 	internal static class MathHelpers
 	{
+		private const double REAL_EPSILON = 1.192092896e-07F /* FLT_EPSILON */;
+
 		/// <summary>
 		/// Determines if two rectangles intersect.
 		/// </summary>
@@ -235,6 +238,37 @@ namespace Uno.UI.Helpers.WinUI
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Return TRUE if two points are close. Close is defined as near enough
+		/// that the rounding to 32bit float precision could have resulted in the
+		/// difference. We define an arbitrary number of allowed rounding errors (10).
+		/// We divide by b to normalize the difference. It doesn't matter which point
+		/// we divide by - if they're significantly different, we'll return true, and
+		/// if they're really close, then a==b (almost).
+		/// </summary>
+		/// <param name="a">input number to compare.</param>
+		/// <param name="b">input number to compare.</param>
+		/// <returns>TRUE if the numbers are close enough.</returns>
+		internal static bool IsCloseReal(double a, double b)
+		{
+			// if b == 0.0f we don't want to divide by zero. If this happens
+			// it's sufficient to use 1.0 as the divisor because REAL_EPSILON
+			// should be good enough to test if a number is close enough to zero.
+
+			// NOTE: if b << a, this could cause an FP overflow. Currently we mask
+			// these exceptions, but if we unmask them, we should probably check
+			// the divide.
+
+			// We assume we can generate an overflow exception without taking down
+			// the system. We will still get the right results based on the FPU
+			// default handling of the overflow.
+
+			// Ensure that anyone clearing the overflow mask comes and revisits this
+			// assumption. If you hit this Assert, it means that the #O exception mask
+			// has been cleared. Go check c_wFPCtrlExceptions.
+			return Math.Abs((a - b) / ((b == 0.0f) ? 1.0f : b)) < 10.0f * REAL_EPSILON;
 		}
 	}
 }

@@ -4,8 +4,8 @@ using System.Reflection;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 #if __ANDROID__
 using Android.Text;
@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 			if (TryCalculateTextLinePhysicalHeight() is int physicalHeight && physicalHeight > 0)
 			{
 				// set container height to a value, plenty for 1 line, but not enough for 2 lines
-				this.SampleContainer.Height =  ViewHelper.PhysicalToLogicalPixels(physicalHeight) * 1.85;
+				this.SampleContainer.Height = ViewHelper.PhysicalToLogicalPixels(physicalHeight) * 1.85;
 			}
 #endif
 		}
@@ -102,7 +102,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 
 		private bool? GetButtonDirection(object sender)
 		{
-			switch ((sender as Windows.UI.Xaml.Controls.Button)?.Content)
+			switch ((sender as Microsoft.UI.Xaml.Controls.Button)?.Content)
 			{
 				case "+": return true;
 				case "-": return false;

@@ -10,28 +10,22 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Tests the Loaded/Unloaded events">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<TextBlock
-						Text="This sample tests that Loaded and Unloaded events are raised properly. You should see ** 2 ** lines prefixed by [OK]."
-						Margin="0,0,0,5" />
+	<StackPanel>
+		<TextBlock
+					Text="This sample tests that Loaded and Unloaded events are raised properly. You should see ** 2 ** lines prefixed by [OK]."
+					Margin="0,0,0,5" />
 
-					<TextBlock Text="Loaded:" FontWeight="Black" />
-					<TextBlock x:Name="loadedResult"
-						Text="[ERROR] loaded not received"
-						Loaded="OnLoadTextLoaded"
-						Margin="0,5" />
+		<TextBlock Text="Loaded:" FontWeight="Black" />
+		<TextBlock x:Name="loadedResult"
+					Text="[ERROR] loaded not received"
+					Loaded="OnLoadTextLoaded"
+					Margin="0,5" />
 
-					<TextBlock Text="Unloaded:" FontWeight="Black" />
-					<TextBlock x:Name="unloadedResult"
-						Text="[ERROR] loaded not received"
-						Loaded="OnUnloadTextLoaded"
-						Unloaded="OnUnloadTextUnloaded"
-						Margin="0,5" />
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+		<TextBlock Text="Unloaded:" FontWeight="Black" />
+		<TextBlock x:Name="unloadedResult"
+					Text="[ERROR] loaded not received"
+					Loaded="OnUnloadTextLoaded"
+					Unloaded="OnUnloadTextUnloaded"
+					Margin="0,5" />
+	</StackPanel>
 </UserControl>

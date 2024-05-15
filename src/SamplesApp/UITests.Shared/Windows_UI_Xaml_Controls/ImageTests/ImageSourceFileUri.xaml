@@ -14,20 +14,14 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Image using local file path as Source, set as Uri">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="File path: "/>
-						<TextBlock Text="{Binding [FilePathUri]}"
-								   TextWrapping="Wrap"/>
-					</StackPanel>
-					<Border BorderBrush="OliveDrab" BorderThickness="2">
-						<Image Source="{Binding [FilePathUri]}" MaxHeight="300"/>
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="File path: "/>
+			<TextBlock Text="{Binding [FilePathUri]}"
+							   TextWrapping="Wrap"/>
+		</StackPanel>
+		<Border BorderBrush="OliveDrab" BorderThickness="2">
+			<Image Source="{Binding [FilePathUri]}" MaxHeight="300"/>
+		</Border>
+	</StackPanel>
 </UserControl>

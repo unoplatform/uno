@@ -1,0 +1,7 @@
+﻿{
+  "profiles": {
+    "UnoAppWinUILinuxValidation.Windows": {
+      "commandName": "MsixPackage"
+    }
+  }
+}

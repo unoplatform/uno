@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Uno.UI.Dispatching;
 
 namespace Windows.UI.Core
 {
-    public partial class IdleDispatchedHandlerArgs
-    {
-		private Uno.UI.Dispatching.IdleDispatchedHandlerArgs _originHandler;
+	public partial class IdleDispatchedHandlerArgs
+	{
+		private readonly NativeDispatcher _dispatcher;
 
-		internal IdleDispatchedHandlerArgs(Uno.UI.Dispatching.IdleDispatchedHandlerArgs c)
+		internal IdleDispatchedHandlerArgs(NativeDispatcher dispatcher)
 		{
-			_originHandler = c;
+			_dispatcher = dispatcher;
 		}
 
 		/// <summary>
 		/// Determines if the dispatcher is currently idle
 		/// </summary>
-		public bool IsDispatcherIdle => _originHandler.IsDispatcherIdle;
-    }
+		public bool IsDispatcherIdle => _dispatcher.IsIdle;
+	}
 }

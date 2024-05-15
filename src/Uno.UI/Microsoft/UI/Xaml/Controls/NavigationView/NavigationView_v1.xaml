@@ -264,7 +264,12 @@
                                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                         <local:ItemsRepeater
                                                                     AutomationProperties.AccessibilityView = "Content"
-                                                                    x:Name="TopNavMenuItemsOverflowHost"/>
+                                                                    x:Name="TopNavMenuItemsOverflowHost">
+                                                            <!-- Uno specific: This matches Fluent v2 version and avoids a memory leak related to the use of the singleton StackLayout in ItemsRepeater -->
+                                                            <local:ItemsRepeater.Layout>
+                                                                <local:StackLayout />
+                                                            </local:ItemsRepeater.Layout>
+                                                        </local:ItemsRepeater>
                                                     </ScrollViewer>
                                                 </local:ItemsRepeaterScrollHost>
                                             </Flyout>

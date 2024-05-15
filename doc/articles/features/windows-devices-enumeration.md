@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WDEnumeration
+---
+
 # Uno Support for Windows.Devices.Enumeration
 
 Device enumeration is partially supported in Uno Platform. It currently supports enumerating the following device classes:

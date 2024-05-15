@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
-	[ContentProperty(Name = "Text")]
+	[ContentProperty(Name = nameof(Text))]
 	public partial class Run : Inline
 	{
 		#region Text Dependency Property
@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Documents
 			set { SetValue(TextProperty, value); }
 		}
 
-		public static DependencyProperty TextProperty { get ; } =
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -85,7 +85,6 @@ namespace Windows.UI.Xaml.Documents
 		{
 			base.OnCharacterSpacingChanged();
 			InvalidateInlines(false);
-			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnTextDecorationsChanged()

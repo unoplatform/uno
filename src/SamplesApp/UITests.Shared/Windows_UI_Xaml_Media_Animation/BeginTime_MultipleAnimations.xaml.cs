@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
@@ -41,7 +41,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 			Storyboard.SetTarget(blueAnimation, TheBlueSquareTransform);
 			Storyboard.SetTargetProperty(blueAnimation, nameof(TheBlueSquareTransform.X));
 
-			new Storyboard {Children = {redAnimation, blueAnimation}}.Begin();
+			new Storyboard { Children = { redAnimation, blueAnimation } }.Begin();
 		}
 	}
 }

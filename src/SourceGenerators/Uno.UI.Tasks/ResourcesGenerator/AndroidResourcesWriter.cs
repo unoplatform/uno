@@ -26,7 +26,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				document.AddFirst(new XComment(comment));
 			}
-			
+
 			document.Save(path);
 		}
 

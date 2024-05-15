@@ -5,7 +5,9 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Media.Animation
+using NativeMethods = __Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.NativeMethods;
+
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T>, IJSObject where T : struct
 	{
@@ -21,7 +23,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.EnableFrameReporting();");
+				NativeMethods.EnableFrameReporting(Handle.JSHandle);
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -33,7 +35,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.DisableFrameReporting();");
+				NativeMethods.DisableFrameReporting(Handle.JSHandle);
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -45,7 +47,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetStartFrameDelay({delayMs});");
+				NativeMethods.SetStartFrameDelay(Handle.JSHandle, delayMs);
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -57,7 +59,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetAnimationFramesInterval();");
+				NativeMethods.SetAnimationFramesInterval(Handle.JSHandle);
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -86,7 +88,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private class Metadata : IJSObjectMetadata
 		{
-			public static Metadata Instance {get;} = new Metadata();
+			public static Metadata Instance { get; } = new Metadata();
 
 			private Metadata() { }
 
@@ -94,18 +96,19 @@ namespace Windows.UI.Xaml.Media.Animation
 			public long CreateNativeInstance(IntPtr managedHandle)
 			{
 				var id = RenderingLoopAnimatorMetadataIdProvider.Next();
-				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.createInstance(\"{managedHandle}\", \"{id}\")");
+
+				NativeMethods.CreateInstance(managedHandle, id);
 
 				return id;
 			}
 
 			/// <inheritdoc />
 			public string GetNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> $"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.getInstance(\"{jsHandle}\")";
+				=> $"Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.getInstance(\"{jsHandle}\")";
 
 			/// <inheritdoc />
 			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance(\"{jsHandle}\")");
+				=> NativeMethods.DestroyInstance(jsHandle);
 
 			/// <inheritdoc />
 			public object InvokeManaged(object instance, string method, string parameters)

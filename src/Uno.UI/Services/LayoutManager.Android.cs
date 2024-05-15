@@ -7,7 +7,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Services
 {
@@ -27,7 +27,7 @@ namespace Uno.UI.Services
 			if (!_IsArrangeRequested)
 			{
 				_IsArrangeRequested = true;
-				Uno.UI.Dispatching.CoreDispatcher.Main.RunAnimation(Arrange);
+				_ = Uno.UI.Dispatching.NativeDispatcher.Main.RunAnimation(Arrange);
 			}
 
 			_arrangeQueue.Add(view);

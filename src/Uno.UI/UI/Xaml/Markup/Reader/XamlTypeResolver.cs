@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using Uno.Xaml;
 using Windows.UI;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Markup.Reader
+namespace Microsoft.UI.Xaml.Markup.Reader
 {
 	internal class XamlTypeResolver
 	{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private readonly Func<XamlMember, Type?> _findPropertyTypeByXamlMember;
 		private readonly Func<Type?, PropertyInfo?> _findContentProperty;
 
-		public static ImmutableDictionary<string, string[]> KnownNamespaces { get; }
+		private static ImmutableDictionary<string, string[]> KnownNamespaces { get; }
 			= new Dictionary<string, string[]>
 			{
 				{
@@ -180,7 +180,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		public DependencyProperty? FindDependencyProperty(Type propertyOwner, string? propertyName)
+		public DependencyProperty? FindDependencyProperty(Type? propertyOwner, string? propertyName)
 		{
 			var propertyDependencyPropertyQuery = GetAllProperties(propertyOwner)
 								.Where(p => p.Name == propertyName + "Property")
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			) as DependencyProperty;
 		}
 
-		private static IEnumerable<PropertyInfo> GetAllProperties(Type type)
+		private static IEnumerable<PropertyInfo> GetAllProperties(Type? type)
 		{
 			Type? currentType = type;
 
@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private static IEnumerable<FieldInfo> GetAllFields(Type type)
+		private static IEnumerable<FieldInfo> GetAllFields(Type? type)
 		{
 			Type? currentType = type;
 
@@ -294,7 +294,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (type != null)
 			{
 				var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
+				var isKnownNamespace = ns?.Prefix is { Length: > 0 };
 
 				if (type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 				{
@@ -308,9 +308,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 				}
 
-				var fullName = isKnownNamespace ? ns?.Prefix + ":" + type.Name : type.Name;
+				string getFullName()
+				{
+					if (!isKnownNamespace && type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
+					{
+						return type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
+					}
+					else
+					{
+						return isKnownNamespace ? ns?.Prefix + ":" + type.Name : type.Name;
+					}
+				}
 
-				return _findType(fullName);
+				return _findType(getFullName());
 			}
 			else
 			{
@@ -326,9 +336,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					var nsName = ns.Namespace.TrimStart("using:");
 
-					if (nsName.StartsWith("clr-namespace:"))
+					if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
 					{
-						nsName = nsName.Split(new[] { ';' })[0].TrimStart("clr-namespace:");
+						nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
 					}
 
 					return nsName + "." + nonQualifiedName;
@@ -344,9 +354,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			var originalName = name;
 
-			if (name.Contains(":"))
+			if (name.Contains(':'))
 			{
-				var fields = name.Split(new[] { ':' });
+				var fields = name.Split(':');
 
 				var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
 
@@ -393,7 +403,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				() => Type.GetType(originalName),
 
 				// As a partial name using the non-qualified name
-				() => Type.GetType(originalName.Split(new[] { ':' }).ElementAtOrDefault(1) ?? ""),
+				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
 
 				// Look for the type in all loaded assemblies
 				() => AppDomain.CurrentDomain

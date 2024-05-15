@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input
+﻿namespace Microsoft.UI.Xaml.Input
 {
 	/// <summary>
 	/// Specifies the 2D directional navigation behavior when using the keyboard arrow keys.

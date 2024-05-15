@@ -1,14 +1,15 @@
-using Foundation;
+﻿using Foundation;
 using System;
 using System.Linq;
 using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector
 	{
@@ -37,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Mode = UIDatePickerMode.Time;
 
 			UpdatePickerStyle();
+			DatePickerSelector.OverrideUIDatePickerTheme(this);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
 			SetPickerClockIdentifier(ClockIdentifier);
 			SaveInitialTime();

@@ -1,20 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<RollForward>Major</RollForward>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'=='netstandard2.0'">
-		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!='' and '$(UnoTargetFrameworkOverride)'!='netstandard2.0'">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
+		
+		<!-- Required in CI to avoid dependency issues -->
+		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -22,21 +19,21 @@
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<Prefer32Bit>true</Prefer32Bit>
-	</PropertyGroup>
-
 	<ItemGroup>
-		<PackageReference Include="Jellyfin.SkiaSharp.NativeAssets.LinuxArm" Version="1.68.0" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
-		<PackageReference Include="GtkSharp" Version="3.24.24.4" />
+		<PackageReference Include="GtkSharp" />
+		<Manifest Remove="app.manifest" />
+		<Manifest Include="$(ApplicationManifest)" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
+		<PackageReference Include="VideoLAN.LibVLC.Mac" Version="3.1.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Gtk\Uno.UI.Runtime.Skia.Gtk.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\Uno.UI.MediaPlayer.Skia.Gtk.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
@@ -46,7 +43,19 @@
 		<Compile Update="Program.cs" />
 	</ItemGroup>
 
-	<Import Project="..\..\..\build\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\build\*.Skia.Gtk.targets" />
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
+
+	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
+		<Message Text="Validating local assets" Importance="high" />
+		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
+	</Target>
 
 </Project>

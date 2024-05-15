@@ -5,26 +5,28 @@ using Uno.UI;
 using Uno.UI.Controls;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Services;
 using Uno.Diagnostics.Eventing;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
 		private Size? _lastLayoutSize;
+		private bool _constraintsChanged;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
 		/// </summary>
 		internal IViewParent NativeVisualParent => (this as View).Parent;
 
-		public FrameworkElement()
+		protected FrameworkElement()
 		{
 			Initialize();
 		}
@@ -32,10 +34,13 @@ namespace Windows.UI.Xaml
 		partial void Initialize();
 
 		protected override void OnNativeLoaded()
+			=> OnNativeLoaded(isFromResources: false);
+
+		private void OnNativeLoaded(bool isFromResources)
 		{
 			try
 			{
-				PerformOnLoaded();
+				PerformOnLoaded(isFromResources);
 
 				base.OnNativeLoaded();
 			}
@@ -46,10 +51,26 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void PerformOnLoaded()
+		private void PerformOnLoaded(bool isFromResources = false)
 		{
-			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
-			OnLoading();
+			if (!isFromResources)
+			{
+				((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
+				OnLoading();
+			}
+
+			if (this.Resources is not null)
+			{
+				foreach (var resource in Resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsFrameworkElement)
+					{
+						resourceAsFrameworkElement.XamlRoot = XamlRoot;
+						resourceAsFrameworkElement.PerformOnLoaded(isFromResources: true);
+					}
+				}
+			}
+
 			OnLoaded();
 
 			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
@@ -65,17 +86,20 @@ namespace Windows.UI.Xaml
 						// Calling this method is acceptable as it is an abstract method that
 						// will never do interop with the java class. It is required to invoke
 						// Loaded/Unloaded actions.
-						e.OnNativeLoaded();
+						e.OnNativeLoaded(isFromResources);
 					}
 				}
 			}
 		}
 
 		protected override void OnNativeUnloaded()
+			=> OnNativeUnloaded();
+
+		private void OnNativeUnloaded(bool isFromResources = false)
 		{
 			try
 			{
-				PerformOnUnloaded();
+				PerformOnUnloaded(isFromResources);
 
 				base.OnNativeUnloaded();
 			}
@@ -86,11 +110,22 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void PerformOnUnloaded()
+		internal void PerformOnUnloaded(bool isFromResources = false)
 		{
+			if (this.Resources is not null)
+			{
+				foreach (var resource in this.Resources.Values)
+				{
+					if (resource is FrameworkElement fe)
+					{
+						fe.PerformOnUnloaded(isFromResources: true);
+					}
+				}
+			}
+
 			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
 			{
-				if (IsNativeLoaded)
+				if (isFromResources || IsNativeLoaded)
 				{
 					OnUnloaded();
 
@@ -105,7 +140,7 @@ namespace Windows.UI.Xaml
 							// Calling this method is acceptable as it is an abstract method that
 							// will never do interop with the java class. It is required to invoke
 							// Loaded/Unloaded actions.
-							e.OnNativeUnloaded();
+							e.OnNativeUnloaded(isFromResources);
 						}
 						else if (view is ViewGroup childViewGroup)
 						{
@@ -144,7 +179,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Notifies that this view has been removed from its parent. This method is only 
+		/// Notifies that this view has been removed from its parent. This method is only
 		/// called when the parent is an UnoViewGroup.
 		/// </summary>
 		protected override void OnRemovedFromParent()
@@ -162,7 +197,11 @@ namespace Windows.UI.Xaml
 				!(NativeVisualParent is DependencyObject),
 				DependencyPropertyValuePrecedences.DefaultValue
 			);
+
+			ReconfigureViewportPropagationPartial();
 		}
+
+		private partial void ReconfigureViewportPropagationPartial();
 
 		#region StretchAffectsMeasure DependencyProperty
 
@@ -182,7 +221,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for StretchAffectsMeasure.  This enables animation, styling, binding, etc...
-		public static DependencyProperty StretchAffectsMeasureProperty { get ; } =
+		public static DependencyProperty StretchAffectsMeasureProperty { get; } =
 			DependencyProperty.Register("StretchAffectsMeasure", typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
 
 		#endregion
@@ -197,11 +236,11 @@ namespace Windows.UI.Xaml
 			SetMeasuredDimension(width, height);
 		}
 
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
+		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
 			try
 			{
-				base.OnLayoutCore(changed, left, top, right, bottom);
+				base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
 				Rect finalRect;
 				if (TransientArrangeFinalRect is Rect tafr)
@@ -235,16 +274,14 @@ namespace Windows.UI.Xaml
 					);
 				}
 
-				var previousSize = AssignedActualSize;
-				AssignedActualSize = finalRect.Size;
-
 				if (
 					// If the layout has changed, but the final size has not, this is just a translation.
 					// So unless there was a layout requested, we can skip arranging the children.
 					(changed && _lastLayoutSize != finalRect.Size)
 
 					// Even if nothing changed, but a layout was requested, arrange the children.
-					|| IsLayoutRequested
+					// Use the copy grabbed from the native invocation to avoid an additional interop call
+					|| localIsLayoutRequested
 				)
 				{
 					_lastLayoutSize = finalRect.Size;
@@ -255,12 +292,6 @@ namespace Windows.UI.Xaml
 
 					OnAfterArrange();
 				}
-
-				if (previousSize != finalRect.Size)
-				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, finalRect.Size));
-					_renderTransform?.UpdateSize(finalRect.Size);
-				}
 			}
 			catch (Exception e)
 			{
@@ -269,7 +300,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Provides an implementation <see cref="ViewGroup.Layout(int, int, int, int)"/> in order 
+		/// Provides an implementation <see cref="ViewGroup.Layout(int, int, int, int)"/> in order
 		/// to avoid the back and forth between Java and C#.
 		/// </summary>
 		internal void FastLayout(bool changed, int left, int top, int right, int bottom)
@@ -281,7 +312,7 @@ namespace Windows.UI.Xaml
 				NativeStartLayoutOverride(left, top, right, bottom);
 
 				// Invoke our own layouting without going back and fort with Java.
-				OnLayoutCore(changed, left, top, right, bottom);
+				OnLayoutCore(changed, left, top, right, bottom, IsLayoutRequested);
 			}
 			finally
 			{
@@ -304,7 +335,7 @@ namespace Windows.UI.Xaml
 					EventOpcode.Send,
 					new[] {
 						GetType().ToString(),
-						this.GetDependencyObjectId().ToString()
+						this.GetDependencyObjectId().ToString(CultureInfo.InvariantCulture)
 					}
 				);
 			}
@@ -323,6 +354,43 @@ namespace Windows.UI.Xaml
 
 			_constraintsChanged = false;
 			return true;
+		}
+
+		private void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
+		{
+			_constraintsChanged = true;
+		}
+
+		/// <summary>
+		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated,
+		/// by determining recursively whether this element's dimensions are already constrained.
+		/// </summary>
+		/// <returns>True if a request should be elevated, false if only this view needs to be rearranged.</returns>
+		private bool ShouldPropagateLayoutRequest()
+		{
+			if (!UseConstraintOptimizations && !AreDimensionsConstrained.HasValue)
+			{
+				return true;
+			}
+
+			if (_constraintsChanged)
+			{
+				return true;
+			}
+			if (!IsLoaded)
+			{
+				//If the control isn't loaded, propagating the request won't do anything anyway
+				return true;
+			}
+
+			if (AreDimensionsConstrained.HasValue)
+			{
+				return !AreDimensionsConstrained.Value;
+			}
+
+			var iswidthConstrained = IsWidthConstrained(null);
+			var isHeightConstrained = IsHeightConstrained(null);
+			return !(iswidthConstrained && isHeightConstrained);
 		}
 
 		private bool IsTopLevelXamlView()

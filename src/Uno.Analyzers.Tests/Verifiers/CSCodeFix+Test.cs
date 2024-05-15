@@ -1,4 +1,8 @@
-﻿using Microsoft.CodeAnalysis.CodeFixes;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
@@ -23,6 +27,15 @@ namespace Uno.Analyzers.Tests.Verifiers
 
 					return solution;
 				});
+			}
+
+			public IEnumerable<string> PreprocessorSymbols { get; set; } = ImmutableArray<string>.Empty;
+
+			protected override ParseOptions CreateParseOptions()
+			{
+				var options = (CSharpParseOptions)base.CreateParseOptions();
+				return options.WithPreprocessorSymbols(PreprocessorSymbols);
+
 			}
 		}
 	}

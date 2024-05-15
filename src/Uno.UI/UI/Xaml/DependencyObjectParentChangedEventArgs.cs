@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// A event arg used when the parent of a DependencyObject changes.
 	/// </summary>
-    internal class DependencyObjectParentChangedEventArgs : EventArgs
-    {
+	internal class DependencyObjectParentChangedEventArgs : EventArgs
+	{
 		public DependencyObjectParentChangedEventArgs(object previousParent, object newParent)
 		{
 			PreviousParent = previousParent;

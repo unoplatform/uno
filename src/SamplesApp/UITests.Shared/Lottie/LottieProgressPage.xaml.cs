@@ -1,13 +1,13 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Samples.Controls;
 using System.Threading.Tasks;
 
 namespace UITests.Lottie
 {
-	[Sample("Lottie", Name="Lottie Progress")]
+	[Sample("Lottie", Name = "Lottie Progress")]
 	public sealed partial class LottieProgressPage : Page
 	{
 		private const double ClickedSegmentFromProgress = 0.69;
@@ -18,6 +18,13 @@ namespace UITests.Lottie
 
 			// Set Lottie Source.
 			var _ = InitializeJsonSource();
+		}
+
+		private async void OnReloadView()
+		{
+			container.Child = null;
+			await Task.Delay(2000);
+			container.Child = Progress_Player;
 		}
 
 		private async Task InitializeJsonSource()

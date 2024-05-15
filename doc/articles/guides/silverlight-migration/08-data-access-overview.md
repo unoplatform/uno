@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.DataAccessOverview
+---
+
 # Data access services
 
 The Silverlight Business Application template utilizes a WCF RIA Services backend project to deliver the Silverlight application via a static or a dynamic page, and to provide access to services. These services use WCF (Windows Communication Foundation) and a custom binding due to restrictions in the network protocols that can be accessed from the browser at that time. There are two types of service that are supported:
@@ -20,15 +24,15 @@ The following services related to authentication are included in the template by
 Unfortunately, WCF itself has been discontinued, although there are, of course, alternatives such as ASP.NET Core Web APIs, gRPC, an open source version of WCF, etc. There is no direct replacement for WCF RIA services, although some scaffolding solutions exist to reduce the amount of boilerplate code required for CRUD operations.
 
 > [!TIP]
-> In the sample migration of TimeEntryRIA to Uno, ASP.NET Core Web APIs were used. You can find a full article discussing how to consume a webservice with Uno below:
+> In the sample migration of TimeEntryRIA to Uno, ASP.NET Core Web APIs were used. You can find a full article discussing how to consume a web service with Uno below:
 >
-> * [How to consume a webservice](https://platform.uno/docs/articles/howto-consume-webservices.html)
-
+> * [How to consume a web service](https://platform.uno/docs/articles/howto-consume-webservices.html)
+>
 > [!NOTE]
 > You can learn more about alternate service technologies here:
 >
-> * [Create web APIs with ASP.NET Core](https://docs.microsoft.com/aspnet/core/web-api/?view=aspnetcore-5.0)
-> * [Introduction to gRPC on .NET](https://docs.microsoft.com/aspnet/core/grpc/?view=aspnetcore-5.0)
+> * [Create web APIs with ASP.NET Core](https://learn.microsoft.com/aspnet/core/web-api/?view=aspnetcore-5.0)
+> * [Introduction to gRPC on .NET](https://learn.microsoft.com/aspnet/core/grpc/?view=aspnetcore-5.0)
 > * [Core WCF](https://github.com/CoreWCF/CoreWCF)
 
 In the sample application migration, REST-based services using ASP.NET Core Web APIs were chosen.

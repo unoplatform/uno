@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Windows.System;
 using Uno.UI;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
 using Foundation;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
@@ -24,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial()
 		{
-			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, null, TextAlignment));
+			OnTextAlignmentChanged(TextAlignment);
 			OnReturnKeyTypeChanged(ReturnKeyType);
 			OnKeyboardAppearanceChanged(KeyboardAppearance);
 			UpdateKeyboardThemePartial();
@@ -57,17 +58,17 @@ namespace Windows.UI.Xaml.Controls
 				.GetValueOrDefault(false);
 		}
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnAcceptsReturnChangedPartial(bool newValue)
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextWrappingChangedPartial()
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 		{
 			_textBoxView?.UpdateTextAlignment();
 		}
@@ -89,6 +90,16 @@ namespace Windows.UI.Xaml.Controls
 				return _textBoxView as MultilineTextBoxView;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets whether the focus should be kept on the TextBox when the user taps outside of it.
+		/// </summary>
+		/// <remarks>
+		/// In some cases, like when the TextBox is inside an <see cref="AutoSuggestBox"/>,
+		/// the focus must be kept on the TextBox when making a selection.
+		/// </remarks>
+		/// Fix issue # https://github.com/unoplatform/uno/issues/11961
+		internal bool IsKeepingFocusOnEndEditing { get; set; }
 
 		private void UpdateTextBoxView()
 		{
@@ -125,7 +136,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool OnKey(char key)
 		{
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
+			// TODO: include modifier info
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey(), VirtualKeyModifiers.None)
 			{
 				CanBubbleNatively = true
 			};
@@ -138,18 +150,18 @@ namespace Windows.UI.Xaml.Controls
 			return downHandled || upHandled;
 		}
 
-		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnInputScopeChangedPartial(InputScope newValue)
 		{
 			this.CoerceValue(ReturnKeyTypeProperty);
 
 			if (_textBoxView != null)
 			{
-				_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType((InputScope)e.NewValue);
+				_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(newValue);
 
 				//If SpellCheck is enabled we already set the Capitalization.
 				if (!IsSpellCheckEnabled)
 				{
-					_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization((InputScope)e.NewValue);
+					_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(newValue);
 				}
 			}
 		}
@@ -162,38 +174,44 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnMaxLengthChangedPartial(int newValue)
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsReadonlyChangedPartial()
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
+		{
+			if (_textBoxView != null && brush != null)
+			{
+				_textBoxView.TintColor = brush.ColorWithOpacity;
+			}
+		}
+
+		partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
 		{
 			if (_textBoxView != null)
 			{
-				var isSpellCheckEnabled = (bool)e.NewValue;
-
-				_textBoxView.SpellCheckingType = isSpellCheckEnabled
+				_textBoxView.SpellCheckingType = newValue
 					? UITextSpellCheckingType.Yes
 					: UITextSpellCheckingType.No;
 
-				_textBoxView.AutocorrectionType = isSpellCheckEnabled
+				_textBoxView.AutocorrectionType = newValue
 					? UITextAutocorrectionType.Yes
 					: UITextAutocorrectionType.No;
 
-				if (isSpellCheckEnabled)
+				if (newValue)
 				{
 					_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 				}
 			}
 		}
 
-		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
 		{
 			// There doesn't seem to be any way to disable/enable TextPrediction without disabling/enabling SpellCheck
 			if (!IsTextPredictionEnabledErrorMessageShown)
@@ -202,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 				IsTextPredictionEnabledErrorMessageShown = true;
 			}
 		}
-		private static bool IsTextPredictionEnabledErrorMessageShown = false;
+		private static bool IsTextPredictionEnabledErrorMessageShown;
 
 		public int SelectionStart
 		{
@@ -291,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 
-		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return dependencyObject is TextBox textBox && textBox.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? UIReturnKeyType.Search

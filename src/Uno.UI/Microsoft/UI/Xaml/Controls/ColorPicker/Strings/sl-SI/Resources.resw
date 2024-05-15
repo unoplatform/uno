@@ -134,11 +134,11 @@
     <comment>The automation name for the third-dimension slider when it's controlling hue.</comment>
   </data>
   <data name="AutomationNameSaturationSlider" xml:space="preserve">
-    <value>Nasičenost</value>
+    <value>Nasičenje</value>
     <comment>The automation name for the third-dimension slider when it's controlling saturation.</comment>
   </data>
   <data name="AutomationNameValueSlider" xml:space="preserve">
-    <value>Svetlost</value>
+    <value>Vrednost (svetlost)</value>
     <comment>The automation name for the third-dimension slider when it's controlling value.</comment>
   </data>
   <data name="TextBlueLabel" xml:space="preserve">
@@ -202,11 +202,11 @@
     <comment>The combo box item content for selecting RGB as the color model to use.</comment>
   </data>
   <data name="TextSaturationLabel" xml:space="preserve">
-    <value>Nasičenost</value>
+    <value>Nasičenje</value>
     <comment>The label for the text box to edit the saturation component of the current HSV color.</comment>
   </data>
   <data name="AutomationNameSaturationTextBox" xml:space="preserve">
-    <value>Nasičenost</value>
+    <value>Nasičenje</value>
     <comment>The automation name for the text box to edit the saturation component of the current HSV color.</comment>
   </data>
   <data name="TextValueLabel" xml:space="preserve">
@@ -214,11 +214,11 @@
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
   </data>
   <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
-    <value>%1!s!, odtenek: %2!u!, nasičenost: %3!u!, svetlost: %4!u!</value>
+    <value>%1!s!, odtenek %2!u!, nasičenje %3!u!, vrednost %4!u!</value>
     <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
-    <value>Odtenek: %1!u!, nasičenost: %2!u!, svetlost: %3!u!</value>
+    <value>Odtenek %1!u!, nasičenje %2!u!, vrednost %3!u!</value>
     <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
@@ -246,7 +246,7 @@
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling value and we're not including the friendly color name. %1 is the brightness value between 0 and 100.</comment>
   </data>
   <data name="AutomationNameValueTextBox" xml:space="preserve">
-    <value>Svetlost</value>
+    <value>Vrednost (svetlost)</value>
     <comment>The automation name for the text box to edit the value component of the current HSV color.</comment>
   </data>
   <data name="ToolTipStringAlphaSlider" xml:space="preserve">
@@ -262,11 +262,11 @@
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling hue and we're not including the friendly color name. %1 is the hue value between 0 and 359.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithColorName" xml:space="preserve">
-    <value>Nasičenost: %1!u! (%2!s!)</value>
+    <value>Nasičenje: %1!u! (%2!s!)</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're including the friendly color name. %1 is the saturation value between 0 and 100; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithoutColorName" xml:space="preserve">
-    <value>Nasičenost: %1!u!</value>
+    <value>Nasičenje: %1!u!</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're not including the friendly color name. %1 is the saturation value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringValueSliderWithColorName" xml:space="preserve">

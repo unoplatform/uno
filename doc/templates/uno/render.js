@@ -1,3 +1,6 @@
+// workaround for gulp-uglify changing order of execution on $.fn func assignments
+Object.assign($.fn, { breakWord });
+
 workAroundFixedHeaderForAnchors();
 highlight();
 enableSearch();
@@ -13,7 +16,6 @@ renderNavbar();
 renderLogo();
 updateLogo()
 updateLogoOnResize();
-updateNavbarHeightOnResize();
 updateTocHeightOnResize();
 updateSidenavTopOnResize();
 renderFooter();

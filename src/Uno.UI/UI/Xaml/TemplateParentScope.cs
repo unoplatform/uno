@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-    class TemplateParentScope
-    {
-    }
+	class TemplateParentScope
+	{
+	}
 }

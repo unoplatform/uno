@@ -8,12 +8,14 @@ using Uno;
 using Uno.UI;
 using Windows.Foundation;
 
-#if XAMARIN_ANDROID
+using Rect = Windows.Foundation.Rect;
+
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -26,12 +28,12 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using ViewGroup = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-    partial class WrapPanel
+	partial class WrapPanel
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -227,9 +229,9 @@ namespace Windows.UI.Xaml.Controls
 					elementSize.Direct;
 
 				// Arrange the element
-				Windows.Foundation.Rect bounds = isHorizontal ?
-					new Windows.Foundation.Rect(directOffset, indirectOffset, directGrowth, indirectGrowth) :
-					new Windows.Foundation.Rect(indirectOffset, directOffset, indirectGrowth, directGrowth);
+				Rect bounds = isHorizontal ?
+					new Rect(directOffset, indirectOffset, directGrowth, indirectGrowth) :
+					new Rect(indirectOffset, directOffset, indirectGrowth, directGrowth);
 
 				ArrangeElement(element, bounds);
 

@@ -1,15 +1,18 @@
-﻿using Uno.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Uno.UI.DataBinding;
-using Uno.Foundation.Logging;
-using System.Linq;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI.DataBinding;
+using Windows.Foundation.Metadata;
+using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class Timeline : DependencyObject, ITimeline, IThemeChangeAware
 	{
@@ -45,7 +48,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			return new[] {
 				this.GetParent()?.GetType().Name,
-				this.GetParent()?.GetDependencyObjectId().ToString(),
+				this.GetParent()?.GetDependencyObjectId().ToString(CultureInfo.InvariantCulture),
 				Target?.GetType().ToString(),
 				PropertyInfo?.Path
 			};
@@ -59,38 +62,38 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public TimeSpan? BeginTime
 		{
-			get => (TimeSpan?) GetValue(BeginTimeProperty);
+			get => (TimeSpan?)GetValue(BeginTimeProperty);
 			set => SetValue(BeginTimeProperty, value);
 		}
 
-		public static DependencyProperty BeginTimeProperty { get ; } =
+		public static DependencyProperty BeginTimeProperty { get; } =
 			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new FrameworkPropertyMetadata(TimeSpan.Zero));
 
 		public Duration Duration
 		{
-			get => (Duration) GetValue(DurationProperty);
+			get => (Duration)GetValue(DurationProperty);
 			set => SetValue(DurationProperty, value);
 		}
 
-		public static DependencyProperty DurationProperty { get ; } =
+		public static DependencyProperty DurationProperty { get; } =
 			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new FrameworkPropertyMetadata(Duration.Automatic));
 
 		public FillBehavior FillBehavior
 		{
-			get => (FillBehavior) GetValue(FillBehaviorProperty);
+			get => (FillBehavior)GetValue(FillBehaviorProperty);
 			set => SetValue(FillBehaviorProperty, value);
 		}
 
-		public static DependencyProperty FillBehaviorProperty { get ; } =
+		public static DependencyProperty FillBehaviorProperty { get; } =
 			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new FrameworkPropertyMetadata(FillBehavior.HoldEnd));
 
 		public RepeatBehavior RepeatBehavior
 		{
-			get => (RepeatBehavior) GetValue(RepeatBehaviorProperty);
+			get => (RepeatBehavior)GetValue(RepeatBehaviorProperty);
 			set => SetValue(RepeatBehaviorProperty, value);
 		}
 
-		public static DependencyProperty RepeatBehaviorProperty { get ; } =
+		public static DependencyProperty RepeatBehaviorProperty { get; } =
 			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
@@ -182,7 +185,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			subject.ElementInstanceChanged += handler;
 		}
 
-		private protected virtual void InitTarget() {}
+		private protected virtual void InitTarget() { }
 
 		/// <summary>
 		/// Path to the target property being animated.
@@ -312,49 +315,49 @@ namespace Windows.UI.Xaml.Media.Animation
 		void ITimeline.Begin()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Begin()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Begin()");
 		}
 
 		void ITimeline.Stop()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Stop()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Stop()");
 		}
 
 		void ITimeline.Resume()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Resume()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Resume()");
 		}
 
 		void ITimeline.Pause()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Pause()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Pause()");
 		}
 
 		void ITimeline.Seek(TimeSpan offset)
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Seek(TimeSpan offset)");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Seek(TimeSpan offset)");
 		}
 
 		void ITimeline.SeekAlignedToLastTick(TimeSpan offset)
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SeekAlignedToLastTick(TimeSpan offset)");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SeekAlignedToLastTick(TimeSpan offset)");
 		}
 
 		void ITimeline.SkipToFill()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SkipToFill()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SkipToFill()");
 		}
 
 		void ITimeline.Deactivate()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
 		}
 
 		private protected IValueAnimator InitializeAnimator() => throw new NotSupportedException(); // Should be implemented by classes which use AnimationImplementation
@@ -388,14 +391,20 @@ namespace Windows.UI.Xaml.Media.Animation
 				if (boundProperty != null)
 				{
 					//https://msdn.microsoft.com/en-uS/office/office365/jj819807.aspx#dependent
-					//TODO Projection, Clip, Canvas.Left or Canvas.Top
+					//TODO Projection, Clip
 
-					if (boundProperty.PropertyName.EndsWith("Opacity")
-						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color"))
-						|| (boundProperty.DataContext is Transform transform && transform.View != null)
+					if (boundProperty.PropertyName.EndsWith("Opacity", StringComparison.Ordinal)
+						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color", StringComparison.Ordinal))
+						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Top", StringComparison.Ordinal)
+						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Left", StringComparison.Ordinal)
+						|| (boundProperty.DataContext is Transform transform)
 					)
 					{
 						//is not dependent if the target is opacity, the color property of a brush, or a Transform property targeting a view as RenderTransform
+						// NOTE that the Transform check isn't necessarily a RenderTransform and is not accurate.
+						// It's there to handle some cases, e.g, a UIElement having RectangleGeometry Clip that has a Transform
+						// Ideally, we want to be specifically checking if the animation is targeting Clip, but no good way to do it so far.
+						// The current approach may consider some dependent animations as independent in niche scenario, but that's not an issue for now.
 						return false;
 					}
 				}
@@ -403,12 +412,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			return true;
 		}
 
-		protected virtual void Dispose(bool disposing)
+		private protected virtual void Dispose(bool disposing)
 		{
 			Target = null;
 		}
 
-		public void Dispose()
+		internal void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
@@ -420,7 +429,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		~Timeline()
 		{
-			Dispose(false);
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dispose(false));
 		}
 	}
 }

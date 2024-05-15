@@ -6,6 +6,6 @@ namespace Uno.UI.RuntimeTests
 	/// Marks a test which sets its test UI to be full-screen (Window.Content).
 	/// </summary>
 	public class RequiresFullWindowAttribute : Attribute
-	{        
-    }
+	{
+	}
 }

@@ -8,13 +8,13 @@
 	xmlns:uc="using:Uno.UI.Samples.Converters"
 	xmlns:helper="using:Uno.UI.Samples.Behaviors"
 	xmlns:ios="http://umbrella/ios"
-	xmlns:xamarin="http://umbrella/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:toolkit="using:Uno.UI.Toolkit"
 	xmlns:not_ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d ios xamarin"
+	mc:Ignorable="d ios not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
@@ -31,7 +31,7 @@
 			<x:Double x:Key="TitleContainerHeight">45</x:Double>
 
 			<uc:FromNullableBoolToReverseBoolConverter x:Key="reverseBoolConverter" />
-			
+
 			<!-- Converters -->
 			<uc:FromNullableBoolToDefaultValueConverter x:Key="FavoritesPathConverter"
 														NullOrFalseValue="{StaticResource Icon_Favorite_Empty}"
@@ -45,11 +45,11 @@
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
 				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
+						Value="{ThemeResource Color05Brush}" />
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Background"
-						Value="{StaticResource ApplicationPageBackgroundThemeBrush}" />
+						Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 				<Setter Property="Height"
 								Value="50" />
 			</Style>
@@ -183,6 +183,7 @@
 
 					<TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 							 Style="{StaticResource SearchTextBoxStyle}"
+							 KeyDown="OnSearchEnterKey_KeyDown"
 							 PlaceholderText="Search"
 							 Margin="8" />
 
@@ -265,14 +266,22 @@
 
 				<!-- LIBRARY (Categories)-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+					  Height="80"
 					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
 
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-					
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
 					<!-- Runtime tests button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
@@ -281,25 +290,47 @@
 						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
 									   Margin="5,0" />
 					</Button>
+					
+					<!-- Playground button -->
+					<Button Style="{StaticResource IconButtonStyle}"
+							Foreground="{StaticResource Color06Brush}"
+							Grid.Column="1"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Right"
+							Command="{Binding OpenPlaygroundCommand}">
+						<FontIcon Glyph="&#xE7FC;" />
+					</Button>
 
 					<!-- Title -->
 					<TextBlock
-						Grid.Column="1"
+						Grid.Column="2"
 						Style="{StaticResource Typo03}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center"
 						Text="Library" />
-					
+
+					<Button Style="{StaticResource IconButtonStyle}"
+							Foreground="{StaticResource Color06Brush}"
+							Grid.Column="3"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Right"
+							Command="{Binding CreateNewWindowCommand}">
+						<FontIcon Glyph="&#xE8A7;" />
+					</Button>
+
 					<!-- Record All Tests Button -->
 					<Button
-						Grid.Column="2"
+						Grid.Column="4"
 						Style="{StaticResource IconButtonStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Right"
-						Command="{Binding RecordAllTestsCommandCommand}">
+						Command="{Binding RecordAllTestsCommand}">
 						<u:PathControl Style="{StaticResource Icon_RunAll}"
 									   Margin="5,0" />
 					</Button>
+
+					<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
+							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
 				</Grid>
 				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
 								Grid.Row="1"
@@ -362,7 +393,7 @@
 
 				<!--NAVIGATION BUTTONS-->
 				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-						
+
 						BorderThickness="0,1,0,0"
 						BorderBrush="{StaticResource Color05Brush}"
 						Height="50"
@@ -370,7 +401,7 @@
 					<u:StarStackPanel VerticalAlignment="Stretch"
 									  Sizes="*,*,*,*"
 									  Orientation="Horizontal">
-						<!--Button foreground has to be set by converter instead of Button's visual state 
+						<!--Button foreground has to be set by converter instead of Button's visual state
 							because path foreground doesn't change through visual states.-->
 						<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
@@ -461,12 +492,13 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<!-- Back Button -->
 					<ToggleButton Style="{StaticResource BurgerButtonStyle}"
 								  IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}"
-								  IsEnabled="{Binding RecordAllTestsCommand.IsExecuting, Converter={StaticResource reverseBoolConverter}}"
+								  IsEnabled="{Binding IsRecordAllTests, Converter={StaticResource reverseBoolConverter}}"
 								  HorizontalAlignment="Left"
 								  VerticalAlignment="Center" />
 
@@ -476,21 +508,30 @@
 							   HorizontalAlignment="Center"
 							   TextAlignment="Center"
 							   TextWrapping="NoWrap"
+							   IsTextSelectionEnabled="True"
 							   VerticalAlignment="Center"
 							   Grid.Column="1" />
 
 					<!-- Info Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
+							x:Name="InfoButton"
 							Grid.Column="2"
-							Command="{Binding ShowTestInformationCommand}"
-							Content="i"
 							FontWeight="SemiBold"
 							FontSize="24"
 							VerticalAlignment="Center"
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"
 							Foreground="{StaticResource Color06Brush}"
-							Visibility="{Binding IsDebug}" />
+							Visibility="{Binding IsDebug}">
+						<Button.Content>
+							<SymbolIcon Symbol="Help" />
+						</Button.Content>
+						<Button.Flyout>
+							<Flyout>
+								<u:SampleInfoControl DataContext="{Binding CurrentSelectedSample}" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
 
 					<!-- Previous Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
@@ -536,28 +577,36 @@
 									   Margin="10,0" />
 					</Button>
 
-					<!-- Log Dump Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
-							VerticalAlignment="Center"
-							Grid.Column="7"
-							Command="{Binding LogViewDumpCommand}"
-							Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
-						<u:PathControl Style="{StaticResource Icon_LogDump}"
-									   VerticalContentAlignment="Center"
-									   HorizontalContentAlignment="Center"
-									   Margin="0,4,10,0" />
-					</Button>
-
-					<!-- Fluent styles check box -->
-					<CheckBox Content="FL"
-							  Grid.Column="8"
-							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
-							  Style="{x:Null}"/>
 					<!-- Dark theme check box -->
 					<CheckBox Grid.Column="9"
+							  Width="64"
+							  MinWidth="64"
 							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
+
+					<Button Grid.Column="10" Margin="8,0">
+						<SymbolIcon Symbol="More" />
+						<Button.Flyout>
+							<MenuFlyout>
+								<ToggleMenuFlyoutItem Text="Use Fluent styles" IsChecked="{Binding UseFluentStyles, Mode=TwoWay}">
+									<ToggleMenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
+									</ToggleMenuFlyoutItem.Icon>
+								</ToggleMenuFlyoutItem>
+								<ToggleMenuFlyoutItem Text="Flow text right-to-left" IsChecked="{Binding UseRtl, Mode=TwoWay}">
+									<ToggleMenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
+									</ToggleMenuFlyoutItem.Icon>
+								</ToggleMenuFlyoutItem>
+								<MenuFlyoutItem Text="Log view dump" Command="{Binding LogViewDumpCommand}" Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
+									<MenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
+									</MenuFlyoutItem.Icon>
+								</MenuFlyoutItem>
+							</MenuFlyout>
+						</Button.Flyout>
+					</Button>
 				</Grid>
 
 				<!-- Sample Content -->
@@ -566,6 +615,20 @@
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="1"/>
+
+				<StackPanel Grid.Row="2"
+							Padding="8"
+							BorderThickness="0,1,0,0"
+							BorderBrush="{ThemeResource Color05Brush}"
+							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+							Visibility="{Binding CurrentSelectedSample.Description, Converter={StaticResource StringEmptyToVisibilityConverter}}">
+					<TextBlock Text="Description"
+							Style="{StaticResource Typo03}"
+							Margin="0,0,0,4" />
+					<TextBlock Text="{Binding CurrentSelectedSample.Description}"
+							Style="{StaticResource Typo05}"
+							MaxHeight="80" />
+				</StackPanel>
 			</Grid>
 		</SplitView.Content>
 	</SplitView>

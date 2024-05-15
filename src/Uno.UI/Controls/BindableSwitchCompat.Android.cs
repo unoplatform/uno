@@ -8,8 +8,9 @@ using Android.Graphics;
 using Android.Text;
 using Android.Util;
 using Android.Widget;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using AndroidX.Core.Graphics;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
@@ -32,7 +33,7 @@ namespace Uno.UI.Controls
 
 			TextOn = "";
 			TextOff = "";
-        }
+		}
 
 		#region TextColor DependencyProperty
 
@@ -45,7 +46,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TextColorProperty, value); }
 		}
 
-		public static DependencyProperty TextColorProperty { get ; } =
+		public static DependencyProperty TextColorProperty { get; } =
 			DependencyProperty.Register("TextColor", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTextColorChanged((Brush)e.NewValue)));
 
 		private void OnTextColorChanged(Brush newValue)
@@ -69,26 +70,21 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ThumbTintProperty, value); }
 		}
 
-		public static DependencyProperty ThumbTintProperty { get ; } =
+		public static DependencyProperty ThumbTintProperty { get; } =
 			DependencyProperty.Register("ThumbTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnThumbTintChanged((Brush)e.NewValue)));
 
 		private void OnThumbTintChanged(Brush newValue)
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-#if __ANDROID_28__
-#pragma warning disable 618 // SetColorFilter is deprecated
-				ThumbDrawable?.SetColorFilter(asColorBrush.ColorWithOpacity, PorterDuff.Mode.SrcIn);
-#pragma warning restore 618 // SetColorFilter is deprecated
-#else
-				ThumbDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.ColorWithOpacity, BlendMode.SrcIn));
-#endif
+				var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat((Color)asColorBrush.ColorWithOpacity, BlendModeCompat.SrcIn);
+				ThumbDrawable?.SetColorFilter(colorFilter);
 			}
 		}
 
-#endregion
+		#endregion
 
-#region TrackTint DependencyProperty
+		#region TrackTint DependencyProperty
 
 		/// <summary> 
 		/// The color used to tint the appearance of the track.
@@ -99,24 +95,19 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TrackTintProperty, value); }
 		}
 
-		public static DependencyProperty TrackTintProperty { get ; } =
+		public static DependencyProperty TrackTintProperty { get; } =
 			DependencyProperty.Register("TrackTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTrackTintChanged((Brush)e.NewValue)));
 
 		private void OnTrackTintChanged(Brush newValue)
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-#if __ANDROID_28__
-#pragma warning disable 618 // SetColorFilter is deprecated
-				TrackDrawable?.SetColorFilter(asColorBrush.ColorWithOpacity, PorterDuff.Mode.SrcIn);
-#pragma warning restore 618 // SetColorFilter is deprecated
-#else
-				TrackDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.ColorWithOpacity, BlendMode.SrcIn));
-#endif
+				var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat((Color)asColorBrush.ColorWithOpacity, BlendModeCompat.SrcIn);
+				TrackDrawable?.SetColorFilter(colorFilter);
 			}
 		}
 
-#endregion
+		#endregion
 
 		private void OnCheckedChange(object sender, CheckedChangeEventArgs e)
 		{

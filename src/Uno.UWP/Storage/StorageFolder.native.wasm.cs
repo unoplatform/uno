@@ -10,6 +10,8 @@ using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
 using SystemPath = global::System.IO.Path;
 
+using NativeMethods = __Windows.Storage.StorageFolder.NativeMethods;
+
 namespace Windows.Storage
 {
 	public partial class StorageFolder
@@ -21,8 +23,6 @@ namespace Windows.Storage
 
 		internal sealed class NativeStorageFolder : ImplementationBase
 		{
-			private const string JsType = "Uno.Storage.NativeStorageFolder";
-
 			// Used to keep track of the Folder handle on the Typescript side.
 			private Guid _id;
 			private string _name;
@@ -45,7 +45,8 @@ namespace Windows.Storage
 
 			public static async Task<StorageFolder?> GetPrivateRootAsync()
 			{
-				var itemInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getPrivateRootAsync()");
+				var itemInfoJson = await NativeMethods.GetPrivateRootAsync();
+
 				if (itemInfoJson == null)
 				{
 					return null;
@@ -102,7 +103,7 @@ namespace Windows.Storage
 						throw new ArgumentOutOfRangeException(nameof(option));
 				}
 
-				var newFolderNativeInfo = await WebAssemblyRuntime.InvokeAsync($"{JsType}.createFolderAsync(\"{_id}\", \"{folderName}\")");
+				var newFolderNativeInfo = await NativeMethods.CreateFolderAsync(_id.ToString(), folderName);
 
 				if (newFolderNativeInfo == null)
 				{
@@ -115,11 +116,11 @@ namespace Windows.Storage
 
 			public override async Task<StorageFolder> GetFolderAsync(string name, CancellationToken ct)
 			{
-				var folderInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+				var folderInfoJson = await NativeMethods.TryGetFolderAsync(_id.ToString(), name);
 
 				if (folderInfoJson == null)
 				{
-					var fileInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+					var fileInfoJson = await NativeMethods.TryGetFileAsync(_id.ToString(), name);
 
 					if (fileInfoJson != null)
 					{
@@ -140,7 +141,8 @@ namespace Windows.Storage
 
 			public override async Task<IReadOnlyList<IStorageItem>> GetItemsAsync(CancellationToken ct)
 			{
-				var itemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getItemsAsync(\"{_id}\")");
+				var itemInfosJson = await NativeMethods.GetItemsAsync(_id.ToString());
+
 				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
 				var results = new List<IStorageItem>();
 				foreach (var info in itemInfos)
@@ -159,7 +161,8 @@ namespace Windows.Storage
 
 			public override async Task<IReadOnlyList<StorageFile>> GetFilesAsync(CancellationToken ct)
 			{
-				var itemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getFilesAsync(\"{_id}\")");
+				var itemInfosJson = await NativeMethods.GetFilesAsync(_id.ToString());
+
 				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
 				var results = new List<StorageFile>();
 				foreach (var info in itemInfos)
@@ -171,7 +174,8 @@ namespace Windows.Storage
 
 			public override async Task<IReadOnlyList<StorageFolder>> GetFoldersAsync(CancellationToken ct)
 			{
-				var itemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getFoldersAsync(\"{_id}\")");
+				var itemInfosJson = await NativeMethods.GetFoldersAsync(_id.ToString());
+
 				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
 				var results = new List<StorageFolder>();
 				foreach (var info in itemInfos)
@@ -228,7 +232,8 @@ namespace Windows.Storage
 						throw new ArgumentOutOfRangeException(nameof(option));
 				}
 
-				var newFolderNativeInfo = await WebAssemblyRuntime.InvokeAsync($"{JsType}.createFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(actualName)}\")");
+				var newFolderNativeInfo = await NativeMethods.CreateFileAsync(_id.ToString(), actualName);
+
 				if (newFolderNativeInfo == null)
 				{
 					throw new UnauthorizedAccessException("Could not create file.");
@@ -240,11 +245,11 @@ namespace Windows.Storage
 
 			public override async Task<StorageFile> GetFileAsync(string name, CancellationToken token)
 			{
-				var fileInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+				var fileInfoJson = await NativeMethods.TryGetFileAsync(_id.ToString(), name);
 
 				if (fileInfoJson == null)
 				{
-					var folderInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+					var folderInfoJson = await NativeMethods.TryGetFolderAsync(_id.ToString(), name);
 
 					if (folderInfoJson != null)
 					{
@@ -278,7 +283,8 @@ namespace Windows.Storage
 
 			public override async Task<IStorageItem?> TryGetItemAsync(string name, CancellationToken token)
 			{
-				var fileInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+				var fileInfoJson = await NativeMethods.TryGetFileAsync(_id.ToString(), name);
+
 				if (fileInfoJson != null)
 				{
 					// File exists
@@ -286,7 +292,8 @@ namespace Windows.Storage
 					return StorageFile.GetFromNativeInfo(fileInfo, Owner);
 				}
 
-				var folderInfoJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
+				var folderInfoJson = await NativeMethods.TryGetFolderAsync(_id.ToString(), name);
+
 				if (folderInfoJson != null)
 				{
 					// Folder exists
@@ -310,7 +317,8 @@ namespace Windows.Storage
 
 			internal async Task DeleteItemAsync(string itemName)
 			{
-				var result = await WebAssemblyRuntime.InvokeAsync($"{JsType}.deleteItemAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(itemName)}\")");
+				var result = await NativeMethods.DeleteItemAsync(_id.ToString(), itemName);
+
 				if (result == null)
 				{
 					throw new UnauthorizedAccessException($"Could not delete item {itemName}");

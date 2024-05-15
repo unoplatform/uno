@@ -8,8 +8,8 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage
 {
@@ -24,7 +24,7 @@ namespace UITests.Windows_Storage
 			this.DataContextChanged += DataContextChangedHandler;
 		}
 
-		private void DataContextChangedHandler(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void DataContextChangedHandler(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as StorageFolderOperationsTestsViewModel;
 		}
@@ -42,7 +42,7 @@ namespace UITests.Windows_Storage
 		private string _errorMessage;
 		private CreationCollisionOption _selectedCreationCollisionOption = CreationCollisionOption.FailIfExists;
 
-		public StorageFolderOperationsTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public StorageFolderOperationsTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
@@ -99,7 +99,7 @@ namespace UITests.Windows_Storage
 				};
 				PickedFolder = await picker.PickSingleFolderAsync();
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				ErrorMessage = "Can't pick folder: " + ex;
 			}
@@ -147,7 +147,7 @@ namespace UITests.Windows_Storage
 				var folders = await _pickedFolder.GetFoldersAsync();
 				StorageItemList = new ObservableCollection<IStorageItem>(folders);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				ErrorMessage = "Can't list folders: " + ex;
 			}

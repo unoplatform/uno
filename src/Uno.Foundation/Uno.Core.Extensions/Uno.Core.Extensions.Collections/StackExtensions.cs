@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,18 +20,13 @@ using Uno.Disposables;
 
 namespace Uno.Extensions
 {
-    internal static class StackExtensions
-    {
-        public static T PeekOrDefault<T>(this Stack<T> stack)
-        {
-            return stack.Empty() ? default(T) : stack.Peek();
-        }
+	internal static class StackExtensions
+	{
+		public static IDisposable Subscribe<T>(this Stack<T> stack, T value)
+		{
+			stack.Push(value);
 
-        public static IDisposable Subscribe<T>(this Stack<T> stack, T value)
-        {
-            stack.Push(value);
-
-            return Disposable.Create(() => stack.Pop());
-        }
-    }
+			return Disposable.Create(() => stack.Pop());
+		}
+	}
 }

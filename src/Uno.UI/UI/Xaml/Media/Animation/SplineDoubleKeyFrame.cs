@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
-    public partial class SplineDoubleKeyFrame : DoubleKeyFrame
-    {
+	public partial class SplineDoubleKeyFrame : DoubleKeyFrame
+	{
 		/// <summary>
 		/// Initializes a new instance of the SplineDoubleKeyFrame class.
 		/// </summary>
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			get { return (KeySpline)this.GetValue(KeySplineProperty); }
 			set { this.SetValue(KeySplineProperty, value); }
 		}
-		public static DependencyProperty KeySplineProperty { get ; } =
+		public static DependencyProperty KeySplineProperty { get; } =
 			DependencyProperty.Register("KeySpline", typeof(KeySpline), typeof(SplineDoubleKeyFrame), new FrameworkPropertyMetadata(new KeySpline()));
 
 		internal override IEasingFunction GetEasingFunction()

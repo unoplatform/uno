@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Toolkit
 {
@@ -17,7 +17,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class MenuFlyoutItemExtensions
 	{
-#region IsDestructive
+		#region IsDestructive
 
 		public static DependencyProperty IsDestructiveProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -37,6 +37,6 @@ namespace Uno.UI.Toolkit
 			return (bool)menuFlyoutItem.GetValue(IsDestructiveProperty);
 		}
 
-#endregion
+		#endregion
 	}
 }

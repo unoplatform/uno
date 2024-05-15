@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -20,26 +20,28 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.UI.WebUI;
 
+using NativeMethods = __Windows.Storage.Helpers.AssetsManager.NativeMethods;
+
 namespace Windows.Storage.Helpers
 {
 	internal partial class AssetsManager
 	{
-		private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
+		internal static Lazy<Task<HashSet<string>>> Assets { get; } = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
 		private static readonly ConcurrentEntryManager _assetsGate = new ConcurrentEntryManager();
 
 		private static async Task<HashSet<string>> GetAssets(CancellationToken ct)
 		{
 			var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 
-			var assets = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
+			var assets = await NativeMethods.DownloadAssetsManifestAsync(assetsUri);
 
-			return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"), StringComparer.OrdinalIgnoreCase);
+			return new HashSet<string>(SplitMatch().Split(assets), StringComparer.OrdinalIgnoreCase);
 		}
 
 		public static async Task<string> DownloadAsset(CancellationToken ct, string assetPath)
 		{
 			var updatedPath = assetPath.TrimStart("/");
-			var assetSet = await _assets.Value;
+			var assetSet = await Assets.Value;
 
 			if (assetSet.Contains(updatedPath))
 			{
@@ -50,7 +52,7 @@ namespace Windows.Storage.Helpers
 				if (!File.Exists(localPath))
 				{
 					var assetUri = AssetsPathBuilder.BuildAssetUri(updatedPath);
-					var assetInfo = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAsset(\'{assetUri}\')");
+					var assetInfo = await NativeMethods.DownloadAssetAsync(assetUri);
 
 					var parts = assetInfo.Split(';');
 					if (parts.Length == 2)
@@ -88,5 +90,8 @@ namespace Windows.Storage.Helpers
 				throw new FileNotFoundException($"The file [{assetPath}] cannot be found");
 			}
 		}
+
+		[GeneratedRegex("\r\n|\r|\n")]
+		private static partial Regex SplitMatch();
 	}
 }

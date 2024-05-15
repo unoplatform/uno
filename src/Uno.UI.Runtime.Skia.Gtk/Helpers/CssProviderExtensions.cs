@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using Gtk;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers
 {
-	public static class CssProviderExtensions
+	internal static class CssProviderExtensions
 	{
 		/// <summary>
 		/// Provides a workaround for https://github.com/GtkSharp/GtkSharp/issues/212.
@@ -19,7 +19,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers
 		{
 			var gtkHostAssembly = typeof(GtkHost).Assembly;
 			var names = gtkHostAssembly.GetManifestResourceNames();
-			var resource = names.FirstOrDefault(name => name.EndsWith(embeddedResourceName));
+			var resource = names.FirstOrDefault(name => name.EndsWith(embeddedResourceName, StringComparison.Ordinal));
 			if (resource == null)
 			{
 				throw new InvalidOperationException($"There is no resource ending with {embeddedResourceName}");

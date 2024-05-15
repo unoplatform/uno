@@ -2,7 +2,7 @@
 
 using System.Numerics;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionEllipseGeometry : CompositionGeometry
 	{
@@ -17,7 +17,7 @@ namespace Windows.UI.Composition
 		public Vector2 Radius
 		{
 			get => _radius;
-			set => SetProperty(ref _radius, value); 
+			set => SetProperty(ref _radius, value);
 		}
 
 		public Vector2 Center

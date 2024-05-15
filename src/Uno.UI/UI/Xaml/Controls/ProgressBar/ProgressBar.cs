@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ProgressBar : RangeBase
 	{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ProgressBar);
 		}
 
-		public global::Windows.UI.Xaml.Controls.Primitives.ProgressBarTemplateSettings TemplateSettings
+		public global::Microsoft.UI.Xaml.Controls.Primitives.ProgressBarTemplateSettings TemplateSettings
 		{
 			get;
 		}
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(IsIndeterminateProperty, value); }
 		}
 
-		public static DependencyProperty IsIndeterminateProperty { get ; } =
+		public static DependencyProperty IsIndeterminateProperty { get; } =
 			DependencyProperty.Register(
 				"IsIndeterminate",
 				typeof(bool),
@@ -57,9 +57,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsIndeterminateChangedPartial(bool oldValue, bool newValue);
 
-#endregion
+		#endregion
 
-#region ShowError
+		#region ShowError
 
 		public bool ShowError
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowErrorProperty, value); }
 		}
 
-		public static DependencyProperty ShowErrorProperty { get ; } =
+		public static DependencyProperty ShowErrorProperty { get; } =
 			DependencyProperty.Register(
 				"ShowError",
 				typeof(bool),
@@ -83,9 +83,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonStates();
 		}
 
-#endregion
+		#endregion
 
-#region ShowPaused
+		#region ShowPaused
 
 		public bool ShowPaused
 		{
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowPausedProperty, value); }
 		}
 
-		public static DependencyProperty ShowPausedProperty { get ; } =
+		public static DependencyProperty ShowPausedProperty { get; } =
 			DependencyProperty.Register(
 				"ShowPaused",
 				typeof(bool),
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonStates();
 		}
 
-#endregion
+		#endregion
 
 		protected override void OnApplyTemplate()
 		{
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__
 					// Changing _progressBarIndicator.Width while in a layout phase doesn't reliably trigger a relayout on Android.
 					// Dispatching InvalidateMeasure appears to solve that problem.
-					Dispatcher.RunAnimation(() => _progressBarIndicator.InvalidateMeasure());
+					_ = Dispatcher.RunAnimation(() => _progressBarIndicator.InvalidateMeasure());
 #endif
 				}
 			}
@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, "Updating", false);
 			}
 		}
-		
+
 		// TODO
 		// public ProgressBarTemplateSettings TemplateSettings { get; }
 	}

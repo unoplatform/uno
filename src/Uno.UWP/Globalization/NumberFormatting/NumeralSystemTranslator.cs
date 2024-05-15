@@ -1,237 +1,264 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Text;
+using Uno;
 using Uno.Globalization.NumberFormatting;
 
-namespace Windows.Globalization.NumberFormatting
+namespace Windows.Globalization.NumberFormatting;
+
+public partial class NumeralSystemTranslator
 {
-	public partial class NumeralSystemTranslator
+	private const string NumeralSystemParameterName = "numeralSystem";
+
+	private readonly static string[] _defaultLanguages = { "en-US" };
+	private string _numeralSystem = "Latn";
+
+	public NumeralSystemTranslator() : this(_defaultLanguages)
 	{
-		private readonly static string[] _defaultLanguages = { "en-US" };
-		private string _numeralSystem;
 
-		public NumeralSystemTranslator() : this(_defaultLanguages)
+	}
+
+	public NumeralSystemTranslator(IEnumerable<string> languages)
+	{
+		ValidateLanguages(languages);
+
+		Languages = languages.ToList();
+		ResolvedLanguage = NumeralSystemTranslatorHelper.GetResolvedLanguage(Languages[0]);
+		NumeralSystem = NumeralSystemTranslatorHelper.GetNumeralSystem(Languages[0]);
+	}
+
+	public string NumeralSystem
+	{
+		get => _numeralSystem;
+		set
 		{
-
-		}
-
-		public NumeralSystemTranslator(IEnumerable<string> languages)
-		{
-			ValidateLanguages(languages);
-
-			Languages = languages.ToList();
-			ResolvedLanguage = NumeralSystemTranslatorHelper.GetResolvedLanguage(Languages[0]);
-			NumeralSystem = NumeralSystemTranslatorHelper.GetNumeralSystem(Languages[0]);
-		}
-
-		public string NumeralSystem
-		{
-			get => _numeralSystem;
-			set
+			if (value is null)
 			{
-				if (value is null)
-				{
-					throw new ArgumentNullException("Value cannot be null.");
-				}
-
-				_numeralSystem = NumeralSystemTranslatorHelper.ToPascalCase(value);
-			}
-		}
-
-		public IReadOnlyList<string> Languages { get; }
-
-		public string ResolvedLanguage { get; }
-
-		private void ValidateLanguages(IEnumerable<string> languages)
-		{
-			if (languages is null)
-			{
-				throw new NullReferenceException("Invalid pointer");
+				throw new ArgumentNullException();
 			}
 
-			if (!languages.Any())
-			{
-				throw new ArgumentException("The parameter is incorrect.");
-			}
+			_numeralSystem = NumeralSystemTranslatorHelper.ToPascalCase(value);
 
-			foreach (var language in languages)
+			if (string.IsNullOrEmpty(_numeralSystem))
 			{
-				NumeralSystemTranslatorHelper.GetNumeralSystem(language);
+				ExceptionHelper.ThrowArgumentException(NumeralSystemParameterName);
 			}
 		}
+	}
 
-		public string TranslateNumerals(string value)
+	public IReadOnlyList<string> Languages { get; }
+
+	public string ResolvedLanguage { get; }
+
+	private void ValidateLanguages(IEnumerable<string> languages)
+	{
+		if (languages is null)
 		{
-			if (NumeralSystem.Equals("Arab", StringComparison.Ordinal) ||
-				NumeralSystem.Equals("ArabExt", StringComparison.Ordinal))
-			{
-				return TranslateArab(value, NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem));
-			}
-
-			return Translate(value, NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem));
+			ExceptionHelper.ThrowNullReferenceException(nameof(languages));
 		}
 
-		private static string TranslateArab(string value, char[] digitsSource)
+		if (!languages!.Any())
 		{
-			var chars = value.ToCharArray();
-
-			for (int i = 0; i < chars.Length; i++)
-			{
-				var c = chars[i];
-
-				switch (c)
-				{
-					case '.':
-						if (IsImmediatelyBeforeALatinDigit(i, chars))
-						{
-							chars[i] = '\u066b';
-						}
-						break;
-					case ',':
-						if (IsImmediatelyBeforeALatinDigit(i, chars))
-						{
-							chars[i] = '\u066c';
-						}
-						break;
-					case '%':
-						if (IsAdjacentToALatinDigit(i, chars))
-						{
-							chars[i] = '\u066a';
-						}
-						break;
-					case '\u2030': //Per Mille Symbol
-						if (IsAdjacentToALatinDigit(i, chars))
-						{
-							chars[i] = '\u0609';
-						}
-						break;
-					default:
-						chars[i] = Translate(c, digitsSource);
-						break;
-				}
-			}
-
-			return new string(chars);
+			ExceptionHelper.ThrowArgumentException(nameof(languages));
 		}
 
-		private static bool IsImmediatelyBeforeALatinDigit(int index, char[] input)
+		foreach (var language in languages!)
 		{
-			if (index + 1 >= input.Length)
+			if (string.IsNullOrEmpty(NumeralSystemTranslatorHelper.GetNumeralSystem(language)))
 			{
-				return false;
+				ExceptionHelper.ThrowArgumentException(nameof(languages));
 			}
+		}
+	}
 
-			return char.IsDigit(input[index + 1]);
+	public string TranslateNumerals(string value)
+	{
+		var stringBuilder = StringBuilderCache.Acquire();
+		stringBuilder.Append(value);
+
+		TranslateNumerals(stringBuilder);
+		var translated = StringBuilderCache.GetStringAndRelease(stringBuilder);
+		return translated;
+	}
+
+	internal void TranslateNumerals(StringBuilder stringBuilder)
+	{
+		var digitsSource = NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem);
+
+		if (digitsSource == NumeralSystemTranslatorHelper.EmptyDigits)
+		{
+			ExceptionHelper.ThrowArgumentException(NumeralSystemParameterName);
 		}
 
-		private static bool IsAdjacentToALatinDigit(int index, char[] input)
+		if (NumeralSystem.Equals("Arab", StringComparison.Ordinal) ||
+			NumeralSystem.Equals("ArabExt", StringComparison.Ordinal))
 		{
-			if (index + 1 < input.Length &&
-				char.IsDigit(input[index + 1]))
-			{
-				return true;
-			}
+			TranslateArab(stringBuilder, digitsSource);
+		}
+		else
+		{
+			Translate(stringBuilder, digitsSource);
+		}
+	}
 
-			if (index - 1 >= 0 &&
-			   char.IsDigit(input[index - 1]))
-			{
-				return true;
-			}
+	private static void TranslateArab(StringBuilder stringBuilder, char[] digitsSource)
+	{
+		for (int i = 0; i < stringBuilder.Length; i++)
+		{
+			var c = stringBuilder[i];
 
+			switch (c)
+			{
+				case '.':
+					if (IsImmediatelyBeforeALatinDigit(i, stringBuilder))
+					{
+						stringBuilder[i] = '\u066b';
+					}
+					break;
+				case ',':
+					if (IsImmediatelyBeforeALatinDigit(i, stringBuilder))
+					{
+						stringBuilder[i] = '\u066c';
+					}
+					break;
+				case '%':
+					if (IsAdjacentToALatinDigit(i, stringBuilder))
+					{
+						stringBuilder[i] = '\u066a';
+					}
+					break;
+				case '\u2030': //Per Mille Symbol
+					if (IsAdjacentToALatinDigit(i, stringBuilder))
+					{
+						stringBuilder[i] = '\u0609';
+					}
+					break;
+				default:
+					stringBuilder[i] = Translate(c, digitsSource);
+					break;
+			}
+		}
+	}
+
+	private static bool IsImmediatelyBeforeALatinDigit(int index, StringBuilder input)
+	{
+		if (index + 1 >= input.Length)
+		{
 			return false;
 		}
 
-		private static string Translate(string value, char[] digitsSource)
+		return char.IsDigit(input[index + 1]);
+	}
+
+	private static bool IsAdjacentToALatinDigit(int index, StringBuilder input)
+	{
+		if (index + 1 < input.Length &&
+			char.IsDigit(input[index + 1]))
 		{
-			var chars = value.ToCharArray();
-
-			for (int i = 0; i < chars.Length; i++)
-			{
-				chars[i] = Translate(chars[i], digitsSource);
-			}
-
-			return new string(chars);
+			return true;
 		}
 
-		private static char Translate(char c, char[] digitsSource)
+		if (index - 1 >= 0 &&
+		   char.IsDigit(input[index - 1]))
 		{
-			var d = c - '0';
-			var t = c;
-
-			if (d >= 0 && d <= 9)
-			{
-				t = digitsSource[d];
-			}
-
-			return t;
+			return true;
 		}
 
-		public string TranslateBackNumerals(string value)
-		{
-			if (NumeralSystem.Equals("Arab", StringComparison.Ordinal) ||
-				NumeralSystem.Equals("ArabExt", StringComparison.Ordinal))
-			{
-				return TranslateBackArab(value, NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem));
-			}
+		return false;
+	}
 
-			return TranslateBack(value, NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem));
+	private static void Translate(StringBuilder stringBuilder, char[] digitsSource)
+	{
+		for (int i = 0; i < stringBuilder.Length; i++)
+		{
+			stringBuilder[i] = Translate(stringBuilder[i], digitsSource);
+		}
+	}
+
+	private static char Translate(char c, char[] digitsSource)
+	{
+		var d = c - '0';
+		var t = c;
+
+		if (d >= 0 && d <= 9)
+		{
+			t = digitsSource[d];
 		}
 
-		private static string TranslateBackArab(string value, char[] digitsSource)
+		return t;
+	}
+
+	public string TranslateBackNumerals(string value)
+	{
+		var stringBuilder = StringBuilderCache.Acquire();
+		stringBuilder.Append(value);
+		TranslateBackNumerals(stringBuilder);
+
+		var translated = StringBuilderCache.GetStringAndRelease(stringBuilder);
+		return translated;
+	}
+
+	internal void TranslateBackNumerals(StringBuilder stringBuilder)
+	{
+		if (NumeralSystem.Equals("Arab", StringComparison.Ordinal) ||
+			NumeralSystem.Equals("ArabExt", StringComparison.Ordinal))
 		{
-			var chars = value.ToCharArray();
+			TranslateBackArab(stringBuilder, NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem));
+		}
+		else
+		{
+			TranslateBack(stringBuilder, NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem));
+		}
+	}
 
-			for (int i = 0; i < chars.Length; i++)
+	private static void TranslateBackArab(StringBuilder stringBuilder, char[] digitsSource)
+	{
+		for (int i = 0; i < stringBuilder.Length; i++)
+		{
+			var c = stringBuilder[i];
+
+			switch (c)
 			{
-				var c = chars[i];
-
-				switch (c)
-				{
-					case '\u066b':
-						chars[i] = '.';
-						break;
-					case '\u066c':
-						chars[i] = ',';
-						break;
-					case '\u066a':
-						chars[i] = '%';
-						break;
-					case '\u0609': //Per Mille Symbol
-						chars[i] = '\u2030';
-						break;
-					default:
-						chars[i] = TranslateBack(c, digitsSource);
-						break;
-				}
+				case '\u066b':
+					stringBuilder[i] = '.';
+					break;
+				case '\u066c':
+					stringBuilder[i] = ',';
+					break;
+				case '\u066a':
+					stringBuilder[i] = '%';
+					break;
+				case '\u0609': //Per Mille Symbol
+					stringBuilder[i] = '\u2030';
+					break;
+				default:
+					stringBuilder[i] = TranslateBack(c, digitsSource);
+					break;
 			}
+		}
+	}
 
-			return new string(chars);
+	private static void TranslateBack(StringBuilder stringBuilder, char[] digitsSource)
+	{
+		for (int i = 0; i < stringBuilder.Length; i++)
+		{
+			stringBuilder[i] = TranslateBack(stringBuilder[i], digitsSource);
+		}
+	}
+
+	private static char TranslateBack(char c, char[] digitsSource)
+	{
+		var d = c - digitsSource[0];
+		var t = c;
+
+		if (d >= 0 && d <= 9)
+		{
+			t = (char)(d + '0');
 		}
 
-		private static string TranslateBack(string value, char[] digitsSource)
-		{
-			var chars = value.ToCharArray();
-
-			for (int i = 0; i < chars.Length; i++)
-			{
-				chars[i] = TranslateBack(chars[i], digitsSource);
-			}
-
-			return new string(chars);
-		}
-
-		private static char TranslateBack(char c, char[] digitsSource)
-		{
-			var d = c - digitsSource[0];
-			var t = c;
-
-			if (d >= 0 && d <= 9)
-			{
-				t = (char)(d + '0');
-			}
-
-			return t;
-		}
+		return t;
 	}
 }

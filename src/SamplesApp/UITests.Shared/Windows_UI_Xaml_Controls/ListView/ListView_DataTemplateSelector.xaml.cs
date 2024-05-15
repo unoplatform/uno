@@ -1,4 +1,4 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
@@ -10,7 +10,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 		{
 			this.InitializeComponent();
 
-			DataContext = new []
+			DataContext = new[]
 			{
 				"Shape1",
 				"Shape2",

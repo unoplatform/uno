@@ -1,36 +1,34 @@
 parameters:
-  vmImage: ''
+  poolName: ''
 
 jobs:
 - job: Documentation
-  displayName: 'Documentation WebSite'
-  dependsOn: Pipeline_Validations
+  displayName: 'Build Documentation WebSite'
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
+
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   steps:
-  - checkout: self
-    clean: true
-
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/install-windows-sdk.yml
+  - template: templates/dotnet-mobile-install-windows.yml
 
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
-
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
 
   - task: MSBuild@1
     inputs:
@@ -38,7 +36,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/generate-docs.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -46,9 +44,9 @@ jobs:
       createLogFile: false
 
   - task: PublishBuildArtifacts@1
-    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages
+      ArtifactName: DocumentationArtifacts
       ArtifactType: Container

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// An element that should be notified when the template in which it exists is being reused.

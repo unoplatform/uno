@@ -6,13 +6,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 #if __IOS__
 using UIKit;
 using Uno.UI.Controls;
@@ -22,22 +22,22 @@ using Uno.UI.Controls;
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
 {
 	public sealed partial class CommandBar_Page2 : Page
-    {
-        public CommandBar_Page2()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public CommandBar_Page2()
+		{
+			this.InitializeComponent();
+		}
 
-        public void OnButtonClicked(object sender, object args)
-        {
+		public void OnButtonClicked(object sender, object args)
+		{
 #if __IOS__
-	        UIView parent = this;
-	        while (parent.HasParent())
-	        {
-		        parent = parent.Superview;
-	        }
+			UIView parent = this;
+			while (parent.HasParent())
+			{
+				parent = parent.Superview;
+			}
 
-	        var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
+			var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
 
 			var image = (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
 				? navigationBar.CompactAppearance.BackIndicatorImage
@@ -46,5 +46,5 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
 			ExpectedImage.Source = image;
 #endif
 		}
-    }
+	}
 }

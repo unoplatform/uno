@@ -1,34 +1,40 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace Uno.UI.Common
+namespace Uno.UI.Common;
+
+internal class DelegateCommand : ICommand
 {
-	public class DelegateCommand : ICommand
+	private Action _action;
+	private bool _canExecuteEnabled = true;
+
+	public event EventHandler CanExecuteChanged;
+
+	public DelegateCommand(Action action)
 	{
-		private Action _action;
-		private bool _canExecuteEnabled = true;
+		_action = action;
+	}
 
-		public event EventHandler CanExecuteChanged;
+	public bool CanExecute(object parameter) => CanExecuteEnabled;
 
-		public DelegateCommand(Action action)
+	public void Execute(object parameter)
+	{
+		if (!CanExecuteEnabled)
 		{
-			_action = action;
+			return;
 		}
 
-		public bool CanExecute(object parameter) => CanExecuteEnabled;
+		_action?.Invoke();
+	}
 
-		public void Execute(object parameter) => _action?.Invoke();
+	private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 
-		private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-
-		public bool CanExecuteEnabled
+	public bool CanExecuteEnabled
+	{
+		get => _canExecuteEnabled;
+		set
 		{
-			get => _canExecuteEnabled;
-			set
-			{
-				_canExecuteEnabled = value;
-				OnCanExecuteChanged();
-			}
+			_canExecuteEnabled = value;
+			OnCanExecuteChanged();
 		}
 	}
 }

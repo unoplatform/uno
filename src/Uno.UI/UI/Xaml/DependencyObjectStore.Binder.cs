@@ -1,31 +1,33 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
-using System.Linq;
-using Uno.Disposables;
-using System.Runtime.CompilerServices;
-using Uno.Foundation.Logging;
-using Uno.Extensions;
-using Uno.UI.DataBinding;
-using Uno.UI;
-using Windows.UI.Xaml.Data;
-using System.Collections.Generic;
-using Windows.UI.Xaml;
-using System.Globalization;
-using System.Threading;
-using Uno.Diagnostics.Eventing;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using Uno.Collections;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
 
-#if !NET461
+#if !IS_UNIT_TESTS
 using Uno.UI.Controls;
 #endif
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class DependencyObjectStore
 	{
@@ -35,8 +37,11 @@ namespace Windows.UI.Xaml
 
 		private readonly object _gate = new object();
 
-		private readonly HashtableEx _childrenBindableMap = new HashtableEx(DependencyPropertyComparer.Default);
-		private readonly List<object?> _childrenBindable = new List<object?>();
+		private HashtableEx? _childrenBindableMap;
+		private List<object?>? _childrenBindable;
+
+		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
+		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
 		private bool _isApplyingDataContextBindings;
@@ -54,11 +59,7 @@ namespace Windows.UI.Xaml
 		/// </param>
 		public void SetTemplatedParent(FrameworkElement? templatedParent)
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY
-			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
-#endif
 			{
 				if (_isApplyingTemplateBindings || _bindingsSuspended)
 				{
@@ -86,12 +87,22 @@ namespace Windows.UI.Xaml
 
 				ApplyChildrenBindable(templatedParent, isTemplatedParent: true);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				_isApplyingTemplateBindings = false;
 			}
+		}
+
+		private bool IsCandidateChild([NotNullWhen(true)] object? child)
+		{
+			if (child is IDependencyObjectStoreProvider)
+			{
+				return true;
+			}
+
+			// The property value may be an enumerable of providers
+			var isValidEnumerable = child is not string;
+			return isValidEnumerable && child is IEnumerable;
 		}
 
 		private void ApplyChildrenBindable(object? inheritedValue, bool isTemplatedParent)
@@ -108,9 +119,20 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			if (_childrenBindable is null)
+			{
+				return;
+			}
+
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
+				if (child is null)
+				{
+					continue;
+				}
+
+				Debug.Assert(IsCandidateChild(child));
 
 				var childAsStoreProvider = child as IDependencyObjectStoreProvider;
 
@@ -123,7 +145,7 @@ namespace Windows.UI.Xaml
 				//Example: Button A contains a Flyout with Button B inside of it
 				//	Button B has a binding to the Flyout itself
 				//	We should not propagate Button B's DataContext to the Flyout
-				//	since its real parent is actually Button A 
+				//	since its real parent is actually Button A
 				if (parent != null && parent != ActualInstance)
 				{
 					continue;
@@ -133,36 +155,31 @@ namespace Windows.UI.Xaml
 				{
 					SetInherited(childAsStoreProvider, inheritedValue, isTemplatedParent);
 				}
-				else
+				else if (child is IList list)
 				{
-					// The property value may be an enumerable of providers
-					var isValidEnumerable = !(child is string);
+					// Special case for IList where the child may not be enumerable
 
-					if (isValidEnumerable)
+					for (int childIndex = 0; childIndex < list.Count; childIndex++)
 					{
-						if (child is IList list)
+						if (list[childIndex] is IDependencyObjectStoreProvider provider2)
 						{
-							// Special case for IList where the child may not be enumerable
-
-							for (int childIndex = 0; childIndex < list.Count; childIndex++)
-							{
-								if (list[childIndex] is IDependencyObjectStoreProvider provider2)
-								{
-									SetInherited(provider2, inheritedValue, isTemplatedParent);
-								}
-							}
-						}
-						else if (child is IEnumerable enumerable)
-						{
-							foreach (var item in enumerable)
-							{
-								if (item is IDependencyObjectStoreProvider provider2)
-								{
-									SetInherited(provider2, inheritedValue, isTemplatedParent);
-								}
-							}
+							SetInherited(provider2, inheritedValue, isTemplatedParent);
 						}
 					}
+				}
+				else if (child is IEnumerable enumerable)
+				{
+					foreach (var item in enumerable)
+					{
+						if (item is IDependencyObjectStoreProvider provider2)
+						{
+							SetInherited(provider2, inheritedValue, isTemplatedParent);
+						}
+					}
+				}
+				else
+				{
+					throw new Exception("This cannot be reached. IsCandidateChild would have returned false if none of the conditions were true.");
 				}
 			}
 		}
@@ -185,9 +202,6 @@ namespace Windows.UI.Xaml
 		internal void ApplyElementNameBindings()
 			=> _properties.ApplyElementNameBindings();
 
-		private string GetOwnerDebugString()
-			=> ActualInstance?.GetType().ToString() ?? "[collected]";
-
 		static void InitializeStaticBinder()
 		{
 			// Register the ability for the BindingPath to subscribe to dependency property changes.
@@ -201,8 +215,8 @@ namespace Windows.UI.Xaml
 		/// Restores the bindings that may have been cleared by <see cref="ClearBindings()"/>.
 		/// </summary>
 		/// <remarks>
-		/// Calling this method will specifically restore <see cref="UI.Xaml.Data.Binding.ElementName"/> 
-		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which are not restored as part of the 
+		/// Calling this method will specifically restore <see cref="UI.Xaml.Data.Binding.ElementName"/>
+		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which are not restored as part of the
 		/// normal <see cref="DataContext"/> change flow.
 		/// </remarks>
 		public void RestoreBindings()
@@ -213,10 +227,10 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Clears the bindings for the current binder.
 		/// </summary>
-		/// <remarks> 
-		/// This method is used as an out-of-band replacement for setting the DataContext to null, which 
+		/// <remarks>
+		/// This method is used as an out-of-band replacement for setting the DataContext to null, which
 		/// in the case of two-way bindings, would send the fallback value if it has been set.
-		/// This method may also clear <see cref="UI.Xaml.Data.Binding.ElementName"/> 
+		/// This method may also clear <see cref="UI.Xaml.Data.Binding.ElementName"/>
 		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which need to be restored
 		/// using the <see cref="RestoreBindings()"/> method.
 		/// </remarks>
@@ -257,16 +271,14 @@ namespace Windows.UI.Xaml
 			}
 
 			_properties.Dispose();
-			_childrenBindableMap.Dispose();
+			_childrenBindableMap?.Dispose();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
 		{
-			var dataContextBinding = _properties.FindDataContextBinding();
-
-			if (dataContextBinding != null && precedence == DependencyPropertyValuePrecedences.Inheritance)
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance && _properties.FindDataContextBinding() is { } dataContextBinding)
 			{
-				// Set the DataContext for the bindings using the current DataContext, except for the 
+				// Set the DataContext for the bindings using the current DataContext, except for the
 				// binding to the DataContext itself, which must use the inherited DataContext.
 				//
 				// This is to avoid recursion when the datacontext.
@@ -280,11 +292,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY
-				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-				// See https://github.com/dotnet/runtime/issues/50783 for more details.
 				try
-#endif
 				{
 					if (_isApplyingDataContextBindings || _bindingsSuspended)
 					{
@@ -299,30 +307,17 @@ namespace Windows.UI.Xaml
 
 					if (TryWriteDataContextChangedEventActivity() is { } trace)
 					{
-						/// <remarks>
-						/// This method contains or is called by a try/catch containing method and
-						/// can be significantly slower than other methods as a result on WebAssembly.
-						/// See https://github.com/dotnet/runtime/issues/56309
-						/// </remarks>
-						void ApplyWithTrace (object? actualDataContext, IDisposable trace)
+						using (trace)
 						{
-							using (trace)
-							{
-								ApplyDataContext(actualDataContext);
-							}
+							ApplyDataContext(actualDataContext);
 						}
-
-						// "using" statements are costly under we https://github.com/dotnet/runtime/issues/50783
-						ApplyWithTrace(actualDataContext, trace);
 					}
 					else
 					{
 						ApplyDataContext(actualDataContext);
 					}
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					_isApplyingDataContextBindings = false;
 				}
@@ -396,7 +391,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				throw new NotSupportedException("Only Windows.UI.Xaml.Data.Binding is supported for bindings.");
+				throw new NotSupportedException("Only Microsoft.UI.Xaml.Data.Binding is supported for bindings.");
 			}
 		}
 
@@ -425,12 +420,12 @@ namespace Windows.UI.Xaml
 				throw new ArgumentNullException(nameof(binding));
 			}
 
-			var fullBinding = binding as Windows.UI.Xaml.Data.Binding;
+			var fullBinding = binding as Microsoft.UI.Xaml.Data.Binding;
 
 			if (fullBinding != null)
 			{
 				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty)
-					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.CompiledSource != null);
+					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.IsXBind);
 
 				if (boundProperty != null)
 				{
@@ -439,7 +434,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				throw new NotSupportedException("Only Windows.UI.Xaml.Data.Binding is supported for bindings.");
+				throw new NotSupportedException("Only Microsoft.UI.Xaml.Data.Binding is supported for bindings.");
 			}
 		}
 
@@ -460,7 +455,7 @@ namespace Windows.UI.Xaml
 
 				if (property == null)
 				{
-					// Create a stub property so the BindingPropertyHelper is able to pick up 
+					// Create a stub property so the BindingPropertyHelper is able to pick up
 					// the plain C# properties.
 					property = DependencyProperty.Register(
 						dependencyProperty,
@@ -539,11 +534,11 @@ namespace Windows.UI.Xaml
 
 			if (dependencyObject != null)
 			{
-				var dp = Windows.UI.Xaml.DependencyProperty.GetProperty(dependencyObject.GetType(), propertyName);
+				var dp = Microsoft.UI.Xaml.DependencyProperty.GetProperty(dependencyObject.GetType(), propertyName);
 
 				if (dp != null)
 				{
-					return Windows.UI.Xaml.DependencyObjectExtensions
+					return Microsoft.UI.Xaml.DependencyObjectExtensions
 						.RegisterDisposablePropertyChangedCallback(dependencyObject, dp, newValueAction.NewValue);
 				}
 				else
@@ -566,24 +561,19 @@ namespace Windows.UI.Xaml
 		{
 			SetBindingValue(propertyDetails, args.NewValue);
 
-			GetPropertyInheritanceConfiguration(
-				propertyDetails: propertyDetails,
-				args: args,
-				hasValueInherits: out var hasValueInherits,
-				hasValueDoesNotInherit: out var hasValueDoesNotInherits
-			);
-
-			if (!hasValueDoesNotInherits)
+			if (!propertyDetails.HasValueDoesNotInherit)
 			{
 				var newValueAsProvider = args.NewValue as IDependencyObjectStoreProvider;
 
-				if (hasValueInherits)
+				if (propertyDetails.HasValueInherits)
 				{
-					if (newValueAsProvider != null)
+					if (newValueAsProvider is not null)
 					{
 						SetChildrenBindableValue(
 							propertyDetails,
-							newValueAsProvider.Store.Parent != ActualInstance ? args.NewValue : null);
+
+							// Ensure DataContext propagation loops cannot happen
+							ReferenceEquals(newValueAsProvider.Store.Parent, ActualInstance) ? null : args.NewValue);
 					}
 					else
 					{
@@ -592,8 +582,8 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					if (newValueAsProvider is { }
-						&& !(newValueAsProvider is UIElement))
+					if (newValueAsProvider is not null
+						&& newValueAsProvider is not UIElement)
 					{
 						SetChildrenBindableValue(propertyDetails, newValueAsProvider);
 					}
@@ -602,32 +592,15 @@ namespace Windows.UI.Xaml
 		}
 
 		private void SetChildrenBindableValue(DependencyPropertyDetails propertyDetails, object? value)
-			=> _childrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = value;
-
-		private void GetPropertyInheritanceConfiguration(
-			DependencyPropertyDetails propertyDetails,
-			DependencyPropertyChangedEventArgs args,
-			out bool hasValueInherits,
-			out bool hasValueDoesNotInherit)
 		{
-			if (propertyDetails.Property == _templatedParentProperty
-				|| propertyDetails.Property == _dataContextProperty)
+			if (IsCandidateChild(value))
 			{
-				// TemplatedParent is a DependencyObject but does not propagate datacontext
-				hasValueInherits = false;
-				hasValueDoesNotInherit = true;
-				return;
+				ChildrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = value;
 			}
-
-			if (propertyDetails.Metadata is FrameworkPropertyMetadata propertyMetadata)
+			else if (TryGetChildBindablePropertyIndex(propertyDetails.Property, out var index))
 			{
-				hasValueInherits = propertyMetadata.Options.HasValueInheritsDataContext();
-				hasValueDoesNotInherit = propertyMetadata.Options.HasValueDoesNotInheritDataContext();
-				return;
+				ChildrenBindable[index] = null;
 			}
-
-			hasValueInherits = false;
-			hasValueDoesNotInherit = false;
 		}
 
 		/// <summary>
@@ -637,10 +610,10 @@ namespace Windows.UI.Xaml
 		{
 			int index;
 
-			if (!_childrenBindableMap.TryGetValue(property, out var indexRaw))
+			if (!ChildrenBindableMap.TryGetValue(property, out var indexRaw))
 			{
-				_childrenBindableMap[property] = index = _childrenBindableMap.Count;
-				_childrenBindable.Add(null);
+				ChildrenBindableMap[property] = index = ChildrenBindableMap.Count;
+				ChildrenBindable.Add(null); // The caller will replace null with a non-null value.
 			}
 			else
 			{
@@ -650,11 +623,24 @@ namespace Windows.UI.Xaml
 			return index;
 		}
 
+		private bool TryGetChildBindablePropertyIndex(DependencyProperty property, out int index)
+		{
+			if (_childrenBindableMap?.TryGetValue(property, out var indexRaw) == true)
+			{
+				index = (int)indexRaw!;
+				return true;
+			}
+
+
+			index = -1;
+			return false;
+		}
+
 
 		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
-		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
+		public Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
 
 		/// <summary>

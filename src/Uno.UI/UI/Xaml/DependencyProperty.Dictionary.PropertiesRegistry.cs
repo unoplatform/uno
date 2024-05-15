@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -12,14 +12,17 @@ using Uno;
 using System.Threading;
 using Uno.Collections;
 using Uno.UI.Helpers;
+using System.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{
 		private class DependencyPropertyRegistry
 		{
-			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default);
+			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
+			// So we don't use pooling to not cause pool exhaustion by renting without returning.
+			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default, usePooling: false);
 
 			internal bool TryGetValue(Type type, string name, out DependencyProperty? result)
 			{
@@ -42,7 +45,7 @@ namespace Windows.UI.Xaml
 			{
 				if (!TryGetTypeTable(type, out var typeTable))
 				{
-					typeTable = new HashtableEx();
+					typeTable = new HashtableEx(usePooling: false);
 					_entries[type] = typeTable;
 				}
 
@@ -53,7 +56,7 @@ namespace Windows.UI.Xaml
 			{
 				if (TryGetTypeTable(type, out var typeTable))
 				{
-					foreach(var value in typeTable!.Values)
+					foreach (var value in typeTable!.Values)
 					{
 						properties.Add((DependencyProperty)value);
 					}
@@ -71,9 +74,6 @@ namespace Windows.UI.Xaml
 				table = null;
 				return false;
 			}
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }

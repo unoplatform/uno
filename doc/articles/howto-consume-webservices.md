@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.ConsumeWebApi
+---
+
 # How to consume a web API
 
 This how-to will walk you through the process of creating a multi-platform application that leverages web services. Specifically you will be:
@@ -5,47 +9,42 @@ This how-to will walk you through the process of creating a multi-platform appli
 * Creating a simple Uno application.
 * Registering for The Cat API web service.
 * Building a number of data models that utilize JSON serialization.
-* Building a web service base class that supports REST service operations and then build a number of services that derived from it.
+* Building a web service base class that supports REST service operations and then building a number of services that are derived from it.
 * Using the services in a view-model.
 * Build a XAML UI that utilizes the view-model.
-* Test the application in UWP and WASM.
+* Test the application in Windows and WASM.
 
-Throughout the how-to there will be notes on recommended practices and tips that highlight resources for additional learning.
+Throughout the how-to, there will be notes on recommended practices and tips that highlight resources for additional learning.
 
 > [!TIP]
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
-
-## Prerequisites
-
-* [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
-  * **Universal Windows Platform** workload installed
-  * **Mobile Development with .NET (Xamarin)** workload installed
-  * **ASP**.**NET and web** workload installed
-  * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
-
-> [!Tip]
-> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs.html)
+>
+> [!TIP]
+> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs-2022.html)
 
 ## Task 1 - Create a simple Uno application
 
-In this task you will create a simple Single Page App with the Uno Platform. This app - **TheCatApiClient** - will be used to demonstrate an approach to consuming REST web services using the **HttpClient** class.
+In this task, you will create a simple Single Page App with the Uno Platform. This app - **TheCatApiClient** - will be used to demonstrate an approach to consuming REST web services using the **HttpClient** class.
 
 1. Open Visual Studio and click on **Create a new project**.
 
-    ![Visual Studio new project dialog](Assets/how-to-webservice/newproject1.PNG)
-
+    ![Visual Studio new project dialog](Assets/tutorial01/newproject1.PNG)
 1. In the **Search for Templates** search box, enter **Uno**
 
-    ![Visual Studio new project dialog searching for Uno](Assets/how-to-webservice/newproject2.PNG)
+    ![Visual Studio new project dialog searching for Uno](Assets/tutorial01/newproject2.PNG)
 
 1. In the filtered list of templates, select **Uno Platform App** and then click **Next**.
 
-1. In the **Configure your new project** window, set the **Project name** to **TheCatApiClient**, choose where you would like to save your project and click the **Create** button.
+1. In the **Configure your new project** window, set the **Project name** to **TheCatApiClient**, choose where you would like to save your project, and click the **Create** button.
 
     ![Configure your new project dialog](Assets/how-to-webservice/newproject3.PNG)
 
     > [!IMPORTANT]
-    > The C# and XAML snippets in this tutorial requires that the solution is named **TheCatApiClient**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
+    > The C# and XAML snippets in this tutorial require that the solution is named **TheCatApiClient**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
+
+1. Select the **Blank** preset. Then, click the **Create** button. Wait for the projects to be created and their dependencies to be restored.
+
+    ![Select startup type in the Uno platform template wizard](Assets/tutorial01/vsix-new-project-options.png)
 
 1. In the **Solution Explorer**, to update the Uno NuGet packages to the latest version, right-click on the Solution file **Solution 'TheCatApiClient'** and select **Manage NuGet Packages for Solution...** from the context menu.
 
@@ -53,39 +52,20 @@ In this task you will create a simple Single Page App with the Uno Platform. Thi
 
 1. At the top-right of the **Manage Packages for Solution** page, in the **Package source** dropdown, ensure that **nuget.org** or **NuGet official package source** is selected.
 
-1. At the top-left of page, to view solution packages available to update, click **Updates**.
-
-1. On the **Updates** tab, to use the stable version of the packages, ensure  **Include prerelease** is unchecked.
-
-1. From the list of available updates, select the following packages if they appear:
-
-    * **Uno.Core**
-    * **Uno.UI**
-    * **Uno.UI.RemoteControl**
-    * **Uno.UI.WebAssembly**
-    * **Uno.Wasm.Bootstrap**
-    * **Uno.Wasm.Bootstrap.DevServer**
-
-    > [!Important]
-    > **Do not** update the **Microsoft.Extensions.Logging.Console**. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
-
-1. To update the packages, click **Update**.
-
-1. At the top-left of page, to browse the available packages, click **Browse**.
+1. At the top-left of the page, to browse the available packages, click **Browse**.
 
 1. In the **Search** field, enter **System.Text.Json** and select **System.Text.Json**.
 
     > [!TIP]
-    > The **System.Text.Json** package provides functionality for serializing to and deserializing from JavaScript Object Notation (JSON). You can learn more about how to serialize and deserialize here: [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-how-to)
+    > The **System.Text.Json** package provides functionality for serializing to and deserializing from JavaScript Object Notation (JSON). You can learn more about how to serialize and deserialize here: [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://learn.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
 
 1. In the right pane of the **Manage Packages for Solution** page, select every project and click **Install**.
 
     ![Install System.Text.Json nuget package](Assets/how-to-webservice/json-install.png)
 
-
 1. To workaround a Visual studio issue regarding the XAML editor, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it.
 
-1. To test the UWP version of the application, in the **Solution Explorer**,  right-click the **TheCatApiClient.UWP** project and click **Set as Startup Project**
+1. To test the Windows version of the application, in the **Solution Explorer**,  right-click the **TheCatApiClient.Windows** project and click **Set as Startup Project**
 
 1. To launch the application, under the **Debug** menu, click **Start Debugging** or use the shortcut key, commonly **F5**.
 
@@ -99,15 +79,15 @@ You have now created a sample application that will be extended in later tasks.
 
 ## Task 2 - Sign up for API key
 
-In order to demonstrate how to consume a webservice, there needs to be a webservice available. In this tutorial you will build a simple client that leverages [The Cat API](https://thecatapi.com/). The website for this service describes it as:
+In order to demonstrate how to consume a web service, there needs to be a web service available. In this tutorial you will build a simple client that leverages [The Cat API](https://thecatapi.com/). The website for this service describes it as:
 
 > A public service API all about Cats, free to use when making your fancy new App, Website or Service.
 
 In order to use this service, you need to sign up for a free API key.
 
-1. In a browser, navigate to The Cat API signup page: [https://thecatapi.com/signup](https://thecatapi.com/signup)
+1. In a browser, navigate to The Cat API sign-up page: [https://thecatapi.com/signup](https://thecatapi.com/signup)
 
-1. Complete the signup form and click **SIGNUP**.
+1. Complete the sign-up form and click **sign-up**.
 
     You will receive an email with your API key - you will need the key later.
 
@@ -176,25 +156,20 @@ In order to use this service, you need to sign up for a free API key.
     ]
     ```
 
-    >[!TIP]
-    > You can learn more about the breed search API here - [GET
-/breeds/search](https://docs.thecatapi.com/api-reference/breeds/breeds-search).
+    > [!TIP]
+    > You can learn more about the breed search API here - [GET/breeds/search](https://docs.thecatapi.com/api-reference/breeds/breeds-search).
 
-Now you have signed up for the API, you are ready to start implementing the API client by create a data model.
+Now you have signed up for the API, you are ready to start implementing the API client by creating a data model.
 
 ## Task 3 - Create API model
 
-The primary objective of this tutorial is to demonstrate how to implement a REST web service client that runs in each of the project heads. To achieve that, you won't be creating a client that makes full use of **TheCatApi** - it will focus on breed search and favorites. The app will also use use simplified models (less fields) where possible.
+The primary objective of this tutorial is to demonstrate how to implement a REST web service client that runs in each project head. To achieve that, you won't create a client that fully uses **TheCatApi** - it will focus on breed searches and favorites. The app will also use simplified models (fewer fields) where possible.
 
-1. To create a folder for the models, in the **Solution Explorer**, right-click the **TheCatApiClient.Shared** project, select **Add**, click **New Folder**, and then name the new folder **Models**.
+1. To create a folder for the models, in the **Solution Explorer**, right-click the **TheCatApiClient** project, select **Add**, click **New Folder**, and then name the new folder **Models**.
 
 1. To add a folder for the data types, right-click the **Models** folder you just created, select **Add**, click **New Folder**, and then name the new folder **DataModels**.
 
-1. To add a folder for the view models types, right-click the **Models** folder, select **Add**, click **New Folder**, and then name the new folder **ViewModels**.
-
-    After creating the folders, the project should look similar to:
-
-    ![Shared project model folders](Assets/how-to-webservice/model-folders.png)
+1. To add a folder for the view model types, right-click the **Models** folder, select **Add**, click **New Folder**, and then name the new folder **ViewModels**.
 
 1. Examine the JSON returned from the breed search you executed earlier:
 
@@ -283,15 +258,15 @@ The primary objective of this tutorial is to demonstrate how to implement a REST
     ```
 
     > [!TIP]
-    > This class is using the **JsonPropertyNameAttribute** from the **System.Text.Json** package to map the lowercase JSON property names to the [PascalCase](https://techterms.com/definition/pascalcase) convention used in C#. To learn more about **System.Text.Json**, you can review the documentation here - [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-how-to).
+    > This class is using the **JsonPropertyNameAttribute** from the **System.Text.Json** package to map the lowercase JSON property names to the [PascalCase](https://techterms.com/definition/pascalcase) convention used in C#. To learn more about **System.Text.Json**, you can review the documentation here - [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://learn.microsoft.com/dotnet/standard/serialization/system-text-json-how-to).
 
 You have now created a simple data model that can be used to deserialize the JSON returned by the breed search API. Next, you will create a service that interacts with the web service API.
 
 ## Task 4 - Create simple GET service for breed search
 
-In this task, you will create a number of classes that demonstrate how to use the **HttpClient** class to interact with a web service. Along the way, you will see some  patterns that may assist in the reuse of the code in additional projects.
+In this task, you will create a number of classes that demonstrate how to use the **HttpClient** class to interact with a web service. Along the way, you will see some patterns that may assist in the reuse of the code in additional projects.
 
-1. To create a folder for the web services, in the **Solution Explorer**, right-click the **TheCatApiClient.Shared** project, select **Add**, click **New Folder**, and then name the new folder **WebServices**.
+1. To create a folder for the web services, in the **Solution Explorer**, right-click the **TheCatApiClient** project, select **Add**, click **New Folder**, and then name the new folder **WebServices**.
 
 1. To add a base class for all the web services, right-click the **WebServices** folder, select **Add** and click **Class...**
 
@@ -338,7 +313,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     Notice that the **_client** variable is declared as **static**. This means there will only be one instance of the **HttpClient** shared by every instance of **WebApiBase** as **HttpClient** is intended to be instantiated once and re-used throughout the life of an application.
 
     > [!TIP]
-    > You can review the Microsoft remarks on **HttpClient** here - [HttpClient Remarks](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netcore-3.1#remarks).
+    > You can review the Microsoft remarks on **HttpClient** here - [HttpClient Remarks](https://learn.microsoft.com/dotnet/api/system.net.http.httpclient#remarks).
 
 1. To initialize the static **_client** variable, locate the comment **// Insert static constructor below here** and replace it with the following code:
 
@@ -371,7 +346,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     }
     ```
 
-    Notice that this method expects the **HttpMethod** representing a GET, DELETE, UPDATE, or POST operation, the string URL and an optional dictionary of headers. In this initial implementation of the **WebApiBase** class, you will consume this from the **GetAsync** method you are about to implement.
+    Notice that this method expects the **HttpMethod** to represent a GET, DELETE, UPDATE, or POST operation, the string URL, and an optional dictionary of headers. In this initial implementation of the **WebApiBase** class, you will consume this from the **GetAsync** method you are about to implement.
 
     > [!NOTE]
     > You will use the header dictionary to supply the authentication key you created earlier.
@@ -397,10 +372,10 @@ In this task, you will create a number of classes that demonstrate how to use th
 
     Notice that this asynchronous method uses the **CreateRequestMessage** you just created. As the returned **HttpRequestMessage** object implements the **IDisposable** interface, the **request** variable is defined within a `using` statement that obtains the resource, executes the statements that you specify, and then automatically disposes of the **HttpRequestMessage** instance.
 
-    The remainder of the method uses the single **HttpClient** instance to send the **request** and `await` a response. If the response is successful, the reponse content is read and returned as a string. If, for some reason, the response does not indicate success, a `null` is returned.
+    The remainder of the method uses the single **HttpClient** instance to send the **request** and `await` a response. If the response is successful, the response content is read and returned as a string. If, for some reason, the response does not indicate success, a `null` is returned.
 
-    > [!Important]
-    > As implementing adequate error handling would add many lines of code, more robust error handling is omitted for clarity. If you are interested in learning more about the considerations for handling errors with **HttpClient**, review the following blog post - [HttpClient - Error handling, a test driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/).
+    > [!IMPORTANT]
+    > As implementing adequate error handling would add many lines of code, more robust error handling is omitted for clarity. If you are interested in learning more about the considerations for handling errors with **HttpClient**, review the following blog post - [HttpClient - Error handling, a test-driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/).
 
 1. You will implement the remaining methods of the **WebApiBase** class in a later task. The current implementation should look similar to:
 
@@ -464,7 +439,7 @@ In this task, you will create a number of classes that demonstrate how to use th
 
     You will now implement the Breed Search API service. This service will inherit from **WebApiBase** and have a single method named **Search** that expects a search string.
 
-1. To add a class for the Breed Search API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
+1. To add a class for the Breed Search API service, in the **TheCatApiClient** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
 1. On the **Add New Item** dialog, in the **Name** field, enter **BreedSearchApi.cs**
 
@@ -508,18 +483,18 @@ In this task, you will create a number of classes that demonstrate how to use th
     > [!IMPORTANT]
     > Replace the `{YOUR-API-KEY}` value with the API key you were sent when you registered with TheCatApi.
 
-    Once the result is returned, it is null-checked and, if not-null, the JSON is deserialized into an enumerable collection of **Breed** instances using the data model you created earlier. If the result is null, then an empty list is returned.
+Once the result is returned, it is null-checked and, if not-null, the JSON is deserialized into an enumerable collection of **Breed** instances using the data model you created earlier. If the result is null, then an empty list is returned.
 
 At this point, you have implemented a simple breed search service. Now, it is time to create the view and view-model that will allow a user to enter a search term and display the results.
 
 ## Task 5 - Create a base view model
 
-In this sample application you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task you will be creating the base view model that will be used in the following task to create the view model for the main page.
+In this sample application, you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task, you will be creating the base view model that will be used in the following task to create the view model for the main page.
 
 > [!TIP]
-> If you want to learn more about MVVM, review the document here - [The Model-View-ViewModel Pattern](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
+> If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
 
-1. To add a base view-model class, in the **TheCatApiClient.Shared** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
+1. To add a base view-model class, in the **TheCatApiClient** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
 
 1. On the **Add New Item** dialog, in the **Name** field, enter **DispatchedBindableBase.cs**
 
@@ -534,8 +509,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using Windows.ApplicationModel.Core;
-    using Windows.UI.Core;
+    using Microsoft.UI.Dispatching;
 
     namespace TheCatApiClient.Models.ViewModels
     {
@@ -559,7 +533,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     ```csharp
     // Insert the event and property below here
     public event PropertyChangedEventHandler PropertyChanged;
-    protected CoreDispatcher Dispatcher => CoreApplication.MainView.Dispatcher;
+    protected DispatcherQueue Dispatcher => DispatcherQueue.GetForCurrentThread();
     ```
 
     The **PropertyChanged** event declaration satisfies the **INotifyPropertyChanged** interface contract, but isn't particularly helpful alone - you will add methods that make it easier to use shortly.
@@ -567,7 +541,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     The **Dispatcher** property is used later to ensure property updates are performed on the UI thread - an essential detail for updating controls in multi-tasking applications.
 
     > [!TIP]
-    > You can learn more about the UI Thread and multi-tasking here - [Keep the UI thread responsive](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
+    > You can learn more about the UI Thread and multi-tasking here - [Keep the UI thread responsive](https://learn.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
 
 1. To add the method that will be used to set a property value and raise the property changed event, locate the comment **// Insert SetProperty below here** and replace it with the following code:
 
@@ -590,10 +564,10 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
 
     The method body then compares the incoming value with the current property value, and returns false if they are equal. This prevents a situation where a property is updated, which updates a control via binding, which then sets the same property with the same value again. Without this guard, the code would continue to loop.
 
-    The **value** is then assigned to the **backingVariable** (updating the variable in the caller). The property changed event is raise (you will add that next) and a true value is returned.
+    The **value** is then assigned to the **backingVariable** (updating the variable in the caller). The property changed event is raised (you will add that next) and a true value is returned.
 
     > [!TIP]
-    > You can learn more about **CallerMemberNameAttribute** here - [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information).
+    > You can learn more about **CallerMemberNameAttribute** here - [Reserved attributes: Determine caller information](https://learn.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information).
 
 1. To add the method that will actually raise the property changed event, locate the comment **// Insert RaisePropertyChanged below here** and replace it with the following code:
 
@@ -607,24 +581,22 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-    This method uses a helper method (added next) to ensure the event is raised on the UI thread. As the code does not await this execution, the compiler would usually display a warning in the assumption that this is a mistake. As it is intentional, the code includes `#pragma` directives that temporarily disable that warning.
+    This method uses a helper method (added next) to ensure the event is raised on the UI thread. As the code does not await this execution, the compiler would usually display a warning with the assumption that this is a mistake. As it is intentional, the code includes `#pragma` directives that temporarily disable that warning.
 
     > [!TIP]
-    > If you want to learn more about lambda expressions, review the document here - [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
+    > If you want to learn more about lambda expressions, review the document here - [Lambda expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
 
 1. To add a helper method that will ensure a callback is executed on the UI thread, locate the comment **// Insert Dispatch below here** and replace it with the following code:
 
     ```csharp
     // Insert DispatchAsync below here
-    protected async Task DispatchAsync(DispatchedHandler callback)
+    protected async Task DispatchAsync(DispatcherQueueHandler callback)
     {
-        // As WASM is currently single-threaded, and Dispatcher.HasThreadAccess always returns false for broader compatibility  reasons
-        // the following code ensures the app always directly invokes the callback on WASM.
         var hasThreadAccess =
     #if __WASM__
-            true;
+        true;
     #else
-            Dispatcher.HasThreadAccess;
+        Dispatcher.HasThreadAccess;
     #endif
 
         if (hasThreadAccess)
@@ -633,15 +605,21 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
         }
         else
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, callback);
+            var completion = new TaskCompletionSource();
+            Dispatcher.TryEnqueue(() =>
+            {
+                callback();
+                completion.SetResult();
+            });
+            await completion.Task; 
         }
     }
     ```
 
     > [!NOTE]
-    > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `Dispatcher.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
+    > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `DispatcherQueue.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
 
-    In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
+    In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **DispatcherQueue.TryEnqueue** method is used to execute the callback on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
 
 1. Once complete the base class will look similar to the following:
 
@@ -651,15 +629,14 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using Windows.ApplicationModel.Core;
-    using Windows.UI.Core;
+    using Microsoft.UI.Dispatching;
 
     namespace TheCatApiClient.Models.ViewModels
     {
         public abstract class DispatchedBindableBase : INotifyPropertyChanged
         {
             // Insert variables below here
-            protected CoreDispatcher Dispatcher => CoreApplication.MainView.Dispatcher;
+            protected DispatcherQueue Dispatcher => DispatcherQueue.GetForCurrentThread();
 
             // Insert variables below here
             public event PropertyChangedEventHandler PropertyChanged;
@@ -683,17 +660,29 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
 
-            // Insert DispatchAsync below here
-            protected async Task DispatchAsync(DispatchedHandler callback)
+        // Insert DispatchAsync below here
+        protected async Task DispatchAsync(DispatcherQueueHandler callback)
+        {
+            var hasThreadAccess =
+        #if __WASM__
+            true;
+        #else
+            Dispatcher.HasThreadAccess;
+        #endif
+
+            if (hasThreadAccess)
             {
-                if (Dispatcher.HasThreadAccess)
+                callback.Invoke();
+            }
+            else
+            {
+                var completion = new TaskCompletionSource();
+                Dispatcher.TryEnqueue(() =>
                 {
-                    callback.Invoke();
-                }
-                else
-                {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, callback);
-                }
+                    callback();
+                    completion.SetResult();
+                });
+                await completion.Task; 
             }
         }
     }
@@ -701,9 +690,9 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
 
 ## Task 6 - Build the search UI view model
 
-In this task you will build the view-model that implements a simple breed search feature using the base class and web service client you just implemented.
+In this task, you will build the view-model that implements a simple breed search feature using the base class and web service client you just implemented.
 
-1. In the **TheCatApiClient.Shared** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
+1. In the **TheCatApiClient** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
 
 1. On the **Add New Item** dialog, in the **Name** field, enter **MainViewModel.cs**
 
@@ -751,8 +740,8 @@ In this task you will build the view-model that implements a simple breed search
 
     The final variable, **_breedSearchApi**, holds a reference to an instance of the **BreedSearchApi** you created earlier.
 
-    > [!TIP] 
-    > You can learn more about **ObservableCollection** and its events here - [ObservableCollection<T> Class](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=netcore-3.1)
+    > [!TIP]
+    > You can learn more about **ObservableCollection** and its events here - [ObservableCollection<T> Class](https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
 
 1. To add the properties that will be used in XAML bindings, locate the comment **// Insert properties below here** and replace it with the following code:
 
@@ -881,11 +870,11 @@ You have now built the view-model for the Main Page. Next, it is time to build t
 
 ## Task 7 - Add breed search to the main view
 
-In this task you will create the XAML for the UI and implement the bindings for the **MainViewModel**. When the UWP version of the app is running, the UI will look similar to this:
+In this task you will create the XAML for the UI and implement the bindings for the **MainViewModel**. When the Windows version of the app is running, the UI will look similar to this:
 
-![UWP Search UI preview](Assets/how-to-webservice/uwp-ui-preview.png)
+![Windows app Search UI preview](Assets/how-to-webservice/uwp-ui-preview.png)
 
-1. In the **Solution Explorer**, in the **TheCatApiClient.Shared** project, open the **MainPage.xaml** file.
+1. In the **Solution Explorer**, in the **TheCatApiClient** project, open the **MainPage.xaml** file.
 
 1. If the **MainPage.xaml** file has opened in the **Design** view, switch to the **XAML** view.
 
@@ -898,8 +887,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:TheCatApiClient"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d"
@@ -939,12 +928,12 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     This page utilizes a simple grid layout with 6 rows to separate the various areas of the UI and will define an overlay that will appear when the app is busy retrieving data from the service.
 
-    Notice that the XAML includes namespace definitions for the **ViewModels** and **DataModels**, as well as the **Uno.IO.Toolkit**:
+    Notice that the XAML includes namespace definitions for the **ViewModels** and **DataModels**, as well as the **Uno.UI.Toolkit**:
 
     ```xml
     <Page
         ...
-        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         ...
@@ -965,7 +954,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     ```xml
     <!-- ROW 1 - Search Box -->
-    <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find" 
+    <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find"
                     Name="BreedSearchBox"
                     Width="300" Margin="4,20" HorizontalAlignment="Left"
                     Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
@@ -978,7 +967,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     ```xml
     <!-- ROW 2 - Search Results -->
-    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4" 
+    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4"
             SelectionMode="None">
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="datamodels:Breed">
@@ -1011,10 +1000,10 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     Notice that this grid is displayed from row 1 and spans 4 rows. As this grid is defined last, it will appear on top of the other controls, block click/touch interactions with the underlying controls as well showing a semi-opaque message that the app is **Downloading data**.
 
-    ![UWP Search UI preview](Assets/how-to-webservice/uwp-ui-busy.png)
+    ![Windows app Search UI preview](Assets/how-to-webservice/uwp-ui-busy.png)
 
-    > [!Note]
-    > You would typically use a **ProgressRing** here, but in a effort to keep the UI as simple as possible, this approach was taken.
+    > [!NOTE]
+    > You would typically use a **ProgressRing** here, but in an effort to keep the UI as simple as possible, this approach was taken.
 
 1. When you have completed adding the XAML, it should look similar to this.
 
@@ -1025,9 +1014,9 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:TheCatApiClient"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
-        xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
+        xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -1048,14 +1037,14 @@ In this task you will create the XAML for the UI and implement the bindings for 
             <TextBlock Text="The Cat API Client" Style="{StaticResource HeaderTextBlockStyle}" />
 
             <!-- ROW 1 - Search Box -->
-            <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find" 
+            <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find"
                             Name="BreedSearchBox"
                             Width="300" Margin="4,20" HorizontalAlignment="Left"
                             Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
                             QuerySubmitted="BreedSearchBox_QuerySubmitted" />
 
             <!-- ROW 2 - Search Results -->
-            <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4" 
+            <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4"
                   SelectionMode="None">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="datamodels:Breed">
@@ -1104,9 +1093,9 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     The **Downloading data...** UI should be shown and then the results should be populated. You should be able to scroll the results and select one (nothing will happen yet).
 
-    ![UWP Search UI preview](Assets/how-to-webservice/uwp-ui-preview.png)
+    ![Windows app Search UI preview](Assets/how-to-webservice/uwp-ui-preview.png)
 
-1. When you have finished testing the UWP app, close it.
+1. When you have finished testing the Windows app, close it.
 
 1. To test the app in Wasm, in the **Solution Explorer**, right-click the **TheCatApiClient.Wasm** project and select **Set as Startup project**.
 
@@ -1154,7 +1143,7 @@ You will start by adding the data models.
     using System;
     using System.Text.Json.Serialization;
 
-    namespace TheCatApiClient.Shared.Models.DataModels
+    namespace TheCatApiClient.Models.DataModels
     {
         public partial class CatImage
         {
@@ -1179,7 +1168,7 @@ You will start by adding the data models.
     using System;
     using System.Text.Json.Serialization;
 
-    namespace TheCatApiClient.Shared.Models.DataModels
+    namespace TheCatApiClient.Models.DataModels
     {
         public partial class Favorite
         {
@@ -1210,7 +1199,7 @@ You will start by adding the data models.
     using System;
     using System.Text.Json.Serialization;
 
-    namespace TheCatApiClient.Shared.Models.DataModels
+    namespace TheCatApiClient.Models.DataModels
     {
         public partial class FavoriteImage
         {
@@ -1229,7 +1218,7 @@ You will start by adding the data models.
     using System;
     using System.Text.Json.Serialization;
 
-    namespace TheCatApiClient.Shared.Models.DataModels
+    namespace TheCatApiClient.Models.DataModels
     {
         public partial class Response
         {
@@ -1316,7 +1305,7 @@ You will start by adding the data models.
 
     Now you will add the additional services. The first service you will add is the **ImageApi**. If you recall, if the user clicks on a breed, this service will be used to retrieve a list of images of that breed.
 
-1. To add a class for the Image API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
+1. To add a class for the Image API service, in the **TheCatApiClient** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
 1. On the **Add New Item** dialog, in the **Name** field, enter **ImageApi.cs**
 
@@ -1327,9 +1316,9 @@ You will start by adding the data models.
     using System.Net;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using TheCatApiClient.Shared.Models.DataModels;
+    using TheCatApiClient.Models.DataModels;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public class ImageApi : WebApiBase
         {
@@ -1376,7 +1365,7 @@ You will start by adding the data models.
     > [!TIP]
     > You can review the images service documentation here - [/images](https://docs.thecatapi.com/api-reference/images/)
 
-1. To add a class for the Favorites API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
+1. To add a class for the Favorites API service, in the **TheCatApiClient** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
 1. On the **Add New Item** dialog, in the **Name** field, enter **ImageApi.cs**
 
@@ -1386,9 +1375,9 @@ You will start by adding the data models.
     using System.Collections.Generic;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using TheCatApiClient.Shared.Models.DataModels;
+    using TheCatApiClient.Models.DataModels;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public class FavoritesApi : WebApiBase
         {
@@ -1440,7 +1429,7 @@ You will start by adding the data models.
     }
     ```
 
-    These methods are very similar to the methods you have implemented earlier - **GetAll** returns a collection of the users **Favorite** instances, whereas **Get** returns a single **Favorite** by its ID.
+    These methods are very similar to the methods you implemented earlier - **GetAll** returns a collection of the users **Favorite** instances, whereas **Get** returns a single **Favorite** by its ID.
 
     > [!TIP]
     > You can review the favorites service documentation here - [/favorites](https://docs.thecatapi.com/api-reference/favourites/)
@@ -1499,9 +1488,9 @@ You will start by adding the data models.
     using System.Collections.Generic;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using TheCatApiClient.Shared.Models.DataModels;
+    using TheCatApiClient.Models.DataModels;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public class FavoritesApi : WebApiBase
         {
@@ -1667,7 +1656,6 @@ In this task, you will add the favorites capability to the Main view-model.
 
     You should notice the use of the `.ConfigureAwait(false)` code throughout to ensure the UI is not blocked. You will also notice the use of the **DispatchAsync** helper to ensure the **CollectionChanged** event raised by the insertion is raised on the UI thread so any bound control updates correctly.
 
-
 1. Finally, to add support for deleting a favorite, locate the **// Insert DeleteFavorite below here** comment and replace it with the following code:
 
     ```csharp
@@ -1699,9 +1687,9 @@ You have now updated the view-model - the final task will have you update the UI
 
 ## Task 10 - Add favorites to the main view
 
-In this final task you will bring together the new **FavoritesApi** with the updated **MainViewModel** to add a list of favorites to the UI.
+In this final task, you will bring together the new **FavoritesApi** with the updated **MainViewModel** to add a list of favorites to the UI.
 
-1. In the **Solution Explorer**, in the **TheCatApiClient.Shared** project, open the **MainPage.xaml** file.
+1. In the **Solution Explorer**, in the **TheCatApiClient** project, open the **MainPage.xaml** file.
 
 1. If the **MainPage.xaml** file has opened in the **Design** view, switch to the **XAML** view.
 
@@ -1709,7 +1697,7 @@ In this final task you will bring together the new **FavoritesApi** with the upd
 
     ```xml
     <!-- ROW 2 - Search Results -->
-    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4" 
+    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4"
             SelectionMode="None"
             IsItemClickEnabled="True"
             ItemClick="SearchResults_ItemClick">
@@ -1732,7 +1720,7 @@ In this final task you will bring together the new **FavoritesApi** with the upd
 
     ```xml
     <!-- ROW 4 - Favorites -->
-    <GridView Grid.Row="4" ItemsSource="{x:Bind ViewModel.Favorites, Mode=OneWay}" Margin="4" 
+    <GridView Grid.Row="4" ItemsSource="{x:Bind ViewModel.Favorites, Mode=OneWay}" Margin="4"
             SelectionMode="None"
             Name="Favorites"
             IsItemClickEnabled="True"
@@ -1770,37 +1758,37 @@ In this final task you will bring together the new **FavoritesApi** with the upd
 
     These methods are very straightforward - they merely pass on the clicked item to the view-model.
 
-1. You have now completed the addition of favorites to the client. In the **Solution Explorer**, right-click the **TheCatApiClient.UWP** project and select **Set as Startup project**.
+1. You have now completed the addition of favorites to the client. In the **Solution Explorer**, right-click the **TheCatApiClient.Windows** project and select **Set as Startup project**.
 
-1. To run the UWP application, press **F5**.
+1. To run the Windows application, press **F5**.
 
 1. In the application, in the **Search for breed** search box, enter **S** and click the search icon.
 
     The **Downloading data...** UI should be shown and then the results should be populated. You should be able to scroll the results and select one (nothing will happen yet).
 
-    ![UWP Search UI preview](Assets/how-to-webservice/uwp-ui-preview.png)
+    ![Windows app Search UI preview](Assets/how-to-webservice/uwp-ui-preview.png)
 
 1. In the search results, click **Abyssinian** and you should see an image of a cat added to the **Favorites** list.
 
-    ![UWP Search UI preview](Assets/how-to-webservice/client-with-favorite.png)
+    ![Windows app Search UI preview](Assets/how-to-webservice/client-with-favorite.png)
 
 1. Repeat the above, adding images for other breeds.
 
 1. In the **Favorites** list, click an image and you should see it be removed.
 
-1. Ensure you have one or more images remaining in your **Favorites** list and exit the UWP application.
+1. Ensure you have one or more images remaining in your **Favorites** list and exit the Windows application.
 
 1. To test the app in Wasm, in the **Solution Explorer**, right-click the **TheCatApiClient.Wasm** project and select **Set as Startup project**.
 
 1. To run the application, press **F5**.
 
-    Visual Studio will open a browser and display the application. You should see the same favorites you had listed in the UWP app.
+    Visual Studio will open a browser and display the application. You should see the same favorites you had listed in the Windows app.
 
-1. Search for additional breeds and add and remove favorites - you should see the same functionality as the UWP app.
+1. Search for additional breeds and add and remove favorites - you should see the same functionality as the Windows app.
 
-1. Try the app on the other platforms. Below is an image of app running on the iPhone and Android simulators.
+1. Try the app on other platforms. Below is an image of the app running on iPhone and Android simulators.
 
-    ![app running on iphone and android simulators](Assets/how-to-webservice/favorites-on-phone.png)
+    ![Application running on iPhone and Android simulators](Assets/how-to-webservice/favorites-on-phone.png)
 
 ## Summary
 
@@ -1813,7 +1801,7 @@ In this how-to, you built a multi-platform application that leverages web servic
 * Leveraged the services in a view-model
   * You built a base class that uses the dispatcher to ensure bound properties are updated on the UI thread
 * Built a XAML UI that utilizes the view-model
-* Tested the application in UWP and WASM (and optionally on iOS and Android)
+* Tested the application in Windows and WASM (and optionally on iOS and Android)
 
 The full source code for this tutorial is available here - [Tutorial Source Code - TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 
@@ -1825,18 +1813,18 @@ The full source code for this tutorial is available here - [Tutorial Source Code
   * [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples)
   * [Tutorial Source Code - TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 * Microsoft Documentation
-  * [HttpClient class](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netcore-3.1)
-  * [REST Client tutorial](https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/console-webapiclient)
-  * [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-how-to)
-  * [HttpClient Remarks](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netcore-3.1#remarks)
+  * [HttpClient class](https://learn.microsoft.com/dotnet/api/system.net.http.httpclient)
+  * [REST Client tutorial](https://learn.microsoft.com/dotnet/csharp/tutorials/console-webapiclient)
+  * [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://learn.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
+  * [HttpClient Remarks](https://learn.microsoft.com/dotnet/api/system.net.http.httpclient#remarks)
   * [HttpClient - Error handling, a test driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/)
-  * [The Model-View-ViewModel Pattern](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/enterprise-application-patterns/mvvm)
-  * [Keep the UI thread responsive](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
-  * [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information)
-  * [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
-  * [ObservableCollection<T> Class](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=netcore-3.1)
+  * [The Model-View-ViewModel Pattern](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm)
+  * [Keep the UI thread responsive](https://learn.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
+  * [Reserved attributes: Determine caller information](https://learn.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information)
+  * [Lambda expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
+  * [ObservableCollection<T> Class](https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
 * The Cat API Documentation
-  * [Key Signup](https://thecatapi.com/signup)
+  * [Key sign-up](https://thecatapi.com/signup)
   * [API documentation](https://docs.thecatapi.com/)
   * [GET /breeds/search](https://docs.thecatapi.com/api-reference/breeds/breeds-search)
   * [/images](https://docs.thecatapi.com/api-reference/images/)

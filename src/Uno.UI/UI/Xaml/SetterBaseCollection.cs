@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public sealed partial class SetterBaseCollection : DependencyObjectCollection<SetterBase>
 	{
@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
 
 		}
 
-		internal SetterBaseCollection(DependencyObject parent, bool isAutoPropertyInheritanceEnabled) 
+		internal SetterBaseCollection(DependencyObject parent, bool isAutoPropertyInheritanceEnabled)
 			: base(parent, isAutoPropertyInheritanceEnabled: false)
 		{
 		}
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnAdded(setterBase);
 
-			if(setterBase is Setter setter && setter.Target is null)
+			if (setterBase is Setter setter && setter.Target is null)
 			{
 				setterBase.Seal();
 			}

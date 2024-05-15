@@ -4,6 +4,21 @@
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					mc:Ignorable="d">
+
+	<ResourceDictionary.ThemeDictionaries>
+
+		<ResourceDictionary x:Key="Light">
+			<SolidColorBrush x:Key="LoadedTestPrimaryBrush"
+							 Color="MediumPurple" />
+		</ResourceDictionary>
+
+		<ResourceDictionary x:Key="Default">
+			<SolidColorBrush x:Key="LoadedTestPrimaryBrush"
+							 Color="Purple" />
+		</ResourceDictionary>
+
+	</ResourceDictionary.ThemeDictionaries>
+
 	<SolidColorBrush x:Key="ResourcesInTemplateTestBrush"
 					 Color="Red" />
 	<Style TargetType="local:Inner_ThemeResource_Control">

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
 
@@ -179,6 +181,16 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_RoundingAlgorithm_Is_None_Then_Should_Throw()
 		{
 			var sut = new SignificantDigitsNumberRounder();
+
+			try
+			{
+				sut.RoundingAlgorithm = RoundingAlgorithm.None;
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nvalue", ex.Message);
+			}
+
 			Assert.ThrowsException<ArgumentException>(() => sut.RoundingAlgorithm = RoundingAlgorithm.None);
 		}
 
@@ -186,6 +198,16 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_SignificantDigits_Is_Zero_Then_Should_Throw()
 		{
 			var sut = new SignificantDigitsNumberRounder();
+
+			try
+			{
+				sut.SignificantDigits = 0;
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nvalue", ex.Message);
+			}
+
 			Assert.ThrowsException<ArgumentException>(() => sut.SignificantDigits = 0);
 		}
 	}

@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.UI;
 using FluentAssertions;
-using Microsoft.Toolkit.Uwp.UI.Lottie;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Threading;
+
+#if HAS_UNO_WINUI
+using CommunityToolkit.WinUI.Lottie;
+#else
+using Microsoft.Toolkit.Uwp.UI.Lottie;
+#endif
 
 namespace Uno.UI.Tests.Lottie
 {
@@ -16,13 +21,13 @@ namespace Uno.UI.Tests.Lottie
 	public class Given_ThemableLottieVisualSource
 	{
 		[TestMethod]
-		public async Task ThemableLottieVisualSource_SimpleLoading()
+		public void ThemableLottieVisualSource_SimpleLoading()
 		{
 			var sut = new ThemableLottieVisualSource();
 
 			var results = new List<string>();
 
-			await sut.LoadForTests(GetStream(), "cache-key", Callback);
+			sut.LoadForTests(GetStream(), "cache-key", Callback);
 
 			void Callback(string animationjson, string cachekey)
 			{
@@ -33,11 +38,11 @@ namespace Uno.UI.Tests.Lottie
 		}
 
 		[TestMethod]
-		public async Task ThemableLottieVisualSource_ValueSet_BeforeLoading()
+		public void ThemableLottieVisualSource_ValueSet_BeforeLoading()
 		{
 			var reference = new ThemableLottieVisualSource();
 
-			await reference.LoadForTests(GetStream(), "cache-key", (x, y) => { });
+			reference.LoadForTests(GetStream(), "cache-key", (x, y) => { });
 
 			var sut = new ThemableLottieVisualSource();
 
@@ -47,7 +52,7 @@ namespace Uno.UI.Tests.Lottie
 
 			var results = new List<string>();
 
-			await sut.LoadForTests(GetStream(), "cache-key", Callback);
+			sut.LoadForTests(GetStream(), "cache-key", Callback);
 
 			void Callback(string animationjson, string cachekey)
 			{
@@ -62,17 +67,17 @@ namespace Uno.UI.Tests.Lottie
 		}
 
 		[TestMethod]
-		public async Task ThemableLottieVisualSource_ValueSet_AfterLoading()
+		public void ThemableLottieVisualSource_ValueSet_AfterLoading()
 		{
 			var reference = new ThemableLottieVisualSource();
 
-			await reference.LoadForTests(GetStream(), "cache-key", (x, y) => { });
+			reference.LoadForTests(GetStream(), "cache-key", (x, y) => { });
 
 			var sut = new ThemableLottieVisualSource();
 
 			var results = new List<string>();
 
-			await sut.LoadForTests(GetStream(), "cache-key", Callback);
+			sut.LoadForTests(GetStream(), "cache-key", Callback);
 
 			void Callback(string animationjson, string cachekey)
 			{

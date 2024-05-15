@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public static class ScrollViewerExtensions
 	{
@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 		private static ScrollViewer Padding(this ScrollViewer sv, Thickness padding)
 		{
 
-#if !NET461
+#if !IS_UNIT_TESTS
 			sv.Padding = padding;
 #endif
 

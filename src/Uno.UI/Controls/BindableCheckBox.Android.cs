@@ -5,11 +5,11 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Widget;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
-    public partial class BindableCheckBox : AndroidX.AppCompat.Widget.AppCompatCheckBox, INotifyPropertyChanged, DependencyObject
+	public partial class BindableCheckBox : AndroidX.AppCompat.Widget.AppCompatCheckBox, INotifyPropertyChanged, DependencyObject
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 

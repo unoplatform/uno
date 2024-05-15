@@ -1,36 +1,32 @@
-﻿#if !NET461 && !UNO_REFERENCE_API
-using Uno.Extensions;
-using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Disposables;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.UI;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Foundation;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
-
-using Windows.UI;
+using Uno.UI;
+using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Image : FrameworkElement
 	{
 		/// <summary>
-		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree. 
-		/// This should generally be left false, but may be required in cases that the image is rapidly unloaded and reloaded, or that 
+		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree.
+		/// This should generally be left false, but may be required in cases that the image is rapidly unloaded and reloaded, or that
 		/// OnUnloaded/OnDetachedFromWindow is improperly called when the view isn't really being removed, and performance/stability is affected.
 		/// </summary>
-		public bool PreserveStateOnUnload { get; set; } = false;
+		public bool PreserveStateOnUnload { get; set; }
 
 		private readonly static IEventProvider _imageTrace = Tracing.Get(TraceProvider.Id);
 
@@ -38,7 +34,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
 		//Set just as image source is going to be set (which may be dispatched)
-		private ImageSource _openedImage;
+		private ImageSource _openedSource;
 
 		//Set after image source fetch has successfully resolved
 		private ImageSource _successfullyOpenedImage;
@@ -46,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool? _hasFiniteBounds;
 		private Size _layoutSize;
 
-		private NativeImage _native;
+		private NativeImageView _nativeImageView;
 
 		public static new class TraceProvider
 		{
@@ -60,118 +56,132 @@ namespace Windows.UI.Xaml.Controls
 			public const int Image_SetImageStop = 6;
 		}
 
-		public event RoutedEventHandler ImageOpened;
-		public event ExceptionRoutedEventHandler ImageFailed;
-
-		private Color? _monochromeColor;
-
-		/// <summary>
-		/// When set, the resulting image is tentatively converted to Monochrome.
-		/// </summary>
-		internal Color? MonochromeColor
-		{
-			get => _monochromeColor;
-			set
-			{
-				_monochromeColor = value;
-				// Force loading the image.
-				OnSourceChanged(Source, forceReload: true);
-			}
-		}
-
-		protected virtual void OnImageFailed(ImageSource imageSource)
+		private protected void OnImageFailed(ImageSource imageSource, Exception exception)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug(this.ToString() + " Image failed to open");
+				if (exception is null)
+				{
+					this.Log().Debug($"Image '{this}' failed to open");
+				}
+				else
+				{
+					this.Log().Debug($"Image '{this}' failed to open: {exception}");
+				}
 			}
 
-			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download"));
+#if !__SKIA__ && !__WASM__ // TODO: Have consistent handling on Wasm and Skia.
+			if (imageSource is BitmapImage bitmapImage && exception is not null)
+			{
+				bitmapImage.RaiseImageFailed(exception);
+			}
+#endif
+
+			if (exception is null)
+			{
+				ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download"));
+			}
+			else
+			{
+				ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download: " + exception.ToString()));
+			}
 		}
 
-		protected virtual void OnImageOpened(ImageSource imageSource)
+		private void OnImageOpened(ImageSource imageSource)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " Image opened successfully");
 			}
 
+#if !__SKIA__ && !__WASM__ // TODO: Have consistent handling on Wasm and Skia.
+			if (imageSource is BitmapImage bitmapImage)
+			{
+				bitmapImage.RaiseImageOpened();
+			}
+#endif
+
 			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			_successfullyOpenedImage = imageSource;
 		}
 
-#region Stretch
-		public Stretch Stretch
-		{
-			get { return (Stretch)this.GetValue(StretchProperty); }
-			set { this.SetValue(StretchProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for Stretch.  This enables animation, styling, binding, etc...
-		public static DependencyProperty StretchProperty { get ; } =
-			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) =>
-			((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
-
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
-#endregion
-
-#region Source
-		public ImageSource Source
-		{
-			get { return (ImageSource)this.GetValue(SourceProperty); }
-			set { this.SetValue(SourceProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SourceProperty { get ; } =
-			DependencyProperty.Register(
-				"Source",
-				typeof(ImageSource),
-				typeof(Image),
-				new FrameworkPropertyMetadata(
-					defaultValue: null,
-					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.NewValue))
-				);
 
 		private void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
-			if (newValue is WriteableBitmap wb)
+			if (Source is null)
+			{
+				_sourceDisposable.Disposable = null;
+			}
+			else if (newValue is WriteableBitmap wb)
 			{
 				wb.Invalidated += OnInvalidated;
 				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
 
-				void OnInvalidated(object sdn, EventArgs args)
+				void OnInvalidated()
 				{
-					_openedImage = null;
+					_openedSource = null;
 					TryOpenImage();
 				}
 			}
+			else if (newValue is SvgImageSource svgImageSource)
+			{
+				var compositeDisposable = new CompositeDisposable();
+				compositeDisposable.Add(
+					Source?.RegisterDisposablePropertyChangedCallback(
+						SvgImageSource.UriSourceProperty, (o, e) =>
+						{
+							if (!object.Equals(e.OldValue, e.NewValue))
+							{
+								_openedSource = null;
+								TryOpenImage(true);
+							}
+						}
+				));
+				svgImageSource.StreamLoaded += ForceReloadSource;
+				compositeDisposable.Add(() => svgImageSource.StreamLoaded -= ForceReloadSource);
+
+				_sourceDisposable.Disposable = compositeDisposable;
+			}
 			else
 			{
-				_sourceDisposable.Disposable =
+				var compositeDisposable = new CompositeDisposable();
+				compositeDisposable.Add(
 					Source?.RegisterDisposablePropertyChangedCallback(
 						BitmapImage.UriSourceProperty, (o, e) =>
 						{
 							if (!object.Equals(e.OldValue, e.NewValue))
 							{
-								_openedImage = null;
+								_openedSource = null;
 								TryOpenImage();
 							}
 						}
-					);
+					));
+
+				if (Source is BitmapSource bitmapSource)
+				{
+					bitmapSource.StreamLoaded += ForceReloadSource;
+					compositeDisposable.Add(() => bitmapSource.StreamLoaded -= ForceReloadSource);
+				}
+
+				_sourceDisposable.Disposable = compositeDisposable;
 			}
 
 			TryOpenImage(forceReload);
 		}
 
-#endregion
+		private void ForceReloadSource(object sender, EventArgs args)
+		{
+			_openedSource = null;
+			TryOpenImage(true);
+		}
 
 		internal override bool IsViewHit() => Source?.HasSource() ?? false;
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			TryOpenImage();
+			OnSourceChanged(Source, false);
 		}
 
 		private protected override void OnUnloaded()
@@ -185,10 +195,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_imageFetchDisposable.Disposable = null;
-			if (_successfullyOpenedImage != _openedImage)
+			_sourceDisposable.Disposable = null;
+			if (_successfullyOpenedImage != _openedSource)
 			{
 				//Dispatched image fetch did not resolve, so we force it to be rescheduled next time TryOpenImage is called
-				_openedImage = null;
+				_openedSource = null;
 			}
 		}
 
@@ -209,25 +220,19 @@ namespace Windows.UI.Xaml.Controls
 			return CanDowngradeLayoutRequest && !double.IsNaN(Width) && !double.IsNaN(Height);
 		}
 
-		private void Dispatch(Func<CancellationToken, Task> handler)
+		private async void Execute(Func<CancellationToken, Task> handler)
 		{
 			var cd = new CancellationDisposable();
-
-			Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
-				() => handler(cd.Token)
-			).AsTask(cd.Token);
-
 			_imageFetchDisposable.Disposable = cd;
-		}
 
-		private void Execute(Func<CancellationToken, Task> handler)
-		{
-			var cd = new CancellationDisposable();
-
-			var dummy = handler(cd.Token);
-
-			_imageFetchDisposable.Disposable = cd;
+			try
+			{
+				await handler(cd.Token);
+			}
+			catch (Exception ex)
+			{
+				this.Log().LogError("Failed executing async operation.", ex);
+			}
 		}
 
 		/// <summary>
@@ -260,14 +265,8 @@ namespace Windows.UI.Xaml.Controls
 			return base.ToString() + ";Source={0}".InvariantCultureFormat(Source?.ToString() ?? "[null]");
 		}
 
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new ImageAutomationPeer(this);
-		}
-		
 		protected override Size MeasureOverride(Size availableSize)
 		{
-
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(ToString() + $" measuring with availableSize={availableSize}");
@@ -276,6 +275,11 @@ namespace Windows.UI.Xaml.Controls
 			SetTargetImageSize(availableSize);
 
 			var size = InnerMeasureOverride(availableSize);
+
+			if (_svgCanvas is not null)
+			{
+				_svgCanvas.Measure(availableSize);
+			}
 
 			return size;
 		}
@@ -346,7 +350,7 @@ namespace Windows.UI.Xaml.Controls
 			// Example: Horizontal=Stretch, Vertical=Top, Stretch=Uniform, SourceWidth=200, SourceHeight=100 (AspectRatio=2)
 			//			This Image is Inside a StackPanel (infinite height and width=300).
 			//			When being measured, the height can be calculated using the aspect ratio of the source image and the available width.
-			//			That means the Measure should return 
+			//			That means the Measure should return
 			//						height = (KnownWidth=300) / (AspectRatio=2) = 150
 			//			...and not	height = (SourceHeight=100) = 100
 			if (isWidthDefined)
@@ -428,7 +432,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				if (_openedImage != null)
+				if (_openedSource != null)
 				{
 					var renderedSize = finalSize.LogicalToPhysicalPixels();
 					var loadedSize = SourceImageSize.LogicalToPhysicalPixels();
@@ -441,6 +445,25 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
+#if __IOS__ || __MACOS__ || __ANDROID__
+			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
+			{
+#if __ANDROID__
+				ClipBounds = null;
+#endif
+				// Calculate the resulting space required on screen for the image;
+				var containerSize = this.MeasureSource(finalSize, svgImageSource.SourceSize);
+
+				// Calculate the position of the image to follow stretch and alignment requirements
+				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
+				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
+
+				_svgCanvas.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
+				_svgCanvas.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
+				return finalSize;
+			}
+#endif
 
 #if __ANDROID__
 			// Images on UWP are always clipped to the control's boundaries.
@@ -462,9 +485,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			// 
-			base.ArrangeOverride(finalSize);
-			return finalSize;
+			return ArrangeFirstChild(finalSize);
 		}
 	}
 }

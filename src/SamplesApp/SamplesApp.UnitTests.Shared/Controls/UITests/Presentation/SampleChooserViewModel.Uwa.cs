@@ -1,4 +1,4 @@
-﻿#if NETFX_CORE
+﻿#if WINAPPSDK
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,17 +15,19 @@ using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
+using System.Runtime.InteropServices;
 
-#if NETFX_CORE
-using Windows.UI.Xaml;
+
+#if WINAPPSDK
+using Microsoft.UI.Xaml;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using Windows.Storage;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
-using FrameworkElement = Windows.UI.Xaml.IFrameworkElement;
+using FrameworkElement = Microsoft.UI.Xaml.IFrameworkElement;
 #endif
 
 namespace SampleControl.Presentation
@@ -36,7 +38,7 @@ namespace SampleControl.Presentation
 		public void PrintViewHierarchy(FrameworkElement c, StringBuilder sb, int level = 0)
 		{
 			var children = c.GetChildren().ToImmutableArray();
-            for (int i = 0; i < children.Length; i++)
+			for (int i = 0; i < children.Length; i++)
 			{
 				var v = children[i];
 				var vElement = (FrameworkElement)v;
@@ -60,79 +62,20 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		private async Task<StorageFolder> GetStorageFolderFromNameOrCreate(CancellationToken ct, string folderName)
 		{
-			var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(
-				folderName,
-				Windows.Storage.CreationCollisionOption.OpenIfExists
-			).AsTask(ct);
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"Output folder for tests: {folder.Path}");
-			}
+			var root = ApplicationData.Current.LocalFolder;
+			var folder = await root.CreateFolderAsync(folderName,
+				CreationCollisionOption.OpenIfExists
+				).AsTask(ct);
+			return folder;
 		}
 
-		private static async Task GenerateBitmap(CancellationToken ct, string folderName, string fileName, FrameworkElement content)
-		{
-			var parent = content.Parent as FrameworkElement;
+		[DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+		private static extern int GetDpiForWindow(IntPtr hwnd);
 
-			if (parent != null)
-			{
-				parent.MinWidth = 400;
-				parent.MinHeight = 400;
-			}
-
-			content.MinWidth = 400;
-			content.MinHeight = 400;
-
-			var border = content.FindFirstChild<Border>();
-
-			if (border != null)
-			{
-				border.Background = new SolidColorBrush(Colors.White);
-			}
-
-			Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap bmp = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
-
-			await bmp.RenderAsync(content.Parent as FrameworkElement).AsTask(ct);
-
-			content.DataContext = null;
-
-			var pixels = await bmp.GetPixelsAsync().AsTask(ct);
-
-			var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(
-				folderName,
-				Windows.Storage.CreationCollisionOption.OpenIfExists
-			).AsTask(ct);
-
-			if (folder == null)
-			{
-				folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(folderName).AsTask(ct);
-			}
-
-			var file = await folder.CreateFileAsync(
-				fileName,
-				Windows.Storage.CreationCollisionOption.ReplaceExisting
-			).AsTask(ct);
-
-			using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite).AsTask(ct))
-			{
-				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream).AsTask(ct);
-
-				encoder.SetPixelData(
-					BitmapPixelFormat.Bgra8,
-					BitmapAlphaMode.Ignore,
-					(uint)bmp.PixelWidth,
-					(uint)bmp.PixelHeight,
-					DisplayInformation.GetForCurrentView().RawDpiX,
-					DisplayInformation.GetForCurrentView().RawDpiY,
-					pixels.ToArray()
-				);
-
-				await encoder.FlushAsync().AsTask(ct);
-			}
-		}
+		private static int GetDpi()
+			=> GetDpiForWindow(WinRT.Interop.WindowNative.GetWindowHandle(SamplesApp.App.MainWindow));
 	}
 }
 #endif

@@ -49,12 +49,16 @@ namespace Uno.Foundation.Interop
 		/// </summary>
 		public bool IsAlive { get; private set; }
 
+		internal long JSHandle => _jsHandle;
+
+		internal nint ManagedHandle => _managedHandle;
+
 		/// <summary>
 		/// Metadata about the marshaled object
 		/// </summary>
 		public IJSObjectMetadata Metadata => _metadata;
 
-		internal string GetNativeInstance() 
+		internal string GetNativeInstance()
 			=> _metadata.GetNativeInstance(_managedHandle, _jsHandle);
 
 		internal bool TryGetManaged(out object target)

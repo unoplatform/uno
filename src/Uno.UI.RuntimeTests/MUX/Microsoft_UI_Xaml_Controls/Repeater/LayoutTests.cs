@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,10 +10,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 using Common;
 
 #if USING_TAEF
@@ -25,19 +25,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using FlowLayoutLineAlignment = Microsoft.UI.Xaml.Controls.FlowLayoutLineAlignment;
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
-using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
-using ElementRealizationOptions = Microsoft.UI.Xaml.Controls.ElementRealizationOptions;
-using LayoutContext = Microsoft.UI.Xaml.Controls.LayoutContext;
+using FlowLayoutLineAlignment = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FlowLayoutLineAlignment;
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
+using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using FlowLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FlowLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
+using ElementRealizationOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementRealizationOptions;
+using LayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutContext;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class LayoutTests : MUXApiTestBase
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateNonVirtualLayoutWithItemsRepeater()
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				// with a non virtualizing layout, repeater will just
 				// run layout once. 
-				repeater.Layout = new MockNonVirtualizingLayout() 
+				repeater.Layout = new MockNonVirtualizingLayout()
 				{
 					MeasureLayoutFunc = (size, context) =>
 					{
@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						 <Button Content='{Binding}' Height='100' />
 					</DataTemplate>");
 
-				Content = new ScrollViewer() 
+				Content = new ScrollViewer()
 				{
 					Content = repeater
 				};
@@ -174,7 +174,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				// Once we switch to a virtualizing layout we should 
 				// get at least two passes to update the viewport.
-				repeater.Layout = new MockVirtualizingLayout() {
+				repeater.Layout = new MockVirtualizingLayout()
+				{
 					MeasureLayoutFunc = (size, context) =>
 					{
 						measureCount++;
@@ -200,12 +201,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				var repeater = new ItemsRepeater() 
+				var repeater = new ItemsRepeater()
 				{
 					ItemsSource = Enumerable.Range(0, 1)
 				};
 
-				Content = new ScrollViewer() 
+				Content = new ScrollViewer()
 				{
 					Content = repeater,
 					Width = 400,
@@ -230,6 +231,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __IOS__
 		[Ignore("UNO: Test does not pass yet with Uno (causes infinite layout cycle) https://github.com/unoplatform/uno/issues/4529")]
 #endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void ValidateStackLayoutDisabledVirtualizationWithItemsRepeater()
 		{
 			RunOnUIThread.Execute(() =>
@@ -244,7 +248,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						 <Button Content='{Binding}' Height='100' />
 					</DataTemplate>");
 
-				var scrollViewer = new ScrollViewer() {
+				var scrollViewer = new ScrollViewer()
+				{
 					Content = repeater
 				};
 				scrollViewer.Height = 100;
@@ -275,7 +280,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				VerticalCacheLength = 0,
 			};
 
-			scrollViewer = new ScrollViewer() 
+			scrollViewer = new ScrollViewer()
 			{
 				Content = repeater
 			};

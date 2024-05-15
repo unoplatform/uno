@@ -21,10 +21,10 @@
 			<Slider x:Name="Slider2" AutomationProperties.Name="simple slider" />
 		</StackPanel>
 
-		<TextBlock>3) Horizontal slider, range 500-1000, step=10, smallChange=10, default=800</TextBlock>
+		<TextBlock>3) Horizontal slider, range 500-1000, step=10, smallChange=10, default=800, Background=Red</TextBlock>
 		<StackPanel Orientation="Horizontal" BorderBrush="Aqua" Padding="5">
 			<Slider x:Name="Slider3" Header="Control header" Width="200" Minimum="500" Maximum="1000"
-			        LargeChange="100" StepFrequency="10" SmallChange="10" Value="800"/>
+			        LargeChange="100" StepFrequency="10" SmallChange="10" Value="800" Background="Red"/>
 			<TextBlock Text="{Binding Value, ElementName=Slider3, Mode=OneWay}" />
 		</StackPanel>
 
@@ -34,10 +34,10 @@
 			<TextBlock Text="{Binding Value, ElementName=Slider4, Mode=OneWay}" />
 		</StackPanel>
 
-		<TextBlock>5) Vertical slider, range -50 to +50, default=0, tickFrequency=10</TextBlock>
+		<TextBlock>5) Vertical slider, range -50 to +50, default=0, tickFrequency=10, Background=Purple</TextBlock>
 		<StackPanel Orientation="Horizontal" BorderBrush="Aqua" Padding="5">
 			<Slider x:Name="Slider5" Width="100" Height="100" Orientation="Vertical" TickFrequency="10" TickPlacement="Outside"
-			        Minimum="-50" Maximum="50" AutomationProperties.Name="vertical slider"/>
+			        Minimum="-50" Maximum="50" AutomationProperties.Name="vertical slider" Background="Purple"/>
 			<TextBlock Text="{Binding Value, ElementName=Slider5, Mode=OneWay}" />
 		</StackPanel>
 

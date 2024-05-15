@@ -31,7 +31,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		private int comboBoxSimple_SelectedItem = 1;
 		private int[] comboBoxSimple_ItemsSource = new[] { 1, 2, 3 };
 
-		public ButtonTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ButtonTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			StartData();
 

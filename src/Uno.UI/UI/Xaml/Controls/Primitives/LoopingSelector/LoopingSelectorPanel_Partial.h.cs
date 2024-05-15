@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 //  Abstract:
@@ -8,12 +8,12 @@
 
 using System;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	partial class LoopingSelectorPanel : Canvas, IScrollSnapPointsInfo
 	{
 
-	// public
+		// public
 		//LoopingSelectorPanel();
 
 		// void OnPropertyChanged(
@@ -22,28 +22,28 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// void SetOffsetInPixels( FLOAT offset);
 		// void SetSizeInPixels( FLOAT size);
 
-	// private
+		// private
 		//~LoopingSelectorPanel();
 
 		// void InitializeImpl() override;
 
-	// public
-		 // Implementation of IScrollSnapPointsInfo
-		 //void get_AreHorizontalSnapPointsRegularImpl(out boolean pValue) override;
-		 //void get_AreVerticalSnapPointsRegularImpl(out boolean pValue) override;
+		// public
+		// Implementation of IScrollSnapPointsInfo
+		//void get_AreHorizontalSnapPointsRegularImpl(out boolean pValue) override;
+		//void get_AreVerticalSnapPointsRegularImpl(out boolean pValue) override;
 
-		 //void GetIrregularSnapPointsImpl(
-		 //    xaml_controls.Orientation orientation,
-		 //    xaml_primitives.SnapPointsAlignment alignment,
-		 //   out  wfc.IVectorView<FLOAT> returnValue);
+		//void GetIrregularSnapPointsImpl(
+		//    xaml_controls.Orientation orientation,
+		//    xaml_primitives.SnapPointsAlignment alignment,
+		//   out  wfc.IVectorView<FLOAT> returnValue);
 
-		 //void GetRegularSnapPointsImpl(
-		 //    xaml_controls.Orientation orientation,
-		 //    xaml_primitives.SnapPointsAlignment alignment,
-		 //   out FLOAT offset,
-		 //   out FLOAT returnValue);
+		//void GetRegularSnapPointsImpl(
+		//    xaml_controls.Orientation orientation,
+		//    xaml_primitives.SnapPointsAlignment alignment,
+		//   out FLOAT offset,
+		//   out FLOAT returnValue);
 
-	// private
+		// private
 		private float _snapPointOffset;
 		private float _snapPointSpacing;
 

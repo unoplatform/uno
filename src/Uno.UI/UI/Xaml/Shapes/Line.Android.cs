@@ -3,7 +3,7 @@ using System;
 using Uno.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Line : Shape
 	{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private Android.Graphics.Path GetPath()
 		{
-			var output = new Android.Graphics.Path();
+			var output = GetOrCreatePath();
 
 			output.MoveTo((float)X1, (float)Y1);
 			output.LineTo((float)X2, (float)Y2);

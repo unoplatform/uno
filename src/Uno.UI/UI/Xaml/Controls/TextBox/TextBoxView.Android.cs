@@ -1,40 +1,33 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Android.Widget;
-using Uno.UI;
-using Java.Lang.Reflect;
 using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
-using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Uno.Foundation.Logging;
-using Android.Views;
-using Android.Runtime;
+using Android.OS;
 using Android.Text;
 using Android.Views.InputMethods;
-using Android.OS;
-using Windows.UI.Xaml.Input;
-using Uno.UI.Extensions;
-using Uno.UI.DataBinding;
+using Android.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
-using Uno.Disposables;
+using Java.Lang.Reflect;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : EditText, DependencyObject
 	{
 		private bool _isRunningTextChanged;
-		private bool _isInitialized = false;
+		private bool _isInitialized;
+		private (InputTypes InputType, InputTypes RawInputType) _inputTypes;
 
 		private readonly ManagedWeakReference? _ownerRef;
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
 
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private Action? _foregroundChanged;
 
 		public TextBoxView(TextBox owner)
 			: base(ContextHelper.Current)
@@ -42,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 			InitializeBinder();
 
-			base.SetSingleLine(owner.TextWrapping == TextWrapping.NoWrap);
+			UpdateSingleLineMode();
 
 			//This Background color is set to remove the native android underline on the EditText.
 			this.SetBackgroundColor(Colors.Transparent);
@@ -61,6 +54,30 @@ namespace Windows.UI.Xaml.Controls
 				 Android.Views.ViewGroup.LayoutParams.WrapContent,
 				 Android.Views.ViewGroup.LayoutParams.WrapContent
 			);
+
+			_inputTypes = (InputType, InputType);
+		}
+
+		internal void SetInputTypes(InputTypes inputType, InputTypes rawInputType)
+		{
+			_inputTypes = (inputType, rawInputType);
+			ResetInputTypes();
+		}
+
+		internal void ResetInputTypes()
+		{
+			InputType = _inputTypes.InputType;
+			SetRawInputType(_inputTypes.RawInputType);
+		}
+
+		internal void UpdateSingleLineMode()
+		{
+			if (Owner is { } owner)
+			{
+				SetMaxLines(owner.AcceptsReturn ? int.MaxValue : 1);
+
+				base.SetSingleLine(owner.TextWrapping == TextWrapping.NoWrap && !owner.AcceptsReturn);
+			}
 		}
 
 		internal void SetTextNative(string text)
@@ -72,6 +89,21 @@ namespace Windows.UI.Xaml.Controls
 				/// at the beginning, even if the text is the same.
 				Text = textSafe;
 			}
+		}
+
+		public override bool OnTextContextMenuItem(int id)
+		{
+			if (id == Android.Resource.Id.Paste)
+			{
+				var args = new TextControlPasteEventArgs();
+				Owner?.RaisePaste(args);
+				if (args.Handled)
+				{
+					return true;
+				}
+			}
+
+			return base.OnTextContextMenuItem(id);
 		}
 
 		protected override void OnTextChanged(Java.Lang.ICharSequence? text, int start, int lengthBefore, int lengthAfter)
@@ -120,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private class EditTextCursorColorChanger
 		{
-			private static bool _prepared = false;
+			private static bool _prepared;
 			private static Field? _editorField;
 			private static Field? _cursorDrawableField;
 			private static Field? _cursorDrawableResField;
@@ -182,7 +214,10 @@ namespace Windows.UI.Xaml.Controls
 						var drawable = editText.TextCursorDrawable;
 						if (BlendMode.SrcAtop != null)
 						{
-							drawable?.SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcAtop));
+							var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(
+								(Android.Graphics.Color)color,
+								BlendModeCompat.SrcAtop!);
+							drawable?.SetColorFilter(colorFilter);
 						}
 					}
 					else if (_cursorDrawableField == null || _cursorDrawableResField == null || _editorField == null || PorterDuff.Mode.SrcIn == null)
@@ -196,41 +231,23 @@ namespace Windows.UI.Xaml.Controls
 						var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
 						var editor = _editorField.Get(editText);
 
-#if __ANDROID_28__
-#pragma warning disable 618 // SetColorFilter is deprecated
+						var colorFilter = new PorterDuffColorFilter((Android.Graphics.Color)color, PorterDuff.Mode.SrcIn);
+
 						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 						{
 							var drawables = new Drawable[2];
-							drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
-							drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+							drawables[0] = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
+							drawables[1] = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
+							drawables[0].SetColorFilter(colorFilter);
+							drawables[1].SetColorFilter(colorFilter);
 							_cursorDrawableField.Set(editor, drawables);
 						}
 						else
 						{
-							var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
+							var drawable = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
+							drawable.SetColorFilter(colorFilter);
 							_cursorDrawableField.Set(editor, drawable);
 						}
-#pragma warning restore 618 // SetColorFilter is deprecated
-#else
-						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
-						{
-							var drawables = new Drawable[2];
-							drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawables[0].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-							drawables[1].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-							_cursorDrawableField.Set(editor, drawables);
-						}
-						else
-						{
-							var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawable.SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-							_cursorDrawableField.Set(editor, drawable);
-						}
-#endif
 					}
 				}
 				catch (Exception)
@@ -267,7 +284,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 		Brush Foreground
@@ -290,13 +307,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundChanged.Disposable = null;
-			var scb = newValue as SolidColorBrush;
-
-			if (scb != null)
+			if (newValue is SolidColorBrush scb)
 			{
-				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
-				ApplyColor();
+				Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
 
 				void ApplyColor()
 				{

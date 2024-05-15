@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System.Linq;
+﻿using System.Linq;
 using UIKit;
 using System.Collections.Generic;
 using Foundation;
@@ -38,4 +37,3 @@ namespace Uno.UI.StartScreen.Extensions
 		}
 	}
 }
-#endif

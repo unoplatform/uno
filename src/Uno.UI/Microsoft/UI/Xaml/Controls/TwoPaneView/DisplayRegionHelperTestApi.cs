@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference DisplayRegionHelperTestApi.cpp, commit d883cf3
+// MUX Reference DisplayRegionHelperTestApi.cpp, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal static class DisplayRegionHelperTestApi
 {

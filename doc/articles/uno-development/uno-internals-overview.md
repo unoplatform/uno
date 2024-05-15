@@ -1,25 +1,32 @@
-# How Uno works
+---
+uid: Uno.Contributing.Overview
+---
 
-This article explores how Uno works in detail, with a focus on information that's useful for contributors to Uno. 
+# How Uno Platform works
 
-## What Uno does
+This article explores how Uno works in detail, with a focus on information that's useful for contributors to Uno.
 
-Recall that the  Uno Platform is a cross-platform projection of Microsoft's UWP framework (and its upcoming iteration, WinUI). Uno mirrors UWP/WinUI types and supports the UWP/WinUI XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus it allows app code written for UWP to be built and run on Android, iOS, in the browser via WebAssembly, and on macOS. (Note that whereas UWP supports authoring app code in C++ as well as C#, Uno only supports C#.)
+## What Uno Platform does
 
-Broadly then, Uno has two jobs to do:
+Uno Platform is a cross-platform projection of Microsoft's WinUI framework (and its preview iteration, UWP). Uno mirrors WinUI/UWP types and supports the WinUI/UWP XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus, it allows app code written for UWP to be built and run on Android, iOS, mac Catalyst, in the browser via WebAssembly, Linux, and on macOS.
 
-* duplicate the types provided by UWP, including views in the `Windows.UI.Xaml` namespace, and non-UI APIs such as `Windows.Foundation`, `Windows.Storage` etc
-* perform compile-time tasks related to non-C# aspects of the UWP app contract (parse XAML files, process assets to platform-specific formats, etc)
+> [!NOTE]
+> While UWP supports authoring app code in C++ as well as C#, Uno Platform only supports C#.
 
-Like UWP, Uno provides access to the standard .NET libraries, via [Mono](https://www.mono-project.com/).
+Broadly then, Uno Platform has two jobs to do:
 
-Uno aims to be a 1:1 match for UWP/WinUI, in API surface (types, properties, methods, events etc), in appearance, and in behavior. At the same time, Uno places an emphasis on interoperability and making it easy to intermix purely native views with Uno/UWP controls in the visual tree.
+* Duplicate the types provided by WinUI, including views in the `Microsoft.UI.Xaml` namespace, and non-UI APIs such as `Windows.Foundation`, `Windows.Storage`, etc...
+* Perform compile-time tasks related to non-C# aspects of the WinUI app contract (parse XAML files, process assets to platform-specific formats, etc)
 
-## Uno.UI as a class library
+Like WinUI, Uno Platform provides access to the existing .NET libraries, via [.NET](https://dotnet.microsoft.com/en-us/).
 
-Certain aspects of the framework are not tied in any way to the platform that Uno happens to be running on. These include support for the [`DependencyProperty` system and data-binding](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview), and style and resource resolution. The code that implements these features is fully shared across all platforms.
+Uno Platform aims to be a 1:1 match for WinUI (and UWP), in API surface (types, properties, methods, events, etc...), in appearance, and in behavior. At the same time, Uno Platform places an emphasis on native interoperability and making it easy to intermix purely native views with Uno/UWP controls in the visual tree.
 
-Other parts of the framework are implemented using a mix of shared and platform-specific code, such as view types (ie types inheriting from [`UIElement`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.uielement)). There is a tendency for high-level controls, which are typically built by composition of simpler visual primitives, to be implemented mainly by shared code - [`NavigationView`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/NavigationView) is a good example. The primitives themselves, such as [`TextBlock`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/TextBlock), [`Image`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/Image), or [`Shape`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Shapes), contain a much higher proportion of platform-specific code as they need to call into per-platform rendering APIs.
+## Uno.WinUI as a class library
+
+Certain aspects of the framework are not tied in any way to the platform that Uno happens to be running on. These include support for the [`DependencyProperty` system and data-binding](https://learn.microsoft.com/windows/uwp/xaml-platform/dependency-properties-overview), and style and resource resolution. The code that implements these features is fully shared across all platforms.
+
+Other parts of the framework are implemented using a mix of shared and platform-specific code, such as view types (ie types inheriting from [`UIElement`](https://learn.microsoft.com/uwp/api/windows.ui.xaml.uielement)). There is a tendency for high-level controls, which are typically built by composition of simpler visual primitives, to be implemented mainly by shared code - [`NavigationView`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/NavigationView) is a good example. The primitives themselves, such as [`TextBlock`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/TextBlock), [`Image`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/Image), or [`Shape`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Shapes), contain a much higher proportion of platform-specific code as they need to call into per-platform rendering APIs.
 
 The layouting system is implemented in shared code as much as possible, for cross-platform consistency; however it's nonetheless tied into the underlying native layout cycle on each platform.
 
@@ -27,49 +34,43 @@ APIs for non-UI features, for example [`Windows.System.Power`](../features/windo
 
 ### Generated `NotImplemented` stubs
 
-UWP has a very large API surface area, and not all features in it have been implemented by Uno. We want pre-existing UWP apps and libraries that reference these features to still be able to at least compile on Uno. To support this, an [automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.UWPSyncGenerator) inspects the UWP framework, compares it to authored code in Uno, and generates stubs for all types and type members that exist in UWP but are not implemented on Uno. For example:
+WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI (and UWP) apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.UWPSyncGenerator) inspects the UWP framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in UWP but are not implemented on Uno. For example:
 
 ```csharp
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool ExitDisplayModeOnAccessKeyInvoked
-		{
-			get
-			{
-				return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
-			}
-			set
-			{
-				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
-			}
-		}
-		#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __MACOS__
+[global::Uno.NotImplemented]
+public  bool ExitDisplayModeOnAccessKeyInvoked
+{
+ get
+ {
+  return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
+ }
+ set
+ {
+  this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
+ }
+}
+#endif
 ```
 
-Note the platform conditionals, since a member may be implemented for some platforms but not others. The `[NotImplemented]` attribute flags this property as not implemented and a code analyzer surfaces a warning if it is referenced in app code.
-
-Note that unlike most other code-generation tasks in Uno, the tool that generates the `NotImplemented` stubs does _not_ run on every build. It's only run when triggered manually (simply because it takes some time to run, and would unnecessarily slow down the build). For this reason, it's common and acceptable to hand-edit these generated files when you're adding a feature. Eg, if you were to implement the `ExitDisplayModeOnAccessKeyInvoked` property for iOS and macOS only, you would manually change the `#if` condition above to:
-
-```csharp
-#if __ANDROID__ || false || NET461 || __WASM__ || false
-```
+Notice the platform conditionals, since a member may be implemented for some platforms but not others. The `[NotImplemented]` attribute flags this property as not implemented and a code analyzer surfaces a warning if it is referenced in app code.
 
 ### Platform-specific details
 
-For more details on how Uno runs on each platform, see platform-specific information for:
+For more details on how Uno Platform runs on each platform, see platform-specific information for:
 
 * [Android](uno-internals-android.md)
 * [iOS](uno-internals-ios.md)
 * [WebAssembly](uno-internals-wasm.md)
 * [macOS](uno-internals-macos.md)
 
-## Uno.UI as a build-time tool
+## Uno.WinUI build-time tooling
 
 ### Parsing XAML to C# code
 
-This is the most substantial compile-time task that Uno carries out. Whenever an app or class library is built, all contained XAML files are parsed and converted to C# files, which are then compiled in the usual way. (Note that this differs from UWP, which parses XAML to XAML Binary Format (.xbf) files which are processed by the UWP runtime.)
+This is the most substantial compile-time task that Uno Platform carries out. Whenever an app or class library is built, all contained XAML files are parsed and converted to C# files, which are then compiled in the usual way. (Note that this differs from WinUI, which parses XAML to XAML Binary Format (.xbf) files which are processed by the WinUI runtime.)
 
-Uno uses existing libraries to parse a given XAML file into a XAML object tree, then Uno-specific code is responsible for interpreting the XAML object tree as a tree of visual elements and their properties. Most of this takes place within the [`XamlFileGenerator`](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class.
+Uno Platform uses existing libraries to parse a given XAML file into a XAML object tree, then Uno-specific code is responsible for interpreting the XAML object tree as a tree of visual elements and their properties. Most of this takes place within the [`XamlFileGenerator`](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class.
 
 ### DependencyObject implementation generator
 

@@ -5,17 +5,18 @@
 #nullable enable
 
 using System;
-
-using Uno.Extensions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Islands;
+using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 #if __IOS__
 using UIKit;
@@ -40,7 +41,6 @@ namespace Uno.UI.Xaml.Core
 		private const int ConnectedAnimationRootZIndex = VisualDiagnosticsRootZIndex - 1;
 		private const int PopupZIndex = ConnectedAnimationRootZIndex - 1;
 		private const int FullWindowMediaRootZIndex = PopupZIndex - 1;
-		private const int TransitionRootZIndex = FullWindowMediaRootZIndex - 1;
 
 		internal enum LookupOptions
 		{
@@ -69,7 +69,7 @@ namespace Uno.UI.Xaml.Core
 		/// </remarks>
 		public VisualTree(CoreServices coreServices, Color backgroundColor, UIElement? rootElement, ContentRoot contentRoot)
 		{
-			//TODO Uno: Adjust to match WinUI	
+			//TODO Uno: Adjust to match WinUI
 			_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 			ContentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
 
@@ -83,9 +83,30 @@ namespace Uno.UI.Xaml.Core
 				RootVisual.AssociatedVisualTree = this;
 				RootVisual.SetBackgroundColor(backgroundColor);
 				RootElement = RootVisual;
-
-				_focusInputHandler = new UnoFocusInputHandler(RootVisual);
 			}
+
+			if (ContentRoot.Type == ContentRootType.CoreWindow)
+			{
+				var config = RootScaleConfig.ParentApply; //XamlOneCoreTransforms.IsEnabled ? RootScaleConfig::ParentApply : RootScaleConfig::ParentInvert;
+				RootScale = new CoreWindowRootScale(config, coreServices, this);
+			}
+			else if (ContentRoot.Type == ContentRootType.XamlIslandRoot)
+			{
+				RootScale = new XamlIslandRootScale(coreServices, this);
+
+				// If an override scale was set earlier for tests, apply it to this new island.
+				//float testOverrideScale = m_pCoreNoRef->GetTestOverrideScale();
+				//if (testOverrideScale != 0.0f)
+				//{
+				//	IFCFAILFAST(m_rootScale->SetTestOverride(testOverrideScale));
+				//}
+			}
+			else
+			{
+				throw new InvalidOperationException("Invalid ContentRoot type.");
+			}
+
+			_focusInputHandler = new UnoFocusInputHandler(RootElement);
 		}
 
 		internal UnoFocusInputHandler? UnoFocusInputHandler => _focusInputHandler;
@@ -106,11 +127,9 @@ namespace Uno.UI.Xaml.Core
 
 		/// <summary>
 		/// RootElement is the parent of the roots. For XAML app window content, this is the RootVisual.
-		/// For XamlIsland content, it's the XamlIslandRoot.
+		/// For XamlIsland content, it's the XamlIsland.
 		/// </summary>
 		public UIElement RootElement { get; }
-
-		public XamlRoot? XamlRoot { get; private set; }
 
 		/// <summary>
 		/// Gets the currently active root visual - can be either public root visual or full-window
@@ -182,9 +201,8 @@ namespace Uno.UI.Xaml.Core
 			//EnsureVisualDiagnosticsRoot();
 			//EnsureXamlIslandRootCollection();
 			//EnsureConnectedAnimationRoot();
-			#if !__MACOS__
+
 			EnsurePopupRoot();
-			#endif
 
 			//TODO Uno specific: We require some additional layers on top
 			EnsureFocusVisualRoot();
@@ -230,7 +248,9 @@ namespace Uno.UI.Xaml.Core
 					AddRoot(PublicRootVisual);
 				}
 
-				//_pCoreNoRef.RaisePendingLoadedRequests();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				_coreServices.RaisePendingLoadedRequests();
+#endif
 			}
 
 			// Re-enter the roots with the new public root's namescope.
@@ -239,7 +259,9 @@ namespace Uno.UI.Xaml.Core
 			//AddRoot(_connectedAnimationRoot));
 			AddRoot(FullWindowMediaRoot);
 
+#if !__MACOS__
 			AddRoot(PopupRoot);
+#endif
 
 			//AddRoot(_printRoot));
 			//AddRoot(_transitionRoot));
@@ -251,6 +273,8 @@ namespace Uno.UI.Xaml.Core
 			//{
 			//	AddRoot(_renderTargetBitmapRoot));
 			//}
+
+			ContentRoot.AddPendingXamlRootChangedEvent(ContentRoot.ChangeType.Content);
 		}
 
 		/// <summary>
@@ -264,39 +288,37 @@ namespace Uno.UI.Xaml.Core
 		/// </summary>
 		/// <param name="dependencyObject">Dependency object.</param>
 		/// <returns></returns>
-		[NotImplemented]
 		public static PopupRoot? GetPopupRootForElement(DependencyObject dependencyObject)
 		{
-			//TODO Uno: Implement when popups are properly working
-			return null;
-			//if (dependencyObject is null)
-			//{
-			//	throw new ArgumentNullException(nameof(dependencyObject));
-			//}
+			if (dependencyObject is null)
+			{
+				throw new ArgumentNullException(nameof(dependencyObject));
+			}
 
-			//CoreServices core = pObject.GetContext();
+			CoreServices core = CoreServices.Instance;
 
-			//var popup = dependencyObject as Popup;
-			//if (popup != null)
-			//{
-			//	// The PopupRoot may be disconnected from its parent by this point.
-			//	if (popup.Child is UIElement child)
-			//	{
-			//		if (child.GetParentInternal(false /*publicParentOnly*/) is PopupRoot parentPopupRoot)
-			//		{
-			//			return parentPopupRoot;
-			//		}
-			//	}
-			//}
+			var popup = dependencyObject as Popup;
+			if (popup != null)
+			{
+				// The PopupRoot may be disconnected from its parent by this point.
+				if (popup.Child is UIElement child)
+				{
+					if (child.GetParentInternal(false /*publicParentOnly*/) is PopupRoot parentPopupRoot)
+					{
+						return parentPopupRoot;
+					}
+				}
+			}
 
-			//if (GetForElement(dependencyObject) is VisualTree visualTree)
-			//{
-			//	if (visualTree.GetPopupRoot() is PopupRoot visualTreePopupRoot)
-			//	{
-			//		*ppPopupRoot = popupRoot;
-			//		return S_OK;
-			//	}
-			//}
+			if (GetForElement(dependencyObject) is VisualTree visualTree)
+			{
+				if (visualTree.PopupRoot is PopupRoot visualTreePopupRoot)
+				{
+					return visualTreePopupRoot;
+				}
+			}
+
+			// TODO Uno: Add proper support for XamlIslandRootCollection #8978.
 
 			//if (popup != null)
 			//{
@@ -307,7 +329,7 @@ namespace Uno.UI.Xaml.Core
 
 			//	if (mainVisualTree != null)
 			//	{
-			//		CXamlIslandRootCollection* xamlIslandRootCollection = mainVisualTree->GetXamlIslandRootCollection();
+			//		XamlIslandRootCollection xamlIslandRootCollection = mainVisualTree.GetXamlIslandRootCollection();
 
 			//		if (xamlIslandRootCollection != null)
 			//		{
@@ -343,9 +365,7 @@ namespace Uno.UI.Xaml.Core
 			//	return S_OK;
 			//}
 
-			//*ppPopupRoot = core.GetMainPopupRoot();
-
-			//return S_OK; // RRETURN_REMOVAL
+			return core.MainPopupRoot;
 		}
 
 		/// <summary>
@@ -355,10 +375,8 @@ namespace Uno.UI.Xaml.Core
 		/// </summary>
 		/// <param name="pObject">Element.</param>
 		/// <returns>Root visual or null.</returns>
-		internal static RootVisual? GetRootForElement(DependencyObject? pObject)
-		{
-			return pObject?.GetContext().MainRootVisual;
-		}
+		internal static RootVisual? GetRootForElement(DependencyObject? pObject) =>
+			VisualTree.GetForElement(pObject)?.RootVisual;
 
 		/// <summary>
 		/// Static helper function that encapsulates getting the FocusManager
@@ -415,20 +433,40 @@ namespace Uno.UI.Xaml.Core
 			if (root != null)
 			{
 				//TODO Uno: The logic here is more complex in WinUI,
-				//setting the namespace owner. Not needed currently.
+				//setting the namescope owner. Not needed currently.
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (IsMainVisualTree())
+				{
+					UIElement rootVisual = RootVisual!;
+					rootVisual.IsLoaded = true;
+				}
+				else if (root.XamlRoot?.VisualTree.RootElement is { } xamlIsland)
+				{
+					xamlIsland.IsLoaded = true;
+				}
+#endif
 
 				MUX_ASSERT(RootElement != null);
 				RootElement!.AddChild(root);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				EnterParams enterParams = new(
+					isLive: true
+				);
+
+				// In WinUI, this is called only under IsMainVisualTree condition.
+				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
+				root.Enter(enterParams, 0);
+#endif
 			}
 		}
 
 
-		[NotImplemented]
-		private bool ResetRoots()
+		private void ResetRoots()
 		{
 			//TODO Uno: We currently never reset existing roots for backwards compatability
 			//with existing infrastructure. This should be adjusted later.
-			return true;
 			//if (_connectedAnimationRoot != null)
 			//{
 			//	RemoveRoot(_connectedAnimationRoot);
@@ -454,6 +492,16 @@ namespace Uno.UI.Xaml.Core
 			//	}
 			//}
 
+			if (FocusVisualRoot is not null)
+			{
+				RemoveRoot(FocusVisualRoot);
+			}
+
+			if (PopupRoot is not null)
+			{
+				RemoveRoot(PopupRoot);
+			}
+
 			//if (_printRoot != null)
 			//{
 			//	RemoveRoot(_printRoot);
@@ -464,10 +512,10 @@ namespace Uno.UI.Xaml.Core
 			//	RemoveRoot(_transitionRoot);
 			//}
 
-			//if (_fullWindowMediaRoot != null)
-			//{
-			//	RemoveRoot(_fullWindowMediaRoot);
-			//}
+			if (FullWindowMediaRoot != null)
+			{
+				RemoveRoot(FullWindowMediaRoot);
+			}
 
 			//if (_renderTargetBitmapRoot != null)
 			//{
@@ -479,38 +527,40 @@ namespace Uno.UI.Xaml.Core
 			//	RemoveRoot(_xamlIslandRootCollection);
 			//}
 
-			//if (_publicRootVisual != null)
+			//if (PublicRootVisual != null)
 			//{
 			//	// ToolTipService attaches handlers to the public root of the main window and each Xaml island. Clean up its
 			//	// bookkeeping now that the root is going away.
-			//	ToolTipService.OnPublicRootRemoved(_publicRootVisual);
+			//	//ToolTipService.OnPublicRootRemoved(_publicRootVisual);
 			//}
 
-			//if (_rootScrollViewer && _bIsRootScrollViewerAddedToRoot)
-			//{
-			//	// Remove both root ScrollViewer and visual root from the tree
-			//	RemoveRootScrollViewer(_rootScrollViewer);
-			//	RemoveVisualRootFromRootScrollViewer(_publicRootVisual);
+			if (false) //RootScrollViewer is not null && _bIsRootScrollViewerAddedToRoot)
+			{
+				//// Remove both root ScrollViewer and visual root from the tree
+				//RemoveRootScrollViewer(RootScrollViewer);
+				//RemoveVisualRootFromRootScrollViewer(PublicRootVisual);
 
-			//	// The public visual root is always released immediately.
-			//	// But we keep the root ScrollViewer reference to reuse it
-			//	// for new public visual root.
-			//	_publicRootVisual.reset();
+				//// The public visual root is always released immediately.
+				//// But we keep the root ScrollViewer reference to reuse it
+				//// for new public visual root.
+				//PublicRootVisual = null;
 
-			//	_bIsRootScrollViewerAddedToRoot = false;
-			//}
-			//else
-			//{
-			//	// Public root visual is always removed last
-			//	if (_publicRootVisual)
-			//	{
-			//		RemoveRoot(_publicRootVisual);
+				//_bIsRootScrollViewerAddedToRoot = false;
+			}
+			else
+			{
+				// Public root visual is always removed last
+				if (PublicRootVisual is not null)
+				{
+					RemoveRoot(PublicRootVisual);
 
-			//		// The public root visual is always released, regardless of 'resetRoots'.
-			//		_publicRootVisual.reset();
-			//	}
-			//}
+					// The public root visual is always released, regardless of 'resetRoots'.
+					PublicRootVisual = null;
+				}
+			}
 		}
+
+		private void RemoveRoot(UIElement root) => RootElement.RemoveChild(root);
 
 		[NotImplemented]
 		internal bool IsBehindFullWindowMediaRoot(DependencyObject? focusedElement)
@@ -548,6 +598,20 @@ namespace Uno.UI.Xaml.Core
 			return false;
 		}
 
+		internal static XamlIsland? GetXamlIslandRootForElement(DependencyObject? pObject)
+		{
+			if (pObject is null) // || !pObject.GetContext().HasXamlIslandRoots())
+			{
+				return null;
+			}
+			if (GetForElement(pObject) is { } visualTree)
+			{
+				return visualTree.RootElement as XamlIsland;
+			}
+			return null;
+		}
+
+#if false
 		/// <summary>
 		/// Removes the given root from the implicit root visual, and potentially 'Leave' it
 		/// from the tree.
@@ -557,7 +621,7 @@ namespace Uno.UI.Xaml.Core
 		/// A root leaves the tree if we can retrieve a namescope owner for it
 		/// using GetNamescopeOwnerForRoot.
 		/// A precondition of this function is that the root being entered is already set
-		/// in its corresponding member variable (e.g. m_popupRoot, m_publicRootVisual, etc.) 
+		/// in its corresponding member variable (e.g. m_popupRoot, m_publicRootVisual, etc.)
 		/// </remarks>
 		[NotImplemented]
 		private void RemoveRoot(UIElement root)
@@ -586,22 +650,7 @@ namespace Uno.UI.Xaml.Core
 			// itself is never live.
 			// publicRoot.LeavePCSceneRecursive();
 		}
-
-		[NotImplemented]
-		private static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)
-		{
-			return null;
-			//TODO Uno: XamlIslandRoot not needed for now.
-			//if (!pObject || !pObject->GetContext()->HasXamlIslands())
-			//{
-			//	return nullptr;
-			//}
-			//if (VisualTree * visualTree = GetForElementNoRef(pObject))
-			//{
-			//	return do_pointer_cast<CXamlIslandRoot>(visualTree->m_rootElement);
-			//}
-			//return null;
-		}
+#endif
 
 		internal static VisualTree? GetForElement(DependencyObject? element, LookupOptions options = LookupOptions.WarningIfNotFound)
 		{
@@ -667,32 +716,32 @@ namespace Uno.UI.Xaml.Core
 					}
 				}
 
-				//if (currentAncestor.GetTypeIndex() == KnownTypeIndex::XamlIsland)
-				//{
-				//	return static_cast<CXamlIslandRoot*>(currentAncestor)->GetVisualTreeNoRef();
-				//}
-				//else
-				if (currentAncestor is RootVisual rootVisual)
+				if (currentAncestor is XamlIsland xamlIslandRoot)
+				{
+					return xamlIslandRoot.ContentRoot.VisualTree;
+				}
+				else if (currentAncestor is RootVisual rootVisual)
 				{
 					return rootVisual.AssociatedVisualTree;
 				}
 
+				DependencyObject? nextAncestor = null;
 				//TODO Uno: Uncomment and implement
-				//DependencyObject? nextAncestor = null;
-				//if (currentAncestor.DoesAllowMultipleAssociation() && currentAncestor.GetParentCount() > 1)
-				//{
-				//	// We cannot travese up a tree through a multiply associated element.  Our goal is to support DOs being
-				//	// shared between XAML trees.  We've seen cases where we traverse up the tree through CSetter objects,
-				//	// so for now we allow the traversal if there's one unique parent.  TODO: This could be fragile?  Allowing
-				//	// the traversal to happen when the parent count is 1 means that if this element gets another parent later,
-				//	// we're now in an inconsistent state.
-				//	// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
-				//}
-				//else
-				//{
-				//	nextAncestor = currentAncestor.GetParentInternal(false /* public parent only */);
-				//}
+				if (false)//currentAncestor.DoesAllowMultipleAssociation() && currentAncestor.GetParentCount() > 1)
+				{
+					// We cannot travese up a tree through a multiply associated element.  Our goal is to support DOs being
+					// shared between XAML trees.  We've seen cases where we traverse up the tree through CSetter objects,
+					// so for now we allow the traversal if there's one unique parent.  TODO: This could be fragile?  Allowing
+					// the traversal to happen when the parent count is 1 means that if this element gets another parent later,
+					// we're now in an inconsistent state.
+					// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
+				}
+				else
+				{
+					nextAncestor = currentAncestor.GetParentInternal(false /* public parent only */);
+				}
 
+				//TODO Uno: Uncomment and implement
 				////
 				//// We have a few tricks to figure out which VisualTree an element may be associated with.
 				//// There is now a cached weak VisualTree pointer on each DO that we update when we do a live
@@ -745,7 +794,7 @@ namespace Uno.UI.Xaml.Core
 				//	}
 				//}
 
-				//currentAncestor = nextAncestor;
+				currentAncestor = nextAncestor;
 			}
 			if (result == null)
 			{
@@ -771,16 +820,105 @@ namespace Uno.UI.Xaml.Core
 
 		internal XamlRoot GetOrCreateXamlRoot()
 		{
-			if (XamlRoot == null)
+			if (XamlRoot is null)
 			{
-				//TODO Uno: Our current implementation has only a single XAML root.
-				//In the future we may want to support multiple.
-				XamlRoot = XamlRoot.Current;
+				XamlRoot = new XamlRoot(this);
 			}
 
 			return XamlRoot;
 		}
 
+		public XamlRoot? XamlRoot { get; private set; }
+
+		internal RootScale RootScale { get; private set; }
+
+		internal double RasterizationScale
+		{
+			get
+			{
+				if (RootScale is { } rootScale)
+				{
+					return rootScale.GetEffectiveRasterizationScale();
+				}
+				else
+				{
+					return 1.0;
+				}
+			}
+		}
+
+		//public Size Size
+		//{
+		//	get
+		//	{
+		//		if (VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+		//		{
+		//			return Content?.RenderSize ?? Size.Empty;
+		//		}
+
+		//		var rootElement = VisualTree.RootElement;
+		//		if (rootElement is RootVisual)
+		//		{
+		//			if (Window.CurrentSafe is null)
+		//			{
+		//				throw new InvalidOperationException("Window.Current must be set.");
+		//			}
+
+		//			return Window.CurrentSafe.Bounds.Size;
+		//		}
+		//		else if (rootElement is XamlIsland xamlIslandRoot)
+		//		{
+		//			var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
+		//			var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
+		//			return new Size(width, height);
+		//		}
+
+		//		return default;
+		//	}
+		//}
+
+		internal Size Size
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIslandRoot)
+				{
+					return xamlIslandRoot.GetSize();
+				}
+				else if (RootElement is RootVisual)
+				{
+					if (Window.CurrentSafe is null)
+					{
+						throw new InvalidOperationException("Window.Current must be set.");
+					}
+
+					return Window.CurrentSafe.Bounds.Size;
+				}
+				else
+				{
+					return default;
+				}
+			}
+		}
+
+		internal bool IsVisible
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIslandRoot)
+				{
+					return xamlIslandRoot.IsVisible();
+				}
+				else if (RootElement is RootVisual rootVisual)
+				{
+					return CoreServices.Instance.IsXamlVisible();
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
 
 		private static void VisualTreeNotFoundWarning()
 		{
@@ -789,5 +927,10 @@ namespace Uno.UI.Xaml.Core
 				typeof(VisualTree).Log().LogDebug("Visual Tree was not found.");
 			}
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private bool IsMainVisualTree()
+			=> RootVisual != null;
+#endif
 	}
 }

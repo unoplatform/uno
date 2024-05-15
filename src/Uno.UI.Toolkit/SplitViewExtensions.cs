@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Toolkit
 {
@@ -16,8 +16,8 @@ namespace Uno.UI.Toolkit
 #endif
 #endif
 	public static class SplitViewExtensions
-    {
-#region IsPaneEnabled
+	{
+		#region IsPaneEnabled
 
 		public static DependencyProperty IsPaneEnabledProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -37,6 +37,6 @@ namespace Uno.UI.Toolkit
 			return (bool)splitView.GetValue(IsPaneEnabledProperty);
 		}
 
-#endregion
+		#endregion
 	}
 }

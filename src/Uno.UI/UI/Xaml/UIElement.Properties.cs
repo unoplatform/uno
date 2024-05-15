@@ -1,10 +1,10 @@
-﻿#if NET461 || __WASM__
+﻿#if IS_UNIT_TESTS || __WASM__
 #pragma warning disable CS0067
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -12,7 +12,7 @@ using Uno.Disposables;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.System;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
@@ -20,22 +20,23 @@ using Uno.UI.Media;
 using System;
 using System.Numerics;
 using System.Reflection;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using Microsoft.UI.Input;
 using Uno.UI.Xaml;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true)]
-		public static DependencyProperty IsHitTestVisibleProperty { get ; } = CreateIsHitTestVisibleProperty();
+		public static DependencyProperty IsHitTestVisibleProperty { get; } = CreateIsHitTestVisibleProperty();
 
 		public bool IsHitTestVisible
 		{
@@ -44,7 +45,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = 1.0, ChangedCallback = true)]
-		public static DependencyProperty OpacityProperty { get ; } = CreateOpacityProperty();
+		public static DependencyProperty OpacityProperty { get; } = CreateOpacityProperty();
 
 		public double Opacity
 		{
@@ -56,7 +57,7 @@ namespace Windows.UI.Xaml
 		/// Sets the visibility of the current view
 		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = Visibility.Visible, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty VisibilityProperty { get ; } = CreateVisibilityProperty();
+		public static DependencyProperty VisibilityProperty { get; } = CreateVisibilityProperty();
 
 		public
 #if __ANDROID__
@@ -68,7 +69,25 @@ namespace Windows.UI.Xaml
 			set => SetVisibilityValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		/// <summary>
+		/// Represents the final cursor shape of the element that is set using ProtectedCursor.
+		/// </summary>
+		/// <remarks>
+		/// This property should never be directly set except from ProtectedCursor's ChangedCallback, and its value should always be calculated through the dependency property system.
+		/// </remarks>
+		/// <remarks>
+		/// The type is nullable because we need a state that indicates that the cursor should be hidden. We choose that state to be null.
+		/// </remarks>
+		[GeneratedDependencyProperty(DefaultValue = InputSystemCursorShape.Arrow, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = false)]
+		internal static DependencyProperty CalculatedFinalCursorProperty { get; } = CreateCalculatedFinalCursorProperty();
+
+		internal InputSystemCursorShape? CalculatedFinalCursor
+		{
+			get => GetCalculatedFinalCursorValue();
+			private set => SetCalculatedFinalCursorValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.LogicalChild)]
 		public static DependencyProperty ContextFlyoutProperty { get; } = CreateContextFlyoutProperty();
 
 		public FlyoutBase ContextFlyout
@@ -78,7 +97,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = null)]
-		internal static DependencyProperty KeyboardAcceleratorsProperty { get ; } = CreateKeyboardAcceleratorsProperty();
+		internal static DependencyProperty KeyboardAcceleratorsProperty { get; } = CreateKeyboardAcceleratorsProperty();
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{

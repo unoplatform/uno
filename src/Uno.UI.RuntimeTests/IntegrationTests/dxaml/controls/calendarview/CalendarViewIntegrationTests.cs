@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #pragma warning disable CS0168 // Disable TestCleanupWrapper warnings
@@ -9,27 +9,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml; 
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Tests.Common;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
-using CalendarView = Windows.UI.Xaml.Controls.CalendarView;
+using CalendarView = Microsoft.UI.Xaml.Controls.CalendarView;
 
 using static Private.Infrastructure.TestServices;
 using static Private.Infrastructure.CalendarHelper;
 using Uno.UI.RuntimeTests;
 
-namespace Windows.UI.Xaml.Tests.Enterprise
+namespace Microsoft.UI.Xaml.Tests.Enterprise
 {
 	[TestClass]
 	public partial class CalendarViewIntegrationTests : BaseDxamlTestClass
@@ -41,13 +41,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[ClassInitialize]
-		void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}
@@ -99,27 +99,27 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				var cv = new CalendarView();
 				VERIFY_ARE_EQUAL(cv.NumberOfWeeksInView, 6);
-				VERIFY_ARE_EQUAL(cv.FirstDayOfWeek, Windows.Globalization.DayOfWeek.Sunday);
+				VERIFY_ARE_EQUAL(cv.FirstDayOfWeek, global::Windows.Globalization.DayOfWeek.Sunday);
 				VERIFY_ARE_EQUAL(cv.SelectionMode, CalendarViewSelectionMode.Single);
 
 				VERIFY_ARE_EQUAL(cv.DisplayMode, CalendarViewDisplayMode.Month);
 				VERIFY_ARE_EQUAL(cv.IsTodayHighlighted, true);
 				VERIFY_ARE_EQUAL(cv.IsOutOfScopeEnabled, true);
 				VERIFY_ARE_EQUAL(cv.IsGroupLabelVisible, false);
-				VERIFY_ARE_EQUAL(cv.DayItemFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.DayItemFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
-				VERIFY_ARE_EQUAL(cv.TodayFontWeight.Weight, Windows.UI.Text.FontWeights.SemiBold.Weight);
+				VERIFY_ARE_EQUAL(cv.DayItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.DayItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.TodayFontWeight.Weight, Microsoft.UI.Text.FontWeights.SemiBold.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontSize, 12.0);
-				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.MonthYearItemFontSize, 20.0);
-				VERIFY_ARE_EQUAL(cv.MonthYearItemFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.MonthYearItemFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.MonthYearItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.MonthYearItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontSize, 12.0);
-				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 
-				Windows.Globalization.Calendar calendar = new Windows.Globalization.Calendar();
+				global::Windows.Globalization.Calendar calendar = new global::Windows.Globalization.Calendar();
 				calendar.SetToNow();
 
 				calendar.AddYears(-100);
@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					cv.MaxDate = date;
 					cv.UpdateLayout();
 				});
-				await helper.VerifyNoSelectedDatesChanged();
+				helper.VerifyNoSelectedDatesChanged();
 			}
 
 			// remove the date
@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				}
 				else
 				{
-					await helper.VerifyNoSelectedDatesChanged();
+					helper.VerifyNoSelectedDatesChanged();
 				}
 
 				TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "S"); //Selected
@@ -452,7 +452,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				else
 				{
 					// otherwise, no selected dates chagned event.
-					await helper.VerifyNoSelectedDatesChanged();
+					helper.VerifyNoSelectedDatesChanged();
 				}
 
 				// the item stays selected until the last time we remove the date from SelectedDates.
@@ -504,7 +504,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// on desktop, move the mouse away to avoid hover state.
 			LOG_OUTPUT("Moving mouse to prevent hover state on phone.");
-			TestServices.InputHelper.MoveMouse(new Windows.Foundation.Point(0, 0));
+			TestServices.InputHelper.MoveMouse(new global::Windows.Foundation.Point(0, 0));
 
 			await WindowHelper.WaitForIdle();
 			LOG_OUTPUT("Release successful.");
@@ -531,7 +531,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				cv.SelectedDates.SetAt(0, date); // no crash, no selected dates changed event.
 			});
-			await helper.VerifyNoSelectedDatesChanged();
+			helper.VerifyNoSelectedDatesChanged();
 		}
 
 		[TestMethod]
@@ -583,7 +583,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			LOG_OUTPUT("Release.");
 			TestServices.InputHelper.DynamicRelease(PointerFinger.Finger1);
 			await WindowHelper.WaitForIdle();
-			await helper.VerifyNoSelectedDatesChanged();
+			helper.VerifyNoSelectedDatesChanged();
 			await RunOnUIThread(() =>
 			{
 				VERIFY_IS_TRUE(cv.SelectedDates.Count == 0u);
@@ -782,7 +782,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Year by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -793,7 +793,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Decade by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -811,10 +811,10 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			helper.PrepareLoadedEvent();
+			await helper.PrepareLoadedEvent();
 			CalendarView cv = await helper.GetCalendarView();
 
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -822,7 +822,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			rootPanel = await CalendarHelper.CreateTestResources();
 
-			helper.PrepareCICEvent();
+			await helper.PrepareCICEvent();
 
 			var date = ConvertToDateTime(1, 2000, 2, 1, 1, 12, 0, 0, 0); // 2/1/2000 12:00:00 AM
 
@@ -875,7 +875,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 
@@ -943,7 +943,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			Grid rootPanel = null;
 
-			Windows.Globalization.Calendar calendar = null;
+			//Windows.Globalization.Calendar calendar = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 
@@ -1070,6 +1070,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 #endif
 #if __SKIA__
 		[RequiresFullWindow]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task VerifyButtonState()
 		{
@@ -1306,7 +1309,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			var viewChangedRegistration = CreateSafeEventRegistration<ScrollViewer, EventHandler<ScrollViewerViewChangedEventArgs>>("ViewChanged");
 
 			using var _ = viewChangedRegistration.Attach(scrollViewer,
-				( sender,  e) =>
+				(sender, e) =>
 				{
 					if (!e.IsIntermediate)
 					{
@@ -1515,8 +1518,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			// the first day item is on Saturday, when we change FirstDayOfWeek from Sunday (0) to Saturday (6), the col of first item will be from 6 to 0
 			for (int i = 0; i < 7; i++)
 			{
-				Windows.Globalization.DayOfWeek dayofWeek =
-					(Windows.Globalization.DayOfWeek)((int)(Windows.Globalization.DayOfWeek.Sunday) + i);
+				global::Windows.Globalization.DayOfWeek dayofWeek =
+					(global::Windows.Globalization.DayOfWeek)((int)(global::Windows.Globalization.DayOfWeek.Sunday) + i);
 
 				await RunOnUIThread(() =>
 				{
@@ -1575,7 +1578,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 			CalendarPanel calendarPanel = null;
 			ScrollViewer scrollViewer = null;
-			UIElement calendarItem = null;
+			//UIElement calendarItem = null;
 			var helper = new CalendarHelper.CalendarViewHelper();
 
 			CalendarView cv = await helper.GetCalendarView();
@@ -1615,11 +1618,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// now test year view and decacde view
 
-			CalendarViewDisplayMode[] modes = {CalendarViewDisplayMode.Year, CalendarViewDisplayMode.Decade};
+			CalendarViewDisplayMode[] modes = { CalendarViewDisplayMode.Year, CalendarViewDisplayMode.Decade };
 
-			string[] panelNames = {"YearViewPanel", "DecadeViewPanel"};
+			string[] panelNames = { "YearViewPanel", "DecadeViewPanel" };
 
-			string[] scrollViewerNames = {"YearViewScrollViewer", "DecadeViewScrollViewer"};
+			string[] scrollViewerNames = { "YearViewScrollViewer", "DecadeViewScrollViewer" };
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -1670,7 +1673,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 			CalendarPanel calendarPanel = null;
 			ScrollViewer scrollViewer = null;
-			UIElement calendarItem = null;
+			//UIElement calendarItem = null;
 			var helper = new CalendarHelper.CalendarViewHelper();
 
 			CalendarView cv = await helper.GetCalendarView();
@@ -1814,7 +1817,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -1824,7 +1827,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed down twice, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 17)));
 			});
@@ -1834,7 +1837,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed left 4 times, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 13)));
 			});
@@ -1843,7 +1846,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 			});
@@ -1852,7 +1855,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed up once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 7)));
 			});
@@ -1861,7 +1864,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed home once, now focus is on ");
 				// note we should be at 9/1 but the first day is 9/3.
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
@@ -1871,7 +1874,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed home again, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
 			});
@@ -1880,7 +1883,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed end once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
@@ -1889,7 +1892,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed end again, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
@@ -1906,7 +1909,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date,
 					"Pressed pagedown once followed by right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 10, 31)));
@@ -1916,7 +1919,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date,
 					"Pressed pagedown once followed by right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
@@ -1926,7 +1929,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date,
 					"Pressed pagedown once followed by right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 10, 30)));
@@ -1973,7 +1976,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 		//	});
@@ -1983,7 +1986,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed down twice, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 17)));
 		//	});
@@ -1994,7 +1997,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed left 3 times, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 		//	});
@@ -2003,7 +2006,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed left again, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 		//	});
@@ -2017,7 +2020,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed right 6 times, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 20)));
 		//	});
@@ -2026,7 +2029,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed right again, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 20)));
 		//	});
@@ -2035,7 +2038,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed up once, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 13)));
 		//	});
@@ -2081,7 +2084,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2093,7 +2096,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				// Cinch fails here - the focusedElement is not a CalendarVIewDayItem, however the focus should be still on the calendarViewDayItem and it is true locally.
 				// add a check to see where is the focus now.
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed down, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2103,7 +2106,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed up, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2114,7 +2117,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed right, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2124,7 +2127,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed left, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2195,7 +2198,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				("DecadeViewPanel", CalendarViewDisplayMode.Decade),
 			};
 
-			foreach(var mode in modes)
+			foreach (var mode in modes)
 			{
 				await RunOnUIThread(() =>
 				{
@@ -2219,7 +2222,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(!IsCalendarItem(focusedElement));
 				});
 
@@ -2228,7 +2231,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(IsCalendarItem(focusedElement));
 				});
 
@@ -2237,7 +2240,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(!IsCalendarItem(focusedElement));
 				});
 
@@ -2246,7 +2249,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(IsCalendarItem(focusedElement));
 				});
 			}
@@ -2293,7 +2296,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2305,7 +2308,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				CalendarHelper.CheckFocusedItem();
 				// the focused element is calendar monthitem, which is not public, we can not verify the date of that item
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Year);
 			});
 
@@ -2316,7 +2319,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				CalendarHelper.CheckFocusedItem();
 				// the focused element is calendar yearitem, which is not public, we can not verify the date of that item
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Decade);
 			});
 
@@ -2327,7 +2330,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				CalendarHelper.CheckFocusedItem();
 				// nothing is changed this time.
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Decade);
 			});
 
@@ -2337,7 +2340,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Year);
 			});
 
@@ -2348,7 +2351,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed right, ctrl + down, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2015, 2, 28)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Month);
@@ -2360,7 +2363,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed ctrl + down, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2015, 2, 28)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Month);
@@ -2408,7 +2411,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				int[] snapPoints // each mode we test the first 3 snap points
 				)[] testData)[] modes =
 				{
-				
+
 					(
 						"MonthViewPanel", "MonthViewScrollViewer", CalendarViewDisplayMode.Month,
 						new [] {
@@ -2418,7 +2421,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 										{
 											5, 9, 13
 										}
-									
+
 								),
 								// dimension 4 x 7, regular snap point (per row).
 								(
@@ -2426,7 +2429,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 										{
 											1, 2, 3
 										}
-									
+
 								)
 						}
 					),
@@ -2553,7 +2556,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					});
 
 
-					for (var i = 0; i < testData.snapPoints.Count(); i++)
+					for (var i = 0; i < testData.snapPoints.Length; i++)
 					{
 						LOG_OUTPUT("scroll down to next snap point and wait for viewchanged event.");
 						TestServices.InputHelper.ScrollMouseWheel(cv, -1);
@@ -2566,7 +2569,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 						await RunOnUIThread(() =>
 						{
 							var distance = scrollViewer.TransformToVisual(calendarPanel)
-								.TransformPoint(new Windows.Foundation.Point(0, 0));
+								.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 							distance.Y -= (float)(itemTopMargin);
 							LOG_OUTPUT("actual position %f, expected %f", distance.Y,
 								itemHeight * testData.snapPoints[i]);
@@ -2579,6 +2582,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __SKIA__
+		[Ignore("Currently flaky on Skia, part of #9080 epic")]
+#endif
 		public async Task CanChangeDisplayModeBeforeLoaded()
 		{
 			TestCleanupWrapper cleanup;
@@ -2860,7 +2869,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				nextButton = Button(TreeHelper.GetVisualChildByName(calendarView, "NextButton"));
 				TestServices.VERIFY_IS_NOT_NULL(nextButton);
 			});
-			pointerEnteredRegistration.Attach(nextButton, (s, e) => {
+			pointerEnteredRegistration.Attach(nextButton, (s, e) =>
+			{
 				pointerEnteredEvent.Set();
 			});
 
@@ -2949,7 +2959,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "decade");
 
-			var calendarIdentifiers = new []
+			var calendarIdentifiers = new[]
 				{
 					"PersianCalendar",
 					//"GregorianCalendar", // skip this. this is the default calendar and we've verified already.
@@ -3002,7 +3012,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 			  cv.RequestedTheme = xaml.ElementTheme.Light;
 			});
-	
+
 			LOG_OUTPUT("Validate light theme");
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "light");
@@ -3065,13 +3075,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 		[TestMethod]
 		[Ignore("ControlHelper.ValidateUIElementTree() not supported yet.")]
-		public async Task ValidateUIElementTree()
+		public void ValidateUIElementTree()
 		{
-			await ControlHelper.ValidateUIElementTree(
+			ControlHelper.ValidateUIElementTree(
 					new Size(400, 600),
-					1, 
+					1,
 				// Test setup.
-				async ()=>
+				async () =>
 			{
 				var helper = new CalendarHelper.CalendarViewHelper();
 				Xaml.Controls.CalendarView cv = await helper.GetCalendarView();
@@ -3133,11 +3143,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				cv.SelectedForeground = new SolidColorBrush(Windows.UI.Colors.Red);
-				cv.BorderThickness = ThicknessHelper.FromUniformLength(3);
+				cv.SelectedForeground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				cv.BorderThickness = new Thickness(3);
 				cv.HorizontalDayItemAlignment = HorizontalAlignment.Left;
 				cv.HorizontalFirstOfMonthLabelAlignment = HorizontalAlignment.Right;
-				cv.CalendarItemBorderBrush = new SolidColorBrush(Windows.UI.Colors.Yellow);
+				cv.CalendarItemBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow);
 				cv.CalendarViewDayItemStyle = (Style)(XamlReader.Load(
 					"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='CalendarViewDayItem'>" +
 					" <Setter Property='MinWidth' Value='50' />" +
@@ -3254,7 +3264,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.WaitForIdle();
 
-			foreach(var cid in cids)
+			foreach (var cid in cids)
 			{
 				LOG_OUTPUT("Begin Testing CalendarIdentifier to %s", cid);
 				// change calendar identifier
@@ -3301,7 +3311,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			var helper = new CalendarHelper.CalendarViewHelper();
 			CalendarView cv = await helper.GetCalendarView();
 			rootPanel = await CalendarHelper.CreateTestResources();
-			var defaultCalendar = new Windows.Globalization.Calendar();
+			var defaultCalendar = new global::Windows.Globalization.Calendar();
 			var today = defaultCalendar.GetDateTime();
 
 			//TestServices.WindowHelper.SetWindowSizeOverride(wf.Count(400, 400));
@@ -3314,7 +3324,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				rootPanel.Children.Add(cv);
 				// set MinDate/MaxDate to the maximium range that calendar can support.
 				cv.CalendarIdentifier = cid;
-				var cal = new Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
+				var cal = new global::Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
 					defaultCalendar.GetClock());
 				cal.SetToMin();
 				cv.MinDate = cal.GetDateTime();
@@ -3758,7 +3768,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var distance = scrollViewer.TransformToVisual(calendarPanel)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				VERIFY_ARE_VERY_CLOSE(distance.Y, 0, 1.0, "distance.Y 1");
 			});
 
@@ -3773,7 +3783,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var distance = scrollViewer.TransformToVisual(calendarPanel)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				var itemHeight = firstItem.ActualHeight;
 				var itemMargin = firstItem.Margin;
 				itemHeight += itemMargin.Top + itemMargin.Bottom;
@@ -3866,7 +3876,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 						"Tapped on the first yearitem Jan/2000, we should go back to month mode and dayitem 1/20/2000 should be focused.");
 					CalendarHelper.CheckFocusedItem();
 					var distance = monthScrollViewer.TransformToVisual(monthPanel)
-						.TransformPoint(new Windows.Foundation.Point(0, 0));
+						.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 					var itemHeight = firstItem.ActualHeight;
 					var itemMargin = firstItem.Margin;
 					itemHeight += itemMargin.Top + itemMargin.Bottom;
@@ -3921,8 +3931,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				cv.DayItemFontFamily = new Media.FontFamily("Segoe UI Symbol");
 				cv.DayItemFontSize = 50;
-				cv.DayItemFontStyle = Windows.UI.Text.FontStyle.Italic;
-				cv.DayItemFontWeight = Windows.UI.Text.FontWeights.ExtraBold;
+				cv.DayItemFontStyle = global::Windows.UI.Text.FontStyle.Italic;
+				cv.DayItemFontWeight = Microsoft.UI.Text.FontWeights.ExtraBold;
 				cv.UpdateLayout();
 
 				actualHeight = dayItem.ActualHeight;
@@ -4039,7 +4049,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var scrollViewer = ScrollViewer(helper.GetTemplateChild("MonthViewScrollViewer"));
-				Windows.Foundation.Point origin = new Point(0, 0);
+				global::Windows.Foundation.Point origin = new Point(0, 0);
 				var itemPos = firstVisibleItem.TransformToVisual(scrollViewer).TransformPoint(origin);
 				LOG_OUTPUT("actual position of display date is (%f, %f)., expected (1, 1)", itemPos.X, itemPos.Y);
 
@@ -4107,7 +4117,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedItem = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedItem = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				TestServices.VERIFY_IS_NOT_NULL(focusedItem);
 				// before this fix, it will focus on first item.
 				VERIFY_ARE_EQUAL(focusedItem, secondItem);
@@ -4130,7 +4140,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedItem = (CalendarViewDayItem)(Input.FocusManager.GetFocusedElement());
+				var focusedItem = (CalendarViewDayItem)(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				VERIFY_IS_NULL(focusedItem);
 			});
 
@@ -4165,10 +4175,10 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				cv.DayItemFontSize = 25;
 				cv.FirstOfMonthLabelFontSize = 20;
 				cv.IsGroupLabelVisible = true;
-				cv.FirstDayOfWeek = Windows.Globalization.DayOfWeek.Thursday;
-				cv.OutOfScopeBackground = new SolidColorBrush(Windows.UI.Colors.Red);
-				cv.CalendarItemBackground = new SolidColorBrush(Windows.UI.Colors.Blue);
-				cv.SelectedBorderBrush = new SolidColorBrush(Windows.UI.Colors.White);
+				cv.FirstDayOfWeek = global::Windows.Globalization.DayOfWeek.Thursday;
+				cv.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				cv.CalendarItemBackground = new SolidColorBrush(Microsoft.UI.Colors.Blue);
+				cv.SelectedBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.White);
 				cv.CalendarViewDayItemStyle = (Style)(XamlReader.Load(
 					"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='CalendarViewDayItem'>" +
 					" <Setter Property='MinWidth' Value='50' />" +
@@ -4195,14 +4205,14 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				// half transparent green background will be drawn on below Red background
 				dayDec31.Background =
-					new SolidColorBrush(Windows.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
+					new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
 				dayJan1.Background =
-					new SolidColorBrush(Windows.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
+					new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
 
 				ColorCollection colors = new ColorCollection();
 				for (int i = 0; i < 8; i++)
 				{
-					colors.Add(Windows.UI.Colors.Yellow);
+					colors.Add(Microsoft.UI.Colors.Yellow);
 				}
 
 				dayDec31.SetDensityColors(colors);
@@ -4270,7 +4280,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var yearScrollViewer = ScrollViewer(helper.GetTemplateChild("YearViewScrollViewer"));
 				var headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 				var offset = yearPanel.TransformToVisual(yearScrollViewer)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				var headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
 				//VERIFY_ARE_EQUAL(headText, "\u200e2050");
@@ -4284,7 +4294,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				cv.UpdateLayout();
 				cv.DisplayMode = CalendarViewDisplayMode.Year;
 				cv.UpdateLayout();
-				offset = yearPanel.TransformToVisual(yearScrollViewer).TransformPoint(new Windows.Foundation.Point(0, 0));
+				offset = yearPanel.TransformToVisual(yearScrollViewer).TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
 				//VERIFY_ARE_EQUAL(headText, "\u200e2000");
@@ -4469,7 +4479,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			CalendarView cv = await helper.GetCalendarView();
 
@@ -4508,7 +4518,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			CalendarView cv = await helper.GetCalendarView();
 
@@ -4586,13 +4596,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				var monthPanel = CalendarPanel(helper.GetTemplateChild("MonthViewPanel"));
 				var itemJan30 = CalendarViewDayItem(monthPanel.Children.GetAt(29));
 				VERIFY_ARE_EQUAL(focusedElement, itemJan30);
 
 				var scrollViewer = ScrollViewer(helper.GetTemplateChild("MonthViewScrollViewer"));
-				Windows.Foundation.Point origin = new Point(0, 0);
+				global::Windows.Foundation.Point origin = new Point(0, 0);
 				var itemPos = focusedElement.TransformToVisual(scrollViewer).TransformPoint(origin);
 
 				var itemHeight = FrameworkElement(focusedElement).ActualHeight;
@@ -4601,7 +4611,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				itemHeight += margin.Top + margin.Bottom;
 
-				Windows.Foundation.Point expectedPos = new Point((float)(margin.Left), (float)(itemHeight * 5 + margin.Top));
+				global::Windows.Foundation.Point expectedPos = new Point((float)(margin.Left), (float)(itemHeight * 5 + margin.Top));
 				LOG_OUTPUT("actual position of Jan30 is (%f, %f)., expected (%f, %f)", itemPos.X, itemPos.Y,
 					expectedPos.X, expectedPos.Y);
 
@@ -4759,7 +4769,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await RunOnUIThread(() =>
 				{
 					CalendarViewDayItem lastItem;
-					Windows.Foundation.Rect layoutSlot;
+					global::Windows.Foundation.Rect layoutSlot;
 					int lastIndex = monthPanel.Children.Count;
 
 					// find the last realized item. The realized item's layout slot will
@@ -4813,7 +4823,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				rootPanel.Children.Add(cv);
 				cv.MinDate = ConvertToDateTime(1, 2011, 12, 31); // Saturday
 				cv.MaxDate = ConvertToDateTime(1, 2012, 1, 2); // Monday
-				cv.FirstDayOfWeek = Windows.Globalization.DayOfWeek.Saturday;
+				cv.FirstDayOfWeek = global::Windows.Globalization.DayOfWeek.Saturday;
 			});
 
 			await WindowHelper.WaitForIdle();
@@ -4902,8 +4912,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "5"); //Today+Hover
-			// move mouse away to avoid any unexpected hover state.
-			TestServices.InputHelper.MoveMouse(new Windows.Foundation.Point(0, 0));
+																										 // move mouse away to avoid any unexpected hover state.
+			TestServices.InputHelper.MoveMouse(new global::Windows.Foundation.Point(0, 0));
 
 			TestServices.InputHelper.DynamicPressCenter(todayItem, 0, 0, PointerFinger.Finger1);
 
@@ -4949,7 +4959,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Year by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -4965,7 +4975,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Decade by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -5021,7 +5031,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Year by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -5036,7 +5046,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Decade by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -5059,7 +5069,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 			int changeCount = 0;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
@@ -5121,7 +5131,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		{
 			TestCleanupWrapper cleanup;
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Windows.UI.Color newColor = Windows.UI.Colors.Red;
+			global::Windows.UI.Color newColor = Microsoft.UI.Colors.Red;
 
 			Button flyoutButton = null;
 			Flyout flyout = null;
@@ -5217,7 +5227,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			var defaultCalendar = new Windows.Globalization.Calendar();
+			var defaultCalendar = new global::Windows.Globalization.Calendar();
 
 			(CalendarViewDisplayMode displayMode, string panelName, string scrollViewerName)[] modes = {
 				(
@@ -5245,9 +5255,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			LOG_OUTPUT("Begin Testing CalendarIdentifier: %s", cid);
 
-			foreach(var dimension in dimensions)
+			foreach (var dimension in dimensions)
 			{
-				CalendarPanel calendarPanel = null;
+				//CalendarPanel calendarPanel = null;
 				var helper = new CalendarHelper.CalendarViewHelper();
 
 				CalendarView cv = await helper.GetCalendarView();
@@ -5263,7 +5273,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 					// set the limits from current calendaridentifier on CalendarView.
 					cv.CalendarIdentifier = cid;
-					var cal = new Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
+					var cal = new global::Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
 						defaultCalendar.GetClock());
 
 					cal.SetToMin();
@@ -5289,7 +5299,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					nextButton = Button(helper.GetTemplateChild("NextButton"));
 				});
 
-				foreach(var mode in modes)
+				foreach (var mode in modes)
 				{
 					LOG_OUTPUT(" Change DisplayMode to %s", mode.displayMode.ToString());
 
@@ -5464,7 +5474,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			// The expected FlowDirection for each calendar id:
-			(string first, FlowDirection second)[] calendarFlowDirections = 
+			(string first, FlowDirection second)[] calendarFlowDirections =
 			{
 				(
 					"PersianCalendar", FlowDirection.RightToLeft
@@ -5765,11 +5775,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		static LinearGradientBrush MakeLinearGradientBrush(float startX, float endX)
 		{
 			GradientStop stop1 = new GradientStop();
-			stop1.Color = Windows.UI.Colors.Green;
+			stop1.Color = Microsoft.UI.Colors.Green;
 			stop1.Offset = 0.2;
 
 			GradientStop stop2 = new GradientStop();
-			stop2.Color = Windows.UI.Colors.Red;
+			stop2.Color = Microsoft.UI.Colors.Red;
 			stop2.Offset = 0.8;
 
 			GradientStopCollection stopCollection = new GradientStopCollection();
@@ -5777,8 +5787,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			stopCollection.Add(stop2);
 
 			LinearGradientBrush brush = new LinearGradientBrush();
-			brush.StartPoint = new Windows.Foundation.Point(startX, 0);
-			brush.EndPoint = new Windows.Foundation.Point(endX, 0);
+			brush.StartPoint = new global::Windows.Foundation.Point(startX, 0);
+			brush.EndPoint = new global::Windows.Foundation.Point(endX, 0);
 			brush.GradientStops = stopCollection;
 			return brush;
 		}

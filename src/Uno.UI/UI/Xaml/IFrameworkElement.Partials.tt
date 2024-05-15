@@ -8,7 +8,7 @@
 <#
 	List<string> DefaultPartials = new List<string>
 	{
-		@"..\..\UI\Xaml\FrameworkElement.EffectiveViewport.cs"
+		@"../Uno.UI/UI/Xaml/FrameworkElement.EffectiveViewport.cs"
 	};
 	
 	void GenerateDefaultPartialClasses(params string[] types)

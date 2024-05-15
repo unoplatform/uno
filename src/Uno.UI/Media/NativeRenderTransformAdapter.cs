@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -13,7 +13,7 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #elif UNO_REFERENCE_API
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #else
 using _View = System.Object;
 #endif
@@ -34,17 +34,31 @@ namespace Uno.UI.Media
 				? new Size(fwElt.ActualWidth, fwElt.ActualHeight)
 				: new Size(0, 0);
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 			// For backward compatibility we set the "View" property on the transform
 			// This is used only by animations
-			transform.View = owner;
+			if (transform is not null)
+			{
+				transform.View = owner;
+			}
+#endif
 
 			// Partial constructor
 			Initialized();
 
-			Transform.Changed += UpdateOnTransformPropertyChanged;
+			if (Transform is not null)
+			{
+				Transform.Changed += UpdateOnTransformPropertyChanged;
+			}
 		}
 
-		partial void Initialized(); 
+		internal NativeRenderTransformAdapter(_View owner, Transform transform, Point origin, Matrix3x2 flowDirectionTransform)
+			: this(owner, transform, origin)
+		{
+			FlowDirectionTransform = flowDirectionTransform;
+		}
+
+		partial void Initialized();
 
 		/// <summary>
 		/// The view on which this render transform has been declared
@@ -55,6 +69,8 @@ namespace Uno.UI.Media
 		/// The render transform
 		/// </summary>
 		public Transform Transform { get; }
+
+		public Matrix3x2 FlowDirectionTransform { get; private set; } = Matrix3x2.Identity;
 
 		/// <summary>
 		/// The current relative origin of this render transform.
@@ -76,6 +92,11 @@ namespace Uno.UI.Media
 		{
 			CurrentSize = size;
 			Update(isSizeChanged: true);
+		}
+
+		public void UpdateFlowDirectionTransform()
+		{
+			Update();
 		}
 
 		private void UpdateOnTransformPropertyChanged(object snd, EventArgs args)

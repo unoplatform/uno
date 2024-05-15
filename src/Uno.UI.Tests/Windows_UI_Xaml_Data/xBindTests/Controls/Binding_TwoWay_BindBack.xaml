@@ -4,13 +4,14 @@
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls"
 	  mc:Ignorable="d">
 
 	<Grid>
-		<TwoWay_BindBack_TestObject x:Name="myObject"
+		<local:TwoWay_BindBack_TestObject x:Name="myObject"
 									x:FieldModifier="public"
 									MyProperty="{x:Bind sys:String.Format('{0}', MyIntProperty), BindBack=MyBindBack, Mode=TwoWay}" />
-		<TwoWay_BindBack_TestObject x:Name="myObjectNestedProperty"
+		<local:TwoWay_BindBack_TestObject x:Name="myObjectNestedProperty"
 									x:FieldModifier="public"
 									MyProperty="{x:Bind sys:String.Format('{0}', Model.MyIntProperty), BindBack=Model.MyBindBack, Mode=TwoWay}" />
 	</Grid>

@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Linq;
@@ -10,17 +9,23 @@ using System.Reflection;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Server.Processors.Helpers;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	internal static class CompilationWorkspaceProvider
 	{
-		private static string MSBuildBasePath;
+		private static string MSBuildBasePath = "";
 
-		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(string projectPath, IReporter reporter, string[] metadataUpdateCapabilities, CancellationToken cancellationToken)
+		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(
+			string projectPath,
+			IReporter reporter,
+			string[] metadataUpdateCapabilities,
+			Dictionary<string, string> properties,
+			CancellationToken cancellationToken)
 		{
 			var taskCompletionSource = new TaskCompletionSource<(Solution, WatchHotReloadService)>(TaskCreationOptions.RunContinuationsAsynchronously);
-			CreateProject(taskCompletionSource, projectPath, reporter, metadataUpdateCapabilities, cancellationToken);
+			CreateProject(taskCompletionSource, projectPath, reporter, metadataUpdateCapabilities, properties, cancellationToken);
 
 			return taskCompletionSource.Task;
 		}
@@ -30,39 +35,59 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
+			Dictionary<string, string> properties,
 			CancellationToken cancellationToken)
 		{
-			var intermediatePath = Path.Combine(Path.GetDirectoryName(projectPath), "obj", "hr") + Path.DirectorySeparatorChar;
-
-			Directory.CreateDirectory(intermediatePath);
+			if (properties.TryGetValue("UnoEnCLogPath", out var EnCLogPath))
+			{
+				// Sets Roslyn's environment variable for troubleshooting HR, see:
+				// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
+				Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", EnCLogPath);
+			}
 
 			var globalProperties = new Dictionary<string, string> {
-				// Override the output path so custom compilation lists do not override the
-				// main compilation caches, which can invalidate incremental compilation.
-				{ "IntermediateOutputPath", intermediatePath },
-
 				// Mark this compilation as hot-reload capable, so generators can act accordingly
 				{ "IsHotReloadHost", "True" },
 			};
 
-			var workspace = MSBuildWorkspace.Create(globalProperties);
-
-			workspace.WorkspaceFailed += (_sender, diag) =>
+			foreach (var property in properties)
 			{
-				if (diag.Diagnostic.Kind == WorkspaceDiagnosticKind.Warning)
+				// Don't set the runtime identifier since it propagates to libraries as well
+				// which do not build using the RuntimeIdentifier being set. For instance, a head
+				// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
+				// dependent projects, causing the HR engine to search for pdb/dlls in
+				// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
+				if (!property.Key.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
 				{
-					reporter.Verbose($"MSBuildWorkspace warning: {diag.Diagnostic}");
+					globalProperties.Add(property.Key, property.Value);
 				}
-				else
-				{
-					if (!diag.Diagnostic.ToString().StartsWith("[Failure] Found invalid data while decoding"))
-					{
-						taskCompletionSource.TrySetException(new InvalidOperationException($"Failed to create MSBuildWorkspace: {diag.Diagnostic}"));
-					}
-				}
-			};
+			}
 
-			await workspace.OpenProjectAsync(projectPath, cancellationToken: cancellationToken);
+			MSBuildWorkspace workspace = null!;
+			for (var i = 3; i > 0; i--)
+			{
+				try
+				{
+					workspace = MSBuildWorkspace.Create(globalProperties);
+
+					workspace.WorkspaceFailed += (_sender, diag) =>
+					{
+						// In some cases, load failures may be incorrectly reported such as this one:
+						// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
+						// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
+						reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
+					};
+
+					await workspace.OpenProjectAsync(projectPath, cancellationToken: cancellationToken);
+					break;
+				}
+				catch (InvalidOperationException) when (i > 1)
+				{
+					// When we load the work space right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
+					// We retry a few times to let the build complete.
+					await Task.Delay(5_000, cancellationToken);
+				}
+			}
 			var currentSolution = workspace.CurrentSolution;
 			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 			await hotReloadService.StartSessionAsync(currentSolution, cancellationToken);
@@ -80,11 +105,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			taskCompletionSource.TrySetResult((currentSolution, hotReloadService));
 		}
 
-		public static void InitializeRoslyn()
+		public static void InitializeRoslyn(string? workDir)
 		{
 			RegisterAssemblyLoader();
 
-			MSBuildBasePath = BuildMSBuildPath();
+			MSBuildBasePath = BuildMSBuildPath(workDir);
+
+			var version = GetDotnetVersion(workDir);
+			if (version.Major != typeof(object).Assembly.GetName().Version?.Major)
+			{
+				if (typeof(CompilationWorkspaceProvider).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Change the TargetFramework version to match net{version.Major}.0 in your project file.");
+				}
+
+				throw new InvalidOperationException("Project TargetFramework version mismatch");
+			}
 
 			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));
 
@@ -96,9 +132,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			}
 		}
 
-		private static string BuildMSBuildPath()
+		private static Version GetDotnetVersion(string? workDir)
 		{
-			var result = ProcessHelper.RunProcess("dotnet.exe", "--info");
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--version", workDir);
+
+			if (result.exitCode == 0)
+			{
+				var reader = new StringReader(result.output);
+
+				if (Version.TryParse(reader.ReadLine()?.Split('-').FirstOrDefault(), out var version))
+				{
+					return version;
+				}
+			}
+
+			throw new InvalidOperationException("Failed to read dotnet version");
+		}
+
+		private static string BuildMSBuildPath(string? workDir)
+		{
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--info", workDir);
 
 			if (result.exitCode == 0)
 			{
@@ -131,13 +184,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				}
 
 				var assembly = new AssemblyName(e.Name);
-				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.CodeBase).LocalPath);
+				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.Location).LocalPath) ?? "";
 
 				Console.WriteLine($"Searching for [{assembly}] from [{basePath}]");
 
 				// Ignore resource assemblies for now, we'll have to adjust this
 				// when adding globalization.
-				if (assembly.Name.EndsWith(".resources"))
+				if (assembly.Name is not null && assembly.Name.EndsWith(".resources", StringComparison.Ordinal))
 				{
 					return null;
 				}
@@ -161,7 +214,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 					if (duplicates.Length != 0)
 					{
-						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.CodeBase).JoinBy("; ")}]");
+						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.Location).JoinBy("; ")}]");
 					}
 
 					return loadedAsm[0];
@@ -171,7 +224,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					return loadedAsm[0];
 				}
 
-				Assembly LoadAssembly(string filePath)
+				Assembly? LoadAssembly(string filePath)
 				{
 					if (File.Exists(filePath))
 					{
@@ -179,7 +232,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 						{
 							var output = Assembly.LoadFrom(filePath);
 
-							Console.WriteLine($"Loaded [{output.GetName()}] from [{output.CodeBase}]");
+							Console.WriteLine($"Loaded [{output.GetName()}] from [{output.Location}]");
 
 							return output;
 						}
@@ -212,4 +265,3 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 	}
 }
-#endif

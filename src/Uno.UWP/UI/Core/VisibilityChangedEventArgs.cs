@@ -13,6 +13,6 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Gets whether the window is visible or not.
 		/// </summary>
-		public bool Visible { get; }
+		public bool Visible { get; internal init; }
 	}
 }

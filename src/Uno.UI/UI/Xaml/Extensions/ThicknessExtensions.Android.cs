@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using Android.Content;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-    public static class ThicknessExtensions
-    {
+	public static class ThicknessExtensions
+	{
 	}
 }

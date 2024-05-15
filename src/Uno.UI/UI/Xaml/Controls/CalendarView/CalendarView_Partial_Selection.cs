@@ -1,16 +1,16 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Linq;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
 using Uno.Extensions;
-using DateTime = System.DateTimeOffset;
-using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.CalendarView, Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 			CalendarViewDayItem ppItem = null;
 
 			var pMonthpanel = m_tpMonthViewItemHost.Panel;
-			if (pMonthpanel is {})
+			if (pMonthpanel is { })
 			{
 				int index = -1;
 				DependencyObject spChildAsI;
@@ -30,11 +30,11 @@ namespace Windows.UI.Xaml.Controls
 				if (index >= 0)
 				{
 					spChildAsI = pMonthpanel.ContainerFromIndex(index);
-					if (spChildAsI is {})
+					if (spChildAsI is { })
 					{
 						CalendarViewDayItem spContainer;
 
-						spContainer = (CalendarViewDayItem) spChildAsI;
+						spContainer = (CalendarViewDayItem)spChildAsI;
 						ppItem = spContainer;
 					}
 				}
@@ -42,6 +42,11 @@ namespace Windows.UI.Xaml.Controls
 
 			return ppItem;
 		}
+
+		internal DateTime GetMaxDate()
+			=> m_maxDate;
+		internal DateTime GetMinDate()
+			=> m_minDate;
 
 		internal void OnSelectDayItem(CalendarViewDayItem pItem)
 		{
@@ -69,11 +74,11 @@ namespace Windows.UI.Xaml.Controls
 						m_isSelectedDatesChangingInternally = true;
 
 						global::System.Diagnostics.Debug.Assert(size <= 1 ||
-						                                        selectionMode == CalendarViewSelectionMode.Multiple);
+																selectionMode == CalendarViewSelectionMode.Multiple);
 
 						date = pItem.Date;
 
-						found = m_tpSelectedDates.IndexOf(date, out index);
+						m_tpSelectedDates.IndexOf(date, out index, out found);
 						if (found)
 						{
 							// when user deselect an item, we remove all equivalent dates from selectedDates.
@@ -124,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			m_focusStateAfterDisplayModeChanged = focusState;
 
-			if (displayMode == CalendarViewDisplayMode.Year && m_tpMonthViewItemHost.Panel is {})
+			if (displayMode == CalendarViewDisplayMode.Year && m_tpMonthViewItemHost.Panel is { })
 			{
 				// when we switch back to MonthView, we try to keep the same day and use the selected month and year (and era)
 				CopyDate(
@@ -224,7 +229,7 @@ namespace Windows.UI.Xaml.Controls
 					CalendarViewDayItem spChild;
 
 					spChild = GetContainerByDate(date);
-					if (spChild is {})
+					if (spChild is { })
 					{
 #if DEBUG
 						bool isBlackout = false;
@@ -280,7 +285,7 @@ namespace Windows.UI.Xaml.Controls
 					CalendarViewDayItem spChild;
 
 					spChild = GetContainerByDate(it);
-					if (spChild is {})
+					if (spChild is { })
 					{
 						spChild.SetIsSelected(false);
 					}
@@ -296,11 +301,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SelectedDatesChangedEventSourceType pEventSource = null;
 				CalendarViewSelectedDatesChangedEventArgs spEventArgs;
-				ValueTypeCollection<DateTime> spAddedDates;
-				ValueTypeCollection<DateTime> spRemovedDates;
+				ValueTypeCollection<DateTimeOffset> spAddedDates;
+				ValueTypeCollection<DateTimeOffset> spRemovedDates;
 
-				spAddedDates = new ValueTypeCollection<DateTime>();
-				spRemovedDates = new ValueTypeCollection<DateTime>();
+				spAddedDates = new ValueTypeCollection<DateTimeOffset>();
+				spRemovedDates = new ValueTypeCollection<DateTimeOffset>();
 
 				foreach (var it in addedDates)
 				{
@@ -313,8 +318,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				spEventArgs = new CalendarViewSelectedDatesChangedEventArgs();
-				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTime>;
-				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTime>;
+				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTimeOffset>;
+				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTimeOffset>;
 				GetSelectedDatesChangedEventSourceNoRef(out pEventSource);
 				pEventSource?.Invoke(this, spEventArgs);
 
@@ -341,7 +346,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					AutomationPeer spAutomationPeer;
 					spAutomationPeer = GetAutomationPeer();
-					if (spAutomationPeer is {})
+					if (spAutomationPeer is { })
 					{
 						(spAutomationPeer as CalendarViewAutomationPeer).RaiseSelectionEvents(spEventArgs);
 					}
@@ -384,16 +389,11 @@ namespace Windows.UI.Xaml.Controls
 		internal void IsSelected(DateTime date, out bool pIsSelected)
 		{
 			uint index = 0;
-			bool found = false;
-
-			found = m_tpSelectedDates.IndexOf(date, out index);
-
-			pIsSelected = found;
-
+			m_tpSelectedDates.IndexOf(date, out index, out pIsSelected);
 		}
 
 		private void OnSelectedDatesChanged(
-			IObservableVector<DateTime> pSender,
+			IObservableVector<DateTimeOffset> pSender,
 			IVectorChangedEventArgs e)
 		{
 			// only raise event for the changes from external.
@@ -412,25 +412,25 @@ namespace Windows.UI.Xaml.Controls
 			switch (action)
 			{
 				case DirectUI.TrackableDateCollection.CollectionChanging.ItemInserting:
-				{
-					// when inserting an item, we should verify the new adding date is not blackout.
-					// also we need to verify this adding operation doesn't break the limition of Selection mode.
-					ValidateSelectingDateIsNotBlackout(addingDate);
-
-					uint size = 0;
-					CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
-
-					selectionMode = SelectionMode;
-					size = (uint)m_tpSelectedDates.Count;
-
-					// if we already have 1 item selected in Single mode, or the selection mode is None, we can't select any more dates.
-					if ((selectionMode == CalendarViewSelectionMode.Single && size > 0)
-						|| (selectionMode == CalendarViewSelectionMode.None))
 					{
-						//ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES);
-						throw new InvalidOperationException("ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES");
+						// when inserting an item, we should verify the new adding date is not blackout.
+						// also we need to verify this adding operation doesn't break the limition of Selection mode.
+						ValidateSelectingDateIsNotBlackout(addingDate);
+
+						uint size = 0;
+						CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
+
+						selectionMode = SelectionMode;
+						size = (uint)m_tpSelectedDates.Count;
+
+						// if we already have 1 item selected in Single mode, or the selection mode is None, we can't select any more dates.
+						if ((selectionMode == CalendarViewSelectionMode.Single && size > 0)
+							|| (selectionMode == CalendarViewSelectionMode.None))
+						{
+							//ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES);
+							throw new InvalidOperationException("ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES");
+						}
 					}
-				}
 					break;
 				case DirectUI.TrackableDateCollection.CollectionChanging.ItemChanging:
 					// when item is changing, we don't change the total number of selected dates, so we
@@ -450,7 +450,7 @@ namespace Windows.UI.Xaml.Controls
 			CalendarViewDayItem spChild;
 
 			spChild = GetContainerByDate(date);
-			if (spChild is {})
+			if (spChild is { })
 			{
 				bool isBlackout = false;
 

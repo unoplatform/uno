@@ -19,10 +19,6 @@ namespace WebAssembly
 
 		// Disable inlining to avoid the interpreter to evaluate an internal call that may not be available
 		[MethodImpl(MethodImplOptions.NoInlining)]
-		private static string MonoInvokeJS(string str, out int exceptionResult) => InvokeJS(str, out exceptionResult);
-
-		// Disable inlining to avoid the interpreter to evaluate an internal call that may not be available
-		[MethodImpl(MethodImplOptions.NoInlining)]
 		private static string NetCoreInvokeJS(string str, out int exceptionResult)
 			=> Interop.Runtime.InvokeJS(str, out exceptionResult);
 
@@ -32,9 +28,7 @@ namespace WebAssembly
 		internal static string InvokeJS(string str)
 		{
 			int exceptionResult;
-			var result = PlatformHelper.IsNetCore
-				? NetCoreInvokeJS(str, out exceptionResult)
-				: MonoInvokeJS(str, out exceptionResult);
+			var result = NetCoreInvokeJS(str, out exceptionResult);
 
 			if (exceptionResult != 0)
 			{

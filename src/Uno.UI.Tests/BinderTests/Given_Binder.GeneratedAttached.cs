@@ -2,9 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,11 +14,10 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Uno.Conversion;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using Uno.UI.Xaml;
 
@@ -81,14 +79,14 @@ namespace Uno.UI.Tests.BinderTests
 	public static partial class Binder_GeneratedAttached_Attached
 	{
 		[GeneratedDependencyProperty(DefaultValue = 21, AttachedBackingFieldOwner = typeof(Binder_GeneratedAttached_Data), Attached = true)]
-		public static readonly DependencyProperty MyValueProperty = CreateMyValueProperty();
+		public static DependencyProperty MyValueProperty { get; } = CreateMyValueProperty();
 
 		public static int GetMyValue(DependencyObject instance) => GetMyValueValue(instance);
 
 		public static void SetMyValue(DependencyObject instance, int value) => SetMyValueValue(instance, value);
 
 		[GeneratedDependencyProperty(DefaultValue = 21, AttachedBackingFieldOwner = typeof(Binder_GeneratedAttached_Data), ChangedCallback = true, Attached = true)]
-		public static readonly DependencyProperty MyValue2Property = CreateMyValue2Property();
+		public static DependencyProperty MyValue2Property { get; } = CreateMyValue2Property();
 
 		public static int GetMyValue2(DependencyObject instance) => GetMyValue2Value(instance);
 
@@ -96,7 +94,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public static void OnMyValue2Changed(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if(instance is Binder_GeneratedAttached_Data data)
+			if (instance is Binder_GeneratedAttached_Data data)
 			{
 				data.Value2ChangedCallback++;
 			}

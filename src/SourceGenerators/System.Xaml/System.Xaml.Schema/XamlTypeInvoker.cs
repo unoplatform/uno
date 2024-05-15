@@ -24,6 +24,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Markup;
 
@@ -52,7 +53,7 @@ namespace Uno.Xaml.Schema
 		void ThrowIfUnknown ()
 		{
 			if (type == null || type.UnderlyingType == null)
-				throw new NotSupportedException (String.Format ("Current operation is valid only when the underlying type on a XamlType is known, but it is unknown for '{0}'", type));
+				throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Current operation is valid only when the underlying type on a XamlType is known, but it is unknown for '{0}'", type));
 		}
 
 		public EventHandler<XamlSetMarkupExtensionEventArgs> SetMarkupExtensionHandler {
@@ -77,7 +78,7 @@ namespace Uno.Xaml.Schema
 			// FIXME: this method lookup should be mostly based on GetAddMethod(). At least iface method lookup must be done there.
 			if (type != null && type.UnderlyingType != null) {
 				if (!xct.IsCollection) // not sure why this check is done only when UnderlyingType exists...
-					throw new NotSupportedException (String.Format ("Non-collection type '{0}' does not support this operation", xct));
+					throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Non-collection type '{0}' does not support this operation", xct));
 				if (ct.IsAssignableFrom (type.UnderlyingType))
 					mi = GetAddMethod (type.SchemaContext.GetXamlType (item.GetType ()));
 			}
@@ -95,7 +96,7 @@ namespace Uno.Xaml.Schema
 			}
 
 			if (mi == null)
-				throw new InvalidOperationException (String.Format ("The collection type '{0}' does not have 'Add' method", ct));
+				throw new InvalidOperationException (String.Format (CultureInfo.InvariantCulture, "The collection type '{0}' does not have 'Add' method", ct));
 			
 			mi.Invoke (instance, new object [] {item});
 		}

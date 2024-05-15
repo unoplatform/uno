@@ -8,18 +8,18 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-#if XAMARIN_ANDROID
+using Microsoft.UI.Xaml.Media;
+#if __ANDROID__
 using Android.Views;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class StackPanel : Panel
 	{
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged))]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged))]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
@@ -138,6 +138,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Orientation DependencyProperty
 
+		internal override Orientation? PhysicalOrientation => Orientation;
+
 		public Orientation Orientation
 		{
 			get { return (Orientation)GetValue(OrientationProperty); }
@@ -145,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Orientation.  This enables animation, styling, binding, etc...
-		public static DependencyProperty OrientationProperty { get ; } =
+		public static DependencyProperty OrientationProperty { get; } =
 			DependencyProperty.Register(
 				"Orientation",
 				typeof(Orientation),
@@ -171,10 +173,10 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SpacingProperty, value);
 		}
 
-		public static DependencyProperty SpacingProperty { get ; } =
+		public static DependencyProperty SpacingProperty { get; } =
 			DependencyProperty.Register(
-				name: "Spacing", 
-				propertyType: typeof(double), 
+				name: "Spacing",
+				propertyType: typeof(double),
 				ownerType: typeof(StackPanel),
 				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: 0.0,

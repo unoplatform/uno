@@ -14,11 +14,3 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 		}
 	}
 }
-
-#if NETSTANDARD2_0
-namespace System.Runtime.CompilerServices
-{
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-	internal sealed class ModuleInitializerAttribute : System.Attribute { }
-}
-#endif

@@ -1,7 +1,7 @@
-using System.Linq;
+﻿using System.Linq;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
@@ -16,14 +16,14 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		private void TargetListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var item = e.AddedItems.First();
-			var list = sender as Windows.UI.Xaml.Controls.ListView;
+			var list = sender as Microsoft.UI.Xaml.Controls.ListView;
 			var container = list.ContainerFromItem(item);
 
 			if (container != null)
 			{
-				var transform = (container as Windows.UI.Xaml.UIElement).TransformToVisual(list);
+				var transform = (container as Microsoft.UI.Xaml.UIElement).TransformToVisual(list);
 				var offset = transform.TransformPoint(new Point());
-				Windows.UI.Xaml.Controls.Canvas.SetTop(TrackerView, offset.Y);
+				Microsoft.UI.Xaml.Controls.Canvas.SetTop(TrackerView, offset.Y);
 			}
 		}
 	}

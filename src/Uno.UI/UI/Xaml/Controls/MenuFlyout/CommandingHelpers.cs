@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 
 using ICommand = System.Windows.Input.ICommand;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class CommandingHelpers
 	{
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 				if (target is IDependencyObjectStoreProvider dosp)
 				{
 					IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
-					dosp.Store.SetBinding(iconProperty, new Binding {Path = "IconSource", Source = uiCommand, Converter = converter});
+					dosp.Store.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
 				}
 			}
 		}
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (target is IDependencyObjectStoreProvider dosp)
 				{
-					dosp.Store.SetBinding(iconSourceProperty, new Binding {Path = "IconSource", Source = uiCommand});
+					dosp.Store.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
 				}
 			}
 		}

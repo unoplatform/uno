@@ -1,13 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Android.Runtime;
 using Android.Views;
 using Android.Util;
-using Uno.Presentation.Resources;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.ComponentModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views.Animations;
 using Uno.Collections;
@@ -55,7 +54,7 @@ namespace Uno.UI.Controls
 			InitializeBinder();
 		}
 
-		protected override void OnLayoutCore(bool changed, int l, int t, int r, int b)
+		protected override void OnLayoutCore(bool changed, int l, int t, int r, int b, bool localIsLayoutRequested)
 		{
 
 		}
@@ -112,6 +111,8 @@ namespace Uno.UI.Controls
 		/// observer.</remarks>
 		public new virtual void AddView(View view)
 		{
+			view.TrySetParent(this);
+
 			_childrenShadow.Add(view);
 			base.AddViewFast(view);
 			OnChildViewAdded(view);
@@ -125,6 +126,8 @@ namespace Uno.UI.Controls
 		/// observer.</remarks>
 		public new virtual void AddView(View view, int index)
 		{
+			view.TrySetParent(this);
+
 			_childrenShadow.Insert(index, view);
 			base.AddViewFast(view, index);
 			OnChildViewAdded(view);
@@ -144,6 +147,7 @@ namespace Uno.UI.Controls
 				{
 					fe.IsManagedLoaded = false;
 					fe.PerformOnUnloaded();
+					fe.SetParent(null);
 				}
 			}
 
@@ -151,6 +155,7 @@ namespace Uno.UI.Controls
 			base.RemoveViewFast(view);
 
 			ResetDependencyObjectParent(view);
+			OnChildViewRemoved(view);
 		}
 
 		/// <summary>
@@ -169,6 +174,7 @@ namespace Uno.UI.Controls
 				{
 					fe.IsManagedLoaded = false;
 					fe.PerformOnUnloaded();
+					fe.SetParent(null);
 				}
 			}
 
@@ -176,6 +182,7 @@ namespace Uno.UI.Controls
 			base.RemoveViewAtFast(index);
 
 			ResetDependencyObjectParent(removedView);
+			OnChildViewRemoved(removedView);
 		}
 
 		/// <summary>
@@ -236,8 +243,16 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Invoked when a child view has been added.
 		/// </summary>
-		/// <param name="view">The view being removed</param>
+		/// <param name="view">The view being added</param>
 		protected virtual void OnChildViewAdded(View view)
+		{
+		}
+
+		/// <summary>
+		/// Invoked when a child view has been removed.
+		/// </summary>
+		/// <param name="view">The view being removed</param>
+		protected virtual void OnChildViewRemoved(View view)
 		{
 		}
 
@@ -260,7 +275,7 @@ namespace Uno.UI.Controls
 			return !_shouldPreventRequestLayout;
 		}
 
-		private bool _shouldPreventRequestLayout = false;
+		private bool _shouldPreventRequestLayout;
 
 		internal IDisposable PreventRequestLayout()
 		{

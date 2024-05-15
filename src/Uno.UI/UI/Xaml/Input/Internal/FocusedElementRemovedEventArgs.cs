@@ -5,13 +5,13 @@
 #nullable enable
 
 using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Input
 {
 	internal class FocusedElementRemovedEventArgs : EventArgs
-    {
-        public FocusedElementRemovedEventArgs(DependencyObject? focusedElement, DependencyObject? currentNextFocusableElement)
+	{
+		public FocusedElementRemovedEventArgs(DependencyObject? focusedElement, DependencyObject? currentNextFocusableElement)
 		{
 			OldFocusedElement = focusedElement;
 			NewFocusedElement = currentNextFocusableElement;
@@ -20,5 +20,5 @@ namespace Uno.UI.Xaml.Input
 		public DependencyObject? OldFocusedElement { get; }
 
 		public DependencyObject? NewFocusedElement { get; set; }
-    }
+	}
 }

@@ -2,7 +2,7 @@
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,25 +11,21 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
-#if NET6_0_OR_GREATER
+using View = Microsoft.UI.Xaml.UIElement;
 using ObjCRuntime;
 #endif
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class NativeScrollContentPresenter : IScrollContentPresenter, INativeScrollContentPresenter
 	{

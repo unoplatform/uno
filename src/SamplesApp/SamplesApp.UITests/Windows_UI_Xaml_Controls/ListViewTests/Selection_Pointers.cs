@@ -60,6 +60,11 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 
 		App.TapCoordinates(d.Rect.CenterX, d.Rect.CenterY);
 
+#if !IS_RUNTIME_UI_TESTS
+		//	Delay may be required for Xamarin.UITest for iOS
+		await Task.Delay(250);
+#endif
+
 		var pageEntered = App.Marked("_pageEntered").GetDependencyPropertyValue<string>("Text");
 		var itemEntered = App.Marked("_itemEntered").GetDependencyPropertyValue<string>("Text");
 		var pageExited = App.Marked("_pageExited").GetDependencyPropertyValue<string>("Text");

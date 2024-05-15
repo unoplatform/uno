@@ -1,15 +1,15 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
+using NativeMethods = __Windows.Phone.Devices.Notification.VibrationDevice.NativeMethods;
 
 namespace Windows.Phone.Devices.Notification
 {
 	public partial class VibrationDevice
 	{
-		private const string JsType = "Windows.Phone.Devices.Notification.VibrationDevice";
-		private static VibrationDevice _instance = null;
-		private static bool _initializationAttempted = false;
+		private static VibrationDevice _instance;
+		private static bool _initializationAttempted;
 
 		private VibrationDevice()
 		{
@@ -19,12 +19,8 @@ namespace Windows.Phone.Devices.Notification
 		{
 			if (!_initializationAttempted && _instance == null)
 			{
-				var command = $"{JsType}.initialize()";
-				var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-				if (bool.Parse(initialized) == true)
-				{
-					_instance = new VibrationDevice();
-				}
+				_instance = NativeMethods.Initialize() ? new() : null;
+
 				_initializationAttempted = true;
 			}
 			return _instance;
@@ -38,9 +34,7 @@ namespace Windows.Phone.Devices.Notification
 
 		private void WasmVibrate(TimeSpan duration)
 		{
-			var command = $"{JsType}.vibrate(\"{(long)duration.TotalMilliseconds}\");";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.Vibrate($"{(long)duration.TotalMilliseconds}");
 		}
 	}
 }
-#endif

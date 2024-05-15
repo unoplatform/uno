@@ -10,7 +10,7 @@ namespace Uno.UI
 		internal static Android.Graphics.RectF ToRectF(this Windows.Foundation.Rect rect)
 		{
 			return new Android.Graphics.RectF((float)rect.X, (float)rect.Y, (float)(rect.X + rect.Width), (float)(rect.Y + rect.Height));
-        }
+		}
 
 		internal static Android.Graphics.Path ToPath(this Windows.Foundation.Rect rect)
 		{

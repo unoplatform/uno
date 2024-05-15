@@ -1,5 +1,5 @@
 ﻿using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,8 +9,8 @@ namespace Uno.UI.DataBinding
 	/// <summary>
 	/// Defines a bindable property with its owner type
 	/// </summary>
-    internal class BindablePropertyDescriptor
-    {
+	internal class BindablePropertyDescriptor
+	{
 		private BindablePropertyDescriptor(IBindableType ownerType, IBindableProperty property)
 		{
 			OwnerType = ownerType;

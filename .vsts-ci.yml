@@ -5,6 +5,7 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
       
   paths:
     include:
@@ -15,6 +16,8 @@ trigger:
     # don't trigger the CI if only docs files are changed
     - doc/*
     - '**/*.md'
+    - '*.md'
+    - 'build/cSpell.json'
     
 pr: 
   branches:
@@ -23,6 +26,7 @@ pr:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
       
   paths:
     include:
@@ -33,107 +37,35 @@ pr:
     # don't trigger the CI if only docs files are changed
     - doc/*
     - '**/*.md'
+    - '*.md'
+    - 'build/cSpell.json'
 
 resources:
   containers:
   - container: nv-bionic-wasm
     image: unoplatform/wasm-build:3.0
+    # Ensures that Chromium has enough room to avoid net::ERR_INSUFFICIENT_RESOURCES errors
+    options: "--shm-size=2gb"
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   windows2019HostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
-  windowsScaledPool: 'Windows2022-20211130'
+  windowsScaledPool: 'Windows2022-20240421'
   linuxVMImage: 'ubuntu-latest'
-  macOSVMImage: 'macOS-11'
-  macOSVMImage_UITests: 'macOS-11'
-  xCodeRoot: '/Applications/Xcode_13.2.1.app'
-  XamarinSDKVersion: 6_12_12
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_13.2.1.app'
-  XamarinSDKVersion_iOS_UITests: 6_12_12
+  linuxScaledPool: 'Ubuntu2204-20230918'
+  macOSVMImage: 'macOS-13'
+  macOSVMImage_UITests: 'macOS-12'
+  xCodeRoot: '/Applications/Xcode_15.2.app'
+  XamarinSDKVersion: 6_12_24
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_14.1.app'
+  XamarinSDKVersion_iOS_UITests: 6_12_24
 
-jobs:
-- template: build/ci/.azure-devops-commitsar.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
+  # Offline validation to improve build performance
+  NUGET_CERT_REVOCATION_MODE: offline
 
-- template: build/ci/.azure-devops-pipeline-validations.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
+  # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
+  #enable_package_cache: true
 
-- template: build/ci/.azure-devops-package-generic.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
-
-- template: build/ci/.azure-devops-package-net6-win.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
-
-- template: build/ci/.azure-devops-package.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
-
-- template: build/ci/.azure-devops-project-template-tests.yml
-  parameters:
-    vmImageWindows: '$(windows2022HostedVMImage)'
-    vmImageLinux: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-uap.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-unit-tests.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-skia-tests.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-    vmMacImage: '$(macOSVMImage)'
-    poolName: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-wasm-uitests.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-wasm-cs9-preview-validation.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-macos.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
-
-- template: build/ci/.azure-devops-android-tests.yml
-  parameters:
-    vmWindowsImage: '$(windows2019HostedVMImage)'
-    vmMacOSImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
-
-- template: build/ci/.azure-devops-ios-tests.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    vmImageTest: '$(macOSVMImage_UITests)'
-    xCodeRootBuild: '$(xCodeRoot)'
-    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
-    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
-
-- template: build/ci/.azure-devops-screenshot-compare.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-vs2022-vsix.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+stages:
+- template: build/ci/.azure-devops-stages.yml

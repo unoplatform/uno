@@ -1,18 +1,27 @@
-using System;
+﻿using System;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Represents a switch that can be toggled between two states.
 	/// </summary>
+	[ContentProperty(Name = nameof(Header))]
 	public partial class ToggleSwitch : Control, IFrameworkTemplatePoolAware
 	{
+		/// <summary>
+		/// This is a workaround for the template pooling issue where we change IsOn when the template is recycled.
+		/// This prevents incorrect event raising but is not a "real" solution. Pooling could still cause issues.
+		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+		/// </summary>
+		private bool _suppressToggled;
+
 		/// <summary>
 		/// Initializes a new instance of the ToggleSwitch class.
 		/// </summary>
@@ -38,6 +47,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLoadedPartial();
 
+#if false
 		private bool IsNativeTemplate
 		{
 			get
@@ -51,6 +61,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			}
 		}
+#endif
 
 		#region Header (DP)
 
@@ -190,36 +201,18 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public ToggleSwitchTemplateSettings TemplateSettings { get; private set; }
 
-		private double GetEndAbsoluteOffset()
+		public void OnTemplateRecycled()
 		{
-			var minOffset = 0;
-			var maxOffset = GetMaxOffset();
-			var startOffset = IsOn ? maxOffset : 0;
-			var absoluteOffset = startOffset;
-			absoluteOffset = Math.Max(minOffset, absoluteOffset);
-			absoluteOffset = Math.Min(maxOffset, absoluteOffset);
-			return absoluteOffset;
-		}
-
-		private double GetMaxOffset()
-		{
-			if (_tpKnobBounds == null || _tpKnob == null)
+			try
 			{
-				return 0;
+				_suppressToggled = true;
+				IsOn = false;
 			}
-
-			return _tpKnobBounds.ActualWidth - _tpKnob.ActualWidth;
-		}
-
-		private void ForceSwitchKnobEndPosition()
-		{
-			if (_spKnobTransform != null)
+			finally
 			{
-				_spKnobTransform.X = GetEndAbsoluteOffset();
+				_suppressToggled = false;
 			}
 		}
-
-		public void OnTemplateRecycled() => IsOn = false;
 
 		internal void AutomationPeerToggle() => IsOn = !IsOn;
 	}

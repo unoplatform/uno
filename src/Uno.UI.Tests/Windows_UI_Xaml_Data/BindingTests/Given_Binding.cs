@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
@@ -22,7 +22,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
 		}
@@ -34,7 +34,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
 		}
@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
 		}
@@ -60,7 +60,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
+			var button = SUT.FindName("button") as Microsoft.UI.Xaml.Controls.Button;
 
 			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
 		}
@@ -92,10 +92,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
+			var button = SUT.FindName("button") as Microsoft.UI.Xaml.Controls.Button;
 
 			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
-			 
+
 			var nestedDO = Binding_ElementName_In_Template_ItemsControl_NonUINested_Attached.GetNonUIObject(button);
 
 			Assert.IsNotNull(nestedDO);
@@ -107,13 +107,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 		{
 			var SUT = new Binding_ElementName_NonUINested_GlobalResources();
 
-			var primaryActionsList = SUT.FindName("PrimaryActionsList") as Windows.UI.Xaml.Controls.ItemsControl;
+			var primaryActionsList = SUT.FindName("PrimaryActionsList") as Microsoft.UI.Xaml.Controls.ItemsControl;
 
 			primaryActionsList.ItemsSource = new[] { "test" };
 
 			SUT.ForceLoaded();
 
-			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
+			var button = SUT.FindName("button") as Microsoft.UI.Xaml.Controls.Button;
 
 			Assert.AreEqual(primaryActionsList.Tag, button.Tag);
 
@@ -130,7 +130,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.ForceLoaded();
 
-			var tb = SUT.FindName("innerTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
+			var tb = SUT.FindName("innerTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
 		}
@@ -197,6 +197,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			binding.RelativeSource.Should().NotBeNull();
 			binding.RelativeSource.Mode.Should().Be(RelativeSourceMode.None);
 			binding.Source.Should().Be("Source");
+		}
+
+		[TestMethod]
+		public void When_Binding_Empty_Quotes()
+		{
+			var SUT = new Binding_Empty_Quotes();
+			SUT.ForceLoaded();
+			SUT.sut.Text.Should().Be("Current DataContext: MyDataContext");
+		}
+
+		[TestMethod]
+		public void When_TemplateBinding_Attached_Property()
+		{
+			var SUT = new Binding_TemplateBinding_AttachedDP();
+			SUT.ForceLoaded();
+			var tb = SUT.tb;
+			var sv = (ScrollViewer)tb.GetTemplateRoot();
+
+			Assert.AreEqual(ScrollBarVisibility.Auto, sv.HorizontalScrollBarVisibility);
+			Assert.AreEqual(ScrollBarVisibility.Hidden, sv.VerticalScrollBarVisibility);
+
+			Assert.AreEqual(ScrollBarVisibility.Auto, (ScrollBarVisibility)tb.GetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty));
+			Assert.AreEqual(ScrollBarVisibility.Hidden, (ScrollBarVisibility)tb.GetValue(ScrollViewer.VerticalScrollBarVisibilityProperty));
 		}
 	}
 }

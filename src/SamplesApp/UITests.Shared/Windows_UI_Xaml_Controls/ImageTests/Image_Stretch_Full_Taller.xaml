@@ -9,77 +9,71 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Description for sample of Image_Stretch_Full_Taller">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer>
-					<StackPanel>
-						<!--UniformToFill-->
-						<TextBlock Text="Stretch=UniformToFill and Image.Width=320 + Image.Height=200"
-								   HorizontalAlignment="Center"
-								   TextAlignment="Center"
-								   TextWrapping="Wrap"
-								   Margin="0,20,0,0" />
-						<Border BorderThickness="1"
-								BorderBrush="DarkBlue"
-								Background="Orange"
-								Margin="20">
-							<Image Width="320"
-								   Height="200"
-								   Source="ms-appx:///Assets/test_image_836_1252.png"
-								   Stretch="UniformToFill" />
-						</Border>
+	<ScrollViewer>
+		<StackPanel>
+			<!--UniformToFill-->
+			<TextBlock Text="Stretch=UniformToFill and Image.Width=320 + Image.Height=200"
+							   HorizontalAlignment="Center"
+							   TextAlignment="Center"
+							   TextWrapping="Wrap"
+							   Margin="0,20,0,0" />
+			<Border BorderThickness="1"
+							BorderBrush="DarkBlue"
+							Background="Orange"
+							Margin="20">
+				<Image Width="320"
+							   Height="200"
+							   Source="ms-appx:///Assets/test_image_836_1252.png"
+							   Stretch="UniformToFill" />
+			</Border>
 
-						<!--Uniform-->
-						<TextBlock Text="Stretch=Uniform and Image.Width=320 + Image.Height=200"
-								   HorizontalAlignment="Center"
-								   TextAlignment="Center"
-								   TextWrapping="Wrap"
-								   Margin="0,20,0,0" />
-						<Border BorderThickness="1"
-								BorderBrush="DarkBlue"
-								Background="Orange"
-								Margin="20">
-							<Image Width="320"
-								   Height="200"
-								   Source="ms-appx:///Assets/test_image_836_1252.png"
-								   Stretch="Uniform" />
-						</Border>
+			<!--Uniform-->
+			<TextBlock Text="Stretch=Uniform and Image.Width=320 + Image.Height=200"
+							   HorizontalAlignment="Center"
+							   TextAlignment="Center"
+							   TextWrapping="Wrap"
+							   Margin="0,20,0,0" />
+			<Border BorderThickness="1"
+							BorderBrush="DarkBlue"
+							Background="Orange"
+							Margin="20">
+				<Image Width="320"
+							   Height="200"
+							   Source="ms-appx:///Assets/test_image_836_1252.png"
+							   Stretch="Uniform" />
+			</Border>
 
-						<!--Fill-->
-						<TextBlock Text="Stretch=Fill and Image.Width=320 + Image.Height=200"
-								   HorizontalAlignment="Center"
-								   TextAlignment="Center"
-								   TextWrapping="Wrap"
-								   Margin="0,20,0,0" />
-						<Border BorderThickness="1"
-								BorderBrush="DarkBlue"
-								Background="Orange"
-								Margin="20">
-							<Image Width="320"
-								   Height="200"
-								   Source="ms-appx:///Assets/test_image_836_1252.png"
-								   Stretch="Fill" />
-						</Border>
+			<!--Fill-->
+			<TextBlock Text="Stretch=Fill and Image.Width=320 + Image.Height=200"
+							   HorizontalAlignment="Center"
+							   TextAlignment="Center"
+							   TextWrapping="Wrap"
+							   Margin="0,20,0,0" />
+			<Border BorderThickness="1"
+							BorderBrush="DarkBlue"
+							Background="Orange"
+							Margin="20">
+				<Image Width="320"
+							   Height="200"
+							   Source="ms-appx:///Assets/test_image_836_1252.png"
+							   Stretch="Fill" />
+			</Border>
 
-						<!--None-->
-						<TextBlock Text="Stretch=None and Image.Width=320 + Image.Height=200"
-								   HorizontalAlignment="Center"
-								   TextAlignment="Center"
-								   TextWrapping="Wrap"
-								   Margin="0,20,0,0" />
-						<Border BorderThickness="1"
-								BorderBrush="DarkBlue"
-								Background="Orange"
-								Margin="20">
-							<Image Width="320"
-								   Height="200"
-								   Source="ms-appx:///Assets/test_image_836_1252.png"
-								   Stretch="None" />
-						</Border>
-					</StackPanel>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+			<!--None-->
+			<TextBlock Text="Stretch=None and Image.Width=320 + Image.Height=200"
+							   HorizontalAlignment="Center"
+							   TextAlignment="Center"
+							   TextWrapping="Wrap"
+							   Margin="0,20,0,0" />
+			<Border BorderThickness="1"
+							BorderBrush="DarkBlue"
+							Background="Orange"
+							Margin="20">
+				<Image Width="320"
+							   Height="200"
+							   Source="ms-appx:///Assets/test_image_836_1252.png"
+							   Stretch="None" />
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

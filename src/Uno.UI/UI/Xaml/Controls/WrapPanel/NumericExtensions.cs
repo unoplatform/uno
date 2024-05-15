@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Numeric utility methods used by controls.  These methods are similar in
@@ -22,6 +22,13 @@ namespace Windows.UI.Xaml.Controls
 			// We actually consider anything within an order of magnitude of
 			// epsilon to be zero
 			return Math.Abs(value) < 2.2204460492503131E-15;
+		}
+
+		public static bool IsOne(this double value)
+		{
+			// We actually consider anything within an order of magnitude of
+			// epsilon to be zero
+			return Math.Abs(value - 1.0) < 2.2204460492503131E-15;
 		}
 
 		/// <summary>
@@ -108,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Floating point representation of the union.
 			/// </summary>
-			[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification="Intentional aliasing")]
+			[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "Intentional aliasing")]
 			[FieldOffset(0)]
 			internal double FloatingValue;
 

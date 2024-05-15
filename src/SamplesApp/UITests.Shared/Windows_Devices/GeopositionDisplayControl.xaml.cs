@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using UITests.Shared.Helpers;
 using Windows.Devices.Geolocation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -21,9 +21,9 @@ namespace UITests.Shared.Windows_Devices
 			get { return (Geoposition)GetValue(GeopositionProperty); }
 			set { SetValue(GeopositionProperty, value); }
 		}
-		
-		public static DependencyProperty GeopositionProperty { get ; } =
-			DependencyProperty.Register(nameof(Geoposition), typeof(Geoposition), typeof(GeopositionDisplayControl), new PropertyMetadata(null, GeopositionChanged));		
+
+		public static DependencyProperty GeopositionProperty { get; } =
+			DependencyProperty.Register(nameof(Geoposition), typeof(Geoposition), typeof(GeopositionDisplayControl), new PropertyMetadata(null, GeopositionChanged));
 
 
 		private static void GeopositionChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)

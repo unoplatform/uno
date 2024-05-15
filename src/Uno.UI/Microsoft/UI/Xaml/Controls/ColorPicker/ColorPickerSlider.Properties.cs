@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorPickerSlider
 	{
@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(ColorChannelProperty, value);
 		}
 
-		public static DependencyProperty ColorChannelProperty { get ; } =
+		public static DependencyProperty ColorChannelProperty { get; } =
 			DependencyProperty.Register(
 				nameof(ColorChannel),
 				typeof(ColorPickerHsvChannel),

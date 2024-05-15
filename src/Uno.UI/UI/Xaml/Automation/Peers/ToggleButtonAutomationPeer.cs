@@ -1,11 +1,11 @@
-using Windows.UI.Xaml.Controls.Primitives;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+﻿using Microsoft.UI.Xaml.Controls.Primitives;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IToggleProvider
 	{
-		public ToggleButtonAutomationPeer(ToggleButton element) : base(element)
+		public ToggleButtonAutomationPeer(ToggleButton owner) : base(owner)
 		{
 		}
 
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			if (IsEnabled())
 			{
-				((ToggleButton)Owner).AutomationPeerToggle();
+				((ToggleButton)Owner).AutomationToggleButtonOnToggle();
 			}
 		}
 

@@ -5,7 +5,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal partial interface ILayouterElement
 {
@@ -29,7 +29,7 @@ internal partial interface ILayouterElement
 			if (StretchAffectsMeasure)
 			{
 				if (HorizontalAlignment == HorizontalAlignment.Stretch &&
-				    !double.IsPositiveInfinity(availableSize.Width))
+					!double.IsPositiveInfinity(availableSize.Width))
 				{
 					measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
 				}

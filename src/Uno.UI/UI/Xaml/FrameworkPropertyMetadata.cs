@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Windows.UI.Xaml.Data;
+﻿using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines the metadata to use for a dependency property for framework elements
@@ -32,6 +28,13 @@ namespace Windows.UI.Xaml
 		) : base(defaultValue)
 		{
 			Options = options.WithDefault();
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
+			CoerceValueCallback coerceValueCallback
+		) : base(defaultValue, coerceValueCallback)
+		{
 		}
 
 		public FrameworkPropertyMetadata(
@@ -166,7 +169,7 @@ namespace Windows.UI.Xaml
 				_isDefaultUpdateSourceTriggerSet = true;
 			}
 		}
-		
+
 		protected internal override void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
 		{
 			base.Merge(baseMetadata, dp);

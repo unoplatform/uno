@@ -8,7 +8,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter, INativeScrollContentPresenter
 	{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			get => NativePanel?.Padding ?? default;
 			set
 			{
-				if (NativePanel is {} native)
+				if (NativePanel is { } native)
 				{
 					native.Padding = value;
 				}

@@ -7,18 +7,18 @@
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:localConverters="using:GenericApp.Views.Converters"
 					xmlns:u="using:Uno.UI.Controls"
-					xmlns:xamarin="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:android="30ef0562-d328-4dcb-8c3c-e52ae5de2ee6"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					mc:Ignorable="d android win android">
 
-	<xamarin:Style x:Key="DefaultComboBoxItemStyle"
+	<not_win:Style x:Key="DefaultComboBoxItemStyle"
 				   OtherProperty="test"
 				   win:TargetType="ComboBoxItem"
-				   xamarin:TargetType="SelectorItem">
-	</xamarin:Style>
+				   not_win:TargetType="SelectorItem">
+	</not_win:Style>
 
 
 </ResourceDictionary>

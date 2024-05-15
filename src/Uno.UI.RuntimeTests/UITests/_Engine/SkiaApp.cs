@@ -8,8 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Web.Http;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
@@ -46,7 +46,12 @@ public partial class SkiaApp : IApp
 
 	public async Task RunAsync(string metadataName)
 	{
-		if (Type.GetType(metadataName + ", SamplesApp.Skia") is { } sampleType
+		var assemblyName = "SamplesApp.Skia";
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			assemblyName = "UnoIslands" + assemblyName;
+		}
+		if (Type.GetType($"{metadataName}, {assemblyName}") is { } sampleType
 			&& Activator.CreateInstance(sampleType) is FrameworkElement sample)
 		{
 			var root = new Grid
@@ -214,7 +219,7 @@ public partial class SkiaApp : IApp
 						};
 					}
 
-					yield return new ()
+					yield return new()
 					{
 						PointerInfo = new()
 						{
@@ -249,6 +254,6 @@ public partial class SkiaApp : IApp
 	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
 		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
-	private Exception NotSupported([CallerMemberName] string operation = null)
+	private Exception NotSupported([CallerMemberName] string operation = "")
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");
 }

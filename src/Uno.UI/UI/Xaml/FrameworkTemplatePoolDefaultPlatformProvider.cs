@@ -7,7 +7,7 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatformProvider
 {
@@ -31,7 +31,7 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 	public TimeSpan Now
 		=> _watch.Elapsed;
 
-	public bool CanUseMemoryManager
+	public virtual bool CanUseMemoryManager
 		=> _canUseMemoryManager;
 
 	public ulong AppMemoryUsage
@@ -54,7 +54,7 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 
 	private void UpdateMemoryUsage()
 	{
-		if(Now - _lastMemorySnapshot > MemoryUsageUpdateResolution)
+		if (Now - _lastMemorySnapshot > MemoryUsageUpdateResolution)
 		{
 			_lastMemorySnapshot = Now;
 			_appMemoryUsageLimit = MemoryManager.AppMemoryUsageLimit;
@@ -65,6 +65,6 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 	public Task Delay(TimeSpan duration)
 		=> Task.Delay(duration);
 
-	public void Schedule(IdleDispatchedHandler action)
-		=> CoreDispatcher.Main.RunIdleAsync(action);
+	public void Schedule(Action action)
+		=> NativeDispatcher.Main.Enqueue(action, NativeDispatcherPriority.Idle);
 }

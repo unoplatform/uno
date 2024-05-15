@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 
@@ -37,13 +38,32 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
+		/// Creates a transformed point using a <see cref="Matrix3x2"/>.
+		/// </summary>
+		/// <param name="x">The x coordinate of the point to transform</param>
+		/// <param name="y">The y coordinate of the point to transform</param>
+		/// <param name="matrix">The matrix to use to transform the point</param>
+		/// <returns>A new rectangle</returns>
+		public static Point Transform(this Matrix3x2 matrix, double x, double y, double originX, double originY)
+		{
+			if (matrix.IsIdentity)
+			{
+				return new Point(x, y);
+			}
+
+			return new Point(
+				(x * matrix.M11 * originX) + (y * matrix.M21 * originY) + matrix.M31,
+				(x * matrix.M12 * originX) + (y * matrix.M22 * originY) + matrix.M32);
+		}
+
+		/// <summary>
 		/// Creates a transformed bounds <see cref="Rect"/> using a <see cref="Matrix3x2"/>.
 		/// </summary>
 		/// <param name="rect">The rectangle to transform</param>
 		/// <param name="matrix">The matrix to use to transform the <paramref name="rect"/></param>
 		/// <returns>A new rectangle</returns>
 		public static Rect Transform(this Matrix3x2 matrix, Rect rect)
-		{ 
+		{
 			var leftTop = matrix.Transform(rect.Left, rect.Top);
 			var leftBottom = matrix.Transform(rect.Left, rect.Bottom);
 			var rightTop = matrix.Transform(rect.Right, rect.Top);
@@ -55,6 +75,43 @@ namespace Uno.Extensions
 			return new Rect(point1, point2);
 		}
 
+		/// <summary>
+		/// Creates a transformed bounds <see cref="Rect"/> using a <see cref="Matrix3x2"/>.
+		/// </summary>
+		/// <param name="matrix">The matrix to use to transform the <paramref name="rect"/></param>
+		/// <param name="rect">The rectangle to transform</param>
+		/// <param name="origin">The relative origin to use to apply transform.</param>
+		/// <returns>A new rectangle</returns>
+		public static Rect Transform(this Matrix3x2 matrix, Rect rect, Point origin)
+			=> Transform(matrix.CenterOn(origin, rect.Size), rect);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Matrix3x2 CenterOn(this Matrix3x2 matrix, Point relativeOrigin, Size size)
+		{
+			if (matrix.IsIdentity || relativeOrigin == default)
+			{
+				return matrix;
+			}
+
+			var origin = new Vector2((float)(relativeOrigin.X * size.Width), (float)(relativeOrigin.Y * size.Height));
+
+			return Matrix3x2.CreateTranslation(origin * -1) * matrix * Matrix3x2.CreateTranslation(origin);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Matrix3x2 CenterOn(this Matrix3x2 matrix, Point absoluteOrigin)
+		{
+			if (matrix.IsIdentity || absoluteOrigin == default)
+			{
+				return matrix;
+			}
+
+			var origin = new Vector2((float)absoluteOrigin.X, (float)absoluteOrigin.Y);
+
+			return Matrix3x2.CreateTranslation(origin * -1) * matrix * Matrix3x2.CreateTranslation(origin);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Matrix3x2 Inverse(this Matrix3x2 matrix)
 		{
 			if (matrix.IsIdentity)

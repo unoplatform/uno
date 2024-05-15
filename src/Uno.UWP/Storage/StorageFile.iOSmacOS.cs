@@ -14,10 +14,11 @@ namespace Windows.Storage
 		{
 			if (uri.Scheme != "ms-appx")
 			{
-				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
+				// ms-appdata is handled by the caller.
+				throw new InvalidOperationException("Uri is not using the ms-appx or ms-appdata scheme");
 			}
 
-			var path = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' });
+			var path = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart('/');
 
 			var directoryName = global::System.IO.Path.GetDirectoryName(path);
 			var fileName = global::System.IO.Path.GetFileNameWithoutExtension(path);

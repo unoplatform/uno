@@ -1,0 +1,10 @@
+{
+	"profiles": {
+		"uno51recommended.Windows (Unpackaged)": {
+			"commandName": "Project"
+		},
+		"uno51recommended.Windows (Package)": {
+			"commandName": "MsixPackage"
+		}
+	}
+}

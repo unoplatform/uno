@@ -36,11 +36,11 @@ namespace Windows.Media.Playback
 	{
 		private AndroidMediaPlayer _player;
 
-		private bool _isPlayRequested = false;
-		private bool _isPlayerPrepared = false;
-		private bool _hasValidHolder = false;
+		private bool _isPlayRequested;
+		private bool _isPlayerPrepared;
+		private bool _hasValidHolder;
 		private VideoStretch _currentStretch = VideoStretch.Uniform;
-		private bool _isUpdatingStretch = false;
+		private bool _isUpdatingStretch;
 
 		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor();
 		private IScheduledFuture _scheduledFuture;
@@ -50,13 +50,16 @@ namespace Windows.Media.Playback
 
 		const string MsAppXScheme = "ms-appx";
 
-		public virtual IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
+		internal uint NaturalVideoHeight { get; private set; }
+		internal uint NaturalVideoWidth { get; private set; }
+
+		public IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
 
 		private void Initialize()
 		{
 			((VideoSurface)RenderSurface).AddOnLayoutChangeListener(this);
 
-			// Register intent to pause media when audio become noisy (unplugged headphones, for example) 
+			// Register intent to pause media when audio become noisy (unplugged headphones, for example)
 			_noisyAudioStreamReceiver = new AudioPlayerBroadcastReceiver(this);
 			var intentFilter = new IntentFilter(AudioManager.ActionAudioBecomingNoisy);
 			Application.Context.RegisterReceiver(_noisyAudioStreamReceiver, intentFilter);
@@ -116,7 +119,7 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackStateChanged += OnStatusChanged;
 		}
 
-		protected virtual void InitializeSource()
+		private void InitializeSource()
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
@@ -155,8 +158,6 @@ namespace Windows.Media.Playback
 				SetVideoSource(uri);
 
 				_player.PrepareAsync();
-
-				MediaOpened?.Invoke(this, null);
 			}
 			catch (global::System.Exception ex)
 			{
@@ -180,7 +181,7 @@ namespace Windows.Media.Playback
 
 			if (uri.IsLocalResource())
 			{
-				var filename = global::System.IO.Path.GetFileName(uri.LocalPath);
+				var filename = uri.PathAndQuery.TrimStart('/');
 				var afd = Application.Context.Assets.OpenFd(filename);
 				_player.SetDataSource(afd.FileDescriptor, afd.StartOffset, afd.Length);
 				return;
@@ -214,7 +215,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		public virtual void Play()
+		public void Play()
 		{
 			if (Source == null || _player == null)
 			{
@@ -251,7 +252,9 @@ namespace Windows.Media.Playback
 		private void StartPlayingHandler()
 		{
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			var handler = new Handler();
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 			var runnable = new Runnable(() => { handler.Post(OnPlaying); });
@@ -268,29 +271,38 @@ namespace Windows.Media.Playback
 
 		public void OnPrepared(AndroidMediaPlayer mp)
 		{
-			PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
-
-			VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
-
-			if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+			if (mp is not null)
 			{
-				UpdateVideoStretch(_currentStretch);
+				PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
+				NaturalVideoWidth = (uint)mp.VideoWidth;
+				NaturalVideoHeight = (uint)mp.VideoHeight;
+				NaturalVideoDimensionChanged?.Invoke(this, null);
 
-				if (_isPlayRequested)
+				IsVideo = mp.GetTrackInfo()?.Any(x => x.TrackType == MediaTrackType.Video) == true;
+
+				if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 				{
-					_player.Start();
-					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					UpdateVideoStretch(_currentStretch);
+
+					if (_isPlayRequested)
+					{
+						_player.Start();
+						PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					}
+					else
+					{
+						// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
+						_player.Start();
+						_player.Pause();
+						_player.SeekTo(0);
+						PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+					}
 				}
-				else
-				{
-					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					_player.Start();
-					_player.Pause();
-					_player.SeekTo(0);
-				}
+
+				_isPlayerPrepared = true;
+
+				MediaOpened?.Invoke(this, null);
 			}
-
-			_isPlayerPrepared = true;
 		}
 
 		public bool OnError(AndroidMediaPlayer mp, MediaError what, int extra)
@@ -322,17 +334,12 @@ namespace Windows.Media.Playback
 
 		private void OnMediaFailed(global::System.Exception ex = null, string message = null)
 		{
-			MediaFailed?.Invoke(this, new MediaPlayerFailedEventArgs()
-			{
-				Error = MediaPlayerError.Unknown,
-				ExtendedErrorCode = ex,
-				ErrorMessage = message ?? ex?.Message
-			});
+			MediaFailed?.Invoke(this, new(MediaPlayerError.Unknown, message ?? ex?.Message, ex));
 
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
-		public virtual void Pause()
+		public void Pause()
 		{
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 			{
@@ -341,7 +348,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		public virtual void Stop()
+		public void Stop()
 		{
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing || PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
 			{
@@ -370,7 +377,7 @@ namespace Windows.Media.Playback
 			_player?.SetVolume(volume, volume);
 		}
 
-		public virtual TimeSpan Position
+		public TimeSpan Position
 		{
 			get
 			{
@@ -385,20 +392,23 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		public bool IsVideo { get; set; }
+
 		internal void UpdateVideoStretch(VideoStretch stretch)
 		{
 			_currentStretch = stretch;
 
-			if (_player != null && RenderSurface is SurfaceView surface && !_isUpdatingStretch)
+			if (_player != null
+				&& RenderSurface is SurfaceView surface
+				&& surface.Parent is View parentView
+				&& !_isUpdatingStretch)
 			{
 				try
 				{
 					_isUpdatingStretch = true;
 
-					var parent = (View)surface.Parent;
-
-					var width = parent.Width;
-					var height = parent.Height;
+					var width = parentView.Width;
+					var height = parentView.Height;
 					var parentRatio = (double)width / global::System.Math.Max(1, height);
 
 					var videoWidth = _player.VideoWidth;

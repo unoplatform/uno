@@ -4,18 +4,19 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Lights;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo(
+	[Sample(
 		"Windows.Devices",
-		"Lamp",
-		description: "Demonstrates the Windows.Devices.Lights.Lamp",
-		viewModelType: typeof(LampTestsViewModel))]
+		Name = "Lamp",
+		Description = "Demonstrates the Windows.Devices.Lights.Lamp",
+		ViewModelType = typeof(LampTestsViewModel),
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class LampTests : Page
 	{
 		public LampTests()
@@ -29,7 +30,7 @@ namespace UITests.Shared.Windows_Devices
 		private Lamp _lamp = null;
 		private string _lampStatus;
 
-		public LampTestsViewModel(CoreDispatcher dispatcher) :
+		public LampTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) :
 			base(dispatcher)
 		{
 		}

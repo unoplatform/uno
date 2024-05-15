@@ -6,9 +6,9 @@
     xmlns:controls="using:XamlGenerationTests.Shared.Controls"
 	xmlns:ios="http://uno.ui/ios"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:android="http://uno.ui/android"
-    xmlns:xamarin="http://uno.ui/xamarin"
-    mc:Ignorable="ios android xamarin"
+    xmlns:android="http://uno.ui/android#using:Android.Widget"
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="ios android not_win"
 	xmlns:System="using:System"
 	xmlns:f="using:Windows.Foundation">
 
@@ -46,11 +46,11 @@
 		<TextBlock x:Name="myTextBlock" />
 	</DataTemplate>
 
-	<Style x:Key="baseGridStyle" TargetType="Grid" xamarin:PartialOverride="true">
+	<Style x:Key="baseGridStyle" TargetType="Grid" not_win:PartialOverride="true">
 		<Setter Property="Background" Value="{ThemeResource ThemedColor}" />
 	</Style>
 
-	<Style x:Key="fromUno" TargetType="Grid" xamarin:PartialOverride="true">
+	<Style x:Key="fromUno" TargetType="Grid" not_win:PartialOverride="true">
 		<!-- Test for resource coming from generic.xaml -->
         <Setter Property="Height" Value="{StaticResource AppBarExpandButtonThemeHeight}" />
     </Style>
@@ -75,7 +75,7 @@
 	<x:String x:Key="testTimeSpanString">00:00:42</x:String>
 	<System:String x:Key="shortDateFormatString">{0:d}</System:String>
 
-	<x:DoubleAnimation x:Key="testDoubleAnination"
+	<DoubleAnimation x:Key="testDoubleAnination"
 					   Duration="{StaticResource testTimeSpanString}" />
 
 	<GradientStop x:Key="GradientStop-with-dash" Color="Yellow" />

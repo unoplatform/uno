@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class GroupStyle
 	{
 		public DataTemplate HeaderTemplate { get; set; }
 
-#if false || false || NET461 || __WASM__
+#if false || false || IS_UNIT_TESTS || __WASM__
 		[Uno.NotImplemented]
 #endif
 		public DataTemplateSelector HeaderTemplateSelector { get; set; }

@@ -17,7 +17,7 @@ namespace SamplesApp.UITests.TestFramework
 		public void When_Retry_On_Timeout()
 		{
 			Console.WriteLine($"When_Retry_On_Timeout: {++When_Retry_On_Timeout_Count}");
-			if (When_Retry_On_Timeout_Count < 3)
+			if (When_Retry_On_Timeout_Count < AutoRetryAttribute.AutoRetryDefaultCount)
 			{
 				System.Threading.Thread.Sleep(4000);
 			}
@@ -31,7 +31,7 @@ namespace SamplesApp.UITests.TestFramework
 		{
 			Console.WriteLine($"When_Retry_On_Unhandled_Exception {++When_Retry_On_Unhandled_Exception_Count}");
 
-			if (When_Retry_On_Unhandled_Exception_Count < 3)
+			if (When_Retry_On_Unhandled_Exception_Count < AutoRetryAttribute.AutoRetryDefaultCount)
 			{
 				throw new NotImplementedException();
 			}
@@ -48,7 +48,7 @@ namespace SamplesApp.UITests.TestFramework
 		{
 			Console.WriteLine($"Setup: {++Setup_Count}");
 
-			if (Setup_Count < 3)
+			if (Setup_Count < AutoRetryAttribute.AutoRetryDefaultCount)
 			{
 				throw new NotImplementedException();
 			}
@@ -71,7 +71,7 @@ namespace SamplesApp.UITests.TestFramework
 		{
 			Console.WriteLine($"TearDown: {++TearDown_Count}");
 
-			if (TearDown_Count < 3)
+			if (TearDown_Count < AutoRetryAttribute.AutoRetryDefaultCount)
 			{
 				throw new NotImplementedException();
 			}

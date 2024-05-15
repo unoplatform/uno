@@ -3,23 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using nint = System.Int32;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -37,7 +26,7 @@ namespace Uno.UI.Controls.Legacy
 
 			set
 			{
-				if(!(value is ListViewLayout))
+				if (!(value is ListViewLayout))
 				{
 					throw new InvalidOperationException("ListView only supports ListViewLayout");
 				}
@@ -79,7 +68,7 @@ namespace Uno.UI.Controls.Legacy
 		#endregion
 
 		public ListView()
-			: base (new RectangleF (), new ListViewLayout ())
+			: base(new RectangleF(), new ListViewLayout())
 		{
 			Initialize();
 		}
@@ -119,24 +108,24 @@ namespace Uno.UI.Controls.Legacy
 		#endregion
 
 		#region Properties Changed
-		protected override void OnSourceChanged (ListViewBaseSource oldSource, ListViewBaseSource newSource)
+		protected override void OnSourceChanged(ListViewBaseSource oldSource, ListViewBaseSource newSource)
 		{
-			base.OnSourceChanged (oldSource, newSource);
-			
+			base.OnSourceChanged(oldSource, newSource);
+
 			var newListViewSource = newSource as ListViewSource;
-			if (newListViewSource!= null)
+			if (newListViewSource != null)
 			{
 				Layout.Source = new WeakReference<ListViewBaseSource>(newListViewSource);
 			}
-        }
+		}
 
 		public void OnSelectionHasChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!e.AddedItems.Equals (e.RemovedItems)) 
-            {
-                SetBindingValue ((e.AddedItems.Count > 0) ? e.AddedItems [0] : null, "SelectedItem");
-            }
-        }
+		{
+			if (!e.AddedItems.Equals(e.RemovedItems))
+			{
+				SetBindingValue((e.AddedItems.Count > 0) ? e.AddedItems[0] : null, "SelectedItem");
+			}
+		}
 		#endregion
 
 		private void SetDefaultItemSize()

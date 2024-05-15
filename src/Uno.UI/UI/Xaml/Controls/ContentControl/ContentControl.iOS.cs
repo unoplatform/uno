@@ -4,19 +4,10 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using nint = System.Int32;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{

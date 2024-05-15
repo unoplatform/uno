@@ -5,23 +5,17 @@
 // This file is a C# translation of the NavigationViewHeader.cpp file from WinUI controls.
 //
 
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Hosting;
-#else
 using Windows.UI.Xaml.Hosting;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewItemHeader : NavigationViewItemBase
+	public partial class NavigationViewItemHeader : NavigationViewItemBase
 	{
 		private long m_splitViewIsPaneOpenChangedRevoker;
 		private long m_splitViewDisplayModeChangedRevoker;
 		private bool m_isClosedCompact;
 
-		public NavigationViewItemHeader() 
+		public NavigationViewItemHeader()
 		{
 			DefaultStyleKey = typeof(NavigationViewItemHeader);
 

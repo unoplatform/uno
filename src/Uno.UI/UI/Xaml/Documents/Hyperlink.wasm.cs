@@ -1,35 +1,36 @@
 ﻿using System;
 using System.Linq;
 using Uno.UI;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Hyperlink
 	{
 		public Hyperlink() : base("a")
 		{
 			UpdateNavigationProperties(null, _defaultNavigationTarget);
-			
+
 			PointerPressed += TextBlock.OnPointerPressed;
 			PointerReleased += TextBlock.OnPointerReleased;
 			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
-			ResourceResolver.ApplyResource(this, Hyperlink.ForegroundProperty, "SystemControlHyperlinkTextBrush", isThemeResourceExtension: true);
-
+			OnUnderlineStyleChanged();
 		}
 
 		#region NavigationTarget DependencyProperty
 		private const NavigationTarget _defaultNavigationTarget = NavigationTarget.NewDocument;
 
-		public NavigationTarget NavigationTarget
+		// TODO: This was changed from public to internal. We need a way to expose it.
+		// See https://github.com/unoplatform/uno/issues/14074 for info.
+		internal NavigationTarget NavigationTarget
 		{
 			get => (NavigationTarget)GetValue(NavigationTargetProperty);
 			set => SetValue(NavigationTargetProperty, value);
 		}
 
-		public static DependencyProperty NavigationTargetProperty { get ; } = DependencyProperty.Register(
+		internal static DependencyProperty NavigationTargetProperty { get; } = DependencyProperty.Register(
 			"NavigationTarget",
 			typeof(NavigationTarget),
 			typeof(Hyperlink),

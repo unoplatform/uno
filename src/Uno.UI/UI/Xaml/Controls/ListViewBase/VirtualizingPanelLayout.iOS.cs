@@ -1,13 +1,13 @@
-﻿using System;
+﻿//#define USE_CUSTOM_LAYOUT_ATTRIBUTES // Use this to debug the frame of the attributes (This also has to be set in the ListViewBaseSource.iOS.cs and ItemsStackPanaleLayout.iOS.cs)
+using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Disposables;
 using Foundation;
 using UIKit;
 using CoreGraphics;
-using LayoutInfoDictionary = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;
 using Uno.Diagnostics.Eventing;
 using Uno;
 using Uno.UI.DataBinding;
@@ -15,16 +15,46 @@ using System.Linq;
 using Uno.Foundation.Logging;
 
 using System.Collections.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
+
+#if USE_CUSTOM_LAYOUT_ATTRIBUTES
+using _LayoutAttributes = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
+using LayoutInfoDictionary = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, Microsoft/* UWP don't rename */.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes>;
+#else
+using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
+using LayoutInfoDictionary = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+
+namespace Microsoft.UI.Xaml.Controls
 {
+#if USE_CUSTOM_LAYOUT_ATTRIBUTES
+	public class UnoUICollectionViewLayoutAttributes : UICollectionViewLayoutAttributes
+	{
+		/// <inheritdoc />
+		public override CGRect Frame
+		{
+			get => base.Frame;
+			set
+			{
+				
+				var was = base.Frame;
+				base.Frame = value;
+				var index = IndexPath;
+
+				this.Log().Debug($"////////////// ALTERING FRAME OF ATTRIBUTES: {GetHashCode():X8} {index.Section}-{index.Row} from {ToString(was)} TO {ToString(value)}");
+				
+				static string ToString(CGRect frame)
+					=> $" {((int)frame.Width)}x{((int)frame.Height)}@{((int)frame.X)},{((int)frame.Y)}";
+			}
+		}
+	}
+#endif
+
 	public abstract partial class VirtualizingPanelLayout : UICollectionViewLayout, DependencyObject
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
@@ -82,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 		/// The last element in the list. This is set when the layout is created (and will point to the databound size and position of 
 		/// the element, once it has been materialized).
 		/// </summary>
-		private UICollectionViewLayoutAttributes _lastElement;
+		private _LayoutAttributes _lastElement;
 
 		/// <summary>
 		/// Locations of group header frames if they were to appear inline with items (ie not 'sticky').
@@ -92,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Thickness _padding;
 		private Dictionary<CachedTuple<int, int>, NSIndexPath> _indexPaths = new Dictionary<CachedTuple<int, int>, NSIndexPath>(CachedTuple<int, int>.Comparer);
-		private Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes> _layoutAttributesForIndexPaths = new Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes>(CachedTuple<int, int>.Comparer);
+		private Dictionary<CachedTuple<int, int>, _LayoutAttributes> _layoutAttributesForIndexPaths = new Dictionary<CachedTuple<int, int>, _LayoutAttributes>(CachedTuple<int, int>.Comparer);
 		private DirtyState _dirtyState;
 		/// <summary>
 		/// The most recently returned desired size.
@@ -116,8 +146,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private UICollectionViewUpdateItem[] _updateItems;
 
-		private (Point Location, object Item, UICollectionViewLayoutAttributes LayoutAttributes)? _reorderingState;
-		private NSIndexPath _reorderingDropTarget = null;
+		private (Point Location, object Item, _LayoutAttributes LayoutAttributes)? _reorderingState;
+		private NSIndexPath _reorderingDropTarget;
 		/// <summary>
 		/// Pre-reorder item positions, stored while applying provisional positions during drag-to-reorder
 		/// </summary>
@@ -223,7 +253,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Overrides
 		public override UICollectionViewLayoutAttributes[] LayoutAttributesForElementsInRect(CGRect rect)
 		{
-			var allAttributes = new List<UICollectionViewLayoutAttributes>();
+			var allAttributes = new List<_LayoutAttributes>();
 
 			foreach (var cellLayoutInfo in _itemLayoutInfos.Values.Concat(_supplementaryLayoutInfos.Values))
 			{
@@ -233,9 +263,13 @@ namespace Windows.UI.Xaml.Controls
 					// Alias to avoid paying the price of interop twice.
 					var frame = layoutAttributes.Frame;
 
-					if (SupportsDynamicItemSizes && HasDynamicElementSizes && areItems)
+					if (SupportsDynamicItemSizes && HasDynamicElementSizes && areItems && _reorderingState is null)
 					{
 						//Propagate layout changes for materialized items that may have a different size to the non-databound template.
+						// Note: If there is pending re-ordering (_reorderingState is not null), we don't want to update the layout attributes,
+						//		 as this will cause the item to jump to the wrong position.
+						//		 Anyway in that case item should already have the correct size.
+
 						UpdateLayoutAttributesForItem(layoutAttributes, shouldRecurse: false);
 					}
 
@@ -557,13 +591,13 @@ namespace Windows.UI.Xaml.Controls
 				// We are layouting after an INotifyCollectionChanged operation(s). Cache the previous element sizes, under their new index 
 				// paths, so we can reuse them in order not to have to lay out elements with different databound sizes with their static size.
 				oldItemSizes = _itemLayoutInfos.SelectMany(kvp => kvp.Value)
-					.ToDictionary(
+					.ToDictionaryKeepLast(
 						kvp => OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewItemElementKind),
 						kvp => (CGSize?)kvp.Value.Size
 					);
 				oldGroupHeaderSizes = _supplementaryLayoutInfos
 					.UnoGetValueOrDefault(NativeListViewBase.ListViewSectionHeaderElementKind)?
-					.ToDictionary(
+					.ToDictionaryKeepLast(
 						kvp => OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewSectionHeaderElementKind).Section,
 						kvp => (CGSize?)kvp.Value.Size
 					);
@@ -650,7 +684,7 @@ namespace Windows.UI.Xaml.Controls
 				//Ensure container for group exists even if group contains no items, to simplify subsequent logic
 				if (createLayoutInfo)
 				{
-					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>();
+					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, _LayoutAttributes>();
 				}
 				//b. Layout items in group
 				var itemsBreadth = LayoutItemsInGroup(section, availableGroupBreadth, ref frame, createLayoutInfo, oldItemSizes);
@@ -780,7 +814,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var container = _supplementaryLayoutInfos.FindOrCreate(kind, () => new LayoutInfoDictionary());
 			var indexPath = GetNSIndexPathFromRowSection(row, section);
-			var layout = UICollectionViewLayoutAttributes.CreateForSupplementaryView(kind, indexPath);
+			var layout = UICollectionViewLayoutAttributes.CreateForSupplementaryView<_LayoutAttributes>(kind, indexPath);
 			layout.Frame = frame;
 			container[indexPath] = layout;
 			_lastElement = layout;
@@ -788,7 +822,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected void CreateItemLayoutInfo(int row, int section, CGRect frame)
 		{
-			var layout = GetLayoutAttributesForIndexPath(row, section);
+			var layout = (_LayoutAttributes)GetLayoutAttributesForIndexPath(row, section);
 			layout.Frame = frame;
 			var container = _itemLayoutInfos.FindOrCreate(section, () => new LayoutInfoDictionary());
 			container[GetNSIndexPathFromRowSection(row, section)] = layout;
@@ -887,7 +921,7 @@ namespace Windows.UI.Xaml.Controls
 				0 :
 				1;
 			var offset = CollectionView.ContentOffset.GetXOrY(axisIndex);
-			Dictionary<NSIndexPath, UIKit.UICollectionViewLayoutAttributes> headerAttributes;
+			Dictionary<NSIndexPath, _LayoutAttributes> headerAttributes;
 			if (_supplementaryLayoutInfos.TryGetValue(NativeListViewBase.ListViewSectionHeaderElementKind, out headerAttributes))
 			{
 				foreach (var kvp in headerAttributes)
@@ -1041,6 +1075,10 @@ namespace Windows.UI.Xaml.Controls
 				// If we're adding an item and the previous layout didn't use all available space, we probably need more space.
 				PropagateUnusedSpaceRelayout();
 			}
+			else if (change.Action == NotifyCollectionChangedAction.Remove)
+			{
+				NeedsRelayout();
+			}
 		}
 
 		/// <summary>
@@ -1087,12 +1125,12 @@ namespace Windows.UI.Xaml.Controls
 		protected UICollectionViewLayoutAttributes GetLayoutAttributesForIndexPath(int row, int section)
 		{
 			var key = CachedTuple.Create(row, section);
-			UICollectionViewLayoutAttributes attributes;
+			_LayoutAttributes attributes;
 
 			if (!_layoutAttributesForIndexPaths.TryGetValue(key, out attributes))
 			{
 				var indexPath = GetNSIndexPathFromRowSection(row, section);
-				_layoutAttributesForIndexPaths.Add(key, attributes = UICollectionViewLayoutAttributes.CreateForCell<UICollectionViewLayoutAttributes>(indexPath));
+				_layoutAttributesForIndexPaths.Add(key, attributes = UICollectionViewLayoutAttributes.CreateForCell<_LayoutAttributes>(indexPath));
 			}
 
 			return attributes;
@@ -1128,7 +1166,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update cached layout attributes for an element after the materialized, databound element has been measured.
 		/// </summary>
-		public void UpdateLayoutAttributesForElement(UICollectionViewLayoutAttributes layoutAttributes)
+		public void UpdateLayoutAttributesForElement(_LayoutAttributes layoutAttributes)
 		{
 			//Update frame of target layoutAttributes
 			var identifier = layoutAttributes.RepresentedElementKind;
@@ -1208,8 +1246,13 @@ namespace Windows.UI.Xaml.Controls
 		private void PropagateUnusedSpaceRelayout()
 		{
 			SetWillConsumeUnusedSpace();
+			NeedsRelayout();
+		}
 
+		internal void NeedsRelayout()
+		{
 			var nativePanel = CollectionView as NativeListViewBase;
+
 			nativePanel.SetNeedsLayout();
 			// NativeListViewBase swallows layout requests by design
 			nativePanel.SetSuperviewNeedsLayout();
@@ -1259,7 +1302,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected void UpdateLayoutAttributesForGroupHeader(UICollectionViewLayoutAttributes groupHeaderLayout, nfloat extentDifference, bool applyOffsetToThis)
+		protected void UpdateLayoutAttributesForGroupHeader(_LayoutAttributes groupHeaderLayout, nfloat extentDifference, bool applyOffsetToThis)
 		{
 			if (applyOffsetToThis)
 			{
@@ -1287,7 +1330,7 @@ namespace Windows.UI.Xaml.Controls
 			_sectionEnd[groupHeaderLayout.IndexPath.Section] += extentDifference;
 		}
 
-		private protected virtual void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes layoutAttributes, bool shouldRecurse)
+		private protected virtual void UpdateLayoutAttributesForItem(_LayoutAttributes layoutAttributes, bool shouldRecurse)
 		{
 			throw new NotSupportedException($"This should be overridden by types which set {nameof(SupportsDynamicItemSizes)} to true.");
 		}
@@ -1436,7 +1479,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get all LayoutAttributes for every display element.
 		/// </summary>
-		private IEnumerable<UICollectionViewLayoutAttributes> GetAllElementLayouts()
+		private IEnumerable<_LayoutAttributes> GetAllElementLayouts()
 		{
 			foreach (var kvp in _itemLayoutInfos)
 			{
@@ -1476,7 +1519,8 @@ namespace Windows.UI.Xaml.Controls
 		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
 		{
 			var indexPath = XamlParent.GetIndexPathFromItem(item);
-			var layoutAttributes = LayoutAttributesForItem(indexPath.ToNSIndexPath());
+			var layoutAttributes = (_LayoutAttributes)LayoutAttributesForItem(indexPath.ToNSIndexPath());
+
 			_reorderingState = (location, item, layoutAttributes);
 			if (layoutAttributes != null && !DoesLayoutAttributesContainDraggedPoint(location, layoutAttributes))
 			{
@@ -1557,7 +1601,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			CGRect ApplyTemporaryFrame(UICollectionViewLayoutAttributes layoutAttributes, nfloat adjustValue, AdjustFrame adjustFrame)
+			CGRect ApplyTemporaryFrame(_LayoutAttributes layoutAttributes, nfloat adjustValue, AdjustFrame adjustFrame)
 			{
 				var frame = layoutAttributes.Frame;
 				_preReorderFrames[layoutAttributes.IndexPath] = frame;
@@ -1583,12 +1627,12 @@ namespace Windows.UI.Xaml.Controls
 			_preReorderFrames.Clear();
 		}
 
-		private UICollectionViewLayoutAttributes FindLayoutAttributesClosestOfPoint(Point point)
+		private _LayoutAttributes FindLayoutAttributesClosestOfPoint(Point point)
 		{
 			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
 
 			var closestDistance = double.MaxValue;
-			var closestElement = default(UICollectionViewLayoutAttributes);
+			var closestElement = default(_LayoutAttributes);
 
 			foreach (var dict in _itemLayoutInfos.Values)
 			{
@@ -1612,13 +1656,13 @@ namespace Windows.UI.Xaml.Controls
 			return closestElement;
 		}
 
-		private bool DoesLayoutAttributesContainDraggedPoint(Point point, UICollectionViewLayoutAttributes layoutAttributes)
+		private bool DoesLayoutAttributesContainDraggedPoint(Point point, _LayoutAttributes layoutAttributes)
 		{
 			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
 			return layoutAttributes.Frame.Contains(adjustedPoint);
 		}
 
-		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotSupportedException("Not used on iOS");
+		private protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotSupportedException("Not used on iOS");
 
 		protected CGRect AdjustExtentOffset(CGRect frame, nfloat adjustment)
 		{
@@ -1885,9 +1929,32 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if DEBUG
-		UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
+#pragma warning disable IDE0051 // Remove unused private members
+		_LayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
+
+		private void DumpFrames(string header, [CallerMemberName] string caller = "", [CallerLineNumber] int line = -1)
+		{
+			Console.WriteLine($"********************* {caller}@{line}: {header}");
+			foreach (var dict in _itemLayoutInfos.Values)
+			{
+				var i = 0;
+				foreach (var layoutAttributes in dict.Values)
+				{
+					Console.WriteLine($"*********************   - {i++} {ToString(layoutAttributes)}");
+				}
+			}
+		}
+
+		private string ToString(UICollectionViewLayoutAttributes layoutAttributes)
+		{
+			var index = layoutAttributes.IndexPath;
+			var data = (CollectionView?.CellForItem(index)?.ContentView?.Subviews?.FirstOrDefault() as FrameworkElement)?.DataContext?.ToString() ?? "--undef--";
+
+			return $"{layoutAttributes.GetHashCode():X8} {index.Section}-{index.Row} {((int)layoutAttributes.Frame.Width)}x{((int)layoutAttributes.Frame.Height)}@{((int)layoutAttributes.Frame.X)},{((int)layoutAttributes.Frame.Y)} {data}";
+		}
 
 		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
+#pragma warning restore IDE0051 // Remove unused private members
 #endif
 	}
 }

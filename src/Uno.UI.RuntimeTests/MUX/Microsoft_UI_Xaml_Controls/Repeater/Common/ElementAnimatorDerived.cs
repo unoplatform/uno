@@ -3,13 +3,13 @@
 
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
-using ElementAnimator = Microsoft.UI.Xaml.Controls.ElementAnimator;
+using AnimationContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationContext;
+using ElementAnimator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementAnimator;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public class ElementAnimatorDerived : ElementAnimator
 	{
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 		public Action<UIElement, AnimationContext> StartShowAnimationFunc { get; set; }
 		public Action<UIElement, AnimationContext> StartHideAnimationFunc { get; set; }
 		public Action<UIElement, AnimationContext, Rect, Rect> StartBoundsChangeAnimationFunc { get; set; }
-	 
+
 		protected override bool HasShowAnimationCore(UIElement element, AnimationContext context)
 		{
 			return HasShowAnimationValue;

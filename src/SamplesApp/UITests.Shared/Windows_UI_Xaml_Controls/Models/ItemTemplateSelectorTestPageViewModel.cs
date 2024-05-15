@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	internal partial class ItemTemplateSelectorTestPageViewModel : ViewModelBase
 	{
 
-		public ItemTemplateSelectorTestPageViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public ItemTemplateSelectorTestPageViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			ListItemsObsStatic = GetSampleItemsSync();
 		}
@@ -37,7 +37,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 			public override string ToString()
 			{
-				return "ListItem: "+ColourString;
+				return "ListItem: " + ColourString;
 			}
 		}
 

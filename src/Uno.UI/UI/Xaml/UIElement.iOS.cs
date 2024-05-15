@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using CoreAnimation;
 using CoreGraphics;
@@ -15,14 +16,14 @@ using Uno.UI.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using UIViewExtensions = UIKit.UIViewExtensions;
 using ObjCRuntime;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : BindableUIView
 	{
@@ -58,7 +59,7 @@ namespace Windows.UI.Xaml
 			get => false; // Not implemented on iOS yet
 		}
 
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		partial void ApplyNativeClip(Rect rect)
 		{
@@ -152,7 +153,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
+		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
 		{
 			return ConvertPointToCoordinateSpace(position, relativeTo);
 		}
@@ -161,7 +162,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -184,9 +185,17 @@ namespace Windows.UI.Xaml
 						switch (parent)
 						{
 							case ListViewBaseInternalContainer listViewBaseInternalContainer:
-								// In the case of ListViewBaseInternalContainer, the first managed parent is normally ItemsPresenter. We omit
-								// the offset since it's incorporated separately via the layout slot propagated to ListViewItem + the scroll offset.
+								// In the case of ListViewBaseInternalContainer, the first managed parent is normally ItemsPresenter.
+								// Normally, the offset should be appended in all cases. However with ObservableCollection::Move, it can result in
+								// the offset to be included in LVI.LayoutSlot already. The if-case guards against that case.
 								parentElement = listViewBaseInternalContainer.FindFirstParent<UIElement>();
+								if (listViewBaseInternalContainer.Content is { } container &&
+									container.LayoutSlot.Left == container.Margin.Left &&
+									container.LayoutSlot.Top == container.Margin.Top)
+								{
+									matrix.M31 += (float)parent.Frame.X;
+									matrix.M32 += (float)parent.Frame.Y;
+								}
 								return true;
 
 							case UIElement eltParent:
@@ -207,19 +216,19 @@ namespace Windows.UI.Xaml
 								var offset = view?.ConvertPointToCoordinateSpace(default, eltParent) ?? default;
 
 								parentElement = eltParent;
-								offsetX += offset.X;
-								offsetY += offset.Y;
+								matrix.M31 += (float)offset.X;
+								matrix.M32 += (float)offset.Y;
 								return true;
 
 							case null:
 								// We reached the top of the window without any UIElement in the hierarchy,
 								// so we adjust offsets using the X/Y position of the original 'view' in the window.
-
 								offset = view.ConvertRectToView(default, null).Location;
 
 								parentElement = null;
-								offsetX += offset.X;
-								offsetY += offset.Y;
+								matrix.M31 += (float)offset.X;
+								matrix.M32 += (float)offset.Y;
+
 								return false;
 						}
 					} while (true);

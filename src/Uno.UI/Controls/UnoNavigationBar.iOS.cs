@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Foundation;
 using UIKit;
 using ObjCRuntime;
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
 
 namespace Uno.UI.Controls
 {
@@ -51,7 +47,7 @@ namespace Uno.UI.Controls
 			get => base.Frame;
 			set
 			{
-				if(value != Frame)
+				if (value != Frame)
 				{
 					base.Frame = value;
 					SizeChanged?.Invoke();
@@ -64,7 +60,7 @@ namespace Uno.UI.Controls
 			get => base.Bounds;
 			set
 			{
-				if(value != Bounds)
+				if (value != Bounds)
 				{
 					base.Bounds = value;
 					SizeChanged?.Invoke();

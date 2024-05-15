@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {
@@ -41,17 +41,28 @@ namespace Uno.UI
 		/// When true (normally because the IsUiAutomationMappingEnabled build property is set), setting the <see cref="Name"/> property
 		/// programmatically will also set the appropriate test identifier for Android/iOS. Disabled by default because it may interfere
 		/// with accessibility features in non-testing scenarios.
-		/// On WebAssembly, settings this property also enables the ability for <see cref="Windows.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty"/>
+		/// On WebAssembly, settings this property also enables the ability for <see cref="Microsoft.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty"/>
 		/// to be applied to the visual tree elements.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsUiAutomationMappingEnabled { get; set; } = false;
 
+		/// <summary>
+		/// Sets the BaseUri property on FrameworkElement. This is a XAML generator API, do not use directly.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void SetBaseUri(FrameworkElement target, string uri)
+			=> SetBaseUri(target, uri, null, -1, -1);
+
+		/// <summary>
+		/// Sets the BaseUri property and debugging details on FrameworkElement. This is a XAML generator API, do not use directly.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void SetBaseUri(FrameworkElement target, string uri, string localFileUri, int lineNumber, int linePosition)
 		{
 			if (target is { } fe)
 			{
-				fe.BaseUri = new Uri(uri);
+				fe.SetBaseUri(uri, localFileUri, lineNumber, linePosition);
 			}
 		}
 

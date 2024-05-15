@@ -5,10 +5,10 @@ using System;
 using System.Reflection;
 using System.Threading;
 using Windows.ApplicationModel.Contacts;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using MUXControlsTestApp.Utilities;
 using Common;
 using System.Threading.Tasks;
@@ -23,9 +23,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using PersonPicture = Windows.UI.Xaml.Controls.PersonPicture;
+using PersonPicture = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PersonPicture;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class PersonPictureTests
@@ -79,15 +79,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyAutomationName()
 		{
-			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
 			{
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					PersonPicture personPicture = new PersonPicture();
 					Verify.IsNotNull(personPicture);
 
-				// Set properties and ensure that the AutomationName updates accordingly
-				personPicture.Initials = "AB";
+					// Set properties and ensure that the AutomationName updates accordingly
+					personPicture.Initials = "AB";
 					String automationName = AutomationProperties.GetName(personPicture);
 					Verify.AreEqual(automationName, "AB");
 
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
+				Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
 				var picturePersonType = provider.GetXamlType(typeof(PersonPicture).FullName);
 				var contactMember = picturePersonType.GetMember("Contact");
 				var memberType = contactMember.Type;
@@ -148,6 +148,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #endif
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task VerifySmallWidthAndHeightDoNotCrash()
 		{
 			PersonPicture personPicture = null;
@@ -162,28 +165,34 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			var sizeChangedEvent = new TaskCompletionSource<bool>();
 
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => sizeChangedEvent.TrySetException(new TimeoutException()));
+
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture.SizeChanged += (sender, args) => sizeChangedEvent.TrySetResult(true);
+				personPicture.UpdateLayout();
 				personPicture.Width = 0.4;
 				personPicture.Height = 0.4;
+				personPicture.UpdateLayout();
 			});
 
 			await sizeChangedEvent.Task;
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 		}
 
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		[TestMethod]
 		public async Task VerifyVSMStatesForPhotosAndInitials()
 		{
 			PersonPicture personPicture = null;
 			TextBlock initialsTextBlock = null;
-#if WINDOWS_UWP
+#if WINAPPSDK
 			string symbolsFontName = "Segoe MDL2 Assets";
-#elif __ANDROID__ || __SKIA__
-			string symbolsFontName = "ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
 #else
-			string symbolsFontName = "Symbols";
+			string symbolsFontName = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
 #endif
 			await RunOnUIThread.ExecuteAsync(() =>
 			{

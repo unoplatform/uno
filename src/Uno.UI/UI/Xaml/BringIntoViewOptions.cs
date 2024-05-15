@@ -2,7 +2,7 @@
 using Uno.Extensions;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 /// <summary>
 /// Represents the options that can be applied when an element is brought into view.
@@ -11,8 +11,8 @@ public partial class BringIntoViewOptions
 {
 	private double _horizontalAlignmentRatio = double.NaN;
 	private double _verticalAlignmentRatio = double.NaN;
-	private double _verticalOffset = 0;
-	private double _horizontalOffset = 0;
+	private double _verticalOffset;
+	private double _horizontalOffset;
 
 	/// <summary>
 	/// Initializes a new instance of the BringIntoViewOptions class.
@@ -24,7 +24,7 @@ public partial class BringIntoViewOptions
 	/// <summary>
 	/// Gets or sets a value that indicates whether to use animation when the element is brought into view.
 	/// </summary>
-	public bool AnimationDesired { get; set; } = false;
+	public bool AnimationDesired { get; set; }
 
 	/// <summary>
 	/// Controls the positioning of the vertical axis of the TargetRect with respect
@@ -39,7 +39,7 @@ public partial class BringIntoViewOptions
 		{
 			if (!double.IsNaN(value))
 			{
-				value = value.Clamp(0.0, 1.0);
+				value = Math.Clamp(value, 0.0, 1.0);
 			}
 			_horizontalAlignmentRatio = value;
 		}
@@ -65,7 +65,7 @@ public partial class BringIntoViewOptions
 	/// <summary>
 	/// Gets or sets the area of an element to bring into view.
 	/// </summary>
-	public Rect? TargetRect { get; set; } = null;
+	public Rect? TargetRect { get; set; }
 
 	/// <summary>
 	/// Controls the positioning of the horizontal axis of the TargetRect with respect
@@ -80,7 +80,7 @@ public partial class BringIntoViewOptions
 		{
 			if (!double.IsNaN(value))
 			{
-				value = value.Clamp(0.0, 1.0);
+				value = Math.Clamp(value, 0.0, 1.0);
 			}
 			_verticalAlignmentRatio = value;
 		}

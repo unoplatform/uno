@@ -1,25 +1,19 @@
 ﻿#nullable enable
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
 	internal static partial class XBindExpressionParser
 	{
 		private const string XBindSubstitute = "↔↔";
-		private static readonly Regex NamedParam = new Regex(@"^(\w*)=(.*?)");
+		private static readonly Regex NamedParam = new(@"^(\w*)=(.*?)", RegexOptions.Compiled);
+		private static readonly Regex DocumentPaths = new("\"{x:Bind\\s(.*?)}\"", RegexOptions.Singleline | RegexOptions.Compiled);
 
 		/// <summary>
 		/// Rewrites all x:Bind expression Path property to be compatible with the System.Xaml parser.
@@ -34,13 +28,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		/// </remarks>
 		internal static string RewriteDocumentPaths(string markup)
 		{
-			var result =
-				Regex.Replace(
-					markup,
-					 "\"{x:Bind\\s(.*?)}\"",
-					e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value.Trim())}}}\"",
-					RegexOptions.Singleline
-				);
+			var result = DocumentPaths.Replace(
+				markup,
+				e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value.Trim())}}}\""
+			);
 
 			return result;
 		}
@@ -65,7 +56,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		private static string RewriteParameters(string value)
 		{
-			var parts = value.Split(',').SelectToArray(v => v.Replace("^'" , XBindSubstitute));
+			var parts = value.Split(',').SelectToArray(v => v.Replace("^'", XBindSubstitute));
 
 			if (parts.Length != 0)
 			{
@@ -132,7 +123,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				parenthesisCount += parts[i].Count(c => c == '(');
 				parenthesisCount -= parts[i].Count(c => c == ')');
 
-				if(parenthesisCount == 0)
+				if (parenthesisCount == 0)
 				{
 					break;
 				}

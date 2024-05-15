@@ -9,7 +9,7 @@ using Uno.Foundation.Extensibility;
 namespace Windows.Storage.Pickers
 {
 	public partial class FolderPicker
-    {
+	{
 		private IFolderPickerExtension? _folderPickerExtension;
 
 		partial void InitializePlatform() => ApiExtensibility.CreateInstance(this, out _folderPickerExtension);
@@ -21,6 +21,7 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FolderPicker is not supported on this target.");
 			}
 
+			_folderPickerExtension.Customize(this);
 			return await _folderPickerExtension.PickSingleFolderAsync(token);
 		}
 	}

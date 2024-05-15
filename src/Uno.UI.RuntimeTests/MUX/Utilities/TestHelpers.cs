@@ -12,10 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Common;
 using Private.Infrastructure;
 #if USING_TAEF
@@ -104,6 +104,34 @@ namespace MUXControlsTestApp
 		}
 
 		public static Application Current => Application.Current;
+
+		/// <summary>
+		/// AdditionalStyles.xaml file for ScrollViewer tests
+		/// </summary>
+		/// 
+		private static ResourceDictionary additionStylesXaml = null;
+		public static ResourceDictionary AdditionStylesXaml
+		{
+			get
+			{
+				if (additionStylesXaml == null)
+				{
+					additionStylesXaml = new ResourceDictionary();
+				}
+
+				return additionStylesXaml;
+			}
+		}
+
+		public static void AppendResourceDictionaryToMergedDictionaries(ResourceDictionary dictionary)
+		{
+			// Check for null and dictionary not present
+			if (!(dictionary is null) &&
+				!Application.Current.Resources.MergedDictionaries.Contains(dictionary))
+			{
+				Application.Current.Resources.MergedDictionaries.Add(dictionary);
+			}
+		}
 	}
 }
 
@@ -113,11 +141,11 @@ namespace MUXControlsTestApp.Utilities
 	{
 		public static int DefaultWaitMs = Debugger.IsAttached ? 120000 : 5000;
 
-		public static void SetAsVisualTreeRoot(FrameworkElement element)
+		public static async Task SetAsVisualTreeRoot(FrameworkElement element)
 		{
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			AutoResetEvent loadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent loadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -126,16 +154,16 @@ namespace MUXControlsTestApp.Utilities
 				MUXControlsTestApp.App.TestContentRoot = element;
 			});
 
-			WaitForEvent(loadedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent(loadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Loaded raised.");
 		}
 
-		public static void ClearVisualTreeRoot()
+		public static async Task ClearVisualTreeRoot()
 		{
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			AutoResetEvent unloadedEvent = new AutoResetEvent(false);
+			UnoAutoResetEvent unloadedEvent = new UnoAutoResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -161,21 +189,21 @@ namespace MUXControlsTestApp.Utilities
 
 			});
 
-			WaitForEvent(unloadedEvent);
-			IdleSynchronizer.Wait();
+			await WaitForEvent(unloadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Unloaded raised.");
 		}
 
-		public static void WaitForEvent(AutoResetEvent e)
+		public static async Task WaitForEvent(UnoAutoResetEvent e)
 		{
-			if (!e.WaitOne(TimeSpan.FromMilliseconds(DefaultWaitMs)))
+			if (!await e.WaitOne(TimeSpan.FromMilliseconds(DefaultWaitMs)))
 			{
 				throw new Exception("Event was not raised.");
 			}
 		}
 
 		public static IList<T> FindDescendents<T>(DependencyObject root)
-#if WINDOWS_UWP
+#if WINAPPSDK
 			where T : DependencyObject
 #else
 			where T : class, DependencyObject
@@ -236,14 +264,14 @@ namespace MUXControlsTestApp.Utilities
 			return child;
 		}
 
-		public static IEnumerable<String> GetVisualStateGroupsName(FrameworkElement element)
+		public static IEnumerable<string> GetVisualStateGroupsName(FrameworkElement element)
 		{
 			var groups = VisualStateManager.GetVisualStateGroups(GetAndAssertFirstChildAsFrameworkElement(element));
 			return groups.Where(group => group != null && group.Name != null).
 				Select(group => group.Name);
 		}
 
-		public static IEnumerable<String> GetCurrentVisualStateName(FrameworkElement element)
+		public static IEnumerable<string> GetCurrentVisualStateName(FrameworkElement element)
 		{
 			var groups = VisualStateManager.GetVisualStateGroups(GetAndAssertFirstChildAsFrameworkElement(element));
 			return groups.Where(group => group != null && group.CurrentState != null).

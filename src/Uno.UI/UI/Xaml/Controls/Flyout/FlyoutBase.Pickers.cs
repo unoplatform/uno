@@ -4,7 +4,7 @@ using Windows.UI.ViewManagement;
 using Uno.UI;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	partial class FlyoutBase
 	{
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// **************************************************************************************
 			var childRect = ((FrameworkElement)_popup.Child).GetAbsoluteBoundsRect();
 			var rect = new Rect(point, childRect.Size);
-			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+			var visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			if (rect.Right > visibleBounds.Right)
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 
 			//_popup.CustomLayouter = new PickerLayouter(this);
-			SetPopupPositionPartial(target, relativeLocation);
+			SetPopupPosition(target, relativeLocation);
 
 			//IFC_RETURN(ForwardPopupFlowDirection());
 			//SetTargetPosition(point);

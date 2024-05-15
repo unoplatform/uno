@@ -1,9 +1,9 @@
-#pragma warning disable 108 // new keyword hiding
+﻿#pragma warning disable 108 // new keyword hiding
 using System;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-	public partial class UnhandledExceptionEventArgs 
+	public partial class UnhandledExceptionEventArgs
 	{
 		public UnhandledExceptionEventArgs(Exception e, bool fatal)
 		{

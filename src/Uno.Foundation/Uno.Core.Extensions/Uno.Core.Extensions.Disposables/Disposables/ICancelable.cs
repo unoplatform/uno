@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,14 +18,14 @@ using System;
 
 namespace Uno.Disposables
 {
-    /// <summary>
-    /// Disposable resource with dipsosal state tracking.
-    /// </summary>
-    internal interface ICancelable : IDisposable
-    {
-        /// <summary>
-        /// Gets a value that indicates whether the object is disposed.
-        /// </summary>
-        bool IsDisposed { get; }
-    }
+	/// <summary>
+	/// Disposable resource with dipsosal state tracking.
+	/// </summary>
+	internal interface ICancelable : IDisposable
+	{
+		/// <summary>
+		/// Gets a value that indicates whether the object is disposed.
+		/// </summary>
+		bool IsDisposed { get; }
+	}
 }

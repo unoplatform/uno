@@ -1,16 +1,25 @@
+---
+uid: Uno.Features.Lottie
+---
+
 # Lottie for Uno
 
-**IMPORTANT**
-This is an experimental implementation, **still incomplete**.
+> [!TIP]
+> This article covers Uno-specific information for `Lottie`. For a full description of the feature and instructions on using it, see [Lottie](https://learn.microsoft.com/windows/communitytoolkit/animations/lottie).
 
-## Using the `LottieVisualSource`:
+* The `CommunityToolkit.WinUI.Lottie` (for WinUI) and `Microsoft.Toolkit.Uwp.UI.Lottie` (for UWP) namespaces provide classes for rendering Lottie animations in a `Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer`.
+
+## Using the `LottieVisualSource`
+
+### [**WinUI 3**](#tab/winui)
 
 Add the following namespaces:
+
 ```xml
 <Page
     ...
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
     ...>
 ```
 
@@ -24,31 +33,87 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-Documentation: <https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer>
+#### References in a Single Project
+
+In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+
+```xml
+<UnoFeatures>
+    ...
+    Lottie;
+    ...
+</UnoFeatures>
+```
+
+#### References in a Legacy Project
+
+On all Uno Platform targets, you'll need the following packages:
+
+* `Uno.WinUI.Lottie` (for the `LottieVisualSource`)
+
+Additionally, on Skia Desktop targets, you'll need the following packages:
+
+* `SkiaSharp.Views.Uno.WinUI` version 2.88.7 or later
+* `SkiaSharp.Skottie` version 2.88.7 or later
+
+On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
+
+### [**UWP**](#tab/uwp)
+
+Add the following namespaces:
+
+```xml
+<Page
+    ...
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    ...>
+```
+
+```xml
+<winui:AnimatedVisualPlayer
+    x:Name="player"
+    AutoPlay="true">
+
+    <lottie:LottieVisualSource
+        UriSource="ms-appx:///Lottie/4930-checkbox-animation.json" />
+</winui:AnimatedVisualPlayer>
+```
+
+On all Uno Platform targets, you'll need the following packages:
+
+* `Uno.UI.Lottie` (for the `LottieVisualSource`)
+
+Additionally, on Skia Desktop targets, you'll need the following packages:
+
+* `SkiaSharp.Views.Uno` version 2.88.7 or later
+* `SkiaSharp.Skottie` version 2.88.7 or later
 
 On UWP, you'll need to reference the following packages in your head project:
-  * `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
-  * `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
 
-On WASM, Android, iOS and macOS, you'll need the following packages:
-  * `Uno.UI.Lottie` (for the `LottieVisualSource`)
-  * `Uno.UI` (for the `AnimatedVisualPlayer`)
+* `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
+* `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
+
+***
+
+For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 
 ## Lottie JSON file location
 
-On WASM, iOS and macOS, you can put the Lottie .json files directly in a folder of the shared project (for example "Lottie/myanimation.json") and set their Build action as Content.
+On WASM, iOS, and macOS, you can put the Lottie .json files directly in a folder of your app's head project (for example "Lottie/myanimation.json") and set their Build action as Content.
 
-On Android, Lottie .json files need to be added into the Assets folder. To match the same path as for the other platforms, the file could be stored at "Assets/Lottie/myanimation.json". Set its Build action to AndroidAsset.
+On Android, Lottie .json files need to be added to the Assets folder. To match the same path as for the other platforms, the file could be stored at `Assets/Lottie/myanimation.json`. Set its Build action to AndroidAsset.
 
 To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-appx:///Lottie/myanimation.json`.
 
 ## Using `embedded://` scheme
 
-**WARNING**: Not supported on Windows, it's a Uno-only feature.
+> [!WARNING]
+> This feature is only available on Uno Platform targets. WinUI and UWP on Windows is not supported.
 
 You can put the file as `<EmbeddedResource>` in your assembly and retrieve it using the following url format as `UriSource`:
 
-```
+```uri
 embedded://<assemblyname>/<resource name>
 ```
 
@@ -60,7 +125,7 @@ embedded://<assemblyname>/<resource name>
 
 As Microsoft documented in the [release notes for Lottie-Windows v6.1.0](https://github.com/windows-toolkit/Lottie-Windows/releases/tag/v6.1.0), there is a new feature called _Theme property binding_. This allows to dynamically change a value (usually a color) at runtime.
 
-To use this feature on Windows, you need to generate code with the [`LottieGen` tool](https://docs.microsoft.com/en-us/windows/communitytoolkit/animations/lottie-scenarios/getting_started_codegen). On Uno supported platforms, it's available at runtime using the `ThemableLottieVisualSource` instead of the original `LottieAnimatedVisualSource`.
+To use this feature on Windows, you need to generate code with the [`LottieGen` tool](https://learn.microsoft.com/windows/communitytoolkit/animations/lottie-scenarios/getting_started_codegen). On Uno supported platforms, it's available at runtime using the `ThemableLottieVisualSource` instead of the original `LottieAnimatedVisualSource`.
 
 Here's how to use this feature:
 
@@ -78,7 +143,7 @@ Here's how to use this feature:
    <winui:AnimatedVisualPlayer
        x:Name="player"
        AutoPlay="true">
-   
+
        <lottie:ThemableLottieVisualSource
            x:Name="animation"
            UriSource="ms-appx:///Assets/Lottie/CheckBoxAnimation.json" />
@@ -101,11 +166,11 @@ Here's how to use this feature:
   [Bindable]
   public sealed class CheckBoxAnimation : ThemableLottieVisualSource
   {
-  	public Color MyColor
-  	{
-  		get => GetColorThemeProperty(nameof(MyColor));
-  		set => SetColorThemeProperty(nameof(MyColor), value);
-  	}
+    public Color MyColor
+    {
+      get => GetColorThemeProperty(nameof(MyColor));
+      set => SetColorThemeProperty(nameof(MyColor), value);
+    }
   }
   ```
 

@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests
 
 				var package = new DataPackage();
 				package.SetText(text);
-#if NETFX_CORE
+#if WINAPPSDK
 				Clipboard.SetContent(package);
 #else
 				await Clipboard.SetContentAsync(package);
@@ -55,7 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				var uri = new Uri("https://platform.uno");
 				var package = new DataPackage();
 				package.SetUri(uri);
-#if NETFX_CORE
+#if WINAPPSDK
 				Clipboard.SetContent(package);
 #else
 				await Clipboard.SetContentAsync(package);

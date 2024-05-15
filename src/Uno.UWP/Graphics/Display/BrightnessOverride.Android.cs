@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
@@ -15,7 +14,7 @@ namespace Windows.Graphics.Display
 		private static Android.Views.WindowManagerLayoutParams LayoutParameters => Window?.Attributes;
 
 		/// <summary>
-		/// Sets the brightness level within a range of 0 to 1 and the override options. 
+		/// Sets the brightness level within a range of 0 to 1 and the override options.
 		/// When your app is ready to change the current brightness with what you want to override it with, call StartOverride().
 		/// </summary>
 		/// <param name="brightnessLevel"> double 0 to 1  </param>
@@ -26,12 +25,12 @@ namespace Windows.Graphics.Display
 			{
 				_defaultBrightnessLevel = LayoutParameters.ScreenBrightness;
 
-				_targetBrightnessLevel = brightnessLevel.Clamp(0, 1);
+				_targetBrightnessLevel = Math.Clamp(brightnessLevel, 0, 1);
 			}
 		}
 
 		/// <summary>
-		/// Request to start overriding the screen brightness level. 
+		/// Request to start overriding the screen brightness level.
 		/// </summary>
 		public void StartOverride()
 		{
@@ -48,7 +47,7 @@ namespace Windows.Graphics.Display
 		public void StopOverride()
 		{
 			if (GetForCurrentView().IsOverrideActive)
-			{ 
+			{
 				LayoutParameters.ScreenBrightness = (float)_defaultBrightnessLevel;
 
 				Window.Attributes = LayoutParameters;
@@ -58,4 +57,3 @@ namespace Windows.Graphics.Display
 		}
 	}
 }
-#endif

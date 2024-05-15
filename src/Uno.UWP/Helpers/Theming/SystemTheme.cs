@@ -1,8 +1,10 @@
-﻿namespace Uno.Helpers.Theming
+﻿namespace Uno.Helpers.Theming;
+
+/// <summary>
+/// Internal representation of the current OS theme.
+/// </summary>
+internal enum SystemTheme
 {
-	internal enum SystemTheme
-	{
-		Light,
-		Dark
-	}
+	Light,
+	Dark
 }

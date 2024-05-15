@@ -20,7 +20,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.WebView
 		private string _webSource;
 		private int _nextLink = 0;
 
-		public WebViewStaticViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public WebViewStaticViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

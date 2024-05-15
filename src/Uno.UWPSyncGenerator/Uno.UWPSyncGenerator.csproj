@@ -2,65 +2,35 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net472</TargetFramework>
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RollForward>Major</RollForward>
 
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<!-- NOTE: Updating to 4.9 will break the BinaryLogger usage we have -->
+		<!-- It will silently stop producing binlogs -->
+		<SyncGeneratorCodeAnalysisVersion>4.8.0</SyncGeneratorCodeAnalysisVersion>
+		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-		<PackageReference Include="ManagedEsent">
-			<Version>1.9.4</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build">
-			<ExcludeAssets>runtime</ExcludeAssets>
-			<Version>15.8.166</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Framework">
-			<ExcludeAssets>runtime</ExcludeAssets>
-			<Version>15.8.166</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Tasks.Core">
-			<ExcludeAssets>runtime</ExcludeAssets>
-			<Version>15.8.166</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Utilities.Core">
-			<ExcludeAssets>runtime</ExcludeAssets>
-			<Version>15.8.166</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.6.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Common">
-			<Version>3.6.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>3.6.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>3.6.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic">
-			<Version>3.6.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces">
-			<Version>3.6.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>3.6.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.6.0" />
-		<PackageReference Include="Microsoft.Tpl.Dataflow">
-			<Version>4.5.24</Version>
-		</PackageReference>
+		<PackageReference Include="Microsoft.Build" Version="17.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
-	
-	<Import Project="..\Common.targets" />
+
 </Project>

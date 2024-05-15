@@ -1,14 +1,15 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Uno;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class KeyFrameAnimation : CompositionAnimation
 	{
-		private ImmutableArray<KeyFrame> _keys = ImmutableArray<KeyFrame>.Empty;
+		private protected IKeyFrameEvaluator? _keyframeEvaluator;
 
 		internal KeyFrameAnimation() => throw new NotSupportedException();
 
@@ -16,43 +17,36 @@ namespace Windows.UI.Composition
 		{
 		}
 
+		internal override bool IsTrackedByCompositor => true;
+
+		[NotImplemented]
 		public AnimationStopBehavior StopBehavior { get; set; }
 
-		public int IterationCount { get; set; }
+		public int IterationCount { get; set; } = 1;
 
 		public AnimationIterationBehavior IterationBehavior { get; set; }
 
-		public global::System.TimeSpan Duration { get; set; }
+		public TimeSpan Duration { get; set; }
 
-		public global::System.TimeSpan DelayTime { get; set; }
+		[NotImplemented]
+		public TimeSpan DelayTime { get; set; }
 
-		public int KeyFrameCount { get; set; }
+		public int KeyFrameCount => KeyFrameCountCore;
 
+		private protected virtual int KeyFrameCountCore { get; }
+
+		[NotImplemented]
 		public AnimationDirection Direction { get; set; }
 
-		public virtual void InsertKeyFrame(float normalizedProgressKey, float value)
+		internal override object Evaluate()
 		{
-			_keys = _keys.Add(new KeyFrame(normalizedProgressKey, value));
-		}
-
-		[global::Uno.NotImplemented]
-		public virtual void InsertKeyFrame(float normalizedProgressKey, float value, global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
-		{
-
-		}
-
-		internal ImmutableArray<KeyFrame> Keys => _keys;
-
-		internal class KeyFrame
-		{
-			public KeyFrame(float normalizedProgressKey, float value)
+			var (value, shouldStop) = _keyframeEvaluator!.Evaluate();
+			if (shouldStop)
 			{
-				NormalizedProgressKey = normalizedProgressKey;
-				Value = value;
+				Stop();
 			}
 
-			public float NormalizedProgressKey { get; }
-			public float Value { get; }
+			return value;
 		}
 	}
 }

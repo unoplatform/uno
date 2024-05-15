@@ -3,7 +3,7 @@ using Uno;
 
 namespace Windows.Storage
 {
-	public enum StreamedFileFailureMode 
+	public enum StreamedFileFailureMode
 	{
 		Failed,
 

@@ -2,11 +2,11 @@
 
 using System;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -15,10 +15,10 @@ using View = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ControlTemplate : FrameworkTemplate
 	{
@@ -42,7 +42,8 @@ namespace Windows.UI.Xaml.Controls
 		public static implicit operator ControlTemplate(Func<View>? obj)
 			=> new ControlTemplate(obj);
 
-		public Type? TargetType { 
+		public Type? TargetType
+		{
 			get;
 			set;
 		}

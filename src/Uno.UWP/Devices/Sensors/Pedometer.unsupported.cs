@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || __WASM__ || NET461
+﻿#if !(__IOS__ || __ANDROID__)
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;

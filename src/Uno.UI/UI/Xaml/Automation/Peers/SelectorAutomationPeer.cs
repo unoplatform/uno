@@ -1,13 +1,17 @@
-#pragma warning disable 108 // new keyword hiding
+﻿#pragma warning disable 108 // new keyword hiding
 using System;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers;
+
+public partial class SelectorAutomationPeer : ItemsControlAutomationPeer, ISelectionProvider
 {
-	public  partial class SelectorAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider
+	public SelectorAutomationPeer(Selector owner) : base(owner)
 	{
-		public SelectorAutomationPeer(object o) : base(null)
-		{
-			throw new NotImplementedException();
-		}
+	}
+
+	public SelectorAutomationPeer(object o) : base(null)
+	{
 	}
 }

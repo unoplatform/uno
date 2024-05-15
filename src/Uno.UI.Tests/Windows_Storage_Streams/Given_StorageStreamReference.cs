@@ -23,7 +23,7 @@ namespace Uno.UI.Tests.Windows_Storage_Streams
 
 			Assert.AreEqual(0, invokeCount);
 
-			sut.OpenReadAsync();
+			_ = sut.OpenReadAsync();
 
 			Assert.AreEqual(1, invokeCount);
 		}

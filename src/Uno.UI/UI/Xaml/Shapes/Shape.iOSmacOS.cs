@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
@@ -10,6 +10,7 @@ using Uno.UI;
 using Uno.UI.UI.Xaml.Media;
 using static System.Double;
 using ObjCRuntime;
+using Uno.UI.Xaml.Media;
 
 #if __IOS__
 using _Color = UIKit.UIColor;
@@ -18,7 +19,7 @@ using AppKit;
 using _Color = AppKit.NSColor;
 #endif
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
@@ -55,6 +56,10 @@ namespace Windows.UI.Xaml.Shapes
 			Layer.AddSublayer(_shapeLayer);
 		}
 
+		private void OnFillBrushChanged() => UpdateRender();
+
+		private void OnStrokeBrushChanged() => UpdateRender();
+
 		private void UpdateRender()
 		{
 			if (_shapeLayer is null)
@@ -71,14 +76,15 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			RemoveSublayers();
 
+			CGColor fillColor;
 			switch (Fill)
 			{
 				case SolidColorBrush colorFill:
-					pathLayer.FillColor = colorFill.ColorWithOpacity;
+					fillColor = colorFill.ColorWithOpacity;
 					break;
 
 				case ImageBrush imageFill when TryCreateImageBrushLayers(imageFill, GetFillMask(pathLayer.Path), out var imageLayer):
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					pathLayer.AddSublayer(imageLayer);
 					break;
 
@@ -88,22 +94,27 @@ namespace Windows.UI.Xaml.Shapes
 					gradientLayer.Mask ??= GetFillMask(pathLayer.Path);
 					gradientLayer.MasksToBounds = true;
 
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					pathLayer.AddSublayer(gradientLayer);
 					break;
 
 				case null:
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					break;
 
 				default:
 					Application.Current.RaiseRecoverableUnhandledException(new NotSupportedException($"The brush {Fill} is not supported as Fill for a {this} on this platform."));
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					break;
 			}
 
 			pathLayer.StrokeColor = Brush.GetColorWithOpacity(Stroke, Colors.Transparent);
 			pathLayer.LineWidth = (nfloat)ActualStrokeThickness;
+			pathLayer.FillColor = fillColor;
+
+			// Make sure to hold native object ref until it has been retained by native itself
+			// https://github.com/unoplatform/uno/issues/10283
+			GC.KeepAlive(fillColor);
 
 			if (StrokeDashArray is { } sda)
 			{
@@ -136,7 +147,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private CAShapeLayer CreateLayer(CGPath path, FillRule fillRule)
 		{
-			var pathLayer = new CAShapeLayer() { Path = path, FillRule = fillRule.ToCAShapeLayerFillRule()};
+			var pathLayer = new CAShapeLayer() { Path = path, FillRule = fillRule.ToCAShapeLayerFillRule() };
 
 			SetFillAndStroke(pathLayer);
 
@@ -145,11 +156,13 @@ namespace Windows.UI.Xaml.Shapes
 
 		private bool TryCreateImageBrushLayers(ImageBrush imageBrush, CAShapeLayer fillMask, out CALayer imageContainerLayer)
 		{
-			if (imageBrush.ImageSource == null || !imageBrush.ImageSource.TryOpenSync(out var uiImage))
+			if (imageBrush.ImageSource == null || !imageBrush.ImageSource.TryOpenSync(out var imageData) || imageData.Kind != ImageDataKind.NativeImage)
 			{
 				imageContainerLayer = default;
 				return false;
 			}
+
+			var uiImage = imageData.NativeImage;
 
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			imageContainerLayer = new CALayer

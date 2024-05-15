@@ -10,6 +10,6 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public string AppUserModelId { get; } = "";
 
-		public ShareProvider? ShareProvider { get; } = null;
+		public ShareProvider? ShareProvider { get; }
 	}
 }

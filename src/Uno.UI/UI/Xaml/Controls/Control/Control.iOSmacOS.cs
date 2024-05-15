@@ -4,9 +4,9 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using System.Linq;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -21,11 +21,11 @@ using CoreGraphics;
 #endif
 
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control
 	{
-		public Control ()
+		public Control()
 		{
 			InitializeControl();
 			Initialize();
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void RegisterSubView(View child)
 		{
-			if(Subviews.Length != 0)
+			if (Subviews.Length != 0)
 			{
 				throw new Exception("A Xaml control may not contain more than one child.");
 			}

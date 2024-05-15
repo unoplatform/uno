@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Uno.UWPSyncGenerator
 {
@@ -15,8 +11,16 @@ namespace Uno.UWPSyncGenerator
 		const string DocMode = "doc";
 		const string AllMode = "all";
 
-		static void Main(string[] args)
+		static async Task Main(string[] args)
 		{
+			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UWP\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.Foundation\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Composition\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Dispatching\Generated\");
+
 			if (args.Length == 0)
 			{
 				Console.WriteLine("No mode selected. Supported modes: doc, sync & all.");
@@ -27,65 +31,76 @@ namespace Uno.UWPSyncGenerator
 
 			if (mode == SyncMode || mode == AllMode)
 			{
-				new SyncGenerator().Build(@"..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
-				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
-				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
-				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Networking.Connectivity.WwanContract");
-				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
+				await new SyncGenerator().Build("Uno.Foundation", "Windows.Foundation.FoundationContract");
+				await new SyncGenerator().Build("Uno", "Windows.Foundation.UniversalApiContract");
+				await new SyncGenerator().Build("Uno", "Windows.Phone.PhoneContract");
+				await new SyncGenerator().Build("Uno", "Windows.Networking.Connectivity.WwanContract");
+				await new SyncGenerator().Build("Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
+				await new SyncGenerator().Build("Uno", "Windows.Services.Store.StoreContract");
 
-				// When adding support for a new WinRT contract here, ensure to add it to the list of origins in Generator.cs
-				// and to the list of supported contracts in ApiInformation.shared.cs
+				// When adding support for a new WinRT contract here, ensure to add it to the list of supported contracts in ApiInformation.shared.cs
 
 #if HAS_UNO_WINUI
-				new SyncGenerator().Build(@"..\..\..\Uno.Foundation", "Uno.Foundation", "Microsoft.Foundation");
+				await new SyncGenerator().Build("Uno.Foundation", "Microsoft.Foundation");
 
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Foundation");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.Foundation");
 
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Graphics");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Microsoft.UI.Composition");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Microsoft.UI");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Microsoft.UI");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.Graphics");
+				await new SyncGenerator().Build("Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
+				await new SyncGenerator().Build("Uno.UI.Composition", "Microsoft.UI.Composition");
+				await new SyncGenerator().Build("Uno.UI.Dispatching", "Microsoft.UI");
+				await new SyncGenerator().Build("Uno.UI.Composition", "Microsoft.UI");
 
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Text");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.ApplicationModel.Resources");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Web.WebView2.Core");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Text");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Content");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.Windows.ApplicationModel.Resources");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
 
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Input");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Windowing");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Input");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Windowing");
 
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Xaml");
 
 #else
-				new SyncGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Windows.Foundation.UniversalApiContract");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Windows.Foundation.UniversalApiContract");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+				await new SyncGenerator().Build("Uno.UI.Composition", "Windows.Foundation.UniversalApiContract");
+				await new SyncGenerator().Build("Uno.UI.Dispatching", "Windows.Foundation.UniversalApiContract");
+				await new SyncGenerator().Build("Uno.UI", "Windows.Foundation.UniversalApiContract");
+				await new SyncGenerator().Build("Uno.UI", "Windows.UI.Xaml.Hosting.HostingContract");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Xaml");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
 #endif
 			}
 
 			if (mode == DocMode || mode == AllMode)
 			{
 #if HAS_UNO_WINUI
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.ApplicationModel.Resources");
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Web.WebView2.Core");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Content");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.Windows.ApplicationModel.Resources");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
 
-				new DocGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
-				new DocGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Microsoft.UI.Composition");
+				await new DocGenerator().Build("Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
+				await new DocGenerator().Build("Uno.UI.Composition", "Microsoft.UI.Composition");
 
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Foundation");
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Composition");
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Dispatching");
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Input");
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Graphics");
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Windowing");
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.Foundation");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Composition");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Dispatching");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Input");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.Graphics");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Windowing");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI");
 
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Xaml");
 #else
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+				await new DocGenerator().Build("Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
 			}
+		}
+
+		private static void DeleteDirectoryIfExists(string path)
+		{
+			if (Directory.Exists(path))
+				Directory.Delete(path, recursive: true);
 		}
 	}
 }

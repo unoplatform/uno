@@ -1,17 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
-using View = Windows.UI.Xaml.FrameworkElement;
-using System;
+using Uno.UI.Controls.Legacy;
 
 namespace Uno.UI.Tests.GridTests
 {
 	[TestClass]
-	public class GivenGrid_And_Alignment : Context
+	public partial class GivenGrid_And_Alignment : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_One_Child_With_VerticalTopAlignment_and_Fixed_Height()
 		{
@@ -22,7 +25,7 @@ namespace Uno.UI.Tests.GridTests
 				{
 					Name = "Child01",
 					RequestedDesiredSize = new Size(10, 10),
-					Height = 10, 
+					Height = 10,
 					VerticalAlignment = VerticalAlignment.Top,
 				}
 				.GridPosition(0, 0)
@@ -33,7 +36,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(0, 0, 20, 10), c1.Arranged);
 
@@ -44,7 +47,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_VerticalBottomAlignment_and_Fixed_Height()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -62,7 +65,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(0, 10, 20, 10), c1.Arranged);
 
@@ -73,7 +76,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_VerticalCenterAlignment_and_Fixed_Height()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -91,7 +94,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(0, 5, 20, 10), c1.Arranged);
 
@@ -119,7 +122,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(0, 0, 10, 20), c1.Arranged);
 
@@ -130,7 +133,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_HorizontalRightAlignment_and_Fixed_Width()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -148,7 +151,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(10, 0, 10, 20), c1.Arranged);
 
@@ -159,7 +162,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_HorizontalCenterAlignment_and_Fixed_Width()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -177,7 +180,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(5, 0, 10, 20), c1.Arranged);
 
@@ -188,7 +191,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_VerticalTopAlignment_and_Variable_Height()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -205,7 +208,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(0, 0, 20, 10), c1.Arranged);
 
@@ -216,7 +219,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_VerticalCenterAlignment_and_Variable_Height()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -233,7 +236,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(0, 5, 20, 10), c1.Arranged);
 
@@ -244,7 +247,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_HorizontalStretchAlignment_and_MaxWidth()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -261,7 +264,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(5, 0, 10, 20), c1.Arranged);
 
@@ -272,7 +275,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_VerticalStretchAlignment_and_MaxHeight()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -289,7 +292,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(0, 5, 20, 10), c1.Arranged);
 
@@ -300,7 +303,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_With_VerticalCenterAlignment_HorizontalCenterAlignment_and_Variable_Height_and_Variable_Width()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -318,7 +321,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(10, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
+			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Rect(5, 5, 10, 10), c1.Arranged);
 
@@ -329,7 +332,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_Centered_And_Auto_row_And_Fixed_Column()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "20" });
 			SUT.RowDefinitions.Add(new RowDefinition { Height = "auto" });
@@ -355,7 +358,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(20, 10), measuredSize);
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,100, 20));
+			SUT.Arrange(new Rect(0, 0, 100, 20));
 
 			Assert.AreEqual(new Size(10, 10), c1.RequestedDesiredSize);
 			Assert.AreEqual(new Rect(5, 0, 10, 10), c1.Arranged);
@@ -367,7 +370,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_Centered_And_Auto_row_And_Star_Column()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "auto" });
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
@@ -408,7 +411,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(0, c1.ArrangeCallCount);
 			Assert.AreEqual(0, c2.ArrangeCallCount);
 
-			SUT.Arrange(new Rect(0, 0,100, 20));
+			SUT.Arrange(new Rect(0, 0, 100, 20));
 
 			Assert.AreEqual(new Size(20, 5), c1.RequestedDesiredSize);
 			Assert.AreEqual(new Size(11, 11), c2.RequestedDesiredSize);
@@ -463,7 +466,7 @@ namespace Uno.UI.Tests.GridTests
 
 			VerticalAlignment GetV()
 			{
-				switch(alignment[1])
+				switch (alignment[1])
 				{
 					case 's': return VerticalAlignment.Stretch;
 					case 't': return VerticalAlignment.Top;
@@ -518,7 +521,7 @@ namespace Uno.UI.Tests.GridTests
 		public void When_One_Child_and_Measure_Bigger_than_arrange()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
+
 
 			var c1 = SUT.AddChild(
 				new View
@@ -533,8 +536,8 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(100, 100), measuredSize);
 			Assert.AreEqual(new Size(100, 100), c1.DesiredSize);
 
-			SUT.Arrange(new Rect(0, 0,20, 20));
-			
+			SUT.Arrange(new Rect(0, 0, 20, 20));
+
 			Assert.AreEqual(new Rect(0, 0, 100, 100), c1.Arranged);
 
 			Assert.AreEqual(1, SUT.GetChildren().Count());

@@ -1,343 +1,469 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI.Xaml;
-using Windows.UI.Xaml.Media;
+﻿using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class RelativePanel
 {
-	public partial class RelativePanel
+	/// <summary>
+	/// Gets or sets a value that indicates how far the background extends in relation to this element's border.
+	/// </summary>
+	public BackgroundSizing BackgroundSizing
 	{
+		get => GetBackgroundSizingValue();
+		set => SetBackgroundSizingValue(value);
+	}
 
-		#region BackgroundSizing DepedencyProperty
-		[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-		public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+	/// <summary>
+	/// Identifies the BackgroundSizing dependency property.
+	/// </summary>
+	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
+	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
 
-		public BackgroundSizing BackgroundSizing
+	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e) =>
+		base.OnBackgroundSizingChangedInnerPanel(e);
+
+	/// <summary>
+	/// Gets or sets a brush that describes the border fill of the panel.
+	/// </summary>
+	public Brush BorderBrush
+	{
+		get => GetBorderBrushValue();
+		set => SetBorderBrushValue(value);
+	}
+
+	private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
+
+	/// <summary>
+	/// Identifies the BorderBrush dependency property.
+	/// </summary>
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+	public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
+
+	private void OnBorderBrushPropertyChanged(Brush oldValue, Brush newValue)
+	{
+		BorderBrushInternal = newValue;
+		OnBorderBrushChanged(oldValue, newValue);
+	}
+
+	/// <summary>
+	/// Gets or sets the border thickness of the panel.
+	/// </summary>
+	public Thickness BorderThickness
+	{
+		get => GetBorderThicknessValue();
+		set => SetBorderThicknessValue(value);
+	}
+
+	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
+
+	/// <summary>
+	/// Identifies the BorderThickness dependency property.
+	/// </summary>
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
+
+	private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
+	{
+		BorderThicknessInternal = newValue;
+		OnBorderThicknessChanged(oldValue, newValue);
+	}
+
+	/// <summary>
+	/// Gets or sets the distance between the border and its child object.
+	/// </summary>
+	public Thickness Padding
+	{
+		get => GetPaddingValue();
+		set => SetPaddingValue(value);
+	}
+
+	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
+
+	/// <summary>
+	/// Identifies the Padding dependency property.
+	/// </summary>
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
+
+	private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
+	{
+		PaddingInternal = newValue;
+		OnPaddingChanged(oldValue, newValue);
+	}
+
+	/// <summary>
+	/// Gets or sets the radius for the corners of the panel's border.
+	/// </summary>
+	public CornerRadius CornerRadius
+	{
+		get => GetCornerRadiusValue();
+		set => SetCornerRadiusValue(value);
+	}
+
+	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
+
+	/// <summary>
+	/// Identifies the CornerRadius dependency property.
+	/// </summary>
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
+	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
+	private void OnCornerRadiusPropertyChanged(CornerRadius oldValue, CornerRadius newValue)
+	{
+		CornerRadiusInternal = newValue;
+		OnCornerRadiusChanged(oldValue, newValue);
+	}
+
+	#region Panel Alignment relationships
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignBottomWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static bool GetAlignBottomWithPanel(UIElement element) => (bool)element.GetValue(AlignBottomWithPanelProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignBottomWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignBottomWithPanel(UIElement element, bool value) => element.SetValue(AlignBottomWithPanelProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignBottomWithPanelProperty XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignBottomWithPanelProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignBottomWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignLeftWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static bool GetAlignLeftWithPanel(UIElement element) => (bool)element.GetValue(AlignLeftWithPanelProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignLeftWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignLeftWithPanel(UIElement element, bool value) => element.SetValue(AlignLeftWithPanelProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignLeftWithPanelProperty XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignLeftWithPanelProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignLeftWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignRightWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static bool GetAlignRightWithPanel(UIElement element) => (bool)element.GetValue(AlignRightWithPanelProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignRightWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignRightWithPanel(UIElement element, bool value) => element.SetValue(AlignRightWithPanelProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignRightWithPanelProperty XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignRightWithPanelProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignRightWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignTopWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static bool GetAlignTopWithPanel(UIElement element) => (bool)element.GetValue(AlignTopWithPanelProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignTopWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignTopWithPanel(UIElement element, bool value) => element.SetValue(AlignTopWithPanelProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignTopWithPanelProperty XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignTopWithPanelProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignTopWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static bool GetAlignHorizontalCenterWithPanel(UIElement element) => (bool)element.GetValue(AlignHorizontalCenterWithPanelProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignHorizontalCenterWithPanel(UIElement element, bool value) => element.SetValue(AlignHorizontalCenterWithPanelProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignHorizontalCenterWithPanelProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignHorizontalCenterWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignVerticalCenterWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static bool GetAlignVerticalCenterWithPanel(UIElement element) => (bool)element.GetValue(AlignVerticalCenterWithPanelProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignVerticalCenterWithPanel XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignVerticalCenterWithPanel(UIElement element, bool value) => element.SetValue(AlignVerticalCenterWithPanelProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignVerticalCenterWithPanel XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignVerticalCenterWithPanelProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignVerticalCenterWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	#endregion
+
+	#region Sibling Alignment relationships
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignBottomWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetAlignBottomWith(UIElement element) => element.GetValue(AlignBottomWithProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignBottomWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignBottomWith(UIElement element, object value) => element.SetValue(AlignBottomWithProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignBottomWith XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignBottomWithProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignBottomWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignLeftWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetAlignLeftWith(UIElement element) => (object)element.GetValue(AlignLeftWithProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignLeftWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignLeftWith(UIElement element, object value) => element.SetValue(AlignLeftWithProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignLeftWith XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignLeftWithProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignLeftWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignRightWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetAlignRightWith(UIElement element) => (object)element.GetValue(AlignRightWithProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignRightWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignRightWith(UIElement element, object value) => element.SetValue(AlignRightWithProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignRightWith XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignRightWithProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignRightWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignTopWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetAlignTopWith(UIElement element) => (object)element.GetValue(AlignTopWithProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignTopWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignTopWith(UIElement element, object value) => element.SetValue(AlignTopWithProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignTopWith XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignTopWithProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignTopWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignHorizontalCenterWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetAlignHorizontalCenterWith(UIElement element) => (object)element.GetValue(AlignHorizontalCenterWithProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignHorizontalCenterWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignHorizontalCenterWith(UIElement element, object value) => element.SetValue(AlignHorizontalCenterWithProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignHorizontalCenterWith XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignHorizontalCenterWithProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignHorizontalCenterWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.AlignVerticalCenterWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetAlignVerticalCenterWith(UIElement element) => (object)element.GetValue(AlignVerticalCenterWithProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.AlignVerticalCenterWith XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAlignVerticalCenterWith(UIElement element, object value) => element.SetValue(AlignVerticalCenterWithProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.AlignVerticalCenterWith XAML attached property.
+	/// </summary>
+	public static DependencyProperty AlignVerticalCenterWithProperty { get; } =
+		DependencyProperty.RegisterAttached("AlignVerticalCenterWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	#endregion
+
+	#region Sibling Positional relationships
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.Above XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetAbove(UIElement element) => (object)element.GetValue(AboveProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.Above XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetAbove(UIElement element, object value) => element.SetValue(AboveProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.Above XAML attached property.
+	/// </summary>
+	public static DependencyProperty AboveProperty { get; } =
+		DependencyProperty.RegisterAttached("Above", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.Below XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetBelow(UIElement element) => (object)element.GetValue(BelowProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.Below XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetBelow(UIElement element, object value) => element.SetValue(BelowProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.Below XAML attached property.
+	/// </summary>
+	public static DependencyProperty BelowProperty { get; } =
+		DependencyProperty.RegisterAttached("Below", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.LeftOf XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetLeftOf(UIElement element) => (object)element.GetValue(LeftOfProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.LeftOf XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetLeftOf(UIElement element, object value) => element.SetValue(LeftOfProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.LeftOf XAML attached property.
+	/// </summary>
+	public static DependencyProperty LeftOfProperty { get; } =
+		DependencyProperty.RegisterAttached("LeftOf", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	/// <summary>
+	/// Gets the value of the RelativePanel.RightOf XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <returns>Value.</returns>
+	public static object GetRightOf(UIElement element) => (object)element.GetValue(RightOfProperty);
+
+	/// <summary>
+	/// Sets the value of the RelativePanel.RightOf XAML attached property for the target element.
+	/// </summary>
+	/// <param name="element">Target element.</param>
+	/// <param name="value">Value.</param>
+	public static void SetRightOf(UIElement element, object value) => element.SetValue(RightOfProperty, value);
+
+	/// <summary>
+	/// Identifies the RelativePanel.RightOf XAML attached property.
+	/// </summary>
+	public static DependencyProperty RightOfProperty { get; } =
+		DependencyProperty.RegisterAttached("RightOf", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+
+	#endregion
+
+	// Uno specific: Instead of checking for RP property changes directly in UIElement, we notify here.
+	private static void OnPositioningChanged(object s)
+	{
+		var element = s as FrameworkElement;
+
+		if (element == null)
 		{
-			get => GetBackgroundSizingValue();
-			set => SetBackgroundSizingValue(value);
+			return;
 		}
 
-		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
+		var panel = element.Parent as RelativePanel;
+		// Invalidate measure on the RelativePanel when the values of the
+		// associated attached properties change so it can re-arrange
+		// its children.
+		if (panel != null)
 		{
-			base.OnBackgroundSizingChangedInnerPanel(e);
-		}
-		#endregion
-
-		#region BorderBrush DependencyProperty
-
-		public Brush BorderBrush
-		{
-			get => GetBorderBrushValue();
-			set => SetBorderBrushValue(value);
-		}
-
-		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
-		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
-
-		private void OnBorderBrushPropertyChanged(Brush oldValue, Brush newValue)
-		{
-			BorderBrushInternal = newValue;
-			OnBorderBrushChanged(oldValue, newValue);
-		}
-
-		#endregion
-
-		#region BorderThickness DependencyProperty
-
-		public Thickness BorderThickness
-		{
-			get => GetBorderThicknessValue();
-			set => SetBorderThicknessValue(value);
-		}
-
-		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged))]
-		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
-
-		private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
-		{
-			BorderThicknessInternal = newValue;
-			OnBorderThicknessChanged(oldValue, newValue);
-		}
-
-		#endregion
-
-		#region Padding DependencyProperty
-
-		public Thickness Padding
-		{
-			get => GetPaddingValue();
-			set => SetPaddingValue(value);
-		}
-
-		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged))]
-		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
-
-		private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
-		{
-			PaddingInternal = newValue;
-			OnPaddingChanged(oldValue, newValue);
-		}
-
-		#endregion
-
-		#region CornerRadius DependencyProperty
-
-		public CornerRadius CornerRadius
-		{
-			get => GetCornerRadiusValue();
-			set => SetCornerRadiusValue(value);
-		}
-
-		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
-		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
-
-		private void OnCornerRadiusPropertyChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			CornerRadiusInternal = newValue;
-			OnCornerRadiusChanged(oldValue, newValue);
-		}
-
-		#endregion
-
-		#region Panel Alignment relationships
-
-		public static bool GetAlignBottomWithPanel(UIElement view)
-		{
-			return (bool)view.GetValue(AlignBottomWithPanelProperty);
-		}
-
-		public static void SetAlignBottomWithPanel(UIElement view, bool value)
-		{
-			view.SetValue(AlignBottomWithPanelProperty, value);
-		}
-
-		public static DependencyProperty AlignBottomWithPanelProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignBottomWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static bool GetAlignLeftWithPanel(UIElement view)
-		{
-			return (bool)view.GetValue(AlignLeftWithPanelProperty);
-		}
-
-		public static void SetAlignLeftWithPanel(UIElement view, bool value)
-		{
-			view.SetValue(AlignLeftWithPanelProperty, value);
-		}
-
-		public static DependencyProperty AlignLeftWithPanelProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignLeftWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static bool GetAlignRightWithPanel(UIElement view)
-		{
-			return (bool)view.GetValue(AlignRightWithPanelProperty);
-		}
-
-		public static void SetAlignRightWithPanel(UIElement view, bool value)
-		{
-			view.SetValue(AlignRightWithPanelProperty, value);
-		}
-
-		public static DependencyProperty AlignRightWithPanelProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignRightWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static bool GetAlignTopWithPanel(UIElement view)
-		{
-			return (bool)view.GetValue(AlignTopWithPanelProperty);
-		}
-
-		public static void SetAlignTopWithPanel(UIElement view, bool value)
-		{
-			view.SetValue(AlignTopWithPanelProperty, value);
-		}
-
-		public static DependencyProperty AlignTopWithPanelProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignTopWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static bool GetAlignHorizontalCenterWithPanel(UIElement view)
-		{
-			return (bool)view.GetValue(AlignHorizontalCenterWithPanelProperty);
-		}
-
-		public static void SetAlignHorizontalCenterWithPanel(UIElement view, bool value)
-		{
-			view.SetValue(AlignHorizontalCenterWithPanelProperty, value);
-		}
-
-		public static DependencyProperty AlignHorizontalCenterWithPanelProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignHorizontalCenterWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static bool GetAlignVerticalCenterWithPanel(UIElement view)
-		{
-			return (bool)view.GetValue(AlignVerticalCenterWithPanelProperty);
-		}
-
-		public static void SetAlignVerticalCenterWithPanel(UIElement view, bool value)
-		{
-			view.SetValue(AlignVerticalCenterWithPanelProperty, value);
-		}
-
-		public static DependencyProperty AlignVerticalCenterWithPanelProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignVerticalCenterWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-		#endregion
-
-		#region Sibling Alignment relationships
-
-		public static object GetAlignBottomWith(UIElement view)
-		{
-			return (object)view.GetValue(AlignBottomWithProperty);
-		}
-
-		public static void SetAlignBottomWith(UIElement view, object value)
-		{
-			view.SetValue(AlignBottomWithProperty, value);
-		}
-
-		public static DependencyProperty AlignBottomWithProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignBottomWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetAlignLeftWith(UIElement view)
-		{
-			return (object)view.GetValue(AlignLeftWithProperty);
-		}
-
-		public static void SetAlignLeftWith(UIElement view, object value)
-		{
-			view.SetValue(AlignLeftWithProperty, value);
-		}
-
-		public static DependencyProperty AlignLeftWithProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignLeftWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetAlignRightWith(UIElement view)
-		{
-			return (object)view.GetValue(AlignRightWithProperty);
-		}
-
-		public static void SetAlignRightWith(UIElement view, object value)
-		{
-			view.SetValue(AlignRightWithProperty, value);
-		}
-
-		public static DependencyProperty AlignRightWithProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignRightWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetAlignTopWith(UIElement view)
-		{
-			return (object)view.GetValue(AlignTopWithProperty);
-		}
-
-		public static void SetAlignTopWith(UIElement view, object value)
-		{
-			view.SetValue(AlignTopWithProperty, value);
-		}
-
-		public static DependencyProperty AlignTopWithProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignTopWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetAlignHorizontalCenterWith(UIElement view)
-		{
-			return (object)view.GetValue(AlignHorizontalCenterWithProperty);
-		}
-
-		public static void SetAlignHorizontalCenterWith(UIElement view, object value)
-		{
-			view.SetValue(AlignHorizontalCenterWithProperty, value);
-		}
-
-		public static DependencyProperty AlignHorizontalCenterWithProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignHorizontalCenterWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetAlignVerticalCenterWith(UIElement view)
-		{
-			return (object)view.GetValue(AlignVerticalCenterWithProperty);
-		}
-
-		public static void SetAlignVerticalCenterWith(UIElement view, object value)
-		{
-			view.SetValue(AlignVerticalCenterWithProperty, value);
-		}
-
-		public static DependencyProperty AlignVerticalCenterWithProperty { get ; } =
-			DependencyProperty.RegisterAttached("AlignVerticalCenterWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		#endregion
-
-		#region Sibling Positional relationships
-
-		public static object GetAbove(UIElement view)
-		{
-			return (object)view.GetValue(AboveProperty);
-		}
-
-		public static void SetAbove(UIElement view, object value)
-		{
-			view.SetValue(AboveProperty, value);
-		}
-
-		public static DependencyProperty AboveProperty { get ; } =
-			DependencyProperty.RegisterAttached("Above", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetBelow(UIElement view)
-		{
-			return (object)view.GetValue(BelowProperty);
-		}
-
-		public static void SetBelow(UIElement view, object value)
-		{
-			view.SetValue(BelowProperty, value);
-		}
-
-		public static DependencyProperty BelowProperty { get ; } =
-			DependencyProperty.RegisterAttached("Below", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetLeftOf(UIElement view)
-		{
-			return (object)view.GetValue(LeftOfProperty);
-		}
-
-		public static void SetLeftOf(UIElement view, object value)
-		{
-			view.SetValue(LeftOfProperty, value);
-		}
-
-		public static DependencyProperty LeftOfProperty { get ; } =
-			DependencyProperty.RegisterAttached("LeftOf", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		public static object GetRightOf(UIElement view)
-		{
-			return (object)view.GetValue(RightOfProperty);
-		}
-
-		public static void SetRightOf(UIElement view, object value)
-		{
-			view.SetValue(RightOfProperty, value);
-		}
-
-		public static DependencyProperty RightOfProperty { get ; } =
-			DependencyProperty.RegisterAttached("RightOf", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
-
-		#endregion
-
-		private static void OnPositioningChanged(object s)
-		{
-			var element = s as FrameworkElement;
-
-			if (element == null)
-			{
-				return;
-			}
-
-			element.InvalidateArrange();
+			panel.InvalidateMeasure();
 		}
 	}
 }

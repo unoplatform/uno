@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Input
 {
-	public  partial class KeyboardCapabilities 
+	public partial class KeyboardCapabilities
 	{
 		[global::Uno.NotImplemented]
-		public  int KeyboardPresent
+		public int KeyboardPresent
 		{
 			get
 			{
@@ -14,7 +14,7 @@ namespace Windows.Devices.Input
 			}
 		}
 
-		public KeyboardCapabilities() 
+		public KeyboardCapabilities()
 		{
 		}
 	}

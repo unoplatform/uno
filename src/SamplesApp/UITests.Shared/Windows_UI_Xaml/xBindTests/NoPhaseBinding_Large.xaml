@@ -7,9 +7,9 @@
 	  xmlns:u="using:Uno.UI.Samples.Controls"
     xmlns:legacy="using:Uno.UI.Controls.Legacy"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:xamarin="http://uno.ui/xamarin"
+	  xmlns:not_win="http://uno.ui/not_win"
 	  xmlns:uloc="http://nventive.com/localization/1.0"
-    mc:Ignorable="d xamarin uloc"
+    mc:Ignorable="d not_win uloc"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -388,7 +388,7 @@
 	<ListView ItemTemplate="{StaticResource DirectFlightWithTitleAndButtonTemplate}"
 						ItemsSource="{x:Bind MyItems}">
 		<ListView.ItemContainerStyle>
-				<xamarin:Style TargetType="ListViewItem"
+				<not_win:Style TargetType="ListViewItem"
 					 x:Key="ListViewItemExpanded">
 					<Setter Property="FontFamily"
 							Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -420,7 +420,7 @@
 										<ContentPresenter x:Name="ContentPresenter"
 															ContentTransitions="{TemplateBinding ContentTransitions}"
 															ContentTemplate="{TemplateBinding ContentTemplate}"
-															xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+															not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 															Content="{TemplateBinding Content}"
 															HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 															VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -428,7 +428,7 @@
 							</ControlTemplate>
 						</Setter.Value>
 					</Setter>
-				</xamarin:Style>
+				</not_win:Style>
 		</ListView.ItemContainerStyle>
 	</ListView>
 

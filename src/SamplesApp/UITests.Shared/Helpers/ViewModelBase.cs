@@ -9,28 +9,30 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Windows.UI.Core;
+using Private.Infrastructure;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using SamplesApp;
 
 namespace Uno.UI.Samples.UITests.Helpers
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	internal class ViewModelBase : INotifyPropertyChanged, IDisposable
 	{
-		public CoreDispatcher Dispatcher { get; }
+		public UnitTestDispatcherCompat Dispatcher { get; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected readonly CompositeDisposable Disposables = new CompositeDisposable();
 		protected readonly CancellationToken CT;
 
-		public ViewModelBase() : this(CoreWindow.GetForCurrentThread().Dispatcher)
+		public ViewModelBase() : this(UnitTestDispatcherCompat.Instance)
 		{
 		}
 
-		public ViewModelBase(CoreDispatcher dispatcher)
+		public ViewModelBase(UnitTestDispatcherCompat dispatcher)
 		{
 			Dispatcher = dispatcher;
 
@@ -57,7 +59,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 			else
 			{
-				var _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseEvent);
+				var _ = Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, RaiseEvent);
 			}
 
 			void RaiseEvent()
@@ -67,11 +69,11 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 		}
 
-		private readonly Dictionary<string, Command> _commands = new Dictionary<string,Command>();
+		private readonly Dictionary<string, Command> _commands = new Dictionary<string, Command>();
 
 		protected Command GetOrCreateCommand<T>(Action<T> action, [CallerMemberName] string commandName = null)
 		{
-			if(!_commands.TryGetValue(commandName, out var command))
+			if (!_commands.TryGetValue(commandName, out var command))
 			{
 				_commands[commandName] = command = new Command(x => action((T)x));
 			}
@@ -113,7 +115,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 		}
 
-		[Windows.UI.Xaml.Data.Bindable]
+		[Microsoft.UI.Xaml.Data.Bindable]
 		public class Command : ICommand
 		{
 			private readonly Action<object> _action;

@@ -1,17 +1,18 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Uno.Disposables;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
+	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	{
 		// Popup for the MenuFlyoutSubItem
@@ -39,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Text
 		{
-			get => (string)this.GetValue(TextProperty);
+			get => (string)this.GetValue(TextProperty) ?? "";
 			set => SetValue(TextProperty, value);
 		}
 
@@ -51,15 +52,15 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(IconProperty, value);
 		}
 
-		public static Windows.UI.Xaml.DependencyProperty TextProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static Microsoft.UI.Xaml.DependencyProperty TextProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"Text",
 			typeof(string),
 			typeof(MenuFlyoutSubItem),
 			new FrameworkPropertyMetadata(default(string)));
 
-		public static Windows.UI.Xaml.DependencyProperty IconProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static Microsoft.UI.Xaml.DependencyProperty IconProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"Icon",
 			typeof(IconElement),
 			typeof(MenuFlyoutSubItem),
@@ -89,6 +90,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.Initialize(this);
 		}
 
+#if false
 		void DisconnectFrameworkPeerCore()
 		{
 			// Ensure the clean up the items whenever MenuFlyoutSubItem is disconnected
@@ -100,6 +102,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// (MenuFlyoutSubItemGenerated.DisconnectFrameworkPeerCore());
 		}
+#endif
 
 		protected override void OnApplyTemplate()
 		{
@@ -111,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// PointerEntered event handler that shows the MenuFlyoutSubItem
-		// whenever the pointer is over to the 
+		// whenever the pointer is over to the
 		// In case of touch, the MenuFlyoutSubItem will be shown by
 		// PointerReleased event.
 
@@ -130,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		// PointerExited event handler that ensures the close MenuFlyoutSubItem
 		// whenever the pointer over is out of the current MenuFlyoutSubItem or
 		// out of the main presenter. If the exited point is on MenuFlyoutSubItem
-		// or sub presenter position, we want to keep the opened 
+		// or sub presenter position, we want to keep the opened
 
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
 		{
@@ -255,7 +258,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.OnKeyUp(args);
 		}
 
-		// Ensure the creating the popup and menu presenter to show the 
+		// Ensure the creating the popup and menu presenter to show the
 		void EnsurePopupAndPresenter()
 		{
 #if MFSI_DEBUG
@@ -375,7 +378,7 @@ namespace Windows.UI.Xaml.Controls
 			var isTextScaleFactorEnabled = pParentMenuFlyoutPresenter.IsTextScaleFactorEnabledInternal;
 			pSubMenuFlyoutPresenter.IsTextScaleFactorEnabledInternal = isTextScaleFactorEnabled;
 
-			ElementSoundMode soundMode = ElementSoundPlayerService.GetEffectiveSoundMode(spThisAsDO as DependencyObject);
+			ElementSoundMode soundMode = ElementSoundPlayerService.Instance.GetEffectiveSoundMode(spThisAsDO as DependencyObject);
 
 			(spSubMenuFlyoutPresenterAsControl as Control).ElementSoundMode = soundMode;
 		}
@@ -490,12 +493,12 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				// UNO TODO
-				//VisualTree* visualTree = VisualTree.GetForElementNoRef(GetHandle());
-				//if (visualTree)
-				//{
-				//	// Put the popup on the same VisualTree as this flyout sub item to make sure it shows up in the right place
-				//	(CPopup*)(m_tpPopup as Popup.GetHandle()).SetAssociatedVisualTree(visualTree);
-				//}
+				VisualTree visualTree = VisualTree.GetForElement(this);
+				if (visualTree is not null)
+				{
+					// Put the popup on the same VisualTree as this flyout sub item to make sure it shows up in the right place
+					m_tpPopup.SetVisualTree(visualTree);
+				}
 
 				// Set the popup open or close state
 				m_tpPopup.IsOpen = isOpen;
@@ -533,7 +536,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		void Open()
+		internal void Open()
 		{
 #if MFSI_DEBUG
 			IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Open.", this));
@@ -542,7 +545,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.OpenSubMenu();
 		}
 
-		void Close()
+		internal void Close()
 		{
 #if MFSI_DEBUG
 			IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Close.", this));
@@ -687,6 +690,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
+#if false
 		void ClearStateFlags()
 		{
 #if MFSI_DEBUG
@@ -715,6 +719,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.OnVisibilityChanged();
 
 		}
+#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
@@ -727,10 +732,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		string GetPlainText()
-		{
-			return Text;
-		}
+		private protected override string GetPlainText() => Text;
 
 		bool ISubMenuOwner.IsSubMenuOpen => IsOpen;
 

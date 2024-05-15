@@ -1,15 +1,15 @@
-﻿#if NET461 || __WASM__
+﻿#if IS_UNIT_TESTS || __WASM__
 #pragma warning disable CS0067
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
@@ -18,40 +18,48 @@ using System;
 using System.Collections;
 using System.Numerics;
 using System.Reflection;
-using Windows.UI.Xaml.Markup;
-
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Composition;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Documents;
+using Windows.ApplicationModel.Core;
+using Microsoft.UI.Input;
+using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Core.Scaling;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
-		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
-			= new Dictionary<Type, RoutedEventFlag>();
-
 		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
 			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
 
 		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
 
-		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
-		private XamlRoot _xamlRoot = null;
 		private string _uid;
 
-		//private protected virtual void PrepareState() 
+		private Vector3 _translation = Vector3.Zero;
+
+		private InputCursor _protectedCursor;
+		private SerialDisposable _disposedEventDisposable = new();
+
+		internal void FreezeTemplatedParent() =>
+			((IDependencyObjectStoreProvider)this).Store.IsTemplatedParentFrozen = true;
+
+		//private protected virtual void PrepareState()
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
 		//	// but to avoid invoking a virtual method in ctor ** THIS IS NOT INVOKED BY DEFAULT IN UNO **.
@@ -67,12 +75,13 @@ namespace Windows.UI.Xaml
 		// This are fulfilled by the ScrollViewer for the EffectiveViewport computation,
 		// but it should actually be computed based on clipping vs desired size.
 		internal Point ScrollOffsets { get; private protected set; }
-		#endregion
 
-		/// <summary>
-		/// Is this view set to Window.Current.Content?
-		/// </summary>
-		internal bool IsWindowRoot { get; set; }
+#if !__SKIA__
+		// This is the local viewport of the element, i.e. where the element can draw content once clipping has been applied.
+		// This is expressed in local coordinate space.
+		internal Rect Viewport { get; private set; } = Rect.Infinite;
+#endif
+		#endregion
 
 		/// <summary>
 		/// Is this view the top of the managed visual tree
@@ -84,6 +93,32 @@ namespace Windows.UI.Xaml
 		{
 			SubscribeToOverridenRoutedEvents();
 		}
+
+#if SUPPORTS_RTL
+		internal Matrix3x2 GetFlowDirectionTransform()
+			=> ShouldMirrorVisual() ? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f) : Matrix3x2.Identity;
+
+		private bool ShouldMirrorVisual()
+		{
+			if (this is not FrameworkElement fe)
+			{
+				return false;
+			}
+
+			var parent = VisualTreeHelper.GetParent(this);
+			while (parent is not null)
+			{
+				if (parent is FrameworkElement feParent)
+				{
+					return feParent is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
+				}
+
+				parent = VisualTreeHelper.GetParent(parent);
+			}
+
+			return false;
+		}
+#endif
 
 		private void SubscribeToOverridenRoutedEvents()
 		{
@@ -101,9 +136,7 @@ namespace Windows.UI.Xaml
 
 		internal static RoutedEventFlag GetImplementedRoutedEventsForType(Type type)
 		{
-			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
-			// and the result placed in a partial file.
-			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
+			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(type, out var result))
 			{
 				return result;
 			}
@@ -125,7 +158,9 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			return ImplementedRoutedEvents[type] = implementedRoutedEvents;
+			UIElementGeneratedProxy.RegisterImplementedRoutedEvents(type, implementedRoutedEvents);
+
+			return implementedRoutedEvents;
 		}
 
 		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(Type type)
@@ -138,6 +173,11 @@ namespace Windows.UI.Xaml
 			}
 
 			return result;
+		}
+
+		private protected virtual void OnChildDesiredSizeChanged(UIElement child)
+		{
+			InvalidateMeasure();
 		}
 
 		private protected static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
@@ -181,7 +221,90 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// Gets the size that this UIElement computed during the arrange pass of the layout process.
+		/// </summary>
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+
+		/// <summary>
+		/// Gets the position of this UIElement, relative to its parent, computed during the arrange pass of the layout process.
+		/// </summary>
+		public Vector3 ActualOffset
+		{
+			get
+			{
+#if __ANDROID__
+				var parent = this.GetVisualTreeParent();
+
+				if (parent is NativeListViewBase lv)
+				{
+					// TODO Uno: Issue with LayoutSlot for list items
+					// https://github.com/unoplatform/uno/issues/2754
+					var sv = lv.FindFirstParent<ScrollViewer>();
+					var offset = GetPosition(this, relativeTo: sv);
+					return new Vector3((float)offset.X, (float)offset.Y, 0f);
+				}
+#endif
+				return new Vector3((float)LayoutSlotWithMarginsAndAlignments.X, (float)LayoutSlotWithMarginsAndAlignments.Y, 0f);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the x, y, and z rendering position of the element.
+		/// </summary>
+		public Vector3 Translation
+		{
+			get => _translation;
+			set
+			{
+				if (_translation != value)
+				{
+					_translation = value;
+					UpdateShadow();
+				}
+			}
+		}
+
+		public
+#if __MACOS__
+			new
+#endif
+			Shadow Shadow
+		{
+			get => (Shadow)GetValue(ShadowProperty);
+			set => SetValue(ShadowProperty, value);
+		}
+
+		public static DependencyProperty ShadowProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Shadow),
+				typeof(Shadow),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(Shadow), OnShadowChanged));
+
+		private static void OnShadowChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is UIElement uiElement)
+			{
+				uiElement.UpdateShadow();
+			}
+		}
+
+		private void UpdateShadow()
+		{
+			if (Shadow == null || Translation.Z <= 0)
+			{
+				UnsetShadow();
+			}
+			else
+			{
+				SetShadow();
+			}
+		}
+
+		partial void SetShadow();
+
+		partial void UnsetShadow();
 
 		internal Size AssignedActualSize { get; set; }
 
@@ -203,18 +326,12 @@ namespace Windows.UI.Xaml
 
 		partial void OnUidChangedPartial();
 
-		public XamlRoot XamlRoot
-		{
-			get => _xamlRoot ?? XamlRoot.Current;
-			set => _xamlRoot = value;
-		}
-
 		#region VirtualizationInformation
 		private VirtualizationInformation _virtualizationInformation;
 		internal VirtualizationInformation GetVirtualizationInformation() => _virtualizationInformation ??= new VirtualizationInformation();
 
 		/// <summary>
-		/// Marks this control as a container generated by, eg, a <see cref="Primitives.Selector"/>, rather than an element explicitly 
+		/// Marks this control as a container generated by, eg, a <see cref="Selector"/>, rather than an element explicitly
 		/// defined in xaml.
 		/// </summary>
 		internal bool IsGeneratedContainer
@@ -231,6 +348,16 @@ namespace Windows.UI.Xaml
 			get => _virtualizationInformation?.IsContainerFromTemplateRoot ?? false;
 			set => GetVirtualizationInformation().IsContainerFromTemplateRoot = value;
 		}
+
+		/// <summary>
+		/// Marks this as a container defined in the root of an ItemTemplate, so that it can be handled appropriately when cleared.
+		/// </summary>
+		internal bool IsOwnContainer
+		{
+			get => _virtualizationInformation?.IsOwnContainer ?? false;
+			set => GetVirtualizationInformation().IsOwnContainer = value;
+		}
+
 		#endregion
 
 		#region Clip DependencyProperty
@@ -254,16 +381,17 @@ namespace Windows.UI.Xaml
 
 		private void OnClipChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var geometry = e.NewValue as RectangleGeometry;
+			if (e.OldValue is RectangleGeometry oldValue)
+			{
+				oldValue.GeometryChanged -= ApplyClip;
+			}
 
 			ApplyClip();
-			_clipSubscription.Disposable = geometry.RegisterDisposableNestedPropertyChangedCallback(
-				(_, __) => ApplyClip(),
-				new[] { RectangleGeometry.RectProperty },
-				new[] { Geometry.TransformProperty },
-				new[] { Geometry.TransformProperty, TranslateTransform.XProperty },
-				new[] { Geometry.TransformProperty, TranslateTransform.YProperty }
-			);
+
+			if (e.NewValue is RectangleGeometry newValue)
+			{
+				newValue.GeometryChanged += ApplyClip;
+			}
 		}
 
 		#endregion
@@ -275,31 +403,31 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Transform RenderTransform
 		{
-			get => (Transform)this.GetValue(RenderTransformProperty);
-			set => this.SetValue(RenderTransformProperty, value);
+			get => GetRenderTransformValue();
+			set => SetRenderTransformValue(value);
 		}
 
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static DependencyProperty RenderTransformProperty { get; } =
-			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new FrameworkPropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty RenderTransformProperty { get; } = CreateRenderTransformProperty();
 
-		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnRenderTransformChanged(Transform _, Transform transform)
 		{
-			var view = (UIElement)dependencyObject;
+			var flowDirectionTransform = _renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity;
 
-			view._renderTransform?.Dispose();
+			_renderTransform?.Dispose();
 
-			if (args.NewValue is Transform transform)
+			if (transform is not null || !flowDirectionTransform.IsIdentity)
 			{
-				view._renderTransform = new NativeRenderTransformAdapter(view, transform, view.RenderTransformOrigin);
-				view.OnRenderTransformSet();
+				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin, flowDirectionTransform);
+				OnRenderTransformSet();
 			}
 			else
 			{
 				// Sanity
-				view._renderTransform = null;
+				_renderTransform = null;
 			}
 		}
 
@@ -315,21 +443,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Point RenderTransformOrigin
 		{
-			get => (Point)this.GetValue(RenderTransformOriginProperty);
-			set => this.SetValue(RenderTransformOriginProperty, value);
+			get => GetRenderTransformOriginValue();
+			set => SetRenderTransformOriginValue(value);
 		}
 
-		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
-		public static DependencyProperty RenderTransformOriginProperty { get; } =
-			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new FrameworkPropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty RenderTransformOriginProperty { get; } = CreateRenderTransformOriginProperty();
+		private static object GetRenderTransformOriginDefaultValue() => default(Point);
 
-		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var view = (UIElement)dependencyObject;
-			var point = (Point)args.NewValue;
-
-			view._renderTransform?.UpdateOrigin(point);
-		}
+		private void OnRenderTransformOriginChanged(Point _, Point origin)
+			=> _renderTransform?.UpdateOrigin(origin);
 		#endregion
 
 		/// <summary>
@@ -386,6 +509,16 @@ namespace Windows.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
 
+		/// <summary>
+		/// Set correct default foreground for the current theme.
+		/// </summary>
+		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
+		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		{
+			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+		}
+
 		[NotImplemented]
 		protected virtual AutomationPeer OnCreateAutomationPeer() => new AutomationPeer();
 
@@ -393,104 +526,142 @@ namespace Windows.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			var logInfoString = from.Log().IsEnabled(LogLevel.Debug) ? new StringBuilder() : null;
-			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
-
-			if (from == to)
+			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))
 			{
 				return Matrix3x2.Identity;
 			}
 
+#if __SKIA__
+			Matrix4x4.Invert(to?.Visual.TotalMatrix ?? Matrix4x4.Identity, out var invertedTotalMatrix);
+			var finalTransform = (from.Visual.TotalMatrix * invertedTotalMatrix).ToMatrix3x2();
+
+			if (from.Log().IsEnabled(LogLevel.Trace))
+			{
+				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {finalTransform}");
+			}
+
+			return finalTransform;
+#else
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
 			// to find an element in the parent hierarchy of the other element.
-			if (to is { } && from.Depth < to.Depth)
+			if (to is not null && from.Depth < to.Depth)
 			{
 				return GetTransform(to, from).Inverse();
 			}
 #endif
 
 			var matrix = Matrix3x2.Identity;
-			double offsetX = 0.0, offsetY = 0.0;
+
 			var elt = from;
 			do
 			{
-				var layoutSlot = elt.LayoutSlotWithMarginsAndAlignments;
-				var transform = elt.RenderTransform;
-				if (transform is null)
-				{
-					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
-					offsetX += layoutSlot.X;
-					offsetY += layoutSlot.Y;
-				}
-				else
-				{
-					var origin = elt.RenderTransformOrigin;
-					var transformMatrix = origin == default
-						? transform.MatrixCore
-						: transform.ToMatrix(origin, layoutSlot.Size);
+				elt.ApplyRenderTransform(ref matrix);
+				elt.ApplyLayoutTransform(ref matrix);
+				elt.ApplyElementCustomTransform(ref matrix);
+				elt.ApplyFlowDirectionTransform(ref matrix);
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
 
-					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
-					// Friendly reminder: Matrix multiplication is usually not commutative ;)
-					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-					matrix *= transformMatrix;
-
-					offsetX = layoutSlot.X;
-					offsetY = layoutSlot.Y;
-				}
-
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
-				if (elt is ScrollViewer sv
-					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
-					&& elt != from)
-				{
-					// Scroll offsets are handled at SCP level using the IsScrollPort
-
-					var zoom = sv.ZoomFactor;
-					if (zoom != 1)
-					{
-						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-						matrix *= Matrix3x2.CreateScale(zoom);
-					}
-				}
-
-				if (elt.IsScrollPort) // Managed SCP or custom scroller
-				{
-					offsetX -= elt.ScrollOffsets.X;
-					offsetY -= elt.ScrollOffsets.Y;
-				}
-#endif
-
-				logInfoString?.Append($"{elt}: ({offsetX}, {offsetY}), ");
-			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
-
-			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-
-			if (to != null && elt != to)
+			if (to is not null && elt != to)
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
-				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
-				var rootToTo = toToRoot.Inverse();
 
+				var rootToTo = toToRoot.Inverse();
 				matrix *= rootToTo;
 			}
 
-			if (logInfoString != null)
+			if (from.Log().IsEnabled(LogLevel.Trace))
 			{
-				logInfoString.Append($"], matrix: {matrix}");
-				from.Log().LogDebug(logInfoString.ToString());
+				from.Log().Trace($"{nameof(GetTransform)}(from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix}");
 			}
+
 			return matrix;
+#endif
 		}
+
+#if !__SKIA__
+		/// <summary>
+		/// Applies to the given matrix the transformation needed to convert from parent to local element coordinates space.
+		/// </summary>
+		/// <param name="matrix">The matrix into which the layout constraints should be written</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyLayoutTransform(ref Matrix3x2 matrix)
+		{
+			var layoutSlot = LayoutSlotWithMarginsAndAlignments;
+			matrix.M31 += (float)layoutSlot.X;
+			matrix.M32 += (float)layoutSlot.Y;
+		}
+
+		/// <summary>
+		/// Applies to the given matrix the <see cref="RenderTransform"/>.
+		/// </summary>
+		/// <param name="matrix">The matrix into which the render transform should be written</param>
+		/// <param name="ignoreOrigin">Indicates if the <see cref="RenderTransformOrigin"/> should be ignored or not.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyRenderTransform(ref Matrix3x2 matrix, bool ignoreOrigin = false)
+		{
+			if (RenderTransform is { } transform)
+			{
+				var transformMatrix = transform.MatrixCore;
+				if (!ignoreOrigin)
+				{
+					transformMatrix = transformMatrix.CenterOn(RenderTransformOrigin, LayoutSlotWithMarginsAndAlignments.Size);
+				}
+
+				matrix *= transformMatrix;
+			}
+		}
+
+		/// <summary>
+		/// Applies to the given matrix the constrains specific to the current element (like ScrollOffsets).
+		/// </summary>
+		/// <param name="matrix">The matrix into which the transformations should be written</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyElementCustomTransform(ref Matrix3x2 matrix)
+		{
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
+			if (this is ScrollViewer sv)
+			{
+				// Scroll offsets are handled at the SCP level using the IsScrollPort
+				// TODO: ZoomFactor should also be handled at the SCP level!
+
+				var zoom = sv.ZoomFactor;
+				if (zoom != 1)
+				{
+					matrix *= Matrix3x2.CreateScale(zoom);
+				}
+			}
+
+			if (IsScrollPort) // Managed SCP or custom scroller
+			{
+				matrix.M31 -= (float)ScrollOffsets.X;
+				matrix.M32 -= (float)ScrollOffsets.Y;
+			}
+#endif
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyFlowDirectionTransform(ref Matrix3x2 matrix)
+		{
+#if SUPPORTS_RTL
+			if (this is FrameworkElement fe
+				&& VisualTreeHelper.GetParent(this) is FrameworkElement parent
+				&& fe.FlowDirection != parent.FlowDirection)
+			{
+				matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f, new Vector2(.5f, 0f));
+			}
+#endif
+		}
+#endif
 
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
-		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _)
 		{
 			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
@@ -557,7 +728,7 @@ namespace Windows.UI.Xaml
 		private static bool _isLayoutingVisualTreeRoot; // Currently in Measure or Arrange of the element flagged with IsVisualTreeRoot (layout requested by the system)
 #pragma warning restore CS0649
 
-#if !__NETSTD__ // We need an internal accessor for the Layouter
+#if !__CROSSRUNTIME__ // We need an internal accessor for the Layouter
 		internal static bool IsLayoutingVisualTreeRoot
 		{
 			get => _isLayoutingVisualTreeRoot;
@@ -574,7 +745,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var root = Windows.UI.Xaml.Window.Current.RootElement;
+			var root = XamlRoot?.VisualTree.RootElement;
 			if (root is null)
 			{
 				return;
@@ -613,26 +784,33 @@ namespace Windows.UI.Xaml
 			// then the whole tree will be measured at the last known value which is 0x0 and will never be invalidated.
 			//
 			// To avoid this we are instead using the Window Bounds as anyway they are the same as the root's slot.
-			var bounds = Windows.UI.Xaml.Window.Current.Bounds;
+
+			if (root.XamlRoot is null)
+			{
+				// Element is not in the visual tree.
+				return;
+			}
+
+			var bounds = root.XamlRoot.Bounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
-				root.Measure(bounds.Size);
-				root.Arrange(bounds);
+			root.Measure(bounds.Size);
+			root.Arrange(bounds);
 #elif __ANDROID__
-				for (var i = 0; i < MaxLayoutIterations; i++)
+			for (var i = 0; i < MaxLayoutIterations; i++)
+			{
+				// On Android, Measure and arrange are the same
+				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
-					// On Android, Measure and arrange are the same
-					if (root.IsMeasureDirtyOrMeasureDirtyPath)
-					{
-						root.Measure(bounds.Size);
-						root.Arrange(bounds);
-					}
-					else
-					{
-						return;
-					}
+					root.Measure(bounds.Size);
+					root.Arrange(bounds);
 				}
-#else
+				else
+				{
+					return;
+				}
+			}
+#elif !__NETSTD_REFERENCE__
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
@@ -642,7 +820,19 @@ namespace Windows.UI.Xaml
 				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
+#if !IS_UNIT_TESTS
+					// Workaround: Without this, the managed Skia TextBox breaks.
+					// For example, keyboard selection or double clicking to select breaks
+					// It's probably an issue with TextBox implementation itself, but for now we workaround it here.
+					root.XamlRoot.RaiseInvalidateRender();
+#endif
 				}
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				else if (root.GetContext().EventManager.HasPendingViewportChangedEvents)
+				{
+					root.GetContext().EventManager.RaiseEffectiveViewportChangedEvents();
+				}
+#endif
 				else
 				{
 					return;
@@ -655,6 +845,27 @@ namespace Windows.UI.Xaml
 
 		internal void ApplyClip()
 		{
+#if __SKIA__
+			// On Skia specifically, we separate the two types of clipping.
+			// First, from Clip DP (handled in this code path)
+			// That clipping propagates to Visual.Clip through ApplyNativeClip.
+			// Second is clipping calculated from FrameworkElement.GetClipRect during arrange.
+			// That clipping propagates to ViewBox during arrange.
+			var clip = Clip;
+			if (clip is null)
+			{
+				ApplyNativeClip(Rect.Empty, transform: null);
+			}
+			else
+			{
+				ApplyNativeClip(clip.Rect, clip.Transform);
+			}
+
+			OnViewportUpdated();
+
+#elif __WASM__
+			InvalidateArrange();
+#else
 			Rect rect;
 
 			if (Clip == null)
@@ -683,10 +894,26 @@ namespace Windows.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
+#endif
 		}
 
-		partial void ApplyNativeClip(Rect rect);
-		private protected virtual void OnViewportUpdated(Rect viewport) { } // Not "Changed" as it might be the same as previous
+		partial void ApplyNativeClip(Rect rect
+#if __SKIA__
+			, Transform transform
+#endif
+			);
+
+		private protected virtual void OnViewportUpdated(
+#if !__SKIA__
+			Rect viewport
+#endif
+			) // Not "Changed" as it might be the same as previous
+		{
+#if !__SKIA__
+			// If not clipped, we consider the viewport as infinite.
+			Viewport = viewport.IsEmpty ? Rect.Infinite : viewport;
+#endif
+		}
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
@@ -707,7 +934,7 @@ namespace Windows.UI.Xaml
 		internal static string SetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyNameAndValue)
 		{
 			var s = dependencyPropertyNameAndValue;
-			var index = s.IndexOf("|");
+			var index = s.IndexOf('|');
 
 			if (index != -1)
 			{
@@ -766,10 +993,10 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
 		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
-		/// This is the 'finalRect' of the last Arrange.
+		/// This is the 'finalRect' of the last Arrange. However, this doesn't affect clipping (even for children).
 		/// </summary>
 		/// <remarks>This is expressed in parent's coordinate space.</remarks>
-		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
+		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; }
 
 		internal bool NeedsClipToSlot { get; set; }
 
@@ -777,6 +1004,31 @@ namespace Windows.UI.Xaml
 		/// Backing property for <see cref="LayoutInformation.GetDesiredSize(UIElement)"/>
 		/// </summary>
 		Size IUIElement.DesiredSize { get; set; }
+
+		private Size _size;
+
+		/// <summary>
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
+		/// </summary>
+		public Size RenderSize
+		{
+			get => Visibility == Visibility.Collapsed ? new Size() : _size;
+			internal set
+			{
+				global::System.Diagnostics.Debug.Assert(value.Width >= 0, $"Invalid width ({value.Width})");
+				global::System.Diagnostics.Debug.Assert(value.Height >= 0, $"Invalid height ({value.Height})");
+				var previousSize = _size;
+				_size = value;
+				if (_size != previousSize)
+				{
+					if (this is FrameworkElement frameworkElement)
+					{
+						frameworkElement.SetActualSize(_size);
+						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
+					}
+				}
+			}
+		}
 
 #if !UNO_REFERENCE_API
 		/// <summary>
@@ -787,10 +1039,6 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public Size DesiredSize => ((IUIElement)this).DesiredSize;
 
-		/// <summary>
-		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
-		/// </summary>
-		public Size RenderSize { get; internal set; }
 
 #if !UNO_REFERENCE_API
 		/// <summary>
@@ -799,21 +1047,70 @@ namespace Windows.UI.Xaml
 		internal Rect? ClippedFrame;
 #endif
 
-		public virtual void Measure(Size availableSize)
+		/// <summary>
+		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
+		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="availableSize">
+		/// The available space that a parent can allocate to a child object. A child object can request a larger
+		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
+		/// possible in that particular container.
+		/// </param>
+		/// <returns>The measured size.</returns>
+		/// <remarks>
+		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
+		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
+		/// </remarks>
+		public void Measure(Size availableSize)
 		{
+#if !UNO_REFERENCE_API
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
+			{
+				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
+			}
+
+			((ILayouterElement)fwe).Layouter.Measure(availableSize);
+#if IS_UNIT_TESTS
+			OnMeasurePartial(availableSize);
+#endif
+#endif
 		}
 
-		public virtual void Arrange(Rect finalRect)
+#if IS_UNIT_TESTS
+		partial void OnMeasurePartial(Size slotSize);
+#endif
+
+		/// <summary>
+		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
+		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
+		public void Arrange(Rect finalRect)
 		{
+#if !UNO_REFERENCE_API
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			var layouter = ((ILayouterElement)fwe).Layouter;
+			layouter.Arrange(finalRect.DeflateBy(fwe.Margin));
+			layouter.ArrangeChild(fwe, finalRect);
+#endif
 		}
 
 		public void InvalidateMeasure()
 		{
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			// Use a non-virtual version of the RequestLayout method, for performance.
 			base.RequestLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif XAMARIN_IOS
+#elif __IOS__
 			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #elif __MACOS__
@@ -838,6 +1135,45 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
+		/// <summary>
+		/// This method has to be invoked for elements that are going to be recycled WITHOUT necessarily being unloaded / loaded.
+		/// For instance, this is not expected to be invoked for elements recycled by the template pool as they are always unloaded.
+		/// The main use case is for ListView and is expected to be invoked by ListView.CleanUpContainer.
+		/// </summary>
+		/// <remarks>This will walk the tree down to invoke this on all children!</remarks>
+		internal static void PrepareForRecycle(object view)
+		{
+			if (view is UIElement elt)
+			{
+				elt.PrepareForRecycle();
+			}
+			else
+			{
+				foreach (var child in VisualTreeHelper.GetManagedVisualChildren(view))
+				{
+					child.PrepareForRecycle();
+				}
+			}
+		}
+
+		/// <summary>
+		/// This method has to be invoked on elements that are going to be recycled WITHOUT necessarily being unloaded / loaded.
+		/// For instance, this is not expected to be invoked for elements recycled by the template pool as they are always unloaded.
+		/// The main use case is for ListView and is expected to be invoked by ListView.CleanUpContainer.
+		/// </summary>
+		/// <remarks>This will walk the tree down to invoke this on all children!</remarks>
+		internal virtual void PrepareForRecycle()
+		{
+			ClearPointerStateOnRecycle();
+
+			foreach (var child in VisualTreeHelper.GetManagedVisualChildren(this))
+			{
+				child.PrepareForRecycle();
+			}
+		}
+
+		private partial void ClearPointerStateOnRecycle();
+
 		internal virtual bool IsViewHit() => true;
 
 		internal virtual bool IsEnabledOverride() => true;
@@ -845,7 +1181,7 @@ namespace Windows.UI.Xaml
 		internal bool GetUseLayoutRounding()
 		{
 #if __SKIA__
-			return true;
+			return UseLayoutRounding;
 #else
 			return false;
 #endif
@@ -922,7 +1258,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		private double LayoutRound(double value, double scaleFactor)
+		private static double LayoutRound(double value, double scaleFactor)
 		{
 			double returnValue = value;
 
@@ -947,13 +1283,9 @@ namespace Windows.UI.Xaml
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
-		internal double GetScaleFactorForLayoutRounding()
-		{
-			// TODO use actual scaling based on current transforms.
-			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / DisplayInformation.BaseDpi; // 100%
-		}
+		internal double GetScaleFactorForLayoutRounding() => RootScale.GetRasterizationScaleForElement(this);
 
-		double XcpRound(double x)
+		private static double XcpRound(double x)
 		{
 			return Math.Round(x);
 		}
@@ -1012,14 +1344,78 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = default(KeyboardNavigationMode))]
 		public static DependencyProperty TabFocusNavigationProperty { get; } = CreateTabFocusNavigationProperty();
 
+		// This depends on the implementation of ICorePointerInputSource.PointerCursor.
+		/// <summary>
+		/// Gets or sets the cursor that displays when the pointer is over this element. Defaults to null, indicating no change to the cursor.
+		/// </summary>
 #if HAS_UNO_WINUI
-		// Skipping already declared property ActualSize
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public UI.Input.InputCursor ProtectedCursor
-		{
-			get;
-			set;
-		}
+		protected InputCursor ProtectedCursor
+#else
+		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
 #endif
+		{
+			get => _protectedCursor;
+			set
+			{
+				_protectedCursor = value;
+				// On WinUI, a disposed InputCursor causes the cursor to be hidden. The ProtectedCursor isn't cleared.
+				// The the InputCursor is disposed while the cursor is currently inside the UIElement, the cursor is only
+				// hidden when the cursor moves. Our implementation matches this.
+				if (value is { IsDisposed: true })
+				{
+					CalculatedFinalCursor = null;
+				}
+				else if (value is InputSystemCursor c)
+				{
+					CalculatedFinalCursor = c.CursorShape;
+				}
+				else if (value is null)
+				{
+					this.ClearValue(CalculatedFinalCursorProperty, DependencyPropertyValuePrecedences.Local);
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"Setting UIElement.ProtectedCursor to value of type {value.GetType().FullName} is not supported. Only Values of type {nameof(InputSystemCursor)} are currently supported.");
+					}
+				}
+
+				if (value is { } cursor)
+				{
+					_disposedEventDisposable.Disposable = cursor.RegisterDisposedEvent((_, _) =>
+					{
+						CalculatedFinalCursor = null;
+						_disposedEventDisposable.Disposable?.Dispose();
+					});
+				}
+			}
+		}
+
+		internal void SetProtectedCursor(Microsoft /* UWP don't rename */.UI.Input.InputCursor cursor)
+		{
+			ProtectedCursor = cursor;
+		}
+
+		/// <summary>
+		/// This event is not yet implemented in Uno Platform.
+		/// </summary>
+		/// <remarks>
+		/// The code was moved here to override the LogLevel.
+		/// </remarks>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs> AccessKeyInvoked
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
+			}
+		}
 	}
 }

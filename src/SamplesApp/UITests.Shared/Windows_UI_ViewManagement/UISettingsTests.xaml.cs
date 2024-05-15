@@ -9,19 +9,20 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Windows_UI_ViewManagement
 {
 	[Sample("Windows.UI.ViewManagement", ViewModelType = typeof(UISettingsTestsViewModel))]
 	public sealed partial class UISettingsTests : Page
-    {
+	{
 		public UISettingsTests()
-        {
-            this.InitializeComponent();
-			this.DataContextChanged += UISettingsTests_DataContextChanged;			
-        }
+		{
+			this.InitializeComponent();
+			this.DataContextChanged += UISettingsTests_DataContextChanged;
+		}
 
 		internal UISettingsTestsViewModel ViewModel { get; private set; }
 
@@ -35,7 +36,7 @@ namespace UITests.Windows_UI_ViewManagement
 	{
 		private readonly UISettings _uiSettings = new UISettings();
 
-		public UISettingsTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public UISettingsTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_uiSettings.ColorValuesChanged += UiSettings_ColorValuesChanged;
 			UpdateColors();
@@ -43,10 +44,10 @@ namespace UITests.Windows_UI_ViewManagement
 
 		private async void UiSettings_ColorValuesChanged(UISettings sender, object args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => UpdateColors());
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => UpdateColors());
 		}
 
-		public string AnimationsEnabled => GetValueSafe(() =>_uiSettings.AnimationsEnabled);
+		public string AnimationsEnabled => GetValueSafe(() => _uiSettings.AnimationsEnabled);
 
 		public ObservableCollection<UIColorTypeListItem> UIColors { get; } = new ObservableCollection<UIColorTypeListItem>();
 
@@ -55,8 +56,7 @@ namespace UITests.Windows_UI_ViewManagement
 		private void UpdateColors()
 		{
 			UIColors.Clear();
-			var colorTypes = Enum.GetValues(typeof(UIColorType)).Cast<UIColorType>();
-			foreach (var colorType in colorTypes)
+			foreach (var colorType in Enum.GetValues<UIColorType>())
 			{
 				try
 				{

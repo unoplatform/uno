@@ -10,7 +10,7 @@ namespace Uno.UI.Lottie
 {
 	// This file is coming from there: https://github.com/windows-toolkit/Lottie-Windows/blob/3b731941af5f3665b3d52333f82abf5d378be6b3/source/LottieToWinComp/PropertyBindingsParser.cs
 
-	internal static class PropertyBindingsParser
+	internal static partial class PropertyBindingsParser
 	{
 		// Property binding language definition
 		// ====================================
@@ -58,7 +58,7 @@ namespace Uno.UI.Lottie
 			// Optional: more property bindings separated by semicolons
 			@"(;\s*" + PropertyBindingRegex + @"\s*)*";
 
-		static readonly Regex s_regex = new Regex(@"{\s*" + PropertyBindingsListRegex + @"}");
+		static readonly Regex s_regex = VariableMatching();
 
 		// Parses property bindings from the given string.
 		internal static (string propertyName, string bindingName)[] ParseBindings(string str)
@@ -76,17 +76,20 @@ namespace Uno.UI.Lottie
 
 			return
 				(from Match match in matches
-					let bindingCaptures = match.Groups[BindingNameSelector].Captures
-#if NETFRAMEWORK || __NETSTD__
+				 let bindingCaptures = match.Groups[BindingNameSelector].Captures
+#if NETFRAMEWORK || __CROSSRUNTIME__
 						.Cast<Capture>()
 #endif
-					let propertyCaptures = match.Groups[PropertyNameSelector].Captures
-#if NETFRAMEWORK || __NETSTD__
+				 let propertyCaptures = match.Groups[PropertyNameSelector].Captures
+#if NETFRAMEWORK || __CROSSRUNTIME__
 						.Cast<Capture>()
 #endif
 				 from pair in propertyCaptures
 						.Zip(bindingCaptures, (p, b) => (p.Value, b.Value))
-					select pair).ToArray();
+				 select pair).ToArray();
 		}
+
+		[GeneratedRegex(@"{\s*" + PropertyBindingsListRegex + @"}")]
+		private static partial Regex VariableMatching();
 	}
 }

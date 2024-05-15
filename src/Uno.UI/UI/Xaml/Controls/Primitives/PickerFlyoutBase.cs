@@ -2,21 +2,29 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class PickerFlyoutBase : FlyoutBase
 	{
 		public static DependencyProperty TitleProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 				"Title", typeof(string),
 				typeof(PickerFlyoutBase),
 				new FrameworkPropertyMetadata(default(string)));
 
-		public static string GetTitle(DependencyObject element) => (string)element.GetValue(TitleProperty);
+		public static string GetTitle(DependencyObject element) => (string)element.GetValue(TitleProperty) ?? "";
 
-		public static void SetTitle(DependencyObject element, string value) => element.SetValue(TitleProperty, value);
+		public static void SetTitle(DependencyObject element, string value)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
 
-		protected virtual void OnConfirmed() => throw new InvalidOperationException();
+			element.SetValue(TitleProperty, value);
+		}
+
+		protected virtual void OnConfirmed() => Hide();
 
 		protected virtual bool ShouldShowConfirmationButtons() => throw new InvalidOperationException();
 

@@ -3,7 +3,7 @@
 namespace MUXControlsTestApp
 {
 	public partial class TestPage : MUXTestPage
-    {
-        
-    }
+	{
+
+	}
 }

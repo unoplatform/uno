@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using UIKit;
 using CoreAnimation;
 using CoreGraphics;
@@ -21,7 +21,7 @@ namespace Uno.UI.Extensions
 {
 	internal static class NSBezierPathExtensions
 	{
-		public static CGPath ToCGPath(this  _BezierPath nSBezierPath)
+		public static CGPath ToCGPath(this _BezierPath nSBezierPath)
 		{
 #if __IOS__
 			return nSBezierPath.CGPath;

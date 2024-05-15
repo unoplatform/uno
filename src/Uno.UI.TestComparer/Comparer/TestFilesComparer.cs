@@ -57,7 +57,7 @@ namespace Uno.UI.TestComparer.Comparer
 						Files = files.AsParallel().ToArray(),
 					};
 
-			var allFolders = LogForeach(q, i => Console.WriteLine($"Processed {i.Path}")).ToArray();
+			var allFolders = LogForeach(q, i => Helpers.WriteLineWithTime($"Processed {i.Path}")).ToArray();
 
 			testResult.Folders.AddRange(allFolders.Select((p, index) => (index, p.Path)).AsParallel());
 
@@ -69,108 +69,115 @@ namespace Uno.UI.TestComparer.Comparer
 				.ToArray();
 
 			var changedList = new List<string>();
-            foreach (var testFile in allFiles)
-            {
-                var testFileIncrements = from folder in allFolders
-                                         orderby folder.Index ascending
-                                         select new
-                                         {
-                                             Folder = folder.Path,
-                                             FolderIndex = folder.Index,
-                                             Files = new[] {
-                                                new { FileInfo = folder.Files.FirstOrDefault(f => Path.GetFileName(f.File) == testFile) }
-                                             }
-                                         };
+			foreach (var testFile in allFiles)
+			{
+				var testFileIncrements = from folder in allFolders
+										 orderby folder.Index ascending
+										 select new
+										 {
+											 Folder = folder.Path,
+											 FolderIndex = folder.Index,
+											 Files = new[] {
+												new { FileInfo = folder.Files.FirstOrDefault(f => Path.GetFileName(f.File) == testFile) }
+											 }
+										 };
 
-                var increments =
-                    (
-                        from platformIndex in Enumerable.Range(0, 1)
-                        select testFileIncrements
-                            .Aggregate(
-                                new[] { new { FolderIndex = -1, Path = "", IdSha = "", Id = -1, CompareeId = -1 } },
-                                (a, f) =>
-                                {
-                                    var platformFiles = f.Files[platformIndex];
+				var increments =
+					(
+						from platformIndex in Enumerable.Range(0, 1)
+						select testFileIncrements
+							.Aggregate(
+								new[] { new { FolderIndex = -1, Path = "", IdSha = "", Id = -1, CompareeId = -1 } },
+								(a, f) =>
+								{
+									var platformFiles = f.Files[platformIndex];
 
-                                    if (platformFiles?.FileInfo == null)
-                                    {
-                                        return a;
-                                    }
+									if (platformFiles?.FileInfo == null)
+									{
+										return a;
+									}
 
-                                    var otherMatch = a.Reverse().Where(i => i.IdSha != null).FirstOrDefault();
-                                    if (platformFiles.FileInfo?.Id.sha != otherMatch?.IdSha)
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = platformFiles.FileInfo?.Id.sha, Id = platformFiles.FileInfo?.Id.index ?? -1, CompareeId = otherMatch.Id } })
-                                            .ToArray();
-                                    }
-                                    else
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = (string)null, Id = platformFiles.FileInfo.Id.index, CompareeId = -1 } })
-                                            .ToArray();
-                                    }
-                                }
-                            )
-                    ).ToArray();
+									var otherMatch = a.Reverse().Where(i => i.IdSha != null).FirstOrDefault();
+									if (platformFiles.FileInfo?.Id.sha != otherMatch?.IdSha)
+									{
+										return a
+											.Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = platformFiles.FileInfo?.Id.sha, Id = platformFiles.FileInfo?.Id.index ?? -1, CompareeId = otherMatch.Id } })
+											.ToArray();
+									}
+									else
+									{
+										return a
+											.Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = (string)null, Id = platformFiles.FileInfo.Id.index, CompareeId = -1 } })
+											.ToArray();
+									}
+								}
+							)
+					).ToArray();
 
-                var hasChanges = increments.Any(i => i.Where(v => v.IdSha != null).Count() - 1 > 1);
+				var hasChanges = increments.Any(i => i.Where(v => v.IdSha != null).Count() - 1 > 1);
 
-                var compareResultFile = new CompareResultFile();
-                compareResultFile.HasChanged = hasChanges;
-                compareResultFile.TestName = testFile;
+				var compareResultFile = new CompareResultFile();
+				compareResultFile.HasChanged = hasChanges;
+				compareResultFile.TestName = testFile;
 
-                testResult.Tests.Add(compareResultFile);
+				testResult.Tests.Add(compareResultFile);
 
-                var changeResult = increments[0];
+				var changeResult = increments[0];
 
-                var firstFolder = changeResult.Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
+				var firstFolder = changeResult.Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
 
-                for (int folderIndex = 0; folderIndex < allFolders.Length; folderIndex++)
-                {
-                    var folderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex);
+				for (int folderIndex = 0; folderIndex < allFolders.Length; folderIndex++)
+				{
+					var folderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex);
 
-                    if (folderInfo != null)
-                    {
-                        var hasChangedFromPrevious = folderIndex != firstFolder && folderInfo?.IdSha != null;
+					if (folderInfo != null)
+					{
+						var hasChangedFromPrevious = folderIndex != firstFolder && folderInfo?.IdSha != null;
 
-                        var compareResultFileRun = new CompareResultFileRun();
-                        compareResultFile.ResultRun.Add(compareResultFileRun);
+						var compareResultFileRun = new CompareResultFileRun();
+						compareResultFile.ResultRun.Add(compareResultFileRun);
 
-                        compareResultFileRun.ImageId = folderInfo.Id;
-                        compareResultFileRun.ImageSha = folderInfo.IdSha;
+						compareResultFileRun.ImageId = folderInfo.Id;
+						compareResultFileRun.ImageSha = folderInfo.IdSha;
 						compareResultFileRun.FilePath = folderInfo.Path;
 						compareResultFileRun.FolderIndex = folderIndex;
 
 						compareResultFileRun.HasChanged = hasChangedFromPrevious;
 
-                        if (folderInfo != null)
-                        {
-                            var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
-                            if (hasChangedFromPrevious && previousFolderInfo != null)
-                            {
-								var currentImage = DecodeImage(folderInfo.Path);
-								var previousImage = DecodeImage(previousFolderInfo.Path);
-
-								if (currentImage.pixels.Length == previousImage.pixels.Length)
+						if (folderInfo != null)
+						{
+							var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
+							if (hasChangedFromPrevious && previousFolderInfo != null)
+							{
+								try
 								{
-									var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
+									var currentImage = DecodeImage(folderInfo.Path);
+									var previousImage = DecodeImage(previousFolderInfo.Path);
 
-									var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-									WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
+									if (currentImage.pixels.Length == previousImage.pixels.Length)
+									{
+										var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
 
-									compareResultFileRun.DiffResultImage = diffFilePath;
+										var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+										WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
+
+										compareResultFileRun.DiffResultImage = diffFilePath;
+									}
+
+									changedList.Add(testFile);
 								}
-
-								changedList.Add(testFile);
-                            }
+								catch (Exception ex)
+								{
+									Helpers.WriteLineWithTime($"[ERROR] Failed to process [{folderInfo.Path}] and [{previousFolderInfo.Path}]\n({ex})");
+								}
+							}
 
 							GC.Collect(2, GCCollectionMode.Forced);
 							GC.WaitForPendingFinalizers();
-                        }
-                    }
-                }
-            }
+						}
+					}
+				}
+			}
 
 			testResult.UnchangedTests = allFiles.Length - changedList.Distinct().Count();
 			testResult.TotalTests = allFiles.Length;
@@ -180,9 +187,9 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private bool CanBeUsedForCompare(string sample)
 		{
-			if(ReadScreenshotMetadata(sample) is IDictionary<string, string> options)
+			if (ReadScreenshotMetadata(sample) is IDictionary<string, string> options)
 			{
-				if(options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.ToLower() == "true")
+				if (options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.Equals("true", StringComparison.OrdinalIgnoreCase))
 				{
 					return false;
 				}
@@ -303,19 +310,26 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
 		{
-			using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
+			try
 			{
-				var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+				using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
+				{
+					var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 
-				var f = decoder.Frames[0];
-				var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
-				var sourceStride = f.PixelWidth * sourceBytesPerPixels;
-				sourceStride += (4 - sourceStride % 4);
+					var f = decoder.Frames[0];
+					var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
+					var sourceStride = f.PixelWidth * sourceBytesPerPixels;
+					sourceStride += (4 - sourceStride % 4);
 
-				var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
-				decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
+					var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
+					decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
 
-				return (decoder.Frames[0], image, sourceStride);
+					return (decoder.Frames[0], image, sourceStride);
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException($"Unable to decode image {path1}", ex);
 			}
 		}
 

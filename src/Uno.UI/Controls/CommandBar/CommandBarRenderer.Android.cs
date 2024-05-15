@@ -10,9 +10,9 @@ using Uno.UI.Extensions;
 using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Android.App;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -41,7 +41,7 @@ namespace Uno.UI.Controls
 				if (_actionBarUpDescription == null)
 				{
 					if (ContextHelper.Current is Activity activity
-					    && activity.Resources?.GetIdentifier("action_bar_up_description", "string", "android") is { } resourceId)
+						&& activity.Resources?.GetIdentifier("action_bar_up_description", "string", "android") is { } resourceId)
 					{
 						_actionBarUpDescription = activity.Resources.GetString(resourceId);
 					}
@@ -195,7 +195,7 @@ namespace Uno.UI.Controls
 			}
 
 			// PrimaryCommands & SecondaryCommands
-			var currentMenuItemIds = GetMenuItems(native.Menu)
+			var currentMenuItemIds = GetMenuItems(native.Menu!)
 				.Select(i => i!.ItemId);
 			var intendedMenuItemIds = element.PrimaryCommands
 				.Concat(element.SecondaryCommands)
@@ -204,18 +204,28 @@ namespace Uno.UI.Controls
 
 			if (!currentMenuItemIds.SequenceEqual(intendedMenuItemIds))
 			{
-				native.Menu.Clear();
-				foreach (var command in element.PrimaryCommands.Concat(element.SecondaryCommands).OfType<AppBarButton>())
+				if (native.Menu is not null)
 				{
+					native.Menu.Clear();
+					foreach (var command in element.PrimaryCommands.Concat(element.SecondaryCommands).OfType<AppBarButton>())
+					{
 #pragma warning disable 618
-					var menuItem = native.Menu.Add(0, command.GetHashCode(), Menu.None, null);
+						var menuItem = native.Menu.Add(0, command.GetHashCode(), Menu.None, null);
 #pragma warning restore 618
 
-					var renderer = command.GetRenderer(() => new AppBarButtonRenderer(command));
-					renderer.Native = menuItem;
+						var renderer = command.GetRenderer(() => new AppBarButtonRenderer(command));
+						renderer.Native = menuItem;
 
-					// This ensures that Behaviors expecting this button to be in the logical tree work. 
-					command.SetParent(element);
+						// This ensures that Behaviors expecting this button to be in the logical tree work. 
+						command.SetParent(element);
+					}
+				}
+				else
+				{
+					if (typeof(CommandBarRenderer).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(CommandBarRenderer).Log().Error("Unable to determine ind the native menu.");
+					}
 				}
 			}
 
@@ -294,13 +304,23 @@ namespace Uno.UI.Controls
 		{
 			CloseKeyboard();
 
-			var hashCode = e.Item.ItemId;
-			var appBarButton = Element.PrimaryCommands
-				.Concat(Element.SecondaryCommands)
-				.OfType<AppBarButton>()
-				.FirstOrDefault(c => hashCode == c.GetHashCode());
+			if (e.Item is not null)
+			{
+				var hashCode = e.Item.ItemId;
+				var appBarButton = Element.PrimaryCommands
+					.Concat(Element.SecondaryCommands)
+					.OfType<AppBarButton>()
+					.FirstOrDefault(c => hashCode == c.GetHashCode());
 
-			appBarButton?.RaiseClick();
+				appBarButton?.RaiseClick();
+			}
+			else
+			{
+				if (typeof(CommandBarRenderer).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(CommandBarRenderer).Log().Error("Unable to determine clicked item native ID.");
+				}
+			}
 		}
 
 		private void Native_NavigationClick(object? sender, Toolbar.NavigationClickEventArgs e)

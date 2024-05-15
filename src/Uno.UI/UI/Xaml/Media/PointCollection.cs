@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class PointCollection : IEnumerable<Point>, IList<Point>
 	{
@@ -128,7 +129,7 @@ namespace Windows.UI.Xaml.Media
 			var values = fields
 				.SelectToArray(strVal =>
 				{
-					successfulConversion &= float.TryParse(strVal, out var v);
+					successfulConversion &= float.TryParse(strVal, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out var v);
 					return v;
 				});
 
@@ -152,12 +153,12 @@ namespace Windows.UI.Xaml.Media
 		{
 			var sb = new StringBuilder();
 
-			sb.Append("[");
+			sb.Append('[');
 			foreach (Point p in _points)
 			{
 				sb.Append(p.X + "," + p.Y + " ");
 			}
-			sb.Append("]");
+			sb.Append(']');
 
 			return sb.ToString();
 		}

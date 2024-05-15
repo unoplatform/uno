@@ -9,10 +9,10 @@ using Windows.Foundation;
 
 namespace Uno.Devices.Sensors
 {
-    public interface INativeHingeAngleSensor
-    {
+	public interface INativeHingeAngleSensor
+	{
 		bool DeviceHasHinge { get; }
 
 		event EventHandler<NativeHingeAngleReading> ReadingChanged;
-    }
+	}
 }

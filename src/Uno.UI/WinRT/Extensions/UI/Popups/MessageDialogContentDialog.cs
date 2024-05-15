@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.WinRT.Extensions.UI.Popups;
 
@@ -25,7 +25,7 @@ internal partial class MessageDialogContentDialog : ContentDialog
 
 		var styleOverriden = TryApplyStyle(WinRTFeatureConfiguration.MessageDialog.StyleOverride);
 		if (!styleOverriden)
-        {
+		{
 			// WinUI provides a modern style for ContentDialog, which is not applied automatically.
 			// Force apply it if available.
 			TryApplyStyle("DefaultContentDialogStyle");

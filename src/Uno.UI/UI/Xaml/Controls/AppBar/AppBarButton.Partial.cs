@@ -1,26 +1,27 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using DirectUI;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
 	{
 		// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
-		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle. 
+		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle.
 		Storyboard? m_widthAdjustmentsForLabelOnRightStyleStoryboard;
 
 		bool m_isWithToggleButtons;
@@ -35,8 +36,8 @@ namespace Windows.UI.Xaml.Controls
 		bool m_isTemplateApplied;
 
 		// We need to adjust our visual state to account for CommandBarElements that have keyboard accelerator text.
-		bool m_isWithKeyboardAcceleratorText = false;
-		double m_maxKeyboardAcceleratorTextWidth = 0;
+		bool m_isWithKeyboardAcceleratorText;
+		double m_maxKeyboardAcceleratorTextWidth;
 
 		// If we have a keyboard accelerator attached to us and the app has not set a tool tip on us,
 		// then we'll create our own tool tip.  We'll use this flag to indicate that we can unset or
@@ -48,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		CascadingMenuHelper? m_menuHelper;
 
 		// Helpers to track the current opened state of the flyout.
-		bool m_isFlyoutClosing = false;
+		bool m_isFlyoutClosing;
 		SerialDisposable m_flyoutOpenedHandler = new SerialDisposable();
 		SerialDisposable m_flyoutClosedHandler = new SerialDisposable();
 		SerialDisposable _contentChangedHandler = new SerialDisposable();
@@ -480,8 +481,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (flyout is { })
 			{
-				var rootVisual = Windows.UI.Xaml.Window.Current.Content;
-				flyout.OverlayInputPassThroughElement = rootVisual;
+				// TODO: Uno specific - avoid using RootVisual on WinUI branch
+				if (XamlRoot is not null)
+				{
+					var rootElement = XamlRoot.VisualTree.RootElement;
+					flyout.OverlayInputPassThroughElement = rootElement;
+				}
 
 				if (flyout is IMenu flyoutAsMenu)
 				{
@@ -794,7 +799,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
-					this.SetValue(ToolTipService.ToolTipProperty, string.Format(toolTipFormatString, labelText, keyboardAcceleratorText));
+					this.SetValue(ToolTipService.ToolTipProperty, string.Format(CultureInfo.CurrentCulture, toolTipFormatString, labelText, keyboardAcceleratorText));
 				}
 				else
 				{

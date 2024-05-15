@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if __ANDROID__
 using System;
 using Android.App;
 using Android.Content;
@@ -18,11 +17,30 @@ using System.Threading;
 
 namespace Windows.Devices.Sensors
 {
-	public partial class SimpleOrientationSensor : Java.Lang.Object, ISensorEventListener
+	public partial class SimpleOrientationSensor
 	{
+		private SimpleOrientationEventListener? _orientationListener;
+		private SettingsContentObserver? _contentObserver;
+		private SensorManager? _sensorManager;
+		private ISensorEventListener? _sensorEventListener;
+
+		// Threshold, in meters per second squared, closely equivalent to an angle of 25 degrees which correspond to the value when Android detect new screen orientation 
+		private const double _threshold = 4.55;
+		private const Android.Hardware.SensorType _gravitySensorType = Android.Hardware.SensorType.Gravity;
+
 		#region Static
 
 		private static Orientation _defaultDeviceOrientation;
+
+		private static partial SimpleOrientationSensor? TryCreateInstance()
+		{
+			if (Application.Context.GetSystemService(Context.SensorService) is not SensorManager)
+			{
+				return null;
+			}
+
+			return new SimpleOrientationSensor();
+		}
 
 		private static Orientation DefaultDeviceOrientation
 		{
@@ -57,14 +75,6 @@ namespace Windows.Devices.Sensors
 
 		#endregion
 
-		private SimpleOrientationEventListener? _orientationListener;
-		private SettingsContentObserver? _contentObserver;
-		private SensorManager? _sensorManager;
-
-		// Threshold, in meters per second squared, closely equivalent to an angle of 25 degrees which correspond to the value when Android detect new screen orientation 
-		private const double _threshold = 4.55;
-		private const Android.Hardware.SensorType _gravitySensorType = Android.Hardware.SensorType.Gravity;
-
 		partial void Initialize()
 		{
 			var mainLooper = Looper.MainLooper;
@@ -73,63 +83,115 @@ namespace Windows.Devices.Sensors
 			// Thread pool is used to avoid startup
 			// cost of threads creation.
 			ThreadPool.QueueUserWorkItem(
-				_ => {
-				if (Application.Context.GetSystemService(Context.SensorService) is SensorManager sensorManager)
+				_ =>
 				{
-					_sensorManager = sensorManager;
-
-					var gravitySensor = _sensorManager.GetDefaultSensor(_gravitySensorType);
-
-					// Gravity sensor support seems to have been added in Nougat (Android 7), but not entirely functional.
-					// Therefore, only use it in Oreo+ 
-					var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
-
-					// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
-					if (gravitySensor != null && useGravitySensor)
+					if (Application.Context.GetSystemService(Context.SensorService) is SensorManager sensorManager)
 					{
-						_sensorManager.RegisterListener(this, _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
-					}
-					else
-					{
-						_orientationListener = new SimpleOrientationEventListener(orientation => OnOrientationChanged(orientation));
-						_contentObserver = new SettingsContentObserver(new Handler(mainLooper!), () => OnIsAccelerometerRotationEnabledChanged(IsAccelerometerRotationEnabled));
+						_sensorManager = sensorManager;
 
-						if (Settings.System.GetUriFor(Settings.System.AccelerometerRotation) is { } accelerometerRotationUri)
+						var gravitySensor = _sensorManager.GetDefaultSensor(_gravitySensorType);
+
+						// Gravity sensor support seems to have been added in Nougat (Android 7), but not entirely functional.
+						// Therefore, only use it in Oreo+ 
+						var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
+
+						// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
+						if (gravitySensor != null && useGravitySensor)
 						{
-							context.ContentResolver!.RegisterContentObserver(accelerometerRotationUri, true, _contentObserver);
-							if (_orientationListener.CanDetectOrientation() && IsAccelerometerRotationEnabled)
+							_sensorManager.RegisterListener(new OrientationListener(this), _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
+						}
+						else
+						{
+							_orientationListener = new SimpleOrientationEventListener(orientation => OnOrientationChanged(orientation));
+							_contentObserver = new SettingsContentObserver(new Handler(mainLooper!), () => OnIsAccelerometerRotationEnabledChanged(IsAccelerometerRotationEnabled));
+
+							if (Settings.System.GetUriFor(Settings.System.AccelerometerRotation) is { } accelerometerRotationUri)
 							{
-								_orientationListener.Enable();
+								context.ContentResolver!.RegisterContentObserver(accelerometerRotationUri, true, _contentObserver);
+								if (_orientationListener.CanDetectOrientation() && IsAccelerometerRotationEnabled)
+								{
+									_orientationListener.Enable();
+								}
 							}
 						}
 					}
-				}
-			}, null);
+				}, null);
 		}
 
-		#region GraviySensorType Methods
-
-		public void OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
+		partial void StartListeningOrientationChanged()
 		{
+			var mainLooper = Looper.MainLooper;
+			var context = ContextHelper.Current;
+
+			// Thread pool is used to avoid startup
+			// cost of threads creation.
+			ThreadPool.QueueUserWorkItem(
+				_ =>
+				{
+					if (Application.Context.GetSystemService(Context.SensorService) is SensorManager sensorManager)
+					{
+						_sensorManager = sensorManager;
+
+						var gravitySensor = _sensorManager.GetDefaultSensor(_gravitySensorType);
+
+						// Gravity sensor support seems to have been added in Nougat (Android 7), but not entirely functional.
+						// Therefore, only use it in Oreo+ 
+						var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
+
+						// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
+						if (gravitySensor != null && useGravitySensor)
+						{
+							_sensorEventListener = new OrientationListener(this);
+							_sensorManager.RegisterListener(_sensorEventListener, _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
+						}
+						else
+						{
+							_orientationListener = new SimpleOrientationEventListener(orientation => OnOrientationChanged(orientation));
+							_contentObserver = new SettingsContentObserver(new Handler(mainLooper!), () => OnIsAccelerometerRotationEnabledChanged(IsAccelerometerRotationEnabled));
+
+							if (Settings.System.GetUriFor(Settings.System.AccelerometerRotation) is { } accelerometerRotationUri)
+							{
+								context.ContentResolver!.RegisterContentObserver(accelerometerRotationUri, true, _contentObserver);
+								if (_orientationListener.CanDetectOrientation() && IsAccelerometerRotationEnabled)
+								{
+									_orientationListener.Enable();
+								}
+							}
+						}
+					}
+				}, null);
 		}
 
-		public void OnSensorChanged(SensorEvent? e)
+		partial void StopListeningOrientationChanged()
 		{
-			if (e?.Sensor?.Type != _gravitySensorType || e?.Values == null)
+			var context = ContextHelper.Current;
+
+			if (Application.Context.GetSystemService(Context.SensorService) is SensorManager sensorManager)
 			{
-				return;
+				_sensorManager = sensorManager;
+				var gravitySensor = _sensorManager.GetDefaultSensor(_gravitySensorType);
+
+				// Gravity sensor support seems to have been added in Nougat (Android 7), but not entirely functional.
+				// Therefore, only use it in Oreo+ 
+				var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
+
+				// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
+				if (gravitySensor != null && useGravitySensor)
+				{
+					_sensorManager.UnregisterListener(_sensorEventListener, _sensorManager.GetDefaultSensor(_gravitySensorType));
+				}
+				else if (Settings.System.GetUriFor(Settings.System.AccelerometerRotation) is { } accelerometerRotationUri &&
+					_orientationListener is { } orientationListener
+					&& _contentObserver is { } contentObserver)
+				{
+					context.ContentResolver!.RegisterContentObserver(accelerometerRotationUri, true, contentObserver);
+					if (orientationListener.CanDetectOrientation() && IsAccelerometerRotationEnabled)
+					{
+						_orientationListener.Disable();
+					}
+				}
 			}
-
-			// All units are negatives compared to iOS : https://developer.android.com/reference/android/hardware/SensorEvent#values
-			var gravityX = -(double)e.Values[0];
-			var gravityY = -(double)e.Values[1];
-			var gravityZ = -(double)e.Values[2];
-
-			var simpleOrientation = ToSimpleOrientation(gravityX, gravityY, gravityZ, _threshold, _currentOrientation);
-			SetCurrentOrientation(simpleOrientation);
 		}
-
-		#endregion
 
 		#region OrientationSensorType Methods and Classes
 
@@ -255,7 +317,36 @@ namespace Windows.Devices.Sensors
 			public override void OnOrientationChanged(int orientation) => _orientationChanged(orientation);
 		}
 
+		private sealed class OrientationListener : Java.Lang.Object, ISensorEventListener
+		{
+			private readonly SimpleOrientationSensor _simpleOrientationSensor;
+
+			public OrientationListener(SimpleOrientationSensor simpleOrientationSensor)
+			{
+				_simpleOrientationSensor = simpleOrientationSensor;
+			}
+
+			public void OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
+			{
+			}
+
+			public void OnSensorChanged(SensorEvent? e)
+			{
+				if (e?.Sensor?.Type != _gravitySensorType || e?.Values == null)
+				{
+					return;
+				}
+
+				// All units are negatives compared to iOS : https://developer.android.com/reference/android/hardware/SensorEvent#values
+				var gravityX = -(double)e.Values[0];
+				var gravityY = -(double)e.Values[1];
+				var gravityZ = -(double)e.Values[2];
+
+				var simpleOrientation = ToSimpleOrientation(gravityX, gravityY, gravityZ, _threshold, _simpleOrientationSensor._currentOrientation);
+				_simpleOrientationSensor.SetCurrentOrientation(simpleOrientation);
+			}
+		}
+
 		#endregion
 	}
 }
-#endif

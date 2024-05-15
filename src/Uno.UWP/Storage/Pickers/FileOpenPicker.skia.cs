@@ -10,7 +10,7 @@ using Uno.Foundation.Extensibility;
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
-    {
+	{
 		private IFileOpenPickerExtension? _fileOpenPickerExtension;
 
 		partial void InitializePlatform() => ApiExtensibility.CreateInstance(this, out _fileOpenPickerExtension);
@@ -22,6 +22,7 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FileOpenPicker is not supported on this target.");
 			}
 
+			_fileOpenPickerExtension.Customize(this);
 			return await _fileOpenPickerExtension.PickSingleFileAsync(token);
 		}
 
@@ -32,6 +33,7 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FileOpenPicker is not supported on this target.");
 			}
 
+			_fileOpenPickerExtension.Customize(this);
 			return await _fileOpenPickerExtension.PickMultipleFilesAsync(token);
 		}
 	}

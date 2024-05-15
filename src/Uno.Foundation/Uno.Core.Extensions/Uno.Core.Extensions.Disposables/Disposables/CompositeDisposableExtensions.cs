@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Disposables
 {
-    internal static class CompositeDisposableExtensions
+	internal static class CompositeDisposableExtensions
 	{
 		/// <summary>
 		/// Adds an action to be executed when the CompositeDisposable is disposed.

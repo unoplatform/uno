@@ -5,9 +5,9 @@ using AndroidX.AppCompat.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase : UnoRecyclerView, ILayoutConstraints
 	{
@@ -65,7 +65,10 @@ namespace Windows.UI.Xaml.Controls
 			ViewCache = new BufferViewCache(this);
 			SetViewCacheExtension(ViewCache);
 
-			InitializeSnapHelper();
+			if (FeatureConfiguration.NativeListViewBase.UseNativeSnapHelper)
+			{
+				InitializeSnapHelper();
+			}
 
 			_shouldRecalibrateFlingVelocity = (int)Android.OS.Build.VERSION.SdkInt >= 28; // Android.OS.BuildVersionCodes.P
 
@@ -88,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				InitializeScrollbars(null);
 
-				if(FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay != null)
+				if (FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay != null)
 				{
 					ScrollBarDefaultDelayBeforeFade = (int)FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay.Value.TotalMilliseconds;
 				}
@@ -235,28 +238,75 @@ namespace Windows.UI.Xaml.Controls
 			return NativeLayout.CanCurrentlyScrollVertically(direction);
 		}
 
+		private bool _trackDetachedViews;
+		private readonly List<UnoViewHolder> _detachedViews = new();
+
+		internal void StartDetachedViewTracking()
+			=> _trackDetachedViews = true;
+
+		internal void StopDetachedViewTrackingAndNotifyPendingAsRecycled()
+		{
+			_trackDetachedViews = false;
+
+			// This should be invoked only from the LV.CleanContainer()
+			// **BUT** the container is not Cleaned/Prepared by the LV on Android
+			// https://github.com/unoplatform/uno/issues/11957
+			foreach (var detachedView in _detachedViews)
+			{
+				UIElement.PrepareForRecycle(detachedView.ItemView);
+			}
+		}
+
 		protected override void AttachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams)
 		{
-			var vh = GetChildViewHolder(child);
-			if (vh != null)
+			var holder = GetChildViewHolder(child);
+			if (holder != null)
 			{
-				vh.IsDetached = false;
+				holder.IsDetached = false;
+				_detachedViews.Remove(holder);
 			}
+
 			base.AttachViewToParent(child, index, layoutParams);
+		}
+
+		protected override void DetachViewsFromParent(int start, int count)
+		{
+			for (int i = start; i < start + count; i++)
+			{
+				BeforeDetachViewFromParent(GetChildAt(i));
+			}
+
+			base.DetachViewsFromParent(start, count);
+		}
+
+		protected override void DetachViewFromParent(View child)
+		{
+			BeforeDetachViewFromParent(child);
+
+			base.DetachViewFromParent(child);
 		}
 
 		protected override void DetachViewFromParent(int index)
 		{
-			var view = GetChildAt(index);
-			if (view != null)
+			BeforeDetachViewFromParent(GetChildAt(index));
+
+			base.DetachViewFromParent(index);
+		}
+
+		private void BeforeDetachViewFromParent(View child)
+		{
+			if (child is { } view)
 			{
-				var vh = GetChildViewHolder(view);
-				if (vh != null)
+				if (GetChildViewHolder(view) is { } holder)
 				{
-					vh.IsDetached = true;
+					holder.IsDetached = true;
+					if (_trackDetachedViews)
+					{
+						// Avoid memory leak by adding them only when needed
+						_detachedViews.Add(holder);
+					}
 				}
 			}
-			base.DetachViewFromParent(index);
 		}
 
 		protected override void RemoveDetachedView(View child, bool animate)
@@ -265,6 +315,7 @@ namespace Windows.UI.Xaml.Controls
 			if (vh != null)
 			{
 				vh.IsDetached = false;
+				_detachedViews.Remove(vh);
 			}
 #if DEBUG
 			if (!vh.IsDetachedPrivate)

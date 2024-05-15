@@ -2,24 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 using Windows.UI;
 
-#if XAMARIN_ANDROID
+using Color = Windows.UI.Color;
+
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif XAMARIN_IOS
-using UIKit;
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>
 		, IShareableDependencyObject //TODO: should be implemented on Brush
@@ -27,7 +24,7 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// Blends the Color set on the SolidColorBrush with its Opacity. Should generally be used for rendering rather than the Color property itself.
 		/// </summary>
-		internal Windows.UI.Color ColorWithOpacity
+		internal Color ColorWithOpacity
 		{
 			get; private set;
 		}
@@ -40,7 +37,7 @@ namespace Windows.UI.Xaml.Media
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public SolidColorBrush(Windows.UI.Color color) : this()
+		public SolidColorBrush(Color color) : this()
 		{
 			Color = color;
 			UpdateColorWithOpacity(color);
@@ -63,12 +60,12 @@ namespace Windows.UI.Xaml.Media
 		/// requires a round-trip with Objective-C, so updating this value only when opacity
 		/// and color changes is more efficient.
 		/// </remarks>
-		private void UpdateColorWithOpacity(Windows.UI.Color newColor)
+		private void UpdateColorWithOpacity(Color newColor)
 		{
 			ColorWithOpacity = GetColorWithOpacity(newColor);
 		}
 
-		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue)
+		partial void OnColorChanged(Color oldValue, Color newValue)
 		{
 			UpdateColorWithOpacity(newValue);
 		}
@@ -82,25 +79,18 @@ namespace Windows.UI.Xaml.Media
 
 		#region Color Dependency Property
 
-		public Windows.UI.Color Color
+		public Color Color
 		{
-			get { return (Windows.UI.Color)this.GetValue(ColorProperty); }
-			set { this.SetValue(ColorProperty, value); }
+			get => GetColorValue();
+			set => SetColorValue(value);
 		}
 
-		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-		public static DependencyProperty ColorProperty { get ; } =
-			DependencyProperty.Register(
-				"Color",
-				typeof(Windows.UI.Color),
-				typeof(SolidColorBrush),
-				new FrameworkPropertyMetadata(
-					Colors.Transparent,
-					(s, e) => ((SolidColorBrush)s).OnColorChanged((Windows.UI.Color)e.OldValue, (Windows.UI.Color)e.NewValue)
-				)
-			);
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnColorChanged))]
+		public static DependencyProperty ColorProperty { get; } = CreateColorProperty();
 
-		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue);
+		private static Color GetColorDefaultValue() => Colors.Transparent;
+
+		partial void OnColorChanged(Color oldValue, Color newValue);
 
 		#endregion
 

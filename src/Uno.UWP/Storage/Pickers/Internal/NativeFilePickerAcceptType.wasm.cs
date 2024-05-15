@@ -2,13 +2,12 @@
 
 namespace Uno.Storage.Pickers.Internal
 {
-	[DataContract]
 	internal class NativeFilePickerAcceptType
 	{
-		[DataMember(Name = "description")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("description")]
 		public string Description { get; set; }
 
-		[DataMember(Name = "accept")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("accept")]
 		public NativeFilePickerAcceptTypeItem[] Accept { get; set; }
 	}
 }

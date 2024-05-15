@@ -8,9 +8,9 @@ using Windows.Foundation;
 using Windows.System.Threading;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {
 	internal static class ColorHelpers
 	{
@@ -448,12 +448,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			//	asyncActionToAssign = null;
 
-				// Uno Doc: Assumed normal priority is acceptable
-				await dispatcherHelper.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					WriteableBitmap checkeredBackgroundBitmap = CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
-					completedFunction?.Invoke(checkeredBackgroundBitmap);
-				});
+			// Uno Doc: Assumed normal priority is acceptable
+			await dispatcherHelper.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				WriteableBitmap checkeredBackgroundBitmap = CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
+				completedFunction?.Invoke(checkeredBackgroundBitmap);
+			});
 			//});
 		}
 

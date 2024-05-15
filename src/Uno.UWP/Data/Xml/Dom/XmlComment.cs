@@ -14,7 +14,7 @@ namespace Windows.Data.Xml.Dom
 			_backingComment = backingComment;
 		}
 
-		public string Data 
+		public string Data
 		{
 			get => _backingComment.Data;
 			set => _backingComment.Data = value;

@@ -1,7 +1,9 @@
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ColorPicker
 	{
@@ -11,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ColorProperty, value);
 		}
 
-		public static DependencyProperty ColorProperty { get ; } =
+		public static DependencyProperty ColorProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Color),
 				typeof(Color),
@@ -26,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ColorSpectrumComponentsProperty, value);
 		}
 
-		public static DependencyProperty ColorSpectrumComponentsProperty { get ; } =
+		public static DependencyProperty ColorSpectrumComponentsProperty { get; } =
 			DependencyProperty.Register(
 				nameof(ColorSpectrumComponents),
 				typeof(ColorSpectrumComponents),
@@ -41,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ColorSpectrumShapeProperty, value);
 		}
 
-		public static DependencyProperty ColorSpectrumShapeProperty { get ; } =
+		public static DependencyProperty ColorSpectrumShapeProperty { get; } =
 			DependencyProperty.Register(
 				nameof(ColorSpectrumShape),
 				typeof(ColorSpectrumShape),
@@ -56,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsAlphaEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsAlphaEnabledProperty { get ; } =
+		public static DependencyProperty IsAlphaEnabledProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsAlphaEnabled),
 				typeof(bool),
@@ -71,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsAlphaSliderVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsAlphaSliderVisibleProperty { get ; } =
+		public static DependencyProperty IsAlphaSliderVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsAlphaSliderVisible),
 				typeof(bool),
@@ -86,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsAlphaTextInputVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsAlphaTextInputVisibleProperty { get ; } =
+		public static DependencyProperty IsAlphaTextInputVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsAlphaTextInputVisible),
 				typeof(bool),
@@ -101,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsColorChannelTextInputVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsColorChannelTextInputVisibleProperty { get ; } =
+		public static DependencyProperty IsColorChannelTextInputVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsColorChannelTextInputVisible),
 				typeof(bool),
@@ -116,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsColorPreviewVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsColorPreviewVisibleProperty { get ; } =
+		public static DependencyProperty IsColorPreviewVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsColorPreviewVisible),
 				typeof(bool),
@@ -131,7 +133,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsColorSliderVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsColorSliderVisibleProperty { get ; } =
+		public static DependencyProperty IsColorSliderVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsColorSliderVisible),
 				typeof(bool),
@@ -146,7 +148,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsColorSpectrumVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsColorSpectrumVisibleProperty { get ; } =
+		public static DependencyProperty IsColorSpectrumVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsColorSpectrumVisible),
 				typeof(bool),
@@ -161,7 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsHexInputVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsHexInputVisibleProperty { get ; } =
+		public static DependencyProperty IsHexInputVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsHexInputVisible),
 				typeof(bool),
@@ -176,7 +178,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsMoreButtonVisibleProperty, value);
 		}
 
-		public static DependencyProperty IsMoreButtonVisibleProperty { get ; } =
+		public static DependencyProperty IsMoreButtonVisibleProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsMoreButtonVisible),
 				typeof(bool),
@@ -191,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(MaxHueProperty, value);
 		}
 
-		public static DependencyProperty MaxHueProperty { get ; } =
+		public static DependencyProperty MaxHueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MaxHue),
 				typeof(int),
@@ -206,7 +208,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(MaxSaturationProperty, value);
 		}
 
-		public static DependencyProperty MaxSaturationProperty { get ; } =
+		public static DependencyProperty MaxSaturationProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MaxSaturation),
 				typeof(int),
@@ -221,7 +223,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(MaxValueProperty, value);
 		}
 
-		public static DependencyProperty MaxValueProperty { get ; } =
+		public static DependencyProperty MaxValueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MaxValue),
 				typeof(int),
@@ -236,7 +238,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(MinHueProperty, value);
 		}
 
-		public static DependencyProperty MinHueProperty { get ; } =
+		public static DependencyProperty MinHueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MinHue),
 				typeof(int),
@@ -251,7 +253,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(MinSaturationProperty, value);
 		}
 
-		public static DependencyProperty MinSaturationProperty { get ; } =
+		public static DependencyProperty MinSaturationProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MinSaturation),
 				typeof(int),
@@ -266,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(MinValueProperty, value);
 		}
 
-		public static DependencyProperty MinValueProperty { get ; } =
+		public static DependencyProperty MinValueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MinValue),
 				typeof(int),
@@ -281,7 +283,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(PreviousColorProperty, value);
 		}
 
-		public static DependencyProperty PreviousColorProperty { get ; } =
+		public static DependencyProperty PreviousColorProperty { get; } =
 			DependencyProperty.Register(
 				nameof(PreviousColor),
 				typeof(Color?),
@@ -290,6 +292,21 @@ namespace Microsoft.UI.Xaml.Controls
 					null,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
-		public event Windows.Foundation.TypedEventHandler<ColorPicker, ColorChangedEventArgs> ColorChanged;
+		public Orientation Orientation
+		{
+			get => (Orientation)GetValue(OrientationProperty);
+			set => SetValue(OrientationProperty, value);
+		}
+
+		public static DependencyProperty OrientationProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Orientation),
+				typeof(Orientation),
+				typeof(ColorPicker),
+				new FrameworkPropertyMetadata(
+					Orientation.Vertical,
+					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
+
+		public event TypedEventHandler<ColorPicker, ColorChangedEventArgs> ColorChanged;
 	}
 }

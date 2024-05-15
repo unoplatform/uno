@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using System.Threading.Tasks;
+
+using Uno.UI.Dispatching;
 
 namespace Windows.UI.Core
 {
@@ -12,20 +11,20 @@ namespace Windows.UI.Core
 		/// Provide a action that will delegate the dispach of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Action<Action> DispatchOverride
+		internal static Action<Action, NativeDispatcherPriority> DispatchOverride
 		{
-			get => Uno.UI.Dispatching.CoreDispatcher.DispatchOverride;
-			set => Uno.UI.Dispatching.CoreDispatcher.DispatchOverride = value;
+			get => NativeDispatcher.DispatchOverride;
+			set => NativeDispatcher.DispatchOverride = value;
 		}
 
 		/// <summary>
 		/// Provide a action that will delegate the dispach of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Func<bool> HasThreadAccessOverride
+		internal static Func<bool> HasThreadAccessOverride
 		{
-			get => Uno.UI.Dispatching.CoreDispatcher.HasThreadAccessOverride;
-			set => Uno.UI.Dispatching.CoreDispatcher.HasThreadAccessOverride = value;
+			get => NativeDispatcher.HasThreadAccessOverride;
+			set => NativeDispatcher.HasThreadAccessOverride = value;
 		}
 	}
 }

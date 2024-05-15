@@ -12,21 +12,24 @@ using _View = Android.Views.View;
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
-#elif __WASM__
-using _View = Windows.UI.Xaml.UIElement;
-#else
-using _View = System.Object;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	/// <summary>
 	/// Transform :  Based on the WinRT Transform
-	/// 
+	///
 	/// https://msdn.microsoft.com/en-us/library/system.windows.media.transform(v=vs.110).aspx
 	/// </summary>
+	// Transform isn't supposed to be abstract, but since the constructor is private protected, it
+	// cannot be subclassed outside of Uno. So it doesn't matter much whether it's abstract or not.
+	// We keep it abstract for now to force subclasses to implement the abstract method ToMatrix.
 	public abstract partial class Transform : GeneralTransform
 	{
+		private protected Transform()
+		{
+		}
+
 		protected static PropertyChangedCallback NotifyChangedCallback { get; } = (snd, args) =>
 		{
 			if (snd is Transform transform)
@@ -36,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 		};
 
 		/// <summary>
-		/// Notifies that a value of this transform changed (usually this means that the <see cref="Matrix"/> has been updated).
+		/// Notifies that a value of this transform changed (usually this means that the <see cref="MatrixCore"/> has been updated).
 		/// </summary>
 		internal event EventHandler Changed;
 
@@ -59,7 +62,7 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// The matrix used by this transformation
 		/// </summary>
-		/// <remarks>This matrix does not include any center point</remarks>
+		/// <remarks>This matrix does not include any origin point (i.e. equivalent to `.ToMatrix(default(Point))`)</remarks>
 		internal Matrix3x2 MatrixCore { get; private set; } = Matrix3x2.Identity;
 
 		/// <summary>
@@ -78,10 +81,12 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>An affine matrix of the transformation</returns>
 		internal abstract Matrix3x2 ToMatrix(Point absoluteOrigin);
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
 		internal virtual _View View { get; set; }
+#endif
 
 		#region GeneralTransform overrides
 		/// <inheritdoc />

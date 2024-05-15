@@ -7,7 +7,7 @@ using Uno.Extensions.Specialized;
 
 namespace Windows.Storage
 {
-    internal class DataTypeSerializer
+	internal class DataTypeSerializer
 	{
 		public readonly static Type[] SupportedTypes = new[]
 		{

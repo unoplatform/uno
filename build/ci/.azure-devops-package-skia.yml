@@ -1,0 +1,111 @@
+parameters:
+  poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+jobs:
+- job: skia_package_macos_native_build
+  displayName: 'Skia macOS Native Binaries'
+  pool:
+    vmImage: ${{ parameters.macOSImageName }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    # We're building packages on linux, so we need to enable WPF support
+    EnableWindowsTargeting: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/download-winui-converted-tree.yml
+  - template: templates/gitversion.yml
+  
+  - bash: |
+      cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
+      chmod +x build.sh
+      ./build.sh
+    displayName: Build Skia macOS native
+
+  - task: PublishPipelineArtifact@1
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+      artifactName: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+
+- job: skia_package_build
+  displayName: 'Skia Package Binaries'
+  container: nv-bionic-wasm
+  dependsOn: skia_package_macos_native_build
+
+  pool: ${{ parameters.poolName }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    # We're building packages on linux, so we need to enable WPF support
+    EnableWindowsTargeting: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/linux-install-zip.yml
+  - template: templates/download-winui-converted-tree.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/gitversion.yml
+  
+  - template: templates/dotnet-install.yml
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /nr:false /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-prepare-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Reference Binaries
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Skia Binaries
+
+  - template: templates/copy-package-assets.yml
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/skia-bin-$(XAML_FLAVOR_BUILD).zip'
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts-skia-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container

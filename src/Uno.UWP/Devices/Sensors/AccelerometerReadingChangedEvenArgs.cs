@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Provides data for the accelerometer reading– changed event.
+	/// </summary>
 	public partial class AccelerometerReadingChangedEventArgs
 	{
 		internal AccelerometerReadingChangedEventArgs()
@@ -17,6 +20,9 @@ namespace Windows.Devices.Sensors
 			Reading = reading;
 		}
 
+		/// <summary>
+		/// Gets the most recent accelerometer reading.
+		/// </summary>
 		public AccelerometerReading Reading { get; }
 #endif
 	}

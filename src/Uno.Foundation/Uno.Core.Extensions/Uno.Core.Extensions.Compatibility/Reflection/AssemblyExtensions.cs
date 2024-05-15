@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,36 +21,20 @@ using System.Text.RegularExpressions;
 
 namespace Uno.Extensions
 {
-    internal static class AssemblyExtensions
-    {
-        public static Version GetVersionNumber(this Assembly assembly)
-        {
-            // Note: Assembly.GetExecutingAssembly().GetName() is not accessible in WP7
-            return new Version(Regex.Match(assembly.FullName, @"(\d+)(.\d+)(.\d+)?(.\d+)?").ToString());
-        }
-
-		public static string GetProductName(this Assembly assembly)
+	internal static partial class AssemblyExtensions
+	{
+		public static Version GetVersionNumber(this Assembly assembly)
 		{
-			var productNameAttribute = assembly.GetAssemblyAttribute<AssemblyProductAttribute>();
-			return productNameAttribute == null ? null : productNameAttribute.Product;
+			// Note: Assembly.GetExecutingAssembly().GetName() is not accessible in WP7
+			return new Version(VersionMatch().Match(assembly.FullName).ToString());
 		}
 
-    	public static string GetCopyright(this Assembly assembly)
-		{
-			var assemblyCopyrightAttribute = assembly.GetAssemblyAttribute<AssemblyCopyrightAttribute>();
-			return assemblyCopyrightAttribute == null ? null : assemblyCopyrightAttribute.Copyright;
-		}
-
-#if NETFX_CORE
-		public static T GetAssemblyAttribute<T>(this Assembly assembly) where T : Attribute
-		{
-			return assembly.GetCustomAttribute(typeof(T)) as T;
-		}
+#if NET7_0_OR_GREATER
+		[GeneratedRegex(@"(\d+)(.\d+)(.\d+)?(.\d+)?")]
+		private static partial Regex VersionMatch();
 #else
-		public static T GetAssemblyAttribute<T>(this Assembly assembly) where T : Attribute
-		{
-			return (T)Attribute.GetCustomAttribute(assembly, typeof(T));
-		}
+		private static Regex VersionMatch()
+			=> new Regex(@"(\d+)(.\d+)(.\d+)?(.\d+)?");
 #endif
-	} 
+	}
 }

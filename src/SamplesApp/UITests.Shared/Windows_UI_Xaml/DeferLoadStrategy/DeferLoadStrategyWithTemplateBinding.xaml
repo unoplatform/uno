@@ -44,11 +44,5 @@
 
 	</UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="DeferLoadStrategyWithTemplateBinding - content should load after a brief delay">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ContentControl Template="{StaticResource DeferLoadStrategyButton}"/>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<ContentControl Template="{StaticResource DeferLoadStrategyButton}"/>
 </UserControl>

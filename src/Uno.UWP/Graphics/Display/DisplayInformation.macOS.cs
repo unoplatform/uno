@@ -6,11 +6,7 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
-
-		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
-
-		private NSObject _didChangeScreenParametersObserver = null;
+		private NSObject _didChangeScreenParametersObserver;
 
 		public DisplayOrientations CurrentOrientation
 		{

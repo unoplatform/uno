@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace Uno.Xaml
@@ -36,7 +37,7 @@ namespace Uno.Xaml
 		}
 
 		public XamlDuplicateMemberException (XamlMember member, XamlType type)
-			: this (String.Format ("duplicate member '{0}' in type '{1}'", member, type))
+			: this (String.Format (CultureInfo.InvariantCulture, "duplicate member '{0}' in type '{1}'", member, type))
 		{
 			DuplicateMember = member;
 			ParentType = type;

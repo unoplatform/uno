@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using Uno;
 using Windows.Foundation;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 
 namespace Windows.Graphics.Display
 {
@@ -14,8 +16,13 @@ namespace Windows.Graphics.Display
 	{
 		internal const float BaseDpi = 96.0f;
 
+		private static object _windowIdMapLock = new object();
+		private static readonly Dictionary<WindowId, DisplayInformation> _windowIdMap = new();
+
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		private float _lastKnownDpi;
 		private DisplayOrientations _lastKnownOrientation;
+#endif
 
 		private static readonly object _syncLock = new object();
 
@@ -24,9 +31,54 @@ namespace Windows.Graphics.Display
 		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
 		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
 
-		private DisplayInformation()
+		private DisplayInformation(
+#if !ANDROID
+			WindowId windowId
+#endif
+			)
 		{
+#if !ANDROID
+			WindowId = windowId;
+#endif
 			Initialize();
+		}
+
+#if !ANDROID
+		internal WindowId WindowId { get; }
+#endif
+
+		public static DisplayInformation GetForCurrentView()
+		{
+#if ANDROID
+			return GetForCurrentViewAndroid();
+#else
+			// This is needed to ensure for "current view" there is always a corresponding DisplayView instance.
+			// This means that Uno Islands and WinUI apps can keep using this API for now until we make the breaking change
+			// on Uno.WinUI codebase.
+			return GetOrCreateForWindowId(AppWindow.MainWindowId);
+#endif
+		}
+
+#pragma warning disable RS0030 // Do not use banned APIs
+		internal static DisplayInformation GetForCurrentViewSafe() => GetForCurrentView();
+#pragma warning restore RS0030 // Do not use banned APIs
+
+		internal static DisplayInformation GetOrCreateForWindowId(WindowId windowId)
+		{
+			lock (_windowIdMapLock)
+			{
+				if (!_windowIdMap.TryGetValue(windowId, out var displayInformation))
+				{
+					displayInformation = new(
+#if !ANDROID
+						windowId
+#endif
+					);
+					_windowIdMap[windowId] = displayInformation;
+				}
+
+				return displayInformation;
+			}
 		}
 
 		public static DisplayOrientations AutoRotationPreferences
@@ -37,11 +89,9 @@ namespace Windows.Graphics.Display
 				_autoRotationPreferences = value;
 				SetOrientationPartial(_autoRotationPreferences);
 			}
-		}		
+		}
 
-		public bool StereoEnabled { get; private set; } = false;
-
-		public static DisplayInformation GetForCurrentView() => InternalGetForCurrentView();
+		public bool StereoEnabled { get; private set; }
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations);
 
@@ -111,10 +161,11 @@ namespace Windows.Graphics.Display
 		}
 #pragma warning restore CS0067
 
-		private void OnOrientationChanged() => _orientationChanged?.Invoke(this, null);
-
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || __SKIA__
 		private void OnDpiChanged() => _dpiChanged?.Invoke(this, null);
+#endif
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		private void OnDisplayMetricsChanged()
 		{
 			var newOrientation = CurrentOrientation;
@@ -130,5 +181,8 @@ namespace Windows.Graphics.Display
 				_lastKnownDpi = newDpi;
 			}
 		}
+
+		private void OnOrientationChanged() => _orientationChanged?.Invoke(this, null);
+#endif
 	}
 }

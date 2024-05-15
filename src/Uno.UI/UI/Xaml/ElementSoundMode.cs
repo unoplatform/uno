@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines constants that specify a control's preference for whether sounds are played.

@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
 
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,25 +10,26 @@ using System.Linq;
 using Windows.Foundation;
 using Uno.UI.Controls;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno;
 using Uno.Disposables;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using UIKit;
 #elif __MACOS__
@@ -37,10 +38,10 @@ using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
 #if !UNO_REFERENCE_API
@@ -66,20 +67,21 @@ namespace Windows.UI.Xaml
 		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
 		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
-#else
-		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
 
-		private bool _constraintsChanged;
-		private bool _suppressIsEnabled;
+		private bool _defaultStyleApplied;
 
-		private bool _defaultStyleApplied = false;
+		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
+
+		private string _baseUriFromParser;
+		private Uri _baseUri;
+
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
 
 		/// <summary>
 		/// The current user-determined 'active Style'. This will either be the explicitly-set Style, if there is one, or otherwise the resolved implicit Style (either in the view hierarchy or in Application.Resources).
 		/// </summary>
-		private Style _activeStyle = null;
+		private Style _activeStyle;
 
 		/// <summary>
 		/// Cache for the current type key for faster implicit style lookup
@@ -91,7 +93,7 @@ namespace Windows.UI.Xaml
 		/// globally set to false if it is causing visual errors (eg views not updating properly). Note: this can still be overridden by
 		/// the <see cref="AreDimensionsConstrained"/> flag set on individual elements.
 		/// </summary>
-		public static bool UseConstraintOptimizations { get; set; } = false;
+		public static bool UseConstraintOptimizations { get; set; }
 
 		/// <summary>
 		/// If manually set, this flag overrides the constraint-based reasoning for optimizing layout calls. This may be useful for
@@ -145,13 +147,47 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
+		#region FlowDirection Dependency Property
+#if !SUPPORTS_RTL
+		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+#endif
+		public FlowDirection FlowDirection
+		{
+			get => GetFlowDirectionValue();
+			set => SetFlowDirectionValue(value);
+		}
+
+#if !SUPPORTS_RTL
+		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+#endif
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
+		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
+
+		private void OnFlowDirectionChanged(FlowDirection oldValue, FlowDirection newValue)
+		{
+#if SUPPORTS_RTL
+			this.InvalidateArrange();
+			VisualTreeHelper.GetParent(this)?.InvalidateArrange();
+#endif
+		}
+
+		#endregion
+		internal void RaiseSizeChanged(SizeChangedEventArgs args)
+		{
+#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
+			SizeChanged?.Invoke(this, args);
+			_renderTransform?.UpdateSize(args.NewSize);
+#endif
+		}
+
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
 		partial void Initialize()
 		{
 #if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
-			Resources = new Windows.UI.Xaml.ResourceDictionary();
+			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -160,7 +196,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__
 		new
 #endif
-		Windows.UI.Xaml.ResourceDictionary Resources
+		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
 			get; set;
 		}
@@ -178,6 +214,18 @@ namespace Windows.UI.Xaml
 #endif
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
+		public global::System.Uri BaseUri
+		{
+			get
+			{
+				if (_baseUri is null)
+				{
+					_baseUri = _baseUriFromParser is null ? DefaultBaseUri : new Uri(_baseUriFromParser);
+				}
+
+				return _baseUri;
+			}
+		}
 
 #if UNO_HAS_MANAGED_POINTERS || __WASM__
 		/// <summary>
@@ -224,8 +272,14 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
+#if __ANDROID__ || __IOS__ || __MACOS__
 			var child = this.FindFirstChild();
-			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
+			return child is not null && child is not UIElement
+				? MeasureElement(child, availableSize)
+				: new Size(0, 0);
+#else
+			return default;
+#endif
 		}
 
 		/// <summary>
@@ -235,62 +289,15 @@ namespace Windows.UI.Xaml
 		/// <returns>The actual size that is used after the element is arranged in layout.</returns>
 		protected virtual Size ArrangeOverride(Size finalSize)
 		{
+#if __ANDROID__ || __IOS__ || __MACOS__
 			var child = this.FindFirstChild();
-
-			if (child != null)
+			if (child is not null && child is not UIElement)
 			{
-#if UNO_REFERENCE_API
-				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
-#else
 				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
+			}
 #endif
-				return finalSize;
-			}
-			else
-			{
-				return finalSize;
-			}
+			return finalSize;
 		}
-
-#if !UNO_REFERENCE_API
-		/// <summary>
-		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
-		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="availableSize">
-		/// The available space that a parent can allocate to a child object. A child object can request a larger
-		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
-		/// possible in that particular container.
-		/// </param>
-		/// <returns>The measured size.</returns>
-		/// <remarks>
-		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
-		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
-		/// </remarks>
-		public override void Measure(Size availableSize)
-		{
-			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
-			{
-				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
-			}
-
-			_layouter.Measure(availableSize);
-			OnMeasurePartial(availableSize);
-		}
-
-		/// <summary>
-		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
-		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
-		public override void Arrange(Rect finalRect)
-		{
-			_layouter.Arrange(finalRect);
-			_layouter.ArrangeChild(this, finalRect);
-		}
-#endif
-
-		partial void OnMeasurePartial(Size slotSize);
 
 		/// <summary>
 		/// Measures an native element, in the same way <see cref="Measure"/> would do.
@@ -319,15 +326,7 @@ namespace Windows.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
-#if __WASM__
-			var adjust = GetBorderThickness();
-
-			// HTML moves the origin along with the border thickness.
-			// Adjust the child based on this element's border thickness.
-			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
-
-			view.Arrange(rect);
-#elif UNO_REFERENCE_API
+#if UNO_REFERENCE_API
 			view.Arrange(finalRect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
@@ -376,15 +375,11 @@ namespace Windows.UI.Xaml
 			{
 				throw new InvalidOperationException($"Called without matching {nameof(IsParsing)} call. This method should never be called from user code.");
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				ApplyStyles();
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				_isParsing = false;
 				ResourceResolver.PopSourceFromScope();
@@ -446,6 +441,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal Style GetActiveStyle() => _activeStyle;
+
 		private SpecializedResourceDictionary.ResourceKey ThisTypeResourceKey
 		{
 			get
@@ -485,7 +482,7 @@ namespace Windows.UI.Xaml
 
 		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 		{
-			if (IsWindowRoot) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			if (XamlRoot?.Content == this) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
 			{
 				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
 				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
@@ -588,7 +585,7 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
 
-		private bool _focusVisualBrushesInitialized = false;
+		private bool _focusVisualBrushesInitialized;
 
 		internal void EnsureFocusVisualBrushDefaults()
 		{
@@ -636,7 +633,7 @@ namespace Windows.UI.Xaml
 		internal
 #if __ANDROID__
 			new
-#endif 
+#endif
 			bool HasFocus()
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
@@ -694,108 +691,6 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnApplyTemplate()
 		{
-		}
-
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
-		{
-			_constraintsChanged = true;
-		}
-
-		#region IsEnabled DependencyProperty
-
-#if !(__ANDROID__ || __IOS__ || __MACOS__) // On those platforms, this code is generated through mixins
-		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
-		//		 As it's used only internally it's safe to do so.
-		[ThreadStatic]
-		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
-
-		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
-
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
-
-		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
-		{
-			UpdateHitTest();
-
-			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
-			_isEnabledChangedEventArgs.SourceEvent = args;
-
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
-			IsEnabledChanged?.Invoke(this, args);
-
-			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
-
-#if __WASM__
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-			{
-				UpdateDOMProperties();
-			}
-#endif
-		}
-#endif
-
-		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
-		{
-		}
-		#endregion
-
-		internal bool IsEnabledSuppressed => _suppressIsEnabled;
-
-		/// <summary>
-		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
-		/// </summary>
-		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
-		private protected void SuppressIsEnabled(bool suppress)
-		{
-			if (_suppressIsEnabled != suppress)
-			{
-				_suppressIsEnabled = suppress;
-				this.CoerceValue(IsEnabledProperty);
-			}
-		}
-
-		private object CoerceIsEnabled(object baseValue)
-		{
-			return _suppressIsEnabled ? false : baseValue;
-		}
-
-		/// <summary>
-		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated,
-		/// by determining recursively whether this element's dimensions are already constrained.
-		/// </summary>
-		/// <returns>True if a request should be elevated, false if only this view needs to be rearranged.</returns>
-		private bool ShouldPropagateLayoutRequest()
-		{
-			if (!UseConstraintOptimizations && !AreDimensionsConstrained.HasValue)
-			{
-				return true;
-			}
-
-			if (_constraintsChanged)
-			{
-				return true;
-			}
-			if (!IsLoaded)
-			{
-				//If the control isn't loaded, propagating the request won't do anything anyway
-				return true;
-			}
-
-			if (AreDimensionsConstrained.HasValue)
-			{
-				return !AreDimensionsConstrained.Value;
-			}
-
-			var iswidthConstrained = IsWidthConstrained(null);
-			var isHeightConstrained = IsHeightConstrained(null);
-			return !(iswidthConstrained && isHeightConstrained);
 		}
 
 		bool ILayoutConstraints.IsWidthConstrained(View requester) => IsWidthConstrained(requester);
@@ -861,6 +756,23 @@ namespace Windows.UI.Xaml
 		}
 
 		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
+
+		private protected Size MeasureFirstChild(Size availableSize)
+		{
+			var child = this.FindFirstChild();
+			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
+		}
+
+		private protected Size ArrangeFirstChild(Size finalSize)
+		{
+			var child = this.FindFirstChild();
+			if (child != null)
+			{
+				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
+			}
+
+			return finalSize;
+		}
 
 #if XAMARIN
 		private static FrameworkElement FindPhaseEnabledRoot(ContentControl content)
@@ -954,7 +866,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		/// <summary>
-		/// Update ThemeResource references. 
+		/// Update ThemeResource references.
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
@@ -972,18 +884,6 @@ namespace Windows.UI.Xaml
 					ActualThemeChanged?.Invoke(this, null);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Set correct default foreground for the current theme.
-		/// </summary>
-		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
-		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
-		{
-			(this).SetValue(foregroundProperty,
-							Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-								? SolidColorBrushHelper.Black
-								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		#region AutomationPeer
@@ -1062,7 +962,7 @@ namespace Windows.UI.Xaml
 
 			protected override Size ArrangeOverride(Size finalSize) => _arrangeOverrideHandler(finalSize);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			protected override void MeasureChild(View view, int widthSpec, int heightSpec) => view.Measure(widthSpec, heightSpec);
 #endif
 

@@ -7,8 +7,8 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:xamarin="http://uno.ui/xamarin"
-	mc:Ignorable="d xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -20,13 +20,13 @@
 		</Grid.RowDefinitions>
 
 		<StackPanel Spacing="10" Orientation="Horizontal">
-			<xamarin:Border>
+			<not_win:Border>
 				<controls:NumberBox x:Name="TestNumberBox"
 				                    AutomationProperties.Name="TestNumberBox"
 				                    PlaceholderText="NUMBER_BOX"
 				                    Width="200"
 				                    AcceptsExpression="True" />
-			</xamarin:Border>
+			</not_win:Border>
 			<Button x:Name="RunButton" Click="RunButtonClick">Run tests</Button>
 			<TextBlock x:Name="Status" FontSize="14" />
 		</StackPanel>

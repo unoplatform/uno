@@ -4,20 +4,17 @@
 
 #define TARGET_64BIT // Use runtime detection of 64bits target
 
-#if !NET5_0_OR_GREATER // https://github.com/dotnet/designs/blob/be793b557255c9ed1276ecdd23119b64f45453bf/accepted/2020/or-greater-defines/or-greater-defines.md
-#define HAS_CUSTOM_ISNULLREF
-#endif
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Uno.Foundation;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Specialized Dictionary for ResourceDictionary values backing, using <see cref="ResourceKey"/> for the dictionary key.
@@ -117,7 +114,7 @@ namespace Windows.UI.Xaml
 		private Entry[] _entries;
 #if TARGET_64BIT
 		private ulong _fastModMultiplier;
-		private static bool Is64Bits = IntPtr.Size >= 8
+		private static bool Is64Bits = Marshal.SizeOf(typeof(IntPtr)) >= 8
 #if __WASM__
 			|| WebAssemblyRuntime.IsWebAssembly;
 #else
@@ -168,11 +165,7 @@ namespace Windows.UI.Xaml
 			get
 			{
 				ref object value = ref FindValue(key);
-#if HAS_CUSTOM_ISNULLREF
-				if (!IsNullRef(ref value))
-#else
 				if (!Unsafe.IsNullRef(ref value))
-#endif
 				{
 					return value;
 				}
@@ -200,7 +193,7 @@ namespace Windows.UI.Xaml
 				Debug.Assert(_buckets != null, "_buckets should be non-null");
 				Debug.Assert(_entries != null, "_entries should be non-null");
 
-				Array.Clear(_buckets, 0, _buckets.Length);
+				Array.Clear(_buckets);
 
 				_count = 0;
 				_freeList = -1;
@@ -209,12 +202,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public bool ContainsKey(in ResourceKey key) =>
-#if HAS_CUSTOM_ISNULLREF
-			!IsNullRef(ref FindValue(key));
-#else
-			!Unsafe.IsNullRef(ref FindValue(key));
-#endif
+		public bool ContainsKey(in ResourceKey key) => !Unsafe.IsNullRef(ref FindValue(key));
 
 		public bool ContainsValue(object value)
 		{
@@ -258,43 +246,11 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private void CopyTo(KeyValuePair<object, object>[] array, int index)
-		{
-			if (array == null)
-			{
-				throw new ArgumentNullException("ExceptionArgument.array");
-			}
-
-			if ((uint)index > (uint)array.Length)
-			{
-				throw new IndexOutOfRangeException("IndexArgumentOutOfRange_NeedNonNegNumException");
-			}
-
-			if (array.Length - index < Count)
-			{
-				throw new ArgumentException("ExceptionResource.Arg_ArrayPlusOffTooSmall");
-			}
-
-			int count = _count;
-			Entry[] entries = _entries;
-			for (int i = 0; i < count; i++)
-			{
-				if (entries![i].next >= -1)
-				{
-					array[index++] = new KeyValuePair<object, object>(entries[i].key, entries[i].value);
-				}
-			}
-		}
-
 		public Enumerator GetEnumerator() => new Enumerator(this, Enumerator.KeyValuePair);
 
 		private ref object FindValue(in ResourceKey key)
 		{
-#if HAS_CUSTOM_ISNULLREF
-			ref Entry entry = ref NullRef<Entry>();
-#else
 			ref Entry entry = ref Unsafe.NullRef<Entry>();
-#endif
 
 			if (_buckets != null)
 			{
@@ -340,11 +296,7 @@ namespace Windows.UI.Xaml
 		Return:
 			return ref value;
 		ReturnNotFound:
-#if HAS_CUSTOM_ISNULLREF
-			value = ref NullRef<object>();
-#else
 			value = ref Unsafe.NullRef<object>();
-#endif
 			goto Return;
 		}
 
@@ -622,11 +574,7 @@ namespace Windows.UI.Xaml
 		public bool TryGetValue(in ResourceKey key, out object value)
 		{
 			ref object valRef = ref FindValue(key);
-#if HAS_CUSTOM_ISNULLREF
-			if (!IsNullRef(ref valRef))
-#else
 			if (!Unsafe.IsNullRef(ref valRef))
-#endif
 			{
 				value = valRef;
 				return true;
@@ -736,15 +684,6 @@ namespace Windows.UI.Xaml
 			_freeCount = 0;
 		}
 
-		private static bool IsCompatibleKey(object key)
-		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("ExceptionArgument.key");
-			}
-			return key is object;
-		}
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private ref int GetBucket(uint hashCode)
 		{
@@ -762,27 +701,6 @@ namespace Windows.UI.Xaml
             return ref buckets[hashCode % (uint)buckets.Length];
 #endif
 		}
-
-#if HAS_CUSTOM_ISNULLREF
-		//
-		// These two methods are extracted from Unsafe.IsNullRef and Unsafe.NullRef v5.0.0
-		// to avoid depending on previous versions of the binaries on Xamarin iOS/macOS/Android.
-		// Those are disabled on net5.0 or greater as the methods exist for those versions.
-		//
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static unsafe bool IsNullRef<T>(ref T source)
-		{
-			return Unsafe.AsPointer(ref source) == null;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public unsafe static ref T NullRef<T>()
-		{
-			return ref Unsafe.AsRef<T>(null);
-		}
-#endif
-
 
 		private struct Entry
 		{

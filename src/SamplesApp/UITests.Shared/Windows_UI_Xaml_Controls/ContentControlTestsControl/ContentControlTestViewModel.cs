@@ -10,13 +10,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Samples.UITests.Helpers;
 using Uno.UI.Common;
 using System.Windows.Input;
@@ -33,16 +33,18 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		public string Property3 { get; set; } = "Property3";
 		public string Property4 { get; set; } = "Property4";
 
-		public ContentControlTestViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ContentControlTestViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			SetChangeablePropertyToNull = new DelegateCommand(() => ChangeableProperty = null);
+
+			FillItems();
 		}
 
-        public TestDataItem SampleData { get; set; } = new TestDataItem()
-        {
-            UpperString = "This string goes above - databound",
-            LowerString = "This string goes below - databound"
-        };
+		public TestDataItem SampleData { get; set; } = new TestDataItem()
+		{
+			UpperString = "This string goes above - databound",
+			LowerString = "This string goes below - databound"
+		};
 
 		private string _changeableProperty;
 
@@ -52,7 +54,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			set { _changeableProperty = value; RaisePropertyChanged(); }
 		}
 
-		public ICommand SetChangeablePropertyToNull { get; } 
+		public ICommand SetChangeablePropertyToNull { get; }
 
 
 		public class TestDataItem
@@ -64,6 +66,36 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			{
 				return "TestDataItem: " + base.ToString();
 			}
+		}
+
+
+		public sealed class Item
+		{
+			public string DisplayName { get; set; }
+		}
+
+		List<Item> _items = new List<Item>();
+		public IEnumerable<Item> Items { get => _items; }
+
+		private int _selectedIndex;
+		public int SelectedIndex
+		{
+			get { return _selectedIndex; }
+			set
+			{
+				if (_selectedIndex != value)
+				{
+					_selectedIndex = value;
+					RaisePropertyChanged();
+				}
+			}
+		}
+
+		private void FillItems()
+		{
+			_items.Add(new Item { DisplayName = "Test1" });
+			_items.Add(new Item { DisplayName = "Test2" });
+			_items.Add(new Item { DisplayName = "Test3" });
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace Uno.Storage.Streams.Internal
 		private readonly StorageFile _cacheFile;
 		private readonly Stream _cacheStream;
 		private readonly Android.Net.Uri _targetUri;
-		private bool _pendingChanges = false;
+		private bool _pendingChanges;
 		private RefCountDisposable _refCountDisposable;
 
 		public override bool CanRead => _cacheStream.CanRead;
@@ -133,7 +133,7 @@ namespace Uno.Storage.Streams.Internal
 		public override void SetLength(long value)
 		{
 			_cacheStream.SetLength(value);
-			_pendingChanges = true;			 
+			_pendingChanges = true;
 		}
 
 		public override int Read(byte[] buffer, int offset, int count)
@@ -166,14 +166,14 @@ namespace Uno.Storage.Streams.Internal
 			if (_pendingChanges)
 			{
 				CopyToTarget();
-			}			
+			}
 			_cacheStream.Dispose();
 			System.IO.File.Delete(_cacheFile.Path);
 		}
 
 		public override async ValueTask DisposeAsync()
 		{
-			if(_pendingChanges)
+			if (_pendingChanges)
 			{
 				await CopyToTargetAsync();
 			}

@@ -1,31 +1,24 @@
 ﻿#nullable enable
 
-using Uno.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using Microsoft.CodeAnalysis;
-using Uno.Roslyn;
-using Uno.UI.SourceGenerators.XamlGenerator;
-using Uno.UI.SourceGenerators.Helpers;
+using System.Linq;
 using System.Xml;
-
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
+using Microsoft.CodeAnalysis;
+using Uno.Extensions;
+using Uno.Roslyn;
+using Uno.UI.SourceGenerators.Helpers;
+using Uno.UI.SourceGenerators.Utils;
+using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.BindableTypeProviders
 {
-#if NETFRAMEWORK
-	[GenerateAfter("Uno.ImmutableGenerator")]
-#endif
 	[Generator]
 	public class DependencyObjectAvailabilityGenerator : ISourceGenerator
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
@@ -33,32 +26,36 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			new Generator().Generate(context);
 		}
 
-		class Generator
+		private sealed class Generator
 		{
 			private string? _defaultNamespace;
 			private string? _projectFullPath;
 			private string? _projectDirectory;
-			private string? _baseIntermediateOutputPath;
+			private string? _intermediateOutputPath;
 			private string? _intermediatePath;
 			private string? _assemblyName;
 			private INamedTypeSymbol? _dependencyObjectSymbol;
-			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
+			private INamedTypeSymbol? _additionalLinkerHintAttributeSymbol;
 			private bool _xamlResourcesTrimming;
+			private bool _isUnoUISolution;
 
 			internal void Generate(GeneratorExecutionContext context)
 			{
 				try
 				{
 					var validPlatform = PlatformHelper.IsValidPlatform(context);
-					var isDesignTime = DesignTimeHelper.IsDesignTime(context);
-					var isApplication = Helpers.IsApplication(context);
 
 					if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out _xamlResourcesTrimming))
 					{
 						_xamlResourcesTrimming = false;
 					}
 
-					if (validPlatform && _xamlResourcesTrimming)
+					if (!bool.TryParse(context.GetMSBuildPropertyValue("_IsUnoUISolution"), out _isUnoUISolution))
+					{
+						_isUnoUISolution = false;
+					}
+
+					if (validPlatform && (_xamlResourcesTrimming || _isUnoUISolution))
 					{
 						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 
@@ -66,14 +63,17 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 							?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 
-						_baseIntermediateOutputPath = context.GetMSBuildPropertyValue("BaseIntermediateOutputPath");
+						_intermediateOutputPath = context.GetMSBuildPropertyValue("IntermediateOutputPath");
 						_intermediatePath = Path.Combine(
 							_projectDirectory,
-							_baseIntermediateOutputPath
+							_intermediateOutputPath
 						);
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
-						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
-						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
+						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.DependencyObject");
+						_additionalLinkerHintAttributeSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
+
+						var additionalLinkerHintSymbols = FindAdditionalLinkerHints(context);
+
 						var modules = from ext in context.Compilation.ExternalReferences
 									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 									  where sym != null
@@ -82,20 +82,17 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 						modules = modules.Concat(context.Compilation.SourceModule);
 
-						var bindableTypes = from module in modules
-											from type in module.GlobalNamespace.GetNamespaceTypes()
-											where (
-												(
-													type.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol))
-												)
-											)
-											select type;
+						var propertyNames = (from module in modules
+											 from type in module.GlobalNamespace.GetNamespaceTypes()
+											 where (
+												 type.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol))
+												 || additionalLinkerHintSymbols.Contains(type)
+											 )
+											 select LinkerHintsHelpers.GetPropertyAvailableName(type.GetFullMetadataName())).ToArray();
 
-						bindableTypes = bindableTypes.ToArray();
+						context.AddSource("DependencyObjectAvailability", GenerateTypeProviders(propertyNames));
 
-						context.AddSource("DependencyObjectAvailability", GenerateTypeProviders(bindableTypes));
-
-						GenerateLinkerSubstitutionDefinition(bindableTypes, isApplication);
+						GenerateLinkerSubstitutionDefinition(propertyNames);
 					}
 				}
 				catch (OperationCanceledException)
@@ -111,20 +108,61 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 					}
 
-#if NETSTANDARD
 					var diagnostic = Diagnostic.Create(
 						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 						null,
-						$"Failed to generate dependency objects. ({e.Message})");
+						$"Failed to generate linker hints. ({e.Message})");
 
 					context.ReportDiagnostic(diagnostic);
-#else
-					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
-#endif
 				}
 			}
 
-			private void GenerateLinkerSubstitutionDefinition(IEnumerable<INamedTypeSymbol> bindableTypes, bool isApplication)
+			private HashSet<INamedTypeSymbol> FindAdditionalLinkerHints(GeneratorExecutionContext context)
+			{
+				HashSet<INamedTypeSymbol> types = new(SymbolEqualityComparer.Default);
+
+				if (_additionalLinkerHintAttributeSymbol != null)
+				{
+					var attributes = context
+						.Compilation
+						.Assembly
+						.GetAttributes()
+						.Where(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, _additionalLinkerHintAttributeSymbol));
+
+					foreach (var attribute in attributes)
+					{
+						if (attribute.ConstructorArguments.FirstOrDefault().Value is string targetType)
+						{
+							if (context.Compilation.GetTypeByMetadataName(targetType) is { } targetSymbol)
+							{
+								types.Add(targetSymbol);
+							}
+							else
+							{
+								var diagnostic = Diagnostic.Create(
+									XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+									null,
+									$"Failed to find type {targetType} in the current context.");
+
+								context.ReportDiagnostic(diagnostic);
+							}
+						}
+						else
+						{
+							var diagnostic = Diagnostic.Create(
+								XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+								null,
+								$"Type attribute AdditionalLinkerHintAttribute must have exactly one parameter");
+
+							context.ReportDiagnostic(diagnostic);
+						}
+					}
+				}
+
+				return types;
+			}
+
+			private void GenerateLinkerSubstitutionDefinition(string[] propertyNames)
 			{
 				// <linker>
 				//   <assembly fullname="Uno.UI">
@@ -156,10 +194,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				typeNode.SetAttribute("fullname", LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace));
 				assemblyNode.AppendChild(typeNode);
 
-				foreach (var type in bindableTypes)
+				foreach (var propertyName in propertyNames)
 				{
-					var propertyName = LinkerHintsHelpers.GetPropertyAvailableName(type.GetFullMetadataName());
-
 					var methodNode = doc.CreateElement(string.Empty, "method", string.Empty);
 					methodNode.SetAttribute("signature", $"System.Boolean get_{propertyName}()");
 					methodNode.SetAttribute("body", "stub");
@@ -175,39 +211,33 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				doc.Save(fileName);
 			}
 
-			private string GenerateTypeProviders(IEnumerable<INamedTypeSymbol> bindableTypes)
+			private StringBuilderBasedSourceText GenerateTypeProviders(string[] propertyNames)
 			{
 				var writer = new IndentedStringBuilder();
 
-				writer.AppendLineInvariant("// <auto-generated>");
-				writer.AppendLineInvariant("// *****************************************************************************");
-				writer.AppendLineInvariant("// This file has been generated by Uno.UI (BindableTypeProvidersSourceGenerator)");
-				writer.AppendLineInvariant("// *****************************************************************************");
-				writer.AppendLineInvariant("// </auto-generated>");
+				writer.AppendLineIndented("// <auto-generated>");
+				writer.AppendLineIndented("// *****************************************************************************");
+				writer.AppendLineIndented("// This file has been generated by Uno.UI (DependencyObjectAvailabilityGenerator)");
+				writer.AppendLineIndented("// *****************************************************************************");
+				writer.AppendLineIndented("// </auto-generated>");
 				writer.AppendLine();
-				writer.AppendLineInvariant("#pragma warning disable 618  // Ignore obsolete members warnings");
-				writer.AppendLineInvariant("#pragma warning disable 1591 // Ignore missing XML comment warnings");
-				writer.AppendLineInvariant("using System;");
-				writer.AppendLineInvariant("using System.Linq;");
-				writer.AppendLineInvariant("using System.Diagnostics;");
+				writer.AppendLineIndented("#pragma warning disable 618  // Ignore obsolete members warnings");
 
-				writer.AppendLineInvariant($"// _intermediatePath: {_intermediatePath}");
-				writer.AppendLineInvariant($"// _baseIntermediateOutputPath: {_baseIntermediateOutputPath}");
+				writer.AppendLineIndented($"// _intermediatePath: {_intermediatePath}");
+				writer.AppendLineIndented($"// _intermediateOutputPath: {_intermediateOutputPath}");
 
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
 					using (writer.BlockInvariant("internal class " + LinkerHintsHelpers.GetLinkerHintsClassName()))
 					{
-						foreach(var type in bindableTypes)
+						foreach (var propertyName in propertyNames)
 						{
-							var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.GetFullMetadataName());
-
-							writer.AppendLineInvariant($"internal static bool {safeTypeName} => true;");
+							writer.AppendLineIndented($"internal static bool {propertyName} => true;");
 						}
 					}
 				}
 
-				return writer.ToString();
+				return new StringBuilderBasedSourceText(writer.Builder);
 			}
 		}
 	}

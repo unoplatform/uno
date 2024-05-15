@@ -1,7 +1,7 @@
 ﻿
 namespace Windows.Devices.Bluetooth
 {
-	public   enum BluetoothMajorClass 
+	public enum BluetoothMajorClass
 	{
 		Miscellaneous,
 		Computer,

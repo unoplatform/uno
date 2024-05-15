@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "..\\..\\src\\Uno.UI.sln",
+    "projects": [
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Windows.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Windows.csproj"
+    ]
+  }
+}

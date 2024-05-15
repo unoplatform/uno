@@ -2,34 +2,31 @@
 using System.Threading.Tasks;
 using MUXControlsTestApp.Utilities;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
 	internal static class FlyoutHelper
 	{
-		public static FrameworkElement GetOpenFlyoutPresenter()
+		public static FrameworkElement GetOpenFlyoutPresenter(XamlRoot xamlRoot)
 		{
-#if NETFX_CORE
-			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
-#else
-			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot.Current);
-#endif
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
 			if (popups.Count != 1)
 			{
 				throw new InvalidOperationException("Expected exactly one open Popup.");
 			}
 
-			return popups[0] ?? throw new InvalidOperationException("Popup child should not be null.");
+			var child = popups[0].Child ?? throw new InvalidOperationException("Popup child should not be null.");
+			return child as FrameworkElement;
 		}
 
 		public static void HideFlyout<T>(T flyoutControl)
 			where T : FlyoutBase
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			flyoutControl.Hide();
 #else
 			flyoutControl.Close();
@@ -37,9 +34,9 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		}
 
 		internal static void OpenFlyout<T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
-			where T: FlyoutBase
+			where T : FlyoutBase
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			flyoutControl.ShowAt(target);
 #else
 			flyoutControl.Open();

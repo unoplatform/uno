@@ -1,21 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
-#if NETFX_CORE
-using View = Uno.UI.Tests.Views.TestView;
-#else
-using View = Windows.UI.Xaml.FrameworkElement;
-#endif
 using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.StackPanelTest
 {
 	[TestClass]
-	public class Given_StackPanel : Context
+	public partial class Given_StackPanel : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Vertical_And_SimpleLayout()
 		{
@@ -32,7 +31,7 @@ namespace Uno.UI.Tests.StackPanelTest
 			SUT.Measure(availableSize: new Size(width: 20, height: 20));
 			Assert.AreEqual(expected: new Size(width: 10, height: 15), actual: SUT.DesiredSize, message: "measuredSize");
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 20, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 20, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 0, y: 0, width: 20, height: 8), actual: c1.Arranged);
 			Assert.AreEqual(expected: new Rect(x: 0, y: 8, width: 20, height: 7), actual: c2.Arranged);
 
@@ -56,7 +55,7 @@ namespace Uno.UI.Tests.StackPanelTest
 			var measuredSize = SUT.DesiredSize;
 			Assert.AreEqual(expected: new Size(width: 17, height: 8), actual: measuredSize, message: "measuredSize");
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 20, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 20, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 0, y: 0, width: 5, height: 20), actual: c1.Arranged);
 			Assert.AreEqual(expected: new Rect(x: 5, y: 0, width: 12, height: 20), actual: c2.Arranged);
 
@@ -93,17 +92,17 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			var c1 = SUT
 				.AddChild(
-					child: new View {Name = "Child01", RequestedDesiredSize = new Size(width: 10, height: 8)}
+					child: new View { Name = "Child01", RequestedDesiredSize = new Size(width: 10, height: 8) }
 				);
 
 			var c2 = SUT
 				.AddChild(
-					child: new View {Name = "Child02", RequestedDesiredSize = new Size(width: 10, height: 7)}
+					child: new View { Name = "Child02", RequestedDesiredSize = new Size(width: 10, height: 7) }
 				);
 
 			var c3 = SUT
 				.AddChild(
-					child: new View {Name = "Child03", RequestedDesiredSize = new Size(width: 10, height: 11)}
+					child: new View { Name = "Child03", RequestedDesiredSize = new Size(width: 10, height: 11) }
 				);
 
 			SUT.Measure(availableSize: new Size(width: 20, height: 20));
@@ -126,12 +125,12 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			var c1 = SUT
 				.AddChild(
-					child: new View {Name = "Child01", RequestedDesiredSize = new Size(width: 5, height: 8)}
+					child: new View { Name = "Child01", RequestedDesiredSize = new Size(width: 5, height: 8) }
 				);
 
 			var c2 = SUT
 				.AddChild(
-					child: new View {Name = "Child02", RequestedDesiredSize = new Size(width: 12, height: 7)}
+					child: new View { Name = "Child02", RequestedDesiredSize = new Size(width: 12, height: 7) }
 				);
 
 			SUT.Measure(availableSize: new Size(width: 20, height: 20));
@@ -152,17 +151,17 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			var c1 = SUT
 				.AddChild(
-					child: new View {Name = "Child01", RequestedDesiredSize = new Size(width: 5, height: 8)}
+					child: new View { Name = "Child01", RequestedDesiredSize = new Size(width: 5, height: 8) }
 				);
 
 			var c2 = SUT
 				.AddChild(
-					child: new View {Name = "Child02", RequestedDesiredSize = new Size(width: 12, height: 7)}
+					child: new View { Name = "Child02", RequestedDesiredSize = new Size(width: 12, height: 7) }
 				);
 
 			var c3 = SUT
 				.AddChild(
-					child: new View {Name = "Child02", RequestedDesiredSize = new Size(width: 12, height: 5)}
+					child: new View { Name = "Child02", RequestedDesiredSize = new Size(width: 12, height: 5) }
 				);
 
 			SUT.Measure(availableSize: new Size(width: 20, height: 20));
@@ -191,7 +190,7 @@ namespace Uno.UI.Tests.StackPanelTest
 			var measuredSize = SUT.DesiredSize;
 			Assert.AreEqual(expected: new Size(width: 10, height: 10), actual: measuredSize, message: "measuredSize");
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 20, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 20, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 0, y: 0, width: 20, height: 10), actual: c1.Arranged);
 
 			Assert.AreEqual(expected: 1, actual: SUT.GetChildren().Count());
@@ -210,7 +209,7 @@ namespace Uno.UI.Tests.StackPanelTest
 			var measuredSize = SUT.DesiredSize;
 			Assert.AreEqual(expected: new Size(width: 10, height: 10), actual: measuredSize, message: "measuredSize");
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 20, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 20, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 0, y: 0, width: 10, height: 20), actual: c1.Arranged);
 
 			Assert.AreEqual(expected: 1, actual: SUT.GetChildren().Count());
@@ -247,7 +246,7 @@ namespace Uno.UI.Tests.StackPanelTest
 				c2.DesiredSize.Should().Be(new Size(20, 30));
 			}
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 30, height: 40));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 30, height: 40));
 
 			using (new AssertionScope("Arranged Sizes"))
 			{
@@ -284,7 +283,7 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			c1.DesiredSize.Should().Be(new Size(10, 10));
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 30, height: 30));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 30, height: 30));
 			SUT.Arranged.Should().Be((Rect)"0,0,30,30");
 			c1.Arranged.Should().Be((Rect)"10,10,10,0"); // size is 10x0 because of margins (w= 30-(10+10), h=10-(10+10))
 
@@ -311,7 +310,7 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			Assert.AreEqual(expected: new Size(width: 10, height: 8), actual: c1.DesiredSize);
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 20, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 20, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 5, y: 0, width: 10, height: 8), actual: c1.Arranged);
 
 			Assert.AreEqual(expected: 1, actual: SUT.GetChildren().Count());
@@ -337,7 +336,7 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			Assert.AreEqual(expected: new Size(width: 10, height: 8), actual: c1.DesiredSize);
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 30, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 30, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 5, y: 0, width: 20, height: 8), actual: c1.Arranged);
 
 			Assert.AreEqual(expected: 1, actual: SUT.GetChildren().Count());
@@ -364,7 +363,7 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			Assert.AreEqual(expected: new Size(width: 10, height: 8), actual: c1.DesiredSize);
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 30, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 30, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 5, y: 0, width: 20, height: 8), actual: c1.Arranged);
 
 			Assert.AreEqual(expected: 1, actual: SUT.GetChildren().Count());
@@ -390,7 +389,7 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			Assert.AreEqual(expected: new Size(width: 8, height: 10), actual: c1.DesiredSize);
 
-			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 20, height: 20));
+			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 20, height: 20));
 			Assert.AreEqual(expected: new Rect(x: 0, y: 5, width: 8, height: 10), actual: c1.Arranged);
 
 			Assert.AreEqual(expected: 1, actual: SUT.GetChildren().Count());
@@ -405,11 +404,12 @@ namespace Uno.UI.Tests.StackPanelTest
 				child: new View
 				{
 					Name = "Child01",
-					DesiredSizeSelector = s => {
+					DesiredSizeSelector = s =>
+					{
 
 						s.Height.Should().Be(expected: 20.0d);
 
-						return new Size(width: 8, height: 10); 
+						return new Size(width: 8, height: 10);
 					},
 					Height = 10
 				}

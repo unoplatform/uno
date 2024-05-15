@@ -1,104 +1,76 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Microsoft.UI.Composition;
+using Uno.Extensions;
+using Uno.Helpers;
+using Uno.UI.Xaml.Media;
+using Windows.Application­Model;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
-using Windows.UI.Composition;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
-		private const int MIN_DIMENSION_SYNC_LOADING = 100;
+		// TODO: Introduce LRU caching if needed
+		private static readonly Dictionary<string, string> _scaledBitmapCache = new();
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
-			asyncImage = TryOpenSourceAsync(ct, targetWidth, targetHeight);
+			asyncImage = TryOpenSourceAsync(ct);
 
 			return true;
 		}
 
-		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight)
+		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct)
 		{
-			var surface = new SkiaCompositionSurface();
-
 			try
 			{
-				if (UriSource != null)
+				var uri = UriSource;
+				if (uri is not null)
 				{
-					if (UriSource.Scheme == "http" || UriSource.Scheme == "https")
+					if (!uri.IsAbsoluteUri)
 					{
-						var client = new HttpClient();
-						var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
-						var imageStream = await response.Content.ReadAsStreamAsync();
-
-						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
+						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
-					else if (UriSource.Scheme == "ms-appx")
+
+					if (uri.IsLocalResource())
 					{
-						var path = UriSource.PathAndQuery;
-						var filePath = GetScaledPath(path);
-						using var fileStream = File.OpenRead(filePath);
-
-						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
+						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
 					}
-					else if (UriSource.Scheme == "ms-appdata")
+
+					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct);
+					if (imageData.Kind == ImageDataKind.Error)
 					{
-						using var fileStream = File.OpenRead(FilePath);
-
-						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
+						RaiseImageFailed(imageData.Error);
 					}
+					else if (imageData.Kind == ImageDataKind.CompositionSurface)
+					{
+						RaiseImageOpened();
+					}
+
+					return imageData;
 				}
 				else if (_stream != null)
 				{
-					return OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
+					return await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(_stream.AsStream(), ct);
 				}
 			}
 			catch (Exception e)
 			{
-				return new ImageData() { Error = e };
+				return ImageData.FromError(e);
 			}
 
 			return default;
-		}
-
-		private ImageData OpenFromStream(int? targetWidth, int? targetHeight, SkiaCompositionSurface surface, global::System.IO.Stream imageStream)
-		{
-			var result = surface.LoadFromStream(targetWidth, targetHeight, imageStream);
-
-			if (result.success)
-			{
-				RaiseImageOpened();
-				return new ImageData { Value = surface };
-			}
-			else
-			{
-				var exception = new InvalidOperationException($"Image load failed ({result.nativeResult})");
-				RaiseImageFailed(exception);
-				return new ImageData { Error = exception };
-			}
-		}
-
-		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
-		{
-			if(_stream != null &&
-				targetWidth is { } width &&
-				targetHeight is { } height &&
-				height < MIN_DIMENSION_SYNC_LOADING &&
-				width < MIN_DIMENSION_SYNC_LOADING)
-			{
-				var surface = new SkiaCompositionSurface();
-				image = OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
-				return image.Value != null;
-			}
-
-			return base.TryOpenSourceSync(targetWidth, targetHeight, out image);
 		}
 
 		private static readonly int[] KnownScales =
@@ -121,10 +93,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 			(int)ResolutionScale.Scale500Percent
 		};
 
-		private static string GetScaledPath(string rawPath)
+		internal static string GetScaledPath(string rawPath)
 		{
+			// Avoid querying filesystem if we already seen this file
+			if (_scaledBitmapCache.TryGetValue(rawPath, out var result))
+			{
+				return result;
+			}
+
 			var originalLocalPath =
-				Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
+				Path.Combine(Package.Current.InstalledPath,
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 				);
 
@@ -134,22 +112,36 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
 			var baseExtension = Path.GetExtension(originalLocalPath);
 
-			for (var i = KnownScales.Length - 1; i >= 0; i--)
+			var applicableScale = FindApplicableScale(true);
+			if (applicableScale is null)
 			{
-				var probeScale = KnownScales[i];
-
-				if (resolutionScale >= probeScale)
-				{
-					var filePath = Path.Combine(baseDirectory, $"{baseFileName}.scale-{probeScale}{baseExtension}");
-
-					if (File.Exists(filePath))
-					{
-						return filePath;
-					}
-				}
+				applicableScale = FindApplicableScale(false);
 			}
 
-			return originalLocalPath;
+			result = applicableScale ?? originalLocalPath;
+			_scaledBitmapCache[rawPath] = result;
+			return result;
+
+			string FindApplicableScale(bool onlyMatching)
+			{
+				for (var i = KnownScales.Length - 1; i >= 0; i--)
+				{
+					var probeScale = KnownScales[i];
+
+					if ((onlyMatching && resolutionScale >= probeScale) ||
+						(!onlyMatching && resolutionScale < probeScale))
+					{
+						var filePath = Path.Combine(baseDirectory, $"{baseFileName}.scale-{probeScale}{baseExtension}");
+
+						if (File.Exists(filePath))
+						{
+							return filePath;
+						}
+					}
+				}
+
+				return null;
+			}
 		}
 	}
 }

@@ -34,7 +34,7 @@ namespace Uno.Extensions.Storage.Pickers
 			};
 
 			var filterBuilder = new StringBuilder();
-			foreach( var choice in _picker.FileTypeChoices)
+			foreach (var choice in _picker.FileTypeChoices)
 			{
 				if (filterBuilder.Length > 0)
 				{

@@ -28,7 +28,7 @@ namespace Uno.UI.Tests.Extensions
 		[TestMethod]
 		public void When_TransformRect_RotateQuarter()
 		{
-			var matrix = Matrix3x2.CreateRotation((float) Math.PI / 4);
+			var matrix = Matrix3x2.CreateRotation((float)Math.PI / 4);
 
 			var expected = new Rect(-4.242640495300293, 1.4142135381698608, 7.77817440032959, 7.7781739234924316);
 			var actual = matrix.Transform(new Rect(1, 1, 5, 6));

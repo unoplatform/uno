@@ -11,7 +11,7 @@ namespace Uno.UI.Samples.Tests;
 
 internal record TestCase
 {
-	public object[] Parameters { get; init; } = Array.Empty<object>();
+	public object?[] Parameters { get; init; } = Array.Empty<object>();
 
 	public PointerDeviceType? Pointer { get; init; }
 
@@ -20,7 +20,7 @@ internal record TestCase
 	{
 		var result = $"({Parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
 
-		if (Pointer is {} pt)
+		if (Pointer is { } pt)
 		{
 			result += $" [{pt}]";
 		}

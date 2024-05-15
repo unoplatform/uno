@@ -1,12 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using Windows.Foundation;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarLayoutStrategy
 	{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			Rect windowConstraint,
 			out Rect pReturnValue) /*override*/
 		{
-			pReturnValue =  default;
+			pReturnValue = default;
 			pReturnValue = _layoutStrategyImpl.GetElementBounds(
 				elementType,
 				elementIndex,
@@ -96,7 +96,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void GetPositionOfFirstElementImpl(out Point returnValue)
 		{
-			returnValue = null;
 			returnValue = _layoutStrategyImpl.GetPositionOfFirstElement();
 
 			return;
@@ -105,12 +104,13 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Estimation and virtualization related methods.
-
+#if false
 		private void GetVirtualizationDirectionImpl(
 			out Orientation pReturnValue)
 		{
 			pReturnValue = _layoutStrategyImpl.VirtualizationDirection;
 		}
+#endif
 
 		internal void EstimateElementIndex(
 			ElementType elementType,
@@ -167,8 +167,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+#if false
 		#region IItemLookupPanel related
-
 		// Estimates the index or the insertion index closest to the given point.
 		private void EstimateIndexFromPointImpl(
 			bool requestingInsertionIndex,
@@ -216,7 +216,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new NotImplementedException();
 		}
-
 		#endregion
 
 		#region Snap points related
@@ -268,7 +267,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new NotImplementedException();
 		}
-
+#endif
 
 		#region Special elements methods
 		internal bool NeedsSpecialItem()

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ButtonBase_Partial.h, ButtonBase_Partial.cpp
+// ButtonBase_Partial.h, ButtonBase_Partial.cpp, tag winui3/release/1.4.2
 
 #nullable enable
 
@@ -11,10 +11,10 @@ using Uno.UI.Xaml.Core;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase
 	{
@@ -22,21 +22,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private Point _pointerPosition = Point.Zero;
 
 		// True if the SPACE or ENTER key is currently pressed, false otherwise.
-		private bool _isSpaceOrEnterKeyDown = false;
+		private bool _isSpaceOrEnterKeyDown;
 
 		// True if the NAVIGATION_ACCEPT or GAMEPAD_A vkey is currently pressed, false otherwise.
-		private bool _isNavigationAcceptOrGamepadAKeyDown = false;
+		private bool _isNavigationAcceptOrGamepadAKeyDown;
 
 		// True if the pointer's left button is currently down, false otherwise.
-		private bool _isPointerLeftButtonDown = false;
+		private bool _isPointerLeftButtonDown;
 
 		// True if ENTER key is equivalent to SPACE
-		private bool _keyboardNavigationAcceptsReturn = false;
+		private bool _keyboardNavigationAcceptsReturn;
 
 		// On pointer released we perform some actions depending on control. We decide to whether to perform them
 		// depending on some parameters including but not limited to whether released is followed by a pressed, which
 		// mouse button is pressed, what type of pointer is it etc. This boolean keeps our decision.
-		private bool _shouldPerformActions = false;
+		private bool _shouldPerformActions;
 
 		// Whether the button should handle keyboard ENTER and SPACE key input.
 		// HubSection's header button sets this to false for non-interactive headers so that they
@@ -271,6 +271,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (command != null)
 			{
 				var commandParameter = CommandParameter;
+
+				// SYNC_CALL_TO_APP DIRECT - This next line may directly call out to app code.
 				canExecute = command.CanExecute(commandParameter);
 			}
 
@@ -288,9 +290,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (command != null)
 			{
 				var commandParameter = CommandParameter;
+
+				// SYNC_CALL_TO_APP DIRECT - This next line may directly call out to app code.
 				var canExecute = command.CanExecute(CommandParameter);
 				if (canExecute)
 				{
+					// SYNC_CALL_TO_APP DIRECT - This next line may directly call out to app code.
 					command.Execute(commandParameter);
 				}
 			}
@@ -352,6 +357,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					IsPressed = false;
 					ReleasePointerCaptureInternal(null);
+					_isSpaceOrEnterKeyDown = false;
+					_isNavigationAcceptOrGamepadAKeyDown = false;
 				}
 			}
 
@@ -453,7 +460,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				if (ClickMode == ClickMode.Hover && IsEnabled)
 				{
 					IsPressed = true;
-					RaiseClick(args);
+					OnClick();
 				}
 			}
 
@@ -576,7 +583,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				if (ClickMode == ClickMode.Press)
 				{
-					RaiseClick(args);
+					OnClick();
 				}
 			}
 
@@ -674,9 +681,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// For mouse, we need to wait for PointerExited because the mouse may still be above the ButtonBase when
 			// PointerCaptureLost is received from clicking.
 			var pointerPoint = args.GetCurrentPoint(null);
-			var pointerDeviceType = pointerPoint.PointerDevice?.PointerDeviceType ?? PointerDeviceType.Touch;
+			var pointerDeviceType = (PointerDeviceType)pointerPoint.PointerDeviceType;
 			if (pointerDeviceType == PointerDeviceType.Touch)
 			{
+				// Uno TODO
 				//IsPointerOver = false;
 			}
 
@@ -737,7 +745,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ExecuteCommand();
 		}
 
-		private void ProgrammaticClick() => OnClick();
+		internal void ProgrammaticClick() => OnClick();
 
 		private protected void SetAcceptsReturn(bool value) => _keyboardNavigationAcceptsReturn = value;
 	}

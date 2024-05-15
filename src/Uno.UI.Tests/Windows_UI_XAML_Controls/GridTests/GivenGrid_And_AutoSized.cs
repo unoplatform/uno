@@ -1,17 +1,21 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using View = Windows.UI.Xaml.FrameworkElement;
-
+using Microsoft.UI.Xaml;
+using Uno.UI.Controls.Legacy;
 
 namespace Uno.UI.Tests.GridTests
 {
 	[TestClass]
-	public class GivenGrid_And_AutoSized : Context
+	public partial class GivenGrid_And_AutoSized : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_One_Auto_Columns_and_one_star_and_two_children()
 		{
@@ -39,7 +43,7 @@ namespace Uno.UI.Tests.GridTests
 
 			Assert.AreEqual(new Rect(0, 0, 5, 20), c1.Arranged);
 			Assert.AreEqual(new Rect(5, 0, 15, 20), c2.Arranged);
-			
+
 			Assert.AreEqual(2, SUT.GetChildren().Count());
 		}
 

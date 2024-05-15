@@ -27,26 +27,29 @@ namespace Windows.Storage
 			protected override bool IsEqual(ImplementationBase impl)
 				=> impl is Local other && Path.Equals(other.Path);
 
-			public override async Task<StorageFolder?> GetParentAsync(CancellationToken ct)
+			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct)
 			{
 				var directoryPath = IOPath.GetDirectoryName(Path);
-				return directoryPath != null ? new StorageFolder(directoryPath) : null;
+				return Task.FromResult(directoryPath != null ? new StorageFolder(directoryPath) : null);
 			}
 
-			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
-				=> BasicProperties.FromFilePath(Owner.Path);
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
+				=> Task.FromResult(BasicProperties.FromFilePath(Owner.Path));
 
-			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateLocal(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+				=> Task.FromResult<IRandomAccessStreamWithContentType>(new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateLocal(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType));
 
-			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));
+			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+				=> Task.FromResult<Stream>(File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options)));
 
-			public override async Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
-				=> new StorageStreamTransaction(Owner, ToFileShare(option));
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
+				=> Task.FromResult(new StorageStreamTransaction(Owner, ToFileShare(option)));
 
-			public override async Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
-				=> File.Delete(Path);
+			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
+			{
+				File.Delete(Path);
+				return Task.CompletedTask;
+			}
 
 			public override async Task CopyAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{

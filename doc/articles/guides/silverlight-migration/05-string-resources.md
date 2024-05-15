@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.SwitchingStringResources
+---
+
 # Switching to string resources
 
 The Silverlight Business App template includes string resources and a helper class that allows the strings to be bound to controls in the UI. Using strings resources for control content is often considered a best practice and comes into its own when an application must support multiple languages.
@@ -8,7 +12,7 @@ Reviewing the Silverlight TimeEntryRia sample app UI, the navigation link conten
 
 ![Silverlight Business App Example Layout](assets/SilverlightBusinessApp.png)
 
-In the Silverlight project, the application string resources are found within the `Assets\Resources\ApplicationsStrings.resx` file. There are two additional resource files for error messages and security challenge questions. As an example, the **Home** navigation title is defined in the **ApplicationsStrings.resx** file as:
+In the Silverlight project, the application string resources are found within the `Assets\Resources\ApplicationsStrings.resx` file. There are two additional resource files for error messages and security challenge questions. As an example, the **Home** navigation title is defined in the `ApplicationsStrings.resx` file as:
 
 ![String Resource Home Navigation Page Title](assets/StringResource-HomeNav.png)
 
@@ -32,7 +36,7 @@ Notice how the **Content** property is bound using `Content="{Binding Path=Appli
 
 ## Binding to string resources in UWP
 
-If you want your app to support different display languages, and you have string literals in your code or XAML markup or app package manifest, then move those strings into a Resources File (.resw). You can then make a translated copy of that Resources File for each language that your app supports.
+If you want your app to support different display languages, and you have string literals in your code or XAML markup or app package manifest, then move those strings into a Resources File (`.resw`). You can then make a translated copy of that Resources File for each language that your app supports.
 
 UWP has an excellent mechanism for using such string resources with controls in XAML - the **x:Uid** attribute. Rather than having to create a helper and using binding syntax, the attribute is added directly to the element and the element value identifies the control in a resource file. The entry in the resource file has a name in the format of **Uid.PropertyName**. So, consider the following XAML:
 
@@ -40,7 +44,7 @@ UWP has an excellent mechanism for using such string resources with controls in 
 <Button x:Uid="HomeButton" Content="Home"/>
 ```
 
-Assuming the application is running under an the **en** locale, then the UWP project would need to have a resource file created in a **Strings\\en\\** folder named **Resources.resw** (the Uno project template creates this resource for you). An entry would be added to the resource file similar to (comments are optional):
+Assuming the application is running under an the **en** locale, then the UWP project would need to have a resource file created in a **Strings\\en\\** folder named `Resources.resw` (the Uno project template creates this resource for you). An entry would be added to the resource file similar to (comments are optional):
 
 | Name | Value | Comment |
 | :-- | :-- | :-- |
@@ -52,7 +56,7 @@ However, the **x:Uid** mechanism doesn't just stop with string values and a sing
 <TextBox x:Uid="DemoTextBox"/>
 ```
 
-If the following entries were added to **Resources.resw**:
+If the following entries were added to `Resources.resw`:
 
 | Name | Value | Comment |
 | :-- | :-- | :-- |
@@ -71,18 +75,18 @@ In WASM, not all of the property conversions are currently supported (notably **
 
 > [!IMPORTANT]
 > There are some idiosyncrasies with Uno and WASM regarding the use of **x:Uid** - some properties must be defined in the XAML otherwise the resources won't be applied. This issue is documented by [Uno issue #921](https://github.com/unoplatform/uno/issues/921)
-
+>
 > [!NOTE]
 > To learn more about **x:Uid** and string localization in UWP, review the following resources:
 >
-> * [x:Uid directive](https://docs.microsoft.com/windows/uwp/xaml-platform/x-uid-directive)
-> * [Localize strings in your UI and app package manifest](https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest)
+> * [x:Uid directive](https://learn.microsoft.com/windows/uwp/xaml-platform/x-uid-directive)
+> * [Localize strings in your UI and app package manifest](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest)
 
 ## Update Main Page NavigationViewItem controls to use x:Uid
 
 In order to migrate the **MainPage** **NavigationView** to use **x:Uid**, perform the following steps.
 
-1. Open the **String\\en\\Resources.resw** file and add the following entries:
+1. Open the `String\en\Resources.resw` file and add the following entries:
 
     | Name | Value | Comment |
     | :-- | :-- | :-- |
@@ -97,7 +101,7 @@ In order to migrate the **MainPage** **NavigationView** to use **x:Uid**, perfor
 
 1. Open the **MainPage.xaml** file.
 
-1. Locate the **muxc:NavigationView.MenuItems** and update them as follows:
+1. Locate the `muxc:NavigationView.MenuItems` and update them as follows:
 
     ```xml
     <muxc:NavigationView.MenuItems>
@@ -110,7 +114,7 @@ In order to migrate the **MainPage** **NavigationView** to use **x:Uid**, perfor
     ```
 
     > [!NOTE]
-    > The **Content** property is still defined above to provide a default value display in the designer. If you wish to confirm that the values are replaced at run time, modify the content values by appending **` - D`** or similar and verify that when the app is executed, resource values are shown.
+    > The **Content** property is still defined above to provide a default value display in the designer. If you wish to confirm that the values are replaced at run time, modify the content values by appending **`- D`** or similar and verify that when the app is executed, resource values are shown.
 
 1. Compile and run the application - confirm that the expected values are displayed.
 
@@ -120,10 +124,11 @@ In order to access the string resources in code, the **ResourceLoader** class mu
 
 > [!TIP]
 > You can learn more about the **ResourceLoader** and UWP resources below:
-> * [ResourceLoader](https://docs.microsoft.com/uwp/api/Windows.ApplicationModel.Resources.ResourceLoader)
-> * [App resources and the Resource Management System](https://docs.microsoft.com/windows/uwp/app-resources/)
+>
+> * [ResourceLoader](https://learn.microsoft.com/uwp/api/Windows.ApplicationModel.Resources.ResourceLoader)
+> * [App resources and the Resource Management System](https://learn.microsoft.com/windows/uwp/app-resources/)
 
-To access resources in the default file **Resources.resw**, you would use the following code:
+To access resources in the default file `Resources.resw`, you would use the following code:
 
 ```csharp
 using Windows.ApplicationModel.Resources;
@@ -144,18 +149,18 @@ public class SomeClass
 
 Although all resources can be added to single resource file, it is often considered a better practice to separate them into groups. In this task, you will add a resource file that is dedicated to error messages and error UI elements. You will then add a helper that will enable these resources to be access from code.
 
-1. In the **Shared** project, navigate to the **Strings\\en** folder and add a new resource file (*.resw) and name it **ErrorResources.resw**.
+1. In the **Shared** project, navigate to the **Strings\\en** folder and add a new resource file (`*.resw`) and name it `ErrorResources.resw`.
 
 1. Add the following resources:
 
     | Name | Value |
     | :--- | :---- |
-    | Cancel	| Cancel|
-    | FatalErrorTitle	| Fatal Error|
-    | FatalInitializeError	| Unable to initialize services - application must be restarted|
-    | LoginDialogLoginFailed	| The user name or password is incorrect|
-    | LoginDialogUserNameRequired	| User name and Password are required|
-    | Ok	| OK |
+    | Cancel | Cancel|
+    | FatalErrorTitle | Fatal Error|
+    | FatalInitializeError | Unable to initialize services - application must be restarted|
+    | LoginDialogLoginFailed | The user name or password is incorrect|
+    | LoginDialogUserNameRequired | User name and Password are required|
+    | Ok | OK |
 
 1. Navigate to the **Helpers** folder and add a new class - name it **ErrorMessageHelper**.
 
@@ -179,7 +184,7 @@ Although all resources can be added to single resource file, it is often conside
     private static ResourceLoader _resourceLoader = ResourceLoader.GetForCurrentView("ErrorMessages");
     ```
 
-    You can see that the resources are loaded by convention - the **ErrorMessages.resw** file is mapped to a key of **ErrorMessages**.
+    You can see that the resources are loaded by convention - the `ErrorMessages.resw` file is mapped to a key of **ErrorMessages**.
 
 1. Finally, add a method to retrieve the required string from the resource:
 

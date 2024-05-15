@@ -7,17 +7,17 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 #endif
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Windows.ApplicationModel.Store;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 #elif XAMARIN || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 #else
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -39,12 +39,12 @@ namespace Uno.UI.Samples.Behaviors
 
 		private static readonly ConditionalWeakTable<ListViewBase, ItemClickEventHandler> _registeredItemClickEventHandler = new ConditionalWeakTable<ListViewBase, ItemClickEventHandler>();
 
-#region Attached Properties
+		#region Attached Properties
 
-		public static DependencyProperty CommandProperty { get ; } =
+		public static DependencyProperty CommandProperty { get; } =
 			DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(ListViewBaseCommand), new PropertyMetadataHelper(new PropertyChangedCallback(OnCommandChanged)));
 
-		public static DependencyProperty CommandParameterProperty { get ; } =
+		public static DependencyProperty CommandParameterProperty { get; } =
 			DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(ListViewBaseCommand), new PropertyMetadata(null));
 
 		public static ICommand GetCommand(ListViewBase obj)
@@ -67,7 +67,7 @@ namespace Uno.UI.Samples.Behaviors
 			obj.SetValue(CommandParameterProperty, value);
 		}
 
-#endregion
+		#endregion
 
 		private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{

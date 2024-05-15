@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-namespace Microsoft.UI.Xaml.Controls
+// MUX Reference SplitButton.properties.cpp, tag winui3/release/1.4.2
+
+using System.Windows.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class SplitButton
 	{
@@ -27,16 +27,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get { return (FlyoutBase)GetValue(FlyoutProperty); }
 			set { SetValue(FlyoutProperty, value); }
-		}		
-		
-		public static DependencyProperty CommandProperty { get ; } =
+		}
+
+		public static DependencyProperty CommandProperty { get; } =
 			DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnCommandChanged));
 
-		public static DependencyProperty CommandParameterProperty { get ; } =
+		public static DependencyProperty CommandParameterProperty { get; } =
 			DependencyProperty.Register(nameof(CommandParameter), typeof(object), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnCommandParameterChanged));
 
-		public static DependencyProperty FlyoutProperty { get ; } =
-			DependencyProperty.Register(nameof(Flyout), typeof(FlyoutBase), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnFlyoutChanged));
+		public static DependencyProperty FlyoutProperty { get; } =
+			DependencyProperty.Register(nameof(Flyout), typeof(FlyoutBase), typeof(SplitButton), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.LogicalChild, OnFlyoutChanged));
 
 		private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

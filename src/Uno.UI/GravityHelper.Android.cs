@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using Android.Views;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {
-    internal static class GravityHelper
-    {
+	internal static class GravityHelper
+	{
 		internal static GravityFlags AlignmentsToGravity(VerticalAlignment verticalAlignment, HorizontalAlignment horizontalAlignment)
 		{
 			// Reset the gravity value
 			var finalGravity = GravityFlags.NoGravity;
-			
+
 			switch (verticalAlignment)
 			{
 				case VerticalAlignment.Center:

@@ -2,9 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,11 +14,13 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using System.Diagnostics;
 
 namespace Uno.UI.Tests.BinderTests.Propagation
 {
@@ -206,7 +207,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			SUT.SubObject = sub;
 
 			// The behavior of UWP is undefined. The datacontext is pass through unknown means tp
-			// non-visual elements, to allow binding. But if defined through code, the datacontext 
+			// non-visual elements, to allow binding. But if defined through code, the datacontext
 			// is not flowing. We're reproducing this behavior here.
 			Assert.AreEqual(0, sub.MyProperty);
 		}
@@ -349,7 +350,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			Assert.AreEqual(77, o1.MyProperty);
 			Assert.AreEqual(78, o2.MyProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_DependencyObject_Bindable_Removed()
 		{
@@ -452,7 +453,8 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			var SUT = new ContentControl() { Tag = 42 };
 			DoubleAnimation anim = null;
 
-			var template = new ControlTemplate(() => {
+			var template = new ControlTemplate(() =>
+			{
 				var g = new Grid();
 
 				var vg = new VisualStateGroup();
@@ -473,6 +475,104 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			SUT.ApplyTemplate();
 
 			Assert.IsNotNull(anim);
+		}
+
+		[TestMethod]
+		public async Task When_PrecedenceChanged_Then_Released()
+		{
+			var SUT = new ContentControl();
+
+			WeakReference Build()
+			{
+				var dc = new object();
+				SUT.DataContext = dc;
+				SUT.SetValue(ContentControl.ForegroundProperty, new SolidColorBrush(Microsoft.UI.Colors.Red));
+
+				SUT.DataContext = null;
+
+				return new(dc);
+			}
+
+			await AssertCollectedReference(Build());
+		}
+
+
+		[TestMethod]
+		public async Task When_PrecedenceChanged_And_Back_Then_Restored()
+		{
+			var SUT = new ContentControl();
+
+			WeakReference Build()
+			{
+				var dc = new object();
+				SUT.DataContext = dc;
+
+				var originalBrush = SUT.Foreground as Brush;
+				var newBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
+
+				SUT.SetValue(ContentControl.ForegroundProperty, newBrush);
+
+				Assert.IsNull(originalBrush.DataContext);
+				Assert.IsNotNull(newBrush.DataContext);
+
+				SUT.ClearValue(ContentControl.ForegroundProperty);
+
+				Assert.AreEqual(dc, originalBrush.DataContext);
+				Assert.IsNull(newBrush.DataContext);
+
+				SUT.DataContext = null;
+
+				return new(dc);
+			}
+
+			await AssertCollectedReference(Build());
+		}
+
+		[TestMethod]
+		public async Task When_PrecedenceChanged_To_Null_And_Back_Then_Restored()
+		{
+			var SUT = new ContentControl();
+
+			WeakReference Build()
+			{
+				var dc = new object();
+				SUT.DataContext = dc;
+
+				var originalBrush = SUT.Foreground as Brush;
+
+				SUT.SetValue(ContentControl.ForegroundProperty, null);
+
+				Assert.IsNull(originalBrush.DataContext);
+
+				SUT.ClearValue(ContentControl.ForegroundProperty);
+
+				Assert.AreEqual(dc, originalBrush.DataContext);
+
+				SUT.DataContext = null;
+
+				return new(dc);
+			}
+
+			await AssertCollectedReference(Build());
+		}
+
+		private async Task AssertCollectedReference(WeakReference reference)
+		{
+			var sw = Stopwatch.StartNew();
+			while (sw.Elapsed < TimeSpan.FromSeconds(2))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+
+				if (!reference.IsAlive)
+				{
+					return;
+				}
+
+				await Task.Delay(100);
+			}
+
+			Assert.IsFalse(reference.IsAlive);
 		}
 	}
 
@@ -534,7 +634,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		private static void OnPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 
-			if(dependencyObject is SubObject so)
+			if (dependencyObject is SubObject so)
 			{
 				so.MyPropertyCounter++;
 			}
@@ -581,7 +681,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				propertyType: typeof(MyObjectWithExplicitDefaultValue),
 				ownerType: typeof(MyObjectWithExplicitDefaultValue),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: null, 
+					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((MyObjectWithExplicitDefaultValue)s)?.OnSameTypeObjectChanged(e)
 				)
 		);
@@ -611,7 +711,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				propertyType: typeof(int),
 				ownerType: typeof(MyObjectWithExplicitDefaultValue),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: 77, 
+					defaultValue: 77,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((MyObjectWithExplicitDefaultValue)s)?.OnMyPropertyChanged(e)
 				)
@@ -642,7 +742,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 	public class PropagationContext2 : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged { add { } remove { } }
 	}
 
 	public class OppositeConverter : IValueConverter

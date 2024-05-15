@@ -3,7 +3,7 @@ using Android.Widget;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +14,9 @@ using System.Linq;
 using Uno.UI.Controls;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject, ILayouterElement
 	{
@@ -247,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 			float? zoomFactor,
 			bool disableAnimation,
 			bool isIntermediate)
-			=> throw new NotImplementedException(); 
+			=> throw new NotImplementedException();
 		#endregion
 
 		#region Native to managed
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnZoomScaleChanged(float p0, float p1)
 		{
 			ScrollOwner?.Presenter?.OnNativeZoom(p1);
-		} 
+		}
 		#endregion
 
 		private Thickness _childMargin;

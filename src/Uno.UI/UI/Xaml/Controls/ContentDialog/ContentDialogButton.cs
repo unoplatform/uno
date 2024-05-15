@@ -1,6 +1,6 @@
-namespace Windows.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls
 {
-	public   enum ContentDialogButton 
+	public enum ContentDialogButton
 	{
 		None,
 		Primary,

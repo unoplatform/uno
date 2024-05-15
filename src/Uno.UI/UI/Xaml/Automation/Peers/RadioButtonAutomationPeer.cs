@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using Uno;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	/// <summary>
 	/// Exposes RadioButton types to Microsoft UI Automation.

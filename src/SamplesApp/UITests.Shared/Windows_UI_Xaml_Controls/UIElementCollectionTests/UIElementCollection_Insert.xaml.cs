@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Linq;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.UIElementCollectionTests
 {
 	[Sample(
 		"UIElement",
-		Description= "This test asserts that an element inserted after the first draw is really inserted at the right place",
-		IgnoreInSnapshotTests=false)]
+		Description = "This test asserts that an element inserted after the first draw is really inserted at the right place",
+		IgnoreInSnapshotTests = false)]
 	public sealed partial class UIElementCollection_Insert : Page
 	{
 		public UIElementCollection_Insert()

@@ -1,15 +1,14 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Web;
-
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 namespace Uno.Helpers
 {
-	public static class ProtocolActivation
+	public static partial class ProtocolActivation
 	{
 		internal const string QueryKey = "unoprotocolactivation";
 
@@ -24,16 +23,15 @@ namespace Uno.Helpers
 			// rules as per https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler
 
 			// The custom scheme's name begins with web+
-			if (scheme.IndexOf("web+", System.StringComparison.InvariantCulture) != 0)
+			if (!scheme.StartsWith("web+", StringComparison.Ordinal))
 			{
 				throw new ArgumentException(
 					"Scheme must start with 'web+'",
 					nameof(scheme));
 			}
 
-			var schemeWithoutPrefix = scheme.Substring("web+".Length);
 			// The custom scheme's name includes at least 1 letter after the web+ prefix
-			if (schemeWithoutPrefix.Length == 0)
+			if (scheme.Length == "web+".Length)
 			{
 				throw new ArgumentException(
 					"Scheme must include at least 1 letter after 'web+' prefix",
@@ -41,12 +39,15 @@ namespace Uno.Helpers
 			}
 
 			// The custom scheme has only lowercase ASCII letters in its name.
-			if (!schemeWithoutPrefix.ToCharArray().All(c => 'a' <= c && c <= 'z'))
+			for (int i = "web+".Length; i < scheme.Length; i++)
 			{
-				throw new ArgumentException(
-					"Scheme must include only lowercase ASCII letters after " +
-					"the 'web+' prefix",
-					nameof(scheme));
+				if (scheme[i] is not (>= 'a' and <= 'z'))
+				{
+					throw new ArgumentException(
+						"Scheme must include only lowercase ASCII letters after " +
+						"the 'web+' prefix",
+						nameof(scheme));
+				}
 			}
 
 			if (domain == null)
@@ -70,8 +71,7 @@ namespace Uno.Helpers
 			uriString += "%s";
 
 			// register scheme
-			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(
-				$"navigator.registerProtocolHandler('{scheme}', '{uriString}' , '{prompt.Replace("'", "\\'")}')");
+			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
 		}
 
 		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
@@ -98,13 +98,18 @@ namespace Uno.Helpers
 				}
 				else
 				{
-					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");					
+					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");
 				}
 			}
 
 			// arguments did not contain activation URI or it could not be parsed
 			return false;
 		}
+
+		internal static partial class NativeMethods
+		{
+			[JSImport("globalThis.navigator.registerProtocolHandler")]
+			internal static partial void RegisterProtocolHandler(string scheme, string uri, string prompt);
+		}
 	}
 }
-#endif

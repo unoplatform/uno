@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
@@ -66,7 +66,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			BindingOperations.SetBinding(dp2, MyDP.MyStringProperty, binding);
 
-			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual("$0.00", dp2.MyString);
 			Assert.AreEqual(1, conv.ConvertCount);
 			Assert.AreEqual(0, conv.ConvertBackCount);
 
@@ -101,7 +101,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			dp2.ApplyXBind();
 
-			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual("$0.00", dp2.MyString);
 			Assert.AreEqual(1, conv.ConvertCount);
 			Assert.AreEqual(0, conv.ConvertBackCount);
 
@@ -115,7 +115,7 @@ namespace Uno.UI.Tests.BinderTests
 			// the UpdateSource invocation as a two-way binding is still happening.
 			//
 			// This behavior is different with a normal binding.
-			Assert.AreEqual("¤42.00", dp2.MyString);
+			Assert.AreEqual("$42.00", dp2.MyString);
 			Assert.AreEqual(42, dp1.MyDouble);
 			Assert.AreEqual(2, conv.ConvertCount);
 			Assert.AreEqual(1, conv.ConvertBackCount);
@@ -171,7 +171,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			var dp1 = new MyDP();
 			var dp2 = new MyDP();
-			
+
 			var binding = new Binding
 			{
 				Source = dp1,

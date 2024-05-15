@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>MyCrossRuntimeLib</RootNamespace>
+    <AssemblyName>MyCrossRuntimeLib</AssemblyName>
+    <DefineConstants>$(DefineConstants);WINUI</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Uno.WinUI.Runtime.WebAssembly" Version="$(GITVERSION_SemVer)" />
+  </ItemGroup>
+</Project>

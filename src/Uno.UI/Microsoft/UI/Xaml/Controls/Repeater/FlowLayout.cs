@@ -1,15 +1,15 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Specialized;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class FlowLayout : VirtualizingLayout, IFlowLayoutAlgorithmDelegates
 	{
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 			LayoutId = "FlowLayout";
 		}
 
-#region IVirtualizingLayoutOverrides
+		#region IVirtualizingLayoutOverrides
 		protected internal override void InitializeForContextCore(VirtualizingLayoutContext context)
 		{
 			var state = context.LayoutState;
@@ -111,9 +111,9 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
-#endregion
+		#endregion
 
-#region IFlowLayoutOverrides
+		#region IFlowLayoutOverrides
 
 		protected virtual Size GetMeasureSize(int index, Size availableSize)
 		{
@@ -283,9 +283,9 @@ namespace Microsoft.UI.Xaml.Controls
 			flowState.OnLineArranged(startIndex, countInLine, lineSize, context);
 		}
 
-#endregion
+		#endregion
 
-#region IFlowLayoutAlgorithmDelegates
+		#region IFlowLayoutAlgorithmDelegates
 
 		Size IFlowLayoutAlgorithmDelegates.Algorithm_GetMeasureSize(int index, Size availableSize, VirtualizingLayoutContext context)
 		{
@@ -371,7 +371,7 @@ namespace Microsoft.UI.Xaml.Controls
 				context);
 		}
 
-#endregion
+		#endregion
 
 		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{

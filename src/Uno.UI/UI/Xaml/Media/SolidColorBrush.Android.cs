@@ -1,15 +1,15 @@
-﻿using Android.Graphics;
+﻿using System;
+using Android.Graphics;
 using Rect = Windows.Foundation.Rect;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	// Android partial for SolidColorBrush
 	public partial class SolidColorBrush : Brush
 	{
-
-		protected override Paint GetPaintInner(Rect destinationRect)
+		private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 		{
-			return new Paint() { Color = this.ColorWithOpacity, AntiAlias = true };
+			paint.Color = ColorWithOpacity;
 		}
 	}
 }

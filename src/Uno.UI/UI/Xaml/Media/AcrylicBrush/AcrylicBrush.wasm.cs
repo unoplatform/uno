@@ -2,7 +2,7 @@
 using Uno.Disposables;
 using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
@@ -10,50 +10,7 @@ namespace Windows.UI.Xaml.Media
 		private const string CssSupportCondition =
 			"(backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))";
 
-		private static bool? _isBackdropFilterSupported = null;
-
-		/// <summary>
-        /// Subscribes to AcrylicBrush for a given UI element and applies it.
-        /// </summary>
-        /// <param name="uiElement">UI element.</param>
-        /// <returns>Disposable.</returns>
-		internal IDisposable Subscribe(UIElement uiElement)
-		{
-			var compositeDisposable = new CompositeDisposable(6);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				AlwaysUseFallbackProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				FallbackColorProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				TintColorProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				TintOpacityProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				OpacityProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			// Apply the current state of the brush
-			Apply(uiElement);
-
-			Disposable.Create(() => ResetStyle(uiElement))
-				.DisposeWith(compositeDisposable);
-
-			return compositeDisposable;
-		}
+		private static bool? _isBackdropFilterSupported;
 
 		/// <summary>
 		/// Applies the current state of Acrylic brush to a given UI element
@@ -96,5 +53,15 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>Value indicating whether backdrop filter is supported.</returns>
 		private static bool IsBackdropFilterSupported() =>
 			_isBackdropFilterSupported ??= WindowManagerInterop.IsCssFeatureSupported(CssSupportCondition);
+
+		protected override void OnConnected()
+		{
+			base.OnConnected();
+		}
+
+		protected override void OnDisconnected()
+		{
+			base.OnDisconnected();
+		}
 	}
 }

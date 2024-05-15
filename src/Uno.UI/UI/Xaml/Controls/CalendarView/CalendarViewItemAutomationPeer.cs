@@ -1,13 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls.Primitives;
-using DateTime = System.DateTimeOffset;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewItem
 	{
@@ -46,6 +46,7 @@ namespace Windows.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
+#if false
 			private void InvokeImpl()
 			{
 				UIElement spOwner;
@@ -71,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 				pParent.GetActiveGeneratorHost(out spHost);
 
 				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is {})
+				if (pCalendarPanel is { })
 				{
 					int itemIndex = 0;
 					itemIndex = spHost.CalculateOffsetFromMinDate(date);
@@ -107,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 				pParent.GetActiveGeneratorHost(out spHost);
 
 				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is {})
+				if (pCalendarPanel is { })
 				{
 					int itemIndex = 0;
 					itemIndex = spHost.CalculateOffsetFromMinDate(date);
@@ -152,6 +153,7 @@ namespace Windows.UI.Xaml.Controls
 
 				return;
 			}
+#endif
 		}
 	}
 }

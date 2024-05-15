@@ -4,7 +4,7 @@ using System.Threading;
 using Android.Animation;
 using Android.Widget;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Android.Views;
 using Uno.Disposables;
 using Uno.UI;
@@ -13,7 +13,11 @@ using System.Threading.Tasks;
 
 using Com.Airbnb.Lottie;
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	partial class LottieVisualSourceBase
 	{
@@ -40,8 +44,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			public override void OnAnimationStart(Animator? animation) => _lottieVisualSource.SetIsPlaying(true);
 		}
-
-		public bool UseHardwareAcceleration { get; set; } = true;
 
 		private Uri? _lastSource;
 		private (double fromProgress, double toProgress, bool looped)? _playState;
@@ -77,7 +79,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			async Task SetProperties()
 			{
 				var sourceUri = UriSource;
-				if(_lastSource == null || !_lastSource.Equals(sourceUri))
+				if (_lastSource == null || !_lastSource.Equals(sourceUri))
 				{
 					_lastSource = sourceUri;
 
@@ -111,7 +113,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					else
 					{
 						var path = sourceUri?.PathAndQuery ?? "";
-						if (path.StartsWith("/"))
+						if (path.StartsWith("/", StringComparison.Ordinal))
 						{
 							path = path.Substring(1);
 						}
@@ -134,16 +136,16 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				switch (player.Stretch)
 				{
-					case Windows.UI.Xaml.Media.Stretch.None:
+					case Microsoft.UI.Xaml.Media.Stretch.None:
 						_animation.SetScaleType(ImageView.ScaleType.Center);
 						break;
-					case Windows.UI.Xaml.Media.Stretch.Uniform:
+					case Microsoft.UI.Xaml.Media.Stretch.Uniform:
 						_animation.SetScaleType(ImageView.ScaleType.CenterInside);
 						break;
-					case Windows.UI.Xaml.Media.Stretch.Fill:
+					case Microsoft.UI.Xaml.Media.Stretch.Fill:
 						_animation.SetScaleType(ImageView.ScaleType.FitCenter);
 						break;
-					case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+					case Microsoft.UI.Xaml.Media.Stretch.UniformToFill:
 						_animation.SetScaleType(ImageView.ScaleType.CenterCrop);
 						break;
 				}
@@ -182,12 +184,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			SetIsPlaying(true);
 			if (_animation is { } animation)
 			{
-#if __ANDROID_26__
 				animation.RepeatCount =
 					looped ? ValueAnimator.Infinite : 0; // Repeat count doesn't include first time.
-#else
-				animation.Loop(looped);
-#endif
 				animation.SetMinProgress((float)fromProgress);
 				animation.SetMaxProgress((float)toProgress);
 				animation.PlayAnimation();
@@ -201,6 +199,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+			_playState = null;
 			_animation?.CancelAnimation();
 		}
 
@@ -225,6 +224,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			//Will be overridden in the Play method
 			_animation.SetMinAndMaxProgress(0f, 1f);
 			_animation.Progress = (float)progress;
+			Stop();
 		}
 
 		public void Load()
@@ -260,134 +260,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return default;
 			}
 		}
-	}
-}
-#else
-using System;
-using System.Threading;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using System.Threading.Tasks;
-using Uno.Disposables;
-using Uno.UI.Controls;
-using Android.Graphics;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml;
-using Uno.Foundation.Logging;
-
-namespace Microsoft.Toolkit.Uwp.UI.Lottie
-{
-	partial class LottieVisualSourceBase
-	{
-		private BindableProgressBar? _bindableProgressBar;
-		private double _toProgress;
-		private bool _looped;
-		private IDisposable? _colorDisposable;
-		private bool _warnOnce;
-
-		public bool UseHardwareAcceleration { get; set; } = true;
-
-		async Task InnerUpdate(CancellationToken ct)
-		{
-			
-		}
-
-		public void Play(double fromProgress, double toProgress, bool looped)
-		{
-			_toProgress = toProgress;
-			_looped = looped;
-
-			if(_bindableProgressBar != null)
-			{
-				_bindableProgressBar.SetProgress((int)(toProgress * 100), looped);
-			}
-		}
-
-		public void Stop()
-		{
-			if (_bindableProgressBar != null)
-			{
-				_bindableProgressBar.SetProgress(0, false);
-			}
-		}
-
-		public void Pause()
-		{
-
-		}
-
-		public void Resume()
-		{
-
-		}
-
-		public void SetProgress(double progress)
-		{
-			if (_bindableProgressBar != null)
-			{
-				_bindableProgressBar.SetProgress((int)(_toProgress * 100), false);
-			}
-		}
-
-		public void Load()
-		{
-			if(!TryLoadProgressRing()&& !_warnOnce)
-			{
-				_warnOnce = true;
-				this.Log().Warn("LottieVisualSource is not available on this platform. See https://github.com/mono/SkiaSharp/issues/1787");
-			}
-		}
-
-		public void Unload()
-		{
-			TryUnloadProgressRing();
-		}
-
-		private bool TryLoadProgressRing()
-		{
-			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
-			{
-				_bindableProgressBar ??= new BindableProgressBar();
-
-				_player.AddView(_bindableProgressBar);
-
-				void UpdateColor()
-				{
-					if (progress.Foreground is SolidColorBrush foregroundColor && _bindableProgressBar?.IndeterminateDrawable != null)
-					{
-#pragma warning disable 618 // SetColorFilter is deprecated
-						_bindableProgressBar.IndeterminateDrawable.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn!);
-#pragma warning restore 618 // SetColorFilter is deprecated
-					}
-				}
-
-				void UpdateColorCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-					=> UpdateColor();
-
-				_colorDisposable = progress.RegisterDisposablePropertyChangedCallback(Microsoft.UI.Xaml.Controls.ProgressRing.ForegroundProperty, UpdateColorCallback);
-
-				_bindableProgressBar.SetProgress((int)(_toProgress * 100), _looped);
-
-				UpdateColor();
-
-				return true;
-			}
-
-			return false;
-		}
-
-
-		private void TryUnloadProgressRing()
-		{
-			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
-			{
-				_colorDisposable?.Dispose();
-				_player.RemoveView(_bindableProgressBar);
-				_bindableProgressBar = null;
-			}
-		}
-
-		private Size CompositionSize => default;
 	}
 }
 #endif

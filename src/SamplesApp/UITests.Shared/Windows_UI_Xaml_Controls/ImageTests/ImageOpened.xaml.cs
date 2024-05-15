@@ -6,31 +6,31 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.Image
 {
 	[SampleControlInfo("Image", "ImageOpened")]
 	public sealed partial class ImageOpened : UserControl
-    {
-        public ImageOpened()
-        {
-            this.InitializeComponent();
+	{
+		public ImageOpened()
+		{
+			this.InitializeComponent();
 
 			MyImage.ImageOpened += (s, e) => Show("MyImage.ImageOpened");
 			MyImage.ImageFailed += (s, e) => Show("MyImage.ImageFailed");
 			MyImageBrush.ImageOpened += (s, e) => Show("MyImageBrush.ImageOpened");
 			MyImageBrush.ImageFailed += (s, e) => Show("MyImageBrush.ImageFailed");
-        }
+		}
 
-		private void UpdateSource (object sender, RoutedEventArgs e)
+		private void UpdateSource(object sender, RoutedEventArgs e)
 		{
 			var button = sender as Button;
 			var content = button.Content;
@@ -53,5 +53,5 @@ namespace Uno.UI.Samples.UITests.Image
 		{
 			var unused = new Windows.UI.Popups.MessageDialog(text).ShowAsync();
 		}
-    }
+	}
 }

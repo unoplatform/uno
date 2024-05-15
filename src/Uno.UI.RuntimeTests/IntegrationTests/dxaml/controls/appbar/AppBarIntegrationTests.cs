@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Tests.Common;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
@@ -16,29 +16,35 @@ using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests;
 using MUXControlsTestApp.Utilities;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Windows.UI.Tests.Enterprise
 {
 	[TestClass]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 	public class AppBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
-		public void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		public void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}
@@ -224,7 +230,7 @@ namespace Windows.UI.Tests.Enterprise
 			await openedEvent.WaitForDefault();
 
 			await RunOnUIThread(() => appBar.IsOpen = false);
-			closedEvent.WaitForDefault();
+			await closedEvent.WaitForDefault();
 
 			await RunOnUIThread(() => SetPageContent(null, page));
 		}
@@ -524,8 +530,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			AppBar topAppBar = null;
-			AppBar bottomAppBar = null;
+			//AppBar topAppBar = null;
+			//AppBar bottomAppBar = null;
 			AppBar inlineAppBar = null;
 
 			await RunOnUIThread(() =>
@@ -540,7 +546,7 @@ namespace Windows.UI.Tests.Enterprise
 			//UNO TODO: Implement Top/Bottom AppBars
 			//CanOpenMinimalAppBarUsingMouseHelper(topAppBar);
 			//CanOpenMinimalAppBarUsingMouseHelper(bottomAppBar);
-			CanOpenMinimalAppBarUsingMouseHelper(inlineAppBar);
+			await CanOpenMinimalAppBarUsingMouseHelper(inlineAppBar);
 		}
 
 		[TestMethod]
@@ -591,7 +597,7 @@ namespace Windows.UI.Tests.Enterprise
 		{
 			TestCleanupWrapper cleanup;
 
-			AppBar appBar = null;
+			//AppBar appBar = null;
 			Page page = null;
 			Button button = null;
 
@@ -777,7 +783,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
 		[Ignore("Missing VerifyUIElementTreeHelper")]
-		public async Task CanClosedDisplayModesControlLayout()
+		public void CanClosedDisplayModesControlLayout()
 		{
 			//	TestCleanupWrapper cleanup;
 
@@ -938,7 +944,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus stayed on the pageButton.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(pageButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(pageButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -975,7 +981,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				appBarButton = (AppBarButton)TreeHelper.GetVisualChildByName(page.BottomAppBar, "AppBarButton");
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1020,7 +1026,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				appBarButton = (AppBarButton)TreeHelper.GetVisualChildByName(page.BottomAppBar, "AppBarButton");
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 				appBar.IsOpen = false;
 			});
 			await WindowHelper.WaitForIdle();
@@ -1028,7 +1034,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus moved back to the pageButton (previously focused element) since the AppBar was closed.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(pageButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(pageButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1071,7 +1077,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Then, close the AppBar programmatically.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton));
 				appBar.IsOpen = false;
 			});
 			await WindowHelper.WaitForIdle();
@@ -1079,7 +1085,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus is still on the expandButton after the AppBar closed.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1130,7 +1136,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
 		[Ignore("ValidateUIElementTree not implemented")]
-		public async Task ValidateInlineAppBars()
+		public void ValidateInlineAppBars()
 		{
 			//ControlHelper::ValidateUIElementTree(
 			//   wf::Size(400, 600),
@@ -1476,7 +1482,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			CanCloseAppBarHelper((expectedHandledValue, appBar) =>
+			await CanCloseAppBarHelper((expectedHandledValue, appBar) =>
 			{
 				bool backButtonPressHandled = false;
 				TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
@@ -1655,7 +1661,7 @@ namespace Windows.UI.Tests.Enterprise
 				var rootPanel = (StackPanel)XamlReader.Load(@"
 					<StackPanel xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
 								xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-								
+
 								Width=""400""
 								Height=""600"">
                         <AppBar x:Name=""appBarCompactClosed"" IsOpen=""False"" ClosedDisplayMode=""Compact""/>
@@ -1725,14 +1731,14 @@ namespace Windows.UI.Tests.Enterprise
 			});
 
 			LOG_OUTPUT("Validate that when set to On the AppBar's overlay is visible.");
-			RunOnUIThread(() =>
+			await RunOnUIThread(() =>
 			{
 				appBar.LightDismissOverlayMode = LightDismissOverlayMode.On;
 				ValidateVisibilityOfOverlayElement(appBar, true);
 			});
 
 			LOG_OUTPUT("Validate that when set to Off the AppBar's overlay is not visible.");
-			RunOnUIThread(() =>
+			await RunOnUIThread(() =>
 			{
 				appBar.LightDismissOverlayMode = LightDismissOverlayMode.Off;
 				ValidateVisibilityOfOverlayElement(appBar, false);
@@ -1911,7 +1917,7 @@ namespace Windows.UI.Tests.Enterprise
 		[Ignore]// Not stable between runs; there is a phantom visual that keeps showing up..
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
-		public async Task ValidateOverlayDCompTree()
+		public void ValidateOverlayDCompTree()
 		{
 			//	TestServices::WindowHelper->SetWindowSizeOverride(wf::Size(400, 400));
 			//	WUCRenderingScopeGuard guard(DCompRendering::WUCCompleteSynchronousCompTree, false /*resizeWindow*/);
@@ -1958,7 +1964,8 @@ namespace Windows.UI.Tests.Enterprise
 		[Description("Validates UIElement tree with an overlay-enabled app bar.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
-		public async Task ValidateOverlayUIETree()
+		[Ignore("ValidateUIElementTree not implemented")]
+		public void ValidateOverlayUIETree()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -2087,13 +2094,13 @@ namespace Windows.UI.Tests.Enterprise
 		//	{
 		//		var root = (FrameworkElement)XamlReader.Load(@"
 		//			<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""  xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-  //                      Background=""LightBlue"" Width=""400"" Height=""400"">
-  //                      <StackPanel>
-  //                          <AppBar  x:Name=""appBar"">
-  //                              <AppBarButton x:Name=""appBarButton"" Icon=""Add"" Label=""Add""/>
-  //                          </AppBar>
-  //                      </StackPanel>
-  //                  </Grid>
+		//                      Background=""LightBlue"" Width=""400"" Height=""400"">
+		//                      <StackPanel>
+		//                          <AppBar  x:Name=""appBar"">
+		//                              <AppBarButton x:Name=""appBarButton"" Icon=""Add"" Label=""Add""/>
+		//                          </AppBar>
+		//                      </StackPanel>
+		//                  </Grid>
 		//		");
 
 		//		appBar = (AppBar)root.FindName("appBar");
@@ -2159,7 +2166,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			CanCloseAppBarHelper(async (expectedHandledValue, appbar) =>
+			await CanCloseAppBarHelper(async (expectedHandledValue, appbar) =>
 			{
 				// We want to make sure the the key press gets handled/not handled as expected.
 				// We cannot listen to the Page.KeyDown event, because Page.TopAppBar/Page.BottomAppBar is not
@@ -2251,7 +2258,7 @@ namespace Windows.UI.Tests.Enterprise
 			});
 			await WindowHelper.WaitForIdle();
 
-			await RunOnUIThread(() => VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton)));
+			await RunOnUIThread(() => VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton)));
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("After closing AppBars, further calls to 'close function', while focus is on top AppBar, should not get handled.");
@@ -2312,7 +2319,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
 				{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 					SearchRoot = container.XamlRoot.Content
 #endif
 				});

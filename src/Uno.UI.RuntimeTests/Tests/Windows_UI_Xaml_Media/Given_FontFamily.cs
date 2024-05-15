@@ -1,18 +1,18 @@
 ﻿#if __WASM__
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
 	[TestClass]
 	public class Given_FontFamily
-	{ 
+	{
 		[TestMethod]
 		public void With_Pure_Name()
 		{
 			var fontName = "My happy font";
 			var fontFamily = new FontFamily(fontName);
-			Assert.AreEqual(fontName, fontFamily.ParsedSource);
+			Assert.AreEqual(fontName, fontFamily.CssFontName);
 		}
 
 		[TestMethod]
@@ -21,16 +21,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontName = "My font name";
 			var fontFamilyPath = $"/Assets/Data/Fonts/MyFont.ttf#{fontName}";
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.ParsedSource);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 
 		[TestMethod]
 		public void With_Path_Without_Hash()
 		{
 			var fontName = "FontName";
-			var fontFamilyPath = $"/Assets/Data/Fonts/{fontName}.ttf";			
+			var fontFamilyPath = $"/Assets/Data/Fonts/{fontName}.ttf";
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.ParsedSource);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 
 		[TestMethod]
@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontName = "Msappx font name";
 			var fontFamilyPath = $"ms-appx:///Assets/Data/Fonts/MyFont.ttf#{fontName}";
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.ParsedSource);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 
 		[TestMethod]
@@ -48,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontName = "Font name";
 			var fontFamilyPath = $"SomeFont.woff2#{fontName}";
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.ParsedSource);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 	}
 }

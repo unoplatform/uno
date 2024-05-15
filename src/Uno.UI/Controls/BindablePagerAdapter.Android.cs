@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +21,7 @@ using Uno.Extensions.Specialized;
 
 namespace Uno.UI.Controls
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	public class BindablePagerAdapter : PagerAdapter, View.IOnClickListener
 	{
 		private IEnumerable _itemsSource;
@@ -33,7 +33,7 @@ namespace Uno.UI.Controls
 
 		public override int Count
 		{
-			get 
+			get
 			{
 				var list = _itemsSource as IList;
 
@@ -67,7 +67,7 @@ namespace Uno.UI.Controls
 		public override void DestroyItem(View container, int position, Java.Lang.Object @object)
 #pragma warning restore CS0672 // Member overrides obsolete member
 		{
-            ((ViewGroup)container).RemoveView((View)@object);
+			((ViewGroup)container).RemoveView((View)@object);
 		}
 
 		public override void DestroyItem(ViewGroup container, int position, Java.Lang.Object @object)
@@ -87,10 +87,7 @@ namespace Uno.UI.Controls
 
 			var view = GetBindableView(convertView, source, templateId, parent);
 
-			if (!_views.Keys.Contains(position))
-			{
-				_views.Add(position, view);
-			}
+			_views.TryAdd(position, view);
 
 			view.SetOnClickListener(this);
 
@@ -134,8 +131,9 @@ namespace Uno.UI.Controls
 
 		public virtual System.Collections.IEnumerable ItemsSource
 		{
-			get { return _itemsSource; } 
-			set {
+			get { return _itemsSource; }
+			set
+			{
 
 				if (_itemsSource != value)
 				{
@@ -143,7 +141,7 @@ namespace Uno.UI.Controls
 
 					UpdateList();
 				}
-			} 
+			}
 		}
 
 		protected virtual void UpdateList()
@@ -181,7 +179,7 @@ namespace Uno.UI.Controls
 		}
 
 		public virtual ICommand ItemClickCommand { get; set; }
-		
+
 		public void OnClick(View v)
 		{
 			var bv = v as BindableView;

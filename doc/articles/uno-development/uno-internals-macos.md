@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.macOS
+---
+
 # How Uno works on macOS
 
 This article explores macOS-specific details of Uno's internals, with a focus on information that's useful for contributors to Uno. For an overview of how Uno works on all platforms, see [this article](uno-internals-overview.md).

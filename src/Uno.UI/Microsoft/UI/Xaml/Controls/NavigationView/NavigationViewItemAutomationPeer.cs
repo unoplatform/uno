@@ -1,440 +1,347 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemAutomationPeer.cpp, commit 2ec9b1c
+// MUX reference NavigationViewItemAutomationPeer.cpp, commit a564c49
 
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+
+public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider
 {
-	public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider
+	private enum AutomationOutput
 	{
-		private enum AutomationOutput
-		{
-			Position,
-			Size,
-		}
+		Position,
+		Size,
+	}
 
-		public NavigationViewItemAutomationPeer(NavigationViewItem navigationViewItem) : base(navigationViewItem)
-		{
-		}
+	public NavigationViewItemAutomationPeer(NavigationViewItem owner) : base(owner)
+	{
+	}
 
-		protected override string GetNameCore()
-		{
-			string returnHString = base.GetNameCore();
+	protected override string GetNameCore()
+	{
+		string returnHString = base.GetNameCore();
 
-			// If a name hasn't been provided by AutomationProperties.Name in markup:
-			if (string.IsNullOrEmpty(returnHString))
+		// If a name hasn't been provided by AutomationProperties.Name in markup:
+		if (string.IsNullOrEmpty(returnHString))
+		{
+			var lvi = Owner as NavigationViewItem;
+			if (lvi != null)
 			{
-				var lvi = Owner as NavigationViewItem;
-				if (lvi != null)
+				returnHString = SharedHelpers.TryGetStringRepresentationFromObject(lvi.Content);
+			}
+		}
+
+		if (string.IsNullOrEmpty(returnHString))
+		{
+			// NB: It'll be up to the app to determine the automation label for
+			// when they're using a PlaceholderValue vs. Value.
+
+			returnHString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationViewItemDefaultControlName);
+		}
+
+		return returnHString;
+	}
+
+	protected override object GetPatternCore(PatternInterface pattern)
+	{
+		// Note: We are intentionally not supporting Invoke Pattern, since supporting both SelectionItem and Invoke was
+		// causing problems. 
+		// See this Issue for more details: https://github.com/microsoft/microsoft-ui-xaml/issues/2702
+		if (pattern == PatternInterface.SelectionItem ||
+			// Only provide expand collapse pattern if we have children!
+			(pattern == PatternInterface.ExpandCollapse && HasChildren()))
+		{
+			return this;
+		}
+
+		return base.GetPatternCore(pattern);
+	}
+
+	protected override string GetClassNameCore()
+	{
+		return nameof(NavigationViewItem);
+	}
+
+	protected override AutomationControlType GetAutomationControlTypeCore()
+	{
+		// To be compliant with MAS 4.1.2, in DisplayMode 'Top',
+		//  a NavigationViewItem should report itsself as TabItem
+		if (IsOnTopNavigation())
+		{
+			return AutomationControlType.TabItem;
+		}
+		else
+		{
+			// TODO: Should this be ListItem in minimal mode and
+			// TreeItem otherwise.
+			return AutomationControlType.ListItem;
+		}
+	}
+
+
+	protected override int GetPositionInSetCore()
+	{
+		return GetPositionOrSetCountHelper(AutomationOutput.Position);
+	}
+
+	protected override int GetSizeOfSetCore()
+	{
+		return GetPositionOrSetCountHelper(AutomationOutput.Size);
+	}
+
+	protected override int GetLevelCore()
+	{
+		NavigationViewItemBase nvib = Owner as NavigationViewItemBase;
+		if (nvib != null)
+		{
+			var nvibImpl = nvib;
+			if (nvibImpl.IsTopLevelItem)
+			{
+				return 1;
+			}
+			else
+			{
+				var navView = GetParentNavigationView();
+				if (navView != null)
 				{
-					returnHString = SharedHelpers.TryGetStringRepresentationFromObject(lvi.Content);
+					var indexPath = navView.GetIndexPathForContainer(nvib);
+					if (indexPath != null)
+					{
+						// first index in path stands for main or footer menu
+						return indexPath.GetSize() - 1;
+					}
 				}
 			}
-
-			if (string.IsNullOrEmpty(returnHString))
-			{
-				// NB: It'll be up to the app to determine the automation label for
-				// when they're using a PlaceholderValue vs. Value.
-
-				returnHString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationViewItemDefaultControlName);
-			}
-
-			return returnHString;
 		}
 
-		protected override object GetPatternCore(PatternInterface pattern)
+		return 0;
+	}
+
+	private void Invoke()
+	{
+		var navView = GetParentNavigationView();
+		if (navView != null)
 		{
-			if (pattern == PatternInterface.SelectionItem ||
-				// Only provide expand collapse pattern if we have children!
-				(pattern == PatternInterface.ExpandCollapse && HasChildren()))
+			var navigationViewItem = Owner as NavigationViewItem;
+			if (navigationViewItem != null)
 			{
-				return this;
-			}
-
-			return base.GetPatternCore(pattern);
-		}
-
-		protected override string GetClassNameCore()
-		{
-			return nameof(NavigationViewItem);
-		}
-
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			// To be compliant with MAS 4.1.2, in DisplayMode 'Top',
-			//  a NavigationViewItem should report itsself as TabItem
-			if (IsOnTopNavigation())
-			{
-				return AutomationControlType.TabItem;
-			}
-			else
-			{
-				// TODO: Should this be ListItem in minimal mode and
-				// TreeItem otherwise.
-				return AutomationControlType.ListItem;
-			}
-		}
-
-
-		protected override int GetPositionInSetCore()
-		{
-			int positionInSet = 0;
-
-			if (IsOnTopNavigation() && !IsOnFooterNavigation())
-			{
-				positionInSet = GetPositionOrSetCountInTopNavHelper(AutomationOutput.Position);
-			}
-			else
-			{
-				positionInSet = GetPositionOrSetCountInLeftNavHelper(AutomationOutput.Position);
-			}
-
-			return positionInSet;
-		}
-
-		protected override int GetSizeOfSetCore()
-		{
-			int sizeOfSet = 0;
-
-			if (IsOnTopNavigation() && !IsOnFooterNavigation())
-			{
-				var navview = GetParentNavigationView();
-				if (navview != null)
+				if (navigationViewItem == navView.SettingsItem)
 				{
-					sizeOfSet = GetPositionOrSetCountInTopNavHelper(AutomationOutput.Size);
-
-				}
-			}
-			else
-			{
-				sizeOfSet = GetPositionOrSetCountInLeftNavHelper(AutomationOutput.Size);
-			}
-
-			return sizeOfSet;
-		}
-
-		protected override int GetLevelCore()
-		{
-			NavigationViewItemBase nvib = Owner as NavigationViewItemBase;
-			if (nvib != null)
-			{
-				var nvibImpl = nvib;
-				if (nvibImpl.IsTopLevelItem)
-				{
-					return 1;
+					navView.OnSettingsInvoked();
 				}
 				else
 				{
-					var navView = GetParentNavigationView();
-					if (navView != null)
-					{
-						var indexPath = navView.GetIndexPathForContainer(nvib);
-						if (indexPath != null)
-						{
-							// first index in path stands for main or footer menu
-							return indexPath.GetSize() - 1;
-						}
-					}
-				}
-			}
-
-			return 0;
-		}
-
-		private void Invoke()
-		{
-			var navView = GetParentNavigationView();
-			if (navView != null)
-			{
-				var navigationViewItem = Owner as NavigationViewItem;
-				if (navigationViewItem != null)
-				{
-					if (navigationViewItem == navView.SettingsItem)
-					{
-						navView.OnSettingsInvoked();
-					}
-					else
-					{
-						navView.OnNavigationViewItemInvoked(navigationViewItem);
-					}
+					navView.OnNavigationViewItemInvoked(navigationViewItem);
 				}
 			}
 		}
+	}
 
-		// IExpandCollapseProvider 
-		public ExpandCollapseState ExpandCollapseState
+	// IExpandCollapseProvider
+	public ExpandCollapseState ExpandCollapseState
+	{
+		get
 		{
-			get
-			{
-				var state = ExpandCollapseState.LeafNode;
-				NavigationViewItem navigationViewItem = Owner as NavigationViewItem;
-				if (navigationViewItem != null)
-				{
-					state = navigationViewItem.IsExpanded ?
-						ExpandCollapseState.Expanded :
-						ExpandCollapseState.Collapsed;
-				}
-
-				return state;
-			}
-		}
-
-		public void Collapse()
-		{
-			var navView = GetParentNavigationView();
-			if (navView != null)
-			{
-				NavigationViewItem navigationViewItem = Owner as NavigationViewItem;
-				if (navigationViewItem != null)
-				{
-					navView.Collapse(navigationViewItem);
-					RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Collapsed);
-				}
-			}
-		}
-
-		public void Expand()
-		{
-			var navView = GetParentNavigationView();
-			if (navView != null)
-			{
-				NavigationViewItem navigationViewItem = Owner as NavigationViewItem;
-				if (navigationViewItem != null)
-				{
-					navView.Expand(navigationViewItem);
-					RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Expanded);
-				}
-			}
-		}
-
-		internal void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
-		{
-			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
-			{
-				ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?
-				   ExpandCollapseState.Collapsed :
-				   ExpandCollapseState.Expanded;
-
-				//oldState doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
-				RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
-				   oldState,
-				   newState);
-			}
-		}
-
-		private NavigationView GetParentNavigationView()
-		{
-			NavigationView navigationView = null;
-
-			NavigationViewItemBase navigationViewItem = Owner as NavigationViewItemBase;
+			var state = ExpandCollapseState.LeafNode;
+			NavigationViewItem navigationViewItem = Owner as NavigationViewItem;
 			if (navigationViewItem != null)
 			{
-				navigationView = navigationViewItem.GetNavigationView();
+				state = navigationViewItem.IsExpanded ?
+					ExpandCollapseState.Expanded :
+					ExpandCollapseState.Collapsed;
 			}
-			return navigationView;
-		}
 
-		int GetNavigationViewItemCountInPrimaryList()
+			return state;
+		}
+	}
+
+	public void Collapse()
+	{
+		var navView = GetParentNavigationView();
+		if (navView != null)
 		{
-			int count = 0;
-			var navigationView = GetParentNavigationView();
-			if (navigationView != null)
+			NavigationViewItem navigationViewItem = Owner as NavigationViewItem;
+			if (navigationViewItem != null)
 			{
-				count = navigationView.GetNavigationViewItemCountInPrimaryList();
+				navView.Collapse(navigationViewItem);
+				RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Collapsed);
 			}
-			return count;
 		}
+	}
 
-		int GetNavigationViewItemCountInTopNav()
+	public void Expand()
+	{
+		var navView = GetParentNavigationView();
+		if (navView != null)
 		{
-			int count = 0;
-			var navigationView = GetParentNavigationView();
-			if (navigationView != null)
+			NavigationViewItem navigationViewItem = Owner as NavigationViewItem;
+			if (navigationViewItem != null)
 			{
-				count = navigationView.GetNavigationViewItemCountInTopNav();
+				navView.Expand(navigationViewItem);
+				RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Expanded);
 			}
-			return count;
 		}
+	}
 
-		bool IsSettingsItem()
+	internal void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
+	{
+		if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
 		{
-			var navView = GetParentNavigationView();
-			if (navView != null)
+			ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?
+			   ExpandCollapseState.Collapsed :
+			   ExpandCollapseState.Expanded;
+
+			//oldState doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
+			RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
+			   oldState,
+			   newState);
+		}
+	}
+
+	private NavigationView GetParentNavigationView()
+	{
+		NavigationView navigationView = null;
+
+		NavigationViewItemBase navigationViewItem = Owner as NavigationViewItemBase;
+		if (navigationViewItem != null)
+		{
+			navigationView = navigationViewItem.GetNavigationView();
+		}
+		return navigationView;
+	}
+
+	int GetNavigationViewItemCountInPrimaryList()
+	{
+		int count = 0;
+		var navigationView = GetParentNavigationView();
+		if (navigationView != null)
+		{
+			count = navigationView.GetNavigationViewItemCountInPrimaryList();
+		}
+		return count;
+	}
+
+	int GetNavigationViewItemCountInTopNav()
+	{
+		int count = 0;
+		var navigationView = GetParentNavigationView();
+		if (navigationView != null)
+		{
+			count = navigationView.GetNavigationViewItemCountInTopNav();
+		}
+		return count;
+	}
+
+	bool IsSettingsItem()
+	{
+		var navView = GetParentNavigationView();
+		if (navView != null)
+		{
+			NavigationViewItem item = Owner as NavigationViewItem;
+			var settingsItem = navView.SettingsItem;
+			if (item != null && settingsItem != null && (item == settingsItem || item.Content == settingsItem))
 			{
-				NavigationViewItem item = Owner as NavigationViewItem;
-				var settingsItem = navView.SettingsItem;
-				if (item != null && settingsItem != null && (item == settingsItem || item.Content == settingsItem))
-				{
-					return true;
-				}
+				return true;
 			}
-			return false;
 		}
+		return false;
+	}
 
-		private bool IsOnTopNavigation()
+	private bool IsOnTopNavigation()
+	{
+		var position = GetNavigationViewRepeaterPosition();
+		return position != NavigationViewRepeaterPosition.LeftNav && position != NavigationViewRepeaterPosition.LeftFooter;
+	}
+
+	private bool IsOnTopNavigationOverflow()
+	{
+		return GetNavigationViewRepeaterPosition() == NavigationViewRepeaterPosition.TopOverflow;
+	}
+
+	private bool IsOnFooterNavigation()
+	{
+		var position = GetNavigationViewRepeaterPosition();
+		return position == NavigationViewRepeaterPosition.LeftFooter || position == NavigationViewRepeaterPosition.TopFooter;
+	}
+
+	private NavigationViewRepeaterPosition GetNavigationViewRepeaterPosition()
+	{
+		NavigationViewItemBase navigationViewItem = Owner as NavigationViewItemBase;
+		if (navigationViewItem != null)
 		{
-			var position = GetNavigationViewRepeaterPosition();
-			return position != NavigationViewRepeaterPosition.LeftNav && position != NavigationViewRepeaterPosition.LeftFooter;
+			return navigationViewItem.Position;
 		}
+		return NavigationViewRepeaterPosition.LeftNav;
+	}
 
-		private bool IsOnTopNavigationOverflow()
-		{
-			return GetNavigationViewRepeaterPosition() == NavigationViewRepeaterPosition.TopOverflow;
-		}
-
-		private bool IsOnFooterNavigation()
-		{
-			var position = GetNavigationViewRepeaterPosition();
-			return position == NavigationViewRepeaterPosition.LeftFooter || position == NavigationViewRepeaterPosition.TopFooter;
-		}
-
-		private NavigationViewRepeaterPosition GetNavigationViewRepeaterPosition()
+	private ItemsRepeater GetParentItemsRepeater()
+	{
+		var navview = GetParentNavigationView();
+		if (navview != null)
 		{
 			NavigationViewItemBase navigationViewItem = Owner as NavigationViewItemBase;
 			if (navigationViewItem != null)
 			{
-				return navigationViewItem.Position;
+				return navview.GetParentItemsRepeaterForContainer(navigationViewItem);
 			}
-			return NavigationViewRepeaterPosition.LeftNav;
 		}
+		return null;
+	}
 
-		private ItemsRepeater GetParentItemsRepeater()
+	// Get either the position or the size of the set for this particular item by iterating through the children of the
+	// parent items repeater and comparing the value of the FrameworkElementAutomationPeer we can get from the item
+	// we're iterating through to this object.
+	private int GetPositionOrSetCountHelper(AutomationOutput automationOutput)
+	{
+		int returnValue = 0;
+		bool itemFound = false;
+
+		var parentRepeater = GetParentItemsRepeater();
+		if (parentRepeater != null)
 		{
-			var navview = GetParentNavigationView();
-			if (navview != null)
+			var itemsSourceView = parentRepeater.ItemsSourceView;
+			if (itemsSourceView != null)
 			{
-				NavigationViewItemBase navigationViewItem = Owner as NavigationViewItemBase;
-				if (navigationViewItem != null)
+				var numberOfElements = itemsSourceView.Count;
+
+				for (int i = 0; i < numberOfElements; i++)
 				{
-					return navview.GetParentItemsRepeaterForContainer(navigationViewItem);
-				}
-			}
-			return null;
-		}
-
-
-		// Get either the position or the size of the set for this particular item in the case of left nav. 
-		// We go through all the items and then we determine if the listviewitem from the left listview can be a navigation view item header
-		// or a navigation view item. If it's the former, we just reset the count. If it's the latter, we increment the counter.
-		// In case of calculating the position, if this is the NavigationViewItemAutomationPeer we're iterating through we break the loop.
-		private int GetPositionOrSetCountInLeftNavHelper(AutomationOutput automationOutput)
-		{
-			int returnValue = 0;
-
-			var repeater = GetParentItemsRepeater();
-			if (repeater != null)
-			{
-				var parent = FrameworkElementAutomationPeer.CreatePeerForElement(repeater) as AutomationPeer;
-				if (parent != null)
-				{
-					var children = parent.GetChildren();
-					if (children != null)
+					var child = parentRepeater.TryGetElement(i);
+					if (child != null)
 					{
-						int index = 0;
-						bool itemFound = false;
-
-						foreach (var child in children)
+						if (child is NavigationViewItemHeader)
 						{
-							var dependencyObject = repeater.TryGetElement(index);
-							if (dependencyObject != null)
+							if (automationOutput == AutomationOutput.Size && itemFound)
 							{
-								if (dependencyObject is NavigationViewItemHeader)
+								break;
+							}
+							else
+							{
+								returnValue = 0;
+							}
+						}
+
+						else if (child is NavigationViewItem navviewitem)
+						{
+							if (navviewitem.Visibility == Visibility.Visible)
+							{
+								returnValue++;
+
+								if (FrameworkElementAutomationPeer.FromElement(navviewitem) == (NavigationViewItemAutomationPeer)(this))
 								{
-									if (automationOutput == AutomationOutput.Size && itemFound)
+									if (automationOutput == AutomationOutput.Position)
 									{
 										break;
 									}
 									else
 									{
-										returnValue = 0;
-									}
-								}
-
-								else if (dependencyObject is NavigationViewItem navviewItem)
-								{
-									if (navviewItem.Visibility == Visibility.Visible)
-									{
-										returnValue++;
-
-										if (FrameworkElementAutomationPeer.FromElement(navviewItem) == (NavigationViewItemAutomationPeer)(this))
-										{
-											if (automationOutput == AutomationOutput.Position)
-											{
-												break;
-											}
-											else
-											{
-												itemFound = true;
-											}
-										}
-									}
-								}
-							}
-							index++;
-						}
-					}
-				}
-			}
-
-			return returnValue;
-		}
-
-		// Get either the position or the size of the set for this particular item in the case of top nav (primary/overflow items). 
-		// Basically, we do the same here as GetPositionOrSetCountInLeftNavHelper without dealing with the listview directly, because 
-		// TopDataProvider provcides two methods: GetOverflowItems() and GetPrimaryItems(), so we can break the loop (in case of position) by 
-		// comparing the value of the FrameworkElementAutomationPeer we can get from the item we're iterating through to this object.
-		private int GetPositionOrSetCountInTopNavHelper(AutomationOutput automationOutput)
-		{
-			int returnValue = 0;
-			bool itemFound = false;
-
-			var parentRepeater = GetParentItemsRepeater();
-			if (parentRepeater != null)
-			{
-				var itemsSourceView = parentRepeater.ItemsSourceView;
-				if (itemsSourceView != null)
-				{
-					var numberOfElements = itemsSourceView.Count;
-
-					for (int i = 0; i < numberOfElements; i++)
-					{
-						var child = parentRepeater.TryGetElement(i);
-						if (child != null)
-						{
-							if (child is NavigationViewItemHeader)
-							{
-								if (automationOutput == AutomationOutput.Size && itemFound)
-								{
-									break;
-								}
-								else
-								{
-									returnValue = 0;
-								}
-							}
-
-							else if (child is NavigationViewItem navviewitem)
-							{
-								if (navviewitem.Visibility == Visibility.Visible)
-								{
-									returnValue++;
-
-									if (FrameworkElementAutomationPeer.FromElement(navviewitem) == (NavigationViewItemAutomationPeer)(this))
-									{
-										if (automationOutput == AutomationOutput.Position)
-										{
-											break;
-										}
-										else
-										{
-											itemFound = true;
-										}
+										itemFound = true;
 									}
 								}
 							}
@@ -442,67 +349,72 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 					}
 				}
 			}
-
-			return returnValue;
 		}
 
-		bool IsSelected()
+		return returnValue;
+	}
+
+	bool IsSelected()
+	{
+		var nvi = Owner as NavigationViewItem;
+		if (nvi != null)
 		{
-			var nvi = Owner as NavigationViewItem;
-			if (nvi != null)
+			return nvi.IsSelected;
+		}
+		return false;
+	}
+
+	IRawElementProviderSimple SelectionContainer()
+	{
+		var navview = GetParentNavigationView();
+		if (navview != null)
+		{
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(navview);
+			if (peer != null)
 			{
-				return nvi.IsSelected;
-			}
-			return false;
-		}
-
-		IRawElementProviderSimple SelectionContainer()
-		{
-			var navview = GetParentNavigationView();
-			if (navview != null)
-			{
-				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(navview);
-				if (peer != null)
-				{
-					return ProviderFromPeer(peer);
-				}
-			}
-
-			return null;
-		}
-
-		void AddToSelection()
-		{
-			ChangeSelection(true);
-		}
-
-		void Select()
-		{
-			ChangeSelection(true);
-		}
-
-		void RemoveFromSelection()
-		{
-			ChangeSelection(false);
-		}
-
-		void ChangeSelection(bool isSelected)
-		{
-			var nvi = Owner as NavigationViewItem;
-			if (nvi != null)
-			{
-				nvi.IsSelected = isSelected;
+				return ProviderFromPeer(peer);
 			}
 		}
 
-		bool HasChildren()
+		return null;
+	}
+
+	void AddToSelection()
+	{
+		ChangeSelection(true);
+	}
+
+	void Select()
+	{
+		ChangeSelection(true);
+	}
+
+	void RemoveFromSelection()
+	{
+		ChangeSelection(false);
+	}
+
+	void ChangeSelection(bool isSelected)
+	{
+		// If the item is being selected, we trigger an invoke as if the user had clicked on the item:
+		if (isSelected)
 		{
-			var navigationViewItem = Owner as NavigationViewItem;
-			if (navigationViewItem != null)
-			{
-				return navigationViewItem.HasChildren();
-			}
-			return false;
+			Invoke();
 		}
+		var nvi = Owner as NavigationViewItem;
+		if (nvi != null)
+		{
+			nvi.IsSelected = isSelected;
+		}
+	}
+
+	bool HasChildren()
+	{
+		var navigationViewItem = Owner as NavigationViewItem;
+		if (navigationViewItem != null)
+		{
+			return navigationViewItem.HasChildren();
+		}
+		return false;
 	}
 }

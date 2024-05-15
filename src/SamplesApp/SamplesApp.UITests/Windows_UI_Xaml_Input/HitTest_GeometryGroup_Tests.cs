@@ -18,7 +18,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	{
 		private const string _sample = "UITests.Windows_UI_Input.PointersTests.HitTest_GeometryGroup";
 
-		[Test] [AutoRetry] public void When_HollowCircle2()
+		[Test]
+		[AutoRetry]
+		public void When_HollowCircle2()
 		{
 			Run(_sample);
 
@@ -28,7 +30,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var rect = _app.WaitForElement(element).Single().Rect;
 			var target = new PointF(
 				rect.CenterX,
-				rect.Bottom - rect.Height * (7f/8f)
+				rect.Bottom - rect.Height * (7f / 8f)
 			);
 			_app.TapCoordinates(target.X, target.Y);
 

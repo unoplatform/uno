@@ -7,8 +7,8 @@ using CoreGraphics;
 
 namespace Windows.Foundation
 {
-    public partial struct Rect
-    {
+	public partial struct Rect
+	{
 		/// <summary>
 		/// Converts this <see cref="Rect"/> to a <see cref="CGRect"/>.
 		/// </summary>

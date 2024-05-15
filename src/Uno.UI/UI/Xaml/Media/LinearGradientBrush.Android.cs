@@ -2,15 +2,14 @@
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Rect = Windows.Foundation.Rect;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class LinearGradientBrush
 	{
-		protected internal override Shader GetShader(Rect destinationRect)
+		protected internal override Shader GetShader(Size size)
 		{
 			if (GradientStops.Count == 0)
 			{
@@ -28,8 +27,8 @@ namespace Windows.UI.Xaml.Media
 				locations.Add(locations[0]);
 			}
 
-			var width = destinationRect.Width;
-			var height = destinationRect.Height;
+			var width = size.Width;
+			var height = size.Height;
 
 			Android.Graphics.Matrix nativeTransformMatrix = null;
 			if (RelativeTransform != null)

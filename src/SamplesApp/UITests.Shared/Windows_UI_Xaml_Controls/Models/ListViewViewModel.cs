@@ -6,8 +6,8 @@ using System.Text;
 using System.Windows.Input;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Uno;
 using Uno.Extensions;
 using Uno.UI.Samples.UITests.Helpers;
@@ -35,7 +35,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 #endif
 
 		private static readonly object[] RandomValues = new object[] { null, new object(), 0, -1, 0, 0.5, 1, "", " ", "test", 'a', ' ', new string[] { "A", "B", "C" }, DateTime.Now };
-		private object[] _randomItems = new object[0];
+		private object[] _randomItems = Array.Empty<object>();
 		private string _newInput = "1,1,2,2,3,3";
 		private List<string> _sampleItemsGenerated = new List<string> { "1", "1", "2", "2", "3", "3" };
 		private List<string> _singleItemList = new List<string> { "1" };
@@ -43,7 +43,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private string _selectedItem = "3";
 		public ObservableCollection<string> InitialyEmptyStringList { get; } = new ObservableCollection<string>();
 
-		public ListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ListViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			VariableLengthItemsLong = CreateVariableLengthItemsLong().ToArray();
 			VariableLengthItemsLongLazy = CreateVariableLengthItemsLong();
@@ -125,7 +125,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteOnUpdateWithNewInput()
 		{
-			SampleItemsGenerated = NewInput.Split(new char[] {','}).ToList();
+			SampleItemsGenerated = NewInput.Split(new char[] { ',' }).ToList();
 		}
 
 		private void ExecuteDoSomething()
@@ -176,7 +176,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		{
 			var newWidth = (new Random()).NextDouble() * 100d + 300d;
 			_log.Warn($"Changing {nameof(VariableWidth)} to {newWidth}");
-			VariableWidth =  newWidth;
+			VariableWidth = newWidth;
 		}
 
 		private static IEnumerable<IGrouping<string, string>> GetGroupsWithVariableLengthKeys()
@@ -290,7 +290,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 				for (int j = 0; j < wordCount; j++)
 				{
 					sb.Append(wordCount);
-					sb.Append(" ");
+					sb.Append(' ');
 				}
 				yield return sb.ToString();
 			}
@@ -305,6 +305,8 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		};
 
 		public int[] SampleItemsLong { get; } = Enumerable.Range(1, 2000).Select(i => i * 10000).ToArray();
+
+		public int[] SampleItemsMed { get; } = Enumerable.Range(1, 500).ToArray();
 
 		public double[] WidthChoices { get; } = Enumerable.Range(1, 5).Select(i => i * 100d).ToArray();
 

@@ -1,0 +1,25 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: spell_checking
+  displayName: 'Spell Checking Validation'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: self
+    fetchDepth: 1
+    clean: true
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+
+  # Keep that version in sync with documentation at doc/README.md
+  - bash: npm install -g cspell@8.3.2
+    displayName: Install cSpell
+
+  - bash: cspell --config ./build/cSpell.json "doc/**/*.md" "doc/**/toc.yml" --no-progress
+    displayName: Run Spell Checking

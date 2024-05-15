@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-    internal static class XamlConstants
+	internal static class XamlConstants
 	{
 		public const string XamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
 		public const string PresentationXamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
@@ -15,14 +15,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
 		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
-		public const string RootMUINamespace = "Windows.UI";
-		public const string BaseXamlNamespace = "Windows.UI.Xaml";
-		public const string UnoXamlNamespace = "Windows.UI.Xaml";
+		public const string RootMUINamespace = "Microsoft.UI";
+		public const string BaseXamlNamespace = "Microsoft.UI.Xaml";
+		public const string UnoXamlNamespace = "Microsoft.UI.Xaml";
 
 		public const int MaxFluentResourcesVersion = 2;
 
 		public static class Namespaces
 		{
+			public const string Base = BaseXamlNamespace;
 			public const string Controls = BaseXamlNamespace + ".Controls";
 			public const string Primitives = Controls + ".Primitives";
 			public const string Text = RootWUINamespace + ".Text";
@@ -30,20 +31,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Documents = BaseXamlNamespace + ".Documents";
 			public const string Media = BaseXamlNamespace + ".Media";
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
+			public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
+			public const string Input = BaseXamlNamespace + ".Input";
+			public const string Automation = BaseXamlNamespace + ".Automation";
 
 			public static readonly string[] PresentationNamespaces =
 			{
 				Controls,
+#if HAS_UNO_WINUI
+				RootWUINamespace + ".Xaml.Controls", // NavigationViewList is in Microsoft.UI.Xaml.Controls even in WinUI tree
+#endif
 				Primitives,
 				Shapes,
+				Input,
 				Media,
 				MediaAnimation,
+				MediaImaging,
 				RootWUINamespace,
 				BaseXamlNamespace,
 				Data,
 				Documents,
 				Text,
+				Automation,
 				"System",
 			};
 
@@ -99,6 +109,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string ColorHelper = RootMUINamespace + ".ColorHelper";
 			public const string Thickness = BaseXamlNamespace + ".Thickness";
 			public const string Application = BaseXamlNamespace + ".Application";
+			public const string Window = BaseXamlNamespace + ".Window";
 
 			// Media
 			public const string LinearGradientBrush = Namespaces.Media + ".LinearGradientBrush";
@@ -109,6 +120,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string KeyTime = Namespaces.MediaAnimation + ".KeyTime";
 			public const string Duration = BaseXamlNamespace + ".Duration";
 			public const string FontFamily = Namespaces.Media + ".FontFamily";
+			public const string ImageSource = Namespaces.Media + ".ImageSource";
 
 			// Controls
 			public const string NativePage = Namespaces.Controls + ".NativePage";
@@ -119,9 +131,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Control = Namespaces.Controls + ".Control";
 			public const string Panel = Namespaces.Controls + ".Panel";
 			public const string Button = Namespaces.Controls + ".Button";
+			public const string Image = Namespaces.Controls + ".Image";
 			public const string TextBox = Namespaces.Controls + ".TextBox";
 			public const string ColumnDefinition = Namespaces.Controls + ".ColumnDefinition";
 			public const string RowDefinition = Namespaces.Controls + ".RowDefinition";
+
+			// EventArgs
+			public const string PointerRoutedEventArgs = Namespaces.Input + ".PointerRoutedEventArgs";
+			public const string ManipulationStartingRoutedEventArgs = Namespaces.Input + ".ManipulationStartingRoutedEventArgs";
+			public const string ManipulationStartedRoutedEventArgs = Namespaces.Input + ".ManipulationStartedRoutedEventArgs";
+			public const string ManipulationDeltaRoutedEventArgs = Namespaces.Input + ".ManipulationDeltaRoutedEventArgs";
+			public const string ManipulationInertiaStartingRoutedEventArgs = Namespaces.Input + ".ManipulationInertiaStartingRoutedEventArgs";
+			public const string ManipulationCompletedRoutedEventArgs = Namespaces.Input + ".ManipulationCompletedRoutedEventArgs";
+			public const string TappedRoutedEventArgs = Namespaces.Input + ".TappedRoutedEventArgs";
+			public const string DoubleTappedRoutedEventArgs = Namespaces.Input + ".DoubleTappedRoutedEventArgs";
+			public const string RightTappedRoutedEventArgs = Namespaces.Input + ".RightTappedRoutedEventArgs";
+			public const string HoldingRoutedEventArgs = Namespaces.Input + ".HoldingRoutedEventArgs";
+			public const string DragEventArgs = Namespaces.Base + ".DragEventArgs";
+			public const string RoutedEventArgs = Namespaces.Base + ".RoutedEventArgs";
+			public const string KeyRoutedEventArgs = Namespaces.Input + ".KeyRoutedEventArgs";
+			public const string BringIntoViewRequestedEventArgs = Namespaces.Base + ".BringIntoViewRequestedEventArgs";
 
 			// Documents
 			public const string Run = Namespaces.Documents + ".Run";
@@ -129,6 +158,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Markup
 			public const string MarkupHelper = "Uno.UI.Helpers.MarkupHelper";
+			public const string MarkupXamlBindingHelper = Markup + ".XamlBindingHelper";
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
 		}

@@ -1,18 +1,22 @@
+---
+uid: Uno.SilverlightMigration.Overview
+---
+
 # Silverlight to Uno Migration
 
 ## Introduction
 
-Despite the last version of Silverlight 5 being released back in 2011, the platform continued to be popular and there are a number of applications that have been developed and remain in use. Unfortunately, Silverlight will reach the end of support on October 12, 2021 and there continues to be significant limitations for Silverlight development and deployment:
+Despite the last version of Silverlight 5 being released back in 2011, the platform continued to be popular and there are a number of applications that have been developed and remain in use. Unfortunately, Silverlight reached the end of support on October 12, 2021 and there continues to be significant limitations for Silverlight development and deployment:
 
 * Silverlight SDK available in Visual Studio 2012
   * Can be opened in Visual Studio 2017 and 2019 with the unofficial extension [Silverlight for Visual Studio](https://marketplace.visualstudio.com/items?itemName=RamiAbughazaleh.SilverlightProjectSystem)
 * Silverlight plugin runs in Internet Explorer 10 and 11 only
 * No macOS browser support
 
-If you maintain one of these Silverlight applications, it is time to consider migrating to a supported platform. For those that wish to continue with XAML and C#, the Uno Platform is a natural choice for continuing the delivery of such applications on Windows, iOS, Android, and WebAssembly.
+If you maintain one of these Silverlight applications, it is time to consider migrating to a supported platform. For those that wish to continue with XAML and/or C#, the Uno Platform is a natural choice for continuing the delivery of such applications on Windows, iOS, Android, and WebAssembly.
 
 > [!TIP]
-> You can learn more about the Uno Platform [here](https://platform.uno/docs/articles/intro.html).
+> To learn more about the Uno Platform, see [Uno Platform documentation](../../intro.md).
 
 ## Silverlight app review
 
@@ -29,8 +33,8 @@ Other things to consider include:
 * Considering Navigation options
   * Many Silverlight applications used the navigation app template or the RIA Business App template. Modern apps also leverage a navigation style approach, often utilizing the "Hamburger" menu approach to navigation.
 
-> [!TIP]
-> Review the Microsoft navigation guide to learn more - [https://docs.microsoft.com/windows/uwp/design/basics/navigation-basics](https://docs.microsoft.com/windows/uwp/design/basics/navigation-basics)
+  > [!TIP]
+  > To learn more about navigation, see [Navigation design basics for Windows apps](https://learn.microsoft.com/windows/uwp/design/basics/navigation-basics).
 
 * Styling choices - consider whether to migrate existing styles or adopt Fluent/Material as a new default
 * Asynchronous code and threading
@@ -44,7 +48,7 @@ Other things to consider include:
   * UWP on Windows has many options for local storage, WASM is more limited
 
 > [!TIP]
-> To learn more about storage options, review the [Uno Windows Storage documentation](https://platform.uno/docs/articles/features/windows-storage.html).
+> To learn more about storage options, review the [Uno Windows Storage documentation](../../features/windows-storage.md).
 
 ## Why choose Uno?
 
@@ -71,7 +75,7 @@ This guide to migration will refer to a Silverlight 5 application called **TimeE
 * **ReportViewer** - can view some simple charts
 * **Admin** - includes the capabilities of **Consultant** and **ReportViewer** and can maintain the list of projects.
 
-The guide will discuss the major aspects of migration as they arise during the course of creating the **TimeEntryUno** version of the application. The typical approach to writing an Uno application is the start with the UWP target, and then test with each of the other targeted platforms. As the current migration scopw is only UWP and WASM, it makes sense to test the WASM version frequently as well.
+The guide will discuss the major aspects of migration as they arise during the course of creating the **TimeEntryUno** version of the application. The typical approach to writing an Uno application is the start with the UWP target, and then test with each of the other targeted platforms. As the current migration scope is only UWP and WASM, it makes sense to test the WASM version frequently as well.
 
 > [!NOTE]
 > The Silverlight **TimeEntryRIA** sample app as well as the sample migrated app **TimeEntryUno** are available for review - checkout the **TimeEntry Samples** article for details.

@@ -1,49 +1,28 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<!-- There is no need to multi-target this test project -->
+		<!-- We keep it on the oldest supported TFM -->
+		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
+		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<IsPackable>false</IsPackable>
-		<NoWarn>1998</NoWarn>
-		<OutputPath>..\Build\Tests\bin\$(Configuration)_$(Platform)\</OutputPath>
+
+		<CodeAnalysisVersionForAnalyzersTests>4.0.0</CodeAnalysisVersionForAnalyzersTests>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-		<PackageReference Include="MSTest.TestAdapter">
-			<Version>2.2.10</Version>
-		</PackageReference>
-		<PackageReference Include="MSTest.TestFramework">
-			<Version>2.1.2</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Common">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest">
-			<Version>1.1.1</Version>
-		</PackageReference>
+		<PackageReference Include="MSTest" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest" Version="1.1.1" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Analyzers\Uno.Analyzers.csproj">
-			<Project>{1b204959-7a49-4283-a601-8713ea3a04a4}</Project>
-			<Name>Uno.Analyzers</Name>
-		</ProjectReference>
+		<ProjectReference Include="..\Uno.Analyzers\Uno.Analyzers.csproj" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-	</ItemGroup>
-	
-	<Import Project="..\Common.targets" />
 
 </Project>

@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.PortingWindowsCalculator
+---
+
 # A piece of Windows 10 is now running on WebAssembly, natively on iOS and Android
 
 A few months ago, Microsoft [open sourced the Windows Calculator](https://blogs.windows.com/buildingapps/2019/03/06/announcing-the-open-sourcing-of-windows-calculator/), the very Calculator that ships with Windows 10.
@@ -5,10 +9,11 @@ A few months ago, Microsoft [open sourced the Windows Calculator](https://blogs.
 We decided to [port it to C# and the Uno Platform](https://github.com/unoplatform/calculator), so that iOS and Android users could use it, but also use it from the Web using WebAssembly. Why – well that’s what we at Uno Platform do 😊 – enable the same C# and XAML code to run on the Web, Mobile and Desktop.
 
 You can use it today on:
+
 - [Apple App Store](https://bit.ly/calc-ios)
 - [Android Play Store](https://play.google.com/store/apps/details?id=uno.platform.calculator)
 - WebAssembly: https://calculator.platform.uno
--	Windows 10 – well, just open it on Windows 10 😊
+- Windows 10 – well, just open it on Windows 10 😊
 
 ![Calculator](Assets/20190612-Calculator-01.png)
 
@@ -47,11 +52,12 @@ Android's NDK also has its surprises, where the handling of exceptions is not en
 ### Challenge #2: Native code interop specifics
 
 There are multiple subtleties for building and using native code:
+
 - For iOS, it is [required to use the `__Internal`](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Shared/CalcManager/CalculatorManager.Interop.cs#L16) known name, as native libraries are statically linked to main executable.
 - For Android, the integrated VS project does not automatically build for all target platforms (x86, armv7 and arm64), which means that [additional CI builds steps](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/.vsts-ci.Windows.yml#L37) have to be executed so the proper binaries are used all at once when creating the final APK. Also, standard project dependencies cannot be used (because of the multi ABI builds), and the [`AndroidNativeLibrary`](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Droid/Calculator.Droid.csproj#L101) items must be added in the project.
 - For WebAssembly, the module needs to be built using the `-s SIDE_MODULE=1` support, with additional support for C++ standard library, as it is [not automatically added by emscripten](https://github.com/emscripten-core/emscripten/wiki/Linking#system-libraries) for dynamic modules.
 
-### Challenge #3: Converting the C++/CX code to C#
+### Challenge #3: Converting the C++/CX code to C\#
 
 The rest of the application is using Microsoft's C++/CX to use WinRT APIs and particularly WinUI APIs. This makes for a very C#-like code that can be converted to C# using a set of regular expressions that convert `::` to `.`, or `dynamic_cast<FrameworkElement>(fe)` to `((FrameworkElement)fe)`, and the rest of the WinRT API calls just match directly, as Uno provides the full APIs signatures of WinRT.
 
@@ -71,7 +77,7 @@ The Calculator's interface layout is also very responsive, and can adjust to man
 
 ### Challenge #5: Localization Resources
 
-The Uno Platform supports the use of resw files, which means that those files are the exact same files that the original calculator uses.
+The Uno Platform supports the use of `resw` files, which means that those files are the exact same files that the original calculator uses.
 
 Note that the resources use the [attached property syntax](https://github.com/microsoft/calculator/blob/06c0dd9bd0f5971db9b17a782e1386037da38026/src/Calculator/Resources/de-DE/Resources.resw#L460) for narrator and tooltip support, such as:
 
@@ -88,7 +94,7 @@ Image assets are also supported directly by the Uno Platform, though some of the
 
 ## Connecting the C++ and C# together
 
-This part is the heart of the porting effort that makes use of [P/Invoke](https://docs.microsoft.com/en-us/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke?view=vs-2019).
+This part is the heart of the porting effort that makes use of [P/Invoke](https://learn.microsoft.com/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke?view=vs-2019).
 
 ### Challenge #6: Mono for WebAssembly Dynamic and Static Linking support
 
@@ -96,12 +102,13 @@ To be able to invoke WebAssembly code directly from C# using P/Invoke, [Mono had
 
 The interpreter-based mode uses [emscripten's dynamic linking feature](https://github.com/emscripten-core/emscripten/wiki/Linking#overview-of-dynamic-linking), and is required to be able to build a Wasm application under windows without having to rely on emscripten's tooling. This ensures that the development loop is as efficient as possible, though at the expense of runtime performance.
 
-The AOT-based mode uses emscripten's and [Mono's static linking feature](https://github.com/mono/mono/pull/14253), where Mono generates a set of "known p/invoke" methods into LLRM bitcode modules. This mode is the most efficient, but also the slowest to generate. It's generally best to use it in release CI builds.
+The AOT-based mode uses emscripten's and [Mono's static linking feature](https://github.com/mono/mono/pull/14253), where Mono generates a set of "known p/invoke" methods into LLRM bit-code modules. This mode is the most efficient, but also the slowest to generate. It's generally best to use it in release CI builds.
 
 ![Calculator](Assets/20190612-Calculator-06.png)
 
 ### Challenge #7: The C adaptation layer
-P/Invoke is only able to call C functions, exposed here through the `extern "C" { }` cdecl calling convention. This means that to be able to invoke the C++ part of the Calculation Engine, a [C to C++ translation layer](https://github.com/unoplatform/calculator/blob/uno/src/CalcManager/CCalcManager.h) needed to be created. It exposes a set of methods that can [create C++ instances](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L86) and returns opaque identifiers that are [passed thereafter explicitly](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L87) to C++ class instance methods.
+
+P/Invoke is only able to call C functions, exposed here through the `extern "C" { }` `cdecl` calling convention. This means that to be able to invoke the C++ part of the Calculation Engine, a [C to C++ translation layer](https://github.com/unoplatform/calculator/blob/uno/src/CalcManager/CCalcManager.h) needed to be created. It exposes a set of methods that can [create C++ instances](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L86) and returns opaque identifiers that are [passed thereafter explicitly](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L87) to C++ class instance methods.
 
 This technique requires manual work, but since the Calculation Engine is not particularly complex, adding all the needed methods was easy work.
 

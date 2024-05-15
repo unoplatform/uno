@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,18 +15,18 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Windows.Input;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Android.Util;
 using Java.Interop;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	public class BindableListAdapter : ItemContainerHolderAdapter
 	{
 		private Android.Content.Context _context;
@@ -53,7 +53,7 @@ namespace Uno.UI.Controls
 		}
 
 		private readonly List<View> _allocatedViews = new List<View>();
-        
+
 		public BindableListAdapter(Android.Content.Context context, object header = null, object footer = null)
 		{
 			_context = context;
@@ -256,7 +256,7 @@ namespace Uno.UI.Controls
 			return position;
 		}
 
-        protected override View GetContainerView(int position, View convertView, ViewGroup parent)
+		protected override View GetContainerView(int position, View convertView, ViewGroup parent)
 		{
 			if (IsHeader(position))
 			{
@@ -354,47 +354,47 @@ namespace Uno.UI.Controls
 
 			return bindableView;
 		}
-		
+
 		private View GetSimpleView(View convertView, object source, ViewGroup parent)
 		{
 			if (ItemTemplate != null || ItemTemplateSelector != null)
 			{
 				if (convertView == null)
 				{
-						if (ItemContainerTemplate != null)
+					if (ItemContainerTemplate != null)
+					{
+						var container = ItemContainerTemplate() as SelectorItem;
+
+						if (container != null)
 						{
-							var container = ItemContainerTemplate() as SelectorItem;
-
-							if (container != null)
-							{
-								container.Style = ItemContainerStyle;
-								container.ContentTemplateSelector = ItemTemplateSelector;
-								container.ContentTemplate = ItemTemplate;
-								container.Binding("Content", "");
-							}
-							else
-							{
-								throw new InvalidOperationException("The ItemContainerTemplate must be a SelectorItem");
-							}
-
-							_allocatedViews.Add(container);
-							return container;
+							container.Style = ItemContainerStyle;
+							container.ContentTemplateSelector = ItemTemplateSelector;
+							container.ContentTemplate = ItemTemplate;
+							container.Binding("Content", "");
 						}
 						else
 						{
-							var template = DataTemplateHelper.ResolveTemplate(
-								this.ItemTemplate,
-								this.ItemTemplateSelector,
-								source,
-								null
-							);
-
-							var templateView = template?.LoadContentCached();
-
-							_allocatedViews.Add(templateView);
-							return templateView;
+							throw new InvalidOperationException("The ItemContainerTemplate must be a SelectorItem");
 						}
+
+						_allocatedViews.Add(container);
+						return container;
 					}
+					else
+					{
+						var template = DataTemplateHelper.ResolveTemplate(
+							this.ItemTemplate,
+							this.ItemTemplateSelector,
+							source,
+							null
+						);
+
+						var templateView = template?.LoadContentCached();
+
+						_allocatedViews.Add(templateView);
+						return templateView;
+					}
+				}
 				else
 				{
 					return convertView;
@@ -438,7 +438,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private bool _needsRefresh = false;
+		private bool _needsRefresh;
 
 		protected void SetNeedsRefresh()
 		{
@@ -448,8 +448,8 @@ namespace Uno.UI.Controls
 			}
 
 			_needsRefresh = true;
-			CoreDispatcher.Main.RunAsync(
-				CoreDispatcherPriority.Normal, 
+			_ = CoreDispatcher.Main.RunAsync(
+				CoreDispatcherPriority.Normal,
 				() =>
 			{
 				Refresh();
@@ -565,7 +565,7 @@ namespace Uno.UI.Controls
 				item,
 				null
 			);
-				
+
 			if (itemTemplate == null)
 			{
 				return 0;

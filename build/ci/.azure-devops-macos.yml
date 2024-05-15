@@ -6,15 +6,16 @@ parameters:
 jobs:
 
 - job: macOS
-  displayName: 'macOS Samples App Build'
+  displayName: 'Build macOS Samples App UI Tests'
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
-    
-  dependsOn: Pipeline_Validations
+
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -22,9 +23,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
-    
-  - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/dotnet7-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -35,35 +35,15 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  # Apply workaround for https://github.com/xamarin/xamarin-macios/issues/10652
-  - bash: |
-        curl -o xamarinmac.pkg 'https://bosstoragemirror.blob.core.windows.net/wrench/xcode12.4/a4c70e7d04e3904d17aa60f6d640eb048081c757/4477741/package/notarized/xamarin.mac-7.4.0.10.pkg'
-        sudo installer -pkg xamarinmac.pkg -target /
-
-    displayName: Apply Xamarin.mac workaround
-
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.7.0
-      checkLatest: false
-
-  - task: MSBuild@1
-    inputs:
-      solution: src/SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+  - script: |
+      cd src/SamplesApp/SamplesApp.netcoremobile
+      dotnet build -f net7.0-macos -r osx-x64 -c Release -p:UnoTargetFrameworkOverride=net7.0-macos -p:CreatePackage=true -p:EnableCodeSigning=false /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/macos-netcoremobile-sampleapp.binlog
+    displayName: 'Build Sample app'
 
   - task: CopyFiles@2
     displayName: 'Copy macOS artifacts'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.macOS/bin/Release
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-macos/osx-x64
       Contents: '**/*.pkg'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false
@@ -72,7 +52,108 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uno-macos-artifacts
       ArtifactType: Container
+
+#- job: macOS_Runtime_Tests
+#  timeoutInMinutes: 90
+#  displayName: Run macOS Runtime Tests
+#
+#  variables:
+#    CI_Build: true
+#    SourceLinkEnabled: false
+#    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+#
+#  dependsOn: macOS
+#
+#  pool:
+#    vmImage: ${{ parameters.vmImage }}
+#
+#  steps:
+#  - checkout: none
+#    clean: true
+#
+#  - task: DownloadBuildArtifacts@0
+#    inputs:
+#        artifactName: uno-macos-artifacts
+#        downloadPath: '$(build.sourcesdirectory)/build'
+#
+#  - task: PowerShell@2
+#    displayName: 'Install coreutils'
+#    inputs:
+#      targetType: inline
+#      script: |
+#        brew install coreutils
+#
+#  - script: |
+#        cd $(build.sourcesdirectory)/build/uno-macos-artifacts
+#        installer -pkg SamplesApp-1.0.pkg -target CurrentUserHomeDirectory
+#
+#    displayName: Install SamplesApp
+#
+#  - script: |
+#      timeout 70m /Applications/SamplesApp.app/Contents/MacOS/SamplesApp --runtime-tests=$(build.sourcesdirectory)/build/macOS-runtime-tests-results.xml
+#
+#    displayName: Run macOS Runtime Tests
+#
+#  - task: PublishTestResults@2
+#    displayName: Publish macOS Runtime Tests
+#    condition: always()
+#    inputs:
+#      testRunTitle: 'macOS Runtime Tests'
+#      testResultsFormat: 'NUnit'
+#      testResultsFiles: '$(build.sourcesdirectory)/build/macOS-runtime-tests-results.xml'
+#      failTaskOnFailedTests: true
+#
+#- job: macOS_Screenshot_Tests
+#  timeoutInMinutes: 100
+#  displayName: Run macOS Snapshot Test
+#
+#  variables:
+#    CI_Build: true
+#    SourceLinkEnabled: false
+#    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+#
+#  dependsOn: macOS
+#
+#  pool:
+#    vmImage: ${{ parameters.vmImage }}
+#
+#  steps:
+#  - checkout: none
+#    clean: true
+#
+#  - task: DownloadBuildArtifacts@0
+#    inputs:
+#        artifactName: uno-macos-artifacts
+#        downloadPath: '$(build.sourcesdirectory)/build'
+#
+#  - task: PowerShell@2
+#    displayName: 'Install coreutils'
+#    inputs:
+#      targetType: inline
+#      script: |
+#        brew install coreutils
+#
+#  - script: |
+#        cd $(build.sourcesdirectory)/build/uno-macos-artifacts
+#        installer -pkg SamplesApp-1.0.pkg -target CurrentUserHomeDirectory
+#
+#    displayName: Install SamplesApp
+#
+#  - script: |
+#        timeout 90m /Applications/SamplesApp.app/Contents/MacOS/SamplesApp --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macOS-screenshots
+#
+#    displayName: Run macOS UI Snapshot Tests
+#
+#  - task: PublishBuildArtifacts@1
+#    displayName: Publish macOS Screenshots
+#    condition: always()
+#    retryCountOnTaskFailure: 3
+#    inputs:
+#      PathtoPublish: $(build.artifactstagingdirectory)
+#      ArtifactName: uitests-results
+#      ArtifactType: Container

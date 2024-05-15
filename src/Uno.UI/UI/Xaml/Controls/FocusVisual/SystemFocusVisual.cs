@@ -3,11 +3,12 @@
 using System;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
@@ -22,7 +23,24 @@ internal partial class SystemFocusVisual : Control
 	public SystemFocusVisual()
 	{
 		DefaultStyleKey = typeof(SystemFocusVisual);
-		Windows.UI.Xaml.Window.Current.SizeChanged += WindowSizeChanged;
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed += XamlRootChanged;
+		}
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed -= XamlRootChanged;
+		}
 	}
 
 	public UIElement? FocusedElement
@@ -51,6 +69,7 @@ internal partial class SystemFocusVisual : Control
 			element.EnsureFocusVisualBrushDefaults();
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
 			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;
+			element.EffectiveViewportChanged += focusVisual.FocusedElementEffectiveViewportChanged;
 			element.Unloaded += focusVisual.FocusedElementUnloaded;
 
 			var visibilityToken = element.RegisterPropertyChangedCallback(VisibilityProperty, focusVisual.FocusedElementVisibilityChanged);
@@ -59,11 +78,14 @@ internal partial class SystemFocusVisual : Control
 
 			focusVisual._lastRect = Rect.Empty;
 			focusVisual.SetLayoutProperties();
+			var parentViewport = element.GetParentViewport(); // the parent Viewport is used, similar to PropagateEffectiveViewportChange
+			focusVisual.ApplyClipping(parentViewport.Effective);
 
 			focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				element.SizeChanged -= focusVisual.FocusedElementSizeChanged;
 				element.LayoutUpdated -= focusVisual.FocusedElementLayoutUpdated;
+				element.EffectiveViewportChanged -= focusVisual.FocusedElementEffectiveViewportChanged;
 				element.UnregisterPropertyChangedCallback(VisibilityProperty, visibilityToken);
 
 				focusVisual.DetachVisualPartial();
@@ -77,7 +99,7 @@ internal partial class SystemFocusVisual : Control
 
 	partial void SetLayoutPropertiesPartial();
 
-	private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => SetLayoutProperties();
+	private void XamlRootChanged(object sender, XamlRootChangedEventArgs e) => SetLayoutProperties();
 
 	private void FocusedElementUnloaded(object sender, RoutedEventArgs e) => FocusedElement = null;
 
@@ -87,9 +109,16 @@ internal partial class SystemFocusVisual : Control
 
 	private void FocusedElementSizeChanged(object sender, SizeChangedEventArgs args) => SetLayoutProperties();
 
+	private void FocusedElementEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+	{
+		SetLayoutProperties();
+		ApplyClipping(args.EffectiveViewport);
+	}
+
 	private void SetLayoutProperties()
 	{
-		if (FocusedElement == null ||
+		if (XamlRoot is null ||
+			FocusedElement is null ||
 			FocusedElement.Visibility == Visibility.Collapsed ||
 			(FocusedElement is Control control && !control.IsEnabled && !control.AllowFocusWhenDisabled))
 		{
@@ -97,10 +126,26 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
+		var parentElement = VisualTreeHelper.GetParent(FocusedElement) as UIElement;
+		if (parentElement is null)
+		{
+			Visibility = Visibility.Collapsed;
+			return;
+		}
+
+		RenderTransform = FocusedElement.RenderTransform;
+		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
-		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
+		var parentTransform = parentElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
+		var parentPoint = parentTransform.TransformPoint(new Windows.Foundation.Point(0, 0));
+
+		var point = new Windows.Foundation.Point
+		{
+			X = parentPoint.X + FocusedElement.ActualOffset.X,
+			Y = parentPoint.Y + FocusedElement.ActualOffset.Y
+		};
+
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 
 		if (newRect != _lastRect)
@@ -108,6 +153,7 @@ internal partial class SystemFocusVisual : Control
 			Width = FocusedElement.ActualSize.X;
 			Height = FocusedElement.ActualSize.Y;
 
+			// FocusVisual and Element has same position and width
 			Canvas.SetLeft(this, point.X);
 			Canvas.SetTop(this, point.Y);
 
@@ -115,5 +161,50 @@ internal partial class SystemFocusVisual : Control
 		}
 
 		SetLayoutPropertiesPartial();
+	}
+
+	private void ApplyClipping(Rect effectiveViewport)
+	{
+		if (FocusedElement is not FrameworkElement fe)
+		{
+			return;
+		}
+
+		var height = Height - fe.FocusVisualMargin.Top - fe.FocusVisualMargin.Bottom;
+		var width = Width - fe.FocusVisualMargin.Left - fe.FocusVisualMargin.Right;
+
+		RectangleGeometry clip;
+
+		if (effectiveViewport.IsEmpty)
+		{
+			clip = new RectangleGeometry
+			{
+				Rect = new Rect(
+					0,
+					0,
+					0,
+					0
+				)
+			};
+		}
+		else
+		{
+			var clipTop = Math.Max(fe.FocusVisualMargin.Top, effectiveViewport.Top - fe.FocusVisualMargin.Top);
+			var clipLeft = Math.Max(fe.FocusVisualMargin.Left, effectiveViewport.Left + fe.FocusVisualMargin.Left);
+			var clipBottom = Math.Max(0, height - (effectiveViewport.Height + effectiveViewport.Top + fe.FocusVisualMargin.Bottom));
+			var clipRight = Math.Max(0, width - (effectiveViewport.Width + effectiveViewport.Left + fe.FocusVisualMargin.Right));
+
+			clip = new RectangleGeometry
+			{
+				Rect = new Rect(
+					Math.Min(width, clipLeft),
+					Math.Min(height, clipTop),
+					Math.Max(0, width - clipRight - clipLeft),
+					Math.Max(0, height - clipBottom - clipTop)
+				)
+			};
+		}
+
+		Clip = clip;
 	}
 }

@@ -12,10 +12,10 @@ namespace Uno.UI.MSAL
 		public static T WithUnoHelpers<T>(this T builder)
 			where T : AbstractApplicationBuilder<T>
 		{
-#if __ANDROID__ && !NET6_0_OR_GREATER
+#if __ANDROID__
 			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => ContextHelper.Current as Android.App.Activity);
-#elif __IOS__ && !NET6_0_OR_GREATER
-			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Windows.UI.Xaml.Window.Current.Content.Window.RootViewController);
+#elif __IOS__
+			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Microsoft.UI.Xaml.Window.Current.Content.Window.RootViewController);
 #elif __WASM__
 			builder.WithHttpClientFactory(WasmHttpFactory.Instance);
 #endif

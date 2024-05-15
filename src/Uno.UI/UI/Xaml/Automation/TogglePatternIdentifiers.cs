@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Uno;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
-namespace Windows.UI.Xaml.Automation
+/// <summary>
+/// Contains values used as identifiers by IToggleProvider.
+/// </summary>
+public partial class TogglePatternIdentifiers
 {
-    public partial class TogglePatternIdentifiers
-    {
-		[NotImplemented]
-		public static AutomationProperty ToggleStateProperty => new AutomationProperty();
-	}
+	/// <summary>
+	/// Identifies the ToggleState automation property.
+	/// </summary>
+	public static AutomationProperty ToggleStateProperty { get; } = new();
 }

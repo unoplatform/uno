@@ -9,39 +9,45 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices.WindowHelper;
 using static Windows.Foundation.Rect;
-using EffectiveViewportChangedEventArgs = Windows.UI.Xaml.EffectiveViewportChangedEventArgs;
+using EffectiveViewportChangedEventArgs = Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_FrameworkElement_EffectiveViewport
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
+	public partial class Given_FrameworkElement_EffectiveViewport
 	{
 #if __ANDROID__
 		private Rect WindowBounds
 		{
 			get
 			{
-				var slot = LayoutInformation.GetLayoutSlot(Window.Current.Content);
+				var slot = LayoutInformation.GetLayoutSlot(TestServices.WindowHelper.CurrentTestWindow!.Content);
 				var bounds = new Rect(0, 0, slot.Width, slot.Height);
 
 				return bounds;
 			}
 		}
 #else
-		private Rect WindowBounds => new Rect(0, 0, Window.Current.Bounds.Width, Window.Current.Bounds.Height);
+		private Rect WindowBounds =>
+			new Rect(default, TestServices.WindowHelper.XamlRoot.Size);
 #endif
 
 		private Point RootLocation
@@ -51,7 +57,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var root = (FrameworkElement)WindowContent;
 				var windowBounds = WindowBounds;
 
-				return new Point(X(root, windowBounds.Width), Y(root, windowBounds.Height));
+				var x = X(root, windowBounds.Width);
+				var y = Y(root, windowBounds.Height);
+#if HAS_UNO // LayoutRound isn't public in UWP/WinUI. Ignore that block of code there for now.
+				if (root.UseLayoutRounding)
+				{
+					x = root.LayoutRound(x);
+					y = root.LayoutRound(y);
+				}
+#endif
+
+				return new Point(x, y);
 			}
 		}
 
@@ -248,7 +264,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				HorizontalAlignment = hAlign,
 				VerticalAlignment = vAlign,
 				Width = width,
-				Height = height
+				Height = height,
 			};
 			using var vp = VP(sut);
 
@@ -358,7 +374,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var sut = new Border
 			{
 				Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x80, 0x18)),
-				Clip = new RectangleGeometry{Rect = new Rect(50,50,100,100)}
+				Clip = new RectangleGeometry { Rect = new Rect(50, 50, 100, 100) }
 			};
 			using var vp = VP(sut);
 
@@ -759,7 +775,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					Content = new Grid
 					{
 						Height = 1024,
-						Clip = new RectangleGeometry{Rect = new Rect(50,50,100,100)},
+						Clip = new RectangleGeometry { Rect = new Rect(50, 50, 100, 100) },
 						Children =
 						{
 							(sut = new Border
@@ -803,10 +819,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			/*
 			<local:HeadedContent Header="With transform" Background="#008018">
-				<Border 
-					EffectiveViewportChanged="ShowEVP" 
-					Style="{StaticResource EVPContainer}" 
-					Width="100" 
+				<Border
+					EffectiveViewportChanged="ShowEVP"
+					Style="{StaticResource EVPContainer}"
+					Width="100"
 					Height="100"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Top">
@@ -832,7 +848,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					Margin = new Thickness(x, y, 0, 0),
 					HorizontalAlignment = HorizontalAlignment.Left,
 					VerticalAlignment = VerticalAlignment.Top,
-					RenderTransform = new TranslateTransform{ X = 50, Y = 25}
+					RenderTransform = new TranslateTransform { X = 50, Y = 25 }
 				}
 			};
 
@@ -856,10 +872,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			<local:HeadedContent Header="With transform in SV" Background="#0000F9">
 				<ScrollViewer>
 					<Grid Height="1024">
-						<Border 
-							EffectiveViewportChanged="ShowEVP" 
-							Style="{StaticResource EVPContainer}" 
-							Width="100" 
+						<Border
+							EffectiveViewportChanged="ShowEVP"
+							Style="{StaticResource EVPContainer}"
+							Width="100"
 							Height="100"
 							HorizontalAlignment="Left"
 							VerticalAlignment="Top">
@@ -893,7 +909,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					{
 						Height = 1024,
 						Children =
-						{ 
+						{
 							(sut = new Border
 							{
 								HorizontalAlignment = HorizontalAlignment.Left,
@@ -937,10 +953,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			<local:HeadedContent Header="Transform with scaling in SV" Background="#86007D">
 				<ScrollViewer>
 					<Grid Height="1024">
-						<Border 
-							EffectiveViewportChanged="ShowEVP" 
-							Style="{StaticResource EVPContainer}" 
-							Width="100" 
+						<Border
+							EffectiveViewportChanged="ShowEVP"
+							Style="{StaticResource EVPContainer}"
+							Width="100"
 							Height="100"
 							HorizontalAlignment="Left"
 							VerticalAlignment="Top">
@@ -1008,6 +1024,165 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			});
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if !__IOS__
+		[Ignore("This test native only element and is not supported on this platform")]
+		public void EVP_When_NativeOnlyElement_Then_PassThrough() { }
+#else
+		public async Task EVP_When_NativeOnlyElement_Then_PassThrough()
+		{
+			Border sut;
+			var tree = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Width = 512,
+				Height = 512,
+				Children =
+				{
+					new NativeOnlyElement
+					{
+						Child = (sut = new Border
+						{
+							HorizontalAlignment = HorizontalAlignment.Left,
+							VerticalAlignment = VerticalAlignment.Top,
+							Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0xF9)),
+							Width = 100,
+							Height = 100,
+						})
+					}
+				}
+			};
+
+			using var vp = VP(sut);
+
+			WindowContent = tree;
+			await WaitForIdle();
+
+			await RetryAssert(() =>
+			{
+				vp.Effective.Width.Should().BeGreaterThan(100);
+				vp.Effective.Height.Should().BeGreaterThan(100);
+			});
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task EVP_When_RemoveHandlerWhileRaisingEvent()
+		{
+			const bool canHorizontallyScroll = true, canVerticallyScroll = true;
+			Border sut;
+			ScrollViewer sv;
+			var root = new Border
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = sv = new ScrollViewer
+				{
+					Width = 512,
+					Height = 512,
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Top,
+					HorizontalScrollBarVisibility = canHorizontallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+					VerticalScrollBarVisibility = canVerticallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+					HorizontalScrollMode = canHorizontallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+					VerticalScrollMode = canVerticallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+					Content = new Grid
+					{
+						Height = 1024,
+						Children =
+						{
+							(sut = new Border
+							{
+								HorizontalAlignment = HorizontalAlignment.Left,
+								VerticalAlignment = VerticalAlignment.Top,
+								Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0xF9)),
+								Width = 100,
+								Height = 100,
+								RenderTransform = new CompositeTransform { TranslateX = 50, TranslateY = 25, ScaleY = 2 }
+							})
+						}
+					}
+				}
+			};
+
+			var result = new TaskCompletionSource<object?>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => result.TrySetException(new TimeoutException()));
+
+			var allowDetach = false;
+			sut.EffectiveViewportChanged += OnSutEVPChanged;
+
+			WindowContent = root;
+
+			// First make sure to be loaded (and actually ignore them)
+			await WaitForIdle();
+			allowDetach = true;
+
+			// Then cause a layout update
+			sv.ChangeView(null, 512, null, disableAnimation: true);
+
+			await result.Task;
+
+			void OnSutEVPChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+			{
+				try
+				{
+					if (!allowDetach)
+					{
+						return;
+					}
+
+					sut.EffectiveViewportChanged -= OnSutEVPChanged;
+					result.TrySetResult(default);
+				}
+				catch (Exception e)
+				{
+					result.TrySetException(e);
+				}
+			}
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child.")]
+#endif
+		public async Task When_EVP_ScrollContentPresenter()
+		{
+			var border = new Border
+			{
+				Height = 4192,
+				Width = 256,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+
+			var sv = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = border
+			};
+
+			await UITestHelper.Load(sv);
+
+			var scp = sv.FindVisualChildByType<ScrollContentPresenter>();
+
+			var changedCount = 0;
+			var childChangedCount = 0;
+			scp.EffectiveViewportChanged += (_, _) => changedCount++;
+			border.EffectiveViewportChanged += (_, _) => childChangedCount++;
+
+			sv.ScrollToVerticalOffset(100);
+			await WaitForIdle();
+
+			Assert.AreEqual(1, changedCount);
+			Assert.AreEqual(2, childChangedCount);
+		}
+
 		private async Task RetryAssert(Action assertion)
 		{
 			var attempt = 0;
@@ -1023,7 +1198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 					break;
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					if (attempt++ >= 30)
 					{
@@ -1051,7 +1226,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 					break;
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					if (attempt++ >= 30)
 					{
@@ -1106,7 +1281,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				=> _args.Add(args);
 
 			public void Dispose()
-				=> _elt.EffectiveViewportChanged += OnEVPChanged;
+				=> _elt.EffectiveViewportChanged -= OnEVPChanged;
 		}
 
 		private class EVPTreeListener : IDisposable
@@ -1141,7 +1316,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						return;
 					}
 
-					if (VisualTreeHelper.GetParent(elt as DependencyObject) is {} parent)
+					if (VisualTreeHelper.GetParent(elt as DependencyObject) is { } parent)
 					{
 						Subscribe(parent);
 					}
@@ -1162,5 +1337,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 			}
 		}
+
+#if __IOS__
+		public partial class NativeOnlyElement : UIKit.UIView
+		{
+			public NativeOnlyElement()
+			{
+				base.AutoresizingMask = UIKit.UIViewAutoresizing.FlexibleWidth | UIKit.UIViewAutoresizing.FlexibleHeight;
+				base.AutosizesSubviews = true;
+			}
+
+			public UIElement? Child
+			{
+				get => Subviews.FirstOrDefault() as UIElement;
+				set
+				{
+					foreach (var subview in Subviews)
+					{
+						subview.RemoveFromSuperview();
+					}
+					if (value is not null)
+					{
+						InsertSubview(value, 0);
+					}
+				}
+			}
+		}
+#endif
 	}
 }

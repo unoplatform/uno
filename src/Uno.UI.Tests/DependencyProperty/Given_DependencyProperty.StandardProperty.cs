@@ -2,9 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +14,9 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.Threading;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests_StandardProperty
 {
@@ -39,7 +38,8 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 
 	public partial class MyObject : DependencyObject
 	{
-		public string Name {
+		public string Name
+		{
 			get => _name;
 			set => _name = value;
 		}

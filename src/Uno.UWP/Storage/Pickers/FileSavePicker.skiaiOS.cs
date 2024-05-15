@@ -10,7 +10,7 @@ using Uno.Foundation.Extensibility;
 namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
-    {
+	{
 		private IFileSavePickerExtension? _fileSavePickerExtension;
 
 		partial void InitializePlatform() => ApiExtensibility.CreateInstance(this, out _fileSavePickerExtension);
@@ -22,6 +22,7 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FileSavePicker extension is not registered.");
 			}
 
+			_fileSavePickerExtension.Customize(this);
 			return await _fileSavePickerExtension.PickSaveFileAsync(token);
 		}
 	}

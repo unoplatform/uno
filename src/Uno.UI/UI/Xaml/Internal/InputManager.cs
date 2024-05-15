@@ -4,41 +4,71 @@
 
 #nullable enable
 
+using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Windows.Devices.Input;
+using Windows.UI.Input.Preview.Injection;
 
-namespace Uno.UI.Xaml.Core
+namespace Uno.UI.Xaml.Core;
+
+internal partial class InputManager : IInputInjectorTarget
 {
-	internal class InputManager
+	public InputManager(ContentRoot contentRoot)
 	{
-		private ContentRoot _contentRoot;
+		ContentRoot = contentRoot;
 
-		public InputManager(ContentRoot contentRoot)
+		ConstructKeyboardManager();
+
+		ConstructPointerManager();
+
+		InitDragAndDrop();
+	}
+
+	partial void ConstructKeyboardManager();
+
+	partial void ConstructPointerManager();
+
+	/// <summary>
+	/// Initialize the InputManager.
+	/// </summary>
+	internal void Initialize(object host)
+	{
+		InitializeKeyboard(host);
+		InitializePointers(host);
+	}
+
+	partial void InitializeKeyboard(object host);
+
+	internal ContentRoot ContentRoot { get; }
+
+	//TODO Uno: Set along with user input - this needs to be adjusted soon
+	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
+
+	internal FocusInputDeviceKind LastFocusInputDeviceKind { get; set; }
+
+	internal bool ShouldRequestFocusSound()
+	{
+		//TODO Uno: Implement
+		return false;
+	}
+
+	internal void NotifyFocusChanged(DependencyObject focusedElement, bool bringIntoView, bool animateIfBringIntoView)
+	{
+		//TODO Uno: match WinUI
+		if (bringIntoView)
 		{
-			_contentRoot = contentRoot;
+			((UIElement)focusedElement).StartBringIntoView(new BringIntoViewOptions
+			{
+				AnimationDesired = animateIfBringIntoView
+			});
 		}
+	}
 
-		//TODO Uno: Set along with user input - this needs to be adjusted soon
-		internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
-
-		internal FocusInputDeviceKind LastFocusInputDeviceKind { get; set; }
-
-		internal bool ShouldRequestFocusSound()
-		{
-			//TODO Uno: Implement
-			return false;
-		}
-
-		internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
-		{
-			//TODO Uno: Implement
-		}
-
-		internal bool LastInputWasNonFocusNavigationKeyFromSIP()
-		{
-			//TODO Uno: Implement
-			return false;
-		}
+	internal bool LastInputWasNonFocusNavigationKeyFromSIP()
+	{
+		//TODO Uno: Implement
+		return false;
 	}
 }

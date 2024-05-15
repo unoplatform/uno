@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,14 +7,14 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -23,7 +23,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 	{
@@ -57,9 +57,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool m_isSubPresenter;
 
-		private int m_depth = 0;
+		private int m_depth;
 
-		private FlyoutBase.MajorPlacementMode m_mostRecentPlacement;
+		//private FlyoutBase.MajorPlacementMode m_mostRecentPlacement;
 
 		private ScrollViewer m_tpScrollViewer;
 
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 			// UNO TODO
 			// m_animationInProgress = false;
 			m_isSubPresenter = false;
-			m_mostRecentPlacement = FlyoutBase.MajorPlacementMode.Bottom;
+			//m_mostRecentPlacement = FlyoutBase.MajorPlacementMode.Bottom;
 
 			DefaultStyleKey = typeof(MenuFlyoutPresenter);
 		}
@@ -221,8 +221,19 @@ namespace Windows.UI.Xaml.Controls
 			var spMenuFlyoutItemBase = pElement as MenuFlyoutItemBase;
 
 			spMenuFlyoutItemBase.SetParentMenuFlyoutPresenter(this);
+
+			SynchronizeTemplatedParent(spMenuFlyoutItemBase);
 		}
 
+		private void SynchronizeTemplatedParent(MenuFlyoutItemBase spMenuFlyoutItemBase)
+		{
+			// Manual propagation of the templated parent to the content properly
+			// until we get the propagation running properly
+			if (spMenuFlyoutItemBase is FrameworkElement content)
+			{
+				content.TemplatedParent = TemplatedParent;
+			}
+		}
 
 		protected override void ClearContainerForItemOverride(
 			 DependencyObject pElement,
@@ -324,12 +335,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Create MenuFlyoutPresenterAutomationPeer to represent the 
+		// Create MenuFlyoutPresenterAutomationPeer to represent the
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new MenuFlyoutPresenterAutomationPeer(this);
 		}
 
+#if false
 		void UpdateVisualStateForPlacement(FlyoutBase.MajorPlacementMode placement)
 		{
 			m_mostRecentPlacement = placement;
@@ -341,7 +353,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			VisualStateManager.GoToState(this, "None", false);
 		}
-
+#endif
 		private protected override void ChangeVisualState(
 		   // true to use transitions when updating the visual state, false
 		   // to snap directly to the new visual state.
@@ -406,6 +418,7 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
+#if false
 		void DetachEntranceAnimationCompletedHandlers()
 		{
 			// Marked as no longer used
@@ -448,8 +461,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Focus(FocusState.Programmatic);
 		}
-
-
+#endif
 		protected override void OnPointerExited(PointerRoutedEventArgs pArgs)
 		{
 			var handled = pArgs.Handled;
@@ -595,7 +607,7 @@ namespace Windows.UI.Xaml.Controls
 							{
 								// When the mouse enters a MenuFlyoutPresenter that is a sub menu
 								// we have to tell the parent presenter to cancel any plans it had
-								// to close this sub 
+								// to close this sub
 								presenter.CancelCloseMenuFlyoutSubItem();
 							}
 						}
@@ -606,7 +618,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		string GetPlainText()
+		private protected override string GetPlainText()
 		{
 			string automationName = null;
 
@@ -694,6 +706,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		DependencyObject GetParentMenuFlyoutSubItem(DependencyObject nativeDO)
 		{
 			var spThis = nativeDO as MenuFlyoutPresenter;
@@ -711,6 +724,7 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 		}
+#endif
 
 		internal void UpdateTemplateSettings()
 		{
@@ -788,7 +802,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// A child element got focus, so make sure we keep m_iFocusedIndex in sync
 				// with it.
-				var focusedElement = FocusManager.GetFocusedElement() as DependencyObject;
+				var focusedElement = (XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot)) as DependencyObject;
 
 				// Since GotFocus is an async event, the focused element could be null if we got it
 				// after the popup closes, which clears focus.
@@ -809,7 +825,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (m_iFocusedIndex == -1)
 			{
-				var focusedElement = FocusManager.GetFocusedElement();
+				var focusedElement = XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot);
 
 				if (this != focusedElement)
 				{
@@ -834,6 +852,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		int GetPositionInSetHelper(MenuFlyoutItemBase item)
 		{
 			var returnValue = -1;
@@ -932,7 +951,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return returnValue;
 		}
-
+#endif
 		ISubMenuOwner IMenuPresenter.Owner
 		{
 			get => m_wrOwner?.Target as ISubMenuOwner;

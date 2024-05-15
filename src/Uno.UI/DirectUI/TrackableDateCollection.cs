@@ -137,32 +137,32 @@ namespace DirectUI
 			return;
 		}
 
-		//private void IndexOf(DateTime value, out uint index, out bool found)
-		//{
-		//	index = 0;
-		//	found = false;
+		public override void IndexOf(DateTime value, out uint index, out bool found)
+		{
+			index = 0;
+			found = false;
 
-		//	CheckThread();
+			CheckThread();
 
-		//	for (uint i = 0; i < m_vector.Count(); ++i)
-		//	{
-		//		if (m_areEquivalentComparer(m_vector[(int)i], value))
-		//		{
-		//			index = i;
-		//			found = true;
-		//			break;
-		//		}
-		//	}
+			for (uint i = 0; i < m_vector.Count; ++i)
+			{
+				if (m_areEquivalentComparer(m_vector[(int)i], value))
+				{
+					index = i;
+					found = true;
+					break;
+				}
+			}
 
-		//	return;
-		//}
+			return;
+		}
 
 		internal void CountOf(DateTime value, out uint pCount)
 		{
 			uint count = 0;
 			pCount = 0;
 
-			for (uint i = 0; i < m_vector.Count(); ++i)
+			for (uint i = 0; i < m_vector.Count; ++i)
 			{
 				if (m_areEquivalentComparer(m_vector[(int)i], value))
 				{
@@ -177,7 +177,7 @@ namespace DirectUI
 		internal void RemoveAll(DateTime value, uint? pFromHint = null)
 		{
 			int from = (int)(pFromHint.HasValue ? pFromHint : 0);
-			int i = (int)(m_vector.Count()) - 1;
+			int i = (int)(m_vector.Count) - 1;
 
 			for (; i >= from; --i)
 			{
@@ -192,7 +192,7 @@ namespace DirectUI
 
 		private void RaiseCollectionChanging(CollectionChanging action, DateTime addingDate)
 		{
-			if (m_collectionChanging is {})
+			if (m_collectionChanging is { })
 			{
 				m_collectionChanging(action, addingDate);
 			}

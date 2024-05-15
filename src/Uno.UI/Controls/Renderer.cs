@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using System.Linq;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.Collections;
 
 namespace Uno.UI.Controls
 {
+	public delegate void NativeChangedHandler(object sender, object native);
+
 	internal abstract class Renderer<TElement, TNative> : IDisposable
 		where TElement : DependencyObject
 		where TNative : class
@@ -19,6 +21,8 @@ namespace Uno.UI.Controls
 		private readonly WeakReference _element;
 		private TNative _native;
 		private bool _isRendering;
+
+		public event NativeChangedHandler NativeChanged;
 
 		public Renderer(TElement element)
 		{
@@ -56,17 +60,21 @@ namespace Uno.UI.Controls
 			}
 		}
 
+		public bool HasNative => _native != null;
+
 		private void OnNativeChanged()
 		{
 			// We remove subscriptions to the previous pair of element and native 
 			_subscriptions.Dispose();
-			
-			if (_native != null)
+
+			if (HasNative)
 			{
 				_subscriptions = new CompositeDisposable(Initialize());
 			}
 
 			Invalidate();
+
+			NativeChanged?.Invoke(this, _native);
 		}
 
 		protected abstract TNative CreateNativeInstance();
@@ -74,7 +82,7 @@ namespace Uno.UI.Controls
 		public void Invalidate()
 		{
 			// We don't render anything if there's no rendering target
-			if (_native != null
+			if (HasNative
 				// Prevent Render() being called reentrantly - this can happen when the Element's parent changes within the Render() method
 				&& !_isRendering)
 			{
@@ -104,15 +112,53 @@ namespace Uno.UI.Controls
 	{
 		private static readonly WeakAttachedDictionary<DependencyObject, Type> _renderers = new WeakAttachedDictionary<DependencyObject, Type>();
 
+		public static TRenderer TryGetRenderer<TElement, TRenderer>(this TElement element)
+			where TElement : DependencyObject
+			where TRenderer : class
+		{
+			TRenderer renderer = null;
+			if (_renderers.GetValue<TRenderer>(element, typeof(TRenderer)) is { } existingRenderer)
+			{
+				renderer = existingRenderer;
+			}
+
+			return renderer;
+		}
+
+		public static bool TryGetNative<TElement, TRenderer, TNative>(this TElement element, out TNative native)
+			where TElement :
+#if HAS_UNO
+			class,
+#endif
+			DependencyObject
+			where TRenderer : Renderer<TElement, TNative>
+			where TNative : class
+		{
+			native = null;
+			if (TryGetRenderer<TElement, TRenderer>(element) is { } renderer && renderer.HasNative)
+			{
+				native = renderer.Native;
+				return true;
+			}
+
+			return false;
+		}
+
 		public static TRenderer GetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
 			where TElement : DependencyObject
 		{
 			return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
 		}
-        public static TRenderer ResetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
-            where TElement : DependencyObject
-        {
-            return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
-        }
+		public static TRenderer ResetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
+			where TElement : DependencyObject
+		{
+			return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
+		}
+
+		public static void SetRenderer<TElement, TRenderer>(this TElement element, TRenderer renderer)
+			where TElement : DependencyObject
+		{
+			_renderers.SetValue(element, typeof(TRenderer), renderer);
+		}
 	}
 }

@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.WrapUp
+---
+
 # Wrap-up
 
 Summarize the major lessons-learnt.

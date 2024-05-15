@@ -45,7 +45,7 @@ namespace Uno.UI.Extensions
 						{
 							for (int y = 0; y < height; y++)
 							{
-								var index = x * 4 + y * height * 4;
+								var index = (x * 4) + (y * width * 4);
 
 								var sourceAlpha = rawData[index + 3];
 

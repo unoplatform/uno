@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -21,7 +20,7 @@ namespace Windows.Graphics.Display
 		/// <param name="options"></param>
 		public void SetBrightnessLevel(double brightnessLevel, DisplayBrightnessOverrideOptions options)
 		{
-			_targetBrightnessLevel = brightnessLevel.Clamp(0, 1);
+			_targetBrightnessLevel = Math.Clamp(brightnessLevel, 0, 1);
 		}
 
 		/// <summary>
@@ -39,7 +38,7 @@ namespace Windows.Graphics.Display
 
 			Window.Brightness = (float)_targetBrightnessLevel;
 
-			GetForCurrentView().IsOverrideActive = true;		
+			GetForCurrentView().IsOverrideActive = true;
 		}
 
 		/// <summary>
@@ -63,4 +62,3 @@ namespace Windows.Graphics.Display
 		}
 	}
 }
-#endif

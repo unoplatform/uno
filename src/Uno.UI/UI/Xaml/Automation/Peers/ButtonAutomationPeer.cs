@@ -1,35 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Uno;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ButtonAutomationPeer : ButtonBaseAutomationPeer, IInvokeProvider
 	{
 		public ButtonAutomationPeer(Button owner) : base(owner)
 		{
 		}
-		
-		protected override string GetClassNameCore()
+
+		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
-			return "Button";
+			if (patternInterface == PatternInterface.Invoke)
+			{
+				return this;
+			}
+
+			return base.GetPatternCore(patternInterface);
 		}
 
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Button;
-		}
+		protected override string GetClassNameCore() => nameof(Button);
+
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
 
 		public void Invoke()
 		{
 			if (IsEnabled())
 			{
-				(Owner as Button).AutomationPeerClick();
+				(Owner as ButtonBase).ProgrammaticClick();
 			}
 		}
 	}

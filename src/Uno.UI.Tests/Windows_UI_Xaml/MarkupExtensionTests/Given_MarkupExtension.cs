@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 {
@@ -70,6 +70,49 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		}
 
 		[TestMethod]
+		public void When_Extension_In_Style_Setter()
+		{
+			var currentCulture = Thread.CurrentThread.CurrentCulture;
+			try
+			{
+				StyleSetterExtension.Calls = 0;
+				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var control = new Test_MarkupExtension();
+				app.HostView.Children.Add(control);
+
+				Assert.AreEqual("**Test**", control.StyleSetterTextBlock1.Text);
+				Assert.AreEqual("**Test**", control.StyleSetterTextBlock2.Text);
+				Assert.AreEqual(1, StyleSetterExtension.Calls);
+			}
+			finally
+			{
+				Thread.CurrentThread.CurrentCulture = currentCulture;
+			}
+		}
+
+		[TestMethod]
+		public void When_Extension_In_VisualState_Setter()
+		{
+			var currentCulture = Thread.CurrentThread.CurrentCulture;
+			try
+			{
+				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var control = new Test_MarkupExtension();
+				app.HostView.Children.Add(control);
+
+				Assert.AreEqual("**Test**", control.VisualStateTextBlock.Text);
+			}
+			finally
+			{
+				Thread.CurrentThread.CurrentCulture = currentCulture;
+			}
+		}
+
+		[TestMethod]
 		public void When_Shortened_Name_Overlaps_Type()
 		{
 			var currentCulture = Thread.CurrentThread.CurrentCulture;
@@ -91,7 +134,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(string))]
-	public class SimpleMarkupExtExtension : Windows.UI.Xaml.Markup.MarkupExtension
+	public class SimpleMarkupExtExtension : Microsoft.UI.Xaml.Markup.MarkupExtension
 	{
 		public string TextValue { get; set; }
 
@@ -102,7 +145,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(TestEntityObject))]
-	public class EntityMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
+	public class EntityMarkupExt : Microsoft.UI.Xaml.Markup.MarkupExtension
 	{
 		public string TextValue { get; set; }
 
@@ -119,7 +162,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(IValueConverter))]
-	public class InverseBoolMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension, IValueConverter
+	public class InverseBoolMarkupExt : Microsoft.UI.Xaml.Markup.MarkupExtension, IValueConverter
 	{
 		protected override object ProvideValue() => this;
 
@@ -134,7 +177,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		}
 	}
 
-	public class NoReturnTypeMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
+	public class NoReturnTypeMarkupExt : Microsoft.UI.Xaml.Markup.MarkupExtension
 	{
 		public Values UseValue { get; set; }
 
@@ -163,6 +206,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		public object Wrapped { get; set; }
 
 		protected override object ProvideValue() => $"**{Wrapped}**";
+	}
+
+	public class StyleSetterExtension : MarkupExtension
+	{
+		public static int Calls { get; set; }
+
+		public object Wrapped { get; set; }
+
+		protected override object ProvideValue()
+		{
+			Calls++;
+			return $"**{Wrapped}**";
+		}
+	}
+
+	public class VisualStateSetterExtension : MarkupExtension
+	{
+		public object Wrapped { get; set; }
+
+		protected override object ProvideValue()
+		{
+			return $"**{Wrapped}**";
+		}
 	}
 
 	// This should not be mistaken for a TextBlock

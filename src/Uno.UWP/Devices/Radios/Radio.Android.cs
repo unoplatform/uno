@@ -1,6 +1,5 @@
 #nullable enable
 
-#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +67,9 @@ namespace Windows.Devices.Radios
 			{
 				// deprecated in API 31
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				var adapter = Android.Bluetooth.BluetoothAdapter.DefaultAdapter;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 				if (adapter == null)
 				{
@@ -253,6 +254,7 @@ namespace Windows.Devices.Radios
 			{
 				// for Android API 1 to 28 (deprecated in 29)
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				var netInfo = connManager.ActiveNetworkInfo;
 				if (netInfo is null)
 				{
@@ -277,14 +279,14 @@ namespace Windows.Devices.Radios
 						}
 					}
 #pragma warning restore CS0618 // Type or member is obsolete
-
+#pragma warning restore CA1422 // Validate platform compatibility
 				}
 				return radio;
 			}
 		}
 
 
-		private async static Task<IReadOnlyList<Radio>> GetRadiosAsyncTask()
+		private static Task<IReadOnlyList<Radio>> GetRadiosAsyncTask()
 		{
 			var radios = new List<Radio>();
 
@@ -306,7 +308,7 @@ namespace Windows.Devices.Radios
 				radios.Add(radio); // yield oRadio;
 			}
 
-			return radios;
+			return Task.FromResult<IReadOnlyList<Radio>>(radios);
 		}
 
 		/// <summary>
@@ -318,4 +320,3 @@ namespace Windows.Devices.Radios
 	}
 
 }
-#endif

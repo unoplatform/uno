@@ -1,52 +1,48 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
-	
-	<Import Project="../netcore-build.props" />
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>$(DefineConstants);IS_UNO_FOUNDATION_RUNTIME_WEBASSEMBLY_PROJECT</DefineConstants>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
-	
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>
-	
+
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Authors>nventive</Authors>
+		<authors>Uno Platform</authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the .NET interoperability support for WebAssembly in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-	
 	<ItemGroup>
 		<PackageReference Include="Uno.Diagnostics.Eventing" />
-		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
-		<PackageReference Include="System.Memory" />
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -56,27 +52,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="AssemblyInfo.cs" />
+		<UpToDateCheckInput Remove="AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\CachedTuple.cs" Link="Helpers\CachedTuple.cs" />
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\FuncMemoizeExtensions.cs" Link="Helpers\FuncMemoizeExtensions.cs" />
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\Funcs.cs" Link="Helpers\Funcs.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\CachedTuple.cs" Link="Helpers\CachedTuple.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\FuncMemoizeExtensions.cs" Link="Helpers\FuncMemoizeExtensions.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\Funcs.cs" Link="Helpers\Funcs.cs" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
-		
+
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />

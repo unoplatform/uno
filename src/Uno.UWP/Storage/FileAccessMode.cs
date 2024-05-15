@@ -1,7 +1,7 @@
 
 namespace Windows.Storage
 {
-	public enum FileAccessMode 
+	public enum FileAccessMode
 	{
 		Read,
 

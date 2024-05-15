@@ -1,26 +1,28 @@
 ﻿#nullable disable // Not supported by WinUI yet
-// #define TRACE_HIT_TESTING
+//#define TRACE_HIT_TESTING
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using Uno.Collections;
+
+using Uno.UI;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using static Uno.Extensions.Matrix3x2Extensions;
+using static Uno.Extensions.EnumerableExtensions;
+
+#if TRACE_HIT_TESTING
 using System.Runtime.CompilerServices;
 using System.Text;
-using Uno.UI;
-using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Uno.Extensions;
 using Uno.Disposables;
-using Windows.Globalization.DateTimeFormatting;
-using Windows.UI.Core;
-using Uno.Foundation.Logging;
-using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
-using Uno.UI.Xaml.Core;
-using Uno.UI.DataBinding;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -34,44 +36,15 @@ using _ViewGroup = AppKit.NSView;
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
 #else
-using _View = Windows.UI.Xaml.UIElement;
-using _ViewGroup = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
+using _ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.UI.Composition;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		private static readonly List<ManagedWeakReference> _openPopups = new();
-
-		internal static IDisposable RegisterOpenPopup(IPopup popup)
-		{
-			CleanupPopupReferences();
-
-			var popupRegistration = _openPopups.FirstOrDefault(
-				p => !p.IsDisposed && p.Target == popup);
-
-			if (popupRegistration is null)
-			{
-				popupRegistration = WeakReferencePool.RentWeakReference(popup, popup);
-
-				_openPopups.Add(popupRegistration);
-			}
-
-			return Disposable.Create(() => _openPopups.Remove(popupRegistration));
-		}
-
-		private static void CleanupPopupReferences()
-		{
-			for (int i = _openPopups.Count - 1; i >= 0; i--)
-			{
-				if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
-				{
-					_openPopups.RemoveAt(i);
-				}
-			}
-		}
-
 		[Uno.NotImplemented]
 		public static void DisconnectChildrenRecursive(UIElement element)
 		{
@@ -96,19 +69,28 @@ namespace Windows.UI.Xaml.Media
 					yield return subtree;
 				}
 
-				foreach (var child in subtree.GetChildren().OfType<UIElement>())
+				foreach (var child in subtree.GetChildren())
 				{
+#if __ANDROID__ || __IOS__ || __MACOS__
+					// On Wasm and Skia, child is always UIElement.
+					if (child is not UIElement uiElement)
+					{
+						continue;
+					}
+#else
+					var uiElement = child;
+#endif
 					var canTest = includeAllElements
-						|| (child.IsHitTestVisible && child.IsViewHit());
+						|| (uiElement.IsHitTestVisible && uiElement.IsViewHit());
 
-					if (child is UIElement uiElement && canTest)
+					if (canTest)
 					{
 						if (IsElementIntersecting(intersectingPoint, uiElement))
 						{
 							yield return uiElement;
 						}
 
-						foreach (var subChild in FindElementsInHostCoordinates(intersectingPoint, child, includeAllElements))
+						foreach (var subChild in FindElementsInHostCoordinates(intersectingPoint, uiElement, includeAllElements))
 						{
 							yield return subChild;
 						}
@@ -140,10 +122,11 @@ namespace Windows.UI.Xaml.Media
 #else
 			return (reference as UIElement)?
 				.GetChildren()
-				.OfType<DependencyObject>()
 				.ElementAtOrDefault(childIndex);
 #endif
 		}
+
+		internal static _View GetViewGroupChild(_ViewGroup reference, int childIndex) => (reference as _ViewGroup)?.GetChildren().ElementAtOrDefault(childIndex);
 
 		public static int GetChildrenCount(DependencyObject reference)
 		{
@@ -155,47 +138,107 @@ namespace Windows.UI.Xaml.Media
 #else
 			return (reference as UIElement)?
 				.GetChildren()
-				.OfType<DependencyObject>()
-				.Count() ?? 0;
+				.Count ?? 0;
+#endif
+		}
+
+		internal static int GetViewGroupChildrenCount(_ViewGroup reference)
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+			=> reference.GetChildren().Count;
+#else
+			=> reference.GetChildren().Count();
+#endif
+
+		internal static void AddView(_ViewGroup parent, _View child, int index)
+		{
+#if __MACOS__
+			if (index == 0)
+			{
+				if (parent.Subviews.Length == 0)
+				{
+					parent.AddSubview(child);
+				}
+				else
+				{
+					parent.AddSubview(child, NSWindowOrderingMode.Below, null);
+				}
+			}
+			else
+			{
+				parent.AddSubview(child, NSWindowOrderingMode.Above, parent.Subviews[index - 1]);
+			}
+#elif __IOS__
+			parent.InsertSubview(child, index);
+#elif __ANDROID__
+			parent.AddView(child, index);
+#elif __CROSSRUNTIME__
+			parent.AddChild(child, index);
+#elif IS_UNIT_TESTS
+			if (parent is FrameworkElement fe)
+			{
+				fe.AddChild(child, index);
+			}
+			else
+			{
+				throw new NotSupportedException("AddView on UIElement is not implemented on IS_UNIT_TESTS.");
+			}
+#else
+			throw new NotSupportedException("AddView not implemented on this platform.");
+#endif
+		}
+
+		internal static void AddView(_ViewGroup parent, _View child)
+		{
+#if __IOS__ || __MACOS__
+			parent.AddSubview(child);
+#elif __ANDROID__
+			parent.AddView(child);
+#else
+			parent.AddChild(child);
+#endif
+		}
+
+		internal static void RemoveView(_ViewGroup parent, _View child)
+		{
+#if __IOS__ || __MACOS__
+			child.RemoveFromSuperview();
+#elif __ANDROID__
+			parent.RemoveView(child);
+#elif __CROSSRUNTIME__
+			parent.RemoveChild(child);
+#else
+			throw new NotSupportedException("RemoveView not implemented on this platform.");
 #endif
 		}
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
-			CleanupPopupReferences();
-
-			return _openPopups
-				.Where(p => !p.IsDisposed)
-				.Select(p => p.Target)
-				.OfType<Popup>()
-				.Distinct()
-				.ToList()
-				.AsReadOnly();
-		}
-
-		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
-		{
-			CleanupPopupReferences();
-
-			return _openPopups
-				.Where(p => !p.IsDisposed)
-				.Select(p => p.Target)
-				.OfType<Popup>()
-				.Distinct()
-				.Where(p => p.IsForFlyout)
-				.ToList().AsReadOnly();
-		}
-
-		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
-		{
-			if (xamlRoot == XamlRoot.Current)
+			if (window.RootElement?.XamlRoot?.VisualTree is { } visualTree)
 			{
-				return GetOpenPopups(Window.Current);
+				return GetOpenPopups(visualTree);
 			}
 
-			return new Popup[0];
+			return Array.Empty<Popup>();
 		}
 
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>
+			GetOpenPopups(xamlRoot.VisualTree)
+				.Where(p => p.IsForFlyout)
+				.ToList()
+				.AsReadOnly();
+
+		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot) =>
+			GetOpenPopups(xamlRoot.VisualTree);
+
+		private static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
+		{
+			if (visualTree?.PopupRoot is not { } popupRoot)
+			{
+				return Array.Empty<Popup>();
+			}
+
+			return popupRoot.GetOpenPopups();
+		}
 
 		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
@@ -203,9 +246,9 @@ namespace Windows.UI.Xaml.Media
 #if XAMARIN
 			realParent = (reference as _ViewGroup)?
 				.FindFirstParent<DependencyObject>();
-#else
-			realParent = reference.GetParent() as DependencyObject;
 #endif
+
+			realParent ??= reference.GetParent() as DependencyObject;
 
 			if (realParent is null && reference is _ViewGroup uiElement)
 			{
@@ -215,17 +258,25 @@ namespace Windows.UI.Xaml.Media
 			return realParent;
 		}
 
-		internal static void CloseAllPopups()
+		internal static void CloseAllPopups(XamlRoot xamlRoot)
 		{
-			foreach (var popup in GetOpenPopups(Window.Current))
+			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree))
 			{
 				popup.IsOpen = false;
 			}
 		}
 
-		internal static void CloseAllFlyouts()
+		internal static void CloseLightDismissPopups(XamlRoot xamlRoot)
 		{
-			foreach (var popup in GetOpenFlyoutPopups())
+			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled))
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal static void CloseAllFlyouts(XamlRoot xamlRoot)
+		{
+			foreach (var popup in GetOpenFlyoutPopups(xamlRoot))
 			{
 				popup.IsOpen = false;
 			}
@@ -311,8 +362,17 @@ namespace Windows.UI.Xaml.Media
 			view.AddView(child);
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
-#elif UNO_REFERENCE_API
+#elif __CROSSRUNTIME__
 			view.AddChild(child);
+#elif IS_UNIT_TESTS
+			if (view is FrameworkElement fe)
+			{
+				fe.AddChild(child);
+			}
+			else
+			{
+				throw new NotImplementedException("AddChild on UIElement is not implemented on IS_UNIT_TESTS.");
+			}
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif
@@ -323,11 +383,11 @@ namespace Windows.UI.Xaml.Media
 #if __ANDROID__
 			view.RemoveView(child);
 #elif __IOS__ || __MACOS__
-			if(child.Superview == view)
+			if (child.Superview == view)
 			{
 				child.RemoveFromSuperview();
 			}
-#elif UNO_REFERENCE_API
+#elif __CROSSRUNTIME__
 			view.RemoveChild(child);
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
@@ -351,7 +411,7 @@ namespace Windows.UI.Xaml.Media
 			children.ForEach(v => v.RemoveFromSuperview());
 
 			return children;
-#elif UNO_REFERENCE_API
+#elif __CROSSRUNTIME__
 			var children = GetChildren<_View>(view).ToList();
 			view.ClearChildren();
 
@@ -361,26 +421,23 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		internal static readonly GetHitTestability DefaultGetTestability;
-		static VisualTreeHelper()
-		{
-			DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
-		}
+		internal static readonly GetHitTestability DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
+			XamlRoot? xamlRoot,
 			GetHitTestability? getTestability = null,
-			Predicate<UIElement>? isStale = null
+			StalePredicate? isStale = null
 #if TRACE_HIT_TESTING
-			, [CallerMemberName] string? caller = null)
+			, [CallerMemberName] string caller = "")
 		{
 			using var _ = BEGIN_TRACE();
-			TRACE($"[{caller!.Replace("CoreWindow_Pointer", "").ToUpperInvariant()}] @{position.ToDebugString()}");
+			TRACE($"[{caller!.ToUpperInvariant()}] @{position.ToDebugString()}");
 #else
 			)
 		{
 #endif
-			if (Window.Current.RootElement is UIElement root)
+			if (xamlRoot?.VisualTree.RootElement is UIElement root)
 			{
 				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
@@ -388,12 +445,15 @@ namespace Windows.UI.Xaml.Media
 			return default;
 		}
 
+		/// <param name="position">
+		/// On skia: The absolute position relative to the window origin.
+		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
+		/// </param>
 		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
-			Point posRelToParent,
+			Point position,
 			UIElement element,
 			GetHitTestability getVisibility,
-			Predicate<UIElement>? isStale = null,
-			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
+			StalePredicate? isStale)
 		{
 			var stale = default(Branch?);
 			HitTestability elementHitTestVisibility;
@@ -408,81 +468,102 @@ namespace Windows.UI.Xaml.Media
 			if (elementHitTestVisibility == HitTestability.Collapsed)
 			{
 				// Even if collapsed, if the element is stale, we search down for the real stale leaf
-				if (isStale?.Invoke(element) ?? false)
+				if (isStale?.Method.Invoke(element) ?? false)
 				{
-					stale = SearchDownForStaleBranch(element, isStale);
+					stale = SearchDownForStaleBranch(element, isStale.Value);
 				}
 
 				TRACE($"> NOT FOUND (Element is HitTestability.Collapsed) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (default, stale);
 			}
 
-			// The region where the element was arrange by its parent.
+			// LayoutSlotWithMarginsAndAlignments is the region where the element was arranged by its parent.
 			// This is expressed in parent coordinate space
-			var layoutSlot = element.LayoutSlotWithMarginsAndAlignments;
+			TRACE($"- layoutSlot (rel to parent): {element.LayoutSlotWithMarginsAndAlignments.ToDebugString()}");
+			if (element.IsScrollPort)
+				TRACE($"- scroller: {element.ScrollOffsets.ToDebugString()}");
+			if (element is ScrollViewer sv)
+				TRACE($"- scroll viewer: zoom={sv.ZoomFactor:F2}");
+			if (element.RenderTransform is { } tr)
+				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
+
+#if __SKIA__
+			var transformToElement = UIElement.GetTransform(element, null);
 
 			// The maximum region where the current element and its children might draw themselves
-			// TODO: Get the real clipping rect! For now we assume no clipping.
-			// This is expressed in element coordinate space.
-			// For some controls imported from WinUI, such as NavigationView, 
-			// the Clip property may be significant. 
-			var clippingBounds = element.Clip?.Bounds ?? Rect.Infinite;
+			// This is expressed in the window (absolute) coordinate space.
+			var clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace() is { } path
+				? transformToElement.Transform(path.TightBounds.ToRect())
+				: Rect.Infinite;
+
+			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
+			{
+				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;
+			}
+			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
 
 			// The region where the current element draws itself.
-			// Be aware that children might be out of this rendering bounds if no clipping defined. TODO: .Intersect(clippingBounds)
+			// Be aware that children might be out of this rendering bounds if no clipping defined.
+			// This is expressed in the window (absolute) coordinate space.
+			var renderingBounds = transformToElement.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
+			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
+#else
+			// First compute the transformation between the element and its parent coordinate space
+			var matrix = Matrix3x2.Identity;
+			element.ApplyRenderTransform(ref matrix);
+			element.ApplyLayoutTransform(ref matrix);
+			element.ApplyElementCustomTransform(ref matrix);
+			element.ApplyFlowDirectionTransform(ref matrix);
+
+			TRACE($"- transform to parent: [{matrix.M11:F2},{matrix.M12:F2} / {matrix.M21:F2},{matrix.M22:F2} / {matrix.M31:F2},{matrix.M32:F2}]");
+
+			// Build 'position' in the current element coordinate space
+			var posRelToElement = matrix.Inverse().Transform(position);
+			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {position.ToDebugString()}");
+
+			// Second compute the transformations applied locally.
+			// This is somehow the difference between the "XAML coordinate space" and the effective coordinate space.
+			matrix = Matrix3x2.Identity;
+			element.ApplyRenderTransform(ref matrix, ignoreOrigin: true);
+			matrix.Translation = default; //
+			element.ApplyElementCustomTransform(ref matrix);
+			element.ApplyFlowDirectionTransform(ref matrix);
+			matrix = matrix.Inverse();
+
+			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in element coordinate space.
-			var renderingBounds = new Rect(new Point(), layoutSlot.Size);
+			var clippingBounds = element.Viewport is { IsInfinite: false } clipping ? matrix.Transform(clipping) : Rect.Infinite;
+			TRACE($"- clipping (rel to element): {clippingBounds.ToDebugString()}");
 
-			// First compute the 'position' in the current element coordinate space
-			var posRelToElement = posRelToParent;
-
-			posRelToElement.X -= layoutSlot.X;
-			posRelToElement.Y -= layoutSlot.Y;
-
-			var renderTransform = element.RenderTransform;
-			if (renderTransform != null)
-			{
-				var parentToElement = renderTransform.MatrixCore.Inverse();
-
-				TRACE($"- renderTransform: [{parentToElement.M11:F2},{parentToElement.M12:F2} / {parentToElement.M21:F2},{parentToElement.M22:F2} / {parentToElement.M31:F2},{parentToElement.M32:F2}]");
-
-				posRelToElement = parentToElement.Transform(posRelToElement);
-				renderingBounds = parentToElement.Transform(renderingBounds);
-			}
-
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
-			if (element is ScrollViewer sv)
-			{
-				// Note: We check only the zoom factor as scroll offsets are handled at SCP level using the IsScrollPort
-				var zoom = sv.ZoomFactor;
-
-				TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
-
-				posRelToElement.X /= zoom;
-				posRelToElement.Y /= zoom;
-
-				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
-			}
-
-			if (element.IsScrollPort) // Managed SCP or custom scroller
-			{
-				posRelToElement.X += element.ScrollOffsets.X;
-				posRelToElement.Y += element.ScrollOffsets.Y;
-			}
+			// The region where the current element draws itself.
+			// Be aware that children might be out of this rendering bounds if no clipping defined.
+			// This is expressed in element coordinate space.
+			var renderingBounds = matrix.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size));
+			renderingBounds = renderingBounds.IntersectWith(clippingBounds) ?? Rect.Empty;
+			TRACE($"- rendering (rel to element): {renderingBounds.ToDebugString()}");
 #endif
 
-			TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");
-			TRACE($"- renderBounds (relative to element): {renderingBounds.ToDebugString()}");
-			TRACE($"- clippingBounds (relative to element): {clippingBounds.ToDebugString()}");
-			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {posRelToParent.ToDebugString()}");
-
+#if __SKIA__
+			var testPosition = position;
+#else
+			var testPosition = posRelToElement;
+#endif
 			// Validate that the pointer is in the bounds of the element
-			if (!clippingBounds.Contains(posRelToElement))
+			if (!clippingBounds.Contains(testPosition))
 			{
 				// Even if out of bounds, if the element is stale, we search down for the real stale leaf
-				if (isStale?.Invoke(element) ?? false)
+				if (isStale is not null)
 				{
-					stale = SearchDownForStaleBranch(element, isStale);
+					if (isStale.Value.Method(element))
+					{
+						TRACE($"- Is {isStale.Value.Name}");
+
+						stale = SearchDownForStaleBranch(element, isStale.Value);
+					}
+					else
+					{
+						TRACE($"- Is NOT {isStale.Value.Name}");
+					}
 				}
 
 				TRACE($"> NOT FOUND (Out of the **clipped** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
@@ -490,37 +571,88 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			// Validate if any child is an acceptable target
-			var children = childrenFilter is null ? GetManagedVisualChildren(element) : childrenFilter(GetManagedVisualChildren(element));
-			using var child = children.Reverse().GetEnumerator();
+			var children = GetManagedVisualChildren(element);
 			var isChildStale = isStale;
+
+			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
+			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
+			// https://github.com/unoplatform/uno/issues/325
+			using var child = children
+#if __SKIA__
+				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
+				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
+				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
+#elif __WASM__
+				.GetReverseEnumerator();
+#else
+				.Reverse()
+				.GetEnumerator();
+#endif
+
 			while (child.MoveNext())
 			{
-				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
+				var childResult = SearchDownForTopMostElementAt(testPosition, child.Current!, getVisibility, isChildStale);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
-				if (childResult.stale is { })
+				if (childResult.stale is not null)
 				{
 					stale = childResult.stale;
 					isChildStale = null;
 				}
 
 				// If we found an acceptable element in the child's sub-tree, job is done!
-				if (childResult.element is { })
+				if (childResult.element is not null)
 				{
-					if (isChildStale is { }) // Also indicates that stale is null
+					if (isChildStale is not null) // Also indicates that stale is null
 					{
 						// If we didn't find any stale root in previous children or in the child's sub tree,
 						// we continue to enumerate sibling children to detect a potential stale root.
 
+						TRACE($"+ Searching for stale {isChildStale.Value.Name} branch.");
+
 						while (child.MoveNext())
 						{
-							if (isChildStale(child.Current))
+#if TRACE_HIT_TESTING
+							using var __ = SET_TRACE_SUBJECT(child.Current);
+#endif
+
+							if (isChildStale.Value.Method(child.Current))
 							{
-								stale = SearchDownForStaleBranch(child.Current!, isChildStale);
+								TRACE($"- Is {isChildStale.Value.Name}");
+
+								stale = SearchDownForStaleBranch(child.Current!, isChildStale.Value);
+
+#if TRACE_HIT_TESTING
+								while (child.MoveNext())
+								{
+									using var ___ = SET_TRACE_SUBJECT(child.Current);
+									if (isChildStale.Value.Method(child.Current))
+									{
+										//Debug.Assert(false);
+										TRACE($"- Is {isChildStale.Value.Name} ***** INVALID: Only one branch can be considered as stale at once! ****");
+									}
+									TRACE($"> Ignored since leaf and stale branch has already been found.");
+								}
+#endif
+
 								break;
+							}
+							else
+							{
+								TRACE($"- Is NOT {isChildStale.Value.Name}");
 							}
 						}
 					}
+#if TRACE_HIT_TESTING
+					else
+					{
+						while (child.MoveNext())
+						{
+							using var __ = SET_TRACE_SUBJECT(child.Current);
+							TRACE($"> Ignored since leaf has already been found and no stale branch to find.");
+						}
+					}
+#endif
 
 					TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch: {stale?.ToString() ?? "-- none --"}");
 					return (childResult.element, stale);
@@ -529,7 +661,7 @@ namespace Windows.UI.Xaml.Media
 
 			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
 			// and the position is in actual bounds (which might be different than the clipping bounds)
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(posRelToElement))
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);
@@ -538,7 +670,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				// If no stale element found yet, validate if the current is stale.
 				// Note: no needs to search down for stale child, we already did it!
-				if (isStale?.Invoke(element) ?? false)
+				if (isStale?.Method.Invoke(element) ?? false)
 				{
 					stale = new Branch(element, stale?.Leaf ?? element);
 				}
@@ -548,21 +680,60 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private static Branch SearchDownForStaleBranch(UIElement staleRoot, Predicate<UIElement> isStale)
-			=> new Branch(staleRoot, SearchDownForLeaf(staleRoot, isStale));
+		private static Branch SearchDownForStaleBranch(UIElement staleRoot, StalePredicate isStale)
+			=> new(staleRoot, SearchDownForLeafCore(staleRoot, isStale));
 
-		internal static UIElement SearchDownForLeaf(UIElement root, Predicate<UIElement> predicate)
+		internal static UIElement SearchDownForLeaf(UIElement root, StalePredicate predicate)
 		{
-			foreach (var child in GetManagedVisualChildren(root).Reverse())
+#if TRACE_HIT_TESTING
+			using var trace = ENSURE_TRACE();
+#endif
+			return SearchDownForLeafCore(root, predicate);
+		}
+
+		private static UIElement SearchDownForLeafCore(UIElement root, StalePredicate predicate)
+		{
+			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
+			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
+			// https://github.com/unoplatform/uno/issues/325
+			using var enumerator = GetManagedVisualChildren(root)
+#if __SKIA__
+				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
+				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
+				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
+#elif __WASM__
+				.GetReverseEnumerator();
+#else
+				.Reverse()
+				.GetEnumerator();
+#endif
+
+			while (enumerator.MoveNext())
 			{
-				if (predicate(child))
+				var child = enumerator.Current;
+#if TRACE_HIT_TESTING
+				SET_TRACE_SUBJECT(child);
+#endif
+
+				if (predicate.Method(child))
 				{
-					return SearchDownForLeaf(child, predicate);
+					TRACE($"- Is {predicate.Name}");
+					return SearchDownForLeafCore(child, predicate);
+				}
+				else
+				{
+					TRACE($"- Is NOT {predicate.Name}");
 				}
 			}
 
 			return root;
 		}
+
+#if __SKIA__
+		// This is used with MaterializableList.GetReverseSortedEnumerator
+		private static int UIElementToCanvasZIndex(UIElement element)
+			=> element.Visual.ZIndex; // Equivalent to GetValue(Canvas.ZIndexProperty) on skia
+#endif
 
 		internal static IEnumerable<DependencyObject> EnumerateAncestors(DependencyObject o)
 		{
@@ -598,12 +769,17 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
+		internal static IEnumerable<UIElement> GetManagedVisualChildren(object view)
+			=> view is _ViewGroup elt
+				? GetManagedVisualChildren(elt)
+				: Enumerable.Empty<UIElement>();
+
 #if __IOS__ || __MACOS__ || __ANDROID__
 		/// <summary>
 		/// Gets all immediate UIElement children of this <paramref name="view"/>. If any immediate subviews are native, it will descend into
 		/// them depth-first until it finds a UIElement, and return those UIElements.
 		/// </summary>
-		private static IEnumerable<UIElement> GetManagedVisualChildren(_ViewGroup view)
+		internal static IEnumerable<UIElement> GetManagedVisualChildren(_ViewGroup view)
 		{
 			foreach (var child in view.GetChildren())
 			{
@@ -620,8 +796,28 @@ namespace Windows.UI.Xaml.Media
 				}
 			}
 		}
+#elif IS_UNIT_TESTS
+		internal static IEnumerable<UIElement> GetManagedVisualChildren(_View view)
+			=> view.GetChildren();
 #else
-		private static IEnumerable<UIElement> GetManagedVisualChildren(_View view) => view.GetChildren().OfType<UIElement>();
+		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
+			=> view._children;
+#endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> GetManagedVisualChildren(view).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseEnumerator GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> view._children.GetReverseEnumerator();
+#endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> GetManagedVisualChildren(view).Where(elt => predicate(elt)).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseReduceEnumerator GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> view._children.GetReverseEnumerator(predicate);
 #endif
 		#endregion
 
@@ -644,6 +840,9 @@ namespace Windows.UI.Xaml.Media
 			});
 		}
 
+		private static IDisposable ENSURE_TRACE()
+			=> _trace is null ? BEGIN_TRACE() : Disposable.Empty;
+
 		private static IDisposable SET_TRACE_SUBJECT(UIElement element)
 		{
 			if (_trace is { })
@@ -651,8 +850,7 @@ namespace Windows.UI.Xaml.Media
 				var previous = _traceSubject;
 				_traceSubject = element;
 
-				_trace.Append(new string('\t', _traceSubject.Depth - 1));
-				_trace.Append($"[{element.GetDebugName()}]\r\n");
+				_trace.AppendLine(_traceSubject.GetDebugIdentifier());
 
 				return Disposable.Create(() => _traceSubject = previous);
 			}
@@ -669,7 +867,8 @@ namespace Windows.UI.Xaml.Media
 #if TRACE_HIT_TESTING
 			if (_trace is { })
 			{
-				_trace.Append(new string('\t', _traceSubject?.Depth ?? 0));
+				_trace.Append(_traceSubject.GetDebugIndent(subLine: true));
+				_trace.Append(' ');
 				_trace.Append(msg.ToStringInvariant());
 				_trace.Append("\r\n");
 			}
@@ -679,8 +878,10 @@ namespace Windows.UI.Xaml.Media
 
 		internal struct Branch
 		{
-			public static Branch ToWindowRoot(UIElement leaf)
-				=> new Branch(Window.Current.RootElement, leaf);
+			public static Branch ToPublicRoot(UIElement leaf)
+				=> new Branch(
+					leaf.XamlRoot?.VisualTree?.RootElement ?? throw new InvalidOperationException("Element must be part of a visual tree"),
+					leaf);
 
 			public Branch(UIElement root, UIElement leaf)
 			{
@@ -718,6 +919,31 @@ namespace Windows.UI.Xaml.Media
 
 					yield return current;
 				}
+			}
+
+			public bool Contains(UIElement element)
+			{
+				var current = Leaf;
+				if (current == element)
+				{
+					return true;
+				}
+
+				while (current != Root)
+				{
+					var parentDo = GetParent(current);
+					while ((current = parentDo as UIElement) is null)
+					{
+						parentDo = GetParent(parentDo!);
+					}
+
+					if (current == element)
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 
 			public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";

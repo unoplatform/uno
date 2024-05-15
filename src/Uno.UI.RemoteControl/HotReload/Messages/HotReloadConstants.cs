@@ -6,6 +6,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 {
 	internal class HotReloadConstants
 	{
-		public const string ScopeName = "hotreload";
+		public const string TestingScopeName = "UnoRuntimeTests";
+		public const string HotReload = "hotreload";
 	}
 }

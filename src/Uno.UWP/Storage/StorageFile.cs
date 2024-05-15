@@ -1,5 +1,4 @@
 #nullable enable
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
 using System;
 using System.Globalization;
@@ -13,22 +12,31 @@ using Windows.Foundation;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Uno;
+using Uno.Helpers;
 
 namespace Windows.Storage
 {
 	public sealed partial class StorageFile : IStorageFile, IStorageFile2, IStorageItem, IStorageItem2
 	{
 		public static IAsyncOperation<StorageFile> GetFileFromPathAsync(string path)
-			=> AsyncOperation.FromTask(async ct => new StorageFile(new Local(path)));
+			=> AsyncOperation.FromTask(ct => Task.FromResult(new StorageFile(new Local(path))));
 
 		internal static StorageFile GetFileFromPath(string path)
 			=> new StorageFile(new Local(path));
 
-		[NotImplemented("NET461", "__NETSTD_REFERENCE__")]
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static IAsyncOperation<StorageFile> GetFileFromApplicationUriAsync(Uri uri)
-			=> AsyncOperation.FromTask(ct => GetFileFromApplicationUri(ct, uri));
+			=> AsyncOperation.FromTask(ct =>
+			{
+				if (uri.IsAppData())
+				{
+					return Task.FromResult(GetFileFromPath(AppDataUriEvaluator.ToPath(uri)));
+				}
 
-#if NET461 || __NETSTD_REFERENCE__
+				return GetFileFromApplicationUri(ct, uri);
+			});
+
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 		private static Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 			=> throw new NotImplementedException();
 #endif
@@ -111,29 +119,29 @@ namespace Windows.Storage
 			=> AsyncOperation.FromTask(ct => Implementation.GetBasicPropertiesAsync(ct));
 
 		public IAsyncOperation<IRandomAccessStreamWithContentType> OpenReadAsync()
-			=> AsyncOperation<IRandomAccessStreamWithContentType>.FromTask((ct, _) => Implementation.OpenAsync(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation.FromTask(async ct => await Implementation.OpenAsync(ct, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode)
-			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await Implementation.OpenAsync(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation.FromTask<IRandomAccessStream>(async ct => await Implementation.OpenAsync(ct, accessMode, StorageOpenOptions.AllowReadersAndWriters));
 
 		public IAsyncOperation<IRandomAccessStream> OpenAsync(FileAccessMode accessMode, StorageOpenOptions options)
-			=> AsyncOperation<IRandomAccessStream>.FromTask(async (ct, _) => await Implementation.OpenAsync(ct, accessMode, options));
+			=> AsyncOperation.FromTask<IRandomAccessStream>(async ct => await Implementation.OpenAsync(ct, accessMode, options));
 
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync()
-			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => Implementation.OpenTransactedWriteAsync(ct, StorageOpenOptions.AllowReadersAndWriters));
+			=> AsyncOperation.FromTask(async ct => await Implementation.OpenTransactedWriteAsync(ct, StorageOpenOptions.AllowReadersAndWriters));
 
 		[NotImplemented] // The options is ignored, we implement this only to increase compatibility
 		public IAsyncOperation<StorageStreamTransaction> OpenTransactedWriteAsync(StorageOpenOptions options)
-			=> AsyncOperation<StorageStreamTransaction>.FromTask((ct, _) => Implementation.OpenTransactedWriteAsync(ct, options));
+			=> AsyncOperation.FromTask(async ct => await Implementation.OpenTransactedWriteAsync(ct, options));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => Implementation.CopyAsync(ct, destinationFolder, global::System.IO.Path.GetFileName(Path), NameCollisionOption.FailIfExists));
+			=> AsyncOperation.FromTask(async ct => await Implementation.CopyAsync(ct, destinationFolder, global::System.IO.Path.GetFileName(Path), NameCollisionOption.FailIfExists));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => Implementation.CopyAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
+			=> AsyncOperation.FromTask(async ct => await Implementation.CopyAsync(ct, destinationFolder, desiredNewName, NameCollisionOption.FailIfExists));
 
 		public IAsyncOperation<StorageFile> CopyAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
-			=> AsyncOperation<StorageFile>.FromTask((ct, _) => Implementation.CopyAsync(ct, destinationFolder, desiredNewName, option));
+			=> AsyncOperation.FromTask(async ct => await Implementation.CopyAsync(ct, destinationFolder, desiredNewName, option));
 
 		public IAsyncAction CopyAndReplaceAsync(IStorageFile fileToReplace)
 			=> AsyncAction.FromTask(ct => Implementation.CopyAndReplaceAsync(ct, fileToReplace));
@@ -192,7 +200,7 @@ namespace Windows.Storage
 					this.Log().Error("The thumbnail could not retrieved.", e);
 					return null;
 				}
-					
+
 			}, ct);
 
 			return stream;

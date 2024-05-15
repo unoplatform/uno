@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ namespace Uno
 	/// A tuple implementation that caches the GetHashCode value for faster lookup performance.
 	/// </summary>
 	internal class CachedTuple
-    {
+	{
 		/// <summary>
 		/// Creates a tuple with two values.
 		/// </summary>
@@ -95,8 +95,8 @@ namespace Uno
 		private static bool InternalEquals(CachedTuple<T1, T2> t1, CachedTuple<T1, T2> t2)
 		{
 			return ReferenceEquals(t1, t2) || (
-				Equals(t1.Item1, t2.Item1)
-				&& Equals(t1.Item2, t2.Item2)
+				EqualityComparer<T1>.Default.Equals(t1.Item1, t2.Item1)
+				&& EqualityComparer<T2>.Default.Equals(t1.Item2, t2.Item2)
 			);
 		}
 
@@ -136,8 +136,8 @@ namespace Uno
 			Item2 = item2;
 			Item3 = item3;
 
-			_cachedHashCode = 
-				item1?.GetHashCode() ?? 0 
+			_cachedHashCode =
+				item1?.GetHashCode() ?? 0
 				^ item2?.GetHashCode() ?? 0
 				^ item3?.GetHashCode() ?? 0;
 		}
@@ -159,9 +159,9 @@ namespace Uno
 		private static bool InternalEquals(CachedTuple<T1, T2, T3> t1, CachedTuple<T1, T2, T3> t2)
 		{
 			return ReferenceEquals(t1, t2) || (
-				Equals(t1.Item1, t2.Item1)
-				&& Equals(t1.Item2, t2.Item2)
-				&& Equals(t1.Item3, t2.Item3)
+				EqualityComparer<T1>.Default.Equals(t1.Item1, t2.Item1)
+				&& EqualityComparer<T2>.Default.Equals(t1.Item2, t2.Item2)
+				&& EqualityComparer<T3>.Default.Equals(t1.Item3, t2.Item3)
 			);
 		}
 
@@ -200,7 +200,7 @@ namespace Uno
 			Item3 = item3;
 			Item4 = item4;
 
-			_cachedHashCode = item1?.GetHashCode() ?? 0 
+			_cachedHashCode = item1?.GetHashCode() ?? 0
 				^ item2?.GetHashCode() ?? 0
 				^ item3?.GetHashCode() ?? 0
 				^ item4?.GetHashCode() ?? 0;
@@ -223,10 +223,10 @@ namespace Uno
 		private static bool InternalEquals(CachedTuple<T1, T2, T3, T4> t1, CachedTuple<T1, T2, T3, T4> t2)
 		{
 			return ReferenceEquals(t1, t2) || (
-					Equals(t1.Item1, t2.Item1)
-					&& Equals(t1.Item2, t2.Item2)
-					&& Equals(t1.Item3, t2.Item3)
-					&& Equals(t1.Item4, t2.Item4)
+					EqualityComparer<T1>.Default.Equals(t1.Item1, t2.Item1)
+					&& EqualityComparer<T2>.Default.Equals(t1.Item2, t2.Item2)
+					&& EqualityComparer<T3>.Default.Equals(t1.Item3, t2.Item3)
+					&& EqualityComparer<T4>.Default.Equals(t1.Item4, t2.Item4)
 				);
 		}
 

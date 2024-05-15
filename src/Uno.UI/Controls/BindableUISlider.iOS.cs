@@ -4,13 +4,9 @@ using System.ComponentModel;
 using System.Text;
 using Foundation;
 using UIKit;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using CoreGraphics;
 using ObjCRuntime;
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
 
 namespace Uno.UI.Controls
 {

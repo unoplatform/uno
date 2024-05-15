@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	partial class AnimatorFactory
 	{
@@ -14,6 +14,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		internal static IValueAnimator Create<T>(Timeline timeline, T startingValue, T targetValue) where T : struct
 		{
+			if (timeline.Duration.HasTimeSpan && timeline.Duration.TimeSpan == TimeSpan.Zero)
+			{
+				return new ImmediateAnimator<T>(targetValue);
+			}
+
 			if (startingValue is float startingFloat && targetValue is float targetFloat)
 			{
 				return CreateDouble(timeline, startingFloat, targetFloat);

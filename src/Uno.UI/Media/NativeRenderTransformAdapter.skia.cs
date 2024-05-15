@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Uno.Extensions;
-using Uno.Extensions.ValueType;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Media
 {
@@ -17,11 +17,21 @@ namespace Uno.UI.Media
 
 		partial void Apply(bool isSizeChanged, bool isOriginChanged)
 		{
-			Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize));
+			FlowDirectionTransform = Owner.GetFlowDirectionTransform();
+
+			if (Transform is null)
+			{
+				Owner.Visual.TransformMatrix = new Matrix4x4(FlowDirectionTransform);
+			}
+			else
+			{
+				Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize) * FlowDirectionTransform);
+			}
 		}
 
 		partial void Cleanup()
 		{
+			FlowDirectionTransform = Matrix3x2.Identity;
 			Owner.Visual.TransformMatrix = Matrix4x4.Identity;
 		}
 	}

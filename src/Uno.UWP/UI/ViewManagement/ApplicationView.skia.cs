@@ -1,39 +1,39 @@
 ﻿#nullable enable
 using System;
-using Uno.Extensions;
-using Uno.Foundation;
-using Uno.Foundation.Logging;
-using Windows.Foundation;
-using System.Globalization;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Microsoft.UI;
 using Uno.Foundation.Extensibility;
-using Uno.Disposables;
-using Windows.ApplicationModel;
-using Windows.Storage;
+using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {
-	partial class ApplicationView : IApplicationViewEvents
+	partial class ApplicationView
 	{
-		private readonly IApplicationViewExtension _applicationViewExtension;
-		private Size _preferredMinSize = Size.Empty;
+		private Lazy<IApplicationViewExtension?> _applicationViewExtension;
 
-		public ApplicationView()
+		private Size _preferredMinSize;
+
+		partial void InitializePlatform()
 		{
-			if (!ApiExtensibility.CreateInstance(this, out _applicationViewExtension))
+			_applicationViewExtension = new Lazy<IApplicationViewExtension?>(() =>
 			{
-				throw new InvalidOperationException($"Unable to find IApplicationViewExtension extension");
+				ApiExtensibility.CreateInstance<IApplicationViewExtension>(this, out var extension);
+				return extension;
+			});
+		}
+
+		internal Size PreferredMinSize
+		{
+			get => _preferredMinSize;
+			set
+			{
+				_preferredMinSize = value;
+				OnPropertyChanged();
 			}
 		}
 
-		public string Title
-		{
-			get => _applicationViewExtension.Title;
-			set => _applicationViewExtension.Title = value;
-		}
-
-		public bool TryEnterFullScreenMode() => _applicationViewExtension.TryEnterFullScreenMode();
-
-		public void ExitFullScreenMode() => _applicationViewExtension.ExitFullScreenMode();
+		internal PropertyChangedEventHandler? PropertyChanged;
 
 		public bool TryResizeView(Size value)
 		{
@@ -41,31 +41,19 @@ namespace Windows.UI.ViewManagement
 			{
 				return false;
 			}
-			return _applicationViewExtension.TryResizeView(value);
+			return _applicationViewExtension.Value?.TryResizeView(value) ?? false;
 		}
 
-		public void SetPreferredMinSize(Size minSize)
+		public void SetPreferredMinSize(Size minSize) => PreferredMinSize = minSize;
+
+		private void OnPropertyChanged([CallerMemberName] string? name = null)
 		{
-			_applicationViewExtension.SetPreferredMinSize(minSize);
-			_preferredMinSize = minSize;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
 
 	internal interface IApplicationViewExtension
 	{
-		string Title { get; set; }
-
-		bool TryEnterFullScreenMode();
-
-		void ExitFullScreenMode();
-
 		bool TryResizeView(Size size);
-
-		void SetPreferredMinSize(Size minSize);
-	}
-
-	internal interface IApplicationViewEvents
-	{
-
 	}
 }

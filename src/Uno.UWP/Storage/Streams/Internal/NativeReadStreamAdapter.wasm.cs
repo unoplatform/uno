@@ -1,25 +1,26 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
 
 namespace Uno.Storage.Streams.Internal
 {
-	internal class NativeReadStreamAdapter : Stream
+	internal partial class NativeReadStreamAdapter : Stream
 	{
-		private const string JsType = "Uno.Storage.Streams.NativeFileReadStream";
-
 		private readonly Guid _streamId;
 
-		private long _length = 0;
-		private long _position = 0;
+		private long _length;
+		private long _position;
 
 		public static async Task<NativeReadStreamAdapter> CreateAsync(Guid fileId)
 		{
 			var streamId = Guid.NewGuid();
-			var result = await WebAssemblyRuntime.InvokeAsync($"{JsType}.openAsync('{streamId}', '{fileId}')");
+			var result = await NativeMethods.OpenAsync(streamId.ToString(), fileId.ToString());
+
 			if (result == null || !long.TryParse(result, out var length))
 			{
 				throw new InvalidOperationException("Could not create a writable stream.");
@@ -68,7 +69,7 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException("This stream is read-only");
 
-		public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException("This stream is read-only.");
+		public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException("This stream is read-only.");
 
 		public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
 		{
@@ -77,8 +78,8 @@ namespace Uno.Storage.Streams.Internal
 			{
 				var pinnedData = handle.AddrOfPinnedObject();
 				// TODO: Handle case of reading beyond end of file!
-				var countReadString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.readAsync('{_streamId}', {pinnedData}, {offset}, {count}, {Position})");
-				var countRead = int.Parse(countReadString);
+				var countReadString = await NativeMethods.ReadAsync(_streamId.ToString(), pinnedData, offset, count, Position);
+				var countRead = int.Parse(countReadString, CultureInfo.InvariantCulture);
 				Position += countRead;
 				return countRead;
 			}
@@ -88,9 +89,23 @@ namespace Uno.Storage.Streams.Internal
 			}
 		}
 
-		protected override async void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
-			WebAssemblyRuntime.InvokeJS($"{JsType}.close('{_streamId}')");
+			NativeMethods.Close(_streamId.ToString());
+		}
+
+		internal static partial class NativeMethods
+		{
+			private const string JsType = "globalThis.Uno.Storage.Streams.NativeFileReadStream";
+
+			[JSImport($"{JsType}.close")]
+			internal static partial void Close(string streamId);
+
+			[JSImport($"{JsType}.openAsync")]
+			internal static partial Task<string> OpenAsync(string streamId, string fileId);
+
+			[JSImport($"{JsType}.readAsync")]
+			internal static partial Task<string> ReadAsync(string streamId, nint pData, int offset, int count, double position);
 		}
 	}
 }

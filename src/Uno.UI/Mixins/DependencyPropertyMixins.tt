@@ -1,15 +1,15 @@
 ﻿<#@template language="C#"#>
-<#@output extension="g.cs" #>
+<#@output extension=".cs" #>
 
 <#
 	_namespaces = new NamespacesBuilder()
-		.Namespace("Windows.UI.Xaml.Controls")
+		.Namespace("Microsoft.UI.Xaml.Controls")
 
 			.Class("Control")
 				.Property("BackgroundSizing", "BackgroundSizing", "default")
 				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)")
 				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
-			.Class("Picker", condition: "XAMARIN_IOS")			
+			.Class("Picker", condition: "__IOS__")			
 				.Property("ItemsSource", "object", "null")
 				.Property("SelectedItem", "object", "null")
 				.Property("SelectedIndex", "int", "-1")
@@ -40,7 +40,7 @@
 				.Property("GroupHeaderPlacement","GroupHeaderPlacement", "GroupHeaderPlacement.Top")
 				.Property("GroupPadding","Thickness","Thickness.Empty")
 				.Property("Orientation", "Orientation", "Orientation.Vertical")
-				.Property("CacheLength", "double", "4.0", condition: "XAMARIN_ANDROID")
+				.Property("CacheLength", "double", "4.0", condition: "__ANDROID__")
 			// https://msdn.microsoft.com/library/windows/apps/windows.ui.xaml.controls.itemswrapgrid.aspx
 			.Class("ItemsWrapGrid")
 				.Property("AreStickyGroupHeadersEnabled", "bool", "true")
@@ -50,7 +50,7 @@
 				.Property("ItemWidth", "double", "Double.NaN")
 				.Property("Orientation", "Orientation", "Orientation.Vertical")
 				.Property("MaximumRowsOrColumns", "int", "-1")
-				.Property("CacheLength", "double", "4.0", condition: "XAMARIN_ANDROID")
+				.Property("CacheLength", "double", "4.0", condition: "__ANDROID__")
 			.Class("VirtualizingPanelLayout", accessModifier: "public")
 				.Property("AreStickyGroupHeadersEnabled", "bool", "true")
 				.Property("GroupHeaderPlacement","GroupHeaderPlacement", "GroupHeaderPlacement.Top")
@@ -71,18 +71,12 @@
 				.Property("DayVisible", "bool", "true")
 				.Property("MonthVisible", "bool", "true")
 				.Property("YearVisible", "bool", "true")
-			.Class("TimePickerFlyout")
-				.Property("Time", "TimeSpan", "DateTime.Now.TimeOfDay")
-				.Property("MinuteIncrement", "int", "1")
-				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
 			.Class("TimePickerSelector")
 				.Property("Time", "TimeSpan", "DateTime.Now.TimeOfDay")
 				.Property("MinuteIncrement", "int", "1")
-				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
-			.Class("TimePicker")
-				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
+				.Property("ClockIdentifier", "string", "global::Windows.Globalization.ClockIdentifiers.TwelveHour")
 
-		.Namespace("Windows.UI.Xaml.Controls.Primitives")
+		.Namespace("Microsoft.UI.Xaml.Controls.Primitives")
 			.Class("SelectorItem")
 				.Property("IsSelected", "bool", "false")
 			.Class("Popup")
@@ -90,22 +84,20 @@
 				.Property("Child", "UIElement", "null", frameworkPropertyOption: "ValueInheritsDataContext")
 				.Property("IsLightDismissEnabled", "bool", "false")
 				//.Property("ChildTransitions", "TransitionCollection", "null")
-				.Property("HorizontalOffset", "double", "0")
-				.Property("VerticalOffset", "double", "0")
 
 		.Namespace("Uno.UI.Controls.Legacy")
-			.Class("ListViewBase", condition: "XAMARIN_IOS")
+			.Class("ListViewBase", condition: "__IOS__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
-			.Class("ListView", condition: "XAMARIN_ANDROID")
+			.Class("ListView", condition: "__ANDROID__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
-			.Class("HorizontalListView", condition: "XAMARIN_ANDROID")
+			.Class("HorizontalListView", condition: "__ANDROID__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
-			.Class("GridView", condition: "XAMARIN_ANDROID")
+			.Class("GridView", condition: "__ANDROID__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
-			.Class("HorizontalGridView", condition: "XAMARIN_ANDROID")
+			.Class("HorizontalGridView", condition: "__ANDROID__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
-		.Namespace("Windows.UI.Xaml.Controls.Primitives")
+		.Namespace("Microsoft.UI.Xaml.Controls.Primitives")
 	.Build();
 #>
 
-<#@include file="..\UI\Xaml\DependencyPropertiesImplementation.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/DependencyPropertiesImplementation.tt"#>

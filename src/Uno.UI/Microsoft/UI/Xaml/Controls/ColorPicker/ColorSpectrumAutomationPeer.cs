@@ -4,12 +4,12 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {
 	public class ColorSpectrumAutomationPeer : AutomationPeer, IValueProvider
 	{
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public string Value
 		{
-			get 
+			get
 			{
 				ColorSpectrum colorSpectrumOwner = _owner;
 				Color color = colorSpectrumOwner.Color;
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void RaisePropertyChangedEvent(Color oldColor, Color newColor, Vector4 oldHsvColor, Vector4 newHsvColor)
 		{
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Automation.ValuePatternIdentifiers", nameof(ValuePatternIdentifiers.ValueProperty)))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers", nameof(ValuePatternIdentifiers.ValueProperty)))
 			{
 				string oldValueString = GetValueString(oldColor, oldHsvColor);
 				string newValueString = GetValueString(newColor, newHsvColor);

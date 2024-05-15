@@ -8,10 +8,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -1233,7 +1233,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void Read_TextLiteral()
 		{
-			var sequence = new SequenceItem[] 
+			var sequence = new SequenceItem[]
 			{
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -1280,7 +1280,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void Read_WhiteSpacePreservation()
 		{
-			var sequence = new SequenceItem[] 
+			var sequence = new SequenceItem[]
 			{
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -1289,7 +1289,7 @@ namespace MonoTests.Uno.Xaml
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = XamlLanguage.Base.ToString() },
 				new SequenceItem { NodeType = XamlNodeType.Value, Value = "", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
-				 
+
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
 				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock"},
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
@@ -1379,7 +1379,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void Read_CustomAttachedProperty()
 		{
-			var sequence = new SequenceItem[] 
+			var sequence = new SequenceItem[]
 			{
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -1407,7 +1407,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void Read_xBind()
 		{
-			var sequence = new SequenceItem[] 
+			var sequence = new SequenceItem[]
 			{
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -1442,7 +1442,7 @@ namespace MonoTests.Uno.Xaml
 
 			while (r.Read()) { }
 
-			var sequence = new SequenceItem[] 
+			var sequence = new SequenceItem[]
 			{
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -1468,7 +1468,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void Read_RunSpace01()
 		{
-			var sequence = new SequenceItem[] 
+			var sequence = new SequenceItem[]
 			{
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -1509,7 +1509,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void Read_RunSpace02()
 		{
-			var sequence = new SequenceItem[] 
+			var sequence = new SequenceItem[]
 			{
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -2096,7 +2096,7 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("TestClass4.xml");
 			WriteNullMemberAsObject (r, null);
 		}
-		
+
 		[Test]
 		public void StaticMember ()
 		{
@@ -2110,7 +2110,7 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("String.xml");
 			Skip (r);
 		}
-		
+
 		[Test]
 		public void Skip2 ()
 		{
@@ -2134,56 +2134,56 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("NonPrimitive.xml");
 			Read_NonPrimitive (r);
 		}
-		
+
 		[Test]
 		public void Read_TypeExtension ()
 		{
 			var r = GetReader ("Type.xml");
 			Read_TypeOrTypeExtension (r, null, XamlLanguage.Type.GetMember ("Type"));
 		}
-		
+
 		[Test]
 		public void Read_Type2 ()
 		{
 			var r = GetReader ("Type2.xml");
 			Read_TypeOrTypeExtension2 (r, null, XamlLanguage.Type.GetMember ("Type"));
 		}
-		
+
 		[Test]
 		public void Read_Reference ()
 		{
 			var r = GetReader ("Reference.xml");
 			Read_Reference (r);
 		}
-		
+
 		[Test]
 		public void Read_Null ()
 		{
 			var r = GetReader ("NullExtension.xml");
 			Read_NullOrNullExtension (r, null);
 		}
-		
+
 		[Test]
 		public void Read_StaticExtension ()
 		{
 			var r = GetReader ("StaticExtension.xml");
 			Read_StaticExtension (r, XamlLanguage.Static.GetMember ("Member"));
 		}
-		
+
 		[Test]
 		public void Read_ListInt32 ()
 		{
 			var r = GetReader ("List_Int32.xml", ignoreWhitespace: true);
 			Read_ListInt32 (r, null, new int [] {5, -3, int.MaxValue, 0}.ToList ());
 		}
-		
+
 		[Test]
 		public void Read_ListInt32_2 ()
 		{
 			var r = GetReader ("List_Int32_2.xml");
 			Read_ListInt32 (r, null, new int [0].ToList ());
 		}
-		
+
 		[Test]
 		public void Read_ListType ()
 		{
@@ -2204,14 +2204,14 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("ArrayList.xml", ignoreWhitespace: true);
 			Read_ArrayList (r);
 		}
-		
+
 		[Test]
 		public void Read_Array ()
 		{
 			var r = GetReader ("ArrayExtension.xml", ignoreWhitespace: true);
 			Read_ArrayOrArrayExtensionOrMyArrayExtension (r, null, typeof (ArrayExtension));
 		}
-		
+
 		[Test]
 		public void Read_MyArrayExtension ()
 		{
@@ -2232,28 +2232,28 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("MyExtension.xml");
 			Read_CustomMarkupExtension (r);
 		}
-		
+
 		[Test]
 		public void Read_CustomMarkupExtension2 ()
 		{
 			var r = GetReader ("MyExtension2.xml");
 			Read_CustomMarkupExtension2 (r);
 		}
-		
+
 		[Test]
 		public void Read_CustomMarkupExtension3 ()
 		{
 			var r = GetReader ("MyExtension3.xml");
 			Read_CustomMarkupExtension3 (r);
 		}
-		
+
 		[Test]
 		public void Read_CustomMarkupExtension4 ()
 		{
 			var r = GetReader ("MyExtension4.xml");
 			Read_CustomMarkupExtension4 (r);
 		}
-		
+
 		[Test]
 		public void Read_CustomMarkupExtension6 ()
 		{
@@ -2278,7 +2278,7 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("Dictionary_String_Double.xml", ignoreWhitespace: true);
 			Read_Dictionary (r);
 		}
-		
+
 		[Test]
 		public void Read_Dictionary2 ()
 		{
@@ -2288,7 +2288,7 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("Dictionary_String_Type_2.xml", ignoreWhitespace: true);
 			Read_Dictionary2 (r, XamlLanguage.Type.GetMember ("Type"));
 		}
-		
+
 		[Test]
 		[Ignore("Not supported for UWP XAML markup extensions")]
 		public void PositionalParameters2 ()
@@ -2303,14 +2303,14 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("ComplexPositionalParameterWrapper.xml");
 			ComplexPositionalParameters (r);
 		}
-		
+
 		[Test]
 		public void Read_ListWrapper ()
 		{
 			var r = GetReader ("ListWrapper.xml", ignoreWhitespace: true);
 			Read_ListWrapper (r);
 		}
-		
+
 		[Test]
 		public void Read_ListWrapper2 () // read-write list member.
 		{
@@ -2491,7 +2491,7 @@ namespace MonoTests.Uno.Xaml
 			var r = GetReader ("DirectDictionaryContainer2.xml", ignoreWhitespace: true);
 			Read_DirectDictionaryContainer2 (r);
 		}
-		
+
 		[Test]
 		public void Read_ContentPropertyContainer ()
 		{

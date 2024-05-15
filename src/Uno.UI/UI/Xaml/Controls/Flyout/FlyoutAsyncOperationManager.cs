@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// --------------------------------------------------------------------------------------------
 	//
@@ -66,10 +66,10 @@ namespace Windows.UI.Xaml.Controls
 			//wrl::ComPtr<wsy::IDispatcherQueueStatics> spDispatcherQueueStatics;
 
 			//IFCEXPECT(!m_isInitialized);
-			if(m_isInitialized)
+			if (m_isInitialized)
 			{
 				throw new InvalidOperationException("Already initialized");
-			}	
+			}
 
 			m_pAssociatedFlyoutNoRef = pAssociatedFlyout;
 			m_cancellationValueCallback = cancellationValueCallback;
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			//IFC(wf::GetActivationFactory(wrl_wrappers::HStringReference(RuntimeClass_Windows_System_DispatcherQueue).Get(), &spDispatcherQueueStatics));
 			//IFC(spDispatcherQueueStatics->GetForCurrentThread(&m_spDispatcherQueue));
 
-			m_spDispatcherQueue = Windows.System.DispatcherQueue.GetForCurrentThread();
+			m_spDispatcherQueue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
 			m_isInitialized = true;
 
 			//Cleanup:
@@ -123,8 +123,7 @@ namespace Windows.UI.Xaml.Controls
 			//IFC(spAsyncOp->StartOperation(m_pAssociatedFlyoutNoRef));
 			spAsyncOp.StartOperation(m_pAssociatedFlyoutNoRef);
 
-			//pTarget = m_tpTargetForDeferredShowAt;
-			//IFC(SetPtrValue(m_tpTargetForDeferredShowAt, pTarget));
+			m_tpTargetForDeferredShowAt = pTarget;
 
 			// UNO-TODO: TEMPORARY DISABLE THIS FEATURE
 			// m_isShowAtForCurrentOperationDeferred = true; 
@@ -172,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 				m_flyoutState = FlyoutState.Closing;
 			}
 
-			
+
 			//if (m_spCurrentOperation)
 			//{
 			if (m_spCurrentOperation != null)
@@ -188,14 +187,14 @@ namespace Windows.UI.Xaml.Controls
 				var asyncStatus = m_spCurrentOperation.Status;
 				if (!m_isShowAtForCurrentOperationDeferred || asyncStatus == AsyncStatus.Canceled)
 				{
-						AssertCompleteOperationPreconditions();
+					AssertCompleteOperationPreconditions();
 
-				//		// nulls out m_spCurrentOperation. This is important in the case of rentrancy;
-				//		// the consumer's CompleteOperation handler may trigger another call to Start,
-				//		// in which case we want Start to be able to return a deferred operation
-				//		// rather than failing.
-				//		wrl::ComPtr<xaml_controls::IPickerFlyoutAsyncOperation<TResult>> spCurrentOperation;
-				//		spCurrentOperation.Swap(m_spCurrentOperation);
+					//		// nulls out m_spCurrentOperation. This is important in the case of rentrancy;
+					//		// the consumer's CompleteOperation handler may trigger another call to Start,
+					//		// in which case we want Start to be able to return a deferred operation
+					//		// rather than failing.
+					//		wrl::ComPtr<xaml_controls::IPickerFlyoutAsyncOperation<TResult>> spCurrentOperation;
+					//		spCurrentOperation.Swap(m_spCurrentOperation);
 					m_isShowAtForCurrentOperationDeferred = false;
 					m_tpTargetForDeferredShowAt = null;
 					m_spCurrentOperation.CompleteOperation(result);

@@ -120,4 +120,10 @@
   <data name="RuntimeTests_AdditionalResource" xml:space="preserve">
     <value>RuntimeTest Additional Resource</value>
   </data>
+  <data name="SomePrefix/When_xUid_With_Prefix.Text" xml:space="preserve">
+    <value>en-US Value for SomePrefix/When_xUid_With_Prefix</value>
+  </data>
+  <data name="When_xUid.Text" xml:space="preserve">
+    <value>en-US Value for When_xUid</value>
+  </data>
 </root>

@@ -3,26 +3,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal partial class DragView : Control
 	{
 		#region Glyph
 		public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(
-			"Glyph", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(default(string)));
+			"Glyph", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(string.Empty));
 
 		public string Glyph
 		{
 			get { return (string)GetValue(GlyphProperty); }
 			set { SetValue(GlyphProperty, value); }
-		} 
+		}
 		#endregion
 
 		#region GlyphVisibility
@@ -38,7 +39,7 @@ namespace Windows.UI.Xaml
 
 		#region Caption
 		public static readonly DependencyProperty CaptionProperty = DependencyProperty.Register(
-			"Caption", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(default(string)));
+			"Caption", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(string.Empty));
 
 		public string Caption
 		{
@@ -99,13 +100,14 @@ namespace Windows.UI.Xaml
 		{
 			get => (Visibility)GetValue(TooltipVisibilityProperty);
 			set => SetValue(TooltipVisibilityProperty, value);
-		} 
+		}
 		#endregion
 
 		private readonly DragUI? _ui;
 		private readonly TranslateTransform _transform;
 
 		private Point _location;
+		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
 		public DragView(DragUI? ui)
 		{
@@ -128,9 +130,8 @@ namespace Windows.UI.Xaml
 		public void Update(DataPackageOperation acceptedOperation, CoreDragUIOverride viewOverride)
 		{
 			// UWP does not allow new lines (trim to the first line, even if blank) and trims the text.
-			var caption = viewOverride
-				.Caption
-				?.Split(new[] {'\r', '\n'}, StringSplitOptions.None)
+			var caption = viewOverride.Caption
+				?.Split(_newLineChars, StringSplitOptions.None)
 				.FirstOrDefault()
 				?.Trim();
 

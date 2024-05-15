@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Windows.Foundation.Collections;
 
-namespace Windows.Foundation.Collections
+/// <summary>
+/// Represents a collection of key-value pairs, correlating several other collection interfaces.
+/// </summary>
+public partial interface IPropertySet :
+	IDictionary<string, object>,
+	IEnumerable<KeyValuePair<string, object>>,
+	IObservableMap<string, object>
 {
-	public partial interface IPropertySet : IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
-	{
-	}
 }

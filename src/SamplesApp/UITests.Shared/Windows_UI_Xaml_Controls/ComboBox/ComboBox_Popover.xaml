@@ -7,21 +7,21 @@
 			 xmlns:local="using:Uno.UI.Samples.Content.UITests.ComboBox"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:xamarin="http://uno.ui/xamarin"
+			 xmlns:not_win="http://uno.ui/not_win"
 			 xmlns:ios="http://uno.ui/ios"
 			 xmlns:android="http://uno.ui/android"
-			 mc:Ignorable="d ios android xamarin"
+			 mc:Ignorable="d ios android not_win"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
   <UserControl.Resources>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ComboBox -->
-	<xamarin:Style x:Key="iPadComboBoxStyle"
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ComboBox -->
+	<not_win:Style x:Key="iPadComboBoxStyle"
 				   TargetType="ComboBox">
-	  <xamarin:Setter Property="ItemContainerStyle"
+	  <not_win:Setter Property="ItemContainerStyle"
 					  Value="{StaticResource DefaultComboBoxItemStyle}">
-	  </xamarin:Setter>
+	  </not_win:Setter>
 	  <Setter Property="Padding"
 			  Value="12,5,0,7" />
 	  <Setter Property="MinWidth"
@@ -345,13 +345,13 @@
 		  </ControlTemplate>
 		</Setter.Value>
 	  </Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
   </UserControl.Resources>
 
   <StackPanel>
 	<TextBlock Text="This ComboBox should use a Popover (iPad only, will crash on iPhone)" />
-	<ComboBox xamarin:Style="{StaticResource iPadComboBoxStyle}"
+	<ComboBox not_win:Style="{StaticResource iPadComboBoxStyle}"
 			  ItemsSource="{Binding [SampleItems]}"
 			  HorizontalAlignment="Stretch" />
   </StackPanel>

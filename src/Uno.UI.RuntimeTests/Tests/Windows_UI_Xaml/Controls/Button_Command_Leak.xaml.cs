@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
 	public partial class Button_Command_Leak : Page
 	{
-		private Button _buttonInField = null;
-
 		public Button_Command_Leak()
 		{
 			InitializeComponent();
@@ -28,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 			{
 			}
 
-			public event EventHandler CanExecuteChanged;
+			public event EventHandler CanExecuteChanged { add { } remove { } }
 
 			public bool CanExecute(object parameter) => true;
 

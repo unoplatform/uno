@@ -1,10 +1,19 @@
-# Uno Support for Windows.UI.StartScreen
+---
+uid: Uno.Features.WinUIStartScreen
+---
+
+# Start Screen
+
+> [!TIP]
+> This article covers Uno-specific information for the `Windows.UI.StartScreen` namespace. For a full description of the feature and instructions on using it, see [Windows.UI.StartScreen Namespace](https://learn.microsoft.com/uwp/api/windows.ui.startscreen).
+
+* The `Windows.UI.StartScreen` namespace provides classes for creating and managing app jump lists.
 
 ## `JumpList` &amp; `JumpListItem`
 
 The APIs are implemented on iOS and Android. Other platforms return `false` when calling the `JumpList.IsSupported()` method.
 
-`JumpListItem` supports `DisplayName`, `Description`, `Arguments` and `Logo` properties on both Android and iOS.
+`JumpListItem` supports `DisplayName`, `Description`, `Arguments`, and `Logo` properties on both Android and iOS.
 
 `DisplayName` may not be empty on Android and iOS - this behavior differs from UWP. If left empty, a single space will be used instead.
 

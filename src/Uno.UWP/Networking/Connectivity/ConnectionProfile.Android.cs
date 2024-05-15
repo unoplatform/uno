@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -48,12 +47,14 @@ namespace Windows.Networking.Connectivity
 			else
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
 				if (info?.IsConnected == true)
 				{
 					IsWwanConnectionProfile = IsConnectionWwan(info.Type);
 					IsWlanConnectionProfile = IsConnectionWlan(info.Type);
 				}
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 			}
 		}
@@ -73,7 +74,7 @@ namespace Windows.Networking.Connectivity
 
 		/// <summary>
 		/// Code based on Xamarin.Essentials implementation with some modifications.
-		/// </summary>		
+		/// </summary>
 		/// <returns>Connectivity level.</returns>
 		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
 		{
@@ -85,7 +86,9 @@ namespace Windows.Networking.Connectivity
 				if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
 				{
 #pragma warning disable CS0618 // ConnectivityManager.GetAllNetworks() is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
 					var networks = manager.GetAllNetworks();
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // ConnectivityManager.GetAllNetworks() is obsolete in API 31
 
 					// some devices running 21 and 22 only use the older api.
@@ -110,11 +113,15 @@ namespace Windows.Networking.Connectivity
 								continue;
 
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 							var info = manager.GetNetworkInfo(network);
-#pragma warning restore CS0618 // Type or member is obsolete
+							var isInternetNetworkConnectionType = info?.Type is
+								ConnectivityType.Ethernet or
+								ConnectivityType.Wifi or
+								ConnectivityType.Mobile;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-							if (info == null || !info.IsAvailable)
+							if (info is null || !info.IsAvailable || !isInternetNetworkConnectionType)
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 								continue;
 
@@ -181,7 +188,9 @@ namespace Windows.Networking.Connectivity
 		{
 			NetworkConnectivityLevel bestConnectivityLevel = NetworkConnectivityLevel.None;
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 			foreach (var info in _connectivityManager.GetAllNetworkInfo())
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 			{
 				var networkConnectivityLevel = GetConnectivityFromNetworkInfo(info);
@@ -194,6 +203,7 @@ namespace Windows.Networking.Connectivity
 		}
 
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 		private NetworkConnectivityLevel GetConnectivityFromNetworkInfo(NetworkInfo info)
 		{
 			if (info == null || !info.IsAvailable)
@@ -210,9 +220,8 @@ namespace Windows.Networking.Connectivity
 			}
 			return NetworkConnectivityLevel.None;
 		}
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 	}
 
 }
-
-#endif

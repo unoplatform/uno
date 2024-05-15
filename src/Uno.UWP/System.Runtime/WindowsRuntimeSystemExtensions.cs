@@ -78,7 +78,7 @@ namespace System
 		public static Task AsTask<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken cancellationToken)
 			=> source.AsTaskCore(cancellationToken);
 
-		public static async Task AsTask<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken cancellationToken, IProgress<TProgress> progress)
+		public static Task AsTask<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken cancellationToken, IProgress<TProgress> progress)
 			=> source.AsTaskCore(cancellationToken, progress);
 
 		private static async Task AsTaskCore<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken ct, IProgress<TProgress>? progress = null)
@@ -86,7 +86,7 @@ namespace System
 			if (source is IAsyncActionWithProgressInternal<TProgress> operation)
 			{
 				using var _ = ct.CanBeCanceled ? ct.Register(operation.Cancel) : default;
-				if (progress is {})
+				if (progress is { })
 				{
 					operation.Progress = (snd, p) => progress.Report(p);
 				}

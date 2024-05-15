@@ -1,25 +1,20 @@
-using Uno.UI.Views.Controls;
+﻿using Uno.UI.Views.Controls;
 using Uno.Disposables;
 using Uno.Extensions;
 using System;
 using Uno.UI;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-    public abstract class NativePage : UIViewController
+	public abstract class NativePage : UIViewController
 	{
-		public NativePage ()
+		public NativePage()
 		{
-			Initialize (); 
+			Initialize();
 		}
 
-		void Initialize ()
+		void Initialize()
 		{
 			AutomaticallyAdjustsScrollViewInsets = false;
 			InitializeComponent();

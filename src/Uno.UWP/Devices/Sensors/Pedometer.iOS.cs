@@ -1,4 +1,5 @@
-﻿#if __IOS__
+﻿#nullable enable
+
 using System;
 using CoreMotion;
 using Foundation;
@@ -9,24 +10,19 @@ namespace Windows.Devices.Sensors
 	public partial class Pedometer
 	{
 		private const int SecondsPerDay = 24 * 60 * 60;
-		private readonly CMPedometer _pedometer;
-		private DateTimeOffset _lastReading = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
+		private CMPedometer? _pedometer;
+		private DateTimeOffset _lastReading = new(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-		private Pedometer(CMPedometer pedometer) => _pedometer = pedometer;
-
-		public static Pedometer TryCreateInstance()
-		{
-			if (CMPedometer.IsStepCountingAvailable)
-			{
-				return new Pedometer(new CMPedometer());
-			}
-			return null;
-		}
+		private static Pedometer? TryCreateInstance() => !CMPedometer.IsStepCountingAvailable ?
+			null :
+			new Pedometer();
 
 		public uint ReportInterval { get; set; }
 
 		private void StartReading()
 		{
+			_pedometer ??= new();
+
 			_pedometer.StartPedometerUpdates(
 				NSDate.Now.AddSeconds(-SecondsPerDay),
 				PedometerUpdateReceived);
@@ -34,7 +30,15 @@ namespace Windows.Devices.Sensors
 
 		private void StopReading()
 		{
+
+			if (_pedometer == null)
+			{
+				return;
+			}
+
 			_pedometer.StopPedometerUpdates();
+			_pedometer.Dispose();
+			_pedometer = null;
 		}
 
 		private void PedometerUpdateReceived(CMPedometerData data, NSError err)
@@ -44,9 +48,8 @@ namespace Windows.Devices.Sensors
 				var startDate = SensorHelpers.NSDateToDateTimeOffset(data.StartDate);
 				var endDate = SensorHelpers.NSDateToDateTimeOffset(data.EndDate);
 				_lastReading = DateTime.UtcNow;
-				OnReadingChanged(new PedometerReading(data.NumberOfSteps.Int32Value, endDate - startDate, PedometerStepKind.Unknown, endDate));				
+				OnReadingChanged(new PedometerReading(data.NumberOfSteps.Int32Value, endDate - startDate, PedometerStepKind.Unknown, endDate));
 			}
 		}
 	}
 }
-#endif

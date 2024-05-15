@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -35,7 +35,7 @@ namespace MUXControlsTestApp.Utilities
 			var dispatcher = whichView.Dispatcher;
 			if (dispatcher.HasThreadAccess
 #if __WASM__
-				|| !dispatcher.IsThreadingSupported
+				|| !Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported
 #endif
 				)
 			{
@@ -102,13 +102,21 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static async Task ExecuteAsync(Action action) =>
-			await ExecuteAsync(CoreApplication.MainView, async () => action());
+			await ExecuteAsync(CoreApplication.MainView, () =>
+			{
+				action();
+				return Task.CompletedTask;
+			});
 
 		public static async Task ExecuteAsync(Func<Task> task) =>
 			await ExecuteAsync(CoreApplication.MainView, task);
 
 		public static async Task ExecuteAsync(CoreApplicationView whichView, Action action) =>
-			await ExecuteAsync(whichView, async () => action());
+			await ExecuteAsync(whichView, () =>
+			{
+				action();
+				return Task.CompletedTask;
+			});
 
 		public static async Task ExecuteAsync(CoreApplicationView whichView, Func<Task> task)
 		{
@@ -116,7 +124,7 @@ namespace MUXControlsTestApp.Utilities
 			var dispatcher = whichView.Dispatcher;
 			if (dispatcher.HasThreadAccess
 #if __WASM__
-				|| !dispatcher.IsThreadingSupported
+				|| !Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported
 #endif
 				)
 			{
@@ -152,7 +160,8 @@ namespace MUXControlsTestApp.Utilities
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
 						await dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-							async () => {
+							async () =>
+							{
 								try
 								{
 									await task();

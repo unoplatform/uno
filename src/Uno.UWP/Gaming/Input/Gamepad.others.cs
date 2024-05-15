@@ -9,5 +9,5 @@ public partial class Gamepad
 	{
 		// Ensure public constructor is not available
 		// on unsupported platforms.
-	} 
+	}
 }

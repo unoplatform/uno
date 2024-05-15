@@ -3,18 +3,19 @@
 // MUX Reference AnimatedIcon.cpp, commit 1b9db23
 
 using System;
+using System.Globalization;
 using System.Numerics;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class AnimatedIcon : IconElement
 	{
@@ -29,12 +30,13 @@ namespace Microsoft.UI.Xaml.Controls
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_AnimatedIcon);
 
 #if !HAS_UNO
-			m_progressPropertySet = Windows.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
+			m_progressPropertySet = Microsoft.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
 			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
 #else
 			m_progressPropertySet = new CompositionPropertySet(null);
 #endif
 			Loaded += OnLoaded;
+			Unloaded += OnIconUnloaded;
 
 			this.RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
 			this.RegisterPropertyChangedCallback(FlowDirectionProperty, OnFlowDirectionPropertyChanged);
@@ -77,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 #if HAS_UNO
-			// Uno specific: Called to ensure OnApplyTemplate runs
+			// Uno specific: Called to ensure OnApplyTemplate runs and Foreground is subscribed
 			EnsureInitialized();
 #endif
 
@@ -394,7 +396,7 @@ namespace Microsoft.UI.Xaml.Controls
 							foreach (var marker in markers)
 							{
 								string value = marker.Key;
-								if (value.IndexOf(fragment) > -1)
+								if (value.IndexOf(fragment, StringComparison.Ordinal) > -1)
 								{
 									m_lastAnimationSegmentStart = "";
 									m_lastAnimationSegmentEnd = marker.Key;
@@ -447,7 +449,7 @@ namespace Microsoft.UI.Xaml.Controls
 			for (int currentLength = input.Length; currentLength > 0; currentLength--)
 			{
 				var shortenedInput = input.Substring(0, currentLength);
-				if (float.TryParse(shortenedInput, out var parsed))
+				if (float.TryParse(shortenedInput, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out var parsed))
 				{
 					if (input.Length - currentLength == 0)
 					{
@@ -544,7 +546,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// Initialize the scale transform that will be used for mirroring and the
 					// render transform origin as center in order to have the icon mirrored in place.
-					Windows.UI.Xaml.Media.ScaleTransform scaleTransform = new ScaleTransform();
+					Microsoft.UI.Xaml.Media.ScaleTransform scaleTransform = new ScaleTransform();
 
 					RenderTransform = scaleTransform;
 					RenderTransformOrigin = new Point(0.5, 0.5);

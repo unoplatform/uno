@@ -7,8 +7,8 @@ using Android.Views;
 using Uno.Client;
 using Uno.Extensions;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Linq;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -17,9 +17,9 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Windows.UI.Core;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class NativeListViewBaseAdapter : RecyclerView.Adapter
 	{
@@ -75,7 +75,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var isGroupHeader = parent.GetIsGroupHeader(position);
-			if (isGroupHeader || parent.GetIsHeader(position) || parent.GetIsFooter(position))
+			var isHeader = parent.GetIsHeader(position);
+			var isFooter = parent.GetIsFooter(position);
+			if (isGroupHeader || isHeader || isFooter)
 			{
 				var item = parent.GetElementFromDisplayPosition(position);
 
@@ -89,12 +91,23 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var dataTemplate = GetDataTemplateFromItem(parent, item, viewType, isGroupHeader);
-
-				container.DataContext = item;
 				container.ContentTemplate = dataTemplate;
-				if (container.GetBindingExpression(ContentControl.ContentProperty) == null)
+
+				if (!isHeader && !isFooter)
 				{
-					container.SetBinding(ContentControl.ContentProperty, new Binding());
+					container.DataContext = item;
+					if (container.GetBindingExpression(ContentControl.ContentProperty) == null)
+					{
+						container.SetBinding(ContentControl.ContentProperty, new Binding());
+					}
+				}
+				else
+				{
+					// When showing the header/footer, the datacontext must be the listview's
+					// datacontext. We only need to set the content of the container, not its
+					// datacontext.
+
+					container.Content = item;
 				}
 			}
 			else if (viewType == IsOwnContainerType)

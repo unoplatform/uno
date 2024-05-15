@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -14,16 +14,19 @@ using Android.Views;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Android.OS;
 using Windows.UI.ViewManagement;
+using Uno.UI.Xaml.Controls;
+using Windows.UI.WindowManagement;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace Uno.UI
 {
 	[Activity(
 
 		// This is required for OnConfigurationChanges to be raised.
-		ConfigurationChanges=
+		ConfigurationChanges =
 			  Android.Content.PM.ConfigChanges.Orientation
 			| Android.Content.PM.ConfigChanges.ScreenSize
 	)]
@@ -56,7 +59,7 @@ namespace Uno.UI
 		/// </summary>
 		public static event EventHandler<CurrentActivityChangedEventArgs> CurrentChanged;
 
-		private static int _instanceCount = 0;
+		private static int _instanceCount;
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity _current;
 
@@ -69,7 +72,7 @@ namespace Uno.UI
 		/// Gets a list of all activities which are currently alive.
 		/// </summary>
 		public static IImmutableDictionary<int, BaseActivity> Instances
-			=> ImmutableDictionary<int, BaseActivity>.Empty.AddRange(_instances) ;
+			=> ImmutableDictionary<int, BaseActivity>.Empty.AddRange(_instances);
 
 		/// <summary>
 		/// Gets the currently running activity, if any.
@@ -155,7 +158,7 @@ namespace Uno.UI
 		{
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
-			ApplicationView.GetForCurrentView();
+			ApplicationView.GetOrCreateForWindowId(AppWindow.MainWindowId);
 
 			NotifyCreatingInstance();
 		}
@@ -194,25 +197,25 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
+			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
 			});
 		}
 
 		partial void InnerRestart() => SetAsCurrent();
-		
+
 		partial void InnerResume()
 		{
-			SetAsCurrent();			
+			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.RaiseResuming();
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(
+			NativeWindowWrapper.Instance.OnNativeActivated(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -222,15 +225,15 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);			
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		partial void InnerStop()
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
+			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
+			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
 		partial void InnerDestroy() => ResignCurrent();
@@ -289,7 +292,7 @@ namespace Uno.UI
 
 				if (isFinalizer)
 				{
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, notify);
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, notify);
 				}
 				else
 				{
@@ -346,7 +349,7 @@ namespace Uno.UI
 			return base.DispatchTouchEvent(ev);
 		}
 
-		public virtual IEnumerable<IDataContextProvider> GetChildrenProviders() => 
+		public virtual IEnumerable<IDataContextProvider> GetChildrenProviders() =>
 			new[] { ContentView as IDataContextProvider }
 			.Trim();
 

@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Markup;
 using Uno.Xaml;
@@ -92,10 +93,10 @@ namespace Uno.Xaml
 			if (instance != null) {
 				var type = new InstanceContext (instance).GetRawValue ().GetType ();
 				if (!type.IsPublic)
-					throw new XamlObjectReaderException (String.Format ("instance type '{0}' must be public and non-nested.", type));
+					throw new XamlObjectReaderException (String.Format (CultureInfo.InvariantCulture, "instance type '{0}' must be public and non-nested.", type));
 				var xt = SchemaContext.GetXamlType (type);
 				if (xt.ConstructionRequiresArguments && !xt.GetConstructorArguments ().Any () && xt.TypeConverter == null)
-					throw new XamlObjectReaderException (String.Format ("instance type '{0}' has no default constructor.", type));
+					throw new XamlObjectReaderException (String.Format (CultureInfo.InvariantCulture, "instance type '{0}' has no default constructor.", type));
 			}
 
 			value_serializer_context = new ValueSerializerContext (new PrefixLookup (sctx), sctx, null);

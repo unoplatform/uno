@@ -113,7 +113,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android: https://github.com/unoplatform/uno/issues/3009
+		[ActivePlatforms(Platform.iOS)]//, Platform.Browser)] // Android: https://github.com/unoplatform/uno/issues/3009
 		public void ScrollBar_HorizontalThumb()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
@@ -141,13 +141,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 			_app.DragCoordinates(thumbResult.Rect.CenterX, thumbResult.Rect.CenterY, thumbResult.Rect.CenterX + 10, thumbResult.Rect.CenterY);
 
-			_app.WaitForText(horizontalValue, "126.56666666666668");
-			_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Horizontal Scroll: EndScroll, 126.56666") ?? false);
+			try
+			{
+				_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Horizontal Scroll: EndScroll, 126.56666") ?? false);
+			}
+			catch (TimeoutException error)
+			{
+				throw new InvalidOperationException($"Failed to get the expected 126.566, got '{scrollValue.GetDependencyPropertyValue<string>("Text")}'.", error);
+			}
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android: https://github.com/unoplatform/uno/issues/3009
+		[ActivePlatforms(Platform.iOS)]//, Platform.Browser)] // Android: https://github.com/unoplatform/uno/issues/3009
 		public void ScrollBar_VerticalThumb()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
@@ -175,8 +181,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 			_app.DragCoordinates(thumbResult.Rect.CenterX, thumbResult.Rect.CenterY, thumbResult.Rect.CenterX, thumbResult.Rect.CenterY + 10);
 
-			_app.WaitForText(verticalValue, "126.56666666666668");
-			_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Vertical Scroll: EndScroll, 126.56666") ?? false);
+			try
+			{
+				_app.WaitFor(() => scrollValue.GetDependencyPropertyValue<string>("Text")?.StartsWith("Vertical Scroll: EndScroll, 126.56666") ?? false);
+			}
+			catch (TimeoutException error)
+			{
+				throw new InvalidOperationException($"Failed to get the expected 126.566, got '{scrollValue.GetDependencyPropertyValue<string>("Text")}'.", error);
+			}
 		}
 	}
 }

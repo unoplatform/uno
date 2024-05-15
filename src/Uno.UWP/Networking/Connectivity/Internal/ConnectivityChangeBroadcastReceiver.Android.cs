@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Android.Content;
 using Windows.Networking.Connectivity;
 
@@ -16,8 +15,7 @@ namespace Uno.Networking.Connectivity.Internal
 				return;
 			}
 
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 	}
 }
-#endif

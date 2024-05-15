@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.DataBinding;
@@ -43,9 +43,10 @@ namespace Uno.UI.Tests.BinderTests
 			sut.Value = "Animations";
 			sut.SetLocalValue("Local");
 
-			Assert.AreEqual("Animations", target.Value);
+			// Local value takes over Animations if it's newer.
+			Assert.AreEqual("Local", target.Value);
 
-			Assert.AreEqual("Animations", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
+			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
 			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
@@ -292,7 +293,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			public string Value
 			{
-				get => (string) this.GetValue(ValueProperty);
+				get => (string)this.GetValue(ValueProperty);
 				set => this.SetValue(ValueProperty, value);
 			}
 		}

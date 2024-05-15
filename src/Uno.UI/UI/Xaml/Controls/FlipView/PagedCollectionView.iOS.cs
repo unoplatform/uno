@@ -5,7 +5,7 @@ using Foundation;
 using System.Collections.Generic;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Natively-derived class that implements FlipView behavior
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			_layout = (UICollectionViewFlowLayout)this.CollectionViewLayout;
 
 			RegisterClassForCell(typeof(Uno.UI.Controls.Legacy.ListViewBaseSource.InternalContainer), FlipView.FlipViewItemReuseIdentifier);
-			
+
 			if (ScrollViewer.UseContentInsetAdjustmentBehavior)
 			{
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal bool InDraggingEnded { get; set; } = false;
+		internal bool InDraggingEnded { get; set; }
 
 		public override bool Dragging => base.Dragging && !InDraggingEnded;
 

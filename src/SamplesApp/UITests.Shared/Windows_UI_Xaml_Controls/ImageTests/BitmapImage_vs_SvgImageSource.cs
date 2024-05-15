@@ -4,10 +4,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
@@ -49,86 +49,86 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 			switch (mode)
 			{
 				case "BitmapImage":
-				{
-					BitmapImage bitmapSource;
-					if (stream == null)
 					{
-						bitmapSource = new BitmapImage(uri);
-					}
-					else
-					{
-						bitmapSource = new BitmapImage();
-						await bitmapSource.SetSourceAsync(stream);
-					}
-					bitmapSource.DownloadProgress += (snd, evt) => Log($"Downloadind... {evt.Progress}%");
-					bitmapSource.ImageFailed += (snd, evt) =>
-					{
-						isError.IsChecked = true;
-						Log($"ERROR: {evt.ErrorMessage}");
-					};
-					bitmapSource.ImageOpened += (snd, evt) =>
-					{
-						isLoaded.IsChecked = true;
-						Log($"LOADED from {evt.OriginalSource}");
-					};
+						BitmapImage bitmapSource;
+						if (stream == null)
+						{
+							bitmapSource = new BitmapImage(uri);
+						}
+						else
+						{
+							bitmapSource = new BitmapImage();
+							await bitmapSource.SetSourceAsync(stream);
+						}
+						bitmapSource.DownloadProgress += (snd, evt) => Log($"Downloadind... {evt.Progress}%");
+						bitmapSource.ImageFailed += (snd, evt) =>
+						{
+							isError.IsChecked = true;
+							Log($"ERROR: {evt.ErrorMessage}");
+						};
+						bitmapSource.ImageOpened += (snd, evt) =>
+						{
+							isLoaded.IsChecked = true;
+							Log($"LOADED from {evt.OriginalSource}");
+						};
 
-					source = bitmapSource;
-					break;
-				}
+						source = bitmapSource;
+						break;
+					}
 				case "SvgImageSource":
-				{
-					SvgImageSource svgSource;
-					if (stream == null)
 					{
-						svgSource = new SvgImageSource(uri);
+						SvgImageSource svgSource;
+						if (stream == null)
+						{
+							svgSource = new SvgImageSource(uri);
+						}
+						else
+						{
+							svgSource = new SvgImageSource();
+							await svgSource.SetSourceAsync(stream);
+						}
+						svgSource.OpenFailed += (snd, evt) =>
+						{
+							isError.IsChecked = true;
+							Log($"ERROR: {evt.Status}");
+						};
+						svgSource.Opened += (snd, evt) =>
+						{
+							isLoaded.IsChecked = true;
+							Log("LOADED");
+						};
+						source = svgSource;
+						break;
 					}
-					else
-					{
-						svgSource = new SvgImageSource();
-						await svgSource.SetSourceAsync(stream);
-					}
-					svgSource.OpenFailed += (snd, evt) =>
-					{
-						isError.IsChecked = true;
-						Log($"ERROR: {evt.Status}");
-					};
-					svgSource.Opened += (snd, evt) =>
-					{
-						isLoaded.IsChecked = true;
-						Log("LOADED");
-					};
-					source = svgSource;
-					break;
-				}
 				case "SvgImageSource2":
-				{
-					var border = img.Parent as FrameworkElement;
-					SvgImageSource svgSource;
-					if (stream == null)
 					{
-						svgSource = new SvgImageSource(uri);
+						var border = img.Parent as FrameworkElement;
+						SvgImageSource svgSource;
+						if (stream == null)
+						{
+							svgSource = new SvgImageSource(uri);
+						}
+						else
+						{
+							svgSource = new SvgImageSource();
+							await svgSource.SetSourceAsync(stream);
+						}
+						source = svgSource;
+						Log($"RasterizePixelWidth/Height: {border.ActualWidth}x{border.ActualHeight}");
+						svgSource.RasterizePixelWidth = border.ActualWidth;
+						svgSource.RasterizePixelHeight = border.ActualHeight;
+						svgSource.OpenFailed += (snd, evt) =>
+						{
+							isError.IsChecked = true;
+							Log($"ERROR: {evt.Status}");
+						};
+						svgSource.Opened += (snd, evt) =>
+						{
+							isLoaded.IsChecked = true;
+							Log("LOADED");
+						};
+						break;
 					}
-					else
-					{
-						svgSource = new SvgImageSource();
-						await svgSource.SetSourceAsync(stream);
-					}
-					source = svgSource;
-					Log($"RasterizePixelWidth/Height: {border.ActualWidth}x{border.ActualHeight}");
-					svgSource.RasterizePixelWidth = border.ActualWidth;
-					svgSource.RasterizePixelHeight = border.ActualHeight;
-					svgSource.OpenFailed += (snd, evt) =>
-					{
-						isError.IsChecked = true;
-						Log($"ERROR: {evt.Status}");
-					};
-					svgSource.Opened += (snd, evt) =>
-					{
-						isLoaded.IsChecked = true;
-						Log("LOADED");
-					};
-					break;
-				}
 			}
 			img.Source = source;
 
@@ -140,11 +140,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		private async Task<IRandomAccessStream> GetStream()
 		{
-#if __WASM__
-			using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
-#else
 			using var httpClient = new HttpClient();
-#endif
 			var data = await httpClient.GetByteArrayAsync(url.Text);
 
 			return new MemoryStream(data).AsRandomAccessStream();

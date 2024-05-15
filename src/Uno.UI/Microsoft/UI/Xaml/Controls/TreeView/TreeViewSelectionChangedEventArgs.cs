@@ -1,22 +1,29 @@
-﻿// MUX Reference TreeView.idl, commit 96244e6
-
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TreeView.idl, tag winui3/release/1.4.2
 
 using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides data for the TreeView.SelectionChanged event.
+/// </summary>
+public partial class TreeViewSelectionChangedEventArgs
 {
-	public partial class TreeViewSelectionChangedEventArgs
+	internal TreeViewSelectionChangedEventArgs(IList<object> addedItems, IList<object> removedItems)
 	{
-		internal TreeViewSelectionChangedEventArgs(IList<object> addedItems, IList<object> removedItems)
-		{
-			AddedItems = addedItems;
-			RemovedItems = removedItems;
-		}
-
-		public IList<object> AddedItems { get; }
-
-		public IList<object> RemovedItems { get; }
+		AddedItems = addedItems;
+		RemovedItems = removedItems;
 	}
+
+	/// <summary>
+	/// Gets a list that contains the items that were selected.
+	/// </summary>
+	public IList<object> AddedItems { get; }
+
+	/// <summary>
+	/// Gets a list that contains the items that were unselected.
+	/// </summary>
+	public IList<object> RemovedItems { get; }
 }

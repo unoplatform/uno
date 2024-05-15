@@ -2,14 +2,38 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-    public partial class WrapPanel : Panel
-    {
+	public partial class WrapPanel : Panel
+	{
 		private Orientation _orientation = Orientation.Horizontal;
 
-		public virtual Orientation Orientation 
-		{ 
+		internal override Orientation? PhysicalOrientation
+		{
+			get
+			{
+				if (TemplatedParent is GridView gv && gv.Style == Style.GetDefaultStyleForType(GetDefaultStyleKey()))
+				{
+					// This is a workaround for our GridView using a WrapPanel instead of an ItemsWrapGrid (which we don't implement).
+					// The following is the implementation of ItemsWrapGrid::get_PhysicalOrientation from WinUI.
+					if (_orientation is Orientation.Horizontal)
+					{
+						return Orientation.Vertical;
+					}
+					else
+					{
+						return Orientation.Horizontal;
+					}
+				}
+				else
+				{
+					return _orientation;
+				}
+			}
+		}
+
+		public virtual Orientation Orientation
+		{
 			get
 			{
 				return _orientation;
@@ -74,5 +98,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			OnItemHeightChangedPartial();
 		}
-    }
+	}
 }

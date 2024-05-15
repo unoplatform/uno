@@ -1,12 +1,13 @@
 ﻿using System;
-using Windows.UI.Xaml;
+using System.Globalization;
+using Microsoft.UI.Xaml;
 using Uno.UI.Xaml;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno.Extensions;
 using Uno.Foundation;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public static class UIElementWasmExtensions
 	{
@@ -15,7 +16,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static string GetHtmlId(this UIElement element)
 		{
+#pragma warning disable CA1305 // Specify IFormatProvider
 			return element.HtmlId.ToString();
+#pragma warning restore CA1305 // Specify IFormatProvider
 		}
 
 		/// <summary>
@@ -27,7 +30,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public static void SetCssStyle(this UIElement element, string name, string value)
 		{
-			WindowManagerInterop.SetStyles(element.HtmlId, new[] {(name, value)});
+			WindowManagerInterop.SetStyleString(element.HtmlId, name, value);
 		}
 
 		/// <summary>
@@ -106,6 +109,14 @@ namespace Windows.UI.Xaml
 		/// Clear/remove a HTML attribute from an element.
 		/// </summary>
 		public static void ClearHtmlAttribute(this UIElement element, string name)
+		{
+			WindowManagerInterop.RemoveAttribute(element.HtmlId, name);
+		}
+
+		/// <summary>
+		/// Clear/remove a HTML attribute from an element.
+		/// </summary>
+		public static void RemoveAttribute(this UIElement element, string name)
 		{
 			WindowManagerInterop.RemoveAttribute(element.HtmlId, name);
 		}

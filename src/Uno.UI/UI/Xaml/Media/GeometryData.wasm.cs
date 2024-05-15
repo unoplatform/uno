@@ -1,7 +1,7 @@
 ﻿using System;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public class GeometryData : Geometry
 	{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media
 
 		public GeometryData(string data)
 		{
-			if (data.StartsWith("F", StringComparison.InvariantCultureIgnoreCase) && data.Length > 2)
+			if ((data.StartsWith('F') || data.StartsWith('f')) && data.Length > 2)
 			{
 				// TODO: support spaces between the F and the 0/1
 

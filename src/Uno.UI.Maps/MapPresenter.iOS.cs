@@ -17,11 +17,11 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using AnnotationAlias = MapKit.IMKAnnotation;
 using OverlayAlias = MapKit.IMKOverlay;
 
-namespace Windows.UI.Xaml.Controls.Maps.Presenters
+namespace Microsoft.UI.Xaml.Controls.Maps.Presenters
 {
 	public sealed partial class MapPresenter : Control
 	{
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 			SetUpOverlayRenderer();
 
-			_internalMapView.GetViewForAnnotation = OnGetViewForAnnotation;
+			_internalMapView.GetViewForAnnotation = OnGetViewForAnnotation!;
 		}
 
 		private IDisposable UpdateOwnerSubscriptions(MapControl owner)
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			return disposables;
 		}
 
-		private void OnRegionChanged(object sender, MKMapViewChangeEventArgs e)
+		private void OnRegionChanged(object? sender, MKMapViewChangeEventArgs e)
 		{
 			if (!_changingCenter)
 			{
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 				foreach (var child in allItems)
 				{
-					MapControlAnnotation annotation;
+					MapControlAnnotation? annotation;
 
 					if (!_elements.TryGetValue(child, out annotation))
 					{
@@ -190,16 +190,6 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 		}
 
-		private void OnMapElementsChanged(DependencyPropertyChangedEventArgs e)
-		{
-			UpdateMapPolygons();
-		}
-
-		private void OnMapElementsCollectionChanged(NotifyCollectionChangedEventArgs args)
-		{
-			UpdateMapPolygons();
-		}
-
 		private void SetUpOverlayRenderer()
 		{
 			// We do not support GetViewForOverlay.
@@ -208,7 +198,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 		private MKOverlayRenderer OnGetOverlayRenderer(MKMapView mapView, IMKOverlay overlay)
 		{
-			return _overlayRenderers.GetValueOrDefault(overlay);
+			return _overlayRenderers.GetValueOrDefault(overlay)!;
 		}
 
 		private MKAnnotationView? OnGetViewForAnnotation(MKMapView mapView, AnnotationAlias annotation)
@@ -238,65 +228,6 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 
 			return null;
-		}
-
-		private void UpdateMapPolygons()
-		{
-			if (_internalMapView != null && _owner != null)
-			{
-				_internalMapView.RemoveOverlays(_overlayRenderers.Keys.ToArray());
-
-				_overlayRenderers.Values.DisposeAll();
-				_overlayRenderers.Clear();
-
-				_elementsDisposable.Disposable = new CompositeDisposable(
-					_owner.MapElements
-					.Select(e => e.RegisterDisposablePropertyChangedCallback((wr, p, args) => UpdateMapPolygons()))
-				);
-
-				foreach (var polygon in _owner.MapElements)
-				{
-					if (polygon is MapPolyline mapPolyline)
-					{
-						AddPolyline(mapPolyline);
-					}
-				}
-			}
-		}
-
-		private void AddPolyline(MapPolyline polyline)
-		{
-			var coordinates = polyline
-				.Path
-				.Positions
-				.Select(point => point.ToLocation())
-				.ToArray();
-
-			var strokeColor = (UIColor)polyline.StrokeColor;
-
-			if (strokeColor == null)
-			{
-				throw new KeyNotFoundException("Stroke color key not found in resources.");
-			}
-
-			var overlay = MKPolyline.FromCoordinates(coordinates);
-			var renderer = new MKPolylineRenderer(overlay)
-			{
-				StrokeColor = strokeColor,
-				LineWidth = (nfloat)polyline.StrokeThickness
-			};
-
-			if (polyline.StrokeThickness != 0 && polyline.StrokeDashed)
-			{
-				renderer.LineDashPattern = new NSNumber[]
-				{
-					polyline.StrokeThickness,
-					4
-				};
-			}
-
-			_overlayRenderers.Add(overlay, renderer);
-			_internalMapView.AddOverlay(overlay);
 		}
 
 		private class MapControlAnnotation : MKAnnotation

@@ -3,7 +3,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +14,9 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Uno.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -83,13 +83,14 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(PaddingProperty, value); }
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
 				typeof(GridView),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((GridView)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -110,7 +111,7 @@ namespace Uno.UI.Controls.Legacy
 
 		#region SelectionMode Dependency Property
 
-		public static DependencyProperty SelectionModeProperty { get ; } =
+		public static DependencyProperty SelectionModeProperty { get; } =
 			DependencyProperty.Register(
 				"SelectionMode",
 				typeof(ListViewSelectionMode),
@@ -133,7 +134,7 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedItems.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SelectedItemsProperty { get ; } =
+		public static DependencyProperty SelectedItemsProperty { get; } =
 			DependencyProperty.Register(
 				"SelectedItems",
 				typeof(IList<object>),
@@ -153,7 +154,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(SelectedItemProperty, value); }
 		}
 
-		public static DependencyProperty SelectedItemProperty { get ; } =
+		public static DependencyProperty SelectedItemProperty { get; } =
 			DependencyProperty.Register(
 				"SelectedItem",
 				typeof(object),
@@ -172,7 +173,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(ItemContainerStyleProperty, value); }
 		}
 
-		public static DependencyProperty ItemContainerStyleProperty =
+		public static DependencyProperty ItemContainerStyleProperty { get; } =
 			DependencyProperty.Register(
 				"ItemContainerStyle",
 				typeof(Style),
@@ -202,7 +203,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(UnselectOnClickProperty, value); }
 		}
 
-		public static DependencyProperty UnselectOnClickProperty { get ; } =
+		public static DependencyProperty UnselectOnClickProperty { get; } =
 			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(GridView), new FrameworkPropertyMetadata(default(bool)));
 
 		#endregion
@@ -218,13 +219,13 @@ namespace Uno.UI.Controls.Legacy
 
 				if (newMode == ListViewSelectionMode.None)
 				{
-					gridView.SelectedItems = new object[0];
+					gridView.SelectedItems = Array.Empty<object>();
 				}
 				else if (newMode == ListViewSelectionMode.Single && oldMode == ListViewSelectionMode.Multiple)
 				{
 					var firstSelection = gridView.SelectedItems.FirstOrDefault();
 
-					gridView.SelectedItems = firstSelection.SelectOrDefault(s => new[] { s }, new object[0]);
+					gridView.SelectedItems = firstSelection.SelectOrDefault(s => new[] { s }, Array.Empty<object>());
 				}
 			}
 		}
@@ -276,7 +277,7 @@ namespace Uno.UI.Controls.Legacy
 
 		private void OnItemClick(object sender, ItemClickEventArgs args)
 		{
-			ItemClick?.Invoke(this, new Windows.UI.Xaml.Controls.ItemClickEventArgs { ClickedItem = BindableAdapter.GetRawItem(args.Position) });
+			ItemClick?.Invoke(this, new Microsoft.UI.Xaml.Controls.ItemClickEventArgs { ClickedItem = BindableAdapter.GetRawItem(args.Position) });
 
 			HandleItemSelection(args);
 		}
@@ -292,7 +293,7 @@ namespace Uno.UI.Controls.Legacy
 					case ListViewSelectionMode.Single:
 						var selectedItem = BindableAdapter.SelectedItems.FirstOrDefault();
 
-						// Unselect the current item only if a new selection is made or 
+						// Unselect the current item only if a new selection is made or
 						// the option to unselect the current item is activated.
 						if (selectedItem != null && (selectedItem != newSelection || UnselectOnClick))
 						{
@@ -337,7 +338,7 @@ namespace Uno.UI.Controls.Legacy
 			if (heightMode == MeasureSpecMode.Unspecified)
 			{
 				// By default, given an Unspecified available height, the GridView will be measured to take the height of a single row.
-				// Therefore, we need the code below to ensure the GridView takes the height of all its items. 
+				// Therefore, we need the code below to ensure the GridView takes the height of all its items.
 				heightMeasureSpec = ViewHelper.MakeMeasureSpec(int.MaxValue, MeasureSpecMode.AtMost);
 			}
 

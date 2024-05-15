@@ -10,18 +10,18 @@ using Uno.Disposables;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToggleSwitch
 	{
-		private bool _isDragging = false;
-		private bool _wasDragged = false;
-		private bool _isPointerOver = false;
+		private bool _isDragging;
+		private bool _wasDragged;
+		private bool _isPointerOver;
 
 		private double _knobTranslation;
 		private double _minKnobTranslation;
@@ -107,10 +107,6 @@ namespace Windows.UI.Xaml.Controls
 				isOn = IsOn;
 				GoToState(useTransitions, isOn ? "On" : "Off");
 				GoToState(useTransitions, isOn ? "OnContent" : "OffContent");
-				// TODO Uno specific: We must force the knob to position, because
-				// we don't yet support the transitions which do this automatically
-				// in XAML template.
-				ForceSwitchKnobEndPosition();
 			}
 		}
 
@@ -224,13 +220,13 @@ namespace Windows.UI.Xaml.Controls
 			var core = DXamlCore.Current;
 			if (dependencyProperty == OnContentProperty)
 			{
-				var onString = core.GetLocalizedResourceString("ToggleSwitchOnContent");
+				var onString = core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_ON");
 				value = onString;
 				return true;
 			}
 			else if (dependencyProperty == OffContentProperty)
 			{
-				var offString = core.GetLocalizedResourceString("ToggleSwitchOffContent");
+				var offString = core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_OFF");
 				value = offString;
 				return true;
 			}
@@ -355,10 +351,12 @@ namespace Windows.UI.Xaml.Controls
 			ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.Invoke, this);
 		}
 
+#if false
 		private void AutomationToggleSwitchOnToggle()
 		{
 			Toggle();
 		}
+#endif
 
 		//private void
 		//AutomationGetClickablePoint(
@@ -417,7 +415,11 @@ namespace Windows.UI.Xaml.Controls
 			var args = new RoutedEventArgs();
 			args.OriginalSource = this;
 
-			Toggled?.Invoke(this, args);
+			// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+			if (!_suppressToggled) // Uno workaround.
+			{
+				Toggled?.Invoke(this, args);
+			}
 
 			if (!_isDragging)
 			{

@@ -1,4 +1,4 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 
@@ -11,7 +11,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 		{
 			this.InitializeComponent();
 
-			DataContext= new ControlDataContext();
+			DataContext = new ControlDataContext();
 		}
 
 		public class ControlDataContext

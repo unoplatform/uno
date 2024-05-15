@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Globalization;
+using Uno.UI.Core;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorPickerSlider : Slider
 	{
@@ -22,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// We want the ColorPickerSlider to pick up everything for its default style from the Slider's default style,
 			// since its purpose is just to turn off keyboarding.  So we'll give it Slider's control name as its default style key
 			// instead of ColorPickerSlider.
-			DefaultStyleKey = typeof(Windows.UI.Xaml.Controls.Slider);
+			DefaultStyleKey = typeof(Microsoft.UI.Xaml.Controls.Slider);
 
 			ValueChanged += OnValueChangedEvent;
 		}
@@ -49,12 +50,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// IControlOverrides overrides
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
-			if ((this.Orientation == Orientation.Horizontal &&
-						 args.Key != VirtualKey.Left &&
-						 args.Key != VirtualKey.Right) ||
-				(this.Orientation == Orientation.Vertical &&
-						 args.Key != VirtualKey.Up &&
-						 args.Key != VirtualKey.Down))
+			if (args.Key != VirtualKey.Left &&
+				args.Key != VirtualKey.Right &&
+				args.Key != VirtualKey.Up &&
+				args.Key != VirtualKey.Down)
 			{
 				base.OnKeyDown(args);
 				return;
@@ -67,8 +66,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Uno Doc: Window must be fully qualified for iOS/macOS where NSWindow maps to Window
-			bool isControlDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			bool isControlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			double minBound = 0;
 			double maxBound = 0;
@@ -111,7 +109,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ColorHelpers.IncrementDirection direction =
 				((args.Key == VirtualKey.Left && !shouldInvertHorizontalDirection) ||
 				 (args.Key == VirtualKey.Right && shouldInvertHorizontalDirection) ||
-				  args.Key == VirtualKey.Up) ?
+				  args.Key == VirtualKey.Down) ?
 				ColorHelpers.IncrementDirection.Lower :
 				ColorHelpers.IncrementDirection.Higher;
 

@@ -8,22 +8,37 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.Extensions;
+using Uno.Helpers;
+using System.Diagnostics;
 
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
+
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
-	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource
+	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource, IAnimatedVisualSourceWithUri
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
+#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE || __WASM__
+		private static HttpClient? _httpClient;
+#endif
+
 		private AnimatedVisualPlayer? _player;
 
-		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty UriSourceProperty { get; } = DependencyProperty.Register(
 			"UriSource",
 			typeof(Uri),
 			typeof(LottieVisualSourceBase),
@@ -32,13 +47,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 				OnUriSourceChanged));
 
+		Uri IAnimatedVisualSourceWithUri.UriSource { get => UriSource; set => UriSource = value; }
+
 		public Uri UriSource
 		{
 			get => (Uri)GetValue(UriSourceProperty);
 			set => SetValue(UriSourceProperty, value);
 		}
 
-		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty OptionsProperty { get; } = DependencyProperty.Register(
 			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSourceBase), new FrameworkPropertyMetadata(LottieVisualOptions.None));
 
 		[NotImplemented]
@@ -56,7 +73,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if HAS_UNO_WINUI
 		[NotImplemented]
-		public IAnimatedVisual TryCreateAnimatedVisual(Windows.UI.Composition.Compositor compositor, out object diagnostics)
+		public IAnimatedVisual TryCreateAnimatedVisual(Microsoft.UI.Composition.Compositor compositor, out object diagnostics)
 		{
 			throw new NotImplementedException();
 		}
@@ -64,7 +81,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			if (sender is LottieVisualSource source)
+			if (sender is LottieVisualSourceBase source)
 			{
 				source.Update(source._player);
 			}
@@ -80,41 +97,33 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 
-#if !(__WASM__ || __ANDROID__ || __IOS__ || __MACOS__)
-
+#if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || (__MACOS__ && !NET6_0_OR_GREATER) || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Stop()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Pause()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Resume()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void SetProgress(double progress)
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Load()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Unload()
+			=> ThrowNotImplementedOnNonTestPlatforms();
+
+		private static void ThrowNotImplementedOnNonTestPlatforms()
 		{
+#if !IS_UNIT_TESTS
 			throw new NotImplementedException();
+#endif
 		}
 
 		public Size Measure(Size availableSize)
@@ -122,7 +131,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			throw new NotImplementedException();
 		}
 
+#pragma warning disable CA1805 // Do not initialize unnecessarily
 		private readonly Size CompositionSize = default;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
+
+		private Task InnerUpdate(CancellationToken ct)
+		{
+			ThrowNotImplementedOnNonTestPlatforms();
+			return Task.CompletedTask;
+		}
 #endif
 
 		private readonly SerialDisposable _updateDisposable = new SerialDisposable();
@@ -139,13 +156,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				var t = InnerUpdate(cts.Token);
 			}
 		}
-
-#if __NETSTD__ && !__WASM__
-		private async Task InnerUpdate(CancellationToken ct)
-		{
-			throw new NotSupportedException("Lottie on this platform is not supported yet.");
-		}
-#endif
 
 		/// <summary>
 		/// If the payload needs to be altered before being feed to the player
@@ -186,7 +196,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			});
 		}
 
+#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE
 		private void SetIsPlaying(bool isPlaying) => _player?.SetValue(AnimatedVisualPlayer.IsPlayingProperty, isPlaying);
+#endif
 
 		Size IAnimatedVisualSource.Measure(Size availableSize)
 		{
@@ -235,11 +247,26 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		partial void InnerMeasure(Size size);
 
+#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE || __WASM__
 		private async Task<IInputStream?> TryLoadDownloadJson(Uri uri, CancellationToken ct)
 		{
-			if(await TryLoadEmbeddedJson(uri, ct) is {} json)
+			if (TryLoadEmbeddedJson(uri, ct) is { } json)
 			{
 				return json;
+			}
+
+			if (uri.IsLocalResource())
+			{
+				var file = await StorageFile.GetFileFromApplicationUriAsync(uri).AsTask(ct);
+				var value = await file.OpenAsync(FileAccessMode.Read).AsTask(ct);
+
+				return value;
+			}
+			else if (uri.IsAppData())
+			{
+				var fileStream = File.OpenRead(AppDataUriEvaluator.ToPath(uri));
+
+				return fileStream.AsInputStream();
 			}
 
 			return IsPayloadNeedsToBeUpdated
@@ -247,7 +274,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				: null;
 		}
 
-		private async Task<IInputStream?> TryLoadEmbeddedJson(Uri uri, CancellationToken ct)
+		private IInputStream? TryLoadEmbeddedJson(Uri uri, CancellationToken ct)
 		{
 			if (uri.Scheme != "embedded")
 			{
@@ -281,16 +308,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private async Task<IInputStream?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
 		{
-			if(uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
-			{
-				var storageFile = await StorageFile.GetFileFromApplicationUriAsync(uri).AsTask(ct);
-				var storageFileStream = await storageFile.OpenReadAsync().AsTask(ct);
-				return storageFileStream.GetInputStreamAt(0);
-			}
+			_httpClient ??= new HttpClient();
 
-			using var client = new HttpClient();
-
-			using var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
+			using var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
 
 			if (!response.IsSuccessStatusCode)
 			{
@@ -306,5 +326,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			return stream.AsInputStream();
 		}
+#endif
 	}
 }

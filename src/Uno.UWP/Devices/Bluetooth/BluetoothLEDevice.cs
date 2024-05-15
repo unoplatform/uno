@@ -1,7 +1,8 @@
-﻿#nullable enable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Windows.Devices.Bluetooth
@@ -9,17 +10,14 @@ namespace Windows.Devices.Bluetooth
 	public partial class BluetoothLEDevice : global::System.IDisposable
 	{
 
-		public ulong BluetoothAddress { get; internal set; }
-		public BluetoothAddressType BluetoothAddressType { get; internal set; }
-		public BluetoothConnectionStatus ConnectionStatus { get; internal set; }
-		public string Name { get; internal set; }
-		public BluetoothLEAppearance Appearance { get; internal set; }
+		public ulong BluetoothAddress { get; }
+		public BluetoothAddressType BluetoothAddressType { get; }
+		public BluetoothConnectionStatus ConnectionStatus { get; }
+		public string Name { get; }
+		public BluetoothLEAppearance Appearance { get; }
 
-		private BluetoothLEDevice(string name, BluetoothLEAppearance appearance)
+		private BluetoothLEDevice()
 		{
-			// dummy for Error CS8618  Non-nullable property 'Value' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
-			Name = name;
-			Appearance = appearance;
 		}
 
 		#region "device selectors"
@@ -63,7 +61,7 @@ namespace Windows.Devices.Bluetooth
 
 		public static string GetDeviceSelectorFromBluetoothAddress(ulong bluetoothAddress)
 		{
-			string macAddr = string.Format("{0:x12}", bluetoothAddress);
+			string macAddr = string.Format(CultureInfo.InvariantCulture, "{0:x12}", bluetoothAddress);
 			return _deviceSelectorPrefix + "(System.DeviceInterface.Bluetooth.DeviceAddress:=\"" + macAddr + "\" OR " + _deviceSelectorIssueInquiry + "#True)";
 		}
 
@@ -74,7 +72,7 @@ namespace Windows.Devices.Bluetooth
 				return GetDeviceSelectorFromBluetoothAddress(bluetoothAddress);
 			}
 
-			string macAddr = string.Format("{0:x12}", bluetoothAddress);
+			string macAddr = string.Format(CultureInfo.InvariantCulture, "{0:x12}", bluetoothAddress);
 			string selector = _deviceSelectorPrefix + "((System.DeviceInterface.Bluetooth.DeviceAddress:=\"" + macAddr + "\"" +
 				"AND System.Devices.Aep.Bluetooth.Le.AddressType:=System.Devices.Aep.Bluetooth.Le.AddressType#";
 
@@ -94,8 +92,8 @@ namespace Windows.Devices.Bluetooth
 		public static string GetDeviceSelectorFromAppearance(BluetoothLEAppearance appearance)
 		{
 			return _deviceSelectorPrefix +
-				"((System.Devices.Aep.Bluetooth.Le.Appearance.Category:=" + appearance.Category.ToString() +
-				"AND System.Devices.Aep.Bluetooth.Le.Appearance.Subcategory:=" + appearance.SubCategory.ToString() +
+				"((System.Devices.Aep.Bluetooth.Le.Appearance.Category:=" + appearance.Category.ToString(CultureInfo.InvariantCulture) +
+				"AND System.Devices.Aep.Bluetooth.Le.Appearance.Subcategory:=" + appearance.SubCategory.ToString(CultureInfo.InvariantCulture) +
 				_deviceSelectorIssueInquiry + "#True";
 		}
 

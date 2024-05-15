@@ -7,6 +7,10 @@ namespace Windows.Devices.Haptics
 {
 	public partial class VibrationDevice
 	{
+		private VibrationDevice()
+		{
+		}
+
 		public SimpleHapticsController SimpleHapticsController { get; } = new SimpleHapticsController();
 
 		public static IAsyncOperation<VibrationAccessStatus> RequestAccessAsync() =>

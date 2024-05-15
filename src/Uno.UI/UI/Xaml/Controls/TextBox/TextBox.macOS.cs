@@ -1,12 +1,13 @@
-﻿using AppKit;
+﻿using Windows.System;
+using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
@@ -22,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial()
 		{
-			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, null, TextAlignment));
+			OnTextAlignmentChanged(TextAlignment);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState)
@@ -42,17 +43,17 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool BecomeFirstResponder() => _textBoxView?.BecomeFirstResponder() ?? false;
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnAcceptsReturnChangedPartial(bool newValue)
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextWrappingChangedPartial()
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 		{
 			UpdateTextBoxView();
 		}
@@ -99,7 +100,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool OnKey(char key)
 		{
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
+			// TODO: include modifier info
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey(), VirtualKeyModifiers.None)
 			{
 				CanBubbleNatively = true
 			};
@@ -118,17 +120,17 @@ namespace Windows.UI.Xaml.Controls
 			_revealView?.UpdateFont();
 		}
 
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnMaxLengthChangedPartial(int newValue)
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsReadonlyChangedPartial()
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
 		{
 			// There doesn't seem to be any way to disable/enable TextPrediction without disabling/enabling SpellCheck
 			if (!IsTextPredictionEnabledErrorMessageShown)
@@ -138,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static bool IsTextPredictionEnabledErrorMessageShown = false;
+		private static bool IsTextPredictionEnabledErrorMessageShown;
 
 		public int SelectionStart
 		{
@@ -186,17 +188,6 @@ namespace Windows.UI.Xaml.Controls
 					securedtv.SelectWithFrame(securedtv.Frame, securedtv.CurrentEditor, null, _textBoxView.SelectedRange.Location, value);
 				}
 			}
-		}
-
-		public override NSView HitTest(CGPoint point)
-		{
-			var view = base.HitTest(point);
-			if (view != null)
-			{
-				Uno.UI.Controls.Window.SetNeedsKeyboard(view, true);
-			}
-
-			return view;
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue)

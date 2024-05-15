@@ -1,8 +1,11 @@
-﻿#if NET6_0_OR_GREATER
+﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -23,24 +26,25 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private FileSystemWatcher[] _solutionWatchers;
-		private CompositeDisposable _solutionWatcherEventsDisposable;
+		private FileSystemWatcher[]? _solutionWatchers;
+		private CompositeDisposable? _solutionWatcherEventsDisposable;
 
 		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
-		private Solution _currentSolution;
-		private WatchHotReloadService _hotReloadService;
+		private Solution? _currentSolution;
+		private WatchHotReloadService? _hotReloadService;
 		private IReporter _reporter = new Reporter();
-		private IDeltaApplier _deltaApplier;
 
-		private bool _useRoslynHotReload = false;
+		private bool _useRoslynHotReload;
 
 		private void InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
+			_useRoslynHotReload = _useRoslynHotReload || configureServer.EnableMetadataUpdates;
+
 			if (_useRoslynHotReload)
 			{
-				CompilationWorkspaceProvider.InitializeRoslyn();
+				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
 				InitializeInner(configureServer);
 			}
@@ -49,22 +53,53 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private void InitializeInner(ConfigureServer configureServer) => _initializeTask = Task.Run(
 			async () =>
 			{
-				var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None);
+				try
+				{
+					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
+						configureServer.ProjectPath,
+						_reporter,
+						configureServer.MetadataUpdateCapabilities,
+						configureServer.MSBuildProperties,
+						CancellationToken.None);
 
-				ObserveSolutionPaths(result.Item1);
+					ObserveSolutionPaths(result.Item1);
 
-				return result;
+					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult() { WorkspaceInitialized = true });
+
+					return result;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"Failed to initialize compilation workspace: {e}");
+
+					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult() { WorkspaceInitialized = false });
+
+					throw;
+				}
 			},
 			CancellationToken.None);
 
 		private void ObserveSolutionPaths(Solution solution)
 		{
-			_solutionWatchers = solution.Projects
-				.SelectMany(p => p.Documents.Select(d => Path.GetDirectoryName(d.FilePath)))
-				.Distinct()
+			var observedPaths =
+				solution.Projects
+					.SelectMany(p => p
+						.Documents
+						.Select(d => d.FilePath)
+						.Concat(p.AdditionalDocuments
+							.Select(d => d.FilePath)))
+					.Select(p => Path.GetDirectoryName(p))
+					.Distinct()
+					.ToArray();
+
+#if DEBUG
+			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
+#endif
+
+			_solutionWatchers = observedPaths
 				.Select(p => new FileSystemWatcher
 				{
-					Path = p,
+					Path = p!,
 					Filter = "*.*",
 					NotifyFilter = NotifyFilters.LastWrite |
 						NotifyFilters.Attributes |
@@ -107,9 +142,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					.Buffer(TimeSpan.FromMilliseconds(250))
 					.Subscribe(filePaths =>
 					{
-#if NET6_0_OR_GREATER
 						ProcessMetadataChanges(filePaths.Distinct());
-#endif
 					}, e => Console.WriteLine($"Error {e}"));
 
 				_solutionWatcherEventsDisposable.Add(disposable);
@@ -130,11 +163,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task<bool> ProcessSolutionChanged(CancellationToken cancellationToken, string file)
 		{
-			await EnsureSolutionInitializedAsync();
+			if (!await EnsureSolutionInitializedAsync() || _currentSolution is null || _hotReloadService is null)
+			{
+				return false;
+			}
 
 			var sw = Stopwatch.StartNew();
 
-			Solution updatedSolution = null;
+			Solution? updatedSolution = null;
 			ProjectId updatedProjectId;
 
 			if (_currentSolution.Projects.SelectMany(p => p.Documents).FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase)) is Document documentToUpdate)
@@ -148,6 +184,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				var sourceText = await GetSourceTextAsync(file);
 				updatedSolution = _currentSolution.WithAdditionalDocumentText(additionalDocument.Id, sourceText, PreservationMode.PreserveValue);
 				updatedProjectId = additionalDocument.Project.Id;
+
+				// Generate an empty document to force the generators to run
+				// in a separate project of the same solution. This is not needed
+				// for the head project, but it's no causing issues either.
+				var docName = Guid.NewGuid().ToString();
+				updatedSolution = updatedSolution.AddAdditionalDocument(
+					DocumentId.CreateNewId(updatedProjectId),
+					docName,
+					SourceText.From("")
+				);
 			}
 			else
 			{
@@ -156,22 +202,24 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return false;
 			}
 
+
 			var (updates, hotReloadDiagnostics) = await _hotReloadService.EmitSolutionUpdateAsync(updatedSolution, cancellationToken);
+			var hasErrorDiagnostics = hotReloadDiagnostics.Any(d => d.Severity == DiagnosticSeverity.Error);
 
-			Console.WriteLine($"Got results after {sw.Elapsed}");
+			_reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 
-			if (hotReloadDiagnostics.IsDefaultOrEmpty && updates.IsDefaultOrEmpty)
+			if (hasErrorDiagnostics && updates.IsDefaultOrEmpty)
 			{
 				// It's possible that there are compilation errors which prevented the solution update
 				// from being updated. Let's look to see if there are compilation errors.
-				var diagnostics = GetDiagnostics(updatedSolution, cancellationToken);
+				var diagnostics = GetErrorDiagnostics(updatedSolution, cancellationToken);
 				if (diagnostics.IsDefaultOrEmpty)
 				{
 					await UpdateMetadata(file, updates);
 				}
 				else
 				{
-					Console.WriteLine($"Got {diagnostics.Length} diagnostics");
+					_reporter.Output($"Got {diagnostics.Length} errors");
 				}
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
@@ -179,13 +227,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return true;
 			}
 
-			if (!hotReloadDiagnostics.IsDefaultOrEmpty)
+			if (hasErrorDiagnostics)
 			{
 				// Rude edit.
 				_reporter.Output("Unable to apply hot reload because of a rude edit. Rebuilding the app...");
 				foreach (var diagnostic in hotReloadDiagnostics)
 				{
-					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic));
+					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
 				}
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
@@ -203,8 +251,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			async Task UpdateMetadata(string file, ImmutableArray<WatchHotReloadService.Update> updates)
 			{
+#if DEBUG
+				_reporter.Output($"Sending {updates.Length} metadata updates for {file}");
+#endif
+
 				for (int i = 0; i < updates.Length; i++)
 				{
+					var updateTypesWriterStream = new MemoryStream();
+					var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
+					WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
+
 					await _remoteControlServer.SendFrame(
 						new AssemblyDeltaReload()
 						{
@@ -213,7 +269,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 							PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
 							ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
 							MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
+							UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
 						});
+				}
+			}
+
+			static void WriteIntArray(BinaryWriter binaryWriter, int[] values)
+			{
+				if (values is null)
+				{
+					binaryWriter.Write(0);
+					return;
+				}
+
+				binaryWriter.Write(values.Length);
+				foreach (var value in values)
+				{
+					binaryWriter.Write(value);
 				}
 			}
 		}
@@ -237,8 +309,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			return null;
 		}
 
-
-		private ImmutableArray<string> GetDiagnostics(Solution solution, CancellationToken cancellationToken)
+		private ImmutableArray<string> GetErrorDiagnostics(Solution solution, CancellationToken cancellationToken)
 		{
 			var @lock = new object();
 			var builder = ImmutableArray<string>.Empty;
@@ -260,7 +331,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (item.Severity == DiagnosticSeverity.Error)
 					{
-						var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item);
+						var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
 						_reporter.Output(diagnostic);
 						projectDiagnostics = projectDiagnostics.Add(diagnostic);
 					}
@@ -276,7 +347,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 
-
+		[MemberNotNullWhen(true, nameof(_currentSolution))]
 		private async ValueTask<bool> EnsureSolutionInitializedAsync()
 		{
 			if (_currentSolution != null)
@@ -302,4 +373,3 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 	}
 }
-#endif

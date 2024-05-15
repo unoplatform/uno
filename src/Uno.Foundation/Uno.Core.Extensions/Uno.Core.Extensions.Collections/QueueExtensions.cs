@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,31 +19,24 @@ using System.Collections.Generic;
 
 namespace Uno.Extensions
 {
-    internal static class QueueExtensions
-    {
-        public static bool Remove<T>(this Queue<T> queue, Func<T, bool> predicate)
-        {
-            var result = false;
-            var allValues = queue.ToArray();
-            queue.Clear();
-            foreach (var v in allValues)
-            {
-                if (predicate(v))
-                {
-                    result = true;
-                    continue;
-                }
-                queue.Enqueue(v);
-            }
+	internal static class QueueExtensions
+	{
+		public static bool Remove<T>(this Queue<T> queue, Func<T, bool> predicate)
+		{
+			var result = false;
+			var allValues = queue.ToArray();
+			queue.Clear();
+			foreach (var v in allValues)
+			{
+				if (predicate(v))
+				{
+					result = true;
+					continue;
+				}
+				queue.Enqueue(v);
+			}
 
-            return result;
-        }
-
-	    public static T DequeueOrDefault<T>(this Queue<T> queue)
-	    {
-		    return queue.Count > 0
-			    ? queue.Dequeue()
-			    : default(T);
+			return result;
 		}
 	}
 }

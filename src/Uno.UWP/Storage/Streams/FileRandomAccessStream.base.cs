@@ -5,7 +5,7 @@ using Windows.Foundation;
 namespace Windows.Storage.Streams
 {
 	public partial class FileRandomAccessStream
-    {
+	{
 		private abstract class ImplementationBase : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
 		{
 			protected Stream _stream;

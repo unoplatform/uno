@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.ViewManagement
 {
-	public  partial class ApplicationViewTitleBar 
+	public partial class ApplicationViewTitleBar
 	{
 		/// <summary>
 		/// Constructor is not public in UWP
@@ -12,7 +12,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ButtonInactiveBackgroundColor
+		public global::Windows.UI.Color? ButtonInactiveBackgroundColor
 		{
 			get
 			{
@@ -26,7 +26,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ButtonHoverForegroundColor
+		public global::Windows.UI.Color? ButtonHoverForegroundColor
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ButtonHoverBackgroundColor
+		public global::Windows.UI.Color? ButtonHoverBackgroundColor
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public  global::Windows.UI.Color? ButtonForegroundColor
+		public global::Windows.UI.Color? ButtonForegroundColor
 		{
 			get
 			{
@@ -65,10 +65,10 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.ButtonForegroundColor");
 			}
 		}
-		
-		
+
+
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ButtonBackgroundColor
+		public global::Windows.UI.Color? ButtonBackgroundColor
 		{
 			get
 			{
@@ -80,10 +80,10 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.ButtonBackgroundColor");
 			}
 		}
-		
-		
+
+
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ButtonInactiveForegroundColor
+		public global::Windows.UI.Color? ButtonInactiveForegroundColor
 		{
 			get
 			{
@@ -98,7 +98,7 @@ namespace Windows.UI.ViewManagement
 
 #if !__WASM__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? BackgroundColor
+		public global::Windows.UI.Color? BackgroundColor
 		{
 			get
 			{
@@ -111,9 +111,9 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
-		
+
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? InactiveForegroundColor
+		public global::Windows.UI.Color? InactiveForegroundColor
 		{
 			get
 			{
@@ -125,10 +125,10 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.InactiveForegroundColor");
 			}
 		}
-		
-		
+
+
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? InactiveBackgroundColor
+		public global::Windows.UI.Color? InactiveBackgroundColor
 		{
 			get
 			{
@@ -140,10 +140,10 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.InactiveBackgroundColor");
 			}
 		}
-		
-		
+
+
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ForegroundColor
+		public global::Windows.UI.Color? ForegroundColor
 		{
 			get
 			{
@@ -155,10 +155,10 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.ForegroundColor");
 			}
 		}
-		
-		
+
+
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ButtonPressedForegroundColor
+		public global::Windows.UI.Color? ButtonPressedForegroundColor
 		{
 			get
 			{
@@ -170,10 +170,10 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.ButtonPressedForegroundColor");
 			}
 		}
-		
-		
+
+
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color? ButtonPressedBackgroundColor
+		public global::Windows.UI.Color? ButtonPressedBackgroundColor
 		{
 			get
 			{
@@ -184,6 +184,6 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.ButtonPressedBackgroundColor");
 			}
 		}
-		
+
 	}
 }

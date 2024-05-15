@@ -1,7 +1,7 @@
-using Uno.Media;
-using Windows.UI.Xaml.Markup;
+﻿using Uno.Media;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Figures))]
 	public partial class PathGeometry : Geometry
@@ -20,11 +20,11 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty FillRuleProperty { get; } =
 			DependencyProperty.Register(
-				"FillRule", 
+				"FillRule",
 				typeof(FillRule),
 				typeof(PathGeometry),
 				new FrameworkPropertyMetadata(
-					defaultValue: FillRule.EvenOdd, 
+					defaultValue: FillRule.EvenOdd,
 					options: FrameworkPropertyMetadataOptions.AffectsRender
 				)
 			);
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty FiguresProperty { get; } =
 			DependencyProperty.Register(
-				"Figures", 
+				"Figures",
 				typeof(PathFigureCollection),
 				typeof(PathGeometry),
 				new FrameworkPropertyMetadata(

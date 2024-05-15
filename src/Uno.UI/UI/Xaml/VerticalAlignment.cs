@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Describes how a child element is vertically positioned or stretched within a parent's layout slot.

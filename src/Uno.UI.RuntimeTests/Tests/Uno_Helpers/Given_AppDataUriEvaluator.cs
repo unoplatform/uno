@@ -1,9 +1,10 @@
-﻿#if !WINDOWS_UWP
+﻿#if !WINAPPSDK
 using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Helpers;
 using Windows.ApplicationModel;
+using Windows.Foundation.Metadata;
 using Windows.Storage;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
@@ -108,7 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 
 		[TestMethod]
 		public void When_Uri_Starts_With_Invalid_Folder()
-		{			
+		{
 			var uri = new Uri($"ms-appdata:///space/file.png");
 
 			Assert.ThrowsException<ArgumentOutOfRangeException>(
@@ -218,6 +219,12 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			var path = AppDataUriEvaluator.ToPath(uri);
 
 			Assert.AreEqual(expected, path);
+		}
+
+		[TestMethod]
+		public void When_NonExistent_Method_Check()
+		{
+			Assert.IsFalse(ApiInformation.IsMethodPresent("Microsoft.UI.Composition.Compositor", "IDontExist"));
 		}
 	}
 }

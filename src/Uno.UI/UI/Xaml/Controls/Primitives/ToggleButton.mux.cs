@@ -1,16 +1,18 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ToggleButton_Partial.h, ToggleButton_Partial.cpp
+// ToggleButton_Partial.h, ToggleButton_Partial.cpp, tag winui3/release/1.4.2
 
 #nullable enable
 
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ToggleButton
 	{
-		private bool _skipCreateAutomationPeer = false;
+#if false // Uno docs: This appears to be unused, even on WinUI.
+		private bool _skipCreateAutomationPeer;
+#endif
 
 		private protected override void Initialize()
 		{
@@ -186,7 +188,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		/// <summary>
-		/// Raises the Click routed event.
+		/// Toggles the IsChecked state.
 		/// </summary>
 		private void OnToggleImpl()
 		{
@@ -226,6 +228,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private void OnIsCheckedChanged()
 		{
+			// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+			if (_suppressCheckedChanged) // Uno workaround
+			{
+				UpdateVisualState();
+				return;
+			}
+
 			var isChecked = IsChecked;
 			if (isChecked == null)
 			{
@@ -244,7 +253,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private void AutomationToggleButtonOnToggle()
+		internal void AutomationToggleButtonOnToggle()
 		{
 			// OnToggle through UIAutomation
 			OnClick();
@@ -256,14 +265,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <returns>Automation peer.</returns>
 		protected override AutomationPeer? OnCreateAutomationPeer()
 		{
-			if (!_skipCreateAutomationPeer)
+			//if (!_skipCreateAutomationPeer)
 			{
 				return new ToggleButtonAutomationPeer(this);
 			}
 
-			return null;
+			//return null;
 		}
 
+#if false // Uno docs: This appears to be unused, even on WinUI.
 		private void SetSkipAutomationPeerCreation() => _skipCreateAutomationPeer = true;
+#endif
 	}
 }

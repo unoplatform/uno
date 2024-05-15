@@ -6,7 +6,7 @@ using static System.Environment;
 namespace Uno.Extensions.Storage.Pickers
 {
 	internal static class PickerHelpers
-    {
+	{
 		// Special CLSID for the "virtual" Computer folder (https://www.autohotkey.com/docs/misc/CLSID-List.htm)
 		private const string ComputerFolderClsid = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
 
@@ -49,5 +49,5 @@ namespace Uno.Extensions.Storage.Pickers
 					return SpecialFolder.MyComputer;
 			}
 		}
-    }
+	}
 }

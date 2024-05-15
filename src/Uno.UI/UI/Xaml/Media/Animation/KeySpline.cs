@@ -6,7 +6,7 @@ using System.Text;
 using Uno.Extensions;
 using System.Globalization;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class KeySpline : DependencyObject
 	{
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		public override string ToString() 
+		public override string ToString()
 			=> "CP1: {0}, CP2: {1}".InvariantCultureFormat(ControlPoint1, ControlPoint2);
 
 		private static Point ValidateControlPointValue(Point controlPointValue)
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			var tokens = input
 				.Split(',', ' ')
-				.Where(t => t.HasValue())
+				.Where(t => !t.IsNullOrEmpty())
 				.ToList();
 
 			if (tokens.Count != 4)
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				double.Parse(tokens[3], CultureInfo.InvariantCulture));
 		}
 
-		public static implicit operator KeySpline(string input) 
+		public static implicit operator KeySpline(string input)
 			=> FromString(input);
 
 		/// <summary>

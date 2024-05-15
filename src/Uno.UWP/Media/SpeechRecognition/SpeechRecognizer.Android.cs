@@ -1,8 +1,10 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.Content;
 using Android.Speech;
 using Windows.Foundation;
+using Windows.Extensions;
 
 namespace Windows.Media.SpeechRecognition
 {
@@ -15,8 +17,15 @@ namespace Windows.Media.SpeechRecognition
 			_speechRecognizer = Android.Speech.SpeechRecognizer.CreateSpeechRecognizer(Android.App.Application.Context);
 		}
 
-		public IAsyncOperation<SpeechRecognitionResult> RecognizeAsync()
+		private async Task<SpeechRecognitionResult> RecognizeTaskAsync(CancellationToken ct)
 		{
+			var isPermissionGranted = await PermissionsHelper.TryGetPermission(ct, Android.Manifest.Permission.RecordAudio);
+
+			if (!isPermissionGranted)
+			{
+				throw new UnauthorizedAccessException("The RECORD_AUDIO permission is either not present in your Manifest or was not accepted prior to attempting a speech recognition.");
+			}
+
 			var tcs = new TaskCompletionSource<SpeechRecognitionResult>();
 
 			var listener = new SpeechRecognitionListener
@@ -47,11 +56,14 @@ namespace Windows.Media.SpeechRecognition
 
 			_speechRecognizer.SetRecognitionListener(listener);
 			_speechRecognizer.StartListening(this.CreateSpeechIntent());
-			
+
 			OnStateChanged(SpeechRecognizerState.Capturing);
 
-			return tcs.Task.AsAsyncOperation();
+			return await tcs.Task;
+
 		}
+
+		public IAsyncOperation<SpeechRecognitionResult> RecognizeAsync() => AsyncOperation.FromTask(RecognizeTaskAsync);
 
 		protected virtual Intent CreateSpeechIntent()
 		{

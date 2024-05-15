@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -7,8 +7,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.RuntimeTests.Helpers;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -18,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_xLoad_Literal()
+		public void When_xLoad_Literal()
 		{
 			var sut = new xLoad_Literal();
 
@@ -32,12 +34,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_xLoad_Order()
+		{
+			var sut = new When_xLoad_Order();
+
+			TestServices.WindowHelper.WindowContent = sut;
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(ElementStub));
+
+			sut.IsLoaded2 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(ElementStub));
+
+			sut.IsLoaded3 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(Border));
+
+			sut.IsLoaded1 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(Border));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_xLoad_xBind()
 		{
 			var sut = new xLoad_xBind();
 
 			TestServices.WindowHelper.WindowContent = sut;
-			TestServices.WindowHelper.WaitForLoaded(sut);
+			await TestServices.WindowHelper.WaitForLoaded(sut);
 
 			var loadBorder = sut.LoadBorder;
 			Assert.IsNull(sut.LoadBorder);
@@ -45,20 +87,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sut.IsLoad = true;
 
 			Assert.IsNotNull(sut.LoadBorder);
-			var parent = sut.LoadBorder.Parent as Border;
+			var parent = (Border)sut.LoadBorder.Parent;
 
 			sut.IsLoad = false;
 
-			Assert.IsFalse((parent.Child as ElementStub).Load);
+			Assert.IsFalse(((ElementStub)parent.Child).Load);
 
 			sut.IsLoad = true;
 
 			Assert.IsNotNull(sut.LoadBorder);
-			parent = sut.LoadBorder.Parent as Border;
+			parent = (Border)sut.LoadBorder.Parent;
 
 			sut.IsLoad = false;
 
-			Assert.IsFalse((parent.Child as ElementStub).Load);
+			Assert.IsFalse(((ElementStub)parent.Child).Load);
 		}
 
 		[TestMethod]
@@ -88,6 +130,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var SUT = new When_xLoad_xBind_xLoad_Initial();
 			grid.Children.Add(SUT);
 
+			await TestServices.WindowHelper.WaitForIdle();
+
 			Assert.IsNotNull(SUT.tb01);
 			Assert.AreEqual(1, SUT.tb01.Tag);
 
@@ -106,12 +150,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var SUT = new When_xLoad_xBind_xLoad_While_Loading();
 			grid.Children.Add(SUT);
 
+			await TestServices.WindowHelper.WaitForIdle();
+
 			Assert.IsNotNull(SUT.tb01);
 			Assert.AreEqual(1, SUT.tb01.Tag);
 
 			SUT.Model.MyValue = 42;
 
 			Assert.AreEqual(42, SUT.tb01.Tag);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/16250")]
+		public async Task When_xLoad_Referenced_By_xBind()
+		{
+			var SUT = new When_xLoad_Referenced_By_xBind();
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNull(SUT.LoadElement);
+			Assert.IsTrue(SUT.button1.IsEnabled);
+			Assert.IsFalse(SUT.ToggleLoad.IsChecked);
+
+			SUT.ToggleLoad.IsChecked = true;
+
+			Assert.IsNotNull(SUT.LoadElement);
+			Assert.IsFalse(SUT.button1.IsEnabled);
+			Assert.IsTrue(SUT.ToggleLoad.IsChecked);
 		}
 
 
@@ -139,6 +204,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNull(SUT.tb01);
 			Assert.IsNull(SUT.tb02);
@@ -200,6 +267,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(SUT.tb01);
 			Assert.IsNotNull(SUT.tb02);
+			// Note: If not null, this usually means that the control is leaking!!!
 			await AssertIsNullAsync(() => SUT.panel01);
 			await AssertIsNullAsync(() => SUT.tb03);
 			await AssertIsNullAsync(() => SUT.panel02);
@@ -251,6 +319,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNull(SUT.tb01);
 			Assert.IsNull(SUT.tb02);

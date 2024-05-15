@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Provides an instance pool for <see cref="Page"/>s. Pooling is enabled when <see cref="Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled"/> is set to true.
@@ -34,8 +34,8 @@ namespace Windows.UI.Xaml
 		{
 			_watch.Start();
 
-#if !NET461
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+#if !IS_UNIT_TESTS
+			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 #endif
 		}
 
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml
 
 			await Task.Delay(TimeSpan.FromSeconds(30));
 
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 		}
 
 		internal Page DequeuePage(Type pageType)

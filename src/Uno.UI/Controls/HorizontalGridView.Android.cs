@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +20,7 @@ namespace Uno.UI.Controls
 			: base(ContextHelper.Current, null, new GridViewAdapter(ContextHelper.Current))
 		{
 			BindableAdapter.Background = Background;
-			BindableAdapter.Orientation = Windows.UI.Xaml.Controls.Orientation.Horizontal;
+			BindableAdapter.Orientation = Microsoft.UI.Xaml.Controls.Orientation.Horizontal;
 		}
 
 		protected override void SetupItemClickListeners()
@@ -83,7 +83,7 @@ namespace Uno.UI.Controls
 		private PointF? _downPoint;
 		public override bool OnInterceptTouchEvent(MotionEvent ev)
 		{
-			if(ev.Action == MotionEventActions.Down)
+			if (ev.Action == MotionEventActions.Down)
 			{
 				_downPoint = new PointF(ev.RawX, ev.RawY);
 			}

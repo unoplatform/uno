@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
 using Uno.Extensions.Specialized;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class RowDefinitionCollection : DefinitionCollectionBase, IList<RowDefinition>, IEnumerable<RowDefinition>
 	{
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			get => _inner[index];
 			set
 			{
-				if(_inner[index] != value)
+				if (_inner[index] != value)
 				{
 					_inner[index] = value;
 				}
@@ -70,6 +70,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public int Count => _inner.Count;
+
+		public uint Size => (uint)_inner.Count;
 
 		public bool IsReadOnly => false;
 

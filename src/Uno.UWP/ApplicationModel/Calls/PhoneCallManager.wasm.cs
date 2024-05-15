@@ -1,7 +1,8 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
+using NativeMethods = __Windows.__System.Launcher.NativeMethods;
 
 namespace Windows.ApplicationModel.Calls
 {
@@ -10,9 +11,7 @@ namespace Windows.ApplicationModel.Calls
 		private static void ShowPhoneCallUIImpl(string phoneNumber, string displayName)
 		{
 			var uri = new Uri($"tel:{phoneNumber}");
-			var command = $"Uno.UI.WindowManager.current.open(\"{uri.AbsoluteUri}\");";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);			
+			NativeMethods.Open(uri.AbsoluteUri);
 		}
 	}
 }
-#endif

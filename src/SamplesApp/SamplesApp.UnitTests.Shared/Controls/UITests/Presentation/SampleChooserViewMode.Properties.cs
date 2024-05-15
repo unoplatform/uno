@@ -1,38 +1,29 @@
 ﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using SampleControl.Entities;
-using Uno.UI.Samples.Controls;
-using Uno.UI.Samples.Entities;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Globalization;
-using Windows.UI.Xaml.Data;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
-using Windows.Storage;
+using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml;
-using System.IO;
-using Uno.Disposables;
-using System.ComponentModel;
+using Microsoft.UI.Xaml;
 using Uno.UI.Common;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Uno.UI.Samples.Controls;
 
 #if XAMARIN || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
-using Windows.Graphics.Display;
-using Windows.UI.Xaml.Media;
+using Microsoft.Graphics.Display;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
+#endif
+
+#if HAS_UNO
+using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 #endif
 
 namespace SampleControl.Presentation
@@ -55,6 +46,7 @@ namespace SampleControl.Presentation
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
 		private bool _useDarkTheme;
+		private bool _manualTestsOnly;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -71,6 +63,7 @@ namespace SampleControl.Presentation
 		private SampleChooserContent _selectedSearchSample;
 		private List<SampleChooserContent> _filteredSamples;
 		private XamlControlsResources _fluentResources;
+		private bool _isRecordAllTests = false;
 
 		private void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
@@ -139,6 +132,17 @@ namespace SampleControl.Presentation
 			{
 				_categoryVisibility = value;
 				RaisePropertyChanged();
+			}
+		}
+
+		public bool ManualTestsOnly
+		{
+			get => _manualTestsOnly;
+			set
+			{
+				_manualTestsOnly = value;
+				RaisePropertyChanged();
+				RefreshSamples();
 			}
 		}
 
@@ -255,7 +259,6 @@ namespace SampleControl.Presentation
 				_currentSelectedSample = value;
 				RaisePropertyChanged();
 				(ReloadCurrentTestCommand as DelegateCommand).CanExecuteEnabled = true;
-				(ShowTestInformationCommand as DelegateCommand).CanExecuteEnabled = true;
 
 				var currentTextIndex = SelectedCategory?.SamplesContent.IndexOf(value);
 				// Set Previous
@@ -404,7 +407,12 @@ namespace SampleControl.Presentation
 				_useFluentStyles = value;
 				if (_useFluentStyles)
 				{
-					_fluentResources = _fluentResources ?? new XamlControlsResources() { ControlsResourcesVersion = ControlsResourcesVersion.Version2 };
+					_fluentResources = _fluentResources ?? new XamlControlsResources()
+					{
+#if !WINAPPSDK
+						ControlsResourcesVersion = ControlsResourcesVersion.Version2
+#endif
+					};
 					Application.Current.Resources.MergedDictionaries.Add(_fluentResources);
 				}
 				else
@@ -416,9 +424,26 @@ namespace SampleControl.Presentation
 				var updateReason = ResourceUpdateReason.ThemeResource;
 				Application.Current.Resources?.UpdateThemeBindings(updateReason);
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
-				Application.PropagateResourcesChanged(Windows.UI.Xaml.Window.Current.Content, updateReason);
+				foreach (var root in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+				{
+					Application.PropagateResourcesChanged(root.XamlRoot?.Content, updateReason);
+				}
 #endif
 				RaisePropertyChanged();
+			}
+		}
+
+		public bool UseRtl
+		{
+			get => Owner.FlowDirection == FlowDirection.RightToLeft;
+			set
+			{
+				var newValue = value ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+				if (newValue != Owner.FlowDirection)
+				{
+					Owner.FlowDirection = newValue;
+					RaisePropertyChanged();
+				}
 			}
 		}
 
@@ -428,7 +453,7 @@ namespace SampleControl.Presentation
 			set
 			{
 				_useDarkTheme = value;
-				if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+				if (Owner.XamlRoot.Content is FrameworkElement root)
 				{
 					root.RequestedTheme = _useDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
 				}
@@ -437,5 +462,18 @@ namespace SampleControl.Presentation
 		}
 
 		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public bool IsRecordAllTests
+		{
+			get => _isRecordAllTests;
+			set
+			{
+				if (value != _isRecordAllTests)
+				{
+					_isRecordAllTests = value;
+					RaisePropertyChanged();
+				}
+			}
+		}
 	}
 }

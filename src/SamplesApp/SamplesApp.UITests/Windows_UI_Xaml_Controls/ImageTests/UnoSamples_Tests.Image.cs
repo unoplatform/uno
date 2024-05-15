@@ -240,13 +240,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnBitmap = _app.Marked("btnBitmap");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.png");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.png");
 			streamMode.SetDependencyPropertyValue("IsChecked", "False");
 
 			btnBitmap.FastTap();
@@ -279,13 +279,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnSvg = _app.Marked("btnSvg");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.svg");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.svg");
 			streamMode.SetDependencyPropertyValue("IsChecked", "False");
 
 			btnSvg.FastTap();
@@ -318,10 +318,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnBitmap = _app.Marked("btnBitmap");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
 			url.SetDependencyPropertyValue("Text", "ms-appx:///Assets/Formats/uno-overalls.png");
@@ -333,7 +333,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			using var screenshotDirect = TakeScreenshot("url_local");
 
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.png");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.png");
 
 			btnBitmap.FastTap();
 
@@ -357,10 +357,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var url = _app.Marked("url");
 			var btnSvg = _app.Marked("btnSvg");
 			var streamMode = _app.Marked("streamMode");
-			var showLow = _app.Marked("showLow");
+			var showLog = _app.Marked("showLog");
 			var img = _app.Marked("img");
 
-			showLow.SetDependencyPropertyValue("IsCheked", "False");
+			showLog.SetDependencyPropertyValue("IsChecked", "False");
 
 			// Load image from url
 			url.SetDependencyPropertyValue("Text", "ms-appx:///Assets/Formats/uno-overalls.svg");
@@ -372,7 +372,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			using var screenshotDirect = TakeScreenshot("url_local");
 
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.svg");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.svg");
 
 			btnSvg.FastTap();
 
@@ -386,6 +386,56 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreEqual(screenshotDirect, screenshotStream, rect, tolerance: PixelTolerance.Exclusive(12));
 		}
 
+		[Test]
+		[AutoRetry]
+		public void Image_Invalid()
+		{
+			Run("Uno.UI.Samples.UITests.ImageTests.Image_Invalid");
+
+			var panel = _app.Marked("ComparePanel");
+			var button = _app.Marked("HideButton");
+			var physicalRect = _app.GetPhysicalRect(panel);
+
+			// Copy of the rect, as the panel will be hidden, so the the X & Y coords would become negative
+			var originalRect = new AppRect(physicalRect.X, physicalRect.Y, physicalRect.Width, physicalRect.Height);
+
+			using var beforeHide = TakeScreenshot("image_invalid_before_hide");
+
+			button.FastTap();
+
+			using var afterHide = TakeScreenshot("image_invalid_after_hide");
+
+			ImageAssert.AreEqual(afterHide, beforeHide, originalRect, tolerance: PixelTolerance.Exclusive(1));
+		}
+
+		// Can be removed when #10340 is done (in favor of When_Image_Source_Nullify runtime test).
+		[Test]
+		[AutoRetry]
+		public void Image_Source_Nullify()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Source_Nullify");
+
+			var panel = _app.Marked("CompareGrid");
+			var loadButton = _app.Marked("LoadButton");
+			var clearButton = _app.Marked("ClearButton");
+
+			var physicalRect = _app.GetPhysicalRect(panel);
+
+			using var beforeLoad = TakeScreenshot("image_source_nullify_empty");
+
+			loadButton.FastTap();
+
+			using var afterLoad = TakeScreenshot("image_source_nullify_loaded");
+
+			ImageAssert.AreNotEqual(beforeLoad, afterLoad, physicalRect);
+
+			clearButton.FastTap();
+
+			using var afterClear = TakeScreenshot("image_source_nullify_cleared");
+
+			ImageAssert.AreEqual(beforeLoad, afterClear, physicalRect, tolerance: PixelTolerance.Exclusive(1));
+		}
+
 		private void WaitForBitmapOrSvgLoaded()
 		{
 			var isLoaded = _app.Marked("isLoaded");
@@ -395,7 +445,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			bool Predicate()
 			{
 				return isLoaded.GetDependencyPropertyValue<bool>("IsChecked")
-				       || imgIsLoaded.GetDependencyPropertyValue<bool>("IsChecked");
+					   || imgIsLoaded.GetDependencyPropertyValue<bool>("IsChecked");
 			}
 
 			_app.WaitFor(Predicate, timeout: loadTimeout);

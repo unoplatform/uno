@@ -1,8 +1,8 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class LineGeometry : Geometry
 	{

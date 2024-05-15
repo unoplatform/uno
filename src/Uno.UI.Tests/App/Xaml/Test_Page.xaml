@@ -10,6 +10,7 @@
 	  xmlns:contract1NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,1)"
 	  xmlns:contract9999Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 9999)"
 	  xmlns:contract9999NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,9999)"
+	  xmlns:unittests="http://uno.ui/net461"
 	  mc:Ignorable="d"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	  views:MyBehavior.Bulbousness="{StaticResource DoubleOrNothing}">
@@ -102,10 +103,15 @@
 				   x:FieldModifier="public"
 				   contract9999Present:Text="Contract"
 				   contract9999NotPresent:Text="Not Contract" />
+		<TextBlock x:Name="testConditionalTextBlock3"
+				   x:FieldModifier="public"
+				   unittests:Text="Hello tests!" />
 		<TextBlock x:Name="testSubclassedDictionaryTextBlock"
 				   x:FieldModifier="public"
 				   Text="{StaticResource ProblemFreePhilosophy}" />
 		<ext:MyTextBox x:Name="myExtTextBox"
 					   x:FieldModifier="public" />
+
+
 	</Grid>
 </Page>

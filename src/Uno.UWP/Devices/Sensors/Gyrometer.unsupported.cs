@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || NET461
+﻿#if !(__IOS__ || __ANDROID__ || __WASM__)
+#nullable enable
+
 namespace Windows.Devices.Sensors
 {
 	public partial class Gyrometer
@@ -11,7 +13,7 @@ namespace Windows.Devices.Sensors
 		/// API not supported, always returns null.
 		/// </summary>
 		/// <returns>Null.</returns>
-		public static Gyrometer GetDefault() => null;
+		public static Gyrometer? GetDefault() => null;
 	}
 }
 #endif

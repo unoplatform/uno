@@ -141,4 +141,10 @@
   <data name="Given_ResourcesService.When_Get_ResourceFromResw" xml:space="preserve">
     <value>Value for When_Get_ResourceFromResw (en)</value>
   </data>
+  <data name="ApplicationDescription" xml:space="preserve">
+    <value>An Uno Platform application containing a large number of UI and non-UI samples. It allows manually testing new features and investigating bugs.</value>
+  </data>
+  <data name="PublisherDisplayName" xml:space="preserve">
+    <value>Uno Platform</value>
+  </data>
 </root>

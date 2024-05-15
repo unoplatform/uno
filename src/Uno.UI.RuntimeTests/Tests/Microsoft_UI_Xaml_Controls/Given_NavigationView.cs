@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ListViewPages;
-#if NETFX_CORE
+using Uno.UI.RuntimeTests.ListViewPages;
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -16,13 +16,13 @@ using AppKit;
 #else
 using Uno.UI;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.Extensions;
@@ -38,21 +38,24 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedItem_Set_Before_Load_And_Theme_Changed()
 		{
 			using (StyleHelper.UseFluentStyles())
 			{
 
-				var navView = new Microsoft.UI.Xaml.Controls.NavigationView()
+				var navView = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView()
 				{
 					MenuItems =
 				{
-					new Microsoft.UI.Xaml.Controls.NavigationViewItem {Content = "Item 1"},
-					new Microsoft.UI.Xaml.Controls.NavigationViewItem {Content = "Item 2"},
-					new Microsoft.UI.Xaml.Controls.NavigationViewItem {Content = "Item 3"},
+					new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem {Content = "Item 1"},
+					new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem {Content = "Item 2"},
+					new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem {Content = "Item 3"},
 				},
-					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal,
-					IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed,
+					PaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal,
+					IsBackButtonVisible = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed,
 				};
 				navView.SelectedItem = navView.MenuItems[1];
 				var hostGrid = new Grid() { MinWidth = 20, MinHeight = 20 };

@@ -10,34 +10,28 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="UniformToFill100x100">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<Border Margin="0,20"
-							Width="500"
-							Height="200">
-						<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
-					   VerticalAlignment="Top"
-					   Stretch="UniformToFill" />
-					</Border>
-					<Border Margin="0,20"
-							Width="500"
-							Height="200">
-						<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
-					   VerticalAlignment="Center"
-					   Stretch="UniformToFill" />
-					</Border>
-					<Border Margin="0,20"
-							Width="500"
-							Height="200">
-						<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
-					   VerticalAlignment="Bottom"
-					   Stretch="UniformToFill" />
-					</Border>
-					
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<Border Margin="0,20"
+						Width="500"
+						Height="200">
+			<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
+				   VerticalAlignment="Top"
+				   Stretch="UniformToFill" />
+		</Border>
+		<Border Margin="0,20"
+						Width="500"
+						Height="200">
+			<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
+				   VerticalAlignment="Center"
+				   Stretch="UniformToFill" />
+		</Border>
+		<Border Margin="0,20"
+						Width="500"
+						Height="200">
+			<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
+				   VerticalAlignment="Bottom"
+				   Stretch="UniformToFill" />
+		</Border>
+
+	</StackPanel>
 </UserControl>

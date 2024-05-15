@@ -5,6 +5,7 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
 
 pr: 
   branches:
@@ -13,20 +14,11 @@ pr:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
 
 variables:
-  windows2022HostedVMImage: 'windows-2022'
+  windowsScaledPool: 'Windows2022-20240421'
   linuxVMImage: 'ubuntu-latest'
 
-jobs:
-- template: build/ci/.azure-devops-commitsar.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-pipeline-validations.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+stages:
+- template: build/ci/.azure-devops-stages-docs.yml

@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PasswordBox : TextBox
 	{
@@ -66,12 +67,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void BeginReveal(object sender, PointerRoutedEventArgs e)
 		{
-			SetPasswordScope(false);
+			SetPasswordRevealState(PasswordRevealState.Revealed);
 		}
 
 		private void EndReveal(object sender, PointerRoutedEventArgs e)
 		{
-			SetPasswordScope(true);
+			SetPasswordRevealState(PasswordRevealState.Obscured);
 			EndRevealPartial();
 		}
 
@@ -83,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			_revealButtonSubscription.Disposable = null;
 		}
 
-		partial void SetPasswordScope(bool shouldHideText);
+		partial void SetPasswordRevealState(PasswordRevealState state);
 
 		#region Password DependencyProperty
 
@@ -112,8 +113,8 @@ namespace Windows.UI.Xaml.Controls
 
 			OnPasswordChangedPartial(e);
 
-			if (Password.IsNullOrEmpty() && 
-                ((PasswordRevealMode == PasswordRevealMode.Peek) || (UseIsPasswordEnabledProperty && IsPasswordRevealButtonEnabled)))
+			if (Password.IsNullOrEmpty() &&
+				((PasswordRevealMode == PasswordRevealMode.Peek) || (UseIsPasswordEnabledProperty && IsPasswordRevealButtonEnabled)))
 			{
 				_isButtonEnabled = true;
 			}
@@ -129,11 +130,29 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(DescriptionProperty, value);
 		}
 
-		public static new global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+		public static new global::Microsoft.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(Description), typeof(object),
-				typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
+				typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
 				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as PasswordBox)?.UpdateDescriptionVisibility(false)));
+
+		#region SelectionHighlightColor DependencyProperty
+
+		/// <summary>
+		/// Gets or sets the brush used to highlight the selected text.
+		/// </summary>
+		public new SolidColorBrush SelectionHighlightColor
+		{
+			get => base.SelectionHighlightColor;
+			set => base.SelectionHighlightColor = value;
+		}
+
+		/// <summary>
+		/// Identifies the SelectionHighlightColor dependency property.
+		/// </summary>
+		public new static DependencyProperty SelectionHighlightColorProperty => TextBox.SelectionHighlightColorProperty;
+
+		#endregion
 
 		protected override void OnTextChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -153,6 +172,11 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
+		/// <summary>
+		/// Copies content from the OS clipboard into the text control.
+		/// </summary>
+		public new void PasteFromClipboard() => base.PasteFromClipboard();
+
 		#region IsPasswordRevealButtonEnabled DependencyProperty
 		public bool IsPasswordRevealButtonEnabled
 		{
@@ -160,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(IsPasswordRevealButtonEnabledProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } =
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsPasswordRevealButtonEnabled),
 				typeof(bool),
@@ -187,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(PasswordRevealModeProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } =
+		public static global::Microsoft.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } =
 			DependencyProperty.Register(
 				nameof(PasswordRevealMode),
 				typeof(bool),
@@ -208,19 +232,19 @@ namespace Windows.UI.Xaml.Controls
 			// Only use IsPasswordRevealButtonEnabled if it is set and PasswordRevealMode is not
 			if (UseIsPasswordEnabledProperty)
 			{
-				SetPasswordScope(true);
-			} 
-            else
+				SetPasswordRevealState(PasswordRevealState.Obscured);
+			}
+			else
 			{
 				switch (PasswordRevealMode)
 				{
 					case PasswordRevealMode.Visible:
-						SetPasswordScope(false);
+						SetPasswordRevealState(PasswordRevealState.Revealed);
 						break;
 					case PasswordRevealMode.Hidden:
 					case PasswordRevealMode.Peek:
 					default:
-						SetPasswordScope(true);
+						SetPasswordRevealState(PasswordRevealState.Obscured);
 						break;
 				}
 			}
@@ -253,8 +277,8 @@ namespace Windows.UI.Xaml.Controls
 					{
 						VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 					}
-				} 
-                else
+				}
+				else
 				{
 					if (PasswordRevealMode == PasswordRevealMode.Peek && Password.IsNullOrEmpty())
 					{
@@ -284,5 +308,16 @@ namespace Windows.UI.Xaml.Controls
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
+
+#if !IS_UNIT_TESTS && !__MACOS__
+		/// <summary>
+		/// Occurs when text is pasted into the control.
+		/// </summary>
+		public new event TextControlPasteEventHandler Paste
+		{
+			add => base.Paste += value;
+			remove => base.Paste -= value;
+		}
+#endif
 	}
 }

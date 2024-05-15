@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
@@ -32,7 +32,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 			_sut = _myControl.FindFirstChild<Border>(b => b.Name == "StateTwoContent");
 			_output = _myControl.FindFirstChild<TextBlock>(t => t.Name == "PullingOutput");
 
-			var timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(100)};
+			var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
 			timer.Tick += (snd, args) =>
 			{
 				_output.Text = _sut.Opacity.ToString("F2");

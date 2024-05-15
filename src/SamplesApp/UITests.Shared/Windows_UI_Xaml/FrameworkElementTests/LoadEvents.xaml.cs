@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-	[SampleControlInfo("FrameworkElement", "LoadEvents")]
+	[SampleControlInfo("FrameworkElement", "LoadEvents", Description = "Tests the Loaded/Unloaded events")]
 	public sealed partial class LoadEvents : UserControl
 	{
 		public LoadEvents()
@@ -32,13 +33,13 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 				return;
 			}
 
-			var block = (TextBlock) sender;
+			var block = (TextBlock)sender;
 			block.Text = "[PENDING] Loaded event received, try to unload it...";
 			block.Loaded -= OnUnloadTextLoaded;
 
-			_unloadTextParent = (Panel) block.Parent;
+			_unloadTextParent = (Panel)block.Parent;
 
-			await block.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _unloadTextParent.Children.Remove(block));
+			await UnitTestDispatcherCompat.From(block).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _unloadTextParent.Children.Remove(block));
 		}
 
 		private async void OnUnloadTextUnloaded(object sender, RoutedEventArgs e)
@@ -47,7 +48,7 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 			block.Text = "[OK] Unloaded event received";
 			block.Unloaded -= OnUnloadTextUnloaded;
 
-			await block.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _unloadTextParent.Children.Add(block));
+			await UnitTestDispatcherCompat.From(block).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _unloadTextParent.Children.Add(block));
 		}
 	}
 }

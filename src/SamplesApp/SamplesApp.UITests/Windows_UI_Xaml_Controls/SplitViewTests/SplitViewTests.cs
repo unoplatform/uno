@@ -12,9 +12,9 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SplitViewTests
 {
 	[TestFixture]
-    public partial class SplitViewTests : SampleControlUITestBase
-    {
-        [Test]
+	public partial class SplitViewTests : SampleControlUITestBase
+	{
+		[Test]
 		[AutoRetry]
 		public void When_RightPanne_Clipped()
 		{

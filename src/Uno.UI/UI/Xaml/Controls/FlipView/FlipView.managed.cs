@@ -6,17 +6,18 @@ using System.Text;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Windows.Foundation.Metadata;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.Disposables;
 using DirectUI;
@@ -30,7 +31,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
@@ -42,12 +43,12 @@ namespace Windows.UI.Xaml.Controls
 		const int TICKS_PER_MILLISECOND = 10000;
 
 		// Minimum required time between mouse wheel inputs for triggering successive flips
-		//const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200;
+		const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200;
 
 		// How long the FlipView's navigation buttons show before fading out.
 		const int FLIP_VIEW_BUTTONS_SHOW_DURATION_MS = 3000;
 
-		//static int s_scrollWheelDelayMS = FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS;
+		static int s_scrollWheelDelayMS = FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS;
 
 		// Dispatcher timer to set correct offset values after size changed
 		DispatcherTimer m_tpFixOffsetTimer;
@@ -85,22 +86,22 @@ namespace Windows.UI.Xaml.Controls
 
 		// True if we are in a Measure/Arrange pass. We need this to make sure that we don't change the SelectedIndex due to
 		// the scroll position changing during a resize.
-		bool m_inMeasure = false;
-		bool m_inArrange = false;
+		bool m_inMeasure;
+		bool m_inArrange;
 
 		// Saved SnapPointsTypes. These are saved in the beginning of an animation and restored when the animation is completed.
 		SnapPointsType m_verticalSnapPointsType;
 		SnapPointsType m_horizontalSnapPointsType;
 
 		// A value indicating the last time a scroll wheel event occurred.
-		//long m_lastScrollWheelTime;
+		long m_lastScrollWheelTime;
 
 		// A value indicating the last wheel delta a scroll wheel event contained.
 		int m_lastScrollWheelDelta;
 
 		bool m_keepNavigationButtonsVisible;
 
-		bool m_moveFocusToSelectedItem = false;
+		bool m_moveFocusToSelectedItem;
 
 		private readonly SerialDisposable _fixOffsetSubscription = new SerialDisposable();
 		private readonly SerialDisposable _buttonsFadeOutTimerSubscription = new SerialDisposable();
@@ -114,30 +115,34 @@ namespace Windows.UI.Xaml.Controls
 			m_horizontalSnapPointsType = SnapPointsType.None;
 			m_skipAnimationOnce = false;
 			m_lastScrollWheelDelta = 0;
-			//m_lastScrollWheelTime = 0;
+			m_lastScrollWheelTime = 0;
 			m_keepNavigationButtonsVisible = false;
 			m_itemsAreSized = false;
 		}
 
-
-		protected override void OnApplyTemplate()
+		internal override void Enter(EnterParams @params, int depth)
 		{
-			// Call base class implementation
-			base.OnApplyTemplate();
-		}
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
+			base.Enter(@params, depth);
 
 			HookTemplate();
 		}
 
-		private protected override void OnUnloaded()
+		internal override void Leave(LeaveParams @params)
 		{
-			base.OnUnloaded();
+			base.Leave(@params);
 
 			UnhookTemplate();
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			var oldSV = m_tpScrollViewer;
+			base.OnApplyTemplate();
+
+			// Uno docs: Due to differences in Uno's FlipView and WinUI's FlipView (i.e, when the ScrollViewer is
+			// initialized - related to OnItemsHostAvailable which is missing in Uno), the base OnApplyTemplate can
+			// mess up with m_tpScrollViewer. So, we bring it back.
+			m_tpScrollViewer ??= oldSV;
 		}
 
 		private void HookTemplate()
@@ -394,29 +399,38 @@ namespace Windows.UI.Xaml.Controls
 			{
 				m_tpPreviousButtonHorizontalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpPreviousButtonHorizontalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpPreviousButtonHorizontalPart.Click -= OnPreviousButtonPartClick;
 			}
 
 			if (m_tpNextButtonHorizontalPart != null)
 			{
 				m_tpNextButtonHorizontalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpNextButtonHorizontalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpNextButtonHorizontalPart.Click -= OnNextButtonPartClick;
 			}
 
 			if (m_tpPreviousButtonVerticalPart != null)
 			{
 				m_tpPreviousButtonVerticalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpPreviousButtonVerticalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpPreviousButtonVerticalPart.Click -= OnPreviousButtonPartClick;
 			}
 
 			if (m_tpNextButtonVerticalPart != null)
 			{
 				m_tpNextButtonVerticalPart.PointerEntered -= OnPointerEnteredNavigationButtons;
 				m_tpNextButtonVerticalPart.PointerExited -= OnPointerExitedNavigationButtons;
+
+				m_tpNextButtonVerticalPart.Click -= OnNextButtonPartClick;
 			}
 
 			if (m_tpScrollViewer != null)
 			{
 				m_tpScrollViewer.SizeChanged -= OnScrollingHostPartSizeChanged;
+
 				m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
 			}
 
@@ -443,7 +457,15 @@ namespace Windows.UI.Xaml.Controls
 
 		void InitializeScrollViewer()
 		{
-			if (m_tpScrollViewer == null)
+			// Uno-specific: The way we call InitializeScrollViewer is different from WinUI.
+			// In WinUI, this is called in OnItemsHostAvailable, which isn't available in Uno.
+			// In Uno, we call this in HookTemplate, which is called in Enter.
+			// If the FlipView enters the visual tree, then leaves it, then enters again, what will happen is:
+			// 1) The first Enter will set the m_tpScrollViewer and subscribe to SizeChanged and ViewChanged.
+			// 2) The leave will UnhookTemplate which will unsubscribe from SizeChanged and ViewChanged.
+			// 3) The second Enter will call InitializeScrollViewer again, but this time m_tpScrollViewer is not null.
+			// 4) This means we won't subscribe to SizeChanged and ViewChanged again if we have the following null check.
+			//if (m_tpScrollViewer == null)
 			{
 				ScrollViewer spScrollViewer;
 
@@ -494,6 +516,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#pragma warning disable IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
 		void OnScrollViewerViewChanged(object pSender, ScrollViewerViewChangedEventArgs pArgs)
 		{
 			bool isIntermediate = true;
@@ -588,11 +611,14 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+#pragma warning restore IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
 
+#if false
 		void OnItemsHostAvailable()
 		{
 			InitializeScrollViewer();
 		}
+#endif
 
 		protected override void OnPointerWheelChanged(PointerRoutedEventArgs pArgs)
 		{
@@ -613,11 +639,11 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isCtrlPressed)
 				{
-					//long lTimeCurrent = default;
+					long lTimeCurrent = default;
 					bool canFlip = false;
 					bool queryCounterSuccess = false;
 
-					//queryCounterSuccess = QueryPerformanceCounter(lTimeCurrent);
+					queryCounterSuccess = QueryPerformanceCounter(out lTimeCurrent);
 
 					if (queryCounterSuccess)
 					{
@@ -638,17 +664,16 @@ namespace Windows.UI.Xaml.Controls
 						}
 						else
 						{
-							//long frequency;
-							//bool queryFrequencySuccess;
+							long frequency;
+							bool queryFrequencySuccess;
 
-							//queryFrequencySuccess = QueryPerformanceFrequency(frequency);
-							//queryFrequencySuccess &&
+							queryFrequencySuccess = QueryPerformanceFrequency(out frequency);
 
-							//if (((lTimeCurrent.QuadPart - m_lastScrollWheelTime) / (double)(frequency.QuadPart) * 1000) > s_scrollWheelDelayMS)
-							//{
-							//	// Enough time has passed so we can flip.
-							//	canFlip = true;
-							//}
+							if (queryFrequencySuccess && ((lTimeCurrent - m_lastScrollWheelTime) / (double)(frequency) * 1000) > s_scrollWheelDelayMS)
+							{
+								// Enough time has passed so we can flip.
+								canFlip = true;
+							}
 						}
 
 						// Whether a flip is performed or not, the time of this mouse wheel delta is being recorded. This is to avoid a single touch pad
@@ -656,8 +681,7 @@ namespace Windows.UI.Xaml.Controls
 						// over multiple seconds, which is much larger than s_scrollWheelDelayMS==200ms. So a pause of 200ms since the last
 						// wheel delta, or a change in direction, is required to trigger a new flip. Unfortunately that may require the user to wait a few seconds
 						// before being able to trigger a new flip with the touch pad.
-						//m_lastScrollWheelTime = lTimeCurrent.QuadPart;
-						//m_lastScrollWheelTime = 0;
+						m_lastScrollWheelTime = lTimeCurrent;
 
 						if (canFlip)
 						{
@@ -733,12 +757,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ResetButtonsFadeOutTimer();
 			}
-		}
-
-		protected override bool IsItemItsOwnContainerOverride(object item)
-		{
-			// Require containers be of type IFlipViewItem
-			return item is FlipViewItem;
 		}
 
 		// Creates or identifies the element that is used to display the given item.
@@ -834,6 +852,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		// TODO: This should override a base class method!
 		void NotifyOfSourceChanged(IObservableVector<DependencyObject> pSender, IVectorChangedEventArgs e)
 		{
@@ -868,6 +887,7 @@ namespace Windows.UI.Xaml.Controls
 
 			m_skipAnimationOnce = false;
 		}
+#endif
 
 		// Sets vertical/horizontal offset corresponding to the selected item.
 		// If the panel inside is a virtualizing panel selected index is used since virtualizing panels use item based scrolling
@@ -1403,7 +1423,7 @@ namespace Windows.UI.Xaml.Controls
 		void HandlePointerLostOrCanceled(PointerRoutedEventArgs pArgs)
 		{
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
 
 			if (pArgs == null) throw new ArgumentNullException();
@@ -1427,12 +1447,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				case "Visibility":
 					OnVisibilityChanged();
-					break;
-
-				case "SelectedIndex":
-					{
-						OnSelectedIndexChanged((int)args.OldValue, (int)args.NewValue);
-					}
 					break;
 			}
 
@@ -1526,7 +1540,12 @@ namespace Windows.UI.Xaml.Controls
 				// with SetFixOffsetTimer.
 				if (m_animateNewIndex)
 				{
-					bool succeeded = (bool)(m_tpScrollViewer?.CancelDirectManipulations());
+					// UIElement.CancelDirectManipulations is not yet implemented in uno at the time of writing.
+					if (ApiInformation.IsMethodPresent(typeof(UIElement), "CancelDirectManipulations"))
+					{
+						bool succeeded = (bool)(m_tpScrollViewer?.CancelDirectManipulations());
+					}
+
 					RestoreSnapPointsTypes();
 					m_animateNewIndex = false;
 					SetFixOffsetTimer();
@@ -1542,7 +1561,7 @@ namespace Windows.UI.Xaml.Controls
 			m_skipAnimationOnce = false;
 
 			var smallChange = Math.Abs(oldSelectedIndex - newSelectedIndex) <= 1;
-			OnSelectedIndexChangedPartial(oldSelectedIndex, newSelectedIndex, smallChange && UseTouchAnimationsForAllNavigation);
+			//OnSelectedIndexChangedPartial(oldSelectedIndex, newSelectedIndex, smallChange && UseTouchAnimationsForAllNavigation);
 		}
 
 		// Called when the IsEnabled property changes.
@@ -1685,29 +1704,6 @@ namespace Windows.UI.Xaml.Controls
 			HideButtonsImmediately();
 		}
 
-		public (ButtonBase ppPreviousButton, ButtonBase ppNextButton) GetPreviousAndNextButtons()
-		{
-			ButtonBase ppPreviousButton;
-			ButtonBase ppNextButton;
-
-			Orientation physicalOrientation = Orientation.Vertical;
-
-			// Determine the correct button/previous/next
-			(physicalOrientation, _) = GetItemsHostOrientations();
-
-			if (physicalOrientation == Orientation.Vertical)
-			{
-				ppPreviousButton = m_tpPreviousButtonVerticalPart;
-				ppNextButton = m_tpNextButtonVerticalPart;
-			}
-			else
-			{
-				ppPreviousButton = m_tpPreviousButtonHorizontalPart;
-				ppNextButton = m_tpNextButtonHorizontalPart;
-			}
-
-			return (ppPreviousButton, ppNextButton);
-		}
 		private void GetTemplatePart<T>(string name, out T element) where T : class
 		{
 			element = GetTemplateChild(name) as T;

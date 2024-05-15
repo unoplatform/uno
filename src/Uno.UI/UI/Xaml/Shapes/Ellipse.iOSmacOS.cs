@@ -1,27 +1,18 @@
 ﻿using System;
 using CoreGraphics;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Ellipse : Shape
 	{
-		static Ellipse()
-		{
-			StretchProperty.OverrideMetadata(typeof(Ellipse), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
-		}
-
 		public Ellipse()
 		{
 #if __IOS__
 			ClipsToBounds = true;
 #endif
 		}
-
-		/// <inheritdoc />
-		protected override Size MeasureOverride(Size availableSize)
-			=> base.MeasureRelativeShape(availableSize);
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)

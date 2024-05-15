@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class GeometryGroup
 	{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media
 
 		private void OnPropertyChanged(ManagedWeakReference? instance, DependencyProperty property, DependencyPropertyChangedEventArgs? args)
 		{
-			if(_svgElement == null)
+			if (_svgElement == null)
 			{
 				return;
 			}
@@ -40,12 +40,12 @@ namespace Windows.UI.Xaml.Media
 			{
 				_svgElement.ClearChildren();
 
-				if(args?.OldValue is GeometryCollection oldGeometries)
+				if (args?.OldValue is GeometryCollection oldGeometries)
 				{
 					oldGeometries.VectorChanged -= OnGeometriesChanged;
 				}
 
-				if((args?.NewValue ?? Children) is GeometryCollection newGeometries)
+				if ((args?.NewValue ?? Children) is GeometryCollection newGeometries)
 				{
 					newGeometries.VectorChanged += OnGeometriesChanged;
 
@@ -102,11 +102,11 @@ namespace Windows.UI.Xaml.Media
 				_owner = owner;
 			}
 
-			public string ToString(string format, IFormatProvider formatProvider)
+			public string ToString(string? format, IFormatProvider? formatProvider)
 			{
 				var sb = new StringBuilder();
 
-				foreach(var child in _owner.Children)
+				foreach (var child in _owner.Children)
 				{
 					var childFormattable = child.ToPathData();
 					sb.Append(childFormattable.ToString(format, formatProvider));

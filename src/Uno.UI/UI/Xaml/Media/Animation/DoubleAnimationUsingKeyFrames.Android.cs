@@ -1,7 +1,7 @@
-﻿namespace Windows.UI.Xaml.Media.Animation
+﻿namespace Microsoft.UI.Xaml.Media.Animation
 {
-    public partial class DoubleAnimationUsingKeyFrames
-    {
+	public partial class DoubleAnimationUsingKeyFrames
+	{
 		partial void OnFrame(IValueAnimator currentAnimator)
 		{
 			if (currentAnimator.AnimatedValue is Java.Lang.Float javaFloat)

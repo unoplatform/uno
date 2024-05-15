@@ -2,46 +2,72 @@
 using System.Diagnostics;
 using System.Windows.Markup;
 
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", System.Windows.Markup.XamlConstants.BaseXamlNamespace, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.BaseXamlNamespace, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Controls, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Primitives, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Text, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Data, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Documents, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Media, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.MediaAnimation, AssemblyName = "Uno.UI")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Shapes, AssemblyName = "Uno.UI")]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.BaseXamlNamespace)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.BaseXamlNamespace)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.RootUINamespace)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Controls)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Primitives)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Text)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Data)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Documents)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Media)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.MediaAnimation)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.MediaImaging)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Shapes)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Automation)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.AutomationPeers)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Input)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Markup)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.WindowsUINamespace)]
 
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System", AssemblyName = "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
-[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System", AssemblyName = "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System")]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System")]
 
-namespace System.Windows.Markup
+namespace Microsoft/* UWP don't rename */.UI.Xaml;
+
+// This attribute is aligned with https://github.com/dotnet/maui/blob/312948086267cf6c529dfeb2ec0eeae7e7aa57ae/src/Graphics/src/Graphics/XmlnsDefinitionAttribute.cs#L8
+// Visual studio now expects this attribute to be present in order to provide intellisense for the types
+// in the namespace, and must not have the `Assembly` property.
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+[DebuggerDisplay("{XmlNamespace}, {ClrNamespace}")]
+internal sealed class XmlnsDefinitionAttribute : Attribute
 {
-	internal static class XamlConstants
+	public string XmlNamespace { get; }
+	public string ClrNamespace { get; }
+
+	public XmlnsDefinitionAttribute(string xmlNamespace, string clrNamespace)
 	{
-#if HAS_UNO_WINUI
-		public const string RootUINamespace = "Microsoft.UI";
-#else
-		public const string RootUINamespace = "Windows.UI";
-#endif
-
-		public const string WindowsUINamespace = "Windows.UI";
-
-		public const string BaseXamlNamespace = RootUINamespace + ".Xaml";
-
-		internal static class Namespaces
-		{
-			public const string Controls = BaseXamlNamespace + ".Controls";
-			public const string Primitives = Controls + ".Primitives";
-			public const string Text = WindowsUINamespace + ".Text";
-			public const string Data = BaseXamlNamespace + ".Data";
-			public const string Documents = BaseXamlNamespace + ".Documents";
-			public const string Media = BaseXamlNamespace + ".Media";
-			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
-			public const string Shapes = BaseXamlNamespace + ".Shapes";
-
-		}
+		ClrNamespace = clrNamespace ?? throw new ArgumentNullException(nameof(xmlNamespace));
+		XmlNamespace = xmlNamespace ?? throw new ArgumentNullException(nameof(clrNamespace));
 	}
 }
 
+internal static class XamlConstants
+{
+#if HAS_UNO_WINUI
+	public const string RootUINamespace = "Microsoft.UI";
+#else
+	public const string RootUINamespace = "Windows.UI";
+#endif
+
+	public const string WindowsUINamespace = "Windows.UI";
+
+	public const string BaseXamlNamespace = RootUINamespace + ".Xaml";
+
+	internal static class Namespaces
+	{
+		public const string Controls = BaseXamlNamespace + ".Controls";
+		public const string Primitives = Controls + ".Primitives";
+		public const string Text = WindowsUINamespace + ".Text";
+		public const string Data = BaseXamlNamespace + ".Data";
+		public const string Documents = BaseXamlNamespace + ".Documents";
+		public const string Media = BaseXamlNamespace + ".Media";
+		public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
+		public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
+		public const string Shapes = BaseXamlNamespace + ".Shapes";
+		public const string Automation = BaseXamlNamespace + ".Automation";
+		public const string AutomationPeers = BaseXamlNamespace + ".Automation.Peers";
+		public const string Input = BaseXamlNamespace + ".Input";
+		public const string Markup = BaseXamlNamespace + ".Markup";
+	}
+}

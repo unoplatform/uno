@@ -10,7 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 	[TestClass]
 	public class Given_MidiSystemExclusiveMessage
 	{
-        [TestMethod]
+		[TestMethod]
 		public void When_RawData_Empty()
 		{
 			Assert.ThrowsException<ArgumentException>(

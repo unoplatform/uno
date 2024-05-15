@@ -13,16 +13,16 @@ namespace Uno.Devices.Sensors.Helpers
 		private const int MinDirectionChange = 3;
 		private const int MaxDurationOfShake = 400;
 
-		private readonly Accelerometer _accelerometer;
+		private readonly global::Windows.Devices.Sensors.Accelerometer _accelerometer;
 
 		private DateTimeOffset _firstDirectionChangeTime = DateTimeOffset.MinValue;
 		private DateTimeOffset _lastDirectionChangeTime = DateTimeOffset.MinValue;
-		private int _directionChangeCount = 0;
-		private double _lastX = 0;
-		private double _lastY = 0;
-		private double _lastZ = 0;
+		private int _directionChangeCount;
+		private double _lastX;
+		private double _lastY;
+		private double _lastZ;
 
-		public ShakeDetector(Accelerometer accelerometer)
+		public ShakeDetector(global::Windows.Devices.Sensors.Accelerometer accelerometer)
 		{
 			_accelerometer = accelerometer;
 		}

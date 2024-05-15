@@ -4,16 +4,17 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Serialization;
 
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
-using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml
+
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{
@@ -44,7 +45,7 @@ namespace Windows.UI.Xaml
 
 			private List<InvocationItem> _invocationList = new List<InvocationItem>();
 			private List<InvocationItem> _pendingInvocationList;
-			private bool _isSubscribed = false;
+			private bool _isSubscribed;
 			private bool _isDispatching;
 
 			public EventRegistration(
@@ -162,45 +163,24 @@ namespace Windows.UI.Xaml
 					args = _payloadConverter(_owner, nativeEventPayload);
 				}
 
-				var result = HtmlEventDispatchResult.Ok;
+				var result = new HtmlEventDispatchResultHelper();
 				foreach (var invocationItem in _invocationList)
 				{
 					if (invocationItem.Handler is RawEventHandler rawHandler)
 					{
 						var handlerResult = rawHandler(_owner, nativeEventPayload);
-
-						if (handlerResult.HasFlag(HtmlEventDispatchResult.StopPropagation))
-						{
-							// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
-							return result | HtmlEventDispatchResult.StopPropagation;
-						}
-						else
-						{
-							result |= handlerResult;
-						}
+						result.Add(handlerResult);
 					}
 					else
 					{
 						var handlerResult = invocationItem.Invoker(invocationItem.Handler, _owner, args);
+						result.Add(args, handlerResult);
+					}
 
-						switch (handlerResult)
-						{
-							case bool isHandledInManaged when isHandledInManaged:
-								if (args is IPreventDefaultHandling preventDefaultHandling &&
-									preventDefaultHandling.DoNotPreventDefault)
-								{
-									return HtmlEventDispatchResult.StopPropagation;
-								}
-								return HtmlEventDispatchResult.StopPropagation | HtmlEventDispatchResult.PreventDefault;
-
-							case HtmlEventDispatchResult dispatchResult when dispatchResult.HasFlag(HtmlEventDispatchResult.StopPropagation):
-								// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
-								return result | HtmlEventDispatchResult.StopPropagation;
-
-							case HtmlEventDispatchResult dispatchResult:
-								result |= dispatchResult;
-								break;
-						}
+					if (result.ShouldStop)
+					{
+						// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
+						return result.Value;
 					}
 				}
 
@@ -221,9 +201,9 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Registering {eventName} on {this}.");
 			}
 
-			if (!_eventHandlers.TryGetValue(eventName, out var registration))
+			if (!_eventHandlers.TryGetValue((eventName, onCapturePhase), out var registration))
 			{
-				_eventHandlers[eventName] = registration = new EventRegistration(
+				_eventHandlers[(eventName, onCapturePhase)] = registration = new EventRegistration(
 					this,
 					eventName,
 					onCapturePhase,
@@ -234,9 +214,9 @@ namespace Windows.UI.Xaml
 			registration.Add(handler, invoker);
 		}
 
-		internal void UnregisterEventHandler(string eventName, Delegate handler, GenericEventHandler invoker)
+		internal void UnregisterEventHandler(string eventName, Delegate handler, GenericEventHandler invoker, bool onCapturePhase = false)
 		{
-			if (_eventHandlers.TryGetValue(eventName, out var registration))
+			if (_eventHandlers.TryGetValue((eventName, onCapturePhase), out var registration))
 			{
 				registration.Remove(handler, invoker);
 			}
@@ -246,12 +226,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal HtmlEventDispatchResult InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null)
+		internal HtmlEventDispatchResult InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null, bool onCapturePhase = false)
 		{
 			var n = eventName;
 			try
 			{
-				return InternalInnerDispatchEvent(eventArgs, nativeEventPayload, n);
+				return InternalInnerDispatchEvent(eventArgs, nativeEventPayload, n, onCapturePhase);
 			}
 			catch (Exception e)
 			{
@@ -268,9 +248,9 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private HtmlEventDispatchResult InternalInnerDispatchEvent(EventArgs eventArgs, string nativeEventPayload, string n)
+		private HtmlEventDispatchResult InternalInnerDispatchEvent(EventArgs eventArgs, string nativeEventPayload, string n, bool onCapturePhase = false)
 		{
-			if (_eventHandlers.TryGetValue(n, out var registration))
+			if (_eventHandlers.TryGetValue((n, onCapturePhase), out var registration))
 			{
 				return registration.Dispatch(eventArgs, nativeEventPayload);
 			}
@@ -291,18 +271,19 @@ namespace Windows.UI.Xaml
 		/// <param name="eventArgs">Serialized event args</param>
 		/// <returns>The HtmlEventDispatchResult of the dispatch.</returns>
 		/// <remarks>The return value is an integer for marshaling consideration, but is actually an HtmlEventDispatchResult.</remarks>
+		[JSExport]
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static int DispatchEvent(int handle, string eventName, string eventArgs)
+		internal static int DispatchEvent(int handle, string eventName, string eventArgs, bool onCapturePhase)
 		{
 #if DEBUG
 			try
-			{
 #endif
+			{
 				// Dispatch to right object, if we can find it
 				if (GetElementFromHandle(handle) is UIElement element)
 				{
-					return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
+					return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs, onCapturePhase: onCapturePhase);
 				}
 				else
 				{
@@ -310,8 +291,8 @@ namespace Windows.UI.Xaml
 				}
 
 				return (int)HtmlEventDispatchResult.NotDispatched;
-#if DEBUG
 			}
+#if DEBUG
 			catch (Exception error)
 			{
 				Console.Error.WriteLine("Failed to dispatch event: " + error);
@@ -320,7 +301,20 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.OrdinalIgnoreCase);
+		private class TupleComparer : IEqualityComparer<(string, bool)>
+		{
+			public bool Equals((string, bool) x, (string, bool) y)
+			{
+				return StringComparer.OrdinalIgnoreCase.Equals(x.Item1, y.Item1) && x.Item2 == y.Item2;
+			}
+
+			public int GetHashCode((string, bool) obj)
+			{
+				return StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Item1) ^ obj.Item2.GetHashCode();
+			}
+		}
+
+		private readonly Dictionary<(string name, bool onCapturePhase), EventRegistration> _eventHandlers = new Dictionary<(string, bool), EventRegistration>(new TupleComparer());
 
 		internal delegate EventArgs EventArgsParser(object sender, string payload);
 
@@ -332,40 +326,6 @@ namespace Windows.UI.Xaml
 			FocusEventExtractor = 4,
 			CustomEventDetailStringExtractor = 5, // For use with CustomEvent("name", {detail:{string detail here}})
 			CustomEventDetailJsonExtractor = 6, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
-		}
-
-		[Flags]
-		internal enum HtmlEventDispatchResult : byte
-		{
-			/// <summary>
-			/// Event has been dispatched properly, but there is no specific action to take.
-			/// </summary>
-			Ok = 0,
-
-			/// <summary>
-			/// Stops **native** propagation of the event to parent elements (a.k.a. Handled).
-			/// </summary>
-			StopPropagation = 1, // a.k.a. Handled
-
-			/// <summary>
-			/// This prevents the default native behavior of the event.
-			/// For instance mouse wheel to scroll the view, tab to changed focus, etc.
-			/// WARNING: Cf. remarks
-			/// </summary>
-			/// <remarks>
-			/// The "default behavior" is applied only once the event as reached the root element.
-			/// This means that if a parent element requires to prevent the default behavior, it will also prevent the default for all its children.
-			/// For instance preventing the default behavior for the wheel event on a `Popup`, will also disable the mouse wheel scrolling for its content.
-			/// </remarks>
-			PreventDefault = 2,
-
-			/// <summary>
-			/// The event has not been dispatch.
-			/// WARNING: This must not be used by application.
-			/// It only indicates that there is no active listener for that event and it should not be raised anymore.
-			/// It should not in anyway indicates an error in event processing.
-			/// </summary>
-			NotDispatched = 128
 		}
 	}
 }

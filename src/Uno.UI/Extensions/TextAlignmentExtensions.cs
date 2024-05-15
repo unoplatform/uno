@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-    internal static class TextAlignmentExtensions
-    {
-#if XAMARIN_IOS
+	internal static class TextAlignmentExtensions
+	{
+#if __IOS__
 
 		internal static UIKit.UITextAlignment ToNativeTextAlignment(this TextAlignment textAlignment)
 		{
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 
 		internal static Android.Views.GravityFlags ToGravity(this TextAlignment textAlignment)
 		{
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml
 					return Android.Views.GravityFlags.FillHorizontal;
 				case TextAlignment.Left:
 				default:
-                    return Android.Views.GravityFlags.Left;
+					return Android.Views.GravityFlags.Left;
 			}
 		}
 

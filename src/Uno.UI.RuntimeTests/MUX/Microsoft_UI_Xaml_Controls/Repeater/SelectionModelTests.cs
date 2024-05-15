@@ -9,8 +9,8 @@ using System.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.Text;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Common;
 
 #if USING_TAEF
@@ -22,12 +22,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using SelectionModel = Microsoft.UI.Xaml.Controls.SelectionModel;
-using IndexPath = Microsoft.UI.Xaml.Controls.IndexPath;
-using SelectionModelSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.SelectionModelSelectionChangedEventArgs;
-using SelectionModelChildrenRequestedEventArgs = Microsoft.UI.Xaml.Controls.SelectionModelChildrenRequestedEventArgs;
+using SelectionModel = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModel;
+using IndexPath = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IndexPath;
+using SelectionModelSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModelSelectionChangedEventArgs;
+using SelectionModelChildrenRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModelChildrenRequestedEventArgs;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class SelectionModelTests : MUXApiTestBase
@@ -79,7 +79,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				bool select = true;
 				int selectionChangedFiredCount = 0;
-				selectionModel.SelectionChanged += delegate (SelectionModel sender, SelectionModelSelectionChangedEventArgs args) {
+				selectionModel.SelectionChanged += delegate (SelectionModel sender, SelectionModelSelectionChangedEventArgs args)
+				{
 					selectionChangedFiredCount++;
 
 					// Verify SelectionChanged was raised after selection state was changed in the SelectionModel
@@ -111,7 +112,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				selectionModel.Source = Enumerable.Range(0, 10).ToList();
 
 				int selectionChangedFiredCount = 0;
-				selectionModel.SelectionChanged += delegate (SelectionModel sender, SelectionModelSelectionChangedEventArgs args) 
+				selectionModel.SelectionChanged += delegate (SelectionModel sender, SelectionModelSelectionChangedEventArgs args)
 				{
 					selectionChangedFiredCount++;
 
@@ -975,7 +976,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				var selectionModel = new SelectionModel() {
+				var selectionModel = new SelectionModel()
+				{
 					Source = CreateNestedData(1, 2, 3)
 				};
 
@@ -1032,7 +1034,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var list = Enumerable.Range(0, 10).ToList();
 
-				var selectionModel = new SelectionModel() {
+				var selectionModel = new SelectionModel()
+				{
 					Source = list,
 					SingleSelect = true
 				};
@@ -1042,7 +1045,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				selectionModel.SelectionChanged += ThrowIfRaisedSelectionChanged;
 				selectionModel.Select(0);
 
-				selectionModel = new SelectionModel() {
+				selectionModel = new SelectionModel()
+				{
 					Source = list,
 					SingleSelect = true
 				};
@@ -1053,7 +1057,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				selectionModel.SelectAt(IndexPath.CreateFrom(1));
 
 				// multi select index
-				selectionModel = new SelectionModel() {
+				selectionModel = new SelectionModel()
+				{
 					Source = list
 				};
 				selectionModel.Select(1);
@@ -1063,7 +1068,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				selectionModel.Select(1);
 				selectionModel.Select(2);
 
-				selectionModel = new SelectionModel() {
+				selectionModel = new SelectionModel()
+				{
 					Source = list
 				};
 
@@ -1091,7 +1097,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var list = Enumerable.Range(0, 10).ToList();
 
-				var selectionModel = new SelectionModel() {
+				var selectionModel = new SelectionModel()
+				{
 					Source = list,
 					SingleSelect = true
 				};
@@ -1100,7 +1107,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				selectionModel.SelectionChanged += ThrowIfRaisedSelectionChanged;
 				selectionModel.Deselect(0);
 
-				selectionModel = new SelectionModel() {
+				selectionModel = new SelectionModel()
+				{
 					Source = list,
 					SingleSelect = true
 				};
@@ -1110,7 +1118,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				selectionModel.DeselectAt(IndexPath.CreateFrom(1));
 
 				// multi select index
-				selectionModel = new SelectionModel() {
+				selectionModel = new SelectionModel()
+				{
 					Source = list
 				};
 				testName = "Deselect(int32 index), multiselect";
@@ -1118,7 +1127,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				selectionModel.Deselect(1);
 				selectionModel.Deselect(2);
 
-				selectionModel = new SelectionModel() {
+				selectionModel = new SelectionModel()
+				{
 					Source = list
 				};
 
@@ -1135,7 +1145,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			}
 		}
 
-		[TestMethod] 
+		[TestMethod]
 		public void ValidateSelectionModeChangeFromMultipleToSingle()
 		{
 			RunOnUIThread.Execute(() =>
@@ -1375,9 +1385,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Verify.AreEqual(selectionModel.SelectedItem, GetData(selectionModel, expectedSelected[0]));
 				}
 
-				int itemsCount = selectionModel.SelectedItems.Count();
+				int itemsCount = selectionModel.SelectedItems.Count;
 				Verify.AreEqual(selectionModel.Source != null ? expectedSelected.Count - selectedInnerNodes : 0, itemsCount);
-				int indicesCount = selectionModel.SelectedIndices.Count();
+				int indicesCount = selectionModel.SelectedIndices.Count;
 				Verify.AreEqual(expectedSelected.Count - selectedInnerNodes, indicesCount);
 			}
 
@@ -1511,7 +1521,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return IndexPath.CreateFromIndices(path);
 		}
 
-		private static int _nextData = 0;
+		private static int _nextData;
 		private struct TreeWalkNodeInfo
 		{
 			public object Current { get; set; }

@@ -1,7 +1,7 @@
-﻿using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 
 	public partial class FrameworkElement : UIElement, IFrameworkElement
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		public object FindName(string name)
-			=> IFrameworkElementHelper.FindName(this, GetChildren(), name);
+			=> IFrameworkElementHelper.FindName(this, this, name);
 
 
 		public void Dispose()
@@ -66,13 +66,6 @@ namespace Windows.UI.Xaml
 			get => throw new NotImplementedException();
 			set => throw new NotImplementedException();
 		}
-
-		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
-		public global::System.Uri BaseUri
-		{
-			get;
-			internal set;
-		} = DefaultBaseUri;
 
 		public void ApplyBindingPhase(int phase) => throw new NotImplementedException();
 

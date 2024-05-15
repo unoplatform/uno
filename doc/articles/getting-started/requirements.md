@@ -1,33 +1,45 @@
+---
+uid: Uno.GettingStarted.Requirements
+---
+
 # Supported platforms
 
-Uno Platform applications run on [Android](#android), [iOS](#ios), [web](#webassembly), [macOS](#macos), [Linux](#linux), Tizen, and [Windows](#windows). 
+Uno Platform applications run on [Android](#android), [iOS](#ios), [Web](#webassembly), [macOS (Catalyst)](#macos---catalyst), [macOS (Desktop)](#macos---desktop), [Linux](#linux), and [Windows](#windows).
 
 See below for minimum supported versions for each platform.
 
-## Android
-
-Uno Platform apps run on devices running Android 5 and above. 
-
-At compile time, Uno typically supports two versions of the Android SDK, the latest and the immediately previous. At present, this is Android 11 and Android 10. It's generally recommended to use the latest version of the SDK. (Note that this **does not** affect the runtime version - apps compiled with Android 11 will run happily on devices running Android 5.)
-
-## iOS
-
-Uno Platform apps run on iOS 8 and above.
-
 ## WebAssembly
 
-Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, Edge Dev, Opera, Firefox and Safari. Desktop and mobile browser versions are supported. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
-
-## macOS
-
-Uno Platform applications run on all macOS versions supported by Xamarin.Mac - currently macOS 10.13 and above.
-
-## Linux
-
-Uno Platform applications run on Linux distributions and versions where .NET 5 is supported, [listed here](https://docs.microsoft.com/en-ca/dotnet/core/install/linux).
+Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, Edge Dev, Opera, Firefox and Safari. Desktop and mobile browser versions are supported, using the `net8.0-browserwasm` target framework. See the official WebAssembly site for [more details](https://webassembly.org/roadmap).
 
 ## Windows
 
-Applications built with UWP run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), but lower versions can be targeted.
+Two paths are available:
 
-Applications built with Uno.UI's Skia.WPF support run on Windows 7 and above. 
+- Applications built with Uno Platforms's [Skia Desktop](xref:Uno.Skia.Desktop) target framework, which support running on Windows 7 and above, using the `net8.0-desktop` target framework.
+- Running apps built with WinAppSDK or WinUI run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://learn.microsoft.com/windows/uwp/whats-new/windows-10-build-19041), using the `net8.0-windows10.0.19041` target framework. Lower versions can be targeted.
+
+## Android
+
+Uno Platform apps run on devices running Android 5 and above, using the `net8.0-android` target framework.
+
+At compile time, Uno Platform typically supports two versions of the Android SDK, the latest and the immediately previous. At present, this is Android 13 and Android 12. It's generally recommended to use the latest version of the SDK.
+
+> [!NOTE]
+> This **does not** affect the runtime version. Apps compiled with Android 13 will run properly on devices running Android 10.
+
+## iOS
+
+Uno Platform apps run on iOS 11 and above, using the `net8.0-ios` target framework.
+
+## macOS - Catalyst
+
+Uno Platform applications run on all macOS versions supported by Mac Catalyst - currently macOS 10.15 and above, using the `net8.0-maccatalyst` target framework.
+
+## macOS - Desktop
+
+Uno Platform applications run on all macOS versions supported by .NET currently macOS 10.15 and above, using the `net8.0-desktop` target framework.
+
+## Linux
+
+Uno Platform applications run on Linux distributions and versions where .NET 7 and later are supported, [listed here](https://learn.microsoft.com/dotnet/core/install/linux), using the `net8.0-desktop` target framework. Supported environments are X11 and Framebuffer.

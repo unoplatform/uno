@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 #if !NETFX_CORE
 using System;
@@ -6,39 +6,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
-using Uno.UI.DataBinding;
-using Uno;
-using Windows.UI.Xaml;
-using System.Collections;
-using Uno.Conversion;
 
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using System.Collections;
+
+using Microsoft.UI.Xaml.Data;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
 
 namespace Uno.UI.DataBinding
 {
 	internal delegate void ValueSetterHandler(object instance, object? value);
-    internal delegate void ValueUnsetterHandler(object instance);
-    internal delegate object? ValueGetterHandler(object instance);
+	internal delegate void ValueUnsetterHandler(object instance);
+	internal delegate object? ValueGetterHandler(object instance);
 
-    public static class BindableMetadata
-    {
-        /// <summary>
-        /// Sets the metadata provider for the whole app domain.
-        /// </summary>
-        public static IBindableMetadataProvider? Provider
+	public static class BindableMetadata
+	{
+		/// <summary>
+		/// Sets the metadata provider for the whole app domain.
+		/// </summary>
+		public static IBindableMetadataProvider? Provider
 		{
 			get => BindingPropertyHelper.BindableMetadataProvider;
 			set => BindingPropertyHelper.BindableMetadataProvider = value;
 		}
 	}
 
-    internal static partial class BindingPropertyHelper
+	internal static partial class BindingPropertyHelper
 	{
 		private static readonly Logger _log = typeof(BindingPropertyHelper).Log();
 
@@ -48,18 +49,22 @@ namespace Uno.UI.DataBinding
 		//          those. If this situation changes, we could remove the associated code and 
 		//          revert to memoized Funcs.
 		//
-		private static Dictionary<CachedTuple<Type, String, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler> _getValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler>(CachedTuple<Type, String, DependencyPropertyValuePrecedences?, bool>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>, ValueSetterHandler> _getValueSetter = new Dictionary<CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>, ValueSetterHandler>(CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getPrecedenceSpecificValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getSubstituteValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler> _getValueUnsetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string>, bool> _isEvent = new Dictionary<CachedTuple<Type, string>, bool>(CachedTuple<Type, string>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, bool>, Type?> _getPropertyType = new Dictionary<CachedTuple<Type, string, bool>, Type?>(CachedTuple<Type, string, bool>.Comparer);
+		private static Dictionary<GetValueGetterCacheKey, ValueGetterHandler> _getValueGetter = new(GetValueGetterCacheKey.Comparer);
+		private static Dictionary<GetValueSetterCacheKey, ValueSetterHandler> _getValueSetter = new(GetValueSetterCacheKey.Comparer);
+		private static Dictionary<GenericPropertyCacheKey, ValueGetterHandler> _getPrecedenceSpecificValueGetter = new(GenericPropertyCacheKey.Comparer);
+		private static Dictionary<GenericPropertyCacheKey, ValueGetterHandler> _getSubstituteValueGetter = new(GenericPropertyCacheKey.Comparer);
+		private static Dictionary<GenericPropertyCacheKey, ValueUnsetterHandler> _getValueUnsetter = new(GenericPropertyCacheKey.Comparer);
+		private static Dictionary<EventCacheKey, bool> _isEvent = new(EventCacheKey.Comparer);
+
+		private static HashtableEx _getPropertyType = new HashtableEx(GetPropertyTypeKey.Comparer, usePooling: false);
+		private static GetPropertyTypeKey _getPropertyTypeKey = new();
+
+		private static Type? _unoGetMemberBindingType;
+		private static Type? _unoSetMemberBindingType;
 
 		static BindingPropertyHelper()
 		{
 			MethodInvokerBuilder = DefaultInvokerBuilder;
-			Conversion = new DefaultConversionExtensions();
 		}
 
 		internal static void ClearCaches()
@@ -89,11 +94,9 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		public static IBindableMetadataProvider? BindableMetadataProvider { get; set; }
 
-		public static DefaultConversionExtensions Conversion { get; private set; }
-
 		public static bool IsEvent(Type type, string property)
 		{
-			var key = CachedTuple.Create(type, property);
+			var key = new EventCacheKey(type, property);
 
 			bool result;
 
@@ -110,19 +113,16 @@ namespace Uno.UI.DataBinding
 
 		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			var key = CachedTuple.Create(type, property, allowPrivateMembers);
+			_getPropertyTypeKey.Update(type, property, allowPrivateMembers);
 
-			Type? result;
+			object? result;
 
-			lock (_getPropertyType)
+			if (!_getPropertyType.TryGetValue(_getPropertyTypeKey, out result))
 			{
-				if (!_getPropertyType.TryGetValue(key, out result))
-				{
-					_getPropertyType.Add(key, result = InternalGetPropertyType(type, property, allowPrivateMembers));
-				}
+				_getPropertyType.Add(_getPropertyTypeKey.Clone(), result = InternalGetPropertyType(type, property, allowPrivateMembers));
 			}
 
-			return result;
+			return Unsafe.As<Type>(result);
 		}
 
 		internal static ValueGetterHandler GetValueGetter(Type type, string property)
@@ -137,7 +137,7 @@ namespace Uno.UI.DataBinding
 		/// <param name="allowPrivateMembers">Allows for private members to be included in the search</param>
 		internal static ValueGetterHandler GetValueGetter(Type type, string property, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 		{
-			var key = CachedTuple.Create(type, property, precedence, allowPrivateMembers);
+			var key = new GetValueGetterCacheKey(type, property, precedence, allowPrivateMembers);
 
 			ValueGetterHandler? result;
 
@@ -152,14 +152,14 @@ namespace Uno.UI.DataBinding
 			return result;
 		}
 
-        internal static ValueSetterHandler GetValueSetter(Type type, string property, bool convert)
+		internal static ValueSetterHandler GetValueSetter(Type type, string property, bool convert)
 		{
 			return GetValueSetter(type, property, convert, DependencyPropertyValuePrecedences.Local);
 		}
 
 		internal static ValueSetterHandler GetValueSetter(Type type, string property, bool convert, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, convert, precedence);
+			var key = new GetValueSetterCacheKey(type, property, precedence, convert);
 
 			ValueSetterHandler? result;
 
@@ -176,7 +176,7 @@ namespace Uno.UI.DataBinding
 
 		internal static ValueGetterHandler GetPrecedenceSpecificValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, precedence);
+			var key = new GenericPropertyCacheKey(type, property, precedence);
 
 			ValueGetterHandler? result;
 
@@ -193,7 +193,7 @@ namespace Uno.UI.DataBinding
 
 		internal static ValueGetterHandler GetSubstituteValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, precedence);
+			var key = new GenericPropertyCacheKey(type, property, precedence);
 
 			ValueGetterHandler? result;
 
@@ -208,14 +208,14 @@ namespace Uno.UI.DataBinding
 			return result;
 		}
 
-        internal static ValueUnsetterHandler GetValueUnsetter(Type type, string property)
+		internal static ValueUnsetterHandler GetValueUnsetter(Type type, string property)
 		{
 			return GetValueUnsetter(type, property, DependencyPropertyValuePrecedences.Local);
 		}
 
 		internal static ValueUnsetterHandler GetValueUnsetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, precedence);
+			var key = new GenericPropertyCacheKey(type, property, precedence);
 
 			ValueUnsetterHandler? result;
 
@@ -241,9 +241,14 @@ namespace Uno.UI.DataBinding
 
 		private static Type? InternalGetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			if(type == typeof(UnsetValue))
+			if (type == typeof(UnsetValue))
 			{
 				return null;
+			}
+
+			if (property.Equals("''", StringComparison.Ordinal))
+			{
+				return type;
 			}
 
 			property = SanitizePropertyName(type, property);
@@ -295,7 +300,21 @@ namespace Uno.UI.DataBinding
 					if (IsIndexerFormat(property))
 					{
 						// Fallback on reflection-based lookup
-						var indexerInfo = GetPropertyInfo(type, "Item", allowPrivateMembers: false);
+
+						// In some cases, there are multiple indexers, in which case GetIndexerInfo fails due to multiple matches when not given an explicit parameter type.
+						// If we know this parses as an integer, then use typeof(int) to reduce the cases of failure.
+						Type? indexerParameterType = null;
+						if (int.TryParse(property.AsSpan().Slice(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
+						{
+							indexerParameterType = typeof(int);
+						}
+						else
+						{
+							indexerParameterType = typeof(string);
+						}
+
+						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: allowPrivateMembers);
+						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: allowPrivateMembers);
 
 						if (indexerInfo != null)
 						{
@@ -308,7 +327,7 @@ namespace Uno.UI.DataBinding
 						}
 					}
 
-					var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: false);
+					var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: allowPrivateMembers);
 
 					if (propertyInfo != null)
 					{
@@ -388,6 +407,59 @@ namespace Uno.UI.DataBinding
 			return null;
 		}
 
+		/// <summary>
+		/// Finds the specified property info by name.
+		/// </summary>
+		/// <param name="type">The type to search</param>
+		/// <param name="name">The name of the property</param>
+		/// <returns>A <see cref="PropertyInfo"/> instance.</returns>
+		/// <remarks>
+		/// This method is required when searching in types that
+		/// include "new" non-virtual overridden members. In Mono 4.0 and
+		/// earlier, the highest match would be returned, but the .NET core 
+		/// implementation found in Mono 4.2+ throws an ambiguous match exception.
+		/// This requires a recursive search using the <see cref="BindingFlags.DeclaredOnly"/> flag.
+		///
+		/// The private members lookup is present to enable the binding to
+		/// x:Name elements in x:Bind operations.
+		/// </remarks>
+		private static PropertyInfo? GetIndexerInfo(Type type, Type? parameterType, bool allowPrivateMembers)
+		{
+			var parameterTypes = parameterType is not null
+				? new[] { parameterType }
+				: null;
+
+			var bindingFlags = BindingFlags.Instance
+					| BindingFlags.Static
+					| BindingFlags.Public
+					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
+					| BindingFlags.DeclaredOnly;
+
+			do
+			{
+				var info = parameterTypes is not null
+					? type.GetProperty(
+						name: "Item"
+						, bindingAttr: bindingFlags
+						, binder: null
+						, returnType: null
+						, types: parameterTypes
+						, modifiers: null
+					)
+					: type.GetProperty(name: "Item", bindingAttr: bindingFlags);
+
+				if (info != null)
+				{
+					return info;
+				}
+
+				type = type.BaseType!;
+			}
+			while (type != null);
+
+			return null;
+		}
+
 		private static FieldInfo? GetFieldInfo(Type type, string name, bool allowPrivateMembers)
 		{
 			do
@@ -427,13 +499,13 @@ namespace Uno.UI.DataBinding
 			// Possible values for 'property' parameter:
 			// - "PropertyName"
 			// - "TypeName.PropertyName"
-			// - "Windows.UI.Xaml.Controls:UIElement.Opacity" (fully qualified)
+			// - "Microsoft.UI.Xaml.Controls:UIElement.Opacity" (fully qualified)
 
-			if (property.Contains("."))
+			if (property.Contains('.'))
 			{
 				var parts = property
 					.Replace(":", ".") // ':' is sometimes used to separate namespace from type
-					.Split(new[] { '.' })
+					.Split('.')
 					.Reverse()
 					.Take(2) // type name + property name
 					.Reverse()
@@ -465,6 +537,11 @@ namespace Uno.UI.DataBinding
 				return UnsetValueGetter;
 			}
 
+			if (property.Equals("''", StringComparison.Ordinal))
+			{
+				return value => value;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 			if (IsIndexerFormat(property))
@@ -475,7 +552,7 @@ namespace Uno.UI.DataBinding
 				{
 					int index;
 
-					if (Int32.TryParse(indexerString, out index))
+					if (int.TryParse(indexerString, NumberStyles.Integer, CultureInfo.InvariantCulture, out index))
 					{
 						return obj =>
 						{
@@ -499,7 +576,7 @@ namespace Uno.UI.DataBinding
 				{
 					int index;
 
-					if (Int32.TryParse(indexerString, out index))
+					if (int.TryParse(indexerString, NumberStyles.Integer, CultureInfo.InvariantCulture, out index))
 					{
 						return obj =>
 						{
@@ -535,6 +612,7 @@ namespace Uno.UI.DataBinding
 
 							if (indexerMethod != null)
 							{
+								indexerString = CoerceIndexerParameter(indexerString, optionalParameterType: null);
 								return instance => indexerMethod(instance, indexerString);
 							}
 						}
@@ -550,9 +628,17 @@ namespace Uno.UI.DataBinding
 						_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 					}
 
-					var indexerInfo = GetPropertyInfo(type, "Item", allowPrivateMembers);
+					var indexerPropertyType = int.TryParse(indexerString, NumberStyles.Integer, CultureInfo.InvariantCulture, out _)
+						? typeof(int)
+						: typeof(string);
 
-					if (indexerInfo != null)
+					// Try explicitly with known types
+					var indexerInfo = GetIndexerInfo(type, indexerPropertyType, allowPrivateMembers);
+
+					// Then if search fails, search by name only
+					indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers);
+
+					if (indexerInfo is not null)
 					{
 						// This is an indexer
 						var method = indexerInfo.GetGetMethod();
@@ -569,13 +655,15 @@ namespace Uno.UI.DataBinding
 						}
 
 						var handler = MethodInvokerBuilder(method);
+						var indexerParameterType = indexerInfo.GetIndexParameters()[0].ParameterType;
+						indexerString = CoerceIndexerParameter(indexerString, indexerParameterType);
 
 						return instance => handler(
-                            instance, 
-                            new object?[] {
-                                Convert(() => indexerInfo.GetIndexParameters()[0].ParameterType, indexerString)
-                            }
-                        );
+							instance,
+							new object?[] {
+								Convert(indexerParameterType, indexerString)
+							}
+						);
 					}
 					else
 					{
@@ -659,7 +747,7 @@ namespace Uno.UI.DataBinding
 
 					var handler = MethodInvokerBuilder(getMethod);
 
-					return instance => handler(instance, new object[0]);
+					return instance => handler(instance, Array.Empty<object>());
 				}
 
 				// Look for a field (permitted for x:Bind only)
@@ -691,7 +779,8 @@ namespace Uno.UI.DataBinding
 					return instance => attachedPropertyGetter.Invoke(null, new[] { instance });
 				}
 
-				if(type == typeof(System.Dynamic.ExpandoObject))
+				if (__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
+					&& type == typeof(System.Dynamic.ExpandoObject))
 				{
 					return instance =>
 					{
@@ -707,16 +796,34 @@ namespace Uno.UI.DataBinding
 					};
 				}
 
-				if(type.Is(typeof(System.Dynamic.DynamicObject)))
+				if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+					&& type.Is(typeof(System.Dynamic.DynamicObject)))
 				{
-					return instance =>
+					return [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UnoGetMemberBinder))] (instance) =>
 					{
-						if (
-							instance is System.Dynamic.DynamicObject dynamicObject
-							&& dynamicObject.TryGetMember(new UnoGetMemberBinder(property, true), out var binderValue)
-						)
+						if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+							&& instance is System.Dynamic.DynamicObject dynamicObject)
 						{
-							return binderValue;
+							// Referencing UnoGetMemberBinder using a typeof or a generic type is enough to pull
+							// the System.Dynamic containing assembly. We're using reflection to create the binder
+							// given that the full type has been kept through `DynamicDependency` provided above.
+							_unoGetMemberBindingType ??=
+								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoGetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
+								?? throw new InvalidOperationException();
+
+							var binder = (GetMemberBinder?)Activator.CreateInstance(_unoGetMemberBindingType, property, true);
+
+							if (binder is not null)
+							{
+								if (dynamicObject.TryGetMember(binder, out var binderValue))
+								{
+									return binderValue;
+								}
+							}
+							else
+							{
+								_log.ErrorFormat("The type UnoGetMemberBinder is not available, likely caused by an incorrect Linker configuration.");
+							}
 						}
 
 						return null;
@@ -745,6 +852,19 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		private static string CoerceIndexerParameter(string indexerParameter, Type? optionalParameterType)
+		{
+			if (optionalParameterType is null || optionalParameterType == typeof(string))
+			{
+				if (indexerParameter.Length >= 2 && indexerParameter[0] == '"' && indexerParameter[indexerParameter.Length - 1] == '"')
+				{
+					return indexerParameter.Substring(1, indexerParameter.Length - 2);
+				}
+			}
+
+			return indexerParameter;
+		}
+
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "To be refactored"),
 		System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "To be refactored")]
 		private static ValueSetterHandler InternalGetValueSetter(Type type, string property, bool convert, DependencyPropertyValuePrecedences precedence)
@@ -762,17 +882,44 @@ namespace Uno.UI.DataBinding
 			if (IsIndexerFormat(property))
 			{
 				// This is an indexer
-				var indexerName = property.Substring(1, property.Length - 2);
+				var indexerRawParameter = property.Substring(1, property.Length - 2);
+				object indexerParameter =
+					int.TryParse(indexerRawParameter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var indexerIndex)
+						? indexerIndex
+						: indexerRawParameter;
 
 				// The fastest path uses the generated bindable metadata, which does not require
 				// the property info, unless there is an actual conversion to perform.
 				// So we just close over the property.
-				var indexerInfo = Uno.Funcs.CreateMemoized(() => GetPropertyInfo(type, "Item", allowPrivateMembers: false));
+				var indexerInfo = Uno.Funcs.CreateMemoized(() =>
+				{
+					var paramType = indexerParameter is int ? typeof(int) : typeof(string);
+
+					// Search for the explicit parameter type
+					if (GetIndexerInfo(type, paramType, allowPrivateMembers: false) is { } withParamResult)
+					{
+						return withParamResult;
+					}
+					// Search for a string parameter
+					else if (GetIndexerInfo(type, typeof(string), allowPrivateMembers: false) is { } withStringParamResult)
+					{
+						return withStringParamResult;
+					}
+					// If not found, search for any matching type
+					else if (paramType is not null)
+					{
+						return GetIndexerInfo(type, null, allowPrivateMembers: false);
+					}
+
+					return null;
+				});
 				var indexerType = Uno.Funcs.CreateMemoized(() => indexerInfo()?.PropertyType);
 
 
 				// Start by using the provider, to avoid reflection
-				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type)
+					&& BindableMetadataProvider != null
+					&& indexerParameter is string)
 				{
 #if PROFILE
 					using (Performance.Measure("GetValueSetter.BindableMetadataProvider"))
@@ -786,7 +933,7 @@ namespace Uno.UI.DataBinding
 
 							if (indexerMethod != null)
 							{
-								return (instance, value) => indexerMethod(instance, indexerName, convertSelector(indexerType, value));
+								return (instance, value) => indexerMethod(instance, indexerRawParameter, convertSelector(indexerType, value));
 							}
 							else
 							{
@@ -818,7 +965,13 @@ namespace Uno.UI.DataBinding
 						{
 							var handler = MethodInvokerBuilder(method);
 
-							return (instance, value) => handler(instance, new object?[] { indexerName, convertSelector(indexerType, value) });
+							if (method.GetParameters() is { Length: 2 } indexerMethodParams
+								&& indexerMethodParams[0].ParameterType == typeof(string))
+							{
+								indexerParameter = indexerRawParameter;
+							}
+
+							return (instance, value) => handler(instance, new object?[] { indexerParameter, convertSelector(indexerType, value) });
 						}
 						else
 						{
@@ -853,7 +1006,7 @@ namespace Uno.UI.DataBinding
 					{
 						if (bindableProperty != null)
 						{
-							if(bindableProperty.Property?.DependencyProperty is { } dependencyProperty)
+							if (bindableProperty.Property?.DependencyProperty is { } dependencyProperty)
 							{
 								return (instance, value) => instance.SetValue(dependencyProperty, convertSelector(() => bindableProperty.Property.PropertyType, value), precedence);
 							}
@@ -905,7 +1058,8 @@ namespace Uno.UI.DataBinding
 					}
 				}
 
-				if (type == typeof(System.Dynamic.ExpandoObject))
+				if (__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
+					&& type == typeof(System.Dynamic.ExpandoObject))
 				{
 					return (instance, value) =>
 					{
@@ -917,13 +1071,32 @@ namespace Uno.UI.DataBinding
 				}
 
 
-				if (type.Is(typeof(System.Dynamic.DynamicObject)))
+				if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+					&& type.Is(typeof(System.Dynamic.DynamicObject)))
 				{
-					return (instance, value) =>
+					return [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UnoSetMemberBinder))] (instance, value) =>
 					{
-						if (instance is System.Dynamic.DynamicObject dynamicObject)
+						if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+							&& instance is System.Dynamic.DynamicObject dynamicObject)
 						{
-							dynamicObject.TrySetMember(new UnoSetMemberBinder(property, true), value);
+							// Referencing UnoSetMemberBinder using a typeof or a generic type is enough to pull
+							// the System.Dynamic containing assembly. We're using reflection to create the binder
+							// given that the full type has been kept through `DynamicDependency` provided above.
+							_unoSetMemberBindingType ??=
+								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoSetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
+								?? throw new InvalidOperationException();
+
+							var binder = (SetMemberBinder?)Activator.CreateInstance(_unoSetMemberBindingType, property, true);
+
+							if (binder is not null)
+							{
+								dynamicObject.TrySetMember(binder, value);
+							}
+							else
+							{
+								_log.ErrorFormat("The type UnoSetMemberBinder is not available, likely caused by an incorrect Linker configuration.");
+							}
+
 						}
 					};
 				}
@@ -977,7 +1150,7 @@ namespace Uno.UI.DataBinding
 
 			if (dp != null)
 			{
-				return (instance) => DependencyObjectExtensions.GetValueUnderPrecedence((DependencyObject)instance, dp, precedence);
+				return (instance) => DependencyObjectExtensions.GetValueUnderPrecedence((DependencyObject)instance, dp, precedence).value;
 			}
 
 			{
@@ -996,7 +1169,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (type == typeof(UnsetValue))
 			{
-				return _ => { };
+				return UnsetValueUnsetter;
 			}
 
 			property = SanitizePropertyName(type, property);
@@ -1015,7 +1188,7 @@ namespace Uno.UI.DataBinding
 			return delegate { once(); };
 		}
 
-		private static DependencyProperty FindDependencyProperty(Type ownerType, string property) 
+		private static DependencyProperty FindDependencyProperty(Type ownerType, string property)
 			=> DependencyProperty.GetProperty(ownerType, property);
 
 		private static DependencyProperty? FindAttachedProperty(Type type, string property)
@@ -1064,38 +1237,53 @@ namespace Uno.UI.DataBinding
 				.FirstOrDefault();
 		}
 
-		internal static object? Convert(Func<Type?>? propertyType, object? value)
+		private static object? ConvertToEnum(Type enumType, object value)
 		{
-			if (value != null && propertyType != null)
-			{
-				var t = propertyType();
+			var valueString = Enum.GetName(enumType, value);
 
-				if (!value.GetType().Is(t))
+			FieldInfo? defaultValue = null;
+			foreach (var field in enumType.GetFields())
+			{
+				if (field.Name.Equals(valueString, StringComparison.OrdinalIgnoreCase))
 				{
-					if (FastConvert(t, value, out var fastConvertResult))
+					return Enum.Parse(enumType, field.Name);
+				}
+
+				var descriptionAttribute = field.GetCustomAttributes<DescriptionAttribute>().FirstOrDefault();
+				if (descriptionAttribute is not null)
+				{
+					if (descriptionAttribute.Description.Equals(valueString, StringComparison.CurrentCultureIgnoreCase) ||
+						descriptionAttribute.Description.Equals(valueString, StringComparison.InvariantCultureIgnoreCase))
 					{
-						return fastConvertResult;
+						if (Enum.TryParse(enumType, field.Name, ignoreCase: true, out var enumValue))
+						{
+							return enumValue;
+						}
 					}
-					else if (t != typeof(object))
+
+					if (descriptionAttribute.Description == "?")
 					{
-						value = ConvertWithConvertionExtension(value, t);
+						defaultValue = field;
 					}
 				}
 			}
-			return value;
+
+			if (defaultValue is not null)
+			{
+				if (Enum.TryParse(enumType, defaultValue.Name, ignoreCase: true, out var enumValue))
+				{
+					return enumValue;
+				}
+			}
+
+			return DependencyProperty.UnsetValue;
 		}
 
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static object ConvertWithConvertionExtension(object? value, Type? t)
+		private static object? ConvertPrimitiveToPrimitive(Type type, object value)
 		{
 			try
 			{
-				value = Conversion.To(value, t, CultureInfo.CurrentCulture);
+				return System.Convert.ChangeType(value, type, CultureInfo.CurrentCulture);
 			}
 			catch (Exception)
 			{
@@ -1103,16 +1291,129 @@ namespace Uno.UI.DataBinding
 				// The problem is that we don't actually know which culture we must use in advance.
 				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
 				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-				value = Conversion.To(value, t, CultureInfo.InvariantCulture);
+				return System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+			}
+		}
+
+		private static object? ConvertUsingTypeDescriptor(Type type, object value)
+		{
+			var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
+			if (valueTypeConverter.CanConvertTo(type))
+			{
+				try
+				{
+					return valueTypeConverter.ConvertTo(null, CultureInfo.CurrentCulture, value, type);
+				}
+				catch (Exception)
+				{
+					return valueTypeConverter.ConvertTo(null, CultureInfo.InvariantCulture, value, type);
+				}
+			}
+
+			if (type == typeof(float))
+			{
+				var valueToString = value.ToString();
+				if (float.TryParse(valueToString, NumberStyles.Float, CultureInfo.CurrentCulture, out var fValue))
+				{
+					return fValue;
+				}
+
+				if (float.TryParse(valueToString, NumberStyles.Float, CultureInfo.InvariantCulture, out fValue))
+				{
+					return fValue;
+				}
+			}
+			else if (type == typeof(decimal))
+			{
+				var valueToString = value.ToString();
+				if (decimal.TryParse(valueToString, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out var dValue))
+				{
+					return dValue;
+				}
+				if (decimal.TryParse(valueToString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dValue))
+				{
+					return dValue;
+				}
+			}
+
+			try
+			{
+				return TypeDescriptor.GetConverter(type).ConvertFrom(null, CultureInfo.CurrentCulture, value);
+			}
+			catch (Exception)
+			{
+				return TypeDescriptor.GetConverter(type).ConvertFrom(null, CultureInfo.InvariantCulture, value);
+			}
+		}
+
+		internal static object? Convert(Func<Type?>? propertyType, object? value)
+		{
+			if (value != null && propertyType != null)
+			{
+				var t = propertyType();
+
+				return Convert(t, value);
 			}
 
 			return value;
+		}
+
+		internal static object? Convert(Type? propertyType, object? value)
+		{
+			if (value != null)
+			{
+				if (!value.GetType().Is(propertyType))
+				{
+					if (FastConvert(propertyType, value, out var fastConvertResult))
+					{
+						return fastConvertResult;
+					}
+					else if (propertyType is null || propertyType == typeof(object))
+					{
+						return value;
+					}
+					else if (propertyType == typeof(string))
+					{
+						return value?.ToString();
+					}
+					else if (propertyType.IsEnum)
+					{
+						return ConvertToEnum(propertyType, value);
+					}
+					else if ((Nullable.GetUnderlyingType(propertyType) ?? propertyType) is { IsPrimitive: true } toTypeUnwrapped && IsPrimitive(value))
+					{
+						return ConvertPrimitiveToPrimitive(toTypeUnwrapped, value);
+					}
+					else
+					{
+						return ConvertUsingTypeDescriptor(propertyType, value);
+					}
+				}
+			}
+
+			return value;
+		}
+
+		private static bool IsPrimitive(object value)
+		{
+			return value.GetType().IsPrimitive
+				|| value is string
+#if __IOS__
+				// Those are platform primitives provided for 64 bits compatibility
+				// with iOS 8.0 and later
+				|| value is nfloat
+				|| value is nint
+				|| value is nuint
+#endif
+									;
 		}
 
 		private static object UnsetValueGetter(object unused)
 			=> DependencyProperty.UnsetValue;
 
 		private static void UnsetValueSetter(object unused, object? unused2) { }
+
+		private static void UnsetValueUnsetter(object unused) { }
 
 		/// <summary>
 		/// Determines if the type can be provided by the MetadataProvider

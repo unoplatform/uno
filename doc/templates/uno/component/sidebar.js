@@ -1,9 +1,10 @@
+const sidefilterHeight = 94; //94px from sidefilter height
+
 function setTocHeight() {
-    if($(window).width() < 767) {
+    if($(window).width() < 768) {
         let headerHeight = $("#header-container").outerHeight();
         let breadcrumbHeight = $("#breadcrumb").outerHeight();
         let tocToggleHeight = $(".btn.toc-toggle.collapse").outerHeight();
-        let sidefilterHeight = 65; //65px from sidefilter height
         let intViewportHeight = window.innerHeight;
         let sidenavPaddingTop = parseInt($(".sidenav").css('padding-top'));
         let maxHeightToc = intViewportHeight - (headerHeight + breadcrumbHeight + tocToggleHeight + sidefilterHeight + sidenavPaddingTop);
@@ -23,7 +24,6 @@ function setSidenavTop() {
     let headerHeight = $("#header-container").outerHeight();
     let breadcrumbHeight = $("#breadcrumb").outerHeight();
     let tocToggleHeight = $(".btn.toc-toggle.collapse").outerHeight();
-    let sidefilterHeight = $(".sidefilter").outerHeight();
     let sidenavTop = headerHeight + breadcrumbHeight;
     let sidefilterTop = headerHeight + breadcrumbHeight;
     let sidetocTop = sidefilterTop + sidefilterHeight;
@@ -32,7 +32,8 @@ function setSidenavTop() {
     $(".sidenav").css("top", sidenavTop);
     $(".sidefilter").css("top", sidenavTop);
     $(".sidetoc").css("top", sidetocTop);
-    if($(window).width() < 767) {
+
+    if($(window).width() < 768) {
         $(".body-content .article").attr("style", "margin-top:" + (articleMarginTopDesk + 5) + "px !important");
     } else {
         $(".body-content .article").attr("style", "margin-top:" + (articleMarginTopMobile + 5) + "px !important");

@@ -1,0 +1,16 @@
+{
+  "solution": {
+    "path": "UnoAppAll.sln",
+    "projects": [
+		"UnoAppAll.Shared\\UnoAppAll.Shared.shproj",
+
+		"UnoAppAll.Mobile\\UnoAppAll.Mobile.csproj",
+
+		"UnoAppAll.Wasm\\UnoAppAll.Wasm.csproj",
+
+		"UnoAppAll.Skia.Gtk\\UnoAppAll.Skia.Gtk.csproj",
+
+		"UnoAppAll.Skia.Linux.FrameBuffer\\UnoAppAll.Skia.Linux.FrameBuffer.csproj",
+    ]
+  }
+}

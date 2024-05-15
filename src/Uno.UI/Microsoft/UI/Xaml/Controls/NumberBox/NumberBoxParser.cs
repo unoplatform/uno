@@ -1,13 +1,17 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NumberBoxParser.cpp, commit 113f81e84367cba671077babd9ab3bd1610cbd55
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
 using Windows.Globalization.NumberFormatting;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
-	internal class NumberBoxParser
+	internal partial class NumberBoxParser
 	{
 		static string c_numberBoxOperators = "+-*/^";
 
@@ -81,15 +85,14 @@ namespace Microsoft.UI.Xaml.Controls
 		static (double, int) GetNextNumber(string input, INumberParser numberParser)
 		{
 			// Attempt to parse anything before an operator or space as a number
-			Regex regex = new Regex("^-?([^-+/*\\(\\)\\^\\s]+)");
-			var match = regex.Match(input);
+			var match = NextNumberParsing().Match(input);
 			if (match.Success)
 			{
 				// Might be a number
 				var matchLength = match.Groups[0].Length;
 				var parsedNum = ApiInformation.IsTypePresent(numberParser?.GetType().FullName)
 					? numberParser.ParseDouble(input.Substring(0, matchLength))
-					: double.TryParse(input.Substring(0, matchLength), out var d)
+					: double.TryParse(input.AsSpan().Slice(0, matchLength), out var d)
 						? (double?)d
 						: null;
 
@@ -121,10 +124,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Converts a list of tokens from infix format (e.g. "3 + 5") to postfix (e.g. "3 5 +")
 		static List<MathToken> ConvertInfixToPostfix(List<MathToken> infixTokens)
 		{
-			List<MathToken> postfixTokens= new List<MathToken>();
+			List<MathToken> postfixTokens = new List<MathToken>();
 			Stack<MathToken> operatorStack = new Stack<MathToken>();
 
-			foreach(var token in infixTokens)
+			foreach (var token in infixTokens)
 			{
 				if (token.Type == MathTokenType.Numeric)
 				{
@@ -155,7 +158,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						while (operatorStack.Count!=0 && operatorStack.Peek().Char != '(')
+						while (operatorStack.Count != 0 && operatorStack.Peek().Char != '(')
 						{
 							// Pop operators onto output until we reach a left paren
 							postfixTokens.Add(operatorStack.Peek());
@@ -194,7 +197,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Stack<double> stack = new Stack<double>();
 
-			foreach(var token in tokens)
+			foreach (var token in tokens)
 			{
 				if (token.Type == MathTokenType.Operator)
 				{
@@ -281,5 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
+		[GeneratedRegex("^-?([^-+/*\\(\\)\\^\\s]+)")]
+		private static partial Regex NextNumberParsing();
 	}
 }

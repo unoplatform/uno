@@ -4,7 +4,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Windows.Input;
 #if __WASM__
 using Uno.Web.Http;
@@ -16,14 +16,14 @@ namespace UITests.Uno_Web.Http
 	[Sample("Uno.Web", ViewModelType = typeof(CookieManagerTestsViewModel))]
 #endif
 	public sealed partial class CookieManagerTests : Page
-    {
-        public CookieManagerTests()
-        {
-            this.InitializeComponent();
+	{
+		public CookieManagerTests()
+		{
+			this.InitializeComponent();
 			this.DataContextChanged += CookieManagerTests_DataContextChanged;
 		}
 
-		private void CookieManagerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void CookieManagerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as CookieManagerTestsViewModel;
 		}
@@ -35,7 +35,7 @@ namespace UITests.Uno_Web.Http
 	{
 		private string _cookiesText = string.Empty;
 
-		public CookieManagerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public CookieManagerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
@@ -54,7 +54,7 @@ namespace UITests.Uno_Web.Http
 
 		public bool Secure { get; set; }
 
-		public CookieSameSite[] SameSiteOptions { get; } = Enum.GetValues(typeof(CookieSameSite)).OfType<CookieSameSite>().ToArray();
+		public CookieSameSite[] SameSiteOptions { get; } = Enum.GetValues<CookieSameSite>();
 
 		public CookieSameSite SameSite { get; set; }
 

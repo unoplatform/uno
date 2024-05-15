@@ -11,21 +11,21 @@ using Uno.ApplicationModel.Contacts.Internal;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 
+using NativeMethods = __Windows.ApplicationModel.Contacts.ContactPicker.NativeMethods;
+
 namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactPicker
 	{
-		private const string JsType = "Windows.ApplicationModel.Contacts.ContactPicker";
-
 		private static Task<bool> IsSupportedTaskAsync(CancellationToken token)
 		{
-			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isSupported()");
-			return Task.FromResult(bool.TryParse(isSupportedString, out var isSupported) && isSupported);
+			return Task.FromResult(NativeMethods.IsSupported());
 		}
 
 		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
-			var pickResultJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts({(multiple ? "true" : "false")})");
+			var pickResultJson = await NativeMethods.PickContactsAsync(multiple);
+
 			if (string.IsNullOrEmpty(pickResultJson) || token.IsCancellationRequested)
 			{
 				return Array.Empty<Contact>();

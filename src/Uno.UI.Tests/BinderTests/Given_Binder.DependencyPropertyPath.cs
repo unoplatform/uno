@@ -2,9 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,41 +14,13 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 {
 	[TestClass]
 	public partial class Given_Binder_DependencyPropertyPath
 	{
-#if !IS_UNO
-		private Uno.Patterns.IoC.Container _container;
-
-		[TestInitialize]
-		public void Init()
-		{
-			_container = new Uno.Patterns.IoC.Container();
-			_container.Register<IResourceRegistry>(new Mock<IResourceRegistry>().Object);
-
-			ServiceLocator.SetLocatorProvider(() => _container);
-
-			LogManager
-				.Repository
-				.Loggers
-				.OfType<DebuggerLogger>()
-				.FirstOrDefault()
-				.SelectOrDefault(l =>
-				{
-					l.LogLevel = LogLevel.Debug;
-					l.RequiresAttachedDebugger = false;
-
-					return l;
-				});
-
-			LogManager.RefreshLogLevel();
-		}
-#endif
-
 		[TestMethod]
 		public void When_AttachedDependencyProperty_And_SimplePath()
 		{
@@ -60,17 +31,18 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 
 			// The property needs to be set at least once (so that it is actually attached)
 			Attachable.SetMyValue(attachedSource, 21);
-		
+
 			var target = new Control1();
-		 
+
 			target.SetBinding(
 				Control1.OtherControlProperty,
-				new Binding($"{nameof(source.OtherControl)}.({ typeof(Attachable).Namespace }:{ nameof(Attachable) }.MyValue)") {
+				new Binding($"{nameof(source.OtherControl)}.({typeof(Attachable).Namespace}:{nameof(Attachable)}.MyValue)")
+				{
 					Mode = BindingMode.TwoWay,
 					Source = source
 				}
 			);
-			 
+
 			Assert.AreEqual(null, target.OtherControl);
 
 			source.OtherControl = attachedSource;

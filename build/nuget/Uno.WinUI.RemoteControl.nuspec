@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata minClientVersion="5.0">
+		<id>Uno.UI.RemoteControl</id>
+		<version>0.1.0.0</version>
+		<title>Uno.UI.RemoteControl</title>
+		<authors>Uno Platform</authors>
+		<owners>unoplatform</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<projectUrl>https://platform.uno/</projectUrl>
+		<license type="expression">Apache-2.0</license>
+		<icon>uno.png</icon>
+		<description>
+			DEPRECATED: Use Uno.[UI|WinUI].DevServer package instead.
+			
+			Development Server for Uno Platform projects, such as XAML Hot Reload.
+		</description>
+		<copyright>Copyright (C) 2015-2023 Uno Platform Inc. - all rights reserved</copyright>
+		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+
+		<dependencies>
+			<dependency id="Uno.WinUI.DevServer" version="0.0.0.0" />
+		</dependencies>
+	</metadata>
+
+	<files>
+		<file src="..\..\src\Common\uno.png" target="/" />
+
+		<file src="_._" target="lib\net8.0" />
+		<file src="_._" target="lib\net7.0" />
+		
+		<file src="_._" target="lib\net8.0-android" />
+		<file src="_._" target="lib\net8.0-ios" />
+		<file src="_._" target="lib\net8.0-maccatalyst" />
+		<file src="_._" target="lib\net8.0-macos" />
+		
+		<file src="_._" target="lib\net7.0-android" />
+		<file src="_._" target="lib\net7.0-ios" />
+		<file src="_._" target="lib\net7.0-maccatalyst" />
+		<file src="_._" target="lib\net7.0-macos" />
+	</files>
+</package>

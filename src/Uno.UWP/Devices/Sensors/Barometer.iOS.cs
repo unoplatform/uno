@@ -1,7 +1,5 @@
-﻿#if __IOS__
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#nullable enable
+
 using CoreMotion;
 using Foundation;
 using Uno.Devices.Sensors.Helpers;
@@ -10,30 +8,29 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Barometer
 	{
-		private readonly CMAltimeter _altimeter;
+		private CMAltimeter? _altimeter;
 
-		private Barometer(CMAltimeter altimeter)
-		{
-			_altimeter = altimeter;
-		}
-
-		private static Barometer TryCreateInstance()
-		{
-			if (CMAltimeter.IsRelativeAltitudeAvailable)
-			{
-				return new Barometer(new CMAltimeter());
-			}
-			return null;
-		}
+		private static Barometer? TryCreateInstance() => !CMAltimeter.IsRelativeAltitudeAvailable ?
+			null :
+			new Barometer();
 
 		private void StartReading()
 		{
+			_altimeter ??= new();
+
 			_altimeter.StartRelativeAltitudeUpdates(new NSOperationQueue(), RelativeAltitudeUpdateReceived);
 		}
 
 		private void StopReading()
 		{
+			if (_altimeter == null)
+			{
+				return;
+			}
+
 			_altimeter.StopRelativeAltitudeUpdates();
+			_altimeter.Dispose();
+			_altimeter = null;
 		}
 
 		private void RelativeAltitudeUpdateReceived(CMAltitudeData data, NSError error)
@@ -49,4 +46,3 @@ namespace Windows.Devices.Sensors
 		private double KPaToHPa(double pressureInKPa) => pressureInKPa * 10;
 	}
 }
-#endif

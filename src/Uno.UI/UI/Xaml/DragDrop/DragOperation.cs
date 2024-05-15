@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -6,15 +6,17 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Dispatching;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal class DragOperation
 	{
@@ -42,14 +44,14 @@ namespace Windows.UI.Xaml
 			Completed
 		}
 
-		public DragOperation(Window window, IDragDropExtension? extension, CoreDragInfo info, ICoreDropOperationTarget? target = null)
+		public DragOperation(InputManager inputManager, IDragDropExtension? extension, CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
 			_extension = extension;
 			Info = info;
 
-			_target = target ?? new DropUITarget(window); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
+			_target = target ?? new DropUITarget(); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
 			_view = new DragView(info.DragUI as DragUI);
-			_viewHandle = window.OpenDragAndDrop(_view);
+			_viewHandle = inputManager.OpenDragAndDrop(_view);
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
 		}
 
@@ -57,13 +59,15 @@ namespace Windows.UI.Xaml
 
 		internal DataPackageOperation Moved(IDragEventSource src)
 		{
-			if (_state >= State.Completing || src.FrameId <= _lastFrameId) 
+			if (_state >= State.Completing || src.FrameId <= _lastFrameId)
 			{
 				return _acceptedOperation;
 			}
 
 			var wasOverWindow = _isOverWindow;
-			_isOverWindow = Window.Current.Bounds.Contains(src.GetPosition(null));
+
+			//TODO: Multi-window support #13982
+			_isOverWindow = Window.CurrentSafe?.Bounds.Contains(src.GetPosition(null)) ?? false;
 
 			Update(src); // It's required to do that as soon as possible in order to update the view's location
 
@@ -133,10 +137,12 @@ namespace Windows.UI.Xaml
 			var isOver = _state == State.Over;
 			_state = State.Over;
 
-			var acceptedOperation = isOver
-				? await _target.OverAsync(Info, _viewOverride).AsTask(ct)
-				: await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
-			acceptedOperation &= Info.AllowedOperations;
+			if (!isOver)
+			{
+				await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
+				// No Task.Yield here. This is similar to what happens on WinUI.
+			}
+			var acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
 
 			_acceptedOperation = acceptedOperation;
 			_view.Update(acceptedOperation, _viewOverride);
@@ -198,6 +204,16 @@ namespace Windows.UI.Xaml
 				}
 
 				_state = State.Completing;
+#if __WASM__
+				// firing OverAsync then DropAsync without a layout cycle in-between breaks ListView dragging
+				// (since it causes a Refresh that clears all the containers and then waits for MeasureOverride
+				// to recreate them). So on WASM, we don't call OverAsync, which shouldn't be too problematic.
+				if (NativeDispatcher.IsThreadingSupported)
+#endif
+				{
+					await _target.OverAsync(Info, _viewOverride).AsTask(ct);
+					await Task.Yield(); // give a chance for layout updates, etc. This is similar to what happens on WinUI.
+				}
 				result = await _target.DropAsync(Info).AsTask(ct);
 				result &= Info.AllowedOperations;
 

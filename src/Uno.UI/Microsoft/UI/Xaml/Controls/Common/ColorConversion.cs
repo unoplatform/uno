@@ -2,7 +2,7 @@
 using System.Globalization;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal static class ColorConversion
 	{
@@ -24,22 +24,22 @@ namespace Microsoft.UI.Xaml.Controls
 			switch (numBase)
 			{
 				case 10:
-				{
-					if (UInt64.TryParse(str, out UInt64 result))
 					{
-						return result;
+						if (UInt64.TryParse(str, out UInt64 result))
+						{
+							return result;
+						}
+						break;
 					}
-					break;
-				}
 
 				case 16:
-				{
-					if (UInt64.TryParse(str, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out UInt64 result))
 					{
-						return result;
+						if (UInt64.TryParse(str, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out UInt64 result))
+						{
+							return result;
+						}
+						break;
 					}
-					break;
-				}
 			}
 
 			// Uno Doc: C++ methodology does not easily convert to C#

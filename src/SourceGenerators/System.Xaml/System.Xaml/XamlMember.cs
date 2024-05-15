@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Markup;
 using Uno.Xaml.Schema;
@@ -201,7 +202,7 @@ namespace Uno.Xaml
 			get { return LookupDeferringLoader (); }
 		}
 		
-		static readonly XamlMember [] empty_members = new XamlMember [0];
+		static readonly XamlMember [] empty_members = Array.Empty<XamlMember>();
 		
 		public IList<XamlMember> DependsOn {
 			get { return LookupDependsOn () ?? empty_members; }
@@ -331,7 +332,7 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		static readonly XamlMember [] empty_list = new XamlMember [0];
+		static readonly XamlMember[] empty_list = Array.Empty<XamlMember>();
 
 		protected virtual IList<XamlMember> LookupDependsOn ()
 		{
@@ -462,7 +463,7 @@ namespace Uno.Xaml
 			if (method == null)
 				return;
 			if (method.GetParameters ().Length != 1 || method.ReturnType == typeof (void))
-				throw new ArgumentException (String.Format ("Property getter for {0} must have exactly one argument and must have non-void return type.", Name));
+				throw new ArgumentException (String.Format (CultureInfo.InvariantCulture, "Property getter for {0} must have exactly one argument and must have non-void return type.", Name));
 		}
 
 		void VerifyAdderSetter (MethodInfo method)
@@ -470,7 +471,7 @@ namespace Uno.Xaml
 			if (method == null)
 				return;
 			if (method.GetParameters ().Length != 2)
-				throw new ArgumentException (String.Format ("Property getter or event adder for {0} must have exactly one argument and must have non-void return type.", Name));
+				throw new ArgumentException (String.Format (CultureInfo.InvariantCulture, "Property getter or event adder for {0} must have exactly one argument and must have non-void return type.", Name));
 		}
 	}
 }

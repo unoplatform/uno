@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno.Client;
-using Uno.UI.Services;
 using UIKit;
 using Uno.Disposables;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-    public partial class MenuFlyout
-    {
+	public partial class MenuFlyout
+	{
 		private UIActionSheet _actionSheet;
 		private SerialDisposable _subscriptions;
 
@@ -35,7 +34,8 @@ namespace Windows.UI.Xaml.Controls
 			_actionSheet.Dismissed += OnDismissed;
 
 			EventHandler<UIButtonEventArgs> handler =
-				(_, args) => {
+				(_, args) =>
+				{
 					var item = availableItems.OfType<MenuFlyoutItem>().ElementAtOrDefault((int)args.ButtonIndex);
 
 					if (item != null)
@@ -47,10 +47,10 @@ namespace Windows.UI.Xaml.Controls
 
 			_actionSheet.Clicked += handler;
 			_subscriptions.Disposable = Disposable.Create(() => _actionSheet.Clicked -= handler);
-			
-			CoreDispatcher.Main.RunAsync(
+
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
-				() => 
+				() =>
 				{
 					switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
 					{
@@ -70,11 +70,11 @@ namespace Windows.UI.Xaml.Controls
 		private void OnDismissed(object sender, UIButtonEventArgs e)
 		{
 			_subscriptions.Dispose();
-        }
+		}
 
 		private void HideActionSheet()
 		{
 			_actionSheet?.DismissWithClickedButtonIndex(_actionSheet.CancelButtonIndex, animated: true);
-        }
+		}
 	}
 }

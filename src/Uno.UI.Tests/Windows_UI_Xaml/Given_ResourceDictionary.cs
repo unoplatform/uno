@@ -13,11 +13,11 @@ using Uno.UI.Xaml;
 #endif
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-using Colors = Windows.UI.Colors;
+using Colors = Microsoft.UI.Colors;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -493,7 +493,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Enumerated_With_StaticResource_Alias()
 		{
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			var light = xcr.ThemeDictionaries["Light"] as ResourceDictionary;
 			Assert.IsNotNull(light);
 			KeyValuePair<object, object> fromEnumeration = default;
@@ -770,7 +770,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_XamlControlsResources()
 		{
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
 			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
 		}
@@ -944,6 +944,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var resources = page.Resources;
 			AssertEx.AssertContainsColorBrushResource(resources, "LarcenousColorBrush", Colors.PaleVioletRed);
 			Assert.AreEqual(initialCreationCount, SomeNotImplType.CreationAttempts);
+		}
+
+		[TestMethod]
+		public void ThemeResource_Named_ResourceDictionary_Override()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var SUT = new ThemeResource_Named_ResourceDictionary_Override();
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(Colors.Red, (SUT.border01.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Blue, (SUT.border02.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (SUT.border03.Background as SolidColorBrush)?.Color);
 		}
 	}
 }

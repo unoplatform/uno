@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
@@ -19,9 +19,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 	[RunsOnUIThread]
 	public class Given_MarkupExtension
 	{
-#if HAS_UNO || !WINDOWS_UWP // the signatures are present from winui, uno\uwp and uno\winui, just not uwp
+#if HAS_UNO || !WINAPPSDK // the signatures are present from winui, uno\uwp and uno\winui, just not uwp
 		[TestMethod]
-		public async Task When_MarkupExtension_Default()
+		public void When_MarkupExtension_Default()
 		{
 			var page = new MarkupExtension_ParserContext();
 
@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
-		public async Task When_MarkupExtension_Nested()
+		public void When_MarkupExtension_Nested()
 		{
 			var page = new MarkupExtension_ParserContext();
 
@@ -46,6 +46,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 			Assert.IsInstanceOfType(pvt.TargetObject, typeof(Binding));
 			Assert.AreEqual(property.Name, nameof(Binding.Source));
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_Enum()
+		{
+			var page = new MarkupExtension_ParserContext();
+
+			Assert.AreEqual(Orientation.Horizontal, page.EnumMarkupExtension_Horizontal.Orientation);
+			Assert.AreEqual(Orientation.Vertical, page.EnumMarkupExtension_Vertical.Orientation);
 		}
 #endif
 	}

@@ -1,16 +1,20 @@
-# Pivot in Uno.UI
+---
+uid: Uno.Controls.Pivot
+---
 
-## Pivot UWP Default Style
+# Pivot in Uno Platform
 
-Uno provides a full support of the Pivot UWP style.
+## Pivot WinUI Default Style
+
+Uno provides a full support of the Pivot WinUI style.
 The Pivot with the default style looks the same on all platforms, both statically and in motion.
-If you need to have a custom design, you can just update the Pivot UWP default style for your needs.
+If you need to have a custom design, you can just update the Pivot WinUI default style for your needs.
 
 ## Pivot Native Default Style
 
-With the 'NativeDefaultPivot' style on Android and iOS, however, the Pivot uses the native implementations of each platform.
-Of course you can still bind to its properties in XAML as you normally would. 
-This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others it's desirable to have a rich, customised UI.
+With the `NativeDefaultPivot` style on Android and iOS, the Pivot uses the native implementations of each platform.
+Of course, you can still bind to its properties in XAML as you normally would.
+This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others it's desirable to have a rich, customized UI.
 You may even want to mix and match different approaches for different screens in your app.
 
 ### Native Pivot Style for Android and iOS
@@ -19,7 +23,7 @@ If you want to use the native Pivot style for either Android or iOS, you'll need
 
 ```xml
 <!-- Default native Pivot styles (for both Android and iOS) -->
-<xamarin:Style x:Key="NativeDefaultPivot"
+<not_win:Style x:Key="NativeDefaultPivot"
                 TargetType="Pivot">
     <Setter Property="Template">
         <Setter.Value>
@@ -28,22 +32,23 @@ If you want to use the native Pivot style for either Android or iOS, you'll need
             </ControlTemplate>
         </Setter.Value>
     </Setter>
-</xamarin:Style>
+</not_win:Style>
 ```
 
 #### NativePivotPresenter Android Style
+
 Note that this one is written in C# rather than XAML because of the `SlidingTabLayout` object.
 
 ```csharp
 var style = new Style(typeof(NativePivotPresenter))
 {
-    Setters = 
+    Setters =
     {
         new Setter<NativePivotPresenter>("Template", pb => pb
             .Template = new ControlTemplate(() =>
                 new Grid
                 {
-                    RowDefinitions = 
+                    RowDefinitions =
                     {
                         new RowDefinition(){ Height = GridLength.Auto},
                         new RowDefinition(){ Height = new GridLength(1, GridUnitType.Star)},

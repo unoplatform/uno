@@ -1,45 +1,43 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-
-  <PropertyGroup>
-    <TargetFrameworks>net461;net48</TargetFrameworks>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<TargetFrameworks>net48</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
-
-	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
-		<PackageReference Include="EnvDTE100" Version="10.0.3" />
-		<PackageReference Include="Microsoft.Build" Version="15.1.548" />
-		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="15.0.751" />
-		<PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="15.9.28307" />
-		<PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="15.9.28307" />
-		<PackageReference Include="Microsoft.VisualStudio.Shell.Interop" Version="7.10.6073" />
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="microsoft.visualstudio.threading.analyzers" Version="16.10.56" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net48'">
-		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-2-31512-422" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.2.2141" />
-		<PackageReference Include="Newtonsoft.Json" version="12.0.3" />
-		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
-		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="16.0.374-pre" />
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeMessageSerializer.cs" Link="IDEChannel\IdeMessageSerializer.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
+		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
+		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
+		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
+		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
+		<PackageReference Include="PolySharp" Version="1.14.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 	</ItemGroup>
 
 	<!-- Fix for VS 2022 -->
@@ -47,7 +45,11 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc</_TargetNugetFolder>
+			<_OverridePackageId>Uno.UI</_OverridePackageId>
+			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
+			<_UnoOverrideTargetVSVersion>16.0</_UnoOverrideTargetVSVersion>
+			<_UnoOverrideTargetVSVersion Condition="'$(TargetFramework)'=='net48'">17.0</_UnoOverrideTargetVSVersion>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId).DevServer\$(UnoNugetOverrideVersion)\tools\rc\$(_UnoOverrideTargetVSVersion)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />
@@ -58,23 +60,8 @@
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
-	<Target Name="_ForceRemoveAnalyzers" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('Linux'))">
-		<!-- Workaround for Linux and macos when building against mono where Analyzers 2.9.x depend on unknown members. This should not happen when building
-		     with "dotnet build"
-		  CSC : error AD0001: Analyzer 'Microsoft.VisualStudio.Threading.Analyzers.VSTHRD010VsServiceUsageAnalyzer' threw an exception of
-			type 'System.Exception' with message 'Analyzer failure while processing syntax at /workspace/uno/src/Uno.UI.RemoteControl.VS/EntryPoint.cs(49,4):
-			System.BadImageFormatException Could not resolve field token 0x0400007c, due to: Could not load type of field
-			'Microsoft.VisualStudio.Threading.Analyzers.Utils+<>c:<>9__18_0' (5) due to: Could not load file or assembly
-			'Microsoft.CodeAnalysis.Workspaces, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35' or one of
-			 its dependencies. assembly:/home/gitpod/.nuget/packages/microsoft.visualstudio.threading.analyzers/15.6.31/analyzers/cs/Microsoft.VisualStudio.Threading.Analyzers.dll
-			  type:<>c member:(null). Syntax: globalPropertiesProvider(OnProvideGlobalPropertiesAsync)'. [/workspace/uno/src/Uno.UI.RemoteControl.VS/Uno.UI.RemoteControl.VS.csproj]
-		-->
-		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)" />
-		</ItemGroup>
-	</Target>
-
 	<!-- VS2022 build issue -->
 	<Target Name="GetTargetPath" />
+	<Target Name="GetCopyToPublishDirectoryItems" />
 
 </Project>

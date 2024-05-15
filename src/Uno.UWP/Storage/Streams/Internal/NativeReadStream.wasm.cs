@@ -8,8 +8,6 @@ namespace Uno.Storage.Streams.Internal
 {
 	internal class NativeReadStream : Stream, IRentableStream
 	{
-		private const string CacheFolderName = "WasmNativeCache";
-
 		private readonly NativeReadStreamAdapter _readStreamAdapter;
 		private readonly Guid _fileId;
 
@@ -36,7 +34,7 @@ namespace Uno.Storage.Streams.Internal
 		{
 			get => _readStreamAdapter.Position;
 			set => _readStreamAdapter.Position = value;
-		}	
+		}
 
 		public RentedStream Rent()
 		{
@@ -69,9 +67,9 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException("This stream is read-only");
 
-		public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException("This stream is read-only");
+		public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException("This stream is read-only");
 
-		protected override async void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			_readStreamAdapter.Dispose();
 		}

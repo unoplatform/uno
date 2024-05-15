@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public static class CollectionChangeEventArgsConverters
 	{
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 						}
 						newArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, movedItems, newStartingIndex, oldStartingIndex);
 					}
-				  break;
+					break;
 				case NotifyCollectionChangedAction.Reset:
 					newArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 					break;

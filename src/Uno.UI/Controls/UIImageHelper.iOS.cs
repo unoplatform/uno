@@ -6,8 +6,8 @@ using UIKit;
 
 namespace Uno.UI
 {
-    internal static class UIImageHelper
-    {
+	internal static class UIImageHelper
+	{
 		public static UIImage FromUri(Uri uri)
 		{
 			if (uri == null)
@@ -16,9 +16,9 @@ namespace Uno.UI
 			}
 
 			var bundleName = Path.GetFileName(uri.AbsolutePath);
-			var bundlePath = uri.PathAndQuery.TrimStart(new[] { '/' });
+			var bundlePath = uri.PathAndQuery.TrimStart('/');
 
-			var image = UIImage.FromFile(bundleName) ?? UIImage.FromFile(bundlePath); 
+			var image = UIImage.FromFile(bundleName) ?? UIImage.FromFile(bundlePath);
 			return image;
 		}
 	}

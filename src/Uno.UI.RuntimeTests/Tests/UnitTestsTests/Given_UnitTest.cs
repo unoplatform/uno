@@ -6,9 +6,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 {
 	[TestClass]
-	class Given_UnitTest
+	public class Given_UnitTest
 	{
-		static int When_UnhandledException_Count = 0;
+		static int When_UnhandledException_Count;
 
 		[TestMethod]
 		public void When_UnhandledException()
@@ -21,9 +21,9 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	}
 
 	[TestClass]
-	class Given_UnitTest_Initialize
+	public class Given_UnitTest_Initialize
 	{
-		static int Initialize_Count = 0;
+		static int Initialize_Count;
 
 		[TestInitialize]
 		public void Initialize()

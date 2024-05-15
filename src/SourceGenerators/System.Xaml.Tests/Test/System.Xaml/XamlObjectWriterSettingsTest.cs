@@ -8,10 +8,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -59,9 +59,9 @@ namespace MonoTests.Uno.Xaml
 			// bug #689548
 			var obj = new RootObjectInstanceTestClass ();
 			RootObjectInstanceTestClass result;
-			
+
 			var rsettings = new XamlXmlReaderSettings ();
-			
+
 			var xml = String.Format (@"<RootObjectInstanceTestClass Property=""Test"" xmlns=""clr-namespace:MonoTests.Uno.Xaml;assembly={0}""></RootObjectInstanceTestClass>", GetType ().Assembly.GetName ().Name);
 			using (var reader = new XamlXmlReader (new StringReader (xml), rsettings)) {
 				var wsettings = new XamlObjectWriterSettings ();
@@ -71,7 +71,7 @@ namespace MonoTests.Uno.Xaml
 					result = (RootObjectInstanceTestClass) writer.Result;
 				}
 			}
-			
+
 			Assert.AreEqual (obj, result, "#1");
 			Assert.AreEqual ("Test", obj.Property, "#2");
 		}

@@ -1,18 +1,19 @@
 ﻿#nullable enable
 
+using System;
 using Uno.Foundation;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control
 {
-	private const string JsType = "Windows.UI.Xaml.Input.FocusVisual";
-
 	partial void AttachVisualPartial()
 	{
 		if (FocusedElement == null)
@@ -20,20 +21,29 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
-		WebAssemblyRuntime.InvokeJS($"{JsType}.attachVisual({HtmlId}, {FocusedElement.HtmlId})");
+		NativeMethods.AttachVisual(HtmlId, FocusedElement.HtmlId);
 	}
 
 	partial void DetachVisualPartial()
-    {
-		WebAssemblyRuntime.InvokeJS($"{JsType}.detachVisual()");
+	{
+		NativeMethods.DetachVisual();
 	}
 
-	[Preserve]
+	[JSExport]
 	public static int DispatchNativePositionChange(int focusVisualId)
 	{
 		var element = UIElement.GetElementFromHandle(focusVisualId) as SystemFocusVisual;
 		element?.SetLayoutProperties();
 
 		return 0;
+	}
+
+	internal static partial class NativeMethods
+	{
+		[JSImport("globalThis.Microsoft.UI.Xaml.Input.FocusVisual.attachVisual")]
+		internal static partial void AttachVisual(IntPtr htmlId, IntPtr focusedElementId);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Input.FocusVisual.detachVisual")]
+		internal static partial void DetachVisual();
 	}
 }

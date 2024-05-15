@@ -1,4 +1,4 @@
-// CopyRight (c) Microsoft Corporation. All Rights reserved.
+﻿// CopyRight (c) Microsoft Corporation. All Rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
@@ -12,23 +12,25 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
 using DirectUI;
-using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
-using DateTime = System.DateTimeOffset;
+using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Core.Scaling;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-		private const float InScopeDensityBarOpacity = 0.35f;
-		private const float OutOfScopeDensityBarOpacity = 0.10f;
-		private const float MaxDensityBarHeight = 5.0f;
+		//private const float InScopeDensityBarOpacity = 0.35f;
+		//private const float OutOfScopeDensityBarOpacity = 0.10f;
+		//private const float MaxDensityBarHeight = 5.0f;
 		private const float TodayBlackouTopacity = 0.40f;
-		private const float FocusBorderThickness = 2.0f;
-		private const float TodaySelectedInnerBorderThickness = 2.0f;
+		//private const float FocusBorderThickness = 2.0f;
+		//private const float TodaySelectedInnerBorderThickness = 2.0f;
 
 		private interface IContentRenderer
 		{
@@ -98,6 +100,7 @@ namespace Windows.UI.Xaml.Controls
 		//	return InsertChild(0, pUI);
 		//}
 
+#if false
 		private void RemoveTemplateChild()
 		{
 			UIElement pTemplateChild = GetFirstChildNoAddRef();
@@ -107,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 				RemoveChild(pTemplateChild);
 			}
 		}
-
+#endif
 
 		private UIElement GetFirstChildNoAddRef() => GetFirstChild();
 
@@ -200,6 +203,7 @@ namespace Windows.UI.Xaml.Controls
 		//	return;
 		//}
 
+#if false
 		private void GenerateContentBounds(
 			out Rect pBounds)
 		{
@@ -211,6 +215,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
+#endif
 
 		protected override Size MeasureOverride(
 			Size availableSize)
@@ -238,6 +243,25 @@ namespace Windows.UI.Xaml.Controls
 			// Uno workaround
 			Uno_MeasureChrome(availableSize);
 
+			// TODO UNO
+			//if (IsRoundedCalendarViewBaseItemChromeEnabled())
+			//{
+			//	if (m_outerBorder)
+			//	{
+			//		IFC_RETURN(m_outerBorder->Measure(availableSize));
+			//	}
+
+			//	if (m_innerBorder)
+			//	{
+			//		IFC_RETURN(m_innerBorder->Measure(availableSize));
+			//	}
+
+			//	if (m_strikethroughLine)
+			//	{
+			//		IFC_RETURN(m_strikethroughLine->Measure(availableSize));
+			//	}
+			//}
+
 			if (m_pMainTextBlock is { })
 			{
 				m_pMainTextBlock.Measure(availableSize);
@@ -253,7 +277,7 @@ namespace Windows.UI.Xaml.Controls
 			UIElement pChildNoRef = GetFirstChildNoAddRef();
 
 			//If we have a child
-			if (pChildNoRef is {})
+			if (pChildNoRef is { })
 			{
 				pChildNoRef.Measure(availableSize);
 				// TODO UNO
@@ -272,8 +296,30 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size ArrangeOverride(
 			Size finalSize)
 		{
-			Size newFinalSize = default;
 			Rect finalBounds = new Rect(0.0f, 0.0f, finalSize.Width, finalSize.Height);
+
+			// TODO UNO
+			//if (m_outerBorder)
+			//{
+			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
+
+			//	IFC_RETURN(m_outerBorder->Arrange(finalBounds));
+			//}
+
+			//if (m_innerBorder)
+			//{
+			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
+
+			//	IFC_RETURN(m_innerBorder->Arrange(finalBounds));
+			//}
+
+			//if (m_strikethroughLine)
+			//{
+			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
+
+			//	IFC_RETURN(m_strikethroughLine->Arrange(finalBounds));
+			//}
+
 			Thickness borderThickness = GetItemBorderThickness();
 			Thickness padding = Padding;
 
@@ -308,14 +354,12 @@ namespace Windows.UI.Xaml.Controls
 
 			UIElement pChildNoRef = GetFirstChildNoAddRef();
 
-			if (pChildNoRef is {})
+			if (pChildNoRef is { })
 			{
 				pChildNoRef.Arrange(finalBounds);
 			}
 
-			newFinalSize = finalSize;
-
-			return newFinalSize;
+			return finalSize;
 		}
 
 		private void CreateTextBlock(
@@ -365,11 +409,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool IsLabel(TextBlock pTextBlock)
 		{
-			global::System.Diagnostics.Debug.Assert(pTextBlock is {} && (pTextBlock == m_pLabelTextBlock || pTextBlock == m_pMainTextBlock), "the textblock should be main textblock or label textblock.");
+			global::System.Diagnostics.Debug.Assert(pTextBlock is { } && (pTextBlock == m_pLabelTextBlock || pTextBlock == m_pMainTextBlock), "the textblock should be main textblock or label textblock.");
 
 			return pTextBlock == m_pLabelTextBlock;
 		}
 
+#if false
 		private void RenderChrome(
 			IContentRenderer pContentRenderer,
 			CalendarViewBaseItemChromeLayerPosition layer
@@ -443,17 +488,16 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
+#endif
 
 		private bool ShouldUseLayoutRounding()
 		{
-			// TODO UNO
-			//// Similar to what Borders do, but we don't care about corner radius (ours is always 0).
-			//var scale = RootScale.GetRasterizationScaleForElement(this);
-			//return (scale != 1.0f) && GetUseLayoutRounding();
-
-			return false;
+			// Similar to what Borders do, but we don't care about corner radius (ours is always 0).
+			var scale = RootScale.GetRasterizationScaleForElement(this);
+			return (scale != 1.0f) && GetUseLayoutRounding();
 		}
 
+#if false
 		private uint GetIntValueOfColor(Color color)
 		{
 			return ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | (uint)color.B;
@@ -540,7 +584,7 @@ namespace Windows.UI.Xaml.Controls
 			Thickness thickness = GetItemBorderThickness();
 			Brush pBrush = GetItemBorderBrush(false /* forFocus */);
 
-			if (pBrush is {} && thickness.Bottom != 0 && thickness.Top != 0 && thickness.Left != 0 && thickness.Right != 0)
+			if (pBrush is { } && thickness.Bottom != 0 && thickness.Top != 0 && thickness.Left != 0 && thickness.Right != 0)
 			{
 				DrawBorder(pContentRenderer, pBrush, bounds, thickness /* ninegrid */, true /* isHollow */);
 			}
@@ -615,7 +659,7 @@ namespace Windows.UI.Xaml.Controls
 		)
 		{
 			Brush pBrush = GetItemBackgroundBrush();
-			if (pBrush is {})
+			if (pBrush is { })
 			{
 				BrushParams emptyBrushParams = default;
 				pContentRenderer.GeneralImageRenderContent(
@@ -644,7 +688,7 @@ namespace Windows.UI.Xaml.Controls
 			//global::System.Diagnostics.Debug.Assert(cVal.GetType() == ValueType.valueObject);
 			var pBrush = (Brush)(cVal);
 
-			if (pBrush is {})
+			if (pBrush is { })
 			{
 				BrushParams emptyBrushParams = default;
 				pContentRenderer.GeneralImageRenderContent(
@@ -660,6 +704,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
+#endif
 
 		private void SetOwner(CalendarView pOwner)
 		{
@@ -676,7 +721,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void SetDensityColors(
 			IIterable<Color> pColors)
 		{
-			if (pColors is {})
+			if (pColors is { })
 			{
 				IIterator<Color> spIterator;
 				uint index = 0;
@@ -800,7 +845,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateTextBlocksForeground()
 		{
-			if (m_pMainTextBlock is {})
+			if (m_pMainTextBlock is { })
 			{
 				UpdateTextBlockForeground(m_pMainTextBlock);
 			}
@@ -1002,7 +1047,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		private void InvalidateRender()
+		internal void InvalidateRender()
 		{
 			Uno_InvalidateRender();
 
@@ -1025,7 +1070,7 @@ namespace Windows.UI.Xaml.Controls
 			//}
 		}
 
-		private Thickness GetItemBorderThickness()
+		internal Thickness GetItemBorderThickness()
 		{
 			var pOwner = GetOwner();
 			if (pOwner is { })
@@ -1111,6 +1156,7 @@ namespace Windows.UI.Xaml.Controls
 			return pBrush;
 		}
 
+#if false
 		// Focus Alternative border brush is same as the item background.
 		private Brush GetItemFocusAltBorderBrush()
 		{
@@ -1123,6 +1169,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return pBrush;
 		}
+#endif
 
 		// for Selected+Today inner border.
 		private Brush GetItemInnerBorderBrush()
@@ -1138,7 +1185,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		private Brush GetItemBackgroundBrush()
+		internal Brush GetItemBackgroundBrush()
 		{
 			Brush pBrush = null;
 
@@ -1220,6 +1267,7 @@ namespace Windows.UI.Xaml.Controls
 			return opacity;
 		}
 
+#if false
 		private void CustomizeFocusRectangle(FocusRectangleOptions options, out bool shouldDrawFocusRect)
 		{
 			bool shouldDrawDottedLines = false;
@@ -1264,6 +1312,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return shouldDrawDottedLines;
 		}
+#endif
 
 		//month year item
 		private protected virtual bool GetTextBlockFontProperties(
@@ -1354,7 +1403,7 @@ namespace Windows.UI.Xaml.Controls
 			pProperties = default;
 			var pOwner = GetOwner();
 
-			if (pOwner is {})
+			if (pOwner is { })
 			{
 				pProperties.fontSize = isLabel ? pOwner.m_firstOfMonthLabelFontSize : pOwner.m_dayItemFontSize;
 				pProperties.fontStyle = isLabel ? pOwner.m_firstOfMonthLabelFontStyle : pOwner.m_dayItemFontStyle;

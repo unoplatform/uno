@@ -7,20 +7,18 @@ using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel.Calls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
-	[SampleControlInfo("Windows.ApplicationModel", "PhoneCallManager", ignoreInSnapshotTests: true, description: "PhoneCallManager APIs implementation.")]
-
+	[Sample("Windows.ApplicationModel.Calls", Name = "PhoneCallManager")]
 	public sealed partial class PhoneCallManagerTests : UserControl
 	{
 		public PhoneCallManagerTests()
@@ -35,14 +33,14 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 			catch (Exception ex)
 			{
 				ErrorMessage.Text = ex.ToString();
-			}		
+			}
 		}
 
 		private void PhoneCallManager_CallStateChanged(object sender, object e) => UpdateCallState();
 
 		private async void UpdateCallState()
 		{
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				IsCallActiveCheckBox.IsChecked = PhoneCallManager.IsCallActive;
 				IsCallIncomingCheckBox.IsChecked = PhoneCallManager.IsCallIncoming;

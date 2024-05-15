@@ -3,8 +3,8 @@ using Settings = Android.Provider.Settings;
 
 namespace Windows.Security.ExchangeActiveSyncProvisioning
 {
-    public partial class EasClientDeviceInformation
-    {
+	public partial class EasClientDeviceInformation
+	{
 		partial void Initialize()
 		{
 			OperatingSystem = "ANDROID";

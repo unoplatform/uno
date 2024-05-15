@@ -9,10 +9,10 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
 	public sealed partial class TreeViewNodeInMarkupTestPage : MUXTestPage
-    {
-        public TreeViewNodeInMarkupTestPage()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public TreeViewNodeInMarkupTestPage()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

@@ -117,4 +117,56 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InfoBarCloseButtonName" xml:space="preserve">
+    <value>Yopish</value>
+    <comment>Automation name of the close button.</comment>
+  </data>
+  <data name="InfoBarCloseButtonTooltip" xml:space="preserve">
+    <value>Yopish</value>
+    <comment>The tooltip that appears on the Close button in InfoBar.</comment>
+  </data>
+  <data name="InfoBarClosedNotification" xml:space="preserve">
+    <value>Axborot paneli yopildi</value>
+    <comment>The string read by narrator when the InfoBar closes.</comment>
+  </data>
+  <data name="InfoBarCustomLandmarkName" xml:space="preserve">
+    <value>Axborot paneli</value>
+    <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
+  </data>
+  <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
+    <value>Xatolik belgisi</value>
+    <comment>Automation name used to announce the severity error icon.</comment>
+  </data>
+  <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
+    <value>Axborot belgisi</value>
+    <comment>Automation name used to announce the severity informational icon.</comment>
+  </data>
+  <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
+    <value>Muvaffaqiyat belgisi</value>
+    <comment>Automation name used to announce the severity success icon.</comment>
+  </data>
+  <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
+    <value>Ogohlantiruvchi belgi</value>
+    <comment>Automation name used to announce the severity warning icon.</comment>
+  </data>
+  <data name="InfoBarOpenedNotification" xml:space="preserve">
+    <value>%1!s! %2!s! %3!s!</value>
+    <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
+  </data>
+  <data name="InfoBarSeverityErrorName" xml:space="preserve">
+    <value>Axborot beruvchi xabar, jiddiy xatolik</value>
+    <comment>Name used to announce severity error to users.</comment>
+  </data>
+  <data name="InfoBarSeverityInformationalName" xml:space="preserve">
+    <value>Axborot beruvchi xabar, muhim axborot</value>
+    <comment>Name used to announce severity informational to users.</comment>
+  </data>
+  <data name="InfoBarSeveritySuccessName" xml:space="preserve">
+    <value>Axborot beruvchi xabar, muhim muvaffaqiyat</value>
+    <comment>Name used to announce severity success to users.</comment>
+  </data>
+  <data name="InfoBarSeverityWarningName" xml:space="preserve">
+    <value>Axborot beruvchi xabar, jiddiy ogohlantirish</value>
+    <comment>Name used to announce severity warning to users.</comment>
+  </data>
 </root>

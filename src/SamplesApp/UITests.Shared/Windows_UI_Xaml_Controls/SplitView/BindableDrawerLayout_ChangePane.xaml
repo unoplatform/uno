@@ -4,7 +4,7 @@
 	  xmlns:local="using:UITests.Windows_UI_Xaml_Controls.SplitView"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:android="http://uno.ui/android"
+	  xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 	  mc:Ignorable="d android"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -13,7 +13,7 @@
 			<!-- mimic LeftDrawerSplitViewStyle -->
 			<android:SplitView.Template>
 				<ControlTemplate TargetType="SplitView">
-					<BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
+					<android:BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
 										  LeftPane="{TemplateBinding Pane}"
 										  LeftPaneBackground="{TemplateBinding PaneBackground}"
 										  IsLeftPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
@@ -21,7 +21,7 @@
 										  Content="{TemplateBinding Content}" />
 				</ControlTemplate>
 			</android:SplitView.Template>
-			
+
 			<SplitView.Content>
 				<Grid>
 					<TextBlock TextWrapping="WrapWholeWords">

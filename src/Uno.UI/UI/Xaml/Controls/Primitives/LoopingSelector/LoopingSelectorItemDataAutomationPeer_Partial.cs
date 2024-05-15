@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class LoopingSelectorItemDataAutomationPeer
 	{
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			//_wrParent.As(spParent);
 			//spParent = _wrParent;
 			//if (spParent is {})
-			if(_wrParent?.TryGetTarget(out spParent) ?? false)
+			if (_wrParent?.TryGetTarget(out spParent) ?? false)
 			{
 				LoopingSelectorItemAutomationPeer spLSIAP;
 				spParent.GetContainerAutomationPeerForItem(_tpItem, out spLSIAP);
@@ -120,17 +120,19 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
+#if false
 		void
 			RealizeImpl()
 		{
 			LoopingSelectorAutomationPeer spParent = default;
 			//_wrParent.As(spParent);
 			//if (spParent && _tpItem)
-			if(_wrParent?.TryGetTarget(out spParent) ?? false)
+			if (_wrParent?.TryGetTarget(out spParent) ?? false)
 			{
 				spParent.RealizeItemAtIndex(_itemIndex);
 			}
 		}
+#endif
 
 		#region Method forwarders
 

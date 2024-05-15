@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ItemsRepeater.cpp, commit 1cf9f1c
 
@@ -7,22 +7,22 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(ItemTemplate))]
 	public partial class ItemsRepeater : FrameworkElement, IPanel
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly SerialDisposable _layoutSubscriptionsRevoker = new SerialDisposable();
 		private readonly SerialDisposable _dataSourceSubscriptionsRevoker = new SerialDisposable();
-		
+
 		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
 
 		internal object LayoutState
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ItemsRepeaterElementClearingEventArgs m_elementClearingArgs;
 		private ItemsRepeaterElementIndexChangedEventArgs m_elementIndexChangedArgs;
 
-		//public Microsoft.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
+		//public Microsoft/* UWP don't rename */.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
 		internal ViewManager ViewManager => m_viewManager;
 		internal AnimationManager AnimationManager => m_animationManager;
 
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		ItemsSourceView m_itemsSourceView;
 
-		Microsoft.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
+		Microsoft/* UWP don't rename */.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
 
 		VirtualizingLayoutContext m_layoutContext;
 		object m_layoutState;
@@ -608,9 +608,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnLoaded(object sender, RoutedEventArgs args)
 		{
+#if !HAS_UNO // With uno we always detach from the scroller on unload so we need to force a layouting pass to re-subscribe to scroller and update viewport (in a single pass)
 			// If we skipped an unload event, reset the scrollers now and invalidate measure so that we get a new
 			// layout pass during which we will hookup new scrollers.
 			if (_loadedCounter > _unloadedCounter)
+#endif
 			{
 				InvalidateMeasure();
 				m_viewportManager.ResetScrollers();
@@ -631,12 +633,12 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			}
 
-			if (_dataSourceSubscriptionsRevoker.Disposable is null && ItemsSource is ItemsSourceView itemsSource)
+			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
 			{
-				itemsSource.CollectionChanged += OnItemsSourceViewChanged;
+				m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
 				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					itemsSource.CollectionChanged -= OnItemsSourceViewChanged;
+					m_itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
 				});
 			}
 #endif
@@ -646,8 +648,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_stackLayoutMeasureCounter = 0u;
 			++_unloadedCounter;
+
+#if !HAS_UNO // Avoids leak and useless as we are not validating such count in the loaded
 			// Only reset the scrollers if this unload event is in-sync.
 			if (_unloadedCounter == _loadedCounter)
+#endif
 			{
 				m_viewportManager.ResetScrollers();
 			}
@@ -657,6 +662,15 @@ namespace Microsoft.UI.Xaml.Controls
 			// because ItemsRepeater uses a "singleton" instance of default StackLayout.
 			_layoutSubscriptionsRevoker.Disposable = null;
 			_dataSourceSubscriptionsRevoker.Disposable = null;
+			if (m_itemsSourceView is not null)
+			{
+				// We will no longer receive the element changes until next load.
+				// While add and remove will be detected on next layout pass, a replace would not be reflected in the UI.
+				// To fix that, we send a fake reset collection changed in order to mark all containers as recyclable.
+				// Note: We do it on unload rather than on load because we want to avoid multiple layout-pass on next load.
+				//		 This is expected to only flag containers as recyclable and should not have any significant perf impact.
+				OnItemsSourceViewChanged(m_itemsSourceView, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+			}
 #endif
 		}
 

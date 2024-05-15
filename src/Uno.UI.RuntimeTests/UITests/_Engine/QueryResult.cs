@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using SamplesApp.UITests;
 using Uno.UI.Extensions;
 

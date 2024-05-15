@@ -1,0 +1,14 @@
+<Project>
+
+	<PropertyGroup>
+		<UnoFeatures>$([System.Text.RegularExpressions.Regex]::Replace($(UnoFeatures), '\s', ''))</UnoFeatures>
+		<UnoFeatures Condition="$(UnoFeatures) == ''">;</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';MauiEmbedding;'))">
+		<UseMaui>true</UseMaui>
+	</PropertyGroup>
+
+</Project>

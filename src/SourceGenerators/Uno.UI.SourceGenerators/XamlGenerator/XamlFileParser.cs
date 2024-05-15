@@ -2,74 +2,131 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using Uno.Extensions;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Xml;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
+using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
-using System.Text.RegularExpressions;
-using Windows.Foundation.Metadata;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
-using System.Diagnostics;
 using Uno.Roslyn;
+using Windows.Foundation.Metadata;
+using System.Collections.Immutable;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlFileParser
+	internal partial class XamlFileParser
 	{
+		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
+		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private static readonly char[] _splitChars = new char[] { '(', ',', ')' };
+		private readonly string _excludeXamlNamespacesProperty;
+		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
-		private readonly RoslynMetadataHelper _metadataHelper;
-		private int _depth = 0;
 
-		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		/// <summary>
+		/// Usages of this field should be careful, since we avoid xaml parse caching if we use it.
+		/// If the usage affects the parse result, you need to disable caching for the file.
+		/// </summary>
+		private readonly RoslynMetadataHelper _metadataHelper;
+
+		private int _depth;
+
+		public XamlFileParser(string excludeXamlNamespacesProperty, string includeXamlNamespacesProperty, string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{
+			_excludeXamlNamespacesProperty = excludeXamlNamespacesProperty;
 			_excludeXamlNamespaces = excludeXamlNamespaces;
+
+			_includeXamlNamespacesProperty = includeXamlNamespacesProperty;
 			_includeXamlNamespaces = includeXamlNamespaces;
-			this._metadataHelper = roslynMetadataHelper;
+
+			_metadataHelper = roslynMetadataHelper;
 		}
 
-		public XamlFileDefinition[] ParseFiles(string[] xamlSourceFiles, System.Threading.CancellationToken cancellationToken)
+		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, string projectDirectory, CancellationToken cancellationToken)
 		{
-			var files = new List<XamlFileDefinition>();
-
 			return xamlSourceFiles
 				.AsParallel()
 				.WithCancellation(cancellationToken)
-				.Select(f => ParseFile(f, cancellationToken))
+				.Select(f => InnerParseFile(f, cancellationToken))
 				.Where(f => f != null)
 				.ToArray()!;
+
+			XamlFileDefinition? InnerParseFile(MSBuildItem fileItem, CancellationToken cancellationToken)
+			{
+				// Generate an actual TargetPath to be used with BaseUri, so that
+				// it maps to the actual path in the app package.
+				var targetFilePath = fileItem.GetMetadataValue("TargetPath") is { Length: > 0 } targetPath
+					? targetPath
+					: fileItem.GetMetadataValue("Link") is { Length: > 0 } link
+						? link
+						: fileItem.GetMetadataValue("Identity").Replace(projectDirectory, "");
+
+				return ParseFile(fileItem.File, targetFilePath.Replace("\\", "/"), cancellationToken);
+			}
 		}
 
-		private XamlFileDefinition? ParseFile(string file, System.Threading.CancellationToken cancellationToken)
+		private static void ScavengeCache()
+		{
+			// DateTimeOffset.Now might be expensive.
+			// Investigate if using Environment.TickCount can work and is faster.
+			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
+		}
+
+		private XamlFileDefinition? ParseFile(AdditionalText file, string targetFilePath, CancellationToken cancellationToken)
 		{
 			try
 			{
 #if DEBUG
-				Console.WriteLine("Pre-processing XAML file: {0}", file);
+				Console.WriteLine("Pre-processing XAML file: {0}", targetFilePath);
 #endif
 
-				var document = ApplyIgnorables(file);
+				var sourceText = file.GetText(cancellationToken)!;
+				if (sourceText is null)
+				{
+					throw new Exception($"Failed to read additional file '{file.Path}'");
+				}
+
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
+				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
+				{
+					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
+					ScavengeCache();
+					return cached.XamlFileDefinition;
+				}
+
+				ScavengeCache();
 
 				// Initialize the reader using an empty context, because when the tasl
-				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
+				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used
 				// to interpret the meaning of objects, which is not correct in Uno.UI context.
 				var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
 
 				// Force the line info, otherwise it will be enabled only when the debugger is attached.
 				var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
-				using (var reader = new XamlXmlReader(document, context, settings))
+				XmlReader document = RewriteForXBind(sourceText);
+
+				using (var reader = new XamlXmlReader(document, context, settings, IsIncluded))
 				{
 					if (reader.Read())
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						return Visit(reader, file);
+						var xamlFileDefinition = Visit(reader, file, targetFilePath, cancellationToken);
+						if (!reader.DisableCaching)
+						{
+							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+						}
+
+						return xamlFileDefinition;
 					}
 				}
 
@@ -81,268 +138,107 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (__uno::Uno.Xaml.XamlParseException e)
 			{
-				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file.Path);
 			}
 			catch (XmlException e)
 			{
-				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file.Path);
 			}
 			catch (Exception e)
 			{
-				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file);
+				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file.Path);
 			}
 		}
 
-		private XmlReader ApplyIgnorables(string file)
+		private XmlReader RewriteForXBind(SourceText sourceText)
 		{
-			var adjusted = File.ReadAllText(file);
+			var originalString = sourceText.ToString();
 
-			var document = new XmlDocument();
-			document.LoadXml(adjusted);
+			var hasxBind = originalString.Contains("{x:Bind", StringComparison.Ordinal);
 
-			var (ignorables, shouldCreateIgnorable) = FindIgnorables(document);
-			var conditionals = FindConditionals(document);
-
-			shouldCreateIgnorable |= conditionals.ExcludedConditionals.Count > 0;
-
-			var hasxBind = adjusted.Contains("{x:Bind", StringComparison.Ordinal);
-
-			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
+			if (!hasxBind)
 			{
 				// No need to modify file
-				return XmlReader.Create(file);
+				return XmlReader.Create(new StringReader(originalString));
 			}
 
-			var originalIgnorables = ignorables?.Value ?? "";
-
-			var ignoredNs = originalIgnorables.Split(' ');
-
-			var newIgnored = ignoredNs
-				.Except(_includeXamlNamespaces)
-				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement?.GetNamespaceOfPrefix(n).HasValue() ?? false))
-				.Concat(conditionals.ExcludedConditionals.Select(a => a.LocalName))
-				.ToArray();
-			var newIgnoredFlat = newIgnored.JoinBy(" ");
-
-			if (ignorables != null)
-			{
-				ignorables.Value = newIgnoredFlat;
-
-#if DEBUG
-				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file);
-#endif
-
-				// change the namespaces using textreplace, to keep the formatting and have proper
-				// line/position reporting.
-				adjusted = adjusted
-					.Replace(
-						"Ignorable=\"{0}\"".InvariantCultureFormat(originalIgnorables),
-						"Ignorable=\"{0}\"".InvariantCultureFormat(ignorables.Value)
-					)
-					.TrimEnd("\r\n");
-			}
-			else
-			{
-				// No existing Ignorable node, create one
-				var targetLine = File.ReadLines(file, Encoding.UTF8).First(l => !l.Trim().StartsWith("<!") && !l.IsNullOrWhiteSpace());
-				if (targetLine.EndsWith(">"))
-				{
-					targetLine = targetLine.TrimEnd(">");
-				}
-
-				var mcName = document.DocumentElement?
-					.Attributes
-					.Cast<XmlAttribute>()
-					.FirstOrDefault(a => a.Prefix == "xmlns" && a.Value == "http://schemas.openxmlformats.org/markup-compatibility/2006")
-					?.LocalName;
-
-				var mcString = "";
-				if (mcName == null)
-				{
-					mcName = "mc";
-					mcString = " xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"";
-				}
-
-				var replacement = "{0}{1} {2}:Ignorable=\"{3}\"".InvariantCultureFormat(targetLine, mcString, mcName, newIgnoredFlat);
-				adjusted = ReplaceFirst(
-						adjusted,
-						targetLine,
-						replacement
-					)
-					.TrimEnd("\r\n");
-			}
-
-			// Replace the ignored namespaces with unique urns so that same urn that are placed in Ignored attribute
-			// are ignored independently.
-			foreach (var n in newIgnored)
-			{
-				adjusted = adjusted
-					.Replace(
-						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement?.GetNamespaceOfPrefix(n)),
-						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, Guid.NewGuid())
-					);
-			}
-
-			// Put all the included namespaces in the same default namespace, so that the properties get their
-			// DeclaringType properly set.
-			foreach (var n in _includeXamlNamespaces)
-			{
-				if (document.DocumentElement != null)
-				{
-					var originalPrefix = document.DocumentElement.GetNamespaceOfPrefix(n);
-
-					if (!originalPrefix.StartsWith("using:"))
-					{
-						adjusted = adjusted
-							.Replace(
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(n)),
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(""))
-							);
-					}
-				}
-			}
-
-			foreach (var includedCond in conditionals.IncludedConditionals)
-			{
-				var valueSplit = includedCond.Value.Split('?');
-				// Strip the conditional part, so the namespace can be parsed correctly by the Xaml reader
-				adjusted = adjusted
-					.Replace(
-						includedCond.OuterXml,
-						"{0}=\"{1}\"".InvariantCultureFormat(includedCond.Name, valueSplit[0])
-					);
-			}
-
-			if (hasxBind)
-			{
-				// Apply replacements to avoid having issues with the XAML parser which does not
-				// support quotes in positional markup extensions parameters.
-				// Note that the UWP preprocessor does not need to apply those replacements as the
-				// x:Bind expressions are being removed during the first phase and replaced by "connections".
-				adjusted = XBindExpressionParser.RewriteDocumentPaths(adjusted);
-			}
+			// Apply replacements to avoid having issues with the XAML parser which does not
+			// support quotes in positional markup extensions parameters.
+			// Note that the UWP preprocessor does not need to apply those replacements as the
+			// x:Bind expressions are being removed during the first phase and replaced by "connections".
+			var adjusted = XBindExpressionParser.RewriteDocumentPaths(originalString);
 
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
-		private static string ReplaceFirst(string targetString, string oldValue, string newValue)
+		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri)
 		{
-			var index = targetString.IndexOf(oldValue, StringComparison.InvariantCulture);
-			if (index < 0)
+			if (_includeXamlNamespaces.Contains(localName))
 			{
-				throw new InvalidOperationException();
+				var result = __uno::Uno.Xaml.IsIncludedResult.ForceInclude;
+				return namespaceUri.Contains("using:")
+					? result
+					: result.WithUpdatedNamespace(XamlConstants.PresentationXamlXmlNamespace);
 			}
-			return targetString.Substring(0, index) + newValue + targetString.Substring(index + oldValue.Length);
-		}
-
-		private (XmlNode? Ignorables, bool ShouldCreateIgnorable) FindIgnorables(XmlDocument document)
-		{
-			var ignorables = document.DocumentElement?.Attributes.GetNamedItem("Ignorable", "http://schemas.openxmlformats.org/markup-compatibility/2006") as XmlAttribute;
-
-			var excludeNamespaces = _excludeXamlNamespaces
-				.Select(n => new { Name = n, Namespace = document.DocumentElement?.GetNamespaceOfPrefix(n) })
-				.Where(n => n.Namespace.HasValue());
-
-			var shouldCreateIgnorable = false;
-
-			foreach (var nspace in excludeNamespaces)
+			else if (_excludeXamlNamespaces.Contains(localName))
 			{
-				var excludeNodes = document
-					.DocumentElement
-					?.SelectNodes("//* | //@*")
-					?.OfType<XmlNode>()
-					.Where(e => e.Prefix == nspace.Name);
-
-				if (ignorables == null && (excludeNodes?.Any() ?? false))
-				{
-					shouldCreateIgnorable = true;
-				}
+				return __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
 			}
 
-			return (ignorables, shouldCreateIgnorable);
-		}
-
-		/// <summary>
-		/// Returns those XAML namespace definitions for which a conditional is set, grouped by those for which the conditional returns true and
-		/// should be included, and those for which it returns fales and should be excluded.
-		/// </summary>
-		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals) FindConditionals(XmlDocument document)
-		{
-			var included = new List<XmlAttribute>();
-			var excluded = new List<XmlAttribute>();
-
-			foreach (XmlAttribute attr in document.DocumentElement!.Attributes)
+			var valueSplit = namespaceUri.Split('?');
+			if (valueSplit.Length != 2)
 			{
-				if (attr.Prefix != "xmlns")
-				{
-					// Not a namespace
-					continue;
-				}
-
-				var valueSplit = attr.Value.Split('?');
-				if (valueSplit.Length != 2)
-				{
-					// Not a (valid) conditional
-					continue;
-				}
-
-				if (ShouldInclude() is bool shouldInclude)
-				{
-					if (shouldInclude)
-					{
-						included.Add(attr);
-					}
-					else
-					{
-						excluded.Add(attr);
-					}
-				}
-
-				bool? ShouldInclude()
-				{
-					var elements = valueSplit[1].Split('(', ',', ')');
-
-					var methodName = elements[0];
-
-					switch (methodName)
-					{
-						case nameof(ApiInformation.IsApiContractPresent):
-						case nameof(ApiInformation.IsApiContractNotPresent):
-							if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
-							{
-								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
-							}
-
-							return methodName == nameof(ApiInformation.IsApiContractPresent) ?
-								ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
-						case nameof(ApiInformation.IsTypePresent):
-						case nameof(ApiInformation.IsTypeNotPresent):
-							if (elements.Length < 2)
-							{
-								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
-							}
-							var expectedType = elements[1];
-							return methodName == nameof(ApiInformation.IsTypePresent) ?
-								ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
-						default:
-							return null;// TODO: support IsPropertyPresent
-					}
-				}
+				// Not a (valid) conditional
+				return __uno::Uno.Xaml.IsIncludedResult.Default;
 			}
 
-			return (included, excluded);
+			namespaceUri = valueSplit[0];
+			var elements = valueSplit[1].Split(_splitChars);
+
+			var methodName = elements[0];
+
+			switch (methodName)
+			{
+				case nameof(ApiInformation.IsApiContractPresent):
+				case nameof(ApiInformation.IsApiContractNotPresent):
+					if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
+					{
+						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
+					}
+
+					var isIncluded1 = methodName == nameof(ApiInformation.IsApiContractPresent) ?
+						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
+						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+					return (isIncluded1
+						? __uno::Uno.Xaml.IsIncludedResult.ForceInclude
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
+				case nameof(ApiInformation.IsTypePresent):
+				case nameof(ApiInformation.IsTypeNotPresent):
+					if (elements.Length < 2)
+					{
+						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
+					}
+					var expectedType = elements[1];
+					var isIncluded2 = methodName == nameof(ApiInformation.IsTypePresent) ?
+						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
+						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
+					return (isIncluded2
+						? __uno::Uno.Xaml.IsIncludedResult.ForceIncludeWithCacheDisabled
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
+				default:
+					return __uno::Uno.Xaml.IsIncludedResult.Default.WithUpdatedNamespace(namespaceUri); // TODO: support IsPropertyPresent
+			}
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, string file)
+		private XamlFileDefinition Visit(XamlXmlReader reader, AdditionalText source, string targetFilePath, CancellationToken cancellationToken)
 		{
 			WriteState(reader);
 
-			var xamlFile = new XamlFileDefinition(file);
+			var xamlFile = new XamlFileDefinition(source.Path, targetFilePath, source.GetText(cancellationToken)?.GetChecksum() ?? ImmutableArray<byte>.Empty);
 
 			do
 			{
+				cancellationToken.ThrowIfCancellationRequested();
 				switch (reader.NodeType)
 				{
 					case XamlNodeType.StartObject:
@@ -370,9 +266,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// );
 		}
 
-		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner)
+		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces = null)
 		{
-			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner);
+			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner, namespaces);
 
 			Visit(reader, xamlObject);
 
@@ -418,6 +314,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private XamlMemberDefinition VisitMember(XamlXmlReader reader, XamlObjectDefinition owner)
 		{
 			var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, owner);
+			var lastWasLiteralInline = false;
+			var lastWasTrimSurroundingWhiteSpace = false;
+			List<NamespaceDeclaration>? namespaces = null;
 
 			while (reader.Read())
 			{
@@ -432,11 +331,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlNodeType.Value:
 						if (IsLiteralInlineText(reader.Value, member, owner))
 						{
-							var run = ConvertLiteralInlineTextToRun(reader);
+							var run = ConvertLiteralInlineTextToRun(reader, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
 							member.Objects.Add(run);
+							lastWasLiteralInline = true;
+							lastWasTrimSurroundingWhiteSpace = false;
 						}
 						else
 						{
+							lastWasLiteralInline = false;
+							lastWasTrimSurroundingWhiteSpace = false;
 							if (member.Value is string s)
 							{
 								member.Value += ", " + reader.Value;
@@ -450,14 +353,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.StartObject:
 						_depth++;
-						member.Objects.Add(VisitObject(reader, owner));
+						var obj = VisitObject(reader, owner, namespaces);
+						if (!reader.PreserveWhitespace &&
+							lastWasLiteralInline &&
+							obj.Type.TrimSurroundingWhitespace &&
+							member.Objects.Count > 0 &&
+							member.Objects[member.Objects.Count - 1].Members.Single() is { Value: string previousValue } runDefinition)
+						{
+							runDefinition.Value = previousValue.TrimEnd();
+						}
+
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = obj.Type.TrimSurroundingWhitespace;
+						member.Objects.Add(obj);
 						break;
 
 					case XamlNodeType.EndObject:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
 						_depth--;
 						break;
 
 					case XamlNodeType.NamespaceDeclaration:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
+						(namespaces ??= new List<NamespaceDeclaration>()).Add(reader.Namespace);
 						// Skip
 						break;
 
@@ -469,14 +389,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return member;
 		}
 
-		private bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
+		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
 		{
 			return value is string
-				&& (xamlObject.Type.Name == "TextBlock" || xamlObject.Type.Name == "Span")
+				&& (
+					xamlObject.Type.Name is "TextBlock"
+						or "Bold"
+						or "Hyperlink"
+						or "Italic"
+						or "Underline"
+						or "Span"
+						or "Paragraph"
+				)
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
 
-		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
+		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, bool trimStart)
 		{
 			var runType = new XamlType(
 				XamlConstants.PresentationXamlXmlNamespace,
@@ -487,13 +415,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var textMember = new XamlMember("Text", runType, false);
 
-			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, null)
+			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null)
 			{
 				Members =
 				{
 					new XamlMemberDefinition(textMember, reader.LineNumber, reader.LinePosition)
 					{
-						Value = reader.Value
+						Value = trimStart ? ((string)reader.Value).TrimStart() : reader.Value
 					}
 				}
 			};

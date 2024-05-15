@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class BrushConverter : TypeConverter
 	{
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media
 			switch (value)
 			{
 				case string color:
-					return SolidColorBrushHelper.FromARGB(color);
+					return SolidColorBrushHelper.Parse(color);
 
 				case Color color:
 					return new SolidColorBrush(color);

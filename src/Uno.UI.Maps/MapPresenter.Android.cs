@@ -21,10 +21,10 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls.Maps.Presenters
+namespace Microsoft.UI.Xaml.Controls.Maps.Presenters
 {
 	public sealed partial class MapPresenter : Control
 	{
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 		}
 
-		private void MapTouchOccurred(object sender, MotionEvent e)
+		private void MapTouchOccurred(object? sender, MotionEvent e)
 		{
 
 		}
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 		{
 			_callbacks = new MapLifeCycleCallBacks(onPause: _internalMapView.OnPause, onResume: _internalMapView.OnResume);
 
-			_application = Context.ApplicationContext as Android.App.Application;
+			_application = (Context?.ApplicationContext as Android.App.Application)!;
 			if (_application != null)
 			{
 				_application.RegisterActivityLifecycleCallbacks(_callbacks);
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 				_onPause();
 			}
 
-			public void OnActivityCreated(Activity activity, global::Android.OS.Bundle savedInstanceState)
+			public void OnActivityCreated(Activity activity, global::Android.OS.Bundle? savedInstanceState)
 			{
 			}
 

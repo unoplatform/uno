@@ -1,9 +1,6 @@
-﻿// TODO Uno: As part of the next round of breaking changes,
-// we can wrap the contents of this file in #if !HAS_UNO_WINUI,
-// as the Control class does not declare these in WinUI.
-// We still need to keep this on for UWP compilation however, so
-// don't delete the file completely!
-namespace Windows.UI.Xaml.Controls
+﻿#if !HAS_UNO_WINUI
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control
 	{
@@ -79,3 +76,4 @@ namespace Windows.UI.Xaml.Controls
 		public static new DependencyProperty UseSystemFocusVisualsProperty => UIElement.UseSystemFocusVisualsProperty;
 	}
 }
+#endif

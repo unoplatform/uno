@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public enum NavigationViewBackButtonVisible 
+	public enum NavigationViewBackButtonVisible
 	{
 		Collapsed,
 		Visible,

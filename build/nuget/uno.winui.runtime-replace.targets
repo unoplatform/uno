@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Target used to override the uno-runtime targets -->
+	<Target Name="ReplaceUnoRuntime"
+				Condition="'$(UnoRuntimeIdentifier)'!=''"
+				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile">
+
+		<ItemGroup>
+
+			<!-- Create a list of all copy local items that are part of the UnoRuntimeEnabledPackage items -->
+			<_RuntimeCopyLocalItemsToRemove Include="@(RuntimeCopyLocalItems)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
+			<_RuntimeCopyLocalItemsToRemove Remove="@(_RuntimeCopyLocalItemsToRemove)" Condition="'%(_RuntimeCopyLocalItemsToRemove.NuGetPackageId)' != '%(_RuntimeCopyLocalItemsToRemove.EnabledIdentity)'" />
+
+			<!-- Remove them from the files to be copied to the output -->
+			<RuntimeCopyLocalItems Remove="@(_RuntimeCopyLocalItemsToRemove)" />
+
+			<_UnoRuntimeEnabledPackage_EmptyPackageBasePath
+				Include="@(UnoRuntimeEnabledPackage)"
+				Condition="'%(UnoRuntimeEnabledPackage.PackageBasePath)'==''" />
+
+			<!-- 
+			Legacy convention: netstandard2.0 (uno-runtime/**)
+			-->
+			<!-- Add the files for the current selected runtime identifier -->
+			<RuntimeCopyLocalItemsMerged
+							Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+							NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
+			<RuntimeCopyLocalItemsMerged
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
+
+			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
+			<RuntimeCopyLocalItemsToUpdate
+				Include="@(RuntimeCopyLocalItemsMerged)"
+				AssetType="runtime"
+				CopyLocal="true"
+				DestinationSubPath="%(FileName)%(Extension)"
+				CopyToPublishDirectory="true"
+				PathInPackage="uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
+			
+			<!-- Publish pdb files -->
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+		</ItemGroup>
+
+		<!-- 
+		Uno 4.6 or later convention: net7.0 or later (uno-runtime/[TargetFramework]/**)
+		-->
+		<RuntimeAssetsSelectorTask_v0
+			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
+			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			TargetFrameworkVersion="$(TargetFrameworkVersion)">
+			<Output TaskParameter="Assemblies" ItemName="RuntimeCopyLocalItemsMerged2" />
+				
+			<!-- Publish PDB files-->
+			<Output TaskParameter="DebugSymbols" ItemName="ReferenceCopyLocalPaths" />
+		</RuntimeAssetsSelectorTask_v0>
+
+		<ItemGroup>
+			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
+			<RuntimeCopyLocalItemsToUpdate
+				Include="@(RuntimeCopyLocalItemsMerged2)"
+				AssetType="runtime"
+				CopyLocal="true"
+				DestinationSubPath="%(FileName)%(Extension)"
+				CopyToPublishDirectory="true"
+				PathInPackage="%(PathInPackage)" />
+
+			<RuntimeCopyLocalItems
+				Include="@(RuntimeCopyLocalItemsToUpdate)"/>
+		</ItemGroup>
+
+		<Error
+			Text="The package(s) [@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)] do not define the UnoRuntimeEnabledPackage.PackageBasePath metadata. Make sure to add one to specify the current location of the targets file."
+			Condition="'@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)'!=''" />
+	</Target>
+
+	<!-- Force a rebuild on runtime files changes -->
+	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
+		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
+	</ItemGroup>
+
+
+</Project>

@@ -14,18 +14,12 @@
 			 d:DesignHeight="2000"
 			 d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Description for sample of ImageWithNoSpecificSize">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<TextBlock Text="This image has Stretch set to Uniform and no specified size, so should keep the image ratio based on red border size" />
-					<Border Width="100"
+	<StackPanel>
+		<TextBlock Text="This image has Stretch set to Uniform and no specified size, so should keep the image ratio based on red border size" />
+		<Border Width="100"
 							Background="Red">
-						<Image Source="/Assets/Diagnostics/avatar.png"
+			<Image Source="/Assets/Diagnostics/avatar.png"
 							   Stretch="Uniform" />
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+		</Border>
+	</StackPanel>
 </UserControl>

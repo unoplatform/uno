@@ -7,8 +7,8 @@ using Windows.UI.Popups;
 
 namespace Uno.UI.Toolkit
 {
-    public static class UICommandExtensions
-    {
+	public static class UICommandExtensions
+	{
 		public static void SetDestructive(this UICommand command, bool isDestructive)
 		{
 #if __IOS__

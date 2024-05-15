@@ -2,7 +2,10 @@ using System;
 
 namespace Windows.Devices.Sensors
 {
-	public  partial class MagnetometerReading 
+	/// <summary>
+	/// Represents a magnetometer reading.
+	/// </summary>
+	public partial class MagnetometerReading
 	{
 		internal MagnetometerReading(
 			float magneticFieldX,
@@ -18,13 +21,25 @@ namespace Windows.Devices.Sensors
 			Timestamp = timestamp;
 		}
 
-		public  global::Windows.Devices.Sensors.MagnetometerAccuracy DirectionalAccuracy { get; }
+		/// <summary>
+		/// Gets the magnetometer's directional accuracy.
+		/// </summary>
+		public global::Windows.Devices.Sensors.MagnetometerAccuracy DirectionalAccuracy { get; }
 
-		public  float MagneticFieldX { get; }
+		/// <summary>
+		/// Gets the magnetic field strength in microteslas along the X axis.
+		/// </summary>
+		public float MagneticFieldX { get; }
 
-		public  float MagneticFieldY { get; }
+		/// <summary>
+		/// Gets the magnetic field strength in microteslas along the Y axis.
+		/// </summary>
+		public float MagneticFieldY { get; }
 
-		public  float MagneticFieldZ { get; }
+		/// <summary>
+		/// Gets the magnetic field strength in microteslas along the Z axis.
+		/// </summary>
+		public float MagneticFieldZ { get; }
 
 		public DateTimeOffset Timestamp { get; }
 	}

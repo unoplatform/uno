@@ -26,7 +26,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// List of action handlers for registering x:Bind events
 		/// </summary>
-		public List<BackingFieldDefinition> xBindEventsHandlers { get; } = new List<BackingFieldDefinition>();
+		public List<EventHandlerBackingFieldDefinition> xBindEventsHandlers { get; } = new();
 
 		/// <summary>
 		/// Lists the ElementStub builder holder variables used to pin references for implicit pinning platforms
@@ -40,6 +40,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<ComponentDefinition> Components { get; } = new List<ComponentDefinition>();
 
 		public List<XamlObjectDefinition> XBindExpressions { get; } = new List<XamlObjectDefinition>();
+
+		public List<string> XBindTryGetMethodDeclarations { get; } = new List<string>();
 
 		public int ComponentCount => Components.Count;
 	}

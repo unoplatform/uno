@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 			// When user click on Button ClickingButtonToChangeOpacity for the first time
 			buttonToIncrementNumber.FastTap();
-			
+
 			// Assert after clicking once while clickingButton enabled
 			Assert.AreEqual("1", totalClicks.GetDependencyPropertyValue("Text")?.ToString());
 

@@ -1,13 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Windows.System.Power;
 
-namespace Windows.System.Power
+/// <summary>
+/// Represents the device's power supply status.
+/// </summary>
+public enum PowerSupplyStatus
 {
-	public enum PowerSupplyStatus
-	{
-		NotPresent,
-		Inadequate,
-		Adequate
-	} 
+	/// <summary>
+	/// The device has no power supply.
+	/// </summary>
+	NotPresent,
+
+	/// <summary>
+	/// The device has an inadequate power supply.
+	/// </summary>
+	Inadequate,
+
+	/// <summary>
+	/// The device has an adequate power supply.
+	/// </summary>
+	Adequate
 }

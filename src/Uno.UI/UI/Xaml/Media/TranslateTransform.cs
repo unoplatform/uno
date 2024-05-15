@@ -5,7 +5,7 @@ using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	/// <summary>
 	/// TranslateTransform :  Based on the WinRT TranslateTransform
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(XProperty, value);
 		}
 
-		public static DependencyProperty XProperty { get ; } =
+		public static DependencyProperty XProperty { get; } =
 			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(0.0, Transform.NotifyChangedCallback));
 
 		public double Y
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(YProperty, value);
 		}
 
-		public static DependencyProperty YProperty { get ; } =
+		public static DependencyProperty YProperty { get; } =
 			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(0.0, Transform.NotifyChangedCallback));
 	}
 }

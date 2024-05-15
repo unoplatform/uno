@@ -1,7 +1,7 @@
 ﻿using Uno.Media;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Polygon : Shape
 	{
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Shapes
 				return null;
 			}
 
-			var output = new Android.Graphics.Path();
+			var output = GetOrCreatePath();
 			var startingPoint = coords[0];
 
 			output.MoveTo((float)startingPoint.X, (float)startingPoint.Y);

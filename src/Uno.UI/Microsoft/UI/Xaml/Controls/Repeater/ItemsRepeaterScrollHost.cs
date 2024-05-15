@@ -1,22 +1,22 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Private.Controls;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
-using static Microsoft.UI.Xaml.Controls._Tracing;
-using Windows.UI.Xaml.Markup;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(ScrollViewer))]
 	public partial class ItemsRepeaterScrollHost : FrameworkElement, IScrollAnchorProvider, IRepeaterScrollingSurface
@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsRepeaterScrollHost);
 		}
 
-		private bool HasPendingBringIntoView => m_pendingBringIntoView.TargetElement is {};
+		private bool HasPendingBringIntoView => m_pendingBringIntoView.TargetElement is { };
 		public UIElement CurrentAnchor => GetAnchorElement(out _);
 
 		public ScrollViewer ScrollViewer
@@ -157,7 +157,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			Size desiredSize = default;
-			if (ScrollViewer is {} scrollViewer)
+			if (ScrollViewer is { } scrollViewer)
 			{
 				scrollViewer.Measure(availableSize);
 				desiredSize = scrollViewer.DesiredSize;
@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			Size result = finalSize;
-			if (ScrollViewer is {} scrollViewer)
+			if (ScrollViewer is { } scrollViewer)
 			{
 #if SCROLLVIEWER_SUPPORTS_ANCHORING
 				if (SharedHelpers.IsRS5OrHigher())
@@ -222,7 +222,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return result;
 		}
 
-#endregion
+		#endregion
 
 		#region IScrollAnchorProvider / IRepeaterScrollingSurface
 
@@ -235,7 +235,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: this API should go on UIElement.
 		internal void StartBringIntoView(UIElement element, double alignmentX, double alignmentY, double offsetX, double offsetY, bool animate)
 		{
-			m_pendingBringIntoView =  new BringIntoViewState(
+			m_pendingBringIntoView = new BringIntoViewState(
 				element,
 				alignmentX,
 				alignmentY,
@@ -276,7 +276,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!double.IsNaN(HorizontalAnchorRatio) || !double.IsNaN(VerticalAnchorRatio))
 			{
-				if (ScrollViewer is {} scrollViewer)
+				if (ScrollViewer is { } scrollViewer)
 				{
 
 #if DEBUG
@@ -315,7 +315,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		Rect IRepeaterScrollingSurface.GetRelativeViewport(UIElement element)
 		{
-			if (ScrollViewer is {} scrollViewer)
+			if (ScrollViewer is { } scrollViewer)
 			{
 				var elem = element;
 				bool hasLockedViewport = HasPendingBringIntoView;
@@ -453,7 +453,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_isAnchorElementDirty)
 			{
-				if (ScrollViewer is {} scrollViewer)
+				if (ScrollViewer is { } scrollViewer)
 				{
 					// ScrollViewer.ChangeView is not synchronous, so we need to account for the pending ChangeView call
 					// and make sure we are locked on the target viewport.
@@ -489,7 +489,7 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 
-					if (bestCandidate is {})
+					if (bestCandidate is { })
 					{
 						m_anchorElement = bestCandidate.Element;
 						m_anchorElementRelativeBounds = bestCandidate.RelativeBounds;

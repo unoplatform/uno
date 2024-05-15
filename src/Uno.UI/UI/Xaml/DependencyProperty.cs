@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Windows.UI.Xaml;
-using Uno.Extensions;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using Uno;
+using System.Text;
 using System.Threading;
+using Microsoft.UI.Xaml;
+using Uno;
+using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.Dispatching;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a dependency property for a <see cref="DependencyObject"/>.
@@ -31,39 +33,70 @@ namespace Windows.UI.Xaml
 		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 
+		/// <summary>
+		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
+		/// </summary>
+		private readonly static PropertyCacheEntry _searchPropertyCacheEntry = new();
+
+
 		private readonly static FrameworkPropertiesForTypeDictionary _getFrameworkPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 		private readonly PropertyMetadataDictionary _metadata = new PropertyMetadataDictionary();
 
+		private readonly Flags _flags;
 		private string _name;
 		private Type _propertyType;
 		private Type _ownerType;
-		private readonly bool _isAttached;
-		private readonly bool _isTypeNullable;
 		private readonly int _uniqueId;
-		private readonly bool _isDependencyObjectCollection;
-		private readonly bool _hasWeakStorage;
 		private object _fallbackDefaultValue;
 
-		private static int _globalId;
+		private static int _globalId = -1;
 
 		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached)
 		{
 			_name = name;
 			_propertyType = propertyType;
 			_ownerType = ownerType;
-			_isAttached = attached;
-			_isDependencyObjectCollection = typeof(DependencyObjectCollection).IsAssignableFrom(propertyType);
-			_isTypeNullable = GetIsTypeNullable(propertyType);
+
+			_flags |= attached ? Flags.IsAttached : Flags.None;
+			_flags |= typeof(DependencyObjectCollection).IsAssignableFrom(propertyType) ? Flags.IsDependencyObjectCollection : Flags.None;
+			_flags |= GetIsTypeNullable(propertyType) ? Flags.IsTypeNullable : Flags.None;
+			_flags |= (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() is true ? Flags.HasWeakStorage : Flags.None;
+			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
+
+			if (ownerType == typeof(FrameworkElement))
+			{
+				if (name is
+					nameof(FrameworkElement.MaxHeight) or
+					nameof(FrameworkElement.MinHeight) or
+					nameof(FrameworkElement.MinWidth) or
+					nameof(FrameworkElement.MaxWidth))
+				{
+					_flags |= Flags.ValidateNotNegativeAndNotNaN;
+				}
+			}
+
 			_uniqueId = Interlocked.Increment(ref _globalId);
-			_hasWeakStorage = (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() ?? false;
 
 			_ownerTypeMetadata = defaultMetadata ?? new FrameworkPropertyMetadata(null);
 			_metadata.Add(_ownerType, _ownerTypeMetadata);
+		}
 
-			// Improve the performance of the hash code by
-			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
+		// This is our equivalent of WinUI's ValidateXXX methods in PropertySystem.cpp, e.g, CDependencyObject::ValidateFloatValue
+		internal void ValidateValue(object value)
+		{
+			if ((_flags & Flags.ValidateNotNegativeAndNotNaN) != 0)
+			{
+				if (value is double doubleValue)
+				{
+					//negative values and NaN are not allowed for these properties
+					if (double.IsNaN(doubleValue) || doubleValue < 0)
+					{
+						throw new ArgumentException($"Property '{_name}' cannot be set to {doubleValue}. It must not be NaN or negative.");
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -74,12 +107,14 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Determines if the property storage should be backed by a <see cref="Uno.UI.DataBinding.ManagedWeakReference"/>
 		/// </summary>
-		internal bool HasWeakStorage => _hasWeakStorage;
+		internal bool HasWeakStorage
+			=> (_flags & Flags.HasWeakStorage) != 0;
 
 		/// <summary>
 		/// Determines if the property type inherits from <see cref="DependencyObjectCollection"/>
 		/// </summary>
-		internal bool IsDependencyObjectCollection => _isDependencyObjectCollection;
+		internal bool IsDependencyObjectCollection
+			=> (_flags & Flags.IsDependencyObjectCollection) != 0;
 
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.
@@ -133,12 +168,12 @@ namespace Windows.UI.Xaml
 		/// <param name="name">The name of the property.</param>
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
-		/// <param name="typeMetadata">The metadata to use when creating the property</param>
+		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
+		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata)
 		{
-			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: true);
+			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
 			try
 			{
@@ -180,14 +215,14 @@ namespace Windows.UI.Xaml
 		internal int CachedHashCode
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get;
+			get => _uniqueId;
 		}
 
 		/// <summary>
 		/// Specifies a static value that is used by the dependency property system rather than null to indicate that
 		/// the property exists, but does not have its value set by the dependency property system.
 		/// </summary>
-		public static object UnsetValue { get; } = Windows.UI.Xaml.UnsetValue.Instance;
+		public static object UnsetValue { get; } = Microsoft.UI.Xaml.UnsetValue.Instance;
 
 		/// <summary>
 		/// Retrieves the property metadata value for the dependency property as registered to a type. You specify the type you want info from as a type reference.
@@ -224,7 +259,7 @@ namespace Windows.UI.Xaml
 
 				ForceInitializeTypeConstructor(forType);
 
-				metadata = _metadata.FindOrCreate(forType, () => GetMetadata(baseType));
+				metadata = _metadata.FindOrCreate(forType, baseType, this);
 			}
 
 			return metadata;
@@ -285,9 +320,7 @@ namespace Windows.UI.Xaml
 		/// Determines if the Type of the property is a ValueType
 		/// </summary>
 		internal bool IsTypeNullable
-		{
-			get { return _isTypeNullable; }
-		}
+			=> (_flags & Flags.IsTypeNullable) != 0;
 
 		internal object GetFallbackDefaultValue()
 			=> _fallbackDefaultValue != null ? _fallbackDefaultValue : _fallbackDefaultValue = Activator.CreateInstance(Type);
@@ -297,7 +330,17 @@ namespace Windows.UI.Xaml
 			get { return _name; }
 		}
 
-		internal bool IsAttached { get { return _isAttached; } }
+		/// <summary>
+		/// Determines if the property is an attached property
+		/// </summary>
+		internal bool IsAttached
+			=> (_flags & Flags.IsAttached) != 0;
+
+		/// <summary>
+		/// Determines if the owner type is declared by Uno.UI
+		/// </summary>
+		internal bool IsUnoType
+			=> (_flags & Flags.IsUnoType) != 0;
 
 		/// <summary>
 		/// Get the specified dependency property on the specified owner type.
@@ -307,12 +350,18 @@ namespace Windows.UI.Xaml
 		/// <returns>A <see cref="DependencyProperty"/> instance, otherwise null it not found.</returns>
 		internal static DependencyProperty GetProperty(Type type, string name)
 		{
-			DependencyProperty result = null;
-			var key = new PropertyCacheEntry(type, name);
-
-			if (!_getPropertyCache.TryGetValue(key, out result))
+#if !__WASM__
+			if (!FeatureConfiguration.DependencyProperty.DisableThreadingCheck && !NativeDispatcher.Main.HasThreadAccess)
 			{
-				_getPropertyCache.Add(key, result = InternalGetProperty(type, name));
+				throw new InvalidOperationException("The dependency property system should not be accessed from non UI thread.");
+			}
+#endif
+
+			_searchPropertyCacheEntry.Update(type, name);
+
+			if (!_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var result))
+			{
+				_getPropertyCache.Add(_searchPropertyCacheEntry.Clone(), result = InternalGetProperty(type, name));
 			}
 
 			return result;
@@ -322,7 +371,9 @@ namespace Windows.UI.Xaml
 		{
 			if (_getPropertyCache.Count != 0)
 			{
-				_getPropertyCache.Remove(new PropertyCacheEntry(ownerType, name));
+				_searchPropertyCacheEntry.Update(ownerType, name);
+
+				_getPropertyCache.Remove(_searchPropertyCacheEntry);
 			}
 		}
 
@@ -332,7 +383,7 @@ namespace Windows.UI.Xaml
 
 			var propertyInfo = DependencyPropertyDescriptor.Parse(name);
 
-			if(propertyInfo != null)
+			if (propertyInfo != null)
 			{
 				type = propertyInfo.OwnerType;
 				name = propertyInfo.Name;
@@ -340,7 +391,7 @@ namespace Windows.UI.Xaml
 
 			do
 			{
-				if(_registry.TryGetValue(type, name, out var result))
+				if (_registry.TryGetValue(type, name, out var result))
 				{
 					return result;
 				}
@@ -470,36 +521,42 @@ namespace Windows.UI.Xaml
 			return output.ToArray();
 		}
 
-		private static DependencyProperty[] InternalGetDependencyObjectPropertiesForType(Type type)
+		public override int GetHashCode() => CachedHashCode;
+
+		[Flags]
+		private enum Flags
 		{
-			var output = new List<DependencyProperty>();
+			/// <summary>
+			/// No flag
+			/// </summary>
+			None = 0,
 
-			var props = GetPropertiesForType(type);
+			/// <summary>
+			/// Set when the property is an attached property
+			/// </summary>
+			IsAttached = (1 << 0),
 
-			for (int i = 0; i < props.Length; i++)
-			{
-				var prop = props[i];
-				var propertyOptions = (prop.GetMetadata(type) as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.None;
+			/// <summary>
+			/// Set when the <see cref="_propertyType"/> is nullable
+			/// </summary>
+			IsTypeNullable = (1 << 1),
 
-				if (
-					(
-						// We must include explicitly marked properties for now, until the
-						// metadata generator can provide this information.
-						propertyOptions.HasValueInheritsDataContext()
-					)
-					&& !propertyOptions.HasValueDoesNotInheritDataContext()
-				)
-				{
-					output.Add(prop);
-				}
-			}
+			/// <summary>
+			/// Set when the <see cref="_propertyType"/> is a <see cref="DependencyObjectCollection"/>
+			/// </summary>
+			IsDependencyObjectCollection = (1 << 2),
 
-			return output.ToArray();
-		}
+			/// <summary>
+			/// Set when the internal storage for the property is using weak references
+			/// </summary>
+			HasWeakStorage = (1 << 3),
 
-		internal static DependencyProperty Register(string v, Type type1, Type type2, PropertyMetadata propertyMetadata, object updateSourceOnChanged)
-		{
-			throw new NotImplementedException();
+			/// <summary>
+			/// Set when the property type is declared in Uno.UI
+			/// </summary>
+			IsUnoType = (1 << 4),
+
+			ValidateNotNegativeAndNotNaN = (1 << 5),
 		}
 	}
 }

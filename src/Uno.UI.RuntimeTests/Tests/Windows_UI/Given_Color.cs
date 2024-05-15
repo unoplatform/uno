@@ -17,12 +17,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 #if HAS_UNO
 		[TestMethod]
 		[DynamicData(nameof(GetData), DynamicDataSourceType.Method)]
-		public async Task When_FromArgb(byte a, byte r, byte g, byte b, uint result)
+		public void When_FromArgb(byte a, byte r, byte g, byte b, uint result)
 			=> Assert.AreEqual(result, Color.FromArgb(a, r, g, b).AsUInt32());
 
 		[TestMethod]
 		[DynamicData(nameof(GetData), DynamicDataSourceType.Method)]
-		public async Task When_GetHashCode(byte a, byte r, byte g, byte b, uint result)
+		public void When_GetHashCode(byte a, byte r, byte g, byte b, uint result)
 			=> Assert.AreEqual(result, (uint)Color.FromArgb(a, r, g, b).GetHashCode());
 
 		public static IEnumerable<object[]> GetData()
@@ -42,12 +42,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 
 		[TestMethod]
 		[DynamicData(nameof(GetCompare), DynamicDataSourceType.Method)]
-		public async Task When_Equals(Color left, Color right, bool result)
+		public void When_Equals(Color left, Color right, bool result)
 			=> Assert.AreEqual(result, left.Equals(right));
 
 		[TestMethod]
 		[DynamicData(nameof(GetCompare), DynamicDataSourceType.Method)]
-		public async Task When_op_Equals(Color left, Color right, bool result)
+		public void When_op_Equals(Color left, Color right, bool result)
 			=> Assert.AreEqual(result, left == right);
 
 		public static IEnumerable<object[]> GetCompare()
@@ -63,5 +63,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 			yield return new object[] { ColorHelper.FromArgb(0xFF, 0xFF, 0x7F, 0xFF), ColorHelper.FromArgb(0xFF, 0xFF, 0x7F, 0xFF), true };
 			yield return new object[] { ColorHelper.FromArgb(0xFF, 0xFF, 0xFF, 0x7F), ColorHelper.FromArgb(0xFF, 0xFF, 0xFF, 0x7F), true };
 		}
+
+#if __MACOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_User_Change_macOS_System_Colors()
+		{
+			var _uiSettings = new Windows.UI.ViewManagement.UISettings();
+
+			Color SUT_1 = _uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Accent);
+			Color SUT_2 = _uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background);
+
+			var accent = new Microsoft.UI.Xaml.Media.SolidColorBrush(AppKit.NSColor.ControlAccent).Color;
+			var background = new Microsoft.UI.Xaml.Media.SolidColorBrush(AppKit.NSColor.ControlBackground).Color;
+
+			Assert.AreEqual(SUT_1, accent);
+			Assert.AreEqual(SUT_2, background);
+		}
+
+#endif
 	}
 }

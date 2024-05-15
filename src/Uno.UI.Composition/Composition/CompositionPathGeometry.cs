@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.Graphics;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionPathGeometry : CompositionGeometry
 	{
@@ -16,7 +16,7 @@ namespace Windows.UI.Composition
 		public CompositionPath? Path
 		{
 			get => _path;
-			set => SetProperty(ref _path, value);
+			set => SetObjectProperty(ref _path, value);
 		}
 
 		internal override IGeometrySource2D? BuildGeometry() => Path?.GeometrySource;

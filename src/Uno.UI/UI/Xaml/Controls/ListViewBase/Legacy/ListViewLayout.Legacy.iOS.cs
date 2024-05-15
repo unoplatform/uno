@@ -1,31 +1,17 @@
 ﻿using Uno.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
-
-#if NET6_0_OR_GREATER
+using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
-#endif
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using nint = System.Int32;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -63,7 +49,7 @@ namespace Uno.UI.Controls.Legacy
 			LineSpacing = 0f;
 		}
 
-        protected override CGSize PrepareLayoutInternal(bool createLayoutInfo = false, CGSize? availableSize = null)
+		protected override CGSize PrepareLayoutInternal(bool createLayoutInfo = false, CGSize? availableSize = null)
 		{
 			ListViewBaseSource source;
 			Source.TryGetTarget(out source);
@@ -75,10 +61,10 @@ namespace Uno.UI.Controls.Legacy
 
 			var newLayoutInfo = createLayoutInfo ? new Dictionary<string, LayoutInfo>(StringComparer.Ordinal) : null;
 
-            var availableWidth = availableSize.SelectOrDefault(size => size.Value.Width, CollectionView.Bounds.Width);
-            var availableHeight = availableSize.SelectOrDefault(size => size.Value.Height, CollectionView.Bounds.Height);
+			var availableWidth = availableSize.SelectOrDefault(size => size.Value.Width, CollectionView.Bounds.Width);
+			var availableHeight = availableSize.SelectOrDefault(size => size.Value.Height, CollectionView.Bounds.Height);
 
-            var frame = (ScrollDirection == ListViewBaseScrollDirection.Vertical)
+			var frame = (ScrollDirection == ListViewBaseScrollDirection.Vertical)
 				? new CGRect(Margin.Left, Margin.Top, availableWidth - (Margin.Left + Margin.Right), 0)
 				: new CGRect(Margin.Left, Margin.Top, 0, availableHeight - (Margin.Top + Margin.Bottom));
 

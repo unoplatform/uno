@@ -1,68 +1,67 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BitmapIconSource.cpp, commit 083796a
+
+// MUX Reference BitmapIconSource_Partial.cpp, tag winui3/release/1.4.2
 
 using System;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+public partial class BitmapIconSource : IconSource
 {
-	public partial class BitmapIconSource : IconSource
+	public Uri UriSource
 	{
-		public Uri UriSource
+		get => (Uri)GetValue(UriSourceProperty);
+		set => SetValue(UriSourceProperty, value);
+	}
+
+	public static DependencyProperty UriSourceProperty { get; } =
+		DependencyProperty.Register(nameof(UriSource), typeof(Uri), typeof(BitmapIconSource), new FrameworkPropertyMetadata(default(Uri), OnPropertyChanged));
+
+	public bool ShowAsMonochrome
+	{
+		get => (bool)GetValue(ShowAsMonochromeProperty);
+		set => SetValue(ShowAsMonochromeProperty, value);
+	}
+
+	public static DependencyProperty ShowAsMonochromeProperty { get; } =
+		DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(true, OnPropertyChanged));
+
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override IconElement CreateIconElementCore()
+	{
+		Uri uriSource = UriSource;
+		bool showAsMonochrome = ShowAsMonochrome;
+
+		var bitmapIcon = new BitmapIcon();
+
+		bitmapIcon.UriSource = UriSource;
+		bitmapIcon.ShowAsMonochrome = ShowAsMonochrome;
+
+		return bitmapIcon;
+	}
+
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
+	{
+		if (iconSourceProperty == ShowAsMonochromeProperty)
 		{
-			get => (Uri)GetValue(UriSourceProperty);
-			set => SetValue(UriSourceProperty, value);
+			return BitmapIcon.ShowAsMonochromeProperty;
 		}
-
-		public static DependencyProperty UriSourceProperty { get; } =
-			DependencyProperty.Register(nameof(UriSource), typeof(Uri), typeof(BitmapIconSource), new FrameworkPropertyMetadata(default(Uri), OnPropertyChanged));
-
-		public bool ShowAsMonochrome
+		else if (iconSourceProperty == UriSourceProperty)
 		{
-			get => (bool)GetValue(ShowAsMonochromeProperty);
-			set => SetValue(ShowAsMonochromeProperty, value);
+			return BitmapIcon.UriSourceProperty;
 		}
-
-		public static DependencyProperty ShowAsMonochromeProperty { get; } =
-			DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(true, OnPropertyChanged));
-
-		private protected override IconElement CreateIconElementCore()
+		else
 		{
-			var bitmapIcon = new BitmapIcon();
-
-			if (UriSource != null)
-			{
-				bitmapIcon.UriSource = UriSource;
-			}
-
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
-			{
-				bitmapIcon.ShowAsMonochrome = ShowAsMonochrome;
-			}
-
-			if (Foreground != null)
-			{
-				bitmapIcon.Foreground = Foreground;
-			}
-
-			return bitmapIcon;
-		}
-
-		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
-		{
-			if (sourceProperty == ShowAsMonochromeProperty)
-			{
-				return BitmapIcon.ShowAsMonochromeProperty;
-			}
-			else if (sourceProperty == UriSourceProperty)
-			{
-				return BitmapIcon.UriSourceProperty;
-			}
-
-			return base.GetIconElementPropertyCore(sourceProperty);
+			return base.GetIconElementPropertyCore(iconSourceProperty);
 		}
 	}
 }

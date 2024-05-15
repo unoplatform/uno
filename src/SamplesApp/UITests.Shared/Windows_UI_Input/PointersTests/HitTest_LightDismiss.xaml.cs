@@ -8,14 +8,14 @@ using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -51,16 +51,16 @@ namespace UITests.Windows_UI_Input.PointersTests
 			AutomationProperties.SetAutomationId(popupChild, "TargetPopupContent");
 			popupChild.PointerPressed += (o, e) => ResultTextBlock.Text = "Popup content pressed";
 
-			void OnFlyoutOpenedOrClosed(object sender, object args)
+			void OnFlyoutOpenedOrClosed(object? sender, object? args)
 			{
-				FlyoutStatusTextBlock.Text = ((Flyout)sender).IsOpen.ToString();
+				FlyoutStatusTextBlock.Text = sender is Flyout flyout ? flyout.IsOpen.ToString() : "";
 			}
 			ButtonFlyout.Opened += OnFlyoutOpenedOrClosed;
 			ButtonFlyout.Closed += OnFlyoutOpenedOrClosed;
 
-			void OnPopupOpenedOrClosed(object sender, object args)
+			void OnPopupOpenedOrClosed(object? sender, object? args)
 			{
-				PopupStatusTextBlock.Text = ((Popup)sender).IsOpen.ToString();
+				PopupStatusTextBlock.Text = sender is Popup popup ? popup.IsOpen.ToString() : "";
 			}
 			_popup.Opened += OnPopupOpenedOrClosed;
 			_popup.Closed += OnPopupOpenedOrClosed;
@@ -113,7 +113,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 
 		private void OnFlyoutContentPressed(object sender, object args)
 		{
-				ResultTextBlock.Text = "Flyout content pressed";
+			ResultTextBlock.Text = "Flyout content pressed";
 		}
 	}
 }

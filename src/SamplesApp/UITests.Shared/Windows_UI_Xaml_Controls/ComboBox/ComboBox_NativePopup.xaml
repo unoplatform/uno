@@ -8,14 +8,14 @@
 	xmlns:local="using:Uno.UI.Samples.Content.UITests.ComboBox"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
-	mc:Ignorable="d ios android xamarin">
+	mc:Ignorable="d ios android not_win">
 
   <UserControl.Resources>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ComboBox -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ComboBox -->
 	<android:Style x:Key="NativePopupComboBoxStyle"
 				   TargetType="ComboBox">
 	  <Setter Property="Padding"

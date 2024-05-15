@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	[Flags]
 	internal enum ResourceUpdateReason
@@ -23,6 +23,11 @@ namespace Windows.UI.Xaml.Data
 		/// An update associated with hot reload, or a resource binding that should be updated for hot-reload changes
 		/// </summary>
 		HotReload = 4,
+
+		/// <summary>
+		/// Update marked as XamlLoader
+		/// </summary>
+		XamlParser = 8,
 
 		/// <summary>
 		/// Updates that should be propagated recursively through the visual tree

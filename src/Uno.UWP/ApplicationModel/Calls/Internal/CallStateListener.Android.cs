@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Runtime;
@@ -17,4 +16,3 @@ namespace Windows.ApplicationModel.Calls
 	}
 #pragma warning restore CS0618, CS0672 // PhoneStateListener is obsolete
 }
-#endif

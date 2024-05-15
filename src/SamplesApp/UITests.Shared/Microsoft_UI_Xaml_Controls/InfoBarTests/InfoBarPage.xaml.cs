@@ -1,18 +1,19 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference InfoBarPage.xaml.cs, commit b424312
+#pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
 
 using System;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
+using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
 
 using Uno.UI.Samples.Controls;
 

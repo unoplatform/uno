@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Android.OS;
 using Windows.System.Profile.Internal;
 
@@ -12,13 +13,13 @@ public partial class AnalyticsVersionInfo
 	{
 		DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
 		var versionString = Build.VERSION.Release;
-		if (int.TryParse(versionString, out var intVersion))
+		if (int.TryParse(versionString, CultureInfo.InvariantCulture, out var intVersion))
 		{
 			versionString = $"{intVersion}.0.0.0";
 		}
 		if (Version.TryParse(versionString, out var version))
 		{
-			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString();
+			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString(CultureInfo.InvariantCulture);
 		}
 	}
 }

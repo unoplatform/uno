@@ -7,7 +7,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.TestFramework
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
 	public partial class TestAppModeAttribute : Attribute
 	{
 		/// <summary>

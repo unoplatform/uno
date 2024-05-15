@@ -6,13 +6,13 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,10 +27,34 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		public int AddIntCallCount;
 		public int AddDoubleCallCount;
 
+		internal static readonly Class Class;
+
+		private TestClass NullTestClass = null;
+		private TestClass NotNullTestClass = new();
+
+		static Functions_Control()
+		{
+			Class = new Class()
+			{
+				SubClass1 = new SubClass1()
+				{
+					SubClass2 = new SubClass2()
+					{
+						SubClass3 = new SubClass3()
+						{
+							Message = "Hello world!"
+						}
+					}
+				}
+			};
+		}
+
 		public Functions_Control()
 		{
 			this.InitializeComponent();
 		}
+
+		private int PrivateInstanceProperty => 41;
 
 		public int InstanceProperty => 42;
 
@@ -109,5 +133,35 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		public static int PublicStaticProperty => 47;
 
 		public const int PublicConstField = 48;
+	}
+
+	internal class Class
+	{
+		public SubClass1 SubClass1 { get; set; }
+	}
+	internal class SubClass1
+	{
+		public SubClass2 SubClass2 { get; set; }
+	}
+	internal class SubClass2
+	{
+		public SubClass3 SubClass3 { get; set; }
+	}
+	internal class SubClass3
+	{
+		public string Message { get; set; }
+	}
+
+	public class TestClass
+	{
+		public string NullString { get; set; }
+	}
+
+	public class MyTextBox : TextBox
+	{
+		public MyTextBox()
+		{
+			Text = "DefaultTextBoxText";
+		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -57,11 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		private static Thickness ThicknessFromUniformLength(double uniformLength) =>
-#if NETFX_CORE && !HAS_UNO_WINUI
 			new Thickness(uniformLength);
-#else
-			ThicknessHelper.FromUniformLength(uniformLength);
-#endif
 	}
 
 	public partial class PlainFrameworkElement : FrameworkElement

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Windows.UI.Xaml.Navigation
+namespace Microsoft.UI.Xaml.Navigation
 {
 	public sealed partial class PageStackEntry : DependencyObject
 	{
@@ -26,9 +26,9 @@ namespace Windows.UI.Xaml.Navigation
 		}
 
 		// Using a DependencyProperty as the backing store for SourcePageType.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SourcePageTypeProperty { get ; } =
+		public static DependencyProperty SourcePageTypeProperty { get; } =
 			DependencyProperty.Register(
-				"SourcePageType", 
+				"SourcePageType",
 				typeof(Type),
 				typeof(PageStackEntry),
 				new FrameworkPropertyMetadata(null, (s, e) => ((PageStackEntry)s)?.OnSourcePageTypeChanged(e))

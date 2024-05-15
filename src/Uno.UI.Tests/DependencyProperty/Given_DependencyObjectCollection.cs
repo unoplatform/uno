@@ -2,9 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +14,7 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -45,7 +44,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.AreEqual(0, o1.MyProperty);
 
-			SUT.Add(o1); 
+			SUT.Add(o1);
 
 			Assert.AreEqual(42, o1.MyProperty);
 		}
@@ -155,7 +154,7 @@ namespace Uno.UI.Tests.BinderTests
 				new MyDependencyObject(),
 				new MyDependencyObject()
 			};
-			
+
 			Assert.AreEqual(3, SUT.CollectionChangedCount);
 		}
 

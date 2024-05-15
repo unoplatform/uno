@@ -1,0 +1,7 @@
+<Project>
+
+  <PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+	<TargetFrameworks>$(UnoTargetFrameworkOverride.Replace('$(NetCurrent)', '$(NetPrevious)'))</TargetFrameworks>
+  </PropertyGroup>
+
+</Project>

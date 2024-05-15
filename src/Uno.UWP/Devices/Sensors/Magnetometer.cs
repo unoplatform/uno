@@ -8,6 +8,9 @@ using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Represents a magnetic sensor.
+	/// </summary>
 	public partial class Magnetometer
 	{
 		private readonly static object _syncLock = new object();
@@ -17,6 +20,17 @@ namespace Windows.Devices.Sensors
 
 		private TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> _readingChanged;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
+		private Magnetometer()
+		{
+		}
+
+		/// <summary>
+		/// Returns the default magnetometer.
+		/// </summary>
+		/// <returns>The default magnetometer.</returns>
 		public static Magnetometer GetDefault()
 		{
 			if (_initializationAttempted)
@@ -34,6 +48,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
+		/// <summary>
+		/// Occurs each time the compass reports a new sensor reading.
+		/// </summary>
 		public event TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> ReadingChanged
 		{
 			add

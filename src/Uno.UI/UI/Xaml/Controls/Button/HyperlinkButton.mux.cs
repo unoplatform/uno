@@ -4,18 +4,19 @@
 
 #nullable enable
 
+using System;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class HyperlinkButton : ButtonBase
 	{
 		private const string ContentPresenterName = "ContentPresenter";
-		private const string ContentPresenterLegacyName = "Text";
+		//private const string ContentPresenterLegacyName = "Text";
 
 		private protected override void Initialize()
 		{

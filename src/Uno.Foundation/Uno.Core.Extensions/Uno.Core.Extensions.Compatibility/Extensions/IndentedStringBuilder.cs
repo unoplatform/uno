@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 //
 // ******************************************************************
 using System;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Uno.Extensions
@@ -23,91 +23,105 @@ namespace Uno.Extensions
 	/// <summary>
 	/// A C# code indented builder.
 	/// </summary>
-	internal class IndentedStringBuilder : IIndentedStringBuilder
+	internal sealed class IndentedStringBuilder : IIndentedStringBuilder
 	{
-		private readonly StringBuilder _stringBuilder;
+		public StringBuilder Builder { get; } = new();
 
 		public int CurrentLevel { get; private set; }
 
 		public IndentedStringBuilder()
-			: this(new StringBuilder())
 		{
 		}
 
-		public IndentedStringBuilder(StringBuilder stringBuilder)
-		{
-			_stringBuilder = stringBuilder;
-		}
-
-		public virtual IDisposable Indent(int count = 1)
+		public IDisposable Indent(int count = 1)
 		{
 			CurrentLevel += count;
 			return new DisposableAction(() => CurrentLevel -= count);
 		}
 
-		public virtual IDisposable Block(int count = 1)
+		public IDisposable Block(int count = 1)
 		{
 			var current = CurrentLevel;
 
 			CurrentLevel += count;
-			Append("{".Indent(current));
+			AppendIndented('{', current);
 			AppendLine();
 
 			return new DisposableAction(() =>
 			{
 				CurrentLevel -= count;
-				Append("}".Indent(current));
+				AppendIndented('}', current);
 				AppendLine();
 			});
 		}
 
-		public virtual IDisposable Block(IFormatProvider formatProvider, string pattern, params object[] parameters)
+		public IDisposable Block(IFormatProvider formatProvider, string pattern, params object[] parameters)
 		{
-			AppendFormat(formatProvider, pattern, parameters);
+			AppendFormatIndented(formatProvider, pattern, parameters);
 			AppendLine();
 
 			return Block();
 		}
 
-		public virtual void Append(string text)
+		public void Append(string text)
 		{
-			_stringBuilder.Append(text);
+			Builder.Append(text);
 		}
 
-		public virtual void AppendFormat(IFormatProvider formatProvider, string pattern, params object[] replacements)
+		public void AppendIndented(string text)
 		{
-			_stringBuilder.AppendFormat(formatProvider, pattern.Indent(CurrentLevel), replacements);
+			Builder.Append('\t', CurrentLevel);
+			Builder.Append(text);
+		}
+
+		public void AppendIndented(ReadOnlySpan<char> text)
+		{
+			Builder.Append('\t', CurrentLevel);
+			unsafe
+			{
+				fixed (char* ptr = &MemoryMarshal.GetReference(text))
+				{
+					Builder.Append(ptr, text.Length);
+				}
+			}
+		}
+
+		private void AppendIndented(char c, int indentCount)
+		{
+			Builder.Append('\t', indentCount);
+			Builder.Append(c);
+		}
+
+		public void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements)
+		{
+			Builder.Append('\t', CurrentLevel);
+			Builder.AppendFormat(formatProvider, text, replacements);
 		}
 
 		/// <summary>
 		/// Appends a newline.
 		/// </summary>
-		/// <remarks>
-		/// This method presents correct behavior, as opposed to its <see cref="AppendLine(String)"/>
-		/// overload. Therefore, this method should be used whenever a newline is desired.
-		/// </remarks>
-		public virtual void AppendLine()
+		public void AppendLine()
 		{
-			_stringBuilder.AppendLine();
+			Builder.AppendLine();
 		}
 
 		/// <summary>
-		/// Appends the given string, *without* appending a newline at the end.
+		/// Appends the given multi-line string with each line indented per CurentLevel, with a newline at the end.
 		/// </summary>
 		/// <param name="text">The string to append.</param>
-		/// <remarks>
-		/// Even though this method seems like it appends a newline, it doesn't. To append a
-		/// newline, call <see cref="AppendLine()"/> after this method, as the parameterless
-		/// overload has the correct behavior.
-		/// </remarks>
-		public virtual void AppendLine(string text)
+		public void AppendMultiLineIndented(string text)
 		{
-			_stringBuilder.Append(text.Indent(CurrentLevel));
+			foreach (var line in text.SplitLines())
+			{
+				AppendIndented(line);
+				AppendLine();
+			}
 		}
 
 		public override string ToString()
 		{
-			return _stringBuilder.ToString();
+			return Builder.ToString();
 		}
 	}
 

@@ -7,10 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -530,7 +526,7 @@ namespace Windows.UI.Xaml.Controls
 			nameof(PaneTitle),
 			typeof(string),
 			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(string),
+			new FrameworkPropertyMetadata(string.Empty,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)));
 	}
 }

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Uno.Extensions;
 using Uno.UI.Views.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Converters;
 using Uno.Client;
 using System.Threading.Tasks;
@@ -13,31 +13,16 @@ using Uno.Diagnostics.Eventing;
 using Uno.UI.Controls;
 using Windows.UI.Core;
 using System.Globalization;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions.Specialized;
 using Uno.UI.Extensions;
 using ObjCRuntime;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-using nint = System.Int32;
-using CGSize = System.Drawing.SizeF;
-#endif
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -311,7 +296,7 @@ namespace Uno.UI.Controls.Legacy
 				}
 				else
 				{
-					CoreDispatcher.Main
+					_ = CoreDispatcher.Main
 						.RunAsync(
 							CoreDispatcherPriority.Normal,
 							async () =>
@@ -633,7 +618,7 @@ namespace Uno.UI.Controls.Legacy
 				{
 					GC.ReRegisterForFinalize(this);
 
-					Windows.UI.Core.CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
+					_ = Windows.UI.Core.CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
 				}
 				else
 				{

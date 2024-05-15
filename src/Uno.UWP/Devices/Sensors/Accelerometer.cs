@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// This sensor returns G-force values with respect to the x, y, and z axes.
+	/// </summary>
 	public partial class Accelerometer
 	{
 		private readonly static object _syncLock = new object();
@@ -24,6 +27,17 @@ namespace Windows.Devices.Sensors
 		[Uno.NotImplemented]
 		public Graphics.Display.DisplayOrientations ReadingTransform { get; set; } = Graphics.Display.DisplayOrientations.Portrait;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
+		private Accelerometer()
+		{
+		}
+
+		/// <summary>
+		/// Returns the default accelerometer.
+		/// </summary>
+		/// <returns>The default accelerometer or null if no integrated accelerometers are found.</returns>
 		public static Accelerometer GetDefault()
 		{
 			if (_initializationAttempted)
@@ -41,20 +55,23 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
+		/// <summary>
+		/// Occurs each time the accelerometer reports a new sensor reading.
+		/// </summary>
 		public event Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> ReadingChanged
-		{			
+		{
 			add
 			{
 				lock (_syncLock)
 				{
 					bool isFirstSubscriber = _readingChanged == null;
 					_readingChanged += value;
-					if ( isFirstSubscriber)
+					if (isFirstSubscriber)
 					{
 						StartReadingChanged();
 					}
 				}
-			}			
+			}
 			remove
 			{
 				lock (_syncLock)
@@ -68,6 +85,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
+		/// <summary>
+		/// Occurs when the accelerometer detects that the device has been shaken.
+		/// </summary>
 		public event Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> Shaken
 		{
 			add

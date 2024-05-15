@@ -1,25 +1,27 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemPresenter.h, commit fd22d7f
+// MUX Reference NavigationViewItemPresenter.h, commit d3fef08
 
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Uno.Disposables;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+
+public partial class NavigationViewItemPresenter
 {
-	public partial class NavigationViewItemPresenter
-	{
-		private double m_compactPaneLengthValue = 40;
+	private double m_compactPaneLengthValue = 40;
 
-		private NavigationViewItemHelper<NavigationViewItemPresenter> m_helper;
+	private NavigationViewItemHelper<NavigationViewItemPresenter> m_helper;
 
-		private Grid m_contentGrid = null;
-		private ContentPresenter m_infoBadgePresenter = null;
-		private Grid m_expandCollapseChevron = null;
+	private Grid m_contentGrid;
+	private ContentPresenter m_infoBadgePresenter;
+	private Grid m_expandCollapseChevron;
 
-		private double m_leftIndentation = 0;
+	private SerialDisposable m_expandCollapseChevronTappedToken = new();
 
-		private Storyboard m_chevronExpandedStoryboard = null;
-		private Storyboard m_chevronCollapsedStoryboard = null;
-	}
+	private double m_leftIndentation;
+
+	private Storyboard m_chevronExpandedStoryboard;
+	private Storyboard m_chevronCollapsedStoryboard;
 }

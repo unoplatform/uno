@@ -5,7 +5,9 @@
 #nullable enable
 
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 
 namespace Uno.UI.Extensions
 {
@@ -13,15 +15,42 @@ namespace Uno.UI.Extensions
 	{
 		internal static VisualTree? GetVisualTree(this DependencyObject dependencyObject)
 		{
-			//TODO Uno: Implement multi-root support, currently we use just a single visual tree
-			//and all DOs return the same tree.
-			return Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree;
+			// The current implementation does not match MUX https://github.com/unoplatform/uno/issues/8978
+			if (dependencyObject is UIElement uiElement)
+			{
+				return uiElement.VisualTreeCache;
+			}
+
+			if (dependencyObject is FlyoutBase flyoutBase)
+			{
+				return flyoutBase.VisualTreeCache;
+			}
+
+			if (dependencyObject is TextElement textElement)
+			{
+				return textElement.VisualTreeCache;
+			}
+
+			return null;
 		}
 
 		internal static void SetVisualTree(this DependencyObject dependencyObject, VisualTree visualTree)
 		{
-			//TODO Uno: Should allow setting the visual tree and be set when
-			//the DO becomes part of the visual tree.
+			// The current implementation does not match MUX https://github.com/unoplatform/uno/issues/8978
+			if (dependencyObject is UIElement uiElement)
+			{
+				uiElement.VisualTreeCache = visualTree;
+			}
+
+			if (dependencyObject is FlyoutBase flyoutBase)
+			{
+				flyoutBase.VisualTreeCache = visualTree;
+			}
+
+			if (dependencyObject is TextElement textElement)
+			{
+				textElement.VisualTreeCache = visualTree;
+			}
 		}
 	}
 }

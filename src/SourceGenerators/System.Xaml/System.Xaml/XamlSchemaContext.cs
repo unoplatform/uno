@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Markup;
@@ -44,6 +45,7 @@ namespace Uno.Xaml
 	// It should be released at finalizer.
 	public class XamlSchemaContext
 	{
+		private static readonly char[] _semicolonArray = new char[] { ';' };
 		public XamlSchemaContext ()
 			: this (null, null)
 		{
@@ -102,13 +104,13 @@ namespace Uno.Xaml
 #endif
 		}
 
+#if SUPPORTS_LOAD_ASSEMBLIES
 		~XamlSchemaContext ()
 		{
-#if SUPPORTS_LOAD_ASSEMBLIES
 			if (reference_assemblies == null)
 				unhookAssemblyLoad?.Invoke();
-#endif
 		}
+#endif
 
 		IList<Assembly> reference_assemblies;
 
@@ -117,7 +119,7 @@ namespace Uno.Xaml
 		Dictionary<string,string> prefixes;
 		Dictionary<string,string> compat_nss;
 		Dictionary<string,List<XamlType>> all_xaml_types;
-		XamlType [] empty_xaml_types = new XamlType [0];
+		XamlType [] empty_xaml_types = Array.Empty<XamlType>();
 		List<XamlType> run_time_types = new List<XamlType> ();
 		object gate = new object();
 #if SUPPORTS_LOAD_ASSEMBLIES
@@ -395,7 +397,7 @@ namespace Uno.Xaml
 				if (xt == null)
 					xt = XamlLanguage.AllTypes.FirstOrDefault (t => t.Name == xmlLocalName);
 				if (xt == null)
-					throw new FormatException (string.Format ("There is no type '{0}' in XAML namespace", name));
+					throw new FormatException (string.Format (CultureInfo.InvariantCulture, "There is no type '{0}' in XAML namespace", name));
 				return xt.UnderlyingType;
 			}
 			else if (!ns.StartsWith ("clr-namespace:", StringComparison.Ordinal))
@@ -409,9 +411,9 @@ namespace Uno.Xaml
 			}
 
 			// convert xml namespace to clr namespace and assembly
-			string [] split = ns.Split (new char[] { ';' });
+			string [] split = ns.Split (_semicolonArray);
 			if (split.Length != 2 || split [0].Length < clr_ns_len || split [1].Length <= clr_ass_len)
-				throw new XamlParseException (string.Format ("Cannot resolve runtime namespace from XML namespace '{0}'", ns));
+				throw new XamlParseException (string.Format (CultureInfo.InvariantCulture, "Cannot resolve runtime namespace from XML namespace '{0}'", ns));
 			string tns = split [0].Substring (clr_ns_len);
 			string aname = split [1].Substring (clr_ass_len);
 
@@ -420,7 +422,7 @@ namespace Uno.Xaml
 			// MarkupExtension type could omit "Extension" part in XML name.
 			Type ret = ass == null ? null : ass.GetType (taqn) ?? ass.GetType (GetTypeName (tns, name + "Extension", genArgs));
 			if (ret == null)
-				throw new XamlParseException (string.Format ("Cannot resolve runtime type from XML namespace '{0}', local name '{1}' with {2} type arguments ({3})", ns, name, typeArguments !=null ? typeArguments.Count : 0, taqn));
+				throw new XamlParseException (string.Format (CultureInfo.InvariantCulture, "Cannot resolve runtime type from XML namespace '{0}', local name '{1}' with {2} type arguments ({3})", ns, name, typeArguments !=null ? typeArguments.Count : 0, taqn));
 			return genArgs == null ? ret : ret.MakeGenericType (genArgs);
 		}
 		

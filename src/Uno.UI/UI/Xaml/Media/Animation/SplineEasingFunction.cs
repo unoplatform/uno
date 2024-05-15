@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal class SplineEasingFunction : IEasingFunction
 	{
@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public SplineEasingFunction(KeySpline keySpline)
 		{
 			KeySpline = keySpline;
-        }
+		}
 
 		public double Ease(double currentTime, double startValue, double finalValue, double duration)
 		{

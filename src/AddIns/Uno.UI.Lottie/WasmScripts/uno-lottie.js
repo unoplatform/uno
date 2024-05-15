@@ -16,6 +16,15 @@ var Uno;
                 });
                 return "ok";
             }
+            static setAnimationPropertiesNative(id, path, autoplay, stretch, rate, cacheKey, data) {
+                if (data === undefined) {
+                    Lottie.setAnimationProperties({ elementId: id, jsonPath: path, autoplay: autoplay, stretch: stretch, rate: rate, cacheKey: cacheKey });
+                }
+                else {
+                    const animationData = data !== null ? JSON.parse(data) : null;
+                    Lottie.setAnimationProperties({ elementId: id, jsonPath: path, autoplay: autoplay, stretch: stretch, rate: rate, cacheKey: cacheKey }, animationData);
+                }
+            }
             static stop(elementId) {
                 Lottie.withPlayer(p => {
                     const a = Lottie._runningAnimations[elementId].animation;
@@ -63,7 +72,7 @@ var Uno;
             static setProgress(elementId, progress) {
                 Lottie.withPlayer(p => {
                     const animation = Lottie._runningAnimations[elementId].animation;
-                    var frame = Lottie._numberOfFrames * progress;
+                    let frame = Lottie._numberOfFrames * progress;
                     if (frame < animation.firstFrame) {
                         frame = frame - animation.firstFrame;
                     }
@@ -194,7 +203,17 @@ var Uno;
                     action(Lottie._player);
                 }
                 else {
-                    require([`${config.uno_app_base}/lottie`], (p) => {
+                    if (typeof require !== "function") {
+                        console.error("RequireJS not present.");
+                        return;
+                    }
+                    const dependencyToLoad = "/lottie";
+                    const lottieDependencyName = config.uno_dependencies.find((d) => d.endsWith(dependencyToLoad) || d.endsWith(dependencyToLoad + ".js"));
+                    require([lottieDependencyName], (p) => {
+                        if (!p) {
+                            console.error("Unable to load lottie player.");
+                            return;
+                        }
                         if (!Lottie._player) {
                             Lottie._player = p;
                         }

@@ -16,7 +16,7 @@ namespace Windows.Security.Credentials
 		{
 			private const string _accountId = "uno_passwordvault";
 
-			private readonly SecRecord _query = new SecRecord(SecKind.GenericPassword) {Account = _accountId};
+			private readonly SecRecord _query = new SecRecord(SecKind.GenericPassword) { Account = _accountId };
 
 			public bool TryOpenRead(out Stream inputStream)
 			{

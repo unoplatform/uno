@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -14,9 +14,9 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace UITests.Shared.Windows_Storage.Pickers
 {
@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			this.DataContextChanged += FolderPickerTests_DataContextChanged;
 		}
 
-		private void FolderPickerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void FolderPickerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as FileSavePickerTestsViewModel;
 		}
@@ -50,7 +50,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		private FileTypeChoiceViewModel _newFileTypeChoice = new FileTypeChoiceViewModel();
 		private FileTypeChoiceViewModel _selectedFileTypeChoice = null;
 
-		public FileSavePickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FileSavePickerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 #if __WASM__
 			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApi;
@@ -61,7 +61,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 #endif
 		}
 
-		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues(typeof(PickerLocationId)).OfType<PickerLocationId>().ToArray();
+		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues<PickerLocationId>();
 
 		public PickerLocationId SuggestedStartLocation { get; set; } = PickerLocationId.ComputerFolder;
 
@@ -210,7 +210,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 				var fileOpenPicker = new FileOpenPicker()
 				{
 					SuggestedStartLocation = PickerLocationId.ComputerFolder,
-					FileTypeFilter = {"*"}
+					FileTypeFilter = { "*" }
 				};
 				SuggestedSaveFile = await fileOpenPicker.PickSingleFileAsync();
 			}

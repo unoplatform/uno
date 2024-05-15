@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using Android.Graphics;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {
-    internal static class TypefaceStyleHelper
-    {
+	internal static class TypefaceStyleHelper
+	{
 		internal static TypefaceStyle GetTypefaceStyle(FontStyle fontStyle, FontWeight fontWeight)
 		{
 			var style = TypefaceStyle.Normal;

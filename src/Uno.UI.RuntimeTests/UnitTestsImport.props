@@ -1,7 +1,5 @@
 ﻿<Project>
-
-
-  <ItemGroup Condition="'$(TargetFramework)'!='uap10.0.18362'">
+  <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
 	<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_Xaml\FrameworkElementTests\*.cs">
 	  <Link>UnitTests\Windows_UI_Xaml\FrameworkElementTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 	</Compile>
@@ -17,6 +15,8 @@
 	<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\ItemsControlTests\*.cs">
 	  <Link>UnitTests\Windows_UI_Xaml_Controls\ItemsControlTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 	</Compile>
+  </ItemGroup>
+  <ItemGroup>
 	<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_Rounder.cs">
 	  <Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
 	</Compile>
@@ -38,7 +38,8 @@
 	<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_PermilleFormatter.cs">
 	  <Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
 	</Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_CurrencyFormatter.cs">
+	  <Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
+	</Compile>
   </ItemGroup>
-
-
 </Project>

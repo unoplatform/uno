@@ -20,55 +20,89 @@ namespace Uno.ReferenceImplComparer
 
 			Console.WriteLine($"Validating package {args[0]}");
 
-			foreach(var assembly in Directory.GetFiles(Path.Combine(filePath, "lib", "netstandard2.0"), "*.dll"))
+			var referenceTargetFrameworks = new[] {
+				"net7.0",
+				"net8.0"
+			};
+
+			foreach (var targetFramework in referenceTargetFrameworks)
 			{
-				var referenceAssemblyDefinition = ReadAssemblyDefinition(assembly);
-
-				foreach(var runtimeAssembly in Directory.GetFiles(Path.Combine(filePath, "uno-runtime"), Path.GetFileName(assembly), SearchOption.AllDirectories))
+				foreach (var assembly in Directory.GetFiles(Path.Combine(filePath, "lib", targetFramework), "*.dll"))
 				{
-					var identifier = $"{Path.GetFileName(runtimeAssembly)}/{Path.GetFileName(Path.GetDirectoryName(runtimeAssembly))}";
-					Console.WriteLine($"Validating {identifier}");
+					var referenceAssemblyDefinition = ReadAssemblyDefinition(assembly);
 
-					var runtimeAssemblyDefinition = ReadAssemblyDefinition(runtimeAssembly);
+					foreach (var runtimeAssembly in Directory.GetFiles(Path.Combine(filePath, "uno-runtime", targetFramework), Path.GetFileName(assembly), SearchOption.AllDirectories))
+					{
+						var identifier = $"{Path.GetFileName(runtimeAssembly)}/{Path.GetFileName(Path.GetDirectoryName(runtimeAssembly))}";
+						Console.WriteLine($"Validating {identifier} ({runtimeAssembly})");
 
-					hasErrors |= CompareAssemblies(referenceAssemblyDefinition, runtimeAssemblyDefinition, identifier);
+						var runtimeAssemblyDefinition = ReadAssemblyDefinition(runtimeAssembly);
+
+						hasErrors |= CompareAssemblies(referenceAssemblyDefinition, runtimeAssemblyDefinition, identifier);
+					}
 				}
 			}
 
 			return hasErrors ? 1 : 0;
 		}
 
-		private static bool CompareAssemblies(AssemblyDefinition referenceAssemby, AssemblyDefinition runtimeAssembly, string identifier)
+		private static bool IsAccessible(MethodDefinition method)
+		{
+			// https://github.com/jbevain/cecil/blob/56d4409b8a0165830565c6e3f96f41bead2c418b/Mono.Cecil/MethodAttributes.cs#L22-L24
+			return method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly;
+		}
+
+		private static bool IsAccessible(FieldDefinition field)
+		{
+			// https://github.com/jbevain/cecil/blob/56d4409b8a0165830565c6e3f96f41bead2c418b/Mono.Cecil/FieldAttributes.cs#L22-L24
+			return field.IsPublic || field.IsFamily || field.IsFamilyOrAssembly;
+		}
+
+		private static bool IsAccessible(TypeDefinition type)
+		{
+			// https://github.com/jbevain/cecil/blob/56d4409b8a0165830565c6e3f96f41bead2c418b/Mono.Cecil/TypeAttributes.cs#L21-L26
+			return type.IsPublic ||
+				((type.IsNestedPublic || type.IsNestedFamily || type.IsNestedFamilyOrAssembly) && IsAccessible(type.DeclaringType));
+		}
+
+		private static bool IsAccessible(PropertyDefinition property)
+		{
+			return (property.GetMethod is not null && IsAccessible(property.GetMethod)) ||
+				(property.SetMethod is not null && IsAccessible(property.SetMethod));
+		}
+
+		private static bool IsAccessible(EventDefinition @event)
+		{
+			return (@event.AddMethod is not null && IsAccessible(@event.AddMethod)) ||
+				(@event.RemoveMethod is not null && IsAccessible(@event.RemoveMethod));
+		}
+
+		private static bool CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition runtimeAssembly, string identifier)
 		{
 			var hasError = false;
-			var referenceTypes = referenceAssemby.MainModule.GetTypes();
+			var referenceTypes = referenceAssembly.MainModule.GetTypes();
 			var runtimeTypes = runtimeAssembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 
-			foreach(var referenceType in referenceTypes.Where(t => t.IsPublic))
+			foreach (var referenceType in referenceTypes.Where(IsAccessible))
 			{
-				if(referenceType.FullName == "Windows.UI.Xaml.Documents.TextElement")
+				if (referenceType.FullName == "Microsoft.UI.Xaml.Documents.TextElement")
 				{
-					Console.WriteLine("Skipping Windows.UI.Xaml.Documents.TextElement comparison");
+					Console.WriteLine("Skipping Microsoft.UI.Xaml.Documents.TextElement comparison");
 					continue;
 				}
 
-				if(runtimeTypes.TryGetValue(referenceType.FullName, out var runtimeType))
+				if (runtimeTypes.TryGetValue(referenceType.FullName, out var runtimeType))
 				{
-					if(
-						referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName
-
-						// Ignored because ArbitraryShapeBase only contains non-public members
-						// and that the hierarchy will be adjusted for wasm to match skia.
-						&& referenceType.BaseType?.FullName != "Windows.UI.Xaml.Shapes.ArbitraryShapeBase")
+					if (referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName)
 					{
 						Console.Error.WriteLine($"Error: {referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
 						hasError = true;
 					}
 
-					hasError |= CompareMembers(referenceType.Methods.Where(m => m.IsPublic), runtimeType.Methods, identifier);
-					hasError |= CompareMembers(referenceType.Properties.Where(m => m.GetMethod?.IsPublic ?? false), runtimeType.Properties, identifier);
-					hasError |= CompareMembers(referenceType.Fields.Where(m => m.IsPublic), runtimeType.Fields, identifier);
-					hasError |= CompareMembers(referenceType.Events.Where(m => m.AddMethod?.IsPublic ?? false), runtimeType.Events, identifier);
+					hasError |= CompareMembers(referenceType.Methods.Where(IsAccessible), runtimeType.Methods.Where(IsAccessible), identifier);
+					hasError |= CompareMembers(referenceType.Properties.Where(IsAccessible), runtimeType.Properties.Where(IsAccessible), identifier);
+					hasError |= CompareMembers(referenceType.Fields.Where(IsAccessible), runtimeType.Fields.Where(IsAccessible), identifier);
+					hasError |= CompareMembers(referenceType.Events.Where(IsAccessible), runtimeType.Events.Where(IsAccessible), identifier);
 				}
 				else
 				{
@@ -84,12 +118,39 @@ namespace Uno.ReferenceImplComparer
 		{
 			var hasError = false;
 			var runtimeMembersLookup = runtimeMembers.ToDictionary(m => m.ToString());
+			var referenceMembersLookup = referenceMembers.ToDictionary(m => m.ToString());
 
-			foreach(var referenceMember in referenceMembers)
+			foreach (var referenceMember in referenceMembers)
 			{
 				if (!runtimeMembersLookup.ContainsKey(referenceMember.ToString()))
 				{
 					Console.Error.WriteLine($"Error: The member {referenceMember} cannot be found in {identifier}");
+					hasError = true;
+				}
+			}
+
+			foreach (var runtimeMember in runtimeMembers)
+			{
+				// It's not very necessary for runtime members to exist in reference members.
+				// But there are cases where it's good to know that info.
+				// 1. If the method is overrides. This is very problematic because in app code that is compiled against reference binaries, a base.XYZ call could refer to the wrong method.
+				// 2. Sometimes there is intent to introduce Skia-specific or Wasm-specific API. Doing so
+				//    under `#if __SKIA__` or `#if __WASM__` isn't enough because you can't call it when compiling against the reference binaries.
+
+				if (runtimeMember is MethodReference { Name: "Finalize" } finalizer && finalizer.Resolve().IsVirtual)
+				{
+					// Assumption is that it's okay for finalizers to be in runtime API but not reference API.
+					continue;
+				}
+				else if (runtimeMember is MethodReference @operator && @operator.Name is "op_Implicit" or "op_Explicit")
+				{
+					// Operators must be declared publicly.
+					continue;
+				}
+
+				if (!referenceMembersLookup.ContainsKey(runtimeMember.ToString()))
+				{
+					Console.Error.WriteLine($"Error: The member {runtimeMember} cannot be found in reference API");
 					hasError = true;
 				}
 			}

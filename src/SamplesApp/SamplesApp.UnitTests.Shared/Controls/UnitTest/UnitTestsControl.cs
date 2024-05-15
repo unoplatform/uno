@@ -14,21 +14,22 @@ using Windows.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleControl.Presentation;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Testing;
 using Uno.UI.Samples.Helper;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
+using System.Collections.Immutable;
+using Private.Infrastructure;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -58,7 +59,9 @@ namespace Uno.UI.Samples.Tests
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 #endif
 
+#if !WINAPPSDK
 		private ApplicationView _applicationView;
+#endif
 
 		private List<TestCaseResult> _testCases = new List<TestCaseResult>();
 		private TestRun _currentRun;
@@ -68,10 +71,18 @@ namespace Uno.UI.Samples.Tests
 		// asynchronously during test enumeration.
 		private int _ciTestsGroupCountCache = -1;
 		private int _ciTestGroupCache = -1;
-		
+
 		public UnitTestsControl()
 		{
+#if DEBUG
+			if (_ciTestsGroupCountCache != -1 || _ciTestGroupCache != -1)
+			{
+				throw new Exception("_ciTestsGroupCountCache or _ciTestGroupCache values are incorrect");
+			}
+#endif
+
 			this.InitializeComponent();
+			this.Loaded += OnLoaded;
 
 			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRoot =
 			(
@@ -83,13 +94,30 @@ namespace Uno.UI.Samples.Tests
 				}
 			);
 
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow ??=
+				Microsoft.UI.Xaml.Window.Current;
+
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
 			EnableConfigPersistence();
 			OverrideDebugProviderAsserts();
 
+#if !WINAPPSDK
 			_applicationView = ApplicationView.GetForCurrentView();
+#endif
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
+
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				XamlRoot.HostWindow is null;
+#else
+				false;
+#endif
 		}
 
 		private static void OverrideDebugProviderAsserts()
@@ -246,10 +274,17 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
+#if HAS_UNO_WINUI || WINAPPSDK
+				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
+				{
+					window.Title = message;
+				}
+#else
 				_applicationView.Title = message;
+#endif
 			}
 
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Setter);
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Setter);
 		}
 
 		private void ReportTestsResults()
@@ -262,7 +297,7 @@ namespace Uno.UI.Samples.Tests
 				FailedTestCountForUITest = failedTestCount.Text = _currentRun.Failed.ToString();
 			}
 
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
+			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(Update);
 		}
 
 		private async Task GenerateTestResults()
@@ -274,13 +309,12 @@ namespace Uno.UI.Samples.Tests
 				NUnitTestResultsDocument = results;
 			}
 
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Update);
 		}
 
 		private void ReportTestClass(TypeInfo testClass)
 		{
-			var t = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			TestServices.WindowHelper.RootElementDispatcher.RunAsync(
 				() =>
 				{
 					if (!IsRunningOnCI)
@@ -376,8 +410,7 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
-			var t = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(
 				Update);
 		}
 
@@ -583,7 +616,7 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					testResults.Visibility = Visibility.Visible;
@@ -602,7 +635,7 @@ namespace Uno.UI.Samples.Tests
 
 				var testTypes = InitializeTests();
 
-				_ = ReportMessage("Running tests...");
+				_ = ReportMessage($"Running tests ({testTypes.Count()} fixtures)...");
 
 				foreach (var type in testTypes)
 				{
@@ -629,7 +662,7 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					if (!IsRunningOnCI)
@@ -647,7 +680,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
 			return testClassInfo.Tests
-				.Where(t => (filters?.None() ?? true)
+				.Where(t => !(filters?.Any() ?? false)
 					|| testClassNameContainsFilters
 					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
 					|| filters.Any(f => t.Name.Contains(f, StrComp)));
@@ -666,7 +699,7 @@ namespace Uno.UI.Samples.Tests
 			var tests = FilterTests(testClassInfo, config.Filters)
 				.Select(method => new UnitTestMethodInfo(instance, method))
 				.ToArray();
-			if (tests.None())
+			if (!tests.Any())
 			{
 				return;
 			}
@@ -723,19 +756,22 @@ namespace Uno.UI.Samples.Tests
 					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
 
-					var cleanupActions = new List<ActionAsync>();
 					var sw = new Stopwatch();
 					var canRetry = true;
 
 					while (canRetry)
 					{
 						canRetry = false;
+						var cleanupActions = new List<Func<Task>>
+						{
+							CloseRemainingPopupsAsync
+						};
 
 						try
 						{
 							if (test.RequiresFullWindow)
 							{
-								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 								{
 #if __ANDROID__
 									// Hide the systray!
@@ -745,9 +781,9 @@ namespace Uno.UI.Samples.Tests
 									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
 									Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
 								});
-								cleanupActions.Add(async _ =>
+								cleanupActions.Add(async () =>
 								{
-									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+									await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 									{
 #if __ANDROID__
 										// Restore the systray!
@@ -760,53 +796,98 @@ namespace Uno.UI.Samples.Tests
 							}
 
 							object returnValue = null;
+							var methodArguments = testCase.Parameters;
+							if (test.PassFiltersAsFirstParameter)
+							{
+								var configFilters = config.Filters ??= Array.Empty<string>();
+								methodArguments = methodArguments.ToImmutableArray().Insert(0, string.Join(";", configFilters)).ToArray();
+							}
 							if (test.RunsOnUIThread)
 							{
-								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								var cts = new TaskCompletionSource<bool>();
+
+								_ = TestServices.WindowHelper.RootElementDispatcher.RunAsync(async () =>
 								{
-									if (instance is IInjectPointers pointersInjector)
+									try
 									{
-										pointersInjector.CleanupPointers();
-									}
+										if (instance is IInjectPointers pointersInjector)
+										{
+											pointersInjector.CleanupPointers();
+										}
 
-									if (testCase.Pointer is { } pt)
+										if (testCase.Pointer is { } pt)
+										{
+											var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
+
+											cleanupActions.Add(() =>
+											{
+												ptSubscription.Dispose();
+												return Task.CompletedTask;
+											});
+										}
+
+										sw.Start();
+										var initializeReturn = testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
+										if (initializeReturn is Task initializeReturnTask)
+										{
+											await initializeReturnTask;
+										}
+
+										var methodParameters = test.Method.GetParameters();
+										if (methodParameters.Length > methodArguments.Length)
+										{
+											methodArguments = ExpandArgumentsWithDefaultValues(methodArguments, methodParameters);
+										}
+										returnValue = test.Method.Invoke(instance, methodArguments);
+
+										sw.Stop();
+
+										cts.TrySetResult(true);
+									}
+									catch (Exception e)
 									{
-										var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
-
-										cleanupActions.Add(async _ => ptSubscription.Dispose());
+										cts.TrySetException(e);
 									}
-
-									sw.Start();
-									testClassInfo.Initialize?.Invoke(instance, new object[0]);
-									returnValue = test.Method.Invoke(instance, testCase.Parameters);
-									sw.Stop();
 								});
+
+								await cts.Task;
 							}
 							else
 							{
 								if (testCase.Pointer is { } pt)
 								{
 									var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
-									cleanupActions.Add(async _ => ptSubscription.Dispose());
+									cleanupActions.Add(() =>
+									{
+										ptSubscription.Dispose();
+										return Task.CompletedTask;
+									});
 								}
 
 								sw.Start();
-								testClassInfo.Initialize?.Invoke(instance, new object[0]);
-								returnValue = test.Method.Invoke(instance, testCase.Parameters);
+
+								var initializeReturn = testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
+								if (initializeReturn is Task initializeReturnTask)
+								{
+									await initializeReturnTask;
+								}
+
+								returnValue = test.Method.Invoke(instance, methodArguments);
 								sw.Stop();
 							}
 
 							if (test.Method.ReturnType == typeof(Task))
 							{
 								var task = (Task)returnValue;
-								var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
+								var timeout = GetTestTimeout(test);
+								var timeoutTask = Task.Delay(timeout);
 
 								var resultingTask = await Task.WhenAny(task, timeoutTask);
 
 								if (resultingTask == timeoutTask)
 								{
 									throw new TimeoutException(
-										$"Test execution timed out after {DefaultUnitTestTimeout}");
+										$"Test execution timed out after {timeout}");
 								}
 
 								// Rethrow exception if failed OR task cancelled if task **internally** raised
@@ -873,9 +954,9 @@ namespace Uno.UI.Samples.Tests
 						}
 						finally
 						{
-							foreach (var cleanup in cleanupActions.Where(action => action is not null))
+							foreach (var cleanup in cleanupActions)
 							{
-								await cleanup(CancellationToken.None);
+								await cleanup();
 							}
 						}
 					}
@@ -890,13 +971,28 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
+			async Task CloseRemainingPopupsAsync()
+			{
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+				{
+					var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+					if (popups.Count > 0)
+					{
+						foreach (var popup in popups)
+						{
+							popup.IsOpen = false;
+						}
+					}
+				});
+			}
+
 			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)
 			{
-				void Run()
+				async Task Run()
 				{
 					try
 					{
-						testClassInfo.Cleanup?.Invoke(instance, new object[0]);
+						await WaitResult(testClassInfo.Cleanup?.Invoke(instance, Array.Empty<object>()), "cleanup");
 					}
 					catch (Exception e)
 					{
@@ -907,13 +1003,96 @@ namespace Uno.UI.Samples.Tests
 
 				if (runsOnUIThread)
 				{
-					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, Run);
+					await ExecuteOnDispatcher(Run, CancellationToken.None); // No CT for cleanup!
 				}
 				else
 				{
-					Run();
+					await Run();
 				}
 			}
+
+			async ValueTask WaitResult(object returnValue, string step)
+			{
+				if (returnValue is Task asyncResult)
+				{
+					var timeoutTask = Task.Delay(DefaultUnitTestTimeout, ct);
+					var resultingTask = await Task.WhenAny(asyncResult, timeoutTask);
+
+					if (resultingTask == timeoutTask)
+					{
+						throw new TimeoutException($"Test {step} timed out after {DefaultUnitTestTimeout}");
+					}
+
+					// Rethrow exception if failed OR task cancelled if task **internally** raised
+					// a TaskCancelledException (we don't provide any cancellation token).
+					await resultingTask;
+				}
+			}
+		}
+
+		private async ValueTask ExecuteOnDispatcher(Func<Task> asyncAction, CancellationToken ct = default)
+		{
+			var tcs = new TaskCompletionSource<object>();
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(async () =>
+			{
+				try
+				{
+					if (ct.IsCancellationRequested)
+					{
+						tcs.TrySetCanceled();
+					}
+
+					using var ctReg = ct.Register(() => tcs.TrySetCanceled());
+					await asyncAction();
+
+					tcs.TrySetResult(default);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
+			});
+
+			await tcs.Task;
+		}
+
+		private static object[] ExpandArgumentsWithDefaultValues(object[] methodArguments, ParameterInfo[] methodParameters)
+		{
+			var expandedArguments = new List<object>(methodParameters.Length);
+			for (int i = 0; i < methodArguments.Length; i++)
+			{
+				expandedArguments.Add(methodArguments[i]);
+			}
+			// Try to get default values for the rest
+			for (int i = 0; i < methodParameters.Length - methodArguments.Length; i++)
+			{
+				var parameter = methodParameters[methodArguments.Length + i];
+				if (!parameter.HasDefaultValue)
+				{
+					throw new InvalidOperationException("Missing parameter does not have default value");
+				}
+				else
+				{
+					expandedArguments.Add(parameter.DefaultValue);
+				}
+			}
+
+			return expandedArguments.ToArray();
+		}
+
+		private TimeSpan GetTestTimeout(UnitTestMethodInfo test)
+		{
+			if (test.Method.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute methodAttribute)
+			{
+				return TimeSpan.FromMilliseconds(methodAttribute.Timeout);
+			}
+
+			if (test.Method.DeclaringType.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute typeAttribute)
+			{
+				return TimeSpan.FromMilliseconds(typeAttribute.Timeout);
+			}
+
+			return DefaultUnitTestTimeout;
 		}
 
 		private IEnumerable<UnitTestClassInfo> InitializeTests()
@@ -926,24 +1105,83 @@ namespace Uno.UI.Samples.Tests
 
 			var types = GetType().GetTypeInfo().Assembly.GetTypes().Concat(testAssembliesTypes);
 
-			return from type in types
-				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
-				   where _ciTestsGroupCountCache == -1 || (_ciTestsGroupCountCache != -1 && (GetTypeTestGroup(type) % _ciTestsGroupCountCache) == _ciTestGroupCache)
-				   orderby type.Name
-				   let info = BuildType(type)
-				   where info.Type is { }
-				   select info;
+			if (_ciTestsGroupCountCache != -1)
+			{
+#if !DEBUG && HAS_UNO
+				this.Log().Info($"Filtered groups summary for {_ciTestsGroupCountCache} groups:");
+
+				var totalCount = 0;
+				for (int i = 0; i < _ciTestsGroupCountCache; i++)
+				{
+					var testGroup = GetFilteredTests(types, _ciTestsGroupCountCache, i);
+					var testCount = testGroup.SelectMany(t => t.Tests).Count();
+					totalCount += testCount;
+
+					this.Log().Info($"Filtered group {i}: {testCount} tests");
+				}
+
+				var unfilteredTestCount = GetFilteredTests(types, -1, -1).SelectMany(t => t.Tests).Count();
+
+				if (totalCount != unfilteredTestCount)
+				{
+					throw new Exception($"Test filter inconsistent (Got {totalCount}, expected {unfilteredTestCount})");
+				}
+
+				this.Log().Info($"Filtering with group #{_ciTestGroupCache}");
+#endif
+
+				Console.WriteLine($"Filtering with group #{_ciTestGroupCache}");
+			}
+
+			var groupedList = GetFilteredTests(types, _ciTestsGroupCountCache, _ciTestGroupCache);
+
+			return groupedList.ToArray();
+		}
+
+		private IEnumerable<UnitTestClassInfo> GetFilteredTests(IEnumerable<Type> types, int groupCount, int activeGroup)
+		{
+			var testClasses =
+				from type in types
+				where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
+				orderby type.Name
+				select type;
+
+			var groupedList =
+				from type in testClasses
+				from test in GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute)).OrderBy(m => m.Name)
+				where groupCount == -1 || (groupCount != -1 && (GetTypeTestGroup(test) % (ulong)groupCount) == (ulong)activeGroup)
+				group test by type into g
+				where g.Count() != 0
+				select BuildTestClassInfo(g.Key, g.ToArray());
+			return groupedList;
 		}
 
 		private static SHA1 _sha1 = SHA1.Create();
 
-		private int GetTypeTestGroup(Type type)
+		private ulong GetTypeTestGroup(MethodInfo method)
 		{
 			// Compute a stable hash of the full metadata name
-			var buffer = Encoding.UTF8.GetBytes(type.FullName);
+			var buffer = Encoding.UTF8.GetBytes(method.DeclaringType.FullName + "." + method.Name);
 			var hash = _sha1.ComputeHash(buffer);
 
-			return (int)BitConverter.ToUInt64(hash, 0);
+			return BitConverter.ToUInt64(hash, 0);
+		}
+
+		private static UnitTestClassInfo BuildTestClassInfo(Type type, MethodInfo[] tests)
+		{
+			try
+			{
+				return new UnitTestClassInfo(
+					type: type,
+					tests: tests,
+					initialize: GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute)).FirstOrDefault(),
+					cleanup: GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute)).FirstOrDefault()
+				);
+			}
+			catch (Exception)
+			{
+				return new UnitTestClassInfo(null, null, null, null);
+			}
 		}
 
 		private static UnitTestClassInfo BuildType(Type type)

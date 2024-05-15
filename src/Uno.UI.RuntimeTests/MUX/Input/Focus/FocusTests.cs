@@ -4,7 +4,7 @@
 
 // Do not run on UWP because the event tester does not work there
 // Do not run on WASM because the tests are very slow for some reason
-#if !WINDOWS_UWP && !__WASM__
+#if !WINAPPSDK && !__WASM__
 
 using System;
 using System.Collections.Generic;
@@ -12,20 +12,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 
 namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 {
 	[TestClass]
 	[RequiresFullWindow]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 	public class FocusTests
 	{
 		private enum FocusAsyncMethod
@@ -164,9 +167,9 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 		//{
 		//	const string rootPanelXaml =
 		//			@"<StackPanel Orientation='Horizontal' XYFocusKeyboardNavigation='Enabled' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
-  //                          <Button Width='50' x:Name='button' Content='Button Group 1'/>
-  //                          <TextBlock><Hyperlink x:Name='hyperlink'>Hyperlink</Hyperlink></TextBlock>
-  //                  </StackPanel>";
+		//                          <Button Width='50' x:Name='button' Content='Button Group 1'/>
+		//                          <TextBlock><Hyperlink x:Name='hyperlink'>Hyperlink</Hyperlink></TextBlock>
+		//                  </StackPanel>";
 
 		//	StackPanel rootPanel = null;
 		//	Button button = null;
@@ -458,7 +461,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			{
 				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
 				{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 					SearchRoot = container.XamlRoot.Content
 #endif
 				});
@@ -1147,6 +1150,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			await FocusAsyncValidation(FocusAsyncMethod.TryFocusAsync, FocusElementType.TextBlock, true, expectedString);
 		}
 
+		//TODO: Requires support for RichTextBlock #81
 		//[TestMethod]
 		//[TestProperty("Description", "Verify that we successfully await the operation, but the Succeeded value is false, RichTextBlock variant")]
 		//[TestProperty("Hosting:Mode", "UAP")] // fails in WPF mode due to final release queue is not empty cleanup issue
@@ -1156,7 +1160,6 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 		//	await FocusAsyncValidation(FocusAsyncMethod.TryFocusAsync, FocusElementType.RichTextBlock, true, expectedString);
 		//}
 
-		//TODO:MZ:Fails
 		private async Task FocusAsyncValidation(FocusAsyncMethod method, FocusElementType elementType, bool shouldCancel, string expectedString)
 		{
 			string rootPanelXaml = null;
@@ -1267,7 +1270,6 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			}
 		}
 
-		//TODO:MZ:Fails
 		[TestMethod]
 		[TestProperty("Description", "Verify that TryAsync fails when trying to focus a non-focusable element")]
 		[TestProperty("Hosting:Mode", "UAP")] // fails in WPF mode due to final release queue is not empty cleanup issue
@@ -1368,7 +1370,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 					Verify.AreEqual(button2, FocusManager.GetFocusedElement(rootPanel.XamlRoot));
 				});
 
-				rootPanelKeyDownEventTester.Wait();
+				await rootPanelKeyDownEventTester.Wait();
 			}
 		}
 
@@ -1448,7 +1450,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			using (var innerBtn2GotFocus = new EventTester<Button, RoutedEventArgs>(innerBtn2, "GotFocus"))
 			{
 				await SimulateShiftTabAsync(rootPanel);
-				innerBtn2GotFocus.Wait();
+				await innerBtn2GotFocus.Wait();
 
 				UIExecutor.Execute(() =>
 				{
@@ -1506,7 +1508,6 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		//TODO:MZ:Fails
 		[TestMethod]
 		[TestProperty("Description", "Verify that we can[can't] focus focusable[non-focusable] stackpanel with Tab/ Shift+Tab")]
 		[TestProperty("Hosting:Mode", "UAP")]   // Bug 24196441: Focus engagement bugs in lifted islands

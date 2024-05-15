@@ -154,12 +154,12 @@ namespace System.Windows.Markup
 
 		protected Exception GetConvertFromException (object value)
 		{
-			return new NotSupportedException (String.Format ("Conversion from string '{0}' is not supported", value));
+			return new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Conversion from string '{0}' is not supported", value));
 		}
 
 		protected Exception GetConvertToException (object value, Type destinationType)
 		{
-			return new NotSupportedException (String.Format ("Conversion from '{0}' to {1} is not supported", value != null ? value.GetType ().Name : "(null)", destinationType));
+			return new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Conversion from '{0}' to {1} is not supported", value != null ? value.GetType ().Name : "(null)", destinationType));
 		}
 
 		public virtual IEnumerable<Type> TypeReferences (object value, IValueSerializerContext context)

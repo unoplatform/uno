@@ -8,8 +8,8 @@
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:xamarin="urn:xamarin"
-	mc:Ignorable="d xamarin ios android"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d not_win ios android"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 

@@ -4,8 +4,9 @@ using System;
 using Uno.Collections;
 using Uno.UI.Helpers;
 using Uno.Extensions;
+using System.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{
@@ -13,7 +14,7 @@ namespace Windows.UI.Xaml
 
 		private bool GetIsTypeNullable(Type type)
 		{
-			if(!_isTypeNullableDictionary.TryGetValue(type, out var isNullable))
+			if (!_isTypeNullableDictionary.TryGetValue(type, out var isNullable))
 			{
 				_isTypeNullableDictionary.Add(type, isNullable = type.IsNullable());
 			}
@@ -23,7 +24,9 @@ namespace Windows.UI.Xaml
 
 		private class TypeNullableDictionary
 		{
-			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default);
+			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
+			// So we don't use pooling to not cause pool exhaustion by renting without returning.
+			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default, usePooling: false);
 
 			internal bool TryGetValue(Type key, out bool result)
 			{
@@ -42,9 +45,6 @@ namespace Windows.UI.Xaml
 
 			internal void Clear()
 				=> _entries.Clear();
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }

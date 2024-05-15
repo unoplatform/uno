@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using Windows.UI.Xaml.Controls;
+﻿using System.Collections.Generic;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public  partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer
+	public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer
 	{
 		public TextBoxAutomationPeer(TextBox owner) : base(owner)
 		{

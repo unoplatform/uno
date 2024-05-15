@@ -1,13 +1,14 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
-using DateTime = System.DateTimeOffset;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -16,7 +17,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
@@ -154,31 +155,32 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
-		// TODO UNO
-		//private void EnterImpl(
-		//	bool bLive,
-		//	bool bSkipNameRegistration,
-		//	bool bCoercedIsEnabled,
-		//	bool bUseLayoutRounding)
-		//{
-		//	base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
+#if !__NETSTD_REFERENCE__
 
-		//	if (bLive)
-		//	{
-		//		// In case any of the TextBlock properties have been updated while
-		//		// we were out of the visual tree, we should update them in order to ensure
-		//		// that we always have the most up-to-date values.
-		//		// An example where this can happen is if the theme changes while
-		//		// the flyout holding the CalendarView for a CalendarDatePicker is closed.
-		//		UpdateTextBlockForeground();
-		//		UpdateTextBlockFontProperties();
-		//		UpdateTextBlockAlignments();
-		//		UpdateVisualStateInternal();
-		//	}
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void Enter(EnterParams @params, int depth)
+		{
+			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
+			base.Enter(@params, depth);
+#else
+		private void EnterImpl()
+		{
+#endif
+			// In case any of the TextBlock properties have been updated while
+			// we were out of the visual tree, we should update them in order to ensure
+			// that we always have the most up-to-date values.
+			// An example where this can happen is if the theme changes while
+			// the flyout holding the CalendarView for a CalendarDatePicker is closed.
+			UpdateTextBlockForeground();
+			UpdateTextBlockFontProperties();
+			UpdateTextBlockAlignments();
+			UpdateVisualStateInternal();
 
-		//	return;
-		//}
+			//TODO:Uno specific: Ensure chrome of the calendar item is updated (e.g. the background color, border color, etc.)
+			InvalidateRender();
+		}
 
+#endif
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private protected CCalendarViewBaseItemChrome GetHandle() => this;
 
@@ -280,7 +282,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Re-focus the currently focused item to propagate focusState (the item might be focused
 				// under a different FocusState value).
-				spItemToFocus = FocusManager.GetFocusedElement() as DependencyObject;
+				var focusedElement = XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot);
+				spItemToFocus = focusedElement as DependencyObject;
 			}
 			else
 			{

@@ -1,22 +1,21 @@
 steps:
 
-  - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK 6.0.300'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: sdk
-      version: 6.0.300
+  - bash: |
+      rm global.json
+      cp build/ci/net7/global.json global.json
+    displayName: "Using .NET 7 global.json"
+    condition: and(succeeded(), eq(variables.UnoDisableNetCurrent, 'true'))
+
+  - bash: |
+      rm global.json
+      cp build/ci/net8/global.json global.json
+    displayName: "Using .NET 8 global.json"
+    condition: and(succeeded(), ne(variables.UnoDisableNetCurrent, 'true'))
 
   - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK 5.0.400'
+    displayName: 'Use .NET SDK'
     retryCountOnTaskFailure: 3
     inputs:
       packageType: sdk
-      version: 5.0.400
-      
-  - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK 3.1.406'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: sdk
-      version: 3.1.406
+      useGlobalJson: true
+      includePreviewVersions: true

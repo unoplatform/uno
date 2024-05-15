@@ -3,18 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Json;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Uno.UI.Lottie;
+using Uno.Extensions;
 using Uno.Disposables;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
-using Uno.UI.Lottie;
-using System.Linq;
-using System.Json;
-using Uno.Extensions;
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	[Bindable]
 	public partial class ThemableLottieVisualSource : LottieVisualSourceBase, IThemableAnimatedVisualSource
@@ -26,14 +28,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		protected override bool IsPayloadNeedsToBeUpdated => true;
 
-#if NETFRAMEWORK
-		public Task LoadForTests(
+#if IS_UNIT_TESTS
+		public void LoadForTests(
 			IInputStream sourceJson,
 			string sourceCacheKey,
 			UpdatedAnimation updateCallback)
 		{
 			_updateCallback = updateCallback;
-			return LoadAndUpdate(default, sourceCacheKey, sourceJson);
+			LoadAndUpdate(default, sourceCacheKey, sourceJson);
 		}
 
 		public string? GetJson()
@@ -51,7 +53,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			_updateCallback = updateCallback;
 
-			var t = LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
+			LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
 
 			return Disposable.Create(() =>
 			{
@@ -60,7 +62,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			});
 		}
 
-		private async Task LoadAndUpdate(
+		private void LoadAndUpdate(
 			CancellationToken ct,
 			string sourceCacheKey,
 			IInputStream sourceJson)
@@ -74,7 +76,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			// LOAD & PARSE JSON
 			LoadAndParseDocument(sourceJson);
 
-			if(_currentDocument == null)
+			if (_currentDocument == null)
 			{
 				return;
 			}
@@ -171,7 +173,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					return;
 				}
 
-				if(!shapeElement.TryGetValue("nm", out var nameProperty)
+				if (!shapeElement.TryGetValue("nm", out var nameProperty)
 					|| nameProperty.JsonType != JsonType.String)
 				{
 					return; // No name
@@ -215,12 +217,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var changed = false;
 			foreach (var colorBinding in _colorsBindings)
 			{
-				if (!(colorBinding.Value.NextValue is {} color))
+				if (!(colorBinding.Value.NextValue is { } color))
 				{
 					continue; // nothing to change
 				}
 
-				var colorComponents = new[] {color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f};
+				var colorComponents = new[] { color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f };
 
 				foreach (var element in colorBinding.Value.Elements)
 				{
@@ -249,7 +251,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void NotifyCallback()
 		{
-			if (_updateCallback is {} callback)
+			if (_updateCallback is { } callback)
 			{
 				var json = _currentDocument?.ToString();
 				if (json is { })

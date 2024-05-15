@@ -2,7 +2,7 @@
 using Uno;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class DatePicker
 	{
@@ -76,7 +76,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private DatePickerFlyout _flyout => _lazyFlyout.Value;
 
-
 		private void InitPartial()
 		{
 #if __IOS__ || __ANDROID__
@@ -109,7 +108,13 @@ namespace Windows.UI.Xaml.Controls
 
 			DatePickerFlyout CreateManagedDatePickerFlyout()
 			{
-				var flyout = new DatePickerFlyout() { DatePickerFlyoutPresenterStyle = FlyoutPresenterStyle };
+				var flyout = new DatePickerFlyout();
+
+				if (FlyoutPresenterStyle is { } style)
+				{
+					flyout.DatePickerFlyoutPresenterStyle = style;
+				}
+
 				flyout.DatePicked += OnPicked;
 
 				return flyout;

@@ -1,5 +1,8 @@
-namespace Windows.UI.Xaml.Media
+﻿using Microsoft.UI.Xaml.Markup;
+
+namespace Microsoft.UI.Xaml.Media
 {
+	[ContentProperty(Name = nameof(Points))]
 	public partial class PolyBezierSegment : PathSegment
 	{
 		public PolyBezierSegment()
@@ -17,9 +20,9 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty PointsProperty { get; } =
 			DependencyProperty.Register(
-				nameof(Points), 
-				typeof(PointCollection), 
-				typeof(PolyBezierSegment), 
+				nameof(Points),
+				typeof(PointCollection),
+				typeof(PolyBezierSegment),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: OnPointsChanged,

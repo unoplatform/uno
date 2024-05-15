@@ -1,9 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#nullable enable
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
 
 
@@ -16,6 +14,16 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void Should_Throw_When_RoundingAlgorithm_Is_None()
 		{
 			var sut = new IncrementNumberRounder();
+
+			try
+			{
+				sut.RoundingAlgorithm = RoundingAlgorithm.None;
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nvalue", ex.Message);
+			}
+
 			Assert.ThrowsException<ArgumentException>(() => sut.RoundingAlgorithm = RoundingAlgorithm.None);
 		}
 
@@ -39,6 +47,15 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 			if (shouldThrow)
 			{
+				try
+				{
+					sut.Increment = increment;
+				}
+				catch (Exception ex)
+				{
+					Assert.AreEqual("The parameter is incorrect.\r\n\r\nvalue", ex.Message);
+				}
+
 				Assert.ThrowsException<ArgumentException>(() => sut.Increment = increment);
 			}
 			else

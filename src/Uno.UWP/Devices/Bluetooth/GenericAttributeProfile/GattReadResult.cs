@@ -1,17 +1,15 @@
-﻿#nullable enable
+﻿#nullable disable
 
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 	public partial class GattReadResult
 	{
-		public GattCommunicationStatus Status { get; internal set; }
-		public Storage.Streams.IBuffer Value { get; internal set; }
-		public byte? ProtocolError { get; internal set; }
+		public GattCommunicationStatus Status { get; }
+		public Storage.Streams.IBuffer Value { get; }
+		public byte? ProtocolError { get; }
 
-		private GattReadResult(Storage.Streams.IBuffer buffer)
+		private GattReadResult()
 		{
-			// dummy for Error CS8618  Non-nullable property 'Value' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
-			Value= buffer;
 		}
 	}
 }

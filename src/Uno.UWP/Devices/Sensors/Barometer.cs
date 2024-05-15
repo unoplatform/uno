@@ -4,11 +4,14 @@ using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Provides an interface for a barometric sensor to measure atmospheric pressure.
+	/// </summary>
 	public partial class Barometer
 	{
 		private static readonly object _syncLock = new object();
-		private static bool _initializationAttempted = false;
-		private static Barometer _instance = null;	
+		private static bool _initializationAttempted;
+		private static Barometer _instance;
 
 		private TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> _readingChanged;
 
@@ -19,6 +22,10 @@ namespace Windows.Devices.Sensors
 		{
 		}
 
+		/// <summary>
+		/// Returns the default barometer sensor.
+		/// </summary>
+		/// <returns>If no barometer sensor is available, this method will return null.</returns>
 		public static Barometer GetDefault()
 		{
 			if (_initializationAttempted)
@@ -36,6 +43,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
+		/// <summary>
+		/// Occurs each time the barometer reports a new sensor reading.
+		/// </summary>
 		public event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> ReadingChanged
 		{
 			add

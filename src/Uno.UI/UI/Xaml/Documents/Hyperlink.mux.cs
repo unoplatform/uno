@@ -5,24 +5,34 @@
 #nullable enable
 
 using Uno.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	public partial class Hyperlink
 	{
-		internal bool IsFocusable()
+		internal
+#if __WASM__
+			new
+#endif
+			bool IsFocusable()
 		{
 			var element = GetContainingFrameworkElement();
 			return
 				element != null &&
 				// Concept of IsActive is currently not present in Uno
 				//element.IsActive && IsActive &&
-				element.IsEnabled &&
+				element is not Control { IsEnabled: false } &&
 				element.Visibility == Visibility.Visible &&
 				element.AreAllAncestorsVisible() &&
 				IsTabStop;
 		}
 
-		internal IFocusable GetIFocusable() => _focusableHelper;
+		internal IFocusable? GetIFocusable() =>
+#if __WASM__
+			null;
+#else
+			_focusableHelper;
+#endif
 	}
 }

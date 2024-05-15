@@ -15,22 +15,24 @@ using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Extensions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Controls;
+using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -40,7 +42,7 @@ using Windows.Devices.Input;
 using Windows.UI.Core;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
 #if HAS_NATIVE_COMMANDBAR
@@ -80,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning disable CS0169
 		// Focus state to be applied on loaded.
 		FocusState m_onLoadFocusState;
-		UIElement? m_layoutTransitionElement;
+		//UIElement? m_layoutTransitionElement;
 		UIElement? m_overlayLayoutTransitionElement;
 		private bool _isNativeTemplate;
 		//UIElement m_parentElementForLTEs;
@@ -129,9 +131,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SizeChanged += OnSizeChanged;
 
-			m_windowSizeChangedEventHandler.Disposable = Windows.UI.Xaml.Window.Current.RegisterSizeChangedEvent(OnWindowSizeChanged);
-
-
 			this.SetValue(TemplateSettingsProperty, new AppBarTemplateSettings());
 		}
 
@@ -146,6 +145,13 @@ namespace Windows.UI.Xaml.Controls
 			if (isOpen)
 			{
 				OnIsOpenChanged(true);
+			}
+
+			// TODO: Uno specific - use XamlRoot instead of Window
+			if (XamlRoot is not null)
+			{
+				XamlRoot.Changed += OnXamlRootChanged;
+				m_windowSizeChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
 			}
 
 			//UNO TODO
@@ -237,6 +243,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
+			base.OnVisibilityChanged(oldValue, newValue);
+
 			if (GetOwner() is { } pageOwner)
 			{
 				// UNO TODO
@@ -603,7 +611,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		{
 			if (m_Mode == AppBarMode.Inline)
 			{
@@ -673,12 +681,13 @@ namespace Windows.UI.Xaml.Controls
 			if (isOpen)
 			{
 				openState = "Open";
-			} else
+			}
+			else
 			{
 				openState = "Closed";
 				placement = string.Empty;
 			}
-			
+
 			ignored = GoToState(useTransitions, $"{displayMode}{openState}{placement}");
 		}
 
@@ -839,6 +848,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private void OnIsOpenChangedForAutomation(DependencyPropertyChangedEventArgs args)
 		{
 			var isOpen = (bool)args.NewValue;
@@ -847,7 +857,8 @@ namespace Windows.UI.Xaml.Controls
 			if (isOpen)
 			{
 				AutomationPeer.RaiseEventIfListener(this, AutomationEvents.MenuOpened);
-			} else
+			}
+			else
 			{
 				AutomationPeer.RaiseEventIfListener(this, AutomationEvents.MenuClosed);
 			}
@@ -865,7 +876,7 @@ namespace Windows.UI.Xaml.Controls
 
 			}
 		}
-
+#endif
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			AutomationPeer? ppAutomationPeer = null;
@@ -1105,7 +1116,7 @@ namespace Windows.UI.Xaml.Controls
 				if (m_tpDisplayModesStateGroupRef?.TryGetTarget(out displayModesStateGroup) ?? false)
 				{
 					var currentState = displayModesStateGroup?.CurrentState;
-					
+
 					if (currentState is { })
 					{
 						var storyboard = currentState.Storyboard;
@@ -1137,7 +1148,7 @@ namespace Windows.UI.Xaml.Controls
 
 
 				// Subtract layout bounds to avoid using the System Tray area to open the AppBar.
-				var offsetFromRootOpenedUp= transform.TransformPoint(new Point(0, -offsetNeededToOpenUp));
+				var offsetFromRootOpenedUp = transform.TransformPoint(new Point(0, -offsetNeededToOpenUp));
 
 				var layoutBounds = new Rect();
 
@@ -1151,7 +1162,12 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					layoutBounds = Windows.UI.Xaml.Window.Current.Bounds;
+					layoutBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
+
+					if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
+					{
+						layoutBounds = XamlRoot?.Bounds ?? new();
+					}
 
 					shouldOpenUp = offsetFromRootOpenedUp.Y >= layoutBounds.Y;
 				}
@@ -1178,6 +1194,10 @@ namespace Windows.UI.Xaml.Controls
 			neededOffset = -verticalDelta;
 			opensWindowed = false;
 		}
+
+		// This is an internal method used in CommandBar-related workarounds without
+		// breaking the public API
+		internal bool TryDismissInlineAppBarInternal() => TryDismissInlineAppBar();
 
 		protected bool TryDismissInlineAppBar()
 		{
@@ -1239,7 +1259,7 @@ namespace Windows.UI.Xaml.Controls
 			RestoreSavedFocusImpl(savedFocusedElement, m_savedFocusState);
 
 			m_savedFocusedElementWeakRef = null;
-			
+
 			m_savedFocusState = FocusState.Unfocused;
 		}
 

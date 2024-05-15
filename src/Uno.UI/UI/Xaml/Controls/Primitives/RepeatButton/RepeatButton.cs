@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class RepeatButton : ButtonBase
 	{
@@ -53,6 +53,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(Interval),
 				typeof(int),
 				typeof(RepeatButton),
-				new FrameworkPropertyMetadata(250));		
+				new FrameworkPropertyMetadata(250));
 	}
 }

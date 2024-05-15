@@ -11,37 +11,37 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
 	[SampleControlInfo(category: "Image", viewModelType: typeof(ImageSourceUrlMsAppDataSchemeViewModel))]
 	internal sealed partial class ImageSourceUrlMsAppDataScheme : Page
-    {
-        public ImageSourceUrlMsAppDataScheme()
-        {
-            this.InitializeComponent();
+	{
+		public ImageSourceUrlMsAppDataScheme()
+		{
+			this.InitializeComponent();
 			this.DataContextChanged += ImageSourceUrlMsAppDataScheme_DataContextChanged;
-        }
+		}
 
 		private async void ImageSourceUrlMsAppDataScheme_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			if (DataContext is ImageSourceUrlMsAppDataSchemeViewModel viewModel)
 			{
 				await viewModel.LoadAsync();
-			}			
+			}
 		}
 	}
 
 	internal class ImageSourceUrlMsAppDataSchemeViewModel : ViewModelBase
 	{
-		public ImageSourceUrlMsAppDataSchemeViewModel(CoreDispatcher dispatcher)
+		public ImageSourceUrlMsAppDataSchemeViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher)
 			: base(dispatcher)
 		{
 		}

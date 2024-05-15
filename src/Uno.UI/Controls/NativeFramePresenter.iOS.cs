@@ -7,10 +7,11 @@ using UIKit;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Media.Animation;
+using Windows.Foundation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
@@ -86,6 +87,12 @@ namespace Uno.UI.Controls
 			// Hide the NavigationBar by default. Only show if navigating to a Page that contains a CommandBar.
 			NavigationController.NavigationBarHidden = true;
 		}
+
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
 
 		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -325,7 +332,7 @@ namespace Uno.UI.Controls
 							if (newItem != null
 								&& e.NewStartingIndex == (collection.Count - 1)
 								&& (frameRequest.NavigationMode == NavigationMode.New || frameRequest.NavigationMode == NavigationMode.Forward)
-								&& newItem.SourcePageType == frameRequest.BackStackPageTypes.LastOrDefault())
+								&& newItem.SourcePageType == (frameRequest.BackStackPageTypes.Count == 0 ? null : frameRequest.BackStackPageTypes[frameRequest.BackStackPageTypes.Count - 1]))
 							{
 								return true;
 							}
@@ -366,7 +373,7 @@ namespace Uno.UI.Controls
 				.Where(entry => entry != null)
 				.Distinct()
 				.OfType<PageStackEntry>()
-				.Select(entry => entry.Instance.FindViewController() ?? new PageViewController(entry.Instance))
+				.Select(FindOrCreateViewController)
 				.ToArray();
 
 			if (!viewControllers.SequenceEqual(NavigationController.ViewControllers))
@@ -379,7 +386,7 @@ namespace Uno.UI.Controls
 				// TODO: iOS 14 introduced a bug where calling this method is getting unpleasant results (https://developer.apple.com/forums/thread/656524). (https://developer.apple.com/forums/thread/656524)
 				// A workaround for this is removing the animation as this seems to be related to the root cause.
 				// Note: This change should not affect consumer navigation since this is only used when resetting the stack.
-				if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0)) 
+				if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
 				{
 					NavigationController.SetViewControllers(viewControllers, animated: false);
 				}
@@ -387,8 +394,18 @@ namespace Uno.UI.Controls
 				{
 					NavigationController.SetViewControllers(viewControllers, animated: true);
 				}
-				
 			}
+		}
+
+		private UIViewController FindOrCreateViewController(PageStackEntry entry)
+		{
+			if (entry.Instance is { } pageInstance)
+			{
+				return pageInstance.FindViewController() ?? new PageViewController(pageInstance);
+			}
+
+			var page = _frame.EnsurePageInitialized(entry);
+			return new PageViewController(page);
 		}
 
 		private bool GetIsAnimated(NavigationTransitionInfo transitionInfo)
@@ -764,7 +781,7 @@ namespace Uno.UI.Controls
 
 			internal CommandBar GetCommandBar()
 			{
-				return Page.TopAppBar as CommandBar ?? Page.FindFirstChild<CommandBar>();
+				return Page.TopAppBar as CommandBar ?? CommandBarHelper.FindTopCommandBar(Page);
 			}
 
 			public override string ToString()

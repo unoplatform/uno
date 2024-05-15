@@ -16,7 +16,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 		[Test]
 		[AutoRetry]
 
-		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Android behaves differently. See https://github.com/unoplatform/uno/pull/7238#issuecomment-937667565
+		// Other platforms are tested in RuntimeTests:
+		// src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Media/Given_ImageBrushStretch.cs
+		// This UI Test can be deleted once we can test Wasm in RuntimeTests.
+		// This is currently blocked due to lack of support for RenderTargetBitmap on Wasm.
+		[ActivePlatforms(Platform.Browser)]
 		public void When_Stretch()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrush_Stretch");

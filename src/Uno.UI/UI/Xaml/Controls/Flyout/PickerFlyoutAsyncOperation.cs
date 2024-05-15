@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal class PickerFlyoutAsyncOperation<TResult> : IAsyncOperationInternal<TResult>
 	{
 		private readonly TaskCompletionSource<TResult> _tcs;
 		private readonly IAsyncOperation<TResult> _asyncOperation;
-		
+
 		//private readonly FlyoutBase _pAssociatedFlyout;
 		private FlyoutBase m_spPendingFlyout;
 

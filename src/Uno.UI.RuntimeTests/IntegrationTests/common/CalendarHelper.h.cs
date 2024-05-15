@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -9,12 +9,12 @@ using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
@@ -46,9 +46,9 @@ namespace Private.Infrastructure
 		internal static bool CompareColor(Color lhs, Color rhs)
 		{
 			return lhs.A == rhs.A
-			       && lhs.R == rhs.R
-			       && lhs.G == rhs.G
-			       && lhs.B == rhs.B;
+				   && lhs.R == rhs.R
+				   && lhs.G == rhs.G
+				   && lhs.B == rhs.B;
 		}
 
 		internal class DateCollection : List<DateTimeOffset>
@@ -106,7 +106,7 @@ namespace Private.Infrastructure
 		internal static async Task<Grid> CreateTestResources()
 		{
 			Grid rootPanel = default;
-			await TestServices.RunOnUIThread(()=>
+			await TestServices.RunOnUIThread(() =>
 			{
 				rootPanel = XamlReader.Load(
 						"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
@@ -232,7 +232,7 @@ namespace Private.Infrastructure
 				m_selectedDatesChangedRegistration.Detach();
 			}
 
-			internal async Task VerifyNoSelectedDatesChanged()
+			internal void VerifyNoSelectedDatesChanged()
 			{
 				// we expect no event here, so below statement will timeout and throw WEX.Common.Exception.
 				TestServices.VERIFY_THROWS_WINRT<Exception>(
@@ -244,7 +244,7 @@ namespace Private.Infrastructure
 
 			internal async Task WaitForCICEvent()
 			{
-				m_cicEvent.WaitForDefault();
+				await m_cicEvent.WaitForDefault();
 				TestServices.VERIFY_IS_TRUE(m_cicEvent.HasFired());
 				m_cicEvent.Reset();
 				m_cicRegistration.Detach();
@@ -375,7 +375,7 @@ namespace Private.Infrastructure
 
 		internal static void CheckFocusedItem()
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			var item = FocusManager.GetFocusedElement();
 #else
 			var item = FocusManager.GetFocusedElement((TestServices.WindowHelper.WindowContent as UIElement)?.XamlRoot);
@@ -417,7 +417,7 @@ namespace Private.Infrastructure
 
 		internal static string[] GetAllSupportedCalendarIdentifiers()
 		{
-			return new [] 
+			return new[]
 				{
 					"PersianCalendar",
 					"GregorianCalendar",

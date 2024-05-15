@@ -1,6 +1,6 @@
-using Windows.Foundation;
+﻿using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class FlyoutShowOptions
 	{
@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FlyoutPlacementMode Placement { get; set; } = FlyoutPlacementMode.Auto;
 
-		public FlyoutShowOptions() 
+		public FlyoutShowOptions()
 		{
 		}
 	}

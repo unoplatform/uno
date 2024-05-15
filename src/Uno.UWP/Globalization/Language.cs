@@ -2,9 +2,9 @@ using System.Globalization;
 
 namespace Windows.Globalization
 {
-	public partial class Language 
-	{		
-		public Language(string languageTag) 
+	public partial class Language
+	{
+		public Language(string languageTag)
 		{
 			var cultureInfo = new CultureInfo(languageTag, false);
 

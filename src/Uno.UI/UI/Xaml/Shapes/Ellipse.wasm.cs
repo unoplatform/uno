@@ -1,47 +1,32 @@
-﻿using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
-using Uno.Extensions;
-using Uno.UI;
-using NotImplementedException = System.NotImplementedException;
+﻿using Uno.Extensions;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Ellipse
 	{
-		private readonly SvgElement _ellipse = new SvgElement("ellipse");
-
-		public Ellipse()
+		public Ellipse() : base("ellipse")
 		{
-			SvgChildren.Add(_ellipse);
-
-			InitCommonShapeProperties();
-
-			RegisterPropertyChangedCallback(StrokeProperty, OnStrokeChanged);
-		}
-
-		private void OnStrokeChanged(DependencyObject sender, DependencyProperty dp) => InvalidateArrange();
-
-		protected override SvgElement GetMainSvgElement()
-		{
-			return _ellipse;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var size = this.ApplySizeConstraints(finalSize);
+			UpdateRender();
+			var (shapeSize, _) = ArrangeRelativeShape(finalSize);
 
-			var cx = size.Width / 2;
-			var cy = size.Height / 2;
+			var cx = shapeSize.Width / 2;
+			var cy = shapeSize.Height / 2;
 
 			var halfStrokeThickness = ActualStrokeThickness / 2;
 
-			_ellipse.SetAttribute(
+			_mainSvgElement.SetAttribute(
 				("cx", cx.ToStringInvariant()),
 				("cy", cy.ToStringInvariant()),
 				("rx", (cx - halfStrokeThickness).ToStringInvariant()),
 				("ry", (cy - halfStrokeThickness).ToStringInvariant()));
 
-			return base.ArrangeOverride(finalSize);
+			return shapeSize;
 		}
 	}
 }

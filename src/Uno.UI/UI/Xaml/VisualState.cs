@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-	[ContentProperty(Name = "Storyboard")]
+	[ContentProperty(Name = nameof(Storyboard))]
 	public sealed partial class VisualState : DependencyObject
 	{
-		private Action lazyBuilder = null;
+		private Action lazyBuilder;
 
 		public VisualState()
 		{
@@ -71,7 +72,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if(!(GetValue(SettersProperty) is SetterBaseCollection collection))
+				if (!(GetValue(SettersProperty) is SetterBaseCollection collection))
 				{
 					collection = Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
 				}
@@ -100,7 +101,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if(!(GetValue(StateTriggersProperty) is IList<StateTriggerBase> list))
+				if (!(GetValue(StateTriggersProperty) is IList<StateTriggerBase> list))
 				{
 					var stateTriggers = new DependencyObjectCollection<StateTriggerBase>(this, isAutoPropertyInheritanceEnabled: false);
 					stateTriggers.VectorChanged += OnStateTriggerCollectionChanged;
@@ -114,7 +115,7 @@ namespace Windows.UI.Xaml
 			internal set => SetValue(StateTriggersProperty, value);
 		}
 
-		internal static DependencyProperty StateTriggersProperty { get ; } =
+		internal static DependencyProperty StateTriggersProperty { get; } =
 			DependencyProperty.Register(
 				name: "StateTriggers",
 				propertyType: typeof(IList<StateTriggerBase>),
@@ -169,18 +170,12 @@ namespace Windows.UI.Xaml
 				LazyBuilder = null;
 				builder.Invoke();
 
-				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
-				{
-					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
-				}
 
-				foreach(var setter in Setters)
-				{
-					if (setter is IDependencyObjectStoreProvider setterProvider)
-					{
-						setterProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
-					}
-				}
+				// Resolve all theme resources from storyboard children
+				// and setters values. This step is needed to ensure that
+				// Theme Resources are resolved using the proper visual tree
+				// parents, particularly when resources a locally overriden.
+				this.UpdateResourceBindings();
 			}
 		}
 

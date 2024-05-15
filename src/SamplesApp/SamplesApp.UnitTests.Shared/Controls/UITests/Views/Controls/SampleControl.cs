@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Windows.ApplicationModel.Store;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 #elif XAMARIN || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 #else
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -37,9 +37,9 @@ namespace Uno.UI.Samples.Controls
 			set { this.SetValue(SampleDescriptionProperty, value); }
 		}
 
-		public static DependencyProperty SampleDescriptionProperty { get ; } =
+		public static DependencyProperty SampleDescriptionProperty { get; } =
 			DependencyProperty.Register("SampleDescription", typeof(string), typeof(SampleControl), new PropertyMetadata(""));
-		
+
 		// This only exists as a proxy to ContentTemplate
 		public DataTemplate SampleContent
 		{
@@ -47,7 +47,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(SampleContentProperty, value); }
 		}
 
-		public static DependencyProperty SampleContentProperty { get ; } =
+		public static DependencyProperty SampleContentProperty { get; } =
 			DependencyProperty.Register("SampleContent", typeof(DataTemplate), typeof(SampleControl), new PropertyMetadata(null, OnSampleContentChanged));
 
 		private static void OnSampleContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

@@ -1,7 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,19 +10,28 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml;
 
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
-		private ScrollBarVisibility _verticalScrollBarVisibility;
-		private ScrollBarVisibility _horizontalScrollBarVisibility;
+		// On wasm, the default of "overflow" property is "visible".
+		// This doesn't match any of our scroll-[x|y]-[auto|disabled|hidden|visible] defined in Uno.UI.css
+		// (see https://github.com/unoplatform/uno/blob/dca49dadd6feaf0b3addd2ec2195c3af1b6ac9f4/src/Uno.UI/WasmCSS/Uno.UI.css#L183-L223)
+		// So, we want the first setter call to be executed, regardless of the value being set.
+		// The logic in the setter is done under "if (_[vertical|horizontal]ScrollBarVisibility != value)"
+		// So, to make sure this condition is always true for the first call of the setter, we set the initial value to -1, which isn't a valid value for ScrollBarVisibility.
+		private ScrollBarVisibility _verticalScrollBarVisibility = (ScrollBarVisibility)(-1);
+		private ScrollBarVisibility _horizontalScrollBarVisibility = (ScrollBarVisibility)(-1);
 		private bool _eventsRegistered;
 
 		private (double? horizontal, double? vertical)? _pendingScrollTo;
+		private (double? horizontal, double? vertical) _lastScrollToRequest;
 		private FrameworkElement _rootEltUsedToProcessScrollTo;
 
 		internal Size ScrollBarSize
@@ -36,7 +45,25 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private object RealContent => Content;
-		
+
+		partial void OnIsPointerWheelReversedChanged(bool isReversed)
+		{
+			PointerWheelChanged -= ManagedScroll;
+			if (isReversed)
+			{
+				PointerWheelChanged += ManagedScroll;
+			}
+
+			static void ManagedScroll(object sender, Input.PointerRoutedEventArgs e)
+			{
+				// When pointer wheel is reversed, we scroll in managed code and prevent the browser to scroll (PreventDefault)
+				e.Handled = true;
+				((IHtmlHandleableRoutedEventArgs)e).HandledResult |= HtmlEventDispatchResult.PreventDefault;
+
+				((ScrollContentPresenter)sender).PointerWheelScroll(sender, e);
+			}
+		}
+
 		private void TryRegisterEvents(ScrollBarVisibility visibility)
 		{
 			if (
@@ -49,20 +76,20 @@ namespace Windows.UI.Xaml.Controls
 
 				_eventsRegistered = true;
 
-				PointerReleased += HandlePointerEvent;
-				PointerPressed += HandlePointerEvent;
-				PointerCanceled += HandlePointerEvent;
-				PointerMoved += HandlePointerEvent;
-				PointerEntered += HandlePointerEvent;
-				PointerExited += HandlePointerEvent;
-				PointerWheelChanged += HandlePointerEvent;
+				PointerReleased += HandlePointerEventIfOverNativeScrollbars;
+				PointerPressed += HandlePointerEventIfOverNativeScrollbars;
+				PointerCanceled += HandlePointerEventIfOverNativeScrollbars;
+				PointerMoved += HandlePointerEventIfOverNativeScrollbars;
+				PointerEntered += HandlePointerEventIfOverNativeScrollbars;
+				PointerExited += HandlePointerEventIfOverNativeScrollbars;
+				PointerWheelChanged += HandlePointerEventIfOverNativeScrollbars;
 			}
 		}
 
-		private static void HandlePointerEvent(object sender, Input.PointerRoutedEventArgs e)
-			=> ((ScrollContentPresenter)sender).HandlePointerEvent(e);
+		private static void HandlePointerEventIfOverNativeScrollbars(object sender, Input.PointerRoutedEventArgs e)
+			=> ((ScrollContentPresenter)sender).HandlePointerEventIfOverNativeScrollbars(e);
 
-		private void HandlePointerEvent(Input.PointerRoutedEventArgs e)
+		private void HandlePointerEventIfOverNativeScrollbars(Input.PointerRoutedEventArgs e)
 		{
 			var (clientSize, offsetSize) = WindowManagerInterop.GetClientViewSize(HtmlId);
 
@@ -93,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-auto", "scroll-y-disabled", "scroll-y-hidden", "scroll-y-visible" };
+		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-disabled", "scroll-y-auto", "scroll-y-hidden", "scroll-y-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeVerticalScrollBarVisibility { set => VerticalScrollBarVisibility = value; }
 		internal ScrollBarVisibility VerticalScrollBarVisibility
@@ -111,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-auto", "scroll-x-disabled", "scroll-x-hidden", "scroll-x-visible" };
+		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-disabled", "scroll-x-auto", "scroll-x-hidden", "scroll-x-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeHorizontalScrollBarVisibility { set => HorizontalScrollBarVisibility = value; }
 		internal ScrollBarVisibility HorizontalScrollBarVisibility
@@ -157,7 +184,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 			RestoreScroll();
-			RegisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+			RegisterEventHandler("scroll", (RoutedEventHandlerWithHandled)OnScroll, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+
+			// a workaround to make scrolling cancelable on WASM
+			AddHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged), true);
+		}
+
+		private void OnPointerWheelChanged(object _, PointerRoutedEventArgs args)
+		{
+			// On other Uno targets, handling PointerWheelChanged cancels the scrolling (which makes sense, but doesn't necessarily
+			// match WinUI). So, to make the behaviour uniform, we also prevent native scrolling here.
+			// Unlike KeyDown, we can't wait until OnScroll to prevent the scrolling. We have to cancel it right here.
+			if (args.Handled)
+			{
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult |= HtmlEventDispatchResult.PreventDefault;
+			}
 		}
 
 		private void RestoreScroll()
@@ -166,7 +207,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (sv.HorizontalOffset > 0 || sv.VerticalOffset > 0)
 				{
-					ScrollTo(sv.HorizontalOffset, sv.VerticalOffset, disableAnimation: true);
+					Set(
+						horizontalOffset: sv.HorizontalOffset,
+						verticalOffset: sv.VerticalOffset,
+						disableAnimation: true);
 				}
 			}
 		}
@@ -174,7 +218,9 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			UnregisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+			UnregisterEventHandler("scroll", new RoutedEventHandlerWithHandled(OnScroll), GenericEventHandlers.RaiseEventHandler);
+
+			RemoveHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged));
 
 			if (_rootEltUsedToProcessScrollTo is { } rootElt)
 			{
@@ -191,9 +237,34 @@ namespace Windows.UI.Xaml.Controls
 			TryProcessScrollTo();
 		}
 
-		public void ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		internal bool Set(
+			double? horizontalOffset = null,
+			double? verticalOffset = null,
+			float? zoomFactor = null, // Not supported yet
+			bool disableAnimation = false,
+			bool isIntermediate = false) // Not supported yet
 		{
+			var success = true;
+			if (horizontalOffset is double hOffset)
+			{
+				var extentWidth = ExtentWidth;
+				var viewportWidth = ViewportWidth;
+
+				horizontalOffset = ValidateInputOffset(hOffset, 0, extentWidth - viewportWidth);
+				success &= horizontalOffset == hOffset;
+			}
+
+			if (verticalOffset is double vOffset)
+			{
+				var extentHeight = ExtentHeight;
+				var viewportHeight = ViewportHeight;
+
+				verticalOffset = ValidateInputOffset(vOffset, 0, extentHeight - viewportHeight);
+				success &= verticalOffset == vOffset;
+			}
+
 			_pendingScrollTo = (horizontalOffset, verticalOffset);
+			_lastScrollToRequest = (horizontalOffset, verticalOffset);
 
 			WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
 
@@ -211,8 +282,8 @@ namespace Windows.UI.Xaml.Controls
 
 				// The scroll to was not processed by the native SCP, we need to re-request ScrollTo a bit later.
 				// This happen has soon as the native SCP element is not in a valid state (like un-arranged or hidden).
-
-				if (_rootEltUsedToProcessScrollTo is null && Window.Current.RootElement is FrameworkElement rootFwElt)
+				var rootElement = XamlRoot?.VisualTree.RootElement ?? Window.CurrentSafe?.RootElement;
+				if (_rootEltUsedToProcessScrollTo is null && rootElement is FrameworkElement rootFwElt)
 				{
 					_rootEltUsedToProcessScrollTo = rootFwElt;
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
@@ -228,7 +299,11 @@ namespace Windows.UI.Xaml.Controls
 					var willNotScroll = horizontalOffset < 0 && nativeHorizontalOffset == 0
 						|| verticalOffset < 0 && nativeVerticalOffset == 0;
 
-					if (!willNotScroll)
+					if (willNotScroll)
+					{
+						return false;
+					}
+					else
 					{
 						// As the native ScrollTo is going to be async, we manually raise the event with the provided values.
 						// If those values are invalid, the browser will raise the final event anyway.
@@ -242,7 +317,15 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
+			return success; // If if not yet processed, we assume that it will be.
 		}
+
+		void IScrollContentPresenter.ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+			=> Set(
+				horizontalOffset: horizontalOffset,
+				verticalOffset: verticalOffset,
+				disableAnimation: disableAnimation);
 
 		private void TryProcessScrollTo(object sender, object e)
 			=> TryProcessScrollTo();
@@ -255,21 +338,29 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnScroll(object sender, EventArgs args)
+		private bool OnScroll(object sender, RoutedEventArgs routedEventArgs)
 		{
+			if (Scroller?.CancelNextNativeScroll ?? false)
+			{
+				return true;
+			}
 			// We don't have any information from the DOM 'scroll' event about the intermediate vs. final state.
 			// We could try to rely on the IsPointerPressed state to detect when the user is scrolling and use it.
 			// This would however not include scrolling due to the inertia which should also be flagged as intermediate.
 			// The main issue is that the IsPointerPressed be true ONLY when dragging the scrollbars with the mouse, 
 			// as for finger and pen we will get a PointerCancelled which will reset the pressed state to false.
-			// And it would also requires us to explicitly invoke OnScroll in PointerRelease in order to raise the
-			// final SV.ViewChanged event with a IsIntermediate == false.
-			// This is probably safer for now to always consider the scroll as final, even if it introduce a performance cost
-			// (the SV updates mode is always sync when isIntermediate is false).
-			var isIntermediate = false;
-
+			// And it would also require us to explicitly invoke OnScroll in PointerRelease in order to raise the
+			// final SV.ViewChanged event with an IsIntermediate == false.
+			// As a best-effort guess, we will consider the scroll as intermediate if the native offset is different from the last ScrollTo request.
 			var horizontalOffset = GetNativeHorizontalOffset();
 			var verticalOffset = GetNativeVerticalOffset();
+			var isIntermediate =
+				(_lastScrollToRequest.horizontal.HasValue && _lastScrollToRequest.horizontal.Value != horizontalOffset) ||
+				(_lastScrollToRequest.vertical.HasValue && _lastScrollToRequest.vertical.Value != verticalOffset);
+			if (!isIntermediate)
+			{
+				_lastScrollToRequest = (null, null);
+			}
 
 			if (IsArrangeDirty
 				&& _pendingScrollTo is { } pending
@@ -281,7 +372,7 @@ namespace Windows.UI.Xaml.Controls
 				// When the native element of the SCP is becoming "valid" with a non 0 offset, it will raise a scroll event.
 				// But if we have a manual scroll request pending, we need to mute it and wait for the next layout updated.
 
-				return;
+				return false;
 			}
 
 			_pendingScrollTo = default;
@@ -293,6 +384,8 @@ namespace Windows.UI.Xaml.Controls
 
 			ScrollOffsets = new Point(horizontalOffset, verticalOffset);
 			InvalidateViewport();
+
+			return false;
 		}
 
 		private double GetNativeHorizontalOffset()

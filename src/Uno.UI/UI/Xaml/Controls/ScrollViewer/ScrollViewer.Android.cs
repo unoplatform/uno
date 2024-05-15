@@ -4,7 +4,7 @@ using Android.Widget;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,9 +16,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI;
 
-using static Uno.Extensions.MathEx;
-
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, ICustomClippingElement
 	{
@@ -50,8 +48,8 @@ namespace Windows.UI.Xaml.Controls
 			const int minScroll = -maxScroll;
 
 			// Clamp values (again) to avoid overflow in UnoTwoDScrollView.java
-			var adjustedPhysicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
-			var adjustedPhysicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
+			var adjustedPhysicalHorizontalOffset = Math.Clamp(physicalHorizontalOffset, minScroll, maxScroll);
+			var adjustedPhysicalVerticalOffset = Math.Clamp(physicalVerticalOffset, minScroll, maxScroll);
 
 			if (disableAnimation)
 			{
@@ -77,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Return true if successfully scrolled to asked offsets
 			return (horizontalOffset == null || physicalHorizontalOffset == adjustedPhysicalHorizontalOffset) &&
-			       (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
+				   (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
 		}
 
 		internal void TryApplyPendingScrollTo()
@@ -102,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 				_presenter.ZoomScale = zoomFactor;
 			}
 		}
-		
+
 		private void UpdateZoomedContentAlignment()
 		{
 			if (ZoomFactor != 1 && Content is IFrameworkElement fe && Content is View view)
@@ -188,5 +186,8 @@ namespace Windows.UI.Xaml.Controls
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
+
+		private partial void OnLoadedPartial() { }
+		private partial void OnUnloadedPartial() { }
 	}
 }

@@ -1,163 +1,112 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
 
-  <PropertyGroup>
-	<T4Path>$(MSBuildThisFileDirectory)..\T4Generator\bin\$(Configuration)</T4Path>
-	<T4Bin>$(T4Path)\T4Generator.exe</T4Bin>
-
-	<IsMonoAndroid>false</IsMonoAndroid>
-	<IsMonoAndroid Condition="'$(TargetFramework)'=='net6.0-android' or $(TargetFramework.ToLower().StartsWith('monoandroid'))">true</IsMonoAndroid>
-
-	<IsXamarinIOS>false</IsXamarinIOS>
-	<IsXamarinIOS Condition="'$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst' or $(TargetFramework.ToLower().StartsWith('xamarinios'))">true</IsXamarinIOS>
-
-	<IsXamarinMac>false</IsXamarinMac>
-	<IsXamarinMac Condition="$(TargetFramework.ToLower().StartsWith('xamarinmac')) or '$(TargetFramework)'=='net6.0-macos'">true</IsXamarinMac>
-	
-	<IsReferenceAPI>false</IsReferenceAPI>
-	<IsReferenceAPI Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">true</IsReferenceAPI>
-
-	<!-- Required because links don't work in actual folder structure -->
-	<_IsUnoUIProjectForMixins Condition="'$(MSBuildProjectName)'=='Uno.UI'">true</_IsUnoUIProjectForMixins>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(DocsGeneration)'==''">
-	<ProjectReference Include="..\T4Generator\T4Generator.csproj">
-	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-	  <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-	  <UndefineProperties>TargetFramework</UndefineProperties>
-	</ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-	<Compile Remove="$(MSBuildThisFileDirectory)Mixins\**\*.cs"/>
-	<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.cs" />
-	<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.tt" />
-
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsMonoAndroid)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsXamarinIOS)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsXamarinMac)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\Wasm\*.g.cs" Condition="$(IsReferenceAPI)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Mixins\net461\*.g.cs" Condition="'$(TargetFramework)'=='net461'" />
-
-	<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
-	<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
-	<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
-	<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
-  </ItemGroup>
-
-  <Choose>
-	<When Condition="'$(_IsUnoUIProjectForMixins)'=='true'">
-	  <ItemGroup>
-		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
-		</None>
-
-		<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-		</Compile>
-		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-		  <DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-		</None>
-
-		<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
-		<Compile Remove="$(MSBuildThisFileDirectory\UI\Xaml\DependencyPropertiesImplementation.cs" />
-		<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
-		<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
-	  </ItemGroup>
-	</When>
-	<Otherwise>
-	  <ItemGroup>
-		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
-		</None>
-		<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-		</Compile>
-		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-		  <DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-		</None>
-	  </ItemGroup>
-	</Otherwise>
-  </Choose>
-
-  <ItemGroup>
-	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt" Condition="$(IsMonoAndroid)" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt" Condition="$(IsMonoAndroid)" />	
-	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.tt" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.Android.tt" Condition="$(IsMonoAndroid)" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt" Condition="$(IsXamarinIOS)" />	
-	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt" Condition="$(IsXamarinMac)" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.iOS.tt" Condition="$(IsXamarinIOS)" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.macOS.tt" Condition="$(IsXamarinMac)" />
-
-	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsMonoAndroid)" />
-	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsMonoAndroid)" />
-	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
-	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)" />	
-	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />	
-  </ItemGroup>
-
-  <!--
-	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
-	project dependency induced builds.
-	-->
-  <Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" DependsOnTargets="_OptimizeT4Generator" Condition="'$(DesignTimeBuild)' != 'true'">
+	<PropertyGroup>
+		<_T4ToolVersion>2.3.1</_T4ToolVersion>
+	</PropertyGroup>
 
 	<ItemGroup>
-	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsMonoAndroid)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-	  </MixinDefinition>
-	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsMonoAndroid)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-	  </MixinDefinition>
-	  <MixinDefinition Include="$(MSBuildThisFileFullPath)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-	  </MixinDefinition>
-	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsXamarinIOS)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-	  </MixinDefinition>
-	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsXamarinMac)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\macOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
-	  </MixinDefinition>
+		<PackageReference Include="dotnet-t4"
+						  Version="$(_T4ToolVersion)"
+						  IncludeAssets="none"
+						  PrivateAssets="all" />
 	</ItemGroup>
 
-	<Message Text="Generating mixins" Importance="high" />
-
-	<!-- This allows for the mixins to generate in parallel -->
-	<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
-	
 	<ItemGroup>
-	  <!--
+		<Compile Remove="$(MSBuildThisFileDirectory)Mixins\**\*.cs"/>
+		<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.cs" />
+		<None Include="$(MSBuildThisFileDirectory)Mixins\**\*.tt" />
+
+		<Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsAndroid)" />
+		<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsIOSOrCatalyst)" />
+		<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsMacOS)" />
+
+		<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
+		<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
+		</None>
+		<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
+		</Compile>
+		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
+			<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt" Condition="$(IsAndroid)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt" Condition="$(IsAndroid)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.tt" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.Android.tt" Condition="$(IsAndroid)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt" Condition="$(IsIOSOrCatalyst)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt" Condition="$(IsMacOS)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.iOS.tt" Condition="$(IsIOSOrCatalyst)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.macOS.tt" Condition="$(IsMacOS)" />
+
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsAndroid)" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsAndroid)" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsIOSOrCatalyst)" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsMacOS)" />
+	</ItemGroup>
+
+	<!--
+	DispatchToInnerBuilds is used for direct builds, CoreCompile is for
+	project dependency induced builds.
+	-->
+	<Target Name="GenerateMixins"
+		  Inputs="@(MixinInput)"
+		  Outputs="@(MixinOutput)"
+		  BeforeTargets="DispatchToInnerBuilds;Build;CoreCompile;_GenerateCompileDependencyCache"
+		  Condition="'$(DesignTimeBuild)' != 'true'">
+
+		<ItemGroup>
+			<_t4Path Include="$(NuGetPackageRoot)/dotnet-t4/$(_T4ToolVersion)/**/t4.dll" />
+
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsAndroid) or $(TargetFrameworks.Contains('-android'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsAndroid) or $(TargetFrameworks.Contains('-android'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsIOSOrCatalyst) or $(TargetFrameworks.Contains('-ios')) or $(TargetFrameworks.Contains('-maccatalyst'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsMacOS) or $(TargetFrameworks.Contains('-macos'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs</Properties>
+			</MixinDefinition>
+		</ItemGroup>
+
+		<Message Text="Generating mixins" Importance="high" />
+
+		<!-- This allows for the mixins to generate in parallel -->
+		<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
+
+		<ItemGroup>
+			<!--
 	  Restore the compile items for projects using globbing
 	  that may not have the .cs files as explicit Compile items
 	  -->
-	  <Compile Remove="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsMonoAndroid)" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsXamarinIOS)" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsXamarinMac)" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\Wasm\*.g.cs" Condition="$(IsReferenceAPI)" />
-	  <Compile Include="$(MSBuildThisFileDirectory)Mixins\net461\*.g.cs" Condition="'$(TargetFramework)'=='net461'" />
-	</ItemGroup>
-  </Target>
+			<Compile Remove="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
+			<Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
+			<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsAndroid)" />
+			<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsIOSOrCatalyst)" />
+			<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsMacOS)" />
+		</ItemGroup>
+	</Target>
 
-  <Target Name="_OptimizeT4Generator" Condition="$([MSBuild]::IsOSUnixLike())">
-  </Target>
-
-  <Target Name="_InnerGenerateMixins">
-	<PropertyGroup>
-	  <_MonoPrefix Condition="'$(MSBuildRuntimeType)'=='Core' and $([MSBuild]::IsOSUnixLike())">mono</_MonoPrefix>
-	</PropertyGroup>
-	
-	<Exec Command="$(_MonoPrefix) &quot;$(T4Bin)&quot; $(InputFile) $(OutputPath)" />
-  </Target>
 </Project>

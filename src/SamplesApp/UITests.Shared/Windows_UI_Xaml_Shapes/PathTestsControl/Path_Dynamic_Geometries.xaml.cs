@@ -1,8 +1,8 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 {
@@ -19,7 +19,7 @@ namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 	{
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			if(targetType == typeof(Point))
+			if (targetType == typeof(Point))
 			{
 				return new Point(System.Convert.ToDouble(value), System.Convert.ToDouble(parameter));
 			}

@@ -1,21 +1,27 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
-
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Security.AccessControl;
 using Windows.Foundation;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlayer
+	public sealed partial class MediaPlayer
 	{
+		internal const bool ImplementedByExtensions =
+#if __ANDROID__ || __IOS__ || __MACOS__
+			false;
+#else
+			true;
+#endif
+
 		#region Properties
 
 		private IMediaPlaybackSource _source;
 		public IMediaPlaybackSource Source
 		{
-			get
-			{
-				return _source;
-			}
+			get => _source;
 			set
 			{
 				Stop();
@@ -35,13 +41,10 @@ namespace Windows.Media.Playback
 
 		public bool AutoPlay { get; set; }
 
-		private bool _isMuted = false;
+		private bool _isMuted;
 		public bool IsMuted
 		{
-			get
-			{
-				return _isMuted;
-			}
+			get => _isMuted;
 			set
 			{
 				_isMuted = value;
@@ -53,10 +56,7 @@ namespace Windows.Media.Playback
 		private double _volume = 1d;
 		public double Volume
 		{
-			get
-			{
-				return _volume;
-			}
+			get => _volume;
 			set
 			{
 				_volume = value;
@@ -72,7 +72,7 @@ namespace Windows.Media.Playback
 		#region Events
 
 		public event TypedEventHandler<MediaPlayer, object> SourceChanged;
-		
+
 		public event TypedEventHandler<MediaPlayer, object> IsMutedChanged;
 
 		public event TypedEventHandler<MediaPlayer, object> VolumeChanged;
@@ -85,16 +85,28 @@ namespace Windows.Media.Playback
 
 		public event TypedEventHandler<MediaPlayer, object> SeekCompleted;
 
-		public event TypedEventHandler<MediaPlayer, double> VideoRatioChanged;
+		public event TypedEventHandler<MediaPlayer, object> NaturalVideoDimensionChanged;
 
 		#endregion
 
 		public MediaPlayer()
 		{
 			PlaybackSession = new MediaPlaybackSession(this);
-
 			Initialize();
 		}
+
+		internal void SetOption(string name, object value)
+		{
+			OnOptionChanged(name, value);
+		}
+
+		partial void OnOptionChanged(string name, object value);
+
+		internal void SetTransportControlBounds(Rect bounds)
+		{
+			OnTransportControlBoundsChanged(bounds);
+		}
+
+		partial void OnTransportControlBoundsChanged(Rect bounds);
 	}
 }
-#endif

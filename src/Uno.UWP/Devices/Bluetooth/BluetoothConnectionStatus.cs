@@ -1,7 +1,7 @@
 ﻿
 namespace Windows.Devices.Bluetooth
 {
-	public   enum BluetoothConnectionStatus 
+	public enum BluetoothConnectionStatus
 	{
 		Disconnected,
 		Connected,

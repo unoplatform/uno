@@ -13,8 +13,10 @@ namespace Uno.UI.Samples.Tests;
 
 internal record UnitTestMethodInfo
 {
-	private readonly List<object[]> _casesParameters;
+	private readonly List<object?[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
+
+	private readonly bool _ignoredBecauseOfConditionalTestAttribute;
 
 	public UnitTestMethodInfo(object testClassInstance, MethodInfo method)
 	{
@@ -25,16 +27,24 @@ internal record UnitTestMethodInfo
 		RequiresFullWindow =
 			HasCustomAttribute<RequiresFullWindowAttribute>(method) ||
 			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType);
+		PassFiltersAsFirstParameter =
+			HasCustomAttribute<FiltersAttribute>(method) ||
+			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
 		ExpectedException = method
 			.GetCustomAttributes<ExpectedExceptionAttribute>()
 			.SingleOrDefault()
 			?.ExceptionType;
 
+		_ignoredBecauseOfConditionalTestAttribute = method
+			.GetCustomAttributes<ConditionalTestAttribute>()
+			.SingleOrDefault()
+			?.ShouldRun() == false;
+
 		_casesParameters = method
 			.GetCustomAttributes<DataRowAttribute>()
 			.Select(d => d.Data)
 			.ToList();
-		if (method.GetCustomAttribute<DynamicDataAttribute>() is {} dynamicData)
+		if (method.GetCustomAttribute<DynamicDataAttribute>() is { } dynamicData)
 		{
 			_casesParameters.AddRange(dynamicData.GetData(method));
 		}
@@ -60,20 +70,28 @@ internal record UnitTestMethodInfo
 
 	public bool RunsOnUIThread { get; }
 
-	private bool HasCustomAttribute<T>(MemberInfo testMethod)
-		=> testMethod.GetCustomAttribute(typeof(T)) != null;
+	public bool PassFiltersAsFirstParameter { get; }
+
+	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
+		=> testMethod?.GetCustomAttribute(typeof(T)) != null;
 
 	public bool IsIgnored(out string ignoreMessage)
 	{
 		var ignoreAttribute = Method.GetCustomAttribute<IgnoreAttribute>();
 		if (ignoreAttribute == null)
 		{
-			ignoreAttribute = Method.DeclaringType.GetCustomAttribute<IgnoreAttribute>();
+			ignoreAttribute = Method.DeclaringType?.GetCustomAttribute<IgnoreAttribute>();
 		}
 
 		if (ignoreAttribute != null)
 		{
 			ignoreMessage = string.IsNullOrEmpty(ignoreAttribute.IgnoreMessage) ? "Test is marked as ignored" : ignoreAttribute.IgnoreMessage;
+			return true;
+		}
+
+		if (_ignoredBecauseOfConditionalTestAttribute)
+		{
+			ignoreMessage = "The test is ignored on the current platform";
 			return true;
 		}
 

@@ -1,12 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class RecyclePool
 	{
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected  virtual UIElement TryGetElementCore(string key,  UIElement owner)
+		protected virtual UIElement TryGetElementCore(string key, UIElement owner)
 		{
 			if (m_elements.TryGetValue(key, out var elements))
 			{

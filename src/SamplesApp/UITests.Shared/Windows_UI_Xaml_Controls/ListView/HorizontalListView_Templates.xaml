@@ -9,7 +9,7 @@
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:uConverters="using:Uno.UI.Samples.Converters"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:android="http://uno.ui/android"
+	xmlns:android="http://uno.ui/android#using:Uno.UI.Controls.Legacy"
 	xmlns:behaviors="using:Uno.UI.Samples.Behaviors"
 	mc:Ignorable="d ios android"
 	d:DesignHeight="2000"
@@ -33,7 +33,7 @@
 												IsItemClickEnabled="true"
 												behaviors:ListViewBaseCommand.Command="{Binding [DoSomething]}"
 												Height="200">
-						<HorizontalListView.ItemTemplate>
+						<android:HorizontalListView.ItemTemplate>
 							<DataTemplate>
 								<StackPanel>
 									<TextBlock Text="{Binding [Item]}"
@@ -44,7 +44,7 @@
 											Visibility="{Binding [IsVisible], Converter={StaticResource boolToVisibility}}" />
 								</StackPanel>
 							</DataTemplate>
-						</HorizontalListView.ItemTemplate>
+						</android:HorizontalListView.ItemTemplate>
 					</android:HorizontalListView>
 
 					<android:TextBlock Text="List View" />

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml;
@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.RoutedEventTests
 
 			void OnTapped(object snd, TappedRoutedEventArgs evt) => events.Add((snd, evt));
 
-			root.AddHandler(UIElement.TappedEvent, (TappedEventHandler) OnTapped, false);
+			root.AddHandler(UIElement.TappedEvent, (TappedEventHandler)OnTapped, false);
 
 			var evt1 = new TappedRoutedEventArgs();
 			root.RaiseEvent(UIElement.TappedEvent, evt1).Should().BeFalse();

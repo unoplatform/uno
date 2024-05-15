@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Android.Views;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls.Legacy
 {
-    internal partial class ListViewFooter : ContentControl
-    {
+	internal partial class ListViewFooter : ContentControl
+	{
 		public ListViewFooter()
 		{
 

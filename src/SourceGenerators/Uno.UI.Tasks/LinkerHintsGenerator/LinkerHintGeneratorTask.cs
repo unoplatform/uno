@@ -29,7 +29,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 #endif
 
 		private List<string> _referencedAssemblies = new List<string>();
-		private string[] _searchPaths = Array.Empty<string>();
 		private DefaultAssemblyResolver? _assemblyResolver;
 
 		[Required]
@@ -42,7 +41,18 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public string ILLinkerPath { get; set; } = "";
 
 		[Required]
+		public string TargetFramework { get; set; } = "";
+
+		[Required]
+		public string TargetFrameworkVersion { get; set; } = "";
+
+		[Required]
 		public string OutputPath { get; set; } = "";
+
+		[Required]
+		public string UnoUIPackageBasePath { get; set; } = "";
+
+		public string UnoRuntimeIdentifier { get; set; } = "";
 
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? ReferencePath { get; set; }
@@ -66,7 +76,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			RunLinker(pass1Path, features);
 			var currrentPassFeatures = BuildResultingFeaturesList(pass1Path);
 
-			int pass= 1;
+			int pass = 1;
 			do
 			{
 				pass++;
@@ -123,19 +133,27 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			var linkerPath = Path.Combine(ILLinkerPath, "illink.dll");
 
-			var linkerSearchPaths = string.Join(" ", _referencedAssemblies.Select(Path.GetDirectoryName).Distinct().Select(p => $"-d \"{p}\" "));
+			var referencedAssemblies = string.Join(" ", _referencedAssemblies
+				// Java interop does not link properly when included in our own
+				// set of parameters provided to the linker.
+				// As we're skipping unresolved symbols already, and that
+				// we do not need a functioning output, we can remove the assembly
+				// altogether.
+				.Where(r => !r.EndsWith("Java.Interop.dll", StringComparison.Ordinal))
+				.Distinct()
+				.Select(r => $"-reference \"{r}\" "));
 
 			var parameters = new List<string>()
 			{
 				$"--feature UnoBindableMetadata false",
 				$"--verbose",
 				$"--deterministic",
-				$"--used-attrs-only true",
+				// $"--used-attrs-only true", // not used to keep additional linker hints
 				$"--skip-unresolved true",
 				$"-b true",
-				$"-a {AssemblyPath}",
+				$"-a {AssemblyPath} entrypoint",
 				$"-out {outputPath}",
-				linkerSearchPaths,
+				referencedAssemblies,
 				features,
 			};
 
@@ -145,7 +163,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			Directory.CreateDirectory(OutputPath);
 
-			var res = StartProcess("dotnet", $"{linkerPath} @{file}", CurrentProjectPath);
+			var res = StartProcess("dotnet", $"\"{linkerPath}\" @{file}", CurrentProjectPath);
 
 			if (!string.IsNullOrEmpty(res.error))
 			{
@@ -167,20 +185,47 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			var features = new Dictionary<string, string>();
 
-			var availableLinkerHints = FindAvailableLinkerHints(assemblies);
+			var originalLinkerHints = FindAvailableLinkerHintsFromOriginalList();
 
-			foreach(var hint in availableLinkerHints)
+			var availableTypes = BuildAvailableTypes(assemblies);
+
+			foreach (var hint in originalLinkerHints)
 			{
 				features[hint] = "false";
 			}
 
 			foreach (var asm in assemblies)
 			{
-				foreach(var type in asm.MainModule.Types)
+				foreach (var type in asm.MainModule.Types)
 				{
+					// Search for dependency object types that are still available after the current
+					// linker pass.
 					if (IsDependencyObject(type))
 					{
 						features[LinkerHintsHelpers.GetPropertyAvailableName(type.FullName)] = "true";
+					}
+				}
+
+				// Search for additional types that may still be available after the current
+				// linker pass.
+				var additionalLinkerHints = asm
+					.MainModule
+					.GetCustomAttributes()
+					.Where(a => a.AttributeType.FullName == "Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
+
+				foreach (var additionalLinkerHint in additionalLinkerHints)
+				{
+					if (!additionalLinkerHint.HasConstructorArguments)
+					{
+						throw new InvalidOperationException($"The AdditionalLinkerHintAttribute must have one ctor parameter");
+					}
+
+					if (additionalLinkerHint.ConstructorArguments[0].Value is string typeName)
+					{
+						if (availableTypes.Contains(typeName))
+						{
+							features[LinkerHintsHelpers.GetPropertyAvailableName(typeName)] = "true";
+						}
 					}
 				}
 			}
@@ -188,9 +233,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return features;
 		}
 
+
 		private bool IsDependencyObject(TypeDefinition type)
 		{
-			if(type.Interfaces.Any(c => c.InterfaceType.FullName == "Windows.UI.Xaml.DependencyObject"))
+			if (type.Interfaces.Any(c => c.InterfaceType.FullName == "Microsoft.UI.Xaml.DependencyObject"))
 			{
 				return true;
 			}
@@ -202,7 +248,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					return true;
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Log.LogMessage(DefaultLogMessageLevel, $"Failed to resolve base types for {type.FullName}: {e.Message}");
 			}
@@ -212,7 +258,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private string BuildLinkerFeaturesList()
 		{
-			var assemblySearchList = BuildResourceSearchList();
+			var assemblySearchList = BuildOriginalResourceSearchList();
 
 			var hints = FindAvailableLinkerHints(assemblySearchList);
 
@@ -221,6 +267,16 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			assemblySearchList.ForEach(a => a.Dispose());
 
 			return output;
+		}
+
+		private List<string> FindAvailableLinkerHintsFromOriginalList()
+		{
+			var originalList = BuildOriginalResourceSearchList();
+			var originalLinkerHints = FindAvailableLinkerHints(originalList);
+
+			originalList.ForEach(a => a.Dispose());
+
+			return originalLinkerHints;
 		}
 
 		private static List<string> FindAvailableLinkerHints(List<AssemblyDefinition> assemblySearchList)
@@ -241,7 +297,25 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return hints.Distinct().ToList();
 		}
 
-		private List<AssemblyDefinition> BuildResourceSearchList()
+		private static HashSet<string> BuildAvailableTypes(List<AssemblyDefinition> assemblySearchList)
+		{
+			HashSet<string> map = new();
+
+			foreach (var asm in assemblySearchList)
+			{
+				foreach (var type in asm.MainModule.Types)
+				{
+					if (!map.Contains(type.FullName))
+					{
+						map.Add(type.FullName);
+					}
+				}
+			}
+
+			return map;
+		}
+
+		private List<AssemblyDefinition> BuildOriginalResourceSearchList()
 		{
 			var sourceList = new List<string>();
 
@@ -275,26 +349,63 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			if (ReferencePath != null)
 			{
+				var unoUIPackageBasePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(UnoUIPackageBasePath)));
+
 				foreach (var referencePath in ReferencePath)
 				{
 					var isReferenceAssembly = referencePath.GetMetadata("PathInPackage")?.StartsWith("ref/", StringComparison.OrdinalIgnoreCase) ?? false;
 					var hasConcreteAssembly = isReferenceAssembly && ReferencePath.Any(innerReference => HasConcreteAssemblyForReferenceAssembly(innerReference, referencePath));
 
 					var name = Path.GetFileName(referencePath.ItemSpec);
-					_referencedAssemblies.Add(referencePath.ItemSpec);
+					_referencedAssemblies.Add(RewriteReferencePath(referencePath.ItemSpec, unoUIPackageBasePath, UnoRuntimeIdentifier));
 				}
 
-				_searchPaths = ReferencePath
+				var searchPaths = ReferencePath
 						.Select(p => Path.GetDirectoryName(p.ItemSpec))
 						.Distinct()
 						.ToArray();
 
 				_assemblyResolver = new DefaultAssemblyResolver();
 
-				foreach (var assembly in _searchPaths)
+				foreach (var assembly in searchPaths)
 				{
 					_assemblyResolver.AddSearchDirectory(assembly);
 				}
+			}
+
+			string RewriteReferencePath(string referencePath, string unoUIPackageBasePath, string unoRuntimeIdentifier)
+			{
+				var separator = Path.DirectorySeparatorChar;
+				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
+
+				var runtimeTargetFramework =
+					new Version(TargetFrameworkVersion) >= new Version("7.0")
+					? "net7.0"
+					: "netstandard2.0";
+
+				var isUnoRuntimeEnabled = (unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
+						referencePath.StartsWith(unoUIPackageBasePath, StringComparison.Ordinal);
+
+				if (isUnoRuntimeEnabled)
+				{
+					var originalFolderPath = $"lib{separator}{runtimeTargetFramework}";
+					var preUno46FolderPart = $"uno-runtime{separator}{unoRuntimeIdentifier}";
+					var postUno46FolderPathPart = $"uno-runtime{separator}{runtimeTargetFramework}{separator}{unoRuntimeIdentifier}";
+
+					var post46Path = referencePath.Replace(originalFolderPath, postUno46FolderPathPart);
+					var pre46Path = referencePath.Replace(originalFolderPath, preUno46FolderPart);
+
+					if (File.Exists(post46Path))
+					{
+						return post46Path;
+					}
+					else if (File.Exists(pre46Path))
+					{
+						return pre46Path;
+					}
+				}
+
+				return referencePath;
 			}
 		}
 

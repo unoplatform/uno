@@ -6,12 +6,13 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.Foundation.Collections;
+using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core.Scaling;
 
 namespace DirectUI
 {
@@ -19,7 +20,7 @@ namespace DirectUI
 	{
 		private static readonly Lazy<DXamlCore> _current = new Lazy<DXamlCore>(() => new DXamlCore());
 
-		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName = null;
+		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
 
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
@@ -44,14 +45,21 @@ namespace DirectUI
 			return physicalRect;
 		}
 
+		public Microsoft.UI.Xaml.Window? GetAssociatedWindow(Microsoft.UI.Xaml.UIElement element)
+		{
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			return element.XamlRoot?.HostWindow;
+		}
+
 		// TODO Uno: Application-wide bar is not supported yet.
 		public ApplicationBarService? TryGetApplicationBarService() => null;
 
 		public string GetLocalizedResourceString(string key)
-		{
-			var loader = ResourceLoader.GetForCurrentView();
-			return loader.GetString(key);
-		}
+			=> ResourceAccessor.GetLocalizedStringResource(key);
 
 		public BuildTreeService GetBuildTreeService()
 			=> _buildTreeService ??= new BuildTreeService();
@@ -70,6 +78,25 @@ namespace DirectUI
 			}
 
 			return _radioButtonGroupsByName;
+		}
+
+		internal void OnCompositionContentStateChangedForUWP()
+		{
+			var contentRootCoordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
+			var root = contentRootCoordinator.CoreWindowContentRoot;
+			var rootScale = RootScale.GetRootScaleForContentRoot(root);
+			if (rootScale is null) // Check that we still have an active tree
+			{
+				return;
+			}
+			rootScale.UpdateSystemScale();
+
+			// TODO Uno: Adjusting for visibility changes on CoreWindow is not supported yet.
+			root?.AddPendingXamlRootChangedEvent(default);
+			root?.RaisePendingXamlRootChangedEventIfNeeded(false);
+
+			// TODO Uno: Not needed now.
+			// OnUWPWindowSizeChanged();
 		}
 	}
 }

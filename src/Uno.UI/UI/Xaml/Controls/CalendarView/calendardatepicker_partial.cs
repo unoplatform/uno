@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -7,12 +7,12 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
-using Windows.UI.Xaml.Input;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Microsoft.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -21,7 +21,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class CalendarDatePicker : Control
 	{
@@ -109,13 +109,13 @@ namespace Windows.UI.Xaml.Controls
 				DateTime? spOldDateReference;
 				//CValueBoxer.UnboxValue<DateTime>(args.OldValue, spOldDateReference);
 				//CValueBoxer.UnboxValue<DateTime>(args.NewValue, spNewDateReference);
-				spOldDateReference = (DateTime?)args.OldValue;
-				spNewDateReference = (DateTime?)args.NewValue;
+				spOldDateReference = (DateTimeOffset?)args.OldValue;
+				spNewDateReference = (DateTimeOffset?)args.NewValue;
 				OnDateChanged(spOldDateReference, spNewDateReference);
 			}
 			else if (args.Property == FrameworkElement.LanguageProperty ||
-			         args.Property == CalendarDatePicker.CalendarIdentifierProperty ||
-			         args.Property == CalendarDatePicker.DateFormatProperty)
+					 args.Property == CalendarDatePicker.CalendarIdentifierProperty ||
+					 args.Property == CalendarDatePicker.DateFormatProperty)
 			{
 				OnDateFormatChanged();
 			}
@@ -283,13 +283,13 @@ namespace Windows.UI.Xaml.Controls
 			void OnFlyoutOpened(object sender, object eventArgs)
 			{
 				IsCalendarOpen = true;
-				_opened?.Invoke(this, new object());
+				Opened?.Invoke(this, new object());
 			}
 
 			void OnFlyoutClosed(object sender, object eventArgs)
 			{
 				IsCalendarOpen = false;
-				_closed?.Invoke(this, new object());
+				Closed?.Invoke(this, new object());
 			}
 
 			void OnCalendarViewDayChanging(CalendarView sender, CalendarViewDayItemChangingEventArgs args)
@@ -366,12 +366,10 @@ namespace Windows.UI.Xaml.Controls
 				// coerce dates
 				minDate = MinDate;
 				maxDate = MaxDate;
-				//coercedDate.UniversalTime = Math.Min(maxDate.UniversalTime, Math.Max(minDate.UniversalTime, date.UniversalTime));
-				coercedDate = new DateTime(Math.Min(maxDate.UtcTicks, Math.Max(minDate.UtcTicks, date.UtcTicks)), TimeSpan.Zero);
+				coercedDate.UniversalTime = Math.Min(maxDate.UniversalTime, Math.Max(minDate.UniversalTime, date.UniversalTime));
 
 				// if Date is not in the range of min/max date, we'll coerce it and trigger DateChanged again.
-				//if (coercedDate.UniversalTime != date.UniversalTime)
-				if (coercedDate.UtcTicks != date.UtcTicks)
+				if (coercedDate.UniversalTime != date.UniversalTime)
 				{
 					DateTime spCoercedDateReference;
 					//PropertyValue.CreateFromDateTime(coercedDate, &spCoercedDateReference));
@@ -404,7 +402,7 @@ namespace Windows.UI.Xaml.Controls
 			//GetDateChangedEventSourceNoRef(&pEventSource));
 
 			//pEventSource.Raise(this, spArgs);
-			_dateChanged?.Invoke(this, spArgs);
+			DateChanged?.Invoke(this, spArgs);
 		}
 
 		public void SetYearDecadeDisplayDimensions(int columns, int rows)
@@ -421,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void SetDisplayDate(DateTime date)
+		public void SetDisplayDate(global::System.DateTimeOffset date)
 		{
 			if (m_tpCalendarView is { })
 			{
@@ -531,7 +529,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					DateTime date;
 
-					date =  spDateReference.Value;
+					date = spDateReference.Value;
 
 					if (m_tpDateFormatter is { }) // when there is a formatter, use it
 					{
@@ -858,7 +856,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//CalendarDatePickerGenerated.OnPointerMoved(pArgs);
 
-			 IsEventSourceTarget(pArgs, out isEventSourceTarget);
+			IsEventSourceTarget(pArgs, out isEventSourceTarget);
 
 			if (isEventSourceTarget)
 			{
@@ -903,7 +901,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Pointer spPointer;
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
 
 			//CalendarDatePickerGenerated.OnPointerCaptureLost(pArgs);
@@ -1050,7 +1048,7 @@ namespace Windows.UI.Xaml.Controls
 				if (isCalendarOpen)
 				{
 					DateTime? spDateReference;
-					IList<DateTime> spSelectedDates;
+					IList<DateTimeOffset> spSelectedDates;
 
 					m_isSelectedDatesChangingInternally = true;
 					//var selectedDatesChangingGuard = wil.scope_exit([&] {
@@ -1101,7 +1099,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			value = null;
 
-			if (m_tpDateText is {})
+			if (m_tpDateText is { })
 			{
 				value = m_tpDateText.Text;
 			}

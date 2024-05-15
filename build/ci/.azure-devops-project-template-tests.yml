@@ -1,19 +1,22 @@
 parameters:
+  poolName: ''
   vmImageWindows: ''
   vmImageLinux: ''
+  macOSImageName: ''
 
 jobs:
-- job: Dotnet_Template_Tests
-  displayName: 'dotnet new Templates Tests'
 
-  pool:
-    vmImage: ${{ parameters.vmImageWindows }}
+- job: Dotnet_Template_Tests_NetCoreMobile_windows
+  displayName: 'Run .NET Templates Tests Windows'
+  timeoutInMinutes: 90
 
-  dependsOn: Generate_Packages
+  pool: ${{ parameters.poolName }}
+
+  dependsOn:
+    - Generate_Packages
 
   variables:
-    # Force disable .NET Native for all samples validation
-    UseDotNetNativeToolchain: false
+    UnoDisableNetPreviousMobile: true
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -21,30 +24,34 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
-  - template: templates/jdk-setup.yml
-  - template: templates/install-windows-sdk.yml
-    parameters:
-      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
+
+  - template: templates/dotnet-mobile-install-windows.yml
 
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
-    displayName: Install Project Templates
-
-  - powershell: build\test-scripts\run-template-tests.ps1
+  - task: PowerShell@2
     displayName: Run Project Templates Tests
+    inputs:
+      targetType: 'filePath'
+      filePath: build\test-scripts\run-netcore-mobile-template-tests.ps1
+      pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
-      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.config
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+      GITVERSION_SemVer: $(GITVERSION.SemVer)
 
-- job: Dotnet_Template_Tests_Net6
-  displayName: 'dotnet new net6 Templates Tests'
+- job: Dotnet_Template_Tests_NetCoreMobile_macos
+  displayName: 'Run .NET Templates Tests macOS'
+  timeoutInMinutes: 90
 
   pool:
-    vmImage: ${{ parameters.vmImageWindows }}
+    vmImage: ${{ parameters.macOSImageName }}
 
-  dependsOn: Generate_Packages
+  dependsOn:
+    - Generate_Packages
+
+  variables:
+    UnoDisableNetPreviousMobile: true
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -52,52 +59,60 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
-  - template: templates/dotnet6-install-windows.yml
-  - template: templates/install-windows-sdk.yml
-    parameters:
-      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
 
-  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+  - bash: |
+      sed -i.bu 's/8.0.100/8.0.200/' build/ci/net8/global.json
+    displayName: Replace global.json with .NET 8.0.200
+
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+  - template: templates/dotnet-mobile-install-mac.yml
+
+  - powershell: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
-    displayName: Install Project Templates
-
-  - powershell: build\test-scripts\run-net6-template-tests.ps1
+  - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
-      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.net6.config
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+      GITVERSION_SemVer: $(GITVERSION.SemVer)
 
-- job: Dotnet_Template_Tests_Linux
-  displayName: 'dotnet new Templates Tests - Linux'
+- job: Dotnet_Template_Tests_net7_Linux
+  displayName: 'Run dotnet new Templates Tests - Linux (net7)'
 
-  pool:
-    vmImage: ${{ parameters.vmImageLinux }}
+  dependsOn:
+    - Generate_Packages
+
+  variables:
+    UnoDisableNetPreviousMobile: true
+
+  pool: ${{ parameters.vmPoolLinux }}
 
   container: unoplatform/wasm-build:2.3
 
-  dependsOn: Generate_Packages
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: NugetPackages
 
-  - template: templates/gitversion.yml
+  - script: |
+      sed -i 's/8.0.100/8.0.200/g' build/ci/net8/global.json
+    displayName: Replace global.json with .NET 8.0.200
 
+  - template: templates/dotnet-mobile-install-linux.yml
+
+  - template: templates/gitversion.yml
+  
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - task: UseDotNet@2
-    inputs:
-      packageType: sdk
-      version: 5.0.102
+  - template: templates/dotnet-install.yml
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
-    displayName: Install Project Templates
-
-  - pwsh: build/test-scripts/run-template-tests-linux.ps1
+  - pwsh: build/test-scripts/run-net7-template-linux.ps1
     displayName: Run Project Templates Tests
     env:
-      NUGET_CI_CONFIG: $(Build.SourcesDirectory)/src/nuget.ci.config
+      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+      GITVERSION_SemVer: $(GITVERSION.SemVer)

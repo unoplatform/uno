@@ -3,15 +3,15 @@
 // MUX Reference: TabView.h, commit ed31e13
 
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Provides data for the TabDragCompleted event.
 	/// </summary>
 	public sealed partial class TabViewTabDragCompletedEventArgs
-    {
+	{
 		private readonly DragItemsCompletedEventArgs _args;
 
 		internal TabViewTabDragCompletedEventArgs(DragItemsCompletedEventArgs args, object item, TabViewItem tab)

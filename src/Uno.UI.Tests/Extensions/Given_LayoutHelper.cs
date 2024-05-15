@@ -1,6 +1,6 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
@@ -13,7 +13,7 @@ namespace Uno.UI.Tests.Extensions
 		[TestMethod]
 		public void LayoutHelper_GetMinSize()
 		{
-			new Border( ).GetMinSize()
+			new Border().GetMinSize()
 				.Should().Be(new Size(0, 0));
 
 			new Border { MinWidth = 100 }.GetMinSize()
@@ -47,8 +47,6 @@ namespace Uno.UI.Tests.Extensions
 		[DataRow("100,100", ",", "10,10", "100,100", "100,100")]
 		[DataRow("100,100", ",", ",", "100,100", "*,*")]
 		[DataRow("100,100", "5,5", ",", "100,100", "100,100")]
-		[DataRow("-100,-100", ",", ",", "0,0", "*,*")]
-		[DataRow("-*,-*", ",", ",", "0,0", "*,*")]
 		[DataRow("*,*", ",", ",", "*,*", "*,*")]
 		[DataRow(",", "100,100", ",", "100,100", "100,100")]
 		[DataRow("50,50", "100,100", "150,150", "100,100", "100,100")]

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Windows.System
 {
-    internal static partial class VirtualKeyHelper
-    {
+	internal static partial class VirtualKeyHelper
+	{
 		public static VirtualKey FromKey(string key)
 		{
 			// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key

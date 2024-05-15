@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void WebView_NavigateToLongString()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.WebView.WebView_NavigateToString2");
@@ -43,7 +43,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void WebView_NavigateToAnchor()
 		{
 			Run("Uno.UI.Samples.Content.UITests.WebView.WebView_AnchorNavigation");
@@ -56,17 +56,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			var navigateToAnchorButton = _app.Marked("NavigateToAnchorButton");
 			var clickAnchorButton = _app.Marked("ClickAnchorButton");
 
-			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html");
+			_app.WaitForText(navigationCompletedTextBlock, "https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
 
 			// navigate to anchor
 			_app.FastTap(navigateToAnchorButton);
-			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html#section-1");
+			_app.WaitForText(navigationCompletedTextBlock, "https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html#section-1");
 
 			TakeScreenshot("navigate to anchor");
 
 			// user click in the browser itself
 			_app.FastTap(clickAnchorButton);
-			_app.WaitForText(navigationCompletedTextBlock, "https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html#page-4");
+			_app.WaitForText(navigationCompletedTextBlock, "https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html#page-4");
 
 			TakeScreenshot("click anchor");
 		}

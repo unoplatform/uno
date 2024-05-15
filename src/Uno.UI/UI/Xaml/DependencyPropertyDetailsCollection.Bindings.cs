@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Xaml.Data;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-    partial class DependencyPropertyDetailsCollection
+	partial class DependencyPropertyDetailsCollection
 	{
 		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
 		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;
@@ -186,7 +187,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void SetSourceValue(DependencyProperty property, object value)
 		{
-			if(GetPropertyDetails(property) is DependencyPropertyDetails details)
+			if (GetPropertyDetails(property) is DependencyPropertyDetails details)
 			{
 				SetSourceValue(details, value);
 			}
@@ -218,6 +219,59 @@ namespace Windows.UI.Xaml
 			}
 
 			return null;
+		}
+
+		internal void UpdateBindingExpressions()
+		{
+			foreach (var binding in _bindings)
+			{
+				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
+			}
+
+			foreach (var binding in _templateBindings)
+			{
+				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
+			}
+		}
+
+		private static void UpdateBindingPropertiesFromThemeResources(Binding binding)
+		{
+			if (binding.TargetNullValueThemeResource is { } targetNullValueThemeResourceKey)
+			{
+				binding.TargetNullValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(targetNullValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+			}
+
+			if (binding.FallbackValueThemeResource is { } fallbackValueThemeResourceKey)
+			{
+				binding.FallbackValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(fallbackValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+			}
+		}
+
+		internal void OnThemeChanged()
+		{
+			foreach (var binding in _bindings)
+			{
+				RefreshBindingValueIfNecessary(binding);
+			}
+
+			foreach (var binding in _templateBindings)
+			{
+				RefreshBindingValueIfNecessary(binding);
+			}
+		}
+
+		private void RefreshBindingValueIfNecessary(BindingExpression binding)
+		{
+			if (binding.ParentBinding.TargetNullValueThemeResource is not null ||
+				binding.ParentBinding.FallbackValueThemeResource is not null)
+			{
+				// Note: This may refresh the binding more than really necessary.
+				// For example, if TargetNullValue is set to a theme resource, but the binding is not null
+				// In this case, a change to TargetNullValue should probably not refresh the binding.
+				// Another case is when the ThemeResource evaluates the same between light/dark themes.
+				// For now, it's not necessary.
+				binding.RefreshTarget();
+			}
 		}
 	}
 }

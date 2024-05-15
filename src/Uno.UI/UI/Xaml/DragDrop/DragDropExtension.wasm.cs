@@ -14,10 +14,10 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -28,19 +28,29 @@ using Uno.Foundation.Logging;
 using Uno.Storage.Internal;
 using Uno.UI;
 using Uno.UI.Xaml;
+using System.Diagnostics.CodeAnalysis;
+
+using NativeMethods = __Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.NativeMethods;
+using System.Runtime.InteropServices.JavaScript;
 
 // As IDragDropExtension is internal, the generated registration cannot be used.
 // [assembly: ApiExtension(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension))]
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	internal class DragDropExtension : IDragDropExtension
+	internal partial class DragDropExtension : IDragDropExtension
 	{
 		private const long _textReadTimeoutTicks = 10 * TimeSpan.TicksPerSecond;
-		private const string _jsType = "Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension";
+
 		private static readonly Logger _log = typeof(DragDropExtension).Log();
+		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
 		private static DragDropExtension? _current;
+
+		/// <summary>
+		/// Conditional support for external drag and drop. See the UnoDragDropExternalSupport msbuild property.
+		/// </summary>
+		public static bool IsExternalDragAndDropSupported { get; } = true;
 
 		public static DragDropExtension GetForCurrentView()
 		{
@@ -49,10 +59,17 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 			if (_current is null && Interlocked.CompareExchange(ref _current, new DragDropExtension(), null) is null)
 			{
-				// For now we enable the D&DExtension sync at creation and we don't support disable.
-				// This allow us to prevent a drop of a content on an app which actually don't support D&D
-				// (would drive the browser to open the dragged file and "dismiss" the app).
-				_current.Enable();
+				if (IsExternalDragAndDropSupported)
+				{
+					// For now we enable the D&DExtension sync at creation and we don't support disable.
+					// This allow us to prevent a drop of a content on an app which actually don't support D&D
+					// (would drive the browser to open the dragged file and "dismiss" the app).
+					_current.Enable();
+				}
+				else
+				{
+					EnableExternalWarning();
+				}
 			}
 
 			return _current;
@@ -70,6 +87,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				?? throw new InvalidOperationException("No CoreDragDropManager available for current thread.");
 		}
 
+		[DynamicDependency(nameof(OnNativeDropEvent))]
 		private void Enable()
 		{
 			if (Interlocked.CompareExchange(ref _isInitialized, 1, 0) == 0)
@@ -84,6 +102,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 
+		private static void EnableExternalWarning()
+		{
+			NativeMethods.RegisterNoOp();
+		}
+
 		/// <inheritdoc />
 		void IDragDropExtension.StartNativeDrag(CoreDragInfo info)
 		{
@@ -93,6 +116,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[JSExport]
 		public static string OnNativeDropEvent()
 		{
 			try
@@ -282,8 +306,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				"text/uri-list" => // https://datatracker.ietf.org/doc/html/rfc2483#section-5
 					(StandardDataFormats.WebLink,
 					async ct => new Uri((await RetrieveText(ct, id))
-						.Split(new[]{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
-						.Where(line => !line.StartsWith("#"))
+						.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
+						.Where(line => !line.StartsWith('#'))
 						.First())),
 				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),
 				"text/html" => (StandardDataFormats.Html, async ct => await RetrieveText(ct, id)),
@@ -293,8 +317,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<IReadOnlyList<IStorageItem>> RetrieveFiles(CancellationToken ct, params int[] itemsIds)
 		{
-			var rawItemsIds = string.Join(", ", itemsIds.Select(id => id.ToStringInvariant()));
-			var infosRaw = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveFiles({rawItemsIds})", ct);
+			var infosRaw = await NativeMethods.RetrieveFilesAsync(itemsIds);
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw);
 			var items = infos.Select(StorageFile.GetFromNativeInfo).ToList();
 
@@ -303,10 +326,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<string> RetrieveText(CancellationToken ct, int itemId)
 		{
-			using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, new CancellationTokenSource(TimeSpan.FromTicks(_textReadTimeoutTicks)).Token);
-			var text = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveText({itemId.ToStringInvariant()})", cts.Token);
-
-			return text;
+			return await NativeMethods.RetrieveTextAsync(itemId);
 		}
 
 		private static DataPackageOperation ToDataPackageOperation(string allowedOperations)
@@ -329,7 +349,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		private static string ToNativeOperation(DataPackageOperation acceptedOperation)
 		{
 			// If multiple flags set (which should not!), the UWP precedence is Link > Copy > Move
-			// This is the same logic used in the DragView.ToGlyph 
+			// This is the same logic used in the DragView.ToGlyph
 			if (acceptedOperation.HasFlag(DataPackageOperation.Link))
 			{
 				return "link";
@@ -449,7 +469,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					+ $" | modifiers: {string.Join(", ", GetModifiers(this))}"
 					+ $" | allowed: {allowedOperations} ({ToDataPackageOperation(allowedOperations)})"
 					+ $" | accepted: {acceptedOperation}"
-					+ $" | entries: {dataItems} ({(dataItems.HasValueTrimmed() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems)) : "")})";
+					+ $" | entries: {dataItems} ({(!dataItems.IsNullOrWhiteSpace() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems)) : "")})";
 
 				IEnumerable<string> GetModifiers(DragDropExtensionEventArgs that)
 				{
@@ -474,17 +494,18 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 
-		[DataContract]
 		private struct DataEntry
 		{
-			[DataMember]
+#pragma warning disable CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public int id;
 
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public string kind;
 
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public string type;
+#pragma warning restore CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
 
 			/// <inheritdoc />
 			public override string ToString()

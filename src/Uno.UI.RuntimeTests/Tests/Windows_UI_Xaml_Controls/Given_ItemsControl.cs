@@ -1,18 +1,18 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Windows.UI.Xaml.Markup;
-#if NETFX_CORE
+using Microsoft.UI.Xaml.Markup;
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -110,7 +110,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ContentPresenter cp = null;
 				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
-#if !NETFX_CORE // This is an Uno implementation detail
+#if !WINAPPSDK // This is an Uno implementation detail
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
 #endif
 
@@ -360,6 +360,215 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_ContentControl_ContainerRecycled_And_Explicit_Item()
+		{
+			var dataTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<TextBlock Text="{Binding}"/>
+				</DataTemplate>
+				""");
+
+			var selector = new TestTemplateSelector();
+
+			var source = new[]
+			{
+				new ContentControl { Content = "First", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentControl { Content = "Second", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentControl { Content = "Third", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			ContentControl first = null;
+			await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
+
+			ContentControl second = null;
+			await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentControl) != null);
+
+			ContentControl third = null;
+			await WindowHelper.WaitFor(() => (third = SUT.ContainerFromItem(source[2]) as ContentControl) != null);
+
+			Assert.IsNotNull(first);
+			Assert.IsNotNull(second);
+			Assert.IsNotNull(third);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
+
+			SUT.ItemsSource = null;
+
+			Assert.AreEqual("First", source[0].Content);
+			Assert.AreEqual("Second", source[1].Content);
+			Assert.AreEqual("Third", source[2].Content);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentPresenter_ContainerRecycled_And_Explicit_Item()
+		{
+			var dataTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<TextBlock Text="{Binding}"/>
+				</DataTemplate>
+				""");
+
+			var selector = new TestTemplateSelector();
+
+			var source = new[]
+			{
+				new ContentPresenter { Content = "First", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentPresenter { Content = "Second", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentPresenter { Content = "Third", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			ContentPresenter first = null;
+			await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+
+			ContentPresenter second = null;
+			await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentPresenter) != null);
+
+			ContentPresenter third = null;
+			await WindowHelper.WaitFor(() => (third = SUT.ContainerFromItem(source[2]) as ContentPresenter) != null);
+
+			Assert.IsNotNull(first);
+			Assert.IsNotNull(second);
+			Assert.IsNotNull(third);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
+
+			SUT.ItemsSource = null;
+
+			Assert.AreEqual("First", source[0].Content);
+			Assert.AreEqual("Second", source[1].Content);
+			Assert.AreEqual("Third", source[2].Content);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentPresenter_ContainerRecycled_And_ContentControl_Template()
+		{
+			var dataTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<ContentControl Content="{Binding}"/>
+				</DataTemplate>
+				""");
+
+			var selector = new TestTemplateSelector();
+
+			var source = new[]
+			{
+				"First",
+				"Second",
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemsSource = source,
+				ItemTemplate = dataTemplate
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			{
+				ContentPresenter first = null;
+				await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+
+				ContentPresenter second = null;
+				await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentPresenter) != null);
+
+				Assert.IsNotNull(first);
+				Assert.IsNotNull(second);
+
+				Assert.IsNotNull(first.Content);
+				Assert.IsNotNull(second.Content);
+
+				var firstInnerContent = first.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[0], firstInnerContent?.Content);
+				Assert.IsNotNull(firstInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+
+				var secondInnerContent = second.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[1], secondInnerContent.Content);
+				Assert.IsNotNull(secondInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+			}
+
+			SUT.ItemsSource = null;
+			await WindowHelper.WaitForIdle();
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			{
+				ContentPresenter first = null;
+				await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+
+				ContentPresenter second = null;
+				await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentPresenter) != null);
+
+				Assert.IsNotNull(first);
+				Assert.IsNotNull(second);
+
+				Assert.IsNotNull(first.Content);
+				Assert.IsNotNull(second.Content);
+
+				var firstInnerContent = first.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[0], firstInnerContent?.Content);
+				Assert.IsNotNull(firstInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+
+				var secondInnerContent = second.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[1], secondInnerContent.Content);
+				Assert.IsNotNull(secondInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task When_NestedItemsControl_RecycleTemplate()
 		{
 			var template = (DataTemplate)XamlReader.Load(@"
@@ -402,5 +611,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	internal partial class ContentControlItemsControl : ItemsControl
 	{
 		protected override DependencyObject GetContainerForItemOverride() => new ContentControl();
+	}
+
+	internal class TestTemplateSelector : DataTemplateSelector
+	{
+		public DataTemplate Template { get; set; }
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => Template;
 	}
 }

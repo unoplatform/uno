@@ -5,21 +5,21 @@ using System.Text;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-#if XAMARIN_IOS
+#if __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Views;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Content")]
+	[ContentProperty(Name = nameof(Content))]
 	public partial class Flyout : FlyoutBase
 	{
 		public Style FlyoutPresenterStyle
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for FlyoutPresenterStyle.  This enables animation, styling, binding, etc...
-		public static DependencyProperty FlyoutPresenterStyleProperty { get ; } =
+		public static DependencyProperty FlyoutPresenterStyleProperty { get; } =
 			DependencyProperty.Register(
 				"FlyoutPresenterStyle",
 				typeof(Style),
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static DependencyProperty ContentProperty { get ; } =
+		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(UIElement),
@@ -126,6 +126,16 @@ namespace Windows.UI.Xaml.Controls
 			if (Content is IDependencyObjectStoreProvider binder)
 			{
 				binder.Store.SetValue(binder.Store.TemplatedParentProperty, TemplatedParent, DependencyPropertyValuePrecedences.Local);
+			}
+		}
+
+		protected internal override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnDataContextChanged(e);
+
+			if (Content is IDependencyObjectStoreProvider binder)
+			{
+				binder.Store.SetValue(binder.Store.DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 

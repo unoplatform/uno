@@ -5,19 +5,19 @@ using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Numerics;
 using Common;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
 using Task = System.Threading.Tasks.Task;
 
@@ -30,30 +30,32 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
-using LayoutContext = Microsoft.UI.Xaml.Controls.LayoutContext;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-//using ScrollPresenter = Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter;
-//using ScrollingScrollCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
-//using ScrollingZoomCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
-//using AnimationMode = Microsoft.UI.Xaml.Controls.AnimationMode;
-//using SnapPointsMode = Microsoft.UI.Xaml.Controls.SnapPointsMode;
-//using ScrollingScrollOptions = Microsoft.UI.Xaml.Controls.ScrollingScrollOptions;
-//using ScrollingZoomOptions = Microsoft.UI.Xaml.Controls.ScrollingZoomOptions;
-//using ContentOrientation = Microsoft.UI.Xaml.Controls.ContentOrientation;
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
+using LayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutContext;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+//using ScrollPresenter = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ScrollPresenter;
+//using ScrollingScrollCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
+//using ScrollingZoomCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
+//using AnimationMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationMode;
+//using SnapPointsMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SnapPointsMode;
+//using ScrollingScrollOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollOptions;
+//using ScrollingZoomOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomOptions;
+//using ContentOrientation = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ContentOrientation;
 using IRepeaterScrollingSurface = Microsoft.UI.Private.Controls.IRepeaterScrollingSurface;
 using ConfigurationChangedEventHandler = Microsoft.UI.Private.Controls.ConfigurationChangedEventHandler;
 using PostArrangeEventHandler = Microsoft.UI.Private.Controls.PostArrangeEventHandler;
 using ViewportChangedEventHandler = Microsoft.UI.Private.Controls.ViewportChangedEventHandler;
 
 using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
@@ -76,11 +78,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = repeater;
 				Content.UpdateLayout();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				Verify.AreEqual(2, realizationRects.Count);
+				Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
+#else
 				// TODO: Uno specific: In our case only one Measure loop occurs
 				// possibly because of a different parent tree of the test.
 				Verify.AreEqual(1, realizationRects.Count);
 				//Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
 				realizationRects.Insert(0, default);
+#endif
 
 				if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 				{
@@ -103,11 +110,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		// [TestMethod] Temporarily disabled for bug 18866003
-		public void ValidateItemsRepeaterScrollHostScenario()
+		public async Task ValidateItemsRepeaterScrollHostScenario()
 		{
 			var realizationRects = new List<Rect>();
 			var scrollViewer = (ScrollViewer)null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 			int waitTime = 2000; // 2 seconds 
 
 			RunOnUIThread.Execute(() =>
@@ -159,8 +166,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -173,8 +180,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(400, 100.0, 1.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -185,8 +192,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, null, 2.0f, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(waitTime), "Waiting for view changed");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -238,7 +245,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					zoomCompletedEvent.Set();
 				};
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -338,7 +345,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					verticalScrollCompletedEvent.Set();
 				};
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -451,7 +458,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				}
 			});
 
-			foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+			foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 			{
 				RunOnUIThread.Execute(() =>
 				{
@@ -473,7 +480,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						scrollPresenters[1].ContentOrientation = ContentOrientation.Vertical;
 					}
 				});
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -486,7 +493,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					else
 					{
 						Log.Comment("Scrolling ScrollPresenter #2 to horizontal offset 150");
-						scrollPresenters[2].ScrollTo(150.0, 0.0, new ScrollingScrollOptions(AnimationMode.Disabled, SnapPointsMode.Ignore));						
+						scrollPresenters[2].ScrollTo(150.0, 0.0, new ScrollingScrollOptions(AnimationMode.Disabled, SnapPointsMode.Ignore));
 					}
 				});
 				Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
@@ -559,7 +566,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			if (!fullCacheEvent.WaitOne(500000)) Verify.Fail("Cache full size never reached.");
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -678,7 +685,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				// - Validate that the recycled element is no longer a candidate for tracking.
 				data[0].RemoveAt(1);
 				Content.UpdateLayout();
-				Verify.AreEqual(string.Join( ", ",
+				Verify.AreEqual(string.Join(", ",
 					new List<string>()
 					{
 						"S2: Unregister Item #0.1",
@@ -794,12 +801,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollers[3].IsVerticallyScrollable = true;
 				scrollers[1].IsHorizontallyScrollable = true;
 
-				foreach(var scrollableScroller in new [] { scrollers[1], scrollers[3] })
+				foreach (var scrollableScroller in new[] { scrollers[1], scrollers[3] })
 				{
 					scrollableScroller.RegisterAnchorCandidateFunc = (element) => { Log.Comment("Register {0}", ((FrameworkElement)element).Name); };
 					scrollableScroller.UnregisterAnchorCandidateFunc = (element) => { Log.Comment("Unregister {0}", ((FrameworkElement)element).Name); };
 					scrollableScroller.GetRelativeViewportFunc = (element) => { Log.Comment("GetRelativeViewport {0}", ((FrameworkElement)element).Name); return new Rect(0, 0, outerScroller.Width, outerScroller.Height); };
-				}				
+				}
 
 				var groups = Enumerable.Range(0, data.Count).Select(i =>
 				{
@@ -848,7 +855,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		// [TestMethod] Temporarily disabled for bug 18866003
-		public void ValidateLoadUnload()
+		public async Task ValidateLoadUnload()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
 			{
@@ -865,7 +872,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			TestScrollingSurface scroller2 = null;
 			ItemsRepeater repeater = null;
 			WeakReference repeaterWeakRef = null;
-			var renderingEvent = new ManualResetEvent(false);
+			var renderingEvent = new UnoManualResetEvent(false);
 
 			var unorderedLoadEvent = false;
 			var loadCounter = 0;
@@ -920,8 +927,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = host;
 			});
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			renderingEvent.Reset();
 			Log.Comment("Putting repeater in and out of scroller 1 until we observe two out-of-sync loaded/unloaded events.");
@@ -943,8 +950,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Log.Comment("Detected an unordered load/unload event.");
 			}
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			renderingEvent.Reset();
 			RunOnUIThread.Execute(() =>
@@ -957,8 +964,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scroller2.Content = repeater;
 			});
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -975,7 +982,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 			Verify.IsFalse(repeaterWeakRef.IsAlive);
 
@@ -991,8 +998,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
-			Verify.IsTrue(renderingEvent.WaitOne(), "Waiting for rendering event");
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.IsTrue(await renderingEvent.WaitOne(), "Waiting for rendering event");
 		}
 
 #if !HAS_UNO
@@ -1017,7 +1024,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet erat vel massa rutrum, eget mollis massa vulputate. Vivamus semper augue leo, eget faucibus nulla mattis nec. Donec scelerisque lacus at dui ultricies, eget auctor ipsum placerat. Integer aliquet libero sed nisi eleifend, nec rutrum arcu lacinia. Sed a sem et ante gravida congue sit amet ut augue. Donec quis pellentesque urna, non finibus metus. Proin sed ornare tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet erat vel massa rutrum, eget mollis massa vulputate. Vivamus semper augue leo, eget faucibus nulla mattis nec. Donec scelerisque lacus at dui ultricies, eget auctor ipsum placerat. Integer aliquet libero sed nisi eleifend, nec rutrum arcu lacinia. Sed a sem et ante gravida congue sit amet ut augue. Donec quis pellentesque urna, non finibus metus. Proin sed ornare tellus.";
 				var root = (Grid)XamlReader.Load(TestUtilities.ProcessTestXamlForRepo(
-					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' xmlns:controls='using:Microsoft.UI.Xaml.Controls'> 
+					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'> 
 						 <Grid.Resources>
 						   <controls:StackLayout x:Name='VerticalStackLayout' />
 						   <controls:RecyclingElementFactory x:Key='ElementFactory'>
@@ -1093,7 +1100,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 			Verify.IsTrue(rootLoadedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -1103,7 +1110,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				innerRepeater.GetOrCreateElement(14).StartBringIntoView();
 			});
 			Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.AreEqual(1, viewChangedOffsets.Count);
 			viewChangedOffsets.Clear();
 			ValidateRealizedRange(repeater, 8, 9, 9, 8, 9, 14);
@@ -1120,7 +1127,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 			});
 			Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsLessThan(1, viewChangedOffsets.Count);
 			viewChangedOffsets.Clear();
 			ValidateRealizedRange(repeater, 8, 9, 9, 6, 9, 14);
@@ -1141,7 +1148,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					});
 				});
 				Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				RunOnUIThread.Execute(() =>
 				{
@@ -1161,7 +1168,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 
 			Verify.IsTrue(scrollCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			ValidateRealizedRange(repeater, 2, 4, 3, 3, 3, 10);
 
 			// Code defect bug 17711793
@@ -1178,7 +1185,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			//});
 
 			//Verify.IsTrue(viewChangeCompletedEvent.WaitOne(DefaultWaitTimeInMS));
-			//IdleSynchronizer.Wait();
+			//await TestServices.WindowHelper.WaitForIdle();
 			//Verify.AreEqual(1, viewChangedOffsets.Count);   // Animations are always disabled for anchors outside the realized range.
 			//viewChangedOffsets.Clear();
 			//ValidateRealizedRange(repeater, 0, 1, 0, 0, 0, 6);
@@ -1227,7 +1234,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						{
 							var itemElement = innerRepeater.TryGetElement(itemIndex);
 
-							if(itemElement != null)
+							if (itemElement != null)
 							{
 								actualFirstItemGroupIndex =
 									actualFirstItemGroupIndex == -1 ?

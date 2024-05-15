@@ -18,7 +18,6 @@ var overridableMethods = @"
 	protected override void OnCreate(Bundle savedInstanceState);
 	public override View OnCreateView(View parent, string name, Context context, IAttributeSet attrs);CreateViewWithParent
 	public override View OnCreateView(string name, Context context, IAttributeSet attrs);
-	protected virtual bool OnPrepareOptionsPanel(View view, IMenu menu);
 	// Removed because support 25 does not include this method anymore.
 	// public virtual void OnRequestPermissionsResult(int requestCode, string[] permissions);
 	protected virtual void OnResumeFragments();

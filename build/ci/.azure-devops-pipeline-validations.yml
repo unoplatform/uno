@@ -4,7 +4,6 @@ parameters:
 jobs:
 - job: Pipeline_Validations
   displayName: 'Pipeline Validations'
-  dependsOn: Commitsar
 
   strategy:
     matrix:

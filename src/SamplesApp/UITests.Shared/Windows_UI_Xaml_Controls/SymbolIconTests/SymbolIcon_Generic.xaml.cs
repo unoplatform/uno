@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.SymbolIconTests
 {
 	[Sample("Icons")]
 	public sealed partial class SymbolIcon_Generic : Page
-    {
-        public SymbolIcon_Generic()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public SymbolIcon_Generic()
+		{
+			this.InitializeComponent();
+		}
 
 		public List<SymbolListItem> Symbols { get; } =
 			Enum.GetValues(typeof(Symbol))
 				.Cast<Symbol>()
 				.Select(symbol => new SymbolListItem(symbol))
-				.ToList();		
-    }
+				.ToList();
+	}
 
 	public class SymbolListItem
 	{

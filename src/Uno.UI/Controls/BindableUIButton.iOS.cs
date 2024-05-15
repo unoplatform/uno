@@ -2,23 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using ObjCRuntime;
 
 using Uno.Foundation.Logging;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-#endif
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
 
 namespace Uno.UI.Views.Controls
 {
@@ -85,7 +76,7 @@ namespace Uno.UI.Views.Controls
 			{
 				if (value == null)
 				{
-					SetTitleColor(Windows.UI.Colors.Black, UIControlState.Normal);
+					SetTitleColor(Microsoft.UI.Colors.Black, UIControlState.Normal);
 					return;
 				}
 

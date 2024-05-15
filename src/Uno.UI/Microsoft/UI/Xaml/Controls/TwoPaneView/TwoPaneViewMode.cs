@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TwoPaneView.idl, commit c6174f1
+// MUX Reference TwoPaneView.idl, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that specify how panes are shown in a TwoPaneView.

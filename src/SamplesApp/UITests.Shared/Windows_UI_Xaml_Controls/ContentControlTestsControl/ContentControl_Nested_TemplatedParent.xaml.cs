@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,14 +9,14 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Helper;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using View = Windows.UI.Xaml.UIElement;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
@@ -41,7 +41,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 
 			while (!ct.IsCancellationRequested)
 			{
-				if(rootGrid.Children.Any())
+				if (rootGrid.Children.Any())
 				{
 					content = rootGrid.Children.First() as UIElement;
 					rootGrid.Children.Remove(content);
@@ -54,7 +54,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 				await Task.Delay(1000);
 			}
 
-			if(rootGrid.Children.Count == 0 && content != null)
+			if (rootGrid.Children.Count == 0 && content != null)
 			{
 				rootGrid.Children.Add(content);
 			}
@@ -67,7 +67,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for MyContent.  This enables animation, styling, binding, etc...
-		public static DependencyProperty MyContentProperty { get ; } =
+		public static DependencyProperty MyContentProperty { get; } =
 			DependencyProperty.Register("MyContent", typeof(MyNestedContent), typeof(ContentControl_Nested_TemplatedParent), new PropertyMetadata(null));
 	}
 
@@ -80,7 +80,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-		public static DependencyProperty MyPropertyProperty { get ; } =
+		public static DependencyProperty MyPropertyProperty { get; } =
 			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyNestedContent), new PropertyMetadata(0));
 	}
 }

@@ -7,10 +7,11 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.Foundation;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
@@ -18,7 +19,7 @@ using View = AppKit.NSView;
 using View = System.Object;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 
 	/// <summary>
@@ -26,7 +27,7 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	/// <remarks>This control is added in the visual tree, in place of the original content.</remarks>
 	public partial class ElementStub : FrameworkElement
-    {
+	{
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 		ManagedWeakReference _contentReference;
 
@@ -140,6 +141,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Func<View> ContentBuilder { get; set; }
 
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
+
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
@@ -179,17 +186,15 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
 			}
 
 			if (_content == null && !_isMaterializing)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
 				{
-#endif
 					_isMaterializing = true;
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
@@ -206,11 +211,8 @@ namespace Windows.UI.Xaml
 					}
 
 					MaterializationChanged?.Invoke(this);
-
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				}
 				finally
-#endif
 				{
 					_isMaterializing = false;
 				}

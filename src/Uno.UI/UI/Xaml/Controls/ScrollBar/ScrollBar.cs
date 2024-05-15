@@ -1,12 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Uno.Disposables;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using DirectUI;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -15,7 +17,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ScrollBar
 	{
@@ -31,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Flag indicating whether the ScrollBar must react to user input or not.
 		bool m_isIgnoringUserInput;
 
-		// Flag indicating whether the mouse is over the 
+		// Flag indicating whether the mouse is over the
 		bool m_isPointerOver;
 
 		// Used to prevent GoToState(true /*bUseTransitions*/) calls while applying the template.
@@ -103,7 +105,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// It's used by core controls (e.g. ScrollViewer) where the ScrollBar's orientation will never change.
 		/// It's required as, unlike UWP, a control which is Visibility = Collapsed will get its template applied anyway.
 		/// </remarks>
-		internal bool IsFixedOrientation { get; set; } = false;
+		internal bool IsFixedOrientation { get; set; }
 
 		// Initializes a new instance of the ScrollBar class.
 		public ScrollBar()
@@ -151,7 +153,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		// Apply a template to the 
+		// Apply a template to the
 		protected override void OnApplyTemplate()
 		{
 			string strAutomationName;
@@ -196,7 +198,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALLARGEINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEINCREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalLargeIncrease as RepeatButton, strAutomationName);
 					}
 				}
@@ -208,7 +210,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALSMALLINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLINCREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalSmallIncrease, strAutomationName);
 
 					}
@@ -221,7 +223,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALLARGEDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEDECREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalLargeDecrease, strAutomationName);
 
 					}
@@ -234,7 +236,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALSMALLDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLDECREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalSmallDecrease, strAutomationName);
 
 					}
@@ -247,7 +249,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALTHUMB, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALTHUMB");
 						AutomationProperties.SetName(m_tpElementHorizontalThumb, strAutomationName);
 
 					}
@@ -267,7 +269,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALALLARGEINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALALLARGEINCREASE");
 						AutomationProperties.SetName(m_tpElementVerticalLargeIncrease, strAutomationName);
 
 					}
@@ -281,7 +283,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALSMALLINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLINCREASE");
 						AutomationProperties.SetName(m_tpElementVerticalSmallIncrease, strAutomationName);
 
 					}
@@ -294,7 +296,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALLARGEDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALLARGEDECREASE");
 						AutomationProperties.SetName(m_tpElementVerticalLargeDecrease, strAutomationName);
 
 					}
@@ -307,7 +309,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALSMALLDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLDECREASE");
 						AutomationProperties.SetName(m_tpElementVerticalSmallDecrease, strAutomationName);
 
 					}
@@ -320,7 +322,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALTHUMB, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALTHUMB");
 						AutomationProperties.SetName(m_tpElementVerticalThumb as Thumb, strAutomationName);
 
 					}
@@ -513,7 +515,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Retrieves a reference to a child template object given its name
-		private T GetTemplateChildHelper<T>(string childName) where T:class
+		private T GetTemplateChildHelper<T>(string childName) where T : class
 			=> GetTemplateChild(childName) as T;
 
 		// IsEnabled property changed handler.
@@ -601,7 +603,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 
-		// Create ScrollBarAutomationPeer to represent the 
+		// Create ScrollBarAutomationPeer to represent the
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ScrollBarAutomationPeer(this);
@@ -825,15 +827,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Value indicating whether the ScrollBar reacts to user input or not.
-		private bool IsIgnoringUserInput
+		internal bool IsIgnoringUserInput
 		{
 			get => m_isIgnoringUserInput;
 			set => m_isIgnoringUserInput = value;
 		}
-
-		private UIElement ElementHorizontalTemplate => m_tpElementHorizontalTemplate;
-
-		private UIElement ElementVerticalTemplate => m_tpElementVerticalTemplate;
 
 		// Called whenever the Thumb drag operation is started.
 		private void OnThumbDragStarted(
@@ -1026,7 +1024,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (m_tpElementHorizontalTemplate != null)
 			{
-				m_tpElementHorizontalTemplate .Visibility =
+				m_tpElementHorizontalTemplate.Visibility =
 					orientation == Orientation.Horizontal ?
 						Visibility.Visible :
 						Visibility.Collapsed;
@@ -1051,7 +1049,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		//Update scrollbar visibility based on what input device is active and the orientation
-		//of the 
+		//of the
 		void UpdateScrollBarVisibility()
 		{
 			OnOrientationChanged();
@@ -1314,6 +1312,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
+#if false
 		// during a SemanticZoomOperation we want to be able to block the scrollbar
 		// without stomping over the user value
 		void BlockIndicatorFromShowing()
@@ -1341,6 +1340,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			m_dragValue += delta;
 		}
-
+#endif
 	}
 }

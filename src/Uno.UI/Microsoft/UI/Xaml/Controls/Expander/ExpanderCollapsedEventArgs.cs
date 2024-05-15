@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+/// <summary>
+/// Provides data for the Expander.Collapsed event.
+/// </summary>
+public sealed partial class ExpanderCollapsedEventArgs
 {
-	public partial class ExpanderCollapsedEventArgs : EventArgs
+	internal ExpanderCollapsedEventArgs()
 	{
 	}
 }

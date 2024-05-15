@@ -1,50 +1,92 @@
 parameters:
   vmImage: ''
   vmMacImage: ''
+  vmLinuxImage: ''
   poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+  snapshotGroups:
+    - 0
+    - 1
+    - 2
+
+  snapshotGroupCount: 3
 
 jobs:
 - job: Skia_Tests_Build
-  displayName: 'Skia Samples App Build'
+  displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
 
-  #pool: ${{ parameters.poolName }}
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-
-  dependsOn: Pipeline_Validations
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
     GTK_RUNTIME_URL: https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2020-07-15/gtk3-runtime-3.24.20-2020-07-15-ts-win64.exe
 
-    # This is required to be able to use hard links as much as possible
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
+
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
-   
+  - checkout: self
+    clean: true
+
+  - template: templates/download-winui-converted-tree.yml
+
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk.binlog
     displayName: Build GTK Head
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
-      ArtifactName: skia-gtk-samples-app
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net7.0
+      ArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.WPF/SamplesApp.Skia.WPF.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
-    displayName: Build WPF Head
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
+    displayName: Build WPF Islands Head
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\netcoreapp3.1
-      ArtifactName: skia-wpf-samples-app
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net7.0-windows
+      ArtifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container
+
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
+    displayName: Build Generic Skia Head
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net7.0
+      ArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: skia-samples-app-binlog
       ArtifactType: Container
 
 ##
@@ -52,69 +94,335 @@ jobs:
 ##
 
 - job: Skia_Gtk_Screenshot_Tests
-  displayName: 'Skia Samples App Snapshot Tests'
+  displayName: 'Run Skia GTK Snapshot Tests'
   timeoutInMinutes: 60
 
-  #pool: ${{ parameters.poolName }}
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+
+  variables:
+    SamplesAppArtifactName: skia-gtk-samples-app-WinUI
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    SnapshotGroupCount: ${{ parameters.snapshotGroupCount }}
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  strategy:
+    matrix:
+      ${{ each testGroup in parameters.snapshotGroups }}:
+        Group_${{ testGroup }}:
+          SNAPSHOT_GROUP: ${{ testGroup }}
 
   steps:
+  - checkout: none
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-gtk-samples-app
+        artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
-  #- template: templates/gtk-install.yml
-  - template: templates/gtk-install-macos.yml
+  - template: templates/gtk-install-windows.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
-        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+        cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots --total-groups=$(SnapshotGroupCount) --current-group-index=$(SNAPSHOT_GROUP)
 
-    displayName: Run Skia UI Snapshot Tests
+    displayName: Run Skia GTK Snapshot Tests
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
       ArtifactType: Container
 
 - job: Skia_Gtk_Runtime_Tests_Build
-  displayName: 'Skia Samples App Runtime Tests'
-  timeoutInMinutes: 30
+  displayName: 'Run Skia GTK Runtime Tests'
+  timeoutInMinutes: 60
 
-  #pool: ${{ parameters.poolName }}
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmImage }}
+
+  strategy:
+    matrix:
+      GROUP_0:
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+      GROUP_1:
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+      GROUP_2:
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
   dependsOn: Skia_Tests_Build
 
+  variables:
+    SamplesAppArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UnoEnableHRuntimeTests: true
+
+    CI_Build: true
+
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
   steps:
+
+  - template: templates/download-winui-converted-tree.yml
+
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-gtk-samples-app
+        artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  #- template: templates/gtk-install.yml
-  - template: templates/gtk-install-macos.yml
+  - template: templates/gtk-install-windows.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug -p:UnoDisableNetCurrent=true
+    displayName: Build HR dependencies
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
         dotnet SamplesApp.Skia.Gtk.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml
 
-    displayName: Run Skia GTK Runtime Tests
+    displayName: Run Skia GTK $(XAML_FLAVOR_BUILD) Runtime Tests
+    env:
+      UnoEnableHRuntimeTests: $(UnoEnableHRuntimeTests)
+      SamplesAppArtifactPath: $(SamplesAppArtifactPath)
+      SamplesAppArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia GTK Runtime Tests'
+      testRunTitle: 'Skia GTK $(XAML_FLAVOR_BUILD) Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
+##
+## WPF
+##
+
+- job: Skia_Windows_Screenshot_Tests
+  displayName: 'Run Skia Windows Snapshot Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+
+  variables:
+    SamplesAppArtifactName: skia-generic-samples-app-WinUI
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: none
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
+        dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-windows-screenshots
+
+    displayName: Run Skia Windows Snapshot Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+- job: Skia_Windows_Runtime_Tests_Build
+  displayName: 'Run Skia Windows Runtime Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
+        dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml
+
+    displayName: Run Skia Windows $(XAML_FLAVOR_BUILD) Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia Windows $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+- job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
+  displayName: 'Run Uno Islands Skia WPF Runtime Tests'
+  timeoutInMinutes: 45
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-WinUI
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
+        dotnet UnoIslandsSamplesApp.Skia.Wpf.dll --runtime-tests=$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml
+
+    displayName: Run Uno Islands Skia WPF Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Uno Islands Skia WPF Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+##
+## X11
+##
+
+- job: Skia_Linux_Screenshot_Tests
+  displayName: 'Run Skia Linux Snapshot Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+
+  dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+
+  variables:
+    SamplesAppArtifactName: skia-generic-samples-app-WinUI
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: none
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/linux-install-xvfb.yml
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
+
+    displayName: Run Skia Linux Snapshot Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+- job: Skia_Linux_Runtime_Tests_Build
+  displayName: 'Run Skia Linux Runtime Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+  - template: templates/linux-install-xvfb.yml
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
+
+    displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
+    env:
+      SamplesAppArtifactPath: $(SamplesAppArtifactPath)
+      SamplesAppArtifactName: $(SamplesAppArtifactName)
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia Linux $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true

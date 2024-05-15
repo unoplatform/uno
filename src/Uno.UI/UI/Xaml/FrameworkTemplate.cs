@@ -5,27 +5,27 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Microsoft.UI.Xaml.Markup;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
 	public delegate View? FrameworkTemplateBuilder(object? owner);
-	
-	public partial class FrameworkTemplate : DependencyObject
+
+	[ContentProperty(Name = "Template")]
+	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
 		internal readonly FrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <returns>A potentially cached instance of the template</returns>
 		/// <remarks>
-		/// The owner of the template is the system, which means that an 
+		/// The owner of the template is the system, which means that an
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
@@ -84,12 +84,10 @@ namespace Windows.UI.Xaml
 		/// Creates a new instance of the current template.
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
-		public View? LoadContent()
+		View? IFrameworkTemplateInternal.LoadContent()
 		{
 			View? view = null;
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 				if (_viewFactory != null)
@@ -97,9 +95,7 @@ namespace Windows.UI.Xaml
 					view = _viewFactory(_ownerRef?.Target);
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				ResourceResolver.PopScope();
 			}
@@ -139,12 +135,12 @@ namespace Windows.UI.Xaml
 				// Same instance
 				ReferenceEquals(left, right)
 
-				// Same delegate (possible if the delegate was created from a 
+				// Same delegate (possible if the delegate was created from a
 				// lambda, which are cached automatically by the C# compiler (as of v6.0)
 				|| left?._viewFactory == right?._viewFactory
 
-				// Same target method (instance or static) (possible if the delegate was created from a 
-				// method group, which are *not* cached by the C# compiler (required by 
+				// Same target method (instance or static) (possible if the delegate was created from a
+				// method group, which are *not* cached by the C# compiler (required by
 				// the C# spec as of version 6.0)
 				|| (
 					ReferenceEquals(left?._viewFactory?.Target, right?._viewFactory?.Target)

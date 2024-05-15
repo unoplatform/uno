@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using AppKit;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
-    internal static partial class InlineExtensions
-    {
+	internal static partial class InlineExtensions
+	{
 		internal static NSStringAttributes GetAttributes(this Inline inline)
 		{
 			return Uno.UI.NSStringAttributesHelper.GetAttributes(

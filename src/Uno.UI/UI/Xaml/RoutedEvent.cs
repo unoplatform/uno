@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[DebuggerDisplay("{" + nameof(Name) + "}")]
 	public partial class RoutedEvent
@@ -22,13 +21,11 @@ namespace Windows.UI.Xaml
 			IsGestureEvent = flag.IsGestureEvent();
 			IsDragAndDropEvent = flag.IsDragAndDropEvent();
 
-			IsAlwaysBubbled = IsPointerEvent || IsGestureEvent || IsManipulationEvent || IsDragAndDropEvent;
+			IsTunnelingEvent = flag.IsTunnelingEvent();
 		}
 
-		[Pure]
 		internal string Name { get; }
 
-		[Pure]
 		internal RoutedEventFlag Flag { get; }
 
 		/// <summary>
@@ -45,20 +42,16 @@ namespace Windows.UI.Xaml
 		/// Basically all routed events that are implementing the 'PrepareManaged***EventBubbling' to maintain local
 		/// state should opt-in for that.
 		/// </remarks>
-		[Pure]
-		internal bool IsAlwaysBubbled { get; }
-
-		[Pure]
+		internal bool IsTunnelingEvent { get; }
 		internal bool IsPointerEvent { get; }
-		[Pure]
 		internal bool IsKeyEvent { get; }
-		[Pure]
 		internal bool IsFocusEvent { get; }
-		[Pure]
 		internal bool IsManipulationEvent { get; }
-		[Pure]
 		internal bool IsGestureEvent { get; }
-		[Pure]
 		internal bool IsDragAndDropEvent { get; }
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> Name;
 	}
 }

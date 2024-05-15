@@ -2,19 +2,22 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
+using static Microsoft.UI.Xaml.Media.Imaging.BitmapImage;
 using Windows.Storage.Helpers;
+using Uno.UI.Xaml.Media;
+using Uno.Helpers;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class SvgImageSource
 	{
-		internal string ContentType { get; set; } = "image/svg+xml";
+		internal override string ContentType { get; } = "image/svg+xml";
 
 		partial void InitPartial()
 		{
@@ -22,42 +25,31 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			if (WebUri is { } webUri)
+			if (AbsoluteUri is { } absoluteUri)
 			{
 				image = default;
 
-				var hasFileScheme = webUri.IsAbsoluteUri && webUri.Scheme == "file";
+				var hasFileScheme = absoluteUri.IsAbsoluteUri && absoluteUri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
 				// Local files are assumed as coming from the remote server
 				var uri = hasFileScheme switch
 				{
-					true => new Uri(webUri.PathAndQuery.TrimStart('/'), UriKind.Relative),
-					_ => webUri
+					true => new Uri(absoluteUri.PathAndQuery.TrimStart('/'), UriKind.Relative),
+					_ => absoluteUri
 				};
 
 				if (uri.IsAbsoluteUri)
 				{
-					if (uri.Scheme == "http" || uri.Scheme == "https")
+					if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+						uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{
-						image = new ImageData
-						{
-							Kind = ImageDataKind.Url,
-							Value = uri.AbsoluteUri,
-							Source = this
-						};
+						image = ImageData.FromUrl(uri.AbsoluteUri, this);
 					}
-
-					// TODO: Implement ms-appdata
 				}
 				else
 				{
 					var path = AssetsPathBuilder.BuildAssetUri(uri.OriginalString);
-					image = new ImageData
-					{
-						Kind = ImageDataKind.Url,
-						Value = path,
-						Source = this
-					};
+					image = ImageData.FromUrl(path, this);
 				}
 
 				return image.Kind != default;
@@ -82,28 +74,22 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return true;
 			}
 
+			if (AbsoluteUri is { } absoluteUri)
+			{
+				if (absoluteUri.IsAppData())
+				{
+					asyncImage = OpenMsAppData(absoluteUri, ct);
+
+					return true;
+				}
+			}
+
 			asyncImage = default;
 			return false;
-
 		}
 
 		internal override void ReportImageLoaded() => RaiseImageOpened();
 
 		internal override void ReportImageFailed(string errorMessage) => RaiseImageFailed(SvgImageSourceLoadStatus.Other);
-
-		public override string ToString()
-		{
-			if (WebUri is { } uri)
-			{
-				return $"{GetType().Name}/{uri}";
-			}
-
-			if (_stream is { } stream)
-			{
-				return $"{GetType().Name}/{stream.GetType()}";
-			}
-
-			return $"{GetType().Name}/-empty-";
-		}
 	}
 }

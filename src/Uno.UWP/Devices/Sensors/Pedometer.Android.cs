@@ -1,59 +1,58 @@
-﻿#if __ANDROID__
+﻿#nullable enable
+
 using System;
-using System.Collections.Generic;
-using System.Threading;
-using Uno.Devices.Sensors.Helpers;
 using Android.Hardware;
 using Android.Runtime;
+using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
 	public partial class Pedometer
 	{
-		private readonly Sensor _sensor;
-		private StepCounterListener _listener;
+		private Sensor? _sensor;
+		private StepCounterListener? _listener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-		private Pedometer(Sensor stepCounterSensor)
-		{
-			_sensor = stepCounterSensor;
-		}
-
+		/// <summary>
+		/// Gets or sets the current report interval for the pedometer.
+		/// </summary>
 		public uint ReportInterval
 		{
 			get => _reportInterval;
 			set
 			{
-				if (_reportInterval != value)
+				if (_reportInterval == value)
 				{
-					lock (_syncLock)
-					{
-						_reportInterval = value;
+					return;
+				}
 
-						if (_readingChanged != null)
-						{
-							//restart reading to apply interval
-							StopReading();
-							StartReading();
-						}
+				lock (_syncLock)
+				{
+					_reportInterval = value;
+
+					if (_readingChanged != null)
+					{
+						//restart reading to apply interval
+						StopReading();
+						StartReading();
 					}
 				}
 			}
 		}
 
-		private static Pedometer TryCreateInstance()
+		private static Pedometer? TryCreateInstance()
 		{
 			var sensorManager = SensorHelpers.GetSensorManager();
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.StepCounter);
-			if (sensor != null)
-			{
-				return new Pedometer(sensor);
-			}
-			return null;
+
+			return sensor == null ? null : new();
 		}
 
 		private void StartReading()
 		{
+			var sensorManager = SensorHelpers.GetSensorManager();
+			_sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.StepCounter);
+
 			_listener = new StepCounterListener(this);
 			SensorHelpers.GetSensorManager().RegisterListener(
 				_listener,
@@ -69,6 +68,9 @@ namespace Windows.Devices.Sensors
 				_listener.Dispose();
 				_listener = null;
 			}
+
+			_sensor?.Dispose();
+			_sensor = null;
 		}
 
 		private class StepCounterListener : Java.Lang.Object, ISensorEventListener, IDisposable
@@ -78,17 +80,22 @@ namespace Windows.Devices.Sensors
 
 			public StepCounterListener(Pedometer pedometer) => _pedometer = pedometer;
 
-			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum]SensorStatus accuracy)
+			void ISensorEventListener.OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
 			{
 			}
 
-			void ISensorEventListener.OnSensorChanged(SensorEvent e)
+			void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 			{
+				if (e?.Values is not { } values)
+				{
+					return;
+				}
+
 				if ((DateTimeOffset.UtcNow - _lastReading).TotalMilliseconds >= _pedometer.ReportInterval)
 				{
 					var lastStepTimestamp = SensorHelpers.TimestampToDateTimeOffset(e.Timestamp);
 					var timeDifference = lastStepTimestamp - SensorHelpers.SystemBootDateTimeOffset;
-					var currentSteps = Convert.ToInt32(e.Values[0]);
+					var currentSteps = Convert.ToInt32(values[0]);
 					var pedometerReading = new PedometerReading(
 						currentSteps,
 						timeDifference,
@@ -96,10 +103,9 @@ namespace Windows.Devices.Sensors
 						lastStepTimestamp);
 
 					_lastReading = DateTimeOffset.UtcNow;
-					_pedometer.OnReadingChanged(pedometerReading);					
+					_pedometer.OnReadingChanged(pedometerReading);
 				}
 			}
 		}
 	}
 }
-#endif

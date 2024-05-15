@@ -1,7 +1,7 @@
-﻿using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
+﻿using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public class ProgressBarAutomationPeer : AutomationPeer, IRangeValueProvider
 	{
@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (patternInterface == PatternInterface.RangeValue)
 			{
-				if(_owner.IsIndeterminate)
+				if (_owner.IsIndeterminate)
 				{
 					return null;
 				}

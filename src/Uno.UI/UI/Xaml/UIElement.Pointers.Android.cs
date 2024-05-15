@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -18,29 +20,14 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{
-		private class TouchReRouter : Java.Lang.Object, View.IOnTouchListener
-		{
-			private readonly UIElement _target;
-
-			public TouchReRouter(IntPtr handle, JniHandleOwnership transfer)
-				: base(handle, transfer)
-			{
-			}
-
-			private TouchReRouter(UIElement target)
-				: base(IntPtr.Zero, JniHandleOwnership.DoNotRegister)
-			{
-				_target = target;
-			}
-
-			/// <inheritdoc />
-			public bool OnTouch(View view, MotionEvent nativeEvent)
-				=> _target.OnNativeMotionEvent(nativeEvent, view, true);
-		}
+		[ThreadStatic]
+		private static UIElement _sequenceReRouteTarget;
+		public static void ReRoutePointerSequenceTo(UIElement target)
+			=> _sequenceReRouteTarget = target;
 
 		partial void InitializePointersPartial()
 		{
@@ -108,6 +95,18 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativeMotionEvent(MotionEvent nativeEvent, PointerRoutedEventArgs args, MotionEventActions action, bool isInView)
 		{
+			// On Android (and IOS) as we have "implicit capture", if a pointer down has been rerouted (cf. InputManager.Pointers.ReRoute() - Flyout.OverlayInputPassThroughElement)
+			// we need to make sure that the whole sequence is re-routed to the target (otherwise only the down will be re-routed and we will remain in an invalid state).
+			if (args is { CanBubbleNatively: true } && _sequenceReRouteTarget is { } target && target != this)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug)) this.Log().Debug($"Rerouting pointer sequence (implicit capture) from {this.GetDebugName()} to {target.GetDebugName()}");
+
+				args.CanBubbleNatively = false;
+				args.OriginalSource = target;
+				target.OnNativeMotionEvent(nativeEvent, args, action, true);
+				return true;
+			}
+
 			// Warning: MotionEvent of other kinds are filtered out in native code (UnoMotionHelper.java)
 			switch (action)
 			{
@@ -138,11 +137,13 @@ namespace Windows.UI.Xaml
 					return OnNativePointerDown(args);
 				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
+					_sequenceReRouteTarget = null;
+
 					// For touch pointer, in the RootVisual we will redispatch this event to raise exit,
 					// but if the event has been handled, we need to raise it after the 'up' has been processed.
 					if (OnNativePointerUp(args))
 					{
-						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+						XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ProcessPointerUp(args, isAfterHandledUp: true);
 						return true;
 					}
 					else
@@ -152,6 +153,7 @@ namespace Windows.UI.Xaml
 				case PointerRoutedEventArgs.StylusWithBarrelUp:
 				case MotionEventActions.Up:
 				case MotionEventActions.PointerUp:
+					_sequenceReRouteTarget = null;
 					return OnNativePointerUp(args);
 
 				// We get ACTION_DOWN and ACTION_UP only for "left" button, and instead we get a HOVER_MOVE when pressing/releasing the right button of the mouse.
@@ -170,6 +172,7 @@ namespace Windows.UI.Xaml
 					return OnNativePointerMoveWithOverCheck(args, isInView);
 
 				case MotionEventActions.Cancel:
+					_sequenceReRouteTarget = null;
 					return OnNativePointerCancel(args, isSwallowedBySystem: true);
 
 				default:
@@ -254,12 +257,6 @@ namespace Windows.UI.Xaml
 				}
 			};
 		}
-
-		#region Capture
-		// No needs to explicitly capture pointers on Android, they are implicitly captured
-		// partial void CapturePointerNative(Pointer pointer);
-		// partial void ReleasePointerNative(Pointer pointer);
-		#endregion
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{

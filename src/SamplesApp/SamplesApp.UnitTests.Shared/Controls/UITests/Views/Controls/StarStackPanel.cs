@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Uno.UI.Samples.Helper;
 
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API && !__MACOS__
+#if !WINAPPSDK && !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API && !__MACOS__
 using System.Windows;
 using System.Windows.Controls;
 #else
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.Samples.Controls
@@ -38,7 +38,7 @@ namespace Uno.UI.Samples.Controls
 			double starTotal = 0;
 
 			var children = Children
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !__MACOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
+#if !WINAPPSDK && !__ANDROID__ && !__IOS__ && !__MACOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
 				.Cast<UIElement>()
 #endif
 				.OrderBy(GetPriority)
@@ -220,7 +220,7 @@ namespace Uno.UI.Samples.Controls
 			finalSize.Height -= VerticalTrim;
 
 			var children = Children
-#if !NETFX_CORE // Useless operator (==overhead on UI thread) for Jupiter platform
+#if !WINAPPSDK // Useless operator (==overhead on UI thread) for Jupiter platform
 				.Cast<UIElement>()
 #endif
 				.ToArray(); // Materialize the list (prevent interop on Jupiter Platform)
@@ -461,7 +461,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(OrientationProperty, value); }
 		}
 
-		public static DependencyProperty OrientationProperty { get ; } = DependencyProperty.Register
+		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register
 		(
 			"Orientation",
 			typeof(Orientation),
@@ -481,7 +481,7 @@ namespace Uno.UI.Samples.Controls
 			obj.SetValue(PriorityProperty, value);
 		}
 
-		public static DependencyProperty PriorityProperty { get ; } = DependencyProperty.RegisterAttached
+		public static DependencyProperty PriorityProperty { get; } = DependencyProperty.RegisterAttached
 		(
 			"Priority",
 			typeof(int),
@@ -491,7 +491,7 @@ namespace Uno.UI.Samples.Controls
 		#endregion
 
 		#region Sizes DependencyProperty
-		public static DependencyProperty SizesProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty SizesProperty { get; } = DependencyProperty.Register(
 			"Sizes", typeof(string), typeof(StarStackPanel), new PropertyMetadata(null, HandleSizesChanged));
 
 		public string Sizes
@@ -522,12 +522,14 @@ namespace Uno.UI.Samples.Controls
 		}
 
 		private static readonly Regex GridLengthParsingRegex =
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 			new Regex(
 				@"^(?:(?<stars>\d*(?:.\d*))\*)|(?<abs>\d+(?:.\d*))|(?<auto>Auto)|(?<star>\*)$",
-#if NETFX_CORE
+#if WINAPPSDK
 				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 #else
 				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled);
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 #endif
 
 		private static GridLength[] ParseGridLength(string s)
@@ -595,7 +597,7 @@ namespace Uno.UI.Samples.Controls
 
 		#region InterElementSpacing DependencyProperty
 
-		public static DependencyProperty InterElementSpacingProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty InterElementSpacingProperty { get; } = DependencyProperty.Register(
 			"InterElementSpacing", typeof(double), typeof(StarStackPanel), new PropertyMetadata((double)0.0, InvalidateLayoutOnChanged));
 
 		public double InterElementSpacing
@@ -616,7 +618,7 @@ namespace Uno.UI.Samples.Controls
 			obj.SetValue(SizeProperty, value);
 		}
 
-		public static DependencyProperty SizeProperty { get ; } = DependencyProperty.RegisterAttached
+		public static DependencyProperty SizeProperty { get; } = DependencyProperty.RegisterAttached
 		(
 			"Size",
 			typeof(GridLength),
@@ -642,7 +644,7 @@ namespace Uno.UI.Samples.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
-		public static DependencyProperty PaddingProperty { get ; } =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register("Padding", typeof(Thickness), typeof(StarStackPanel), new PropertyMetadata(default(Thickness), InvalidateLayoutOnChanged));
 
 		#endregion

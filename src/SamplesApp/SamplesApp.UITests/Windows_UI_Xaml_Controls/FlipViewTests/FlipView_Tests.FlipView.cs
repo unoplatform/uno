@@ -11,9 +11,9 @@ using System.Linq;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 {
-    [TestFixture]
-    public partial class FlipView_Tests : SampleControlUITestBase
-    {
+	[TestFixture]
+	public partial class FlipView_Tests : SampleControlUITestBase
+	{
 		// Green, Blue, Red, Fuchsia, Orange
 		const string ButtonColors = "#008000,#0000FF,#FF0000,#FF00FF,#FFA500";
 

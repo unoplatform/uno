@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,20 +8,25 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Helper;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
+using UITests.Shared.Helpers;
+using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
 	[Sample("Brushes")]
-	public sealed partial class ImageBrush_StreamSource : UserControl
+	public sealed partial class ImageBrush_StreamSource : UserControl, IWaitableSample
 	{
+		private int _imageLoadCount;
+		private TaskCompletionSource _tcs = new();
+
 		public static DependencyProperty MySourceProperty { get; } =
 			DependencyProperty.Register("MySource", typeof(ImageSource), typeof(ImageBrush_StreamSource), new PropertyMetadata(null));
 
@@ -37,25 +42,51 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 
 			this.RunWhileLoaded(async ct =>
 			{
-#if __WASM__
-				using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
-#else
 				using var httpClient = new HttpClient();
-#endif
-				const string imageUrl = "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.jpg";
+				const string imageUrl = "https://uno-assets.platform.uno/tests/images/uno-overalls.jpg";
 				var data = await httpClient.GetByteArrayAsync(imageUrl);
 
 				BitmapImage bitmapImage;
 				MySource = bitmapImage = new BitmapImage();
 
-#if NETFX_CORE
+#if WINAPPSDK
 				using var stream = new MemoryStream(data).AsRandomAccessStream();
 #else
 				using var stream = new MemoryStream(data);
 #endif
 				await bitmapImage.SetSourceAsync(stream);
 				MySource = bitmapImage;
+
+				imageBrush1.ImageOpened += ImageOpened;
+				imageBrush1.ImageFailed += ImageFailed;
+				imageBrush2.ImageOpened += ImageOpened;
+				imageBrush2.ImageFailed += ImageFailed;
+				imageBrush3.ImageOpened += ImageOpened;
+				imageBrush3.ImageFailed += ImageFailed;
+				imageBrush4.ImageOpened += ImageOpened;
+				imageBrush4.ImageFailed += ImageFailed;
+				imageBrush5.ImageOpened += ImageOpened;
+				imageBrush5.ImageFailed += ImageFailed;
+				imageBrush6.ImageOpened += ImageOpened;
+				imageBrush6.ImageFailed += ImageFailed;
 			});
+		}
+
+		public Task SamplePreparedTask => _tcs.Task;
+
+		private void ImageOpened(object sender, RoutedEventArgs e)
+			=> ImageOpenedOrFailed();
+
+		private void ImageFailed(object sender, ExceptionRoutedEventArgs e)
+			=> ImageOpenedOrFailed();
+
+		private void ImageOpenedOrFailed()
+		{
+			_imageLoadCount++;
+			if (_imageLoadCount == 6)
+			{
+				_tcs.SetResult();
+			}
 		}
 	}
 }

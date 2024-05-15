@@ -9,11 +9,10 @@ namespace DirectUI
 	internal partial class BudgetManager
 	{
 		// The default elapsed time before deferring
-		private const int BUDGET_MANAGER_DEFAULT_LIMIT = 40;
+		//private const int BUDGET_MANAGER_DEFAULT_LIMIT = 40;
 
 		//long m_freq;
 		//long m_startFrameTime;
 		//long m_endFrameTime;
 	}
 }
-

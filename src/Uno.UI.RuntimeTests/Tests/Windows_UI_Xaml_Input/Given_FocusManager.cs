@@ -6,10 +6,11 @@ using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
@@ -21,6 +22,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		public async Task GotLostFocus()
 		{
 			using var _ = new AssertionScope();
+			var buttons = new Button[4];
+			RoutedEventHandler[] onButtonGotFocus = new RoutedEventHandler[4];
+			RoutedEventHandler[] onButtonLostFocus = new RoutedEventHandler[4];
+			EventHandler<FocusManagerGotFocusEventArgs> onFocusManagerGotFocus = null;
+			EventHandler<FocusManagerLostFocusEventArgs> onFocusManagerLostFocus = null;
+
 			try
 			{
 				var panel = new StackPanel();
@@ -29,7 +36,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				var receivedGotFocus = new bool[4];
 				var receivedLostFocus = new bool[4];
 
-				var buttons = new Button[4];
 				for (var i = 0; i < 4; i++)
 				{
 					var button = new Button
@@ -68,31 +74,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				for (var i = 0; i < 4; i++)
 				{
 					var inner = i;
-					buttons[i].GotFocus += (o, e) =>
+
+					onButtonGotFocus[i] = (o, e) =>
 					{
 						receivedGotFocus[inner] = true;
 						wasEventRaised = true;
-						FocusManager.GetFocusedElement().Should().NotBeNull($"buttons[{i}].GotFocus");
+						FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"buttons[{i}].GotFocus");
 					};
 
-					buttons[i].LostFocus += (o, e) =>
+					onButtonLostFocus[i] = (o, e) =>
 					{
 						receivedLostFocus[inner] = true;
 						wasEventRaised = true;
-						FocusManager.GetFocusedElement().Should().NotBeNull($"buttons[{i}].LostFocus");
+						FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"buttons[{i}].LostFocus");
 					};
+
+					buttons[i].GotFocus += onButtonGotFocus[i];
+
+					buttons[i].LostFocus += onButtonLostFocus[i];
 				}
 
-				FocusManager.GotFocus += (o, e) =>
+				onFocusManagerGotFocus = (o, e) =>
 				{
-					FocusManager.GetFocusedElement().Should().NotBeNull($"FocusManager.GotFocus - element");
+					FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"FocusManager.GotFocus - element");
 					wasEventRaised = true;
 				};
-				FocusManager.LostFocus += (o, e) =>
+
+				onFocusManagerLostFocus = (o, e) =>
 				{
-					FocusManager.GetFocusedElement().Should().NotBeNull($"FocusManager.LostFocus - element");
+					FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"FocusManager.LostFocus - element");
 					wasEventRaised = true;
 				};
+
+				FocusManager.GotFocus += onFocusManagerGotFocus;
+
+				FocusManager.LostFocus += onFocusManagerLostFocus;
 
 				buttons[1].Focus(FocusState.Programmatic);
 				buttons[3].Focus(FocusState.Programmatic);
@@ -117,7 +133,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			}
 			finally
 			{
+				for (var i = 0; i < 4; i++)
+				{
+					buttons[i].GotFocus -= onButtonGotFocus[i];
+					buttons[i].LostFocus -= onButtonLostFocus[i];
+				}
 
+				FocusManager.GotFocus -= onFocusManagerGotFocus;
+
+				FocusManager.LostFocus -= onFocusManagerLostFocus;
 			}
 		}
 
@@ -215,6 +239,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 		public async Task When_Page_Navigates_Focus_Outside_Frame()
 		{
 			var stackPanel = new StackPanel();
@@ -443,17 +470,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 			textBox1.Focus(FocusState.Programmatic);
 
-			var moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
-			var focused = FocusManager.GetFocusedElement();
+			var moved = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 
 			Assert.IsTrue(moved);
 			Assert.AreEqual(textBox2, focused);
 
-			moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
-			focused = FocusManager.GetFocusedElement();
+			moved = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
+			focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 
 			Assert.IsTrue(moved);
 			Assert.AreEqual(button, focused);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
+#endif
+		public async Task When_FocusChanged_PreventScroll()
+		{
+			var ts1 = new ToggleSwitch();
+			var ts2 = new ToggleSwitch();
+			var SUT = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Spacing = 1200,
+					Children =
+					{
+						ts1, ts2
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+
+			ts2.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+			SUT.ScrollToVerticalOffset(99999);
+
+			ts1.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			Assert.AreEqual(SUT.ScrollableHeight, SUT.VerticalOffset);
 		}
 
 		private async Task WaitForLoadedEvent(FocusNavigationPage page)
@@ -499,7 +573,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		private void AssertHasFocus(Control control)
 		{
 			control.Should().NotBeNull("control");
-			var focused = FocusManager.GetFocusedElement();
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 			focused.Should().NotBeNull("focused element");
 			focused.Should().BeSameAs(control, "must be same element");
 			control.FocusState.Should().NotBe(FocusState.Unfocused);

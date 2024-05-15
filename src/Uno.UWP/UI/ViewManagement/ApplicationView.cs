@@ -3,15 +3,20 @@
 #pragma warning disable 67
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Windows.Foundation;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
-using System.Threading.Tasks;
-
+using Windows.Foundation;
 using Windows.Storage;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
+using MUXWindowId = Microsoft.UI.WindowId;
 
 namespace Windows.UI.ViewManagement
 {
@@ -21,19 +26,30 @@ namespace Windows.UI.ViewManagement
 		private const string PreferredLaunchViewWidthKey = "__Uno.PreferredLaunchViewSizeKey.Width";
 		private const string PreferredLaunchViewHeightKey = "__Uno.PreferredLaunchViewSizeKey.Height";
 
-		private static ApplicationView _instance = new ApplicationView();
+		private static readonly ConcurrentDictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
+
+		private readonly MUXWindowId _windowId;
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
 		private IReadOnlyList<Rect> _defaultSpanningRects;
 		private IApplicationViewSpanningRects _applicationViewSpanningRects;
 
-		private void Initialize()
-		{
-			_instance = this;
-		}
-
 		[global::Uno.NotImplemented]
 		public int Id => 1;
+
+		internal ApplicationView(MUXWindowId windowId)
+		{
+			_windowId = windowId;
+			InitializePlatform();
+		}
+
+		partial void InitializePlatform();
+
+		public string Title
+		{
+			get => AppWindow.GetFromWindowId(_windowId).Title;
+			set => AppWindow.GetFromWindowId(_windowId).Title = value;
+		}
 
 		public ApplicationViewOrientation Orientation
 		{
@@ -88,16 +104,82 @@ namespace Windows.UI.ViewManagement
 
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
-		[global::Uno.NotImplemented]
-		public bool IsFullScreenMode => true;
+		/// <summary>
+		/// Gets a value that indicates whether the app is running in full-screen mode.
+		/// </summary>
+		public bool IsFullScreenMode => GetAppWindow()?.Presenter is FullScreenPresenter;
+
+		public bool TryEnterFullScreenMode()
+		{
+			if (GetAppWindow() is { } appWindow)
+			{
+				appWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
+				return appWindow.Presenter is FullScreenPresenter;
+			}
+
+			return false;
+		}
+
+		public void ExitFullScreenMode() => GetAppWindow()?.SetPresenter(AppWindowPresenterKind.Default);
 
 		public global::Windows.UI.ViewManagement.ApplicationViewTitleBar TitleBar => _titleBar;
 
-		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView() => _instance;
+		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView()
+		{
+			// This is needed to ensure for "current view" there is always a corresponding ApplicationView instance.
+			// This means that Uno Islands and WinUI apps can keep using this API for now until we make the breaking change
+			// on Uno.WinUI codebase.
+			return GetOrCreateForWindowId(AppWindow.MainWindowId);
+		}
+
+		private AppWindow GetAppWindow() => AppWindow.GetFromWindowId(_windowId);
+
+#pragma warning disable RS0030 // Do not use banned APIs
+		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentViewSafe() => GetForCurrentView();
+#pragma warning restore RS0030 // Do not use banned APIs
+
+		internal static global::Windows.UI.ViewManagement.ApplicationView GetForWindowId(MUXWindowId windowId)
+		{
+			if (!_windowIdMap.TryGetValue(windowId, out var appView))
+			{
+				throw new InvalidOperationException(
+					$"ApplicationView corresponding with this window does not exist yet, which usually means " +
+					$"the API was called too early in the windowing lifecycle. Try to use ApplicationView later.");
+			}
+
+			return appView;
+		}
+
+		internal MUXWindowId WindowId
+		{
+			get
+			{
+				// TODO: If this proves costly, let's add another dictionary in the opposite direction.
+				foreach (var kvp in _windowIdMap)
+				{
+					if (kvp.Value == this)
+					{
+						return kvp.Key;
+					}
+				}
+
+				throw new UnreachableException($"Failed to find a WindowId for ApplicationView {this}");
+			}
+		}
+
+		internal static ApplicationView GetOrCreateForWindowId(MUXWindowId windowId)
+		{
+			if (!_windowIdMap.TryGetValue(windowId, out var appView))
+			{
+				appView = new(windowId);
+				_windowIdMap[windowId] = appView;
+			}
+
+			return appView;
+		}
 
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
-
 
 		public ApplicationViewMode ViewMode
 		{
@@ -143,7 +225,7 @@ namespace Windows.UI.ViewManagement
 			}
 			else if (viewMode == ApplicationViewMode.Spanning)
 			{
-				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.IsDualScreen == true;
+				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.SupportsSpanning == true;
 			}
 
 			return false;

@@ -117,11 +117,14 @@ namespace Windows.Media.Playback
 		private NSObject _playbackStalledNotification;
 		private NSObject _didPlayToEndTimeNotification;
 
-		public static NSString RateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
+		private static readonly NSString _rateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
 
 		const string MsAppXScheme = "ms-appx";
 
 		public IVideoSurface RenderSurface { get; } = new VideoSurface();
+
+		internal uint NaturalVideoHeight { get; private set; }
+		internal uint NaturalVideoWidth { get; private set; }
 
 		private void Initialize()
 		{
@@ -142,7 +145,7 @@ namespace Windows.Media.Playback
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
-					_player.RemoveObserver(_observer, new NSString("rate"), RateObservationContext.Handle);
+					_player.RemoveObserver(_observer, new NSString("rate"), _rateObservationContext.Handle);
 					_player.RemoveTimeObserver(_periodicTimeObserverObject);
 					_player.RemoveAllItems();
 				}
@@ -180,7 +183,7 @@ namespace Windows.Media.Playback
 			}
 #endif
 			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
-			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
+			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _rateObservationContext.Handle);
 
 			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime(_observer.OnMediaFailed);
 			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled(_observer.OnMediaStalled);
@@ -200,7 +203,7 @@ namespace Windows.Media.Playback
 			});
 		}
 
-		protected virtual void InitializeSource()
+		private void InitializeSource()
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
@@ -218,7 +221,7 @@ namespace Windows.Media.Playback
 				InitializePlayer();
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-				
+
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
@@ -246,9 +249,6 @@ namespace Windows.Media.Playback
 
 				// Adapt pitch to prevent "metallic echo" when changing playback rate
 				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
-				
-				MediaOpened?.Invoke(this, null);
-
 			}
 			catch (Exception ex)
 			{
@@ -277,15 +277,15 @@ namespace Windows.Media.Playback
 		{
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
-				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart(new char[] { '/' }));
-			}		
+				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart('/'));
+			}
 
 			if (uri.IsLocalResource())
 			{
-				var file = uri.PathAndQuery.TrimStart(new[] { '/' });
-				var fileName = Path.GetFileNameWithoutExtension(file);
-				var fileExtension = Path.GetExtension(file)?.Replace(".", "");
-				return NSBundle.MainBundle.GetUrlForResource(fileName, fileExtension);
+				var filePath = uri.PathAndQuery.TrimStart('/')
+				// UWP supports backward slash in path for directory separators
+				.Replace("\\", "/");
+				return NSUrl.CreateFileUrl(filePath, relativeToUrl: null);
 			}
 
 			if (uri.IsAppData())
@@ -298,11 +298,11 @@ namespace Windows.Media.Playback
 			{
 				return NSUrl.CreateFileUrl(uri.PathAndQuery, relativeToUrl: null);
 			}
-			
+
 			return new NSUrl(uri.ToString());
 		}
 
-#endregion
+		#endregion
 
 		public void Play()
 		{
@@ -345,12 +345,9 @@ namespace Windows.Media.Playback
 
 		private void OnMediaFailed(Exception ex = null, string message = null)
 		{
-			MediaFailed?.Invoke(this, new MediaPlayerFailedEventArgs()
-			{
-				Error = MediaPlayerError.Unknown,
-				ExtendedErrorCode = ex,
-				ErrorMessage = message ?? ex?.Message
-			});
+			MediaFailed?.Invoke(
+				this,
+				new MediaPlayerFailedEventArgs(MediaPlayerError.Unknown, message ?? ex?.Message, ex));
 
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 
@@ -361,13 +358,16 @@ namespace Windows.Media.Playback
 		{
 			if (_player?.CurrentItem != null)
 			{
+				IsVideo = _player.CurrentItem.Tracks?.Any(x => x.AssetTrack.FormatDescriptions.Any(x => x.MediaType == CMMediaType.Video)) == true;
+
 				if (_player.CurrentItem.Status == AVPlayerItemStatus.Failed || _player.Status == AVPlayerStatus.Failed)
 				{
 					OnMediaFailed();
 					return;
 				}
 
-				if (_player.Status == AVPlayerStatus.ReadyToPlay && PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
+				if (_player.Status == AVPlayerStatus.ReadyToPlay &&
+					PlaybackSession.PlaybackState is MediaPlaybackState.Opening or MediaPlaybackState.Buffering)
 				{
 					if (_player.Rate == 0.0)
 					{
@@ -379,14 +379,21 @@ namespace Windows.Media.Playback
 						_player.Play();
 					}
 				}
+
+				if (_player.Status == AVPlayerStatus.ReadyToPlay)
+				{
+					MediaOpened?.Invoke(this, null);
+				}
 			}
 		}
 
 		private void OnVideoRectChanged()
 		{
-			if (_videoLayer?.VideoRect != null)
+			if (_videoLayer?.VideoRect is { } videoRect)
 			{
-				VideoRatioChanged?.Invoke(this, _videoLayer.VideoRect.Width / Math.Max(_videoLayer.VideoRect.Height, 1));
+				NaturalVideoWidth = (uint)videoRect.Width;
+				NaturalVideoHeight = (uint)videoRect.Height;
+				NaturalVideoDimensionChanged?.Invoke(this, null);
 			}
 		}
 
@@ -474,6 +481,8 @@ namespace Windows.Media.Playback
 				}
 			}
 		}
+
+		public bool IsVideo { get; set; }
 
 		private void OnSeekCompleted(bool finished)
 		{

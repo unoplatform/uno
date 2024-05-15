@@ -1,12 +1,12 @@
-﻿#if NETFX_CORE
+﻿#if WINAPPSDK
 using Windows.ApplicationModel.Store;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 #elif HAS_UNO || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 #else
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -27,7 +27,7 @@ namespace Uno.UI.Samples.Helper
 			obj.SetValue(IsAttachedProperty, value);
 		}
 
-		public static DependencyProperty IsAttachedProperty { get ; } =
+		public static DependencyProperty IsAttachedProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"IsAttached",
 				typeof(bool),
@@ -44,7 +44,7 @@ namespace Uno.UI.Samples.Helper
 			obj.SetValue(CanNavigateBackProperty, value);
 		}
 
-		public static DependencyProperty CanNavigateBackProperty { get ; } =
+		public static DependencyProperty CanNavigateBackProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"CanNavigateBack",
 				typeof(bool),

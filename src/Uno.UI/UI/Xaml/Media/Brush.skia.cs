@@ -1,88 +1,19 @@
 ﻿using System;
 using System.Numerics;
 using Uno.Disposables;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.UI;
+using Microsoft/* UWP don't rename */.UI.Xaml.Media;
+using System.Collections.Generic;
+using Uno;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
-	public abstract partial class Brush
+	public partial class Brush
 	{
 		internal delegate void BrushSetterHandler(CompositionBrush brush);
 
-		/// <summary>
-		/// Registers observers for property changes on the specified Brush.
-		/// Note that skia implementation of this method should only be used for property observervation.
-		/// </summary>
-		internal static IDisposable AssignAndObserveBrush(Brush brush, Action<Color> colorSetter, Action imageBrushCallback = null)
-		{
-			colorSetter(Colors.Transparent);
-
-			if (brush == null)
-			{
-				return null;
-			}
-
-			var disposables = new CompositeDisposable();
-
-			void UpdateColor(object sender, DependencyPropertyChangedEventArgs e) => colorSetter(Colors.Transparent);
-			void UpdateColorWhenAnyChanged(DependencyObject source, params DependencyProperty[] properties)
-			{
-				foreach (var property in properties)
-				{
-					source
-						.RegisterDisposablePropertyChangedCallback(property, UpdateColor)
-						.DisposeWith(disposables);
-				}
-			}
-
-			if (brush is SolidColorBrush colorBrush)
-			{
-				UpdateColorWhenAnyChanged(colorBrush, new[]
-				{
-					SolidColorBrush.ColorProperty,
-					SolidColorBrush.OpacityProperty
-				});
-			}
-			else if (brush is GradientBrush gradientBrush)
-			{
-				if (gradientBrush is LinearGradientBrush linearGradient)
-				{
-					UpdateColorWhenAnyChanged(linearGradient, new[]
-					{
-						LinearGradientBrush.StartPointProperty,
-						LinearGradientBrush.EndPointProperty,
-					});
-				}
-
-				UpdateColorWhenAnyChanged(gradientBrush, new[]
-				{
-					GradientBrush.GradientStopsProperty,
-					GradientBrush.MappingModeProperty,
-					GradientBrush.OpacityProperty,
-					GradientBrush.SpreadMethodProperty,
-					GradientBrush.RelativeTransformProperty,
-				});
-			}
-			else if (brush is ImageBrush imageBrush)
-			{
-				imageBrush
-					.Subscribe(_ => colorSetter(Colors.Transparent))
-					.DisposeWith(disposables);
-			}
-			else if (brush is AcrylicBrush acrylicBrush)
-			{
-				UpdateColorWhenAnyChanged(acrylicBrush, new[]
-				{
-					AcrylicBrush.FallbackColorProperty,
-					AcrylicBrush.OpacityProperty,
-				});
-			}
-
-			return disposables;
-		}
-
-		internal static IDisposable AssignAndObserveBrush(Brush brush, Compositor compositor, BrushSetterHandler brushSetter, Action imageBrushCallback = null)
+		internal static IDisposable AssignAndObserveBrush(Brush brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			if (brush == null)
 			{
@@ -103,13 +34,13 @@ namespace Windows.UI.Xaml.Media
 			{
 				return AsssignAndObserveImageBrush(imageBrush, compositor, brushSetter);
 			}
-			else if (brush is AcrylicBrush acrylicBrush)
+			else if (brush is RadialGradientBrush radialGradientBrush)
 			{
-				return AssignAndObserveAcrylicBrush(acrylicBrush, compositor, brushSetter);
+				return AssignAndObserveRadialGradientBrush(radialGradientBrush, compositor, brushSetter);
 			}
-			else if (brush is XamlCompositionBrushBase unimplementedCompositionBrush)
+			else if (brush is XamlCompositionBrushBase compositionBrush)
 			{
-				return AssignAndObserveXamlCompositionBrush(unimplementedCompositionBrush, compositor, brushSetter);
+				return AssignAndObserveXamlCompositionBrush(compositionBrush, compositor, brushSetter);
 			}
 			else
 			{
@@ -212,32 +143,77 @@ namespace Windows.UI.Xaml.Media
 
 			var surfaceBrush = compositor.CreateSurfaceBrush();
 
-			brush.Subscribe(data =>
+			Action onInvalidateRender = () =>
 			{
-				surfaceBrush.Surface = data.Value;
-			}).DisposeWith(disposables);
+				if (brush.ImageDataCache is { } data)
+				{
+					surfaceBrush.Stretch = (CompositionStretch)brush.Stretch;
+					surfaceBrush.HorizontalAlignmentRatio = GetHorizontalAlignmentRatio(brush.AlignmentX);
+					surfaceBrush.VerticalAlignmentRatio = GetVerticalAlignmentRatio(brush.AlignmentY);
+					surfaceBrush.Surface = data.CompositionSurface;
+				}
+			};
 
+			onInvalidateRender();
+			brush.InvalidateRender += onInvalidateRender;
 			brushSetter(surfaceBrush);
-
-			return disposables;
+			return new DisposableAction(() => brush.InvalidateRender -= onInvalidateRender);
 		}
 
-		private static IDisposable AssignAndObserveAcrylicBrush(AcrylicBrush acrylicBrush, Compositor compositor, BrushSetterHandler brushSetter)
+		private static float GetHorizontalAlignmentRatio(AlignmentX alignmentX)
+		{
+			return alignmentX switch
+			{
+				AlignmentX.Left => 0.0f,
+				AlignmentX.Center => 0.5f,
+				AlignmentX.Right => 1.0f,
+				_ => 0.5f, // this should never happen.
+			};
+		}
+
+		private static float GetVerticalAlignmentRatio(AlignmentY alignmentY)
+		{
+			return alignmentY switch
+			{
+				AlignmentY.Top => 0.0f,
+				AlignmentY.Center => 0.5f,
+				AlignmentY.Bottom => 1.0f,
+				_ => 0.5f, // this should never happen.
+			};
+		}
+
+		private static IDisposable AssignAndObserveRadialGradientBrush(RadialGradientBrush brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			var disposables = new CompositeDisposable();
 
-			var compositionBrush = compositor.CreateColorBrush(acrylicBrush.FallbackColorWithOpacity);
+			var compositionBrush = CreateCompositionRadialGradientBrush(brush, compositor);
 
-			acrylicBrush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.FallbackColorProperty,
-				(s, colorArg) => compositionBrush.Color = acrylicBrush.FallbackColorWithOpacity
-			)
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.MappingModeProperty,
+					(s, e) => compositionBrush.MappingMode = (CompositionMappingMode)e.NewValue
+				)
 			.DisposeWith(disposables);
 
-			acrylicBrush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.OpacityProperty,
-				(s, colorArg) => compositionBrush.Color = acrylicBrush.FallbackColorWithOpacity
-			)
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.OpacityProperty,
+					(s, e) => ConvertGradientColorStops(
+						compositionBrush.Compositor,
+						compositionBrush,
+						((RadialGradientBrush)s).GradientStops,
+						(double)e.NewValue)
+				)
+			.DisposeWith(disposables);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.SpreadMethodProperty,
+					(s, e) => compositionBrush.ExtendMode = ConvertGradientExtendMode((GradientSpreadMethod)e.NewValue)
+				)
+			.DisposeWith(disposables);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.RelativeTransformProperty,
+					(s, e) => compositionBrush.RelativeTransformMatrix = ((Transform)e.NewValue)?.MatrixCore ?? Matrix3x2.Identity
+				)
 			.DisposeWith(disposables);
 
 			brushSetter(compositionBrush);
@@ -245,25 +221,32 @@ namespace Windows.UI.Xaml.Media
 			return disposables;
 		}
 
-		/// <summary>
-		/// Apply fallback colour for unimplemented <see cref="XamlCompositionBrushBase"/> types. For implemented types a more specific method
-		/// should be supplied.
-		/// </summary>
 		private static IDisposable AssignAndObserveXamlCompositionBrush(XamlCompositionBrushBase brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			var disposables = new CompositeDisposable();
 
-			var compositionBrush = compositor.CreateColorBrush(brush.FallbackColorWithOpacity);
+			if (brush.CompositionBrush is null)
+			{
+				brush.OnConnectedInternal();
+			}
+
+			var compositionBrush = brush.CompositionBrush ?? compositor.CreateColorBrush(brush.FallbackColorWithOpacity);
 
 			brush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.FallbackColorProperty,
-				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
+				XamlCompositionBrushBase.FallbackColorProperty,
+				(s, colorArg) => compositionBrush.TrySetColorFromBrush(brush)
 			)
 			.DisposeWith(disposables);
 
 			brush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.OpacityProperty,
-				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
+				XamlCompositionBrushBase.OpacityProperty,
+				(s, colorArg) => compositionBrush.TrySetColorFromBrush(brush)
+			)
+			.DisposeWith(disposables);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+				XamlCompositionBrushBase.CompositionBrushProperty,
+				(s, brushArg) => { if (brush.CompositionBrush is CompositionBrush compBrush) brushSetter(compBrush); }
 			)
 			.DisposeWith(disposables);
 
@@ -307,7 +290,21 @@ namespace Windows.UI.Xaml.Media
 			return compositionBrush;
 		}
 
-		private static void ConvertGradientColorStops(Compositor compositor, CompositionGradientBrush compositionBrush, GradientStopCollection gradientStops, double opacity)
+		private static CompositionRadialGradientBrush CreateCompositionRadialGradientBrush(RadialGradientBrush radialGradientBrush, Compositor compositor)
+		{
+			var compositionBrush = compositor.CreateRadialGradientBrush();
+			compositionBrush.EllipseCenter = radialGradientBrush.Center.ToVector2();
+			compositionBrush.EllipseRadius = new Vector2((float)radialGradientBrush.RadiusX, (float)radialGradientBrush.RadiusY);
+			ConvertGradientColorStops(compositor, compositionBrush, radialGradientBrush.GradientStops, radialGradientBrush.Opacity);
+			compositionBrush.GradientOriginOffset = radialGradientBrush.GradientOrigin.ToVector2();
+			compositionBrush.InterpolationSpace = radialGradientBrush.InterpolationSpace;
+			compositionBrush.MappingMode = ConvertBrushMappingMode(radialGradientBrush.MappingMode);
+			compositionBrush.RelativeTransformMatrix = radialGradientBrush.RelativeTransform?.MatrixCore ?? Matrix3x2.Identity;
+
+			return compositionBrush;
+		}
+
+		private static void ConvertGradientColorStops(Compositor compositor, CompositionGradientBrush compositionBrush, IEnumerable<GradientStop> gradientStops, double opacity)
 		{
 			compositionBrush.ColorStops.Clear();
 
@@ -340,6 +337,17 @@ namespace Windows.UI.Xaml.Media
 				case BrushMappingMode.RelativeToBoundingBox:
 				default:
 					return CompositionMappingMode.Relative;
+			}
+		}
+	}
+
+	internal static class BrushExtensions
+	{
+		internal static void TrySetColorFromBrush(this CompositionBrush brush, XamlCompositionBrushBase srcBrush)
+		{
+			if (brush is CompositionColorBrush colorBrush)
+			{
+				colorBrush.Color = srcBrush.FallbackColor;
 			}
 		}
 	}

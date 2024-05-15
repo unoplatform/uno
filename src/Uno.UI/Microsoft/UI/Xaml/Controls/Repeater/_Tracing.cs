@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal static partial class _Tracing
 	{
@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				builder.Append('\t', indent);
 			}
-			
+
 			for (var textIndex = 0; textIndex < text.Length; textIndex++)
 			{
 				var c = text[textIndex];

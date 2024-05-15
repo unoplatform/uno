@@ -4,7 +4,9 @@ using Windows.Foundation;
 using Windows.System;
 using Uno.Foundation;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Input;
 
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -12,9 +14,9 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
-	partial class PointerRoutedEventArgs
+	partial class PointerRoutedEventArgs : IHtmlHandleableRoutedEventArgs
 	{
 		private readonly double _timestamp;
 		private readonly Point _absolutePosition;
@@ -25,8 +27,7 @@ namespace Windows.UI.Xaml.Input
 
 		internal PointerRoutedEventArgs(
 			double timestamp,
-			uint pointerId,
-			PointerDeviceType pointerType,
+			PointerIdentifier pointerUniqueId,
 			Point absolutePosition,
 			bool isInContact,
 			bool isInRange,
@@ -46,15 +47,19 @@ namespace Windows.UI.Xaml.Input
 			_wheel = wheel;
 
 			FrameId = ToFrameId(timestamp);
-			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange);
+			Pointer = new Pointer(pointerUniqueId, isInContact, isInRange);
 			KeyModifiers = keys;
 			OriginalSource = source;
 		}
 
+		/// <inheritdoc />
+		/// <remarks>Default value for pointers is <see cref="HtmlEventDispatchResult.StopPropagation"/>.</remarks>
+		HtmlEventDispatchResult IHtmlHandleableRoutedEventArgs.HandledResult { get; set; } = HtmlEventDispatchResult.StopPropagation;
+
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var timestamp = ToTimeStamp(_timestamp);
-			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
+			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var rawPosition = _absolutePosition;
 			var position = relativeTo == null
 				? rawPosition
@@ -110,7 +115,7 @@ namespace Windows.UI.Xaml.Input
 
 		private static ulong ToTimeStamp(double timestamp)
 		{
-			_bootTime ??= (ulong)(double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture) * TimeSpan.TicksPerMillisecond);
+			_bootTime ??= (ulong)(WindowManagerInterop.GetBootTime() * TimeSpan.TicksPerMillisecond);
 
 			return _bootTime.Value + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
 		}

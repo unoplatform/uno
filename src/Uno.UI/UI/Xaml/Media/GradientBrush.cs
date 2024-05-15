@@ -1,7 +1,12 @@
-﻿using Windows.UI.Xaml.Markup;
-using Windows.UI;
+﻿#nullable enable
 
-namespace Windows.UI.Xaml.Media
+using Microsoft.UI.Xaml.Markup;
+
+#if HAS_UNO_WINUI
+using Windows.UI;
+#endif
+
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = "GradientStops")]
 	public abstract partial class GradientBrush : Brush
@@ -11,7 +16,7 @@ namespace Windows.UI.Xaml.Media
 			GradientStops = new GradientStopCollection();
 		}
 
-		public static DependencyProperty FallbackColorProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty FallbackColorProperty { get; } = DependencyProperty.Register(
 			"FallbackColor", typeof(Color), typeof(GradientBrush), new FrameworkPropertyMetadata(default(Color)));
 
 		public Color FallbackColor
@@ -20,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(FallbackColorProperty, value);
 		}
 
-		public static DependencyProperty GradientStopsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty GradientStopsProperty { get; } = DependencyProperty.Register(
 			"GradientStops",
 			typeof(GradientStopCollection),
 			typeof(GradientBrush),
@@ -30,13 +35,59 @@ namespace Windows.UI.Xaml.Media
 				)
 		);
 
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == GradientStopsProperty)
+			{
+				OnGradientStopsChanged(this, args);
+			}
+		}
+
+		private static void OnGradientStopsChanged(GradientBrush @this, DependencyPropertyChangedEventArgs args)
+		{
+			if (args.OldValue is GradientStopCollection oldValue)
+			{
+				oldValue.Added -= @this.OnAdded;
+				oldValue.Removed -= @this.OnRemoved;
+
+				foreach (var stop in oldValue)
+				{
+					stop.InvalidateRender -= @this.OnInvalidateRender;
+				}
+			}
+
+			if (args.NewValue is GradientStopCollection newValue)
+			{
+				newValue.Added += @this.OnAdded;
+				newValue.Removed += @this.OnRemoved;
+
+				foreach (var stop in newValue)
+				{
+					stop.InvalidateRender += @this.OnInvalidateRender;
+				}
+			}
+		}
+
+		private void OnAdded(GradientStop addedStop)
+		{
+			OnInvalidateRender();
+			addedStop.InvalidateRender += OnInvalidateRender;
+		}
+
+		private void OnRemoved(GradientStop removedStop)
+		{
+			OnInvalidateRender();
+			removedStop.InvalidateRender -= OnInvalidateRender;
+		}
+
 		public GradientStopCollection GradientStops
 		{
 			get => (GradientStopCollection)GetValue(GradientStopsProperty);
 			set => SetValue(GradientStopsProperty, value);
 		}
 
-		public static DependencyProperty MappingModeProperty { get ; } =
+		public static DependencyProperty MappingModeProperty { get; } =
 			DependencyProperty.Register(
 				"MappingMode",
 				typeof(BrushMappingMode),
@@ -67,5 +118,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
+
+		internal virtual bool CanApplyToBorder(CornerRadius cornerRadius) => true;
 	}
 }

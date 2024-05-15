@@ -242,7 +242,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				var ItemRoot = LabelFirstItem().FirstResult();
 
 				_app.TapCoordinates((float)(ItemRoot.Rect.X + ItemRoot.Rect.Width * .75), (float)(ItemRoot.Rect.Y + ItemRoot.Rect.Height * .5));
-				
+
 				ClickButton("GetItemCount");
 				Assert.AreEqual("4", ReadResult());
 				ClickButton("LabelItems");
@@ -310,7 +310,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				var root1 = QueryAll("Root.1");
 				Assert.IsNotNull(root1, "Verifying root.1 is found");
 				TapAt(root1, 36, 12); // offset by approximate chevron position
-				//Wait.ForIdle();
+									  //Wait.ForIdle();
 
 				Assert.AreEqual("Expanding Raised", ReadResult());
 			}
@@ -673,7 +673,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			var buttonAboveTreeView = QueryAll(buttonName).FirstResult();
 			Assert.IsNotNull(buttonAboveTreeView, "Verifying that we found a UIElement called " + buttonName);
 
-			_app.TapCoordinates((float)(buttonAboveTreeView.Rect.X + x), (float)(buttonAboveTreeView.Rect.Bottom + y));			
+			_app.TapCoordinates((float)(buttonAboveTreeView.Rect.X + x), (float)(buttonAboveTreeView.Rect.Bottom + y));
 			//Wait.ForIdle();
 		}
 
@@ -710,7 +710,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		private void TapAt(QueryEx query, double x, double y)
 		{
 			var firstResult = query.FirstResult();
-			
+
 			_app.TapCoordinates((float)(firstResult.Rect.X + x), (float)(firstResult.Rect.Y + y));
 		}
 

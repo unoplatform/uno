@@ -1,43 +1,66 @@
-# Uno Platform app solution structure
+---
+uid: Uno.Development.AppStructure
+---
 
-This guide briefly explains the structure of an app created with the default [Uno Platform app template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). It's particularly aimed at developers who have not worked with multi-platform codebases before. 
+# Solution Structure
+
+This guide briefly explains the structure of an app created with either the [`dotnet new unoapp` template](xref:Uno.GetStarted.dotnet-new) or the [Uno Platform Template Wizard](xref:Uno.GettingStarted.UsingWizard). It is particularly aimed at developers who have not worked with cross-platform codebases before.
 
 ## The project files in an Uno Platform app
 
-Let's say we've created a new solution with the [Uno Platform app template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), call it `HelloWorld`. It will already contain the following projects:
-
-1. A `HelloWorld.[Platform].csproj` file for each platform that Uno Platform supports: UWP (Windows), Android, iOS, and WebAssembly (Web). This project is known as the **head** for that platform. It contains typical information like settings, metadata, dependencies, and also a list of files included in the project. The platform *head* builds and packages the binary executable for that platform. 
-
-> The Android head is named `Droid` to avoid namespace clashes with the original Android namespace.
-
-2. A single `HelloWorld.Shared.shproj` file, plus an accompanying `HelloWorld.Shared.projitems` file. This *shared project* contains files that are shared between all of the heads.
-
-> The main reason the solution contains a shared project and not a cross-targeted library is related to a missing Visual Studio feature. At present time (VS16.1.x), building a head that references such a cross-targeted library implies that all target frameworks are built, leading to a slow developer inner loop.
-
-Normally, your UI and business logic will go in the shared project. Bootstrapping code, packaging settings, and platform-specific code goes in the corresponding platform head. [String resources](features/working-with-strings.md) normally go in the shared project. [Image assets](features/working-with-assets.md) may go either in the shared project or under each head. [Font assets](features/custom-fonts.md) must be placed under each head.
+After creating a new solution called `MyApp`, it will contain the following project:
 
 ![Uno Platform solution structure](Assets/solution-structure.png)
 
-## Understanding shared projects
+The `MyApp.csproj` project supports Mobile (iOS/Android/Mac Catalyst), WebAssembly, Desktop (native macOS, Linux X11/Framebuffer, Windows 7+), and Windows App SDK targets.
 
-Clearly understanding how shared projects work is important to using Uno Platform effectively. A shared project in Visual Studio is really nothing more than a list of files. Let's repeat that for emphasis: **a shared project is just a list of files**. Referencing a shared project in an ordinary `.csproj` project causes those files to be included in the project. They're treated in exactly the same way as the files inside the project. 
+You'll find below details about the contents of the solution.
 
-It's important to be aware that the code in a shared-project file is compiled separately for each platform head. This gives a great deal of flexibility, but it also means that shared code may work for one platform, but not another.
+### Platforms
 
-## Handling dependencies
+The Platforms folder contains platform specific files for targets supported by Uno Platform:
 
-Since a shared project is just a list of files, it can't depend on other projects, NuGet packages, or system assemblies. Instead those dependencies must be added to the projects that are referencing the shared project.
+- `Desktop` uses the [Uno Platform Skia Desktop](xref:Uno.Features.Uno.Sdk) support for Windows 7+, Linux, and macOS
+- `Android` contains files and assets specific to Android Phones, Tablets, TVs, and watches
+- `iOS` targets Apple's iOS devices, Phones and Tablets
+- `MacCatalyst` targets the macOS Catalyst platform
+- `WebAssembly` targets the browser using WebAssembly
+- `Windows` targets the [Windows App SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) to run on Windows
 
-For example, we decide we need to use the `Json.NET` library in our app. We install the NuGet package in our `HelloWorld.Droid` head, and add a class to our `HelloWorld.Shared` project:
+### Properties
 
-```csharp
-using Newtonsoft.Json;
+This folder contains the debug profile configuration. This is used to choose where to debug your Skia Desktop app (Local Windows or WSL), the Web Server for your WebAssembly app, or Package and Unpackaged modes for Windows App SDK.
 
-...
-```
+### Assets
 
-We run our app on Android and it works fine. But now the UWP head fails to compile because we forgot to install the NuGet package there. The solution in this case is to install the NuGet package in all the heads we're targeting.
+This folder contains [all the assets](xref:Uno.Features.Assets) (images, splash screens, data, ...) that are published as part of the app.
+
+## Other project files
+
+- `App.xaml` and `App.xaml.cs` are the common entry point for the app. The generic app setup runtime code generally goes here.
+- `MainPage.xaml` and `MainPage.xaml.cs` contain the main UI of the app.
+- `GlobalUsings.cs` contains the [global usings](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-directive#global-modifier) define for the project.
+- `app.manifest` contains [Windows specific configuration](https://learn.microsoft.com/en-us/windows/win32/sbscs/application-manifests) for `net8.0-desktop` and `net8.0-windows` targets.
+- `Package.appxmanifest` contains metadata about the application such as the app name and description.
+
+### Solution items
+
+This solution folder contains the configuration for the whole solution:
+
+- `global.json` contains the [.NET SDK configuration](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json) as well as the Uno.Sdk version to use. See [our documentation](xref:Uno.Features.Uno.Sdk) on how to update it.
+- `Directory.Build.props` and `Directory.Build.targets` contain common solution configurations applied to all projects.
+- `Directory.Packages.props` contains the [NuGet Central Package Management](https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management) package versions.
 
 ## Further information
 
-See additional guides on handling platform-specific [C# code](platform-specific-csharp.md) and [XAML markup](platform-specific-xaml.md) in an Uno Platform project.
+See additional guides on handling platform-specific [C# code](xref:Uno.Development.PlatformSpecificCSharp) and [XAML markup](xref:Uno.Development.PlatformSpecificXaml) in an Uno Platform project.
+
+## Next Steps
+
+Learn more about:
+
+- [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+- [Hot Reload feature](xref:Uno.Features.HotReload)
+- [Troubleshooting](xref:Uno.UI.CommonIssues)
+- [List of views implemented in Uno](implemented-views.md) for the set of available controls and their properties.
+- You can head to [How-tos and tutorials](xref:Uno.Tutorials.Intro) on how to work on your Uno Platform app.

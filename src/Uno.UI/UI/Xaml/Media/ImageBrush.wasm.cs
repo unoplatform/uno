@@ -1,16 +1,17 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 using Uno.Disposables;
 using System.Threading.Tasks;
 using System.Globalization;
 using System.Collections.Generic;
 using Uno.Extensions;
-
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Collections.Concurrent;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageBrush
 	{
@@ -123,7 +124,7 @@ namespace Windows.UI.Xaml.Media
 						);
 
 						// Clear any previous image, if any
-						foreach(var previousChild in pattern.GetChildren())
+						foreach (var previousChild in pattern.GetChildren())
 						{
 							pattern.RemoveChild(previousChild);
 						}
@@ -219,8 +220,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (!_naturalSizeCache.TryGetValue(_imageUri, out var naturalSize))
 			{
-				var command = "Uno.UI.WindowManager.current.getNaturalImageSize(\"" + _imageUri + "\");";
-				var naturalSizeResponse = await Uno.Foundation.WebAssemblyRuntime.InvokeAsync(command);
+				var naturalSizeResponse = await WindowManagerInterop.GetNaturalImageSizeAsync(_imageUri);
 
 				if (!TryParseNaturalSize(naturalSizeResponse, out naturalSize))
 				{
@@ -240,8 +240,8 @@ namespace Windows.UI.Xaml.Media
 			var imgElement = pattern.FindFirstChild();
 
 			imgElement?.SetAttribute(
-				("width", naturalSize.Width.ToString()),
-				("height", naturalSize.Height.ToString())
+				("width", naturalSize.Width.ToString(CultureInfo.InvariantCulture)),
+				("height", naturalSize.Height.ToString(CultureInfo.InvariantCulture))
 			);
 
 			var width = (int)target.ActualWidth;

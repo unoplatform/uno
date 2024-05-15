@@ -2,13 +2,13 @@
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Devices.Bluetooth;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "BluetoothSelectors", description: "Demonstrates use of Windows.Devices.Bluetooth*.GetDeviceSelector*")]
+	[SampleControlInfo("Windows.Devices", "BluetoothSelectors", description: "Demonstrates use of Windows.Devices.Bluetooth*.GetDeviceSelector*", ignoreInSnapshotTests: true)]
 	public sealed partial class BluetoothSelectors : UserControl
 	{
 		public BluetoothSelectors()

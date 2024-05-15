@@ -7,15 +7,15 @@ using System.Windows.Input;
 using CoreGraphics;
 using Foundation;
 using UIKit;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
 using System.Collections.Specialized;
 using Uno.Disposables;
 
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		[Uno.UnoOnly]
 		public bool UseCollectionAnimations { get; set; } = true;
 
-		private bool _animateScrollIntoView;
+		private bool _animateScrollIntoView = Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView;
 		public bool AnimateScrollIntoView
 		{
 			get { return _animateScrollIntoView; }
@@ -146,9 +146,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (NativePanel != null)
 			{
-				return NativePanel.IndexPathsForVisibleItems
-						.OrderBy(p => p.ToIndexPath())
-						.Select(NativePanel.CellForItem)
+				return NativePanel
+						.Subviews
 						.OfType<ListViewBaseInternalContainer>()
 						.Select(cell => cell.Content)
 						.Trim();
@@ -231,6 +230,21 @@ namespace Windows.UI.Xaml.Controls
 				ManagedVirtualizingPanel.GetLayouter().Refresh();
 
 				InvalidateMeasure();
+			}
+		}
+
+		public override void MovedToWindow()
+		{
+			base.MovedToWindow();
+
+			// Uno#13172: The header container can sometimes lose its data-context between/after frame navigation,
+			// especially so when the header has been scrolled out of viewport (far enough to be recycled) once.
+			if (Window is { })
+			{
+				if (InternalItemsPanelRoot is NativeListViewBase panel)
+				{
+					panel.UpdateHeaderAndFooter();
+				}
 			}
 		}
 	}

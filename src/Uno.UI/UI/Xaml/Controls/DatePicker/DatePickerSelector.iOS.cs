@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Uno.Disposables;
 using Foundation;
@@ -10,8 +10,9 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Globalization;
 using Uno.Helpers.Theming;
+using Windows.ApplicationModel.Core;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class DatePickerSelector
 	{
@@ -63,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 
 			UpdatePickerStyle();
-			UpdateTheme();
+			OverrideUIDatePickerTheme(this);
 
 			UpdatePickerValue(Date, animated: false);
 
@@ -125,10 +126,10 @@ namespace Windows.UI.Xaml.Controls
 
 			// TODO: support non-gregorian calendars
 
-			var winCalendar = new Windows.Globalization.Calendar(
-				new string[0],
-				Windows.Globalization.CalendarIdentifiers.Gregorian,
-				Windows.Globalization.ClockIdentifiers.TwentyFourHour);
+			var winCalendar = new global::Windows.Globalization.Calendar(
+				Array.Empty<string>(),
+				global::Windows.Globalization.CalendarIdentifiers.Gregorian,
+				global::Windows.Globalization.ClockIdentifiers.TwentyFourHour);
 
 			var calendar = new NSCalendar(NSCalendarType.Gregorian);
 
@@ -181,7 +182,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void Cancel()
 		{
-			if (_initialValue is {} initialDate)
+			if (_initialValue is { } initialDate)
 			{
 				_picker?.SetDate(initialDate, false);
 			}
@@ -236,14 +237,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateTheme()
+		internal static void OverrideUIDatePickerTheme(UIView picker)
 		{
 			// Force the background of the UIDatePicker to allow for proper
 			// readability.
 			UIDatePicker.Appearance.BackgroundColor =
-				SystemThemeHelper.SystemTheme == SystemTheme.Dark
+				CoreApplication.RequestedTheme == SystemTheme.Dark
 				? UIColor.Black
 				: UIColor.White;
+
+			picker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Dark
+				? UIUserInterfaceStyle.Dark
+				: UIUserInterfaceStyle.Light;
 
 			// UIDatePicker does not allow for fine-grained control of its appearance:
 			// https://developer.apple.com/documentation/uikit/uidatepicker

@@ -1,10 +1,10 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.Generic;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal class CalendarScrollViewerAutomationPeer : ScrollViewerAutomationPeer
 	{
@@ -25,22 +25,22 @@ namespace Windows.UI.Xaml.Controls
 			FrameworkElement spOwnerAsFrameworkElement;
 
 			spOwner = Owner;
-			spOwnerAsFrameworkElement = (FrameworkElement) spOwner;
+			spOwnerAsFrameworkElement = (FrameworkElement)spOwner;
 
 			DependencyObject spTemplatedParent;
 			spTemplatedParent = (spOwnerAsFrameworkElement as FrameworkElement).TemplatedParent;
 
-			if (spTemplatedParent is {})
+			if (spTemplatedParent is { })
 			{
 				CalendarView spCalendarView = spTemplatedParent as CalendarView;
 
-				if (spCalendarView is {})
+				if (spCalendarView is { })
 				{
 					CalendarViewGeneratorHost spGeneratorHost;
 					(spCalendarView as CalendarView).GetActiveGeneratorHost(out spGeneratorHost);
 					var pCalendarPanel = spGeneratorHost.Panel;
 
-					if (pCalendarPanel is {})
+					if (pCalendarPanel is { })
 					{
 						int firstIndex = -1;
 						int lastIndex = -1;
@@ -62,12 +62,12 @@ namespace Windows.UI.Xaml.Controls
 								DependencyObject spChildAsIDO;
 								CalendarViewBaseItem spChildAsItem;
 								spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
-								spChildAsItem = (CalendarViewBaseItem) spChildAsIDO;
+								spChildAsItem = (CalendarViewBaseItem)spChildAsIDO;
 
 								AutomationPeer spAutomationPeer;
 								spAutomationPeer = (spChildAsItem as CalendarViewBaseItem).GetAutomationPeer();
 
-								if (spAutomationPeer is {})
+								if (spAutomationPeer is { })
 								{
 									spAPChildren.Add(spAutomationPeer);
 								}

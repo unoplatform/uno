@@ -1,6 +1,6 @@
 ﻿using SamplesApp.Samples.NavigationViewSample;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -11,11 +11,11 @@ namespace SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests
 	/// </summary>
 	[SampleControlInfo("NavigationView", "NavigationView_BasicNavigation")]
 	public sealed partial class NavigationView_BasicNavigation : Page
-    {
-        public NavigationView_BasicNavigation()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public NavigationView_BasicNavigation()
+		{
+			this.InitializeComponent();
+		}
 
 		private void BasicNavigation_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
 		{

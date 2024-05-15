@@ -52,9 +52,9 @@ while [[ -z ${LAUNCHER_READY} ]]; do
 
     if [ $ANDROID_SIMULATOR_APILEVEL -ge 29 ];
     then
-    UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window 2>/dev/null | grep -E 'mCurrentFocus|mFocusedApp'`
+    UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window 2>/dev/null | grep -E 'mCurrentFocus|mFocusedApp' || true`
     else
-    UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window windows 2>/dev/null | grep -i mCurrentFocus`
+    UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window windows 2>/dev/null | grep -i mCurrentFocus || true`
     fi
 
     ELAPSED_TIME=$(( SECONDS - START_TIME ))

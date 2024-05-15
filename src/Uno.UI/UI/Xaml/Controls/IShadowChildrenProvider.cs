@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if XAMARIN_IOS
+#if __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using View = Android.Views.View;
 #elif __MACOS__
 using View = AppKit.NSView;
@@ -19,14 +19,14 @@ namespace Uno.UI.Controls
 	/// </summary>
 	internal interface IShadowChildrenProvider
 	{
-        /// <summary>
-        /// An enumerable of children views.
-        /// </summary>
+		/// <summary>
+		/// An enumerable of children views.
+		/// </summary>
 		/// <remarks>
 		/// This property is exposed as a concrete <see cref="List{T}"/> to benefit from
 		/// allocation-less enumeration of the shadow children.
 		/// </remarks>
-        List<View> ChildrenShadow { get; }
+		List<View> ChildrenShadow { get; }
 	}
 }
 #endif

@@ -7,7 +7,7 @@ using Android.Graphics;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Android.Graphics.Drawables;
 using Android.Views.Animations;
 using Windows.Foundation;
@@ -17,13 +17,13 @@ using Uno.UI;
 
 using Rect = Windows.Foundation.Rect;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageBrush
 	{
 		private Action _onImageLoaded;
 		private bool _imageSourceChanged;
-		private Windows.Foundation.Rect _lastDrawRect;
+		private Rect _lastDrawRect;
 		private readonly SerialDisposable _refreshPaint = new SerialDisposable();
 
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue)
@@ -31,16 +31,14 @@ namespace Windows.UI.Xaml.Media
 			oldValue?.Dispose();
 			_imageSourceChanged = true;
 			_onImageLoaded?.Invoke();
-			return;
 		}
 
-
-		protected override Paint GetPaintInner(Rect drawRect)
+		private protected override void ApplyToPaintInner(Rect drawRect, Paint paint)
 		{
-			throw new NotSupportedException($"{nameof(GetPaintInner)} is not supported for ImageBrush.");
+			throw new NotSupportedException($"{nameof(ApplyToPaintInner)} is not supported for ImageBrush.");
 		}
 
-		internal void ScheduleRefreshIfNeeded(Windows.Foundation.Rect drawRect, Action onImageLoaded)
+		internal void ScheduleRefreshIfNeeded(Rect drawRect, Action onImageLoaded)
 		{
 			_onImageLoaded = onImageLoaded;
 
@@ -62,7 +60,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private async void RefreshImageAsync(Windows.Foundation.Rect drawRect)
+		private async void RefreshImageAsync(Rect drawRect)
 		{
 			CoreDispatcher.CheckThreadAccess();
 
@@ -73,14 +71,18 @@ namespace Windows.UI.Xaml.Media
 			await RefreshImage(cd.Token, drawRect);
 		}
 
-		private async Task RefreshImage(CancellationToken ct, Windows.Foundation.Rect drawRect)
+		private async Task RefreshImage(CancellationToken ct, Rect drawRect)
 		{
 			if (ImageSource is ImageSource imageSource && (_imageSourceChanged || !imageSource.IsOpened) && !drawRect.HasZeroArea())
 			{
 				try
 				{
-					var image = await imageSource.Open(ct, targetWidth: (int)drawRect.Width, targetHeight: (int)drawRect.Height);
-					if (image != null || imageSource.IsImageLoadedToUiDirectly)
+					var image = await imageSource.Open(ct,
+						targetImage: null,
+						targetWidth: (int)drawRect.Width,
+						targetHeight: (int)drawRect.Height);
+
+					if (image.Bitmap != null || imageSource.IsImageLoadedToUiDirectly)
 					{
 						OnImageOpened();
 					}
@@ -104,7 +106,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="drawRect">The destination bounds</param>
 		/// <param name="maskingPath">An optional path to clip the bitmap by (eg an ellipse)</param>
 		/// <returns>A bitmap transformed based on target bounds and shape, Stretch mode, and RelativeTransform</returns>
-		internal async Task<Bitmap> GetBitmap(CancellationToken ct, Windows.Foundation.Rect drawRect, Path maskingPath = null)
+		internal async Task<Bitmap> GetBitmap(CancellationToken ct, Rect drawRect, Path maskingPath = null)
 		{
 			await RefreshImage(ct, drawRect);
 
@@ -121,7 +123,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="destinationCanvas">The canvas to draw the final image on</param>
 		/// <param name="drawRect">The destination bounds</param>
 		/// <param name="maskingPath">An optional path to clip the bitmap by (eg an ellipse)</param>
-		internal void DrawBackground(Canvas destinationCanvas, Windows.Foundation.Rect drawRect, Path maskingPath = null)
+		internal void DrawBackground(Canvas destinationCanvas, Rect drawRect, Path maskingPath = null)
 		{
 			//Create a temporary bitmap
 			var output = TryGetTransformedBitmap(drawRect, maskingPath);
@@ -145,7 +147,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="onImageLoaded">A callback that will be called when the backing image changes (eg, to redraw your view)</param>
 		/// <param name="maskingPath">An optional path to clip the bitmap by (eg an ellipse)</param>
 		/// <returns>A bitmap transformed based on target bounds and shape, Stretch mode, and RelativeTransform</returns>
-		internal Bitmap TryGetBitmap(Windows.Foundation.Rect drawRect, Action onImageLoaded, Path maskingPath = null)
+		internal Bitmap TryGetBitmap(Rect drawRect, Action onImageLoaded, Path maskingPath = null)
 		{
 			ScheduleRefreshIfNeeded(drawRect, onImageLoaded);
 
@@ -158,7 +160,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="drawRect">The destination bounds</param>
 		/// <param name="maskingPath">An optional path to clip the bitmap by (eg an ellipse)</param>
 		/// <returns></returns>
-		private Bitmap TryGetTransformedBitmap(Windows.Foundation.Rect drawRect, Path maskingPath = null)
+		private Bitmap TryGetTransformedBitmap(Rect drawRect, Path maskingPath = null)
 		{
 			var imgSrc = ImageSource;
 			if (imgSrc == null || !imgSrc.TryOpenSync(out var sourceBitmap))
@@ -213,14 +215,14 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="drawRect"></param>
 		/// <param name="bitmap"></param>
 		/// <returns></returns>
-		private Android.Graphics.Matrix GenerateMatrix(Windows.Foundation.Rect drawRect, Bitmap bitmap)
+		private Android.Graphics.Matrix GenerateMatrix(Rect drawRect, Bitmap bitmap)
 		{
 			var matrix = new Android.Graphics.Matrix();
 
 			// Note that bitmap.Width and bitmap.Height (in physical pixels) are automatically scaled up when loaded from local resources, but aren't when acquired externally.
 			// This means that bitmaps acquired externally might not render the same way on devices with different densities when using Stretch.None.
 
-			var sourceRect = new Windows.Foundation.Rect(0, 0, bitmap.Width, bitmap.Height);
+			var sourceRect = new Rect(0, 0, bitmap.Width, bitmap.Height);
 			var destinationRect = GetArrangedImageRect(sourceRect.Size, drawRect);
 
 			matrix.SetRectToRect(sourceRect.ToRectF(), destinationRect.ToRectF(), Android.Graphics.Matrix.ScaleToFit.Fill);
