@@ -5,6 +5,11 @@
 		private static inputElement: HTMLInputElement;
 		private static isInSelectionChange: boolean;
 
+		private static waitingAsyncOnSelectionChange: boolean;
+		private static nextSelectionStart: number;
+		private static nextSelectionEnd: number;
+		private static nextSelectionDirection: "forward" | "backward" | "none";
+
 		public static async initialize(): Promise<any> {
 			const module = <any>window.Module;
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined
@@ -13,16 +18,15 @@
 
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
 
-				document.onselectionchange = (ev) => {
+				document.onselectionchange = () => {
 					let input = document.activeElement;
 					if (input instanceof HTMLInputElement) {
 						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
-						console.log(input);
-						console.log(`Got native selection change ${input.selectionStart}, ${input.selectionEnd}, ${input.selectionDirection}`);
-						if (input.selectionDirection == "backward") {
-							BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
-						} else {
-							BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+
+						if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
+							BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
+							input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
+							return;
 						}
 
 						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
@@ -66,7 +70,16 @@
 			};
 
 			input.onkeydown = ev => {
-				ev.stopPropagation();
+				if (ev.ctrlKey) {
+					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
+					// So, we do stopPropagation instead of preventDefault
+					if (ev.key == "c" || ev.key == "C" || ev.key == "v" || ev.key == "V" || ev.key == "x" || ev.key == "X") {
+						ev.stopPropagation();
+						return;
+					}
+				}
+
+				ev.preventDefault();
 			};
 
 			document.body.appendChild(input);
@@ -85,9 +98,7 @@
 				// It's necessary to actually focus the native input, not just make it visible. This is particularly
 				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
 				// events and properly recognize password inputs to not read it.
-				console.log("Focusing native");
 				BrowserInvisibleTextBoxViewExtension.inputElement.focus();
-				console.log("Focused native");
 			} else {
 				// reset focus
 				(document.activeElement as HTMLElement)?.blur();
@@ -99,7 +110,21 @@
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
 				// input could be null beccause we could call setText without focusing first
-				input.value = text;
+
+				if (input.value != text) {
+					// When setting input.value, the browser will try to set the selection to the end, which isn't what we want.
+					// The browser doesn't raise onselectionchange synchronously though, so we set a flag that we're waiting
+					// for a future selection change that is the result of setting value.
+					// And we set the existing values of selection start and selection end.
+					// On the next onselectionchange event, we will ignore the browser provided selection and use these values.
+					// Also, in case we got a managed selection in between here and the next onselectionchange, we will
+					// use that instead (see updateSelection below).
+					BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = true;
+					BrowserInvisibleTextBoxViewExtension.nextSelectionStart = input.selectionStart;
+					BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = input.selectionEnd;
+					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = input.selectionDirection;
+					input.value = text;
+				}
 			}
 		}
 
@@ -118,7 +143,14 @@
 		public static updateSelection(start: number, length: number, direction: "forward" | "backward") {
 			if (!BrowserInvisibleTextBoxViewExtension.isInSelectionChange) {
 				const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-				console.log(`Got managed selection change ${start}, ${length}, ${direction}`);
+
+				// See comment in setText.
+				if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
+					BrowserInvisibleTextBoxViewExtension.nextSelectionStart = start;
+					BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = start + length;
+					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = direction;
+				}
+
 				input.setSelectionRange(start, start + length, direction);
 			}
 		}
