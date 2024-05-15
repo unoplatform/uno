@@ -16,7 +16,7 @@ jobs:
     - Generate_Packages
 
   variables:
-    UnoDisableNetPreviousMobile: true
+    UnoDisableNetCurrentMobile: true
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -59,7 +59,7 @@ jobs:
     - Generate_Packages
 
   variables:
-    UnoDisableNetPreviousMobile: true
+    UnoDisableNetCurrentMobile: true
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -103,7 +103,7 @@ jobs:
     - Generate_Packages
 
   variables:
-    UnoDisableNetPreviousMobile: true
+    UnoDisableNetCurrentMobile: true
 
   pool: ${{ parameters.vmPoolLinux }}
 
