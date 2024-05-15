@@ -29,4 +29,9 @@
 		<!-- <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" /> -->
 	</ItemGroup>
+	<Target Name="ValidateIsPackable"
+			AfterTargets="CoreCompile;Build">
+		<Error Text="Expected IsPackable='false', however it actually equals '$(IsPackable)'."
+		Condition="$(IsPackable) == 'true'" />
+	</Target>
 </Project>
