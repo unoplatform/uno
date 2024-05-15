@@ -26,8 +26,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	[Required]
 	public string OutputType { get; set; } = null!;
 
-	public bool IsPackable { get; set; }
-
 	public bool Optimize { get; set; }
 
 	[Required]
@@ -177,8 +175,11 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			foreach (var reference in ImplicitPackageReferences)
 			{
 				var packageId = reference.ItemSpec;
-				var excludeAssets = packageId == "Uno.WinUI.DevServer" && Optimize ? "all" : null;
-				AddPackage(packageId, excludeAssets);
+				var metadata = reference.CloneCustomMetadata()
+					.Keys
+					.Cast<string>()
+					.ToDictionary(x => x, x => reference.GetMetadata(x));
+				AddPackage(packageId, metadata);
 			}
 		}
 		catch (Exception ex)
@@ -350,7 +351,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		}
 	}
 
-	private void AddPackage(string packageId, string? excludeAssets = null)
+	private void AddPackage(string packageId, IDictionary<string, string> metadata)
 	{
 		// 1) Check for Existing References
 		var existingReference = PackageReferences.SingleOrDefault(x => x.ItemSpec == packageId);
@@ -399,7 +400,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 		// 5) Add the Implicit Package Reference
 		Debug("Adding Implicit Reference for '{0}' with version: '{1}'.", packageId, version);
-		_implicitPackages.Add(new PackageReference(packageId, version, excludeAssets));
+		_implicitPackages.Add(new PackageReference(packageId, version, metadata));
 	}
 
 	private void Debug(string message, params object[] args)
