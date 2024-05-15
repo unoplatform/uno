@@ -2,7 +2,7 @@
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
 		private static readonly inputElementId = "uno-input";
-		private static inputElement: HTMLInputElement;
+		private static inputElement: HTMLInputElement | HTMLTextAreaElement;
 		private static isInSelectionChange: boolean;
 
 		private static waitingAsyncOnSelectionChange: boolean;
@@ -41,13 +41,11 @@
 			}
 		}
 
-		private static createInput(isPasswordBox: boolean, text: string) {
-			const input = document.createElement("input");
+		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean) {
+			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
 			if (isPasswordBox) {
-				input.type = "password";
+				(input as HTMLInputElement).type = "password";
 				input.autocomplete = "password";
-			} else {
-				input.type = "text";
 			}
 
 			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
@@ -92,14 +90,14 @@
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
 		}
 
-		public static focus(focused: boolean, isPassword: boolean, text: string) {
+		public static focus(focused: boolean, isPassword: boolean, text: string, acceptsReturn: boolean) {
 			if (focused) {
 				// NOTE: We can get focused as true while we have inputElement.
 				// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
 				// For such case, we do call StartEntry twice without any EndEntry in between.
 				// So, cleanup the existing inputElement and create a new one.
 				BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
-				this.createInput(isPassword, text);
+				this.createInput(isPassword, text, acceptsReturn);
 
 				// It's necessary to actually focus the native input, not just make it visible. This is particularly
 				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
@@ -136,8 +134,8 @@
 
 		public static updateSize(width: number, height: number) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			input.width = width;
-			input.height = height;
+			input.style.width = `${width}`;
+			input.style.height = `${height}`;
 		}
 
 		public static updatePosition(x: number, y: number) {

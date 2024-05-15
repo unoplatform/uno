@@ -47,11 +47,11 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void StartEntry()
 	{
-		NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text);
+		NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false);
 		NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0, SelectionDirection);
 	}
 
-	public void EndEntry() => NativeMethods.Focus(false, _view.IsPasswordBox, _view.TextBox?.Text);
+	public void EndEntry() => NativeMethods.Focus(false, _view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false);
 
 	public void UpdateSize() => NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
 
@@ -92,7 +92,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void SetText(string text);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.focus")]
-		public static partial void Focus(bool focused, bool isPassword, string? text);
+		public static partial void Focus(bool focused, bool isPassword, string? text, bool acceptsReturn);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.updateSize")]
 		public static partial void UpdateSize(double width, double height);
