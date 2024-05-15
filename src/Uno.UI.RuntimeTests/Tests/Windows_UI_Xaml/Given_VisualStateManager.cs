@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
@@ -14,20 +14,19 @@ public class Given_VisualStateManager
 	{
 		var root = new When_Transition_Modifies_SubProperty();
 		await UITestHelper.Load(root);
+		var control = (Control)root.FindName("control");
 		var border = (Border)root.FindName("SUT_BackgroundBorder");
-		var redButton = (Button)root.FindName("RedButton");
-		var greenButton = (Button)root.FindName("GreenButton");
 		Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)border.Background).Color);
 
-		((ButtonAutomationPeer)redButton.GetAutomationPeer()).Invoke();
+		VisualStateManager.GoToState(control, "Red", true);
 		await Task.Delay(1000);
 		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
 
-		((ButtonAutomationPeer)greenButton.GetAutomationPeer()).Invoke();
+		VisualStateManager.GoToState(control, "Green", true);
 		await Task.Delay(1000);
 		Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)border.Background).Color);
 
-		((ButtonAutomationPeer)redButton.GetAutomationPeer()).Invoke();
+		VisualStateManager.GoToState(control, "Red", true);
 		await Task.Delay(1000);
 		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
 	}
