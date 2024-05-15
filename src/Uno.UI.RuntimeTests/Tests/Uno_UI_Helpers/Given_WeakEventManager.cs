@@ -21,6 +21,8 @@ public class Given_WeakEventManager
 			add => _manager.AddEventHandler(value);
 			remove => _manager.RemoveEventHandler(value);
 		}
+
+		public void RaiseEvent() => _manager.HandleEvent("Event");
 	}
 
 	private sealed class EventSubscriber
@@ -86,6 +88,60 @@ public class Given_WeakEventManager
 		}
 
 		void Handler2_2()
+		{
+			handler2Count++;
+		}
+	}
+
+	[TestMethod]
+	public void When_UnSubscribeInHandler()
+	{
+		var sut = new WeakEventManager();
+		int handler1Count = 0, handler2Count = 0;
+
+		sut.AddEventHandler(Handler1, "Event1");
+		sut.AddEventHandler(Handler2, "Event1");
+
+		sut.HandleEvent("Event1");
+		sut.HandleEvent("Event1");
+
+		Assert.AreEqual(1, handler1Count);
+		Assert.AreEqual(2, handler2Count);
+
+		void Handler1()
+		{
+			handler1Count++;
+			sut.RemoveEventHandler(Handler1, "Event1");
+		}
+
+		void Handler2()
+		{
+			handler2Count++;
+		}
+	}
+
+	[TestMethod]
+	public void When_UnSubscribeInHandler2()
+	{
+		var pub = new EventPublisher();
+		int handler1Count = 0, handler2Count = 0;
+
+		pub.Event += Handler1;
+		pub.Event += Handler2;
+
+		pub.RaiseEvent();
+		pub.RaiseEvent();
+
+		Assert.AreEqual(1, handler1Count);
+		Assert.AreEqual(2, handler2Count);
+
+		void Handler1()
+		{
+			handler1Count++;
+			pub.Event -= Handler1;
+		}
+
+		void Handler2()
 		{
 			handler2Count++;
 		}
