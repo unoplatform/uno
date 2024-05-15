@@ -105,8 +105,6 @@ public partial class Border : FrameworkElement
 		{
 			AddChild(newValue);
 		}
-
-		AfterUpdateBorderPartial();
 	}
 
 	#endregion
@@ -123,7 +121,7 @@ public partial class Border : FrameworkElement
 		set => SetCornerRadiusValue(value);
 	}
 
-	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
+	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => _borderRenderer.Update();
 
 	#endregion
 
@@ -185,7 +183,7 @@ public partial class Border : FrameworkElement
 		set => SetPaddingValue(value);
 	}
 
-	private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => _borderRenderer.Update();
 
 	#endregion
 
@@ -200,7 +198,7 @@ public partial class Border : FrameworkElement
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
-		UpdateBorder();
+		_borderRenderer.Update();
 		base.OnBackgroundSizingChangedInner(e);
 	}
 	#endregion
@@ -217,7 +215,7 @@ public partial class Border : FrameworkElement
 		set => SetBorderThicknessValue(value);
 	}
 
-	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => _borderRenderer.Update();
 
 	#endregion
 
@@ -250,7 +248,7 @@ public partial class Border : FrameworkElement
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => UpdateBorder()));
+		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => _borderRenderer.Update()));
 #if __WASM__
 		if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 		{
