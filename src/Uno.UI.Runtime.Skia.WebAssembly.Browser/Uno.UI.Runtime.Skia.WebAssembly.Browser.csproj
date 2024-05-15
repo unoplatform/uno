@@ -71,11 +71,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\Runtime\BrowserRenderer.ts" />
-	  <UpToDateCheckInput Remove="ts\Runtime\WebAssemblyWindowWrapper.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Include="tsconfig.json" />
 	</ItemGroup>
 

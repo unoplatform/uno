@@ -74,6 +74,8 @@ public partial class TextBox
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
+	internal bool IsBackwardSelection => _selectionEndsAtTheStart;
+
 	internal TextBoxView TextBoxView => _textBoxView;
 
 	internal ContentControl ContentElement => _contentElement;
@@ -842,7 +844,7 @@ public partial class TextBox
 	/// Takes a possibly-negative selection length, indicating a selection that goes backwards.
 	/// This makes the calculations a lot more natural.
 	/// </summary>
-	private void SelectInternal(int selectionStart, int selectionLength)
+	internal void SelectInternal(int selectionStart, int selectionLength)
 	{
 		_inSelectInternal = true;
 		_selectionEndsAtTheStart = selectionLength < 0;

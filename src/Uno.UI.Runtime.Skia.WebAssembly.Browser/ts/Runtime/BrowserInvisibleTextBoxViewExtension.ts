@@ -3,6 +3,7 @@
 		private static _exports: any;
 		private static readonly inputElementId = "uno-input";
 		private static inputElement: HTMLInputElement;
+		private static isInSelectionChange: boolean;
 
 		public static async initialize(): Promise<any> {
 			const module = <any>window.Module;
@@ -11,6 +12,22 @@
 				const browserExports = (await module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser"));
 
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
+
+				document.onselectionchange = (ev) => {
+					let input = document.activeElement;
+					if (input instanceof HTMLInputElement) {
+						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+						console.log(input);
+						console.log(`Got native selection change ${input.selectionStart}, ${input.selectionEnd}, ${input.selectionDirection}`);
+						if (input.selectionDirection == "backward") {
+							BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
+						} else {
+							BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
+						}
+
+						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+					}
+				}
 			}
 		}
 
@@ -44,7 +61,12 @@
 			input.value = text;
 
 			input.oninput = ev => {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged((ev.target as HTMLInputElement).value)
+				let input = ev.target as HTMLInputElement;
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+			};
+
+			input.onkeydown = ev => {
+				ev.stopPropagation();
 			};
 
 			document.body.appendChild(input);
@@ -63,7 +85,9 @@
 				// It's necessary to actually focus the native input, not just make it visible. This is particularly
 				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
 				// events and properly recognize password inputs to not read it.
+				console.log("Focusing native");
 				BrowserInvisibleTextBoxViewExtension.inputElement.focus();
+				console.log("Focused native");
 			} else {
 				// reset focus
 				(document.activeElement as HTMLElement)?.blur();
@@ -91,9 +115,12 @@
 			input.style.left = `${Math.round(x)}px`;
 		}
 
-		public static updateSelection(start: number, length: number) {
-			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			input.setSelectionRange(start, start + length);
+		public static updateSelection(start: number, length: number, direction: "forward" | "backward") {
+			if (!BrowserInvisibleTextBoxViewExtension.isInSelectionChange) {
+				const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+				console.log(`Got managed selection change ${start}, ${length}, ${direction}`);
+				input.setSelectionRange(start, start + length, direction);
+			}
 		}
 	}
 }

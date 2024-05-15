@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -16,13 +17,29 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		NativeMethods.Initialize();
 	}
 
+	private string SelectionDirection => _view.TextBox is { IsBackwardSelection: true } ? "backward" : "forward";
+
 	[JSExport]
-	private static void OnInputTextChanged(string text)
+	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// This only fires from password manager autocompletion, which is only available when the TextBox is focused
-		var focusedElement = FocusManager.GetFocusedElement(xamlRoot!) as TextBox;
-		focusedElement?.TextBoxView.UpdateTextFromNative(text);
+		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
+		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		{
+			textBox.SetPendingSelection(selectionStart, selectionLength);
+			textBox.TextBoxView.UpdateTextFromNative(text);
+		}
+	}
+
+	[JSExport]
+	private static void OnSelectionChanged(int selectionStart, int selectionLength)
+	{
+		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
+		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		{
+			textBox.SelectInternal(selectionStart, selectionLength);
+		}
 	}
 
 	// The "overlay layer" is the DOM, which is always present.
@@ -31,7 +48,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	public void StartEntry()
 	{
 		NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text);
-		NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0);
+		NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0, SelectionDirection);
 	}
 
 	public void EndEntry() => NativeMethods.Focus(false, _view.IsPasswordBox, _view.TextBox?.Text);
@@ -52,7 +69,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void SetText(string text) => NativeMethods.SetText(text);
 
-	public void Select(int start, int length) => NativeMethods.UpdateSelection(start, length);
+	public void Select(int start, int length)
+	{
+		NativeMethods.UpdateSelection(start, length, SelectionDirection);
+	}
 
 	// Since we don't actually use the <input /> visually, do we don't need to take care of any of the visual aspects
 	public void UpdateNativeView() { }
@@ -81,6 +101,6 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void UpdatePosition(double x, double y);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.updateSelection")]
-		public static partial void UpdateSelection(int start, int length);
+		public static partial void UpdateSelection(int start, int length, string direction);
 	}
 }
