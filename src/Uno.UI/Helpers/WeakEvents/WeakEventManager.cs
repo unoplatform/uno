@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Uno.UI.Helpers;
 
@@ -17,10 +18,7 @@ internal sealed class WeakEventManager
 
 	public void AddEventHandler(Action? handler, [CallerMemberName] string eventName = "")
 	{
-		if (string.IsNullOrEmpty(eventName))
-		{
-			throw new ArgumentNullException(nameof(eventName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(eventName);
 
 		if (handler is null)
 		{
@@ -42,10 +40,7 @@ internal sealed class WeakEventManager
 
 	public void RemoveEventHandler(Action? handler, [CallerMemberName] string eventName = "")
 	{
-		if (string.IsNullOrEmpty(eventName))
-		{
-			throw new ArgumentNullException(nameof(eventName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(eventName);
 
 		if (handler is null)
 		{
@@ -102,30 +97,30 @@ internal sealed class WeakEventManager
 
 	private void AddTo(Dictionary<string, List<Action>> handlersPerEvent, string eventName, Action handler)
 	{
-		if (handlersPerEvent.TryGetValue(eventName, out var handlers))
+		ref var handlers = ref CollectionsMarshal.GetValueRefOrAddDefault(handlersPerEvent, eventName, out var exists);
+		if (exists)
 		{
 			if (_enumeratingHandlersOfEvent == eventName)
 			{
-				handlers = [..handlers];
-				handlersPerEvent[eventName] = handlers;
+				handlers = handlers![..];
 			}
 
-			handlers.Add(handler);
+			handlers!.Add(handler);
 		}
 		else
 		{
-			handlersPerEvent.Add(eventName, [handler]);
+			handlers = [handler];
 		}
 	}
 
 	private void RemoveFrom(Dictionary<string, List<Action>> handlersPerEvent, string eventName, Action handler)
 	{
-		if (handlersPerEvent.TryGetValue(eventName, out var handlers))
+		ref var handlers = ref CollectionsMarshal.GetValueRefOrNullRef(handlersPerEvent, eventName);
+		if (!Unsafe.IsNullRef(ref handlers))
 		{
 			if (_enumeratingHandlersOfEvent == eventName)
 			{
-				handlers = [..handlers];
-				handlersPerEvent[eventName] = handlers;
+				handlers = handlers[..];
 			}
 
 			handlers.Remove(handler);
