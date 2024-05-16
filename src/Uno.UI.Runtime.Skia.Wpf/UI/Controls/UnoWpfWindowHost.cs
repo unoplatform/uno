@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -9,7 +10,6 @@ using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
-using Uno.UI.Xaml.Core;
 using WinUI = Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
@@ -22,6 +22,26 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 {
 	private const string NativeOverlayLayerHostPart = "NativeOverlayLayerHost";
+	private static readonly Style _style = (Style)XamlReader.Parse(
+		"""
+		<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			   xmlns:controls="clr-namespace:Uno.UI.Runtime.Skia.Wpf.UI.Controls;assembly=Uno.UI.Runtime.Skia.Wpf"
+			   TargetType="{x:Type controls:UnoWpfWindowHost}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type controls:UnoWpfWindowHost}">
+						<Border
+							Background="{x:Null}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+							<ContentPresenter x:Name="NativeOverlayLayerHost" />
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		""");
 
 	private readonly WpfCanvas _nativeOverlayLayer = new();
 	private readonly UnoWpfWindow _wpfWindow;
@@ -30,18 +50,12 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	private IWpfRenderer? _renderer;
 
-	static UnoWpfWindowHost()
-	{
-		DefaultStyleKeyProperty.OverrideMetadata(
-			typeof(UnoWpfWindowHost),
-			new WpfFrameworkPropertyMetadata(typeof(UnoWpfWindowHost)));
-	}
-
 	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, WinUI.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
 		_winUIWindow = winUIWindow;
 
+		Style = _style;
 		FocusVisualStyle = null;
 
 		Loaded += WpfHost_Loaded;
