@@ -25,9 +25,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ContentDialog
 	{
+#if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("Pointer injection supported only on skia for now.")]
+		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 
 		public async Task When_Press_Should_Not_Lose_Focus()
@@ -56,7 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var bottomRight = new Point(bounds.Right, bounds.Bottom);
 
 				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-				var mouse = injector.GetMouse();
+				using var mouse = injector.GetMouse();
 
 				mouse.MoveTo(bottomRight.X - 5, bottomRight.Y - 5);
 				mouse.Press();
@@ -83,6 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Hide();
 			}
 		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
