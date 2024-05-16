@@ -1,3 +1,4 @@
+#if UNO_HAS_BORDER_VISUAL
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
@@ -45,3 +46,4 @@ internal static class BorderHelper
 		@this.UpdateBorderThickness();
 	}
 }
+#endif

@@ -38,18 +38,18 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 		private readonly BorderLayerRenderer _borderRenderer;
 #endif
 
 		public Border()
 		{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 			_borderRenderer = new BorderLayerRenderer(this);
 #endif
 		}
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 		{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 			this.UpdateCornerRadius();
 #else
 			UpdateBorder();
@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 			// TODO: https://github.com/unoplatform/uno/issues/16705
 #else
 			UpdateBorder();
@@ -213,7 +213,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 			this.UpdateBackgroundSizing();
 #else
 			UpdateBorder();
@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 			this.UpdateBorderThickness();
 #else
 			UpdateBorder();
@@ -276,7 +276,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
 			{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 				this.UpdateBorderBrush();
 #else
 				UpdateBorder();
@@ -295,7 +295,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 			this.UpdateBackground();
 #else
 			UpdateBorder();
@@ -319,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return element.Background != null;
 		}
 
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 		private void UpdateBorder()
 		{
 			_borderRenderer.Update();

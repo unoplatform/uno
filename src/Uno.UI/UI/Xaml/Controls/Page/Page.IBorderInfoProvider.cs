@@ -20,7 +20,7 @@ public partial class Page : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius.None;
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 	BorderVisual IBorderInfoProvider.BorderVisual => Visual as BorderVisual ?? throw new InvalidCastException($"{nameof(IBorderInfoProvider)}s should use a {nameof(BorderVisual)}.");
 
 	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();

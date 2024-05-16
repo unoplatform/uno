@@ -29,7 +29,7 @@ public partial class Panel : FrameworkElement, IPanel
 	, ICustomClippingElement
 #endif
 {
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	private readonly BorderLayerRenderer _borderRenderer;
 #endif
 
@@ -43,13 +43,13 @@ public partial class Panel : FrameworkElement, IPanel
 
 	public Panel()
 	{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
 #endif
 		_children = new UIElementCollection(this);
 	}
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
@@ -192,7 +192,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
 #else
 		UpdateBorder();
@@ -201,7 +201,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
 #else
 		UpdateBorder();
@@ -210,7 +210,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
 #else
 		UpdateBorder();
@@ -219,7 +219,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderBrush();
 #else
 		UpdateBorder();
@@ -232,7 +232,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
 #else
 		UpdateBorder();
@@ -246,7 +246,7 @@ public partial class Panel : FrameworkElement, IPanel
 	{
 		base.OnBackgroundSizingChangedInner(e);
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
 #else
 		UpdateBorder();
@@ -255,7 +255,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();
 #endif
 

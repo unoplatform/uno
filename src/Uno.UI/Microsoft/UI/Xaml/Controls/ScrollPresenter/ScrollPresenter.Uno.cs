@@ -1,5 +1,4 @@
-﻿#if __SKIA__
-using System;
+﻿using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
@@ -9,18 +8,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class ScrollPresenter : IBorderInfoProvider
 {
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	private BorderLayerRenderer _borderRenderer;
 #endif
 
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	partial void InitializePartial()
 	{
 		_borderRenderer = new BorderLayerRenderer(this);
 	}
 #endif
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
@@ -34,11 +33,10 @@ partial class ScrollPresenter : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => default;
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 	BorderVisual IBorderInfoProvider.BorderVisual => Visual as BorderVisual ?? throw new InvalidCastException($"{nameof(IBorderInfoProvider)}s should use a {nameof(BorderVisual)}.");
 
 	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
 	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
 #endif
 }
-#endif

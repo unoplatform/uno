@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 		private BorderLayerRenderer _borderRenderer;
 #endif
 
@@ -54,7 +54,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			base.OnArrangeVisual(rect, clip);
 		}
+#endif
 
+#if UNO_HAS_BORDER_VISUAL
 		private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
@@ -69,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 			_borderRenderer ??= new BorderLayerRenderer(this);
 #endif
 
@@ -94,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 			this.UpdateAllBorderProperties();
 #else
 			_borderRenderer.Update();

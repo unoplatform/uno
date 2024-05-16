@@ -10,22 +10,22 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Page : UserControl
 {
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	private readonly BorderLayerRenderer _borderRenderer;
 #endif
 
 	public Page()
 	{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
 #endif
 	}
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder()
 	{
 		_borderRenderer.Update();
@@ -109,7 +109,7 @@ public partial class Page : UserControl
 
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
 #else
 		UpdateBorder();

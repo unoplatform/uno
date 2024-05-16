@@ -57,7 +57,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	, ICustomClippingElement
 #endif
 {
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	private readonly BorderLayerRenderer _borderRenderer;
 #endif
 
@@ -71,7 +71,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public ContentPresenter()
 	{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
 #endif
 		SetDefaultForeground(ForegroundProperty);
@@ -79,7 +79,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		InitializePlatform();
 	}
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
@@ -205,7 +205,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
 #else
 		UpdateBorder();
@@ -523,7 +523,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
 #else
 		UpdateBorder();
@@ -554,7 +554,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
 #else
 		UpdateBorder();
@@ -591,7 +591,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			(Content as UIElement)?.InvalidateArrange();
 		}
 #endif
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderBrush();
 #else
 		UpdateBorder();
@@ -615,7 +615,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
 #else
 		UpdateBorder();
@@ -848,7 +848,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// as it may have been reset during the last unload.
 		SynchronizeContentTemplatedParent();
 
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();
 #endif
 
@@ -1062,7 +1062,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </remarks>
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
 #else
 		UpdateBorder();
@@ -1236,7 +1236,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </summary>
 	partial void ArrangeNativeElement(Rect arrangeRect);
 
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();
 #endif
 

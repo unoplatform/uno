@@ -38,7 +38,7 @@ internal partial interface IBorderInfoProvider
 	/// </summary>
 	CornerRadius CornerRadius { get; }
 
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
 	BorderVisual BorderVisual { get; }
 
 	SerialDisposable BorderBrushSubscriptionDisposable { get; set; }

@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__NETSTD_REFERENCE__
 			this.Loaded += (_, _) =>
 			{
-#if !__SKIA__
+#if !UNO_HAS_BORDER_VISUAL
 				_borderRenderer ??= new(this);
 #endif
 #if !UNO_HAS_ENHANCED_LIFECYCLE
