@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition;
 /// </summary>
 internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 {
-	[ThreadStatic] // just in case we eventually use multiple ui threads.
+	[ThreadStatic] // this should be tied to the compositor
 	private static CompositionPathGeometry? _sharedPathGeometry;
 
 	// state received from BorderLayerRenderer
@@ -62,39 +62,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		set => SetProperty(ref _borderBrush, value);
 	}
 
-	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
-		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
-
-	internal override void Paint(in PaintingSession session)
-	{
-		_sharedPathGeometry ??= Compositor.CreatePathGeometry();
-		_sharedPathGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D());
-		var geometrySource = (SkiaGeometrySource2D)_sharedPathGeometry.Path.GeometrySource;
-
-		UpdatePathsAndCornerClip();
-
-		if (_backgroundShape is { } backgroundShape && _backgroundPath is { } backgroundPath)
-		{
-			backgroundShape.Geometry = _sharedPathGeometry; // will only do something the first time
-			geometrySource.Geometry = backgroundPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
-			session.Canvas.Save();
-			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
-			// E.g. effect brushes will draw outside the intended area if they're not clipped.
-			_backgroundClip?.Apply(session.Canvas, this);
-			backgroundShape.Render(in session);
-			session.Canvas.Restore();
-		}
-
-		base.Paint(in session);
-
-		if (_borderShape is { } borderShape && _borderPath is { } borderPath)
-		{
-			borderShape.Geometry = _sharedPathGeometry; // will only do something the first time
-			geometrySource.Geometry = borderPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
-			_borderShape?.Render(in session);
-		}
-	}
-
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
@@ -140,6 +107,39 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				break;
 		}
 	}
+
+	internal override void Paint(in PaintingSession session)
+	{
+		_sharedPathGeometry ??= Compositor.CreatePathGeometry();
+		_sharedPathGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D());
+		var geometrySource = (SkiaGeometrySource2D)_sharedPathGeometry.Path.GeometrySource;
+
+		UpdatePathsAndCornerClip();
+
+		if (_backgroundShape is { } backgroundShape && _backgroundPath is { } backgroundPath)
+		{
+			backgroundShape.Geometry = _sharedPathGeometry; // will only do something the first time
+			geometrySource.Geometry = backgroundPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
+			session.Canvas.Save();
+			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
+			// E.g. effect brushes will draw outside the intended area if they're not clipped.
+			_backgroundClip?.Apply(session.Canvas, this);
+			backgroundShape.Render(in session);
+			session.Canvas.Restore();
+		}
+
+		base.Paint(in session);
+
+		if (_borderShape is { } borderShape && _borderPath is { } borderPath)
+		{
+			borderShape.Geometry = _sharedPathGeometry; // will only do something the first time
+			geometrySource.Geometry = borderPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
+			_borderShape?.Render(in session);
+		}
+	}
+
+	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
+		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
 
 	private void UpdatePathsAndCornerClip()
 	{

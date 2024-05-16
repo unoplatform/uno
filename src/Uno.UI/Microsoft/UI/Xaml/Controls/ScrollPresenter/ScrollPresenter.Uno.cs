@@ -13,12 +13,12 @@ partial class ScrollPresenter : IBorderInfoProvider
 	private BorderLayerRenderer _borderRenderer;
 #endif
 
+#if !__SKIA__
 	partial void InitializePartial()
 	{
-#if !__SKIA__
 		_borderRenderer = new BorderLayerRenderer(this);
-#endif
 	}
+#endif
 
 #if __SKIA__
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
