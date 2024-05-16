@@ -54,6 +54,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		private static ToolTip m_CurrentToolTip;
+		private static uint m_LastEnteredFrameId;
+		private static DispatcherTimer m_OpenTimer;
+		private static DispatcherTimer m_CloseTimer;
 
 		private static void OnToolTipChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs e)
 		{
@@ -135,7 +139,67 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static IDisposable SubscribeToEvents(FrameworkElement control, ToolTip tooltip)
+		private static void OpenToolTipImpl(ToolTip toolTip)
+		{
+			if (m_CurrentToolTip is { })
+			{
+				// Only one instance of the tooltip can be opened at any time.
+				CloseToolTipImpl(m_CurrentToolTip);
+			}
+
+			if (toolTip is { })
+			{
+				m_CurrentToolTip = toolTip;
+
+				m_OpenTimer.Start();
+				m_CloseTimer?.Stop();
+			}
+		}
+
+		private static void CloseToolTipImpl(ToolTip toolTip)
+		{
+			if (m_CurrentToolTip == toolTip)
+			{
+				m_OpenTimer?.Stop();
+				m_CloseTimer?.Stop();
+
+				m_CurrentToolTip.IsOpen = false;
+			}
+			else
+			{
+				toolTip.IsOpen = false;
+			}
+		}
+
+		private static void OnOpenTimerTick(object sender, object e)
+		{
+			m_OpenTimer.Stop();
+
+			if (m_CurrentToolTip is { })
+			{
+				m_CurrentToolTip.IsOpen = true;
+			}
+
+			if (m_CloseTimer is null)
+			{
+				m_CloseTimer = new DispatcherTimer();
+				m_CloseTimer.Interval = TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDuration);
+				m_CloseTimer.Tick += OnCloseTimerTick;
+			}
+			m_CloseTimer.Start();
+		}
+
+		private static void OnCloseTimerTick(object sender, object e)
+		{
+			m_CloseTimer.Stop();
+
+			if (m_CurrentToolTip is { })
+			{
+				m_CurrentToolTip.IsOpen = false;
+			}
+		}
+
+		private static IDisposable SubscribeToEvents(FrameworkElement control, ToolTip toolTip)
 		{
 			// event subscriptions
 			if (control.IsLoaded)
@@ -151,8 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 				control.Unloaded -= OnOwnerUnloaded;
 				OnOwnerUnloaded(control, null);
 
-				tooltip.IsOpen = false;
-				tooltip.CurrentHoverId++;
+				CloseToolTipImpl(toolTip);
 			});
 		}
 
@@ -162,8 +225,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (GetToolTipReference(owner) is { } toolTip)
 				{
-					toolTip.IsOpen = false;
-					toolTip.CurrentHoverId++;
+					CloseToolTipImpl(toolTip);
 				}
 			}
 		}
@@ -192,7 +254,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
-				toolTip.IsOpen = false;
+				CloseToolTipImpl(toolTip);
+
 				owner.PointerEntered -= OnPointerEntered;
 				owner.PointerExited -= OnPointerExited;
 				owner.Tapped -= OnTapped;
@@ -208,28 +271,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnPointerEntered(object sender, PointerRoutedEventArgs e)
 		{
+			// Multiple elements can all receive the same PointerEntered at once (from inner-most to outer-most).
+			// In this case, the inner-most one is the only one that should be shown,
+			// so we are dropping any subsequent events from this frame-id.
+			if (e.FrameId == m_LastEnteredFrameId) return;
+
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
-				_ = HoverTask(++toolTip.CurrentHoverId);
-				async Task HoverTask(long hoverId)
+				if (toolTip.IsOpen) return;
+
+				if (m_OpenTimer is null)
 				{
-					await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay);
-					if (toolTip.CurrentHoverId != hoverId)
-					{
-						return;
-					}
-
-					if (owner.IsLoaded)
-					{
-						toolTip.IsOpen = true;
-
-						await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
-						if (toolTip.CurrentHoverId == hoverId)
-						{
-							toolTip.IsOpen = false;
-						}
-					}
+					m_OpenTimer = new DispatcherTimer();
+					m_OpenTimer.Interval = TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay);
+					m_OpenTimer.Tick += OnOpenTimerTick;
 				}
+				m_LastEnteredFrameId = e.FrameId;
+				OpenToolTipImpl(toolTip);
 			}
 		}
 
@@ -237,8 +295,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
-				toolTip.IsOpen = false;
-				toolTip.CurrentHoverId++;
+				CloseToolTipImpl(toolTip);
 			}
 		}
 
@@ -246,8 +303,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
-				toolTip.IsOpen = false;
-				toolTip.CurrentHoverId++;
+				CloseToolTipImpl(toolTip);
 			}
 		}
 
@@ -263,8 +319,8 @@ namespace Microsoft.UI.Xaml.Controls
 					case VirtualKey.Right:
 						return;
 				}
-				toolTip.IsOpen = false;
-				toolTip.CurrentHoverId++;
+
+				CloseToolTipImpl(toolTip);
 			}
 		}
 
@@ -274,8 +330,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
 				{
-					toolTip.IsOpen = false;
-					toolTip.CurrentHoverId++;
+					CloseToolTipImpl(toolTip);
 				}
 			}
 		}
