@@ -48,6 +48,26 @@ namespace Microsoft.UI.Xaml
 			_entries = _empty;
 		}
 
+		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other)
+		{
+			for (int i = 0; i < _entries.Length; i++)
+			{
+				if (_entries[i] is { Property: { } oldDP } oldDetails)
+				{
+					var newDP = DependencyProperty.GetProperty(oldDP.OwnerType, oldDP.Name);
+					if (newDP is null)
+					{
+						continue;
+					}
+
+					if (other.GetPropertyDetails(newDP) is { } newDetails)
+					{
+						oldDetails.CloneToForHotReload(newDetails);
+					}
+				}
+			}
+		}
+
 		public void Dispose()
 		{
 			var entries = _entries;

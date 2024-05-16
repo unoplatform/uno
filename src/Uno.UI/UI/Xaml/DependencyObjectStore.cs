@@ -165,6 +165,14 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// This is used by HotReload so that type replacement doesn't cause property values to be lost.
+		/// </summary>
+		internal void ClonePropertiesToAnotherStoreForHotReload(DependencyObjectStore otherStore)
+		{
+			_properties.CloneToForHotReload(otherStore._properties);
+		}
+
+		/// <summary>
 		/// Creates a delegated dependency object instance for the specified <paramref name="originalObject"/>
 		/// </summary>
 		/// <param name="originalObject"></param>

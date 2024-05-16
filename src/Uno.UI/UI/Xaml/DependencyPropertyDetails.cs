@@ -46,6 +46,24 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void CloneToForHotReload(DependencyPropertyDetails other)
+		{
+			other._highestPrecedence = _highestPrecedence;
+			other._fastLocalValue = _fastLocalValue;
+			if (_stack is not null)
+			{
+				if (other._stack is null)
+				{
+					other._stack = _pool.Rent(StackSize);
+				}
+
+				for (int i = 0; i < StackSize; i++)
+				{
+					other._stack[i] = _stack[i];
+				}
+			}
+		}
+
 		public void Dispose()
 		{
 			_callbackManager?.Dispose();
