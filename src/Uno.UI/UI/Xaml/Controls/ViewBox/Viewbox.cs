@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-using static Uno.UI.Helpers.WinUI.MathHelpers;
+using static Uno.Helpers.MathHelpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 

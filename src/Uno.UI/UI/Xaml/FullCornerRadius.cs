@@ -1,6 +1,10 @@
 ﻿using Windows.Foundation;
 
+#if IS_UNO_COMPOSITION
+namespace Uno.UI.Composition;
+#else
 namespace Microsoft.UI.Xaml;
+#endif
 
 internal partial record struct FullCornerRadius
 (

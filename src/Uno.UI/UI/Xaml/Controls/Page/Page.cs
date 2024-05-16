@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Xaml.Controls;
@@ -9,14 +10,27 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Page : UserControl
 {
+#if !UNO_HAS_BORDER_VISUAL
 	private readonly BorderLayerRenderer _borderRenderer;
+#endif
 
 	public Page()
 	{
+#if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
+#endif
 	}
 
-	private void UpdateBorder() => _borderRenderer.Update();
+#if UNO_HAS_BORDER_VISUAL
+	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
+
+#if !UNO_HAS_BORDER_VISUAL
+	private void UpdateBorder()
+	{
+		_borderRenderer.Update();
+	}
+#endif
 
 	protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
 
@@ -93,5 +107,12 @@ public partial class Page : UserControl
 
 	public NavigationCacheMode NavigationCacheMode { get; set; }
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBackground();
+#else
+		UpdateBorder();
+#endif
+	}
 }

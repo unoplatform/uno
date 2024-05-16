@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using Microsoft.UI.Composition;
@@ -26,6 +27,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {
@@ -56,7 +58,7 @@ namespace Microsoft.UI.Xaml
 				nameof(UseLayoutRounding),
 				typeof(bool),
 				typeof(UIElement),
-				new FrameworkPropertyMetadata(true));
+				new FrameworkPropertyMetadata(true, propertyChangedCallback: (o, _) => (o as IBorderInfoProvider)?.UpdateBorderThickness()));
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -80,7 +82,9 @@ namespace Microsoft.UI.Xaml
 
 				if (_visual is null)
 				{
-					_visual = Compositor.GetSharedCompositor().CreateShapeVisual();
+					_visual = CreateElementVisual();
+					Debug.Assert(this is not IBorderInfoProvider || _visual is BorderVisual,
+						"Border info providers are expected to override CreateElementVisual and return BorderVisual, and types returning BorderVisual should be IBorderInfoProviders");
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
@@ -89,6 +93,8 @@ namespace Microsoft.UI.Xaml
 				return _visual;
 			}
 		}
+
+		private protected virtual ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
 		internal void AddChild(UIElement child, int? index = null)
 		{

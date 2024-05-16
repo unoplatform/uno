@@ -17,7 +17,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 
 	private CompositionClip? _clip;
-	private RectangleClip? _cornerRadiusClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private bool _matrixDirty = true;
@@ -85,17 +84,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		get => _clip;
 		set => SetProperty(ref _clip, value);
-	}
-
-	/// <summary>
-	/// DO NOT USE: This a a temporary property to properly support the corner radius. 
-	/// It should be removed by https://github.com/unoplatform/uno/issues/16294.
-	/// This clipping should be applied only on Children elements (i.e. in the context of a ContainerVisual)
-	/// </summary>
-	internal RectangleClip? CornerRadiusClip
-	{
-		get => _cornerRadiusClip;
-		set => SetProperty(ref _cornerRadiusClip, value);
 	}
 
 	public Vector2 AnchorPoint
@@ -190,10 +178,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (var session = CreateLocalSession(in parentSession))
 		{
-			Paint(session);
+			var canvas = session.Canvas;
 
-			// The CornerRadiusClip doesn't affect the visual itself, only its children
-			CornerRadiusClip?.Apply(session.Canvas, this);
+			ApplyPrePaintingClipping(canvas);
+
+			// Rendering shouldn't depend on matrix or clip adjustments having in a visual's Paint. That should
+			// be specific to that visual and should not affect the rendering of any other visual.
+#if DEBUG
+			var saveCount = canvas.SaveCount;
+#endif
+			Paint(session);
+#if DEBUG
+			Debug.Assert(saveCount == canvas.SaveCount);
+#endif
+
+			ApplyPostPaintingClipping(canvas);
 
 			foreach (var child in GetChildrenInRenderOrder())
 			{
@@ -219,7 +218,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
-	private protected virtual void ApplyClipping(in SKCanvas canvas)
+	private protected virtual void ApplyPrePaintingClipping(in SKCanvas canvas)
 	{
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
@@ -227,12 +226,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		Clip?.Apply(canvas, this);
 	}
 
+	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
+	private protected virtual void ApplyPostPaintingClipping(in SKCanvas canvas) { }
+
 	private protected virtual IList<Visual> GetChildrenInRenderOrder() => Array.Empty<Visual>();
 	internal IList<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
 	/// <summary>
-	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates,
-	/// clipping and opacity.
+	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
 	/// </summary>
 	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
 	{
@@ -254,8 +255,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			canvas.SetMatrix((TotalMatrix * rootTransform).ToSKMatrix());
 		}
-
-		ApplyClipping(canvas);
 
 		return session;
 	}

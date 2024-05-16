@@ -45,6 +45,11 @@ namespace Microsoft.UI.Composition
 		public ShapeVisual CreateShapeVisual()
 			=> new ShapeVisual(this);
 
+#if __SKIA__
+		internal BorderVisual CreateBorderVisual()
+			=> new BorderVisual(this);
+#endif
+
 		public CompositionSpriteShape CreateSpriteShape()
 			=> new CompositionSpriteShape(this);
 

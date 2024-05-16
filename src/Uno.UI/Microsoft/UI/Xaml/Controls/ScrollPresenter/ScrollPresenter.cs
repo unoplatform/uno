@@ -3685,7 +3685,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			// So, they can just cast ScrollPresenter to Panel and set the Background.
 			// In our case, we can't do that as there is no multi inheritance in C#.
 			// We use BorderLayerRenderer to draw the background.
-#if __SKIA__
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateBackground();
+#else
 			_borderRenderer.Update();
 #endif
 

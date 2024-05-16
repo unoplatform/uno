@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Composition;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
@@ -37,12 +38,20 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
+#if !UNO_HAS_BORDER_VISUAL
 		private readonly BorderLayerRenderer _borderRenderer;
+#endif
 
 		public Border()
 		{
+#if !UNO_HAS_BORDER_VISUAL
 			_borderRenderer = new BorderLayerRenderer(this);
+#endif
 		}
+
+#if UNO_HAS_BORDER_VISUAL
+		private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
 
 		/// <summary>
 		/// Support for the C# collection initializer style.
@@ -113,7 +122,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+		{
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateCornerRadius();
+#else
+			UpdateBorder();
+#endif
+		}
 
 		#endregion
 
@@ -175,7 +191,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+		{
+#if UNO_HAS_BORDER_VISUAL
+			// TODO: https://github.com/unoplatform/uno/issues/16705
+#else
+			UpdateBorder();
+#endif
+		}
 
 		#endregion
 
@@ -190,7 +213,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateBackgroundSizing();
+#else
 			UpdateBorder();
+#endif
 			base.OnBackgroundSizingChangedInner(e);
 		}
 		#endregion
@@ -207,7 +234,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+		{
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateBorderThickness();
+#else
+			UpdateBorder();
+#endif
+		}
 
 		#endregion
 
@@ -240,7 +274,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => UpdateBorder()));
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
+			{
+#if UNO_HAS_BORDER_VISUAL
+				this.UpdateBorderBrush();
+#else
+				UpdateBorder();
+#endif
+			}));
 #if __WASM__
 			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 			{
@@ -254,7 +295,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateBackground();
+#else
 			UpdateBorder();
+#endif
 			OnBackgroundChangedPartial();
 		}
 
@@ -274,6 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return element.Background != null;
 		}
 
+#if !UNO_HAS_BORDER_VISUAL
 		private void UpdateBorder()
 		{
 			_borderRenderer.Update();
@@ -281,5 +327,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void AfterUpdateBorderPartial();
+#endif
 	}
 }
