@@ -74,9 +74,13 @@
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 
-	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+	<PropertyGroup>
+		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib</_libUnoNativeMacPath>
+	</PropertyGroup>
+
+	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile" Condition="exists($(_libUnoNativeMacPath))">
 		<Copy
-			SourceFiles="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib"
+			SourceFiles="$(_libUnoNativeMacPath)"
 			DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
 	</Target>
 
