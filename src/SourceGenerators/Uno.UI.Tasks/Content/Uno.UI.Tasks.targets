@@ -348,6 +348,20 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="_UnoLinkerAndroidUITestSupport"
+			Condition="'$(IsUnoHead)'=='true' and '$(TargetPlatformIdentifier)'=='android' and '$(IsUiAutomationMappingEnabled)'!='true'"
+			BeforeTargets="PrepareForILLink">
+
+		<ItemGroup>
+			<RuntimeHostConfigurationOption Include="AndroidUITestSupport" Value="false" Trim="true" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_ExtraTrimmerArgs>--link-attributes "$(MSBuildThisFileDirectory)Descriptors/Uno.UI.LinkAttributes.Android.xml" $(_ExtraTrimmerArgs)</_ExtraTrimmerArgs>
+		</PropertyGroup>
+
+	</Target>
+
 	<Target Name="_ValidateBootstraperVersion"
 			BeforeTargets="BeforeBuild"
 			Condition="'$(IsUnoHead)'=='true' and '$(UnoXamlResourcesTrimming)'=='true'">
