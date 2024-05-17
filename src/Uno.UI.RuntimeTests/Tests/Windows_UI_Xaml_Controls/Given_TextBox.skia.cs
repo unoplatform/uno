@@ -906,7 +906,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -949,7 +949,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1034,7 +1034,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1081,7 +1081,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1129,7 +1129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1328,7 +1328,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1395,7 +1395,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1454,7 +1454,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1517,7 +1517,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// An actual attempt to paste will work, because the native HTML
 				// input is what will receive the key event, and the browser will be
 				// responsible for changing the text.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1583,7 +1583,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1678,7 +1678,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// An actual attempt to paste will work, because the native HTML
 				// input is what will receive the key event, and the browser will be
 				// responsible for changing the text.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1774,7 +1774,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// An actual attempt to paste will work, because the native HTML
 				// input is what will receive the key event, and the browser will be
 				// responsible for changing the text.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2409,7 +2409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
 				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
 				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2571,7 +2571,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (OperatingSystem.IsBrowser())
 			{
 				// Clipboard can't be read for security reasons.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3129,7 +3129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// An actual attempt to paste will work, because the native HTML
 				// input is what will receive the key event, and the browser will be
 				// responsible for changing the text.
-				return;
+				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3603,7 +3603,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (OperatingSystem.IsBrowser())
 			{
 				// TODO: Investigate what goes wrong here on Wasm Skia.
-				return;
+				Assert.Inconclusive("Not working on Wasm Skia, unknown issue.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3785,7 +3785,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (OperatingSystem.IsBrowser())
 			{
 				// Overlay isn't supported on Wasm Skia.
-				return;
+				Assert.Inconclusive("Not supported on Wasm Skia.");
 			}
 
 			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
