@@ -114,7 +114,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var popup = comboBox.FindFirstChild<Popup>();
 				var popupBorder = popup.Child as Border;
 				Assert.IsNotNull(popupBorder);
-				Assert.AreEqual(expectedBackground, (popupBorder.Background as AcrylicBrush)?.FallbackColorWithOpacity);
+				var acrylicBrush = popupBorder.Background as AcrylicBrush;
+				var color = acrylicBrush.FallbackColor;
+				var actualColor = Color.FromArgb((byte)(color.A * acrylicBrush.Opacity), color.R, color.G, color.B);
+				Assert.AreEqual(expectedBackground, actualColor);
 			}
 			finally
 			{
