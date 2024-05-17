@@ -9,9 +9,9 @@ namespace Uno.UI.Runtime.Skia.Gtk.Rendering;
 
 internal static class GtkRendererProvider
 {
-	public static async Task<IGtkRenderer> CreateForHostAsync(IGtkXamlRootHost host, bool isFlyoutSurface)
+	public static async Task<IGtkRenderer> CreateForHostAsync(IGtkXamlRootHost host, bool isFlyoutSurface, RenderSurfaceType? renderSurfaceType = null)
 	{
-		RenderSurfaceType? renderSurfaceType = host.RenderSurfaceType;
+		renderSurfaceType ??= host.RenderSurfaceType;
 		if (TryReadRenderSurfaceTypeEnvironment(out var overridenSurfaceType))
 		{
 			renderSurfaceType = overridenSurfaceType;

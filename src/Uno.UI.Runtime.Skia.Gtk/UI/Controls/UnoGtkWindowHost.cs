@@ -53,7 +53,8 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	public async Task InitializeAsync()
 	{
 		_bottomRenderer = await GtkRendererProvider.CreateForHostAsync(this, isFlyoutSurface: false);
-		_topRenderer = await GtkRendererProvider.CreateForHostAsync(this, isFlyoutSurface: true);
+		// Transparency doesn't work with the OpenGL renderer, so we have to use the software renderer for the top layer
+		_topRenderer = await GtkRendererProvider.CreateForHostAsync(this, isFlyoutSurface: true, Gtk.RenderSurfaceType.Software);
 		UpdateRendererBackground();
 		_topRenderer.BackgroundColor = SKColors.Transparent;
 
