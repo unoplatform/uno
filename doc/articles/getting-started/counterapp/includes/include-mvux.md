@@ -13,21 +13,42 @@ As part of creating the application, we selected MVUX as the presentation framew
     }
     ```
 
-- Add the `Count` and `Step` properties, to the `MainModel` class. These fields both must be of type `IState<int>` and to initialize them we use `=> State.Value(...)`.
+- Add a new `partial record` above named `Countable`. This record will be responsible for updating our counter's properties all while ensuring immutability. Learn more about immutable records [here](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/WorkingWithRecords.html#how-to-create-immutable-records).
 
     ```csharp
-    public IState<int> Count 
-        => State.Value(this, () => 0);
-
-    public IState<int> Step 
-        => State.Value(this, () => 1);
+    internal partial record Countable
+    {
+    }
     ```
 
-- Add a method called `IncrementCommand` to the `MainModel` that will increment the counter by the step size. The generated ViewModel of our `MainModel` will automatically re-expose as `ICommand` the `IncrementCommand` method.
+- Add the `Count` and `Step` properties to the `Countable`'s primary constructor. 
 
     ```csharp
-    public ValueTask IncrementCommand(int Step)
-        => Count.Update(c => c + Step, CancellationToken.None);
+    internal partial record Countable(int Count, int Step)
+    {
+    }
+    ```
+
+- Add an `Increment` method to the `Countable` record. The `with` operator allows us to [create a new instance](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/WorkingWithRecords.html#updating-records) of the object.
+
+    ```csharp
+    public Countable Increment() => this with
+    {
+        Count = Count + Step
+    };
+    ```
+
+- Add the newly created `Countable` as a property in the `MainModel` class. The type must be `IState<Countable>` and we use `=> State.Value(...)` to initialize it.
+
+    ```csharp
+    public IState<Countable> Countable => State.Value(this, () => new Countable(0, 1));
+    ```
+
+- Add a method named `IncrementCommand` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. The generated ViewModel of our `MainModel` will automatically re-expose as `ICommand` the `IncrementCommand` method.
+
+    ```csharp
+    public ValueTask IncrementCommand()
+        => Countable.Update(c => c?.Increment(), CancellationToken.None);
     ```
 
 The final code for the `MainModel` class should look like this:
@@ -35,13 +56,19 @@ The final code for the `MainModel` class should look like this:
 ```csharp
 namespace Counter;
 
+internal partial record Countable(int Count, int Step)
+{
+    public Countable Increment() => this with
+    {
+        Count = Count + Step
+    };
+}
+
 internal partial record MainModel
 {
-    public IState<int> Count => State.Value(this, () => 0);
+    public IState<Countable> Countable => State.Value(this, () => new Countable(0, 1));
 
-    public IState<int> Step => State.Value(this, () => 1);
-
-    public ValueTask IncrementCommand(int Step)
-        => Count.Update(c => c + Step, CancellationToken.None);
+    public ValueTask IncrementCommand()
+        => Countable.Update(c => c?.Increment(), CancellationToken.None);
 }
 ```
