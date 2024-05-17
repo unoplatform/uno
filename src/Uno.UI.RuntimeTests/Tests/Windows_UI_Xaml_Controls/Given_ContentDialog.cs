@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Input.Preview.Injection;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -24,6 +25,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ContentDialog
 	{
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+
+		public async Task When_Press_Should_Not_Lose_Focus()
+		{
+			var SUT = new MyContentDialog
+			{
+				Content = "Hello World",
+				PrimaryButtonText = "OK",
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				SUT.ContentScrollViewer.Background = new SolidColorBrush(Microsoft.UI.Colors.Red);
+
+				await WindowHelper.WaitForIdle();
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+				Assert.IsInstanceOfType<Button>(focused);
+				Assert.AreEqual("OK", ((Button)focused).Content.ToString());
+
+				var bounds = SUT.ContentScrollViewer.GetAbsoluteBounds();
+				var bottomRight = new Point(bounds.Right, bounds.Bottom);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				mouse.MoveTo(bottomRight.X - 5, bottomRight.Y - 5);
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+				Assert.IsInstanceOfType<Button>(focused);
+				Assert.AreEqual("OK", ((Button)focused).Content.ToString());
+
+				mouse.MoveTo(bottomRight.X - 5, bottomRight.Y + 5);
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+				Assert.IsInstanceOfType<Button>(focused);
+				Assert.AreEqual("OK", ((Button)focused).Content.ToString());
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+#endif
+
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -613,7 +675,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Button PrimaryButton { get; private set; }
 		public Border BackgroundElement { get; private set; }
 		public Grid LayoutRoot { get; private set; }
-
+		public ScrollViewer ContentScrollViewer { get; private set; }
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -621,6 +683,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
 			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
 			LayoutRoot = GetTemplateChild("LayoutRoot") as Grid;
+			ContentScrollViewer = GetTemplateChild("ContentScrollViewer") as ScrollViewer;
 		}
 	}
 }

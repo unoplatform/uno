@@ -1,15 +1,16 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -115,14 +116,39 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_isPointerLeftButtonPressed = false;
 
-				// Uno Specific: On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
-				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
-				// skip focusing, or focus some child of this faux RootScrollViewer. To match the other platforms, we do the former.
-				if (this.GetParent() is UIElement { IsVisualTreeRoot: false })
+				var isFocusedOnLightDismissPopupOfFlyout = ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(this);
+				if (isFocusedOnLightDismissPopupOfFlyout)
+				{
+					args.Handled = true;
+				}
+				else
 				{
 					args.Handled = Focus(FocusState.Pointer);
 				}
 			}
+		}
+
+		private static bool ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(UIElement pScrollContentControl)
+		{
+			PopupRoot? pPopupRoot = null;
+			Popup? pPopup = null;
+
+			if (pScrollContentControl.GetRootOfPopupSubTree() is not null)
+			{
+				pPopupRoot = VisualTree.GetPopupRootForElement(pScrollContentControl);
+				if (pPopupRoot is not null)
+				{
+					pPopup = pPopupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOnly);
+					// Uno-specific: We don't yet have GetSavedFocusState()
+					if (pPopup is not null && FocusSelection.ShouldUpdateFocus(pPopup.Child, pPopup.FocusState/*.GetSavedFocusState()*/) && pPopup.IsForFlyout)
+					{
+						bool wasFocusUpdated = pPopup.Focus(FocusState.Pointer, false /*animateIfBringIntoView*/);
+						return wasFocusUpdated;
+					}
+				}
+			}
+
+			return false;
 		}
 	}
 
