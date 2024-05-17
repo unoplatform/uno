@@ -25,7 +25,7 @@ partial class Border
 	protected override void OnAfterArrange()
 	{
 		base.OnAfterArrange();
-		_borderRenderer.Update();
+		BorderRenderer.Update();
 	}
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
