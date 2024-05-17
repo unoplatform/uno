@@ -49,7 +49,8 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 
 		_bottomLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this, false));
 		_nativeOverlayLayer = new WpfCanvas();
-		_flyoutLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this, true));
+		// Transparency doesn't work with the OpenGL renderer, so we have to use the software renderer for the top layer
+		_flyoutLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this, true, RenderSurfaceType.Software));
 
 		Loaded += WpfHost_Loaded;
 		Unloaded += (_, _) => _backgroundDisposable.Dispose();

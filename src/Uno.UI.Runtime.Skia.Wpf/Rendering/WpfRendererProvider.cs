@@ -6,9 +6,9 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal static class WpfRendererProvider
 {
-	public static IWpfRenderer CreateForHost(IWpfXamlRootHost host, bool isFlyoutSurface)
+	public static IWpfRenderer CreateForHost(IWpfXamlRootHost host, bool isFlyoutSurface, RenderSurfaceType? surfaceType = null)
 	{
-		var requestedRenderer = host.RenderSurfaceType ?? RenderSurfaceType.OpenGL;
+		var requestedRenderer = surfaceType ?? host.RenderSurfaceType ?? RenderSurfaceType.OpenGL;
 
 		if (typeof(WpfRendererProvider).Log().IsEnabled(LogLevel.Debug))
 		{

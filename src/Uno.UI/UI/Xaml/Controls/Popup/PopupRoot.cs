@@ -23,7 +23,7 @@ internal partial class PopupRoot : Panel
 
 	public PopupRoot()
 	{
-		Visual.SetAsFlyoutVisual();
+		Visual.SetAsFlyoutVisual(true);
 		KeyDown += OnKeyDown;
 		Loaded += OnRootLoaded;
 		Unloaded += OnRootUnloaded;

@@ -24,10 +24,34 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
 	// This doesn't yet handle the case of a child visual changing parents. i.e., once a flyout visual, always a flyout visual.
-	private bool _isFlyoutVisual;
+	private bool? _isFlyoutVisual;
+	private bool _isFlyoutVisualInherited;
+	private bool IsFlyoutVisual => _isFlyoutVisual ?? _isFlyoutVisualInherited;
 
-	internal void SetAsFlyoutVisual() => _isFlyoutVisual = true;
-	protected bool IsFlyoutVisual() => _isFlyoutVisual || (Parent?.IsFlyoutVisual() ?? false);
+	/// <remarks>call with a null <paramref name="isFlyoutVisual"/> to unset.</remarks>
+	internal void SetAsFlyoutVisual(bool? isFlyoutVisual, bool inherited = false)
+	{
+		Debug.Assert(!inherited || isFlyoutVisual is { }, "Only non-null values should be inherited.");
+		var oldValue = IsFlyoutVisual;
+
+		if (inherited)
+		{
+			_isFlyoutVisualInherited = isFlyoutVisual!.Value;
+		}
+		else
+		{
+			_isFlyoutVisual = isFlyoutVisual;
+		}
+
+		var newValue = IsFlyoutVisual;
+		if (oldValue != newValue)
+		{
+			foreach (var child in GetChildrenInRenderOrder())
+			{
+				child.SetAsFlyoutVisual(newValue, true);
+			}
+		}
+	}
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
@@ -132,12 +156,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		if (isFlyoutSurface && !_isFlyoutVisual)
-		{
-			// we always draw everything on non-flyout surfaces
-			return;
-		}
-
 		var canvas = surface.Canvas;
 
 		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
@@ -162,7 +180,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
 		{
-			Render(session);
+			Render(session, isFlyoutSurface);
 		}
 
 		if (offsetOverride is { })
@@ -175,7 +193,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession)
+	private void Render(in PaintingSession parentSession, bool isFlyoutSurface)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -193,23 +211,31 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			ApplyPrePaintingClipping(canvas);
+			if (isFlyoutSurface == IsFlyoutVisual)
+			{
 
-			// Rendering shouldn't depend on matrix or clip adjustments having in a visual's Paint. That should
-			// be specific to that visual and should not affect the rendering of any other visual.
+				ApplyPrePaintingClipping(canvas);
+
+				// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
+				// be specific to that visual and should not affect the rendering of any other visual.
 #if DEBUG
-			var saveCount = canvas.SaveCount;
+				var saveCount = canvas.SaveCount;
 #endif
-			Paint(session);
+				if (isFlyoutSurface && IsFlyoutVisual)
+				{
+
+				}
+				Paint(session);
 #if DEBUG
-			Debug.Assert(saveCount == canvas.SaveCount);
+				Debug.Assert(saveCount == canvas.SaveCount);
 #endif
+			}
 
 			ApplyPostPaintingClipping(canvas);
 
 			foreach (var child in GetChildrenInRenderOrder())
 			{
-				child.Render(in session);
+				child.Render(in session, isFlyoutSurface);
 			}
 		}
 	}
