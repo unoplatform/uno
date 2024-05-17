@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 // https://www.x.org/releases/X11R7.6/doc/xextproto/shape.html
@@ -12,6 +13,8 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 // https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
+	private const string SampleVideoLink = "https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4";
+
 	/// replace the executable and the args with whatever you have locally. This is only used
 	/// for internal debugging. However, make sure that you can set a unique title to the window,
 	/// so that you can then look it up.
@@ -66,24 +69,23 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			process.Start();
 
-			var display = host.RootX11Window.Display;
-			using var _1 = X11Helper.XLock(display);
+			using var _1 = X11Helper.XLock(_display);
 
-			var _2 = XLib.XQueryTree(display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
+			var _2 = XLib.XQueryTree(_display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
 			XLib.XFree(children);
 
 			// Wait for the window to open.
 			IntPtr window = IntPtr.Zero;
 			SpinWait.SpinUntil(() =>
 			{
-				window = FindWindowByTitle(display, root, title);
+				window = FindWindowByTitle(_display, root, title);
 				if (window == IntPtr.Zero)
 				{
 					return false;
 				}
 
 				XWindowAttributes attributes = default;
-				var _ = XLib.XGetWindowAttributes(display, window, ref attributes);
+				var _ = XLib.XGetWindowAttributes(_display, window, ref attributes);
 				return attributes.map_state == MapState.IsViewable;
 			});
 
@@ -93,7 +95,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 				return null;
 			}
 
-			return new X11Window(display, window);
+			return new X11NativeWindow(window);
 		}
 
 		// For debugging: replace the above with a hardcoded window id, obtainable using e.g. wmctrl
