@@ -150,13 +150,8 @@ public class Given_DependencyObjectGenerator
 	 			if(BinderReferenceHolder.IsEnabled)
 	 			{
 	 				_refHolder = new BinderReferenceHolder(this.GetType(), this);
-	 		
-	 				UpdateBinderDetails();
 	 			}
 	 		}
-	 		
-	 		
-	 		partial void UpdateBinderDetails();
 	 		
 	 		/// <summary>
 	 		/// Obsolete method kept for binary compatibility

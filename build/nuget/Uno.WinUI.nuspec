@@ -685,7 +685,7 @@
 		<file src="uno.winui.single-project.targets" target="buildTransitive" />
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive" />
 		<file src="uno.winui.winappsdk.targets" target="buildTransitive" />
-		<file src="..\..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive" />
+		<file src="..\..\src\SourceGenerators\Uno.UI.Tasks\Content\**" target="buildTransitive" />
 
 		<!-- Force UAP to ignore netstandard 2.0 -->
 		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
