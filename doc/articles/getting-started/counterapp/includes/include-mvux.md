@@ -21,7 +21,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     }
     ```
 
-- Add the `Count` and `Step` properties to the `Countable`'s primary constructor. 
+- Add the `Count` and `Step` properties to the `Countable`'s primary constructor.
 
     ```csharp
     internal partial record Countable(int Count, int Step)
@@ -44,7 +44,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     public IState<Countable> Countable => State.Value(this, () => new Countable(0, 1));
     ```
 
-- Add a method named `IncrementCommand` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. The generated ViewModel of our `MainModel` will automatically re-expose as `ICommand` the `IncrementCommand` method.
+- Add a method named `IncrementCommand` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. You can find more information on commands in MVUX [here](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/Advanced/Commands.html).
 
     ```csharp
     public ValueTask IncrementCommand()
