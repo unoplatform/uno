@@ -78,11 +78,15 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		};
 
 		// PassThrough makes it so that any pointer event will fall through.
-		// We can't selectively pass certain events through, so we keep it off.
-		// area2.Realized += (s, e) =>
-		// {
-		// 	area2.Window.PassThrough = true;
-		// };
+		// We can't selectively pass certain events through, so we can either
+		// pass through all the events, or none of them. We go with the
+		// former. This means that clicking on a popup on top of a native element
+		// will pass the pointer event to the native element even if it's supposed
+		// to be hidden behind the popup.
+		area2.Realized += (s, e) =>
+		{
+			area2.Window.PassThrough = true;
+		};
 
 		area.SizeAllocated += (s, e) =>
 		{
