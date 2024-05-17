@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-#if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 	public static partial class KnownFolders
@@ -138,7 +138,7 @@ namespace Windows.Storage
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.KnownFoldersAccessStatus> RequestAccessAsync(global::Windows.Storage.KnownFolderId folderId)
 		{
@@ -152,7 +152,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<KnownFoldersAccessStatus> KnownFolders.RequestAccessForUserAsync(User user, KnownFolderId folderId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CKnownFoldersAccessStatus%3E%20KnownFolders.RequestAccessForUserAsync%28User%20user%2C%20KnownFolderId%20folderId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(global::Windows.Storage.KnownFolderId folderId)
 		{
