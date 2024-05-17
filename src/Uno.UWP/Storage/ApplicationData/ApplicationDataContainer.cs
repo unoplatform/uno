@@ -5,9 +5,18 @@ using Windows.Phone.PersonalInformation;
 
 namespace Windows.Storage;
 
+/// <summary>
+/// Represents a container for app settings. The methods and properties of this class support 
+/// creating, deleting, enumerating, and traversing the container hierarchy.
+/// </summary>
+/// <remarks>
+/// Settings are stored in platform-specific preference stores. Some keys are used internally by Uno Platform,
+/// and are not surfaced via the public API. These keys are prefixed with "__".
+/// To provide the concept of nested containers, we use the "__/" prefix in key names as the container path separator.
+/// </remarks>
 public partial class ApplicationDataContainer : IDisposable
 {
-	private const string ContainerNameSeparator = "__|";
+	private const string ContainerPathSeparator = "__/";
 
 	private Lazy<Dictionary<string, ApplicationDataContainer>> _containers = new(CreateContainersDictionary);
 	private ApplicationDataContainer _parent;
@@ -27,7 +36,7 @@ public partial class ApplicationDataContainer : IDisposable
 		Locality = parent.Locality;
 	}
 
-	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + ContainerNameSeparator + Name;
+	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + ContainerPathSeparator + Name;
 
 	partial void InitializePartial(ApplicationData owner);
 
