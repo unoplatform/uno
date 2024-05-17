@@ -34,8 +34,8 @@
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
 			</group>
 
-			<!-- net8.0-macos -->
-			<group targetFramework="net8.0-macos">
+			<!-- net8.0-macos14.0 -->
+			<group targetFramework="net8.0-macos14.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
@@ -70,8 +70,8 @@
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
 			</group>
 
-			<!-- net9.0-macos -->
-			<group targetFramework="net9.0-macos">
+			<!-- net9.0-macos14.2 -->
+			<group targetFramework="net9.0-macos14.2">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
@@ -139,8 +139,8 @@
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.RemoteControl.dll" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0-maccatalyst17.0" />
 
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos\Uno.UI.RemoteControl.dll" target="lib\net8.0-macos" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net8.0-macos" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos14.0\Uno.UI.RemoteControl.dll" target="lib\net8.0-macos14.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos14.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0-macos14.0" />
 
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-android\Uno.UI.RemoteControl.dll" target="lib\net9.0-android" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-android\Uno.UI.RemoteControl.pdb" target="lib\net9.0-android" />
@@ -151,8 +151,8 @@
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.RemoteControl.dll" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.RemoteControl.pdb" target="lib\net9.0-maccatalyst17.2" />
 
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-macos\Uno.UI.RemoteControl.dll" target="lib\net9.0-macos" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net9.0-macos" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-macos14.2\Uno.UI.RemoteControl.dll" target="lib\net9.0-macos14.2" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-macos14.2\Uno.UI.RemoteControl.pdb" target="lib\net9.0-macos14.2" />
 
 		<!-- Processors -->
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.dll" target="tools\rc\processors\net8.0" />

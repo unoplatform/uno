@@ -55,7 +55,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
-			<group targetFramework="net8.0-macos">
+			<group targetFramework="net8.0-macos14.0">
 				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
 				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.7" />
@@ -88,7 +88,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
-			<group targetFramework="net9.0-macos">
+			<group targetFramework="net9.0-macos14.2">
 				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
 				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.7" />
@@ -105,7 +105,7 @@
 			<group targetFramework="net8.0-maccatalyst17.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net8.0-macos">
+			<group targetFramework="net8.0-macos14.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<group targetFramework="net8.0-android">
@@ -117,7 +117,7 @@
 			<group targetFramework="net9.0-maccatalyst17.2">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net9.0-macos">
+			<group targetFramework="net9.0-macos14.2">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<group targetFramework="net9.0-android">

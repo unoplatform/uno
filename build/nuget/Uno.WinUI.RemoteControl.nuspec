@@ -32,11 +32,11 @@
 		<file src="_._" target="lib\net8.0-android" />
 		<file src="_._" target="lib\net8.0-ios17.0" />
 		<file src="_._" target="lib\net8.0-maccatalyst17.0" />
-		<file src="_._" target="lib\net8.0-macos" />
+		<file src="_._" target="lib\net8.0-macos14.0" />
 		
 		<file src="_._" target="lib\net9.0-android" />
 		<file src="_._" target="lib\net9.0-ios17.2" />
 		<file src="_._" target="lib\net9.0-maccatalyst17.2" />
-		<file src="_._" target="lib\net9.0-macos" />
+		<file src="_._" target="lib\net9.0-macos14.2" />
 	</files>
 </package>

@@ -134,7 +134,7 @@
 		<ItemGroup>
 			<MixinTargetFrameworks Include="net8.0-ios17.0" />
 			<MixinTargetFrameworks Include="net8.0-android" />
-			<MixinTargetFrameworks Include="net8.0-macos" />
+			<MixinTargetFrameworks Include="net8.0-macos14.0" />
 		</ItemGroup>
 
 		<MSBuild
