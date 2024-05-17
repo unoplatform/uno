@@ -912,7 +912,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (OperatingSystem.IsBrowser())
 			{
 				// TODO: Investigate what happens on Wasm Skia when running this test.
-				return;
+				Assert.Inconclusive("Fails on Wasm Skia for unknown reason");
 			}
 #endif
 			var SUT = new TextBox();
