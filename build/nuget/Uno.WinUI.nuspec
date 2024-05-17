@@ -34,28 +34,28 @@
 				<dependency id="Xamarin.AndroidX.SwipeRefreshLayout"  version="1.1.0.10" />
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- net7.0-ios -->
 			<group targetFramework="net7.0-ios">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- net7.0-maccatalyst -->
 			<group targetFramework="net7.0-maccatalyst">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- net7.0-macos -->
 			<group targetFramework="net7.0-macos">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- net8.0-android30.0 -->
@@ -67,28 +67,28 @@
 				<dependency id="Xamarin.AndroidX.SwipeRefreshLayout"  version="1.1.0.10" />
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- net8.0-ios -->
 			<group targetFramework="net8.0-ios">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- net8.0-maccatalyst -->
 			<group targetFramework="net8.0-maccatalyst">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- net8.0-macos -->
 			<group targetFramework="net8.0-macos">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- .NET 7 (Reference API) -->
@@ -99,7 +99,7 @@
 				<dependency id="System.Memory" version="4.5.2" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="System.Collections.Immutable" version="1.3.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- .NET 8 (Reference API) -->
@@ -110,7 +110,7 @@
 				<dependency id="System.Memory" version="4.5.2" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="System.Collections.Immutable" version="1.3.1" />
-				<dependency id="Uno.Fonts.Fluent" version="2.3.0" />
+				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 		</dependencies>
 

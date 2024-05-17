@@ -91,7 +91,7 @@
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
-		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0" />
+		<PackageReference Update="Uno.Fonts.Fluent" version="2.3.1" />
 		<PackageReference Update="Uno.Resizetizer" Version="1.2.0-dev.72" />
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 		<PackageReference Update="Xamarin.UITest" Version="4.3.4" />
