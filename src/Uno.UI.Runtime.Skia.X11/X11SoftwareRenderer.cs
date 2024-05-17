@@ -73,7 +73,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (host.RootElement?.Visual is { } rootVisual)
 				{
+					// Unlike the other skia platforms, we don't have multiple "layers",
+					// but we draw everything on top of the native windows and then "cutout holes"
+					// in this top rendered area to see the native windows, so we render twice
+					// with isFlyoutSurface = true and false
 					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, false);
+					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, true);
 				}
 
 				canvas.Flush();

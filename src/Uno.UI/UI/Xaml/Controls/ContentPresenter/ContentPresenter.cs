@@ -668,9 +668,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			ContentTemplateRoot = null;
 		}
 
-		TryRegisterNativeElement(newValue);
-
 		TrySetDataContextFromContent(newValue);
+
+		if (IsLoaded)
+		{
+			TryRegisterNativeElement(newValue);
+		}
 
 		SetUpdateTemplate();
 	}
@@ -851,11 +854,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();
 #endif
-
-		if (IsNativeHost)
-		{
-			AttachNativeElement();
-		}
 	}
 #endif
 
@@ -876,12 +874,16 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
+#endif
 
+		if (!IsNativeHost)
+		{
+			TryRegisterNativeElement(Content);
+		}
 		if (IsNativeHost)
 		{
 			AttachNativeElement();
 		}
-#endif
 	}
 
 	private protected override void OnUnloaded()
