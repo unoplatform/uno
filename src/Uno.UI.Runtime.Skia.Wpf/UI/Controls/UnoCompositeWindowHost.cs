@@ -1,5 +1,7 @@
 #nullable enable
 
+using System.Windows;
+using System.Windows.Markup;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -20,6 +22,41 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 	private const string NativeOverlayLayerHost = "NativeOverlayLayerHost";
 	private const string BottomLayerHost = "BottomLayerHost";
 	private const string FlyoutLayerHost = "FlyoutLayerHost";
+	private readonly Style _style = (Style)XamlReader.Parse(
+		"""
+		<Style
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:controls="clr-namespace:Uno.UI.Runtime.Skia.Wpf.UI.Controls;assembly=Uno.UI.Runtime.Skia.Wpf"
+			TargetType="{x:Type controls:UnoCompositeWindowHost}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type controls:UnoCompositeWindowHost}">
+						<Grid>
+							<Border
+								Background="{x:Null}"
+								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="{TemplateBinding BorderThickness}">
+								<ContentPresenter x:Name="BottomLayerHost" />
+							</Border>
+							<Border
+								Background="{x:Null}"
+								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="{TemplateBinding BorderThickness}">
+								<ContentPresenter x:Name="NativeOverlayLayerHost" />
+							</Border>
+							<Border
+								Background="{x:Null}"
+								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="{TemplateBinding BorderThickness}">
+								<ContentPresenter x:Name="FlyoutLayerHost" />
+							</Border>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		""");
 
 	private readonly UnoWpfWindow _wpfWindow;
 	private readonly MUX.Window _winUIWindow;
@@ -30,17 +67,12 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 
 	private readonly SerialDisposable _backgroundDisposable = new();
 
-	static UnoCompositeWindowHost()
-	{
-		DefaultStyleKeyProperty.OverrideMetadata(
-			typeof(UnoCompositeWindowHost),
-			new WpfFrameworkPropertyMetadata(typeof(UnoCompositeWindowHost)));
-	}
-
 	public UnoCompositeWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
 		_winUIWindow = winUIWindow;
+
+		Style = _style;
 
 		// We need to set the content here because the RenderingLayerHost needs to call Window.GetWindow
 		wpfWindow.Content = this;

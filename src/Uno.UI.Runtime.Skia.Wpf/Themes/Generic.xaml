@@ -3,50 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Uno.UI.Runtime.Skia.Wpf.UI.Controls">
 
-    <Style TargetType="{x:Type controls:UnoWpfWindowHost}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:UnoWpfWindowHost}">
-                    <Border
-                        Background="{x:Null}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                        <ContentPresenter x:Name="NativeOverlayLayerHost" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-	<Style TargetType="{x:Type controls:UnoCompositeWindowHost}">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type controls:UnoCompositeWindowHost}">
-					<Grid>
-						<Border
-							Background="{x:Null}"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}">
-							<ContentPresenter x:Name="BottomLayerHost" />
-						</Border>
-						<Border
-							Background="{x:Null}"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}">
-							<ContentPresenter x:Name="NativeOverlayLayerHost" />
-						</Border>
-						<Border
-							Background="{x:Null}"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}">
-							<ContentPresenter x:Name="FlyoutLayerHost" />
-						</Border>
-					</Grid>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-
     <Style TargetType="{x:Type controls:WpfTextViewTextBox}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
