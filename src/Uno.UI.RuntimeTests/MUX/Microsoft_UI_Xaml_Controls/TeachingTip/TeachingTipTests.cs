@@ -243,7 +243,7 @@ public class TeachingTipTests
 			tip.UpdateLayout();
 		});
 
-			await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
