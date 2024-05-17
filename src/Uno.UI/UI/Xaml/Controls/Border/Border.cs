@@ -38,14 +38,16 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = nameof(Child))]
 public partial class Border : FrameworkElement
 {
-	private readonly BorderLayerRenderer _borderRenderer;
-
 	public Border()
 	{
-		_borderRenderer = new BorderLayerRenderer(this);
+#if !UNO_HAS_BORDER_VISUAL
+		BorderRenderer = new BorderLayerRenderer(this);
+#endif
 	}
 
-	internal BorderLayerRenderer BorderRenderer => _borderRenderer;
+#if !UNO_HAS_BORDER_VISUAL
+	internal BorderLayerRenderer BorderRenderer { get; }
+#endif
 
 	/// <summary>
 	/// Support for the C# collection initializer style.
@@ -122,7 +124,14 @@ public partial class Border : FrameworkElement
 		set => SetCornerRadiusValue(value);
 	}
 
-	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => _borderRenderer.Update();
+	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateCornerRadius();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -184,7 +193,14 @@ public partial class Border : FrameworkElement
 		set => SetPaddingValue(value);
 	}
 
-	private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => _borderRenderer.Update();
+	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		// TODO: https://github.com/unoplatform/uno/issues/16705
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -199,7 +215,11 @@ public partial class Border : FrameworkElement
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
-		_borderRenderer.Update();
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBackgroundSizing();
+#else
+		UpdateBorder();
+#endif
 		base.OnBackgroundSizingChangedInner(e);
 	}
 	#endregion
@@ -216,7 +236,14 @@ public partial class Border : FrameworkElement
 		set => SetBorderThicknessValue(value);
 	}
 
-	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => _borderRenderer.Update();
+	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBorderThickness();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -249,7 +276,14 @@ public partial class Border : FrameworkElement
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => _borderRenderer.Update()));
+		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
+		{
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateBorderBrush();
+#else
+			UpdateBorder();
+#endif
+		}));
 #if __WASM__
 		if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 		{
@@ -263,7 +297,11 @@ public partial class Border : FrameworkElement
 
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-		_borderRenderer.Update();
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBackground();
+#else
+		UpdateBorder();
+#endif
 		OnBackgroundChangedPartial();
 	}
 
@@ -282,4 +320,8 @@ public partial class Border : FrameworkElement
 
 		return element.Background != null;
 	}
+
+#if !UNO_HAS_BORDER_VISUAL
+	private void UpdateBorder() => BorderRenderer.Update();
+#endif
 }
