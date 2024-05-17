@@ -150,7 +150,7 @@ namespace Uno.UWPSyncGenerator
 			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-ios17.0");
 			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-android");
 			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net8.0");
-			_macCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-macos");
+			_macCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-macos14.0");
 
 			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net8.0");
 			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net8.0");
