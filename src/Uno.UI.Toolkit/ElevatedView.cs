@@ -81,7 +81,7 @@ namespace Uno.UI.Toolkit
 #if __IOS__ || __MACOS__
 			if (_border != null)
 			{
-				_border.BoundsPathUpdated += (s, e) => UpdateElevation();
+				_border.BorderRenderer.BoundsPathUpdated += (s, e) => UpdateElevation();
 			}
 #endif
 
