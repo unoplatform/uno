@@ -1,7 +1,7 @@
 <Project>
 	<!-- CI helper to split net8 and net9 builds and actually build on net8 the net8.0-* targets -->
 	<PropertyGroup Condition="'$(UnoDisableNetPreviousMobile)'=='true'">
-		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net8.0-ios17.0','').Replace('net8.0-android','').Replace('net8.0-maccatalyst','').Replace('net8.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net8.0-ios17.0','').Replace('net8.0-android','').Replace('net8.0-maccatalyst17.0','').Replace('net8.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--
 		Results from property functions are escaped, causing itemgroup inclusion to be
@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoDisableNetCurrentMobile)'=='true'">
-		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net9.0-ios17.2','').Replace('net9.0-android','').Replace('net9.0-maccatalyst','').Replace('net9.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net9.0-ios17.2','').Replace('net9.0-android','').Replace('net9.0-maccatalyst17.2','').Replace('net9.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--
 		Results from property functions are escaped, causing itemgroup inclusion to be
