@@ -350,8 +350,20 @@ namespace Microsoft.UI.Xaml
 				desiredSize.Height = LayoutRound(desiredSize.Height);
 			}
 
+			var oldWidth = this.GetActualWidth();
+			var oldHeight = this.GetActualHeight();
+
 			// DesiredSize must include margins
 			LayoutInformation.SetDesiredSize(this, desiredSize);
+
+			var newWidth = this.GetActualWidth();
+			var newHeight = this.GetActualHeight();
+
+			if (oldWidth != newWidth || oldHeight != newHeight)
+			{
+				// This is HACKY, and is specific to TextBlock which overrides GetActualWidth and GetActualHeight to return DesiredSize.
+				RaiseSizeChanged(new SizeChangedEventArgs(this, new Size(oldWidth, oldHeight), new Size(newWidth, newHeight)));
+			}
 
 			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
 		}
@@ -705,8 +717,10 @@ namespace Microsoft.UI.Xaml
 			var clippedFrame = GetClipRect(needsClipBounds, visualOffset, finalRect, new Size(maxWidth, maxHeight), margin);
 			ArrangeNative(visualOffset, clippedFrame);
 
-			OnLayoutUpdated();
+			AfterArrange();
 		}
+
+		internal virtual void AfterArrange() { }
 
 		// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
 		private protected virtual Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)

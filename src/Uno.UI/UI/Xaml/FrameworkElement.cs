@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno.UI;
 using System.Linq;
 using Windows.Foundation;
@@ -752,12 +753,76 @@ namespace Microsoft.UI.Xaml
 
 		protected virtual bool GoToElementStateCore(string stateName, bool useTransitions) => false;
 
-		public event EventHandler<object> LayoutUpdated;
+		#region LayoutUpdated
 
-		internal virtual void OnLayoutUpdated()
+		private EventHandler<object> _layoutUpdated;
+
+		public event EventHandler<object> LayoutUpdated
 		{
-			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
+			// This is the same as what the compiler generates for field-like events, except that we want to plug extra code (notifying EventManager).
+			add
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var isFirstSubscriber = _layoutUpdated is null;
+#endif
+
+				EventHandler<object> eventHandler = _layoutUpdated;
+				while (true)
+				{
+					EventHandler<object> eventHandler2 = eventHandler;
+					EventHandler<object> value2 = (EventHandler<object>)Delegate.Combine(eventHandler2, value);
+					eventHandler = Interlocked.CompareExchange(ref _layoutUpdated, value2, eventHandler2);
+					if ((object)eventHandler == eventHandler2)
+					{
+						break;
+					}
+				}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (isFirstSubscriber)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.AddLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
+			remove
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var hadSubscribers = _layoutUpdated is not null;
+#endif
+
+				EventHandler<object> eventHandler = _layoutUpdated;
+				while (true)
+				{
+					EventHandler<object> eventHandler2 = eventHandler;
+					EventHandler<object> value2 = (EventHandler<object>)Delegate.Remove(eventHandler2, value);
+					eventHandler = Interlocked.CompareExchange(ref _layoutUpdated, value2, eventHandler2);
+					if ((object)eventHandler == eventHandler2)
+					{
+						break;
+					}
+				}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (hadSubscribers && _layoutUpdated is null)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.RemoveLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
 		}
+
+		// This shouldn't be virtual on enhanced lifecycle as it won't be called if there is no real subscriber to LayoutUpdated.
+		internal
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			virtual
+#endif
+			void OnLayoutUpdated()
+		{
+			_layoutUpdated?.Invoke(null, null);
+		}
+
+		#endregion
 
 		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
 

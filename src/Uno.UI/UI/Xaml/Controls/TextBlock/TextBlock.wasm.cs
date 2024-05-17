@@ -163,9 +163,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return base.ArrangeOverride(arrangeSize);
 		}
 
-		internal override void OnLayoutUpdated()
+		internal override void AfterArrange()
 		{
-			base.OnLayoutUpdated();
+			base.AfterArrange();
 
 			if (_shouldUpdateIsTextTrimmed)
 			{

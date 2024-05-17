@@ -1227,21 +1227,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Child Loading", events[1]);
 			Assert.AreEqual("Parent SizeChanged", events[2]);
 			Assert.AreEqual("Child SizeChanged", events[3]);
+
+			// On WinUI, order isn't guaranteed. Different runs of test can produce different order of LayoutUpdated.
+			// Likely caused by some data structure usage in WinUI that doesn't guarantee insertion order.
+			if (events[4] == "Child LayoutUpdated")
+			{
+				Assert.AreEqual("Parent LayoutUpdated", events[5]);
+			}
+			else
+			{
+				Assert.AreEqual("Parent LayoutUpdated", events[4]);
+				Assert.AreEqual("Child LayoutUpdated", events[5]);
+			}
+
+			Assert.AreEqual("Child Loaded", events[6]);
+			Assert.AreEqual("Parent Loaded", events[7]);
+#else
+			Assert.AreEqual(10, events.Count);
+			Assert.AreEqual("Parent Loading", events[0]);
+			Assert.AreEqual("Child Loading", events[1]);
+			Assert.AreEqual("Child SizeChanged", events[2]);
+			Assert.AreEqual("Parent SizeChanged", events[3]);
 			Assert.AreEqual("Child LayoutUpdated", events[4]);
 			Assert.AreEqual("Parent LayoutUpdated", events[5]);
 			Assert.AreEqual("Child Loaded", events[6]);
 			Assert.AreEqual("Parent Loaded", events[7]);
-#else
-			Assert.AreEqual(9, events.Count);
-			Assert.AreEqual("Parent Loading", events[0]);
-			Assert.AreEqual("Child Loading", events[1]);
-			Assert.AreEqual("Child SizeChanged", events[2]);
-			Assert.AreEqual("Child LayoutUpdated", events[3]);
-			Assert.AreEqual("Parent SizeChanged", events[4]);
-			Assert.AreEqual("Parent LayoutUpdated", events[5]);
-			Assert.AreEqual("Child Loaded", events[6]);
-			Assert.AreEqual("Parent Loaded", events[7]);
 			Assert.AreEqual("Child LayoutUpdated", events[8]);
+			Assert.AreEqual("Parent LayoutUpdated", events[9]);
 #endif
 		}
 #endif

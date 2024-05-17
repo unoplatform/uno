@@ -11,7 +11,7 @@ using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core;
 
-internal sealed class EventManager
+internal sealed partial class EventManager
 {
 	private List<UIElement?> _loadedEventList = new(1024);
 	private List<(FrameworkElement Element, EffectiveViewportChangedEventArgs Args)> _effectiveViewportChangedQueue = new(32);

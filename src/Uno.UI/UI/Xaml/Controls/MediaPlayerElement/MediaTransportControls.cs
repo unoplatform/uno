@@ -122,10 +122,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DeinitializeTransportControls();
 		}
-		internal override void OnLayoutUpdated()
+
+		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
+		internal override void
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			AfterArrange()
+		{
+			base.AfterArrange();
+#else
+			OnLayoutUpdated()
 		{
 			base.OnLayoutUpdated();
-
+#endif
 			OnControlsBoundsChanged();
 		}
 

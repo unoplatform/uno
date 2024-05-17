@@ -68,7 +68,6 @@ internal partial class SystemFocusVisual : Control
 		{
 			element.EnsureFocusVisualBrushDefaults();
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
-			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;
 			element.EffectiveViewportChanged += focusVisual.FocusedElementEffectiveViewportChanged;
 			element.Unloaded += focusVisual.FocusedElementUnloaded;
 
@@ -84,7 +83,6 @@ internal partial class SystemFocusVisual : Control
 			focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				element.SizeChanged -= focusVisual.FocusedElementSizeChanged;
-				element.LayoutUpdated -= focusVisual.FocusedElementLayoutUpdated;
 				element.EffectiveViewportChanged -= focusVisual.FocusedElementEffectiveViewportChanged;
 				element.UnregisterPropertyChangedCallback(VisibilityProperty, visibilityToken);
 
@@ -104,8 +102,6 @@ internal partial class SystemFocusVisual : Control
 	private void FocusedElementUnloaded(object sender, RoutedEventArgs e) => FocusedElement = null;
 
 	private void FocusedElementVisibilityChanged(DependencyObject sender, DependencyProperty dp) => SetLayoutProperties();
-
-	private void FocusedElementLayoutUpdated(object? sender, object e) => SetLayoutProperties();
 
 	private void FocusedElementSizeChanged(object sender, SizeChangedEventArgs args) => SetLayoutProperties();
 

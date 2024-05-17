@@ -229,11 +229,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		/// <inheritdoc />
-		internal override void OnLayoutUpdated()
+		internal override void AfterArrange()
 		{
-			base.OnLayoutUpdated();
-
+			base.AfterArrange();
 			TryProcessScrollTo();
 		}
 
@@ -286,6 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_rootEltUsedToProcessScrollTo is null && rootElement is FrameworkElement rootFwElt)
 				{
 					_rootEltUsedToProcessScrollTo = rootFwElt;
+					// TODO: LayoutUpdated doesn't look like the right thing to do.
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
 				}
 

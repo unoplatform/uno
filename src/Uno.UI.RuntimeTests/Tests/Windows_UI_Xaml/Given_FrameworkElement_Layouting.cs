@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
 	[TestClass]
-#if !IS_UNIT_TESTS
-	[RuntimeTests.RunsOnUIThread]
-#endif
+	[RunsOnUIThread]
 	public partial class Given_FrameworkElement
 	{
 		[TestMethod]
@@ -54,6 +51,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			SUT.Arrange(new Rect(0, 0, 2, 2));
 
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+			var sutLayoutUpdate3 = sutLayoutUpdatedCount;
+			var item1LayoutUpdate3 = item1LayoutUpdatedCount;
+
+			TestServices.WindowHelper.EmbeddedTestRoot.control.InvalidateMeasure();
+			TestServices.WindowHelper.EmbeddedTestRoot.control.UpdateLayout();
+			var sutLayoutUpdate4 = sutLayoutUpdatedCount;
+
+			TestServices.WindowHelper.EmbeddedTestRoot.control.UpdateLayout();
+			var sutLayoutUpdate5 = sutLayoutUpdatedCount;
+#endif
+
 			using (new AssertionScope())
 			{
 #if __ANDROID__
@@ -64,6 +73,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 				// Issue: https://github.com/unoplatform/uno/issues/2769
 				sutLayoutUpdate1.Should().Be(2, "sut-before");
 				sutLayoutUpdate2.Should().Be(4, "sut-after");
+#elif UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+				sutLayoutUpdate1.Should().Be(0, "sut-1");
+				sutLayoutUpdate2.Should().Be(0, "sut-2");
+				sutLayoutUpdate3.Should().Be(0, "sut-3");
+				sutLayoutUpdate4.Should().Be(1, "sut-4");
+				sutLayoutUpdate5.Should().Be(1, "sut-5");
 #else
 				sutLayoutUpdate1.Should().Be(1, "sut-before");
 				sutLayoutUpdate2.Should().Be(2, "sut-after");
@@ -73,6 +88,80 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 				item1LayoutUpdate1.Should().Be(1, "item1-before");
 				item1LayoutUpdate2.Should().Be(2, "item1-after");
 #endif
+			}
+		}
+
+		[TestMethod]
+		public async Task When_LayoutUpdated_Not_In_Visual_Tree()
+		{
+			string s = "";
+			var button = new Button();
+			button.LayoutUpdated += (sender, args) =>
+			{
+				Assert.IsNull(sender);
+				Assert.IsNull(args);
+				s += "button1 ";
+			};
+			button.LayoutUpdated += (sender, args) =>
+			{
+				Assert.IsNull(sender);
+				Assert.IsNull(args);
+				s += "button2 ";
+			};
+
+			var border = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+
+			border.LayoutUpdated += (sender, args) =>
+			{
+				Assert.IsNull(sender);
+				Assert.IsNull(args);
+				s += "border1 ";
+			};
+
+			border.LayoutUpdated += (sender, args) =>
+			{
+				Assert.IsNull(sender);
+				Assert.IsNull(args);
+				s += "border2 ";
+			};
+
+			await UITestHelper.Load(border);
+
+#if WINAPPSDK
+			// On WinUI, running the test randomly produces one of these outputs.
+			if (s is not ("button1 button2 border1 border2 " or "border1 border2 button1 button2 "))
+			{
+				Assert.Fail($"Test failed. Actual: {s}");
+			}
+#else
+			Assert.AreEqual("button1 button2 border1 border2 ", s);
+#endif
+		}
+
+
+		[TestMethod]
+		public void When_LayoutUpdated_Should_Not_Keep_Elements_Alive()
+		{
+			var wr = GetWeakReference();
+
+			for (int i = 0; i < 10; i++)
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.IsFalse(wr.TryGetTarget(out _));
+
+			static WeakReference<Button> GetWeakReference()
+			{
+				var x = new Button();
+				x.LayoutUpdated += (_, _) => x.Content = "Hello";
+				return new(x);
 			}
 		}
 
@@ -87,6 +176,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			});
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		public void When_SuppressIsEnabled()
 		{
@@ -106,6 +196,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			SUT.PublicSuppressIsEnabled(false);
 			Assert.IsTrue(SUT.IsEnabled);
 		}
+#endif
 
 		[TestMethod]
 		public void When_DP_IsEnabled_Null()
@@ -116,8 +207,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		}
 	}
 
+#if HAS_UNO
 	public partial class MyEnabledTestControl : ContentControl
 	{
 		public void PublicSuppressIsEnabled(bool suppress) => SuppressIsEnabled(suppress);
 	}
+#endif
 }
