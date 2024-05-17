@@ -28,7 +28,6 @@ public partial class ApplicationDataContainer
 
 			_folderPath = settingsFolderPath;
 			_filePath = Path.Combine(settingsFolderPath, $"{locality}.dat");
-
 			ReadFromFile();
 		}
 
