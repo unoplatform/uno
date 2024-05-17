@@ -852,7 +852,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		UpdateBorder();
 #endif
 
-		TryAttachNativeElement();
+		if (IsNativeHost)
+		{
+			AttachNativeElement();
+		}
 	}
 #endif
 
@@ -1240,7 +1243,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 #if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();
-#endif
 #endif
 
 	private void SetUpdateTemplate()

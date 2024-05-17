@@ -19,14 +19,13 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 	private WpfControl _hostControl;
 	private WriteableBitmap? _bitmap;
 	private IWpfXamlRootHost _host;
-	private readonly XamlRoot _xamlRoot;
+	private XamlRoot? _xamlRoot;
 	private bool _isFlyoutSurface;
 
 	public SoftwareWpfRenderer(IWpfXamlRootHost host, bool isFlyoutSurface)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_xamlRoot = WpfManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		_isFlyoutSurface = isFlyoutSurface;
 		if (isFlyoutSurface)
 		{
@@ -56,6 +55,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		int width, height;
 
+		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		var dpi = _xamlRoot.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;

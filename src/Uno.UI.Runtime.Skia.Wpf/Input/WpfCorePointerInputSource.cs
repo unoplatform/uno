@@ -144,7 +144,8 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			else
 			{
 				// if not, is it on top of a native element? if so, raise in native
-				var result = VisualTreeHelper.HitTest(((IWpfXamlRootHost)_hostControl).NativeOverlayLayer!, args.GetPosition(null));
+				var windowsFoundationPosition = eventArgs.CurrentPoint.Position;
+				var result = VisualTreeHelper.HitTest(((IWpfXamlRootHost)_hostControl).NativeOverlayLayer!, new Point(windowsFoundationPosition.X, windowsFoundationPosition.Y));
 				if (result?.VisualHit is UIElement element)
 				{
 					element.RaiseEvent(args);

@@ -22,6 +22,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 
+	// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
+	// This doesn't yet handle the case of a child visual changing parents. i.e., once a flyout visual, always a flyout visual.
+	private bool _isFlyoutVisual;
+
+	internal void SetAsFlyoutVisual() => _isFlyoutVisual = true;
+	protected bool IsFlyoutVisual() => _isFlyoutVisual || (Parent?.IsFlyoutVisual() ?? false);
+
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
@@ -122,6 +129,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
+			return;
+		}
+
+		if (isFlyoutSurface && !_isFlyoutVisual)
+		{
+			// we always draw everything on non-flyout surfaces
 			return;
 		}
 

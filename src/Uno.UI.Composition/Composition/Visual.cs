@@ -25,19 +25,12 @@ namespace Microsoft.UI.Composition
 		private CompositionCompositeMode _compositeMode;
 		private ICompositionTarget? _compositionTarget;
 
-		// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
-		// This doesn't yet handle the case of a child visual changing parents. As in: once a flyout visual, always a flyout visual.
-		private bool _isFlyoutVisual;
-
 		internal Visual(Compositor compositor) : base(compositor)
 		{
 			InitializePartial();
 		}
 
 		partial void InitializePartial();
-
-		internal void SetAsFlyoutVisual() => _isFlyoutVisual = true;
-		protected bool IsFlyoutVisual() => _isFlyoutVisual || (Parent?.IsFlyoutVisual() ?? false);
 
 		internal VisualInteractionSource? VisualInteractionSource { get; set; }
 

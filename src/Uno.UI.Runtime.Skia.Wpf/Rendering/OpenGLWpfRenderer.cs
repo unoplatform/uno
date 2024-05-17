@@ -24,7 +24,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
 	private readonly bool _isFlyoutSurface;
-	private readonly WinUI.XamlRoot _xamlRoot;
+	private WinUI.XamlRoot? _xamlRoot;
 	private nint _hwnd;
 	private nint _hdc;
 	private nint _glContext;
@@ -37,7 +37,6 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_xamlRoot = WpfManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		_isFlyoutSurface = isFlyoutSurface;
 		if (isFlyoutSurface)
 		{
@@ -159,7 +158,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		int width, height;
 
-		var dpi = _xamlRoot.RasterizationScale;
+		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		var dpi = _xamlRoot!.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
 		if (_host.IgnorePixelScaling)

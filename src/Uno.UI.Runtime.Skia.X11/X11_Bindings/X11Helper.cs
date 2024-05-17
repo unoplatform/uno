@@ -331,8 +331,8 @@ internal static partial class X11Helper
 	[LibraryImport(libX11)]
 	public static partial int XClearWindow(IntPtr display, IntPtr window);
 
-	[LibraryImport(libX11)]
-	public static partial int XFetchName(IntPtr display, IntPtr window, out string name_return);
+	[DllImport(libX11)]
+	public static extern int XFetchName(IntPtr display, IntPtr window, out string name_return);
 
 	[LibraryImport(libX11)]
 	public unsafe static partial int XChangeWindowAttributes(
@@ -396,8 +396,8 @@ internal static partial class X11Helper
 		return region;
 	}
 
-	[LibraryImport(libX11Randr)]
-	public static partial bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
+	[DllImport(libX11Randr)]
+	public static extern bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
 
 	[LibraryImport(libXext)]
 	public static partial void XShapeCombineRegion (
