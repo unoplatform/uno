@@ -18,7 +18,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	/// replace the executable and the args with whatever you have locally. This is only used
 	/// for internal debugging. However, make sure that you can set a unique title to the window,
 	/// so that you can then look it up.
-	public object? CreateSampleComponent(XamlRoot owner, string text) {
+	public object? CreateSampleComponent(XamlRoot owner, string text)
+	{
 		if (X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
 		{
 			if (!Exists("mpv"))
@@ -54,7 +55,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			// process.StartInfo.ArgumentList.Add("--meta-title");
 			// process.StartInfo.ArgumentList.Add(title);
 			// title += " - VLC media player";
-			
+
 			// alacritty
 			// var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
 			// process.StartInfo.ArgumentList.Add("--title");
@@ -72,7 +73,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			using var _1 = X11Helper.XLock(_display);
 
 			var _2 = XLib.XQueryTree(_display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
-			XLib.XFree(children);
+			var _3 = XLib.XFree(children);
 
 			// Wait for the window to open.
 			IntPtr window = IntPtr.Zero;
@@ -144,7 +145,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 		var span = new Span<IntPtr>(children.ToPointer(), nChildren);
 
-		for (var i =  0; i < nChildren; ++i)
+		for (var i = 0; i < nChildren; ++i)
 		{
 			IntPtr window = FindWindowByTitle(display, span[i], title);
 
@@ -173,7 +174,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 		var span = new Span<IntPtr>(children.ToPointer(), nChildren);
 
-		for (var i =  0; i < nChildren; ++i)
+		for (var i = 0; i < nChildren; ++i)
 		{
 			IntPtr window = FindWindowById(display, span[i], id);
 

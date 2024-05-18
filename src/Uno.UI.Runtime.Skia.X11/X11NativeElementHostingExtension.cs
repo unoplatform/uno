@@ -63,7 +63,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		using var _1 = X11Helper.XLock(_display);
 
 		var _3 = XLib.XQueryTree(_display, XLib.XDefaultRootWindow(_display), out IntPtr root, out _, out var children, out _);
-		XLib.XFree(children);
+		var _4 = XLib.XFree(children);
 
 		// _NET_CLIENT_LIST only identifies top-level windows, not subwindows.
 		var status = XLib.XGetWindowProperty(
@@ -114,15 +114,15 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			{
 				IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
 				Marshal.StructureToPtr(attributes, attr, false);
-				X11Helper.XChangeWindowAttributes(_display, nativeWindow.WindowId, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
+				var _3 = X11Helper.XChangeWindowAttributes(_display, nativeWindow.WindowId, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
 				Marshal.FreeHGlobal(attr);
 			}
 
-			var _3 = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, host.RootX11Window.Window, 0, 0);
+			var _4 = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, host.RootX11Window.Window, 0, 0);
 			XLib.XSync(_display, false); // XSync is necessary after XReparent for unknown reasons
 
-			using var _4 = X11Helper.XLock(_display);
-			var _5 = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
+			using var _5 = X11Helper.XLock(_display);
+			var _6 = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
 
 			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
 			{
@@ -132,7 +132,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			_xamlRoot = owner;
 			_content = nativeWindow;
-			
+
 			owner.InvalidateRender += UpdateLayout;
 		}
 		else
@@ -144,15 +144,15 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	public void DetachNativeElement(XamlRoot owner, object content)
 	{
 		Debug.Assert(IsNativeElementAttached(owner, content));
-		
+
 		if (content is X11NativeWindow nativeWindow
 			&& X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
 		{
 			using var _1 = X11Helper.XLock(_display);
 			var _2 = XLib.XQueryTree(_display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
-			XLib.XFree(children);
-			var _3 = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, root, 0, 0);
-			XLib.XSync(_display, false);
+			var _3 = XLib.XFree(children);
+			var _4 = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, root, 0, 0);
+			var _5 = XLib.XSync(_display, false);
 
 			var set = _hostToNativeElementHosts[host];
 			set.Remove(this);
@@ -172,7 +172,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 		else
 		{
-			 throw new InvalidOperationException($"{nameof(DetachNativeElement)} called in an invalid state.");
+			throw new InvalidOperationException($"{nameof(DetachNativeElement)} called in an invalid state.");
 		}
 	}
 
@@ -185,7 +185,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		// xlib calls are expensive and it's better to update the layout once at the end when multiple arrange
 		// calls are fired sequentially.
 	}
-	
+
 	private void UpdateLayout()
 	{
 		if (!_layoutDirty)
@@ -211,7 +211,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			if (_xShapesPresent.Value)
 			{
 				var region = X11Helper.CreateRegion((short)clipRect.Left, (short)clipRect.Top, (short)clipRect.Width, (short)clipRect.Height);
-				using var _4 = Disposable.Create(() => X11Helper.XDestroyRegion(region));
+				using var _4 = Disposable.Create(() =>
+				{
+					var _ = X11Helper.XDestroyRegion(region);
+				});
 				X11Helper.XShapeCombineRegion(_display, nativeWindow.WindowId, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
 			}
 			else
@@ -229,7 +232,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 				arrangeRect.Y + clipRect.Y,
 				clipRect.Width,
 				clipRect.Height);
-			_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates);;
+			_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates);
 
 			host.QueueUpdateTopWindowClipRect();
 		}

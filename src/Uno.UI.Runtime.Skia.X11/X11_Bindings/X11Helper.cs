@@ -379,19 +379,20 @@ internal static partial class X11Helper
 
 	[LibraryImport(libX11)]
 	public unsafe static partial int XUnionRectWithRegion(
-		XRectangle*	rectangle,
+		XRectangle* rectangle,
 		IntPtr src_region,
 		IntPtr dest_region_return
 	);
 
-	public unsafe static IntPtr CreateRegion(short x, short y, short w, short h) {
+	public unsafe static IntPtr CreateRegion(short x, short y, short w, short h)
+	{
 		IntPtr region = XCreateRegion();
 		XRectangle rectangle;
 		rectangle.X = x;
 		rectangle.Y = y;
 		rectangle.W = w;
 		rectangle.H = h;
-		XUnionRectWithRegion(&rectangle, region, region);
+		var _ = XUnionRectWithRegion(&rectangle, region, region);
 
 		return region;
 	}
@@ -400,28 +401,28 @@ internal static partial class X11Helper
 	public static extern bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
 
 	[LibraryImport(libXext)]
-	public static partial void XShapeCombineRegion (
+	public static partial void XShapeCombineRegion(
 		IntPtr display,
 		IntPtr window,
-		int	dest_kind,
-		int	x_off,
-		int	y_off,
+		int dest_kind,
+		int x_off,
+		int y_off,
 		IntPtr region,
 		int op
 	);
 
 	[LibraryImport(libXext)]
-	public unsafe static partial void XShapeCombineRectangles (
+	public unsafe static partial void XShapeCombineRectangles(
 		IntPtr display,
 		IntPtr window,
-		int	dest_kind,
-		int	x_off,
-		int	y_off,
-        XRectangle*	rectangles,
-        int n_rects,
-        int	op,
-        int	ordering
-    );
+		int dest_kind,
+		int x_off,
+		int y_off,
+		XRectangle* rectangles,
+		int n_rects,
+		int op,
+		int ordering
+	);
 
 	[LibraryImport(libX11Randr)]
 	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
