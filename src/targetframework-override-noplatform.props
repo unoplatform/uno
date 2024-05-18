@@ -1,17 +1,26 @@
 <Project>
 
 	<Choose>
-		<!-- Some projects are platform-agnostic and should always be net7.0/net8.0 even if -->
-		<!-- we are building for android with net7.0-android/net8.0-android -->
+		<!-- Some projects are platform-agnostic and should always be net9.0/net8.0 even if -->
+		<!-- we are building for android with net9.0-android/net8.0-android -->
 		<!-- Such projects will import this props file and the TargetFrameworks property will update appropriately -->
-		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net7.0'))">
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net9.0'))">
 			<PropertyGroup>
-				<TargetFrameworks>net7.0</TargetFrameworks>
+				<TargetFrameworks>net9.0</TargetFrameworks>
 			</PropertyGroup>
 		</When>
 		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net8.0'))">
 			<PropertyGroup>
 				<TargetFrameworks>net8.0</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<!-- We check specifically for net7.0-ios -->
+		<!-- Our builds are now all net8.0+ -->
+		<!-- However, Xamarin.UITest doesn't (probably won't) support net8.0+ -->
+		<!-- So, we still build SamplesApp in net7.0-ios in CI to be able to run UI tests -->
+		<When Condition="'$(UnoTargetFrameworkOverride)' == 'net7.0-ios'">
+			<PropertyGroup>
+				<TargetFrameworks>net7.0</TargetFrameworks>
 			</PropertyGroup>
 		</When>
 	</Choose>

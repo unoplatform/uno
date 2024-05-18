@@ -496,7 +496,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var _2 = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
 
 		var region = X11Helper.CreateRegion(0, 0, (short)attributes.width, (short)attributes.height);
-		using var _3 = Disposable.Create(() => X11Helper.XDestroyRegion(region));
+		using var _3 = Disposable.Create(() =>
+		{
+			var _ = X11Helper.XDestroyRegion(region);
+		});
 
 		// Reset ShapeBounding to the full viewport
 		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);

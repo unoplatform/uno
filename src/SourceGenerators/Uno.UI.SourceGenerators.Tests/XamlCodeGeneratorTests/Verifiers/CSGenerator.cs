@@ -139,7 +139,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				}
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
 
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net70;
+				ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
 
 #if WRITE_EXPECTED
 				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
@@ -259,8 +259,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 #endif
 
 				var availableTargets = new[] {
-					Path.Combine("Uno.UI.Skia", configuration, "net7.0"),
-					Path.Combine("Uno.UI.Reference", configuration, "net7.0"),
+					Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
+					Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
 				};
 
 				var unoUIBase = Path.Combine(

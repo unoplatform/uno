@@ -15,8 +15,8 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 public class Given_DependencyObjectGenerator
 {
 	private static readonly ImmutableArray<PackageIdentity> _unoPackage = ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"));
-	private static readonly ReferenceAssemblies _Net70AndroidWithUno = ReferenceAssemblies.Net.Net70Android.AddPackages(_unoPackage);
-	private static readonly ReferenceAssemblies _Net70WithUno = ReferenceAssemblies.Net.Net70.AddPackages(_unoPackage);
+	private static readonly ReferenceAssemblies _Net70AndroidWithUno = ReferenceAssemblies.Net.Net80Android.AddPackages(_unoPackage);
+	private static readonly ReferenceAssemblies _Net70WithUno = ReferenceAssemblies.Net.Net80.AddPackages(_unoPackage);
 
 	private async Task TestAndroid(string testCode, params DiagnosticResult[] expectedDiagnostics)
 	{
@@ -150,13 +150,8 @@ public class Given_DependencyObjectGenerator
 	 			if(BinderReferenceHolder.IsEnabled)
 	 			{
 	 				_refHolder = new BinderReferenceHolder(this.GetType(), this);
-	 		
-	 				UpdateBinderDetails();
 	 			}
 	 		}
-	 		
-	 		
-	 		partial void UpdateBinderDetails();
 	 		
 	 		/// <summary>
 	 		/// Obsolete method kept for binary compatibility

@@ -13,8 +13,8 @@
 
 	<!-- List of packages that provide an uno-runtime folder -->
 	<PropertyGroup>
-		<_UnoRCHostVersionPath>net7.0</_UnoRCHostVersionPath>
-		<_UnoRCHostVersionPath Condition="'$([MSBuild]::GetTargetFrameworkVersion($(TargetFramework)))' &gt; 7">net8.0</_UnoRCHostVersionPath>
+		<_UnoRCHostVersionPath>net8.0</_UnoRCHostVersionPath>
+		<_UnoRCHostVersionPath Condition="'$([MSBuild]::GetTargetFrameworkVersion($(TargetFramework)))' &gt; 8">net9.0</_UnoRCHostVersionPath>
 
 		<UnoRemoteControlProcessorsPath>$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Server.Processors\bin\$(Configuration)\$(_UnoRCHostVersionPath)</UnoRemoteControlProcessorsPath>
 	</PropertyGroup>

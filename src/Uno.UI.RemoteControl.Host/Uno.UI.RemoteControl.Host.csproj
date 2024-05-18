@@ -56,7 +56,7 @@
 		<Content Update="Config\*.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
-		<Content Update="Config\global-net7.0.json" Condition="'$(TargetFramework)' == 'net7.0'">
+		<Content Update="Config\global-net9.0.json" Condition="'$(TargetFramework)' == 'net9.0'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>global.json</TargetPath>
 		</Content>

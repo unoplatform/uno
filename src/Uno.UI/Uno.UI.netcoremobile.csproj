@@ -69,13 +69,6 @@
 		<PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" />
 	</ItemGroup>
 
-	<!-- This condition is **explicitly** for net7.0 -->
-	<!-- Don't include this package for any version later than net7.0 -->
-	<!-- Once we remove net7.0 support, this ItemGroup should be deleted. -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
@@ -93,9 +86,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
-			<LogicalName>$(AssemblyName).xml</LogicalName>
-		</EmbeddedResource>
 		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
 

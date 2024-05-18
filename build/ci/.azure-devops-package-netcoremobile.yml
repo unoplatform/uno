@@ -12,14 +12,14 @@ jobs:
 
   strategy:
     matrix:
-      NET8:
+      NET9:
         UnoDisableNetPreviousMobile: true
-        ZipFileTargetFramework: net8
+        ZipFileTargetFramework: net9
 
-      NET7:
+      NET8:
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
-        ZipFileTargetFramework: net7
+        ZipFileTargetFramework: net8
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -76,7 +76,7 @@ jobs:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
-    condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net7'))
+    condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net8'))
     displayName: Building WinAppSDK/UWP package binaries
 
   - template: templates/copy-package-assets.yml

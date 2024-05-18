@@ -16,7 +16,8 @@ jobs:
     - Generate_Packages
 
   variables:
-    UnoDisableNetPreviousMobile: true
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -40,6 +41,14 @@ jobs:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
 
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
+      ArtifactName: template-tests-binlogs-windows
+      ArtifactType: Container
+
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
   displayName: 'Run .NET Templates Tests macOS'
   timeoutInMinutes: 90
@@ -51,7 +60,8 @@ jobs:
     - Generate_Packages
 
   variables:
-    UnoDisableNetPreviousMobile: true
+    UnoDisableNetCurrent: true
+    UnoDisableNetCurrentMobile: true
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -80,6 +90,14 @@ jobs:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
 
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
+      ArtifactName: template-tests-binlogs-macos
+      ArtifactType: Container
+
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
 
@@ -87,7 +105,8 @@ jobs:
     - Generate_Packages
 
   variables:
-    UnoDisableNetPreviousMobile: true
+    UnoDisableNetCurrent: true
+    UnoDisableNetCurrentMobile: true
 
   pool: ${{ parameters.vmPoolLinux }}
 
@@ -116,3 +135,11 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
+      ArtifactName: template-tests-binlogs-net7-linux
+      ArtifactType: Container

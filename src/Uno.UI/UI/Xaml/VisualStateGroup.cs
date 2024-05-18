@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
+using System.Buffers;
 using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
@@ -23,14 +24,6 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = "States")]
 	public sealed partial class VisualStateGroup : DependencyObject
 	{
-		/// <summary>
-		/// Reusable HashSet to check properties set by the current state and not set by the next state
-		/// in <see cref="GoToState"/>. Since changing visual states should happen on the UI thread, there
-		/// are no concurrency problems. Consider this not a part of the state. Use it instead of
-		/// new HashSet() and clear before each use.
-		/// </summary>
-		private static HashSet<BindingPath> _propertiesNotToClear;
-
 		/// <summary>
 		/// The xaml scope in force at the time the VisualStateGroup was created.
 		/// </summary>
@@ -387,13 +380,15 @@ namespace Microsoft.UI.Xaml
 		// WinUI rolls back properties that are set by the current state that won't be set by the
 		// setters of the next state and won't be set by the nextAnimation.
 		// It doesn't matter how it's set by the current state (setters or transition or animation) or
-		// how it will possibly be set by the new state. Simply put, if the ne doesn't touch
+		// how it will possibly be set by the new state. Simply put, if the next state (or transition) doesn't touch
 		// the property in any way, roll it back. Similarly, if the animation of the new state
 		// doesn't set a property but it's set in the transition, it should be cleared after the
 		// transition.
 		// In other words, one can think of it as actually manipulating 3 states
 		// "Active" State (Setter & runningAnimation) --> Transition (if exists) --> New State (Setter & target.animation)
 		// Moving from one to the next rolls back the properties of the one before it.
+		// Note that "touching the property" also includes modifying a subproperty. Meaning, if the previous state sets
+		// the property Prop and the "next state" sets "Prop.SubProp", then we don't roll back Prop.
 		/*****************************************************************/
 		private static void ClearPropertiesNotSetInNextState(
 			IFrameworkElement element,
@@ -407,13 +402,14 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			(_propertiesNotToClear ??= new HashSet<BindingPath>(new PathComparer())).Clear();
+			var propertiesNotToClear = ArrayPool<BindingPath>.Shared.Rent((nextSetters?.Count ?? 0) + (nextAnimation?.Children.Items.Count ?? 0));
+			var propsLength = 0;
 
 			if (nextSetters is { })
 			{
 				foreach (var setter in nextSetters.OfType<Setter>())
 				{
-					_propertiesNotToClear.Add(setter.TryGetOrCreateBindingPath(element));
+					propertiesNotToClear[propsLength++] = setter.TryGetOrCreateBindingPath(element);
 				}
 			}
 
@@ -421,7 +417,7 @@ namespace Microsoft.UI.Xaml
 			{
 				foreach (var item in nextAnimation.Children.Items)
 				{
-					_propertiesNotToClear.Add(item.PropertyInfo);
+					propertiesNotToClear[propsLength++] = item.PropertyInfo;
 				}
 			}
 
@@ -430,7 +426,7 @@ namespace Microsoft.UI.Xaml
 				foreach (var setter in prevSetters.OfType<Setter>())
 				{
 					// Setters with a null path are always cleared.
-					if (setter.TryGetOrCreateBindingPath(element) is not { } path || !_propertiesNotToClear.Contains(path))
+					if (setter.TryGetOrCreateBindingPath(element) is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path)))
 					{
 						setter.ClearValue();
 					}
@@ -442,7 +438,7 @@ namespace Microsoft.UI.Xaml
 				foreach (var item in prevAnimation.Children.Items)
 				{
 					// Animations with a null path are always cleared.
-					if (item.PropertyInfo is not { } path || !_propertiesNotToClear.Contains(path))
+					if (item.PropertyInfo is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path)))
 					{
 						item.PropertyInfo.ClearValue();
 					}
@@ -595,13 +591,5 @@ namespace Microsoft.UI.Xaml
 
 		public override string ToString()
 			=> Name ?? $"<unnamed group {GetHashCode()}>";
-
-		private class PathComparer : EqualityComparer<BindingPath>
-		{
-			public override bool Equals(BindingPath path1, BindingPath path2)
-				=> (path1 != null && path1.Equals(path2)) || (path1 == null && path2 == null);
-
-			public override int GetHashCode(BindingPath path) => path.GetHashCode();
-		}
 	}
 }

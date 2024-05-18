@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 namespace Uno.UI.DataBinding
 {
 	[DebuggerDisplay("Path={_path} DataContext={_dataContextWeakStorage?.Target}")]
-	internal partial class BindingPath : IDisposable, IEquatable<BindingPath>
+	internal partial class BindingPath : IDisposable
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
 		private readonly string _path;
@@ -317,11 +317,26 @@ namespace Uno.UI.DataBinding
 			Dispose(false);
 		}
 
-		public bool Equals(BindingPath? that)
+		public bool PrefixOfOrEqualTo(BindingPath? that)
 		{
-			return that != null
-				&& this.Path == that.Path
-				&& !DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext);
+			if (that == null || DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext))
+			{
+				return false;
+			}
+
+			var currentLeft = this._chain;
+			var currentRight = that._chain;
+			while (currentLeft != null)
+			{
+				if (!currentLeft.Equals(currentRight))
+				{
+					return false;
+				}
+				currentLeft = currentLeft.Next;
+				currentRight = currentRight.Next;
+			}
+
+			return true;
 		}
 
 		// We define Equals to be based on Path, so `RuntimeHelpers.GetHashCode(path)` doesn't work,

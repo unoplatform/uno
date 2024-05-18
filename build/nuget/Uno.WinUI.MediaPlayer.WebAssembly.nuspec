@@ -18,7 +18,7 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.WebAssembly\bin\Uno.UI.MediaPlayer.WebAssembly\Release\net7.0\Uno.UI.MediaPlayer.WebAssembly.*" target="lib\net7.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.WebAssembly\bin\Uno.UI.MediaPlayer.WebAssembly\Release\net9.0\Uno.UI.MediaPlayer.WebAssembly.*" target="lib\net9.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.WebAssembly\bin\Uno.UI.MediaPlayer.WebAssembly\Release\net8.0\Uno.UI.MediaPlayer.WebAssembly.*" target="lib\net8.0" />
 	</files>
 
