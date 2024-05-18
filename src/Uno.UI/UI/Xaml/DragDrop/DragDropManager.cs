@@ -36,6 +36,8 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+		internal ContentRoot ContentRoot => _inputManager.ContentRoot;
+
 		/// <inheritdoc />
 		public bool AreConcurrentOperationsEnabled { get; set; }
 
@@ -100,11 +102,14 @@ namespace Microsoft.UI.Xaml
 		/// The last accepted operation.
 		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 		/// </returns>
-		public DataPackageOperation ProcessAborted(IDragEventSource src)
-			=> FindOperation(src)?.Aborted(src) ?? DataPackageOperation.None;
+		public DataPackageOperation ProcessAborted(long pointerId)
+			=> FindOperation(pointerId)?.Aborted() ?? DataPackageOperation.None;
 
 		private DragOperation? FindOperation(IDragEventSource src)
 			=> _dragOperations.FirstOrDefault(drag => drag.Info.SourceId == src.Id);
+
+		private DragOperation? FindOperation(long pointerId)
+			=> _dragOperations.FirstOrDefault(drag => drag.Info.SourceId == pointerId);
 
 		private void RegisterWindowHandlers()
 		{
@@ -136,6 +141,6 @@ namespace Microsoft.UI.Xaml
 
 		private void OnPointerReleased(object snd, PointerRoutedEventArgs e) => ProcessDropped(e);
 
-		private void OnPointerCanceled(object snd, PointerRoutedEventArgs e) => ProcessAborted(e);
+		private void OnPointerCanceled(object snd, PointerRoutedEventArgs e) => ProcessAborted(e.Pointer.PointerId);
 	}
 }

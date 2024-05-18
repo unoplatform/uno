@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
 using System;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
-using Windows.UI.Composition;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
@@ -51,7 +51,7 @@ public sealed partial class XamlRoot
 		get
 		{
 			var rootElement = VisualTree.RootElement;
-			if (rootElement is RootVisual rootVisual)
+			if (rootElement is RootVisual)
 			{
 				if (Window.CurrentSafe is null)
 				{
@@ -71,7 +71,7 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	internal Microsoft.UI.Composition.Compositor Compositor => Microsoft.UI.Composition.Compositor.GetSharedCompositor();
+	internal Composition.Compositor Compositor => Composition.Compositor.GetSharedCompositor();
 
 #if !HAS_UNO_WINUI // This is a UWP-only property
 	/// <summary>
@@ -84,6 +84,9 @@ public sealed partial class XamlRoot
 
 	internal static DisplayInformation GetDisplayInformation(XamlRoot? root)
 		=> root?.HostWindow?.AppWindow.Id is { } id ? DisplayInformation.GetOrCreateForWindowId(id) : DisplayInformation.GetForCurrentViewSafe();
+
+	internal static CoreDragDropManager GetCoreDragDropManager(XamlRoot? root)
+		=> root?.HostWindow?.AppWindow.Id is { } id ? CoreDragDropManager.GetOrCreateForWindowId(id) : CoreDragDropManager.GetForCurrentViewSafe();
 
 	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
 	{

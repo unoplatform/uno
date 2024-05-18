@@ -775,7 +775,7 @@ namespace Microsoft.UI.Xaml
 				asyncResult.SetResult(result);
 			});
 
-			XamlRoot.VisualTree.ContentRoot.InputManager.CoreDragDrop.DragStarted(dragInfo);
+			XamlRoot.GetCoreDragDropManager(XamlRoot).DragStarted(dragInfo);
 
 			var result = await asyncResult.Task;
 
@@ -1149,7 +1149,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 				if (GestureRecognizer.IsDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args.Pointer.PointerId);
 				}
 			}
 
