@@ -68,7 +68,9 @@ namespace Windows.Devices.Midi
 			foreach (var packet in e.Packets)
 			{
 				var bytes = new byte[packet.Length];
+#pragma warning disable CS0618 // MidiPacket.Bytes is obsolete. We should use MidiPacket.ByteArray once we have https://github.com/xamarin/xamarin-macios/pull/20540.
 				Marshal.Copy(packet.Bytes, bytes, 0, packet.Length);
+#pragma warning restore CS0618
 				OnMessageReceived(bytes, 0, bytes.Length, TimeSpan.FromMilliseconds(packet.TimeStamp));
 			}
 		}

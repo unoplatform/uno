@@ -379,8 +379,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
 
 				var runtimeTargetFramework =
-					new Version(TargetFrameworkVersion) >= new Version("7.0")
-					? "net7.0"
+					new Version(TargetFrameworkVersion) >= new Version("8.0")
+					? "net8.0"
 					: "netstandard2.0";
 
 				var isUnoRuntimeEnabled = (unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&

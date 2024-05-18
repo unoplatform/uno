@@ -19,7 +19,7 @@
 			<dependency id="GtkSharp" version="3.24.24.38" />
 		</dependencies>
 		<references>
-			<group targetFramework="net7.0">
+			<group targetFramework="net9.0">
 				<reference file="Uno.UI.MediaPlayer.Skia.Gtk.dll" />
 			</group>
 			<group targetFramework="net8.0">
@@ -32,7 +32,7 @@
 		<file src="..\..\src\Common\uno.png" target="/" />
 
 		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\bin\Uno.UI.MediaPlayer.Skia.Gtk\Release\net8.0\Uno.UI.MediaPlayer.Skia.Gtk.*" target="lib\net8.0" />
-		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\bin\Uno.UI.MediaPlayer.Skia.Gtk\Release\net7.0\Uno.UI.MediaPlayer.Skia.Gtk.*" target="lib\net7.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\bin\Uno.UI.MediaPlayer.Skia.Gtk\Release\net9.0\Uno.UI.MediaPlayer.Skia.Gtk.*" target="lib\net9.0" />
 	</files>
 
 </package>

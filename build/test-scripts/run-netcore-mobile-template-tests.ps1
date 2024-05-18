@@ -28,10 +28,10 @@ $release = $default + '/p:Configuration=Release' + '/r'
 ## Configurations are split to work around UWP not building with .NET new
 $dotnetBuildConfigurations =
 @(
-    @("Mobile", "-f:net7.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
-    @("Mobile", "-f:net7.0-ios", ""),
-    @("Mobile", "-f:net7.0-maccatalyst", ""),
-    # @("Mobile", "-f:net7.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
+    @("Mobile", "-f:net8.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
+    @("Mobile", "-f:net8.0-ios", ""),
+    @("Mobile", "-f:net8.0-maccatalyst", ""),
+    # @("Mobile", "-f:net8.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", "")
@@ -50,7 +50,7 @@ pushd UnoAppAll
 for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
 {
     $platform=$dotnetBuildConfigurations[$i][0];
-    & dotnet build -c Debug $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj"
+    & dotnet build -c Debug $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj" -bl:binlogs/UnoAppAll.$platform/debug/$i/msbuild.binlog
     Assert-ExitCodeIsZero
 }
 
@@ -63,7 +63,7 @@ if ($IsWindows)
 for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
 {
     $platform=$dotnetBuildConfigurations[$i][0];
-    & dotnet build -c Release $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj"
+    & dotnet build -c Release $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj" -bl:binlogs/UnoAppAll.$platform/release/$i/msbuild.binlog
     Assert-ExitCodeIsZero
 }
 
@@ -79,10 +79,10 @@ popd
 
 $dotnetBuildNet6Configurations =
 @(
-    @("Mobile", "-f:net7.0-android", ""),
-    @("Mobile", "-f:net7.0-ios", ""),
-    @("Mobile", "-f:net7.0-maccatalyst", ""),
-    # @("Mobile", "-f:net6.0-macos", ""),  # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
+    @("Mobile", "-f:net8.0-android", ""),
+    @("Mobile", "-f:net8.0-ios", ""),
+    @("Mobile", "-f:net8.0-maccatalyst", ""),
+    # @("Mobile", "-f:net8.0-macos", ""),  # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
     @("Server", "", ""),
     @("Skia.Gtk", "", ""),
@@ -99,7 +99,7 @@ pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 {
     $platform=$dotnetBuildNet6Configurations[$i][0];
-    & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj"
+    & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj" -bl:binlogs/UnoAppWinUI.$platform/debug/$i/msbuild.binlog
     Assert-ExitCodeIsZero
 }
 
@@ -110,7 +110,7 @@ if ($IsWindows)
 
     # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
     # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-    & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041"
+    & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net8.0-windows10.0.19041;TargetFramework=net8.0-windows10.0.19041"
     Assert-ExitCodeIsZero
 }
 
@@ -128,7 +128,7 @@ popd
 
 if ($IsWindows) 
 {
-    dotnet build MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj -c Release -p:UnoXamlResourcesTrimming=true -p:WasmShellGenerateCompressedFiles=false -p:WasmShellILLinkerEnabled=true
+    dotnet build MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj -c Release -p:UnoXamlResourcesTrimming=true -p:WasmShellGenerateCompressedFiles=false -p:WasmShellILLinkerEnabled=true -bl:binlogs/MyAppXamlTrim.Wasm/release/msbuild.binlog
     Assert-ExitCodeIsZero
 
     dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem MyAppXamlTrim.Wasm.clr -Recurse).FullName -r Strings.en.Resources.upri -x Strings.fr.Resources.upri
@@ -143,7 +143,7 @@ if ($IsWindows)
         "$debug",
         "/t:pack",
         "MyUnoLib\MyUnoLib.csproj",
-        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
+        "/p:TargetFrameworks=""net8.0-windows10.0.19041;net8.0"""
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
@@ -164,7 +164,7 @@ if ($IsWindows)
         "/p:IncludeContentInPack=false",
         "MyUnoLib2\MyUnoLib2.csproj",
         "-bl",
-        "/p:TargetFrameworks=""net7.0-windows10.0.19041;net7.0"""
+        "/p:TargetFrameworks=""net8.0-windows10.0.19041;net8.0"""
     )
     $responseFile | Out-File -FilePath "build.rsp" -Encoding ASCII
 
@@ -327,13 +327,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
     if ($buildWithNetCore)
     {
         Write-Host "NetCore Building Debug $projectPath with $projectOptions"
-        dotnet build $debug "$projectPath" $projectOptions
+        dotnet build $debug "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/debug/msbuild.binlog
         Assert-ExitCodeIsZero
 
         dotnet clean $debug "$projectPath"
 
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
-        dotnet build $release "$projectPath" $projectOptions
+        dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
  
         dotnet clean $release "$projectPath"

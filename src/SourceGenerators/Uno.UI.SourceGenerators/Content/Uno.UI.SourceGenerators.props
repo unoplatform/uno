@@ -12,16 +12,13 @@
 
 		<XamarinProjectType Condition="
 							'$(TargetPlatformIdentifier)' == 'ios'
-							or '$(TargetPlatformIdentifier)' == 'maccatalyst'
-							OR '$(TargetFramework)' == 'net8.0-ios'
-							OR '$(TargetFramework)' == 'net8.0-maccatalyst'
-							OR '$(TargetFramework)' == 'net7.0-ios'
-							OR '$(TargetFramework)' == 'net7.0-maccatalyst'
+							OR '$(TargetPlatformIdentifier)' == 'maccatalyst'
+							OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'
+							OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'
 							">ios</XamarinProjectType>
 		<XamarinProjectType Condition="
 							'$(TargetPlatformIdentifier)' == 'android'
-							OR '$(TargetFramework)' == 'net8.0-android'
-							OR '$(TargetFramework)' == 'net7.0-android'
+							OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'
 							">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
@@ -198,7 +195,7 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_skia" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_netstdref" />
 		<!-- netstdref from class library -->
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'!='IS_UNIT_TESTS' AND ('$(TargetFramework)'=='net7.0' OR '$(TargetFramework)'=='net8.0')" Include="netstdref" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'!='IS_UNIT_TESTS' AND ('$(TargetFramework)'=='net9.0' OR '$(TargetFramework)'=='net8.0')" Include="netstdref" />
 		<!--
 		A list of analyzer suppressions to include in every generated class.
 		This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.

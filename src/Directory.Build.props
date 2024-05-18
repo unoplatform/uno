@@ -51,11 +51,11 @@
 
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 
-		<NetCurrent>net8.0</NetCurrent>
-		<NetPrevious>net7.0</NetPrevious>
+		<NetCurrent>net9.0</NetCurrent>
+		<NetPrevious>net8.0</NetPrevious>
 
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst;$(NetCurrent)-macos</NetCurrentNetCoreMobile>
-		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-macos</NetPreviousNetCoreMobile>
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios17.2;$(NetCurrent)-maccatalyst17.2;$(NetCurrent)-macos14.2</NetCurrentNetCoreMobile>
+		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0;$(NetPrevious)-macos14.0</NetPreviousNetCoreMobile>
 
 		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
 		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
@@ -72,7 +72,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.9.0-3.final</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.10.0-3.final</MicrosoftNetCompilersToolsetVersion>
+		<!-- Because Xamarin.UITest doesn't work for net7.0, we keep building iOS SamplesApp for tests with .NET 7 SDK -->
+		<!-- Using Roslyn 4.10 with .NET 7 SDK is not supported because of https://github.com/dotnet/roslyn/pull/71507 -->
+		<MicrosoftNetCompilersToolsetVersion Condition="'$(UnoTargetFrameworkOverride)'=='net7.0-ios'">4.9.2</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
