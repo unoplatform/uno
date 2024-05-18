@@ -12,7 +12,7 @@ function Assert-ExitCodeIsZero()
 
 function CleanupTree()
 {
-    git clean -fdx
+    git clean -fdx -e *.binlog
 }
 
 $default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
