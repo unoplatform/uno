@@ -21,6 +21,9 @@ internal partial class OpenGLWpfRenderer
 		[DllImport("gdi32.dll")]
 		internal static extern int SetPixelFormat(IntPtr hdc, int iPixelFormat, ref PIXELFORMATDESCRIPTOR ppfd);
 
+		[DllImport("opengl32.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
+		public static extern IntPtr wglGetProcAddress(string functionName);
+
 		[DllImport("opengl32.dll")]
 		internal static extern IntPtr wglCreateContext(IntPtr hdc);
 

@@ -61,6 +61,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
+
+		ApiExtensibility.Register(typeof(GLGetProcAddress), _ => new GLGetProcAddress(GlxInterface.glXGetProcAddress));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)

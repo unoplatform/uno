@@ -20,6 +20,7 @@ using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Microsoft.UI.Xaml.Controls;
+using Silk.NET.Core.Contexts;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 
@@ -54,6 +55,7 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
+		ApiExtensibility.Register(typeof(INativeContext), _ => new WpfGlNativeContext());
 
 		_registered = true;
 	}
