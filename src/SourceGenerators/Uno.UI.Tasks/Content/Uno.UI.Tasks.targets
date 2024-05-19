@@ -6,29 +6,9 @@
 		
 		<_IsXamlTrimmingAvailable>true</_IsXamlTrimmingAvailable>
 		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
-		<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
+
+		<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!='' and '$(TargetFrameworkVersion)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
 	</PropertyGroup>
-
-	<Choose>
-		<When Condition="
-			'$(TargetFrameworkIdentifier)'=='.NETCoreApp'
-			and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '5.0'))
-			and '$(ILLinkTasksAssembly)'!=''">
-
-			<Choose>
-				<When Condition="$([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '8.0'))">
-					<PropertyGroup>
-						<_UnoLinkerHintGeneratorILLinkerPath>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
-					</PropertyGroup>
-				</When>
-				<Otherwise>
-					<PropertyGroup>
-						<_UnoLinkerHintGeneratorILLinkerPath>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net7.0</_UnoLinkerHintGeneratorILLinkerPath>
-					</PropertyGroup>
-				</Otherwise>
-			</Choose>
-		</When>
-	</Choose>
 
 	<Import Project="uno.ui.tasks.assets.targets"/>
 

@@ -650,8 +650,6 @@
 		<file src="..\..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="buildTransitive\Uno.UI.Tasks" />
 		<file src="..\..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="buildTransitive\Uno.UI.Tasks" />
 
-		<file src="..\..\src\SourceGenerators\Uno.UI.Tasks\external\linker\*.*" target="tools\linker" />
-
 		<file src="Uno.WinUI.targets" target="buildTransitive\net8.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net8.0-android30.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net8.0-ios" />
