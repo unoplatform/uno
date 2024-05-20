@@ -60,7 +60,8 @@ partial class ContentPresenter
 	}
 
 	private void ArrangeNativeElement()
-	{ if (!IsNativeHost)
+	{
+		if (!IsNativeHost)
 		{
 			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
 			// might no longer be a NativeHost
