@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void ClonePropertiesToAnotherStoreForHotReload(DependencyObjectStore otherStore)
 		{
-			_properties.CloneToForHotReload(otherStore._properties);
+			_properties.CloneToForHotReload(otherStore._properties, this, otherStore);
 		}
 
 		/// <summary>

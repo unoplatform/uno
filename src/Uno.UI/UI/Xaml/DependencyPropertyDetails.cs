@@ -50,6 +50,8 @@ namespace Microsoft.UI.Xaml
 		{
 			other._highestPrecedence = _highestPrecedence;
 			other._fastLocalValue = _fastLocalValue;
+			other._flags = _flags; // Probably the only important flag to copy will be LocalValueNewerThanAnimationsValue
+			other._defaultValue = _defaultValue;
 			if (_stack is not null)
 			{
 				if (other._stack is null)

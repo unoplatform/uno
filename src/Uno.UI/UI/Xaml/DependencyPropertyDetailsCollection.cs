@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Data;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
 
@@ -48,7 +49,7 @@ namespace Microsoft.UI.Xaml
 			_entries = _empty;
 		}
 
-		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other)
+		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObjectStore store, DependencyObjectStore otherStore)
 		{
 			for (int i = 0; i < _entries.Length; i++)
 			{
@@ -63,6 +64,31 @@ namespace Microsoft.UI.Xaml
 					if (other.GetPropertyDetails(newDP) is { } newDetails)
 					{
 						oldDetails.CloneToForHotReload(newDetails);
+
+						// This may not work well for x:Bind, we will investigate proper support for x:Bind.
+						// Though, anything will be done now for x:Bind will need to be re-worked if we refactored
+						// x:Bind to be fully compiled, as in WinUI.
+						if (oldDetails.GetBinding() is { ParentBinding: { } binding })
+						{
+							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
+							var newSource = binding.Source;
+							if (newSource is IDependencyObjectStoreProvider { Store: { } oldStore } && oldStore == store)
+							{
+								newSource = otherStore.ActualInstance;
+							}
+
+							newBinding.Source = newSource;
+							newBinding.Mode = binding.Mode;
+							newBinding.TargetNullValue = binding.TargetNullValue;
+							newBinding.ElementName = binding.ElementName;
+							newBinding.FallbackValue = binding.FallbackValue;
+							if (binding.RelativeSource is { } relativeSource)
+							{
+								newBinding.RelativeSource = new RelativeSource(relativeSource.Mode);
+							}
+
+							otherStore.SetBinding(newDP, newBinding);
+						}
 					}
 				}
 			}
