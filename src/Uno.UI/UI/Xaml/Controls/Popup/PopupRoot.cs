@@ -19,7 +19,11 @@ internal partial class PopupRoot : Panel
 	private readonly SerialDisposable _subscriptions = new();
 
 	// This is needed for native element hosting.
-	internal event Action Arranged;
+	internal
+#if IS_UNIT_TESTS
+		new
+#endif
+		event Action Arranged;
 
 	public PopupRoot()
 	{
