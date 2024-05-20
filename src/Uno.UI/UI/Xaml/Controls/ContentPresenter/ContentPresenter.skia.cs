@@ -21,12 +21,13 @@ partial class ContentPresenter
 
 	private IDisposable _nativeElementDisposable;
 
-	partial void TryRegisterNativeElement(object newValue)
+	partial void TryRegisterNativeElement(object oldValue, object newValue)
 	{
 		if (IsNativeHost && IsLoaded)
 		{
-			DetachNativeElement(); // remove the old native element
+			DetachNativeElement(oldValue);
 		}
+
 		if (_nativeElementHostingExtension.Value?.IsNativeElement(newValue) ?? false)
 		{
 			IsNativeHost = true;
@@ -54,7 +55,12 @@ partial class ContentPresenter
 
 	private void ArrangeNativeElement()
 	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		if (!IsNativeHost)
+		{
+			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
+			// might no longer be a NativeHost
+			return;
+		}
 		var arrangeRect = this.GetAbsoluteBoundsRect();
 		var ev = GetParentViewport().Effective;
 
@@ -98,12 +104,12 @@ partial class ContentPresenter
 		});
 	}
 
-	partial void DetachNativeElement()
+	partial void DetachNativeElement(object content)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 		EffectiveViewportChanged -= OnEffectiveViewportChanged;
 		LayoutUpdated -= OnLayoutUpdated;
-		_nativeElementHostingExtension.Value!.DetachNativeElement(XamlRoot, Content);
+		_nativeElementHostingExtension.Value!.DetachNativeElement(XamlRoot, content);
 		_nativeElementDisposable?.Dispose();
 	}
 

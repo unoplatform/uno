@@ -55,7 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(SUT.IsNativeHost);
 
-			TestServices.WindowHelper.WindowContent = null;
+			SUT.Content = "something that isn't a native element";
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(SUT.IsNativeHost);

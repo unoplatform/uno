@@ -672,7 +672,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		if (IsLoaded)
 		{
-			TryRegisterNativeElement(newValue);
+			TryRegisterNativeElement(oldValue, newValue);
 		}
 
 		SetUpdateTemplate();
@@ -878,7 +878,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		if (!IsNativeHost)
 		{
-			TryRegisterNativeElement(Content);
+			TryRegisterNativeElement(null, Content);
 		}
 		if (IsNativeHost)
 		{
@@ -892,7 +892,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		if (IsNativeHost)
 		{
-			DetachNativeElement();
+			DetachNativeElement(Content);
 		}
 	}
 
@@ -1231,7 +1231,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <summary>
 	/// Registers the provided native element in the native shell
 	/// </summary>
-	partial void TryRegisterNativeElement(object newValue);
+	partial void TryRegisterNativeElement(object oldValue, object newValue);
 
 	/// <summary>
 	/// Attaches the current native element in the native shell
@@ -1241,7 +1241,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <summary>
 	/// Detaches the current native element from the native shell
 	/// </summary>
-	partial void DetachNativeElement();
+	partial void DetachNativeElement(object content);
 
 #if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();
