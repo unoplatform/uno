@@ -54,7 +54,7 @@ public class Given_TypeReplacement : BaseTestClass
 
 		UserControl oldComponent = page.myComponent;
 
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_DPUpdates_Component>(
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_DPUpdates_Binding_Component>(
 			OriginalColor,
 			UpdatedColor,
 			() =>
@@ -68,8 +68,8 @@ public class Given_TypeReplacement : BaseTestClass
 				page.Tag2 = "Updated tag";
 				var componentGrid = (Grid)VisualTreeHelper.GetChild(component, 0);
 				var tb = (TextBlock)componentGrid.Children.Single();
-
-				Assert.AreEqual("Updated tag", tb.Text);
+				Assert.AreEqual("Updated tag", component.Tag, "Tag should be updated on component");
+				Assert.AreEqual("Updated tag", tb.Text, "Tag should be updated on component's TextBlock");
 				return Task.CompletedTask;
 			},
 			ct);
