@@ -60,31 +60,10 @@ namespace Microsoft.UI.Xaml
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(true, propertyChangedCallback: (o, _) => (o as IBorderInfoProvider)?.UpdateBorderThickness()));
 
-		/// <summary>
-		/// Represents the final calculated opacity of the element.
-		/// </summary>
-		/// <remarks>
-		/// This property should never be directly set, and its value should always be calculated through coercion (see <see cref="CoerceHitTestVisibility(DependencyObject, object, bool)"/>.
-		/// </remarks>
-		[GeneratedDependencyProperty(DefaultValue = 1.0, Options = FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.Inherits, CoerceCallback = true, ChangedCallback = false)]
-		internal static DependencyProperty CalculatedOpacityProperty { get; } = CreateCalculatedOpacityProperty();
-
-		internal double CalculatedOpacity
-		{
-			get => GetCalculatedOpacityValue();
-			set => SetCalculatedOpacityValue(value);
-		}
-
-		private object CoerceCalculatedOpacity(object baseValue)
-		{
-			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceCalculatedOpacity.
-			return baseValue is double d1 ? d1 * Opacity : Opacity;
-		}
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
-			CalculatedOpacity = (double)args.NewValue;
+			ContentPresenter.UpdateNativeHostContentPresentersOpacities();
 		}
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
 using Uno.Disposables;
@@ -9,6 +10,7 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class ContentPresenter
 {
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
+	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
 	partial void InitializePlatform()
 	{
@@ -54,8 +56,7 @@ partial class ContentPresenter
 	}
 
 	private void ArrangeNativeElement()
-	{
-		if (!IsNativeHost)
+	{ if (!IsNativeHost)
 		{
 			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
 			// might no longer be a NativeHost
@@ -93,13 +94,12 @@ partial class ContentPresenter
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null);
 		_nativeElementHostingExtension.Value!.AttachNativeElement(XamlRoot, Content);
+		_nativeHosts.Add(this);
 		EffectiveViewportChanged += OnEffectiveViewportChanged;
 		LayoutUpdated += OnLayoutUpdated;
-		var opacityToken = RegisterPropertyChangedCallback(CalculatedOpacityProperty, OnCalculatedOpacityChanged);
 		var visiblityToken = RegisterPropertyChangedCallback(HitTestVisibilityProperty, OnHitTestVisiblityChanged);
 		_nativeElementDisposable = Disposable.Create(() =>
 		{
-			UnregisterPropertyChangedCallback(CalculatedOpacityProperty, opacityToken);
 			UnregisterPropertyChangedCallback(HitTestVisibilityProperty, visiblityToken);
 		});
 	}
@@ -107,6 +107,7 @@ partial class ContentPresenter
 	partial void DetachNativeElement(object content)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		_nativeHosts.Remove(this);
 		EffectiveViewportChanged -= OnEffectiveViewportChanged;
 		LayoutUpdated -= OnLayoutUpdated;
 		_nativeElementHostingExtension.Value!.DetachNativeElement(XamlRoot, content);
@@ -119,14 +120,25 @@ partial class ContentPresenter
 		return _nativeElementHostingExtension.Value!.MeasureNativeElement(XamlRoot, Content, childMeasuredSize, availableSize);
 	}
 
-	private void OnCalculatedOpacityChanged(DependencyObject sender, DependencyProperty dp)
-	{
-		_nativeElementHostingExtension.Value!.ChangeNativeElementOpacity(XamlRoot, Content, CalculatedOpacity);
-	}
-
 	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)
 	{
 		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(XamlRoot, Content, HitTestVisibility != HitTestability.Collapsed);
+	}
+
+	internal static void UpdateNativeHostContentPresentersOpacities()
+	{
+		foreach (var contentPresenter in _nativeHosts)
+		{
+			double finalOpacity = 1;
+			UIElement parent = contentPresenter;
+			while (parent is not null)
+			{
+				finalOpacity *= parent.Opacity;
+				parent = parent.GetParent() as UIElement;
+			}
+
+			contentPresenter._nativeElementHostingExtension!.Value.ChangeNativeElementOpacity(contentPresenter.XamlRoot, contentPresenter.Content, finalOpacity);
+		}
 	}
 
 	private void OnLayoutUpdated(object sender, object e)
