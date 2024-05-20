@@ -1246,8 +1246,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(10, events.Count);
 			Assert.AreEqual("Parent Loading", events[0]);
 			Assert.AreEqual("Child Loading", events[1]);
-			Assert.AreEqual("Child SizeChanged", events[2]);
-			Assert.AreEqual("Parent SizeChanged", events[3]);
+			Assert.AreEqual("Parent SizeChanged", events[2]);
+			Assert.AreEqual("Child SizeChanged", events[3]);
 			Assert.AreEqual("Child LayoutUpdated", events[4]);
 			Assert.AreEqual("Parent LayoutUpdated", events[5]);
 			Assert.AreEqual("Child Loaded", events[6]);

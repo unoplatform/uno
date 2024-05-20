@@ -16,6 +16,7 @@ using static Uno.UI.LayoutHelper;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -362,6 +363,7 @@ namespace Microsoft.UI.Xaml
 			if (oldWidth != newWidth || oldHeight != newHeight)
 			{
 				// This is HACKY, and is specific to TextBlock which overrides GetActualWidth and GetActualHeight to return DesiredSize.
+				this.GetContext().EventManager.EnqueueForSizeChanged(this, new Size(oldWidth, oldHeight));
 				RaiseSizeChanged(new SizeChangedEventArgs(this, new Size(oldWidth, oldHeight), new Size(newWidth, newHeight)));
 			}
 
@@ -595,10 +597,10 @@ namespace Microsoft.UI.Xaml
 			//	OnActualSizeChanged();
 			//}
 
-			//if (!IsSameSize(oldRenderSize, innerInkSize))
-			//{
-			//	VisualTree.GetLayoutManagerForElement(this).EnqueueForSizeChanged(this, oldRenderSize);
-			//}
+			if (oldRenderSize != innerInkSize)
+			{
+				this.GetContext().EventManager.EnqueueForSizeChanged(this, oldRenderSize);
+			}
 
 			//if (!bInLayoutTransition)
 			{

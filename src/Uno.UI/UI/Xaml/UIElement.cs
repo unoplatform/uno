@@ -845,7 +845,10 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
-					// TODO: Size changed.
+					if (eventManager.HasPendingSizeChangedEvents)
+					{
+						eventManager.RaiseSizeChangedEvents();
+					}
 
 					if (root.IsMeasureDirtyOrMeasureDirtyPath ||
 						root.IsArrangeDirtyOrArrangeDirtyPath ||
@@ -1056,7 +1059,9 @@ namespace Microsoft.UI.Xaml
 					if (this is FrameworkElement frameworkElement)
 					{
 						frameworkElement.SetActualSize(_size);
+#if !UNO_HAS_ENHANCED_LIFECYCLE // Handled by EventManager with enhanced lifecycle.
 						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
+#endif
 					}
 				}
 			}
