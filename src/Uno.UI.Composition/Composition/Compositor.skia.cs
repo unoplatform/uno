@@ -30,7 +30,7 @@ public partial class Compositor
 		}
 	}
 
-	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, bool isFlyoutSurface = false)
+	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, bool isFlyoutSurface)
 	{
 		if (rootVisual is null)
 		{

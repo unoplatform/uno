@@ -146,7 +146,7 @@ internal partial class X11XamlRootHost
 				switch (@event.type)
 				{
 					case XEventName.ClientMessage:
-						if (@event.ClientMessageEvent.ptr1 == X11Helper.GetAtom(X11Window.Display, X11Helper.WM_DELETE_WINDOW))
+						if (@event.ClientMessageEvent.ptr1 == X11Helper.GetAtom(x11Window.Display, X11Helper.WM_DELETE_WINDOW))
 						{
 							// This happens when we click the titlebar X, not like xkill,
 							// which, according to the source code, just calls XKillClient
@@ -154,11 +154,11 @@ internal partial class X11XamlRootHost
 							// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
 							QueueAction(this, _closingCallback);
 						}
-						else if (@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndEnter) ||
-							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndPosition) ||
-							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndPosition) ||
-							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndLeave) ||
-							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(X11Window.Display, X11Helper.XdndDrop))
+						else if (@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndEnter) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndPosition) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndPosition) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndLeave) ||
+							@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndDrop))
 						{
 							QueueAction(this, () => _dragDrop?.ProcessXdndMessage(@event.ClientMessageEvent));
 						}

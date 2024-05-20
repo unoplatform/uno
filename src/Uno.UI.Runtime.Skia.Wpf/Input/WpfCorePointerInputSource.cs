@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Constants;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -42,8 +41,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 #pragma warning restore CS0067
 
 	private readonly FrameworkElement _topLayer = default!;
-	private WpfControl? _host;
-	private HwndSource? _hwndSource;
+	private readonly WpfControl? _host;
 	private PointerEventArgs? _previous;
 
 	public WpfCorePointerInputSource(IXamlRootHost host)
@@ -90,8 +88,8 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			var win = Window.GetWindow(_topLayer);
 
 			var fromDependencyObject = PresentationSource.FromDependencyObject(win);
-			_hwndSource = fromDependencyObject as HwndSource;
-			_hwndSource?.AddHook(OnWmMessage);
+			var hwndSource = fromDependencyObject as HwndSource;
+			hwndSource?.AddHook(OnWmMessage);
 		}
 	}
 

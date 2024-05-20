@@ -23,7 +23,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 
 	// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
-	// This doesn't yet handle the case of a child visual changing parents. i.e., once a flyout visual, always a flyout visual.
 	private bool? _isFlyoutVisual;
 	private bool _isFlyoutVisualInherited;
 	private bool IsFlyoutVisual => _isFlyoutVisual ?? _isFlyoutVisualInherited;

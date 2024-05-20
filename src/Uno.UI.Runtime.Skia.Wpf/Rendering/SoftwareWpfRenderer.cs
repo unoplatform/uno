@@ -16,11 +16,11 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
-	private WpfControl _hostControl;
+	private readonly WpfControl _hostControl;
+	private readonly IWpfXamlRootHost _host;
+	private readonly bool _isFlyoutSurface;
 	private WriteableBitmap? _bitmap;
-	private IWpfXamlRootHost _host;
 	private XamlRoot? _xamlRoot;
-	private bool _isFlyoutSurface;
 
 	public SoftwareWpfRenderer(IWpfXamlRootHost host, bool isFlyoutSurface)
 	{
