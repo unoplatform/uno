@@ -14,9 +14,17 @@ parameters:
   snapshotGroupCount: 3
 
 jobs:
+- template: .azure-devops-package-skia-native-assets.yml
+  parameters:
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+    macOSImageName: ${{ parameters.vmMacImage }}
+    AssetNativeSuffix: '-SamplesApp'
+
 - job: Skia_Tests_Build
   displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
+  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 
@@ -47,6 +55,13 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
+
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-SamplesApp-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk.binlog
     displayName: Build GTK Head
