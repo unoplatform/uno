@@ -48,13 +48,13 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (host is null) return;
 
-		if (host is not UnoCompositeWindowHost hostControl)
+		if (host is not WpfControl hostControl)
 		{
 			throw new ArgumentException($"{nameof(host)} must be a WPF Control instance", nameof(host));
 		}
 
 		_host = hostControl;
-		_topLayer = hostControl.FlyoutLayer;
+		_topLayer = host is UnoCompositeWindowHost compositeWindowHost ? compositeWindowHost.FlyoutLayer : hostControl;
 
 		// we only use the top layer for events since subscribing on the hostControl will receive
 		// extra and/or out-of-order events.
