@@ -75,25 +75,36 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 		private void StartConsoleInterception()
 		{
-			_consoleInterceptionThread = new(() =>
+			// Only use the keyboard interception if the input is not redirected, to support
+			// starting the app without a pty.
+			if (!Console.IsInputRedirected && Console.KeyAvailable)
 			{
-
-				// Loop until Application.Current.Exit() is invoked
-				while (!_coreApplicationExtension!.ExitRequested)
+				_consoleInterceptionThread = new(() =>
 				{
-					// Read the console keys without showing them on screen.
-					// The keyboard input is handled by libinput.
-					Console.ReadKey(true);
+					// Loop until Application.Current.Exit() is invoked
+					while (!_coreApplicationExtension!.ExitRequested)
+					{
+						// Read the console keys without showing them on screen.
+						// The keyboard input is handled by libinput.
+						Console.ReadKey(true);
+					}
+
+					// The process asked to exit
+					_terminationGate.Set();
+				});
+
+				// The thread must not block the process from exiting
+				_consoleInterceptionThread.IsBackground = true;
+
+				_consoleInterceptionThread.Start();
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Console input is redirected, skipping input interception");
 				}
-
-				// The process asked to exit
-				_terminationGate.Set();
-			});
-
-			// The thread must not block the process from exiting
-			_consoleInterceptionThread.IsBackground = true;
-
-			_consoleInterceptionThread.Start();
+			}
 		}
 
 		private void InnerInitialize()

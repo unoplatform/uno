@@ -74,6 +74,19 @@ internal static partial class X11Helper
 	public const string XA_CARDINAL = "CARDINAL";
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
+	public const string XdndAware = "XdndAware";
+	public const string XdndStatus = "XdndStatus";
+	public const string XdndEnter = "XdndEnter";
+	public const string XdndPosition = "XdndPosition";
+	public const string XdndTypeList = "XdndTypeList";
+	public const string XdndActionCopy = "XdndActionCopy";
+	public const string XdndActionLink = "XdndActionLink";
+	public const string XdndActionMove = "XdndActionMove";
+	public const string XdndDrop = "XdndDrop";
+	public const string XdndLeave = "XdndLeave";
+	public const string XdndFinished = "XdndFinished";
+	public const string XdndSelection = "XdndSelection";
+	public const string XdndProxy = "XdndProxy";
 
 	public const int ShapeSet = 0;
 	public const int ShapeUnion = 1;
@@ -315,7 +328,11 @@ internal static partial class X11Helper
 	}
 
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
-	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false) => _getAtom(display, name, only_if_exists);
+	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false)
+	{
+		using var _ = XLock(display);
+		return _getAtom(display, name, only_if_exists);
+	}
 
 	[LibraryImport("libc")]
 	public unsafe static partial int poll(Pollfd* __fds, IntPtr __nfds, int __timeout);
