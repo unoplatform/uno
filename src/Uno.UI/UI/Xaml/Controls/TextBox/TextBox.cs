@@ -1247,7 +1247,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if __SKIA__
 				try
 				{
-
+					_clearHistoryOnTextChanged = false;
 					_suppressCurrentlyTyping = true;
 #else
 				{
@@ -1258,6 +1258,7 @@ namespace Microsoft.UI.Xaml.Controls
 				finally
 				{
 					_suppressCurrentlyTyping = false;
+					_clearHistoryOnTextChanged = true;
 				}
 #endif
 
