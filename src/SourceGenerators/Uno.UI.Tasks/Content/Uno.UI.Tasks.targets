@@ -6,8 +6,6 @@
 		
 		<_IsXamlTrimmingAvailable>true</_IsXamlTrimmingAvailable>
 		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
-
-		<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!='' and '$(TargetFrameworkVersion)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
 	</PropertyGroup>
 
 	<Import Project="uno.ui.tasks.assets.targets"/>
@@ -319,6 +317,8 @@
 					'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI'
 					or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'"
 				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
+
+			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
 		</PropertyGroup>
 
 		<LinkerHintGeneratorTask_v0
