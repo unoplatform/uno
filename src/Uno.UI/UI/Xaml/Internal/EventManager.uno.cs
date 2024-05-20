@@ -96,20 +96,21 @@ internal sealed partial class EventManager
 			// Note the move instead of copy here to avoid doing an extra
 			// addref/release on the item. Also note that the order in which
 			// we call the event is reversed.
-			var index = 0;
+			var index = currentCount;
 			// Uno docs: WinUI uses rbegin and rend for iterating here, which is "reverse" order.
-			// As .NET's queue doesn't have an efficient way for reverse iterating, we add them in
-			// same order, but then in the loop below we'll reverse it.
+			// As .NET's queue doesn't have an efficient way for reverse iterating, we just
+			// start our index from currentCount - 1 till we reach zero.
 			foreach (var item in _sizeChangedQueue)
 			{
+				index--;
 				tmp[index] = item;
-				index++;
 			}
+
+			Debug.Assert(index == 0);
 
 			_sizeChangedQueue.Clear();
 
-			// Uno docs: This is the replacement for the reverse iteration in WinUI.
-			for (int i = currentCount - 1; i >= 0; i--)
+			for (int i = 0; i < currentCount; i++)
 			{
 				var item = tmp[i];
 				//TraceIndividualSizeChangedBegin();

@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-			_renderTransform?.UpdateSize(newSize);
+			_renderTransform?.UpdateSize(args.NewSize);
 #endif
 #endif
 		}
