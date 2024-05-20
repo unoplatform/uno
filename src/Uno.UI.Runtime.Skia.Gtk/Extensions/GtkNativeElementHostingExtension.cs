@@ -17,15 +17,21 @@ namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
+	private readonly ContentPresenter _presenter;
+
+	public GtkNativeElementHostingExtension(ContentPresenter contentPresenter)
+	{
+		_presenter = contentPresenter;
+	}
+
 	private static Dictionary<object, IDisposable> NativeRenderDisposables { get; } = new();
 
-	internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
-		GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+	private XamlRoot? XamlRoot => _presenter.XamlRoot;
+	private Fixed? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer : null;
 
-	public bool IsNativeElement(object content)
-		=> content is Widget;
+	public bool IsNativeElement(object content) => content is Widget;
 
-	public void AttachNativeElement(XamlRoot owner, object content)
+	public void AttachNativeElement(object content)
 	{
 		if (content is Widget widget)
 		{
@@ -37,15 +43,14 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to attach native element {content} to {owner}.");
+				this.Log().Debug($"Unable to attach native element {content} to {XamlRoot}.");
 			}
 		}
 	}
 
-	public void DetachNativeElement(XamlRoot owner, object content)
+	public void DetachNativeElement(object content)
 	{
-		if (content is Widget widget
-			&& GetOverlayLayer(owner) is { } overlay)
+		if (content is Widget widget && OverlayLayer is { } overlay)
 		{
 			if (NativeRenderDisposables.Remove(widget, out var disposable))
 			{
@@ -57,12 +62,12 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Unable to detach native element {content} from {owner}.");
+				this.Log().LogDebug($"Unable to detach native element {content} from {XamlRoot}.");
 			}
 		}
 	}
 
-	public object CreateSampleComponent(XamlRoot owner, string text)
+	public object CreateSampleComponent(string text)
 	{
 		var vbox = new VBox(false, 5);
 
@@ -81,12 +86,10 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 		return vbox;
 	}
 
-	public bool IsNativeElementAttached(XamlRoot owner, object nativeElement) =>
-		nativeElement is Widget widget
-			&& GetOverlayLayer(owner) is { } overlay
-			&& widget.Parent == overlay;
+	private bool IsNativeElementAttached(object nativeElement) =>
+		nativeElement is Widget widget && OverlayLayer is { } overlay && widget.Parent == overlay;
 
-	public void ChangeNativeElementVisibility(XamlRoot owner, object content, bool visible)
+	public void ChangeNativeElementVisibility(object content, bool visible)
 	{
 		if (content is Widget widget)
 		{
@@ -94,7 +97,7 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 		}
 	}
 
-	public void ChangeNativeElementOpacity(XamlRoot owner, object content, double opacity)
+	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		if (content is Widget widget)
 		{
@@ -102,12 +105,11 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 		}
 	}
 
-	public void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
 	{
-		if (content is Widget widget
-			&& GetOverlayLayer(owner) is { } overlay)
+		if (content is Widget widget && OverlayLayer is { } overlay)
 		{
-			if (!IsNativeElementAttached(owner, content))
+			if (!IsNativeElementAttached(content))
 			{
 				// We do this not on attaching, but on the first arrange, to prevent the overlay from being
 				// misplaced for a split-second before the arrange occurs
@@ -121,10 +123,10 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
+				this.Log().Trace($"ArrangeNativeElement({XamlRoot}, {arrangeRect})");
 			}
 
-			var scaleAdjustment = owner.FractionalScaleAdjustment;
+			var scaleAdjustment = XamlRoot!.FractionalScaleAdjustment;
 			var rect = new Gdk.Rectangle(
 				(int)(arrangeRect.X * scaleAdjustment),
 				(int)(arrangeRect.Y * scaleAdjustment),
@@ -170,7 +172,7 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 
 			var onActivated = new WindowActivatedEventHandler(callback);
 			var onSizeChanged = new WindowSizeChangedEventHandler(callback);
-			if (owner.HostWindow is { } window)
+			if (XamlRoot.HostWindow is { } window)
 			{
 				window.Activated += onActivated;
 				window.SizeChanged += onSizeChanged;
@@ -185,12 +187,12 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
+				this.Log().Debug($"Unable to arrange native element {content} in {XamlRoot}.");
 			}
 		}
 	}
 
-	public Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize)
+	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
 	{
 		if (content is Widget widget)
 		{
@@ -201,14 +203,14 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 				this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
 			}
 
-			var scaleAdjustment = owner.FractionalScaleAdjustment;
+			var scaleAdjustment = XamlRoot!.FractionalScaleAdjustment;
 			return new(naturalSize.Width / scaleAdjustment, naturalSize.Height / scaleAdjustment);
 		}
 		else
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to measure native element {content} in {owner}.");
+				this.Log().Debug($"Unable to measure native element {content} in {XamlRoot}.");
 			}
 		}
 

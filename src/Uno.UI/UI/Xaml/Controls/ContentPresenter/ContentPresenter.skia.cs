@@ -12,6 +12,10 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
+#if DEBUG
+	private bool _nativeElementAttached;
+#endif
+
 	partial void InitializePlatform()
 	{
 		_nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
@@ -84,7 +88,6 @@ partial class ContentPresenter
 		}
 
 		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
-			XamlRoot,
 			Content,
 			arrangeRect,
 			clippingBounds);
@@ -92,8 +95,11 @@ partial class ContentPresenter
 
 	partial void AttachNativeElement()
 	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null);
-		_nativeElementHostingExtension.Value!.AttachNativeElement(XamlRoot, Content);
+#if DEBUG
+		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null && !_nativeElementAttached);
+		_nativeElementAttached = true;
+#endif
+		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
 		EffectiveViewportChanged += OnEffectiveViewportChanged;
 		LayoutUpdated += OnLayoutUpdated;
@@ -106,23 +112,26 @@ partial class ContentPresenter
 
 	partial void DetachNativeElement(object content)
 	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+#if DEBUG
+		global::System.Diagnostics.Debug.Assert(IsNativeHost && _nativeElementAttached);
+		_nativeElementAttached = false;
+#endif
 		_nativeHosts.Remove(this);
 		EffectiveViewportChanged -= OnEffectiveViewportChanged;
 		LayoutUpdated -= OnLayoutUpdated;
-		_nativeElementHostingExtension.Value!.DetachNativeElement(XamlRoot, content);
+		_nativeElementHostingExtension.Value!.DetachNativeElement(content);
 		_nativeElementDisposable?.Dispose();
 	}
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		return _nativeElementHostingExtension.Value!.MeasureNativeElement(XamlRoot, Content, childMeasuredSize, availableSize);
+		return _nativeElementHostingExtension.Value!.MeasureNativeElement(Content, childMeasuredSize, availableSize);
 	}
 
 	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)
 	{
-		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(XamlRoot, Content, HitTestVisibility != HitTestability.Collapsed);
+		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(Content, HitTestVisibility != HitTestability.Collapsed);
 	}
 
 	internal static void UpdateNativeHostContentPresentersOpacities()
@@ -137,7 +146,7 @@ partial class ContentPresenter
 				parent = parent.GetParent() as UIElement;
 			}
 
-			contentPresenter._nativeElementHostingExtension!.Value.ChangeNativeElementOpacity(contentPresenter.XamlRoot, contentPresenter.Content, finalOpacity);
+			contentPresenter._nativeElementHostingExtension!.Value.ChangeNativeElementOpacity(contentPresenter.Content, finalOpacity);
 		}
 	}
 
@@ -158,6 +167,6 @@ partial class ContentPresenter
 
 	internal object CreateSampleComponent(string text)
 	{
-		return _nativeElementHostingExtension.Value?.CreateSampleComponent(XamlRoot, text);
+		return _nativeElementHostingExtension.Value?.CreateSampleComponent(text);
 	}
 }

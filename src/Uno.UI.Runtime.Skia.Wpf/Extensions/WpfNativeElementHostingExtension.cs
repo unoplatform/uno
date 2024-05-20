@@ -13,15 +13,22 @@ namespace Uno.UI.Runtime.Skia.Wpf;
 
 internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
-		WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+	private readonly ContentPresenter _presenter;
+
+	public WpfNativeElementHostingExtension(ContentPresenter contentPresenter)
+	{
+		_presenter = contentPresenter;
+	}
+
+	private XamlRoot? XamlRoot => _presenter.XamlRoot;
+	private WpfCanvas? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer : null;
 
 	public bool IsNativeElement(object content)
 		=> content is System.Windows.UIElement;
 
-	public void AttachNativeElement(XamlRoot owner, object content)
+	public void AttachNativeElement(object content)
 	{
-		if (GetOverlayLayer(owner) is { } layer
+		if (OverlayLayer is { } layer
 			&& content is System.Windows.FrameworkElement contentAsFE
 			&& contentAsFE.Parent != layer)
 		{
@@ -31,14 +38,14 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to attach native element {content} in {owner}.");
+				this.Log().Debug($"Unable to attach native element {content} in {XamlRoot}.");
 			}
 		}
 	}
 
-	public void DetachNativeElement(XamlRoot owner, object content)
+	public void DetachNativeElement(object content)
 	{
-		if (GetOverlayLayer(owner) is { } layer
+		if (OverlayLayer is { } layer
 			&& content is System.Windows.FrameworkElement contentAsFE
 			&& contentAsFE.Parent == layer)
 		{
@@ -48,24 +55,19 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to detach native element {content} in {owner}.");
+				this.Log().Debug($"Unable to detach native element {content} in {XamlRoot}.");
 			}
 		}
 	}
 
-	public bool IsNativeElementAttached(XamlRoot owner, object nativeElement) =>
-		nativeElement is System.Windows.FrameworkElement contentAsFE
-			&& GetOverlayLayer(owner) is { } layer
-			&& contentAsFE.Parent == layer;
-
-	public void ChangeNativeElementVisibility(XamlRoot owner, object content, bool visible)
+	public void ChangeNativeElementVisibility(object content, bool visible)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
 			contentAsUIElement.Visibility = visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 		}
 	}
-	public void ChangeNativeElementOpacity(XamlRoot owner, object content, double opacity)
+	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -73,7 +75,7 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 		}
 	}
 
-	public void ArrangeNativeElement(XamlRoot owner, object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
+	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -90,12 +92,12 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
+				this.Log().Debug($"Unable to arrange native element {content} in {XamlRoot}.");
 			}
 		}
 	}
 
-	public Windows.Foundation.Size MeasureNativeElement(XamlRoot owner, object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize)
+	public Windows.Foundation.Size MeasureNativeElement(object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -106,7 +108,7 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 		return Windows.Foundation.Size.Empty;
 	}
 
-	public object CreateSampleComponent(XamlRoot owner, string text)
+	public object CreateSampleComponent(string text)
 	{
 		return new Button
 		{

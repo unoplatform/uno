@@ -18,9 +18,9 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	/// replace the executable and the args with whatever you have locally. This is only used
 	/// for internal debugging. However, make sure that you can set a unique title to the window,
 	/// so that you can then look it up.
-	public object? CreateSampleComponent(XamlRoot owner, string text)
+	public object? CreateSampleComponent(string text)
 	{
-		if (X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
+		if (XamlRoot is { } xamlRoot && X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			if (!Exists("mpv"))
 			// if (!Exists("vlc"))

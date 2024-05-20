@@ -9,21 +9,19 @@ partial class ContentPresenter
 #if UNO_SUPPORTS_NATIVEHOST
 		bool IsNativeElement(object content);
 
-		void AttachNativeElement(XamlRoot owner, object content);
+		void AttachNativeElement(object content);
 
-		void DetachNativeElement(XamlRoot owner, object content);
+		void DetachNativeElement(object content);
 
-		void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect clipRect);
+		void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect);
 
-		Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize);
+		Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize);
 
-		object CreateSampleComponent(XamlRoot owner, string text);
+		object CreateSampleComponent(string text);
 
-		bool IsNativeElementAttached(XamlRoot owner, object nativeElement);
+		void ChangeNativeElementVisibility(object content, bool visible);
 
-		void ChangeNativeElementVisibility(XamlRoot owner, object content, bool visible);
-
-		void ChangeNativeElementOpacity(XamlRoot owner, object content, double opacity);
+		void ChangeNativeElementOpacity(object content, double opacity);
 #endif
 	}
 }

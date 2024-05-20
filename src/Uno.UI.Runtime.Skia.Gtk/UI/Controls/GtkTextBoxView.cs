@@ -60,7 +60,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (GtkNativeElementHostingExtension.GetOverlayLayer(xamlRoot) is { } layer && RootWidget.Parent != layer)
+		if (GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer is { } layer && RootWidget.Parent != layer)
 		{
 			layer.Put(RootWidget, 0, 0);
 			layer.ShowAll();

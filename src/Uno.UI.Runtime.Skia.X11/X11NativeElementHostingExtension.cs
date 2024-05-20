@@ -20,8 +20,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	private Rect? _lastFinalRect;
 	private Rect? _lastArrangeRect;
 	private Rect? _lastClipRect;
-	private XamlRoot? _xamlRoot;
-	private X11NativeWindow? _content;
 	private bool _layoutDirty = true;
 	private bool? _xShapesPresent;
 	private readonly ContentPresenter _presenter;
@@ -32,6 +30,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		_presenter = contentPresenter;
 		_display = ((X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RootX11Window.Display;
 	}
+
+	private XamlRoot? XamlRoot => _presenter.XamlRoot;
 
 	internal static IEnumerable<XRectangle> GetNativeElementRects(X11XamlRootHost host)
 	{
@@ -97,11 +97,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 		return FindWindowById(_display, nativeWindow.WindowId, root) != IntPtr.Zero;
 	}
-	public void AttachNativeElement(XamlRoot owner, object content)
+	public void AttachNativeElement(object content)
 	{
-		Debug.Assert(!IsNativeElementAttached(owner, content));
 		if (content is X11NativeWindow nativeWindow
-			&& X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
+			&& XamlRoot is { } xamlRoot
+			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var _1 = X11Helper.XLock(_display);
 
@@ -130,10 +130,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			}
 			set.Add(this);
 
-			_xamlRoot = owner;
-			_content = nativeWindow;
-
-			owner.InvalidateRender += UpdateLayout;
+			xamlRoot.InvalidateRender += UpdateLayout;
 		}
 		else
 		{
@@ -141,12 +138,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void DetachNativeElement(XamlRoot owner, object content)
+	public void DetachNativeElement(object content)
 	{
-		Debug.Assert(IsNativeElementAttached(owner, content));
-
 		if (content is X11NativeWindow nativeWindow
-			&& X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
+			&& XamlRoot is { } xamlRoot
+			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var _1 = X11Helper.XLock(_display);
 			var _2 = XLib.XQueryTree(_display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
@@ -164,10 +160,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 			_lastFinalRect = null;
-			_xamlRoot = null;
-			_content = null;
 
-			owner.InvalidateRender -= UpdateLayout;
+			xamlRoot.InvalidateRender -= UpdateLayout;
 			host.QueueUpdateTopWindowClipRect();
 		}
 		else
@@ -176,7 +170,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void ArrangeNativeElement(XamlRoot owner, object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
 	{
 		_lastArrangeRect = arrangeRect;
 		_lastClipRect = clipRect;
@@ -193,10 +187,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			return;
 		}
 		_layoutDirty = false;
-		if (_content is { } nativeWindow &&
+		if (_presenter.Content is X11NativeWindow nativeWindow &&
 			_lastArrangeRect is { } arrangeRect &&
 			_lastClipRect is { } clipRect &&
-			_xamlRoot is { } xamlRoot &&
+			XamlRoot is { } xamlRoot &&
 			X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var _1 = X11Helper.XLock(_display);
@@ -238,26 +232,9 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public Size MeasureNativeElement(XamlRoot owner, object content, Size childMeasuredSize, Size availableSize) => availableSize;
+	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
 
-	public bool IsNativeElementAttached(XamlRoot owner, object nativeElement)
-	{
-		// Querying the X server every time is really expensive, so let's not do that.
-		// if (nativeElement is X11Window x11Window
-		// 	&& X11Manager.XamlRootMap.GetHostForRoot(owner) is X11XamlRootHost host)
-		// {
-		// 	using var _1 = X11Helper.XLock(x11Window.Display);
-		// 	var _2 = XLib.XQueryTree(x11Window.Display, x11Window.Window, out _, out IntPtr parent, out var children, out _);
-		// 	XLib.XFree(children);
-		// 	return parent == host.RootX11Window.Window;
-		// }
-		//
-		// return false;
-
-		return _content == (X11NativeWindow?)nativeElement && owner == _xamlRoot;
-	}
-
-	public void ChangeNativeElementVisibility(XamlRoot owner, object content, bool visible)
+	public void ChangeNativeElementVisibility(object content, bool visible)
 	{
 		if (content is X11NativeWindow nativeWindow)
 		{
@@ -273,7 +250,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	}
 
 	// This doesn't seem to work as most (all?) WMs won't change the opacity for subwindows, only top-level windows
-	public void ChangeNativeElementOpacity(XamlRoot owner, object content, double opacity)
+	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		// if (IsNativeElementAttached(owner, content) && content is X11Window x11Window)
 		// {
