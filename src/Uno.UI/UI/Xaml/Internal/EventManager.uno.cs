@@ -71,6 +71,9 @@ internal sealed partial class EventManager
 
 	public void EnqueueForSizeChanged(FrameworkElement element, Size oldSize)
 	{
+		// Uno-specific. Maybe render transforms should subscribe to SizeChanged instead.
+		element.UpdateRenderTransformSize(element.RenderSize);
+
 		if (element.WantsSizeChanged)
 		{
 			_sizeChangedQueue.Enqueue(new SizeChangedQueueItem(element, oldSize));

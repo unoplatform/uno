@@ -181,9 +181,16 @@ namespace Microsoft.UI.Xaml
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
-			_renderTransform?.UpdateSize(args.NewSize);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			_renderTransform?.UpdateSize(newSize);
+#endif
 #endif
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal void UpdateRenderTransformSize(Size newSize)
+			=> _renderTransform?.UpdateSize(newSize);
+#endif
 
 		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
