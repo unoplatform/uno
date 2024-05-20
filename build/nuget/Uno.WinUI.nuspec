@@ -674,7 +674,7 @@
 		<file src="Uno.WinUI.props" target="buildTransitive\net8.0-macos14.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-android30.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-ios17.2" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-maccatalyst17.0" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-maccatalyst17.2" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-macos14.2" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net9.0-windows" />
 
