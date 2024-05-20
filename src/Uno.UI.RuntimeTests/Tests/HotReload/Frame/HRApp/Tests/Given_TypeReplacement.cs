@@ -44,4 +44,34 @@ public class Given_TypeReplacement : BaseTestClass
 			ct);
 	}
 
+	[TestMethod]
+	public async Task When_DP_Has_Binding()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+
+		var page = new HR_DPUpdates_Binding_PageUsingComponent();
+		UnitTestsUIContentHelper.Content = page;
+
+		UserControl oldComponent = page.myComponent;
+
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_DPUpdates_Component>(
+			OriginalColor,
+			UpdatedColor,
+			() =>
+			{
+				var component = (UserControl)page.Content;
+				Assert.AreNotEqual(oldComponent, component);
+				Assert.IsTrue(component.GetType().Name.Contains("#"));
+
+				Assert.IsNotNull(component.GetBindingExpression(FrameworkElement.TagProperty));
+
+				page.Tag2 = "Updated tag";
+				var componentGrid = (Grid)VisualTreeHelper.GetChild(component, 0);
+				var tb = (TextBlock)componentGrid.Children.Single();
+
+				Assert.AreEqual("Updated tag", tb.Text);
+				return Task.CompletedTask;
+			},
+			ct);
+	}
 }

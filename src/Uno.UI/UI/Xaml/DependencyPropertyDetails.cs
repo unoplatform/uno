@@ -54,14 +54,9 @@ namespace Microsoft.UI.Xaml
 			other._defaultValue = _defaultValue;
 			if (_stack is not null)
 			{
-				if (other._stack is null)
-				{
-					other._stack = _pool.Rent(StackSize);
-				}
-
 				for (int i = 0; i < StackSize; i++)
 				{
-					other._stack[i] = _stack[i];
+					other.Stack[i] = _stack[i];
 				}
 			}
 		}
