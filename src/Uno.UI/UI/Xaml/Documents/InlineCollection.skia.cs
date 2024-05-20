@@ -295,7 +295,7 @@ namespace Microsoft.UI.Xaml.Documents
 						}
 
 						// By this point, we must have at least dealt with the leading spaces.
-						global::System.Diagnostics.CI.Assert(start >= segment.LeadingSpaces);
+						// We either drew all the leading space or we drew as many as we could and we're discarding the rest.
 
 						if (x > 0)
 						{
