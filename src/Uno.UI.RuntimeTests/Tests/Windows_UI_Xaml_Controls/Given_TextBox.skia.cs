@@ -1627,6 +1627,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Paste_History_Remains_Intact()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "initial"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "copied content";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			// This actually matches WinUI. text comes before "initial" and text2 comes after text
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + "initial", SUT.Text);
+
+			var dp2 = new DataPackage();
+			var text2 = "copied content 2";
+			dp2.SetText(text2);
+			Clipboard.SetContent(dp2);
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + text2 + "initial", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + "initial", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("initial", SUT.Text);
+		}
+
+		[TestMethod]
 		public async Task When_Multiline_Simple()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
