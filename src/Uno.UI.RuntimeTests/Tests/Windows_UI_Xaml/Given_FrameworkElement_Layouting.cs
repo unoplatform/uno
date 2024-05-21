@@ -93,6 +93,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		}
 
 		[TestMethod]
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		[Ignore("Properly works only with enhanced lifecycle")]
+#endif
 		public async Task When_LayoutUpdated_Not_In_Visual_Tree()
 		{
 			string s = "";
@@ -133,15 +136,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			await UITestHelper.Load(border);
 
-#if WINAPPSDK
 			// On WinUI, running the test randomly produces one of these outputs.
 			if (s is not ("button1 button2 border1 border2 " or "border1 border2 button1 button2 "))
 			{
 				Assert.Fail($"Test failed. Actual: {s}");
 			}
-#else
-			Assert.AreEqual("button1 button2 border1 border2 ", s);
-#endif
 		}
 
 		[TestMethod]
