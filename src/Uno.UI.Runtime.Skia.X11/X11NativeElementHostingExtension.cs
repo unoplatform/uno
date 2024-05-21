@@ -105,21 +105,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		{
 			using var _1 = X11Helper.XLock(_display);
 
-			// this seems to be necessary or else the WM will keep detaching the subwindow
-			XWindowAttributes attributes = default;
-			var _2 = XLib.XGetWindowAttributes(_display, nativeWindow.WindowId, ref attributes);
-			attributes.override_direct = /* True */ 1;
-
-			unsafe
-			{
-				IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
-				Marshal.StructureToPtr(attributes, attr, false);
-				var _3 = X11Helper.XChangeWindowAttributes(_display, nativeWindow.WindowId, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
-				Marshal.FreeHGlobal(attr);
-			}
-
-			var _4 = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, host.RootX11Window.Window, 0, 0);
-			XLib.XSync(_display, false); // XSync is necessary after XReparent for unknown reasons
+			host.AttachSubWindow(nativeWindow.WindowId);
 
 			using var _5 = X11Helper.XLock(_display);
 			var _6 = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);

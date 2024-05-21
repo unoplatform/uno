@@ -370,9 +370,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// The window must be mapped before DisplayInformationExtension is initialized.
 		var _4 = XLib.XMapWindow(display, rootWindow);
 		var _5 = XLib.XMapWindow(display, TopX11Window.Window);
-		XLib.XSync(display, false); // we apparently need to sync before calling XReparentWindow, or else the reparenting won't go through
-		var _6 = X11Helper.XReparentWindow(TopX11Window.Display, TopX11Window.Window, RootX11Window.Window, 0, 0);
-		XLib.XSync(display, false);
+		AttachSubWindow(TopX11Window.Window);
+
 		var _7 = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
 
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
@@ -481,6 +480,24 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	public unsafe void AttachSubWindow(IntPtr window)
+	{
+		using var _1 = X11Helper.XLock(RootX11Window.Display);
+		// this seems to be necessary or else the WM will keep detaching the subwindow
+		XWindowAttributes attributes = default;
+		var _2 = XLib.XGetWindowAttributes(RootX11Window.Display, window, ref attributes);
+		attributes.override_direct = /* True */ 1;
+
+		IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
+		Marshal.StructureToPtr(attributes, attr, false);
+		var _3 = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
+		Marshal.FreeHGlobal(attr);
+
+		var _4 = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
+		XLib.XFlush(RootX11Window.Display);
+		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
+	}
 
 	public void QueueUpdateTopWindowClipRect()
 	{
