@@ -177,7 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
-		[DataRow(typeof(MediaPlayerElement), 15)] // Commented out temporarily.
+		[DataRow(typeof(MediaPlayerElement), 15)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
 		{
 			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
@@ -213,11 +213,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 
 			var _holders = new ConditionalWeakTable<DependencyObject, Holder>();
-			void TrackDependencyObject(DependencyObject target) => _holders.Add(target, new Holder(HolderUpdate));
-
-			var maxCounter = 0;
-			var activeControls = 0;
-			var maxActiveControls = 0;
+			void TrackDependencyObject(DependencyObject target) => _holders.Add(target, new Holder());
 
 			// Ensure Holder counter is reset between individual control tests.
 			Holder.Reset();
@@ -230,47 +226,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			for (int i = 0; i < count; i++)
 			{
-				await MaterializeControl(controlType, _holders, maxCounter, rootContainer);
+				await MaterializeControl(controlType, _holders, rootContainer);
 			}
 
 			TestServices.WindowHelper.WindowContent = null;
 
-			void HolderUpdate(int value)
-			{
-				_ = rootContainer!.Dispatcher.RunAsync(CoreDispatcherPriority.High,
-					() =>
-					{
-						maxCounter = Math.Max(value, maxCounter);
-						activeControls = value;
-						maxActiveControls = maxCounter;
-					}
-				);
-			}
-
-			var sw = Stopwatch.StartNew();
-
-			var endTime = TimeSpan.FromSeconds(5);
-			var maxTime = TimeSpan.FromSeconds(30);
-
-			var lastActiveControls = activeControls;
-
-			while (sw.Elapsed < endTime && sw.Elapsed < maxTime && activeControls != 0)
+			for (int i = 0; i < 10; i++)
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
 
+				if (Holder.Counter == 0)
+				{
+					break;
+				}
+
 				// Waiting for idle is required for collection of
 				// DispatcherConditionalDisposable to be executed
 				await TestServices.WindowHelper.WaitForIdle();
-
-				if (lastActiveControls != activeControls)
-				{
-					// Expand the timeout if the count has changed, as the
-					// GC may still be processing levels of the hierarcy on iOS
-					endTime += TimeSpan.FromMilliseconds(500);
-				}
-
-				lastActiveControls = activeControls;
 			}
 
 #if TRACK_REFS
@@ -297,7 +270,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			// created, we can assume that enough objects were collected entirely.
 			Assert.IsTrue(activeControls < count, retainedMessage);
 #else
-			Assert.AreEqual(0, activeControls, retainedMessage);
+			Assert.AreEqual(0, Holder.Counter, retainedMessage);
 #endif
 
 #if __IOS__ || __ANDROID__
@@ -314,7 +287,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 #endif
 
-			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
+			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, ContentControl rootContainer)
 			{
 				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
 				TrackDependencyObject(item);
@@ -410,19 +383,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private class Holder
 		{
-			private readonly Action<int> _update;
 			private static int _counter;
 
-			public Holder(Action<int> update)
+			internal static int Counter => _counter;
+
+			public Holder()
 			{
-				_update = update;
-				_update(++_counter);
+				Interlocked.Increment(ref _counter);
 			}
 
 			~Holder()
 			{
-				var counter = Interlocked.Decrement(ref _counter);
-				_update(counter);
+				Interlocked.Decrement(ref _counter);
 			}
 
 			public static void Reset() => _counter = 0;

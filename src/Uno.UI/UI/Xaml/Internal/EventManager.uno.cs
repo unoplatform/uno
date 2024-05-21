@@ -132,7 +132,7 @@ internal sealed partial class EventManager
 				//TraceIndividualSizeChangedEnd(UINT64(item.m_pElement));
 			}
 
-			ArrayPool<SizeChangedQueueItem>.Shared.Return(tmp);
+			ArrayPool<SizeChangedQueueItem>.Shared.Return(tmp, clearArray: true);
 		}
 	}
 }

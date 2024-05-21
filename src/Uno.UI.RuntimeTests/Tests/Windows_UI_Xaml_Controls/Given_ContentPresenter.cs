@@ -307,7 +307,9 @@ public class Given_ContentPresenter
 
 		SUT.Content = null;
 
-		await AssertCollectedReference(wref);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		AssertCollectedReference(wref);
 
 		WeakReference SetContent()
 		{
@@ -317,24 +319,22 @@ public class Given_ContentPresenter
 		}
 	}
 
-	private async Task AssertCollectedReference(WeakReference reference)
+	private void AssertCollectedReference(WeakReference reference)
 	{
-		var sw = Stopwatch.StartNew();
-		while (sw.Elapsed < TimeSpan.FromSeconds(3))
+		for (int i = 0; i < 10; i++)
 		{
-			GC.Collect(2);
+			GC.Collect();
 			GC.WaitForPendingFinalizers();
 
 			if (!reference.IsAlive)
 			{
 				return;
 			}
-
-			await Task.Delay(100);
 		}
 
 		Assert.IsFalse(reference.IsAlive);
 	}
+
 	public class AlignmentTestConfiguration
 	{
 		public AlignmentTestConfiguration(HorizontalAlignment outerHorizontal, VerticalAlignment outerVertical, HorizontalAlignment innerHorizontal, VerticalAlignment innerVertical, Point expectedPosition, Size expectedSize)
