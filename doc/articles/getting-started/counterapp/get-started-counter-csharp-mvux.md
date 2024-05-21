@@ -123,13 +123,13 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
         .Text(x => x.Binding(() => vm.Step).TwoWay())
     ```
 
-- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`BindableMainModel`**.
+- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCounter`** task of the **`BindableMainModel`**.
 
     ```csharp
     new Button()
         .Margin(12)
         .HorizontalAlignment(HorizontalAlignment.Center)
-        .Command(() => vm.IncrementCommand)
+        .Command(() => vm.IncrementCounter)
         .Content("Increment Counter by Step Size")
     ```
 
@@ -168,7 +168,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
                             new Button()
                                 .Margin(12)
                                 .HorizontalAlignment(HorizontalAlignment.Center)
-                                .Command(() => vm.IncrementCommand)
+                                .Command(() => vm.IncrementCounter)
                                 .Content("Increment Counter by Step Size")
                         )
                 )
