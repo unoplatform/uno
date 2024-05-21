@@ -49,7 +49,9 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - template: templates/dotnet-mobile-install-windows.yml
+  # Building with .NET 9 SDK for net8.0-ios17.0 to work.
+  # It looks like building net8.0-ios17.0 with .NET 8 SDK will end up using Microsoft.iOS 17.2 assembly.
+  - template: templates/dotnet9-mobile-install-windows.yml
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later
