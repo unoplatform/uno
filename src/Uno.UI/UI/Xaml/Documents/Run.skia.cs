@@ -207,6 +207,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 					// We don't support ligatures for now since they can cause buggy behaviour in TextBox
 					// where multiple chars in a TextBox are turned into a single glyph.
+					//https://github.com/unoplatform/uno/issues/15528
+					// https://github.com/unoplatform/uno/issues/16788
 					// https://harfbuzz.github.io/shaping-opentype-features.html
 					font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
 
