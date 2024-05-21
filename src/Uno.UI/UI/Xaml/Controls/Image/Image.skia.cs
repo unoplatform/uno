@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -159,32 +160,28 @@ namespace Microsoft.UI.Xaml.Controls
 				// Calculate the resulting space required on screen for the image;
 				var containerSize = this.MeasureSource(finalSize, _lastMeasuredSize);
 
-				// Calculate the position of the image to follow stretch and alignment requirements
-				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
-
 				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} position:{finalPosition} finalSize:{finalSize}");
+					this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize}, containerSize:{containerSize}, finalSize:{finalSize}");
 				}
 
 				if (Source is SvgImageSource)
 				{
-					_svgCanvas?.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
-					return finalSize;
+					_svgCanvas?.Arrange(new Rect(0, 0, roundedSize.X, roundedSize.Y));
+					return containerSize;
 				}
 				else
 				{
 					_imageSprite.Size = roundedSize;
-					_imageSprite.Offset = new Vector3((float)finalPosition.X, (float)finalPosition.Y, 0);
 
 					var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / _currentSurface.Image.Width, _imageSprite.Size.Y / _currentSurface.Image.Height);
 
 					_surfaceBrush.TransformMatrix = transform;
 
 					// Image has no direct child that needs to be arranged explicitly
-					return finalSize;
+					return containerSize;
 				}
 			}
 			else

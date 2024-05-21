@@ -9564,6 +9564,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\LargeWisteria.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ListView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\MakeButton.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\my500x200.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\menu.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\MenuBar.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\MenuFlyout.png" />
