@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -20,8 +21,19 @@ partial class ContentPresenter
 	{
 		_nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
 		{
-			ApiExtensibility.CreateInstance<INativeElementHostingExtension>(this, out var extension);
-			return extension;
+			try
+			{
+				ApiExtensibility.CreateInstance<INativeElementHostingExtension>(this, out var extension);
+				return extension;
+			}
+			catch (Exception e) // this catches weird cases like an enqueued Loaded event on a ContentPresenter that dispatches after the window of that ContentPresenter is closed
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Couldn't create an {nameof(INativeElementHostingExtension)}.", e);
+				}
+				return null;
+			}
 		});
 	}
 
