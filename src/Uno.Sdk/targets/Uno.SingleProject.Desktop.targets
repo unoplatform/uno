@@ -2,6 +2,12 @@
 	<PropertyGroup>
 		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('$(DesktopProjectFolder)app.manifest')">$(DesktopProjectFolder)app.manifest</ApplicationManifest>
 		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('app.manifest')">app.manifest</ApplicationManifest>
+
+		<!-- Follow the Android, iOS, & MacCatalyst SDK's -->
+		<!-- Default to 1, if blank -->
+		<ApplicationVersion Condition=" '$(ApplicationVersion)' == '' ">1</ApplicationVersion>
+		<Version Condition=" $([System.Version]::TryParse ('$(ApplicationDisplayVersion)', $([System.Version]::Parse('1.0')))) ">$(ApplicationDisplayVersion)</Version>
+		<ApplicationDisplayVersion Condition=" '$(ApplicationDisplayVersion)' == '' ">$(Version)</ApplicationDisplayVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="$(DesktopProjectFolder)Package.appxmanifest"
