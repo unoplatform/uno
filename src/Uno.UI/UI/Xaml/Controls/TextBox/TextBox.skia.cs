@@ -502,20 +502,10 @@ public partial class TextBox
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
 		_suppressCurrentlyTyping = true;
-		if (text == Text)
-		{
-			if (!_isPressed)
-			{
-				SelectInternal(selectionStart, selectionLength);
-			}
-		}
-		else
-		{
-			_clearHistoryOnTextChanged = false;
-			_pendingSelection = (selectionStart, selectionLength);
-			ProcessTextInput(text);
-			_clearHistoryOnTextChanged = true;
-		}
+		_clearHistoryOnTextChanged = false;
+		_pendingSelection = (selectionStart, selectionLength);
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
 	}
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
@@ -1262,15 +1252,7 @@ public partial class TextBox
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
 
-			if (Text == newText)
-			{
-				// OnTextChanged won't fire, so we immediately change the selection
-				Select(selectionStart + clipboardText.Length, 0);
-			}
-			else
-			{
-				_pendingSelection = (selectionStart + clipboardText.Length, 0);
-			}
+			_pendingSelection = (selectionStart + clipboardText.Length, 0);
 		}
 	}
 
