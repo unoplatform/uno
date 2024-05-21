@@ -1130,7 +1130,19 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				_isInputModifyingText = true;
+				var oldText = Text;
 				Text = newText;
+
+#if __SKIA__
+				if (_pendingSelection is { } selection && Text == oldText)
+				{
+					// OnTextChanged won't fire, so we immediately change the selection.
+					// Note how we check that Text (after assignment) == oldText and
+					// not oldText == newText. This is because CoerceText can make it so that
+					// newText != oldText but Text (after assignment) == oldText
+					SelectInternal(selection.start, selection.length);
+				}
+#endif
 			}
 			finally
 			{
