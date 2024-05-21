@@ -44,11 +44,11 @@ As part of creating the application, we selected MVUX as the presentation framew
     public IState<Countable> Countable => State.Value(this, () => new Countable(0, 1));
     ```
 
-- Add a method named `IncrementCommand` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. You can find more information on commands in MVUX [here](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/Advanced/Commands.html).
+- Add a method named `IncrementCounter` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. You can find more information on commands in MVUX [here](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/Advanced/Commands.html).
 
     ```csharp
-    public ValueTask IncrementCommand()
-        => Countable.Update(c => c?.Increment(), CancellationToken.None);
+    public ValueTask IncrementCounter()
+        => Countable.UpdateAsync(c => c?.Increment());
     ```
 
 The final code for the `MainModel` class should look like this:
@@ -68,7 +68,7 @@ internal partial record MainModel
 {
     public IState<Countable> Countable => State.Value(this, () => new Countable(0, 1));
 
-    public ValueTask IncrementCommand()
-        => Countable.Update(c => c?.Increment(), CancellationToken.None);
+    public ValueTask IncrementCounter()
+        => Countable.UpdateAsync(c => c?.Increment());
 }
 ```

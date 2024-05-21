@@ -119,12 +119,12 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
              TextAlignment="Center" />
     ```
 
-- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`BindableMainModel`**.
+- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCounter`** task of the **`BindableMainModel`**.
 
     ```xml
     <Button Margin="12"
             HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
+            Command="{Binding IncrementCounter}"
             Content="Increment Counter by Step Size" />
     ```
 
@@ -160,7 +160,7 @@ The final code for **MainPage.xaml** should look like this:
 
     <Button Margin="12"
             HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
+            Command="{Binding IncrementCounter}"
             Content="Increment Counter by Step Size" />
   </StackPanel>
 </Page>
