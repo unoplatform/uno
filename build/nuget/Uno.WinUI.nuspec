@@ -93,22 +93,14 @@
 			<!-- .NET 9 (Reference API) -->
 			<group targetFramework="net9.0">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
-				<dependency id="System.Numerics.Vectors" version="4.5.0" />
-				<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
-				<dependency id="System.Memory" version="4.5.2" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="System.Collections.Immutable" version="1.3.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 
 			<!-- .NET 8 (Reference API) -->
 			<group targetFramework="net8.0">
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
-				<dependency id="System.Numerics.Vectors" version="4.5.0" />
-				<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
-				<dependency id="System.Memory" version="4.5.2" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="System.Collections.Immutable" version="1.3.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
 			</group>
 		</dependencies>
