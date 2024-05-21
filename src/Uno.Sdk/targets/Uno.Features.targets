@@ -1,7 +1,7 @@
 <Project>
 
 	<PropertyGroup>
-		<UnoFeatures>$([System.Text.RegularExpressions.Regex]::Replace($(UnoFeatures), '\s', '').ToLower())</UnoFeatures>
+		<UnoFeatures>$([System.Text.RegularExpressions.Regex]::Replace($(UnoFeatures), '\s', '').ToLowerInvariant())</UnoFeatures>
 		<UnoFeatures Condition="$(UnoFeatures) == ''">;</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
