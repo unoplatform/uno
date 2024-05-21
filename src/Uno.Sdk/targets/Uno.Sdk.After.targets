@@ -28,7 +28,7 @@
 		<_UnoTargetFrameworkCount>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries).Length)</_UnoTargetFrameworkCount>
 		
 		<!-- Cleanup the target frameworks so the rewriting becomes simpler -->
-		<TargetFrameworks>$(TargetFrameworks.Replace('&#x0d;','').Replace('&#x0a;','').Replace(' ','').Replace('&#x09;',''))</TargetFrameworks>
+		<TargetFrameworks>$([System.Text.RegularExpressions.Regex]::Replace($(TargetFrameworks), '\s', ''))</TargetFrameworks>
 
 		<!-- Ensure that the TFM list ends with a `;` in order for replacements to be tfm specific -->
 		<TargetFrameworks Condition="!$(TargetFrameworks.EndsWith(';'))">$(TargetFrameworks);</TargetFrameworks>
@@ -37,33 +37,41 @@
 		<_UnoFirstOriginalTargetFramework>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries)[0].Trim())</_UnoFirstOriginalTargetFramework>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="
-		'$(BuildingInsideVisualStudio)' == 'true'
-		AND '$(UnoDisableFirstTargetFrameworkRewrite)' == ''
-		AND (
-			$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
-			OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
-			OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
-		)
-		AND '$(TargetFrameworks)' != ''
-		AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'
-		AND $(TargetFrameworks.Contains('$(_UnoSelectedTargetFramework);'))">
-		
-		<!-- 
-			This property is multiline, but only inside the expression. There must be no crlf 
-			before the first `$(` or after the last `)`
-		-->
-		<TargetFrameworks>$(
-				[MSBuild]::Unescape(
-					$(
-						TargetFrameworks
-						.Replace('$(_UnoSelectedTargetFramework);','**PLACEHOLDER**;')
-						.Replace('$(_UnoFirstOriginalTargetFramework);','$(_UnoSelectedTargetFramework);')
-						.Replace('**PLACEHOLDER**;','$(_UnoFirstOriginalTargetFramework);')
-					)
+	<Choose>
+		<When Condition="
+				'$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(UnoDisableFirstTargetFrameworkRewrite)' == ''
+				AND (
+					$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
+					OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
+					OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
 				)
-			)</TargetFrameworks>
-	</PropertyGroup>
+				AND '$(TargetFrameworks)' != ''
+				AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'
+				AND $(TargetFrameworks.Contains('$(_UnoSelectedTargetFramework);'))">
+
+			<PropertyGroup>
+				<!-- 
+					This property is multiline, but only inside the expression. There must be no crlf 
+					before the first `$(` or after the last `)`
+				-->
+				<TargetFrameworks>$(
+						[MSBuild]::Unescape(
+							$(
+								TargetFrameworks
+								.Replace('$(_UnoSelectedTargetFramework);','**PLACEHOLDER**;')
+								.Replace('$(_UnoFirstOriginalTargetFramework);','$(_UnoSelectedTargetFramework);')
+								.Replace('**PLACEHOLDER**;','$(_UnoFirstOriginalTargetFramework);')
+							)
+						)
+					)</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<!-- As we're rewritten the list, we need to make sure that `;` is not escaped -->
+			<TargetFrameworks>$([MSBuild]::Unescape($(TargetFrameworks)))</TargetFrameworks>
+		</Otherwise>
+	</Choose>
 
 	<Target Name="_UnoVSWarnBrowserIsFirst"
 			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
