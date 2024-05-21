@@ -33,6 +33,14 @@
 			"type": "string",
 			"description": "The version of the application."
 		},
+		"ApplicationPublisher": {
+			"type": "string",
+			"description": "Sets the Publisher Display Name in the Package.appxmanifest."
+		},
+		"Description": {
+			"type": "string",
+			"description": "The description of the application."
+		},
 		"AssetsFolder": {
 			"type": "folder-with-slash",
 			"description": "The folder containing the assets for this project."
