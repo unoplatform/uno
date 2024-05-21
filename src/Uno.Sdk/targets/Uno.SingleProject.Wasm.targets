@@ -7,6 +7,12 @@
 			https://aka.platform.uno/wasm-deeplink
 		-->
 		<WasmShellWebAppBasePath Condition="$(WasmShellWebAppBasePath) == ''">/</WasmShellWebAppBasePath>
+
+		<!-- Follow the Android, iOS, & MacCatalyst SDK's -->
+		<!-- Default to 1, if blank -->
+		<ApplicationVersion Condition=" '$(ApplicationVersion)' == '' ">1</ApplicationVersion>
+		<Version Condition=" $([System.Version]::TryParse ('$(ApplicationDisplayVersion)', $([System.Version]::Parse('1.0')))) ">$(ApplicationDisplayVersion)</Version>
+		<ApplicationDisplayVersion Condition=" '$(ApplicationDisplayVersion)' == '' ">$(Version)</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Optimize)'!='true'">
