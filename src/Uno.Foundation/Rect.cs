@@ -36,7 +36,9 @@ public partial struct Rect
 
 	public Rect(double x, double y, double width, double height)
 	{
+#if !__SKIA__ && !__WASM__
 		if (!Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight)
+#endif
 		{
 			if (width < 0)
 			{
