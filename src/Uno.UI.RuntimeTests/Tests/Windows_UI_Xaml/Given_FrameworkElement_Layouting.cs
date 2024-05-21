@@ -146,9 +146,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Fails on Wasm for unknown reason.")]
-#endif
 		public void When_LayoutUpdated_Should_Not_Keep_Elements_Alive()
 		{
 			var wr = GetWeakReference();

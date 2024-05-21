@@ -254,7 +254,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var retainedMessage = "";
 
 #if __IOS__ || __ANDROID__
-			if (activeControls != 0)
+			if (Holder.Counter != 0)
 			{
 				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).JoinBy(";");
 				Console.WriteLine($"Retained types: {retainedTypes}");
@@ -268,7 +268,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			// to always go to zero during runtime tests. If the count of active objects
 			// is arbitrarily below the half of the number of top-level objects.
 			// created, we can assume that enough objects were collected entirely.
-			Assert.IsTrue(activeControls < count, retainedMessage);
+			Assert.IsTrue(Holder.Counter < count, retainedMessage);
 #else
 			Assert.AreEqual(0, Holder.Counter, retainedMessage);
 #endif
