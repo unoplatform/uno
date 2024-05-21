@@ -146,7 +146,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 
 		[TestMethod]
-		public void When_LayoutUpdated_Should_Not_Keep_Elements_Alive()
+		public async Task When_LayoutUpdated_Should_Not_Keep_Elements_Alive()
 		{
 			var wr = GetWeakReference();
 
@@ -156,6 +156,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 				GC.WaitForPendingFinalizers();
 			}
 
+			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsFalse(wr.TryGetTarget(out _));
 
 			[MethodImpl(MethodImplOptions.NoInlining)]
