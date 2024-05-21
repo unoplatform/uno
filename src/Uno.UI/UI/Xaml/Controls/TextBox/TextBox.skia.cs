@@ -503,7 +503,12 @@ public partial class TextBox
 
 		_suppressCurrentlyTyping = true;
 		_clearHistoryOnTextChanged = false;
-		_pendingSelection = (selectionStart, selectionLength);
+		if (!_isPressed)
+		{
+			// This matches WinUI. When the pointer is held, only the next PointerMove will
+			// update the selection.
+			_pendingSelection = (selectionStart, selectionLength);
+		}
 		ProcessTextInput(text);
 		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
