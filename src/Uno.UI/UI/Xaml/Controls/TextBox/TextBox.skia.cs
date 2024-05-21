@@ -508,6 +508,7 @@ public partial class TextBox
 		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
 	}
+
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		if (_isPressed)
@@ -565,7 +566,7 @@ public partial class TextBox
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -593,7 +594,7 @@ public partial class TextBox
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -1037,9 +1038,9 @@ public partial class TextBox
 	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
 	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
-	/// GetUpResult and GetDownResult care about the second kind of lines.
+	/// This method cares about the second kind of lines.
 	/// </summary>
-	private int GetUpResult(string text, int selectionStart, int selectionLength, bool shift)
+	private int GetUpDownResult(string text, int selectionStart, int selectionLength, bool shift, bool up)
 	{
 		if (text.Length == 0)
 		{
@@ -1051,47 +1052,18 @@ public partial class TextBox
 		var startLineIndex = lines.IndexOf(startLine);
 		var endLineIndex = lines.IndexOf(endLine);
 
-		if (shift && endLineIndex == 0)
+		if (up && shift && endLineIndex == 0)
 		{
 			return 0; // first line, goes to the beginning
 		}
-
-		var newLineIndex = selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1);
-
-		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
-		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
-		if (text.Length > index - 1
-			&& index - 1 >= 0
-			&& index == lines[newLineIndex].start + lines[newLineIndex].length
-			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
-		{
-			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
-			index--;
-		}
-
-		return index;
-	}
-
-	private int GetDownResult(string text, int selectionStart, int selectionLength, bool shift)
-	{
-		if (text.Length == 0)
-		{
-			return 0;
-		}
-		var startLine = GetLineAt(text, selectionStart, 0);
-		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
-		var lines = DisplayBlockInlines.GetLineIntervals();
-		var startLineIndex = lines.IndexOf(startLine);
-		var endLineIndex = lines.IndexOf(endLine);
-
-		if (!shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
+		else if (!up && !shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
 		{
 			return text.Length; // last line, goes to the end
 		}
 
-		var newLineIndex = selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
+		var newLineIndex = up ?
+			selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1) :
+			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
 
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
