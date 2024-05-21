@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[Sample("ContentPresenter", Name = "ContentPresenter_NativeEmbedding")]
+	[Sample("ContentPresenter", Name = "ContentPresenter_NativeEmbedding", IsManualTest = true)]
 	public sealed partial class ContentPresenter_NativeEmbedding : UserControl
 	{
 		public ContentPresenter_NativeEmbedding()
