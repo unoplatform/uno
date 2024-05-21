@@ -28,7 +28,7 @@ public partial class TextBox
 
 	private TextBoxView _textBoxView;
 
-	private bool _deleteButtonVisiblityChangedSinceLastUpdateScrolling = true;
+	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
 
 	private readonly Rectangle _caretRect = new Rectangle();
 	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
@@ -376,9 +376,9 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
-			if (_deleteButtonVisiblityChangedSinceLastUpdateScrolling)
+			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
 			{
-				_deleteButtonVisiblityChangedSinceLastUpdateScrolling = false;
+				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
 				// enqueuing on the dispatcher is needed so that we UpdateScrolling after the button is layouted
 				DispatcherQueue.TryEnqueue(UpdateScrolling);
 			}

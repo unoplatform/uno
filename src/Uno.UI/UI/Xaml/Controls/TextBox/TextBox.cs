@@ -1108,7 +1108,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if __SKIA__
-			_deleteButtonVisiblityChangedSinceLastUpdateScrolling |= changed;
+			_deleteButtonVisibilityChangedSinceLastUpdateScrolling |= changed;
 #endif
 		}
 
