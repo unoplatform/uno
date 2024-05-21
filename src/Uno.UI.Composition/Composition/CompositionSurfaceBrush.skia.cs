@@ -79,13 +79,33 @@ namespace Microsoft.UI.Composition
 		{
 			if (TryGetSkiaCompositionSurface(Surface, out var scs))
 			{
-				var sourceImageSize = new Size(scs.Image!.Width, scs.Image.Height);
-				var backgroundArea = GetArrangedImageRect(sourceImageSize, bounds);
-				var matrix = Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceImageSize.Width), (float)(backgroundArea.Height / sourceImageSize.Height));
-				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
-				matrix *= TransformMatrix;
+				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
 
-				var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
+				// Adding image downscaling in the shader matrix directly is very blurry
+				// so we use this workaround instead.
+				// https://github.com/mono/SkiaSharp/issues/520#issuecomment-444973518
+				var kernel = new[]
+				{
+					0, -.1f, 0,
+					-.1f, 1.4f, -.1f,
+					0, -.1f, 0,
+				};
+
+				var kernelSize = new SKSizeI(3, 3);
+				var kernelOffset = new SKPointI(1, 1);
+
+				fillPaint.ImageFilter = SKImageFilter.CreateMatrixConvolution(
+					kernelSize, kernel, 1f, 0f, kernelOffset,
+					SKShaderTileMode.Clamp, false);
+
+				var bitmap = scs.Image.ToSKBitmap();
+				var info = new SKImageInfo((int)backgroundArea.Width, (int)backgroundArea.Height);
+				var resizedBitmap = bitmap.Resize(info, SKFilterQuality.High);
+				var resizedImage = SKImage.FromBitmap(resizedBitmap);
+
+				var matrix = Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+				matrix *= TransformMatrix;
+				var imageShader = SKShader.CreateImage(resizedImage, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 
 				if (UsePaintColorToColorSurface)
 				{

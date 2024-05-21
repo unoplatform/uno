@@ -126,6 +126,12 @@ namespace Microsoft.UI.Composition
 					paint.PathEffect.Dispose();
 					paint.PathEffect = null;
 				}
+
+				if (paint.ImageFilter != null)
+				{
+					paint.ImageFilter.Dispose();
+					paint.ImageFilter = null;
+				}
 			}
 
 			paint.ColorFilter = session.Filters.OpacityColorFilter;
