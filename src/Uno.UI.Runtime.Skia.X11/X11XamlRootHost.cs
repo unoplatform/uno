@@ -325,6 +325,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			size = new Size(InitialWidth, InitialHeight);
 		}
 
+		// For the root window (that does nothing but act as an anchor for children,
+		// we don't bother with OpenGL, since we don't render on this window anyway.
 		IntPtr rootWindow = XLib.XCreateSimpleWindow(
 			display,
 			XLib.XRootWindow(display, screen),
