@@ -10,6 +10,8 @@ using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -51,7 +53,7 @@ public class SelectorBarTests : MUXApiTestBase
 	}
 
 	[TestMethod]
-	public void VerifySelectorBarItems()
+	public async Task VerifySelectorBarItems()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
@@ -147,7 +149,7 @@ public class SelectorBarTests : MUXApiTestBase
 			});
 
 			WaitForEvent("Waiting for Unloaded event", selectorBarUnloadedEvent);
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			Log.Comment("Done");
 		}
 	}
