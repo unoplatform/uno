@@ -11,11 +11,10 @@ using Microsoft.UI.Xaml;
 using GLib;
 using Microsoft.UI.Xaml.Controls;
 using GtkApplication = Gtk.Application;
-using Button = Gtk.Button;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
-internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
+internal partial class GtkNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private readonly ContentPresenter _presenter;
 
@@ -65,25 +64,6 @@ internal class GtkNativeElementHostingExtension : ContentPresenter.INativeElemen
 				this.Log().LogDebug($"Unable to detach native element {content} from {XamlRoot}.");
 			}
 		}
-	}
-
-	public object CreateSampleComponent(string text)
-	{
-		var vbox = new VBox(false, 5);
-
-		var label = new Label(text);
-		vbox.PackStart(label, false, false, 0);
-
-		var hbox = new HBox(true, 3);
-
-		var button1 = new Button("Button 1");
-		var button2 = new Button("Button 2");
-		hbox.Add(button1);
-		hbox.Add(button2);
-
-		vbox.PackStart(hbox, false, false, 0);
-
-		return vbox;
 	}
 
 	private bool IsNativeElementAttached(object nativeElement) =>
