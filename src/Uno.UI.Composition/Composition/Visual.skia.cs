@@ -148,7 +148,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null, bool isFlyoutSurface = false)
+	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null, bool isPopupSurface = false)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -179,7 +179,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
 		{
-			Render(session, isFlyoutSurface);
+			Render(session, isPopupSurface);
 		}
 
 		if (offsetOverride is { })
@@ -192,7 +192,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession, bool isFlyoutSurface)
+	private void Render(in PaintingSession parentSession, bool isPopupSurface)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -210,7 +210,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			if (isFlyoutSurface == IsFlyoutVisual)
+			if (isPopupSurface == IsFlyoutVisual)
 			{
 
 				ApplyPrePaintingClipping(canvas);
@@ -220,7 +220,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 				var saveCount = canvas.SaveCount;
 #endif
-				if (isFlyoutSurface && IsFlyoutVisual)
+				if (isPopupSurface && IsFlyoutVisual)
 				{
 
 				}
@@ -234,7 +234,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			foreach (var child in GetChildrenInRenderOrder())
 			{
-				child.Render(in session, isFlyoutSurface);
+				child.Render(in session, isPopupSurface);
 			}
 		}
 	}

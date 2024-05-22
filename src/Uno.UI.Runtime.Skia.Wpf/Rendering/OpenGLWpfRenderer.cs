@@ -23,7 +23,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
-	private readonly bool _isFlyoutSurface;
+	private readonly bool _isPopupSurface;
 	private WinUI.XamlRoot? _xamlRoot;
 	private nint _hwnd;
 	private nint _hdc;
@@ -33,12 +33,12 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private WriteableBitmap? _backBuffer;
 
-	public OpenGLWpfRenderer(IWpfXamlRootHost host, bool isFlyoutSurface)
+	public OpenGLWpfRenderer(IWpfXamlRootHost host, bool isPopupSurface)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_isFlyoutSurface = isFlyoutSurface;
-		if (isFlyoutSurface)
+		_isPopupSurface = isPopupSurface;
+		if (isPopupSurface)
 		{
 			BackgroundColor = SKColors.Transparent;
 		}
@@ -220,7 +220,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(_surface, rootVisual, _isFlyoutSurface);
+				rootVisual.Compositor.RenderRootVisual(_surface, rootVisual, _isPopupSurface);
 			}
 		}
 

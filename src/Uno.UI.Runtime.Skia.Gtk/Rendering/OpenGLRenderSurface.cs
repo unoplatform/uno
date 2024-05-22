@@ -19,7 +19,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		private static DefaultNativeContext NativeContext
 			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
 
-		public OpenGLRenderSurface(IGtkXamlRootHost host, bool isFlyoutSurface) : base(host, isFlyoutSurface)
+		public OpenGLRenderSurface(IGtkXamlRootHost host, bool isPopupSurface) : base(host, isPopupSurface)
 		{
 			SetRequiredVersion(3, 3);
 

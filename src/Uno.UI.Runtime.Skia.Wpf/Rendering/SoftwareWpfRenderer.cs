@@ -18,16 +18,16 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 {
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
-	private readonly bool _isFlyoutSurface;
+	private readonly bool _isPopupSurface;
 	private WriteableBitmap? _bitmap;
 	private XamlRoot? _xamlRoot;
 
-	public SoftwareWpfRenderer(IWpfXamlRootHost host, bool isFlyoutSurface)
+	public SoftwareWpfRenderer(IWpfXamlRootHost host, bool isPopupSurface)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_isFlyoutSurface = isFlyoutSurface;
-		if (isFlyoutSurface)
+		_isPopupSurface = isPopupSurface;
+		if (isPopupSurface)
 		{
 			BackgroundColor = SKColors.Transparent;
 		}
@@ -89,7 +89,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, _isFlyoutSurface);
+				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, _isPopupSurface);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
 				{

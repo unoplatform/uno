@@ -26,7 +26,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 	private int _bheight, _bwidth;
 	private ImageSurface? _gtkSurface;
 	private int renderCount;
-	private bool _isFlyoutSurface;
+	private bool _isPopupSurface;
 
 	private float _scale = 1;
 	private XamlRoot _xamlRoot;
@@ -36,7 +36,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 	public SKColor BackgroundColor { get; set; }
 		= SKColors.White;
 
-	public SoftwareRenderSurface(IGtkXamlRootHost host, bool isFlyoutSurface)
+	public SoftwareRenderSurface(IGtkXamlRootHost host, bool isPopupSurface)
 	{
 		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		_xamlRoot.Changed += OnXamlRootChanged;
@@ -52,7 +52,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			}
 		}
 		_host = host;
-		_isFlyoutSurface = isFlyoutSurface;
+		_isPopupSurface = isPopupSurface;
 	}
 
 	public Widget Widget => this;
@@ -98,7 +98,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var compositor = Compositor.GetSharedCompositor();
-				compositor.RenderRootVisual(_surface, rootVisual, _isFlyoutSurface);
+				compositor.RenderRootVisual(_surface, rootVisual, _isPopupSurface);
 
 				if (compositor.IsSoftwareRenderer is null)
 				{
