@@ -14,8 +14,7 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Run
 	{
-		private const int SpacesPerTab = 8;
-		private const int TabCodepoint = 3; // we give tab the same HarfBuzz codepoint as Space (which is not equal to `(ushort)' '` for some reason
+		private const int SpacesPerTab = 12;
 
 		private List<Segment>? _segments;
 
@@ -272,9 +271,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 					// We add special handling for tabs, which don't get rendered correctly, and treated as an unknown glyph
 					TextFormatting.GlyphInfo glyph = new(
-						textSpan[i] == '\t' ? (ushort)TabCodepoint : (ushort)hbGlyph.Codepoint,
+						textSpan[i] == '\t' ? _measureTab(fontInfo.Font).codepoint : (ushort)hbGlyph.Codepoint,
 						clusterStart + (int)hbGlyph.Cluster,
-						(textSpan[i] == '\t' ? _measureTab(fontInfo.Font) : hbPos.XAdvance) * textSizeX,
+						(textSpan[i] == '\t' ? _measureTab(fontInfo.Font).width : hbPos.XAdvance) * textSizeX,
 						hbPos.XOffset * textSizeX,
 						hbPos.YOffset * textSizeY
 					);
@@ -288,12 +287,14 @@ namespace Microsoft.UI.Xaml.Documents
 
 		partial void InvalidateSegmentsPartial() => _segments = null;
 
-		private static Func<Font, float> _measureTab =
-			((Func<Font, float>?)(font =>
+		private static Func<Font, (ushort codepoint, float width)> _measureTab =
+			((Func<Font, (ushort codepoint, float width)>?)(font =>
 			{
-				font.TryGetNominalGlyph((uint)' ', out var glyph);
-				font.GetGlyphAdvanceForDirection(glyph, Direction.LeftToRight, out var xAdvance, out _);
-				return xAdvance * SpacesPerTab;
+				using var buffer = new Buffer();
+				buffer.AddUtf8(" ");
+				buffer.GuessSegmentProperties();
+				font.Shape(buffer);
+				return ((ushort)buffer.GlyphInfos[0].Codepoint, buffer.GlyphPositions[0].XAdvance);
 			}))
 			.AsMemoized();
 	}
