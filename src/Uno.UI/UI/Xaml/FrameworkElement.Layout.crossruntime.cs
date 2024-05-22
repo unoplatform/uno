@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml
 				// TODO: BEGIN Uno specific
 				if (this is Control thisAsControl)
 				{
-					thisAsControl.TryCallOnApplyTemplate();
+					thisAsControl.ApplyTemplate();
 
 					// Update bindings to ensure resources defined
 					// in visual parents get applied.
