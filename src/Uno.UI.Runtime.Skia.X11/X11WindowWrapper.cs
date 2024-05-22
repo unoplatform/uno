@@ -88,8 +88,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		using (X11Helper.XLock(x11Window.Display))
 		{
 			X11XamlRootHost.Close(x11Window);
-			var _1 = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
-			var _2 = XLib.XFlush(x11Window.Display);
 		}
 
 		RaiseClosed();

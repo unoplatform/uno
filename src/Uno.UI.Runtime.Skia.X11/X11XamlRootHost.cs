@@ -2,9 +2,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -50,6 +52,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
 	private readonly XamlRoot _xamlRoot;
+
+	private int _synchronizedShutDownTopWindowIdleCounter;
 
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
@@ -373,6 +377,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var _4 = XLib.XMapWindow(display, rootWindow);
 		var _5 = XLib.XMapWindow(display, TopX11Window.Window);
 		AttachSubWindow(TopX11Window.Window);
+		QueueAction(this, () => AttachSubWindow(TopX11Window.Window));
 
 		var _7 = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
 
@@ -546,5 +551,42 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
 
 		XLib.XSync(TopX11Window.Display, false);
+	}
+
+	private unsafe void SynchronizedShutDown(X11Window x11Window)
+	{
+		// This is extremely extremely delicate. You want to prevent any
+
+		if (x11Window == TopX11Window)
+		{
+			var WaitForIdle = () =>
+			{
+				using var _1 = X11Helper.XLock(TopX11Window.Display);
+				_ = XLib.XFlush(TopX11Window.Display);
+				_ = XLib.XSync(TopX11Window.Display, false);
+				_synchronizedShutDownTopWindowIdleCounter++;
+			};
+			for (int i = 0; i < 10; i++)
+			{
+				QueueAction(this, WaitForIdle);
+			}
+		}
+		else // RootX11Window
+		{
+			Debug.Assert(x11Window == RootX11Window);
+
+			SpinWait.SpinUntil(() => _synchronizedShutDownTopWindowIdleCounter == 10);
+			if (x11Window == RootX11Window)
+			{
+				// Be very cautious about making any changes here.
+				using var _1 = X11Helper.XLock(RootX11Window.Display);
+				using var _2 = X11Helper.XLock(TopX11Window.Display);
+				_ = XLib.XFlush(TopX11Window.Display);
+				_ = XLib.XFlush(RootX11Window.Display);
+				_ = XLib.XDestroyWindow(TopX11Window.Display, TopX11Window.Window);
+				_ = XLib.XDestroyWindow(RootX11Window.Display, RootX11Window.Window);
+				_ = XLib.XFlush(RootX11Window.Display);
+			}
+		}
 	}
 }

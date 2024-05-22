@@ -88,6 +88,7 @@ internal partial class X11XamlRootHost
 
 			if (_closed.Task.IsCompleted)
 			{
+				SynchronizedShutDown(x11Window);
 				return;
 			}
 
