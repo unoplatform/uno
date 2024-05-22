@@ -97,6 +97,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 		return FindWindowById(_display, nativeWindow.WindowId, root) != IntPtr.Zero;
 	}
+
 	public void AttachNativeElement(object content)
 	{
 		if (content is X11NativeWindow nativeWindow

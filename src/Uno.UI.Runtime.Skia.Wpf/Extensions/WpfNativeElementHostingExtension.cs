@@ -67,6 +67,7 @@ internal class WpfNativeElementHostingExtension : ContentPresenter.INativeElemen
 			contentAsUIElement.Visibility = visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 		}
 	}
+
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
