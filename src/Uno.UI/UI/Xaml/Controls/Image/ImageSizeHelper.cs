@@ -65,6 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return imageSize;
 		}
 
+#if !__SKIA__
 		public static Rect ArrangeSource(this Image image, Size finalSize, Size containerSize)
 		{
 			var child = new Rect(default, containerSize);
@@ -136,6 +137,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return child;
 		}
+#endif
 
 		public static (double x, double y) BuildScale(this Image image, Size destinationSize, Size sourceSize)
 		{
