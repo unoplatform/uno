@@ -20,15 +20,5 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Border
 {
-	partial void OnChildChangedPartial(View previousValue, View newValue)
-	{
-		if (previousValue != null)
-		{
-			RemoveChild(previousValue);
-		}
-
-		AddChild(newValue);
-	}
-
 	partial void OnBackgroundChangedPartial() => UpdateHitTest();
 }
