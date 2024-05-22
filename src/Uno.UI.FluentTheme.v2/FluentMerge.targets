@@ -21,12 +21,6 @@
 		  Remove="@(ExcludedTemplatesV2)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-      <!-- These files are present for the WinUI Build only -->
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\SelectorBar.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\SelectorBar_themeresources.xaml" />
-    </ItemGroup>
-
     <Message Importance="high" Text="Generating theme resources XAML file " />
     <MakeDir Directories="$(IntermediateOutputPath)\Version2" />
     <BatchMergeXaml
