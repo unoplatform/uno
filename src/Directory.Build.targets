@@ -113,6 +113,7 @@
 		
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
 		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
