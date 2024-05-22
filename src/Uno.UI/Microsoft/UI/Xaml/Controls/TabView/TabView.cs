@@ -311,6 +311,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 								var listViewBounds = listView.TransformToVisual(null).TransformBounds(listViewBoundsLocal);
 								FindNextElementOptions options = new FindNextElementOptions();
 								options.ExclusionRect = listViewBounds;
+								options.SearchRoot = XamlRoot.Content;
 								var next = FocusManager.FindNextElement(direction, options);
 								var args2 = args;
 								if (args != null)

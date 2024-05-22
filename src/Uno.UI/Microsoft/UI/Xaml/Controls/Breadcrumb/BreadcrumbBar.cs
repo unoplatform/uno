@@ -602,7 +602,7 @@ public partial class BreadcrumbBar : Control
 	private FindNextElementOptions GetFindNextElementOptions()
 	{
 		var findNextElementOptions = new FindNextElementOptions();
-		findNextElementOptions.SearchRoot = this;
+		findNextElementOptions.SearchRoot = XamlRoot?.Content;
 		return findNextElementOptions;
 	}
 
@@ -643,8 +643,7 @@ public partial class BreadcrumbBar : Control
 			else if ((flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadLeft)) ||
 						(!flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadRight)))
 			{
-				var options = GetFindNextElementOptions();
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Previous, options))
+				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Previous, GetFindNextElementOptions()))
 				{
 					args.Handled = true;
 					return;
@@ -664,7 +663,7 @@ public partial class BreadcrumbBar : Control
 			}
 			else
 			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right))
+				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right, GetFindNextElementOptions()))
 				{
 					args.Handled = true;
 					return;
@@ -684,7 +683,7 @@ public partial class BreadcrumbBar : Control
 			}
 			else
 			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Left))
+				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Left, GetFindNextElementOptions()))
 				{
 					args.Handled = true;
 					return;
