@@ -29,7 +29,11 @@ internal partial class BorderLayerRenderer
 
 		_owner.Loaded += (s, e) => Update();
 		_owner.Unloaded += (s, e) => Clear();
-		_owner.SizeChanged += (s, e) => Update();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		_owner.SizeChanged += (_, _) => Update();
+#else
+		_owner.LayoutUpdated += (_, _) => Update();
+#endif
 	}
 
 	/// <summary>
