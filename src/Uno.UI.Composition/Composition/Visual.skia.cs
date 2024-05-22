@@ -23,31 +23,31 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 
 	// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
-	private bool? _isFlyoutVisual;
-	private bool _isFlyoutVisualInherited;
-	private bool IsFlyoutVisual => _isFlyoutVisual ?? _isFlyoutVisualInherited;
+	private bool? _isPopupVisual;
+	private bool _isPopupVisualInherited;
+	private bool IsPopupVisual => _isPopupVisual ?? _isPopupVisualInherited;
 
-	/// <remarks>call with a null <paramref name="isFlyoutVisual"/> to unset.</remarks>
-	internal void SetAsFlyoutVisual(bool? isFlyoutVisual, bool inherited = false)
+	/// <remarks>call with a null <paramref name="isPopupVisual"/> to unset.</remarks>
+	internal void SetAsPopupVisual(bool? isPopupVisual, bool inherited = false)
 	{
-		Debug.Assert(!inherited || isFlyoutVisual is { }, "Only non-null values should be inherited.");
-		var oldValue = IsFlyoutVisual;
+		Debug.Assert(!inherited || isPopupVisual is { }, "Only non-null values should be inherited.");
+		var oldValue = IsPopupVisual;
 
 		if (inherited)
 		{
-			_isFlyoutVisualInherited = isFlyoutVisual!.Value;
+			_isPopupVisualInherited = isPopupVisual!.Value;
 		}
 		else
 		{
-			_isFlyoutVisual = isFlyoutVisual;
+			_isPopupVisual = isPopupVisual;
 		}
 
-		var newValue = IsFlyoutVisual;
+		var newValue = IsPopupVisual;
 		if (oldValue != newValue)
 		{
 			foreach (var child in GetChildrenInRenderOrder())
 			{
-				child.SetAsFlyoutVisual(newValue, true);
+				child.SetAsPopupVisual(newValue, true);
 			}
 		}
 	}
@@ -177,9 +177,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = translation * initialTransform;
 		}
 
-		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
+		using (var session = _factory.CreateInstance(this, surface, canvas, isPopupSurface, DrawingFilters.Default, initialTransform))
 		{
-			Render(session, isPopupSurface);
+			Render(session);
 		}
 
 		if (offsetOverride is { })
@@ -192,7 +192,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession, bool isPopupSurface)
+	private void Render(in PaintingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -210,9 +210,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			if (isPopupSurface == IsFlyoutVisual)
+			if (session.IsPopupSurface == IsPopupVisual)
 			{
-
 				ApplyPrePaintingClipping(canvas);
 
 				// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
@@ -220,10 +219,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 				var saveCount = canvas.SaveCount;
 #endif
-				if (isPopupSurface && IsFlyoutVisual)
-				{
-
-				}
 				Paint(session);
 #if DEBUG
 				Debug.Assert(saveCount == canvas.SaveCount);
@@ -234,7 +229,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			foreach (var child in GetChildrenInRenderOrder())
 			{
-				child.Render(in session, isPopupSurface);
+				child.Render(in session);
 			}
 		}
 	}
@@ -275,6 +270,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
 	{
+		var isPopupSurface = parentSession.IsPopupSurface;
 		var surface = parentSession.Surface;
 		var canvas = parentSession.Canvas;
 		var rootTransform = parentSession.RootTransform;
@@ -283,7 +279,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			? parentSession.Filters
 			: parentSession.Filters with { Opacity = parentSession.Filters.Opacity * Opacity };
 
-		var session = _factory.CreateInstance(this, surface, canvas, filters, rootTransform);
+		var session = _factory.CreateInstance(this, surface, canvas, isPopupSurface, filters, rootTransform);
 
 		if (rootTransform.IsIdentity)
 		{
