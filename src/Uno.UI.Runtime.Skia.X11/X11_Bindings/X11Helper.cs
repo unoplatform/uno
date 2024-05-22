@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Windowing;
@@ -348,8 +349,8 @@ internal static partial class X11Helper
 	[LibraryImport(libX11)]
 	public static partial int XClearWindow(IntPtr display, IntPtr window);
 
-	[DllImport(libX11)] // DllImport handles string marshalling automatically
-	public static extern int XFetchName(IntPtr display, IntPtr window, out string name_return);
+	[LibraryImport(libX11, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
+	public static partial int XFetchName(IntPtr display, IntPtr window, out string name_return);
 
 	[LibraryImport(libX11)]
 	public unsafe static partial int XChangeWindowAttributes(
@@ -414,8 +415,9 @@ internal static partial class X11Helper
 		return region;
 	}
 
-	[DllImport(libX11Randr)] // DllImport handles bool marshalling automatically
-	public static extern bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
+	[LibraryImport(libX11Randr)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	public static partial bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
 
 	[LibraryImport(libXext)]
 	public static partial void XShapeCombineRegion(
