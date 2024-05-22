@@ -102,7 +102,11 @@ internal sealed class WeakEventManager
 		{
 			if (_enumeratingHandlersOfEvent == eventName)
 			{
+#if NET8_0_OR_GREATER
 				handlers = handlers![..];
+#else
+				handlers = handlers!.ToArray();
+#endif
 			}
 
 			handlers!.Add(handler);
@@ -120,7 +124,11 @@ internal sealed class WeakEventManager
 		{
 			if (_enumeratingHandlersOfEvent == eventName)
 			{
+#if NET8_0_OR_GREATER
 				handlers = handlers[..];
+#else
+				handlers = handlers!.ToArray();
+#endif
 			}
 
 			handlers.Remove(handler);
