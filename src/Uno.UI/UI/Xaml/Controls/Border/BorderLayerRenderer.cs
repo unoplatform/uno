@@ -29,7 +29,7 @@ internal partial class BorderLayerRenderer
 
 		_owner.Loaded += (s, e) => Update();
 		_owner.Unloaded += (s, e) => Clear();
-		_owner.LayoutUpdated += (s, e) => Update();
+		_owner.SizeChanged += (s, e) => Update();
 	}
 
 	/// <summary>
