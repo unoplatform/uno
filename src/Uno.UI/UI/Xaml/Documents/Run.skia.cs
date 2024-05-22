@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Documents
 				buffer.AddUtf8(" ");
 				buffer.GuessSegmentProperties();
 				font.Shape(buffer);
-				return ((ushort)buffer.GlyphInfos[0].Codepoint, buffer.GlyphPositions[0].XAdvance);
+				return ((ushort)buffer.GlyphInfos[0].Codepoint, buffer.GlyphPositions[0].XAdvance * SpacesPerTab);
 			}))
 			.AsMemoized();
 	}
