@@ -40,7 +40,7 @@
 	<Choose>
 		<When Condition="
 				'$(BuildingInsideVisualStudio)' == 'true'
-				AND '$(UnoDisableFirstTargetFrameworkRewrite)' == ''
+				AND '$(UnoDisableFirstTargetFrameworkRewrite)' != 'true'
 				AND (
 					$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
 					OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
