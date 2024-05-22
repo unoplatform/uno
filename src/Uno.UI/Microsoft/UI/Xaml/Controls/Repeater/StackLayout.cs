@@ -2,10 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Collections;
 using Uno.Extensions;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
@@ -72,7 +74,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
 		{
-			GetAsStackState(context.LayoutState).OnMeasureStart();
+			var state = GetAsStackState(context.LayoutState);
+			state.OnMeasureStart();
 
 			var algo = GetFlowAlgorithm(context);
 			var desiredSize = algo.Measure(
@@ -87,9 +90,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				LayoutId);
 
 			// Uno workaround [BEGIN]: Keep track of realized items count for viewport invalidation optimization
-			_uno_lastKnownItemsCount = context.ItemCount;
-			_uno_lastKnownRealizedElementsCount = algo.RealizedElementCount;
-			_uno_lastKnownDesiredSize = desiredSize;
+			state.Uno_LastKnownItemsCount = context.ItemCount;
+			state.Uno_LastKnownRealizedElementsCount = algo.RealizedElementCount;
+			state.Uno_LastKnownDesiredSize = desiredSize;
 			// Uno workaround [END]
 
 			return desiredSize;
@@ -117,10 +120,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		#endregion
 
 		#region IStackLayoutOverrides
-
 		FlowLayoutAnchorInfo GetAnchorForRealizationRect(Size availableSize, VirtualizingLayoutContext context)
 		{
-
 			int anchorIndex = -1;
 			double offset = double.NaN;
 
@@ -147,8 +148,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					// Uno workaround [BEGIN]: Make sure items at index 0 is always at offset 0
 					anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex));
 					// Uno workaround [END]
-
-					offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
+					offset = EstimateMajor(state._uno_realizedItemsCache.AsSpan(..Math.Min(anchorIndex, state._uno_realizedItemsCache.Length)), averageElementSize);
+					//offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
 					//anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex)); // Line moved before computation of the offset for uno
 				}
 			}
@@ -180,13 +181,19 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (firstRealized != null)
 				{
 					MUX_ASSERT(lastRealized != null);
-					var firstRealizedMajor = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
-					// Uno workaround [BEGIN]: Make sure to not move items above the viewport. This can be the case if an items is significantly higher than previous items (will increase the average items size)
-					firstRealizedMajor = Math.Max(0.0f, firstRealizedMajor);
+
+					// var firstRealizedMajor = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
+					// Uno workaround [BEGIN]: Make sure to not move items above the viewport. This can be the case if an items is significantly taller than previous items (will increase the average items size)
+					// We try to estimate only items that as not been realized yet.
+					var before = Aggregate(stackState._uno_realizedItemsCache.AsSpan(..firstRealizedItemIndex));
+					var after = Aggregate(stackState._uno_realizedItemsCache.AsSpan((lastRealizedItemIndex + 1)..Math.Min(itemsCount, stackState._uno_realizedItemsCache.Length)));
+					var realizedSize = MajorEnd(lastRealizedLayoutBounds) - MajorStart(firstRealizedLayoutBounds);
+					var neverRealizedItemsEstimatedSize = (before.notRealized + after.notRealized) * averageElementSize;
+					var previouslyRealizedItemsSize = Major(before.total) + Major(after.total);
+
+					// Note: We do NOT set the MajorStart as with uno we assume it to always be 0.
+					SetMajorSize(ref extent, realizedSize + previouslyRealizedItemsSize + neverRealizedItemsEstimatedSize);
 					// Uno workaround [END]
-					SetMajorStart(ref extent, firstRealizedMajor);
-					var remainingItems = itemsCount - lastRealizedItemIndex - 1;
-					SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - MajorStart(extent) + (float)(remainingItems * averageElementSize));
 				}
 				else
 				{
@@ -207,6 +214,30 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			return extent;
 		}
 
+		private double EstimateMajor(Span<Size> span, double averageElementSize)
+		{
+			var info = Aggregate(span);
+			return Major(info.total) + info.notRealized * averageElementSize;
+		}
+
+		private static (Size total, uint notRealized) Aggregate(Span<Size> span)
+		{
+			var total = default(Size);
+			var notRealized = 0u;
+			for (var i = 0; i < span.Length; i++)
+			{
+				ref var size = ref span[i];
+				total.Width += size.Width;
+				total.Height += size.Height;
+				if (size == default)
+				{
+					notRealized++;
+				}
+			}
+
+			return (total, notRealized);
+		}
+
 		void OnElementMeasured(
 			UIElement element,
 			int index,
@@ -224,6 +255,18 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					index,
 					Major(provisionalArrangeSizeWinRt),
 					Minor(provisionalArrangeSizeWinRt));
+
+				if (index < StackLayoutState._uno_realizedItemsCacheMaxLength)
+				{
+					if (stackState._uno_realizedItemsCache.Length <= index)
+					{
+						var currentLength = stackState._uno_realizedItemsCache.Length;
+						var newLength = (int)Math.Ceiling((index + 1) / (double)currentLength) * currentLength;
+						Array.Resize(ref stackState._uno_realizedItemsCache, newLength);
+					}
+
+					stackState._uno_realizedItemsCache[index] = provisionalArrangeSize;
+				}
 			}
 		}
 
@@ -358,7 +401,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				averageElementSize = Math.Round(stackLayoutState.TotalElementSize / stackLayoutState.TotalElementsMeasured);
 			}
 
-			return _uno_lastKnownAverageElementSize = averageElementSize;
+			stackLayoutState.Uno_LastKnownAverageElementSize = averageElementSize;
+
+			return averageElementSize;
 		}
 
 
@@ -366,42 +411,38 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		#endregion
 
 		#region Uno workaround
-		private double _uno_lastKnownAverageElementSize;
-		private int _uno_lastKnownRealizedElementsCount;
-		private int _uno_lastKnownItemsCount;
-		private Size _uno_lastKnownDesiredSize;
-
 		/// <inheritdoc />
-		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		protected internal override bool IsSignificantViewportChange(object state, Rect oldViewport, Rect newViewport)
 		{
-			var elementSize = _uno_lastKnownAverageElementSize;
-			if (elementSize <= 0)
+			if (state is StackLayoutState { Uno_LastKnownAverageElementSize: > 0 } stackState)
 			{
-				return base.IsSignificantViewportChange(oldViewport, newViewport);
-			}
+				var neededElementsCountToFillNewViewport = Math.Min(stackState.Uno_LastKnownItemsCount, MajorSize(newViewport) / stackState.Uno_LastKnownAverageElementSize);
+				if (stackState.Uno_LastKnownRealizedElementsCount < neededElementsCountToFillNewViewport)
+				{
+					// Only a few first items have been measured so far (usually 1 or 2), this might be because the IR is within a SV and not visible yet.
+					// Note: In that case we have to make sure to not only validate the Major axis since the parent SV could be vertical while local layout itself is horizontal.
+					// Note2: Depending of the platform (Android), we might be invoked with empty viewport, make sure to consider out-of-bound in such case.
+					// Test case: When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis
+					const int threshold = 100; // Allows 100px above and after to trigger loading even before IR is visible.
+					var isOutOfBounds = newViewport is { Width: 0 } or { Height: 0 }
+						|| MajorEnd(newViewport) < -threshold
+						|| MajorStart(newViewport) > Major(stackState.Uno_LastKnownDesiredSize) + threshold
+						|| MinorEnd(newViewport) < -threshold
+						|| MinorStart(newViewport) > Minor(stackState.Uno_LastKnownDesiredSize) + threshold;
 
-			var neededElementsCountToFillNewViewport = Math.Min(_uno_lastKnownItemsCount, MajorSize(newViewport) / _uno_lastKnownAverageElementSize);
-			if (_uno_lastKnownRealizedElementsCount < neededElementsCountToFillNewViewport)
+					return !isOutOfBounds;
+				}
+
+				var size = Math.Max(MajorSize(oldViewport), MajorSize(newViewport));
+				var minDelta = Math.Min(stackState.Uno_LastKnownAverageElementSize * 5, size);
+
+				return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > minDelta
+					|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > minDelta;
+			}
+			else
 			{
-				// Only a few first items have been measured so far (usually 1 or 2), this might be because the IR is within a SV and not visible yet.
-				// Note: In that case we have to make sure to not only validate the Major axis since the parent SV could be vertical while local layout itself is horizontal.
-				// Note2: Depending of the platform (Android), we might be invoked with empty viewport, make sure to consider out-of-bound in such case.
-				// Test case: When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis
-				const int threshold = 100; // Allows 100px above and after to trigger loading even before IR is visible.
-				var isOutOfBounds = newViewport is { Width: 0 } or { Height: 0 }
-					|| MajorEnd(newViewport) < -threshold
-					|| MajorStart(newViewport) > Major(_uno_lastKnownDesiredSize) + threshold
-					|| MinorEnd(newViewport) < -threshold
-					|| MinorStart(newViewport) > Minor(_uno_lastKnownDesiredSize) + threshold;
-
-				return !isOutOfBounds;
+				return base.IsSignificantViewportChange(state, oldViewport, newViewport);
 			}
-
-			var size = Math.Max(MajorSize(oldViewport), MajorSize(newViewport));
-			var minDelta = Math.Min(elementSize * 5, size);
-
-			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > minDelta
-				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > minDelta;
 		}
 		#endregion
 	}
