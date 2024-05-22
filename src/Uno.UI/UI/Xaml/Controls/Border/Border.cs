@@ -49,6 +49,10 @@ public partial class Border : FrameworkElement
 	internal BorderLayerRenderer BorderRenderer { get; }
 #endif
 
+#if UNO_HAS_BORDER_VISUAL
+	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
+
 	/// <summary>
 	/// Support for the C# collection initializer style.
 	/// Allows items to be added like this
