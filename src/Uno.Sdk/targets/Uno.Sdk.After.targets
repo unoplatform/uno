@@ -69,7 +69,7 @@
 		</When>
 		<Otherwise>
 			<PropertyGroup>
-				<!-- As we're rewritten the list, we need to make sure that `;` is not escaped -->
+				<!-- As we've rewritten the list, we need to make sure that `;` is not escaped -->
 				<TargetFrameworks>$([MSBuild]::Unescape($(TargetFrameworks)))</TargetFrameworks>
 			</PropertyGroup>
 		</Otherwise>
