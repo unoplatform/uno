@@ -260,6 +260,11 @@ $projects =
     # Ensure that default without platform builds properly
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:TargetFramework=net8.0-windows10.0.19041"), $false, $false),
 
+    # Validate building inside VS
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true"), $true, $false),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true", "-p:_UnoSelectedTargetFramework=net8.0-desktop"), $true, $false),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true", "-p:_UnoSelectedTargetFramework=net8.0-windows10.0.19041"), $false, $false),
+
     #
     # 5.2 Uno Lib
     #
