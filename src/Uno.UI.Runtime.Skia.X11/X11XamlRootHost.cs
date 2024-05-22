@@ -74,7 +74,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			// copy the root window dimensions to the top window
 			using var _1 = X11Helper.XLock(TopX11Window.Display);
-			var _2 = XLib.XResizeWindow(TopX11Window.Display, TopX11Window.Window, (int)size.Width, (int)size.Height);
+			_ = XLib.XResizeWindow(TopX11Window.Display, TopX11Window.Window, (int)size.Width, (int)size.Height);
 			resizeCallback(size);
 		};
 		_closingCallback = closingCallback;
@@ -211,7 +211,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 			var pixels = bitmap.Pixels;
 			var data = Marshal.AllocHGlobal((pixels.Length + 2) * sizeof(IntPtr));
-			using var _1 = Disposable.Create(() => Marshal.FreeHGlobal(data));
+			using var _freeDisposable = Disposable.Create(() => Marshal.FreeHGlobal(data));
 
 			var ptr = (IntPtr*)data.ToPointer();
 			*(ptr++) = bitmap.Width;
@@ -222,11 +222,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 
 			var display = RootX11Window.Display;
-			using var _2 = X11Helper.XLock(display);
+			using var lockDisposable = X11Helper.XLock(display);
 
 			var wmIconAtom = X11Helper.GetAtom(display, X11Helper._NET_WM_ICON);
 			var cardinalAtom = X11Helper.GetAtom(display, X11Helper.XA_CARDINAL);
-			var _3 = XLib.XChangeProperty(
+			_ = XLib.XChangeProperty(
 				display,
 				RootX11Window.Window,
 				wmIconAtom,
@@ -236,8 +236,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				data,
 				pixels.Length + 2);
 
-			var _4 = XLib.XFlush(display);
-			var _5 = XLib.XSync(display, false); // wait until the pixels are actually copied
+			_ = XLib.XFlush(display);
+			_ = XLib.XSync(display, false); // wait until the pixels are actually copied
 		}
 	}
 
@@ -298,7 +298,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void Initialize()
 	{
-		using var _1 = Disposable.Create(() =>
+		using var _mutexDisposable = Disposable.Create(() =>
 		{
 			// set _firstWindowCreated even if we crash. This prevents the Main thread from being
 			// kept alive forever even if the main window creation crashed.
@@ -310,7 +310,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
 
-		using var _2 = X11Helper.XLock(display);
+		using var lockDisposable = X11Helper.XLock(display);
 
 		if (display == IntPtr.Zero)
 		{
@@ -365,7 +365,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
-		var _3 = XLib.XSetWMProtocols(display, rootWindow, new[] { deleteWindow }, 1);
+		_ = XLib.XSetWMProtocols(display, rootWindow, new[] { deleteWindow }, 1);
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -374,12 +374,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		// The window must be mapped before DisplayInformationExtension is initialized.
-		var _4 = XLib.XMapWindow(display, rootWindow);
-		var _5 = XLib.XMapWindow(display, TopX11Window.Window);
+		_ = XLib.XMapWindow(display, rootWindow);
+		_ = XLib.XMapWindow(display, TopX11Window.Window);
 		AttachSubWindow(TopX11Window.Window);
 		QueueAction(this, () => AttachSubWindow(TopX11Window.Window));
 
-		var _7 = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
+		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
 
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
@@ -459,8 +459,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			(UIntPtr)(XCreateWindowFlags.CWBackPixel | XCreateWindowFlags.CWColormap | XCreateWindowFlags.CWBorderPixel | XCreateWindowFlags.CWEventMask),
 			ref attribs);
 
-		var _2 = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
-		var _3 = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_SAMPLES, out var samples);
+		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
+		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_SAMPLES, out var samples);
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
@@ -490,7 +490,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public unsafe void AttachSubWindow(IntPtr window)
 	{
-		using var _1 = X11Helper.XLock(RootX11Window.Display);
+		using var lockDisposable = X11Helper.XLock(RootX11Window.Display);
 		// this seems to be necessary or else the WM will keep detaching the subwindow
 		XWindowAttributes attributes = default;
 		_ = XLib.XGetWindowAttributes(RootX11Window.Display, window, ref attributes);
@@ -502,7 +502,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		Marshal.FreeHGlobal(attr);
 
 		_ = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
-		XLib.XFlush(RootX11Window.Display);
+		_ = XLib.XFlush(RootX11Window.Display);
 		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
 	}
 
@@ -514,13 +514,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private unsafe void UpdateTopWindowClipRect()
 	{
-		using var _1 = X11Helper.XLock(TopX11Window.Display);
+		using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
 
 		XWindowAttributes attributes = default;
-		var _2 = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
+		_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
 
 		var region = X11Helper.CreateRegion(0, 0, (short)attributes.width, (short)attributes.height);
-		using var _3 = Disposable.Create(() =>
+		using var regionDisposable = Disposable.Create(() =>
 		{
 			var _ = X11Helper.XDestroyRegion(region);
 		});
@@ -532,7 +532,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Subtract the areas that contain native elements
 		var array1 = X11NativeElementHostingExtension.GetNativeElementRects(this).ToArray();
 		IntPtr nativeRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array1.Length);
-		using var _4 = Disposable.Create(() => Marshal.FreeHGlobal(nativeRects));
+		using var dataDisposable = Disposable.Create(() => Marshal.FreeHGlobal(nativeRects));
 		new Span<XRectangle>(array1).CopyTo(new Span<XRectangle>(nativeRects.ToPointer(), array1.Length));
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
@@ -545,7 +545,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			.Select(rect => new XRectangle { X = (short)rect.X, Y = (short)rect.Y, H = (short)rect.Height, W = (short)rect.Width })
 			.ToArray();
 		IntPtr flyoutRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array2.Length);
-		using var _6 = Disposable.Create(() => Marshal.FreeHGlobal(flyoutRects));
+		using var rectsDisposable = Disposable.Create(() => Marshal.FreeHGlobal(flyoutRects));
 		new Span<XRectangle>(array2).CopyTo(new Span<XRectangle>(flyoutRects.ToPointer(), array2.Length));
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
@@ -561,7 +561,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			var waitForIdle = () =>
 			{
-				using var _1 = X11Helper.XLock(TopX11Window.Display);
+				using var lockDiposable = X11Helper.XLock(TopX11Window.Display);
 				_ = XLib.XFlush(TopX11Window.Display);
 				_ = XLib.XSync(TopX11Window.Display, false);
 				_synchronizedShutDownTopWindowIdleCounter++;
@@ -579,8 +579,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			if (x11Window == RootX11Window)
 			{
 				// Be very cautious about making any changes here.
-				using var _1 = X11Helper.XLock(RootX11Window.Display);
-				using var _2 = X11Helper.XLock(TopX11Window.Display);
+				using var rootLockDiposable = X11Helper.XLock(RootX11Window.Display);
+				using var topLockDiposable = X11Helper.XLock(TopX11Window.Display);
 				_ = XLib.XFlush(TopX11Window.Display);
 				_ = XLib.XFlush(RootX11Window.Display);
 				_ = XLib.XDestroyWindow(TopX11Window.Display, TopX11Window.Window);

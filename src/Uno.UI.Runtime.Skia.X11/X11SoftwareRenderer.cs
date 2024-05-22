@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -18,7 +17,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		void IX11Renderer.InvalidateRender()
 		{
-			using var _1 = X11Helper.XLock(x11window.Display);
+			using var lockDiposable = X11Helper.XLock(x11window.Display);
 
 			if (host is X11XamlRootHost { Closed.IsCompleted: true })
 			{
@@ -31,7 +30,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 
 			XWindowAttributes attributes = default;
-			var _2 = XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
+			_ = XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
 
 			var width = attributes.width;
 			var height = attributes.height;
@@ -54,7 +53,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 						var ptr = (XImage*)xImage.ToPointer();
 						ptr->data = IntPtr.Zero;
 					}
-					var _3 = XLib.XDestroyImage(xImage);
+					_ = XLib.XDestroyImage(xImage);
 					_xImage = null;
 				}
 
@@ -96,7 +95,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				bitmap_pad: BitmapPad,
 				bytes_per_line: 0); // 0 bytes per line assume contiguous lines i.e. pad * width
 
-			var _4 = X11Helper.XPutImage(
+			_ = X11Helper.XPutImage(
 				display: x11window.Display,
 				drawable: x11window.Window,
 				gc: X11Helper.XDefaultGC(x11window.Display, XLib.XDefaultScreen(x11window.Display)),
@@ -108,7 +107,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				width: (uint)width,
 				height: (uint)height);
 
-			var _5 = XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
+			_ = XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
 		}
 	}
 }

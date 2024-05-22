@@ -60,10 +60,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			return false;
 		}
 
-		using var _1 = X11Helper.XLock(_display);
+		using var lockDiposable = X11Helper.XLock(_display);
 
-		var _3 = XLib.XQueryTree(_display, XLib.XDefaultRootWindow(_display), out IntPtr root, out _, out var children, out _);
-		var _4 = XLib.XFree(children);
+		_ = XLib.XQueryTree(_display, XLib.XDefaultRootWindow(_display), out IntPtr root, out _, out var children, out _);
+		_ = XLib.XFree(children);
 
 		// _NET_CLIENT_LIST only identifies top-level windows, not subwindows.
 		var status = XLib.XGetWindowProperty(
@@ -104,11 +104,9 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			&& XamlRoot is { } xamlRoot
 			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			using var _1 = X11Helper.XLock(_display);
+			using var lockDiposable = X11Helper.XLock(_display);
 
 			host.AttachSubWindow(nativeWindow.WindowId);
-
-			using var _2 = X11Helper.XLock(_display);
 			_ = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
 
 			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
@@ -131,11 +129,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			&& XamlRoot is { } xamlRoot
 			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			using var _1 = X11Helper.XLock(_display);
-			var _2 = XLib.XQueryTree(_display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
-			var _3 = XLib.XFree(children);
-			var _4 = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, root, 0, 0);
-			var _5 = XLib.XSync(_display, false);
+			using var lockDiposable = X11Helper.XLock(_display);
+			_ = XLib.XQueryTree(_display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
+			_ = XLib.XFree(children);
+			_ = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, root, 0, 0);
+			_ = XLib.XSync(_display, false);
 
 			var set = _hostToNativeElementHosts[host];
 			set.Remove(this);
@@ -180,19 +178,19 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			XamlRoot is { } xamlRoot &&
 			X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			using var _1 = X11Helper.XLock(_display);
+			using var lockDiposable = X11Helper.XLock(_display);
 			if (arrangeRect.Width <= 0 || arrangeRect.Height <= 0)
 			{
 				arrangeRect.Size = new Size(1, 1);
 			}
-			var _2 = XLib.XResizeWindow(_display, nativeWindow.WindowId, (int)arrangeRect.Width, (int)arrangeRect.Height);
-			var _3 = X11Helper.XMoveWindow(_display, nativeWindow.WindowId, (int)arrangeRect.X, (int)arrangeRect.Y);
+			_ = XLib.XResizeWindow(_display, nativeWindow.WindowId, (int)arrangeRect.Width, (int)arrangeRect.Height);
+			_ = X11Helper.XMoveWindow(_display, nativeWindow.WindowId, (int)arrangeRect.X, (int)arrangeRect.Y);
 
 			_xShapesPresent ??= X11Helper.XShapeQueryExtension(_display, out _, out _);
 			if (_xShapesPresent.Value)
 			{
 				var region = X11Helper.CreateRegion((short)clipRect.Left, (short)clipRect.Top, (short)clipRect.Width, (short)clipRect.Height);
-				using var _4 = Disposable.Create(() =>
+				using var regionDisposable = Disposable.Create(() =>
 				{
 					var _ = X11Helper.XDestroyRegion(region);
 				});
@@ -227,11 +225,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		{
 			if (visible)
 			{
-				var _3 = XLib.XMapWindow(_display, nativeWindow.WindowId);
+				_ = XLib.XMapWindow(_display, nativeWindow.WindowId);
 			}
 			else
 			{
-				var _3 = X11Helper.XUnmapWindow(_display, nativeWindow.WindowId);
+				_ = X11Helper.XUnmapWindow(_display, nativeWindow.WindowId);
 			}
 		}
 	}

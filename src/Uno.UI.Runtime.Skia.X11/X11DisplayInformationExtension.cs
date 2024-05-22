@@ -138,7 +138,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			var oldDetails = _details;
 			var xLock = X11Helper.XLock(display);
-			using var _2 = Disposable.Create(() =>
+			using var notifyDisposable = Disposable.Create(() =>
 			{
 				// dispose lock before raising DpiChanged in case a user defined callback takes too long.
 				xLock.Dispose();
@@ -163,7 +163,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			else // naive implementation from xdpyinfo
 			{
 				XWindowAttributes attributes = default;
-				var _3 = XLib.XGetWindowAttributes(display, window, ref attributes);
+				_ = XLib.XGetWindowAttributes(display, window, ref attributes);
 				var screen = attributes.screen;
 				// Using X<Width|Height>OfScreen calls seems to work more reliably than XDisplay<Width|Height>.
 				// Mostly because XScreenNumberOfScreen (which we need for XDisplay<Width|Height>) isn't working reliably
@@ -313,15 +313,15 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		// 2009 spec, notably does not use monitors. Relies on "transforms" which may or may not be be part of RandR 1.2
 		private unsafe DisplayInformationDetails? GetDisplayInformationXRandR1_3(IntPtr display, IntPtr window)
 		{
-			using var _1 = X11Helper.XLock(display);
+			using var lockDiposable = X11Helper.XLock(display);
 
 			var resources = X11Helper.XRRGetScreenResourcesCurrent(display, window);
-			using var _2 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
+			using var resourcesDiposable = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
 
-			var _3 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out var children, out _);
-			var _4 = XLib.XFree(children);
+			_ = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out var children, out _);
+			_ = XLib.XFree(children);
 			XWindowAttributes windowAttrs = default;
-			var _5 = XLib.XGetWindowAttributes(display, window, ref windowAttrs);
+			_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs);
 			XLib.XTranslateCoordinates(display, window, root, windowAttrs.x, windowAttrs.y, out var rootx, out var rooty, out _);
 
 			X11Helper.XRRCrtcInfo* crtcInfo = default;
@@ -351,7 +351,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				}
 			}
 
-			using var _6 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
+			using var crtcInfoDisposable = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
 
 			if (crtcInfo == default || crtcInfo->noutput == 0)
 			{
@@ -363,13 +363,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// the first one we find for the numbers
 
 			var outputInfo = X11Helper.XRRGetOutputInfo(display, new IntPtr(resources), *(IntPtr*)crtcInfo->outputs.ToPointer());
-			using var _7 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
+			using var outputInfoDisposable = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
 
 			X11Helper.XRRCrtcTransformAttributes* transformInfo = default;
-			var _8 = X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
-			using var _9 = Disposable.Create(() =>
+			_ = X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
+			using var transformInfoDisposable = Disposable.Create(() =>
 			{
-				var _ = XLib.XFree(new IntPtr(transformInfo));
+				_ = XLib.XFree(new IntPtr(transformInfo));
 			});
 
 			// Assume no fancy transforms. We only support simple scaling transforms.

@@ -60,8 +60,8 @@ internal class X11DragDropExtension : IDragDropExtension
 		_coreDragDropManager = XamlRoot.GetCoreDragDropManager(((IXamlRootHost)_host).RootElement!.XamlRoot);
 
 		var display = _host.RootX11Window.Display;
-		using var _1 = X11Helper.XLock(display);
-		var _2 = XLib.XChangeProperty(
+		using var lockDiposable = X11Helper.XLock(display);
+		_ = XLib.XChangeProperty(
 			display,
 			_host.RootX11Window.Window,
 			X11Helper.GetAtom(display, X11Helper.XdndAware),
@@ -70,14 +70,14 @@ internal class X11DragDropExtension : IDragDropExtension
 			PropertyMode.Replace,
 			new byte[] { 5 }, // version 5
 			1);
-		var _3 = XLib.XFlush(display);
+		_ = XLib.XFlush(display);
 
 		_host.SetDragDropExtension(this);
 	}
 
 	public void ProcessXdndMessage(XClientMessageEvent ev)
 	{
-		using var _1 = X11Helper.XLock(_host.RootX11Window.Display);
+		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -148,9 +148,9 @@ internal class X11DragDropExtension : IDragDropExtension
 		var rootX = (int)(ev.ptr3 >> 16);
 		var rootY = (int)(ev.ptr3 & 0xffff);
 
-		var _1 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
+		_ = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
 		XWindowAttributes windowAttrs = default;
-		var _2 = XLib.XGetWindowAttributes(display, _host.RootX11Window.Window, ref windowAttrs);
+		_ = XLib.XGetWindowAttributes(display, _host.RootX11Window.Window, ref windowAttrs);
 		XLib.XTranslateCoordinates(display, root, _host.RootX11Window.Window, rootX, rootY, out var x, out var y, out _);
 
 		if (!_currentSession.Value.EnterFired)
@@ -205,8 +205,8 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		XEvent xev = default;
 		xev.ClientMessageEvent = m;
-		var _3 = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
-		var _4 = XLib.XFlush(display);
+		_ = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
+		_ = XLib.XFlush(display);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -255,8 +255,8 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		XEvent xev = default;
 		xev.ClientMessageEvent = m;
-		var _1 = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
-		var _2 = XLib.XFlush(display);
+		_ = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
+		_ = XLib.XFlush(display);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{

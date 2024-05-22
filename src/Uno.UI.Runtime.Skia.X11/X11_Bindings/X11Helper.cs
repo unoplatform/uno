@@ -163,7 +163,7 @@ internal static partial class X11Helper
 
 	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4, IntPtr ptr5)
 	{
-		using var _1 = XLock(x11Window.Display);
+		using var lockDiposable = XLock(x11Window.Display);
 
 		// https://stackoverflow.com/a/28396773
 		XClientMessageEvent xclient = default;
@@ -180,8 +180,8 @@ internal static partial class X11Helper
 
 		XEvent xev = default;
 		xev.ClientMessageEvent = xclient;
-		var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
-		var _3 = XLib.XFlush(x11Window.Display);
+		_ = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+		_ = XLib.XFlush(x11Window.Display);
 	}
 
 	public static void SetMotifWMDecorations(X11Window x11Window, bool on, IntPtr decorations)
@@ -230,10 +230,10 @@ internal static partial class X11Helper
 	// #define MWM_DECOR_MAXIMIZE	(1L << 6)
 	private unsafe static void SetMotifWMHints(X11Window x11Window, bool on, IntPtr? decorations, IntPtr? functions)
 	{
-		using var _1 = XLock(x11Window.Display);
+		using var lockDiposable = XLock(x11Window.Display);
 
 		var hintsAtom = GetAtom(x11Window.Display, _MOTIF_WM_HINTS);
-		var _2 = XLib.XGetWindowProperty(
+		_ = XLib.XGetWindowProperty(
 			x11Window.Display,
 			x11Window.Window,
 			hintsAtom,
@@ -247,7 +247,7 @@ internal static partial class X11Helper
 			out _,
 			out IntPtr prop);
 
-		using var _3 = Disposable.Create(() =>
+		using var propDisposable = Disposable.Create(() =>
 		{
 			var _ = XLib.XFree(prop);
 		});
@@ -316,7 +316,7 @@ internal static partial class X11Helper
 			}
 		}
 
-		var _4 = XLib.XChangeProperty(
+		_ = XLib.XChangeProperty(
 			x11Window.Display,
 			x11Window.Window,
 			hintsAtom,
@@ -325,7 +325,7 @@ internal static partial class X11Helper
 			PropertyMode.Replace,
 			arr,
 			5);
-		var _5 = XLib.XFlush(x11Window.Display);
+		_ = XLib.XFlush(x11Window.Display);
 	}
 
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);

@@ -30,15 +30,15 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		get
 		{
-			using var _1 = X11Helper.XLock(_host.RootX11Window.Display);
+			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
 			var @out = string.Empty;
-			var _2 = XLib.XFetchName(_host.RootX11Window.Display, _host.RootX11Window.Window, ref @out);
+			_ = XLib.XFetchName(_host.RootX11Window.Display, _host.RootX11Window.Window, ref @out);
 			return @out;
 		}
 		set
 		{
-			using var _1 = X11Helper.XLock(_host.RootX11Window.Display);
-			var _2 = XLib.XStoreName(_host.RootX11Window.Display, _host.RootX11Window.Window, value);
+			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+			_ = XLib.XStoreName(_host.RootX11Window.Display, _host.RootX11Window.Window, value);
 		}
 	}
 
@@ -58,8 +58,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		if (NativeWindow is X11Window x11Window)
 		{
-			using var _ = X11Helper.XLock(x11Window.Display);
-			var _1 = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
+			using var lockDiposable = X11Helper.XLock(x11Window.Display);
+			_ = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
 
 			// We could send _NET_ACTIVE_WINDOW as well, although it doesn't seem to be needed (and only works with EWMH-compliant WMs)
 			// XClientMessageEvent xclient = default;
@@ -73,8 +73,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 			//
 			// XEvent xev = default;
 			// xev.ClientMessageEvent = xclient;
-			// var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
-			// var _3 = XLib.XFlush(x11Window.Display);
+			// _ = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+			// _ = XLib.XFlush(x11Window.Display);
 		}
 	}
 

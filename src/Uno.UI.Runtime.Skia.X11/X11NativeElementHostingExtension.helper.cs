@@ -70,10 +70,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			process.Start();
 
-			using var _1 = X11Helper.XLock(_display);
+			using var lockDiposable = X11Helper.XLock(_display);
 
-			var _2 = XLib.XQueryTree(_display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
-			var _3 = XLib.XFree(children);
+			_ = XLib.XQueryTree(_display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
+			_ = XLib.XFree(children);
 
 			// Wait for the window to open.
 			IntPtr window = IntPtr.Zero;
@@ -130,13 +130,13 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 	private unsafe static IntPtr FindWindowByTitle(IntPtr display, IntPtr current, string title)
 	{
-		var _1 = X11Helper.XFetchName(display, current, out var name);
+		_ = X11Helper.XFetchName(display, current, out var name);
 		if (name == title)
 		{
 			return current;
 		}
 
-		var _2 = XLib.XQueryTree(display,
+		_ = XLib.XQueryTree(display,
 			current,
 			out _,
 			out _,
@@ -165,7 +165,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			return current;
 		}
 
-		var _2 = XLib.XQueryTree(display,
+		_ = XLib.XQueryTree(display,
 			current,
 			out _,
 			out _,
