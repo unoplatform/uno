@@ -37,6 +37,7 @@ public partial class TextBox
 
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
+	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
 	private bool _showCaret = true;
 
 	private bool _inSelectInternal;
@@ -329,8 +330,9 @@ public partial class TextBox
 		TrySetCurrentlyTyping(false);
 		if (!_inSelectInternal)
 		{
-			// SelectInternal sets _selectionEndsAtTheStart on its own
+			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
 			_selectionEndsAtTheStart = false;
+			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
 		_selection = (start, length);
 		if (!_isSkiaTextBox)
@@ -501,6 +503,8 @@ public partial class TextBox
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
+		var caretXOffset = _caretXOffset;
+
 		_suppressCurrentlyTyping = true;
 		_clearHistoryOnTextChanged = false;
 		if (!_isPressed)
@@ -512,6 +516,14 @@ public partial class TextBox
 		ProcessTextInput(text);
 		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
+
+		// don't change the caret offset when moving up and down
+		if (args.Key is VirtualKey.Up or VirtualKey.Down)
+		{
+			// this condition is accurate in the case of hitting Down on the last line
+			// or up on the first line. On WinUI, the caret offset won't change.
+			_caretXOffset = caretXOffset;
+		}
 	}
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
@@ -834,6 +846,12 @@ public partial class TextBox
 	{
 		_inSelectInternal = true;
 		_selectionEndsAtTheStart = selectionLength < 0;
+		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
+		{
+			_caretXOffset = selectionLength >= 0 ?
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Left :
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Right;
+		}
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
 		_inSelectInternal = false;
 	}
@@ -1071,7 +1089,7 @@ public partial class TextBox
 			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
 
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
+		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
 		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
