@@ -13,7 +13,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     }
     ```
 
-- Add a new `partial record` above named `Countable`. This record will be responsible for updating our counter's properties all while ensuring immutability. Learn more about immutable records [here](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/WorkingWithRecords.html#how-to-create-immutable-records).
+- Add a new `partial record` above named `Countable`. This record will be responsible for updating our counter's properties all while ensuring immutability. Learn more about immutable records [here](xref:Uno.Extensions.Mvux.Records#how-to-create-immutable-records).
 
     ```csharp
     internal partial record Countable
@@ -29,7 +29,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     }
     ```
 
-- Add an `Increment` method to the `Countable` record. The `with` operator allows us to [create a new instance](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/WorkingWithRecords.html#updating-records) of the object.
+- Add an `Increment` method to the `Countable` record. The `with` operator allows us to [create a new instance](xref:Uno.Extensions.Mvux.Records#updating-records) of the object.
 
     ```csharp
     public Countable Increment() => this with
@@ -44,7 +44,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     public IState<Countable> Countable => State.Value(this, () => new Countable(0, 1));
     ```
 
-- Add a method named `IncrementCounter` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. You can find more information on commands in MVUX [here](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Mvux/Advanced/Commands.html).
+- Add a method named `IncrementCounter` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. You can find more information on commands in MVUX [here](xref:Uno.Extensions.Mvux.Advanced.Commands).
 
     ```csharp
     public ValueTask IncrementCounter()
