@@ -29,49 +29,49 @@
 		</Otherwise>
 	</Choose>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Maps;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';maps;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Maps" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Foldable;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';foldable;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Foldable" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';csharpmarkup;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Markup" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Markup.Generators" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Toolkit;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';toolkit;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.Skia.WinUI" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Skia;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Cupertino" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Cupertino;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Material;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';Material;')) AND $(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.Skia.WinUI" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';skia;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Cupertino" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';cupertino;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';material;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';material;')) AND $(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Material;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';material;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Material.WinUI" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.Material.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Material.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Cupertino;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';cupertino;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Cupertino.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Prism;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';prism;'))">
 		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI" ProjectSystem="true" Condition="!$(_IsExecutable)" />
 		<_UnoProjectSystemPackageReference Include="Prism.DryIoc.Uno.WinUI" ProjectSystem="true" Condition="$(_IsExecutable)" />
-		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoProjectSystemPackageReference Include="Prism.Uno.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';dsp;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Dsp.Tasks" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Mvvm;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';mvvm;'))">
 		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
 	</ItemGroup>
 

@@ -393,7 +393,7 @@
 		},
 		"unoFeature": {
 			"allowUnknownValues": false,
-			"caseSensitive": true,
+			"caseSensitive": false,
 			"values": {
 				"Foldable": {
 					"description": "Adds a reference to Uno.WinUI.Foldable.",

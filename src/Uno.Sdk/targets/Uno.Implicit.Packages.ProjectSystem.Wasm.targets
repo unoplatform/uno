@@ -8,7 +8,7 @@
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebAssembly" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';MediaElement;'))"/>
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';mediaelement;'))"/>
 		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.Compatibility" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap" ProjectSystem="true" />

@@ -120,17 +120,17 @@
 		<None Include="@(_IgnorePlatformFiles)" Sdk="Uno" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';dsp;'))">
 		<!-- New Material Theme Builder export format (Uno.Dsp 1.3+) -->
-		<UnoDspImportColors Include="Styles\*.json" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
-		<UnoDspImportColors Include="Styles\*.json" Generator="CSharp" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.json" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';csharpmarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.json" Generator="CSharp" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 
 		<!-- Legacy old DSP format for backward compatibility -->
-		<UnoDspImportColors Include="Styles\*.zip" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
-		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.zip" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';csharpmarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition="($(UnoFeatures.Contains(';Configuration;')) OR $(UnoFeatures.Contains(';Extensions;'))) AND Exists('appsettings.json')">
+	<ItemGroup Condition="($(UnoFeatures.Contains(';configuration;')) OR $(UnoFeatures.Contains(';Extensions;'))) AND Exists('appsettings.json')">
 		<EmbeddedResource Include="appsettings.json" />
 		<EmbeddedResource Include="appsettings.*.json" DependentUpon="appsettings.json" />
 	</ItemGroup>
