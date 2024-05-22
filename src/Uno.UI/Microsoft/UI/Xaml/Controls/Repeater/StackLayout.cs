@@ -148,8 +148,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					// Uno workaround [BEGIN]: Make sure items at index 0 is always at offset 0
 					anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex));
 					// Uno workaround [END]
-					offset = EstimateMajor(state._uno_realizedItemsCache.AsSpan(..Math.Min(anchorIndex, state._uno_realizedItemsCache.Length)), averageElementSize);
-					//offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
+					offset = anchorIndex * averageElementSize + MajorStart(lastExtent);
 					//anchorIndex = Math.Max(0, Math.Min(itemsCount - 1, anchorIndex)); // Line moved before computation of the offset for uno
 				}
 			}
@@ -182,18 +181,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				{
 					MUX_ASSERT(lastRealized != null);
 
-					// var firstRealizedMajor = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
-					// Uno workaround [BEGIN]: Make sure to not move items above the viewport. This can be the case if an items is significantly taller than previous items (will increase the average items size)
-					// We try to estimate only items that as not been realized yet.
-					var before = Aggregate(stackState._uno_realizedItemsCache.AsSpan(..firstRealizedItemIndex));
-					var after = Aggregate(stackState._uno_realizedItemsCache.AsSpan((lastRealizedItemIndex + 1)..Math.Min(itemsCount, stackState._uno_realizedItemsCache.Length)));
-					var realizedSize = MajorEnd(lastRealizedLayoutBounds) - MajorStart(firstRealizedLayoutBounds);
-					var neverRealizedItemsEstimatedSize = (before.notRealized + after.notRealized) * averageElementSize;
-					var previouslyRealizedItemsSize = Major(before.total) + Major(after.total);
-
-					// Note: We do NOT set the MajorStart as with uno we assume it to always be 0.
-					SetMajorSize(ref extent, realizedSize + previouslyRealizedItemsSize + neverRealizedItemsEstimatedSize);
+					var firstRealizedMajor = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
+					// Uno workaround [BEGIN]: Make sure to not move items above the viewport. This can be the case if an items is significantly higher than previous items (will increase the average items size)
+					firstRealizedMajor = Math.Max(0.0f, firstRealizedMajor);
 					// Uno workaround [END]
+					SetMajorStart(ref extent, firstRealizedMajor);
+					var remainingItems = itemsCount - lastRealizedItemIndex - 1;
+					SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - MajorStart(extent) + (float)(remainingItems * averageElementSize));
 				}
 				else
 				{
@@ -214,30 +208,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			return extent;
 		}
 
-		private double EstimateMajor(Span<Size> span, double averageElementSize)
-		{
-			var info = Aggregate(span);
-			return Major(info.total) + info.notRealized * averageElementSize;
-		}
-
-		private static (Size total, uint notRealized) Aggregate(Span<Size> span)
-		{
-			var total = default(Size);
-			var notRealized = 0u;
-			for (var i = 0; i < span.Length; i++)
-			{
-				ref var size = ref span[i];
-				total.Width += size.Width;
-				total.Height += size.Height;
-				if (size == default)
-				{
-					notRealized++;
-				}
-			}
-
-			return (total, notRealized);
-		}
-
 		void OnElementMeasured(
 			UIElement element,
 			int index,
@@ -255,18 +225,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					index,
 					Major(provisionalArrangeSizeWinRt),
 					Minor(provisionalArrangeSizeWinRt));
-
-				if (index < StackLayoutState._uno_realizedItemsCacheMaxLength)
-				{
-					if (stackState._uno_realizedItemsCache.Length <= index)
-					{
-						var currentLength = stackState._uno_realizedItemsCache.Length;
-						var newLength = (int)Math.Ceiling((index + 1) / (double)currentLength) * currentLength;
-						Array.Resize(ref stackState._uno_realizedItemsCache, newLength);
-					}
-
-					stackState._uno_realizedItemsCache[index] = provisionalArrangeSize;
-				}
 			}
 		}
 

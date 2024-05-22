@@ -30,9 +30,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		internal int Uno_LastKnownRealizedElementsCount;
 		internal int Uno_LastKnownItemsCount;
 		internal Size Uno_LastKnownDesiredSize;
-
-		internal Size[] _uno_realizedItemsCache = new Size[256];
-		internal const int _uno_realizedItemsCacheMaxLength = 4096;
 		// Uno workaround [END]
 
 		public StackLayoutState()
