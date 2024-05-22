@@ -286,7 +286,6 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_rootEltUsedToProcessScrollTo is null && rootElement is FrameworkElement rootFwElt)
 				{
 					_rootEltUsedToProcessScrollTo = rootFwElt;
-					rootFwElt.LayoutUpdated += TryProcessScrollTo;
 				}
 
 				if (disableAnimation)
