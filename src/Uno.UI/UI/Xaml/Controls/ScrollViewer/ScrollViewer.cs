@@ -702,13 +702,12 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void TrimOverscroll(Orientation orientation);
 
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
-		internal override void
 #if UNO_HAS_ENHANCED_LIFECYCLE
-			AfterArrange()
+		internal override void AfterArrange()
 		{
 			base.AfterArrange();
 #else
-			OnLayoutUpdated()
+		internal override void OnLayoutUpdated()
 		{
 			base.OnLayoutUpdated();
 #endif

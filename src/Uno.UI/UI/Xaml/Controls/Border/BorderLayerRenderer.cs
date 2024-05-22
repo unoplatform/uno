@@ -32,6 +32,9 @@ internal partial class BorderLayerRenderer
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		_owner.SizeChanged += (_, _) => Update();
 #else
+		// Using SizeChanged on other platforms SHOULD work. But it didn't work on Android
+		// for unknown reason. For now, we are using SizeChanged only on enhanced lifecycle
+		// platforms where we are sure it works correctly.
 		_owner.LayoutUpdated += (_, _) => Update();
 #endif
 	}
