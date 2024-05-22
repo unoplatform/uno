@@ -22,7 +22,7 @@ internal sealed class WeakEventManager
 
 		if (handler is null)
 		{
-			// Allow handler to be nullable to not having to deal with nullability checks in callsites, but this indicates a bug.
+			// Allow handler to be nullable to not have to deal with nullability checks in callsites, but this indicates a bug.
 			Debug.Fail($"Got a null event handler for event {eventName}.");
 			return;
 		}
@@ -44,7 +44,7 @@ internal sealed class WeakEventManager
 
 		if (handler is null)
 		{
-			// Allow handler to be nullable to not having to deal with nullability checks in callsites, but this indicates a bug.
+			// Allow handler to be nullable to not have to deal with nullability checks in callsites, but this indicates a bug.
 			Debug.Fail($"Got a null event handler for event {eventName}.");
 			return;
 		}
