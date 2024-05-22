@@ -493,15 +493,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		using var _1 = X11Helper.XLock(RootX11Window.Display);
 		// this seems to be necessary or else the WM will keep detaching the subwindow
 		XWindowAttributes attributes = default;
-		var _2 = XLib.XGetWindowAttributes(RootX11Window.Display, window, ref attributes);
+		_ = XLib.XGetWindowAttributes(RootX11Window.Display, window, ref attributes);
 		attributes.override_direct = /* True */ 1;
 
 		IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
 		Marshal.StructureToPtr(attributes, attr, false);
-		var _3 = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
+		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
 		Marshal.FreeHGlobal(attr);
 
-		var _4 = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
+		_ = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
 		XLib.XFlush(RootX11Window.Display);
 		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
 	}
@@ -559,7 +559,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		if (x11Window == TopX11Window)
 		{
-			var WaitForIdle = () =>
+			var waitForIdle = () =>
 			{
 				using var _1 = X11Helper.XLock(TopX11Window.Display);
 				_ = XLib.XFlush(TopX11Window.Display);
@@ -568,7 +568,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			};
 			for (int i = 0; i < 10; i++)
 			{
-				QueueAction(this, WaitForIdle);
+				QueueAction(this, waitForIdle);
 			}
 		}
 		else // RootX11Window

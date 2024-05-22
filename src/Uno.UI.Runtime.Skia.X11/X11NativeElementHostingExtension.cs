@@ -107,8 +107,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			host.AttachSubWindow(nativeWindow.WindowId);
 
-			using var _5 = X11Helper.XLock(_display);
-			var _6 = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
+			using var _2 = X11Helper.XLock(_display);
+			_ = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
 
 			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
 			{
