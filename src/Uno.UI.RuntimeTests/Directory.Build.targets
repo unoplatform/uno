@@ -28,6 +28,10 @@
 		<Page Remove="MUX\Microsoft_UI_Xaml_Controls\ScrollPresenter\**\*.xaml" />
 		<None Include="MUX\Microsoft_UI_Xaml_Controls\ScrollPresenter\**\*.cs" />
 
+		<Compile Remove="MUX\Microsoft_UI_Xaml_Controls\SelectorBar\**\*.cs" />
+		<Page Remove="MUX\Microsoft_UI_Xaml_Controls\SelectorBar\**\*.xaml" />
+		<None Include="MUX\Microsoft_UI_Xaml_Controls\SelectorBar\**\*.cs" />
+
 		<Compile Remove="Tests\BindingTests\XBindInWindow.xaml.cs" />
 		<Page Remove="Tests\BindingTests\XBindInWindow.xaml" />
 		<None Include="Tests\BindingTests\XBindInWindow.xaml.cs" />

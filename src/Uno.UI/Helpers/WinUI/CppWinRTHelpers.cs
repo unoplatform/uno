@@ -18,6 +18,12 @@ internal static class CppWinRTHelpers
 		return Disposable.Create(() => xamlRoot.Changed -= handler);
 	}
 
+	public static IDisposable RegisterPropertyChanged(DependencyObject dependencyObject, DependencyProperty dependencyProperty, DependencyPropertyChangedCallback callback)
+	{
+		var token = dependencyObject.RegisterPropertyChangedCallback(dependencyProperty, callback);
+		return Disposable.Create(() => dependencyObject.UnregisterPropertyChangedCallback(dependencyProperty, token));
+	}
+
 	public static bool SetFocus(DependencyObject obj, FocusState focusState)
 	{
 		if (obj != null)
