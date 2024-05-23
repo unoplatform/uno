@@ -16,7 +16,7 @@
 		<!-- <UnoSdkVersionSuffix Condition="$(GitVersion_Sha) != ''">_v$(GitVersion_Sha)</UnoSdkVersionSuffix> -->
 		<!-- Use the VersionSource SHA to avoid conflicts for PR builds that span merges on master -->
 		<!-- <UnoSdkVersionSuffix Condition="$(GITVERSION_INFORMATIONALVERSION.Contains('PullRequest'))">$(GITVERSION_VersionSourceSha)</UnoSdkVersionSuffix> -->
-		<AssemblyName>$(PackageId)$(UnoSdkVersionSuffix)</AssemblyName>
+		<AssemblyName>Uno.Sdk$(UnoSdkVersionSuffix)</AssemblyName>
 
 		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
 		<GeneratePackageOnBuild Condition=" '$(UNO_UWP_BUILD)' != 'true' ">true</GeneratePackageOnBuild>
