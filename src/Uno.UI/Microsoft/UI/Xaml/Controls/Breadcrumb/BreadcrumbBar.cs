@@ -567,13 +567,6 @@ public partial class BreadcrumbBar : Control
 		return MoveFocus(movementNext);
 	}
 
-	private FindNextElementOptions GetFindNextElementOptions()
-	{
-		var findNextElementOptions = new FindNextElementOptions();
-		findNextElementOptions.SearchRoot = this;
-		return findNextElementOptions;
-	}
-
 	private void OnChildPreviewKeyDown(object sender, KeyRoutedEventArgs args)
 	{
 		bool flowDirectionIsLTR = (FlowDirection == FlowDirection.LeftToRight);

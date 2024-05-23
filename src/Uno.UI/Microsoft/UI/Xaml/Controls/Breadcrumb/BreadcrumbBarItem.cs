@@ -6,6 +6,7 @@
 
 using System.Collections.ObjectModel;
 using Uno.Disposables;
+using Uno.UI.DataBinding;
 using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -21,7 +22,6 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-using Uno.UI.DataBinding;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
