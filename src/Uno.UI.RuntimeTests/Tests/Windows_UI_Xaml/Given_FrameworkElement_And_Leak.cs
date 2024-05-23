@@ -53,6 +53,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ToggleButton), 15)]
 		[DataRow(typeof(RepeatButton), 15)]
 		[DataRow(typeof(TextBlock), 15)]
+		[DataRow(typeof(ScrollViewer), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15)]
@@ -91,9 +92,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(ToggleSwitch), 15)]
 #endif
-#if __SKIA__ // Control is currently supported on Skia targets only.
+#if __SKIA__ && HAS_UNO_WINUI // Control is currently supported on Skia targets only.
 		[DataRow(typeof(SelectorBar), 15)]
 		[DataRow(typeof(SelectorBarItem), 15)]
+		[DataRow(typeof(ItemsView), 15)]
+		[DataRow(typeof(ScrollView), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
