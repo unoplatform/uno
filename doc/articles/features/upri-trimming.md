@@ -6,8 +6,6 @@ uid: Uno.Features.StringResourceTrimming
 
 String resource trimming is an optional feature used to reduce the final payload size of an Uno Platform application by removing unused localization languages throughout the app.
 
-This feature is currently available for WebAssembly projects.
-
 ## Using String Resource Trimming
 
 To enable resources trimming, you need to declare which culture(s) your application uses. For example, in your csproj add:
