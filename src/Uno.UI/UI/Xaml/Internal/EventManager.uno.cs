@@ -23,6 +23,10 @@ internal sealed partial class EventManager
 
 	internal bool HasPendingSizeChangedEvents => _sizeChangedQueue is { Count: > 0 };
 
+	// Not using a record because Size struct doesn't implement `IEquatable<Size>`, so,
+	// a record will use EqualityComparer<Size>.Default which is an `ObjectEqualityComparer`
+	// which will cause boxing for every equality comparison. See
+	// https://github.com/dotnet/runtime/issues/102593
 	private readonly struct SizeChangedQueueItem : IEquatable<SizeChangedQueueItem>
 	{
 		public FrameworkElement Element { get; }
@@ -62,10 +66,11 @@ internal sealed partial class EventManager
 
 	public void RaiseLayoutUpdated()
 	{
-		var clone = _layoutUpdatedSubscribers.ToArray();
-		for (int i = 0; i < clone.Length; i++)
+		// Elements that are added after the enumerator is retrieved will not be looped over here.
+		// This is actually what we want and what WinUI does.
+		foreach (var item in _layoutUpdatedSubscribers)
 		{
-			clone[i].Key.OnLayoutUpdated();
+			item.Key.OnLayoutUpdated();
 		}
 	}
 
