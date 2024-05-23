@@ -762,28 +762,17 @@ namespace Microsoft.UI.Xaml
 
 		#region LayoutUpdated
 
-		private EventHandler<object> _layoutUpdated;
+		private event EventHandler<object> _layoutUpdated;
 
 		public event EventHandler<object> LayoutUpdated
 		{
-			// This is the same as what the compiler generates for field-like events, except that we want to plug extra code (notifying EventManager).
 			add
 			{
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				var isFirstSubscriber = _layoutUpdated is null;
 #endif
 
-				EventHandler<object> eventHandler = _layoutUpdated;
-				while (true)
-				{
-					EventHandler<object> eventHandler2 = eventHandler;
-					EventHandler<object> value2 = (EventHandler<object>)Delegate.Combine(eventHandler2, value);
-					eventHandler = Interlocked.CompareExchange(ref _layoutUpdated, value2, eventHandler2);
-					if ((object)eventHandler == eventHandler2)
-					{
-						break;
-					}
-				}
+				_layoutUpdated += value;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				if (isFirstSubscriber)
@@ -798,17 +787,7 @@ namespace Microsoft.UI.Xaml
 				var hadSubscribers = _layoutUpdated is not null;
 #endif
 
-				EventHandler<object> eventHandler = _layoutUpdated;
-				while (true)
-				{
-					EventHandler<object> eventHandler2 = eventHandler;
-					EventHandler<object> value2 = (EventHandler<object>)Delegate.Remove(eventHandler2, value);
-					eventHandler = Interlocked.CompareExchange(ref _layoutUpdated, value2, eventHandler2);
-					if ((object)eventHandler == eventHandler2)
-					{
-						break;
-					}
-				}
+				_layoutUpdated -= value;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				if (hadSubscribers && _layoutUpdated is null)
