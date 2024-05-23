@@ -1,4 +1,5 @@
 ﻿#nullable enable
+#if HAS_UNO
 
 using System;
 using System.Collections.Generic;
@@ -157,3 +158,4 @@ public class Given_WeakEventManager
 		}
 	}
 }
+#endif
