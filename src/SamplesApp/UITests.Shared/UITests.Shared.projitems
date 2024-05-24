@@ -686,6 +686,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileOpenPickerTests_FileInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePickerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5925,6 +5929,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\DownloadFileSavePickerTests.xaml.cs">
       <DependentUpon>DownloadFileSavePickerTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileOpenPickerTests_FileInfo.xaml.cs">
+      <DependentUpon>FileOpenPickerTests_FileInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePickerTests.xaml.cs">
       <DependentUpon>FileSavePickerTests.xaml</DependentUpon>

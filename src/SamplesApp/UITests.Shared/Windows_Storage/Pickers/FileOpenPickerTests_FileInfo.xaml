@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_Storage.Pickers.FileOpenPickerTests_FileInfo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:storage="using:Windows.Storage"
+	xmlns:wasm="http://uno.ui/wasm"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d wasm">
+
+	<StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="16">
+		<Button Click="PickVideosButton_Click" Content="Select videos" />
+		<Button Click="PickPhotosButton_Click" Content="Select Photos" />
+	</StackPanel>
+</Page>
