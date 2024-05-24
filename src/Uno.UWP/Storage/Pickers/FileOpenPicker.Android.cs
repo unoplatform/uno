@@ -42,15 +42,30 @@ namespace Windows.Storage.Pickers
 			return true;
 		}
 
-		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
+		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
-			var files = await PickFilesAsync(false, token);
-			return files.Count == 0 ? null : files[0];
+			var tcs = new TaskCompletionSource<StorageFile?>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				var files = await PickFilesAsync(false, token);
+				var file = files.Count > 0 ? files[0] : null;
+
+				tcs.TrySetResult(file);
+			});
+
+			return tcs.Task;
 		}
 
-		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
+		private Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
 		{
-			return await PickFilesAsync(true, token);
+			var tcs = new TaskCompletionSource<IReadOnlyList<StorageFile>>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				var files = await PickFilesAsync(true, token);
+				tcs.TrySetResult(files);
+			});
+
+			return tcs.Task;
 		}
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
