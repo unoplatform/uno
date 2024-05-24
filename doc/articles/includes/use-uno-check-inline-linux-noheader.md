@@ -2,7 +2,7 @@
 1. If `dotnet --version` returns `command not found`:
     - Follow the [official directions](https://learn.microsoft.com/dotnet/core/install/linux?WT.mc_id=dotnet-35129-website#packages) for installing .NET.
       > [!IMPORTANT]
-      > If your distribution is Ubuntu and you want to develop for Android, make sure to use the directions to install the Microsoft feed and not the Ubuntu official feed. The latter does not contain Android workloads.
+      > If your distribution is Ubuntu, make sure to use the directions to [install .NET from the Microsoft feed](https://learn.microsoft.com/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository) and not the Ubuntu official feed.
 1. Then, setup uno.check by:
     - Installing the tool:
 
