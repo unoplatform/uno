@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private void FolderPickerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
-			// When the picker is showing, the Page is reseting the DataContext to null.
+			// When the picker is showing, the Page is resetting the DataContext to null.
 			if (args.NewValue is FileOpenPickerTestsViewModel viewModel)
 			{
 				ViewModel = viewModel;
