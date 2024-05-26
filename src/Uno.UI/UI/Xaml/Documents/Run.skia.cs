@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using HarfBuzzSharp;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -14,8 +15,6 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Run
 	{
-		private const int SpacesPerTab = 12;
-
 		private List<Segment>? _segments;
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= _segments = GetSegments();
@@ -71,7 +70,7 @@ namespace Microsoft.UI.Xaml.Documents
 				else
 				{
 					// Count leading spaces
-					while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]))
+					while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
 					{
 						leadingSpaces++;
 						i++;
@@ -82,6 +81,26 @@ namespace Microsoft.UI.Xaml.Documents
 					{
 						if (ProcessLineBreak(text, ref i, ref lineBreakLength))
 						{
+							break;
+						}
+
+						// Since tabs require special handling, we put tabs in separate segments.
+						// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
+						if (text[i] == '\t')
+						{
+							wordBreakAfter = true;
+							i++;
+							break;
+						}
+
+						if (i + 1 < text.Length && text[i + 1] == '\t')
+						{
+							if (char.IsWhiteSpace(text[i]))
+							{
+								trailingSpaces++;
+							}
+							wordBreakAfter = true;
+							i++;
 							break;
 						}
 
@@ -112,7 +131,7 @@ namespace Microsoft.UI.Xaml.Documents
 							else
 							{
 								// Under some Linux systems, the symbol may not be found
-								// in the default font and 
+								// in the default font and
 								// we have to skip the character and continue segments
 								// evaluation.
 
@@ -133,7 +152,7 @@ namespace Microsoft.UI.Xaml.Documents
 							if (symbolTypeface is null)
 							{
 								// Under some Linux systems, the symbol may not be found
-								// in the default font and 
+								// in the default font and
 								// we have to skip the character and continue segments
 								// evaluation.
 								if (this.Log().IsEnabled(LogLevel.Trace))
@@ -160,7 +179,7 @@ namespace Microsoft.UI.Xaml.Documents
 								break;
 							}
 
-							if (char.IsWhiteSpace(text[i]))
+							if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
 							{
 								trailingSpaces++;
 								i++;
@@ -176,7 +195,6 @@ namespace Microsoft.UI.Xaml.Documents
 				int length = i - s;
 				if (length > 0)
 				{
-
 					if (lineBreakLength == 2)
 					{
 						buffer.AddUtf16(text.Slice(s, length - 1)); // Skip second line break char so that it is considered part of the same cluster as the first
@@ -211,7 +229,13 @@ namespace Microsoft.UI.Xaml.Documents
 						buffer.ReverseClusters();
 					}
 
-					var glyphs = GetGlyphs(buffer, Text.AsSpan(s, length), fontInfo, s, textSizeX, textSizeY);
+					var glyphs = GetGlyphs(buffer, s, textSizeX, textSizeY);
+
+					Debug.Assert(!(Text.AsSpan(s, length).Contains('\t')) || length == 1);
+					if (length == 1 && text[s] == '\t')
+					{
+						glyphs[0] = glyphs[0] with { GlyphId = _getSpaceGlyph(fontInfo.Font) };
+					}
 
 					var segment = new Segment(this, direction, s, length, leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, glyphs, fallbackFont);
 
@@ -251,7 +275,7 @@ namespace Microsoft.UI.Xaml.Documents
 				return false;
 			}
 
-			static List<GlyphInfo> GetGlyphs(Buffer buffer, ReadOnlySpan<char> textSpan, FontDetails fontInfo, int clusterStart, float textSizeX, float textSizeY)
+			static List<GlyphInfo> GetGlyphs(Buffer buffer, int clusterStart, float textSizeX, float textSizeY)
 			{
 				int length = buffer.Length;
 				var hbGlyphs = buffer.GetGlyphInfoSpan();
@@ -266,9 +290,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 					// We add special handling for tabs, which don't get rendered correctly, and treated as an unknown glyph
 					TextFormatting.GlyphInfo glyph = new(
-						textSpan[i] == '\t' ? _measureTab(fontInfo.Font).codepoint : (ushort)hbGlyph.Codepoint,
+						(ushort)hbGlyph.Codepoint,
 						clusterStart + (int)hbGlyph.Cluster,
-						(textSpan[i] == '\t' ? _measureTab(fontInfo.Font).width : hbPos.XAdvance) * textSizeX,
+						hbPos.XAdvance * textSizeX,
 						hbPos.XOffset * textSizeX,
 						hbPos.YOffset * textSizeY
 					);
@@ -282,14 +306,14 @@ namespace Microsoft.UI.Xaml.Documents
 
 		partial void InvalidateSegmentsPartial() => _segments = null;
 
-		private static Func<Font, (ushort codepoint, float width)> _measureTab =
-			((Func<Font, (ushort codepoint, float width)>?)(font =>
+		private static readonly Func<Font, ushort> _getSpaceGlyph =
+			((Func<Font, ushort>?)(font =>
 			{
-				using var buffer = new Buffer();
+				using var buffer = new HarfBuzzSharp.Buffer();
 				buffer.AddUtf8(" ");
 				buffer.GuessSegmentProperties();
 				font.Shape(buffer);
-				return ((ushort)buffer.GlyphInfos[0].Codepoint, buffer.GlyphPositions[0].XAdvance * SpacesPerTab);
+				return (ushort)buffer.GlyphInfos[0].Codepoint;
 			}))
 			.AsMemoized();
 	}

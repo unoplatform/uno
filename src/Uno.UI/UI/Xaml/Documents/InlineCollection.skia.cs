@@ -206,6 +206,11 @@ namespace Microsoft.UI.Xaml.Documents
 							goto MaxLinesHit;
 						}
 
+						if (segment.IsTab)
+						{
+							segment.AdjustTabWidth(x);
+						}
+
 						float remainingWidth = availableWidth - x;
 						(int segmentLengthWithoutTrailingSpaces, float widthWithoutTrailingSpaces) = GetSegmentRenderInfo(segment, start, characterSpacing);
 
@@ -1045,7 +1050,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		/// <summary>
 		/// When we read the length of a span or segment from Skia/HarfBuzz, what we actually get is the
-		/// number of glyphs (i.e. Unicode runes), not the number of c# chars, so surrogate pairs will
+		/// number of glyphs, not the number of c# chars, so surrogate pairs will
 		/// only be counted as a single "unit". This method stretches the range to account for surrogate
 		/// pairs being 2 characters, not one.
 		/// </summary>
