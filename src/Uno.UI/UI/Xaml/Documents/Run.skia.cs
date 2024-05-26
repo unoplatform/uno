@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using HarfBuzzSharp;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -14,8 +15,6 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Run
 	{
-		private const int SpacesPerTab = 12;
-
 		private List<Segment>? _segments;
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= _segments = GetSegments();
@@ -71,7 +70,8 @@ namespace Microsoft.UI.Xaml.Documents
 				else
 				{
 					// Count leading spaces
-					while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]))
+					var c = text[i];
+					while (i < text.Length && char.IsWhiteSpace(c) && !Unicode.IsLineBreak(c) && c != '\t')
 					{
 						leadingSpaces++;
 						i++;
@@ -85,9 +85,29 @@ namespace Microsoft.UI.Xaml.Documents
 							break;
 						}
 
+						// Since tabs require special handling, we put tabs in separate segments.
+						// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
+						if (c == '\t')
+						{
+							wordBreakAfter = true;
+							i++;
+							break;
+						}
+
+						if (i + 1 < text.Length && text[i + 1] == '\t')
+						{
+							if (char.IsWhiteSpace(c))
+							{
+								trailingSpaces++;
+							}
+							wordBreakAfter = true;
+							i++;
+							break;
+						}
+
 						if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
 						{
-							if (char.IsWhiteSpace(text[i]))
+							if (char.IsWhiteSpace(c))
 							{
 								trailingSpaces++;
 							}
@@ -97,11 +117,11 @@ namespace Microsoft.UI.Xaml.Documents
 						}
 
 						if (i + 1 < text.Length
-							&& char.IsSurrogate(text[i])
-							&& char.IsSurrogatePair(text[i], text[i + 1]))
+							&& char.IsSurrogate(c)
+							&& char.IsSurrogatePair(c, text[i + 1]))
 						{
 							var fontManager = SKFontManager.Default;
-							var codepoint = (int)((text[i] - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
+							var codepoint = (int)((c - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
 							symbolTypeface = fontManager
 								.MatchCharacter(codepoint);
 
@@ -112,7 +132,7 @@ namespace Microsoft.UI.Xaml.Documents
 							else
 							{
 								// Under some Linux systems, the symbol may not be found
-								// in the default font and 
+								// in the default font and
 								// we have to skip the character and continue segments
 								// evaluation.
 
@@ -125,20 +145,20 @@ namespace Microsoft.UI.Xaml.Documents
 							}
 							break;
 						}
-						else if (!fontInfo.SKFont.ContainsGlyph(text[i]))
+						else if (!fontInfo.SKFont.ContainsGlyph(c))
 						{
 							symbolTypeface = SKFontManager.Default
-								.MatchCharacter(text[i]);
+								.MatchCharacter(c);
 
 							if (symbolTypeface is null)
 							{
 								// Under some Linux systems, the symbol may not be found
-								// in the default font and 
+								// in the default font and
 								// we have to skip the character and continue segments
 								// evaluation.
 								if (this.Log().IsEnabled(LogLevel.Trace))
 								{
-									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)text[i]:X4}, {text[i]})");
+									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)c:X4}, {c})");
 								}
 
 								i++;
@@ -160,7 +180,7 @@ namespace Microsoft.UI.Xaml.Documents
 								break;
 							}
 
-							if (char.IsWhiteSpace(text[i]))
+							if (char.IsWhiteSpace(c) && c != '\t')
 							{
 								trailingSpaces++;
 								i++;
@@ -176,7 +196,6 @@ namespace Microsoft.UI.Xaml.Documents
 				int length = i - s;
 				if (length > 0)
 				{
-
 					if (lineBreakLength == 2)
 					{
 						buffer.AddUtf16(text.Slice(s, length - 1)); // Skip second line break char so that it is considered part of the same cluster as the first
@@ -206,7 +225,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					// We don't support ligatures for now since they can cause buggy behaviour in TextBox
 					// where multiple chars in a TextBox are turned into a single glyph.
-					//https://github.com/unoplatform/uno/issues/15528
+					// https://github.com/unoplatform/uno/issues/15528
 					// https://github.com/unoplatform/uno/issues/16788
 					// https://harfbuzz.github.io/shaping-opentype-features.html
 					font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
@@ -217,6 +236,12 @@ namespace Microsoft.UI.Xaml.Documents
 					}
 
 					var glyphs = GetGlyphs(buffer, Text.AsSpan(s, length), fontInfo, s, textSizeX, textSizeY);
+
+					Debug.Assert(!(Text.AsSpan(s, length).Contains('\t')) || length == 1);
+					if (length == 1 && text[s] == '\t')
+					{
+						glyphs[0] = glyphs[0] with { GlyphId = _getSpaceGlyph(fontInfo.Font) };
+					}
 
 					var segment = new Segment(this, direction, s, length, leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, glyphs, fallbackFont);
 
@@ -271,9 +296,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 					// We add special handling for tabs, which don't get rendered correctly, and treated as an unknown glyph
 					TextFormatting.GlyphInfo glyph = new(
-						textSpan[i] == '\t' ? _measureTab(fontInfo.Font).codepoint : (ushort)hbGlyph.Codepoint,
+						(ushort)hbGlyph.Codepoint,
 						clusterStart + (int)hbGlyph.Cluster,
-						(textSpan[i] == '\t' ? _measureTab(fontInfo.Font).width : hbPos.XAdvance) * textSizeX,
+						hbPos.XAdvance * textSizeX,
 						hbPos.XOffset * textSizeX,
 						hbPos.YOffset * textSizeY
 					);
@@ -287,14 +312,14 @@ namespace Microsoft.UI.Xaml.Documents
 
 		partial void InvalidateSegmentsPartial() => _segments = null;
 
-		private static Func<Font, (ushort codepoint, float width)> _measureTab =
-			((Func<Font, (ushort codepoint, float width)>?)(font =>
+		private static readonly Func<Font, ushort> _getSpaceGlyph =
+			((Func<Font, ushort>?)(font =>
 			{
-				using var buffer = new Buffer();
+				using var buffer = new HarfBuzzSharp.Buffer();
 				buffer.AddUtf8(" ");
 				buffer.GuessSegmentProperties();
 				font.Shape(buffer);
-				return ((ushort)buffer.GlyphInfos[0].Codepoint, buffer.GlyphPositions[0].XAdvance * SpacesPerTab);
+				return (ushort)buffer.GlyphInfos[0].Codepoint;
 			}))
 			.AsMemoized();
 	}

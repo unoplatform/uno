@@ -14,7 +14,10 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 	[DebuggerDisplay("{DebugText}")]
 	internal sealed class Segment
 	{
-		private readonly IReadOnlyList<GlyphInfo>? _glyphs;
+		// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
+		private const float TabStopWidth = 50;
+
+		private readonly List<GlyphInfo>? _glyphs;
 		private readonly FontDetails? _fallbackFont;
 		// we cache the text as soon as we create the Segment in case a Run's text Updates
 		// before this (now outdated) Segment is discarded.
@@ -70,6 +73,8 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		/// </summary>
 		public bool WordBreakAfter { get; }
 
+		public bool IsTab => Text.Length == 1 && Text [0] == '\t';
+
 		/// <summary>
 		/// Gets the section of text of the Run element this segment represents. Throws if this segment represents a LineBreak element.
 		/// </summary>
@@ -83,7 +88,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 
 		private string DebugText => Inline is Run ? Text.ToString() : "{LineBreak}";
 
-		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, bool wordBreakAfter, IReadOnlyList<GlyphInfo> glyphs, FontDetails? fallbackFont)
+		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, bool wordBreakAfter, List<GlyphInfo> glyphs, FontDetails? fallbackFont)
 		{
 			Inline = run;
 			Direction = direction;
@@ -107,5 +112,15 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		}
 
 		public FontDetails? FallbackFont => _fallbackFont;
+
+		/// <remarks>
+		/// This is the only form of impurity in this class. Unfortunately, we can't
+		/// calculate the width of the tab ahead of time.
+		/// </remarks>
+		public void AdjustTabWidth(float xOffset)
+		{
+			Debug.Assert(IsTab);
+			_glyphs![0] = _glyphs[0] with { AdvanceX = TabStopWidth - xOffset % TabStopWidth };
+		}
 	}
 }
