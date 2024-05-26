@@ -474,9 +474,11 @@ public partial class TextBox
 				text = Text;
 				break;
 			case VirtualKey.V when ctrl:
+			case VirtualKey.Insert when shift:
 				PasteFromClipboard(); // async so doesn't actually do anything right now
 				break;
 			case VirtualKey.C when ctrl:
+			case VirtualKey.Insert when ctrl:
 				CopySelectionToClipboard();
 				break;
 			case VirtualKey.Escape:
