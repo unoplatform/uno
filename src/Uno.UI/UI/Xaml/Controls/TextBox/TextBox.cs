@@ -397,7 +397,9 @@ namespace Microsoft.UI.Xaml.Controls
 				baseString = GetFirstLine(baseString);
 				if (_pendingSelection is { } selection)
 				{
-					_pendingSelection = (Math.Min(selection.start, baseString.Length), Math.Max(0, Math.Min(selection.start + selection.length, baseString.Length)));
+					var start = Math.Min(selection.start, baseString.Length);
+					var end = Math.Min(selection.start + selection.length, baseString.Length);
+					_pendingSelection = (start, end - start);
 				}
 			}
 			else if (_isSkiaTextBox)
