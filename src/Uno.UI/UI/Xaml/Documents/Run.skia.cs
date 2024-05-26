@@ -75,6 +75,7 @@ namespace Microsoft.UI.Xaml.Documents
 					{
 						leadingSpaces++;
 						i++;
+						c = text[i];
 					}
 
 					// Keep the segment going until we hit a word break opportunity or a line break
