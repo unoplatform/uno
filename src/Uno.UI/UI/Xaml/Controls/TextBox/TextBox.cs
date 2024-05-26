@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Text;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
@@ -398,14 +399,60 @@ namespace Microsoft.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
+#if __SKIA__
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
+				if (_pendingSelection is { } selection)
+				{
+					var start = Math.Min(selection.start, baseString.Length);
+					var end = Math.Min(selection.start + selection.length, baseString.Length);
+					_pendingSelection = (start, end - start);
+				}
 			}
-#if __SKIA__
 			else if (_isSkiaTextBox)
 			{
-				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
+				// WinUI replaces all \r's and and \r\n's by \r. This is annoying because
+				// the _pendingSelection uses indices before this removal.
+				var builder = new StringBuilder();
+				for (int i = 0; i < baseString.Length; i++)
+				{
+					var c = baseString[i];
+					if (c == '\n')
+					{
+						builder.Append('\r');
+					}
+					else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
+					{
+						if (_pendingSelection is { } selection)
+						{
+							var (start, end) = (selection.start, selection.start + selection.length);
+							if (start > i)
+							{
+								start--;
+							}
+							if (end > i)
+							{
+								end--;
+							}
+							_pendingSelection = (start, end - start);
+						}
+
+						builder.Append('\r');
+						i++;
+					}
+					else
+					{
+						builder.Append(c);
+					}
+				}
+
+				baseString = builder.ToString();
+			}
+#else
+			if (!AcceptsReturn)
+			{
+				baseString = GetFirstLine(baseString);
 			}
 #endif
 
