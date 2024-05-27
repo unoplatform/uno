@@ -37,7 +37,7 @@
 	</Target>
 
 	<Target Name="InjectRemoteControlHost"
-			BeforeTargets="BeforeBuild"
+			BeforeTargets="AfterBuild"
 			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(IsRunningInsideVisualStudio)'!='true'">
 
 		<ItemGroup>
