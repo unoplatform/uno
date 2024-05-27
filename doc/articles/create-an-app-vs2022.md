@@ -35,16 +35,23 @@ To create an Uno Platform app:
 
 ## Debug the App
 
-### [**Windows**](#tab/windows)
+### [**Desktop**](#tab/desktop)
 
-To run the **Windows** (WinAppSDK) head:
+To debug your Uno Platform **Desktop** target:
 
-- In the debugger toolbar, click the down arrow to select **MyApp (WinAppSDK Unpackaged)**
+- Directly on Windows:
+  - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop)`
 
-    ![Visual Studio - Select the WinappSDK profile](getting-started/wizard/assets/winappsdk-debugger-dropdown.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-debug-windows.png)
 
-- Press the `MyApp (WinAppSDK Unpackaged)` button to deploy the app
-- If you've not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
+  - Press `F5` to debug.
+
+- Using WSL with X11:
+  - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop WSL2)`
+
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-wsl2-debug-windows.png)
+
+  - Then press `F5` or the green arrow to start debugging the app
 
 ### [**WebAssembly**](#tab/wasm)
 
@@ -63,6 +70,20 @@ To run the ASP.NET Hosted **WebAssembly** (Server) head, if you've selected the 
 
 - Right-click on the `MyApp.Server` project, select **Set as startup project**
 - Press the `MyApp.Server` button to deploy the app
+
+### [**Windows**](#tab/windows)
+
+To run the **Windows** (WinAppSDK) head:
+
+- In the debugger toolbar, click the down arrow to select **MyApp (WinAppSDK Unpackaged)**
+
+    ![Visual Studio - Select the WinappSDK profile](getting-started/wizard/assets/winappsdk-debugger-dropdown.png)
+
+- Press the `MyApp (WinAppSDK Unpackaged)` button to deploy the app
+- If you have not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
+
+> [!INFO]
+> If you're not able or willing to turn on the Windows developer mode, [read this section](xref:Uno.UI.CommonIssues.vs2022#unable-to-select-the-myapp-unpackaged-winappsdk-profile).
 
 ### [**iOS**](#tab/iOS)
 
@@ -93,24 +114,6 @@ To debug the **Android** platform:
 - Select an active device in the "Device" sub-menu
     > [!NOTE]
     > If no android devices are available, a Visual Studio 17.7+ issue may require unloading/reloading the project. Right-click on the `MyApp` project and select **Unload Project** then **Load project**.
-
-### [**Desktop**](#tab/desktop)
-
-To debug your Uno Platform **Desktop** target:
-
-- Directly on Windows:
-  - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop)`
-
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-debug-windows.png)
-
-  - Press `F5` to debug.
-
-- Using WSL with X11:
-  - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop WSL2)`
-
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-wsl2-debug-windows.png)
-
-  - Then press `F5` or the green arrow to start debugging the app
 
 ***
 
