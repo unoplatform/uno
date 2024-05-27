@@ -339,7 +339,7 @@ public partial class UIElement : DependencyObject
 			buttons == WindowManagerInterop.HtmlPointerButtonsState.None &&
 			args.deviceType == (int)PointerDeviceType.Mouse)
 		{
-			// This sceanrio should technically not occur, but it may happen for macOS devices with the trackpad tap to click setting
+			// This scenario should technically not occur, but it may happen for macOS devices with the trackpad tap to click setting
 			// enabled (see discussion in issue #16076). To work around this, we use the buttonUpdate value which seems to be reliable.
 			buttons = buttonUpdate switch
 			{
