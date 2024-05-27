@@ -409,11 +409,12 @@ namespace Microsoft.UI.Xaml.Controls
 				var builder = new StringBuilder();
 				for (int i = 0; i < baseString.Length; i++)
 				{
-					if (baseString[i] == '\n')
+					var c = baseString[i];
+					if (c == '\n')
 					{
 						builder.Append('\r');
 					}
-					else if (baseString[i] == '\r' && baseString[i + 1] == '\n')
+					else if (c == '\r' &&  i + 1 < baseString.Length && baseString[i + 1] == '\n')
 					{
 						if (_pendingSelection is { } selection)
 						{
@@ -431,9 +432,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 						builder.Append('\r');
 						i++;
-
+					}
+					else
+					{
+						builder.Append(c);
 					}
 				}
+
+				baseString = builder.ToString();
 			}
 #else
 			if (!AcceptsReturn)
