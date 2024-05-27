@@ -1570,7 +1570,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Copy_Paste()
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Copy_Paste(bool useInsert)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1595,7 +1597,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			void Paste()
+			{
+				if (useInsert)
+                {
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, VirtualKeyModifiers.Shift));
+                }
+                else
+                {
+                	SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+                }
+			}
+
+			void Copy()
+			{
+				if (useInsert)
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, VirtualKeyModifiers.Control));
+				}
+				else
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control, unicodeKey: 'c'));
+				}
+			}
+
+			Paste();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1603,7 +1629,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(2, 4);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control, unicodeKey: 'c'));
+			Copy();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1613,7 +1639,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(SUT.Text.Length - 1, 0);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			Paste();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1623,7 +1649,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(6, 3);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			Paste();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
