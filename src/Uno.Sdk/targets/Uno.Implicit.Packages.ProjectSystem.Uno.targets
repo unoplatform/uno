@@ -8,7 +8,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;')) OR $(UnoFeatures.Contains(';toolkit;'))">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND '$(IsPackable)' != 'true'">
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;')) OR $(UnoFeatures.Contains(';toolkit;'))" />
 		<_UnoProjectSystemPackageReference Include="Svg.Skia" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'" />
 	</ItemGroup>
 </Project>
