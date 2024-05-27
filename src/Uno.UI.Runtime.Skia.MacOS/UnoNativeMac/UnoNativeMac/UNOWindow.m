@@ -716,6 +716,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
                 }
             }
 #endif
+            data.pointerDeviceType = pdt;
             // mouse
             data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
 
