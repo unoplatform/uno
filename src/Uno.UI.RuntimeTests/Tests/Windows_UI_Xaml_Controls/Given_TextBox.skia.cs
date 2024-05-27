@@ -3484,6 +3484,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Variable_Width_Tab()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "\tabc"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			SUT.Text = "a\tabc";
+			await WindowHelper.WaitForIdle();
+			var bitmap2 = await UITestHelper.ScreenShot(SUT);
+
+			for (var x = 20; x < bitmap.Width; x++)
+			{
+				for (var y = 0; y < bitmap.Height; y++)
+				{
+					Assert.AreEqual(bitmap.GetPixel(x, y), bitmap2.GetPixel(x, y));
+				}
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Tab_Forces_NewLine_When_Not_Enough_Width()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 120,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "\t"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			var height = (await UITestHelper.Load(SUT)).Height;
+
+			SUT.Text = "\t\t";
+			await WindowHelper.WaitForIdle();
+			Assert.AreNotEqual(height, SUT.GetAbsoluteBounds().Height);
+		}
+
+		[TestMethod]
 		public async Task When_FeatureConfiguration_Changes()
 		{
 			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
