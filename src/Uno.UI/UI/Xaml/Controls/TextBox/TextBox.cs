@@ -414,7 +414,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						builder.Append('\r');
 					}
-					else if (c == '\r' &&  i + 1 < baseString.Length && baseString[i + 1] == '\n')
+					else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
 					{
 						if (_pendingSelection is { } selection)
 						{
