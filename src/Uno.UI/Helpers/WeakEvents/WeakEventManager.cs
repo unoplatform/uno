@@ -4,6 +4,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -105,7 +106,7 @@ internal sealed class WeakEventManager
 #if NET8_0_OR_GREATER
 				handlers = handlers![..];
 #else
-				handlers = handlers!.ToArray();
+				handlers = handlers!.ToList();
 #endif
 			}
 
@@ -127,7 +128,7 @@ internal sealed class WeakEventManager
 #if NET8_0_OR_GREATER
 				handlers = handlers[..];
 #else
-				handlers = handlers!.ToArray();
+				handlers = handlers!.ToList();
 #endif
 			}
 
