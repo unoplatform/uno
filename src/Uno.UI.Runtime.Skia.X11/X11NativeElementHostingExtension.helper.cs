@@ -61,8 +61,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			else if (filename == "alacritty")
 			{
 				title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
-                process.StartInfo.ArgumentList.Add("--title");
-                process.StartInfo.ArgumentList.Add(title);
+				process.StartInfo.ArgumentList.Add("--title");
+				process.StartInfo.ArgumentList.Add(title);
 			}
 			else if (filename == "xterm")
 			{
