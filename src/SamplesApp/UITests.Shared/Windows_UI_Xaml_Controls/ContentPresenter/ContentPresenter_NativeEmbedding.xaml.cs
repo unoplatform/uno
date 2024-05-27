@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[Sample("ContentPresenter", Name = "ContentPresenter_NativeEmbedding", IsManualTest = true)]
+	[Sample("ContentPresenter", Name = "ContentPresenter_NativeEmbedding", IsManualTest = true, Description = "This sample showcases embedding native elements into an Uno window. On X11, this sample needs Xterm to be installed and will need a few seconds to load. You should test that clipping scrolling works correctly with native elements and that opening the flyout will hide elements underneath it.")]
 	public sealed partial class ContentPresenter_NativeEmbedding : UserControl
 	{
 		public ContentPresenter_NativeEmbedding()

@@ -22,12 +22,14 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	{
 		if (XamlRoot is { } xamlRoot && X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			if (!Exists("mpv") && !Exists("vlc"))
+			if (!Exists("mpv") && !Exists("vlc") && !Exists("xterm"))
 			{
 				return null;
 			}
 
-			var filename = Exists("mpv") ? "mpv" : "vlc";
+			// xterm is by far the most reliable since it opens up quickly. X11 doesn't have a nice way of
+			// waiting for a specific window to be present, so we make do with a Thread.Sleep
+			var filename = Exists("xterm") ? "xterm" : (Exists("vlc") ? "vlc" : "mpv");
 
 			// Note: xterm will more than likely crash. Use alacritty instead if you want to test embedding a terminal.
 			var process = new Process
@@ -69,6 +71,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 				process.StartInfo.ArgumentList.Add("XTerm.vt100.allowTitleOps: false");
 				process.StartInfo.ArgumentList.Add("-T");
 				process.StartInfo.ArgumentList.Add(title);
+				process.StartInfo.ArgumentList.Add("-e");
+				process.StartInfo.ArgumentList.Add("top");
 			}
 			else
 			{
@@ -83,19 +87,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_ = XLib.XFree(children);
 
 			// Wait for the window to open.
-			IntPtr window = IntPtr.Zero;
-			SpinWait.SpinUntil(() =>
-			{
-				window = FindWindowByTitle(_display, root, title);
-				if (window == IntPtr.Zero)
-				{
-					return false;
-				}
-
-				XWindowAttributes attributes = default;
-				var _ = XLib.XGetWindowAttributes(_display, window, ref attributes);
-				return attributes.map_state == MapState.IsViewable;
-			});
+			Thread.Sleep(500);
+			IntPtr window = FindWindowByTitle(_display, root, title);
 
 			if (window == IntPtr.Zero)
 			{

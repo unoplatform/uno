@@ -16,32 +16,45 @@
 		                                          VisibilityIfTrue="Visible" />
 	</UserControl.Resources>
 	<skia:ScrollViewer Height="300">
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-			<StackPanel Grid.Column="0">
-				<ListView ItemsSource="0123456">
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<local:NativeControlHostWithText Width="300" Height="200" Text="{Binding}" />
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</StackPanel>
-			<StackPanel Grid.Column="1">
-				<ToggleSwitch x:Name="ToggleSwitch" IsOn="True">Visible</ToggleSwitch>
-				<Slider x:Name="slider" Minimum="0" Maximum="1" Value="1" StepFrequency="0.01"></Slider>
-				<TextBlock>Opacity</TextBlock>
-				<local:NativeControlHostWithText x:Name="visibleHost"
-												 Width="300"
-												 Height="200"
-				                                 Opacity="{Binding Value, ElementName=slider}"
-				                                 Visibility="{Binding IsOn, ElementName=ToggleSwitch, Converter={StaticResource FromNullableBoolToVisibilityConverter}}"
-				                                 Text="I'm visible if you can see me" />
-			</StackPanel>
-		</Grid>
+		<StackPanel>
+			<Button x:Name="FullFlyoutButton"
+					Content="Show a Flyout. The native elements should NOT be visible through the flyout.">
+				<Button.Flyout>
+					<Flyout Placement="Full">
+						<Border BorderBrush="Tomato"
+								BorderThickness="2"
+								Background="Gray">
+						</Border>
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<ListView ItemsSource="0123456">
+						<ListView.ItemTemplate>
+							<DataTemplate>
+								<local:NativeControlHostWithText Width="300" Height="200" Text="{Binding}" />
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</StackPanel>
+				<StackPanel Grid.Column="1">
+					<ToggleSwitch x:Name="ToggleSwitch" IsOn="True">Visible</ToggleSwitch>
+					<Slider x:Name="slider" Minimum="0" Maximum="1" Value="1" StepFrequency="0.01"></Slider>
+					<TextBlock>Opacity</TextBlock>
+					<local:NativeControlHostWithText x:Name="visibleHost"
+													 Width="300"
+													 Height="200"
+					                                 Opacity="{Binding Value, ElementName=slider}"
+					                                 Visibility="{Binding IsOn, ElementName=ToggleSwitch, Converter={StaticResource FromNullableBoolToVisibilityConverter}}"
+					                                 Text="I'm visible if you can see me" />
+				</StackPanel>
+			</Grid>
+		</StackPanel>
 	</skia:ScrollViewer>
 	<not_skia:TextBlock>This sample is only supported on platforms with native embedding support.</not_skia:TextBlock>
 </UserControl>
