@@ -116,6 +116,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			set.Add(this);
 
 			xamlRoot.InvalidateRender += UpdateLayout;
+			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
 		}
 		else
 		{
@@ -160,6 +161,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		_lastArrangeRect = arrangeRect;
 		_lastClipRect = clipRect;
 		_layoutDirty = true;
+		XamlRoot?.QueueInvalidateRender();
 		// we don't update the layout right now. We wait for the next render to happen, as
 		// xlib calls are expensive and it's better to update the layout once at the end when multiple arrange
 		// calls are fired sequentially.
