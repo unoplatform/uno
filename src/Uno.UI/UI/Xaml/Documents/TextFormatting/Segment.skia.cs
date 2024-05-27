@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		/// </summary>
 		public bool WordBreakAfter { get; }
 
-		public bool IsTab => Text.Length == 1 && Text [0] == '\t';
+		public bool IsTab => Text.Length == 1 && Text[0] == '\t';
 
 		/// <summary>
 		/// Gets the section of text of the Run element this segment represents. Throws if this segment represents a LineBreak element.
