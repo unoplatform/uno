@@ -169,6 +169,7 @@ namespace Microsoft.UI.Xaml.Documents
 			bool previousLineWrapped = false;
 
 			float availableWidth = wrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
+			availableWidth -= CaretThickness; // In case the text width is _exactly_ equal to availableWidth, the caret would not be visible at the end without this line
 			float widestLineWidth = 0, widestLineHeight = 0;
 
 			float x = 0;
