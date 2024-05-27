@@ -70,15 +70,10 @@ namespace Microsoft.UI.Xaml.Documents
 				else
 				{
 					// Count leading spaces
-					var c = text[i];
-					while (i < text.Length && char.IsWhiteSpace(c) && !Unicode.IsLineBreak(c) && c != '\t')
+					while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
 					{
 						leadingSpaces++;
 						i++;
-						if (i < text.Length)
-						{
-							c = text[i];
-						}
 					}
 
 					// Keep the segment going until we hit a word break opportunity or a line break
@@ -91,7 +86,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 						// Since tabs require special handling, we put tabs in separate segments.
 						// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
-						if (c == '\t')
+						if (text[i] == '\t')
 						{
 							wordBreakAfter = true;
 							i++;
@@ -100,7 +95,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 						if (i + 1 < text.Length && text[i + 1] == '\t')
 						{
-							if (char.IsWhiteSpace(c))
+							if (char.IsWhiteSpace(text[i]))
 							{
 								trailingSpaces++;
 							}
@@ -111,7 +106,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 						if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
 						{
-							if (char.IsWhiteSpace(c))
+							if (char.IsWhiteSpace(text[i]))
 							{
 								trailingSpaces++;
 							}
@@ -121,11 +116,11 @@ namespace Microsoft.UI.Xaml.Documents
 						}
 
 						if (i + 1 < text.Length
-							&& char.IsSurrogate(c)
-							&& char.IsSurrogatePair(c, text[i + 1]))
+							&& char.IsSurrogate(text[i])
+							&& char.IsSurrogatePair(text[i], text[i + 1]))
 						{
 							var fontManager = SKFontManager.Default;
-							var codepoint = (int)((c - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
+							var codepoint = (int)((text[i] - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
 							symbolTypeface = fontManager
 								.MatchCharacter(codepoint);
 
@@ -149,10 +144,10 @@ namespace Microsoft.UI.Xaml.Documents
 							}
 							break;
 						}
-						else if (!fontInfo.SKFont.ContainsGlyph(c))
+						else if (!fontInfo.SKFont.ContainsGlyph(text[i]))
 						{
 							symbolTypeface = SKFontManager.Default
-								.MatchCharacter(c);
+								.MatchCharacter(text[i]);
 
 							if (symbolTypeface is null)
 							{
@@ -162,7 +157,7 @@ namespace Microsoft.UI.Xaml.Documents
 								// evaluation.
 								if (this.Log().IsEnabled(LogLevel.Trace))
 								{
-									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)c:X4}, {c})");
+									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)text[i]:X4}, {text[i]})");
 								}
 
 								i++;
@@ -184,7 +179,7 @@ namespace Microsoft.UI.Xaml.Documents
 								break;
 							}
 
-							if (char.IsWhiteSpace(c) && c != '\t')
+							if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
 							{
 								trailingSpaces++;
 								i++;
@@ -239,7 +234,7 @@ namespace Microsoft.UI.Xaml.Documents
 						buffer.ReverseClusters();
 					}
 
-					var glyphs = GetGlyphs(buffer, Text.AsSpan(s, length), fontInfo, s, textSizeX, textSizeY);
+					var glyphs = GetGlyphs(buffer, s, textSizeX, textSizeY);
 
 					Debug.Assert(!(Text.AsSpan(s, length).Contains('\t')) || length == 1);
 					if (length == 1 && text[s] == '\t')
@@ -285,7 +280,7 @@ namespace Microsoft.UI.Xaml.Documents
 				return false;
 			}
 
-			static List<GlyphInfo> GetGlyphs(Buffer buffer, ReadOnlySpan<char> textSpan, FontDetails fontInfo, int clusterStart, float textSizeX, float textSizeY)
+			static List<GlyphInfo> GetGlyphs(Buffer buffer, int clusterStart, float textSizeX, float textSizeY)
 			{
 				int length = buffer.Length;
 				var hbGlyphs = buffer.GetGlyphInfoSpan();
