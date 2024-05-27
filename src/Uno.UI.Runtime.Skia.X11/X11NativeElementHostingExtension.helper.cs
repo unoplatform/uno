@@ -22,51 +22,58 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	{
 		if (XamlRoot is { } xamlRoot && X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			if (!Exists("mpv"))
-			// if (!Exists("vlc"))
-			// if (!Exists("alacritty"))
-			// if (!Exists("xterm"))
+			if (!Exists("mpv") && !Exists("vlc"))
 			{
 				return null;
 			}
+
+			var filename = Exists("mpv") ? "mpv" : "vlc";
 
 			// Note: xterm will more than likely crash. Use alacritty instead if you want to test embedding a terminal.
 			var process = new Process
 			{
 				StartInfo = new ProcessStartInfo
 				{
-					FileName = "mpv",
-					// FileName = "vlc",
-					// FileName = "alacritty",
-					// FileName = "xterm",
+					FileName = filename,
 					UseShellExecute = false
 				}
 			};
 
-			// mpv
-			var title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
-			process.StartInfo.ArgumentList.Add("--keep-open=always");
-			process.StartInfo.ArgumentList.Add($"--title={title}");
-			process.StartInfo.ArgumentList.Add(SampleVideoLink);
 
-			// vlc
-			// var title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
-			// process.StartInfo.ArgumentList.Add(SampleVideoLink);
-			// process.StartInfo.ArgumentList.Add("--meta-title");
-			// process.StartInfo.ArgumentList.Add(title);
-			// title += " - VLC media player";
-
-			// alacritty
-			// var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
-			// process.StartInfo.ArgumentList.Add("--title");
-			// process.StartInfo.ArgumentList.Add(title);
-
-			// xterm
-			// var title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
-			// process.StartInfo.ArgumentList.Add("-xrm");
-			// process.StartInfo.ArgumentList.Add("XTerm.vt100.allowTitleOps: false");
-			// process.StartInfo.ArgumentList.Add("-T");
-			// process.StartInfo.ArgumentList.Add(title);
+			string title;
+			if (filename == "vlc")
+			{
+				title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
+				process.StartInfo.ArgumentList.Add(SampleVideoLink);
+				process.StartInfo.ArgumentList.Add("--meta-title");
+				process.StartInfo.ArgumentList.Add(title);
+				title += " - VLC media player";
+			}
+			else if (filename == "mpv")
+			{
+				title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
+				process.StartInfo.ArgumentList.Add("--keep-open=always");
+				process.StartInfo.ArgumentList.Add($"--title={title}");
+				process.StartInfo.ArgumentList.Add(SampleVideoLink);
+			}
+			else if (filename == "alacritty")
+			{
+				title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
+                process.StartInfo.ArgumentList.Add("--title");
+                process.StartInfo.ArgumentList.Add(title);
+			}
+			else if (filename == "xterm")
+			{
+				title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
+				process.StartInfo.ArgumentList.Add("-xrm");
+				process.StartInfo.ArgumentList.Add("XTerm.vt100.allowTitleOps: false");
+				process.StartInfo.ArgumentList.Add("-T");
+				process.StartInfo.ArgumentList.Add(title);
+			}
+			else
+			{
+				return null;
+			}
 
 			process.Start();
 
