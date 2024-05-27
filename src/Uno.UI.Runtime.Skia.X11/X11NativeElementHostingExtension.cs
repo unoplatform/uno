@@ -53,50 +53,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public bool IsNativeElement(object content)
-	{
-		if (content is not X11NativeWindow nativeWindow)
-		{
-			return false;
-		}
-
-		using var lockDiposable = X11Helper.XLock(_display);
-
-		_ = XLib.XQueryTree(_display, XLib.XDefaultRootWindow(_display), out IntPtr root, out _, out var children, out _);
-		_ = XLib.XFree(children);
-
-		// _NET_CLIENT_LIST only identifies top-level windows, not subwindows.
-		var status = XLib.XGetWindowProperty(
-			_display,
-			root,
-			X11Helper.GetAtom(_display, X11Helper._NET_CLIENT_LIST),
-			0,
-			new IntPtr(0x7fffffff),
-			false,
-			X11Helper.AnyPropertyType,
-			out _,
-			out _,
-			out var length,
-			out _,
-			out IntPtr windowArray);
-
-		if (status == X11Helper.Success)
-		{
-			unsafe
-			{
-				var span = new Span<IntPtr>(windowArray.ToPointer(), (int)length);
-				foreach (var window in span)
-				{
-					if (window == nativeWindow.WindowId)
-					{
-						return true;
-					}
-				}
-			}
-		}
-
-		return FindWindowById(_display, nativeWindow.WindowId, root) != IntPtr.Zero;
-	}
+	public bool IsNativeElement(object content) => content is X11NativeWindow;
 
 	public void AttachNativeElement(object content)
 	{
