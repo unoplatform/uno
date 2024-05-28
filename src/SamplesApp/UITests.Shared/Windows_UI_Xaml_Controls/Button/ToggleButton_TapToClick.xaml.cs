@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models;
 using Uno.UI.Samples.Controls;
 
-namespace UITests.Shared.Windows_UI_Xaml_Controls.ButtonTestsControl;
+namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl;
 
 [Sample(
 	"Buttons",
