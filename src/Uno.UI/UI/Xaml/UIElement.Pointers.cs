@@ -927,9 +927,13 @@ namespace Microsoft.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerDown(PointerRoutedEventArgs args) => OnPointerDown(args);
+		internal bool OnNativePointerDown(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		{
+			// If 2+ pointer buttons are pressed, we only respond to the first.
+			return _staticPressedPointers.Add(args.Pointer.PointerId) && OnPointerDown(args, ctx);
+		}
 
-		internal bool OnPointerDown(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		private bool OnPointerDown(PointerRoutedEventArgs args, BubblingContext ctx)
 		{
 			_isGestureCompleted = false;
 
@@ -1052,11 +1056,18 @@ namespace Microsoft.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerUp(PointerRoutedEventArgs args) => OnPointerUp(args);
-
-		internal bool OnPointerUp(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnNativePointerUp(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
-			var handledInManaged = false;
+			// We might get a PointerUp if a button was released while another button is still pressed.
+			// In that case, we ignore the PointerUp. In other words, we only respond to the last
+			// PointerUp.
+			return !args.GetCurrentPoint(null).Properties.HasPressedButton &&
+				_staticPressedPointers.Remove(args.Pointer.PointerId) &&
+				OnPointerUp(args, ctx);
+		}
+
+		internal bool OnPointerUp(PointerRoutedEventArgs args, BubblingContext ctx)
+		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, out var isOver);
 			if (!isOverOrCaptured)
 			{
@@ -1075,7 +1086,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
 			}
 
-			handledInManaged |= SetPressed(args, false, ctx);
+			var handledInManaged = SetPressed(args, false, ctx);
 
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
 			//		 are fired between those events.
@@ -1279,7 +1290,8 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		#region Pointer pressed state (Updated by the partial API OnNative***, should not be updated externaly)
-		private readonly HashSet<uint> _pressedPointers = new();
+		private readonly HashSet<uint> _pressedPointers = new(); // per-element. adds a pointer when the pointer started being pressed on the element
+		private static readonly HashSet<uint> _staticPressedPointers = new(); // global. pointers get added/removed simply as they get pressed/released
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
@@ -1312,8 +1324,6 @@ namespace Microsoft.UI.Xaml
 		/// Same thing if you release left first (press left => press right => release left => release right), and for the pen's barrel button.
 		/// </remarks>
 		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
-
-		internal bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, BubblingContext ctx)
 		{
