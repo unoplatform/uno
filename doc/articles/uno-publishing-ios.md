@@ -32,7 +32,7 @@ Then, you'll need to setup your `csproj` to include the signing information:
 
 To build your app from the CLI on macOS:
 
-- Open a terminal, command line or powershell
+- Open a terminal, command line, or powershell
 - Navigate to your `csproj` folder
 - Publish the app using:
 

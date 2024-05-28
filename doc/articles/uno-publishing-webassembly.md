@@ -19,10 +19,10 @@ You can view more on the [WebAssembly Bootstrapper](xref:UnoWasmBootstrap.Overvi
 
 To build your app for WebAssembly:
 
-- In the debugger toolbar drop down, select the `net8.0-browserwasm` target framework
-- Once the project has reloaded, right click on the project and select **Publish**
+- In the debugger toolbar drop-down, select the `net8.0-browserwasm` target framework
+- Once the project has reloaded, right-click on the project and select **Publish**
 - Select the appropriate target for your publication, this example will use the **Folder**, then click **Next**
-- Choose an output folder for the publish output, then click **Close**.
+- Choose an output folder for the published output, then click **Close**.
 - In the opened editor, on the top right, click the **Publish** button
 - Once the build is done, the output is located in the `wwwroot` folder
 
@@ -30,9 +30,9 @@ Once done, you can head over to [publishing section](xref:uno.publishing.webasse
 
 ### Packaging your app using the CLI
 
-To build your app from the CLI, on Windows, Linux or macOS:
+To build your app from the CLI, on Windows, Linux, or macOS:
 
-- Open a terminal, command line or powershell
+- Open a terminal, command line, or powershell
 - Navigate to your `csproj` folder
 - Publish the app using:
 
