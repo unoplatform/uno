@@ -1,8 +1,16 @@
-﻿namespace Windows.Storage;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-partial class ApplicationDataContainerSettings
+namespace Uno.Storage;
+
+partial class NativeApplicationSettings
 {
-	partial void InitializePartial() => ReadFromLegacyFile();
+	private static partial bool SupportsLocality() => true;
+
+	partial void InitializePlatform() => ReadFromLegacyFile();
 
 	public object? this[string key]
 	{
@@ -181,7 +189,7 @@ partial class ApplicationDataContainerSettings
 	}
 }
 
-class ApplicationDataContainerInterop
+class NativeApplicationSettingsInterop
 {
 	#region TryGetValue
 	internal static bool TryGetValue(ApplicationDataLocality locality, string key, out string? value)

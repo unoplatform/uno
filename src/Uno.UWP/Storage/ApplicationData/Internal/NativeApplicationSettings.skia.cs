@@ -1,19 +1,23 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Uno.Foundation.Logging;
+using Windows.Storage;
 
-namespace Windows.Storage;
+namespace Uno.Storage;
 
-partial class ApplicationDataContainerSettings
+partial class NativeApplicationSettings
 {
+	private static partial bool SupportsLocality() => true;
+
 	private readonly Dictionary<string, string> _values = new();
 	private readonly string _folderPath;
 	private readonly string _filePath;
 
-	public FilePropertySet(ApplicationData owner, ApplicationDataLocality locality)
+	partial void (ApplicationData owner, ApplicationDataLocality locality)
 	{
 		var settingsFolderPath = owner.GetSettingsFolderPath();
 
