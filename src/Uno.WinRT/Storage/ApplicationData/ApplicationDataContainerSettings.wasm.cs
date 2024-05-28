@@ -115,8 +115,6 @@ partial class ApplicationDataContainerSettings
 		return ret;
 	}
 
-	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
-
 	public bool TryGetValue(string key, out object? value)
 	{
 		if (ApplicationDataContainerInterop.TryGetValue(_locality, key, out var innervalue))
