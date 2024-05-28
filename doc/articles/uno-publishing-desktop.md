@@ -19,7 +19,7 @@ To publish your app with Visual Studio 2022:
 - Once the project has reloaded, right click on the project and select **Publish**
 - Select the appropriate target for your publication, this example will use the **Folder**, then click **Next**
 - Choose an output folder for the publish output, then click **Close**.
-- In the opened editor, click the **Configuration** "pen" to edit the configration
+- In the opened editor, click the **Configuration** "pen" to edit the configuration
 - In the opened popup, ensure that **Target Framework** is set to `net8.0-desktop`, then click **Save**
 - On the top right, click the **Publish** button
 - Once the build is done, the output is located in the publish folder
