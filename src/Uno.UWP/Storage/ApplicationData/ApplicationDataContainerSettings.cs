@@ -1,81 +1,37 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage;
 
+/// <summary>
+/// Provides access to the settings in a settings container. The ApplicationDataContainer.Values property returns an object that can be cast to this type.
+/// </summary>
 public partial class ApplicationDataContainerSettings : IPropertySet, IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
 {
+	private readonly ApplicationDataContainer _container;
+	private readonly ApplicationDataLocality _locality;
+
 	internal ApplicationDataContainerSettings(ApplicationDataContainer container, ApplicationDataLocality locality)
 	{
+		_container = container ?? throw new ArgumentNullException(nameof(container));
+		_locality = locality;
+
+		InitializePlatform();
 	}
 
-	public uint Size
-	{
-		get
-		{
-			throw new global::System.NotImplementedException("The member uint ApplicationDataContainerSettings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ApplicationDataContainerSettings.Size");
-		}
-	}
+	partial void InitializePlatform();
 
-	public event global::Windows.Foundation.Collections.MapChangedEventHandler<string, object> MapChanged;
+	/// <summary>
+	/// Occurs when the map changes.
+	/// </summary>
+	public event MapChangedEventHandler<string, object> MapChanged;
 
-	public void Add(string key, object value)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public bool ContainsKey(string key)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public bool Remove(string key)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public bool TryGetValue(string key, out object value)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public object this[string key]
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-		set
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-
-	public global::System.Collections.Generic.ICollection<string> Keys
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-
-	public global::System.Collections.Generic.ICollection<object> Values
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-
-	public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public void Clear()
-	{
-		throw new global::System.NotSupportedException();
-	}
+	/// <summary>
+	/// Gets the number of related application settings.
+	/// </summary>
+	public uint Size => (uint)Count;
 
 	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
 	{
@@ -87,34 +43,7 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		throw new global::System.NotSupportedException();
 	}
 
-	public bool Remove(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
+	public bool IsReadOnly => false;
 
-	public int Count
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-
-	public bool IsReadOnly
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-
-	public IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	IEnumerator IEnumerable.GetEnumerator()
-	{
-		throw new global::System.NotSupportedException();
-	}
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
