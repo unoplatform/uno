@@ -1559,6 +1559,77 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Multiple_Pointer_Buttons_Pressed(bool releaseRightFirst)
+		{
+			var SUT = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 100,
+				Height = 100
+			};
+
+			var pointerDown = 0;
+			var pointerUp = 0;
+			var rightTapped = 0;
+			SUT.PointerPressed += (_, _) => pointerDown++;
+			SUT.PointerReleased += (_, _) => pointerUp++;
+			SUT.RightTapped += (_, _) => rightTapped++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Press();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			mouse.PressRight();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			if (releaseRightFirst)
+			{
+				mouse.ReleaseRight();
+			}
+			else
+			{
+				mouse.Release();
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			if (releaseRightFirst)
+			{
+				mouse.Release();
+			}
+			else
+			{
+				mouse.ReleaseRight();
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(1, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
 #if !__SKIA__
 		[Ignore("Hittesting is only accurate in this case on skia.")]
 #endif
