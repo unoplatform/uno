@@ -62,6 +62,10 @@ public partial class ApplicationDataContainer : IDisposable
 
 	public void DeleteContainer(string name)
 	{
+		if (!_containers.Value.ContainsKey(name))
+		{
+			throw new KeyNotFoundException("Container does not exist.");
+		}
 		_containers.Value.Remove(name);
 	}
 
