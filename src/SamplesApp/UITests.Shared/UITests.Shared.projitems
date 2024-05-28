@@ -4194,6 +4194,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Pointers\PointerEventArgsTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\XamlUICommandTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8098,6 +8102,9 @@
       <DependentUpon>Keyboard_Showing_Dismissal.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Models\CopyToClipboardViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Pointers\PointerEventArgsTests.xaml.cs">
+      <DependentUpon>PointerEventArgsTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Pointers\DragCoordinates_Automated.xaml.cs">
       <DependentUpon>DragCoordinates_Automated.xaml</DependentUpon>
     </Compile>
