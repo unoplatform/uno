@@ -2,9 +2,6 @@
 
 partial class ApplicationDataContainerSettings
 {
-	private ISharedPreferences CreatePreferences()
-		=> PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
-
 	public object this[string key]
 	{
 		get
@@ -134,8 +131,6 @@ partial class ApplicationDataContainerSettings
 		return true;
 	}
 
-	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
-
 	public bool TryGetValue(string key, out object value)
 	{
 		using var preferences = CreatePreferences();
@@ -158,4 +153,7 @@ partial class ApplicationDataContainerSettings
 			.All
 			.GetEnumerator();
 	}
+
+
+	private ISharedPreferences CreatePreferences() => PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
 }

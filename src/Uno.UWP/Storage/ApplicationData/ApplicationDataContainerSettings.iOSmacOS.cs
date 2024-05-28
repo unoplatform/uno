@@ -81,8 +81,6 @@ partial class ApplicationDataContainerSettings
 		return true;
 	}
 
-	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
-
 	public bool TryGetValue(string key, out object value)
 	{
 		if (NSUserDefaults.StandardUserDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
