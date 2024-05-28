@@ -4,6 +4,19 @@ uid: Uno.UI.CommonIssues.AllIDEs
 
 # Issues related to all development environments
 
+## Could not resolve SDK "Uno.Sdk"
+
+This error may happen for multiple reasons:
+
+- Ensure that all [NuGet feeds are authenticated properly](https://learn.microsoft.com/nuget/consume-packages/consuming-packages-authenticated-feeds). When building on the command line, some enterprise NuGet feeds may not be authenticated properly.
+- Ensure that no global package mappings are interfering with nuget restore. To validate that no package mappings are set, on Windows for Visual Studio 2022:
+  - Make a backup copy of `%AppData%\NuGet\NuGet.Config`
+  - Open a visual studio instance that does not have any solution opened
+  - Go to **Tools**, **Options**, **NuGet Package Manager**, then **Package Source Mappings**
+  - If there are entries in the list, click then click **Remove All**
+
+Try building your project again.
+
 ## Runtime error `No parameterless constructor defined for XXXX`
 
 This error is generally caused by some missing [IL Linker](https://github.com/mono/linker/tree/master/docs) configuration on WebAssembly. You may need to add some of your application assemblies in the LinkerConfig.xml file of your project. You can find [additional information in the documentation](features/using-il-linker-webassembly.md).
