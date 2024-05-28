@@ -4,7 +4,7 @@ uid: uno.publishing.windows.sideload.packaged.signed
 
 # Build a signed packaged app
 
-This guide will show how to create an signed packaged app using Windows App SDK.
+This guide will show how to create a signed packaged app using Windows App SDK.
 
 > [!IMPORTANT]
 > Building your app requires using the msbuild command (`dotnet build` is not compatible as of WinAppSDK 1.5).
@@ -38,7 +38,7 @@ In order to build for additional platforms, change the `Platform` parameter to `
 
 ## Considerations for solutions with class library projects
 
-If your app references multiple library projects projects, you will need to split the above build command in two parts, one to restore NuGet packages, and the other one to create the package.
+If your app references multiple library projects, you will need to split the above build command into two parts, one to restore NuGet packages, and the other one to create the package.
 
 To build your solution:
 
@@ -53,7 +53,7 @@ To build your solution:
   </PropertyGroup>
   ```
 
-- Run this command to restore the nuget packages:
+- Run this command to restore the NuGet packages:
 
   ```shell
   msbuild /r /t:Restore /p:Configuration=Release
