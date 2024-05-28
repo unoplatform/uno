@@ -8,9 +8,9 @@ uid: Uno.UI.CommonIssues.AllIDEs
 
 This error may happen for multiple reasons:
 
-- Ensure that all [nuget feeds are authenticated properly](https://learn.microsoft.com/en-us/nuget/consume-packages/consuming-packages-authenticated-feeds). When building on the command line, some enterprise nuget feeds may not be authenticated properly.
+- Ensure that all [NuGet feeds are authenticated properly](https://learn.microsoft.com/nuget/consume-packages/consuming-packages-authenticated-feeds). When building on the command line, some enterprise NuGet feeds may not be authenticated properly.
 - Ensure that no global package mappings are interfering with nuget restore. To validate that no package mappings are set, on Windows for Visual Studio 2022:
-  - Make a backup copy of `%appdata%\NuGet\NuGet.Config`
+  - Make a backup copy of `%AppData%\NuGet\NuGet.Config`
   - Open a visual studio instance that does not have any solution opened
   - Go to **Tools**, **Options**, **NuGet Package Manager**, then **Package Source Mappings**
   - If there are entries in the list, click then click **Remove All**
