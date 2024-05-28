@@ -6,7 +6,7 @@ uid: Uno.UI.CommonIssues.vs2022
 
 ## Unable to select the `MyApp (Unpackaged WinAppSDK)` profile
 
-A [Visual Studio issue](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735) is preventing the Unpackaged profile if iOS/Android target frameworks are present in the project. In order for the unpackaged profile to be selected, you'll need to edit the `Properties/launchSettings.json` file to remove the `MyApp (Packaged WinAppSDK)` entry. Once it is removed, select the `MyApp (Unpackaged WinAppSDK)` the start the debugging of your app.
+A [Visual Studio issue](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735) is preventing the Unpackaged profile if iOS/Android target frameworks are present in the project. In order for the unpackaged profile to be selected, you'll need to edit the `Properties/launchSettings.json` file to remove the `MyApp (Packaged WinAppSDK)` entry. Once it is removed, select the `MyApp (Unpackaged WinAppSDK)` then start the debugging of your app.
 
 ## App builds in Visual Studio 2022 are taking a long time
 
