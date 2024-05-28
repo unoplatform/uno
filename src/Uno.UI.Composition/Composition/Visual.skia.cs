@@ -17,10 +17,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
+	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
+	// If we move to a UI-thread-per-window model, then we need multiple recorders.
+	[ThreadStatic]
+	private static SKPictureRecorder? _recorder;
+
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+	private bool _requiresRepaint;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
+	private SKPicture? _picture;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty;
 
@@ -78,6 +87,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
 		return !matrixDirty;
+	}
+
+	public void InvalidatePaint()
+	{
+		_picture?.Dispose();
+		_picture = null;
+		if (CanPaint)
+		{
+			_requiresRepaint = true;
+			Compositor.InvalidateRender(this);
+		}
 	}
 
 	/// <summary>
@@ -263,7 +283,29 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 			var saveCount = canvas.SaveCount;
 #endif
-			Paint(session);
+			if (_requiresRepaint || RequiresRepaintOnEveryFrame)
+			{
+				_requiresRepaint = false;
+				if (RequiresRepaintOnEveryFrame)
+				{
+					// why bother with a recorder when it's going to get repainted next frame? just paint directly on the surface
+					Paint(session);
+				}
+				else
+				{
+					_recorder ??= new SKPictureRecorder();
+					var recordingCanvas = _recorder.BeginRecording(new SKRect(float.NegativeInfinity, float.NegativeInfinity, float.PositiveInfinity, float.PositiveInfinity));
+					var recorderSession = _factory.CreateInstance(this, session.Surface, recordingCanvas, session.IsPopupSurface, session.Filters, session.RootTransform);
+					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+					Paint(in recorderSession);
+					_picture = _recorder.EndRecording();
+				}
+			}
+
+			if (_picture is { })
+			{
+				session.Canvas.DrawPicture(_picture);
+			}
 #if DEBUG
 			Debug.Assert(saveCount == canvas.SaveCount);
 #endif
@@ -316,6 +358,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	internal List<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+
+	/// <summary>
+	/// Identifies whether a Visual can paint things. For example, ContainerVisuals don't
+	/// paint on their own (even though they might contain other Visuals that do).
+	/// This is a temporary optimization used with <see cref="_requiresRepaint"/> to reduce unnecessary
+	/// SkPicture allocations. In the future, we should accurately set <see cref="_requiresRepaint"/> to
+	/// only be true when we really have something to paint (and that painting needs to be updated).
+	/// </summary>
+	internal virtual bool CanPaint => false;
+	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.

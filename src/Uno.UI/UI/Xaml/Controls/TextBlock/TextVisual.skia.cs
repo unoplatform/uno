@@ -34,5 +34,9 @@ namespace Microsoft.UI.Composition
 				owner.Inlines.Draw(in session);
 			}
 		}
+
+		// We don't bother with calculating the exact scenarios where we CanPaint (e.g.
+		// even with empty Text we might want to draw carets).
+		internal override bool CanPaint => true;
 	}
 }
