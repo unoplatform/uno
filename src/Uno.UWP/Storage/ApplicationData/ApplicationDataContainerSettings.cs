@@ -5,10 +5,10 @@ namespace Windows.Storage;
 
 public partial class ApplicationDataContainerSettings : IPropertySet, IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
 {
-	internal ApplicationDataContainerSettings()
+	internal ApplicationDataContainerSettings(ApplicationDataContainer container, ApplicationDataLocality locality)
 	{
 	}
-	
+
 	public uint Size
 	{
 		get
