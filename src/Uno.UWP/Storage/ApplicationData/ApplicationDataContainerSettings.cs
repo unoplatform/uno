@@ -43,6 +43,8 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		throw new global::System.NotSupportedException();
 	}
 
+	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
+
 	public bool IsReadOnly => false;
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
