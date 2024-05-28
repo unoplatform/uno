@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ButtonTestsControl.ToggleButton_TapToClick"
+    x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.ToggleButton_TapToClick"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
