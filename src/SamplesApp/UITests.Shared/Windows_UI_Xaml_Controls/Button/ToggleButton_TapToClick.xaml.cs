@@ -9,10 +9,11 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl;
 	"Buttons",
 	IgnoreInSnapshotTests = true,
 	IsManualTest = true,
+	UsesFrame = false,
 	Description =
 		"This sample is specifically for macOS laptops. Go to system Settings -> Trackpad and enable Tap to Click feature. " +
 		"Then move mouse over the button and light-tap the trackpad repeatedly. The button should get toggled on each tap reliably.")]
-public sealed partial class ToggleButton_TapToClick : UserControl
+public sealed partial class ToggleButton_TapToClick : Page
 {
 	public ToggleButton_TapToClick()
 	{
