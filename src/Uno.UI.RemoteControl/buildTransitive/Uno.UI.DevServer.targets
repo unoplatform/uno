@@ -48,6 +48,10 @@
 			<Output TaskParameter="Lines" ItemName="_RemoteControlHostContent"/>
 		</ReadLinesFromFile>
 
+		<ItemGroup>
+			<FileWrites Include="$(IntermediateOutputPath)\RemoteControlHost.config" />
+		</ItemGroup>
+
 		<CreateProperty
 			Value="@(_RemoteControlHostContent)">
 			<Output
