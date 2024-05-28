@@ -26,7 +26,7 @@ public partial class ApplicationDataContainer : IDisposable
 		Locality = locality;
 		Name = name;
 
-		InitializePartial(owner);
+		Values = new ApplicationDataContainerSettings(this, locality);
 	}
 
 	internal ApplicationDataContainer(ApplicationDataContainer parent, string name)
@@ -37,8 +37,6 @@ public partial class ApplicationDataContainer : IDisposable
 	}
 
 	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + ContainerPathSeparator + Name;
-
-	partial void InitializePartial(ApplicationData owner);
 
 	public ApplicationDataLocality Locality { get; }
 
