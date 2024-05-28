@@ -1,7 +1,15 @@
-﻿namespace Windows.Storage;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-partial class ApplicationDataContainerSettings
+namespace Uno.Storage;
+
+partial class NativeApplicationSettings
 {
+	private static partial bool SupportsLocality() => false;
+
 	public object this[string key]
 	{
 		get
@@ -21,6 +29,8 @@ partial class ApplicationDataContainerSettings
 			{
 				Remove(key);
 			}
+
+			MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemChanged, key));
 		}
 	}
 
