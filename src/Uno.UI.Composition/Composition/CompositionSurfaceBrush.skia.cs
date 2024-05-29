@@ -11,8 +11,6 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
-		private static readonly float[] _imageFilterKernel = { 0, -.1f, 0, -.1f, 1.4f, -.1f, 0, -.1f, 0, };
-
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
 
 		bool ISizedBrush.IsSized => true;
@@ -83,19 +81,13 @@ namespace Microsoft.UI.Composition
 			{
 				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
 
-				var kernelSize = new SKSizeI(3, 3);
-				var kernelOffset = new SKPointI(1, 1);
-
 				// Adding image downscaling in the shader matrix directly is very blurry
-				// so we use this workaround instead.
+				// since the default downsampler in Skia is really low quality (but really fast).
+				// We force Lanczos instead.
 				// https://github.com/mono/SkiaSharp/issues/520#issuecomment-444973518
-				fillPaint.ImageFilter = SKImageFilter.CreateMatrixConvolution(
-					kernelSize, _imageFilterKernel, 1f, 0f, kernelOffset,
-					SKShaderTileMode.Clamp, false);
-
-				var bitmap = scs.Image.ToSKBitmap();
-				var info = new SKImageInfo((int)backgroundArea.Width, (int)backgroundArea.Height);
-				var resizedBitmap = bitmap.Resize(info, SKFilterQuality.High);
+#pragma warning disable CS0612 // Type or member is obsolete
+				var resizedBitmap = scs.Image.ToSKBitmap().Resize(scs.Image.Info.WithSize((int)backgroundArea.Size.Width, (int)backgroundArea.Size.Height), SKBitmapResizeMethod.Lanczos3.ToFilterQuality());
+#pragma warning restore CS0612 // Type or member is obsolete
 				var resizedImage = SKImage.FromBitmap(resizedBitmap);
 
 				var matrix = Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
