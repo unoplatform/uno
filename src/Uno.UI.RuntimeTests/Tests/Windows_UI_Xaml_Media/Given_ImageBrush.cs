@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_ImageBrushStretch
+	public class Given_ImageBrush
 	{
 		[DataRow(Stretch.Fill, false)]
 		[DataRow(Stretch.Fill, true)]
@@ -105,5 +105,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 21);
 			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 21);
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_DownSampling()
+		{
+			var border = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new ImageBrush
+				{
+					ImageSource = new Uri("ms-appx:/Assets/LargeWisteria.jpg")
+				}
+			};
+
+			var image = new Image
+			{
+				Width = 100,
+				Height = 100,
+				Source = new Uri("ms-appx:/Assets/ResizedLargeWisteria.png")
+			};
+
+			await UITestHelper.Load(new StackPanel
+			{
+				Children =
+				{
+					border,
+					image
+				}
+			});
+			await Task.Delay(1000); // wait for idle might not be enough here
+
+			var bitmap = await UITestHelper.ScreenShot(border);
+			var bitmap2 = await UITestHelper.ScreenShot(image);
+			await ImageAssert.AreEqualAsync(bitmap, bitmap2);
+		}
+#endif
 	}
 }
