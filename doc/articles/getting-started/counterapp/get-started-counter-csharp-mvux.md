@@ -120,7 +120,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
         .HorizontalAlignment(HorizontalAlignment.Center)
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .PlaceholderText("Step Size")
-        .Text(x => x.Binding(() => vm.Step).TwoWay())
+        .Text(x => x.Binding(() => vm.Countable.Step).TwoWay())
     ```
 
 - Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCounter`** task of the **`BindableMainModel`**.
