@@ -11,6 +11,8 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
+		private static readonly float[] _imageFilterKernel = { 0, -.1f, 0, -.1f, 1.4f, -.1f, 0, -.1f, 0, };
+
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
 
 		bool ISizedBrush.IsSized => true;
@@ -81,21 +83,14 @@ namespace Microsoft.UI.Composition
 			{
 				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
 
-				// Adding image downscaling in the shader matrix directly is very blurry
-				// so we use this workaround instead.
-				// https://github.com/mono/SkiaSharp/issues/520#issuecomment-444973518
-				var kernel = new[]
-				{
-					0, -.1f, 0,
-					-.1f, 1.4f, -.1f,
-					0, -.1f, 0,
-				};
-
 				var kernelSize = new SKSizeI(3, 3);
 				var kernelOffset = new SKPointI(1, 1);
 
+				// Adding image downscaling in the shader matrix directly is very blurry
+				// so we use this workaround instead.
+				// https://github.com/mono/SkiaSharp/issues/520#issuecomment-444973518
 				fillPaint.ImageFilter = SKImageFilter.CreateMatrixConvolution(
-					kernelSize, kernel, 1f, 0f, kernelOffset,
+					kernelSize, _imageFilterKernel, 1f, 0f, kernelOffset,
 					SKShaderTileMode.Clamp, false);
 
 				var bitmap = scs.Image.ToSKBitmap();
