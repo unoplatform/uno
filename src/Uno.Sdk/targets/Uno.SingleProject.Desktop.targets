@@ -9,6 +9,11 @@
 		<Version Condition=" $([System.Version]::TryParse ('$(ApplicationDisplayVersion)', $([System.Version]::Parse('1.0')))) ">$(ApplicationDisplayVersion)</Version>
 		<ApplicationDisplayVersion Condition=" '$(ApplicationDisplayVersion)' == '' ">$(Version)</ApplicationDisplayVersion>
 	</PropertyGroup>
+	
+	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' AND $(Optimize) == 'true' ">
+		<OutputType>WinExe</OutputType>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<EmbeddedResource Include="$(DesktopProjectFolder)Package.appxmanifest"
 			Condition="Exists('$(DesktopProjectFolder)Package.appxmanifest')"
