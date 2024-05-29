@@ -169,6 +169,7 @@ namespace Microsoft.UI.Xaml.Documents
 			bool previousLineWrapped = false;
 
 			float availableWidth = wrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
+			availableWidth -= CaretThickness; // In case the text width is _exactly_ equal to availableWidth, the caret would not be visible at the end without this line
 			float widestLineWidth = 0, widestLineHeight = 0;
 
 			float x = 0;
@@ -204,6 +205,11 @@ namespace Microsoft.UI.Xaml.Documents
 						if (maxLines > 0 && _renderLines.Count == maxLines)
 						{
 							goto MaxLinesHit;
+						}
+
+						if (segment.IsTab)
+						{
+							segment.AdjustTabWidth(x);
 						}
 
 						float remainingWidth = availableWidth - x;
@@ -1045,7 +1051,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		/// <summary>
 		/// When we read the length of a span or segment from Skia/HarfBuzz, what we actually get is the
-		/// number of glyphs (i.e. Unicode runes), not the number of c# chars, so surrogate pairs will
+		/// number of glyphs, not the number of c# chars, so surrogate pairs will
 		/// only be counted as a single "unit". This method stretches the range to account for surrogate
 		/// pairs being 2 characters, not one.
 		/// </summary>
