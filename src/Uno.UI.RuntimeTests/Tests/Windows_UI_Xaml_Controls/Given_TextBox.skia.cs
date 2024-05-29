@@ -1865,7 +1865,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(17, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
@@ -1875,7 +1875,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart);
+			Assert.AreEqual(17, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_UpDown_Caret_Position_Preserved()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "abcdef\rabc\rabcdefghi"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select("abcdef".Length, 0);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc\rabcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// hitting down on the last line goes to the end BUT doesn't change the logical caret column position.
+			Assert.AreEqual("abcdef\rabc\rabcdefghi".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc".Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -1909,7 +1962,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(17, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
@@ -1919,7 +1972,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart);
+			Assert.AreEqual(17, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 

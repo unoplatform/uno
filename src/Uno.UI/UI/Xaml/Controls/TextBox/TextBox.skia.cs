@@ -35,6 +35,7 @@ public partial class TextBox
 
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
+	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
 	private bool _showCaret = true;
 
 	private bool _inSelectInternal;
@@ -327,8 +328,9 @@ public partial class TextBox
 		TrySetCurrentlyTyping(false);
 		if (!_inSelectInternal)
 		{
-			// SelectInternal sets _selectionEndsAtTheStart on its own
+			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
 			_selectionEndsAtTheStart = false;
+			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
 		_selection = (start, length);
 		if (!_isSkiaTextBox)
@@ -494,6 +496,8 @@ public partial class TextBox
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
+		var caretXOffset = _caretXOffset;
+
 		_suppressCurrentlyTyping = true;
 		if (text == Text)
 		{
@@ -510,7 +514,16 @@ public partial class TextBox
 			_clearHistoryOnTextChanged = true;
 		}
 		_suppressCurrentlyTyping = false;
+
+		// don't change the caret offset when moving up and down
+		if (args.Key is VirtualKey.Up or VirtualKey.Down)
+		{
+			// this condition is accurate in the case of hitting Down on the last line
+			// or up on the first line. On WinUI, the caret offset won't change.
+			_caretXOffset = caretXOffset;
+		}
 	}
+
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		if (_isPressed)
@@ -568,7 +581,7 @@ public partial class TextBox
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -596,7 +609,7 @@ public partial class TextBox
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -831,6 +844,12 @@ public partial class TextBox
 	{
 		_inSelectInternal = true;
 		_selectionEndsAtTheStart = selectionLength < 0;
+		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
+		{
+			_caretXOffset = selectionLength >= 0 ?
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Left :
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Right;
+		}
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
 		_inSelectInternal = false;
 	}
@@ -1040,9 +1059,9 @@ public partial class TextBox
 	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
 	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
-	/// GetUpResult and GetDownResult care about the second kind of lines.
+	/// This method cares about the second kind of lines.
 	/// </summary>
-	private int GetUpResult(string text, int selectionStart, int selectionLength, bool shift)
+	private int GetUpDownResult(string text, int selectionStart, int selectionLength, bool shift, bool up)
 	{
 		if (text.Length == 0)
 		{
@@ -1054,50 +1073,21 @@ public partial class TextBox
 		var startLineIndex = lines.IndexOf(startLine);
 		var endLineIndex = lines.IndexOf(endLine);
 
-		if (shift && endLineIndex == 0)
+		if (up && shift && endLineIndex == 0)
 		{
 			return 0; // first line, goes to the beginning
 		}
-
-		var newLineIndex = selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1);
-
-		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
-		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
-		if (text.Length > index - 1
-			&& index - 1 >= 0
-			&& index == lines[newLineIndex].start + lines[newLineIndex].length
-			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
-		{
-			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
-			index--;
-		}
-
-		return index;
-	}
-
-	private int GetDownResult(string text, int selectionStart, int selectionLength, bool shift)
-	{
-		if (text.Length == 0)
-		{
-			return 0;
-		}
-		var startLine = GetLineAt(text, selectionStart, 0);
-		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
-		var lines = DisplayBlockInlines.GetLineIntervals();
-		var startLineIndex = lines.IndexOf(startLine);
-		var endLineIndex = lines.IndexOf(endLine);
-
-		if (!shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
+		else if (!up && !shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
 		{
 			return text.Length; // last line, goes to the end
 		}
 
-		var newLineIndex = selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
+		var newLineIndex = up ?
+			selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1) :
+			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
 
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
+		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
 		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
