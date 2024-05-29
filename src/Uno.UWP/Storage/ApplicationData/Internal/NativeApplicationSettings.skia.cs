@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#nullable enable
+
 using Uno.Foundation.Logging;
 using Windows.Storage;
 
@@ -14,19 +16,19 @@ partial class NativeApplicationSettings
 	private static partial bool SupportsLocality() => true;
 
 	private readonly Dictionary<string, string> _values = new();
-	private readonly string _folderPath;
-	private readonly string _filePath;
+	private string _folderPath;
+	private string _filePath;
 
-	partial void (ApplicationData owner, ApplicationDataLocality locality)
+	partial void InitializePlatform()
 	{
-		var settingsFolderPath = owner.GetSettingsFolderPath();
+		var settingsFolderPath = ApplicationData.Current.GetSettingsFolderPath();
 
 		_folderPath = settingsFolderPath;
-		_filePath = Path.Combine(settingsFolderPath, $"{locality}.dat");
+		_filePath = Path.Combine(settingsFolderPath, $"{_locality}.dat");
 		ReadFromFile();
 	}
 
-	public object? this[string key]
+	public string? this[string key]
 	{
 		get
 		{
