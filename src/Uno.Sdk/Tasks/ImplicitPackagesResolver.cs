@@ -164,14 +164,15 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 				throw new InvalidOperationException("Unable to parse UnoVersion from the Package Manifest.");
 			}
 
+			// This needs to run before we get and Validate the Uno Features
+			SetupRuntimePackageManifestUpdates(_manifest);
+
 			_unoFeatures = GetFeatures();
 			if (Log.HasLoggedErrors)
 			{
 				return false;
 			}
 
-			// TODO: Add update from Manifest that can ship via nuget.org
-			SetupRuntimePackageManifestUpdates(_manifest);
 			foreach (var reference in ImplicitPackageReferences)
 			{
 				var packageId = reference.ItemSpec;
@@ -314,22 +315,25 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.Single(x => x.DeclaringType == typeof(UnoFeature))
 			.GetCustomAttribute<UnoAreaAttribute>()?.Area;
 
+		if (_manifest is null)
+			throw new ArgumentNullException(nameof(_manifest));
+
 		switch (area)
 		{
 			case UnoArea.Core:
-				VerifyFeature(feature, _manifest!.UnoVersion);
+				VerifyFeature(feature, _manifest.UnoVersion);
 				break;
 			case UnoArea.CSharpMarkup:
-				VerifyFeature(feature, UnoCSharpMarkupVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.CSharpMarkup));
 				break;
 			case UnoArea.Extensions:
-				VerifyFeature(feature, UnoExtensionsVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.Extensions));
 				break;
 			case UnoArea.Theme:
-				VerifyFeature(feature, UnoThemesVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.Themes));
 				break;
 			case UnoArea.Toolkit:
-				VerifyFeature(feature, UnoToolkitVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.Toolkit));
 				break;
 		}
 	}
