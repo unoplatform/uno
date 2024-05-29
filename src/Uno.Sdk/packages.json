@@ -24,14 +24,14 @@
 	},
 	{
 		"group": "WasmBootstrap",
-		"version": "8.0.13",
+		"version": "8.0.14",
 		"packages": [
 			"Uno.Wasm.Bootstrap",
 			"Uno.Wasm.Bootstrap.DevServer",
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-dev.43"
+			"net9.0": "9.0.0-dev.47"
 		}
 	},
 	{
@@ -91,14 +91,14 @@
 	},
 	{
 		"group": "WinAppSdk",
-		"version": "1.5.240404000",
+		"version": "1.5.240428000",
 		"packages": [
 			"Microsoft.WindowsAppSDK"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.22621.3233",
+		"version": "10.0.26100.1",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
@@ -110,22 +110,22 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.3.24172.9"
+			"net9.0": "9.0.0-preview.4.24266.19"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "8.0.4",
+		"version": "8.0.6",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.3.24175.3"
+			"net9.0": "9.0.0-preview.4.24267.11"
 		}
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.60.3",
+		"version": "4.61.1",
 		"packages": [
 			"Microsoft.Identity.Client"
 		]
@@ -215,12 +215,15 @@
 	},
 	{
 		"group": "Maui",
-		"version": "",
+		"version": "8.0.40",
 		"packages": [
 			"Microsoft.Maui.Controls",
 			"Microsoft.Maui.Controls.Compatibility",
 			"Microsoft.Maui.Graphics"
-		]
+		],
+		"versionOverride": {
+			"net9.0": "9.0.0-preview.4.10690"
+		}
 	},
 	{
 		"group": "CSharpMarkup",
