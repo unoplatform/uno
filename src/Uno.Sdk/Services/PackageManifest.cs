@@ -117,7 +117,7 @@ internal class PackageManifest
 		return this;
 	}
 
-	private string? GetGroupVersion(string groupName)
+	public string GetGroupVersion(string groupName)
 	{
 		var group = Manifest.SingleOrDefault(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
 		return GetGroupVersion(group);
