@@ -231,6 +231,18 @@
         topicHref: guides/silverlight-migration/silverlight-migration-landing.md
         href: guides/silverlight-migration/toc.yml
 
+    - name: Publishing
+      items:
+        - name: Overview
+          href: xref:uno.publishing.overview
+        - name: Publishing for Windows
+          topicHref: xref:uno.publishing.windows
+          items:
+            - name: Build Packaged Unsigned Apps
+              href: xref:uno.publishing.windows.sideload.packaged.unsigned
+            - name: Build Packaged Signed Apps
+              href: xref:uno.publishing.windows.sideload.packaged.signed
+
     - name: Performance
       items:
         - name: Improving Build Times

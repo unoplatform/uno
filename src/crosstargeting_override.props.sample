@@ -15,7 +15,7 @@
     <!--<UnoTargetFrameworkOverride>net8.0</UnoTargetFrameworkOverride>-->
     <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
     <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
-    <!--<UnoNugetOverrideVersion>4.9.0-dev.153</UnoNugetOverrideVersion>-->
+    <!--<UnoNugetOverrideVersion>5.3.0-dev.1495</UnoNugetOverrideVersion>-->
 
     <!-- 
         

@@ -52,7 +52,7 @@ internal abstract partial class RootScale
 	internal void UpdateSystemScale()
 	{
 		// Remove SuspendFailFastOnStowedException
-		//     Bug 19696972: QueryScaleFactor silently fails at statup
+		//     Bug 19696972: QueryScaleFactor silently fails at startup
 		// SuspendFailFastOnStowedException raiiSuspender;
 		var systemScale = GetSystemScale();
 		if (systemScale != 0.0f)

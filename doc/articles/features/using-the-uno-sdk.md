@@ -77,9 +77,6 @@ Here are the supported features:
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
 
-> [!IMPORTANT]
-> Feature names are case sensitive
-
 ## Implicit Packages
 
 Uno Platform is composed of many required and optional NuGet packages. By default, the SDK automatically references the Uno.UI required packages based on the current target framework, using versions appropriate for the version of Uno Platform being used.

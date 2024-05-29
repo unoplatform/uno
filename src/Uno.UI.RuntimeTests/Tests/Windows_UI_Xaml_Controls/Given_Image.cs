@@ -31,6 +31,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public class Given_Image
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("TODO: Fix on other platforms")]
+#endif
+		public async Task When_Parent_Has_BorderThickness()
+		{
+			var image = new Image()
+			{
+				Width = 100,
+				Height = 100,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/my500x200.jpg")),
+			};
+
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Orange),
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Gray),
+				BorderThickness = new(20),
+				Children =
+				{
+					image,
+				},
+			};
+
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+
+			await UITestHelper.Load(grid);
+
+			await WindowHelper.WaitFor(() => imageOpened == true);
+
+			var screenshot = await UITestHelper.ScreenShot(grid);
+
+			var orangeBounds = ImageAssert.GetColorBounds(screenshot, Colors.Orange, tolerance: 10); // 60x60
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Colors.Red, tolerance: 10); // 60x20
+			var greenBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 75, 255, 0), tolerance: 10); // 20x20
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 249, 75), tolerance: 10); // 20x20
+			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
+
+			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
+			Assert.AreEqual(new Rect(20, 30, 59, 18), redBounds);
+			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
+			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
+			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
+		}
+
 #if !__IOS__ // Currently fails on iOS
 		[TestMethod]
 #endif

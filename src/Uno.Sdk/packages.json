@@ -58,14 +58,14 @@
 	},
 	{
 		"group": "Dsp",
-		"version": "1.3.0",
+		"version": "1.3.2",
 		"packages": [
 			"Uno.Dsp.Tasks"
 		]
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.4.9",
+		"version": "1.5.0-dev.87",
 		"packages": [
 			"Uno.Resizetizer"
 		]

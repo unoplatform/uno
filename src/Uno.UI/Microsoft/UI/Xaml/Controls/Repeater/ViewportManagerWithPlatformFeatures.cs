@@ -595,7 +595,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Uno workaround [BEGIN]: For perf considerations, do not invalidate the tree on each viewport update
 			// (Viewport updates are quite frequent, this would cause lot of unnecessary layout pass which would impact scroll perf, especially on Android).
 			if (m_owner.Layout is VirtualizingLayout vl // If not a VirtualizingLayout, we actually don't have to re-measure items!
-				&& vl.IsSignificantViewportChange(_uno_viewportUsedInLastMeasure, m_visibleWindow))
+				&& vl.IsSignificantViewportChange(m_owner.LayoutState, _uno_viewportUsedInLastMeasure, m_visibleWindow))
 			// Uno workaround [END]
 #endif
 			{

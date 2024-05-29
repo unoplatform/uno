@@ -40,6 +40,12 @@
 		<None Include="Microsoft\UI\Xaml\Controls\ItemContainer\**\*.cs"/>
 		<None Include="Microsoft\UI\Xaml\Controls\ItemContainer\ItemContainer.xaml"/>
 
+		<Compile Remove="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.cs"/>
+		<Page Remove="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.xaml"/>
+		<XamlMergeInput Remove="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.xaml"/>
+		<None Include="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.cs"/>
+		<None Include="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.xaml"/>
+
 	</ItemGroup>
 
 </Project>

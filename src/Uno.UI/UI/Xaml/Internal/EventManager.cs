@@ -47,12 +47,8 @@ internal sealed class EventManager
 
 	private void AddToLoadedEventList(UIElement element)
 	{
-		// TODO: Maybe this shouldn't happen?
-		// It doesn't make sense to attempt to add duplicate elements.
-		if (!_loadedEventList.Contains(element))
-		{
-			_loadedEventList.Add(element);
-		}
+		Debug.Assert(!_loadedEventList.Contains(element));
+		_loadedEventList.Add(element);
 	}
 
 	private void RemoveFromLoadedEventList(UIElement element)

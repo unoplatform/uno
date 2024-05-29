@@ -148,6 +148,8 @@
 		public const string SR_NumberBoxMinimumValueStatus = "NumberBoxMinimumValueStatus";
 		public const string SR_ItemContainerDefaultControlName = "ItemContainerDefaultControlName";
 
+		public const string SR_SelectorBarItemDefaultControlName = "SelectorBarItemDefaultControlName";
+
 		public const string SR_InfoBarCloseButtonName = "InfoBarCloseButtonName";
 		public const string SR_InfoBarOpenedNotification = "InfoBarOpenedNotification";
 		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";
