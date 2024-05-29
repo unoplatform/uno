@@ -8,6 +8,9 @@ using Windows.Storage;
 
 namespace Uno.Storage;
 
+/// <summary>
+/// Provides access to raw application settings.
+/// </summary>
 internal partial class NativeApplicationSettings
 {
 	private static readonly ConcurrentDictionary<ApplicationDataLocality, NativeApplicationSettings> _instances = new();
