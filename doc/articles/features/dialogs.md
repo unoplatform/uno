@@ -28,7 +28,7 @@ noWifiDialog.XamlRoot = anyLoadedControl.XamlRoot;
 ContentDialogResult result = await noWifiDialog.ShowAsync();
 ```
 
-It is crucial to set the `XamlRoot` property before calling `ShowAsync`. This way the dialog will become asssociated with the visual tree. `XamlRoot` can be retrieved from any loaded control in your window (e.g. a `Button`, your `Page`, etc.).
+It is crucial to set the `XamlRoot` property before calling `ShowAsync`. This way the dialog will become associated with the visual tree. `XamlRoot` can be retrieved from any loaded control in your window (e.g. a `Button`, your `Page`, etc.).
 
 ## Customize a `ContentDialog`
 
