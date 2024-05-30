@@ -67,4 +67,9 @@ internal partial class NativeApplicationSettings
 	private partial void SetSetting(string key, string value);
 
 	private partial string? GetSetting(string key);
+
+	internal IEnumerable<string> GetKeysWithPrefix(string prefix)
+	{
+		return Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.InvariantCulture));
+	}
 }
