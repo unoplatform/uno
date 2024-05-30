@@ -1834,7 +1834,7 @@ namespace Uno.UWPSyncGenerator
 			// NOTE: msbuildLogger doesn't work in 4.9
 			// https://github.com/dotnet/roslyn/issues/72202
 			// https://github.com/dotnet/roslyn/discussions/71950
-			var project = await ws.OpenProjectAsync(projectFile, msbuildLogger: new BinaryLogger() { Parameters = Path.Combine(Directory.GetCurrentDirectory(), $"{projectFileName}_{targetFramework}.binlog") });
+			var project = await ws.OpenProjectAsync(projectFile, msbuildLogger: new BinaryLogger() { Parameters = Path.Combine(Directory.GetCurrentDirectory(), "binlogs", $"{projectFileName}_{targetFramework}.binlog") });
 
 			var metadataLessProjects = ws
 				.CurrentSolution

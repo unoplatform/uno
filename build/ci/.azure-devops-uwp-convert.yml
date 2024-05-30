@@ -54,6 +54,14 @@ jobs:
       logProjectEvents: false
       createLogFile: false
 
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/Uno.UWPSyncGenerator/bin/Release/binlogs
+      ArtifactName: SyncGenerator-Binlogs
+      ArtifactType: Container
+
   - powershell: |
         git config --global user.email "ci@ci.com"
         git config --global user.name "ci"
