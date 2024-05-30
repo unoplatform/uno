@@ -509,7 +509,10 @@ public partial class TextBox
 
 		_suppressCurrentlyTyping = true;
 		_clearHistoryOnTextChanged = false;
-		_pendingSelection = (selectionStart, selectionLength);
+		if (!_isPressed)
+		{
+			_pendingSelection = (selectionStart, selectionLength);
+		}
 		ProcessTextInput(text);
 		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
