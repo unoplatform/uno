@@ -351,23 +351,23 @@ namespace Microsoft.UI.Xaml
 				desiredSize.Height = LayoutRound(desiredSize.Height);
 			}
 
-			var oldWidth = this.GetActualWidth();
-			var oldHeight = this.GetActualHeight();
-
-			// DesiredSize must include margins
-			LayoutInformation.SetDesiredSize(this, desiredSize);
-
-			var newWidth = this.GetActualWidth();
-			var newHeight = this.GetActualHeight();
-
-			if (oldWidth != newWidth || oldHeight != newHeight)
+#if __SKIA__
+			if (desiredSize != DesiredSize)
+#endif
 			{
-				// This is HACKY, and is specific to TextBlock which overrides GetActualWidth and GetActualHeight to return DesiredSize.
-				this.GetContext().EventManager.EnqueueForSizeChanged(this, new Size(oldWidth, oldHeight));
-				RaiseSizeChanged(new SizeChangedEventArgs(this, new Size(oldWidth, oldHeight), new Size(newWidth, newHeight)));
+				// DesiredSize must include margins
+				LayoutInformation.SetDesiredSize(this, desiredSize);
+#if __SKIA__
+				this.OnDesiredSizeChanged();
+#endif
 			}
 
 			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
+		}
+
+		private protected virtual void OnDesiredSizeChanged()
+		{
+
 		}
 
 		private void RaiseLoadingEventIfNeeded()
