@@ -36,28 +36,8 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	/// <returns></returns>
 	public object this[string key]
 	{
-		get
-		{
-			var serializedValue = _nativeApplicationSettings[key];
-			if (serializedValue is null)
-			{
-				return null;
-			}
-
-			return DataTypeSerializer.Deserialize(serializedValue);
-		}
-		set
-		{
-			if (value is null)
-			{
-				_nativeApplicationSettings.Remove(key);
-			}
-			else
-			{
-				var serializedValue = DataTypeSerializer.Serialize(value);
-				_nativeApplicationSettings[key] = serializedValue;
-			}
-		}
+		get => _nativeApplicationSettings[key];
+		set => _nativeApplicationSettings[key] = value;
 	}
 
 	/// <summary>
