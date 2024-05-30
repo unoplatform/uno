@@ -133,5 +133,10 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		throw new global::System.NotSupportedException();
 	}
 
+	internal void ClearIncludingInternal()
+	{
+		throw new NotImplementedException();
+	}
+
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
