@@ -250,7 +250,7 @@
           href: xref:uno.publishing.ios
         - name: Publishing for Android
           href: xref:uno.publishing.android
-        - name: Publishing for Catalyst
+        - name: Publishing for Mac Catalyst
           href: xref:uno.publishing.maccatalyst
 
     - name: Performance
