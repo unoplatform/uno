@@ -39,7 +39,7 @@ In order for your custom dialog to follow the Fluent design, it's important that
 ```csharp
 Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
 ```
-You dialog will look similar to this dialog:
+Your dialog will look similar to this dialog:
 <img width="273" alt="WithStyle" src="https://github.com/unoplatform/uno/assets/1608424/ca1c3dd8-694e-4149-8778-cbf103098fd3">
 
 If you omit this line, your dialog will look like this:
