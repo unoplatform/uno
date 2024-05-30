@@ -37,8 +37,7 @@ public class Given_TypeReplacement : BaseTestClass
 				Assert.IsTrue(component.GetType().Name.Contains("#"));
 				Assert.AreEqual(1, Grid.GetRow(component));
 				Assert.AreEqual("Hello tag", component.Tag as string);
-				// Visually, the color is updated, but this assert still fails with "Actual" being "Green" :/
-				//Assert.AreEqual(Microsoft.UI.Colors.Orange, ((SolidColorBrush)((Grid)component.Content).Background).Color);
+				Assert.AreEqual(Microsoft.UI.Colors.Orange, ((SolidColorBrush)((Grid)component.Content).Background).Color);
 				return Task.CompletedTask;
 			},
 			ct);

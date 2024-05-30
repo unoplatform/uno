@@ -48,6 +48,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void CloneToForHotReload(DependencyPropertyDetails other)
 		{
+			if (other._highestPrecedence == _highestPrecedence)
+			{
+				return;
+			}
+
 			other._highestPrecedence = _highestPrecedence;
 			other._fastLocalValue = _fastLocalValue;
 			other._flags = _flags; // Probably the only important flag to copy will be LocalValueNewerThanAnimationsValue
