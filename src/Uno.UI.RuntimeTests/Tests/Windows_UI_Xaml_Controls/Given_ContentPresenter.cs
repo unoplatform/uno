@@ -309,7 +309,7 @@ public class Given_ContentPresenter
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		AssertCollectedReference(wref);
+		await AssertCollectedReference(wref);
 
 		WeakReference SetContent()
 		{
@@ -319,17 +319,20 @@ public class Given_ContentPresenter
 		}
 	}
 
-	private void AssertCollectedReference(WeakReference reference)
+	private async Task AssertCollectedReference(WeakReference reference)
 	{
-		for (int i = 0; i < 10; i++)
+		var sw = Stopwatch.StartNew();
+		while (sw.Elapsed < TimeSpan.FromSeconds(3))
 		{
-			GC.Collect();
+			GC.Collect(2);
 			GC.WaitForPendingFinalizers();
 
 			if (!reference.IsAlive)
 			{
 				return;
 			}
+
+			await Task.Delay(100);
 		}
 
 		Assert.IsFalse(reference.IsAlive);
