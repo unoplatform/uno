@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Vector3KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
@@ -15,5 +15,6 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3KeyFrameAnimation", "void Vector3KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector3 value, CompositionEasingFunction easingFunction)");
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Composition.Vector3KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector3)
 	}
 }

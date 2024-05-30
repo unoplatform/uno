@@ -65,16 +65,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Windowing.AppWindowTitleBar TitleBar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppWindowTitleBar AppWindow.TitleBar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowTitleBar%20AppWindow.TitleBar");
-			}
-		}
-#endif
+		// Skipping already declared property TitleBar
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Graphics.SizeInt32 ClientSize

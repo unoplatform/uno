@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum TeachingTipHeroContentPlacementMode
 	{
-#if false
-		Auto = 0,
-#endif
-#if false
-		Top = 1,
-#endif
-#if false
-		Bottom = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode.Top
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode.Bottom
 	}
 #endif
 }

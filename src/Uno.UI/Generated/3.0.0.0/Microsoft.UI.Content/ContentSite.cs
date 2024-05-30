@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentSite : global::System.IDisposable, global::Microsoft.UI.IClosableNotifier
 	{
-#if false
-		internal ContentSite()
-		{
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool ShouldApplyRasterizationScale
@@ -27,34 +22,8 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float ParentScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ContentSite.ParentScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentSite.ParentScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "float ContentSite.ParentScale");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float OverrideScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ContentSite.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentSite.OverrideScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "float ContentSite.OverrideScale");
-			}
-		}
-#endif
+		// Skipping already declared property ParentScale
+		// Skipping already declared property OverrideScale
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Content.ContentLayoutDirection LayoutDirection
@@ -69,20 +38,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSiteVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.IsSiteVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsSiteVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSite", "bool ContentSite.IsSiteVisible");
-			}
-		}
-#endif
+		// Skipping already declared property IsSiteVisible
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsSiteEnabled
@@ -165,16 +121,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float RasterizationScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ContentSite.RasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentSite.RasterizationScale");
-			}
-		}
-#endif
+		// Skipping already declared property RasterizationScale
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Numerics.Vector2 RequestedSize
@@ -185,16 +132,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Content.ContentSiteView View
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentSiteView ContentSite.View is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteView%20ContentSite.View");
-			}
-		}
-#endif
+		// Skipping already declared property View
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsClosed

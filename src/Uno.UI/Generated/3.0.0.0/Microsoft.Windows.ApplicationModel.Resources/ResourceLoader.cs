@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Windows.ApplicationModel.Resources
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ResourceLoader
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ResourceLoader(string fileName)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "ResourceLoader.ResourceLoader(string fileName)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -24,21 +18,9 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string, string)
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ResourceLoader()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "ResourceLoader.ResourceLoader()");
-		}
-#endif
+		// Skipping already declared method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader()
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader()
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string GetString(string resourceId)
-		{
-			throw new global::System.NotImplementedException("The member string ResourceLoader.GetString(string resourceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceLoader.GetString%28string%20resourceId%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.GetString(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string GetStringForUri(global::System.Uri resourceUri)
