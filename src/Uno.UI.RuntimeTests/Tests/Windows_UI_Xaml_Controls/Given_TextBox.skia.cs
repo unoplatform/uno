@@ -1761,7 +1761,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new TextBox
 			{
-				Text = "copied content"
+				AcceptsReturn = true,
+				Text = "copied\r\ncontent"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1772,7 +1773,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var dp = new DataPackage();
-			var text = "copied content";
+			var text = "copied\r\ncontent";
 			dp.SetText(text);
 			Clipboard.SetContent(dp);
 
@@ -1781,7 +1782,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("copied content".Length, SUT.SelectionStart);
+			Assert.AreEqual("copied\rcontent".Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
