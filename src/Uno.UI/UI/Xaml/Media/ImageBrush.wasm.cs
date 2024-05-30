@@ -77,8 +77,8 @@ namespace Microsoft.UI.Xaml.Media
 				this.RegisterDisposablePropertyChangedCallback(AlignmentYProperty, OnAlignmentChanged);
 
 
-			target.LayoutUpdated += OnTargetLayoutUpdated;
-			var layoutUpdatedSubscription = Disposable.Create(() => target.LayoutUpdated -= OnTargetLayoutUpdated);
+			target.SizeChanged += OnTargetSizeChanged;
+			var layoutUpdatedSubscription = Disposable.Create(() => target.SizeChanged -= OnTargetSizeChanged);
 
 			void OnImageSourceChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 			{
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Media
 				preserveAspectRatio = SetPreserveAspectRatio();
 			}
 
-			void OnTargetLayoutUpdated(object sender, object e)
+			void OnTargetSizeChanged(object sender, SizeChangedEventArgs e)
 			{
 				preserveAspectRatio = SetPreserveAspectRatio();
 			}

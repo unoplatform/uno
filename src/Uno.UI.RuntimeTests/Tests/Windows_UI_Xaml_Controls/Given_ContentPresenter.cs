@@ -307,6 +307,8 @@ public class Given_ContentPresenter
 
 		SUT.Content = null;
 
+		await TestServices.WindowHelper.WaitForIdle();
+
 		await AssertCollectedReference(wref);
 
 		WeakReference SetContent()
@@ -335,6 +337,7 @@ public class Given_ContentPresenter
 
 		Assert.IsFalse(reference.IsAlive);
 	}
+
 	public class AlignmentTestConfiguration
 	{
 		public AlignmentTestConfiguration(HorizontalAlignment outerHorizontal, VerticalAlignment outerVertical, HorizontalAlignment innerHorizontal, VerticalAlignment innerVertical, Point expectedPosition, Size expectedSize)

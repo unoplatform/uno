@@ -28,6 +28,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private MenuFlyout? _contextMenu;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
+		internal Action? DesiredSizeChangedCallback { get; set; }
+
 		public TextBlock()
 		{
 			SetDefaultForeground(ForegroundProperty);
@@ -43,6 +45,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			GotFocus += (_, _) => UpdateSelectionRendering();
 			LostFocus += (_, _) => UpdateSelectionRendering();
+		}
+
+		private protected override void OnDesiredSizeChanged()
+		{
+			base.OnDesiredSizeChanged();
+			DesiredSizeChangedCallback?.Invoke();
 		}
 
 #if DEBUG

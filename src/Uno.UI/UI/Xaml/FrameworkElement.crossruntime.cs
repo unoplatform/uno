@@ -30,6 +30,8 @@ namespace Microsoft.UI.Xaml
 		public event SizeChangedEventHandler SizeChanged;
 #pragma warning restore CS0067
 
+		internal bool WantsSizeChanged => SizeChanged != null;
+
 		public double ActualWidth => GetActualWidth();
 		public double ActualHeight => GetActualHeight();
 

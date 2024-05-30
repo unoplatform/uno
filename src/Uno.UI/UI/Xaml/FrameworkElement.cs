@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno.UI;
 using System.Linq;
 using Windows.Foundation;
@@ -180,9 +181,16 @@ namespace Microsoft.UI.Xaml
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			_renderTransform?.UpdateSize(args.NewSize);
 #endif
+#endif
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal void UpdateRenderTransformSize(Size newSize)
+			=> _renderTransform?.UpdateSize(newSize);
+#endif
 
 		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
@@ -752,12 +760,55 @@ namespace Microsoft.UI.Xaml
 
 		protected virtual bool GoToElementStateCore(string stateName, bool useTransitions) => false;
 
-		public event EventHandler<object> LayoutUpdated;
+		#region LayoutUpdated
 
-		internal virtual void OnLayoutUpdated()
+		private event EventHandler<object> _layoutUpdated;
+
+		public event EventHandler<object> LayoutUpdated
 		{
-			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
+			add
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var isFirstSubscriber = _layoutUpdated is null;
+#endif
+
+				_layoutUpdated += value;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (isFirstSubscriber)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.AddLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
+			remove
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var hadSubscribers = _layoutUpdated is not null;
+#endif
+
+				_layoutUpdated -= value;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (hadSubscribers && _layoutUpdated is null)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.RemoveLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
 		}
+
+		// This shouldn't be virtual on enhanced lifecycle as it won't be called if there is no real subscriber to LayoutUpdated.
+		internal
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			virtual
+#endif
+			void OnLayoutUpdated()
+		{
+			_layoutUpdated?.Invoke(null, null);
+		}
+
+		#endregion
 
 		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
 

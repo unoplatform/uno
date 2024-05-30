@@ -133,7 +133,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DefaultStyleKey = typeof(ScrollBar);
 
 			SizeChanged += OnSizeChanged;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			LayoutUpdated += OnLayoutUpdated;
+#endif
 			Loaded += ReAttachEvents;
 			Unloaded += DetachEvents;
 		}
@@ -909,12 +911,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			(pSender as ScrollBar)?.UpdateTrackLayout();
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private static void OnLayoutUpdated(
 			object pSender,
 			object pArgs)
 		{
 			(pSender as ScrollBar)?.UpdateTrackLayout();
 		}
+#endif
 
 		// Called whenever the SmallDecrement button is clicked.
 		void SmallDecrement(

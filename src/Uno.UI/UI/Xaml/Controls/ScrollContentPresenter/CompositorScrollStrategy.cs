@@ -13,16 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <inheritdoc />
 		public void Initialize(ScrollContentPresenter presenter)
-			=> presenter.LayoutUpdated += ScrollContentPresenter_LayoutUpdated;
-
-		private static void ScrollContentPresenter_LayoutUpdated(object? sender, object e)
-		{
-			if (sender is ScrollContentPresenter presenter)
-			{
-				// TODO: We probably don't need LayoutUpdated here.
-				presenter.Visual.Clip = presenter.Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
-			}
-		}
+			=> presenter.Visual.Clip = presenter.Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
 
 		public void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, bool disableAnimation)
 		{

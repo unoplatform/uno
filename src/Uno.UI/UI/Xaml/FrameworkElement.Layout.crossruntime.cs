@@ -16,6 +16,7 @@ using static Uno.UI.LayoutHelper;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -350,10 +351,23 @@ namespace Microsoft.UI.Xaml
 				desiredSize.Height = LayoutRound(desiredSize.Height);
 			}
 
-			// DesiredSize must include margins
-			LayoutInformation.SetDesiredSize(this, desiredSize);
+#if __SKIA__
+			if (desiredSize != DesiredSize)
+#endif
+			{
+				// DesiredSize must include margins
+				LayoutInformation.SetDesiredSize(this, desiredSize);
+#if __SKIA__
+				this.OnDesiredSizeChanged();
+#endif
+			}
 
 			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
+		}
+
+		private protected virtual void OnDesiredSizeChanged()
+		{
+
 		}
 
 		private void RaiseLoadingEventIfNeeded()
@@ -583,10 +597,10 @@ namespace Microsoft.UI.Xaml
 			//	OnActualSizeChanged();
 			//}
 
-			//if (!IsSameSize(oldRenderSize, innerInkSize))
-			//{
-			//	VisualTree.GetLayoutManagerForElement(this).EnqueueForSizeChanged(this, oldRenderSize);
-			//}
+			if (oldRenderSize != innerInkSize)
+			{
+				this.GetContext().EventManager.EnqueueForSizeChanged(this, oldRenderSize);
+			}
 
 			//if (!bInLayoutTransition)
 			{
@@ -705,8 +719,10 @@ namespace Microsoft.UI.Xaml
 			var clippedFrame = GetClipRect(needsClipBounds, visualOffset, finalRect, new Size(maxWidth, maxHeight), margin);
 			ArrangeNative(visualOffset, clippedFrame);
 
-			OnLayoutUpdated();
+			AfterArrange();
 		}
+
+		internal virtual void AfterArrange() { }
 
 		// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
 		private protected virtual Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)

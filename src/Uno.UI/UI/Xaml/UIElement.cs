@@ -811,6 +811,17 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 #elif !__NETSTD_REFERENCE__
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			var eventManager = root.GetContext().EventManager;
+			if (!root.IsMeasureDirtyOrMeasureDirtyPath &&
+				!root.IsArrangeDirtyOrArrangeDirtyPath &&
+				!eventManager.HasPendingViewportChangedEvents)
+			{
+				return;
+			}
+#endif
+
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
@@ -828,15 +839,39 @@ namespace Microsoft.UI.Xaml
 #endif
 				}
 #if UNO_HAS_ENHANCED_LIFECYCLE
-				else if (root.GetContext().EventManager.HasPendingViewportChangedEvents)
+				else if (eventManager.HasPendingViewportChangedEvents)
 				{
-					root.GetContext().EventManager.RaiseEffectiveViewportChangedEvents();
+					eventManager.RaiseEffectiveViewportChangedEvents();
 				}
-#endif
+				else
+				{
+					if (eventManager.HasPendingSizeChangedEvents)
+					{
+						eventManager.RaiseSizeChangedEvents();
+					}
+
+					if (root.IsMeasureDirtyOrMeasureDirtyPath ||
+						root.IsArrangeDirtyOrArrangeDirtyPath ||
+						eventManager.HasPendingViewportChangedEvents)
+					{
+						continue;
+					}
+
+					eventManager.RaiseLayoutUpdated();
+
+					if (!root.IsMeasureDirtyOrMeasureDirtyPath &&
+						!root.IsArrangeDirtyOrArrangeDirtyPath &&
+						!eventManager.HasPendingViewportChangedEvents)
+					{
+						return;
+					}
+				}
+#else
 				else
 				{
 					return;
 				}
+#endif
 			}
 
 			throw new InvalidOperationException("Layout cycle detected.");
@@ -1024,7 +1059,9 @@ namespace Microsoft.UI.Xaml
 					if (this is FrameworkElement frameworkElement)
 					{
 						frameworkElement.SetActualSize(_size);
+#if !UNO_HAS_ENHANCED_LIFECYCLE // Handled by EventManager with enhanced lifecycle.
 						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
+#endif
 					}
 				}
 			}
