@@ -222,7 +222,12 @@ namespace Microsoft.UI.Xaml.Documents
 					buffer.GuessSegmentProperties();
 					var direction = buffer.Direction == Direction.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
 
-					font.Shape(buffer);
+					// We don't support ligatures for now since they can cause buggy behaviour in TextBox
+					// where multiple chars in a TextBox are turned into a single glyph.
+					//https://github.com/unoplatform/uno/issues/15528
+					// https://github.com/unoplatform/uno/issues/16788
+					// https://harfbuzz.github.io/shaping-opentype-features.html
+					font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
 
 					if (buffer.Direction == Direction.RightToLeft)
 					{
