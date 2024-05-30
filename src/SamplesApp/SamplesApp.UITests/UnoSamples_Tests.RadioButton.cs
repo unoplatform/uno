@@ -18,7 +18,7 @@ namespace SamplesApp.UITests
 		[AutoRetry]
 		public void RadioButton_IsEnabled_Validation()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
+			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.RadioButton_IsEnabled_Automated");
 
 			_app.WaitForElement(_app.Marked("MyRadioButtonDisabler"));
 
@@ -53,7 +53,7 @@ namespace SamplesApp.UITests
 		[AutoRetry]
 		public void RadioButton_DoubleTap_Validation()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
+			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.RadioButton_IsEnabled_Automated");
 
 			_app.WaitForElement(_app.Marked("MyRadioButtonDisabler"));
 
@@ -89,7 +89,7 @@ namespace SamplesApp.UITests
 		[AutoRetry]
 		public void RadioButton_StatePreservation()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
+			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.RadioButton_IsEnabled_Automated");
 
 			_app.WaitForElement(_app.Marked("MyRadioButtonDisabler"));
 
