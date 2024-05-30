@@ -414,40 +414,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// WinUI replaces all \r's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
-				var builder = new StringBuilder();
-				for (int i = 0; i < baseString.Length; i++)
-				{
-					var c = baseString[i];
-					if (c == '\n')
-					{
-						builder.Append('\r');
-					}
-					else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
-					{
-						if (_pendingSelection is { } selection)
-						{
-							var (start, end) = (selection.start, selection.start + selection.length);
-							if (start > i)
-							{
-								start--;
-							}
-							if (end > i)
-							{
-								end--;
-							}
-							_pendingSelection = (start, end - start);
-						}
-
-						builder.Append('\r');
-						i++;
-					}
-					else
-					{
-						builder.Append(c);
-					}
-				}
-
-				baseString = builder.ToString();
+				baseString = RemoveLF(baseString);
 			}
 #else
 			if (!AcceptsReturn)
@@ -463,6 +430,46 @@ namespace Microsoft.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
+			return baseString;
+		}
+
+		private string RemoveLF(string baseString)
+		{
+
+			var builder = new StringBuilder();
+			for (int i = 0; i < baseString.Length; i++)
+			{
+				var c = baseString[i];
+				if (c == '\n')
+				{
+					builder.Append('\r');
+				}
+				else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
+				{
+					if (_pendingSelection is { } selection)
+					{
+						var (start, end) = (selection.start, selection.start + selection.length);
+						if (start > i)
+						{
+							start--;
+						}
+						if (end > i)
+						{
+							end--;
+						}
+						_pendingSelection = (start, end - start);
+					}
+
+					builder.Append('\r');
+					i++;
+				}
+				else
+				{
+					builder.Append(c);
+				}
+			}
+
+			baseString = builder.ToString();
 			return baseString;
 		}
 
