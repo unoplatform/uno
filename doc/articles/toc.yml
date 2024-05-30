@@ -235,6 +235,10 @@
       items:
         - name: Overview
           href: xref:uno.publishing.overview
+        - name: Publishing for Desktop
+          href: xref:uno.publishing.desktop
+        - name: Publishing for WebAssembly
+          href: xref:uno.publishing.webassembly
         - name: Publishing for Windows
           topicHref: xref:uno.publishing.windows
           items:
@@ -242,6 +246,12 @@
               href: xref:uno.publishing.windows.sideload.packaged.unsigned
             - name: Build Packaged Signed Apps
               href: xref:uno.publishing.windows.sideload.packaged.signed
+        - name: Publishing for iOS
+          href: xref:uno.publishing.ios
+        - name: Publishing for Android
+          href: xref:uno.publishing.android
+        - name: Publishing for Mac Catalyst
+          href: xref:uno.publishing.maccatalyst
 
     - name: Performance
       items:
