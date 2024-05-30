@@ -251,7 +251,7 @@
         - name: Publishing for Android
           href: xref:uno.publishing.android
         - name: Publishing for Catalyst
-          href: xref:uno.publishing.catalyst
+          href: xref:uno.publishing.maccatalyst
 
     - name: Performance
       items:
