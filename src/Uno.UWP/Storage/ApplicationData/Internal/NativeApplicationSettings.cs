@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,4 +39,32 @@ internal partial class NativeApplicationSettings
 	private static partial bool SupportsLocality();
 
 	partial void InitializePlatform();
+
+	public object? this[string key]
+	{
+		get
+		{
+			if (GetSetting(key) is { } value)
+			{
+				return DataTypeSerializer.Deserialize(value);
+			}
+
+			return null;
+		}
+		set
+		{
+			if (value is not null)
+			{
+				SetSetting(key, DataTypeSerializer.Serialize(value));
+			}
+			else
+			{
+				Remove(key);
+			}
+		}
+	}
+
+	private partial void SetSetting(string key, string value);
+
+	private partial string? GetSetting(string key);
 }
