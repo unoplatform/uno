@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Uno.Storage;
 using Windows.Foundation.Collections;
-using Windows.Phone.PersonalInformation;
 
 namespace Windows.Storage;
 
@@ -18,7 +17,6 @@ namespace Windows.Storage;
 public partial class ApplicationDataContainer : IDisposable
 {
 	private const string InternalSettingPrefix = "__";
-
 	private const string ContainerPathSeparator = "¬";
 
 	private readonly Lazy<Dictionary<string, ApplicationDataContainer>> _containers;
@@ -41,7 +39,7 @@ public partial class ApplicationDataContainer : IDisposable
 		_parent = parent ?? throw new ArgumentNullException(nameof(parent));
 	}
 
-	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + ContainerPathSeparator + Name;
+	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + InternalSettingPrefix + Name + ContainerPathSeparator;
 
 	public ApplicationDataLocality Locality { get; }
 
@@ -53,26 +51,66 @@ public partial class ApplicationDataContainer : IDisposable
 
 	private Dictionary<string, ApplicationDataContainer> CreateContainersDictionary()
 	{
-		var keysWithPrefix = _nativeApplicationSettings.Select(kvp => kvp.Key).Where(k => k.StartsWith(ContainerPath + ContainerPathSeparator));
-		return new Dictionary<string, ApplicationDataContainer>();
+		var containers = new Dictionary<string, ApplicationDataContainer>();
+		var prefix = ContainerPath + InternalSettingPrefix;
+		var keysWithPrefix = _nativeApplicationSettings.GetKeysWithPrefix(prefix);
+		foreach (var key in keysWithPrefix)
+		{
+			var relativeKey = key.AsSpan(prefix.Length);
+			if (relativeKey.IndexOf(ContainerPathSeparator) is { } separatorIndex && separatorIndex == relativeKey.Length - 1)
+			{
+				var containerName = relativeKey.Slice(0, relativeKey.Length - 1).ToString();
+				var container = new ApplicationDataContainer(this, containerName);
+				containers.Add(containerName, container);
+			}
+		}
+
+		return containers;
 	}
 
 	public ApplicationDataContainer CreateContainer(string name, ApplicationDataCreateDisposition disposition)
 	{
-		var containers = Containers;
-		if (disposition == ApplicationDataCreateDisposition.Existing)
+		var containers = _containers.Value;
+
+		if (containers.TryGetValue(name, out var container))
 		{
-			var applicationDataContainer = new ApplicationDataContainer(this, name);
+			return container;
+		}
+		else if (disposition == ApplicationDataCreateDisposition.Existing)
+		{
+			throw new KeyNotFoundException("Container does not exist.");
+		}
+		else
+		{
+			var newContainer = new ApplicationDataContainer(this, name);
+			containers.Add(name, newContainer);
+
+			// Add a container marker entry to the settings store
+			_nativeApplicationSettings.Set(newContainer.ContainerPath) = "";
+
+			return newContainer;
 		}
 	}
 
 	public void DeleteContainer(string name)
 	{
-		if (!_containers.Value.ContainsKey(name))
+		if (!_containers.Value.TryGetValue(name, out var container))
 		{
 			throw new KeyNotFoundException("Container does not exist.");
 		}
+
+		container.ClearIncludingInternal();
+
+		// Remove the container marker entry from the settings store
+		_nativeApplicationSettings.Remove(container.ContainerPath);
+
 		_containers.Value.Remove(name);
+	}
+
+	internal void ClearIncludingInternals()
+	{
+		Clear();
+		_nativeApplicationSettings.RemoveKeysWithPrefix(InternalSettingPrefix);
 	}
 
 	public void Dispose() => DisposePartial();
