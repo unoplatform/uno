@@ -48,21 +48,14 @@ namespace Microsoft.UI.Xaml
 
 		internal void CloneToForHotReload(DependencyPropertyDetails other)
 		{
-			if (other._highestPrecedence == _highestPrecedence)
+			// If the old instance has a local value **and** the new instance doesn't, then copy the local value.
+			// We shouldn't be copying local value if the new instance already has it set. The new value in the new instance
+			// should not be overwritten as it's more likely to be more correct.
+			var oldValue = this.GetValue(DependencyPropertyValuePrecedences.Local);
+			if (oldValue != DependencyProperty.UnsetValue &&
+				other.GetValue(DependencyPropertyValuePrecedences.Local) == DependencyProperty.UnsetValue)
 			{
-				return;
-			}
-
-			other._highestPrecedence = _highestPrecedence;
-			other._fastLocalValue = _fastLocalValue;
-			other._flags = _flags; // Probably the only important flag to copy will be LocalValueNewerThanAnimationsValue
-			other._defaultValue = _defaultValue;
-			if (_stack is not null)
-			{
-				for (int i = 0; i < StackSize; i++)
-				{
-					other.Stack[i] = _stack[i];
-				}
+				other.SetValue(oldValue, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
