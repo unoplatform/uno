@@ -36,7 +36,15 @@ namespace SampleControl.Entities
 		public override int GetHashCode() => Category?.GetHashCode() ?? 0;
 
 		public int Compare(SampleChooserContent x, SampleChooserContent y)
-			=> string.Compare(x.ControlName, y.ControlName, StringComparison.InvariantCultureIgnoreCase);
+		{
+			var comparisonResult = string.Compare(x.ControlName, y.ControlName, StringComparison.InvariantCultureIgnoreCase);
+			if (comparisonResult != 0)
+			{
+				return comparisonResult;
+			}
+
+			return string.Compare(x.ControlType.FullName, y.ControlType.FullName, StringComparison.InvariantCultureIgnoreCase);
+		}
 
 		public int CompareTo(SampleChooserCategory other)
 		{
