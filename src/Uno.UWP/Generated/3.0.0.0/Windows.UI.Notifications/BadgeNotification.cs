@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-#if __ANDROID__ || false || false || false || false || false || false
+#if __ANDROID__ || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented("__ANDROID__")]
 #endif
 	public partial class BadgeNotification
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.DateTimeOffset? ExpirationTime
 		{
 			get
@@ -22,7 +22,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-#if __ANDROID__ || false || false || false || false || false || false
+#if __ANDROID__ || false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument Content
 		{
@@ -32,7 +32,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-#if __ANDROID__ || false || false || false || false || false || false
+#if __ANDROID__ || false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__")]
 		public BadgeNotification(global::Windows.Data.Xml.Dom.XmlDocument content)
 		{

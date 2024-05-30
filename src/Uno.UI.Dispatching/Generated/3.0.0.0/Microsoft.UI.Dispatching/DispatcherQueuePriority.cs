@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Dispatching
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum DispatcherQueuePriority
 	{
 		// Skipping already declared field Microsoft.UI.Dispatching.DispatcherQueuePriority.Low

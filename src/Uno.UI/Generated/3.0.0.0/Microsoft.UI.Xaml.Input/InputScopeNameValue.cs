@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Input
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum InputScopeNameValue
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Input.InputScopeNameValue.Default

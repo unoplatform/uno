@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Input
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PointerRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
@@ -17,7 +17,13 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.IsGenerated.get
-		// Skipping already declared method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.GetCurrentPoint(Microsoft.UI.Xaml.UIElement)
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public global::Microsoft.UI.Input.PointerPoint GetCurrentPoint(global::Microsoft.UI.Xaml.UIElement relativeTo)
+		{
+			throw new global::System.NotImplementedException("The member PointerPoint PointerRoutedEventArgs.GetCurrentPoint(UIElement relativeTo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerPoint%20PointerRoutedEventArgs.GetCurrentPoint%28UIElement%20relativeTo%29");
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints(Microsoft.UI.Xaml.UIElement)
 	}
 }

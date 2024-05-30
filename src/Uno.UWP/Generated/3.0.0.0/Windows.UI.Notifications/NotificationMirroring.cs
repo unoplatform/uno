@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum NotificationMirroring
 	{
 		// Skipping already declared field Windows.UI.Notifications.NotificationMirroring.Allowed

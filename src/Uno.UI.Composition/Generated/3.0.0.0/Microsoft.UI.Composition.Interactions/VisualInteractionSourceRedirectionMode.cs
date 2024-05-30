@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Interactions
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum VisualInteractionSourceRedirectionMode
 	{
 		// Skipping already declared field Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode.Off

@@ -3,12 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum ContactStoreAccessType
 	{
-		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactStoreAccessType.AppContactsReadWrite
+#if false || false || __TVOS__ || false || false || false || false || false
+		AppContactsReadWrite = 0,
+#endif
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactStoreAccessType.AllContactsReadOnly
-		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactStoreAccessType.AllContactsReadWrite
+#if false || false || __TVOS__ || false || false || false || false || false
+		AllContactsReadWrite = 2,
+#endif
 	}
 #endif
 }

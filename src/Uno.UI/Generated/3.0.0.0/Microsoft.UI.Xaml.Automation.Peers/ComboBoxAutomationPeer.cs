@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ComboBoxAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IValueProvider, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider, global::Microsoft.UI.Xaml.Automation.Provider.IWindowProvider

@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 #endif
 	public static partial class StandardDataFormats
 	{
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Bitmap
 		{
@@ -18,7 +18,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Html
 		{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Rtf
 		{
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string StorageItems
 		{
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Text
 		{
@@ -58,7 +58,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Uri
 		{
@@ -68,7 +68,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string ApplicationLink
 		{
@@ -78,7 +78,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string WebLink
 		{
@@ -88,7 +88,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string UserActivityJsonArray
 		{
