@@ -12,7 +12,7 @@ uid: Uno.Features.Dialogs
 
 ## Using `ContentDialog`
 
-The recommended way to display user dialogs is via the `Microsoft.UI.Xaml.Controls.ContentDialog` class. 
+The recommended way to display user dialogs is via the `Microsoft.UI.Xaml.Controls.ContentDialog` class.
 
 ```csharp
 ContentDialog noWifiDialog = new ContentDialog
