@@ -433,6 +433,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return baseString;
 		}
 
+#if __SKIA__
 		private string RemoveLF(string baseString)
 		{
 
@@ -472,6 +473,7 @@ namespace Microsoft.UI.Xaml.Controls
 			baseString = builder.ToString();
 			return baseString;
 		}
+#endif
 
 		#endregion
 
