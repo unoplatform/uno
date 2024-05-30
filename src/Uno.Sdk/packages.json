@@ -24,14 +24,14 @@
 	},
 	{
 		"group": "WasmBootstrap",
-		"version": "8.0.13",
+		"version": "8.0.15",
 		"packages": [
 			"Uno.Wasm.Bootstrap",
 			"Uno.Wasm.Bootstrap.DevServer",
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-dev.43"
+			"net9.0": "9.0.0-dev.70"
 		}
 	},
 	{
