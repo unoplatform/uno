@@ -118,6 +118,8 @@ Here's what to look for:
 ## Android specifics
 
 - Adjust the [GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) by modifying the `environment.conf` file with parameters matching your application
+- Enable `LLVM` in `Release` with `-p:EnableLLVM=true` for better runtime performance at the expense of package size and longer compilation times
+- Enable `Marshal Methods` in `Release` with `-p:AndroidEnableMarshalMethods=true` to improve startup performance (.NET 8 +)
 - [Enable Startup Tracing](https://devblogs.microsoft.com/dotnet/performance-improvements-in-dotnet-maui/#record-a-custom-aot-profile) by running the following:
 
  ```bash
@@ -134,6 +136,14 @@ Here's what to look for:
   <AndroidAotProfile Include="Android/custom.aprof" />
  </ItemGroup>
  ```
+
+- Enable `Full AOT` instead of `Startup Tracing` in `Release` with `-p:AndroidEnableProfiledAot=false` to get the best runtime performance
+
+  This will make your package size **significantly** larger and your compilation times longer.
+
+  You may combine this with `-p:EnableLLVM=true` and `-p:AndroidEnableMarshalMethods=true` to get even better performance.
+
+- Use [String Resource Trimming](xref:Uno.Features.StringResourceTrimming) to improve package size and startup time
 
 ## Advanced performance Tracing
 
