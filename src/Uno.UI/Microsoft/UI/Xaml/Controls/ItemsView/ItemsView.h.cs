@@ -55,7 +55,7 @@ partial class ItemsView
 	// Caches the element index used to define m_keyboardNavigationReferenceRect.
 	private int m_keyboardNavigationReferenceIndex = -1;
 	// Bounds of the reference element for directional keyboard navigations.
-	private Rect m_keyboardNavigationReferenceRect = new Rect(-1.0f, -1.0f, -1.0f, -1.0f);
+	private Rect m_keyboardNavigationReferenceRect = Rect.InvalidRect;
 
 	// Set to True during a user action processing which updates selection.
 	private bool m_isProcessingInteraction = false;

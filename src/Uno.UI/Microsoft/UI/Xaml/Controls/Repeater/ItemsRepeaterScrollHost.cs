@@ -51,7 +51,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		class CandidateInfo
 		{
-			public static Rect InvalidBounds = new Rect(-1.0f, -1.0f, -1.0f, -1.0f);
+			public static Rect InvalidBounds = Rect.InvalidRect;
 
 			public CandidateInfo(UIElement element)
 			{
