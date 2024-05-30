@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Uno.Storage;
 using Windows.Foundation.Collections;
 using Windows.Phone.PersonalInformation;
 
@@ -16,24 +17,28 @@ namespace Windows.Storage;
 /// </remarks>
 public partial class ApplicationDataContainer : IDisposable
 {
-	private const string ContainerPathSeparator = "__/";
+	private const string InternalSettingPrefix = "__";
 
-	private Lazy<Dictionary<string, ApplicationDataContainer>> _containers = new(CreateContainersDictionary);
-	private ApplicationDataContainer _parent;
+	private const string ContainerPathSeparator = "¬";
 
-	internal ApplicationDataContainer(ApplicationData owner, string name, ApplicationDataLocality locality)
+	private readonly Lazy<Dictionary<string, ApplicationDataContainer>> _containers;
+	private readonly NativeApplicationSettings _nativeApplicationSettings;
+	private readonly ApplicationDataContainerSettings _values;
+	private readonly ApplicationDataContainer _parent;
+
+	internal ApplicationDataContainer(string name, ApplicationDataLocality locality)
 	{
 		Locality = locality;
 		Name = name;
 
-		Values = new ApplicationDataContainerSettings(this, locality);
+		_nativeApplicationSettings = NativeApplicationSettings.GetForLocality(locality);
+		_values = new ApplicationDataContainerSettings(this, locality);
+		_containers = new(() => CreateContainersDictionary());
 	}
 
-	internal ApplicationDataContainer(ApplicationDataContainer parent, string name)
+	internal ApplicationDataContainer(ApplicationDataContainer parent, string name) : this(name, parent.Locality)
 	{
 		_parent = parent ?? throw new ArgumentNullException(nameof(parent));
-		Name = name;
-		Locality = parent.Locality;
 	}
 
 	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + ContainerPathSeparator + Name;
@@ -42,12 +47,13 @@ public partial class ApplicationDataContainer : IDisposable
 
 	public string Name { get; }
 
-	public IPropertySet Values { get; private set; }
+	public IPropertySet Values => _values;
 
 	public IReadOnlyDictionary<string, ApplicationDataContainer> Containers => _containers.Value.AsReadOnly();
 
-	private static Dictionary<string, ApplicationDataContainer> CreateContainersDictionary()
+	private Dictionary<string, ApplicationDataContainer> CreateContainersDictionary()
 	{
+		var keysWithPrefix = _nativeApplicationSettings.Select(kvp => kvp.Key).Where(k => k.StartsWith(ContainerPath + ContainerPathSeparator));
 		return new Dictionary<string, ApplicationDataContainer>();
 	}
 
@@ -56,7 +62,7 @@ public partial class ApplicationDataContainer : IDisposable
 		var containers = Containers;
 		if (disposition == ApplicationDataCreateDisposition.Existing)
 		{
-
+			var applicationDataContainer = new ApplicationDataContainer(this, name);
 		}
 	}
 
