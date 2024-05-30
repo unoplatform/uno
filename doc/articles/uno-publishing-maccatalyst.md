@@ -10,7 +10,7 @@ uid: uno.publishing.maccatalyst
 
 ## Building your app
 
-### Packaging your app using the MacCatalyst
+### Packaging your app using Mac Catalyst
 
 > [!IMPORTANT]
 > Publishing for Mac Catalyst is only supported on macOS
