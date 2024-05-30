@@ -75,16 +75,13 @@
 		<_CompileUnoJavaBeforeTargets Include="GenerateBindings" />
 		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports" />
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
-
-		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports" /> <!-- This target generates the \lp\**\classes.jar -->
 	</ItemGroup>
 
 	<Target Name="_CompileUnoJava"
 			BeforeTargets="@(_CompileUnoJavaBeforeTargets)"
-			AfterTargets="@(_CompileUnoJavaAfterTargets)"
 			Inputs="@(_JavaFile)"
 			Outputs="@(EmbeddedJar)"
-			DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">
+			DependsOnTargets="_ExtractLibraryProjectImports;_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">
 
 		<ItemGroup>
 			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
