@@ -11,8 +11,9 @@ uid: uno.publishing.overview
 
 ## Packaging
 
+- [Packaging for Desktop](xref:uno.publishing.desktop)
+- [Packaging for WebAssembly](xref:uno.publishing.webassembly)
 - [Packaging for Windows](xref:uno.publishing.windows)
-
-## Deploying
-
-_To be documented._
+- [Packaging for iOS](xref:uno.publishing.ios)
+- [Packaging for Android](xref:uno.publishing.android)
+- [Packaging for Mac Catalyst](xref:uno.publishing.maccatalyst)
