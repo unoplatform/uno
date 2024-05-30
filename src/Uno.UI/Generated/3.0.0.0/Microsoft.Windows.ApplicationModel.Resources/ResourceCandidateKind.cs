@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Windows.ApplicationModel.Resources
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum ResourceCandidateKind
 	{
-#if false
-		Unknown = 0,
-#endif
-#if false
-		String = 1,
-#endif
-#if false
-		FilePath = 2,
-#endif
-#if false
-		EmbeddedData = 3,
-#endif
+		// Skipping already declared field Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind.Unknown
+		// Skipping already declared field Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind.String
+		// Skipping already declared field Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind.FilePath
+		// Skipping already declared field Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind.EmbeddedData
 	}
 #endif
 }

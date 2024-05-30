@@ -3,17 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Windows.ApplicationModel.Resources
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IResourceContext
 	{
-#if false
-		global::System.Collections.Generic.IDictionary<string, string> QualifierValues
-		{
-			get;
-		}
-#endif
+		// Skipping already declared property QualifierValues
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceContext.QualifierValues.get
 	}
 }

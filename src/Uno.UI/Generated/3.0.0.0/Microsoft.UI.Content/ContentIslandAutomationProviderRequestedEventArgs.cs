@@ -3,44 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentIslandAutomationProviderRequestedEventArgs
 	{
-#if false
-		internal ContentIslandAutomationProviderRequestedEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentIslandAutomationProviderRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIslandAutomationProviderRequestedEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs", "bool ContentIslandAutomationProviderRequestedEventArgs.Handled");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public object AutomationProvider
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs", "object ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider");
-			}
-		}
-#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property AutomationProvider
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.get

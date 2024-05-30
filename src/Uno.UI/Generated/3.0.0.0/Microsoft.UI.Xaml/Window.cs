@@ -22,20 +22,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ExtendsContentIntoTitleBar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool Window.ExtendsContentIntoTitleBar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Window.ExtendsContentIntoTitleBar");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Window", "bool Window.ExtendsContentIntoTitleBar");
-			}
-		}
-#endif
+		// Skipping already declared property ExtendsContentIntoTitleBar
 		// Skipping already declared property Content
 		// Skipping already declared property Bounds
 		// Skipping already declared property Compositor

@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum FocusNavigationResult
 	{
-#if false
-		NotMoved = 0,
-#endif
-#if false
-		Moved = 1,
-#endif
-#if false
-		NoFocusableElements = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Input.FocusNavigationResult.NotMoved
+		// Skipping already declared field Microsoft.UI.Input.FocusNavigationResult.Moved
+		// Skipping already declared field Microsoft.UI.Input.FocusNavigationResult.NoFocusableElements
 	}
 #endif
 }

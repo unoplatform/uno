@@ -14,13 +14,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendered.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.remove
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Composition.Compositor GetCompositorForCurrentThread()
-		{
-			throw new global::System.NotImplementedException("The member Compositor CompositionTarget.GetCompositorForCurrentThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compositor%20CompositionTarget.GetCompositorForCurrentThread%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Microsoft.UI.Xaml.Media.RenderedEventArgs> Rendered

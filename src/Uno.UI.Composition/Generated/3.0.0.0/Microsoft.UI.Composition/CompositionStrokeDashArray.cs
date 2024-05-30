@@ -8,6 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionStrokeDashArray : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<float>, global::System.Collections.Generic.IEnumerable<float>
 	{
+		// Skipping already declared property Size
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Clear()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.RemoveAt(uint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Append(float)
@@ -22,7 +23,11 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.SetAt(uint, float)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.InsertAt(uint, float)
 		// Processing: System.Collections.Generic.IList<float>
+		// Skipping already implement System.Collections.Generic.IList<float>.this[int]
 		// Processing: System.Collections.Generic.ICollection<float>
+		// Skipping already implement System.Collections.Generic.ICollection<float>.Count
+		// Skipping already implement System.Collections.Generic.ICollection<float>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<float>
+		// Processing: System.Collections.IEnumerable
 	}
 }

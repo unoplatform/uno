@@ -238,6 +238,9 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateSpriteVisual()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateSurfaceBrush()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateSurfaceBrush(Microsoft.UI.Composition.ICompositionSurface)
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateVector2KeyFrameAnimation()
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateVector3KeyFrameAnimation()
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateVector4KeyFrameAnimation()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.CompositionCommitBatch GetCommitBatch(global::Microsoft.UI.Composition.CompositionBatchTypes batchType)

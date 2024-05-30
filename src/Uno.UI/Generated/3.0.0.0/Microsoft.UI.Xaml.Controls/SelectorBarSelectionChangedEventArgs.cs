@@ -3,15 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SelectorBarSelectionChangedEventArgs
 	{
-#if false
-		internal SelectorBarSelectionChangedEventArgs()
-		{
-		}
-#endif
 	}
 }

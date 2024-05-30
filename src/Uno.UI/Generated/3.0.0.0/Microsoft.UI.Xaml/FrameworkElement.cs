@@ -263,12 +263,12 @@ namespace Microsoft.UI.Xaml
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged
 		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "event SizeChangedEventHandler FrameworkElement.SizeChanged");
 			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "event SizeChangedEventHandler FrameworkElement.SizeChanged");

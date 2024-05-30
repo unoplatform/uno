@@ -3,69 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FocusNavigationRequest
 	{
-#if false
-		internal FocusNavigationRequest()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Guid CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid FocusNavigationRequest.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20FocusNavigationRequest.CorrelationId");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.Rect? HintRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect? FocusNavigationRequest.HintRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%3F%20FocusNavigationRequest.HintRect");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Input.FocusNavigationReason Reason
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusNavigationReason FocusNavigationRequest.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationReason%20FocusNavigationRequest.Reason");
-			}
-		}
-#endif
+		// Skipping already declared property CorrelationId
+		// Skipping already declared property HintRect
+		// Skipping already declared property Reason
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Reason.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.HintRect.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.CorrelationId.get
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Input.FocusNavigationRequest Create(global::Microsoft.UI.Input.FocusNavigationReason reason)
-		{
-			throw new global::System.NotImplementedException("The member FocusNavigationRequest FocusNavigationRequest.Create(FocusNavigationReason reason) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationRequest%20FocusNavigationRequest.Create%28FocusNavigationReason%20reason%29");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Input.FocusNavigationRequest Create(global::Microsoft.UI.Input.FocusNavigationReason reason, global::Windows.Foundation.Rect hintRect)
-		{
-			throw new global::System.NotImplementedException("The member FocusNavigationRequest FocusNavigationRequest.Create(FocusNavigationReason reason, Rect hintRect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationRequest%20FocusNavigationRequest.Create%28FocusNavigationReason%20reason%2C%20Rect%20hintRect%29");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Input.FocusNavigationRequest Create(global::Microsoft.UI.Input.FocusNavigationReason reason, global::Windows.Foundation.Rect hintRect, global::System.Guid correlationId)
-		{
-			throw new global::System.NotImplementedException("The member FocusNavigationRequest FocusNavigationRequest.Create(FocusNavigationReason reason, Rect hintRect, Guid correlationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationRequest%20FocusNavigationRequest.Create%28FocusNavigationReason%20reason%2C%20Rect%20hintRect%2C%20Guid%20correlationId%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason)
+		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect)
+		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect, System.Guid)
 	}
 }
