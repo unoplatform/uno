@@ -17,7 +17,8 @@ namespace Windows.Storage;
 public partial class ApplicationDataContainer : IDisposable
 {
 	private const string InternalSettingPrefix = "__";
-	private const string ContainerPathSeparator = "¬";
+	private const string ContainerSeparator = "¬";
+	private const string ContainerListKey = InternalSettingPrefix + "UnoContainers";
 
 	private readonly Lazy<Dictionary<string, ApplicationDataContainer>> _containers;
 	private readonly NativeApplicationSettings _nativeApplicationSettings;
@@ -70,6 +71,11 @@ public partial class ApplicationDataContainer : IDisposable
 
 	public ApplicationDataContainer CreateContainer(string name, ApplicationDataCreateDisposition disposition)
 	{
+		if (name.Contains(ContainerSeparator))
+		{
+			throw new InvalidOperationException($"Container names may not contain the '{ContainerSeparator}' character.");
+		}
+
 		var containers = _containers.Value;
 
 		if (containers.TryGetValue(name, out var container))
@@ -86,7 +92,7 @@ public partial class ApplicationDataContainer : IDisposable
 			containers.Add(name, newContainer);
 
 			// Add a container marker entry to the settings store
-			_nativeApplicationSettings.Set(newContainer.ContainerPath) = "";
+			AddContainerToList(name);
 
 			return newContainer;
 		}
@@ -94,6 +100,11 @@ public partial class ApplicationDataContainer : IDisposable
 
 	public void DeleteContainer(string name)
 	{
+		if (name.Contains(ContainerSeparator))
+		{
+			throw new InvalidOperationException($"Container names may not contain the '{ContainerSeparator}' character.");
+		}
+
 		if (!_containers.Value.TryGetValue(name, out var container))
 		{
 			throw new KeyNotFoundException("Container does not exist.");
@@ -102,7 +113,7 @@ public partial class ApplicationDataContainer : IDisposable
 		container.ClearIncludingInternal();
 
 		// Remove the container marker entry from the settings store
-		_nativeApplicationSettings.Remove(container.ContainerPath);
+		RemoveContainerFromList(name);
 
 		_containers.Value.Remove(name);
 	}
@@ -111,6 +122,26 @@ public partial class ApplicationDataContainer : IDisposable
 	{
 		Clear();
 		_nativeApplicationSettings.RemoveKeysWithPrefix(InternalSettingPrefix);
+	}
+
+	private void AddContainerToList(string containerName)
+	{
+		var containerList = _nativeApplicationSettings.Get(ContainerPath + ContainerListKey) ?? "";
+		if (containerList.Length > 0)
+		{
+			containerList += ContainerListSeparator;
+		}
+
+		containerList += containerName;
+		_nativeApplicationSettings.Set(ContainerPath + ContainerListKey) = containerList;
+	}
+
+	private void RemoveContainerFromList(string containerName)
+	{
+		var containerList = _nativeApplicationSettings.Get(ContainerPath + ContainerListKey) ?? "";
+		var containerListParts = containerList.Split(ContainerListSeparator);
+		var newContainerList = string.Join(ContainerListSeparator, containerListParts.Where(c => c != containerName));
+		_nativeApplicationSettings.Set(ContainerPath + ContainerListKey) = newContainerList;
 	}
 
 	public void Dispose() => DisposePartial();
