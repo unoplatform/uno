@@ -320,7 +320,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextChangedPartial();
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
-			if (focusManager.FocusedElement != this &&
+			if (focusManager?.FocusedElement != this &&
 				GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus } bindingExpression)
 			{
 				bindingExpression.UpdateSource(Text);
