@@ -82,7 +82,7 @@ To run the **Windows** (WinAppSDK) head:
 - Press the `MyApp (WinAppSDK Unpackaged)` button to deploy the app
 - If you have not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
 
-> [!INFO]
+> [!NOTE]
 > If you're not able or willing to turn on the Windows developer mode, [read about this common issue](xref:Uno.UI.CommonIssues.vs2022#unable-to-select-the-myapp-unpackaged-winappsdk-profile).
 
 ### [**iOS**](#tab/iOS)
