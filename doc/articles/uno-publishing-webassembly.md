@@ -9,7 +9,7 @@ uid: uno.publishing.webassembly
 - [Configure deep linking](xref:UnoWasmBootstrap.Features.DeepLinking)
 - [Configure WebAssembly AOT modes](xref:Uno.Wasm.Bootstrap.Runtime.Execution)
 - [Profile the memory of your app](xref:Uno.Wasm.Bootstrap.Profiling.Memory)
-- [Enable binaries obfuscation](xref:Uno.Wasm.Bootstrap.Obfuscation)
+- [Enable binaries obfuscation](xref:UnoWasmBootstrap.Features.Obfuscation)
 
 You can view more on the [WebAssembly Bootstrapper](xref:UnoWasmBootstrap.Overview) options.
 
