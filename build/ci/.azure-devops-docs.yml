@@ -30,6 +30,8 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
 
+  - template: templates/docfx-intermediary-assets.yml
+
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj
