@@ -360,6 +360,12 @@ partial class ClientHotReloadProcessor
 			if (instanceFE is not null &&
 				newInstanceFE is not null)
 			{
+#if HAS_UNO
+				var oldStore = ((IDependencyObjectStoreProvider)instanceFE).Store;
+				var newStore = ((IDependencyObjectStoreProvider)newInstanceFE).Store;
+				oldStore.ClonePropertiesToAnotherStoreForHotReload(newStore);
+#endif
+
 				handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
 
 				SwapViews(instanceFE, newInstanceFE);
