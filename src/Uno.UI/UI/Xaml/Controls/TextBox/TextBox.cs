@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Uno.UI;
@@ -26,7 +27,6 @@ using Uno.UI;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-using Uno.UI.Xaml.Core;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
