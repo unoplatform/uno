@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -31,7 +32,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			// waiting for a specific window to be present, so we make do with a Thread.Sleep
 			var filename = Exists("xterm") ? "xterm" : (Exists("vlc") ? "vlc" : "mpv");
 
-			// Note: xterm will more than likely crash. Use alacritty instead if you want to test embedding a terminal.
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Using {filename} as the X11 native application for {nameof(CreateSampleComponent)}.");
+			}
+
 			var process = new Process
 			{
 				StartInfo = new ProcessStartInfo
@@ -67,6 +72,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			else if (filename == "xterm")
 			{
 				title = $"Sample terminal {Random.Shared.Next()} {text}"; // used to maintain unique titles
+				process.StartInfo.ArgumentList.Add("-iconic");
 				process.StartInfo.ArgumentList.Add("-xrm");
 				process.StartInfo.ArgumentList.Add("XTerm.vt100.allowTitleOps: false");
 				process.StartInfo.ArgumentList.Add("-T");
