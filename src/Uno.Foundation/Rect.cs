@@ -12,8 +12,9 @@ namespace Windows.Foundation;
 public partial struct Rect
 {
 	// TODO: These are floats in WinUI. Consider matching it.
-	private double _width;
-	private double _height;
+	// NOTE: These are actually public in WinUI as well, but for now we don't need to match that.
+	internal double _width;
+	internal double _height;
 
 	private const string _negativeErrorMessage = "Non-negative number required.";
 	private const float Epsilon = 0.00001f;
