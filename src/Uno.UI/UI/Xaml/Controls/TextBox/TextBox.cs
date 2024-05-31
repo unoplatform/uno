@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Uno.UI;
@@ -317,6 +318,13 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateButtonStates();
 
 			OnTextChangedPartial();
+
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager?.FocusedElement != this &&
+				GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus } bindingExpression)
+			{
+				bindingExpression.UpdateSource(Text);
+			}
 
 			var isUserModifyingText = _isInputModifyingText | _isInputClearingText;
 			_textChangedPendingCount++;
@@ -918,11 +926,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
-				if (!_wasTemplateRecycled)
+				if (!_wasTemplateRecycled &&
+					GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.LostFocus or UpdateSourceTrigger.Default } bindingExpression)
 				{
 					// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
-					var bindingExpression = GetBindingExpression(TextProperty);
-					bindingExpression?.UpdateSource(Text);
+					bindingExpression.UpdateSource(Text);
 				}
 
 				_wasTemplateRecycled = false;
