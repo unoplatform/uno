@@ -44,6 +44,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly ApplicationView _applicationView;
 	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
+	private readonly CompositeDisposable _disposables = new();
 
 	private X11Window? _x11Window;
 	private IX11Renderer? _renderer;
@@ -93,6 +94,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
+
+		RegisterForBackgroundColor();
 	}
 
 	public static X11XamlRootHost? GetHostFromWindow(Window window)
@@ -309,6 +312,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		IntPtr window;
+		uint depth = 32;
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
 			_x11Window = CreateGLXWindow(display, screen, size);
@@ -316,16 +320,54 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			window = XLib.XCreateSimpleWindow(
-				display,
-				XLib.XRootWindow(display, screen),
-				0,
-				0,
-				(int)size.Width,
-				(int)size.Height,
-				0,
-				XLib.XBlackPixel(display, screen),
-				XLib.XWhitePixel(display, screen));
+			var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, 32, 4, out var info);
+			var success = matchVisualInfoResult != 0;
+			if (!success)
+			{
+				var defaultDepth = XLib.XDefaultDepth(display, screen);
+				matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, defaultDepth, 4, out info);
+
+				success = matchVisualInfoResult != 0;
+				if (!success)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error("XLIB ERROR: Cannot match visual info");
+					}
+					throw new InvalidOperationException("XLIB ERROR: Cannot match visual info");
+				}
+			}
+
+			var visual = info.visual;
+			depth = info.depth;
+
+			var rootWindow = XLib.XRootWindow(display, screen);
+			var xSetWindowAttributes = new XSetWindowAttributes()
+			{
+				backing_store = 1,
+				bit_gravity = Gravity.NorthWestGravity,
+				win_gravity = Gravity.NorthWestGravity,
+				// Settings to true when WindowStyle is None
+				//override_redirect = true,
+				colormap = XLib.XCreateColormap(display, rootWindow, visual, /* AllocNone */ 0),
+				border_pixel = 0,
+				// Settings background pixel to zero means Transparent background,
+				// and it will use the background color from `Window.SetBackground`
+				background_pixel = IntPtr.Zero,
+			};
+			var valueMask =
+					0
+					| SetWindowValuemask.BackPixel
+					| SetWindowValuemask.BorderPixel
+					| SetWindowValuemask.BitGravity
+					| SetWindowValuemask.WinGravity
+					| SetWindowValuemask.BackingStore
+					| SetWindowValuemask.ColorMap
+				//| SetWindowValuemask.OverrideRedirect
+				;
+			window = XLib.XCreateWindow(display, rootWindow, 0, 0, (int)size.Width,
+				(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
+				(UIntPtr)(valueMask), ref xSetWindowAttributes);
 			XLib.XSelectInput(display, window, EventsMask);
 			_x11Window = new X11Window(display, window);
 		}
@@ -349,7 +391,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			_renderer = new X11SoftwareRenderer(this, _x11Window.Value);
+			_renderer = new X11SoftwareRenderer(this, _x11Window.Value, depth);
 		}
 	}
 
@@ -439,4 +481,29 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	private void RegisterForBackgroundColor()
+	{
+		UpdateRendererBackground();
+
+		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
+	}
+
+	private void UpdateRendererBackground()
+	{
+		if (_window.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
+		{
+			if (_renderer is not null)
+			{
+				_renderer.BackgroundColor = brush.Color;
+			}
+		}
+		else if (_window.Background is not null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+			}
+		}
+	}
 }

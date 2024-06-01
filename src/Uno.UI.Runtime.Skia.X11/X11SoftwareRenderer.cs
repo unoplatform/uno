@@ -6,15 +6,16 @@ using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	internal class X11SoftwareRenderer(IXamlRootHost host, X11Window x11window) : IX11Renderer
+	internal class X11SoftwareRenderer(IXamlRootHost host, X11Window x11window, uint colorDepth) : IX11Renderer
 	{
-		private const int ColorDepth = 24;
 		private const int BitmapPad = 32;
 
 		private SKBitmap? _bitmap;
 		private SKSurface? _surface;
 		private IntPtr? _xImage;
-		private int renderCount;
+		private int _renderCount;
+		private IntPtr? _gc;
+		public SKColor BackgroundColor { get; set; } = SKColors.White;
 
 		void IX11Renderer.InvalidateRender()
 		{
@@ -27,7 +28,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Render {renderCount++}");
+				this.Log().Trace($"Render {_renderCount++}");
 			}
 
 			XWindowAttributes attributes = default;
@@ -36,7 +37,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var width = attributes.width;
 			var height = attributes.height;
 
-			// TODO: make sure this works everywhere. AFAICT everyone is using 24 bit color with 32 bit_pad
 			// endianness might come into play here?
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 
@@ -65,7 +65,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var canvas = _surface.Canvas;
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				canvas.Clear(SKColors.Transparent);
+				canvas.Clear(BackgroundColor);
 				var scale = host.RootElement?.XamlRoot is { } root
 					? root.RasterizationScale
 					: 1;
@@ -82,7 +82,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			_xImage ??= X11Helper.XCreateImage(
 				display: x11window.Display,
 				visual: /* CopyFromParent */ 0,
-				depth: ColorDepth,
+				depth: colorDepth,
 				format: /* ZPixmap */ 2,
 				offset: 0,
 				data: _bitmap.GetPixels(),
@@ -91,11 +91,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				bitmap_pad: BitmapPad,
 				bytes_per_line: 0); // 0 bytes per line assume contiguous lines i.e. pad * width
 
+			var image = _xImage.Value;
+
+			_gc ??= X11Helper.XCreateGC(x11window.Display, x11window.Window, 0, 0);
+			var gc = _gc.Value;
+
 			var _4 = X11Helper.XPutImage(
 				display: x11window.Display,
 				drawable: x11window.Window,
-				gc: X11Helper.XDefaultGC(x11window.Display, XLib.XDefaultScreen(x11window.Display)),
-				image: _xImage.Value,
+				gc: gc,
+				image: image,
 				srcx: 0,
 				srcy: 0,
 				destx: 0,

@@ -23,6 +23,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
 
+		public SKColor BackgroundColor { get; set; } = SKColors.White;
+
 		public X11OpenGLRenderer(IXamlRootHost host, X11Window x11window)
 		{
 			_host = host;
@@ -88,7 +90,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var canvas = _surface.Canvas;
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				canvas.Clear(SKColors.Transparent);
+				canvas.Clear(BackgroundColor);
 
 				var scale = _host.RootElement?.XamlRoot is { } root
 					? root.RasterizationScale
