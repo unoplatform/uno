@@ -61,7 +61,10 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(MediaPlayer),
 				typeof(global::Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(
+					default(global::Windows.Media.Playback.MediaPlayer),
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -111,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Stretch),
 				typeof(MediaPlayerPresenter),
 				new FrameworkPropertyMetadata(
-					Stretch.Uniform, 
+					Stretch.Uniform,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
