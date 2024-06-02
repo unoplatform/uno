@@ -12,8 +12,7 @@ uid: Uno.Features.Dialogs
 
 ## Using `ContentDialog`
 
-The recommended way to display user dialogs is via the `Microsoft.UI.Xaml.Controls.ContentDialog` class. You can use various properties to customize its display and also provide a custom XAML-based content for it. For more information, see [ContentDialog Class | Microsoft Learn](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.contentdialog).
-
+The recommended way to display user dialogs is via the `Microsoft.UI.Xaml.Controls.ContentDialog` class.
 ```csharp
 ContentDialog noWifiDialog = new ContentDialog
 {
@@ -28,11 +27,26 @@ noWifiDialog.XamlRoot = anyLoadedControl.XamlRoot;
 ContentDialogResult result = await noWifiDialog.ShowAsync();
 ```
 
-It is crucial to set the `XamlRoot` property before calling `ShowAsync`. This way the dialog will become asssociated with the visual tree. `XamlRoot` can be retrieved from any loaded control in your window (e.g. a `Button`, your `Page`, etc.).
+It is crucial to set the `XamlRoot` property before calling `ShowAsync`. This way the dialog will become associated with the visual tree. `XamlRoot` can be retrieved from any loaded control in your window (e.g. a `Button`, your `Page`, etc.).
+
+## Customize a `ContentDialog`
+
+You can use various properties to customize its display and also provide a custom XAML-based content for it. For more information, see [ContentDialog Class | Microsoft Learn](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.contentdialog).
+
+In order for your custom dialog to follow the Fluent design, it's important that you add the following line in the constructor of your dialog:
+
+```csharp
+Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+```
+Your dialog will look similar to this dialog:
+![With style sample](../Assets/features/contentdialog/withstyle.png)
+
+If you omit this line, your dialog will look like this:
+![With style sample](../Assets/features/contentdialog/withoutstyle.png)
 
 ## Using `MessageDialog`
 
-`MessageDialog` is a legacy API which is no longer officially supported. If possible, please use `ContentDialog` instead.
+`MessageDialog` is a legacy API that is no longer officially supported. If possible, please use `ContentDialog` instead.
 
 For existing applications which rely on `MessageDialog`, updating to Uno Platform 5.2 and newer requires you to associate the `MessageDialog` with a window before it is displayed. This can be done via the `WinRT.Interop` APIs:
 
