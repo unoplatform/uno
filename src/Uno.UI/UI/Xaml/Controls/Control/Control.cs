@@ -202,7 +202,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, // WinUI also has AffectsMeasure here, but we only do this conditionally in SetUpdateControlTemplate.
 					(s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
 		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
@@ -641,7 +641,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(
-				"FontWeight",
+				nameof(FontWeight),
 				typeof(FontWeight),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
@@ -663,7 +663,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty FontSizeProperty { get; } =
 			DependencyProperty.Register(
-				"FontSize",
+				nameof(FontSize),
 				typeof(double),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
@@ -685,7 +685,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(
-				"FontFamily",
+				nameof(FontFamily),
 				typeof(FontFamily),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
@@ -706,7 +706,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty FontStyleProperty { get; } =
 			DependencyProperty.Register(
-				"FontStyle",
+				nameof(FontStyle),
 				typeof(FontStyle),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
@@ -740,7 +740,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
-				"Padding",
+				nameof(Padding),
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
@@ -763,7 +763,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
 		public static DependencyProperty BorderThicknessProperty { get; } =
 			DependencyProperty.Register(
-				"BorderThickness",
+				nameof(BorderThickness),
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(

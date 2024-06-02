@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
-				"Content",
+				nameof(Content),
 				typeof(object),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ContentTemplateProperty { get; } =
 			DependencyProperty.Register(
-				"ContentTemplate",
+				nameof(ContentTemplate),
 				typeof(DataTemplate),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(

@@ -159,7 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//There is an error in the MSDN docs saying that the default value for IsPaneOpen is true, it is actually false
 		public static DependencyProperty IsPaneOpenProperty { get; } =
 			DependencyProperty.Register(
-				"IsPaneOpen",
+				nameof(IsPaneOpen),
 				typeof(bool),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
@@ -238,7 +238,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty PanePlacementProperty { get; } =
 			DependencyProperty.Register(
-				"PanePlacement",
+				nameof(PanePlacement),
 				typeof(SplitViewPanePlacement),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(

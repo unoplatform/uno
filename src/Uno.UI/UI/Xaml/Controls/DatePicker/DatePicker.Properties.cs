@@ -174,7 +174,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
 		DependencyProperty.Register(
-			name: "HeaderTemplate",
+			name: nameof(HeaderTemplate),
 			propertyType: typeof(DataTemplate),
 			ownerType: typeof(DatePicker),
 			typeMetadata: new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty HeaderProperty { get; } =
 		DependencyProperty.Register(
-			name: "Header",
+			name: nameof(Header),
 			propertyType: typeof(object),
 			ownerType: typeof(DatePicker),
 			typeMetadata: new FrameworkPropertyMetadata(default(object), FrameworkPropertyMetadataOptions.AffectsMeasure));
