@@ -131,7 +131,7 @@ Here's how to use this feature:
 
 1. Add a _css-like_ declaration to your Lottie shape like this then put this in the name of the shape. That means the `nm` property in the json-generated file.
 
-   ``` css
+   ```css
    { Color: var(MyColor); }
    ```
 
@@ -139,7 +139,7 @@ Here's how to use this feature:
 
 2. Use it that way:
 
-   ``` xml
+   ```xml
    <winui:AnimatedVisualPlayer
        x:Name="player"
        AutoPlay="true">

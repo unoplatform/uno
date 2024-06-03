@@ -22,14 +22,14 @@ All this happens behind the scenes whenever you build an Uno head.
 
 Let's look at a concrete example. This is part of the markup we put in `MainPage.xaml` in a previous article:
 
-```` xml
+```xml
     <StackPanel> 
         <TextBlock x:Name="ClickTextBlock" 
                    Text="Button wasn't clicked yet" /> 
         <Button Content="Click me" 
                 Click="Button_Click" /> 
     </StackPanel> 
-````
+```
 
 The generated output can be found in the 'obj' folder under the project head.
 
@@ -39,7 +39,7 @@ The generated output can be found in the 'obj' folder under the project head.
 
 This is a part of the generated code, showing the output for the XAML snippet above:
 
-```` csharp
+```csharp
     public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page 
     { 
         private void InitializeComponent() 
@@ -78,7 +78,7 @@ This is a part of the generated code, showing the output for the XAML snippet ab
                     , 
                 } 
             }
-````
+```
 
 What a mouthful! Bear in mind that generated code tends to be optimized for machine readability, rather than for human readability. For example, the explicit casts to `XamlApplyHandler` were added when we found that the compiler was having to do a lot of computationally-expensive type inference. That one change **doubled** the compilation speed for large XAML files.
 
