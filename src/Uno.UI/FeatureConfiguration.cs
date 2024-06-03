@@ -135,12 +135,7 @@ namespace Uno.UI
 			/// Will never be deferred when .ApplyTemplate() is called explicitly.
 			/// More information there: https://github.com/unoplatform/uno/issues/3519
 			/// </remarks>
-			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __IOS__ || __MACOS__
-			// opt-in for iOS/Android/macOS
-#else
-				= true;
-#endif
+			public static bool UseDeferredOnApplyTemplate { get; set; } = true;
 		}
 
 		public static class DataTemplateSelector
