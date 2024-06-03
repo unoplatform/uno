@@ -94,7 +94,7 @@ On UWP, you'll need to reference the following packages in your head project:
 * `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
 * `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
 
-***
+---
 
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 
