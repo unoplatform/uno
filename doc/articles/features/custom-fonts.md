@@ -25,7 +25,7 @@ In order to use a custom font in your application:
 
 On Wasm platform, fonts files are loaded by the browser and can take some time to load, resulting in performance degradation and potential flickering when the font is actually available for rendering. In order to prevent this, it is possible to instruct the browser to preload the font before the rendering:
 
-``` csharp
+```csharp
 // Preloading of font families on Wasm. Add this before the Application.Start() in the Program.cs
 
 public static void Main(string[] args)
@@ -203,7 +203,7 @@ First, the font needs to be defined in CSS.
 
 Second, you can use it in XAML in this way:
 
-``` xml
+```xml
 <!-- XAML usage of CSS defined font -->
 
 <TextBlock FontFamily="MyCustomFontAsBase64">This text should be rendered using the font defined as base64 in CSS.</TextBlock>

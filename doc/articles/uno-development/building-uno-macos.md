@@ -22,7 +22,7 @@ Support for building the `Uno.UI` solution is still somewhat unstable, this is a
 
 * If NuGet restore fails when building from the IDE, or if it gets stuck for some other reason, try building from the command line. Open a terminal session in the `uno/src` folder and use the following command:
 
-   ``` shell
+   ```shell
    msbuild /m /r SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj
    ```
 
