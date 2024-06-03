@@ -1111,7 +1111,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var previousHyperLinks = _hyperlinks.Select(h => h.hyperlink).ToList();
+			var previousHyperLinks = _hyperlinks.SelectToList(hyperlink => hyperlink.hyperlink);
+
 			_hyperlinkOver = null;
 			_hyperlinks.Clear();
 
