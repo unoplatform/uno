@@ -50,7 +50,7 @@ If you omit this line, your dialog will look like this:
 
 `MessageDialog` is a legacy API that is no longer officially supported. If possible, please use `ContentDialog` instead.
 
-For existing applications which rely on `MessageDialog`, updating to Uno Platform 5.2 and newer requires you to associate the `MessageDialog` with a window before it is displayed. This can be done via the `WinRT.Interop` APIs:
+For existing applications that rely on `MessageDialog`, updating to Uno Platform 5.2 and newer requires you to associate the `MessageDialog` with a window before it is displayed. This can be done via the `WinRT.Interop` APIs:
 
 ```csharp
 var dialog = new MessageDialog();
