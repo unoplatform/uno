@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-public partial class ClientHotReloadProcessor : IRemoteControlProcessor
+public partial class ClientHotReloadProcessor : IClientProcessor
 {
 	private string? _projectPath;
 	private string[]? _xamlPaths;
