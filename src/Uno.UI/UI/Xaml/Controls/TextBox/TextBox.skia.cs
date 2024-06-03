@@ -255,15 +255,15 @@ public partial class TextBox
 							_rectsChanged = true;
 							rectangle.Fill = SelectionHighlightColor;
 						}
-						if (rectangle.Width != Math.Ceiling(rect.Width))
+						if (rectangle.Width != rect.Width)
 						{
 							_rectsChanged = true;
-							rectangle.Width = Math.Ceiling(rect.Width);
+							rectangle.Width = rect.Width;
 						}
-						if (rectangle.Height != Math.Ceiling(rect.Height))
+						if (rectangle.Height != rect.Height)
 						{
 							_rectsChanged = true;
-							rectangle.Height = Math.Ceiling(rect.Height);
+							rectangle.Height = rect.Height;
 						}
 						if ((double)rectangle.GetValue(Canvas.LeftProperty) != rect.Left)
 						{
