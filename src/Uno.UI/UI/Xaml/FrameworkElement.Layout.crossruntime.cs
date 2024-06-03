@@ -17,6 +17,8 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml
 {
@@ -900,8 +902,38 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		internal override void Enter(EnterParams @params, int depth)
+		internal override void Enter(INameScope? nameScope, EnterParams @params, int depth)
 		{
+			// This should happen regardless of whether Name is null or not.
+			// What we need here is that once we find an element being entered that
+			// has its own NameScope, then we start using this namescope and use it for entering its children.
+			// For example, elements in a template where the template root will have its own NameScope.
+			if (NameScope.GetNameScope(this) is { } currentNameScope)
+			{
+				nameScope = currentNameScope;
+			}
+
+			if (nameScope is not null)
+			{
+				var name = this.Name;
+
+				if (!string.IsNullOrEmpty(name) && nameScope.FindName(name) is null)
+				{
+					// Ideally, we shouldn't be checking for null FindName.
+					// But it's currently needed due to the way we
+					// register names in namescopes which don't yet match WinUI completely.
+					// Right now, XAML generator will do RegisterName calls, then, when we
+					// enter the visual tree, we will be trying to register the name again.
+					// However, registering in Enter is also very necessary in case C# is used
+					// instead of XAML (be it "regular" C# code or C# Markup).
+					// So, we need to have RegisterName here.
+					// The RegisterName calls in XAML generator should probably happen via something
+					// similar to WinUI's PostParseRegisterNames which will basically just do an "Enter" with
+					// isLive being false. Then, the Enter happening in VisualTree.AddRoot should skip name registration.
+					nameScope.RegisterName(name, this);
+				}
+			}
+
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
 			// are entered as well.
@@ -913,12 +945,12 @@ namespace Microsoft.UI.Xaml
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
 						resourceAsUIElement.XamlRoot = XamlRoot;
-						resourceAsUIElement.Enter(@params, int.MinValue);
+						resourceAsUIElement.Enter(nameScope, @params, int.MinValue);
 					}
 				}
 			}
 
-			base.Enter(@params, depth);
+			base.Enter(nameScope, @params, depth);
 
 			if (@params.IsLive)
 			{

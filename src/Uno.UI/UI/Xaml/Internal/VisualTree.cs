@@ -435,6 +435,13 @@ namespace Uno.UI.Xaml.Core
 				//TODO Uno: The logic here is more complex in WinUI,
 				//setting the namescope owner. Not needed currently.
 
+				// While XAML generator should be setting NameScope, this is to support cases where
+				// C# is used instead of XAML (it could be "regular" pure C#, or C# Markup)
+				if (root == PublicRootVisual && NameScope.GetNameScope(root) is null)
+				{
+					NameScope.SetNameScope(root, new NameScope() { Owner = root });
+				}
+
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				if (IsMainVisualTree())
 				{
@@ -457,7 +464,7 @@ namespace Uno.UI.Xaml.Core
 
 				// In WinUI, this is called only under IsMainVisualTree condition.
 				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
-				root.Enter(enterParams, 0);
+				root.Enter(NameScope.GetNameScope(root), enterParams, 0);
 #endif
 			}
 		}

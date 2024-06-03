@@ -43,7 +43,7 @@ namespace MyProject
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
-			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			private static global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
 			internal static global::Uno.UI.IXamlResourceDictionaryProvider Instance
 			{

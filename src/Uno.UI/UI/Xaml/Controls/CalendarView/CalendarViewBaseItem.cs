@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Input;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -158,10 +160,10 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__NETSTD_REFERENCE__
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		internal override void Enter(EnterParams @params, int depth)
+		internal override void Enter(INameScope nameScope, EnterParams @params, int depth)
 		{
 			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
-			base.Enter(@params, depth);
+			base.Enter(nameScope, @params, depth);
 #else
 		private void EnterImpl()
 		{

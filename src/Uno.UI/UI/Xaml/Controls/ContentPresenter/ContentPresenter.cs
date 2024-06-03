@@ -835,9 +835,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-	internal override void Enter(EnterParams @params, int depth)
+	internal override void Enter(INameScope nameScope, EnterParams @params, int depth)
 	{
-		base.Enter(@params, depth);
+		base.Enter(nameScope, @params, depth);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{

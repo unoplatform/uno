@@ -58,7 +58,7 @@ namespace TestRepro
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			public _View Build(object __ResourceOwner_1)
 			{
 				_View __rootInstance = null;
@@ -103,7 +103,7 @@ namespace TestRepro
 					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 					{
 						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+						((global::Microsoft.UI.Xaml.NameScope)__nameScope).Owner = d;
 					}
 					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 				}
@@ -153,7 +153,7 @@ namespace MyProject
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
-			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			private static global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
 			internal static global::Uno.UI.IXamlResourceDictionaryProvider Instance
 			{
@@ -224,7 +224,7 @@ namespace MyProject.__Resources
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
-		global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		public _View Build(object __ResourceOwner_1)
 		{
 			_View __rootInstance = null;
@@ -269,7 +269,7 @@ namespace MyProject.__Resources
 				if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 				{
 					global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-					__nameScope.Owner = d;
+					((global::Microsoft.UI.Xaml.NameScope)__nameScope).Owner = d;
 				}
 				global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 			}
@@ -313,7 +313,7 @@ namespace MyProject.__Resources
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
-		global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		public _View Build(object __ResourceOwner_1)
 		{
 			_View __rootInstance = null;
@@ -358,7 +358,7 @@ namespace MyProject.__Resources
 				if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 				{
 					global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-					__nameScope.Owner = d;
+					((global::Microsoft.UI.Xaml.NameScope)__nameScope).Owner = d;
 				}
 				global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 			}

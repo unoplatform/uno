@@ -137,6 +137,7 @@ namespace Microsoft.UI.Xaml
 						binding: binding
 					);
 
+				bindingExpression.OnAttach();
 				details.SetBinding(bindingExpression);
 
 				if (Equals(binding.RelativeSource, RelativeSource.TemplatedParent))

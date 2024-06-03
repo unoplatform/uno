@@ -40,10 +40,17 @@ namespace TestRepro
 		private const string __baseUri_prefix_UserControl1_81d855d5b3bba02f594dcda3b149beb2 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2 = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
-			NameScope.SetNameScope(this, __nameScope);
+			if (NameScope.GetNameScope(this) is { } existingRootNameScope)
+			{
+				__nameScope = existingRootNameScope;
+			}
+			else
+			{
+				NameScope.SetNameScope(this, __nameScope);
+			}
 			var __that = this;
 			base.IsParsing = true;
 			// Source 0\UserControl1.xaml (Line 1:2)

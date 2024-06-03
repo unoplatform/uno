@@ -40,10 +40,17 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 		private const string __baseUri_prefix_Grid_Uses_New_Assigned_ContentProperty_Syntax_9f853e56098ff21d39f15479035509ef = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Grid_Uses_New_Assigned_ContentProperty_Syntax_9f853e56098ff21d39f15479035509ef = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
-			NameScope.SetNameScope(this, __nameScope);
+			if (NameScope.GetNameScope(this) is { } existingRootNameScope)
+			{
+				__nameScope = existingRootNameScope;
+			}
+			else
+			{
+				NameScope.SetNameScope(this, __nameScope);
+			}
 			var __that = this;
 			base.IsParsing = true;
 			// Source 0\Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 1:2)

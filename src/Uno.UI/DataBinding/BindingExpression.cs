@@ -138,7 +138,11 @@ namespace Microsoft.UI.Xaml.Data
 			}
 
 			ApplyExplicitSource();
-			ApplyElementName();
+		}
+
+		internal void OnAttach()
+		{
+			ApplyElementName(isOnAttach: true);
 		}
 
 		private ManagedWeakReference GetWeakDataContext()
@@ -326,37 +330,82 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
-		internal void ApplyElementName()
+		private void TargetLoaded(object sender, RoutedEventArgs args)
+		{
+			var fe = (FrameworkElement)sender;
+			fe.Loaded -= TargetLoaded;
+			if (_disposed)
+			{
+				return;
+			}
+
+			TryGetElementName(out _, out var elementName);
+			if (elementName is not null)
+			{
+				// TODO: This should also lookup the NameScope of TemplatedParent.
+				var target = NameScope.FindInNamescopes(_view?.Target as DependencyObject, elementName);
+				ExplicitSource = target;
+				ApplyExplicitSource();
+			}
+		}
+
+		private void TryGetElementName(out ElementNameSubject subject, out string elementName)
 		{
 			if (ParentBinding.ElementName is ElementNameSubject elementNameSubject)
 			{
+				subject = elementNameSubject;
+				elementName = subject.Name;
+			}
+			else
+			{
+				subject = null;
+				elementName = ParentBinding.ElementName as string;
+			}
+		}
 
-				if (elementNameSubject.IsLoadTimeBound)
+		internal void ApplyElementName(bool isOnAttach = false)
+		{
+			TryGetElementName(out var elementNameSubject, out var elementName);
+			if (elementNameSubject is { IsLoadTimeBound: false })
+			{
+				void applySource()
 				{
-					// ElementName references in outer scopes will be resolvable on loading
-					var target = NameScope.FindInNamescopes(_view?.Target as DependencyObject, elementNameSubject.Name);
-					ExplicitSource = target;
+					ExplicitSource = elementNameSubject.ElementInstance;
 					ApplyExplicitSource();
+				}
+
+				// The element name instance may already have been
+				// set, in relation to the declaration order in the xaml file.
+				if (elementNameSubject.ElementInstance == null)
+				{
+					elementNameSubject
+						.ElementInstanceChanged += (s, elementNameInstance) => applySource();
 				}
 				else
 				{
-					void applySource()
+					applySource();
+				}
+			}
+			else if (elementName is not null && _view?.Target is DependencyObject dependencyObject)
+			{
+				// ElementName references in outer scopes will be resolvable on loading
+				// TODO: This should also lookup the NameScope of TemplatedParent.
+				var target = NameScope.FindInNamescopes(dependencyObject, elementName);
+				if (target is null && isOnAttach && dependencyObject is FrameworkElement fe1 && !fe1.IsInLiveTree)
+				{
+					fe1.Loaded += TargetLoaded;
+				}
+				else
+				{
+					if (target is not null && dependencyObject is FrameworkElement fe2)
 					{
-						ExplicitSource = elementNameSubject.ElementInstance;
-						ApplyExplicitSource();
+						// If the binding was re-evaluated after we subscribed to Loaded but
+						// before Loaded was actually fired, then we need to unsubscribe.
+						fe2.Loaded -= TargetLoaded;
 					}
 
-					// The element name instance may already have been
-					// set, in relation to the declaration order in the xaml file.
-					if (elementNameSubject.ElementInstance == null)
-					{
-						elementNameSubject
-							.ElementInstanceChanged += (s, elementNameInstance) => applySource();
-					}
-					else
-					{
-						applySource();
-					}
+					ExplicitSource = target;
+					ApplyExplicitSource();
 				}
 			}
 		}

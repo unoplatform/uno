@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -16,6 +18,36 @@ namespace Uno.UI.RuntimeTests.Tests;
 [RunsOnUIThread]
 public class BindingTests
 {
+	[TestMethod]
+	public async Task When_Binding_By_Programmatically_Setting_Name()
+	{
+		var tb = new TextBox();
+		tb.Name = "textBox";
+		tb.Text = "Text";
+		tb.DataContext = "Hello World";
+
+		var button = new Button();
+		button.Name = "button";
+		button.SetBinding(Button.ContentProperty, new Binding()
+		{
+			ElementName = "textBox",
+			Path = new PropertyPath("DataContext")
+		});
+
+		var sp = new StackPanel()
+		{
+			Children =
+			{
+				tb,
+				button,
+			},
+		};
+
+		await UITestHelper.Load(sp);
+
+		Assert.AreEqual("Hello World", button.Content);
+	}
+
 	[TestMethod]
 	public async Task When_Binding_Setter_Value_In_Style()
 	{
