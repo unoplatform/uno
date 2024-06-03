@@ -1000,9 +1000,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			if (ShouldFocusOnPointerPressed(args)
-				// UWP Captures pointer is not Touch
-				&& CapturePointer(args.Pointer))
+			if (ShouldFocusOnPointerPressed(args) // UWP Captures if the pointer is not Touch
+#if !__WASM__ // We cannot capture the pointer on WASM because it would prevent the user from scrolling through text on selection.
+                && CapturePointer(args.Pointer)
+#endif
+				)
 			{
 				Focus(FocusState.Pointer);
 			}
