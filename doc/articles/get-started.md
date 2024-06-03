@@ -88,7 +88,7 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 - † Rider [does not support .NET Android](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) on Linux at this time.
 - †† `net8.0-browserwasm` and `net8.0-desktop` are not available in Rider yet (Please [upvote this issue](https://aka.platform.uno/rider-desktop-wasm-support)).
 
-***
+---
 
 ## Questions
 

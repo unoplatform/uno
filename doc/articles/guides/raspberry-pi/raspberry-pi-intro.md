@@ -82,7 +82,9 @@ However, I've created a single line install script for .NET 7 on the Raspberry P
 
 Run the following command;
 
-`wget -O - https://raw.githubusercontent.com/pjgpetecodes/dotnet7pi/main/install.sh | sudo bash`
+```bash
+wget -O - https://raw.githubusercontent.com/pjgpetecodes/dotnet7pi/main/install.sh | sudo bash
+```
 
 You can see the contents of this .NET installation script in [install.sh on GitHub](https://github.com/pjgpetecodes/dotnet7pi/blob/main/install.sh)
 

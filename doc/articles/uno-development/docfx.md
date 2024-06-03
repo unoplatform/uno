@@ -69,7 +69,7 @@ Markdown:
 
 `Windows.UI.Xaml.FrameworkElement`
 
-***
+---
 ```
 
 Html output:
@@ -82,7 +82,7 @@ Html output:
 
 `Windows.UI.Xaml.FrameworkElement`
 
-***
+---
 
 ### TOC checker script
 
