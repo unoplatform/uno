@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Uno;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
@@ -75,22 +76,21 @@ internal sealed class HotReloadAgent : IDisposable
 			{
 				foreach (var attr in assembly.GetCustomAttributesData())
 				{
-					// Look up the attribute by name rather than by type. This would allow netstandard targeting libraries to
-					// define their own copy without having to cross-compile.
-					if (attr.AttributeType.FullName != "System.Reflection.Metadata.MetadataUpdateHandlerAttribute")
+					// Look up the attribute by name rather than by type.
+					// This would allow netstandard targeting libraries to define their own copy without having to cross-compile.
+					if (attr is not { AttributeType.FullName: "System.Reflection.Metadata.MetadataUpdateHandlerAttribute" })
 					{
 						continue;
 					}
 
-					IList<CustomAttributeTypedArgument> ctorArgs = attr.ConstructorArguments;
-					if (ctorArgs.Count != 1 ||
-						ctorArgs[0].Value is not Type handlerType)
+					if (attr is { ConstructorArguments: [{ Value: Type handlerType }] })
+					{
+						GetHandlerActions(handlerActions, handlerType);
+					}
+					else
 					{
 						_log($"'{attr}' found with invalid arguments.");
-						continue;
 					}
-
-					GetHandlerActions(handlerActions, handlerType);
 				}
 			}
 			catch (Exception e)
@@ -112,13 +112,13 @@ internal sealed class HotReloadAgent : IDisposable
 	{
 		bool methodFound = false;
 
-		if (GetUpdateMethod(handlerType, "ClearCache") is MethodInfo clearCache)
+		if (GetMethod(handlerType, "ClearCache") is MethodInfo clearCache)
 		{
 			handlerActions.ClearCache.Add(CreateAction(clearCache));
 			methodFound = true;
 		}
 
-		if (GetUpdateMethod(handlerType, "UpdateApplication") is MethodInfo updateApplication)
+		if (GetMethod(handlerType, "UpdateApplication") is MethodInfo updateApplication)
 		{
 			handlerActions.UpdateApplication.Add(CreateAction(updateApplication));
 			methodFound = true;
@@ -150,9 +150,7 @@ internal sealed class HotReloadAgent : IDisposable
 			};
 		}
 
-		MethodInfo? GetUpdateMethod(
-		[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
-		Type handlerType, string name)
+		MethodInfo? GetMethod([DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)] Type handlerType, string name)
 		{
 			if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(Type[]) }, null) is MethodInfo updateMethod &&
 				updateMethod.ReturnType == typeof(void))
@@ -160,7 +158,7 @@ internal sealed class HotReloadAgent : IDisposable
 				return updateMethod;
 			}
 
-			foreach (MethodInfo method in handlerType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
+			foreach (var method in handlerType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
 			{
 				if (method.Name == name)
 				{
@@ -236,6 +234,8 @@ internal sealed class HotReloadAgent : IDisposable
 			var handlerActions = _handlerActions;
 
 			Type[]? updatedTypes = GetMetadataUpdateTypes(deltas);
+
+			// TODO: Diag report --> dev-server update
 
 			handlerActions.ClearCache.ForEach(a => a(updatedTypes));
 			handlerActions.UpdateApplication.ForEach(a => a(updatedTypes));

@@ -1,17 +1,13 @@
-﻿using System;
+﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
+using Uno.Diagnostics.UI;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -20,6 +16,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	private string? _projectPath;
 	private string[]? _xamlPaths;
 	private readonly IRemoteControlClient _rcClient;
+	private readonly DiagnosticView<HotReloadStatusView, HotReloadStatusMessage> _diagView = DiagnosticView.Register<HotReloadStatusView, HotReloadStatusMessage>("Hot reload", (view, status) => view.Update(status));
 	private HotReloadMode? _forcedHotReloadMode;
 
 	private Dictionary<string, string>? _msbuildProperties;
@@ -31,7 +28,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 	partial void InitializeMetadataUpdater();
 
-	string IRemoteControlProcessor.Scope => HotReloadConstants.HotReload;
+	string IClientProcessor.Scope => WellKnownScopes.HotReload;
 
 	public async Task Initialize()
 		=> await ConfigureServer();
@@ -41,15 +38,19 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 		switch (frame.Name)
 		{
 			case AssemblyDeltaReload.Name:
-				AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content)!);
+				AssemblyReload(frame.GetContent<AssemblyDeltaReload>());
 				break;
 
 			case FileReload.Name:
-				await ProcessFileReload(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);
+				await ProcessFileReload(frame.GetContent<FileReload>());
 				break;
 
 			case HotReloadWorkspaceLoadResult.Name:
-				WorkspaceLoadResult(JsonConvert.DeserializeObject<HotReload.Messages.HotReloadWorkspaceLoadResult>(frame.Content)!);
+				WorkspaceLoadResult(frame.GetContent<HotReloadWorkspaceLoadResult>());
+				break;
+
+			case HotReloadStatusMessage.Name:
+				await ProcessStatus(frame.GetContent<HotReloadStatusMessage>());
 				break;
 
 			default:
@@ -59,8 +60,6 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				}
 				break;
 		}
-
-		return;
 	}
 
 	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
@@ -80,6 +79,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 		}
 	}
 
+	#region Configure hot-reload
 	private async Task ConfigureServer()
 	{
 		var assembly = _rcClient.AppType.Assembly;
@@ -154,5 +154,11 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 		}
 
 		return output;
+	}
+	#endregion
+
+	private async Task ProcessStatus(HotReloadStatusMessage status)
+	{
+		_diagView.Update(status);
 	}
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.FileUpdateProcessor))]
 
@@ -12,6 +14,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload;
 
 partial class FileUpdateProcessor : IServerProcessor, IDisposable
 {
+	// *******************************************
+	// *******************************************
+	// ***************** WARNING *****************
+	// *******************************************
+	// *******************************************
+	//
+	// This processor is present only for legacy purposes.
+	// The Scope of the UpdateFile message has been changed from WellKnownScopes.Testing to WellKnownScopes.HotReload.
+	// This processor will only handle requests made on the old scope, like old version of the runtime-test engine.
+	// The new processor that is handling those messages is now the ServerHotReloadProcessor.
+
 	private readonly IRemoteControlServer _remoteControlServer;
 
 	public FileUpdateProcessor(IRemoteControlServer remoteControlServer)
@@ -19,7 +32,7 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 		_remoteControlServer = remoteControlServer;
 	}
 
-	public string Scope => HotReloadConstants.TestingScopeName;
+	public string Scope => WellKnownScopes.Testing;
 
 	public void Dispose()
 	{
@@ -36,6 +49,10 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 
 		return Task.CompletedTask;
 	}
+
+	/// <inheritdoc />
+	public Task ProcessIdeMessage(IdeMessage message, CancellationToken ct)
+		=> Task.CompletedTask;
 
 	private void ProcessUpdateFile(UpdateFile? message)
 	{

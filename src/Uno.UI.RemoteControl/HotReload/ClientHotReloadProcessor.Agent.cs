@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -141,6 +142,16 @@ namespace Uno.UI.RemoteControl.HotReload
 			return Array.Empty<string>();
 		}
 
+		private enum HotReloadSource
+		{
+			Runtime,
+			DevServer,
+			Manual
+		}
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+		private static HotReloadSource _source;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
+
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
 			try
@@ -174,6 +185,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						UpdatedTypes = ReadIntArray(changedTypesReader)
 					};
 
+					_source = HotReloadSource.DevServer;
 					_agent?.ApplyDeltas(new[] { delta });
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -195,6 +207,10 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					this.Log().Error($"An exception occurred when applying IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload.ModuleId})", e);
 				}
+			}
+			finally
+			{
+				_source = default; // runtime
 			}
 		}
 
