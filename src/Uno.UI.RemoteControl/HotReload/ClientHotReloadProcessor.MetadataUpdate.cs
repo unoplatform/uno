@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -17,6 +18,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Diagnostics.UI;
+using static Microsoft.UI.Xaml.Markup.Reader.XamlConstants;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -27,6 +31,7 @@ partial class ClientHotReloadProcessor
 	private static ElementUpdateAgent? _elementAgent;
 
 	private static Logger _log = typeof(ClientHotReloadProcessor).Log();
+	private static Window? _currentWindow;
 
 	private static ElementUpdateAgent ElementAgent
 	{
@@ -65,7 +70,33 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-	internal static Window? CurrentWindow { get; set; }
+	internal static Window? CurrentWindow
+	{
+		get => _currentWindow;
+		set
+		{
+			if (_currentWindow is not null)
+			{
+				_currentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
+			}
+
+			_currentWindow = value;
+
+			if (_currentWindow is not null)
+			{
+				_currentWindow.Activated += ShowDiagnosticsOnFirstActivation;
+			}
+		}
+	}
+
+	private static void ShowDiagnosticsOnFirstActivation(object snd, WindowActivatedEventArgs windowActivatedEventArgs)
+	{
+		if (snd is Window { RootElement.XamlRoot: { } xamlRoot } window)
+		{
+			window.Activated -= ShowDiagnosticsOnFirstActivation;
+			DiagnosticsOverlay.Get(xamlRoot).IsVisible = true;
+		}
+	}
 
 	private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
 	{
@@ -382,8 +413,30 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
+	/// <summary>
+	/// Forces a hot reload update
+	/// </summary>
+	public static void ForceHotReloadUpdate()
+	{
+		try
+		{
+			_source = HotReloadSource.Manual;
+			UpdateApplication(Array.Empty<Type>());
+		}
+		finally
+		{
+			_source = default;
+		}
+	}
+
+	/// <summary>
+	/// Entry point for .net MetadataUpdateHandler, do not use directly.
+	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void UpdateApplication(Type[] types)
 	{
+		// TODO: Diag.Report --> Real handler or force reload
+
 		foreach (var type in types)
 		{
 			try
@@ -401,9 +454,9 @@ partial class ClientHotReloadProcessor
 				}
 			}
 			catch (Exception error)
-		{
-				if (_log.IsEnabled(LogLevel.Error))
 			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
 					_log.Error($"Error while processing MetadataUpdateOriginalTypeAttribute for {type}", error);
 				}
 			}

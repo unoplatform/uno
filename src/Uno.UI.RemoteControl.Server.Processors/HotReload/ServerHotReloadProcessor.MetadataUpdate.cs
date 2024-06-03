@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,12 +21,16 @@ using Newtonsoft.Json;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
+using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.RemoteControl.Messaging.HotReload;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
+		private static readonly StringComparer _pathsComparer = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+
 		private FileSystemWatcher[]? _solutionWatchers;
 		private CompositeDisposable? _solutionWatcherEventsDisposable;
 
@@ -36,7 +41,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private bool _useRoslynHotReload;
 
-		private void InitializeMetadataUpdater(ConfigureServer configureServer)
+		private bool InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
@@ -47,6 +52,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
 				InitializeInner(configureServer);
+
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 
@@ -55,6 +66,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				try
 				{
+					await Notify(HotReloadEvent.Initializing);
+
 					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 						configureServer.ProjectPath,
 						_reporter,
@@ -64,7 +77,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					ObserveSolutionPaths(result.Item1);
 
-					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult() { WorkspaceInitialized = true });
+					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
+					await Notify(HotReloadEvent.Ready);
 
 					return result;
 				}
@@ -72,7 +86,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					Console.WriteLine($"Failed to initialize compilation workspace: {e}");
 
-					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult() { WorkspaceInitialized = false });
+					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
+					await Notify(HotReloadEvent.Disabled);
 
 					throw;
 				}
@@ -115,53 +130,41 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			foreach (var watcher in _solutionWatchers)
 			{
-				// Create an observable instead of using the FromEventPattern which
-				// does not register to events properly.
-				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
-				// Visual Studio uses to save files.
-
-				var changes = Observable.Create<string>(o =>
-				{
-
-					void changed(object s, FileSystemEventArgs args) => o.OnNext(args.FullPath);
-					void renamed(object s, RenamedEventArgs args) => o.OnNext(args.FullPath);
-
-					watcher.Changed += changed;
-					watcher.Created += changed;
-					watcher.Renamed += renamed;
-
-					return Disposable.Create(() =>
-					{
-						watcher.Changed -= changed;
-						watcher.Created -= changed;
-						watcher.Renamed -= renamed;
-					});
-				});
-
-				var disposable = changes
-					.Buffer(TimeSpan.FromMilliseconds(250))
-					.Subscribe(filePaths =>
-					{
-						ProcessMetadataChanges(filePaths.Distinct());
-					}, e => Console.WriteLine($"Error {e}"));
+				var disposable = ToObservable(watcher).Subscribe(
+					filePaths => _ = ProcessMetadataChanges(filePaths.Distinct()),
+					e => Console.WriteLine($"Error {e}"));
 
 				_solutionWatcherEventsDisposable.Add(disposable);
-
 			}
 		}
 
-		private void ProcessMetadataChanges(IEnumerable<string> filePaths)
+		private async Task ProcessMetadataChanges(IEnumerable<string> filePaths)
 		{
-			if (_useRoslynHotReload)
+			if (_useRoslynHotReload) // Note: Always true here?!
 			{
-				foreach (var file in filePaths)
+				var files = filePaths.ToImmutableHashSet(_pathsComparer);
+				var hotReload = await StartOrContinueHotReload(files);
+
+				try
 				{
-					ProcessSolutionChanged(CancellationToken.None, file).Wait();
+					// Note: We should process all files at once here!
+					foreach (var file in files)
+					{
+						ProcessSolutionChanged(hotReload, file, CancellationToken.None).Wait();
+					}
+				}
+				catch (Exception e)
+				{
+					_reporter.Warn($"Internal error while processing hot-reload ({e.Message}).");
+				}
+				finally
+				{
+					await hotReload.CompleteUsingIntermediates();
 				}
 			}
 		}
 
-		private async Task<bool> ProcessSolutionChanged(CancellationToken cancellationToken, string file)
+		private async Task<bool> ProcessSolutionChanged(HotReloadOperation hotReload, string file, CancellationToken cancellationToken)
 		{
 			if (!await EnsureSolutionInitializedAsync() || _currentSolution is null || _hotReloadService is null)
 			{
@@ -216,10 +219,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				if (diagnostics.IsDefaultOrEmpty)
 				{
 					await UpdateMetadata(file, updates);
+					hotReload.NotifyIntermediate(file, HotReloadResult.NoChanges);
 				}
 				else
 				{
 					_reporter.Output($"Got {diagnostics.Length} errors");
+					hotReload.NotifyIntermediate(file, HotReloadResult.Failed);
 				}
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
@@ -236,6 +241,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
 				}
 
+				hotReload.NotifyIntermediate(file, HotReloadResult.RudeEdit);
+
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
 				return false;
 			}
@@ -245,6 +252,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			sw.Stop();
 
 			await UpdateMetadata(file, updates);
+			hotReload.NotifyIntermediate(file, HotReloadResult.Success);
 
 			// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
 			return true;
@@ -347,10 +355,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 
-		[MemberNotNullWhen(true, nameof(_currentSolution))]
+		[MemberNotNullWhen(true, nameof(_currentSolution), nameof(_hotReloadService))]
 		private async ValueTask<bool> EnsureSolutionInitializedAsync()
 		{
-			if (_currentSolution != null)
+			if (_currentSolution is not null && _hotReloadService is not null)
 			{
 				return true;
 			}
