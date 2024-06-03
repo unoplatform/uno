@@ -41,7 +41,7 @@ Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
 ```
 
 Your dialog will look similar to this dialog:
-![With style sample](../Assets/features/contentdialog/withstyle.png)
+![Content dialog with style sample](../Assets/features/contentdialog/withstyle.png)
 
 If you omit this line, your dialog will look like this:
 ![Content dialog without style sample](../Assets/features/contentdialog/withoutstyle.png)
