@@ -4591,6 +4591,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(lv.ContainerFromItem(0));
 		}
 #endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_UpdateLayout_In_DragDropping()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true
+			};
+
+			for (var i = 0; i < 3; i++)
+			{
+				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
+				{
+					Content = new TextBlock
+					{
+						AllowDrop = true,
+						CanDrag = true,
+						Margin = new Thickness(50),
+						Text = i.ToString()
+					}
+				});
+			}
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 50 });
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 150 });
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var textBlocks = SUT.FindFirstDescendant<ItemsStackPanel>().Children
+				.Select(c => c.FindFirstDescendant<TextBlock>())
+				.OrderBy(c => c.GetAbsoluteBoundsRect().Y)
+				.ToList();
+			Assert.AreEqual("1", textBlocks[0].Text);
+			Assert.AreEqual("0", textBlocks[1].Text);
+			Assert.AreEqual("2", textBlocks[2].Text);
+		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -4910,6 +4963,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public BackNavigationPage()
 			{
 				Content = new Button().Apply(x => x.Click += (s, e) => Frame.GoBack());
+			}
+		}
+
+		public class UpdateLayoutOnUnloadedControl : UserControl
+		{
+			public UpdateLayoutOnUnloadedControl()
+			{
+				Unloaded += (_, _) => UpdateLayout();
 			}
 		}
 	}
