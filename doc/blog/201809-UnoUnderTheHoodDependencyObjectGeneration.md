@@ -16,7 +16,7 @@ We want to inherit from `ViewGroup` or `UIView`. We also want to inherit from `D
 
 What if you have code like this in your app?
 
-```` csharp
+```csharp
     public class MyBindableObject : DependencyObject
 
     {
@@ -40,7 +40,7 @@ What if you have code like this in your app?
             DependencyProperty.Register("MyProperty", typeof(string), typeof(MyBindableObject), new PropertyMetadata(default(string)));
 
     }
-````
+```
 
 We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact, if it's just an interface, then the code won't compile, because the interface hasn't been implemented.
 
@@ -70,7 +70,7 @@ I'll start with the simpler approach: using 'T4' templates. To quote Microsoft's
 
 T4 templates ('.tt files') have been around for quite a while. They're essentially a mix of static text (which is C# code, in our case) and conditional logic. Here's a snippet:
 
-```` csharp
+```csharp
 namespace <#= mixin.NamespaceName #>
 {
     public partial class <#= mixin.ClassName #> : IFrameworkElement
@@ -89,7 +89,7 @@ namespace <#= mixin.NamespaceName #>
         OnLoaded();
     }
 �
-````
+```
 
 That's from the [template](https://github.com/unoplatform/uno/blob/be4f4e938a861d5802c228efc314c1f3ea314027/src/Uno.UI/UI/Xaml/IFrameworkElementImplementation.iOS.tt#L30-L46) which adds `IFrameworkElement` functionality in Uno. It implements properties like `Width`/`Height`, `Opacity`, `Style`, etc. At compile time, the template runs and creates a [partial class](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) with those members for `ScrollContentPresenter` and several other classes (including `FrameworkElement` itself).
 
@@ -113,7 +113,7 @@ Since the generator has a full set of semantic information from Roslyn, it can d
 
 Here's a [small snippet](https://github.com/unoplatform/uno/blob/74ba91756c446107e7394e0423527de273154f5d/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs#L218-L250) of code from `DependencyObjectGenerator`:
 
-```` csharp
+```csharp
    private void WriteAndroidAttachedToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
    {
     var isAndroidView = typeSymbol.Is(_androidViewSymbol);
@@ -144,7 +144,7 @@ Here's a [small snippet](https://github.com/unoplatform/uno/blob/74ba91756c44610
       _loadActions.ForEach(a => a.Item1());
       BinderAttachedToWindow();
      }}
-````
+```
 
 In this method we have an [INamedTypeSymbol](https://learn.microsoft.com/dotnet/api/microsoft.codeanalysis.inamedtypesymbol?view=roslyn-dotnet), an object from Roslyn that encapsulates information about a type. We've already determined that `typeSymbol` implements `DependencyObject`; here we check if it's an Android `View` and, if so override the loaded method. You can notice that we're also checking that the type doesn't _already_ override the same method, so we don't accidentally generate code that clashes with authored code and causes a compiler error. All this goes on under the hood without user intervention, whenever your app compiles.
 

@@ -40,7 +40,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below)
 - Make changes to your XAML or C# code, then save your file
 
-***
+---
 
 > [!IMPORTANT]
 > Using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
@@ -85,7 +85,7 @@ Mobile targets are currently using a limited version of XAML Hot Reload and do n
 
 Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
 
-***
+---
 
 ## Troubleshooting
 

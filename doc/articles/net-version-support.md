@@ -43,4 +43,4 @@ For Xamarin.Android, Xamarin.iOS, and Xamarin.macOS, the supported versions depe
 
 For UWP, it is possible force a higher version of C# using `LangVersion` in the platform `csproj` (eg `<LangVersion>12.0</LangVersion>`), but some language features may not work properly, such as those that depend on compiler-checked types (eg array slicing, `init`-only properties) or on runtime support (eg default interface implementations). Using [PolySharp](https://www.nuget.org/packages/PolySharp) can help enabling some more recent C# features.
 
-***
+---

@@ -68,4 +68,4 @@ Use C# Markup for layout and MVVM for state management
 
 <br/>
 
-***
+---

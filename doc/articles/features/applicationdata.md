@@ -52,7 +52,7 @@ string text = await FileIO.ReadTextAsync(file);
 
 The `LocalSettings` and `RoamingSettings` properties provide access to simple key-value containers that allow storage of lightweight user and application preferences. The values stored in settings should be simple serializable types. To store more complex data structures, it is preferred to serialize them first into a string (for example using a JSON serializer).
 
-``` csharp
+```csharp
 ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 // Save a setting.

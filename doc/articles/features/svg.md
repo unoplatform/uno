@@ -42,7 +42,7 @@ To use SVG, install the following NuGet packages into the iOS, macOS, Mac Cataly
 
 Add the SVG Image to the app project and make sure that the build action is set to Content.
 
-***
+---
 
 Now, you can display the SVG image in an `Image` by referencing it from the `Source` property. For example:
 

@@ -41,7 +41,7 @@ This builder allows us to configure the SkiaHost and setup which platforms will 
 
 [!include[linux-setup](../includes/additional-linux-setup-inline.md)]
 
-***
+---
 
 ### Troubleshooting OpenGL integration
 

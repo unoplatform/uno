@@ -129,7 +129,7 @@ Here are the supported properties:
 | `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
 | `WindowsCompatibilityVersion`       | [Microsoft.Windows.Compatibility](https://www.nuget.org/packages/Microsoft.Windows.Compatibility)                    | Enables Windows desktop apps to use .NET Core by providing access to additional Windows APIs.                  |
 
-***
+---
 
 Those properties can be set from `Directory.Build.props` or may be set in the `csproj` file for your project.
 

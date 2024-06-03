@@ -137,7 +137,7 @@ While the new templates simplify adding a splash screen, this article covers how
 
   * Add your image path to the `Image View`
 
-    ``` xml
+    ```xml
     <imageView ... image="Assets/SplashScreen">
     ```
 
