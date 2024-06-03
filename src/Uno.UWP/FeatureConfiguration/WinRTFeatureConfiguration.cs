@@ -1,4 +1,6 @@
-﻿namespace Uno;
+﻿using System.Globalization;
+
+namespace Uno;
 
 public static partial class WinRTFeatureConfiguration
 {
@@ -18,5 +20,19 @@ public static partial class WinRTFeatureConfiguration
 		/// Set this property to false to require an app restart for the change to take effect. The default of the property is true.
 		/// </summary>
 		public static bool UseLegacyPrimaryLanguageOverride { get; set; } = true;
+	}
+
+	public static class ResourceLoader
+	{
+		/// <summary>
+		/// Use <see cref="Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride"/> as the override for resource resolution.
+		/// Alternatively if set to false, use <see cref="CultureInfo.CurrentUICulture"/> as the override.
+		/// </summary>
+		public static bool UsePrimaryLanguageOverride { get; set; } = true;
+
+		/// <summary>
+		/// Determines if parsed string resources are preserved between languages change.
+		/// </summary>
+		public static bool PreserveParsedResources { get; set; }
 	}
 }
