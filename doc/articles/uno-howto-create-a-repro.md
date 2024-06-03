@@ -91,4 +91,4 @@ Using a terminal:
 
 Once done, you can zip the folder and send it to github in your issue or discussion.
 
-***
+---
