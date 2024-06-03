@@ -944,13 +944,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UpdateVisualState();
-
-			OnFocusStateChangedPartial2(newValue);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState);
-
-		partial void OnFocusStateChangedPartial2(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -1108,15 +1104,20 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
+			var changed = false;
 			// Minimum width for TextBox with DeleteButton visible is 5em.
 			if (CanShowButton && _isButtonEnabled && ActualWidth > FontSize * 5)
 			{
-				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
+				changed |= VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
+				changed |= VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 			}
+
+#if __SKIA__
+			_deleteButtonVisibilityChangedSinceLastUpdateScrolling |= changed;
+#endif
 		}
 
 		/// <summary>

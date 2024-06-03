@@ -28,6 +28,8 @@ public partial class TextBox
 
 	private TextBoxView _textBoxView;
 
+	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
+
 	private readonly Rectangle _caretRect = new Rectangle();
 	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
 	private int _usedRects;
@@ -376,6 +378,13 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
+			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
+			{
+				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
+				// enqueuing on the dispatcher is needed so that we UpdateScrolling after the button is layouted
+				DispatcherQueue.TryEnqueue(UpdateScrolling);
+			}
+
 			var selectionEnd = _selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
 
 			var horizontalOffset = sv.HorizontalOffset;
@@ -1227,19 +1236,6 @@ public partial class TextBox
 			{
 				ClearUndoRedoHistory();
 			}
-		}
-	}
-
-	partial void OnFocusStateChangedPartial2(FocusState focusState)
-	{
-		if (_isSkiaTextBox)
-		{
-			// this is needed so that we UpdateScrolling after the button appears/disappears.
-			UpdateLayout();
-			// Another round because a collapsed DeleteButton gets measured on the subsequent layout cycle.
-			_contentElement?.InvalidateMeasure();
-			UpdateLayout();
-			UpdateScrolling();
 		}
 	}
 
