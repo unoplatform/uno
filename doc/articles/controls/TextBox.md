@@ -63,3 +63,16 @@ If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.
 Support for capturing and handling the `Paste` event is implemented on all targets except for macOS.
 
 In case of Android, it is currently limited to the pastes which are triggered by the native context menu (e.g. after long-pressing the `TextBox`). It cannot detect paste triggered from the virtual keyboard or via hardware keyboard shortcut.
+
+## Pointer capture on WebAssembly
+
+In addition to focus, `TextBox` control also captures pointer, so that manipulations like scrolling through contents are possible. However, on WASM setting the programmatic capture will prevent the native scrolling behavior of the underlying `<input>`. For that reason we avoid performing the pointer capture in this case. If you still want to capture the pointer, you can do so by deriving a custom type from `TextBox` and overriding `OnPointerPressed`:
+
+```csharp
+protected override void OnPointerPressed(PointerRoutedEventArgs args)
+{
+    base.OnPointerPressed(args);
+
+    this.CapturePointer(args.Pointer);
+}
+```
