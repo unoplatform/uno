@@ -44,7 +44,7 @@ Your dialog will look similar to this dialog:
 ![With style sample](../Assets/features/contentdialog/withstyle.png)
 
 If you omit this line, your dialog will look like this:
-![With style sample](../Assets/features/contentdialog/withoutstyle.png)
+![Content dialog without style sample](../Assets/features/contentdialog/withoutstyle.png)
 
 ## Using `MessageDialog`
 
