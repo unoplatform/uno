@@ -13,6 +13,7 @@ uid: Uno.Features.Dialogs
 ## Using `ContentDialog`
 
 The recommended way to display user dialogs is via the `Microsoft.UI.Xaml.Controls.ContentDialog` class.
+
 ```csharp
 ContentDialog noWifiDialog = new ContentDialog
 {
@@ -38,6 +39,7 @@ In order for your custom dialog to follow the Fluent design, it's important that
 ```csharp
 Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
 ```
+
 Your dialog will look similar to this dialog:
 ![With style sample](../Assets/features/contentdialog/withstyle.png)
 
