@@ -70,6 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Size _availableSize;
 		private Size _lastMeasuredSize;
 		private double _lastScrollOffset;
+		private bool _clearingLines;
 
 		/// <summary>
 		/// The current average line height based on materialized lines. Used to estimate scroll extent of unmaterialized items.
@@ -347,6 +348,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size MeasureOverride(Size availableSize)
 		{
+			if (_clearingLines)
+			{
+				return new Size(0, 0);
+			}
 			if (ItemsControl == null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -830,11 +835,24 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"{GetMethodTag()}");
 			}
 
-			foreach (var line in _materializedLines)
+			_clearingLines = true;
+			try
 			{
-				RecycleLine(line, clearContainer);
+				// Recycling a line can lead to removing elements from the visual tree.
+				// If a user forces a layout during this (e.g. in Unloaded), we will
+				// update the _materializedLines in MeasureOverride. So, to prevent
+				// modification while looping, we take a copy and clear before looping.
+				var lines = _materializedLines.ToList();
+				_materializedLines.Clear();
+				foreach (var line in lines)
+				{
+					RecycleLine(line, clearContainer);
+				}
 			}
-			_materializedLines.Clear();
+			finally
+			{
+				_clearingLines = false;
+			}
 		}
 
 		/// <summary>
