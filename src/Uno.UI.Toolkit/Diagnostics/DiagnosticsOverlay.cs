@@ -17,6 +17,9 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.Diagnostics.UI;
 
+/// <summary>
+/// An overlay layer used to inject analytics and diagnostics indicators into the UI.
+/// </summary>
 public sealed partial class DiagnosticsOverlay
 {
 	private static readonly ConditionalWeakTable<XamlRoot, DiagnosticsOverlay> _overlays = new();
@@ -210,8 +213,8 @@ public sealed partial class DiagnosticsOverlay
 	private bool ShouldMaterialize(DiagnosticViewRegistration registration)
 		=> registration.Mode switch
 		{
-			GlobalProviderMode.All => true,
-			GlobalProviderMode.OnDemand => false,
+			DiagnosticViewRegistrationMode.All => true,
+			DiagnosticViewRegistrationMode.OnDemand => false,
 			_ => _overlays.Count(overlay => overlay.Value.IsMaterialized(registration.Provider)) is 0
 		};
 

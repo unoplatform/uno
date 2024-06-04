@@ -28,10 +28,10 @@ internal partial class DiagnosticView(
 	string IDiagnosticViewProvider.Name => name;
 
 	/// <inheritdoc />
-	public object GetPreview(IDiagnosticViewContext context) 
+	public object GetPreview(IDiagnosticViewContext context)
 		=> preview(context);
 
 	/// <inheritdoc />
-	public async ValueTask<object?> GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct) 
+	public async ValueTask<object?> GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
 		=> details is null ? null : await details(context, ct);
 }

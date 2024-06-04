@@ -10,14 +10,14 @@ namespace Uno.Diagnostics.UI;
 /// </summary>
 internal static class DiagnosticViewRegistry
 {
-	internal static EventHandler<ImmutableList<DiagnosticViewRegistration>>? Added;
+	internal static EventHandler<IImmutableList<DiagnosticViewRegistration>>? Added;
 
-	private static ImmutableList<DiagnosticViewRegistration> _registrations = ImmutableList<DiagnosticViewRegistration>.Empty;
+	private static ImmutableArray<DiagnosticViewRegistration> _registrations = ImmutableArray<DiagnosticViewRegistration>.Empty;
 
 	/// <summary>
 	/// Gets the list of registered diagnostic providers.
 	/// </summary>
-	internal static ImmutableList<DiagnosticViewRegistration> Registrations => _registrations;
+	internal static IImmutableList<DiagnosticViewRegistration> Registrations => _registrations;
 
 	/// <summary>
 	/// Register a global diagnostic provider that can be displayed on any window.
@@ -28,15 +28,15 @@ internal static class DiagnosticViewRegistry
 		ImmutableInterlocked.Update(
 			ref _registrations,
 			static (providers, provider) => providers.Add(provider),
-			new DiagnosticViewRegistration(GlobalProviderMode.One, provider));
+			new DiagnosticViewRegistration(DiagnosticViewRegistrationMode.One, provider));
 
 		Added?.Invoke(null, _registrations);
 	}
 }
 
-internal record DiagnosticViewRegistration(GlobalProviderMode Mode, IDiagnosticViewProvider Provider);
+internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, IDiagnosticViewProvider Provider);
 
-internal enum GlobalProviderMode
+internal enum DiagnosticViewRegistrationMode
 {
 	/// <summary>
 	/// Diagnostic is being rendered as overlay on each window.

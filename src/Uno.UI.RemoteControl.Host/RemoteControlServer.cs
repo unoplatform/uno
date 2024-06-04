@@ -207,9 +207,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
 		if (_processors.TryGetValue(message.Scope, out var processor))
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogDebug("Received message [{Scope} / {Name}] to be processed by {processor}", message.Scope, message.GetType().Name, processor);
+				this.Log().LogTrace("Received message [{Scope} / {Name}] to be processed by {processor}", message.Scope, message.GetType().Name, processor);
 			}
 
 			var process = processor.ProcessIdeMessage(message, _ct.Token);
@@ -225,9 +225,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		}
 		else
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", message.Scope, message.GetType().Name);
+				this.Log().LogTrace("Unknown Frame [{Scope} / {Name}]", message.Scope, message.GetType().Name);
 			}
 		}
 	}
@@ -241,7 +241,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 			if (ping.AssemblyVersion != pong.AssemblyVersion && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogTrace(
+				this.Log().LogWarning(
 					$"Client ping frame (a.k.a. KeepAlive), but version differs from server (server: {pong.AssemblyVersion} | client: {ping.AssemblyVersion})."
 					+ $"This usually indicates that an old instance of the dev-server is being re-used or a partial deployment of the application."
 					+ "Some feature like hot-reload are most likely to fail. To fix this, you might have to restart Visual Studio.");
@@ -257,7 +257,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogTrace(
+				this.Log().LogWarning(
 					"Client ping frame (a.k.a. KeepAlive), but failed to deserialize it's content. "
 					+ $"This usually indicates a version mismatch between client and server (server: {pong.AssemblyVersion})."
 					+ "Some feature like hot-reload are most likely to fail. To fix this, you might have to restart Visual Studio.");
@@ -309,9 +309,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
 #if NET9_0_OR_GREATER
-			basePath = Path.Combine(basePath, "net9.0");
+				basePath = Path.Combine(basePath, "net9.0");
 #elif NET8_0_OR_GREATER
-			basePath = Path.Combine(basePath, "net8.0");
+				basePath = Path.Combine(basePath, "net8.0");
 #endif
 
 				// Additional processors may not need the directory added immediately above.

@@ -6,18 +6,24 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-internal sealed partial class HotReloadStatusView : UserControl
+internal sealed partial class HotReloadStatusView : Control
 {
 	private (long id, string state) _currentResult = (-1, "None");
 
 	public HotReloadStatusView()
 	{
-		InitializeComponent();
+		DefaultStyleKey = typeof(HotReloadStatusView);
+	}
+
+	/// <inheritdoc />
+	protected override void OnApplyTemplate()
+	{
+		base.OnApplyTemplate();
 	}
 
 	public void Update(HotReloadStatusMessage? status)
 	{
-		ToolTipService.SetToolTip(Root, GetStatusSummary(status));
+		ToolTipService.SetToolTip(this, GetStatusSummary(status));
 
 		if (status is null)
 		{
