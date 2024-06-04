@@ -616,18 +616,27 @@ namespace Microsoft.UI.Xaml
 			return new Rect();
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// Doesn't exactly match WinUI code.
 		internal virtual void Enter(INameScope? nameScope, EnterParams @params, int depth)
 		{
+			// Enter does nothing on platforms with non-enhanced lifecycle.
+			// Its only purpose is to register names via the FrameworkElement override.
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			Depth = depth;
 
 			if (@params.IsLive)
 			{
 				IsActiveInVisualTree = true;
 			}
+#endif
 
-			foreach (var child in _children)
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			var children = _children;
+#else
+			var children = this.GetChildren();
+#endif
+
+			foreach (var child in children)
 			{
 				if (child == this)
 				{
@@ -639,9 +648,14 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				child.Enter(nameScope, @params, depth + 1);
+#else
+				(child as UIElement)?.Enter(nameScope, @params, depth + 1);
+#endif
 			}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			if (@params.IsLive)
 			{
 				var core = this.GetContext();
@@ -650,11 +664,19 @@ namespace Microsoft.UI.Xaml
 
 			// Make sure that we propagate OnDirtyPath bits to the new parent.
 			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+#endif
 		}
 
 		internal virtual void Leave(INameScope? nameScope, LeaveParams @params)
 		{
-			foreach (var child in _children)
+			var children =
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				_children;
+#else
+				this.GetChildren();
+#endif
+
+			foreach (var child in children)
 			{
 				if (child == this)
 				{
@@ -666,9 +688,14 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				child.Leave(nameScope, @params);
+#else
+				(child as UIElement)?.Leave(nameScope, @params);
+#endif
 			}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			if (IsActiveInVisualTree)
 			{
 				if (IsLoaded)
@@ -689,8 +716,7 @@ namespace Microsoft.UI.Xaml
 
 				var eventManager = this.GetContext().EventManager;
 				eventManager.RemoveRequest(this);
-			}
-		}
 #endif
+		}
 	}
 }

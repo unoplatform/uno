@@ -18,6 +18,7 @@ using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml
 {
@@ -65,6 +66,7 @@ namespace Microsoft.UI.Xaml
 			if (view is UIElement uiElement)
 			{
 				OnChildManagedViewAddedOrRemoved(uiElement);
+				uiElement.Enter(FindNameScope(uiElement), default, default);
 			}
 			else
 			{
@@ -80,6 +82,7 @@ namespace Microsoft.UI.Xaml
 			if (view is UIElement uiElement)
 			{
 				OnChildManagedViewAddedOrRemoved(uiElement);
+				uiElement.Leave(FindNameScope(uiElement), default);
 			}
 			else
 			{

@@ -457,7 +457,6 @@ namespace Uno.UI.Xaml.Core
 				MUX_ASSERT(RootElement != null);
 				RootElement!.AddChild(root);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				EnterParams enterParams = new(
 					isLive: true
 				);
@@ -465,7 +464,6 @@ namespace Uno.UI.Xaml.Core
 				// In WinUI, this is called only under IsMainVisualTree condition.
 				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
 				root.Enter(NameScope.GetNameScope(root), enterParams, 0);
-#endif
 			}
 		}
 

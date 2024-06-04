@@ -118,25 +118,6 @@ namespace Microsoft.UI.Xaml
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		internal static INameScope FindNameScope(DependencyObject dependencyObject)
-		{
-			// In many cases, this will not traverse the entire visual tree, as the NameScope is often
-			// present on each element as the DP is inherited. However, it can happen that the DP inheritance
-			// didn't yet happen, in which case we'll traverse the tree up.
-			var current = dependencyObject;
-			while (current is not null)
-			{
-				if (NameScope.GetNameScope(current) is { } nameScope)
-				{
-					return nameScope;
-				}
-
-				current = VisualTreeHelper.GetParent(current);
-			}
-
-			return null;
-		}
-
 		private void ChildEnter(UIElement child, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
