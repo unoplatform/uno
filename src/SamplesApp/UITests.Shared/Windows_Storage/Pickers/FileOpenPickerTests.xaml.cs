@@ -37,7 +37,6 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			{
 				ViewModel = viewModel;
 			}
-		}
 
 		}
 
