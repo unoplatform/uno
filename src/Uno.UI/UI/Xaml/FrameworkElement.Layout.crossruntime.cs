@@ -902,16 +902,21 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+		private void AdjustNameScope(ref INameScope? nameScope)
+		{
+			if (NameScope.GetNameScope(this) is { } currentNameScope)
+			{
+				nameScope = currentNameScope;
+			}
+		}
+
 		internal override void Enter(INameScope? nameScope, EnterParams @params, int depth)
 		{
 			// This should happen regardless of whether Name is null or not.
 			// What we need here is that once we find an element being entered that
 			// has its own NameScope, then we start using this namescope and use it for entering its children.
 			// For example, elements in a template where the template root will have its own NameScope.
-			if (NameScope.GetNameScope(this) is { } currentNameScope)
-			{
-				nameScope = currentNameScope;
-			}
+			AdjustNameScope(ref nameScope);
 
 			if (nameScope is not null)
 			{
@@ -963,8 +968,24 @@ namespace Microsoft.UI.Xaml
 			m_firedLoadingEvent = false;
 		}
 
-		internal override void Leave(LeaveParams @params)
+		internal override void Leave(INameScope? nameScope, LeaveParams @params)
 		{
+			// This should happen regardless of whether Name is null or not.
+			// What we need here is that once we find an element leaving that
+			// has its own NameScope, then we start using this namescope and use it for leaving its children.
+			// For example, elements in a template where the template root will have its own NameScope.
+			AdjustNameScope(ref nameScope);
+
+			if (nameScope is not null)
+			{
+				var name = this.Name;
+
+				if (!string.IsNullOrEmpty(name))
+				{
+					nameScope.UnregisterName(name);
+				}
+			}
+
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
 			// are entered as well.
@@ -975,12 +996,12 @@ namespace Microsoft.UI.Xaml
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
-						resourceAsUIElement.Leave(@params);
+						resourceAsUIElement.Leave(nameScope, @params);
 					}
 				}
 			}
 
-			base.Leave(@params);
+			base.Leave(nameScope, @params);
 
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}

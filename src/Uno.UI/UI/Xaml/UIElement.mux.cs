@@ -652,7 +652,7 @@ namespace Microsoft.UI.Xaml
 			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 		}
 
-		internal virtual void Leave(LeaveParams @params)
+		internal virtual void Leave(INameScope? nameScope, LeaveParams @params)
 		{
 			foreach (var child in _children)
 			{
@@ -666,7 +666,7 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
-				child.Leave(@params);
+				child.Leave(nameScope, @params);
 			}
 
 			if (IsActiveInVisualTree)

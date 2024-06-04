@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml
 				if (value is FrameworkElement fe)
 				{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-					fe.Leave(new LeaveParams());
+					fe.Leave(UIElement.FindNameScope(fe), new LeaveParams());
 #else
 					fe.PerformOnUnloaded(isFromResources: true);
 #endif

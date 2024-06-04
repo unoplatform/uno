@@ -43,6 +43,8 @@ public class BindingTests
 			},
 		};
 
+		Assert.AreEqual(null, button.Content);
+
 		await UITestHelper.Load(sp);
 
 #if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
@@ -51,6 +53,72 @@ public class BindingTests
 		// Unfortunate wrong behavior on Android and iOS.
 		Assert.AreEqual(null, button.Content);
 #endif
+
+		tb.DataContext = "Hello World Updated";
+
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("Hello World Updated", button.Content);
+#else
+		// Unfortunate wrong behavior on Android and iOS.
+		Assert.AreEqual(null, button.Content);
+#endif
+
+		sp.Children.Remove(tb);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("Hello World Updated", button.Content);
+#else
+		// Unfortunate wrong behavior on Android and iOS.
+		Assert.AreEqual(null, button.Content);
+#endif
+
+		// At this point, the textBox name is was unregistered as it's removed from the visual tree.
+		// However, on WinUI, the binding have already solved the target for ElementName and the binding will continue to work.
+		tb.DataContext = "Hello World Updated 2";
+
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		Assert.AreEqual("Hello World Updated 2", button.Content);
+#else
+		// Unfortunate wrong behavior on Android and iOS.
+		Assert.AreEqual(null, button.Content);
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Binding_Is_Set_After_RegisterName_And_UnregisterName()
+	{
+		var tb = new TextBox();
+		tb.Name = "textBox";
+		tb.Text = "Text";
+		tb.DataContext = "Hello World";
+
+		var button = new Button();
+		button.Name = "button";
+
+		var sp = new StackPanel()
+		{
+			Children =
+			{
+				tb,
+				button,
+			},
+		};
+
+		Assert.AreEqual(null, button.Content);
+
+		await UITestHelper.Load(sp);
+
+		sp.Children.Remove(tb);
+
+		// The remove call will UnregisterName for the textBox.
+		// The binding shouldn't be able to find the target for ElementName
+		button.SetBinding(Button.ContentProperty, new Binding()
+		{
+			ElementName = "textBox",
+			Path = new PropertyPath("DataContext")
+		});
+
+		Assert.AreEqual(null, button.Content);
 	}
 
 	[TestMethod]

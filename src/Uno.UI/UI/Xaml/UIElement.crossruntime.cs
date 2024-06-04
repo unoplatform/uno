@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
-			child.Leave(leaveParams);
+			child.Leave(FindNameScope(this), leaveParams);
 #endif
 		}
 
@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		private static INameScope FindNameScope(DependencyObject dependencyObject)
+		internal static INameScope FindNameScope(DependencyObject dependencyObject)
 		{
 			// In many cases, this will not traverse the entire visual tree, as the NameScope is often
 			// present on each element as the DP is inherited. However, it can happen that the DP inheritance
