@@ -323,54 +323,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
-			var success = matchVisualInfoResult != 0;
-			if (!success)
-			{
-				matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, FallbackColorDepth, 4, out info);
-
-				success = matchVisualInfoResult != 0;
-				if (!success)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error("XLIB ERROR: Cannot match visual info");
-					}
-					throw new InvalidOperationException("XLIB ERROR: Cannot match visual info");
-				}
-			}
-
-			var visual = info.visual;
-			depth = info.depth;
-
-			var rootWindow = XLib.XRootWindow(display, screen);
-			var xSetWindowAttributes = new XSetWindowAttributes()
-			{
-				backing_store = 1,
-				bit_gravity = Gravity.NorthWestGravity,
-				win_gravity = Gravity.NorthWestGravity,
-				// Settings to true when WindowStyle is None
-				//override_redirect = true,
-				colormap = XLib.XCreateColormap(display, rootWindow, visual, /* AllocNone */ 0),
-				border_pixel = 0,
-				// Settings background pixel to zero means Transparent background,
-				// and it will use the background color from `Window.SetBackground`
-				background_pixel = IntPtr.Zero,
-			};
-			var valueMask =
-					0
-					| SetWindowValuemask.BackPixel
-					| SetWindowValuemask.BorderPixel
-					| SetWindowValuemask.BitGravity
-					| SetWindowValuemask.WinGravity
-					| SetWindowValuemask.BackingStore
-					| SetWindowValuemask.ColorMap
-				//| SetWindowValuemask.OverrideRedirect
-				;
-			window = XLib.XCreateWindow(display, rootWindow, 0, 0, (int)size.Width,
-				(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
-				(UIntPtr)(valueMask), ref xSetWindowAttributes);
-			XLib.XSelectInput(display, window, EventsMask);
+			(window, depth) = CreateSoftwareRenderWindow(display, screen, size);
 			_x11Window = new X11Window(display, window);
 		}
 
@@ -466,6 +419,59 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var _2 = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
 		var _3 = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_SAMPLES, out var samples);
 		return new X11Window(display, window, (stencil, samples, context));
+	}
+
+	private (IntPtr window, uint depth) CreateSoftwareRenderWindow(IntPtr display, int screen, Size size)
+	{
+		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
+		var success = matchVisualInfoResult != 0;
+		if (!success)
+		{
+			matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, FallbackColorDepth, 4, out info);
+
+			success = matchVisualInfoResult != 0;
+			if (!success)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("XLIB ERROR: Cannot match visual info");
+				}
+				throw new InvalidOperationException("XLIB ERROR: Cannot match visual info");
+			}
+		}
+
+		var visual = info.visual;
+		var depth = info.depth;
+
+		var rootWindow = XLib.XRootWindow(display, screen);
+		var xSetWindowAttributes = new XSetWindowAttributes()
+		{
+			backing_store = 1,
+			bit_gravity = Gravity.NorthWestGravity,
+			win_gravity = Gravity.NorthWestGravity,
+			// Settings to true when WindowStyle is None
+			//override_redirect = true,
+			colormap = XLib.XCreateColormap(display, rootWindow, visual, /* AllocNone */ 0),
+			border_pixel = 0,
+			// Settings background pixel to zero means Transparent background,
+			// and it will use the background color from `Window.SetBackground`
+			background_pixel = IntPtr.Zero,
+		};
+		var valueMask =
+				0
+				| SetWindowValuemask.BackPixel
+				| SetWindowValuemask.BorderPixel
+				| SetWindowValuemask.BitGravity
+				| SetWindowValuemask.WinGravity
+				| SetWindowValuemask.BackingStore
+				| SetWindowValuemask.ColorMap
+			//| SetWindowValuemask.OverrideRedirect
+			;
+		var window = XLib.XCreateWindow(display, rootWindow, 0, 0, (int)size.Width,
+			(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
+			(UIntPtr)(valueMask), ref xSetWindowAttributes);
+		XLib.XSelectInput(display, window, EventsMask);
+		return (window, depth);
 	}
 
 	private bool IsOpenGLSupported(IntPtr display)
