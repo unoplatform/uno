@@ -324,7 +324,7 @@ public partial class RemoteControlClient
 				ConnectionStatus.Connected when _invalidFrames is not 0 => $"Connected to dev-server, but received {_invalidFrames} invalid frames from the server.",
 				ConnectionStatus.Connected when _isMissingRequiredProcessor is true => "Connected to dev-server, but some required processors are missing on server.",
 				ConnectionStatus.Connected when _keepAliveStatus is KeepAliveStatus.Late => "Connected to dev-server, but keep-alive messages are taking longer than expected.",
-				ConnectionStatus.Connected when _keepAliveStatus is KeepAliveStatus.Lost => "Connected to dev-server, but last keep-alive messages has been lost.",
+				ConnectionStatus.Connected when _keepAliveStatus is KeepAliveStatus.Lost => "Connected to dev-server, but last keep-alive messages have been lost.",
 				ConnectionStatus.Connected when _keepAliveStatus is KeepAliveStatus.Aborted => "Connected to dev-server, but keep-alive has been aborted.",
 				ConnectionStatus.Connected => "Connected to dev-server.",
 
@@ -347,7 +347,7 @@ public partial class RemoteControlClient
 			{
 				details.AppendLine();
 				details.AppendLine();
-				details.AppendLine("Some processor requested by the client are missing on the server:");
+				details.AppendLine("Some processor(s) requested by the client are missing on the server:");
 
 				foreach (var m in missing)
 				{
