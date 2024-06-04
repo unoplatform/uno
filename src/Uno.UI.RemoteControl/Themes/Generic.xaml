@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="ms-appx:///Uno.UI.RemoteControl/RemoteControlStatusView.xaml" />
 		<ResourceDictionary Source="ms-appx:///Uno.UI.RemoteControl/HotReload/HotReloadStatusView.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 

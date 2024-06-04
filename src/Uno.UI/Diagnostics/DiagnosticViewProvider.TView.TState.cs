@@ -11,14 +11,21 @@ internal class DiagnosticView<TView, TState>(
 	string name,
 	Func<TView> preview,
 	Action<TView, TState> update,
-	Func<IDiagnosticViewContext, CancellationToken, ValueTask<object?>>? details = null)
+	Func<IDiagnosticViewContext, TState, CancellationToken, ValueTask<object?>>? details = null)
 	: IDiagnosticViewProvider
 	where TView : FrameworkElement
 {
 	private readonly DiagnosticViewHelper<TView, TState> _statusView = new(preview, update);
 
+	private bool _hasState;
+	private TState? _state;
+
 	public void Update(TState status)
-		=> _statusView.NotifyChanged(status);
+	{
+		_state = status;
+		_hasState = true;
+		_statusView.NotifyChanged(status);
+	}
 
 	/// <inheritdoc />
 	string IDiagnosticViewProvider.Name => name;
@@ -29,5 +36,5 @@ internal class DiagnosticView<TView, TState>(
 
 	/// <inheritdoc />
 	async ValueTask<object?> IDiagnosticViewProvider.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
-		=> details is null ? null : await details(context, ct);
+		=> _hasState && details is not null ? await details(context, _state!, ct) : null;
 }
