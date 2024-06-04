@@ -6,7 +6,7 @@ namespace Uno.UI.Xaml.Controls;
 /// Contains additional attached properties that provide Uno-specific
 /// behavior for TextBox control.
 /// </summary>
-public class TextBox
+public static class TextBox
 {
 #if __CROSSRUNTIME__
 	/// <summary>
