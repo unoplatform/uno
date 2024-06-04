@@ -4615,7 +4615,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					{
 						AllowDrop = true,
 						CanDrag = true,
-						Margin = new Thickness(50),
+						Height = 100,
 						Text = i.ToString()
 					}
 				});
@@ -4626,10 +4626,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
+			// drag(pick-up) item#0
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 50 });
+			await WindowHelper.WaitForIdle();
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
+			// drop onto item#1
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 150 });
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
