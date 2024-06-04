@@ -85,6 +85,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return default;
 			}
 
+			(Panel as Control)?.ApplyTemplate();
+
 			try
 			{
 				if (_elementAsUIElement?.IsVisualTreeRoot ?? false)
