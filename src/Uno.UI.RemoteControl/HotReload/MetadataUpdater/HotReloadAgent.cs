@@ -76,8 +76,8 @@ internal sealed class HotReloadAgent : IDisposable
 			{
 				foreach (var attr in assembly.GetCustomAttributesData())
 				{
-					// Look up the attribute by name rather than by type.
-					// This would allow netstandard targeting libraries to define their own copy without having to cross-compile.
+					// Look up the attribute by name rather than by type. This would allow netstandard targeting libraries to
+					// define their own copy without having to cross-compile.
 					if (attr is not { AttributeType.FullName: "System.Reflection.Metadata.MetadataUpdateHandlerAttribute" })
 					{
 						continue;
@@ -112,13 +112,13 @@ internal sealed class HotReloadAgent : IDisposable
 	{
 		bool methodFound = false;
 
-		if (GetMethod(handlerType, "ClearCache") is MethodInfo clearCache)
+		if (GetUpdateMethod(handlerType, "ClearCache") is MethodInfo clearCache)
 		{
 			handlerActions.ClearCache.Add(CreateAction(clearCache));
 			methodFound = true;
 		}
 
-		if (GetMethod(handlerType, "UpdateApplication") is MethodInfo updateApplication)
+		if (GetUpdateMethod(handlerType, "UpdateApplication") is MethodInfo updateApplication)
 		{
 			handlerActions.UpdateApplication.Add(CreateAction(updateApplication));
 			methodFound = true;
@@ -150,7 +150,7 @@ internal sealed class HotReloadAgent : IDisposable
 			};
 		}
 
-		MethodInfo? GetMethod([DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)] Type handlerType, string name)
+		MethodInfo? GetUpdateMethod([DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)] Type handlerType, string name)
 		{
 			if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(Type[]) }, null) is MethodInfo updateMethod &&
 				updateMethod.ReturnType == typeof(void))
@@ -158,7 +158,7 @@ internal sealed class HotReloadAgent : IDisposable
 				return updateMethod;
 			}
 
-			foreach (var method in handlerType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
+			foreach (MethodInfo method in handlerType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
 			{
 				if (method.Name == name)
 				{
@@ -234,8 +234,6 @@ internal sealed class HotReloadAgent : IDisposable
 			var handlerActions = _handlerActions;
 
 			Type[]? updatedTypes = GetMetadataUpdateTypes(deltas);
-
-			// TODO: Diag report --> dev-server update
 
 			handlerActions.ClearCache.ForEach(a => a(updatedTypes));
 			handlerActions.UpdateApplication.ForEach(a => a(updatedTypes));

@@ -67,4 +67,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
 </Project>
