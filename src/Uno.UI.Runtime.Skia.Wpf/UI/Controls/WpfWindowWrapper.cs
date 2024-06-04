@@ -121,6 +121,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
+		_isFullScreen = true;
 		_wpfWindow.WindowStyle = WindowStyle.None;
 		_wpfWindow.WindowState = WindowState.Maximized;
 
