@@ -66,13 +66,21 @@ In the case of Android, it is currently limited to the pastes that are triggered
 
 ## Pointer capture on WebAssembly
 
-In addition to focus, `TextBox` control also captures pointers, so that manipulations like scrolling through contents are possible. However, on WASM setting the programmatic capture will prevent the native scrolling behavior of the underlying `<input>`. For that reason, we avoid performing the pointer capture in this case. If you still want to capture the pointer, you can do so by deriving a custom type from `TextBox` and overriding `OnPointerPressed`:
+In addition to focus, `TextBox` control also captures pointers, so that manipulations like scrolling through contents are possible. However, on WASM setting the programmatic capture will prevent the native scrolling behavior of the underlying `<input>`. For that reason, we avoid performing the pointer capture in this case. If you still want to capture the pointer, you can do so by setting the `IsPointerCaptureRequired` attached property to `true`:
+
+In C#:
 
 ```csharp
-protected override void OnPointerPressed(PointerRoutedEventArgs args)
-{
-    base.OnPointerPressed(args);
-
-    this.CapturePointer(args.Pointer);
-}
+Uno.UI.Xaml.Controls.TextBox.SetIsPointerCaptureRequired(myTextBox, true);
 ```
+
+Or in XAML:
+
+```xaml
+<Page ... xmlns:unoui="using:Uno.UI.Xaml.Controls">
+    ...
+    <TextBox unoui:TextBox.IsPointerCaptureRequired="true" />
+</Page>
+```
+
+The value only affects WebAssembly, all other targets capture by default.
