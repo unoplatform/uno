@@ -2,16 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Windows.UI;
-using Microsoft.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.Messages;
 using Frame = Uno.UI.RemoteControl.HotReload.Messages.Frame;
@@ -24,7 +16,7 @@ public partial class RemoteControlClient
 	{
 		void ReportActiveConnection(Connection? connection);
 
-		void Report(ConnectionStatus status);
+		void Report(ConnectionState state);
 
 		void ReportPing(KeepAliveMessage ping);
 
@@ -37,7 +29,7 @@ public partial class RemoteControlClient
 		void ReportServerProcessors(ProcessorsDiscoveryResponse response);
 	}
 
-	private enum ConnectionStatus
+	internal enum ConnectionState
 	{
 		/// <summary>
 		/// Client as not been started yet
@@ -84,7 +76,7 @@ public partial class RemoteControlClient
 		Disconnected
 	}
 
-	private enum KeepAliveStatus
+	internal enum KeepAliveState
 	{
 		Idle,
 		Ok, // Got ping/pong in expected delays
@@ -93,37 +85,42 @@ public partial class RemoteControlClient
 		Aborted // KeepAlive was aborted
 	}
 
-	private class DiagnosticsView : IDiagnosticsSink, IDiagnosticViewProvider
+	internal record Status(
+		ConnectionState State,
+		bool? IsVersionValid,
+		(KeepAliveState State, long RoundTrip) KeepAlive,
+		ImmutableHashSet<MissingProcessor> MissingRequiredProcessors,
+		(long Count, ImmutableHashSet<Type> Types) InvalidFrames);
+
+	internal record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
+
+	private class DiagnosticsSink : IDiagnosticsSink
 	{
-		private ConnectionStatus _status = ConnectionStatus.Idle;
-		private readonly DiagnosticViewHelper<Ellipse> _statusView;
+		private ConnectionState _state = ConnectionState.Idle;
+		private readonly DiagnosticView<RemoteControlStatusView, Status> _view = DiagnosticView.Register<RemoteControlStatusView, Status>(
+			"Dev-server", 
+			(view, status) => view.Update(status),
+			RemoteControlStatusView.GetStatusDetails);
 
-		public DiagnosticsView()
-		{
-			_statusView = new(
-				() => new Ellipse { Width = 16, Height = 16, Fill = new SolidColorBrush(Colors.Gray) },
-				ellipse =>
-				{
-					((SolidColorBrush)ellipse.Fill).Color = GetStatusColor();
-					ToolTipService.SetToolTip(ellipse, GetStatusSummary());
-				});
+		public Status BuildStatus()
+			=> new(_state, _isVersionValid, (_keepAliveState, _roundTrip), _missingRequiredProcessors, (_invalidFrames, _invalidFrameTypes));
 
-			DiagnosticViewRegistry.Register(this); // Only register, do not make visible
-		}
+		private void NotifyStatusChanged()
+			=> _view.Update(BuildStatus());
 
 		#region Connection status
 		public void ReportActiveConnection(Connection? connection)
 			=> Report(connection switch
 			{
-				null when _status < ConnectionStatus.Connected => ConnectionStatus.ConnectionFailed,
-				null => ConnectionStatus.Disconnected,
-				_ => ConnectionStatus.Connected,
+				null when _state < ConnectionState.Connected => ConnectionState.ConnectionFailed,
+				null => ConnectionState.Disconnected,
+				_ => ConnectionState.Connected,
 			});
 
-		public void Report(ConnectionStatus status)
+		public void Report(ConnectionState state)
 		{
-			_status = status;
-			_statusView.NotifyChanged();
+			_state = state;
+			NotifyStatusChanged();
 		}
 		#endregion
 
@@ -132,7 +129,7 @@ public partial class RemoteControlClient
 		private const int _pongTimeoutDelay = 1000;
 		private KeepAliveMessage? _lastPing;
 		private Stopwatch? _sinceLastPing;
-		private KeepAliveStatus _keepAliveStatus = KeepAliveStatus.Ok; // We assume Ok as startup to not wait for the first ping to turn green.
+		private KeepAliveState _keepAliveState = KeepAliveState.Ok; // We assume Ok as startup to not wait for the first ping to turn green.
 		private bool? _isVersionValid;
 		private Timer? _pongTimeout;
 		private long _roundTrip = -1;
@@ -152,16 +149,16 @@ public partial class RemoteControlClient
 
 		private static void OnPongLateOrTimeout(object? state)
 		{
-			var that = (DiagnosticsView)state!;
+			var that = (DiagnosticsSink)state!;
 
-			if (that._keepAliveStatus is KeepAliveStatus.Late)
+			if (that._keepAliveState is KeepAliveState.Late)
 			{
 				that.ReportPong(null);
 			}
 			else
 			{
-				that._keepAliveStatus = KeepAliveStatus.Late;
-				that._statusView.NotifyChanged();
+				that._keepAliveState = KeepAliveState.Late;
+				that.NotifyStatusChanged();
 			}
 		}
 
@@ -172,8 +169,8 @@ public partial class RemoteControlClient
 			{
 				_sinceLastPing?.Stop();
 				_pongTimeout?.Change(Timeout.Infinite, Timeout.Infinite);
-				_keepAliveStatus = KeepAliveStatus.Lost;
-				_statusView.NotifyChanged();
+				_keepAliveState = KeepAliveState.Lost;
+				NotifyStatusChanged();
 				return;
 			}
 
@@ -189,13 +186,13 @@ public partial class RemoteControlClient
 			if (_isVersionValid != isVersionValid)
 			{
 				_isVersionValid = isVersionValid;
-				_statusView.NotifyChanged();
+				NotifyStatusChanged();
 			}
 
-			if (_keepAliveStatus != KeepAliveStatus.Ok)
+			if (_keepAliveState != KeepAliveState.Ok)
 			{
-				_keepAliveStatus = KeepAliveStatus.Ok;
-				_statusView.NotifyChanged();
+				_keepAliveState = KeepAliveState.Ok;
+				NotifyStatusChanged();
 			}
 		}
 
@@ -203,65 +200,53 @@ public partial class RemoteControlClient
 		{
 			Interlocked.Exchange(ref _pongTimeout, null)?.Dispose();
 			_sinceLastPing?.Stop();
-			_keepAliveStatus = KeepAliveStatus.Aborted;
-			_statusView.NotifyChanged();
+			_keepAliveState = KeepAliveState.Aborted;
+			NotifyStatusChanged();
 		}
 		#endregion
 
 		#region Server status
 		private record ProcessorInfo(string TypeFullName, string Version);
-		private record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
+
 		private ImmutableHashSet<ProcessorInfo> _requiredProcessors = ImmutableHashSet<ProcessorInfo>.Empty;
-		private ProcessorsDiscoveryResponse? _loadedProcessors;
-		private bool? _isMissingRequiredProcessor;
+		private ImmutableHashSet<MissingProcessor> _missingRequiredProcessors = ImmutableHashSet<MissingProcessor>.Empty;
 
 		public void RegisterRequiredServerProcessor(string typeFullName, string version)
 			=> ImmutableInterlocked.Update(ref _requiredProcessors, static (set, info) => set.Add(info), new ProcessorInfo(typeFullName, version));
 
 		public void ReportServerProcessors(ProcessorsDiscoveryResponse response)
 		{
-			_loadedProcessors = response;
+			_missingRequiredProcessors = GetMissingServerProcessors(_requiredProcessors, response).ToImmutableHashSet();
 
-			var isMissing = GetMissingServerProcessors().Any();
-			if (_isMissingRequiredProcessor != isMissing)
+			NotifyStatusChanged();
+
+			static IEnumerable<MissingProcessor> GetMissingServerProcessors(ImmutableHashSet<ProcessorInfo> requiredProcessors, ProcessorsDiscoveryResponse response)
 			{
-				_isMissingRequiredProcessor = isMissing;
-				_statusView.NotifyChanged();
-			}
-		}
-
-		private IEnumerable<MissingProcessor> GetMissingServerProcessors()
-		{
-			var response = _loadedProcessors;
-			if (response is null)
-			{
-				yield break;
-			}
-
-			var loaded = response.Processors.ToDictionary(p => p.Type, StringComparer.OrdinalIgnoreCase);
-			foreach (var required in _requiredProcessors)
-			{
-				if (!loaded.TryGetValue(required.TypeFullName, out var actual))
+				var loaded = response.Processors.ToDictionary(p => p.Type, StringComparer.OrdinalIgnoreCase);
+				foreach (var required in requiredProcessors)
 				{
-					yield return new MissingProcessor(required.TypeFullName, required.Version, "Processor not found by dev-server.");
-					continue;
-				}
+					if (!loaded.TryGetValue(required.TypeFullName, out var actual))
+					{
+						yield return new MissingProcessor(required.TypeFullName, required.Version, "Processor not found by dev-server.");
+						continue;
+					}
 
-				if (actual.LoadError is not null)
-				{
-					yield return new MissingProcessor(required.TypeFullName, required.Version, "Dev-server failed to create an instance.", actual.LoadError);
-					continue;
-				}
+					if (actual.LoadError is not null)
+					{
+						yield return new MissingProcessor(required.TypeFullName, required.Version, "Dev-server failed to create an instance.", actual.LoadError);
+						continue;
+					}
 
-				if (!actual.IsLoaded)
-				{
-					yield return new MissingProcessor(required.TypeFullName, required.Version, "Type is not a valid server processor.");
-					continue;
-				}
+					if (!actual.IsLoaded)
+					{
+						yield return new MissingProcessor(required.TypeFullName, required.Version, "Type is not a valid server processor.");
+						continue;
+					}
 
-				if (actual.Version != required.Version)
-				{
-					yield return new MissingProcessor(required.TypeFullName, required.Version, $"Version mismatch, client expected it to be {required.Version} but server loaded version {actual.Version}.");
+					if (actual.Version != required.Version)
+					{
+						yield return new MissingProcessor(required.TypeFullName, required.Version, $"Version mismatch, client expected it to be {required.Version} but server loaded version {actual.Version}.");
+					}
 				}
 			}
 		}
@@ -275,103 +260,9 @@ public partial class RemoteControlClient
 		{
 			Interlocked.Increment(ref _invalidFrames);
 			ImmutableInterlocked.Update(ref _invalidFrameTypes, static (set, type) => set.Add(type), typeof(TContent));
+
+			NotifyStatusChanged();
 		}
 		#endregion
-
-		/// <inheritdoc />
-		string IDiagnosticViewProvider.Name => "Dev-server";
-
-		/// <inheritdoc />
-		object IDiagnosticViewProvider.GetPreview(IDiagnosticViewContext context)
-			=> _statusView.GetView(context);
-
-		/// <inheritdoc />
-		ValueTask<object?> IDiagnosticViewProvider.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
-			=> ValueTask.FromResult<object?>(GetStatusDetails());
-
-		private Color GetStatusColor()
-			=> _status switch
-			{
-				ConnectionStatus.Idle => Colors.Gray,
-				ConnectionStatus.NoServer => Colors.Red,
-				ConnectionStatus.Connecting => Colors.Yellow,
-				ConnectionStatus.ConnectionTimeout => Colors.Red,
-				ConnectionStatus.ConnectionFailed => Colors.Red,
-				ConnectionStatus.Reconnecting => Colors.Yellow,
-				ConnectionStatus.Disconnected => Colors.Red,
-
-				ConnectionStatus.Connected when _isVersionValid is false => Colors.Orange,
-				ConnectionStatus.Connected when _invalidFrames is not 0 => Colors.Orange,
-				ConnectionStatus.Connected when _keepAliveStatus is not KeepAliveStatus.Ok => Colors.Yellow,
-				ConnectionStatus.Connected => Colors.Green,
-
-				_ => Colors.Gray
-			};
-
-		private string GetStatusSummary()
-		{
-			var status = _status switch
-			{
-				ConnectionStatus.Idle => "Initializing...",
-				ConnectionStatus.NoServer => "No server configured, cannot initialize connection.",
-				ConnectionStatus.Connecting => "Connecting to dev-server.",
-				ConnectionStatus.ConnectionTimeout => "Failed to connect to dev-server (timeout).",
-				ConnectionStatus.ConnectionFailed => "Failed to connect to dev-server (error).",
-				ConnectionStatus.Reconnecting => "Connection to dev-server has been lost, reconnecting.",
-				ConnectionStatus.Disconnected => "Connection to dev-server has been lost, will retry later.",
-
-				ConnectionStatus.Connected when _isVersionValid is false => "Connected to dev-server, but version mis-match with client.",
-				ConnectionStatus.Connected when _invalidFrames is not 0 => $"Connected to dev-server, but received {_invalidFrames} invalid frames from the server.",
-				ConnectionStatus.Connected when _isMissingRequiredProcessor is true => "Connected to dev-server, but some required processors are missing on server.",
-				ConnectionStatus.Connected when _keepAliveStatus is KeepAliveStatus.Late => "Connected to dev-server, but keep-alive messages are taking longer than expected.",
-				ConnectionStatus.Connected when _keepAliveStatus is KeepAliveStatus.Lost => "Connected to dev-server, but last keep-alive messages have been lost.",
-				ConnectionStatus.Connected when _keepAliveStatus is KeepAliveStatus.Aborted => "Connected to dev-server, but keep-alive has been aborted.",
-				ConnectionStatus.Connected => "Connected to dev-server.",
-
-				_ => _status.ToString()
-			};
-
-			if (_roundTrip >= 0)
-			{
-				status += $" (ping {_roundTrip}ms)";
-			}
-
-			return status;
-		}
-
-		private string GetStatusDetails()
-		{
-			var details = new StringBuilder(GetStatusSummary());
-
-			if (GetMissingServerProcessors().ToList() is { Count: > 0 } missing)
-			{
-				details.AppendLine();
-				details.AppendLine();
-				details.AppendLine("Some processor(s) requested by the client are missing on the server:");
-
-				foreach (var m in missing)
-				{
-					details.AppendLine($"- {m.TypeFullName} v{m.Version}: {m.Details}");
-					if (m.Error is not null)
-					{
-						details.AppendLine($"  {m.Error}");
-					}
-				}
-			}
-
-			if (_invalidFrameTypes is { Count: > 0 } invalidFrameTypes)
-			{
-				details.AppendLine();
-				details.AppendLine();
-				details.AppendLine($"Received {_invalidFrames} invalid frames from the server. Failing frame types ({invalidFrameTypes.Count}):");
-
-				foreach (var type in invalidFrameTypes)
-				{
-					details.AppendLine($"- {type.FullName}");
-				}
-			}
-
-			return details.ToString();
-		}
 	}
 }

@@ -54,7 +54,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	public TimeSpan ConnectionRetryInterval { get; } = TimeSpan.FromMilliseconds(_connectionRetryInterval);
 	private const int _connectionRetryInterval = 5_000;
 
-	private readonly IDiagnosticsSink _diagnostics = new DiagnosticsView();
+	private readonly IDiagnosticsSink _diagnostics = new DiagnosticsSink();
 	private static readonly TimeSpan _keepAliveInterval = TimeSpan.FromSeconds(30);
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
@@ -113,7 +113,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			this.Log().LogError("Failed to get any remote control server endpoint from the IDE.");
 
 			_connection = Task.FromResult<Connection?>(null);
-			_diagnostics.Report(ConnectionStatus.NoServer);
+			_diagnostics.Report(ConnectionState.NoServer);
 			return;
 		}
 
@@ -151,7 +151,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			// We have a socket (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
 			lock (_connectionGate)
 			{
-				_diagnostics.Report(ConnectionStatus.Reconnecting);
+				_diagnostics.Report(ConnectionState.Reconnecting);
 
 				if (connectionTask == _connection)
 				{
@@ -178,7 +178,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					this.Log().LogWarning($"No server addresses provided, skipping.");
 				}
 
-				_diagnostics.Report(ConnectionStatus.NoServer);
+				_diagnostics.Report(ConnectionState.NoServer);
 				return default;
 			}
 
@@ -188,7 +188,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			const bool isHttps = false;
 #endif
 
-			_diagnostics.Report(ConnectionStatus.Connecting);
+			_diagnostics.Report(ConnectionState.Connecting);
 
 			var pending = _serverAddresses
 				.Where(adr => adr.port != 0 || Uri.TryCreate(adr.endpoint, UriKind.Absolute, out _))
@@ -217,7 +217,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 						this.Log().LogError("Failed to connect to the server (timeout).");
 					}
 
-					_diagnostics.Report(ConnectionStatus.ConnectionTimeout);
+					_diagnostics.Report(ConnectionState.ConnectionTimeout);
 					AbortPending();
 
 					return null;
