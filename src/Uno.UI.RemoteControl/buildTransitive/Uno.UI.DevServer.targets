@@ -38,7 +38,7 @@
 
 	<Target Name="InjectRemoteControlHost"
 			BeforeTargets="BeforeBuild"
-			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(IsRunningInsideVisualStudio)'!='true'">
+			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(BuildingInsideVisualStudio)'!='true'">
 
 		<ItemGroup>
 			<WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
