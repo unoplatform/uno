@@ -69,7 +69,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		return !matrixDirty;
 	}
 
-	public void InvalidatePaint()
+	internal void InvalidatePaint()
 	{
 		_picture?.Dispose();
 		_picture = null;
