@@ -144,7 +144,12 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	}
 
 	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
-		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
+	{
+		// We need the explicit call to UpdatePathsAndCornerClip in case CanPaint is false (e.g.,
+		// because brushes are null). In that case, we still need to update the CornerClip
+		UpdatePathsAndCornerClip();
+		_childClipCausedByCornerRadius?.Apply(canvas, this);
+	}
 
 	private void UpdatePathsAndCornerClip()
 	{
