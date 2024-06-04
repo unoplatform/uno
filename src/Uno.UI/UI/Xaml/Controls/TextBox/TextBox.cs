@@ -986,11 +986,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			if (ShouldFocusOnPointerPressed(args) // UWP Captures if the pointer is not Touch
-#if !__WASM__ // We cannot capture the pointer on WASM because it would prevent the user from scrolling through text on selection.
-				&& CapturePointer(args.Pointer)
+			bool isPointerCaptureRequired =
+#if __WASM__
+				Uno.UI.Xaml.Controls.TextBox.GetIsPointerCaptureRequired(this);
+#else
+				true;
 #endif
-				)
+
+			if (ShouldFocusOnPointerPressed(args) // UWP Captures if the pointer is not Touch
+				&& isPointerCaptureRequired
+				&& CapturePointer(args.Pointer))
 			{
 				Focus(FocusState.Pointer);
 			}
