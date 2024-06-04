@@ -71,16 +71,9 @@ In addition to focus, `TextBox` control also captures pointers, so that manipula
 In C#:
 
 ```csharp
+#if __WASM__
 Uno.UI.Xaml.Controls.TextBox.SetIsPointerCaptureRequired(myTextBox, true);
-```
-
-Or in XAML:
-
-```xaml
-<Page ... xmlns:unoui="using:Uno.UI.Xaml.Controls">
-    ...
-    <TextBox unoui:TextBox.IsPointerCaptureRequired="true" />
-</Page>
+#endif
 ```
 
 The value only affects WebAssembly, all other targets capture by default.
