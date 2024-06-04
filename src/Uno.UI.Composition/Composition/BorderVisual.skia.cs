@@ -83,7 +83,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				_borderPathValid = false; // to update _borderPath if previously skipped
 				if (BorderBrush is not null && _borderShape is null)
 				{
-					// we need this to track get notified on brush updates.
+					// we need this to get notified on brush updates.
 					SetProperty(ref _borderShape, Compositor.CreateSpriteShape());
 #if DEBUG
 					_borderShape!.Comment = "#borderShape";
@@ -98,7 +98,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				_backgroundPathValid = false; // to update _backgroundPath if previously skipped
 				if (BackgroundBrush is not null && _backgroundShape is null)
 				{
-					// we need this to track get notified on brush updates.
+					// we need this to get notified on brush updates.
 					SetProperty(ref _backgroundShape, Compositor.CreateSpriteShape());
 #if DEBUG
 					_backgroundShape!.Comment = "#backgroundShape";
@@ -143,7 +143,12 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	}
 
 	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
-		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
+	{
+		// We need the explicit call to UpdatePathsAndCornerClip in case CanPaint is false (e.g.,
+		// because brushes are null). In that case, we still need to update the CornerClip
+		UpdatePathsAndCornerClip();
+		_childClipCausedByCornerRadius?.Apply(canvas, this);
+	}
 
 	private void UpdatePathsAndCornerClip()
 	{
