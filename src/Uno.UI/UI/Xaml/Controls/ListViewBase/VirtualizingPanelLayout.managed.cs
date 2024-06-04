@@ -838,11 +838,13 @@ namespace Microsoft.UI.Xaml.Controls
 			_clearingLines = true;
 			try
 			{
-				// Recycling a line can lead to removing elements from the visual tree.
-				// If a user forces a layout during this (e.g. in Unloaded), we will
-				// update the _materializedLines in MeasureOverride. So, to prevent
-				// modification while looping, we take a copy and clear before looping.
-				var lines = _materializedLines.ToList();
+				// Recycling a line can lead to elements removal from the visual tree.
+				// To prevent modification while looping, we take a copy of _materializedLines
+				// and clear the original before starting the loop. This ensures that if a user forces
+				// a layout during this process (e.g., in Unloaded), we can update _materializedLines
+				// in MeasureOverride without issues. Even so, this causes some weird behaviour with
+				// pointer interaction, so we also disable measuring until ClearLines is done.
+				var lines = _materializedLines.ToArray();
 				_materializedLines.Clear();
 				foreach (var line in lines)
 				{
