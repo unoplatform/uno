@@ -4966,7 +4966,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		public class UpdateLayoutOnUnloadedControl : UserControl
+		public partial class UpdateLayoutOnUnloadedControl : UserControl
 		{
 			public UpdateLayoutOnUnloadedControl()
 			{
