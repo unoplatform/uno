@@ -19,6 +19,9 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost : IXamlRootHost
 {
+	private const int DefaultColorDepth = 32;
+	private const int FallbackColorDepth = 24;
+
 	private const int InitialWidth = 900;
 	private const int InitialHeight = 800;
 	private const IntPtr EventsMask =
@@ -312,7 +315,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		IntPtr window;
-		uint depth = 32;
+		uint depth = DefaultColorDepth;
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
 			_x11Window = CreateGLXWindow(display, screen, size);
@@ -320,12 +323,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, 32, 4, out var info);
+			var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
 			var success = matchVisualInfoResult != 0;
 			if (!success)
 			{
-				var defaultDepth = XLib.XDefaultDepth(display, screen);
-				matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, defaultDepth, 4, out info);
+				matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, FallbackColorDepth, 4, out info);
 
 				success = matchVisualInfoResult != 0;
 				if (!success)
