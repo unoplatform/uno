@@ -138,12 +138,12 @@
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net9.0\Uno.UI.Lottie.dll" target="lib\net9.0" />
 
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-android\Uno.UI.Lottie.dll" target="lib\net8.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-ios\Uno.UI.Lottie.dll" target="lib\net8.0-ios" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Lottie.dll" target="lib\net8.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Lottie.dll" target="lib\net8.0-maccatalyst" />
 
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-android\Uno.UI.Lottie.dll" target="lib\net9.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-ios\Uno.UI.Lottie.dll" target="lib\net9.0-ios" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net9.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-ios17.2\Uno.UI.Lottie.dll" target="lib\net9.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.Lottie.dll" target="lib\net9.0-maccatalyst" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
