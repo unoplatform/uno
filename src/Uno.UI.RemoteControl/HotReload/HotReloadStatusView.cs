@@ -40,9 +40,9 @@ internal sealed partial class HotReloadStatusView : Control
 	public static string GetStatusSummary(HotReloadStatusMessage? status)
 		=> status?.State switch
 		{
-			HotReloadState.Disabled => "Hot-reload is disable.",
+			HotReloadState.Disabled => "Hot-reload is disabled.",
 			HotReloadState.Initializing => "Hot-reload is initializing.",
-			HotReloadState.Idle => "Hot-reload server is ready and listing for file changes.",
+			HotReloadState.Idle => "Hot-reload server is ready and listening for file changes.",
 			HotReloadState.Processing => "Hot-reload server is processing file changes",
 			_ => "Unable to determine the state of the hot-reload server."
 		};
