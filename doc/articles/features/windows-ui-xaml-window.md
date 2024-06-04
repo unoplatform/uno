@@ -123,4 +123,3 @@ This feature can help blend the background of the window with the background of 
 |                              | Skia Desktop | iOS | Android | macOS | Catalyst | WebAssembly |
 | ---------------------------- | :----------: | :-: | :-----: | :---: | :------: | :---------: |
 | `WindowHelper.SetBackground` |      ✔️     | ❌  |   ❌    |  ❌  |    ❌    |     ❌     |
-
