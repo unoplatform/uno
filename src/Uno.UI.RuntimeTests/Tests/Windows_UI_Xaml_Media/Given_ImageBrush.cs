@@ -108,6 +108,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 #if __SKIA__
 		[TestMethod]
+		[Ignore("Flaky. https://github.com/unoplatform/uno/issues/9080")]
 		public async Task When_DownSampling()
 		{
 			var border = new Border
