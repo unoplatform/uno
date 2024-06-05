@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using Uno.UI.DirectUI;
+using DirectUI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -126,7 +126,7 @@ internal static class KeyboardAcceleratorUtility
 
 					var acceleratorUIElement = acceleratorParentElement as UIElement;
 					// If the parent is disabled search for the next accelerator with enabled parent
-					if (acceleratorUIElement is not null && !acceleratorUIElement.IsEnabled())
+					if (acceleratorUIElement is not null && !acceleratorUIElement.IsEnabledInternal())
 					{
 						continue;
 					}
@@ -157,7 +157,7 @@ internal static class KeyboardAcceleratorUtility
 		DependencyObject pElement,
 		out bool pHandled,
 		out bool pHandledShouldNotImpedeTextInput,
-		DependencyObject pFocusedElement,
+		DependencyObject? pFocusedElement,
 		bool isCallFromTryInvoke)
 	{
 		// The order of things should be as follows:
@@ -199,12 +199,12 @@ internal static class KeyboardAcceleratorUtility
 		VirtualKey originalKey,
 		VirtualKeyModifiers keyModifiers,
 		DependencyObject pElement,
-		DependencyObject pFocusedElement,
+		DependencyObject? pFocusedElement,
 		bool isCallFromTryInvoke)
 	{
 		// If the element is disabled, none of its accelerators are considered invocable anyway, so we can bail out early in that case
 		var pUIElement = pElement as UIElement;
-		if (pUIElement is not null && !pUIElement.IsEnabled())
+		if (pUIElement is not null && !pUIElement.IsEnabledInternal())
 		{
 			return false;
 		}
@@ -268,7 +268,7 @@ internal static class KeyboardAcceleratorUtility
 		 VirtualKeyModifiers keyModifiers,
 		 VectorOfKACollectionAndRefCountPair allLiveAccelerators,
 		 DependencyObject pElement,
-		  DependencyObject pFocusedElement,
+		 DependencyObject? pFocusedElement,
 		 bool isCallFromTryInvoke)
 	{
 		return ProcessAllLiveAccelerators(originalKey, keyModifiers, allLiveAccelerators, pElement, AcceleratorIsOwnedPolicy, pFocusedElement, isCallFromTryInvoke);

@@ -33,7 +33,7 @@ internal static class KeyboardAutomationInvoker
 		if (ownerAutomationPeer is null)
 		{
 			// let's try creating an automation peer
-			ownerAutomationPeer = frameworkElement.OnCreateAutomationPeer();
+			ownerAutomationPeer = frameworkElement.OnCreateAutomationPeerInternal();
 			// Want to print a message when there is no automation peer for the owner and the item is not a scope (and can be navigated into).
 			if (ownerAutomationPeer is null && !AccessKeys.IsAccessKeyScope(pDO))
 			{
