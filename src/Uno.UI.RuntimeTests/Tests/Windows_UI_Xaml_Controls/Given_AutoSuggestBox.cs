@@ -49,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__ || __WASM__
 			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == (char)Symbol.Home);
 #else
-			var tb = (TextBlock)SUT.EnumerateAllChildren(c => c is TextBlock tb && tb.Text.Length == 1 && tb.Text[0] == (char)Symbol.Home).Single();
+			var tb = (TextBlock)SUT.EnumerateAllChildren(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == (char)Symbol.Home).Single();
 #endif
 
 			Assert.AreEqual(12, tb.FontSize);
