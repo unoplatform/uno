@@ -52,9 +52,7 @@ public partial class Window : UIWindow
 
 	internal event Action? FrameChanged;
 
-#if __MACCATALYST__ //TODO:MZ: Should be mac catalyst specific?
 	private ICoreWindowEvents? _ownerEvents;
-#endif
 
 	/// <summary>
 	/// ctor.
@@ -80,7 +78,6 @@ public partial class Window : UIWindow
 	{
 		var handled = false;
 
-#if __MACCATALYST__
 		foreach (UIPress press in presses)
 		{
 			if (press.Key is null)
@@ -127,7 +124,6 @@ public partial class Window : UIWindow
 				Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
-#endif
 
 		if (!handled)
 		{
@@ -139,7 +135,6 @@ public partial class Window : UIWindow
 	{
 		var handled = false;
 
-#if __MACCATALYST__
 		foreach (UIPress press in presses)
 		{
 			if (press.Key is null)
@@ -186,43 +181,7 @@ public partial class Window : UIWindow
 				Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
-#else
-		var focusInputHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree?.UnoFocusInputHandler;
-		if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
-		{
-			foreach (UIPress press in presses)
-			{
-				if (press.Key is null)
-				{
-					continue;
-				}
 
-				if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardTab)
-				{
-					var shift =
-						press.Key.ModifierFlags.HasFlag(UIKeyModifierFlags.AlphaShift) ||
-						press.Key.ModifierFlags.HasFlag(UIKeyModifierFlags.Shift);
-					handled |= focusInputHandler.TryHandleTabFocus(shift);
-				}
-				else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardLeftArrow)
-				{
-					handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Left);
-				}
-				else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardRightArrow)
-				{
-					handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Right);
-				}
-				else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardUpArrow)
-				{
-					handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Up);
-				}
-				else if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardDownArrow)
-				{
-					handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Down);
-				}
-			}
-		}
-#endif
 		if (!handled)
 		{
 			base.PressesBegan(presses, evt);
@@ -230,9 +189,7 @@ public partial class Window : UIWindow
 	}
 
 
-#if __MACCATALYST__
 	internal void SetOwner(CoreWindow owner) => _ownerEvents = (ICoreWindowEvents)owner;
-#endif
 
 	/// <summary>
 	/// The behavior to use to bring the focused item into view when opening the keyboard.
