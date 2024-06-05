@@ -22,6 +22,12 @@ using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
