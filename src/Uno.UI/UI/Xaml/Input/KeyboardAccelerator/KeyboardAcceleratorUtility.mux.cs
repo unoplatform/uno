@@ -1,11 +1,14 @@
 ﻿#nullable enable
 
+using System.Collections.Generic;
 using Uno.UI.DirectUI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Windows.WinRT.Paltypes;
+using static Windows.WinRT.WinUser;
 
 namespace Microsoft.UI.Xaml.Input;
 
@@ -90,18 +93,18 @@ internal static class KeyboardAcceleratorUtility
 		DependencyObject pFocusedElement,
 		bool isCallFromTryInvoke)
 	{
-		Jupiter.stack_vector < KACollectionAndRefCountPair, 25 > collectionsToGC;
+		List<KACollectionAndRefCountPair> collectionsToGC = new(25);
 		foreach (var weakCollection in allLiveAccelerators)
 		{
-			xref_ptr<CKeyboardAcceleratorCollection> strongRef = weakCollection.first.lock () ;
-			CKeyboardAcceleratorCollection* collection = strongRef;
+			KeyboardAcceleratorCollection? collection = weakCollection.KeyboardAcceleratorCollectionWeak.IsAlive ?
+				(KeyboardAcceleratorCollection)weakCollection.KeyboardAcceleratorCollectionWeak.Target : null;
 			if (collection == null)
 			{
-				collectionsToGC.m_vector.emplace_back(weakCollection);
+				collectionsToGC.Add(weakCollection);
 				continue;
 			}
 
-			DependencyObject parent = collection.GetParentInternal(false /* publicParentOnly */);
+			var parent = collection.GetParentInternal(false /* publicParentOnly */);
 			while (parent != null)
 			{
 				if (parent.IsActive())
@@ -337,7 +340,7 @@ internal static class KeyboardAcceleratorUtility
 		//const int VK_OEM_3 = ;0xC0   // '`~' for US
 
 		// We only want the 'symbol' keys from the extended VK set to be valid keyboard accelerators.
-		bool isVKOEMSymbolKey = VK_OEM_1 <= originalKey && originalKey < VK_OEM_3;
+		bool isVKOEMSymbolKey = VK_OEM_1 <= (int)originalKey && (int)originalKey < VK_OEM_3;
 
 		//Valid non symbol / aplha-numeric accesskeys are Enter, Esc, Backspace, Space, PageUp, PageDown, End, Home, Left, Up, Right,
 		//Down, Snapshot, Insert, and Delete
@@ -372,14 +375,14 @@ internal static class KeyboardAcceleratorUtility
 	}
 
 	internal static bool ShouldRaiseAcceleratorEvent(
-		 VirtualKey key,
-		 VirtualKeyModifiers keyModifiers,
-		  KeyboardAccelerator pAccelerator,
-		 DependencyObject pParent)
+		VirtualKey key,
+		VirtualKeyModifiers keyModifiers,
+		KeyboardAccelerator pAccelerator,
+		DependencyObject pParent)
 	{
-		return pAccelerator.m_isEnabled &&
-			key == (VirtualKey)(pAccelerator.m_key) &&
-			keyModifiers == (VirtualKeyModifiers)(pAccelerator.m_keyModifiers) &&
+		return pAccelerator.IsEnabled &&
+			key == (VirtualKey)(pAccelerator.Key) &&
+			keyModifiers == (VirtualKeyModifiers)(pAccelerator.Modifiers) &&
 			FocusProperties.IsVisible(pParent) &&
 			FocusProperties.AreAllAncestorsVisible(pParent);
 	}
