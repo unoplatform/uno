@@ -209,10 +209,10 @@ internal static class KeyboardAcceleratorUtility
 			return false;
 		}
 
-		if (pElement.GetCurrentHighestValuePrecedence(UIElement.KeyboardAcceleratorsProperty) == DependencyPropertyValuePrecedences.DefaultValue) // TODO:MZ: EffectiveSparseValue equivalent?
-		{
-			return false;
-		}
+		//if (!pElement.EffectiveSparseValue(UIElement.KeyboardAcceleratorsProperty)) // TODO:MZ: EffectiveSparseValue equivalent?
+		//{
+		//	return false;
+		//}
 
 		var acceleratorCollectionValue = pElement.GetValue(UIElement.KeyboardAcceleratorsProperty);
 
