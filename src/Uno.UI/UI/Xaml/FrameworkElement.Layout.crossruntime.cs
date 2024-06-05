@@ -902,6 +902,14 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+		private void AdjustNameScope(ref INameScope? nameScope)
+		{
+			if (NameScope.GetNameScope(this) is { } currentNameScope)
+			{
+				nameScope = currentNameScope;
+			}
+		}
+
 		internal override void Enter(INameScope? nameScope, EnterParams @params, int depth)
 		{
 			// This should happen regardless of whether Name is null or not.
@@ -914,9 +922,11 @@ namespace Microsoft.UI.Xaml
 			{
 				var name = this.Name;
 
-				if (!string.IsNullOrEmpty(name))
+				if (!string.IsNullOrEmpty(name) && nameScope.FindName(name) is null)
 				{
-					// NOTE: Multiple RegisterName calls can happen.
+					// Ideally, we shouldn't be checking for null FindName.
+					// But it's currently needed due to the way we
+					// register names in namescopes which don't yet match WinUI completely.
 					// Right now, XAML generator will do RegisterName calls, then, when we
 					// enter the visual tree, we will be trying to register the name again.
 					// However, registering in Enter is also very necessary in case C# is used
@@ -925,7 +935,7 @@ namespace Microsoft.UI.Xaml
 					// The RegisterName calls in XAML generator should probably happen via something
 					// similar to WinUI's PostParseRegisterNames which will basically just do an "Enter" with
 					// isLive being false. Then, the Enter happening in VisualTree.AddRoot should skip name registration.
-					((NameScope)nameScope).RegisterNameNoWarn(name, this);
+					nameScope.RegisterName(name, this);
 				}
 			}
 

@@ -47,7 +47,6 @@ namespace Uno.UI.Controls
 			// Instead we have to pre-update the _shadowChildren so handlers of the Loaded event will be able
 			// to properly walk the tree up and down (cf. EffectiveViewport).
 			_shadowChildren.Add(view);
-			TryRegisterName(view);
 			base.AddSubview(view);
 		}
 
@@ -55,17 +54,7 @@ namespace Uno.UI.Controls
 		{
 			// cf. AddSubview comment!
 			_shadowChildren.Insert((int)atIndex, view);
-			TryRegisterName(view);
 			base.InsertSubview(view, atIndex);
-		}
-
-		private void TryRegisterName(UIView view)
-		{
-			if (view is FrameworkElement { Name: { Length: > 0 } name } fe &&
-				FindNameScope(fe) is { } nameScope)
-			{
-				nameScope.RegisterName(name, fe);
-			}
 		}
 
 		public override void WillRemoveSubview(UIView uiview)

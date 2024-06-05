@@ -28,8 +28,6 @@ using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
-
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -942,67 +940,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
-
-		private void AdjustNameScope(ref INameScope nameScope)
-		{
-			if (NameScope.GetNameScope(this) is { } currentNameScope)
-			{
-				nameScope = currentNameScope;
-			}
-		}
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		internal override void Enter(INameScope nameScope, EnterParams @params, int depth)
-		{
-			// This should happen regardless of whether Name is null or not.
-			// What we need here is that once we find an element being entered that
-			// has its own NameScope, then we start using this namescope and use it for entering its children.
-			// For example, elements in a template where the template root will have its own NameScope.
-			AdjustNameScope(ref nameScope);
-
-			if (nameScope is not null)
-			{
-				var name = this.Name;
-
-				if (!string.IsNullOrEmpty(name))
-				{
-					// NOTE: Multiple RegisterName calls can happen.
-					// Right now, XAML generator will do RegisterName calls, then, when we
-					// enter the visual tree, we will be trying to register the name again.
-					// However, registering in Enter is also very necessary in case C# is used
-					// instead of XAML (be it "regular" C# code or C# Markup).
-					// So, we need to have RegisterName here.
-					// The RegisterName calls in XAML generator should probably happen via something
-					// similar to WinUI's PostParseRegisterNames which will basically just do an "Enter" with
-					// isLive being false. Then, the Enter happening in VisualTree.AddRoot should skip name registration.
-					((NameScope)nameScope).RegisterNameNoWarn(name, this);
-				}
-			}
-
-			base.Enter(nameScope, @params, depth);
-		}
-
-		internal override void Leave(INameScope nameScope, LeaveParams @params)
-		{
-			// This should happen regardless of whether Name is null or not.
-			// What we need here is that once we find an element leaving that
-			// has its own NameScope, then we start using this namescope and use it for leaving its children.
-			// For example, elements in a template where the template root will have its own NameScope.
-			AdjustNameScope(ref nameScope);
-
-			if (nameScope is not null)
-			{
-				var name = this.Name;
-
-				if (!string.IsNullOrEmpty(name))
-				{
-					nameScope.UnregisterName(name);
-				}
-			}
-
-			base.Leave(nameScope, @params);
-		}
-#endif
 
 		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins

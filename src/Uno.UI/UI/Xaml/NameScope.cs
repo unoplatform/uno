@@ -42,20 +42,11 @@ namespace Microsoft.UI.Xaml
 
 		public void RegisterName(string name, object scopedElement)
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning) && _names.ContainsKey(name))
+			if (_names.ContainsKey(name))
 			{
 				this.Log().Warn($"The name [{name}] already exists in the current XAML scope");
 			}
 
-			_names[name] = WeakReferencePool.RentWeakReference(this, scopedElement);
-		}
-
-		internal void RegisterNameNoWarn(string name, object scopedElement)
-		{
-			if (name == "textBox")
-			{
-
-			}
 			_names[name] = WeakReferencePool.RentWeakReference(this, scopedElement);
 		}
 
