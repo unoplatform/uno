@@ -39,6 +39,8 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Uno.UI.Toolkit.Extensions;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -187,7 +189,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			nvi1.IsExpanded = true;
 			await WindowHelper.WaitForIdle();
 
+#if __ANDROID__
+			var descendant = nv.EnumerateDescendants().SingleOrDefault(d => d is NavigationViewItem { Name: "RuntimeTestNVI" });
+			Assert.AreEqual(nvi2, descendant);
+#else
 			Assert.AreEqual(nvi2, nv.FindVisualChildByName("RuntimeTestNVI"));
+#endif
 		}
 #endif
 	}
