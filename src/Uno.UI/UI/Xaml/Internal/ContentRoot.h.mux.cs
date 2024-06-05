@@ -1,7 +1,15 @@
-﻿using Microsoft.UI.Content;
+﻿using System.Collections.Generic;
+using Microsoft.UI.Content;
 using Uno.Disposables;
+using Uno.UI.DataBinding;
 
 namespace Uno.UI.Xaml.Core;
+
+internal record KACollectionAndRefCountPair(ManagedWeakReference KeyboardAcceleratorCollectionWeak, int Count);
+
+internal class VectorOfKACollectionAndRefCountPair : List<KACollectionAndRefCountPair>
+{
+}
 
 partial class ContentRoot
 {
@@ -21,11 +29,7 @@ partial class ContentRoot
 	private readonly SerialDisposable _compositionContentStateChangedToken = new();
 	private readonly SerialDisposable _automationProviderRequestedToken = new();
 
+	private VectorOfKACollectionAndRefCountPair _allLiveKeyboardAccelerators = new();
+
 	private bool _hasPendingChangedEvent;
-﻿}
-
-internal record KACollectionAndRefCountPair(ManagedWeakReference KeyboardAcceleratorCollectionWeak, int Count);
-
-internal class VectorOfKACollectionAndRefCountPair : List<KACollectionAndRefCountPair>
-{
 }

@@ -198,6 +198,14 @@ internal partial class ContentRoot
 		}
 	}
 
+	// CKeyboardAcceleratorCollection can be added multiple times through initial Live Enters and then
+	// Flyouts Open operations ( I can think of). We need reference counting on accelerator collection
+	// so that closing flyout will only decrement the ref count and will not remove keyboard accelerator
+	// collections which might be still alive. Collection will only be removed if ref count goes down to 0.
+	// As of now Add/ Remove reference and then collection is triggered through Enter and Leave mechanism only.
+	// If one has to update ref counts explicitly, please make sure to take care of life time of those collections.
+	internal VectorOfKACollectionAndRefCountPair GetAllLiveKeyboardAccelerators() => _allLiveKeyboardAccelerators;
+
 	//TODO Uno: This might need to be adjusted when we have proper lifetime handling
 	internal bool IsShuttingDown() => false;
 
