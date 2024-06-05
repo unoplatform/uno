@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Uno;
@@ -32,7 +32,12 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private void FolderPickerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
-			ViewModel = args.NewValue as FileOpenPickerTestsViewModel;
+			// When the picker is showing, the Page is resetting the DataContext to null.
+			if (args.NewValue is FileOpenPickerTestsViewModel viewModel)
+			{
+				ViewModel = viewModel;
+			}
+
 		}
 
 		internal FileOpenPickerTestsViewModel ViewModel { get; private set; }
@@ -161,6 +166,9 @@ namespace UITests.Shared.Windows_Storage.Pickers
 					filePicker.CommitButtonText = CommitButtonText;
 				}
 				filePicker.FileTypeFilter.AddRange(FileTypeFilter);
+
+				StatusMessage = "Picking single file....";
+
 				var pickedFile = await filePicker.PickSingleFileAsync();
 				if (pickedFile != null)
 				{
@@ -199,6 +207,8 @@ namespace UITests.Shared.Windows_Storage.Pickers
 					filePicker.CommitButtonText = CommitButtonText;
 				}
 				filePicker.FileTypeFilter.AddRange(FileTypeFilter);
+
+				StatusMessage = "Picking multiple files...";
 				var pickedFiles = await filePicker.PickMultipleFilesAsync();
 				if (pickedFiles.Any())
 				{
