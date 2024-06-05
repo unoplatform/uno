@@ -91,7 +91,7 @@ internal class MacOSWindowNative
 					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				}
 
-				NativeUno.uno_application_set_icon(iconPath);
+				NativeUno.uno_application_set_icon(scaledPath);
 			}
 			else
 			{
