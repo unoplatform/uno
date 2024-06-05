@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml.Input;
 using Uno.UI;
 using Uno.Disposables;
 using Windows.System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 #if __IOS__
 using UIKit;
@@ -12,7 +14,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Controls
 {
 	partial class ToolTipService
 	{
@@ -41,6 +43,35 @@ namespace Microsoft.UI.Xaml.Controls
 		public static void SetPlacement(DependencyObject element, PlacementMode value) => element.SetValue(PlacementProperty, value);
 
 		#endregion
+
+		#region DependencyProperty: PlacementTarget
+
+		/// <summary>
+		/// Gets or sets the object relative to which the tooltip is positioned.
+		/// </summary>
+		public static DependencyProperty PlacementTargetProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"PlacementTarget",
+				typeof(UIElement),
+				typeof(ToolTipService),
+				new FrameworkPropertyMetadata(default(UIElement)));
+
+		/// <summary>
+		/// Gets the ToolTipService.PlacementTarget XAML attached property value for the specified target element.
+		/// </summary>
+		/// <param name="element">The target element for the attached property value.</param>
+		/// <returns>The visual element that the tooltip is positioned relative to.</returns>
+		public static UIElement GetPlacementTarget(DependencyObject element) => (UIElement)element.GetValue(PlacementTargetProperty);
+
+		/// <summary>
+		/// Sets the ToolTipService.PlacementTarget XAML attached property value for the specified target element.
+		/// </summary>
+		/// <param name="element">The target element for the attached property value.</param>
+		/// <param name="value">The visual element that should be the placement target for the tooltip.</param>
+		public static void SetPlacementTarget(DependencyObject element, UIElement value) => element.SetValue(PlacementTargetProperty, value);
+
+		#endregion
+
 		#region DependencyProperty: ToolTipReference
 
 		internal static DependencyProperty ToolTipReferenceProperty { get; } = DependencyProperty.RegisterAttached(
