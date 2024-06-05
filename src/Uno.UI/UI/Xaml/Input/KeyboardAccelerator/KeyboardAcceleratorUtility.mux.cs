@@ -14,13 +14,13 @@ namespace Microsoft.UI.Xaml.Input;
 
 internal static class KeyboardAcceleratorUtility
 {
-	internal delegate bool KeyboardAcceleratorPolicyFn(KeyboardAccelerator accelerator, DependencyObject owner);
+	internal delegate bool KeyboardAcceleratorPolicyFn(KeyboardAccelerator accelerator, DependencyObject? owner);
 
 	// Through TryInvokeKeyboardAccelerator mechanism we will be traversing the whole subtree to hunt for the accelerator.
 	// As a result we may encounter matching accelerator but with the scope not valid for this instance.
 	// Below utility function will validate the scope of an accelerator before raising the event.
 	internal static bool IsAcceleratorLocallyScoped(
-		  DependencyObject pFocusedElement,
+		  DependencyObject? pFocusedElement,
 		  KeyboardAccelerator accelerator)
 	{
 		// If unable to retrive the focused element, consider the accelerator scope as valid scope.
@@ -88,12 +88,12 @@ internal static class KeyboardAcceleratorUtility
 		VirtualKey originalKey,
 		VirtualKeyModifiers keyModifiers,
 		VectorOfKACollectionAndRefCountPair allLiveAccelerators,
-		DependencyObject owner,
+		DependencyObject? owner,
 		KeyboardAcceleratorPolicyFn policyFn,
-		DependencyObject pFocusedElement,
+		DependencyObject? pFocusedElement,
 		bool isCallFromTryInvoke)
 	{
-		List<KACollectionAndRefCountPair> collectionsToGC = new(25);
+		HashSet<KACollectionAndRefCountPair> collectionsToGC = new(25);
 		foreach (var weakCollection in allLiveAccelerators)
 		{
 			KeyboardAcceleratorCollection? collection = weakCollection.KeyboardAcceleratorCollectionWeak.IsAlive ?
@@ -105,12 +105,12 @@ internal static class KeyboardAcceleratorUtility
 			}
 
 			var parent = collection.GetParentInternal(false /* publicParentOnly */);
-			while (parent != null)
+			while (parent is not null)
 			{
-				if (parent.IsActive())
-				{
-					break;
-				}
+				//if (parent.IsActive()) //TODO:MZ: IsActive equivalent needed
+				//{
+				//	break;
+				//}
 				parent = parent.GetParentInternal(false /* publicParentOnly */);
 			}
 
@@ -122,7 +122,7 @@ internal static class KeyboardAcceleratorUtility
 					ShouldRaiseAcceleratorEvent(originalKey, keyModifiers, (KeyboardAccelerator)(accelerator), parent))
 				{
 					// The parent of the collection is the element that the collection belongs to.
-					DependencyObject acceleratorParentElement = collection.GetParentInternal(false /* publicParentOnly */);
+					var acceleratorParentElement = collection.GetParentInternal(false /* publicParentOnly */);
 
 					var acceleratorUIElement = acceleratorParentElement as UIElement;
 					// If the parent is disabled search for the next accelerator with enabled parent
@@ -145,20 +145,7 @@ internal static class KeyboardAcceleratorUtility
 		}
 
 		// Clean up zombie KA collections
-		allLiveAccelerators.erase(
-			std.remove_if(
-				allLiveAccelerators.begin(),
-				allLiveAccelerators.end(),
-				[&collectionsToGC](KACollectionAndRefCountPair & weakCollection)
-
-
-				{
-			var it = std.find(collectionsToGC.m_vector.begin(), collectionsToGC.m_vector.end(), weakCollection);
-			return it != collectionsToGC.m_vector.end();
-		}
-            ),
-        allLiveAccelerators.end()
-	        );
+		allLiveAccelerators.RemoveAll(entry => collectionsToGC.Contains(entry));
 
 		return false;
 	}
@@ -222,41 +209,33 @@ internal static class KeyboardAcceleratorUtility
 			return false;
 		}
 
-		if (false == pElement.IsEffectiveValueInSparseStorage(UIElement.KeyboardAcceleratorsProperty))
+		if (pElement.GetCurrentHighestValuePrecedence(UIElement.KeyboardAcceleratorsProperty) == DependencyPropertyValuePrecedences.DefaultValue) // TODO:MZ: EffectiveSparseValue equivalent?
 		{
 			return false;
 		}
 
-		CValue acceleratorCollectionValue;
-		HRESULT hr = 0;
-		/*VERIFYHR*/
-		(hr = pElement.GetValueByIndex(KnownPropertyIndex.UIElement_KeyboardAccelerators, &acceleratorCollectionValue));
-		if (/*FAILED*/(hr))
+		var acceleratorCollectionValue = pElement.GetValue(UIElement.KeyboardAcceleratorsProperty);
+
+		if (acceleratorCollectionValue == null)
 		{
 			return false;
 		}
 
-		xref_ptr<DependencyObject> value = acceleratorCollectionValue.DetachObject();
-		if (value == null)
+		var collection = (KeyboardAcceleratorCollection)acceleratorCollectionValue;
+		var collectionParent = collection.GetParentInternal(false /*public parent only*/);
+		foreach (var accelerator in collection)
 		{
-			return false;
-		}
-
-		CKeyboardAcceleratorCollection* pCollection = do_pointer_cast<KeyboardAcceleratorCollection>(value);
-		DependencyObject collectionParent = pCollection.GetParentInternal(false /*public parent only*/);
-		for (DependencyObject accelerator : *pCollection)
-		{
-			if (ShouldRaiseAcceleratorEvent(originalKey, keyModifiers, (KeyboardAccelerator)(accelerator), collectionParent))
+			if (ShouldRaiseAcceleratorEvent(originalKey, keyModifiers, accelerator, collectionParent))
 			{
 				// Now  it's time to check if accelerator is not locally scoped accelerator.
 				// in which case it will be skipped.
-				if (isCallFromTryInvoke && IsAcceleratorLocallyScoped(pFocusedElement, (KeyboardAccelerator)(accelerator)))
+				if (isCallFromTryInvoke && IsAcceleratorLocallyScoped(pFocusedElement, accelerator))
 				{
 					continue; // check for another accelerator.
 				}
 
 				// We found an accelerator to try invoking - even if it wasn't handled, we don't need to look any further
-				return RaiseKeyboardAcceleratorInvoked((KeyboardAccelerator)(accelerator), collectionParent);
+				return RaiseKeyboardAcceleratorInvoked(accelerator, collectionParent);
 			}
 		}
 
@@ -265,7 +244,7 @@ internal static class KeyboardAcceleratorUtility
 
 	internal static bool AcceleratorIsOwnedPolicy(
 		  KeyboardAccelerator accelerator,
-		  DependencyObject owner)
+		  DependencyObject? owner)
 	{
 		// no need to proceed if accelerator we are processing is global.
 		if (accelerator.ScopeOwner is null)
@@ -297,7 +276,7 @@ internal static class KeyboardAcceleratorUtility
 
 	internal static bool AcceleratorIsGlobalPolicy(
 		  KeyboardAccelerator accelerator,
-		  DependencyObject owner)
+		  DependencyObject? owner)
 	{
 		return accelerator.ScopeOwner == null;
 	}
@@ -347,7 +326,7 @@ internal static class KeyboardAcceleratorUtility
 		bool isValidNonSymbolAccessKey = (originalKey == VirtualKey.Enter)
 						   || (originalKey == VirtualKey.Escape)
 						   || (originalKey == VirtualKey.Back)
-						   || ((modifierKeys & KEY_MODIFIER_CTRL) && (originalKey == VirtualKey.Tab))
+						   || (((modifierKeys & KEY_MODIFIER_CTRL) != KEY_MODIFIER_CTRL) && (originalKey == VirtualKey.Tab))
 						   || ((VirtualKey.Space <= originalKey) && (originalKey <= VirtualKey.Down))
 						   || ((originalKey >= VirtualKey.Snapshot) && (originalKey <= VirtualKey.Delete));
 
@@ -378,7 +357,7 @@ internal static class KeyboardAcceleratorUtility
 		VirtualKey key,
 		VirtualKeyModifiers keyModifiers,
 		KeyboardAccelerator pAccelerator,
-		DependencyObject pParent)
+		DependencyObject? pParent)
 	{
 		return pAccelerator.IsEnabled &&
 			key == (VirtualKey)(pAccelerator.Key) &&
