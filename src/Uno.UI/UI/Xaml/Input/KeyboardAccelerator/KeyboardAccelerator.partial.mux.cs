@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\KeyboardAccelerator_Partial.cpp, tag winui3/release/1.4.3, commit 685d2bf
+// MUX Reference dxaml\xcp\dxaml\lib\KeyboardAccelerator_Partial.cpp, tag winui3/release/1.5.3, commit 685d2bf
 
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 using Windows.System;
 
 namespace Microsoft.UI.Xaml.Input;
@@ -318,28 +319,18 @@ partial class KeyboardAccelerator
 		DependencyObject pParentElement)
 	{
 		//Retrive the string representing accelerator defined on element.
-		string stringRepresentation = pNativeAccelerator.GetStringRepresentation;
+		string stringRepresentation = pNativeAccelerator.GetStringRepresentation();
 
-		ctl::ComPtr<IInspectable> textValue;
-		wf::IPropertyValueStatics* pPropertyValueStatic = pParentElement->GetContext()->GetPropertyValueStatics();
-		pPropertyValueStatic->CreateString(stringRepresentation, &textValue);
+		var textValue = PropertyValue.CreateString(stringRepresentation);
 
-		DependencyObject* pToolTipTargetDO = null;
-		CValue value;
+		var pToolTipTargetDO = (DependencyObject)pParentElement.GetValue(UIElement.KeyboardAcceleratorPlacementTargetProperty);
 
-		var value = pParentElement.GetValue(UIElement.KeyboardAcceleratorPlacementTarget);
-		IFC_RETURN(DirectUI::CValueBoxer::UnwrapWeakRef(
-			&value,
-			DirectUI::MetadataAPI::GetDependencyPropertyByIndex(UIElement.KeyboardAcceleratorPlacementTarget),
-			&pToolTipTargetDO));
-
-		if (pToolTipTargetDO != null)
+		if (pToolTipTargetDO is not null)
 		{
 			pParentElement = pToolTipTargetDO;
 		}
-		ctl::ComPtr<DependencyObject> spParentDO;
-		IFC_RETURN(DXamlCore::GetCurrent()->GetPeer(pParentElement, &spParentDO));
+		var spParentDO = pParentElement;
 
-		IFC_RETURN(ToolTipService.SetKeyboardAcceleratorToolTipStatic(spParentDO.Get(), textValue.Get()));
+		ToolTipService.SetKeyboardAcceleratorToolTipStatic(spParentDO, textValue);
 	}
 }
