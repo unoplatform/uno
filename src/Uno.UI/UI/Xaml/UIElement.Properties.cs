@@ -16,6 +16,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Input;
 
 #if __IOS__
 using UIKit;
@@ -152,7 +153,7 @@ namespace Microsoft.UI.Xaml
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{
-			get => GetKeyboardAcceleratorsValue() ?? (KeyboardAccelerators = new List<KeyboardAccelerator>());
+			get => GetKeyboardAcceleratorsValue() ?? (KeyboardAccelerators = new KeyboardAcceleratorCollection());
 			set => SetKeyboardAcceleratorsValue(value);
 		}
 
