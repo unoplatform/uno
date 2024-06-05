@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml
 
 		private protected bool IsVisible() => Visibility == Visibility.Visible;
 
-		internal bool IsEnabled()
+		private bool IsEnabled()
 		{
 			if (this is Control control)
 			{
@@ -159,6 +159,8 @@ namespace Microsoft.UI.Xaml
 
 			return true;
 		}
+
+		internal bool IsEnabledInternal() => IsEnabled();
 
 		internal
 #if __ANDROID__

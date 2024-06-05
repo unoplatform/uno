@@ -11,28 +11,30 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 {
 	private void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
 	{
-		base.Enter(pNamescopeOwner, enterParams);
+		//TODO:MZ Implement this
+		//base.Enter(pNamescopeOwner, enterParams);
 
-		if (enterParams.IsLive || enterParams.IsForKeyboardAccelerator)
-		{
-			ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
-			if (pContentRoot != null)
-			{
-				pContentRoot.AddToLiveKeyboardAccelerators(this);
-			}
-		}
+		//if (enterParams.IsLive || enterParams.IsForKeyboardAccelerator)
+		//{
+		//	ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
+		//	if (pContentRoot != null)
+		//	{
+		//		pContentRoot.AddToLiveKeyboardAccelerators(this);
+		//	}
+		//}
 	}
 
 	private void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
 	{
-		base.Leave(pNamescopeOwner, leaveParams);
-		if (leaveParams.IsLive || leaveParams.IsForKeyboardAccelerator)
-		{
-			ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
-			if (pContentRoot != null)
-			{
-				pContentRoot.RemoveFromLiveKeyboardAccelerators(this);
-			}
-		}
+		//TODO:MZ Implement this
+		//base.Leave(pNamescopeOwner, leaveParams);
+		//if (leaveParams.IsLive || leaveParams.IsForKeyboardAccelerator)
+		//{
+		//	ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
+		//	if (pContentRoot != null)
+		//	{
+		//		pContentRoot.RemoveFromLiveKeyboardAccelerators(this);
+		//	}
+		//}
 	}
 }

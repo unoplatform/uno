@@ -15,7 +15,6 @@ using Uno.UI.Xaml;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Core;
 using Microsoft.UI.Xaml.Input;
 
 #if __IOS__

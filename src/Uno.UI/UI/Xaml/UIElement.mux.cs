@@ -17,10 +17,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
-using Uno.UI.Extensions;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Input;
-using Windows.Foundation;
 using Windows.System;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
@@ -618,6 +614,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnKeyDown(EventArgs pEventArgs)
 		{
+			// TODO:MZ: This is wrong!
 			/*
 			1. We take different paths for raising events depending on whether the source is a UIElement or a Control
 			2. The DXAML layer OnKeyDown virtual is defined on Control
@@ -625,39 +622,38 @@ namespace Microsoft.UI.Xaml
 			As a result, we execute similar logic to process KeyboardAccelerators in both CUIElement::OnKeyDown and Control::OnKeyDown
 			One deals with controls, this deals with all other UIElements.
 			*/
-			KeyEventArgs pKeyRoutedEventArgs = pEventArgs;
-			bool handled = false;
-			bool handledShouldNotImpedeTextInput = false;
-			VirtualKey dxamlOriginalKey;
-			VirtualKeyModifiers keyModifiers;
+			//KeyRoutedEventArgs pKeyRoutedEventArgs = (KeyRoutedEventArgs)pEventArgs;
+			//bool handled = false;
+			//bool handledShouldNotImpedeTextInput = false;
+			//VirtualKey dxamlOriginalKey;
 
-			dxamlOriginalKey = pKeyRoutedEventArgs.OriginalKey;
+			//dxamlOriginalKey = pKeyRoutedEventArgs.OriginalKey;
 
-			VirtualKey originalKey = dxamlOriginalKey;
+			//VirtualKey originalKey = dxamlOriginalKey;
 
-			CoreImports.Input_GetKeyboardModifiers(&keyModifiers));
+			//var keyModifiers = CoreImports.Input_GetKeyboardModifiers();
 
-			if (KeyboardAcceleratorUtility.IsKeyValidForAccelerators(originalKey, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(keyModifiers)))
-			{
-				KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
-					originalKey,
-					keyModifiers,
-					VisualTree.GetContentRootForElement(this).GetAllLiveKeyboardAccelerators(),
-					this,
-					ref handled,
-					ref handledShouldNotImpedeTextInput,
-					null,
-					false);
+			//if (KeyboardAcceleratorUtility.IsKeyValidForAccelerators(originalKey, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(keyModifiers)))
+			//{
+			//	KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
+			//		originalKey,
+			//		keyModifiers,
+			//		VisualTree.GetContentRootForElement(this)!.GetAllLiveKeyboardAccelerators(),
+			//		this,
+			//		out handled,
+			//		out handledShouldNotImpedeTextInput,
+			//		null,
+			//		false);
 
-				if (handled)
-				{
-					pKeyRoutedEventArgs.Handled = true;
-				}
-				if (handledShouldNotImpedeTextInput)
-				{
-					pKeyRoutedEventArgs.HandledShouldNotImpedeTextInput = true;
-				}
-			}
+			//	if (handled)
+			//	{
+			//		pKeyRoutedEventArgs.Handled = true;
+			//	}
+			//	if (handledShouldNotImpedeTextInput)
+			//	{
+			//		pKeyRoutedEventArgs.HandledShouldNotImpedeTextInput = true;
+			//	}
+			//}
 		}
 
 		// Implements a depth-first search of the element's sub-tree,
@@ -674,10 +670,10 @@ namespace Microsoft.UI.Xaml
 			KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
 				key,
 				keyModifiers,
-				VisualTree.GetContentRootForElement(pElement)?.GetAllLiveKeyboardAccelerators(),
+				VisualTree.GetContentRootForElement(pElement)!.GetAllLiveKeyboardAccelerators(),
 				pElement,
-				ref handled,
-				ref handledShouldNotImpedeTextInput,
+				out handled,
+				out handledShouldNotImpedeTextInput,
 				pFocusedElement,
 				true /*isCallFromTryInvoke*/ );
 			if (handled)
