@@ -331,6 +331,6 @@ partial class KeyboardAccelerator
 		}
 		var spParentDO = pParentElement;
 
-		ToolTipService.SetKeyboardAcceleratorToolTipStatic(spParentDO, textValue);
+		ToolTipService.SetKeyboardAcceleratorToolTip(spParentDO, textValue);
 	}
 }
