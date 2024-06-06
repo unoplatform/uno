@@ -1,7 +1,6 @@
 parameters:
   vmImage: ''
   xCodeRoot: ''
-  XamarinSDKVersion: ''
 
 jobs:
 
@@ -33,7 +32,6 @@ jobs:
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - script: |
       cd src/SamplesApp/SamplesApp.netcoremobile

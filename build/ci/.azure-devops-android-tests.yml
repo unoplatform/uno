@@ -4,7 +4,6 @@ parameters:
   vmLinuxImage: ''
   vmLinuxPool: ''
   xCodeRoot: ''
-  XamarinSDKVersion: ''
 
   automatedTestsBuckets:
     - 1

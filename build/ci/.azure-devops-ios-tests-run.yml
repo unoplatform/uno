@@ -1,7 +1,6 @@
 parameters:
   vmImage: ''
   xCodeRoot: ''
-  XamarinSDKVersion: ''
   JobName: ''
   JobTimeoutInMinutes: ''
   JobDisplayName: ''
@@ -27,6 +26,9 @@ jobs:
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
     UITEST_ALLOW_RERUN: ${{ parameters.UITEST_ALLOW_RERUN }}
 
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
     
     UNO_UITEST_BUCKET_COUNT: 5
 
@@ -48,7 +50,7 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  - template: templates/dotnet-install.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -57,7 +59,6 @@ jobs:
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
       rm -f ${HOME}/Library/Preferences/Xamarin/Settings.plist

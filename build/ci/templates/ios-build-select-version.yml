@@ -1,6 +1,5 @@
 parameters:
   xCodeRoot: ''
-  XamarinSDKVersion: ''
 
 steps:
   - bash: |
