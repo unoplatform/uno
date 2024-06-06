@@ -164,7 +164,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task<bool> ProcessSolutionChanged(HotReloadOperation hotReload, string file, CancellationToken cancellationToken)
+		private async Task<bool> ProcessSolutionChanged(HotReloadServerOperation hotReload, string file, CancellationToken cancellationToken)
 		{
 			if (!await EnsureSolutionInitializedAsync() || _currentSolution is null || _hotReloadService is null)
 			{
@@ -219,12 +219,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				if (diagnostics.IsDefaultOrEmpty)
 				{
 					await UpdateMetadata(file, updates);
-					hotReload.NotifyIntermediate(file, HotReloadResult.NoChanges);
+					hotReload.NotifyIntermediate(file, HotReloadServerResult.NoChanges);
 				}
 				else
 				{
 					_reporter.Output($"Got {diagnostics.Length} errors");
-					hotReload.NotifyIntermediate(file, HotReloadResult.Failed);
+					hotReload.NotifyIntermediate(file, HotReloadServerResult.Failed);
 				}
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
@@ -241,7 +241,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
 				}
 
-				hotReload.NotifyIntermediate(file, HotReloadResult.RudeEdit);
+				hotReload.NotifyIntermediate(file, HotReloadServerResult.RudeEdit);
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
 				return false;
@@ -252,7 +252,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			sw.Stop();
 
 			await UpdateMetadata(file, updates);
-			hotReload.NotifyIntermediate(file, HotReloadResult.Success);
+			hotReload.NotifyIntermediate(file, HotReloadServerResult.Success);
 
 			// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
 			return true;

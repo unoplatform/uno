@@ -15,6 +15,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -26,47 +27,43 @@ namespace Uno.UI.RemoteControl.HotReload;
 
 partial class ClientHotReloadProcessor
 {
-	private static int _isReloading;
+	private static int _isWaitingForTypeMapping;
 
 	private static ElementUpdateAgent? _elementAgent;
 
-	private static Logger _log = typeof(ClientHotReloadProcessor).Log();
+	private static readonly Logger _log = typeof(ClientHotReloadProcessor).Log();
 	private static Window? _currentWindow;
 
 	private static ElementUpdateAgent ElementAgent
 	{
 		get
 		{
-			_elementAgent ??= new ElementUpdateAgent(s =>
-				{
-					if (_log.IsEnabled(LogLevel.Trace))
-					{
-						_log.Trace(s);
-					}
-				});
+			var log = _log.IsEnabled(LogLevel.Trace)
+				? new Action<string>(_log.Trace)
+				: static _ => { };
+
+			_elementAgent ??= new ElementUpdateAgent(log, static (callback, error) => HotReloadClientOperation.GetForCurrentThread()?.ReportError(callback, error));
 
 			return _elementAgent;
 		}
 	}
 
-	private static async Task<bool> ShouldReload()
+	private static async Task<(bool value, string reason)> ShouldReload()
 	{
-		if (Interlocked.CompareExchange(ref _isReloading, 1, 0) == 1)
+		if (Interlocked.CompareExchange(ref _isWaitingForTypeMapping, 1, 0) == 1)
 		{
-			return false;
+			return (false, "another reload is already waiting for type mapping to resume");
 		}
 		try
 		{
-			var waiter = TypeMappings.WaitForResume();
-			if (!waiter.IsCompleted)
-			{
-				return false;
-			}
-			return await waiter;
+			var shouldReload = await TypeMappings.WaitForResume();
+			return shouldReload
+				? (true, string.Empty)
+				: (false, "type mapping prevent reload");
 		}
 		finally
 		{
-			Interlocked.Exchange(ref _isReloading, 0);
+			Interlocked.Exchange(ref _isWaitingForTypeMapping, 0);
 		}
 	}
 
@@ -98,17 +95,22 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-	private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
+	/// <summary>
+	/// Run on UI thread to reload the visual tree with updated types
+	/// </summary>
+	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 	{
 		var handlerActions = ElementAgent?.ElementHandlerActions;
 
 		var uiUpdating = true;
 		try
 		{
-			var window = CurrentWindow;
-			if (window is null || !await ShouldReload())
+			hrOp?.SetCurrent();
+
+			if (await ShouldReload() is { value: false } prevent)
 			{
 				uiUpdating = false;
+				hrOp?.ReportIgnored(prevent.reason);
 				return;
 			}
 
@@ -217,6 +219,8 @@ partial class ClientHotReloadProcessor
 		}
 		catch (Exception ex)
 		{
+			hrOp?.ReportError(ex);
+
 			if (_log.IsEnabled(LogLevel.Error))
 			{
 				_log.Error($"Error doing UI Update - {ex.Message}", ex);
@@ -228,6 +232,9 @@ partial class ClientHotReloadProcessor
 		{
 			// Action: ReloadCompleted
 			_ = handlerActions?.Do(h => h.Value.ReloadCompleted(updatedTypes, uiUpdating)).ToArray();
+
+			hrOp?.ResignCurrent();
+			hrOp?.ReportCompleted();
 		}
 	}
 
@@ -420,12 +427,12 @@ partial class ClientHotReloadProcessor
 	{
 		try
 		{
-			_source = HotReloadSource.Manual;
+			_instance?._status.ConfigureSourceForNextOperation(HotReloadSource.Manual);
 			UpdateApplication(Array.Empty<Type>());
 		}
 		finally
 		{
-			_source = default;
+			_instance?._status.ConfigureSourceForNextOperation(default);
 		}
 	}
 
@@ -435,7 +442,7 @@ partial class ClientHotReloadProcessor
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void UpdateApplication(Type[] types)
 	{
-		// TODO: Diag.Report --> Real handler or force reload
+		var hr = _instance?._status.ReportLocalStarting(types);
 
 		foreach (var type in types)
 		{
@@ -459,6 +466,7 @@ partial class ClientHotReloadProcessor
 				{
 					_log.Error($"Error while processing MetadataUpdateOriginalTypeAttribute for {type}", error);
 				}
+				hr?.ReportError(error);
 			}
 		}
 
@@ -468,21 +476,24 @@ partial class ClientHotReloadProcessor
 		}
 
 #if WINUI
-		var dispatcherQueue = CurrentWindow?.DispatcherQueue;
-		if (dispatcherQueue is not null)
+		if (CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
-			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(types));
+			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #else
-		var dispatcher = CurrentWindow?.Dispatcher;
-		if (dispatcher is not null)
+		if (CurrentWindow is { Dispatcher: { } dispatcher } window)
 		{
-			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(types));
+			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #endif
-		else if (_log.IsEnabled(LogLevel.Warning))
+		else
 		{
-			_log.Warn($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup. See https://aka.platform.uno/hot-reload");
+			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup. See https://aka.platform.uno/hot-reload";
+			hr?.ReportError(new InvalidOperationException(errorMsg));
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn(errorMsg);
+			}
 		}
 	}
 }

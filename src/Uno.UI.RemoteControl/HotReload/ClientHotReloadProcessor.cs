@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.Diagnostics.UI;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Reflection;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -16,7 +20,6 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	private string? _projectPath;
 	private string[]? _xamlPaths;
 	private readonly IRemoteControlClient _rcClient;
-	private readonly DiagnosticView<HotReloadStatusView, HotReloadStatusMessage> _diagView = DiagnosticView.Register<HotReloadStatusView, HotReloadStatusMessage>("Hot reload", (view, status) => view.Update(status));
 	private HotReloadMode? _forcedHotReloadMode;
 
 	private Dictionary<string, string>? _msbuildProperties;
@@ -38,7 +41,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 		switch (frame.Name)
 		{
 			case AssemblyDeltaReload.Name:
-				AssemblyReload(frame.GetContent<AssemblyDeltaReload>());
+				ProcessAssemblyReload(frame.GetContent<AssemblyDeltaReload>());
 				break;
 
 			case FileReload.Name:
@@ -50,7 +53,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				break;
 
 			case HotReloadStatusMessage.Name:
-				await ProcessStatus(frame.GetContent<HotReloadStatusMessage>());
+				await ProcessServerStatus(frame.GetContent<HotReloadStatusMessage>());
 				break;
 
 			default:
@@ -157,8 +160,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	}
 	#endregion
 
-	private async Task ProcessStatus(HotReloadStatusMessage status)
+	private async Task ProcessServerStatus(HotReloadStatusMessage status)
 	{
-		_diagView.Update(status);
+		_status.ReportServerStatus(status);
 	}
 }

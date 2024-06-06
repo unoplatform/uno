@@ -98,7 +98,7 @@ public partial class RemoteControlClient
 	{
 		private ConnectionState _state = ConnectionState.Idle;
 		private readonly DiagnosticView<RemoteControlStatusView, Status> _view = DiagnosticView.Register<RemoteControlStatusView, Status>(
-			"Dev-server", 
+			"Dev-server",
 			(view, status) => view.Update(status),
 			RemoteControlStatusView.GetStatusDetails);
 
