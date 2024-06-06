@@ -488,13 +488,15 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = (Button)rootPanel.FindName("button");
 			ctrlEqualAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			ctrlEqualAccelerator.Key = (global::Windows.System.VirtualKey)equalKeyValue;
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -578,7 +580,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		Button button = null;
 		KeyboardAccelerator backAccelerator = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
 			TestServices.WindowHelper.WindowContent = rootPanel;
@@ -701,7 +703,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
 			TestServices.WindowHelper.WindowContent = rootPanel;
@@ -1604,15 +1606,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		KeyboardAccelerator Sub_MenuItem_KA = null;
 		KeyboardAccelerator Sub_Sub_MenuItem_KA = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			ButtonWithoutFlyout = (Button)rootPanel.FindName("ButtonWithoutFlyout");
 			MenuItem_KA = (KeyboardAccelerator)rootPanel.FindName("MenuItem_KA");
 			Sub_MenuItem_KA = (KeyboardAccelerator)rootPanel.FindName("Sub_MenuItem_KA");
 			Sub_Sub_MenuItem_KA = (KeyboardAccelerator)rootPanel.FindName("Sub_Sub_MenuItem_KA");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1676,14 +1679,15 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrlSAccelerator = (KeyboardAccelerator)rootPanel.FindName("ctrlSAccelerator");
 			FlyoutItem2 = (MenuFlyoutItem)rootPanel.FindName("FlyoutItem2");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		await FocusHelper.EnsureFocusAsync(focusButton, FocusState.Keyboard);
@@ -1735,15 +1739,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false); // handled
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrlSAccelerator = (KeyboardAccelerator)rootPanel.FindName("ctrlSAccelerator");
 			flyoutItem2 = (MenuFlyoutItem)rootPanel.FindName("flyoutItem2");
 			fileMenu = (MenuBarItem)rootPanel.FindName("fileMenu");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1799,15 +1804,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false); // handled
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrlSAccelerator = (KeyboardAccelerator)rootPanel.FindName("ctrlSAccelerator");
 			flyoutItem2 = (MenuFlyoutItem)rootPanel.FindName("flyoutItem2");
 			fileMenu = (MenuBarItem)rootPanel.FindName("fileMenu");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1850,13 +1856,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		MenuFlyoutItem deleteFlyoutItem = null;
 		StandardUICommand deleteCommand = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			deleteFlyoutItem = (MenuFlyoutItem)rootPanel.FindName("deleteFlyoutItem");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		await FocusHelper.EnsureFocusAsync(focusButton, FocusState.Keyboard);
@@ -1899,17 +1906,18 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		MenuFlyoutItem deleteFlyoutItem = null;
 		StandardUICommand deleteCommand = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			deleteFlyoutItem = (MenuFlyoutItem)rootPanel.FindName("deleteFlyoutItem");
 
 			// Add StandardUICommand on menubar item.
 			deleteCommand = new StandardUICommand(StandardUICommandKind.Delete);
 			deleteFlyoutItem.Command = deleteCommand;
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 		await FocusHelper.EnsureFocusAsync(focusButton, FocusState.Keyboard);
@@ -1946,9 +1954,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		MenuBarItem fileMenu = null;
 		StandardUICommand deleteCommand = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			deleteFlyoutItem = (MenuFlyoutItem)rootPanel.FindName("deleteFlyoutItem");
 			fileMenu = (MenuBarItem)rootPanel.FindName("fileMenu");
@@ -1956,8 +1967,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			// Add StandardUICommand on menubar item.
 			deleteCommand = new StandardUICommand(StandardUICommandKind.Delete);
 			deleteFlyoutItem.Command = deleteCommand;
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1998,9 +2007,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		MenuBarItem fileMenu = null;
 		StandardUICommand deleteCommand = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			deleteFlyoutItem = (MenuFlyoutItem)rootPanel.FindName("deleteFlyoutItem");
 			fileMenu = (MenuBarItem)rootPanel.FindName("fileMenu");
@@ -2008,8 +2020,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			// Add StandardUICommand on menubar item.
 			deleteCommand = new StandardUICommand(StandardUICommandKind.Delete);
 			deleteFlyoutItem.Command = deleteCommand;
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2082,9 +2092,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			ButtonFlyout = (Flyout)rootPanel.FindName("ButtonFlyout");
 			flyoutButton1 = (Button)rootPanel.FindName("flyoutButton1");
 			flyoutButton2 = (Button)rootPanel.FindName("flyoutButton2");
@@ -2092,8 +2105,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			ctrl1Accelerator = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator1");
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
 			ctrl2Accelerator = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator2");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2165,9 +2176,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			ButtonFlyout = (Flyout)rootPanel.FindName("ButtonFlyout");
 			flyoutButton1 = (Button)rootPanel.FindName("flyoutButton1");
 			flyoutButton2 = (Button)rootPanel.FindName("flyoutButton2");
@@ -2175,8 +2189,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			ctrl1Accelerator = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator1");
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
 			ctrl2Accelerator = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator2");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2229,16 +2241,17 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Accelerator invoked");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			ButtonFlyout = (Flyout)rootPanel.FindName("ButtonFlyout");
 			flyoutButton1 = (Button)rootPanel.FindName("flyoutButton1");
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrl1Accelerator = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator1");
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2293,15 +2306,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			FlyoutItem1 = (MenuFlyoutItem)rootPanel.FindName("FlyoutItem1");
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrl1Accelerator = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator");
 			FlyoutItem2 = (MenuFlyoutItem)rootPanel.FindName("FlyoutItem2");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2352,14 +2366,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("FocusButton");
 			ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
 			overflowButton = (AppBarButton)commandBar.FindName("overflowButton");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2408,14 +2424,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("FocusButton");
 			ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("ctrlQAccelerator");
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
 			secondaryButton = (AppBarButton)commandBar.FindName("secondaryButton");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2477,14 +2495,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("CommandBar Accelerator invoked.");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("FocusButton");
 			ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
 			overflowButton = (AppBarButton)commandBar.FindName("overflowButton");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2531,14 +2551,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			focusButton = (Button)rootPanel.FindName("FocusButton");
 			ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
 			overflowButton = (AppBarButton)commandBar.FindName("overflowButton");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2583,15 +2605,17 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Accelerator invoked");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button2 = (Button)rootPanel.FindName("button2");
 			ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			parentPanel = (StackPanel)rootPanel.FindName("parentPanel");
 
 			ctrlQAccelerator.ScopeOwner = parentPanel;
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2636,15 +2660,17 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Unexpected: ProcessKeyboardAccelerators raised!");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async() =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button1 = (Button)rootPanel.FindName("button1");
 			ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			parentPanel = (StackPanel)rootPanel.FindName("parentPanel");
 
 			ctrlQAccelerator.ScopeOwner = parentPanel;
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2691,15 +2717,17 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Unexpected: ProcessKeyboardAccelerators raised.");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button1 = (Button)rootPanel.FindName("button1");
 			ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			parentPanel = (StackPanel)rootPanel.FindName("parentPanel");
 
 			ctrlQAccelerator.ScopeOwner = parentPanel;
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2752,14 +2780,15 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 			button = (Button)rootPanel.FindName("button");
 			parentPanel = (StackPanel)rootPanel.FindName("parentPanel");
 			ctrlAAccelerator1 = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator1");
 			ctrlAAccelerator2 = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator2");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2815,16 +2844,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 			listView = (ListView)rootPanel.FindName("listView");
 			lvItem = (ListViewItem)rootPanel.FindName("lvItem");
 			contextFlyout = (FlyoutBase)rootPanel.FindName("flyout");
 			ctrl1Accelerator1 = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator");
 			action1 = (MenuFlyoutItem)rootPanel.FindName("action1");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
