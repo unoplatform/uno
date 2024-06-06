@@ -349,8 +349,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			_queryButton.Content = QueryIcon;
-			_queryButton.Visibility = QueryIcon == null ? Visibility.Collapsed : Visibility.Visible;
+			var queryIcon = QueryIcon;
+			if (queryIcon is SymbolIcon symbolIcon)
+			{
+				symbolIcon.SetFontSize(0);
+			}
+			_queryButton.Content = queryIcon;
+			_queryButton.Visibility = queryIcon == null ? Visibility.Collapsed : Visibility.Visible;
 		}
 
 		private void UpdateTextBox()
