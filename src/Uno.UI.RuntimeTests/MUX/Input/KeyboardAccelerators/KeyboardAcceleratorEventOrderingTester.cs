@@ -2,25 +2,19 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using System;
 using System.Text;
-
-using Private.Infrastructure;
-using Microsoft.UI.Xaml.Tests.Common;
-
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Input;
+using Private.Infrastructure;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Tests.Common
 {
-	public sealed class KeyboardAcceleratorEventOrderingTester : IDisposable
+	public sealed class KeyboardAcceleratorEventOrderingTester : IAsyncDisposable
 	{
 		public StringBuilder EventOrder;
 		private readonly FrameworkElement[] ElementsToTest;
 
-		public KeyboardAcceleratorEventOrderingTester(FrameworkElement[] elements, StringBuilder eventOrder)
+		private KeyboardAcceleratorEventOrderingTester(FrameworkElement[] elements, StringBuilder eventOrder)
 		{
 			this.EventOrder = eventOrder;
 			this.ElementsToTest = elements;
@@ -41,15 +35,21 @@ namespace Microsoft.UI.Xaml.Tests.Common
 				//Log.Comment($"FrameworkElementProcessKeyboardAcceleratorsHandler:{msg}");
 			});
 
-			UIExecutor.Execute(() =>
+			//TestServices.RunOnUIThread(() =>
 			{
 				for (int i = 0; i < ElementsToTest.Length; i++)
 				{
 					this.AddEventsToFrameworkElement(ElementsToTest[i]);
 				}
-			});
+			}
 		}
 
+		public static async Task<KeyboardAcceleratorEventOrderingTester> CreateAsync(FrameworkElement[] elements, StringBuilder eventOrder)
+		{
+			KeyboardAcceleratorEventOrderingTester tester = null;
+			await TestServices.RunOnUIThread(() => tester = new KeyboardAcceleratorEventOrderingTester(elements, eventOrder));
+			return tester;
+		}
 
 		private void AddEventsToFrameworkElement(FrameworkElement element)
 		{
@@ -81,9 +81,9 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		KeyEventHandler FrameworkElementKeyDownHandler;
 		TypedEventHandler<UIElement, ProcessKeyboardAcceleratorEventArgs> FrameworkElementProcessKeyboardAcceleratorsHandler;
 
-		public void Dispose()
+		public async ValueTask DisposeAsync()
 		{
-			UIExecutor.Execute(() =>
+			await TestServices.RunOnUIThread(() =>
 			{
 				for (int i = 0; i < ElementsToTest.Length; i++)
 				{

@@ -7,9 +7,12 @@ using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
-using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
 using System.Linq;
+using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
+using Uno.UI.DirectUI;
+using System.Reflection.Metadata.Ecma335;
+using UIElement = Microsoft.UI.Xaml.UIElement;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -428,6 +431,16 @@ namespace Private.Infrastructure
 					}
 				}
 #endif
+			}
+
+			internal async static Task<ToolTip> TestGetActualToolTip(UIElement element)
+			{
+				ToolTip toolTip = null;
+				await RunOnUIThread(() =>
+				{
+					toolTip = DXamlTestHooks.TestGetActualToolTip(element);
+				});
+				return toolTip;
 			}
 		}
 	}
