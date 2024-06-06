@@ -412,7 +412,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (_isSkiaTextBox)
 			{
-				// WinUI replaces all \r's and and \r\n's by \r. This is annoying because
+				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
 				baseString = RemoveLF(baseString);
 			}
