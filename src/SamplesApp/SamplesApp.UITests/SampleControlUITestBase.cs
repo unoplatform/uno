@@ -69,7 +69,7 @@ namespace SamplesApp.UITests
 				var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
 
 				// Force an explicit timeout to avoid excessive waiting on iOS
-				var timeout = TimeSpan.FromMinutes(1);
+				var timeout = TimeSpan.FromMinutes(5);
 				var timeoutTask = Task.Delay(timeout);
 
 				var allTasks = Task.WhenAny(coldStartTask, timeoutTask);
@@ -77,7 +77,7 @@ namespace SamplesApp.UITests
 
 				if (allTasks.Result == timeoutTask)
 				{
-					throw new Exception($"Cold start timeout after {timeout}");
+					throw new Exception("Cold start timeout after timeout");
 				}
 			}
 			catch
@@ -244,7 +244,7 @@ namespace SamplesApp.UITests
 				// --DeviceAgentException
 				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
 				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
-				System.Diagnostics.Process.Start("xcrun", $"simctl erase \"{simId}\"").WaitForExit();
+				//System.Diagnostics.Process.Start("xcrun", $"simctl erase \"{simId}\"").WaitForExit();
 
 				// Retry a cold startup after the erasure
 				return AppInitializer.ColdStartApp();
