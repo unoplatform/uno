@@ -29,19 +29,6 @@ public class Frame
 
 	public string Content { get; }
 
-	public static Frame Read(Stream stream)
-	{
-		using (var reader = new BinaryReader(stream, Encoding.UTF8))
-		{
-			var version = reader.ReadInt16();
-			var scope = reader.ReadString();
-			var name = reader.ReadString();
-			var content = reader.ReadString();
-
-			return new Frame(version, scope, name, content);
-		}
-	}
-
 	public static Frame Create<T>(short version, string scope, string name, T content)
 		=> new Frame(
 			version,
@@ -76,13 +63,27 @@ public class Frame
 		}
 	}
 
+	public static Frame Read(Stream stream)
+	{
+		using var reader = new BinaryReader(stream, Encoding.UTF8, leaveOpen: true);
+
+		var version = reader.ReadInt16();
+		var scope = reader.ReadString();
+		var name = reader.ReadString();
+		var content = reader.ReadString();
+
+		return new Frame(version, scope, name, content);
+	}
+
 	public void WriteTo(Stream stream)
 	{
-		var writer = new BinaryWriter(stream, Encoding.UTF8);
+		using var writer = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true);
 
 		writer.Write((short)Version);
 		writer.Write(Scope);
 		writer.Write(Name);
 		writer.Write(Content);
+
+		writer.Flush();
 	}
 }
