@@ -7,6 +7,8 @@ using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using static SkiaSharp.HarfBuzz.SKShaper;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ButtonCommand_Leak_Owner;
 
 namespace Private.Infrastructure
 {
@@ -283,13 +285,26 @@ namespace Private.Infrastructure
 			public static void Enter(UIElement element = null)
 			{
 				PressKeySequence("$d$_enter#$u$_enter", element);
-
 			}
 
 			public static void Space(UIElement element = null)
 			{
 				PressKeySequence("$d$_space#$u$_space", element);
 
+			}
+			public static void Backspace(UIElement element = null)
+			{
+				PressKeySequence("$d$_backspace#$u$_backspace", element);
+			}
+
+			public static void Delete(UIElement element = null)
+			{
+				PressKeySequence("$d$_delete#$u$_delete", element);
+			}
+
+			public static void CtrlTab(UIElement element = null)
+			{
+				PressKeySequence("$d$_ctrlscan#$d$_tab#$u$_tab#$u$_ctrlscan", element);
 			}
 
 			public static void GamepadA(UIElement element = null)
