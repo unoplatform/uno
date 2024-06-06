@@ -107,9 +107,9 @@ internal sealed partial class HotReloadStatusView : Control
 			vm.Description = localOp.Result switch
 			{
 				null => $"Processing changes{Join(types, "types")} (total of {localOp.Types.Length} types updated).",
-				HotReloadClientResult.Success => $"Application received {localOp.Types.Length} changes{Join(types, "types")} and updated the view (total of {localOp.Types.Length} types updated).",
-				HotReloadClientResult.Failed => $"Application received {localOp.Types.Length} changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but failed to update the view ({localOp.Exceptions.FirstOrDefault()?.Message}).",
-				HotReloadClientResult.Ignored => $"Application received {localOp.Types.Length} changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but view was not been updated because {localOp.IgnoreReason}.",
+				HotReloadClientResult.Success => $"Application received changes{Join(types, "types")} and updated the view (total of {localOp.Types.Length} types updated).",
+				HotReloadClientResult.Failed => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but failed to update the view ({localOp.Exceptions.FirstOrDefault()?.Message}).",
+				HotReloadClientResult.Ignored => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but view was not been updated because {localOp.IgnoreReason}.",
 				_ => $"Unknown application operation result: {localOp.Result}."
 			};
 			vm.Duration = localOp.EndTime is not null ? localOp.EndTime - localOp.StartTime : null;
