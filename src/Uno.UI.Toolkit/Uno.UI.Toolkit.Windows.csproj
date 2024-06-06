@@ -26,6 +26,16 @@
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="Uno.UI\Behaviors\VisibleBoundsPadding.cs" />
 		<Compile Include="..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
+		
+		<!-- Diagnostics overlay -->
+		<Compile Include="..\Uno.Foundation\Diagnostics\DiagnosticViewRegistry.cs" Link="Uno.Foundation\Diagnostics\DiagnosticViewRegistry.cs" />
+		<Compile Include="..\Uno.Foundation\Diagnostics\IDiagnosticViewContext.cs" Link="Uno.Foundation\Diagnostics\IDiagnosticViewContext.cs" />
+		<Compile Include="..\Uno.Foundation\Diagnostics\IDiagnosticViewProvider.cs" Link="Uno.Foundation\Diagnostics\IDiagnosticViewProvider.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.cs" Link="Uno.UI\Diagnostics\DiagnosticView.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.Factories.cs" Link="Uno.UI\Diagnostics\DiagnosticView.Factories.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewHelper.cs" Link="Uno.UI\Diagnostics\DiagnosticViewHelper.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewHelper.TView.cs" Link="Uno.UI\Diagnostics\DiagnosticViewHelper.TView.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewHelper.TView.TState.cs" Link="Uno.UI\Diagnostics\DiagnosticViewHelper.TView.TState.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
@@ -39,9 +49,10 @@
 		<Compile Include="..\Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" Link="Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" />
 		<Compile Include="..\Uno.UI\Helpers\TypeMappings.cs" Link="Uno.UI\Helpers\TypeMappings.cs" />
 
-		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\WindowExtensions.cs" Link="Uno.UI.RemoteControl\HotReload\WindowExtensions.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.Status.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.Status.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\**\*.HotReload.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\%(FileName)%(Extension)" />
 

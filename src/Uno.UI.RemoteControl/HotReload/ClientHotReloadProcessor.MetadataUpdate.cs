@@ -15,13 +15,10 @@ using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
-using static Microsoft.UI.Xaml.Markup.Reader.XamlConstants;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Uno.UI.RemoteControl.HotReload;
 

@@ -4,13 +4,13 @@
 	xmlns:local="using:Uno.UI.RemoteControl.HotReload"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:controls="clr-namespace:Microsoft.UI.Xaml.Controls;assembly=Uno.UI"
+	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 	mc:Ignorable="d"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
 	<DataTemplate x:Key="OperationTemplate">
-		<Border BorderThickness="5,0,0,0" Padding="3" Width="300">
+		<Border BorderThickness="8,0,0,0" Padding="8" Width="300">
 			<Border.BorderBrush>
 				<SolidColorBrush Color="{Binding Color}" />
 			</Border.BorderBrush>
@@ -25,7 +25,7 @@
 	<Style TargetType="local:HotReloadStatusView">
 		<Setter Property="Template">
 			<Setter.Value>
-				<controls:ControlTemplate TargetType="local:HotReloadStatusView">
+				<ControlTemplate TargetType="local:HotReloadStatusView">
 					<Grid x:Name="Root" Width="16" Height="16">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="Status">
@@ -101,7 +101,7 @@
 						<Button Padding="0" Margin="0">
 							<Button.Flyout>
 								<Flyout>
-									<StackPanel Margin="-5" Spacing="3">
+									<StackPanel Margin="-5" Spacing="8">
 										<TextBlock Text="{TemplateBinding HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" />
 										<ScrollViewer MaxHeight="400">
 											<ItemsRepeater
@@ -122,7 +122,7 @@
 							</Grid>
 						</Button>
 					</Grid>
-				</controls:ControlTemplate>
+				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>

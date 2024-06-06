@@ -18,7 +18,7 @@ internal partial class DiagnosticView
 	}
 
 	public static DiagnosticView<TView, TState> Register<TView, TState>(
-		string name, 
+		string name,
 		Action<TView, TState> update,
 		Func<TState, object?>? details = null)
 		where TView : FrameworkElement, new()

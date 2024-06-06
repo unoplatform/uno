@@ -1,5 +1,6 @@
 ﻿#nullable enable
 #pragma warning disable IDE0055 // Invalid suggestion for switch statement
+#if WINAPPSDK || HAS_UNO_WINUI
 using System;
 using System.Linq;
 using System.Threading;
@@ -107,3 +108,4 @@ public sealed partial class DiagnosticsOverlay
 			=> Interlocked.Exchange(ref _details, new CancellationTokenSource())?.Cancel();
 	}
 }
+#endif
