@@ -23,9 +23,9 @@ internal partial class DiagnosticView
 		Func<TState, object?>? details = null)
 		where TView : FrameworkElement, new()
 	{
-		var provider = details is null 
+		var provider = details is null
 			? new DiagnosticView<TView, TState>(name, () => new TView(), update)
-			: new DiagnosticView<TView, TState>(name, () => new TView(), update, (ctx, state, ct) => new(details(state));
+			: new DiagnosticView<TView, TState>(name, () => new TView(), update, (ctx, state, ct) => new(details(state)));
 		DiagnosticViewRegistry.Register(provider);
 		return provider;
 	}

@@ -73,7 +73,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		#region Hot-relaod state
 		private HotReloadState _globalState; // This actually contains only the initializing stat (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
-		private HotReloadOperation? _current; // I.e. head of the operation chain list
+		private HotReloadServerOperation? _current; // I.e. head of the operation chain list
 
 		public enum HotReloadEventSource
 		{
@@ -89,13 +89,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask<HotReloadOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
+		private async ValueTask<HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
 		{
 			var previous = _current;
-			HotReloadOperation? current, @new;
+			HotReloadServerOperation? current, @new;
 			while (true)
 			{
-				@new = new HotReloadOperation(this, previous, filesPaths);
+				@new = new HotReloadServerOperation(this, previous, filesPaths);
 				current = Interlocked.CompareExchange(ref _current, @new, previous);
 				if (current == previous)
 				{
@@ -113,13 +113,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			return @new;
 		}
 
-		private async ValueTask<HotReloadOperation> StartOrContinueHotReload(ImmutableHashSet<string>? filesPaths = null)
+		private async ValueTask<HotReloadServerOperation> StartOrContinueHotReload(ImmutableHashSet<string>? filesPaths = null)
 			=> _current is { } current && (filesPaths is null || current.TryMerge(filesPaths))
 				? current
 				: await StartHotReload(filesPaths);
 
 		private ValueTask AbortHotReload()
-			=> _current?.Complete(HotReloadResult.Aborted) ?? SendUpdate();
+			=> _current?.Complete(HotReloadServerResult.Aborted) ?? SendUpdate();
 
 		private async ValueTask Notify(HotReloadEvent evt, HotReloadEventSource source = HotReloadEventSource.DevServer)
 		{
@@ -147,31 +147,31 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.Completed:
-					await (await StartOrContinueHotReload()).DeferComplete(HotReloadResult.Success);
+					await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
 					break;
 
 				case HotReloadEvent.NoChanges:
-					await (await StartOrContinueHotReload()).Complete(HotReloadResult.NoChanges);
+					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
 					break;
 				case HotReloadEvent.Failed:
-					await (await StartOrContinueHotReload()).Complete(HotReloadResult.Failed);
+					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
 					break;
 
 				case HotReloadEvent.RudeEdit:
 				case HotReloadEvent.RudeEditDialogButton:
-					await (await StartOrContinueHotReload()).Complete(HotReloadResult.RudeEdit);
+					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
 					break;
 			}
 		}
 
-		private async ValueTask SendUpdate(HotReloadOperation? completing = null)
+		private async ValueTask SendUpdate(HotReloadServerOperation? completing = null)
 		{
 			var state = _globalState;
-			var operations = ImmutableList<HotReloadOperationInfo>.Empty;
+			var operations = ImmutableList<HotReloadServerOperationData>.Empty;
 
 			if (state is not HotReloadState.Disabled && (_current ?? completing) is { } current)
 			{
-				var infos = ImmutableList.CreateBuilder<HotReloadOperationInfo>();
+				var infos = ImmutableList.CreateBuilder<HotReloadServerOperationData>();
 				var foundCompleting = completing is null;
 				LoadInfos(current);
 				if (!foundCompleting)
@@ -181,7 +181,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				operations = infos.ToImmutable();
 
-				void LoadInfos(HotReloadOperation? operation)
+				void LoadInfos(HotReloadServerOperation? operation)
 				{
 					while (operation is not null)
 					{
@@ -191,7 +191,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						}
 
 						foundCompleting |= operation == completing;
-						infos.Add(new(operation.Id, operation.FilePaths, operation.Result));
+						infos.Add(new(operation.Id, operation.StartTime, operation.FilePaths, operation.CompletionTime, operation.Result));
 						operation = operation.Previous!;
 					}
 				}
@@ -203,7 +203,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		/// <summary>
 		/// A hot-reload operation that is in progress.
 		/// </summary>
-		private class HotReloadOperation
+		private class HotReloadServerOperation
 		{
 			// Delay to wait without any update to consider operation was aborted.
 			private static readonly TimeSpan _timeoutDelay = TimeSpan.FromSeconds(30);
@@ -212,7 +212,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private static long _count;
 
 			private readonly ServerHotReloadProcessor _owner;
-			private readonly HotReloadOperation? _previous;
+			private readonly HotReloadServerOperation? _previous;
 			private readonly Timer _timeout;
 
 			private ImmutableHashSet<string> _filePaths;
@@ -221,21 +221,25 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			public long Id { get; } = Interlocked.Increment(ref _count);
 
-			public HotReloadOperation? Previous => _previous;
+			public DateTimeOffset StartTime { get; } = DateTimeOffset.Now;
+
+			public DateTimeOffset? CompletionTime { get; private set; }
+
+			public HotReloadServerOperation? Previous => _previous;
 
 			public ImmutableHashSet<string> FilePaths => _filePaths;
 
-			public HotReloadResult? Result => _result is -1 ? null : (HotReloadResult)_result;
+			public HotReloadServerResult? Result => _result is -1 ? null : (HotReloadServerResult)_result;
 
 			/// <param name="previous">The previous hot-reload operation which has to be considered as aborted when this new one completes.</param>
-			public HotReloadOperation(ServerHotReloadProcessor owner, HotReloadOperation? previous, ImmutableHashSet<string>? filePaths = null)
+			public HotReloadServerOperation(ServerHotReloadProcessor owner, HotReloadServerOperation? previous, ImmutableHashSet<string>? filePaths = null)
 			{
 				_owner = owner;
 				_previous = previous;
 				_filePaths = filePaths ?? _empty;
 
 				_timeout = new Timer(
-					static that => _ = ((HotReloadOperation)that!).Complete(HotReloadResult.Aborted),
+					static that => _ = ((HotReloadServerOperation)that!).Complete(HotReloadServerResult.Aborted),
 					this,
 					_timeoutDelay,
 					Timeout.InfiniteTimeSpan);
@@ -286,9 +290,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 
 			// Note: This is a patch until the dev-server based hot-reload treat files per batch instead of file per file.
-			private HotReloadResult _aggregatedResult = HotReloadResult.NoChanges;
+			private HotReloadServerResult _aggregatedResult = HotReloadServerResult.NoChanges;
 			private int _aggregatedFilesCount;
-			public void NotifyIntermediate(string file, HotReloadResult result)
+			public void NotifyIntermediate(string file, HotReloadServerResult result)
 			{
 				if (Interlocked.Increment(ref _aggregatedFilesCount) is 1)
 				{
@@ -296,7 +300,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return;
 				}
 
-				_aggregatedResult = (HotReloadResult)Math.Max((int)_aggregatedResult, (int)result);
+				_aggregatedResult = (HotReloadServerResult)Math.Max((int)_aggregatedResult, (int)result);
 				_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
 			}
 
@@ -309,9 +313,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
 			/// </summary>
-			public async ValueTask DeferComplete(HotReloadResult result, Exception? exception = null)
+			public async ValueTask DeferComplete(HotReloadServerResult result, Exception? exception = null)
 			{
-				Debug.Assert(result != HotReloadResult.InternalError || exception is not null); // For internal error we should always provide an exception!
+				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
 
 				if (Interlocked.CompareExchange(ref _deferredCompletion, new CancellationTokenSource(), null) is null)
 				{
@@ -324,12 +328,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-			public ValueTask Complete(HotReloadResult result, Exception? exception = null)
+			public ValueTask Complete(HotReloadServerResult result, Exception? exception = null)
 				=> Complete(result, exception, isFromNext: false);
 
-			private async ValueTask Complete(HotReloadResult result, Exception? exception, bool isFromNext)
+			private async ValueTask Complete(HotReloadServerResult result, Exception? exception, bool isFromNext)
 			{
-				Debug.Assert(result != HotReloadResult.InternalError || exception is not null); // For internal error we should always provide an exception!
+				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
 
 				// Remove this from current
 				Interlocked.CompareExchange(ref _owner._current, null, this);
@@ -341,13 +345,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return; // Already completed
 				}
 
+				CompletionTime = DateTimeOffset.Now;
 				await _timeout.DisposeAsync();
 
 				// Consider previous hot-reload operation(s) as aborted (this is actually a chain list)
 				if (_previous is not null)
 				{
 					await _previous.Complete(
-						HotReloadResult.Aborted,
+						HotReloadServerResult.Aborted,
 						new TimeoutException("An more recent hot-reload operation has completed."),
 						isFromNext: true);
 				}
@@ -463,7 +468,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 			catch (Exception ex)
 			{
-				await hotReload.Complete(HotReloadResult.InternalError, ex);
+				await hotReload.Complete(HotReloadServerResult.InternalError, ex);
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath, FileUpdateResult.Failed, ex.Message));
 			}
 

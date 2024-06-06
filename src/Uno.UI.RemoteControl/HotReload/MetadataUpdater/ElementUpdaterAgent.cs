@@ -23,14 +23,16 @@ internal sealed class ElementUpdateAgent : IDisposable
 	private const DynamicallyAccessedMemberTypes HotReloadHandlerLinkerFlags = DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods;
 
 	private readonly Action<string> _log;
+	private readonly Action<MethodInfo, Exception> _onActionError;
 	private readonly AssemblyLoadEventHandler _assemblyLoad;
 	private readonly ConcurrentDictionary<Type, ElementUpdateHandlerActions> _elementHandlerActions = new();
 
 	internal const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
 
-	public ElementUpdateAgent(Action<string> log)
+	public ElementUpdateAgent(Action<string> log, Action<MethodInfo, Exception> onActionError)
 	{
 		_log = log;
+		_onActionError = onActionError;
 		_assemblyLoad = OnAssemblyLoad;
 		AppDomain.CurrentDomain.AssemblyLoad += _assemblyLoad;
 		LoadElementUpdateHandlerActions();
@@ -314,6 +316,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 			}
 			catch (Exception ex)
 			{
+				_onActionError(update, ex);
 				_log($"Exception from '{update.Name}' on {handlerType.Name}: {ex}");
 			}
 		};

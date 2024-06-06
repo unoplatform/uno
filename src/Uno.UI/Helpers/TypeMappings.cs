@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Uno.UI.Helpers;
@@ -165,12 +166,10 @@ public static class TypeMappings
 	/// <param name="updateLayout">Indicates whether the layout should be updated after resuming updates</param>
 	public static void Resume(bool updateLayout)
 	{
-		var completion = _mappingsPaused;
-		_mappingsPaused = null;
-		if (completion is not null)
+		if (Interlocked.Exchange(ref _mappingsPaused, null) is { } completion)
 		{
-			MappedTypeToOriginalTypeMappings = AllMappedTypeToOriginalTypeMappings.ToDictionary(x => x.Key, x => x.Value);
-			OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
+			MappedTypeToOriginalTypeMappings = new Dictionary<Type, Type>(AllMappedTypeToOriginalTypeMappings);
+			OriginalTypeToMappedType = new Dictionary<Type, Type>(AllOriginalTypeToMappedType);
 			completion.TrySetResult(updateLayout);
 		}
 	}

@@ -4,14 +4,28 @@
 	xmlns:local="using:Uno.UI.RemoteControl.HotReload"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:controls="clr-namespace:Microsoft.UI.Xaml.Controls;assembly=Uno.UI"
 	mc:Ignorable="d"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
+	<DataTemplate x:Key="OperationTemplate">
+		<Border BorderThickness="5,0,0,0" Padding="3" Width="300">
+			<Border.BorderBrush>
+				<SolidColorBrush Color="{Binding Color}" />
+			</Border.BorderBrush>
+			<TextBlock TextWrapping="WrapWholeWords">
+				<Run Text="{Binding Title}" FontSize="12" FontWeight="Bold" />
+				<LineBreak />
+				<Run Text="{Binding Description}" FontSize="10" />
+			</TextBlock>
+		</Border>
+	</DataTemplate>
+
 	<Style TargetType="local:HotReloadStatusView">
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="local:HotReloadStatusView">
+				<controls:ControlTemplate TargetType="local:HotReloadStatusView">
 					<Grid x:Name="Root" Width="16" Height="16">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="Status">
@@ -59,7 +73,7 @@
 								</VisualState>
 								<VisualState x:Name="Success">
 									<VisualState.Setters>
-										<Setter Target="Text.Text" Value="✔️" />
+										<Setter Target="Text.Text" Value="OK" />
 									</VisualState.Setters>
 									<Storyboard>
 										<ObjectAnimationUsingKeyFrames
@@ -84,10 +98,31 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 
-						<Ellipse x:Name="Dot" Width="16" Height="16" Fill="Gray" />
-						<TextBlock x:Name="Text" HorizontalAlignment="Center" VerticalAlignment="Center" Text="HR" FontSize="8" />
+						<Button Padding="0" Margin="0">
+							<Button.Flyout>
+								<Flyout>
+									<StackPanel Margin="-5" Spacing="3">
+										<TextBlock Text="{TemplateBinding HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" />
+										<ScrollViewer MaxHeight="400">
+											<ItemsRepeater
+												ItemsSource="{TemplateBinding History}"
+												ItemTemplate="{StaticResource OperationTemplate}">
+												<ItemsRepeater.Layout>
+													<StackLayout Spacing="5" />
+												</ItemsRepeater.Layout>
+											</ItemsRepeater>
+										</ScrollViewer>
+									</StackPanel>
+								</Flyout>
+							</Button.Flyout>
+
+							<Grid>
+								<Ellipse x:Name="Dot" Width="16" Height="16" Fill="Gray" />
+								<TextBlock x:Name="Text" HorizontalAlignment="Center" VerticalAlignment="Center" Text="HR" FontSize="8" />
+							</Grid>
+						</Button>
 					</Grid>
-				</ControlTemplate>
+				</controls:ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
