@@ -123,6 +123,12 @@ On iOS and Catalyst, calling `Dispose()` or `Dispose(bool)` on a type inheriting
 
 Invocations to `Dispose` can cause the application to crash in `__NSObject_Disposer drain`, cause `ObjectDisposedException` exception to be thrown. More information can be found in [xamarin/xamarin-macios#19493](https://github.com/xamarin/xamarin-macios/issues/19493).
 
+### UNO0006
+
+**Call 'InitializeComponent()' from code-behind**
+
+The method `InitializeComponent` should always be called in class constructor. A missing call will lead to hard-to-diagnose bugs. This analyzer reports when it's missing to make issues more apparent.
+
 ## XAML Errors
 
 ### UNOX0001
