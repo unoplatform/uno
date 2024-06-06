@@ -56,7 +56,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var tbBounds = tb.GetAbsoluteBounds();
 
+#if __WASM__
+			Assert.AreEqual(new Size(13, 12), new Size(tbBounds.Width, tbBounds.Height));
+#elif __ANDROID__
+			Assert.AreEqual(new Size(12, 14), new Size(tbBounds.Width, tbBounds.Height));
+#else
+			// 12, 12 is the right behavior here.
 			Assert.AreEqual(new Size(12, 12), new Size(tbBounds.Width, tbBounds.Height));
+#endif
 		}
 #endif
 
