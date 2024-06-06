@@ -30,11 +30,24 @@ To package your app:
   ```shell
   msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
   ```
+To package your app for the Microsoft App Store, the process is similar to creating a self-signed app package with just a minor difference:
+- Instead of linking to a self-signed certificate, associate your project with a Microsoft Store Applicaton under the 'Project/Publish/Associate App with Store...' menu item
+- Build the app on the command line with the following command:
+
+  ```shell
+  msbuild /r /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=StoreUpload /p:AppxPackageDir="C:/temp/output/" 
+  ``` 
 
 In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX files.
 
 > [!IMPORTANT]
-> Single package msix bundling is [not yet supported from msbuild the command line](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/single-project-msix?tabs=csharp#automate-building-and-packaging-your-single-project-msix-app).
+> Single package msix bundling is [not yet supported from msbuild the command line](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/single-project-msix?tabs=csharp#automate-building-and-packaging-your-single-project-msix-app).  The individual msix packages can be assembled after creation using Microsoft's makeappx.exe tool installed with the .Net SDK in the 'Windows Kits' folder, for example C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\makeappx.exe.
+
+To bundle the individual msix packages, move them all to a common folder, for example "C:\Temp\Output\MyApp", and run the following command:
+
+```shell
+  "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\makeappx.exe" bundle /d "C:\Temp\Output\MyApp" /p "C:\Temp\Output\MyApp.msixbundle"
+```
 
 ## Considerations for solutions with class library projects
 
