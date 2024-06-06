@@ -1,4 +1,5 @@
 ﻿#nullable enable
+#if WINAPPSDK || HAS_UNO_WINUI
 using System;
 using System.Linq;
 using System.Threading;
@@ -37,3 +38,4 @@ internal sealed class DiagnosticCounter(string name, string description) : IDiag
 	ValueTask<object?> IDiagnosticViewProvider.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
 		=> new($"current: {_value}\r\n\r\n{Description}");
 }
+#endif
