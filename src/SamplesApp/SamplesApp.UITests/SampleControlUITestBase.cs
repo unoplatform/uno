@@ -69,7 +69,7 @@ namespace SamplesApp.UITests
 				var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
 
 				// Force an explicit timeout to avoid excessive waiting on iOS
-				var timeout = TimeSpan.FromMinutes(5);
+				var timeout = TimeSpan.FromMinutes(1);
 				var timeoutTask = Task.Delay(timeout);
 
 				var allTasks = Task.WhenAny(coldStartTask, timeoutTask);
@@ -77,7 +77,7 @@ namespace SamplesApp.UITests
 
 				if (allTasks.Result == timeoutTask)
 				{
-					throw new Exception("Cold start timeout after timeout");
+					throw new Exception($"Cold start timeout after {timeout}");
 				}
 			}
 			catch
