@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Uno;
@@ -73,6 +73,8 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		public PickerViewMode[] ViewModes { get; } = Enum.GetValues<PickerViewMode>();
 
 		public PickerViewMode ViewMode { get; set; } = PickerViewMode.List;
+
+		public int MaxFiles { get; set; } = 2;
 
 		public string FileType
 		{
@@ -209,6 +211,9 @@ namespace UITests.Shared.Windows_Storage.Pickers
 				filePicker.FileTypeFilter.AddRange(FileTypeFilter);
 
 				StatusMessage = "Picking multiple files...";
+#if __IOS__
+				filePicker.SetLimit(MaxFiles);
+#endif
 				var pickedFiles = await filePicker.PickMultipleFilesAsync();
 				if (pickedFiles.Any())
 				{
