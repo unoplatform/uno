@@ -1,16 +1,9 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Uno.Analyzers;
 
@@ -38,49 +31,42 @@ public class UnoInitializeComponentAnalyzer : DiagnosticAnalyzer
 	public override void Initialize(AnalysisContext context)
 	{
 		context.EnableConcurrentExecution();
-		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-		context.RegisterCompilationStartAction(context =>
+		context.RegisterSymbolStartAction(context =>
 		{
-			// .NET doesn't have ConcurrentHashSet. https://github.com/dotnet/runtime/issues/39919
-			var xClasses = new ConcurrentDictionary<string, byte>();
-			foreach (var xamlFile in context.Options.AdditionalFiles)
+			var type = (INamedTypeSymbol)context.Symbol;
+			IMethodSymbol? initializeComponent = null;
+			foreach (var member in type.GetMembers("InitializeComponent"))
 			{
-				if (!xamlFile.Path.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase))
+				if (member is IMethodSymbol { Parameters.Length: 0 } method)
 				{
-					continue;
-				}
-
-				var stream = new SourceTextStream(xamlFile.GetText(context.CancellationToken));
-
-				using (XmlReader reader = XmlReader.Create(stream))
-				{
-					reader.MoveToContent();
-					var xClass = reader.GetAttribute("x:Class");
-					if (!string.IsNullOrEmpty(xClass))
-					{
-						xClasses.TryAdd(xClass, 0);
-					}
+					initializeComponent = method;
+					break;
 				}
 			}
 
-			context.RegisterOperationAction(context =>
+			if (initializeComponent is not null)
 			{
-				var invocation = (IInvocationOperation)context.Operation;
-				if (invocation.TargetMethod.Name == "InitializeComponent" && invocation.TargetMethod.Parameters.Length == 0 &&
-					context.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Constructor } constructor && constructor.Parameters.Length == 0)
+				var isCalled = false;
+				context.RegisterOperationAction(context =>
 				{
-					xClasses.TryRemove(context.ContainingSymbol.ContainingType.ToDisplayString(), out _);
-				}
-			}, OperationKind.Invocation);
+					if (!isCalled &&
+						initializeComponent.Equals(((IInvocationOperation)context.Operation).TargetMethod, SymbolEqualityComparer.Default) &&
+						context.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Constructor, Parameters.Length: 0 })
+					{
+						isCalled = true;
+					}
+				}, OperationKind.Invocation);
 
-			context.RegisterCompilationEndAction(context =>
-			{
-				foreach (var xClass in xClasses)
+				context.RegisterSymbolEndAction(context =>
 				{
-					context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None, xClass.Key));
-				}
-			});
-		});
+					if (!isCalled)
+					{
+						context.ReportDiagnostic(Diagnostic.Create(Rule, type.Locations[0], type.ToDisplayString()));
+					}
+				});
+			}
+		}, SymbolKind.NamedType);
 	}
 }
