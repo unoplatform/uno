@@ -54,12 +54,10 @@ variables:
   windowsScaledPool: 'Windows2022-20240421'
   linuxVMImage: 'ubuntu-latest'
   linuxScaledPool: 'Ubuntu2204-20230918'
-  macOSVMImage: 'macOS-13'
-  macOSVMImage_UITests: 'macOS-12'
-  xCodeRoot: '/Applications/Xcode_15.2.app'
-  XamarinSDKVersion: 6_12_24
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_14.1.app'
-  XamarinSDKVersion_iOS_UITests: 6_12_24
+  macOSVMImage: 'macOS-14'
+  macOSVMImage_UITests: 'macOS-14'
+  xCodeRoot: '/Applications/Xcode_15.4.app'
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_15.4.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
