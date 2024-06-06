@@ -13,6 +13,7 @@ namespace Windows.Storage.Pickers
 	{
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
+		private int _multipleFileLimit;
 
 		/// <summary>
 		/// Gets the collection of file types that the folder picker displays.
@@ -98,6 +99,22 @@ namespace Windows.Storage.Pickers
 				throw new InvalidOperationException("You must provide at least a general file type filter ('*')");
 			}
 		}
+
+		internal void SetMultipleFileLimit(int limit)
+		{
+			_multipleFileLimit = limit;
+		}
 #endif
+	}
+
+	public static class FileOpenPickerExtensions
+	{
+		/// <summary>
+		/// Sets the file limit a user can select when picking multiple files.
+		/// </summary>
+		public static void SetLimit(this FileOpenPicker picker, int limit)
+		{
+			picker.SetMultipleFileLimit(limit);
+		}
 	}
 }
