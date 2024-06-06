@@ -114,9 +114,6 @@ namespace SamplesApp
 			SetupAndroidEnvironment();
 
 #if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
-			// requires Xamarin Test Cloud Agent
-			Xamarin.Calabash.Start();
-
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =
