@@ -56,7 +56,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			pivotItemHeadertoolTip = TestServices.WindowHelper.TestGetActualToolTip(keyboardAcceleratorPlacementTarget);
+			pivotItemHeadertoolTip = await TestServices.WindowHelper.TestGetActualToolTip(keyboardAcceleratorPlacementTarget);
 			await TestServices.RunOnUIThread(() =>
 			{
 				toolTipString = ToolTipService.GetToolTip(pivotItem1) as String;
@@ -68,7 +68,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 			});
 
-			pivotItemHeadertoolTip = TestServices.WindowHelper.TestGetActualToolTip(keyboardAcceleratorPlacementTarget);
+			pivotItemHeadertoolTip = await TestServices.WindowHelper.TestGetActualToolTip(keyboardAcceleratorPlacementTarget);
 			await TestServices.RunOnUIThread(() =>
 			{
 				toolTipString = ToolTipService.GetToolTip(pivotItem1) as String;
@@ -122,9 +122,9 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 			await TestServices.WindowHelper.WaitForIdle();
-			toolTip1 = TestServices.WindowHelper.TestGetActualToolTip(button1);
-			toolTip2 = TestServices.WindowHelper.TestGetActualToolTip(button2);
-			toolTip3 = TestServices.WindowHelper.TestGetActualToolTip(button3);
+			toolTip1 = await TestServices.WindowHelper.TestGetActualToolTip(button1);
+			toolTip2 = await TestServices.WindowHelper.TestGetActualToolTip(button2);
+			toolTip3 = await TestServices.WindowHelper.TestGetActualToolTip(button3);
 
 			await TestServices.RunOnUIThread(() =>
 			{
@@ -176,7 +176,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
-		toolTip1 = TestServices.WindowHelper.TestGetActualToolTip(button1);
+		toolTip1 = await TestServices.WindowHelper.TestGetActualToolTip(button1);
 
 		await TestServices.RunOnUIThread(() =>
 		{
@@ -849,7 +849,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
 
-		using (var keyboardAcceleratorOrdering = new KeyboardAcceleratorEventOrderingTester(elementList, button.eventOrder))
+		await using (var keyboardAcceleratorOrdering = await KeyboardAcceleratorEventOrderingTester.CreateAsync(elementList, button.eventOrder))
 		using (var rootPanelKeyDown = EventTester<UIElement, KeyRoutedEventArgs>.FromRoutedEvent(rootPanel, "KeyDown", (t, u) => { } /*No action required*/))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
@@ -899,7 +899,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
 
-		using (var keyboardAcceleratorOrdering = new KeyboardAcceleratorEventOrderingTester(elementList, button.eventOrder))
+		await using (var keyboardAcceleratorOrdering = await KeyboardAcceleratorEventOrderingTester.CreateAsync(elementList, button.eventOrder))
 		using (var rootPanelKeyDown = EventTester<UIElement, KeyRoutedEventArgs>.FromRoutedEvent(rootPanel, "KeyDown", (t, u) => { } /*No action required*/))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
@@ -984,7 +984,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
 
-		using (var keyboardAcceleratorOrdering = new KeyboardAcceleratorEventOrderingTester(elementList, button.eventOrder))
+		await using (var keyboardAcceleratorOrdering = await KeyboardAcceleratorEventOrderingTester.CreateAsync(elementList, button.eventOrder))
 		{
 			Log.Comment("Try to process local accelerators defined on this element");
 			using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlAAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
@@ -1131,7 +1131,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
 
-		using (var keyboardAcceleratorOrdering = new KeyboardAcceleratorEventOrderingTester(elementList, eventOrder))
+		await using (var keyboardAcceleratorOrdering = await KeyboardAcceleratorEventOrderingTester.CreateAsync(elementList, eventOrder))
 		using (var rootPanelProcessKeyboardAccelerators = new EventTester<StackPanel, ProcessKeyboardAcceleratorEventArgs>(rootPanel, "ProcessKeyboardAccelerators", rootPanelProcessKeyboardAcceleratorsHandler))
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlAAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		using (var rootPanelKeyUp = EventTester<UIElement, KeyRoutedEventArgs>.FromRoutedEvent(rootPanel, "KeyUp", (t, u) => { } /*No action required*/))
