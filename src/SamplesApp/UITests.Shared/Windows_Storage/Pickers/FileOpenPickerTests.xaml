@@ -46,11 +46,22 @@
                 HorizontalAlignment="Stretch"
                 Click="{x:Bind ViewModel.PickSingleFile}"
                 Content="Pick single file" />
-            <Button
-                Padding="12"
-                HorizontalAlignment="Stretch"
-                Click="{x:Bind ViewModel.PickMultipleFiles}"
-                Content="Pick multiple files" />
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<NumberBox 
+					Header="Max files"
+					Value="{x:Bind ViewModel.MaxFiles, Mode=TwoWay}" />
+				<Button
+					Padding="12"
+					Grid.Row="1"
+					HorizontalAlignment="Stretch"
+					Click="{x:Bind ViewModel.PickMultipleFiles}"
+					Content="Pick multiple files" />					
+			</Grid>
 
             <ListView Height="120" ItemsSource="{x:Bind ViewModel.PickedFiles, Mode=OneWay}">
                 <ListView.ItemTemplate>

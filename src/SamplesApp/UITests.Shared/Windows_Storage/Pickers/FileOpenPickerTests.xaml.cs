@@ -69,6 +69,8 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		public PickerViewMode ViewMode { get; set; } = PickerViewMode.List;
 
+		public int MaxFiles { get; set; } = 2;
+
 		public string FileType
 		{
 			get => _fileType;
@@ -199,6 +201,14 @@ namespace UITests.Shared.Windows_Storage.Pickers
 					filePicker.CommitButtonText = CommitButtonText;
 				}
 				filePicker.FileTypeFilter.AddRange(FileTypeFilter);
+<<<<<<< HEAD
+=======
+
+				StatusMessage = "Picking multiple files...";
+#if __IOS__
+				filePicker.SetLimit(MaxFiles);
+#endif
+>>>>>>> 4f104a0220 (test: update FileOpenPicker sample with max file)
 				var pickedFiles = await filePicker.PickMultipleFilesAsync();
 				if (pickedFiles.Any())
 				{
