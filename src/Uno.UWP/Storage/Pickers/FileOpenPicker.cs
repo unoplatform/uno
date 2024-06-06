@@ -109,12 +109,27 @@ namespace Windows.Storage.Pickers
 
 	public static class FileOpenPickerExtensions
 	{
+#if __IOS__
 		/// <summary>
 		/// Sets the file limit a user can select when picking multiple files.
 		/// </summary>
+		/// <param name="limit">The maximum number of files that the user can pick.</param>
 		public static void SetLimit(this FileOpenPicker picker, int limit)
 		{
 			picker.SetMultipleFileLimit(limit);
 		}
+
+		/// <summary>
+		/// Shows the file picker so that the user can pick multiple files.
+		/// </summary>
+		/// <param name="limit">The maximum number of files that the user can pick.</param>
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="FilePickerSelectedFilesArray"/> object that contains
+		/// all the files that were picked by the user. Picked files in this array are represented by <see cref="StorageFile"/> objects.</returns>
+		public static IAsyncOperation<IReadOnlyList<StorageFile>> PickMultipleFilesAsync(this FileOpenPicker picker, int limit)
+		{
+			picker.SetMultipleFileLimit(limit);
+			return picker.PickMultipleFilesAsync();
+		}
+#endif
 	}
 }

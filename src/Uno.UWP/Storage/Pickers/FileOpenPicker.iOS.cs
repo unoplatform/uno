@@ -90,7 +90,7 @@ namespace Windows.Storage.Pickers
 					var documentTypes = UTTypeMapper.GetDocumentTypes(FileTypeFilter);
 					return new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open)
 					{
-						AllowsMultipleSelection = multiple,						
+						AllowsMultipleSelection = multiple,
 						ShouldShowFileExtensions = true,
 						Delegate = new FileOpenPickerDelegate(completionSource)
 					};
