@@ -17,7 +17,6 @@ partial class KeyboardAccelerator
 		DependencyObject pNamescopeOwner,
 		EnterParams enterParams)
 	{
-
 		// base.EnterImpl(pNamescopeOwner, enterParams);
 
 		if (enterParams.IsLive)

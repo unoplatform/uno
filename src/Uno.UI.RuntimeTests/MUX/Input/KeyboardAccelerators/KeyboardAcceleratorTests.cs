@@ -46,13 +46,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			UIElement keyboardAcceleratorPlacementTarget = null; ;
 			ToolTip pivotItemHeadertoolTip;
 
-			await TestServices.RunOnUIThread(() =>
+			await TestServices.RunOnUIThread(async () =>
 			{
 				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				TestServices.WindowHelper.WindowContent = rootPanel;
+				await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 				pivotItem1 = (PivotItem)rootPanel.FindName("pivotItem1");
 				keyboardAcceleratorPlacementTarget = (UIElement)pivotItem1.KeyboardAcceleratorPlacementTarget;
-
-				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -112,14 +113,15 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			ToolTip toolTip2 = null;
 			ToolTip toolTip3 = null;
 
-			await TestServices.RunOnUIThread(() =>
+			await TestServices.RunOnUIThread(async () =>
 			{
 				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				TestServices.WindowHelper.WindowContent = rootPanel;
+				await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 				button1 = (Button)rootPanel.FindName("button1");
 				button2 = (Button)rootPanel.FindName("button2");
 				button3 = (Button)rootPanel.FindName("button3");
-
-				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 			toolTip1 = await TestServices.WindowHelper.TestGetActualToolTip(button1);
@@ -152,7 +154,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates ToolTips on KeyboardAccelerator added through code")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateToolTipForAcceleratorDefinedInCode()
 	{
 		StackPanel rootPanel = null;
@@ -190,7 +191,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAcceleratorPlacementMode is Hidden by default for AppBar/ AppBarToggleButton/ MenuFlyoutItem when added through xaml script")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorPlacementMode()
 	{
 		{
@@ -205,9 +205,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			AppBarButton appBarButton = null;
 			AppBarToggleButton appBarTButton = null;
 			MenuFlyoutItem menuFlyoutItem = null;
-			await TestServices.RunOnUIThread(() =>
+			await TestServices.RunOnUIThread(async () =>
 			{
 				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				TestServices.WindowHelper.WindowContent = rootPanel;
+				await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 				appBarButton = (AppBarButton)rootPanel.FindName("AppBarButton");
 				appBarTButton = (AppBarToggleButton)rootPanel.FindName("AppBarTButton");
 				menuFlyoutItem = (MenuFlyoutItem)rootPanel.FindName("MenuFlyoutItem");
@@ -221,8 +224,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				Verify.AreEqual(
 					menuFlyoutItem.KeyboardAcceleratorPlacementMode,
 					KeyboardAcceleratorPlacementMode.Hidden);
-
-				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -246,9 +247,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			StackPanel innerPanel = null;
 			Button outerButton = null;
 			Button innerButton = null;
-			await TestServices.RunOnUIThread(() =>
+			await TestServices.RunOnUIThread(async () =>
 			{
 				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				TestServices.WindowHelper.WindowContent = rootPanel;
+				await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 				innerPanel = (StackPanel)rootPanel.FindName("innerPanel");
 				outerButton = (Button)rootPanel.FindName("oButton");
 				innerButton = (Button)rootPanel.FindName("iButton");
@@ -279,15 +283,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				Verify.AreEqual(
 					innerButton.KeyboardAcceleratorPlacementMode,
 					KeyboardAcceleratorPlacementMode.Auto);
-
-				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 		}
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verify inherited property KeyboardAcceleratorPlacementMode with UIElement tree dump.")]
-	[TestProperty("HasAssociatedMasterFile", "True")]
 	public async Task ValidateKeyboardAcceleratorPlacementModeInheritedProperty()
 	{
 		{
@@ -303,9 +304,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			StackPanel innerPanel = null;
 			Button outerButton = null;
 			Button innerButton = null;
-			await TestServices.RunOnUIThread(() =>
+			await TestServices.RunOnUIThread(async () =>
 			{
 				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				TestServices.WindowHelper.WindowContent = rootPanel;
+				await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 				innerPanel = (StackPanel)rootPanel.FindName("innerPanel");
 				outerButton = (Button)rootPanel.FindName("oButton");
 				innerButton = (Button)rootPanel.FindName("iButton");
@@ -319,8 +323,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				Verify.AreEqual(
 					innerButton.KeyboardAcceleratorPlacementMode,
 					KeyboardAcceleratorPlacementMode.Hidden);
-
-				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 			await FocusHelper.EnsureFocusAsync(outerButton, FocusState.Keyboard);
@@ -334,7 +336,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 	#region BasicInvokeBehavior
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorEventInvoked()
 	{
 		const string rootPanelXaml =
@@ -361,12 +362,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
-			button = (Button)rootPanel.FindName("button");
-			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
+			button = (Button)rootPanel.FindName("button");
+			ctrlAAccelerator = button.KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -386,7 +389,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorEventNotInvokedWhenCollapsed()
 	{
 		const string rootPanelXaml =
@@ -412,14 +414,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Accelerator invoked despite parent not being visible.");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			innerPanel = (StackPanel)rootPanel.FindName("innerPanel");
 			button = (Button)rootPanel.FindName("button");
 			button2 = (Button)rootPanel.FindName("button2");
 			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -456,7 +460,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators can work with a key outside the VirtualKey enum")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateEqualsKeyCanBeAKeyboardAccelerator()
 	{
 		const string rootPanelXaml =
@@ -511,7 +514,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerator behavior when no modifiers are set.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorBehaviorWithNoModifiers()
 	{
 		const string rootPanelXaml =
@@ -538,12 +540,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = (Button)rootPanel.FindName("button");
 			f5Accelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -559,7 +563,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerator behavior for Back which is non symbol access keys.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorBehaviorWithBackspace()
 	{
 		const string rootPanelXaml =
@@ -578,9 +581,11 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		await TestServices.RunOnUIThread(() =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = (Button)rootPanel.FindName("button");
 			backAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -608,7 +613,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerator behavior when multiple modifiers are required.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorBehaviorWithMultipleModifiers()
 	{
 		const string rootPanelXaml =
@@ -635,12 +639,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
-			button = (Button)rootPanel.FindName("button");
-			ctrlShiftSAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
+			button = (Button)rootPanel.FindName("button");
+			ctrlShiftSAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");			
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -669,7 +675,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior for Ctrl+Tab.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorEventInvokedForCtrlTab()
 	{
 		const string rootPanelXaml =
@@ -699,9 +704,11 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		await TestServices.RunOnUIThread(() =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
-			button = (Button)rootPanel.FindName("button");
-			ctrlTabAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
+			button = (Button)rootPanel.FindName("button");
+			ctrlTabAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");			
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -723,7 +730,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates access keys on pivot control.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyAcceleratorsWorkOnPivotControl()
 	{
 		const string rootPanelXaml =
@@ -774,12 +780,13 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			verifySelectedPivotItemChanged(source, 2);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
-			pivot = (Pivot)rootPanel.FindName("rootPivot");
-
 			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
+			pivot = (Pivot)rootPanel.FindName("rootPivot");
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -816,7 +823,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 	#region EventOrdering
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event's ordering.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateOnProcessKeyboardAcceleratorsEventOrdering()
 	{
 		const string rootPanelXaml =
@@ -828,9 +834,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		KeyboardAccelerator altAAccelerator = null;
 		FrameworkElement[] elementList = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = new KeyboardAcceleratorTests.ButtonWithEventOrdering();
 			button.Name = "button";
 
@@ -843,7 +852,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			elementList = new FrameworkElement[2] { button, rootPanel };
 			button.eventOrder = new StringBuilder();
 			button.shouldSetHandled = false;
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -866,7 +874,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event's ordering when the virtual sets handled to true.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateOnProcessKeyboardAcceleratorsEventOrderingWhenHandlingArgs()
 	{
 		const string rootPanelXaml =
@@ -878,9 +885,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		KeyboardAccelerator altAAccelerator = null;
 		FrameworkElement[] elementList = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = new KeyboardAcceleratorTests.ButtonWithEventOrdering();
 			button.Name = "button";
 
@@ -893,7 +903,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			elementList = new FrameworkElement[2] { button, rootPanel };
 			button.eventOrder = new StringBuilder();
 			button.shouldSetHandled = true;
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -917,7 +926,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates the order and priority of accelerator operations.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateOrderOfAcceleratorOperations()
 	{
 		const string rootPanelXaml =
@@ -959,9 +967,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			args.Handled = true;
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = new KeyboardAcceleratorTests.ButtonWithEventOrdering();
 			button.Name = "button";
 
@@ -978,7 +989,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			elementList = new FrameworkElement[3] { button, rootPanel, ownedButton };
 			button.eventOrder = new StringBuilder();
 			button.shouldSetHandled = false;
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1081,7 +1091,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event's ordering on a non-control UIElement.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorEventOrderingOnUIElement()
 	{
 		const string rootPanelXaml =
@@ -1116,16 +1125,17 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			args.Handled = true;
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = (Button)rootPanel.FindName("button");
 			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 
 			elementList = new FrameworkElement[2] { button, rootPanel };
 			eventOrder = new StringBuilder();
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1153,7 +1163,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 	#region DisabledAccelerators
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateDisabledKeyboardAcceleratorNeverInvoked()
 	{
 		const string rootPanelXaml =
@@ -1174,12 +1183,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Accelerator invoked");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = (Button)rootPanel.FindName("button");
 			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1219,12 +1230,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Accelerator invoked.");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button2 = (Button)rootPanel.FindName("button2");
 			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1281,7 +1294,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that KeyboardAccelerators event gets invoked.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateHandlingKeyboardAcceleratorsCanPreventAutomationAction()
 	{
 		const string rootPanelXaml =
@@ -1316,12 +1328,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Button clicked.");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = (Button)rootPanel.FindName("button");
 			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1343,7 +1357,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 	#region GlobalScopeTests
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorsAreGlobalByDefault()
 	{
 		//using (var testCleanup = new TestCleanupWrapper())
@@ -1379,13 +1392,15 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 					false /*handled*/);
 			});
 
-			await TestServices.RunOnUIThread(() =>
+			await TestServices.RunOnUIThread(async () =>
 			{
 				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				TestServices.WindowHelper.WindowContent = rootPanel;
+				await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 				button1 = (Button)rootPanel.FindName("button1");
 				button2 = (Button)rootPanel.FindName("button2");
 				ctrlQAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -1413,7 +1428,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached MenuFlyout.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyButtonFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuItem()
 	{
 		const string rootPanelXaml =
@@ -1450,15 +1464,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				false /*handled*/);
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			FlyoutItem1 = (MenuFlyoutItem)rootPanel.FindName("FlyoutItem1");
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrl1Accelerator = (KeyboardAccelerator)rootPanel.FindName("flyoutAccelerator");
 			FlyoutItem2 = (MenuFlyoutItem)rootPanel.FindName("FlyoutItem2");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1476,7 +1491,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on button control.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnButton()
 	{
 		const string rootPanelXaml =
@@ -1514,15 +1528,16 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		KeyboardAccelerator Sub_MenuItem_KA = null;
 		KeyboardAccelerator Sub_Sub_MenuItem_KA = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			ButtonWithFlyout = (Button)rootPanel.FindName("ButtonWithFlyout");
 			MenuItem_KA = (KeyboardAccelerator)rootPanel.FindName("MenuItem_KA");
 			Sub_MenuItem_KA = (KeyboardAccelerator)rootPanel.FindName("Sub_MenuItem_KA");
 			Sub_Sub_MenuItem_KA = (KeyboardAccelerator)rootPanel.FindName("Sub_Sub_MenuItem_KA");
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1552,7 +1567,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on menubar control.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnMenuBar()
 	{
 		const string rootPanelXaml =
@@ -1628,7 +1642,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is collapsed.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1687,8 +1700,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is opened up.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // 20309123
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -1753,8 +1764,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works after menu item is opened up and closed again.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // 20309123
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -1822,7 +1831,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands defined on MenuBar after setting window content, works when menu item is collapsed.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsAfterSettingWindowContent()
 	{
 		const string rootPanelXaml =
@@ -1872,7 +1880,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands on MenuBar works when menu item closed.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1919,8 +1926,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works when menu item is opened up.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // 20309123
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -1973,8 +1978,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works after menu item opened up and closed again.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // 20309123
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -2030,8 +2033,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // 19594689
 	public async Task VerifyButtonFlyoutCanInvokeAcceleratorsDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2115,8 +2116,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // 19594689
 	public async Task VerifyButtonContextFlyoutWithFlyoutCanInvokeAcceleratorDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2200,8 +2199,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Flyout processing on Button control does not crash due to stackoverflow.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // 19594689
 	public async Task VerifyButtonFlyoutDoesNotIntroduceStackOverflow()
 	{
 		const string rootPanelXaml =
@@ -2259,7 +2256,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the global accelerators on its attached MenuFlyout.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyButtonContextFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuFlyout()
 	{
 		const string rootPanelXaml =
@@ -2323,7 +2319,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior in a commandbar.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorsWorkInCommandBarSecondaryCommands()
 	{
 		const string rootPanelXaml =
@@ -2380,8 +2375,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators gets invoked in secondary commands in commandbar even after opening and closing them explicitly.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Ignore", "True")] // Task 30789524: WinUI 3: Keyboard accelerators applied to secondary items in a CommandBar can't be used after the CommandBar is opened and then closed
 	public async Task ValidateKeyboardAcceleratorsWorkInCommandBarSecondaryCommandsAfterOpeningThemExplicitly()
 	{
 		const string rootPanelXaml =
@@ -2457,7 +2450,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior in a commandbar.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorsNotInvokedSecondaryCommandsOfACollapsedCommandBar()
 	{
 		const string rootPanelXaml =
@@ -2508,7 +2500,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior in a commandbar.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorsWorkInCommandBarPrimaryCommands()
 	{
 		const string rootPanelXaml =
@@ -2566,7 +2557,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateKeyboardAcceleratorsCanBeScoped()
 	{
 		const string rootPanelXaml =
@@ -2618,7 +2608,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates ProcessKeyboardAccelerators event behavior.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateProcessKeyboardAcceleratorsEventBehavior()
 	{
 		const string rootPanelXaml =
@@ -2674,7 +2663,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates ProcessKeyboardAccelerators event behavior for Controls.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateProcessKeyboardAcceleratorsEventBehaviorForControls()
 	{
 		const string rootPanelXaml =
@@ -2730,7 +2718,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior when two accelerators are shared and the first is disabled.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyParentOfDisabledControlCanBeInvoked()
 	{
 		const string rootPanelXaml =
@@ -2791,7 +2778,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView fires the accelerators on its attached ContextFlyout.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyListViewContextFlyoutCanInvokeHiddenAccelerator()
 	{
 		const string rootPanelXaml =
@@ -2857,7 +2843,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that TryInvokeKeyboardAccelerator searches a subtree appropriately.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyTryInvokeKeyboardAcceleratorBehavior()
 	{
 		StackPanelWithProcessKeyboardAcceleratorOverride rootPanel = null;
@@ -2928,7 +2913,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that TryInvokeKeyboardAccelerator does not call locally scoped accelerators.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyTryInvokeKeyboardAcceleratorBehaviorForLocallyScopedAccelerator()
 	{
 		StackPanelWithProcessKeyboardAcceleratorOverride tryInvokePanel = null;
@@ -3046,7 +3030,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView does not fire the accelerators on its attached ContextFlyout, as it is scoped to be local.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyListViewContextFlyoutCanNotInvokeHiddenLocallyScopedAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3088,9 +3071,12 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 				action1,
 				false /*handled*/);
 		});
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			listView = (ListView)rootPanel.FindName("listView");
 			lvItem = (ListViewItem)rootPanel.FindName("lvItem");
 			contextFlyout = (FlyoutBase)rootPanel.FindName("flyout");
@@ -3100,7 +3086,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			ctrl1AcceleratorScopedtoListView.ScopeOwner = listView;
 			action1 = (MenuFlyoutItem)rootPanel.FindName("action1");
 
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -3123,7 +3108,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked is not fired when elements are in the background when using a content dialog.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateContentDialogPreventsBackgroundAcceleratorInvoke()
 	{
 		const string rootPanelXaml =
@@ -3150,19 +3134,21 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			Verify.Fail("Accelerator invoked");
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			button = (Button)rootPanel.FindName("button");
-			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
+			ctrlAAccelerator = button.KeyboardAccelerators[0];
 
 			dialog = (ContentDialog)rootPanel.FindName("dialog");
 			dialogButton = (Button)rootPanel.FindName("dialogButton");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await TestServices.RunOnUIThread(async () =>
+		_ = TestServices.RunOnUIThread(async () =>
 		{
 			await dialog.ShowAsync();
 			contentDialogShown.Set();
@@ -3193,7 +3179,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates content dialog behavior. Content dialog should not block key inputs to its text box.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task ValidateTextBoxInContentDialogReceivesInput()
 	{
 		const string rootPanelXaml =
@@ -3231,18 +3216,20 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			args.Handled = true;
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			acceleratorA = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
 
 			dialog = (ContentDialog)rootPanel.FindName("dialog");
 			textBox = (TextBox)rootPanel.FindName("textBox");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await TestServices.RunOnUIThread(async () =>
+		_ = TestServices.RunOnUIThread(async () =>
 		{
 			await dialog.ShowAsync();
 			contentDialogShown.Set();
@@ -3273,8 +3260,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators and Text Input behavior. Key input in currently focused TextBox should only be used to generate text input.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
-	[TestProperty("Hosting:Mode", "UAP")] // fails in WPF mode
 	public async Task ValidateTextInputAndKeyboardAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3307,15 +3292,17 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			args.Handled = true;
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			acceleratorA = (KeyboardAccelerator)rootPanel.FindName("keyboardAcceleratorA");
 			acceleratorLeft = (KeyboardAccelerator)rootPanel.FindName("keyboardAcceleratorLeft");
 			acceleratorF3 = (KeyboardAccelerator)rootPanel.FindName("keyboardAcceleratorF3");
 			acceleratorCtrlS = (KeyboardAccelerator)rootPanel.FindName("keyboardAcceleratorCtrlS");
 			textBox = (TextBox)rootPanel.FindName("textBox");
-			Window.Current.Content = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -3379,7 +3366,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 	#region OverridingControlAccelerators
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators can override the control accelerators for TextBox.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyKeyboardAcceleratorCanOverrideControlAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3409,12 +3395,14 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			args.Handled = true;
 		});
 
-		await TestServices.RunOnUIThread(() =>
+		await TestServices.RunOnUIThread(async () =>
 		{
 			rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+			TestServices.WindowHelper.WindowContent = rootPanel;
+			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+
 			txb1 = (TextBox)rootPanel.FindName("txb1");
 			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
-			TestServices.WindowHelper.WindowContent = rootPanel;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -3448,7 +3436,6 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that all values of global::Windows.System.VirtualKey are accounted for when converting to a keyboard accelerator string representation.")]
-	[TestProperty("VelocityTestPass:OneCoreStrict", "Desktop")]
 	public async Task VerifyAllVirtualKeysAccountedForInKeyboardAcceleratorStringRepresentations()
 	{
 		foreach (VirtualKey vk in Enum.GetValues(typeof(VirtualKey)))
