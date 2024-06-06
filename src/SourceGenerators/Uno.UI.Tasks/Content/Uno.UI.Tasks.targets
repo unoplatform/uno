@@ -76,6 +76,8 @@
 	<Target Name="UnoResourcesGeneration"
 				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
+				Inputs="@(PRIResource)"
+				Outputs="$(IntermediateOutputPath)UnoResourcesGeneration.stamp"
 				Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
@@ -128,6 +130,9 @@
 			<Output TaskParameter="GeneratedFiles"
 							ItemName="GeneratedFiles" />
 		</ResourcesGenerationTask_v0>
+
+		<WriteLinesToFile File="$(IntermediateOutputPath)UnoResourcesGeneration.stamp" Overwrite="true" />
+
 		<ItemGroup>
 			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
 			<_UnoAndroidResources Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
@@ -141,6 +146,7 @@
 
 			<!-- Ensure files are tracked properly for incremental build and clean targets -->
 			<FileWrites Include="@(GeneratedFiles)" />
+			<FileWrites Include="$(IntermediateOutputPath)UnoResourcesGeneration.stamp" />
 		</ItemGroup>
 	</Target>
 
@@ -218,6 +224,8 @@
 
 	<Target Name="_UnoLinkerUpriSubstitutions"
 		Condition="'$(DesignTimeBuild)' != 'true'"
+		Inputs="@(GeneratedFiles)"
+		Outputs="$(_UnoUpriSubstitutionsFile)"
 		AfterTargets="UnoResourcesGeneration">
 
 		<ItemGroup>
