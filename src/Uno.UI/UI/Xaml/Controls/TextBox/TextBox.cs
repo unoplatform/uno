@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Text;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
@@ -398,14 +399,27 @@ namespace Microsoft.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
+#if __SKIA__
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
+				if (_pendingSelection is { } selection)
+				{
+					var start = Math.Min(selection.start, baseString.Length);
+					var end = Math.Min(selection.start + selection.length, baseString.Length);
+					_pendingSelection = (start, end - start);
+				}
 			}
-#if __SKIA__
 			else if (_isSkiaTextBox)
 			{
-				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
+				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
+				// the _pendingSelection uses indices before this removal.
+				baseString = RemoveLF(baseString);
+			}
+#else
+			if (!AcceptsReturn)
+			{
+				baseString = GetFirstLine(baseString);
 			}
 #endif
 
@@ -1130,7 +1144,19 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				_isInputModifyingText = true;
+				var oldText = Text;
 				Text = newText;
+
+#if __SKIA__
+				if (_pendingSelection is { } selection && Text == oldText)
+				{
+					// OnTextChanged won't fire, so we immediately change the selection.
+					// Note how we check that Text (after assignment) == oldText and
+					// not oldText == newText. This is because CoerceText can make it so that
+					// newText != oldText but Text (after assignment) == oldText
+					SelectInternal(selection.start, selection.length);
+				}
+#endif
 			}
 			finally
 			{

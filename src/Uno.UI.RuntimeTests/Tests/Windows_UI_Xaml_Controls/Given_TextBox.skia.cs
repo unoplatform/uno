@@ -1755,6 +1755,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Paste_The_Same_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "copied\r\ncontent"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "copied\r\ncontent";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("copied\rcontent".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
 		public async Task When_Multiline_Simple()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

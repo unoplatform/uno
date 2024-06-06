@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -508,20 +509,13 @@ public partial class TextBox
 		var caretXOffset = _caretXOffset;
 
 		_suppressCurrentlyTyping = true;
-		if (text == Text)
+		_clearHistoryOnTextChanged = false;
+		if (!_isPressed)
 		{
-			if (!_isPressed)
-			{
-				SelectInternal(selectionStart, selectionLength);
-			}
-		}
-		else
-		{
-			_clearHistoryOnTextChanged = false;
 			_pendingSelection = (selectionStart, selectionLength);
-			ProcessTextInput(text);
-			_clearHistoryOnTextChanged = true;
 		}
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
 
 		// don't change the caret offset when moving up and down
@@ -1239,6 +1233,46 @@ public partial class TextBox
 		}
 	}
 
+	private string RemoveLF(string baseString)
+	{
+
+		var builder = new StringBuilder();
+		for (int i = 0; i < baseString.Length; i++)
+		{
+			var c = baseString[i];
+			if (c == '\n')
+			{
+				builder.Append('\r');
+			}
+			else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
+			{
+				if (_pendingSelection is { } selection)
+				{
+					var (start, end) = (selection.start, selection.start + selection.length);
+					if (start > i)
+					{
+						start--;
+					}
+					if (end > i)
+					{
+						end--;
+					}
+					_pendingSelection = (start, end - start);
+				}
+
+				builder.Append('\r');
+				i++;
+			}
+			else
+			{
+				builder.Append(c);
+			}
+		}
+
+		baseString = builder.ToString();
+		return baseString;
+	}
+
 	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
 	{
 		if (_isSkiaTextBox)
@@ -1254,15 +1288,7 @@ public partial class TextBox
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
 
-			if (Text == newText)
-			{
-				// OnTextChanged won't fire, so we immediately change the selection
-				Select(selectionStart + clipboardText.Length, 0);
-			}
-			else
-			{
-				_pendingSelection = (selectionStart + clipboardText.Length, 0);
-			}
+			_pendingSelection = (selectionStart + clipboardText.Length, 0);
 		}
 	}
 
