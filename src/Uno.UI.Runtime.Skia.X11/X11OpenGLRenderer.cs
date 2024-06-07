@@ -34,7 +34,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		void IX11Renderer.InvalidateRender()
 		{
-			using var _1 = X11Helper.XLock(_x11Window.Display);
+			using var lockDiposable = X11Helper.XLock(_x11Window.Display);
 
 			if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 			{
@@ -65,7 +65,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 
 			XWindowAttributes attributes = default;
-			var _2 = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
+			_ = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
 
 			var width = attributes.width;
 			var height = attributes.height;
@@ -97,7 +97,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
+					// Unlike the other skia platforms, we don't have multiple "layers",
+					// but we draw everything on top of the native windows and then "cutout holes"
+					// in this top rendered area to see the native windows, so we render twice
+					// with isPopupSurface = true and false
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, false);
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, true);
 				}
 			}
 
@@ -105,7 +110,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			GlxInterface.glXSwapBuffers(_x11Window.Display, _x11Window.Window);
 
-			var _3 = XLib.XFlush(_x11Window.Display); // unnecessary on most X11 implementations
+			_ = XLib.XFlush(_x11Window.Display); // unnecessary on most X11 implementations
 		}
 
 		private GRContext CreateGRGLContext()

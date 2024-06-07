@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Globalization;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -31,19 +30,19 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		get
 		{
-			using var _1 = X11Helper.XLock(_host.X11Window.Display);
+			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
 			var @out = string.Empty;
-			var _2 = XLib.XFetchName(_host.X11Window.Display, _host.X11Window.Window, ref @out);
+			_ = XLib.XFetchName(_host.RootX11Window.Display, _host.RootX11Window.Window, ref @out);
 			return @out;
 		}
 		set
 		{
-			using var _1 = X11Helper.XLock(_host.X11Window.Display);
-			var _2 = XLib.XStoreName(_host.X11Window.Display, _host.X11Window.Window, value);
+			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+			_ = XLib.XStoreName(_host.RootX11Window.Display, _host.RootX11Window.Window, value);
 		}
 	}
 
-	public override object NativeWindow => _host.X11Window;
+	public override object NativeWindow => _host.RootX11Window;
 
 	private void RaiseNativeSizeChanged(Size newWindowSize)
 	{
@@ -59,8 +58,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		if (NativeWindow is X11Window x11Window)
 		{
-			using var _ = X11Helper.XLock(x11Window.Display);
-			var _1 = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
+			using var lockDiposable = X11Helper.XLock(x11Window.Display);
+			_ = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
 
 			// We could send _NET_ACTIVE_WINDOW as well, although it doesn't seem to be needed (and only works with EWMH-compliant WMs)
 			// XClientMessageEvent xclient = default;
@@ -74,8 +73,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 			//
 			// XEvent xev = default;
 			// xev.ClientMessageEvent = xclient;
-			// var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
-			// var _3 = XLib.XFlush(x11Window.Display);
+			// _ = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+			// _ = XLib.XFlush(x11Window.Display);
 		}
 	}
 
@@ -89,8 +88,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		using (X11Helper.XLock(x11Window.Display))
 		{
 			X11XamlRootHost.Close(x11Window);
-			var _1 = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
-			var _2 = XLib.XFlush(x11Window.Display);
 		}
 
 		RaiseClosed();
@@ -139,7 +136,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new X11NativeOverlappedPresenter(_host.X11Window, this));
+		presenter.SetNative(new X11NativeOverlappedPresenter(_host.RootX11Window, this));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 
@@ -153,9 +150,9 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	internal void SetFullScreenMode(bool on)
 	{
 		X11Helper.SetWMHints(
-			_host.X11Window,
-			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE),
+			_host.RootX11Window,
+			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE),
 			on ? 1 : 0,
-			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
+			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
 	}
 }

@@ -24,6 +24,7 @@ namespace Microsoft.UI.Composition
 		private float _opacity = 1.0f;
 		private CompositionCompositeMode _compositeMode;
 		private ICompositionTarget? _compositionTarget;
+		private ContainerVisual? _parent;
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
@@ -122,7 +123,17 @@ namespace Microsoft.UI.Composition
 
 		partial void OnRotationAxisChanged(Vector3 value);
 
-		public ContainerVisual? Parent { get; set; }
+		public ContainerVisual? Parent
+		{
+			get => _parent;
+			set
+			{
+				_parent = value;
+#if __SKIA__
+				SetAsPopupVisual(value?._isPopupVisual ?? false, inherited: true);
+#endif
+			}
+		}
 
 		internal ICompositionTarget? CompositionTarget
 		{

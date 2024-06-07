@@ -668,9 +668,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			ContentTemplateRoot = null;
 		}
 
-		TryRegisterNativeElement(newValue);
-
 		TrySetDataContextFromContent(newValue);
+
+		if (IsLoaded)
+		{
+			TryRegisterNativeElement(oldValue, newValue);
+		}
 
 		SetUpdateTemplate();
 	}
@@ -851,8 +854,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();
 #endif
-
-		TryAttachNativeElement();
 	}
 #endif
 
@@ -873,16 +874,26 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
-
-		TryAttachNativeElement();
 #endif
+
+		if (!IsNativeHost)
+		{
+			TryRegisterNativeElement(null, Content);
+		}
+		if (IsNativeHost)
+		{
+			AttachNativeElement();
+		}
 	}
 
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
 
-		TryDetachNativeElement();
+		if (IsNativeHost)
+		{
+			DetachNativeElement(Content);
+		}
 	}
 
 	private bool ResetDataContextOnFirstLoad()
@@ -1131,8 +1142,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				contentSize.Height);
 
 			ArrangeElement(child, arrangeRect);
-
-			ArrangeNativeElement(arrangeRect);
 		}
 
 		return finalSize;
@@ -1201,7 +1210,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		);
 
 #if UNO_SUPPORTS_NATIVEHOST
-		measuredSize = MeasureNativeElement(measuredSize);
+		if (IsNativeHost)
+		{
+			measuredSize = MeasureNativeElement(measuredSize, size);
+		}
 #endif
 
 		return new Size(
@@ -1219,22 +1231,17 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <summary>
 	/// Registers the provided native element in the native shell
 	/// </summary>
-	partial void TryRegisterNativeElement(object newValue);
+	partial void TryRegisterNativeElement(object oldValue, object newValue);
 
 	/// <summary>
 	/// Attaches the current native element in the native shell
 	/// </summary>
-	partial void TryAttachNativeElement();
+	partial void AttachNativeElement();
 
 	/// <summary>
 	/// Detaches the current native element from the native shell
 	/// </summary>
-	partial void TryDetachNativeElement();
-
-	/// <summary>
-	/// Arranges the native element in the native shell
-	/// </summary>
-	partial void ArrangeNativeElement(Rect arrangeRect);
+	partial void DetachNativeElement(object content);
 
 #if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();

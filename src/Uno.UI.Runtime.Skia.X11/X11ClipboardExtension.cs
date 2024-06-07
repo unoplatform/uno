@@ -99,7 +99,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 	{
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
 
-		using var _1 = X11Helper.XLock(display);
+		using var lockDiposable = X11Helper.XLock(display);
 
 		if (display == IntPtr.Zero)
 		{
@@ -122,7 +122,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			XLib.XBlackPixel(display, screen),
 			XLib.XWhitePixel(display, screen));
 
-		var _2 = XLib.XFlush(display); // unnecessary on most Xlib implementations
+		_ = XLib.XFlush(display); // unnecessary on most Xlib implementations
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -161,11 +161,11 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 	public void SetContent(DataPackage content)
 	{
-		using var _1 = X11Helper.XLock(_x11Window.Display);
+		using var lockDiposable = X11Helper.XLock(_x11Window.Display);
 
 		_ownershipTimestamp = GetTimestamp();
 		// Similar open issue for Gtk: https://github.com/unoplatform/uno/issues/14945
-		var _2 = XLib.XSetSelectionOwner(
+		_ = XLib.XSetSelectionOwner(
 			_x11Window.Display,
 			X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD),
 			_x11Window.Window,
@@ -196,13 +196,13 @@ internal class X11ClipboardExtension : IClipboardExtension
 	/// <remarks>We need an additional target parameter to support the recursive MULTIPLE</remarks>
 	private bool SwitchTargets(IntPtr requestor, IntPtr target, IntPtr property)
 	{
-		using var _1 = X11Helper.XLock(_x11Window.Display);
+		using var lockDiposable = X11Helper.XLock(_x11Window.Display);
 
 		var targetName = XLib.GetAtomName(_x11Window.Display, target);
 		if (target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TIMESTAMP))
 		{
 			/* Return timestamp used to acquire ownership if target is TIMESTAMP */
-			var _2 = XLib.XChangeProperty(
+			_ = XLib.XChangeProperty(
 				_x11Window.Display,
 				requestor,
 				property,
@@ -215,7 +215,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		else if (target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TARGETS))
 		{
 			var atoms = _supportedAtoms.Concat(TextFormats.Keys.Select(name => X11Helper.GetAtom(_x11Window.Display, name))).ToArray();
-			var _2 = XLib.XChangeProperty(
+			_ = XLib.XChangeProperty(
 				_x11Window.Display,
 				requestor,
 				property,
@@ -239,7 +239,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 					this.Log().Trace("XCLIP: sending string to requestor.");
 				}
 				var bytes = encoding.GetBytes(s);
-				var _2 = XLib.XChangeProperty(
+				_ = XLib.XChangeProperty(
 					_x11Window.Display,
 					requestor,
 					property,
@@ -255,7 +255,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				{
 					this.Log().Trace("XCLIP: couldn't sending byte[] to requestor.");
 				}
-				var _2 = XLib.XChangeProperty(
+				_ = XLib.XChangeProperty(
 					_x11Window.Display,
 					requestor,
 					property,
@@ -284,7 +284,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				_clipboardData.GetTextAsync().GetResults() :
 				_clipboardData.GetUriAsync().GetResults().ToString(); // TODO: is this deadlock-proof?
 			var bytes = encoding2.GetBytes(s);
-			var _2 = XLib.XChangeProperty(
+			_ = XLib.XChangeProperty(
 				_x11Window.Display,
 				requestor,
 				property,
@@ -303,7 +303,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			}
 			var s = _clipboardData.GetHtmlFormatAsync().GetResults(); // TODO: is this deadlock-proof?
 			var bytes = Encoding.GetEncoding(s).GetBytes(s);
-			var _2 = XLib.XChangeProperty(
+			_ = XLib.XChangeProperty(
 				_x11Window.Display,
 				requestor,
 				property,
@@ -324,7 +324,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				return false;
 			}
 
-			var _2 = XLib.XGetWindowProperty(
+			_ = XLib.XGetWindowProperty(
 				_x11Window.Display,
 				requestor,
 				property,
@@ -337,7 +337,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				out var length,
 				out IntPtr _,
 				out IntPtr atomsArray);
-			using var _3 = Disposable.Create(() =>
+			using var atomsDisposable = Disposable.Create(() =>
 			{
 				var _ = XLib.XFree(atomsArray);
 			});
@@ -374,7 +374,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				{
 					this.Log().Trace($"XCLIP: sending {targetName} data to requestor.");
 				}
-				var _2 = XLib.XChangeProperty(
+				_ = XLib.XChangeProperty(
 					_x11Window.Display,
 					requestor,
 					property,
@@ -601,7 +601,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 	public static IntPtr[] WaitForFormats(X11Window x11Window, IntPtr selection)
 	{
-		using var _1 = X11Helper.XLock(x11Window.Display);
+		using var lockDiposable = X11Helper.XLock(x11Window.Display);
 
 		if (!HasOwner(x11Window, X11Helper.GetAtom(x11Window.Display, X11Helper.CLIPBOARD)))
 		{
@@ -614,7 +614,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		}
 
 		var targetsAtom = X11Helper.GetAtom(x11Window.Display, X11Helper.TARGETS);
-		var _2 = XLib.XConvertSelection(
+		_ = XLib.XConvertSelection(
 			x11Window.Display,
 			selection,
 			targetsAtom,
@@ -624,7 +624,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		// We don't need an event mask here as Selection events aren't maskable.
 
-		var _3 = XLib.XNextEvent(x11Window.Display, out var event_);
+		_ = XLib.XNextEvent(x11Window.Display, out var event_);
 
 		while (event_.type != XEventName.SelectionNotify)
 		{
@@ -633,7 +633,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				typeof(X11ClipboardExtension).Log().Debug($"{nameof(WaitForFormats)}: Unexpected X {event_.type} event while waiting for clipboard formats.");
 			}
 
-			var _4 = XLib.XNextEvent(x11Window.Display, out event_);
+			_ = XLib.XNextEvent(x11Window.Display, out event_);
 		}
 
 		var sel = event_.SelectionEvent;
@@ -660,7 +660,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			typeof(X11ClipboardExtension).Log().Trace($"{nameof(WaitForFormats)}: XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
 		}
 
-		var _5 = XLib.XGetWindowProperty(
+		_ = XLib.XGetWindowProperty(
 			x11Window.Display,
 			x11Window.Window,
 			sel.property,
@@ -673,7 +673,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			out var nitems,
 			out var _,
 			out var prop);
-		using var _6 = Disposable.Create(() =>
+		using var propDisposable = Disposable.Create(() =>
 		{
 			var _ = XLib.XFree(prop);
 		});
@@ -712,11 +712,11 @@ internal class X11ClipboardExtension : IClipboardExtension
 			return null;
 		}
 
-		var _2 = XLib.XConvertSelection(x11Window.Display, selection, format, format,
+		_ = XLib.XConvertSelection(x11Window.Display, selection, format, format,
 			x11Window.Window, X11Helper.CurrentTime);
 
 		// We don't need an event mask here as Selection events aren't maskable.
-		var _3 = XLib.XNextEvent(x11Window.Display, out var event_);
+		_ = XLib.XNextEvent(x11Window.Display, out var event_);
 
 		while (event_.type != XEventName.SelectionNotify)
 		{
@@ -725,7 +725,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				typeof(X11ClipboardExtension).Log().Debug($"{nameof(WaitForBytes)}: Unexpected {event_.type} event while waiting for clipboard data.");
 			}
 
-			var _4 = XLib.XNextEvent(x11Window.Display, out event_);
+			_ = XLib.XNextEvent(x11Window.Display, out event_);
 		}
 
 		var sel = event_.SelectionEvent;
@@ -752,7 +752,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			typeof(X11ClipboardExtension).Log().Trace($"{nameof(WaitForBytes)}: XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
 		}
 
-		var _5 = XLib.XGetWindowProperty(
+		_ = XLib.XGetWindowProperty(
 			x11Window.Display,
 			x11Window.Window,
 			sel.property,
@@ -768,7 +768,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		var readonlyProp = prop;
 		using var propDisposable = Disposable.Create(() =>
 		{
-			var _ = XLib.XFree(readonlyProp);
+			_ = XLib.XFree(readonlyProp);
 		});
 
 		var incrAtom = X11Helper.GetAtom(x11Window.Display, X11Helper.INCR);
@@ -783,17 +783,17 @@ internal class X11ClipboardExtension : IClipboardExtension
 			// prop contains a lower bound on the number of bytes, maybe we should use that to set the initial capacity somehow?
 			var stream = new MemoryStream();
 
-			var _6 = XLib.XDeleteProperty(x11Window.Display, x11Window.Window, sel.property);
-			var _7 = XLib.XFlush(x11Window.Display); // just a precaution
+			_ = XLib.XDeleteProperty(x11Window.Display, x11Window.Window, sel.property);
+			_ = XLib.XFlush(x11Window.Display); // just a precaution
 
 			XWindowAttributes attributes = default;
-			var _8 = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
+			_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
 
 			using var maskDisposable = Disposable.Create(() =>
 			{
-				var _ = XLib.XSelectInput(x11Window.Display, x11Window.Window, attributes.your_event_mask);
+				_ = XLib.XSelectInput(x11Window.Display, x11Window.Window, attributes.your_event_mask);
 			});
-			var _9 = XLib.XSelectInput(x11Window.Display, x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+			_ = XLib.XSelectInput(x11Window.Display, x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
 
 			while (true)
 			{
@@ -807,14 +807,14 @@ internal class X11ClipboardExtension : IClipboardExtension
 					return null;
 				}
 
-				var _10 = XLib.XNextEvent(x11Window.Display, out event_);
+				_ = XLib.XNextEvent(x11Window.Display, out event_);
 
 				if (event_.type != XEventName.PropertyNotify || event_.PropertyEvent.state != X11Helper.PropertyNewValue)
 				{
 					continue;
 				}
 
-				var _11 = XLib.XGetWindowProperty(
+				_ = XLib.XGetWindowProperty(
 					x11Window.Display,
 					x11Window.Window,
 					sel.property,
@@ -922,20 +922,20 @@ internal class X11ClipboardExtension : IClipboardExtension
 	private IntPtr GetTimestamp()
 	{
 		XWindowAttributes attributes = default;
-		var _1 = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
+		_ = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
 
 		using var maskDisposable = Disposable.Create(() =>
 		{
-			var _ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, attributes.your_event_mask);
+			_ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, attributes.your_event_mask);
 		});
-		var _2 = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+		_ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace("XCLIP: Setting dummy prop on window to get timestamp");
 		}
 
-		var _3 = XLib.XChangeProperty(
+		_ = XLib.XChangeProperty(
 			_x11Window.Display,
 			_x11Window.Window,
 			X11Helper.GetAtom(_x11Window.Display, "DUMMY_PROP_TO_GET_TIMESTAMP"),
@@ -952,7 +952,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				this.Log().Trace("XCLIP: Waiting for PropertyNotify to get server timestamp.");
 			}
 
-			var _4 = XLib.XNextEvent(_x11Window.Display, out var event_);
+			_ = XLib.XNextEvent(_x11Window.Display, out var event_);
 
 			if (event_.type == XEventName.PropertyNotify)
 			{

@@ -9,9 +9,11 @@ using System.Windows.Shell;
 using Windows.ApplicationModel.Core;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
+using WpfControl = System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -37,8 +39,8 @@ internal class UnoWpfWindow : WpfWindow
 			Height = (int)preferredWindowSize.Height;
 		}
 
-		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
-		WpfManager.XamlRootMap.Register(xamlRoot, Host);
+		Host = new UnoCompositeWindowHost(this, winUIWindow);
+		WpfManager.XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
@@ -75,7 +77,7 @@ internal class UnoWpfWindow : WpfWindow
 		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
-	internal UnoWpfWindowHost Host { get; private set; }
+	internal WpfControl Host { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 

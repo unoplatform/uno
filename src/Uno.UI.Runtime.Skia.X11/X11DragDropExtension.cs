@@ -47,7 +47,7 @@ internal class X11DragDropExtension : IDragDropExtension
 	private readonly DragDropManager _manager;
 	private XdndSession? _currentSession;
 
-	private IntPtr XdndSelection => X11Helper.GetAtom(_host.X11Window.Display, X11Helper.XdndSelection);
+	private IntPtr XdndSelection => X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XdndSelection);
 
 	public X11DragDropExtension(DragDropManager manager)
 	{
@@ -59,44 +59,44 @@ internal class X11DragDropExtension : IDragDropExtension
 		_manager = manager;
 		_coreDragDropManager = XamlRoot.GetCoreDragDropManager(((IXamlRootHost)_host).RootElement!.XamlRoot);
 
-		var display = _host.X11Window.Display;
-		using var _1 = X11Helper.XLock(display);
-		var _2 = XLib.XChangeProperty(
+		var display = _host.RootX11Window.Display;
+		using var lockDiposable = X11Helper.XLock(display);
+		_ = XLib.XChangeProperty(
 			display,
-			_host.X11Window.Window,
+			_host.RootX11Window.Window,
 			X11Helper.GetAtom(display, X11Helper.XdndAware),
 			X11Helper.GetAtom(display, X11Helper.XA_ATOM),
 			32,
 			PropertyMode.Replace,
 			new byte[] { 5 }, // version 5
 			1);
-		var _3 = XLib.XFlush(display);
+		_ = XLib.XFlush(display);
 
 		_host.SetDragDropExtension(this);
 	}
 
 	public void ProcessXdndMessage(XClientMessageEvent ev)
 	{
-		using var _1 = X11Helper.XLock(_host.X11Window.Display);
+		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"XDnd EVENT for window {ev.window}: message_type={XLib.GetAtomName(_host.X11Window.Display, ev.message_type)} data: {ev.ptr1.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr2.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr3.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr4.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr5.ToString("X", CultureInfo.InvariantCulture)}");
+			this.Log().Trace($"XDnd EVENT for window {ev.window}: message_type={XLib.GetAtomName(_host.RootX11Window.Display, ev.message_type)} data: {ev.ptr1.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr2.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr3.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr4.ToString("X", CultureInfo.InvariantCulture)}, {ev.ptr5.ToString("X", CultureInfo.InvariantCulture)}");
 		}
 
-		if (ev.message_type == X11Helper.GetAtom(_host.X11Window.Display, X11Helper.XdndEnter))
+		if (ev.message_type == X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XdndEnter))
 		{
 			ProcessXdndEnter(ev);
 		}
-		else if (ev.message_type == X11Helper.GetAtom(_host.X11Window.Display, X11Helper.XdndPosition))
+		else if (ev.message_type == X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XdndPosition))
 		{
 			ProcessXdndPosition(ev);
 		}
-		else if (ev.message_type == X11Helper.GetAtom(_host.X11Window.Display, X11Helper.XdndLeave))
+		else if (ev.message_type == X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XdndLeave))
 		{
 			ProcessXdndLeave(ev);
 		}
-		else if (ev.message_type == X11Helper.GetAtom(_host.X11Window.Display, X11Helper.XdndDrop))
+		else if (ev.message_type == X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XdndDrop))
 		{
 			ProcessXdndDrop(ev);
 		}
@@ -113,18 +113,18 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"XDndEnter: version={version}, sourceWindow={sourceWindow}, types in message: [{XLib.GetAtomName(_host.X11Window.Display, ev.ptr3)}, {XLib.GetAtomName(_host.X11Window.Display, ev.ptr4)}, {XLib.GetAtomName(_host.X11Window.Display, ev.ptr5)}]");
+			this.Log().Trace($"XDndEnter: version={version}, sourceWindow={sourceWindow}, types in message: [{XLib.GetAtomName(_host.RootX11Window.Display, ev.ptr3)}, {XLib.GetAtomName(_host.RootX11Window.Display, ev.ptr4)}, {XLib.GetAtomName(_host.RootX11Window.Display, ev.ptr5)}]");
 		}
 
 		var moreThan3Types = ev.ptr2 & 1;
 
 		var types = moreThan3Types == IntPtr.Zero ?
 			new[] { ev.ptr3, ev.ptr4, ev.ptr5 } :
-			X11ClipboardExtension.WaitForFormats(_host.X11Window, XdndSelection);
+			X11ClipboardExtension.WaitForFormats(_host.RootX11Window, XdndSelection);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"XDndEnter: total types received {types.Select(t => XLib.GetAtomName(_host.X11Window.Display, t)).ToList()}");
+			this.Log().Trace($"XDndEnter: total types received {types.Select(t => XLib.GetAtomName(_host.RootX11Window.Display, t)).ToList()}");
 		}
 
 		_currentSession = new XdndSession(version, sourceWindow, types, false, null, null, null);
@@ -142,16 +142,16 @@ internal class X11DragDropExtension : IDragDropExtension
 			return;
 		}
 
-		var display = _host.X11Window.Display;
+		var display = _host.RootX11Window.Display;
 
 		var sourceWindow = ev.ptr1;
 		var rootX = (int)(ev.ptr3 >> 16);
 		var rootY = (int)(ev.ptr3 & 0xffff);
 
-		var _1 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
+		_ = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
 		XWindowAttributes windowAttrs = default;
-		var _2 = XLib.XGetWindowAttributes(display, _host.X11Window.Window, ref windowAttrs);
-		XLib.XTranslateCoordinates(display, root, _host.X11Window.Window, rootX, rootY, out var x, out var y, out _);
+		_ = XLib.XGetWindowAttributes(display, _host.RootX11Window.Window, ref windowAttrs);
+		XLib.XTranslateCoordinates(display, root, _host.RootX11Window.Window, rootX, rootY, out var x, out var y, out _);
 
 		if (!_currentSession.Value.EnterFired)
 		{
@@ -160,7 +160,7 @@ internal class X11DragDropExtension : IDragDropExtension
 			var formats = _currentSession.Value.AvailableFormats;
 			if (formats.FirstOrDefault(f => X11ClipboardExtension.TextFormats.ContainsKey(XLib.GetAtomName(display, f))) is var f2 && f2 != IntPtr.Zero)
 			{
-				package.SetText(X11ClipboardExtension.WaitForText(_host.X11Window, f2, XdndSelection));
+				package.SetText(X11ClipboardExtension.WaitForText(_host.RootX11Window, f2, XdndSelection));
 			}
 
 			// TODO: other operations
@@ -195,7 +195,7 @@ internal class X11DragDropExtension : IDragDropExtension
 		m.window = sourceWindow;
 		m.message_type = X11Helper.GetAtom(display, X11Helper.XdndStatus);
 		m.format = 32;
-		m.ptr1 = _host.X11Window.Window;
+		m.ptr1 = _host.RootX11Window.Window;
 		m.ptr2 = acceptedOperations != DataPackageOperation.None ? 1 : 0;
 		// This is an optimization mechanism that tells Xdnd not to send new XdndPosition events until the pointer exits the widget it's in.
 		// We skip this with an empty rectangle.
@@ -205,8 +205,8 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		XEvent xev = default;
 		xev.ClientMessageEvent = m;
-		var _3 = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
-		var _4 = XLib.XFlush(display);
+		_ = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
+		_ = XLib.XFlush(display);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -239,7 +239,7 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		var sourceWindow = ev.ptr1;
 
-		var display = _host.X11Window.Display;
+		var display = _host.RootX11Window.Display;
 
 		// We already cached the data, so no need to first retrieve it. We directly send XdndFinished
 		XClientMessageEvent m = default;
@@ -248,15 +248,15 @@ internal class X11DragDropExtension : IDragDropExtension
 		m.window = sourceWindow;
 		m.message_type = X11Helper.GetAtom(display, X11Helper.XdndFinished);
 		m.format = 32;
-		m.ptr1 = _host.X11Window.Window;
+		m.ptr1 = _host.RootX11Window.Window;
 		m.ptr2 = 0;
 		// TODO: support other actions and read from acceptedOperation
 		m.ptr3 = acceptedOperation is not DataPackageOperation.None ? X11Helper.GetAtom(display, X11Helper.XdndActionCopy) : X11Helper.None;
 
 		XEvent xev = default;
 		xev.ClientMessageEvent = m;
-		var _1 = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
-		var _2 = XLib.XFlush(display);
+		_ = XLib.XSendEvent(display, ev.ptr1, false, IntPtr.Zero /* NoEventMask */, ref xev);
+		_ = XLib.XFlush(display);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
