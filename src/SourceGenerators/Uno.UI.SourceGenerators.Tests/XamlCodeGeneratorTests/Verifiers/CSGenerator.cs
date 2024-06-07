@@ -60,10 +60,6 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				: base(new[] { xamlFile }, testFilePath, ShortName(testMethodName)) // We use only upper-cased char to reduce length of filename push to git)
 			{
 			}
-			public Test(XamlFile xamlFile, Dictionary<string, string> globalConfigOverride, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
-				: base(new[] { xamlFile }, testFilePath, ShortName(testMethodName), globalConfigOverride) // We use only upper-cased char to reduce length of filename push to git)
-			{
-			}
 
 			public Test(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 				: base(xamlFiles, testFilePath, ShortName(testMethodName))
@@ -80,23 +76,51 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			private readonly string _testMethodName;
 			private const string TestOutputFolderName = "Out";
 
+			private readonly XamlFile[] _xamlFiles;
+
 			public bool EnableFuzzyMatching { get; set; } = true;
 			public bool DisableBuildReferences { get; set; }
-			public string? XamlIncludedNamespaces { get; set; }
+			public Dictionary<string, string>? GlobalConfigOverride { get; set; }
 
-			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "", Dictionary<string, string>? globalConfigOverride = null)
-				: this(new[] { xamlFile }, testFilePath, testMethodName, globalConfigOverride)
+			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: this([xamlFile], testFilePath, testMethodName)
 			{
 			}
 
 			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName)
-				: this(xamlFiles, testFilePath, testMethodName, null)
-			{ }
-
-			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName, Dictionary<string, string>? globalConfigOverride)
 			{
+				_xamlFiles = xamlFiles;
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
+
+				ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
+
+#if WRITE_EXPECTED
+				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
+#endif
+			}
+
+			protected override async Task RunImplAsync(CancellationToken cancellationToken)
+			{
+				string? includeXamlNamespaces = null;
+				string? excludeXamlNamespaces = null;
+				if (ReferenceAssemblies.Packages.Any(p => p.Id.StartsWith("Microsoft.Android.Ref", StringComparison.OrdinalIgnoreCase)))
+				{
+					includeXamlNamespaces = "android,not_ios,not_wasm,not_macos,not_skia,not_netstdref";
+					excludeXamlNamespaces = "ios,wasm,macos,skia,not_android";
+				}
+				else if (ReferenceAssemblies.Packages.Any(p =>
+					p.Id.StartsWith("Microsoft.iOS.Ref", StringComparison.OrdinalIgnoreCase) ||
+					p.Id.StartsWith("Microsoft.MacCatalyst.Ref", StringComparison.OrdinalIgnoreCase)))
+				{
+					includeXamlNamespaces = "ios,not_android,not_wasm,not_macos,not_skia,not_netstdref";
+					excludeXamlNamespaces = "android,wasm,macos,skia,not_ios";
+				}
+				else if (ReferenceAssemblies.Packages.Any(p => p.Id.StartsWith("Microsoft.macOS.Ref", StringComparison.OrdinalIgnoreCase)))
+				{
+					includeXamlNamespaces = "macos,not_android,not_wasm,not_ios,not_skia,not_netstdref";
+					excludeXamlNamespaces = "android,ios,wasm,skia,not_macos";
+				}
 
 				var defaultConfig = new Dictionary<string, string>
 				{
@@ -105,9 +129,19 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 					{ "build_property.RootNamespace", "MyProject" },
 					{ "build_property.UnoForceHotReloadCodeGen", "false" },
 					{ "build_property.UnoEnableXamlFuzzyMatching", "false" },
-					{ "build_property.IncludeXamlNamespacesProperty", "android" },
 				};
 
+				if (includeXamlNamespaces is not null)
+				{
+					defaultConfig.Add("build_property.IncludeXamlNamespacesProperty", includeXamlNamespaces);
+				}
+
+				if (excludeXamlNamespaces is not null)
+				{
+					defaultConfig.Add("build_property.ExcludeXamlNamespacesProperty", excludeXamlNamespaces);
+				}
+
+				var globalConfigOverride = GlobalConfigOverride;
 				if (globalConfigOverride is null)
 				{
 					globalConfigOverride = new Dictionary<string, string>();
@@ -130,20 +164,16 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 				globalConfigBuilder.AppendLine();
 
-				foreach (var xamlFile in xamlFiles)
+				foreach (var xamlFile in _xamlFiles)
 				{
 					globalConfigBuilder.Append($@"[C:/Project/0/{xamlFile.FileName}]
 build_metadata.AdditionalFiles.SourceItemGroup = Page
 ");
 					TestState.AdditionalFiles.Add(($"C:/Project/0/{xamlFile.FileName}", xamlFile.Contents));
 				}
+
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
-
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
-
-#if WRITE_EXPECTED
-				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
-#endif
+				await base.RunImplAsync(cancellationToken);
 			}
 
 			public IEnumerable<string> PreprocessorSymbols { get; set; } = ImmutableArray<string>.Empty;

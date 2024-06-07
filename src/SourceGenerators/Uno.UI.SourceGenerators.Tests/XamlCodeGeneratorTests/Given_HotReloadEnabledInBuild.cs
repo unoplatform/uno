@@ -34,7 +34,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -59,6 +59,7 @@ public class Given_HotReloadEnabledInBuild
 			},
 			ReferenceAssemblies = _net7Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -87,7 +88,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -112,6 +113,7 @@ public class Given_HotReloadEnabledInBuild
 			},
 			ReferenceAssemblies = _net7Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -137,7 +139,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -162,6 +164,7 @@ public class Given_HotReloadEnabledInBuild
 			},
 			ReferenceAssemblies = _net7Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -196,7 +199,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -221,6 +224,7 @@ public class Given_HotReloadEnabledInBuild
 			},
 			ReferenceAssemblies = _net7Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -240,10 +244,11 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			ReferenceAssemblies = _net7Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -304,7 +309,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -329,6 +334,7 @@ public class Given_HotReloadEnabledInBuild
 			},
 			ReferenceAssemblies = _net7Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
