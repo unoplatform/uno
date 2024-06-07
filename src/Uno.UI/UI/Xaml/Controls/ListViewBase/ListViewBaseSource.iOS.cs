@@ -834,9 +834,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			set
 			{
+				base.Frame = value;
+				
 				try
 				{
-					base.Frame = value;
 					UpdateContentViewFrame();
 				}
 				catch (Exception ex)
