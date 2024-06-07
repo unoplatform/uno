@@ -33,7 +33,7 @@ To package your app:
 
 To package your app for the Microsoft App Store, the process is similar to creating a self-signed app package with just a minor difference:
 
-- Instead of linking to a self-signed certificate, associate your project with a Microsoft Store Application by right cliking on your project project in the solution explorer, then the **Publish**, **Associate App with Store...** menu item.
+- Instead of linking to a self-signed certificate, associate your project with a Microsoft Store Application by right-clicking on your project in the solution explorer, then the **Publish**, **Associate App with Store...** menu item.
 - Build the app on the command line with the following command:
 
   ```shell
