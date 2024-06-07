@@ -53,6 +53,7 @@ To bundle the individual msix packages, move them all to a common folder, for ex
 
 > [!TIP]
 > The `makeappx.exe` tool is also available from the environment when opening a [**Developer Command Prompt for VS 2022**](https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022)
+
 ## Considerations for solutions with class library projects
 
 If your app references multiple library projects, you will need to split the above build command into two parts, one to restore NuGet packages, and the other one to create the package.
