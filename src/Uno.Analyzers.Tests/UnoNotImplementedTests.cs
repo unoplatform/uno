@@ -403,5 +403,68 @@ namespace Uno.Analyzers.Tests
 
 			await TestWithPreprocessorDirective(test, new[] { "UNO_REFERENCE_API" });
 		}
+
+		[TestMethod]
+		public async Task When_TypeOf_Included()
+		{
+			var test = """
+				using System;
+
+				namespace Uno
+				{
+					[NotImplemented("__ANDROID__")]
+					public class TestClass
+					{
+					}
+				}
+
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							_ = [|typeof(Uno.TestClass)|];
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
+
+			await TestWithPreprocessorDirective(test, new[] { "__ANDROID__" });
+		}
+
+		[TestMethod]
+		public async Task When_MethodReference_Included()
+		{
+			var test = """
+				using System;
+
+				namespace Uno
+				{
+					public class TestClass
+					{
+						[NotImplemented("__ANDROID__")]
+						public void M()
+						{
+						}
+					}
+				}
+
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var x = new Uno.TestClass();
+							Action action = [|x.M|];
+							action();
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
+
+			await TestWithPreprocessorDirective(test, new[] { "__ANDROID__" });
+		}
 	}
 }
