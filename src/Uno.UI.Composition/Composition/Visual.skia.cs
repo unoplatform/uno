@@ -26,9 +26,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
-#pragma warning disable CS0414 // Field is assigned but its value is never used
 	private bool _requiresRepaint;
-#pragma warning restore CS0414 // Field is assigned but its value is never used
 	private SKPicture? _picture;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty;
