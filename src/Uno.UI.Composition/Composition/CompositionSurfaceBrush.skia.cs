@@ -81,6 +81,11 @@ namespace Microsoft.UI.Composition
 			{
 				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
 
+				if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
+				{
+					return;
+				}
+
 				// Adding image downscaling in the shader matrix directly is very blurry
 				// since the default downsampler in Skia is really low quality (but really fast).
 				// We force Lanczos instead.
