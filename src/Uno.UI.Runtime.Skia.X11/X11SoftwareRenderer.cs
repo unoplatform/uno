@@ -6,7 +6,7 @@ using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	internal class X11SoftwareRenderer(IXamlRootHost host, X11Window x11window, uint colorDepth) : IX11Renderer
+	internal class X11SoftwareRenderer(IXamlRootHost host, X11Window x11window) : IX11Renderer
 	{
 		private const int BitmapPad = 32;
 
@@ -82,7 +82,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			_xImage ??= X11Helper.XCreateImage(
 				display: x11window.Display,
 				visual: /* CopyFromParent */ 0,
-				depth: colorDepth,
+				depth: (uint)attributes.depth,
 				format: /* ZPixmap */ 2,
 				offset: 0,
 				data: _bitmap.GetPixels(),

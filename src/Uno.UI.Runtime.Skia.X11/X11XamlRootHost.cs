@@ -315,7 +315,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		IntPtr window;
-		uint depth = DefaultColorDepth;
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
 			_x11Window = CreateGLXWindow(display, screen, size);
@@ -323,7 +322,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			(window, depth) = CreateSoftwareRenderWindow(display, screen, size);
+			window = CreateSoftwareRenderWindow(display, screen, size);
+			XLib.XSelectInput(display, window, EventsMask);
 			_x11Window = new X11Window(display, window);
 		}
 
@@ -346,7 +346,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			_renderer = new X11SoftwareRenderer(this, _x11Window.Value, depth);
+			_renderer = new X11SoftwareRenderer(this, _x11Window.Value);
 		}
 	}
 
@@ -421,7 +421,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
-	private (IntPtr window, uint depth) CreateSoftwareRenderWindow(IntPtr display, int screen, Size size)
+	private IntPtr CreateSoftwareRenderWindow(IntPtr display, int screen, Size size)
 	{
 		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
 		var success = matchVisualInfoResult != 0;
@@ -470,8 +470,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var window = XLib.XCreateWindow(display, rootWindow, 0, 0, (int)size.Width,
 			(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
 			(UIntPtr)(valueMask), ref xSetWindowAttributes);
-		XLib.XSelectInput(display, window, EventsMask);
-		return (window, depth);
+		return window;
 	}
 
 	private bool IsOpenGLSupported(IntPtr display)
