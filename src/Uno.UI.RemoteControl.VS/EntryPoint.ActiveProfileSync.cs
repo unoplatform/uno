@@ -19,6 +19,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Xml;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio;
@@ -227,11 +228,9 @@ public partial class EntryPoint : IDisposable
 							// properly keeps the value.
 							await WriteProjectUserSettingsAsync(newFramework);
 
-							// Unload project
-							solution4.UnloadProject(ref projectGuid, (uint)_VSProjectUnloadStatus.UNLOADSTATUS_UnloadedByUser);
-
-							// Reload project
-							solution4.ReloadProject(ref projectGuid);
+							// Reload the project in-place. This allows to keep files related to
+							// this project opened even when reloading.
+							startupProject.ReloadProjectInSolution();
 
 							var sw2 = Stopwatch.StartNew();
 
