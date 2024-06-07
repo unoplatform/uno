@@ -79,20 +79,13 @@ namespace Microsoft.UI.Composition
 		{
 			if (TryGetSkiaCompositionSurface(Surface, out var scs))
 			{
-				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
-
-				// Adding image downscaling in the shader matrix directly is very blurry
-				// since the default downsampler in Skia is really low quality (but really fast).
-				// We force Lanczos instead.
-				// https://github.com/mono/SkiaSharp/issues/520#issuecomment-444973518
-#pragma warning disable CS0612 // Type or member is obsolete
-				var resizedBitmap = scs.Image.ToSKBitmap().Resize(scs.Image.Info.WithSize((int)backgroundArea.Size.Width, (int)backgroundArea.Size.Height), SKBitmapResizeMethod.Lanczos3.ToFilterQuality());
-#pragma warning restore CS0612 // Type or member is obsolete
-				var resizedImage = SKImage.FromBitmap(resizedBitmap);
-
-				var matrix = Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+				var sourceImageSize = new Size(scs.Image!.Width, scs.Image.Height);
+				var backgroundArea = GetArrangedImageRect(sourceImageSize, bounds);
+				var matrix = Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceImageSize.Width), (float)(backgroundArea.Height / sourceImageSize.Height));
+				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
 				matrix *= TransformMatrix;
-				var imageShader = SKShader.CreateImage(resizedImage, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
+
+				var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 
 				if (UsePaintColorToColorSurface)
 				{
