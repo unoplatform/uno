@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 
 using Private.Infrastructure;
@@ -63,7 +64,6 @@ public class Given_TabView
 #endif
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Leading_Item_Removed()
 	{
 		var source = new ObservableCollection<int>(Enumerable.Range(0, 100));
@@ -86,5 +86,32 @@ public class Given_TabView
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(setup.SelectedItem, presenter.DataContext, "TabView content was changed.");
+	}
+
+	[TestMethod]
+	public async Task When_Tab_Removed()
+	{
+		var SUT = new TabView
+		{
+			TabItems =
+			{
+				new TabViewItem { Header = "Tab 1" },
+				new TabViewItem { Header = "Tab 2" }
+			}
+		};
+		SUT.TabCloseRequested += (sender, args) => sender.TabItems.Remove(args.Tab);
+
+		await UITestHelper.Load(SUT);
+
+		SUT.SelectedIndex = 1;
+		await WindowHelper.WaitForIdle();
+
+		var closeButton = (Button)((TabViewItem)SUT.TabItems[0]).FindName("CloseButton");
+		((ButtonAutomationPeer)closeButton.GetAutomationPeer()).Invoke();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, SUT.TabItems.Count);
+		Assert.AreEqual(0, SUT.SelectedIndex);
+		Assert.AreEqual("Tab 2", ((TabViewItem)SUT.TabItems[0]).Header);
 	}
 }
