@@ -251,11 +251,11 @@ public partial class Window : UIWindow
 		{
 			_focusedView?.EndEditing(true);
 		}
-		catch(Exception e)
+		catch(Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
-			Application.Current.RaiseRecoverableUnhandledException(e);
+			Application.Current.RaiseRecoverableUnhandledException(ex);
 		}
 	}
 
@@ -266,11 +266,11 @@ public partial class Window : UIWindow
 			var scalableViews = this.FindSubviewsOfType<IFontScalable>(int.MaxValue);
 			scalableViews.ForEach(v => v.RefreshFont());
 		}
-		catch(Exception e)
+		catch(Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
-			Application.Current.RaiseRecoverableUnhandledException(e);
+			Application.Current.RaiseRecoverableUnhandledException(ex);
 		}
 	}
 
@@ -350,11 +350,11 @@ public partial class Window : UIWindow
 
 			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
 		}
-		catch(Exception e)
+		catch(Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
-			Application.Current.RaiseRecoverableUnhandledException(e);
+			Application.Current.RaiseRecoverableUnhandledException(ex);
 		}
 	}
 
@@ -364,11 +364,11 @@ public partial class Window : UIWindow
 		{
 			_inputPane.OccludedRect = new Rect(0, 0, 0, 0);
 		}
-		catch(Exception e)
+		catch(Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
-			Application.Current.RaiseRecoverableUnhandledException(e);
+			Application.Current.RaiseRecoverableUnhandledException(ex);
 		}
 	}
 
