@@ -414,12 +414,12 @@ namespace <#= mixin.NamespaceName #>
 						Transform = oldTransform.Value;
 					}
 				}
-			}
-			catch (Exception ex)
-			{
-				// The app must not crash if any managed exception happens in the
-				// native override
-				Application.Current.RaiseRecoverableUnhandledException(ex);
+				catch (Exception ex)
+				{
+					// The app must not crash if any managed exception happens in the
+					// native override
+					Application.Current.RaiseRecoverableUnhandledException(ex);
+				}
 			}
 		}
 
