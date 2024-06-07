@@ -107,7 +107,7 @@ public class Given_TabView
 		await WindowHelper.WaitForIdle();
 
 		var closeButton = (Button)((TabViewItem)SUT.TabItems[0]).FindName("CloseButton");
-		((ButtonAutomationPeer)closeButton.GetAutomationPeer()).Invoke();
+		new ButtonAutomationPeer(closeButton).Invoke();
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(1, SUT.TabItems.Count);
