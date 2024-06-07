@@ -502,7 +502,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			if (_renderer is not null)
 			{
-				_renderer.BackgroundColor = brush.Color;
+				_renderer.SetBackgroundColor(brush.Color);
 			}
 		}
 		else if (_window.Background is not null)

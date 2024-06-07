@@ -15,7 +15,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private IntPtr? _xImage;
 		private int _renderCount;
 		private IntPtr? _gc;
-		public SKColor BackgroundColor { get; set; } = SKColors.White;
+		private SKColor _background = SKColors.White;
+
+		public void SetBackgroundColor(SKColor color) => _background = color;
 
 		void IX11Renderer.InvalidateRender()
 		{
@@ -65,7 +67,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var canvas = _surface.Canvas;
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				canvas.Clear(BackgroundColor);
+				canvas.Clear(_background);
 				var scale = host.RootElement?.XamlRoot is { } root
 					? root.RasterizationScale
 					: 1;
