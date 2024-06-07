@@ -141,6 +141,7 @@ jobs:
         IS_UI_TESTS: true
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.poolName }}
 
       net8_benchmarks:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -150,6 +151,7 @@ jobs:
         IS_UI_TESTS: true
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.benchmarkPpoolName }}
 
       net8_uwp_runtimetests_group_00:
         SITE_SUFFIX: 'net8.0-UWP'
@@ -161,6 +163,7 @@ jobs:
         IS_UI_TESTS: false
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.poolName }}
 
       net8_uwp_runtimetests_group_01:
         SITE_SUFFIX: 'net8.0-UWP'
@@ -172,6 +175,7 @@ jobs:
         IS_UI_TESTS: false
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.poolName }}
 
       net8_uwp_runtimetests_group_02:
         SITE_SUFFIX: 'net8.0-UWP'
@@ -183,6 +187,7 @@ jobs:
         IS_UI_TESTS: false
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.poolName }}
 
       net8_winui_runtimetests_group_00:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -194,6 +199,7 @@ jobs:
         IS_UI_TESTS: false
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.poolName }}
 
       net8_winui_runtimetests_group_01:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -205,6 +211,7 @@ jobs:
         IS_UI_TESTS: false
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.poolName }}
 
       net8_winui_runtimetests_group_02:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -216,8 +223,9 @@ jobs:
         IS_UI_TESTS: false
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
+        TargetAgentPool: ${{ parameters.poolName }}
 
-  pool: ${{ parameters.poolName }}
+  pool: $(TargetAgentPool)
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget

@@ -54,6 +54,7 @@ variables:
   windowsScaledPool: 'Windows2022-20240421'
   linuxVMImage: 'ubuntu-latest'
   linuxScaledPool: 'Ubuntu2204-20230918'
+  linuxBenchmarkPool: 'Linux-x64-22.04-Benchmarks'
   macOSVMImage: 'macOS-13'
   macOSVMImage_UITests: 'macOS-12'
   xCodeRoot: '/Applications/Xcode_15.2.app'

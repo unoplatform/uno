@@ -134,6 +134,7 @@ stages:
   - template: .azure-devops-wasm-uitests.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      benchmarkPpoolName: '$(linuxBenchmarkPool)'
 
 - stage: skia_tests_uwp
   displayName: Tests - Skia UWP
