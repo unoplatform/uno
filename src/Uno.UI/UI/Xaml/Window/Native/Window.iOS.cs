@@ -247,13 +247,31 @@ public partial class Window : UIWindow
 
 	private void OnApplicationEnteredBackground(object? sender, NSNotificationEventArgs e)
 	{
-		_focusedView?.EndEditing(true);
+		try
+		{
+			_focusedView?.EndEditing(true);
+		}
+		catch(Exception e)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
 	}
 
 	private void OnContentSizeCategoryChanged(object? sender, UIContentSizeCategoryChangedEventArgs e)
 	{
-		var scalableViews = this.FindSubviewsOfType<IFontScalable>(int.MaxValue);
-		scalableViews.ForEach(v => v.RefreshFont());
+		try
+		{
+			var scalableViews = this.FindSubviewsOfType<IFontScalable>(int.MaxValue);
+			scalableViews.ForEach(v => v.RefreshFont());
+		}
+		catch(Exception e)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
 	}
 
 	public override
@@ -318,22 +336,40 @@ public partial class Window : UIWindow
 
 	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
 	{
-		if (e.Notification.UserInfo is null)
+		try
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (e.Notification.UserInfo is null)
 			{
-				this.Log().Debug("[OnKeyboardWillShow] Notification UserInfo was null");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("[OnKeyboardWillShow] Notification UserInfo was null");
+				}
+
+				return;
 			}
 
-			return;
+			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
 		}
-
-		_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
+		catch(Exception e)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
 	}
 
 	private void OnKeyboardWillHide(object? sender, UIKeyboardEventArgs e)
 	{
-		_inputPane.OccludedRect = new Rect(0, 0, 0, 0);
+		try
+		{
+			_inputPane.OccludedRect = new Rect(0, 0, 0, 0);
+		}
+		catch(Exception e)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
 	}
 
 	internal void MakeFocusedViewVisible(bool isOpeningKeyboard = false)
