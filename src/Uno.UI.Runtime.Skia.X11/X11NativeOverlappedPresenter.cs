@@ -53,15 +53,15 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 
 	public void Minimize(bool activateWindow)
 	{
-		using var _1 = X11Helper.XLock(x11Window.Display);
+		using var lockDiposable = X11Helper.XLock(x11Window.Display);
 
 		// Minimizing while in full screen could be buggy depending on the implementation
 		// https://stackoverflow.com/questions/6381098/minimize-fullscreen-xlib-opengl-window
 		wrapper.SetFullScreenMode(false);
 
 		// XLib.XScreenNumberOfScreen(x11Window.Display, screen) is buggy. We use the default screen instead (which should be fine for 99% of cases)
-		var _3 = XLib.XIconifyWindow(x11Window.Display, x11Window.Window, XLib.XDefaultScreen(x11Window.Display));
-		var _4 = XLib.XFlush(x11Window.Display);
+		_ = XLib.XIconifyWindow(x11Window.Display, x11Window.Window, XLib.XDefaultScreen(x11Window.Display));
+		_ = XLib.XFlush(x11Window.Display);
 	}
 
 	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
@@ -75,14 +75,14 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 	public void Restore(bool activateWindow)
 	{
 		// https://stackoverflow.com/a/30256233
-		using var _1 = X11Helper.XLock(x11Window.Display);
+		using var lockDiposable = X11Helper.XLock(x11Window.Display);
 
 		var shouldActivate = activateWindow;
 		shouldActivate |= GetWMState().Contains(X11Helper.GetAtom(x11Window.Display, X11Helper._NET_WM_STATE_HIDDEN));
 		if (!shouldActivate)
 		{
 			XWindowAttributes attributes = default;
-			var _2 = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
+			_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
 			shouldActivate = attributes.map_state == MapState.IsUnmapped;
 		}
 

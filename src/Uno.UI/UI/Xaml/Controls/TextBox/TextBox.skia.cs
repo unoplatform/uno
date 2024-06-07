@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -27,6 +28,8 @@ public partial class TextBox
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 	private TextBoxView _textBoxView;
+
+	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
 
 	private readonly Rectangle _caretRect = new Rectangle();
 	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
@@ -253,15 +256,15 @@ public partial class TextBox
 							_rectsChanged = true;
 							rectangle.Fill = SelectionHighlightColor;
 						}
-						if (rectangle.Width != Math.Ceiling(rect.Width))
+						if (rectangle.Width != rect.Width)
 						{
 							_rectsChanged = true;
-							rectangle.Width = Math.Ceiling(rect.Width);
+							rectangle.Width = rect.Width;
 						}
-						if (rectangle.Height != Math.Ceiling(rect.Height))
+						if (rectangle.Height != rect.Height)
 						{
 							_rectsChanged = true;
-							rectangle.Height = Math.Ceiling(rect.Height);
+							rectangle.Height = rect.Height;
 						}
 						if ((double)rectangle.GetValue(Canvas.LeftProperty) != rect.Left)
 						{
@@ -376,6 +379,13 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
+			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
+			{
+				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
+				// enqueuing on the dispatcher is needed so that we UpdateScrolling after the button is layouted
+				DispatcherQueue.TryEnqueue(UpdateScrolling);
+			}
+
 			var selectionEnd = _selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
 
 			var horizontalOffset = sv.HorizontalOffset;
@@ -499,20 +509,13 @@ public partial class TextBox
 		var caretXOffset = _caretXOffset;
 
 		_suppressCurrentlyTyping = true;
-		if (text == Text)
+		_clearHistoryOnTextChanged = false;
+		if (!_isPressed)
 		{
-			if (!_isPressed)
-			{
-				SelectInternal(selectionStart, selectionLength);
-			}
-		}
-		else
-		{
-			_clearHistoryOnTextChanged = false;
 			_pendingSelection = (selectionStart, selectionLength);
-			ProcessTextInput(text);
-			_clearHistoryOnTextChanged = true;
 		}
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
 
 		// don't change the caret offset when moving up and down
@@ -1230,17 +1233,44 @@ public partial class TextBox
 		}
 	}
 
-	partial void OnFocusStateChangedPartial2(FocusState focusState)
+	private string RemoveLF(string baseString)
 	{
-		if (_isSkiaTextBox)
+
+		var builder = new StringBuilder();
+		for (int i = 0; i < baseString.Length; i++)
 		{
-			// this is needed so that we UpdateScrolling after the button appears/disappears.
-			UpdateLayout();
-			// Another round because a collapsed DeleteButton gets measured on the subsequent layout cycle.
-			_contentElement?.InvalidateMeasure();
-			UpdateLayout();
-			UpdateScrolling();
+			var c = baseString[i];
+			if (c == '\n')
+			{
+				builder.Append('\r');
+			}
+			else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
+			{
+				if (_pendingSelection is { } selection)
+				{
+					var (start, end) = (selection.start, selection.start + selection.length);
+					if (start > i)
+					{
+						start--;
+					}
+					if (end > i)
+					{
+						end--;
+					}
+					_pendingSelection = (start, end - start);
+				}
+
+				builder.Append('\r');
+				i++;
+			}
+			else
+			{
+				builder.Append(c);
+			}
 		}
+
+		baseString = builder.ToString();
+		return baseString;
 	}
 
 	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
@@ -1258,15 +1288,7 @@ public partial class TextBox
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
 
-			if (Text == newText)
-			{
-				// OnTextChanged won't fire, so we immediately change the selection
-				Select(selectionStart + clipboardText.Length, 0);
-			}
-			else
-			{
-				_pendingSelection = (selectionStart + clipboardText.Length, 0);
-			}
+			_pendingSelection = (selectionStart + clipboardText.Length, 0);
 		}
 	}
 

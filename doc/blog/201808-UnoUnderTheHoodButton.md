@@ -20,7 +20,7 @@ I present the simplest interactive application imaginable, one step above 'Hello
 
 XAML:
 
-```` xml
+```xml
 <Page x:Class="UnoExtTestbed.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -35,11 +35,11 @@ XAML:
                 Click="Button_Click" />
     </StackPanel>
 </Page>
-````
+```
 
 code-behind:
 
-```` csharp
+```csharp
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -61,7 +61,7 @@ namespace UnoExtTestbed
         }
     }
 }
-````
+```
 
 I made a blank app using the [Uno Solution template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) and put this code on the main page. Whenever the [Button](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.button) is clicked, the number goes up. Add a bit more chrome and we could have a [viral hit](https://en.wikipedia.org/wiki/Cow_Clicker).
 
@@ -95,7 +95,7 @@ On UWP, `UIElement` inherits from [DependencyObject](https://learn.microsoft.com
 
 In Uno.Android and Uno.iOS, any `UIElement` is an instance of the native base view type ([Android.Views.View](https://developer.android.com/reference/android/view/View) and [UIKit.UIView](https://developer.apple.com/documentation/uikit/uiview) respectively, mapped to managed types via the magic of [Xamarin](https://visualstudio.microsoft.com/xamarin/)). So views defined in XAML are also native views. This means, for example, that it's possible to incorporate native views that know nothing about Uno directly into your app's XAML. The following works on iOS:
 
-```` xml
+```xml
 <Page x:Class="UnoExtTestbed.MainPage"
             ...
             xmlns:uikit="using:UIKit">
@@ -104,7 +104,7 @@ In Uno.Android and Uno.iOS, any `UIElement` is an instance of the native base vi
             <uikit:UILabel Text="Native label"/>
     </StackPanel>
 </Page>
-````
+```
 
 This is uniquely easy to do in Uno. We talk about 'leaving an escape hatch': the goal is 100% code reuse, but if you positively have to use a platform-specific feature or view library, the flexibility is there.
 
@@ -124,11 +124,11 @@ A number of controls implemented by Uno, `Button` included, support the concept 
 
 It's supported by setting a pre-defined [Style](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles) that puts an instance of the native control inside the XAML control. In our code above, we could have written:
 
-```` xml
+```xml
         <Button Content="Click me"
                 Click="Button_Click"
       Style="{StaticResource NativeDefaultButton}" />
-````
+```
 
 Since Android's default button looks rather similar to UWP's, I'm going with a more visually obvious illustration using a different control, [ToggleSwitch](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.toggleswitch). I'll use the [sample](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/ToggleSwitch.xaml) from the [Uno Gallery](https://github.com/unoplatform/uno.Playground#uno-playground) app.
 

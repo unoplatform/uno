@@ -572,7 +572,9 @@ namespace SamplesApp
 					{
 						try
 						{
-							property.SetValue(null, Convert.ChangeType(value, property.PropertyType));
+							// ChangeType doesn't handle Nullable types
+							var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+							property.SetValue(null, value == "null" ? null : Convert.ChangeType(value, type));
 						}
 						catch (Exception)
 						{

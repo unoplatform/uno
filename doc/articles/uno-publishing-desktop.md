@@ -44,7 +44,7 @@ Once done, you can head over to [publishing section](xref:uno.publishing.webasse
 
 ## Publishing
 
-> [!INFO]
+> [!NOTE]
 > Work still in progress for publishing to some targets.
 
 Publishing your app can be done through different means:

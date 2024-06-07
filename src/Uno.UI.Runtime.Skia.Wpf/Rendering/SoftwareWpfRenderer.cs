@@ -16,16 +16,21 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
-	private WpfControl _hostControl;
+	private readonly WpfControl _hostControl;
+	private readonly IWpfXamlRootHost _host;
+	private readonly bool _isPopupSurface;
 	private WriteableBitmap? _bitmap;
-	private IWpfXamlRootHost _host;
-	private readonly XamlRoot _xamlRoot;
+	private XamlRoot? _xamlRoot;
 
-	public SoftwareWpfRenderer(IWpfXamlRootHost host)
+	public SoftwareWpfRenderer(IWpfXamlRootHost host, bool isPopupSurface)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_xamlRoot = WpfManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		_isPopupSurface = isPopupSurface;
+		if (isPopupSurface)
+		{
+			BackgroundColor = SKColors.Transparent;
+		}
 	}
 
 	public SKColor BackgroundColor { get; set; } = SKColors.White;
@@ -50,6 +55,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		int width, height;
 
+		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		var dpi = _xamlRoot.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
@@ -83,7 +89,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual);
+				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, _isPopupSurface);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
 				{

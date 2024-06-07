@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Text;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
@@ -19,6 +20,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Uno.UI;
@@ -318,6 +320,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager?.FocusedElement != this &&
+				GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus } bindingExpression)
+			{
+				bindingExpression.UpdateSource(Text);
+			}
+
 			var isUserModifyingText = _isInputModifyingText | _isInputClearingText;
 			_textChangedPendingCount++;
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTextChanged(isUserModifyingText));
@@ -390,14 +399,27 @@ namespace Microsoft.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
+#if __SKIA__
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
+				if (_pendingSelection is { } selection)
+				{
+					var start = Math.Min(selection.start, baseString.Length);
+					var end = Math.Min(selection.start + selection.length, baseString.Length);
+					_pendingSelection = (start, end - start);
+				}
 			}
-#if __SKIA__
 			else if (_isSkiaTextBox)
 			{
-				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
+				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
+				// the _pendingSelection uses indices before this removal.
+				baseString = RemoveLF(baseString);
+			}
+#else
+			if (!AcceptsReturn)
+			{
+				baseString = GetFirstLine(baseString);
 			}
 #endif
 
@@ -918,11 +940,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
-				if (!_wasTemplateRecycled)
+				if (!_wasTemplateRecycled &&
+					GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.LostFocus or UpdateSourceTrigger.Default } bindingExpression)
 				{
 					// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
-					var bindingExpression = GetBindingExpression(TextProperty);
-					bindingExpression?.UpdateSource(Text);
+					bindingExpression.UpdateSource(Text);
 				}
 
 				_wasTemplateRecycled = false;
@@ -936,13 +958,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UpdateVisualState();
-
-			OnFocusStateChangedPartial2(newValue);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState);
-
-		partial void OnFocusStateChangedPartial2(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -1100,15 +1118,20 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
+			var changed = false;
 			// Minimum width for TextBox with DeleteButton visible is 5em.
 			if (CanShowButton && _isButtonEnabled && ActualWidth > FontSize * 5)
 			{
-				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
+				changed |= VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
+				changed |= VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 			}
+
+#if __SKIA__
+			_deleteButtonVisibilityChangedSinceLastUpdateScrolling |= changed;
+#endif
 		}
 
 		/// <summary>
@@ -1121,7 +1144,19 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				_isInputModifyingText = true;
+				var oldText = Text;
 				Text = newText;
+
+#if __SKIA__
+				if (_pendingSelection is { } selection && Text == oldText)
+				{
+					// OnTextChanged won't fire, so we immediately change the selection.
+					// Note how we check that Text (after assignment) == oldText and
+					// not oldText == newText. This is because CoerceText can make it so that
+					// newText != oldText but Text (after assignment) == oldText
+					SelectInternal(selection.start, selection.length);
+				}
+#endif
 			}
 			finally
 			{

@@ -4,7 +4,7 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 # Creating an app with VS Code
 
 > [!NOTE]
-> Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.vscode).
+> Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vscode).
 
 ## Create the App
 
@@ -213,11 +213,11 @@ In the status bar :
 
 Finally press `F5` to start the debugging session.
 
-***
+---
 
 You're all set!
 
-You can also find [additional VS Code topics](xref:Uno.vscode.additional), such as using snippets, updating existing apps to use VS Code
+You can also find [additional VS Code topics](xref:Uno.vscode.additional), such as using snippets, updating existing apps to use VS Code.
 
 ## Next Steps
 

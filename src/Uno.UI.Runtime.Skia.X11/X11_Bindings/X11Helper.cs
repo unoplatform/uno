@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Windowing;
@@ -39,6 +40,7 @@ internal static partial class X11Helper
 {
 	private const string libX11 = "libX11.so.6";
 	private const string libX11Randr = "libXrandr.so.2";
+	private const string libXext = "libXext.so.6";
 
 	public static readonly IntPtr CurrentTime = IntPtr.Zero;
 	public static readonly IntPtr None = IntPtr.Zero;
@@ -49,6 +51,8 @@ internal static partial class X11Helper
 	public const string _NET_ACTIVE_WINDOW = "_NET_ACTIVE_WINDOW";
 	public const string _NET_WM_STATE = "_NET_WM_STATE";
 	public const string _NET_WM_STATE_FULLSCREEN = "_NET_WM_STATE_FULLSCREEN";
+	public const string _NET_WM_WINDOW_OPACITY = "_NET_WM_WINDOW_OPACITY";
+	public const string _NET_CLIENT_LIST = "_NET_CLIENT_LIST";
 	public const string _NET_WM_STATE_ABOVE = "_NET_WM_STATE_ABOVE";
 	public const string _NET_WM_STATE_HIDDEN = "_NET_WM_STATE_HIDDEN";
 	public const string _NET_WM_STATE_MAXIMIZED_HORZ = "_NET_WM_STATE_MAXIMIZED_HORZ";
@@ -84,6 +88,18 @@ internal static partial class X11Helper
 	public const string XdndFinished = "XdndFinished";
 	public const string XdndSelection = "XdndSelection";
 	public const string XdndProxy = "XdndProxy";
+
+	public const int ShapeSet = 0;
+	public const int ShapeUnion = 1;
+	public const int ShapeIntersect = 2;
+	public const int ShapeSubtract = 3;
+	public const int ShapeInvert = 4;
+	public const int ShapeBounding = 0;
+	public const int ShapeClip = 1;
+	public const int ShapeInput = 2;
+	public const int Unsorted = 0;
+
+	public const int Success = 0;
 
 	public const int POLLIN = 0x001; /* There is data to read.  */
 	public const int POLLPRI = 0x002; /* There is urgent data to read.  */
@@ -147,7 +163,7 @@ internal static partial class X11Helper
 
 	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4, IntPtr ptr5)
 	{
-		using var _1 = XLock(x11Window.Display);
+		using var lockDiposable = XLock(x11Window.Display);
 
 		// https://stackoverflow.com/a/28396773
 		XClientMessageEvent xclient = default;
@@ -164,8 +180,8 @@ internal static partial class X11Helper
 
 		XEvent xev = default;
 		xev.ClientMessageEvent = xclient;
-		var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
-		var _3 = XLib.XFlush(x11Window.Display);
+		_ = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+		_ = XLib.XFlush(x11Window.Display);
 	}
 
 	public static void SetMotifWMDecorations(X11Window x11Window, bool on, IntPtr decorations)
@@ -214,10 +230,10 @@ internal static partial class X11Helper
 	// #define MWM_DECOR_MAXIMIZE	(1L << 6)
 	private unsafe static void SetMotifWMHints(X11Window x11Window, bool on, IntPtr? decorations, IntPtr? functions)
 	{
-		using var _1 = XLock(x11Window.Display);
+		using var lockDiposable = XLock(x11Window.Display);
 
 		var hintsAtom = GetAtom(x11Window.Display, _MOTIF_WM_HINTS);
-		var _2 = XLib.XGetWindowProperty(
+		_ = XLib.XGetWindowProperty(
 			x11Window.Display,
 			x11Window.Window,
 			hintsAtom,
@@ -231,7 +247,7 @@ internal static partial class X11Helper
 			out _,
 			out IntPtr prop);
 
-		using var _3 = Disposable.Create(() =>
+		using var propDisposable = Disposable.Create(() =>
 		{
 			var _ = XLib.XFree(prop);
 		});
@@ -300,7 +316,7 @@ internal static partial class X11Helper
 			}
 		}
 
-		var _4 = XLib.XChangeProperty(
+		_ = XLib.XChangeProperty(
 			x11Window.Display,
 			x11Window.Window,
 			hintsAtom,
@@ -309,7 +325,7 @@ internal static partial class X11Helper
 			PropertyMode.Replace,
 			arr,
 			5);
-		var _5 = XLib.XFlush(x11Window.Display);
+		_ = XLib.XFlush(x11Window.Display);
 	}
 
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
@@ -334,6 +350,28 @@ internal static partial class X11Helper
 		IntPtr data, uint width, uint height, int bitmap_pad, int bytes_per_line);
 
 	[LibraryImport(libX11)]
+	public static partial int XClearWindow(IntPtr display, IntPtr window);
+
+	[LibraryImport(libX11, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
+	public static partial int XFetchName(IntPtr display, IntPtr window, out string name_return);
+
+	[LibraryImport(libX11)]
+	public unsafe static partial int XChangeWindowAttributes(
+		IntPtr display, IntPtr window, IntPtr valuemask, XSetWindowAttributes* attributes);
+
+	[LibraryImport(libX11)]
+	public static partial int XReparentWindow(IntPtr display, IntPtr window, IntPtr parent, int x, int y);
+
+	[LibraryImport(libX11)]
+	public static partial int XRaiseWindow(IntPtr display, IntPtr window);
+
+	[LibraryImport(libX11)]
+	public static partial int XMoveWindow(IntPtr display, IntPtr window, int x, int y);
+
+	[LibraryImport(libX11)]
+	public static partial int XUnmapWindow(IntPtr display, IntPtr window);
+
+	[LibraryImport(libX11)]
 	public static partial int XPending(IntPtr display);
 
 	[LibraryImport(libX11)]
@@ -353,6 +391,60 @@ internal static partial class X11Helper
 
 	[LibraryImport(libX11)]
 	public static partial int XHeightOfScreen(IntPtr screen);
+
+	[LibraryImport(libX11)]
+	public static partial IntPtr XCreateRegion();
+
+	[LibraryImport(libX11)]
+	public static partial int XDestroyRegion(IntPtr region);
+
+	[LibraryImport(libX11)]
+	public unsafe static partial int XUnionRectWithRegion(
+		XRectangle* rectangle,
+		IntPtr src_region,
+		IntPtr dest_region_return
+	);
+
+	public unsafe static IntPtr CreateRegion(short x, short y, short w, short h)
+	{
+		IntPtr region = XCreateRegion();
+		XRectangle rectangle;
+		rectangle.X = x;
+		rectangle.Y = y;
+		rectangle.W = w;
+		rectangle.H = h;
+		var _ = XUnionRectWithRegion(&rectangle, region, region);
+
+		return region;
+	}
+
+	[LibraryImport(libX11Randr)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	public static partial bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
+
+	[LibraryImport(libXext)]
+	public static partial void XShapeCombineRegion(
+		IntPtr display,
+		IntPtr window,
+		int dest_kind,
+		int x_off,
+		int y_off,
+		IntPtr region,
+		int op
+	);
+
+	[LibraryImport(libXext)]
+	public unsafe static partial void XShapeCombineRectangles(
+		IntPtr display,
+		IntPtr window,
+		int dest_kind,
+		int x_off,
+		int y_off,
+		XRectangle* rectangles,
+		int n_rects,
+		int op,
+		int ordering
+	);
 
 	[LibraryImport(libX11Randr)]
 	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);

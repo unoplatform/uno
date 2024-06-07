@@ -21,6 +21,6 @@ namespace Windows.Storage
 
 		public string Id { get; }
 
-		public string DisplayName => _resourceLoader.Value.GetString(_displayNameResourceKey);
+		public string? DisplayName => _resourceLoader.Value.GetString(_displayNameResourceKey);
 	}
 }

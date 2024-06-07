@@ -4,7 +4,7 @@ uid: Uno.GettingStarted.CreateAnApp.VS2022
 # Creating an app with Visual Studio 2022 for Windows
 
 > [!NOTE]
-> Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.vs2022).
+> Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
 
 ## Create the App
 
@@ -82,7 +82,7 @@ To run the **Windows** (WinAppSDK) head:
 - Press the `MyApp (WinAppSDK Unpackaged)` button to deploy the app
 - If you have not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
 
-> [!INFO]
+> [!NOTE]
 > If you're not able or willing to turn on the Windows developer mode, [read about this common issue](xref:Uno.UI.CommonIssues.vs2022#unable-to-select-the-myapp-unpackaged-winappsdk-profile).
 
 ### [**iOS**](#tab/iOS)
@@ -115,7 +115,7 @@ To debug the **Android** platform:
     > [!NOTE]
     > If no android devices are available, a Visual Studio 17.7+ issue may require unloading/reloading the project. Right-click on the `MyApp` project and select **Unload Project** then **Load project**.
 
-***
+---
 
 You're all set!
 

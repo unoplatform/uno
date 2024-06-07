@@ -16,6 +16,9 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.UI;
 
 using static Private.Infrastructure.TestServices;
+using Private.Infrastructure;
+using Microsoft.UI.Xaml.Data;
+
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -32,6 +35,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_TextBox
 	{
+		[TestMethod]
+		[DataRow(UpdateSourceTrigger.Default)]
+		[DataRow(UpdateSourceTrigger.PropertyChanged)]
+		[DataRow(UpdateSourceTrigger.Explicit)]
+		[DataRow(UpdateSourceTrigger.LostFocus)]
+		public async Task When_TwoWay_Text_Binding(UpdateSourceTrigger trigger)
+		{
+			var SUT = new When_TwoWay_Text_Binding();
+			var tb = trigger switch
+			{
+				UpdateSourceTrigger.Default => SUT.tbTwoWay_triggerDefault,
+				UpdateSourceTrigger.PropertyChanged => SUT.tbTwoWay_triggerPropertyChanged,
+				UpdateSourceTrigger.Explicit => SUT.tbTwoWay_triggerExplicit,
+				UpdateSourceTrigger.LostFocus => SUT.tbTwoWay_triggerLostFocus,
+				_ => throw new Exception("Should not happen."),
+			};
+			var expectedSetCount = 0;
+
+			await UITestHelper.Load(SUT);
+
+			var vm = (When_TwoWay_Text_Binding.VM)tb.DataContext;
+
+			Assert.AreNotEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("", tb.Text);
+
+			// Change text while not focused
+			tb.Text = "Hello";
+			if (trigger != UpdateSourceTrigger.Explicit)
+			{
+				expectedSetCount++;
+			}
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello", tb.Text);
+
+			tb.Focus(FocusState.Programmatic);
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			// Change text while focused
+			tb.Text = "Hello2";
+			if (trigger is UpdateSourceTrigger.PropertyChanged)
+			{
+				expectedSetCount++;
+			}
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello2", tb.Text);
+
+			// To unfocus TextBox.
+			SUT.dummyButton.Focus(FocusState.Programmatic);
+			Assert.AreEqual(SUT.dummyButton, FocusManager.GetFocusedElement(SUT.XamlRoot));
+			if (trigger is UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus)
+			{
+				expectedSetCount++;
+			}
+
+			// In WinUI, a WaitForIdle is required.
+			// In Uno, it's not at the time of writing the test.
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello2", tb.Text);
+		}
+
 #if __ANDROID__
 		[TestMethod]
 		public void When_InputScope_Null_And_ImeOptions()

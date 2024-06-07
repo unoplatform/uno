@@ -16,6 +16,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -30,7 +31,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	{
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
-		var _ = X11Helper.XInitThreads();
+		_ = X11Helper.XInitThreads();
 
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
 		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
@@ -61,6 +62,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
+
+		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension(o));
 
 		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new X11DragDropExtension(o));
 	}

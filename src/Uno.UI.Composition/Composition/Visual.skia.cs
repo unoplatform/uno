@@ -22,6 +22,36 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 
+	// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
+	private bool? _isPopupVisual;
+	private bool _isPopupVisualInherited;
+	private bool IsPopupVisual => _isPopupVisual ?? _isPopupVisualInherited;
+
+	/// <remarks>call with a null <paramref name="isPopupVisual"/> to unset.</remarks>
+	internal void SetAsPopupVisual(bool? isPopupVisual, bool inherited = false)
+	{
+		Debug.Assert(!inherited || isPopupVisual is { }, "Only non-null values should be inherited.");
+		var oldValue = IsPopupVisual;
+
+		if (inherited)
+		{
+			_isPopupVisualInherited = isPopupVisual!.Value;
+		}
+		else
+		{
+			_isPopupVisual = isPopupVisual;
+		}
+
+		var newValue = IsPopupVisual;
+		if (oldValue != newValue)
+		{
+			foreach (var child in GetChildrenInRenderOrder())
+			{
+				child.SetAsPopupVisual(newValue, true);
+			}
+		}
+	}
+
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
@@ -118,7 +148,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null)
+	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null, bool isPopupSurface = false)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -147,7 +177,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = translation * initialTransform;
 		}
 
-		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
+		using (var session = _factory.CreateInstance(this, surface, canvas, isPopupSurface, DrawingFilters.Default, initialTransform))
 		{
 			Render(session);
 		}
@@ -180,17 +210,20 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			ApplyPrePaintingClipping(canvas);
+			if (session.IsPopupSurface == IsPopupVisual)
+			{
+				ApplyPrePaintingClipping(canvas);
 
-			// Rendering shouldn't depend on matrix or clip adjustments having in a visual's Paint. That should
-			// be specific to that visual and should not affect the rendering of any other visual.
+				// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
+				// be specific to that visual and should not affect the rendering of any other visual.
 #if DEBUG
-			var saveCount = canvas.SaveCount;
+				var saveCount = canvas.SaveCount;
 #endif
-			Paint(session);
+				Paint(session);
 #if DEBUG
-			Debug.Assert(saveCount == canvas.SaveCount);
+				Debug.Assert(saveCount == canvas.SaveCount);
 #endif
+			}
 
 			ApplyPostPaintingClipping(canvas);
 
@@ -237,6 +270,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
 	{
+		var isPopupSurface = parentSession.IsPopupSurface;
 		var surface = parentSession.Surface;
 		var canvas = parentSession.Canvas;
 		var rootTransform = parentSession.RootTransform;
@@ -245,7 +279,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			? parentSession.Filters
 			: parentSession.Filters with { Opacity = parentSession.Filters.Opacity * Opacity };
 
-		var session = _factory.CreateInstance(this, surface, canvas, filters, rootTransform);
+		var session = _factory.CreateInstance(this, surface, canvas, isPopupSurface, filters, rootTransform);
 
 		if (rootTransform.IsIdentity)
 		{

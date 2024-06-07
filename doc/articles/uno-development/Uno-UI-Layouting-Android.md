@@ -8,7 +8,7 @@ The layouting cycle (measure and arrange) in Uno on Android involves a complex i
 methods. These interactions are summarized in the diagram below. This information is primarily intended to help when debugging Uno, but
 may be interesting to anyone curious as to how native Android methods are connected to the UWP contract exposed by Uno.
 
-``` mermaid
+```mermaid
 flowchart TD
     %% Android layout flow
 

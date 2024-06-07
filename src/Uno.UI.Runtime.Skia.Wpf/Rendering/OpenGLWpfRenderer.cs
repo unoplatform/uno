@@ -23,7 +23,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
-	private readonly WinUI.XamlRoot _xamlRoot;
+	private readonly bool _isPopupSurface;
+	private WinUI.XamlRoot? _xamlRoot;
 	private nint _hwnd;
 	private nint _hdc;
 	private nint _glContext;
@@ -32,11 +33,15 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private WriteableBitmap? _backBuffer;
 
-	public OpenGLWpfRenderer(IWpfXamlRootHost host)
+	public OpenGLWpfRenderer(IWpfXamlRootHost host, bool isPopupSurface)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_xamlRoot = WpfManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		_isPopupSurface = isPopupSurface;
+		if (isPopupSurface)
+		{
+			BackgroundColor = SKColors.Transparent;
+		}
 	}
 
 	public SKColor BackgroundColor { get; set; }
@@ -153,7 +158,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		int width, height;
 
-		var dpi = _xamlRoot.RasterizationScale;
+		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		var dpi = _xamlRoot!.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
 		if (_host.IgnorePixelScaling)
@@ -214,7 +220,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(_surface, rootVisual);
+				rootVisual.Compositor.RenderRootVisual(_surface, rootVisual, _isPopupSurface);
 			}
 		}
 

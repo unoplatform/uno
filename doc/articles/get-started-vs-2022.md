@@ -59,7 +59,7 @@ To setup your environment for WSL:
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
-***
+---
 
 ## Next Steps
 

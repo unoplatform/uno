@@ -853,6 +853,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "This should be a lot longer than the width of the TextBox.";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			((ScrollViewer)SUT.ContentElement).HorizontalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableWidth, 1.0);
+		}
+
+		[TestMethod]
 		public async Task When_Pointer_Tap()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1722,6 +1752,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Undo();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("initial", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_The_Same_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "copied\r\ncontent"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "copied\r\ncontent";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("copied\rcontent".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		[TestMethod]

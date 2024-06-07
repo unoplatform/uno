@@ -31,7 +31,7 @@ Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [V
 
 [!include[macos-setup](../includes/additional-macos-setup-inline.md)]
 
-***
+---
 
 Once done, you can create a new app with [`dotnet new`](xref:Uno.GetStarted.dotnet-new) using:
 

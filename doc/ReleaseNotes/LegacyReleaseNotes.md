@@ -190,7 +190,7 @@ uid: Uno.ReleaseNotes.Legacy
   - **Custom Themes** are supported. This let you specify `HighContrast` or any other custom themes.
     (this is a feature not supported in UWP)
 
-    ``` csharp
+    ```csharp
     // Put that somewhere during app initialization...
     Uno.UI.ApplicationHelper.RequestedCustomTheme = "MyCustomTheme";
     ```

@@ -63,6 +63,7 @@ namespace Microsoft.UI.Xaml
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
+			ContentPresenter.UpdateNativeHostContentPresentersOpacities();
 		}
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
