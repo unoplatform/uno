@@ -337,16 +337,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// For the root window (that does nothing but act as an anchor for children,
 		// we don't bother with OpenGL, since we don't render on this window anyway.
-		IntPtr rootWindow = XLib.XCreateSimpleWindow(
-			display,
-			XLib.XRootWindow(display, screen),
-			0,
-			0,
-			(int)size.Width,
-			(int)size.Height,
-			0,
-			XLib.XBlackPixel(display, screen),
-			XLib.XWhitePixel(display, screen));
+		IntPtr rootWindow = CreateSoftwareRenderWindow(display, screen, size);
 		XLib.XSelectInput(display, rootWindow, RootEventsMask);
 		_x11Window = new X11Window(display, rootWindow);
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
