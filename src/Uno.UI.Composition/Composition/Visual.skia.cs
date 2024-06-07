@@ -26,9 +26,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
-#pragma warning disable CS0414 // Field is assigned but its value is never used
 	private bool _requiresRepaint;
-#pragma warning restore CS0414 // Field is assigned but its value is never used
 	private SKPicture? _picture;
 
 	// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
