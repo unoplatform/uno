@@ -835,7 +835,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set
 			{
 				base.Frame = value;
-				
+
 				try
 				{
 					UpdateContentViewFrame();
