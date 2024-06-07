@@ -109,10 +109,6 @@ fi
 echo "Current system date"
 date
 
-# create a symlink from ~/Library to ~/Document/Library 
-# to work around https://github.com/microsoft/appcenter/issues/2584
-ln -s ~/Library ~/Documents/Library
-
 ## Install iOS 16.4 simulators
 xcodes runtimes install --keep-archive 'iOS 16.1' || true
 
