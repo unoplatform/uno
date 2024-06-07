@@ -3145,6 +3145,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Item_Removed_Selection_Stays()
+		{
+			var SUT = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				Items =
+				{
+					new ListViewItem { Content = "Item 1" },
+					new ListViewItem { Content = "Item 2" }
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 1;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Items.RemoveAt(0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.Items.Count);
+			Assert.AreEqual(0, SUT.SelectedIndex);
+			Assert.AreEqual("Item 2", ((ListViewItem)SUT.Items[0]).Content);
+		}
+
+		[TestMethod]
 #if __WASM__ || __SKIA__
 		[Ignore("Fails on WASM/Skia - https://github.com/unoplatform/uno/issues/7323")]
 #endif
