@@ -251,7 +251,7 @@ public partial class Window : UIWindow
 		{
 			_focusedView?.EndEditing(true);
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
@@ -266,7 +266,7 @@ public partial class Window : UIWindow
 			var scalableViews = this.FindSubviewsOfType<IFontScalable>(int.MaxValue);
 			scalableViews.ForEach(v => v.RefreshFont());
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
@@ -350,7 +350,7 @@ public partial class Window : UIWindow
 
 			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
@@ -364,7 +364,7 @@ public partial class Window : UIWindow
 		{
 			_inputPane.OccludedRect = new Rect(0, 0, 0, 0);
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			// The app must not crash if any managed exception happens in the
 			// native callback
