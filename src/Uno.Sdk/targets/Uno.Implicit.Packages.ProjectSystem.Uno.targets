@@ -4,7 +4,7 @@
 		in order for VS and C# Dev Kit to show nuget references in their respective solution explorers.
 		The version is not required, and VS/Code waits for some design-time targets to be executed to evaluate it.
 	-->
-	<ItemGroup Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;')) OR $(IsDesktop) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
