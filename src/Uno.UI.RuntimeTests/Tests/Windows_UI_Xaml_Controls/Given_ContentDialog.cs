@@ -624,7 +624,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var inputPane = InputPane.GetForCurrentView();
 			void OnShowing(InputPane sender, InputPaneVisibilityEventArgs args)
 			{
-				tcs.SetResult(true);
+				tcs.TrySetResult(true);
 			}
 			try
 			{
