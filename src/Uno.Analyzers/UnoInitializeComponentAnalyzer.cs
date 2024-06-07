@@ -33,40 +33,76 @@ public class UnoInitializeComponentAnalyzer : DiagnosticAnalyzer
 		context.EnableConcurrentExecution();
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-		context.RegisterSymbolStartAction(context =>
+		context.RegisterCompilationStartAction(context =>
 		{
-			var type = (INamedTypeSymbol)context.Symbol;
-			IMethodSymbol? initializeComponent = null;
-			foreach (var member in type.GetMembers("InitializeComponent"))
+			var applicationSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Application");
+			var dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.DependencyObject");
+			if (applicationSymbol is null || dependencyObjectSymbol is null)
 			{
-				if (member is IMethodSymbol { Parameters.Length: 0 } method)
+				return;
+			}
+
+			context.RegisterSymbolStartAction(context =>
+			{
+				var type = (INamedTypeSymbol)context.Symbol;
+				if (!TypeIsApplicationOrDependencyObject(type, applicationSymbol, dependencyObjectSymbol))
 				{
-					initializeComponent = method;
-					break;
+					return;
 				}
-			}
 
-			if (initializeComponent is not null)
+				IMethodSymbol? initializeComponent = null;
+				foreach (var member in type.GetMembers("InitializeComponent"))
+				{
+					if (member is IMethodSymbol { Parameters.Length: 0 } method)
+					{
+						initializeComponent = method;
+						break;
+					}
+				}
+
+				if (initializeComponent?.Locations[0].SourceTree?.FilePath.Contains("XamlCodeGenerator") == true)
+				{
+					var isCalled = false;
+					context.RegisterOperationAction(context =>
+					{
+						if (!isCalled &&
+							initializeComponent.Equals(((IInvocationOperation)context.Operation).TargetMethod, SymbolEqualityComparer.Default) &&
+							context.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Constructor, Parameters.Length: 0 })
+						{
+							isCalled = true;
+						}
+					}, OperationKind.Invocation);
+
+					context.RegisterSymbolEndAction(context =>
+					{
+						if (!isCalled)
+						{
+							context.ReportDiagnostic(Diagnostic.Create(Rule, type.Locations[0], type.ToDisplayString()));
+						}
+					});
+				}
+			}, SymbolKind.NamedType);
+		});
+	}
+
+	private static bool TypeIsApplicationOrDependencyObject(INamedTypeSymbol type, INamedTypeSymbol applicationSymbol, INamedTypeSymbol dependencyObjectSymbol)
+	{
+		if (type.AllInterfaces.Contains(dependencyObjectSymbol))
+		{
+			return true;
+		}
+
+		var currentType = type;
+		while (currentType is not null)
+		{
+			if (currentType.Equals(applicationSymbol, SymbolEqualityComparer.Default))
 			{
-				var isCalled = false;
-				context.RegisterOperationAction(context =>
-				{
-					if (!isCalled &&
-						initializeComponent.Equals(((IInvocationOperation)context.Operation).TargetMethod, SymbolEqualityComparer.Default) &&
-						context.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Constructor, Parameters.Length: 0 })
-					{
-						isCalled = true;
-					}
-				}, OperationKind.Invocation);
-
-				context.RegisterSymbolEndAction(context =>
-				{
-					if (!isCalled)
-					{
-						context.ReportDiagnostic(Diagnostic.Create(Rule, type.Locations[0], type.ToDisplayString()));
-					}
-				});
+				return true;
 			}
-		}, SymbolKind.NamedType);
+
+			currentType = currentType.BaseType;
+		}
+
+		return false;
 	}
 }
