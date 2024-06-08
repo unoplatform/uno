@@ -13,15 +13,24 @@ using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal partial class SkiaCompositionSurface : ICompositionSurface
+	internal partial class SkiaCompositionSurface : CompositionObject, ICompositionSurface
 	{
+		// Don't use field directly. Instead, use Image property.
 		private SKImage? _image;
 
-		public SKImage? Image { get => _image; }
+		public SKImage? Image
+		{
+			get => _image;
+			set
+			{
+				_image = value;
+				OnPropertyChanged(nameof(Image), isSubPropertyChange: false);
+			}
+		}
 
 		internal SkiaCompositionSurface(SKImage image)
 		{
-			_image = image;
+			Image = image;
 		}
 
 		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
@@ -45,7 +54,7 @@ namespace Microsoft.UI.Composition
 
 				if (result == SKCodecResult.Success)
 				{
-					_image = SKImage.FromBitmap(bitmap);
+					Image = SKImage.FromBitmap(bitmap);
 				}
 
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
@@ -54,8 +63,8 @@ namespace Microsoft.UI.Composition
 			{
 				try
 				{
-					_image = SKImage.FromEncodedData(stream);
-					return _image is null
+					Image = SKImage.FromEncodedData(stream);
+					return Image is null
 						? (false, "Failed to decode image")
 						: (true, "Success");
 				}
@@ -75,7 +84,7 @@ namespace Microsoft.UI.Composition
 
 			using (var pData = data.Pin())
 			{
-				_image = SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4);
+				Image = SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4);
 			}
 		}
 	}
