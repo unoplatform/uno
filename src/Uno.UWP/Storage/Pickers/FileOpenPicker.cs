@@ -109,15 +109,17 @@ namespace Windows.Storage.Pickers
 
 	public static class FileOpenPickerExtensions
 	{
-#if __IOS__
+
 		/// <summary>
 		/// Sets the file limit a user can select when picking multiple files.
 		/// </summary>
 		/// <param name="limit">The maximum number of files that the user can pick.</param>
+#if !__IOS__
+		[NotImplemented]
+#endif
 		public static void SetMultipleFilesLimit(this FileOpenPicker picker, int limit)
 		{
 			picker.SetMultipleFileLimit(limit);
 		}
-#endif
 	}
 }
