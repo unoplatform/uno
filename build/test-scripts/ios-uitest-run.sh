@@ -93,9 +93,9 @@ export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-16-1"
-export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (5th generation)"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
 
-export UnoTargetFrameworkOverride="net7.0-ios"
+export UnoTargetFrameworkOverride="net8.0-ios17.0"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
@@ -109,15 +109,26 @@ fi
 echo "Current system date"
 date
 
+## Install iOS 16.4 simulators
+xcodes runtimes install --keep-archive 'iOS 16.1' || true
+
+# Wait while ios runtime 16.1 is not having simulators. The install process may 
+# take a few seconds and "simctl list devices" may not return devices.
+while true; do
+	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
+	export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
+
+	if [ -n "$UITEST_IOSDEVICE_ID" ]; then
+		break
+	fi
+
+	echo "Waiting for the simulator to be available"
+	sleep 5
+done
+
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
 xcrun simctl list devices --json > $DEVICELIST_FILEPATH
-
-##
-## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
-##
-export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
-export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
 
 # check for the presence of idb, and install it if it's not present
 export PATH=$PATH:~/.local/bin
@@ -134,6 +145,9 @@ else
 	echo "Using idb from:" `command -v idb`
 fi
 
+##
+## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
+##
 echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
@@ -226,6 +240,7 @@ else
 		-c Release \
 		-l:"console;verbosity=normal" \
 		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+		--logger "console;verbosity=detailed" \
 		--filter "$UNO_TESTS_FILTER" \
 		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
 		-v m \
@@ -248,7 +263,7 @@ xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PRE
 ## Capture the device logs
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
 
-echo "Dumping device logs"
+echo "Dumping device logs to $LOG_FILEPATH_FULL"
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 
 echo "Searching for failures in device logs"
