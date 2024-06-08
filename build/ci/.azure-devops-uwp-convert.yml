@@ -33,6 +33,11 @@ jobs:
 
   - template: templates/dotnet-mobile-install-windows.yml
 
+  - script: |
+      cd src/Uno.UI
+      dotnet workload restore Uno.UI.netcoremobile.csproj
+    displayName: Workload restore
+
   - powershell: |
         cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
         dotnet run "$(build.sourcesdirectory)"

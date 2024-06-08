@@ -70,10 +70,6 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - bash: |
-      sed -i.bu 's/8.0.100/8.0.200/' build/ci/net8/global.json
-    displayName: Replace global.json with .NET 8.0.200
-
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
@@ -115,10 +111,6 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: NugetPackages
-
-  - script: |
-      sed -i 's/8.0.100/8.0.200/g' build/ci/net8/global.json
-    displayName: Replace global.json with .NET 8.0.200
 
   - template: templates/dotnet-mobile-install-linux.yml
 
