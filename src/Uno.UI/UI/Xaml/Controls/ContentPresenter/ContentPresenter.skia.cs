@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Uno.Foundation.Extensibility;
-using Windows.Foundation;
 using Uno.Disposables;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
