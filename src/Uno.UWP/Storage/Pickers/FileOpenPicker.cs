@@ -114,7 +114,7 @@ namespace Windows.Storage.Pickers
 		/// Sets the file limit a user can select when picking multiple files.
 		/// </summary>
 		/// <param name="limit">The maximum number of files that the user can pick.</param>
-		public static void SetLimit(this FileOpenPicker picker, int limit)
+		public static void SetMultipleFilesLimit(this FileOpenPicker picker, int limit)
 		{
 			picker.SetMultipleFileLimit(limit);
 		}
