@@ -495,7 +495,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
 			button = (Button)rootPanel.FindName("button");
-			ctrlEqualAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
+			ctrlEqualAccelerator = button.KeyboardAccelerators[0];
 			ctrlEqualAccelerator.Key = (global::Windows.System.VirtualKey)equalKeyValue;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
@@ -1192,7 +1192,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
 			button = (Button)rootPanel.FindName("button");
-			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
+			ctrlAAccelerator = button.KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1239,7 +1239,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
 			button2 = (Button)rootPanel.FindName("button2");
-			ctrlAAccelerator = (KeyboardAccelerator)rootPanel.FindName("keyboardAccelerator");
+			ctrlAAccelerator = ((Button)rootPanel.FindName("button1")).KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
