@@ -53,7 +53,9 @@ namespace Uno.Analyzers
 					, OperationKind.ObjectCreation
 					, OperationKind.FieldReference
 					, OperationKind.PropertyReference
-					, OperationKind.EventReference);
+					, OperationKind.EventReference
+					, OperationKind.TypeOf
+					, OperationKind.MethodReference);
 			});
 		}
 
@@ -92,6 +94,8 @@ namespace Uno.Analyzers
 				IFieldReferenceOperation fieldReferenceOperation => fieldReferenceOperation.Field,
 				IPropertyReferenceOperation propertyReferenceOperation => propertyReferenceOperation.Property,
 				IEventReferenceOperation eventReferenceOperation => eventReferenceOperation.Event,
+				ITypeOfOperation typeofOperation => typeofOperation.TypeOperand,
+				IMethodReferenceOperation methodReferenceOperation => methodReferenceOperation.Method,
 				_ => throw new InvalidOperationException("This code path is unreachable.")
 			};
 
