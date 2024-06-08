@@ -114,6 +114,10 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal bool IsDisposed => _isDisposed;
+#endif
+
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
 		/// </summary>

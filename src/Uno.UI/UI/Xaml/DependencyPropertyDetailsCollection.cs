@@ -106,6 +106,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			ReturnEntriesAndOffsetsToPools();
+
+			_entries = null!;
 		}
 
 		public DependencyPropertyDetails DataContextPropertyDetails
@@ -132,6 +134,11 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
+			if (_entries is null)
+			{
+				throw new InvalidOperationException("DependencyPropertyDetailsCollection is accessed after it was disposed.");
+			}
+
 			if (forceCreate)
 			{
 				// Since BucketSize is a power of 2 we can shift and mask to divide and modulo respectively
@@ -244,7 +251,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal DependencyPropertyDetails?[] GetAllDetails() => _entries;
+		internal DependencyPropertyDetails?[] GetAllDetails()
+			=> _entries ?? throw new InvalidOperationException("DependencyPropertyDetailsCollection is accessed after it was disposed.");
 
 		internal void TryEnableHardReferences()
 		{
