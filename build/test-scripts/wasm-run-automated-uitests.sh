@@ -52,8 +52,7 @@ fi
 if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ]; then
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
-	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
-	exit 0
+	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run."
 fi
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
@@ -61,7 +60,7 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 ## The python server serves the current working directory, and may be changed by the nunit runner
 dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-$SITE_SUFFIX" &
 
-if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` != "invalid-test-for-retry" ]; then
     UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
 else
     UNO_TESTS_FILTER=$TEST_FILTERS
