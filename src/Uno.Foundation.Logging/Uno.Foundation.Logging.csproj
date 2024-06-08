@@ -5,12 +5,6 @@
 		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
 		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
-
-		<!-- We check specifically for net7.0-ios -->
-		<!-- Our builds are now all net8.0+ -->
-		<!-- However, Xamarin.UITest doesn't (probably won't) support net8.0+ -->
-		<!-- So, we still build SamplesApp in net7.0-ios in CI to be able to run UI tests -->
-		<TargetFrameworks Condition="'$(UnoTargetFrameworkOverride)'=='net7.0-ios'">net7.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
