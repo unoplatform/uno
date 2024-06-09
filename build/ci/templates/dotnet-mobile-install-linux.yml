@@ -1,5 +1,5 @@
 parameters:
-  UnoCheck_Version: '1.23'
+  UnoCheck_Version: '1.23.0'
 
 steps:
 
