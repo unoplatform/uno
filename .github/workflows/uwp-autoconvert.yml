@@ -71,6 +71,12 @@ jobs:
     - run: | 
         & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac
       name: Run uno-check
+
+    - name: Workload restore
+      run: |
+        cd src\Uno.UI
+        dotnet workload restore Uno.UI.netcoremobile.csproj
+
     - name: Convert source tree to UWP
       run: |
         cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
