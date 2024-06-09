@@ -32,7 +32,7 @@ jobs:
     displayName: Copy Artifacts to PackageCache
 
   - script: |
-      cd src\SolutionTemplate\UnoAppAll\UnoAppAll.Mobile
+      cd src/SolutionTemplate/UnoAppAll/UnoAppAll.Mobile
       dotnet workload restore
     displayName: Workload restore
 
@@ -85,7 +85,7 @@ jobs:
     displayName: Copy Artifacts to PackageCache
 
   - script: |
-      cd src\SolutionTemplate\UnoAppAll\UnoAppAll.Mobile
+      cd src/SolutionTemplate/UnoAppAll/UnoAppAll.Mobile
       dotnet workload restore
     displayName: Workload restore
 
