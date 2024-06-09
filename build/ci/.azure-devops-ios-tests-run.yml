@@ -96,7 +96,6 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
-      UnoTargetFrameworkOverride: "net7.0-ios"
 
   - task: PublishTestResults@2
     condition: always()
@@ -126,7 +125,6 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
-      UnoTargetFrameworkOverride: "net7.0-ios"
 
   - task: PublishTestResults@2
     condition: eq(variables.UITEST_ALLOW_RERUN, 'true')

@@ -6,8 +6,7 @@
 		<!-- We keep it on the oldest supported TFM -->
 		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
-		<!-- Ideally, this should be $(NetPrevious), but as we still build iOS tests on net7.0, we have to match here. -->
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<RollForward>major</RollForward>
 	</PropertyGroup>

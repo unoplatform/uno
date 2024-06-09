@@ -14,15 +14,6 @@
 				<TargetFrameworks>net8.0</TargetFrameworks>
 			</PropertyGroup>
 		</When>
-		<!-- We check specifically for net7.0-ios -->
-		<!-- Our builds are now all net8.0+ -->
-		<!-- However, Xamarin.UITest doesn't (probably won't) support net8.0+ -->
-		<!-- So, we still build SamplesApp in net7.0-ios in CI to be able to run UI tests -->
-		<When Condition="'$(UnoTargetFrameworkOverride)' == 'net7.0-ios'">
-			<PropertyGroup>
-				<TargetFrameworks>net7.0</TargetFrameworks>
-			</PropertyGroup>
-		</When>
 	</Choose>
 
 </Project>

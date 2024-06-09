@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!-- Ideally, this should be $(NetPrevious), but as we still build iOS tests on net7.0, we have to match here. -->
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
