@@ -136,7 +136,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_entries is null)
 			{
-				throw new InvalidOperationException("DependencyPropertyDetailsCollection is accessed after it was disposed.");
+				return null;
 			}
 
 			if (forceCreate)
@@ -252,7 +252,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal DependencyPropertyDetails?[] GetAllDetails()
-			=> _entries ?? throw new InvalidOperationException("DependencyPropertyDetailsCollection is accessed after it was disposed.");
+			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
+			=> _entries ?? _empty;
 
 		internal void TryEnableHardReferences()
 		{
