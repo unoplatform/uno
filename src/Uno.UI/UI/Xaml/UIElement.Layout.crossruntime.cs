@@ -29,9 +29,9 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogError($"[LayoutCycleTracing] InvalidateMeasure {this},{this.GetDebugName()}");
+				this.Log().LogWarning($"[LayoutCycleTracing] InvalidateMeasure {this},{this.GetDebugName()}");
 			}
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
