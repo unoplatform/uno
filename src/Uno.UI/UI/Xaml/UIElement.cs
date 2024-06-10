@@ -832,9 +832,9 @@ namespace Microsoft.UI.Xaml
 				if (i <= 10 && Application.Current is { DebugSettings.LayoutCycleTracingLevel: not LayoutCycleTracingLevel.None })
 				{
 					_traceLayoutCycle = true;
-					if (typeof(UIElement).Log().IsEnabled(LogLevel.Error))
+					if (typeof(UIElement).Log().IsEnabled(LogLevel.Warning))
 					{
-						typeof(UIElement).Log().LogError($"[LayoutCycleTracing] Low on countdown ({i}).");
+						typeof(UIElement).Log().LogWarning($"[LayoutCycleTracing] Low on countdown ({i}).");
 					}
 				}
 #endif

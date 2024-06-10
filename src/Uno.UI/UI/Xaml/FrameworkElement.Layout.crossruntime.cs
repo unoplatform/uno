@@ -168,9 +168,9 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerMeasureCore(Size availableSize)
 		{
-			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogError($"[LayoutCycleTracing] Measuring {this},{this.GetDebugName()} with availableSize {availableSize}.");
+				this.Log().LogWarning($"[LayoutCycleTracing] Measuring {this},{this.GetDebugName()} with availableSize {availableSize}.");
 			}
 
 			// Uno TODO
@@ -356,9 +356,9 @@ namespace Microsoft.UI.Xaml
 				desiredSize.Height = LayoutRound(desiredSize.Height);
 			}
 
-			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogError($"[LayoutCycleTracing] Measured {this},{this.GetDebugName()}: desiredSize is {desiredSize}.");
+				this.Log().LogWarning($"[LayoutCycleTracing] Measured {this},{this.GetDebugName()}: desiredSize is {desiredSize}.");
 			}
 
 #if __SKIA__
@@ -442,9 +442,9 @@ namespace Microsoft.UI.Xaml
 		private void InnerArrangeCore(Rect finalRect)
 		{
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect})");
-			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogError($"[LayoutCycleTracing] Arranging {this},{this.GetDebugName()} with finalRect {finalRect}.");
+				this.Log().LogWarning($"[LayoutCycleTracing] Arranging {this},{this.GetDebugName()} with finalRect {finalRect}.");
 			}
 
 			// Uno TODO:
@@ -733,9 +733,9 @@ namespace Microsoft.UI.Xaml
 			var clippedFrame = GetClipRect(needsClipBounds, visualOffset, finalRect, new Size(maxWidth, maxHeight), margin);
 			ArrangeNative(visualOffset, clippedFrame);
 
-			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogError($"[LayoutCycleTracing] Arranged {this},{this.GetDebugName()}: {clippedFrame}.");
+				this.Log().LogWarning($"[LayoutCycleTracing] Arranged {this},{this.GetDebugName()}: {clippedFrame}.");
 			}
 
 			AfterArrange();
