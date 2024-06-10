@@ -50,6 +50,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static partial IntPtr XOpenDisplay(IntPtr display);
 
 		[LibraryImport(libX11)]
+		public static partial int XDefaultDepth(IntPtr display, int screen);
+
+		[LibraryImport(libX11)]
+		public static partial int XMatchVisualInfo(IntPtr display, int screen, int depth, int klass, out XVisualInfo info);
+
+		[LibraryImport(libX11)]
 		public static partial IntPtr XCreateSimpleWindow(IntPtr display, IntPtr parent, int x, int y, int width,
 			int height, int border_width, IntPtr border, IntPtr background);
 
