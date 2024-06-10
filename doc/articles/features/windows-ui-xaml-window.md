@@ -6,6 +6,9 @@ uid: Uno.Features.WinUIWindow
 
 > [!TIP]
 > This article covers Uno-specific information for `Microsoft.UI.Xaml.Window` and windowing. For a full description of the feature and instructions on using it, see [Window Class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window) and [Windowing Overview](https://learn.microsoft.com/windows/apps/windows-app-sdk/windowing/windowing-overview).
+>
+> [!Video https://www.youtube-nocookie.com/embed?listType=playlist&list=PLl_OlDcUya9qHAzFlO5Z6SGJ8zHg-nYkh]
+For more information and detailed walkthroughs on Windowing, please refer to the rest of the [video playlist](https://www.youtube.com/playlist?list=PLl_OlDcUya9qHAzFlO5Z6SGJ8zHg-nYkh).
 
 * The `Microsoft.UI.Xaml.Window` class allows for managing the window of the application.
 * This article also describes window management in Uno Platform apps
