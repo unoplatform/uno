@@ -130,11 +130,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
-		// The window needs to be mapped earlier because it's used in DisplayInformationExtension
-		// if (NativeWindow is X11Window x11Window)
-		// {
-		// 	XLib.XMapWindow(x11Window.Display, x11Window.Window);
-		// }
+		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
+		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)

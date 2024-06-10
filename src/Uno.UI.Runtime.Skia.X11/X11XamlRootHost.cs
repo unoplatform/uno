@@ -14,14 +14,27 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost : IXamlRootHost
 {
+<<<<<<< HEAD
 	private const int InitialWidth = 900;
 	private const int InitialHeight = 800;
 	private const IntPtr EventsMask =
+=======
+	private const int DefaultColorDepth = 32;
+	private const int FallbackColorDepth = 24;
+
+	private const IntPtr RootEventsMask =
+		(IntPtr)EventMask.ExposureMask |
+		(IntPtr)EventMask.StructureNotifyMask |
+		(IntPtr)EventMask.VisibilityChangeMask |
+		(IntPtr)EventMask.NoEventMask;
+	private const IntPtr TopEventsMask =
+>>>>>>> e3a7f56884 (chore: same fix for X11 + some cleanup)
 		(IntPtr)EventMask.ExposureMask |
 		(IntPtr)EventMask.ButtonPressMask |
 		(IntPtr)EventMask.ButtonReleaseMask |
@@ -305,9 +318,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var size = ApplicationView.PreferredLaunchViewSize;
 		if (size == Size.Empty)
 		{
-			size = new Size(InitialWidth, InitialHeight);
+			size = new Size(NativeWindowWrapperBase.InitialWidth, NativeWindowWrapperBase.InitialHeight);
 		}
 
+<<<<<<< HEAD
 		IntPtr window;
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
@@ -328,7 +342,25 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				XLib.XWhitePixel(display, screen));
 			XLib.XSelectInput(display, window, EventsMask);
 			_x11Window = new X11Window(display, window);
+=======
+		// For the root window (that does nothing but act as an anchor for children,
+		// we don't bother with OpenGL, since we don't render on this window anyway.
+		IntPtr rootWindow = CreateSoftwareRenderWindow(display, screen, size, XLib.XRootWindow(display, screen));
+		XLib.XSelectInput(display, rootWindow, RootEventsMask);
+		_x11Window = new X11Window(display, rootWindow);
+		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
+		{
+			_x11TopWindow = CreateGLXWindow(display, screen, size, rootWindow);
 		}
+		else
+		{
+			var topWindow = CreateSoftwareRenderWindow(display, screen, size, rootWindow);
+			XLib.XSelectInput(display, topWindow, TopEventsMask);
+			_x11TopWindow = new X11Window(display, topWindow);
+>>>>>>> e3a7f56884 (chore: same fix for X11 + some cleanup)
+		}
+
+		QueueAction(this, () => _resizeCallback(size));
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
@@ -340,8 +372,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			_x11WindowToXamlRootHost[_x11Window.Value] = this;
 		}
 
+<<<<<<< HEAD
 		// The window must be mapped before DisplayInformationExtension is initialized.
 		var _4 = XLib.XMapWindow(display, window);
+=======
+		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
+>>>>>>> e3a7f56884 (chore: same fix for X11 + some cleanup)
 
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
@@ -355,7 +391,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
-	private unsafe X11Window CreateGLXWindow(IntPtr display, int screen, Size size)
+	private unsafe X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
 	{
 		int[] glxAttribs = {
 			GlxConsts.GLX_X_RENDERABLE    , /* True */ 1,
@@ -403,11 +439,16 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		attribs.background_pixel = XLib.XWhitePixel(display, screen);
 		// Not sure why this is needed, commented out until further notice
 		// attribs.override_redirect = /* True */ 1;
+<<<<<<< HEAD
 		attribs.colormap = XLib.XCreateColormap(display, XLib.XRootWindow(display, screen), visual->visual, /* AllocNone */ 0);
 		attribs.event_mask = EventsMask;
+=======
+		attribs.colormap = XLib.XCreateColormap(display, parent, visual->visual, /* AllocNone */ 0);
+		attribs.event_mask = TopEventsMask;
+>>>>>>> e3a7f56884 (chore: same fix for X11 + some cleanup)
 		var window = XLib.XCreateWindow(
 			display,
-			XLib.XRootWindow(display, screen),
+			parent,
 			0,
 			0,
 			(int)size.Width,
@@ -424,6 +465,60 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
+<<<<<<< HEAD
+=======
+	private IntPtr CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	{
+		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
+		var success = matchVisualInfoResult != 0;
+		if (!success)
+		{
+			matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, FallbackColorDepth, 4, out info);
+
+			success = matchVisualInfoResult != 0;
+			if (!success)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("XLIB ERROR: Cannot match visual info");
+				}
+				throw new InvalidOperationException("XLIB ERROR: Cannot match visual info");
+			}
+		}
+
+		var visual = info.visual;
+		var depth = info.depth;
+
+		var xSetWindowAttributes = new XSetWindowAttributes()
+		{
+			backing_store = 1,
+			bit_gravity = Gravity.NorthWestGravity,
+			win_gravity = Gravity.NorthWestGravity,
+			// Settings to true when WindowStyle is None
+			//override_redirect = true,
+			colormap = XLib.XCreateColormap(display, parent, visual, /* AllocNone */ 0),
+			border_pixel = 0,
+			// Settings background pixel to zero means Transparent background,
+			// and it will use the background color from `Window.SetBackground`
+			background_pixel = IntPtr.Zero,
+		};
+		var valueMask =
+				0
+				| SetWindowValuemask.BackPixel
+				| SetWindowValuemask.BorderPixel
+				| SetWindowValuemask.BitGravity
+				| SetWindowValuemask.WinGravity
+				| SetWindowValuemask.BackingStore
+				| SetWindowValuemask.ColorMap
+			//| SetWindowValuemask.OverrideRedirect
+			;
+		var window = XLib.XCreateWindow(display, parent, 0, 0, (int)size.Width,
+			(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
+			(UIntPtr)(valueMask), ref xSetWindowAttributes);
+		return window;
+	}
+
+>>>>>>> e3a7f56884 (chore: same fix for X11 + some cleanup)
 	private bool IsOpenGLSupported(IntPtr display)
 	{
 		try
