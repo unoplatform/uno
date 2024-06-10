@@ -5,7 +5,9 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DebugSettings
 	{
+#if HAS_UNO_WINUI
 		public LayoutCycleTracingLevel LayoutCycleTracingLevel { get; set; }
+#endif
 
 		[Uno.NotImplemented]
 		public bool EnableFrameRateCounter { get; set; }
