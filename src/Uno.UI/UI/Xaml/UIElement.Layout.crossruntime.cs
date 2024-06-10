@@ -27,6 +27,11 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"[LayoutCycleTracing] InvalidateMeasure {this},{this.GetDebugName()}");
+			}
+
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 
 			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && !IsMeasureDirtyPathDisabled)
@@ -79,6 +84,11 @@ namespace Microsoft.UI.Xaml
 			if (IsArrangeDirty)
 			{
 				return; // Already dirty
+			}
+
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"[LayoutCycleTracing] InvalidateArrange {this},{this.GetDebugName()}");
 			}
 
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
