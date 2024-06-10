@@ -2,11 +2,13 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Uno.UI;
-using Uno.UI.Xaml;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml
 {
