@@ -44,7 +44,10 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
+#if HAS_UNO_WINUI
 		private protected static bool _traceLayoutCycle;
+#endif
+
 		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
 			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
 
@@ -825,6 +828,7 @@ namespace Microsoft.UI.Xaml
 
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
+#if HAS_UNO_WINUI
 				if (i <= 10 && Application.Current is { DebugSettings.LayoutCycleTracingLevel: not LayoutCycleTracingLevel.None })
 				{
 					_traceLayoutCycle = true;
@@ -833,6 +837,7 @@ namespace Microsoft.UI.Xaml
 						typeof(UIElement).Log().LogError($"[LayoutCycleTracing] Low on countdown ({i}).");
 					}
 				}
+#endif
 
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
