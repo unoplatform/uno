@@ -44,6 +44,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
+		private protected static bool _traceLayoutCycle;
 		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
 			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
 
@@ -824,6 +825,15 @@ namespace Microsoft.UI.Xaml
 
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
+				if (i <= 10 && Application.Current is { DebugSettings.LayoutCycleTracingLevel: not LayoutCycleTracingLevel.None })
+				{
+					_traceLayoutCycle = true;
+					if (typeof(UIElement).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(UIElement).Log().LogError($"[LayoutCycleTracing] Low on countdown ({i}).");
+					}
+				}
+
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
 					root.Measure(bounds.Size);
@@ -863,17 +873,20 @@ namespace Microsoft.UI.Xaml
 						!root.IsArrangeDirtyOrArrangeDirtyPath &&
 						!eventManager.HasPendingViewportChangedEvents)
 					{
+						_traceLayoutCycle = false;
 						return;
 					}
 				}
 #else
 				else
 				{
+					_traceLayoutCycle = false;
 					return;
 				}
 #endif
 			}
 
+			_traceLayoutCycle = false;
 			throw new InvalidOperationException("Layout cycle detected.");
 #endif
 		}
