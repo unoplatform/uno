@@ -122,7 +122,7 @@ public partial class ApiInformation
 	/// <summary>
 	/// The message log level used when a not implemented member is used at runtime, if <see cref="IsFailWhenNotImplemented"/> is false.
 	/// </summary>
-	public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Error;
+	public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Debug;
 
 	private static Type? GetValidType(string typeName)
 	{
