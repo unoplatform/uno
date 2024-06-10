@@ -4,7 +4,7 @@ using Uno.Foundation.Logging;
 
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-
+using Uno.UI.Xaml.Controls;
 using IOPath = System.IO.Path;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 
@@ -15,18 +15,20 @@ internal class MacOSWindowNative
 	private readonly WinUIWindow _winUIWindow;
 	private readonly ApplicationView _applicationView;
 
-	public MacOSWindowNative(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot)
+	public MacOSWindowNative(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot, out Size initialSize)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 
-		var defaultWidth = 1024.0;
-		var defaultHeight = 800.0;
+		double initialWidth = NativeWindowWrapperBase.InitialWidth;
+		double initialHeight = NativeWindowWrapperBase.InitialHeight;
 		var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)
 		{
-			defaultWidth = preferredWindowSize.Width;
-			defaultHeight = preferredWindowSize.Height;
+			initialWidth = preferredWindowSize.Width;
+			initialHeight = preferredWindowSize.Height;
 		}
+
+		initialSize = new Size(initialWidth, initialHeight);
 
 		if (MacSkiaHost.Current.InitialWindow is null)
 		{
@@ -36,7 +38,7 @@ internal class MacOSWindowNative
 		}
 		else
 		{
-			Handle = NativeUno.uno_window_create(defaultWidth, defaultHeight);
+			Handle = NativeUno.uno_window_create(initialWidth, initialHeight);
 		}
 
 		// host MUST be created after we get a native handle
@@ -45,7 +47,7 @@ internal class MacOSWindowNative
 		MacOSWindowHost.Register(Handle, xamlRoot, Host);
 
 		// call resize as late as possible (after the host creation)
-		NativeUno.uno_window_resize(Handle, defaultWidth, defaultHeight);
+		NativeUno.uno_window_resize(Handle, initialWidth, initialHeight);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
