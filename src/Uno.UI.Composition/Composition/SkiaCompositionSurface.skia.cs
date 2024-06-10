@@ -21,7 +21,7 @@ namespace Microsoft.UI.Composition
 		public SKImage? Image
 		{
 			get => _image;
-			set
+			private set
 			{
 				_image = value;
 				OnPropertyChanged(nameof(Image), isSubPropertyChange: false);
