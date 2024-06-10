@@ -186,11 +186,11 @@ namespace Microsoft.UI.Xaml
 					_entries = entries = newEntries;
 				}
 
-				ref var propertyEntry = ref entries[offset + bucketRemainder];
-
-				if (propertyEntry == null)
+				var propertyEntry = entries[offset + bucketRemainder];
+				if (propertyEntry is null)
 				{
 					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty || property == _templatedParentProperty);
+					_entries[offset + bucketRemainder] = propertyEntry;
 
 					if (TryResolveDefaultValueFromProviders(property, out var value))
 					{
