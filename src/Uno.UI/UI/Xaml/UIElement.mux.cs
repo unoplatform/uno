@@ -612,9 +612,8 @@ namespace Microsoft.UI.Xaml
 		/// <returns>True if the element is a ScrollViewer.</returns>
 		internal bool IsScroller() => this is ScrollViewer;
 
-		private void OnKeyDown(EventArgs pEventArgs)
+		private void OnKeyDown(KeyRoutedEventArgs pEventArgs)
 		{
-			// TODO:MZ: This is wrong!
 			/*
 			1. We take different paths for raising events depending on whether the source is a UIElement or a Control
 			2. The DXAML layer OnKeyDown virtual is defined on Control
@@ -622,38 +621,38 @@ namespace Microsoft.UI.Xaml
 			As a result, we execute similar logic to process KeyboardAccelerators in both CUIElement::OnKeyDown and Control::OnKeyDown
 			One deals with controls, this deals with all other UIElements.
 			*/
-			//KeyRoutedEventArgs pKeyRoutedEventArgs = (KeyRoutedEventArgs)pEventArgs;
-			//bool handled = false;
-			//bool handledShouldNotImpedeTextInput = false;
-			//VirtualKey dxamlOriginalKey;
+			KeyRoutedEventArgs pKeyRoutedEventArgs = (KeyRoutedEventArgs)pEventArgs;
+			bool handled = false;
+			bool handledShouldNotImpedeTextInput = false;
+			VirtualKey dxamlOriginalKey;
 
-			//dxamlOriginalKey = pKeyRoutedEventArgs.OriginalKey;
+			dxamlOriginalKey = pKeyRoutedEventArgs.OriginalKey;
 
-			//VirtualKey originalKey = dxamlOriginalKey;
+			VirtualKey originalKey = dxamlOriginalKey;
 
-			//var keyModifiers = CoreImports.Input_GetKeyboardModifiers();
+			var keyModifiers = CoreImports.Input_GetKeyboardModifiers();
 
-			//if (KeyboardAcceleratorUtility.IsKeyValidForAccelerators(originalKey, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(keyModifiers)))
-			//{
-			//	KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
-			//		originalKey,
-			//		keyModifiers,
-			//		VisualTree.GetContentRootForElement(this)!.GetAllLiveKeyboardAccelerators(),
-			//		this,
-			//		out handled,
-			//		out handledShouldNotImpedeTextInput,
-			//		null,
-			//		false);
+			if (KeyboardAcceleratorUtility.IsKeyValidForAccelerators(originalKey, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(keyModifiers)))
+			{
+				KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
+					originalKey,
+					keyModifiers,
+					VisualTree.GetContentRootForElement(this)!.GetAllLiveKeyboardAccelerators(),
+					this,
+					out handled,
+					out handledShouldNotImpedeTextInput,
+					null,
+					false);
 
-			//	if (handled)
-			//	{
-			//		pKeyRoutedEventArgs.Handled = true;
-			//	}
-			//	if (handledShouldNotImpedeTextInput)
-			//	{
-			//		pKeyRoutedEventArgs.HandledShouldNotImpedeTextInput = true;
-			//	}
-			//}
+				if (handled)
+				{
+					pKeyRoutedEventArgs.Handled = true;
+				}
+				if (handledShouldNotImpedeTextInput)
+				{
+					pKeyRoutedEventArgs.HandledShouldNotImpedeTextInput = true;
+				}
+			}
 		}
 
 		// Implements a depth-first search of the element's sub-tree,
