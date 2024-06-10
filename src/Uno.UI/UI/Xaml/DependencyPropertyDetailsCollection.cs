@@ -106,6 +106,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			ReturnEntriesAndOffsetsToPools();
+
+			_entries = null!;
 		}
 
 		public DependencyPropertyDetails DataContextPropertyDetails
@@ -132,6 +134,11 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
+			if (_entries is null)
+			{
+				return null;
+			}
+
 			if (forceCreate)
 			{
 				// Since BucketSize is a power of 2 we can shift and mask to divide and modulo respectively
@@ -244,7 +251,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal DependencyPropertyDetails?[] GetAllDetails() => _entries;
+		internal DependencyPropertyDetails?[] GetAllDetails()
+			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
+			=> _entries ?? _empty;
 
 		internal void TryEnableHardReferences()
 		{
