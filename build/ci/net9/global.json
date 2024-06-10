@@ -1,7 +1,6 @@
 {
 	"sdk": {
 		"version": "9.0.100-preview.4.24267.66",
-		// Change to false once we have stable 9.0 SDK
 		"allowPrerelease": true,
 		"rollForward": "disable"
 	},
