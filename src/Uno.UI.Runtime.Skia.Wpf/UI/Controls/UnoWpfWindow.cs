@@ -5,10 +5,16 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Shell;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
+<<<<<<< HEAD
+=======
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Xaml.Controls;
+using WindowChrome = System.Windows.Shell.WindowChrome;
+>>>>>>> b34e485755 (fix(wpf): not activating the window shouldn't prevent the application from loading)
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
@@ -30,12 +36,13 @@ internal class UnoWpfWindow : WpfWindow
 		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
 		winUIWindow.Closed += (_, _) => _windowToWpfWindow.TryRemove(winUIWindow, out _);
 
-		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-		if (preferredWindowSize != Windows.Foundation.Size.Empty)
+		var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+		if (preferredWindowSize.IsEmpty)
 		{
-			Width = (int)preferredWindowSize.Width;
-			Height = (int)preferredWindowSize.Height;
+			preferredWindowSize = new Windows.Foundation.Size(NativeWindowWrapperBase.InitialWidth, NativeWindowWrapperBase.InitialHeight);
 		}
+		Width = (int)preferredWindowSize.Width;
+		Height = (int)preferredWindowSize.Height;
 
 		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
 		WpfManager.XamlRootMap.Register(xamlRoot, Host);

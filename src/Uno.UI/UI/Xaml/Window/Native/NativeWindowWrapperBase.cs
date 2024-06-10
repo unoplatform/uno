@@ -13,6 +13,9 @@ namespace Uno.UI.Xaml.Controls;
 
 internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
+	public const int InitialWidth = 1024;
+	public const int InitialHeight = 640;
+
 	protected readonly ContentSite _contentSite = new();
 	private Rect _bounds;
 	private Rect _visibleBounds;
