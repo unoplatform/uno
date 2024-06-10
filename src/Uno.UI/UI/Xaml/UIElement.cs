@@ -824,12 +824,14 @@ namespace Microsoft.UI.Xaml
 			}
 #endif
 
+			var tracingThisCall = false;
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
 #if HAS_UNO_WINUI
 				if (i <= 10 && Application.Current is { DebugSettings.LayoutCycleTracingLevel: not LayoutCycleTracingLevel.None })
 				{
 					_traceLayoutCycle = true;
+					tracingThisCall = true;
 					if (typeof(UIElement).Log().IsEnabled(LogLevel.Warning))
 					{
 						typeof(UIElement).Log().LogWarning($"[LayoutCycleTracing] Low on countdown ({i}).");
@@ -876,20 +878,35 @@ namespace Microsoft.UI.Xaml
 						!root.IsArrangeDirtyOrArrangeDirtyPath &&
 						!eventManager.HasPendingViewportChangedEvents)
 					{
-						_traceLayoutCycle = false;
+						if (tracingThisCall)
+						{
+							// Avoid setting _traceLayoutCycle to false for re-entrant calls in case it happens.
+							_traceLayoutCycle = false;
+						}
+
 						return;
 					}
 				}
 #else
 				else
 				{
-					_traceLayoutCycle = false;
+					if (tracingThisCall)
+					{
+						// Avoid setting _traceLayoutCycle to false for re-entrant calls in case it happens.
+						_traceLayoutCycle = false;
+					}
+
 					return;
 				}
 #endif
 			}
 
-			_traceLayoutCycle = false;
+			if (tracingThisCall)
+			{
+				// Avoid setting _traceLayoutCycle to false for re-entrant calls in case it happens.
+				_traceLayoutCycle = false;
+			}
+
 			throw new InvalidOperationException("Layout cycle detected.");
 #endif
 		}
