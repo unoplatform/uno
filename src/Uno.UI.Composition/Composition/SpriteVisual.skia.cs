@@ -69,8 +69,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		internal override bool RequiresRepaintOnEveryFrame =>
-			Brush is CompositionEffectBrush { HasBackdropBrushInput: true } or IOnlineBrush { IsOnline: true };
+		internal override bool RequiresRepaintOnEveryFrame => (Brush?.RequiresRepaintOnEveryFrame ?? false);
 
 		internal override bool CanPaint => true;
 	}

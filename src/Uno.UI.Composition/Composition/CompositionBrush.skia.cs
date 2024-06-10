@@ -9,5 +9,7 @@ namespace Microsoft.UI.Composition
 		internal virtual void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
 		}
+
+		internal virtual bool RequiresRepaintOnEveryFrame => false;
 	}
 }
