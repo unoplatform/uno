@@ -25,11 +25,6 @@ jobs:
 
   - template: templates/dotnet-mobile-install-mac.yml
 
-  - script: |
-      cd src/SamplesApp/SamplesApp.netcoremobile
-      dotnet workload restore
-    displayName: Workload restore
-
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)

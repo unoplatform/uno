@@ -31,11 +31,6 @@ jobs:
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: |
-      cd src/SolutionTemplate/UnoAppAll/UnoAppAll.Mobile
-      dotnet workload restore
-    displayName: Workload restore
-
   - task: PowerShell@2
     displayName: Run Project Templates Tests
     inputs:
@@ -83,11 +78,6 @@ jobs:
 
   - powershell: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
-
-  - script: |
-      cd src/SolutionTemplate/UnoAppAll/UnoAppAll.Mobile
-      dotnet workload restore
-    displayName: Workload restore
 
   - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests

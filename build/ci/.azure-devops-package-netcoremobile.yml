@@ -51,11 +51,6 @@ jobs:
 
   - template: templates/dotnet-mobile-install-windows.yml
 
-  - script: |
-      cd src/Uno.UI
-      dotnet workload restore Uno.UI.netcoremobile.csproj
-    displayName: Workload restore
-
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later
   - task: DotNetCoreCLI@2
