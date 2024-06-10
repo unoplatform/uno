@@ -28,6 +28,8 @@ public partial class CompositionEffectBrush : CompositionBrush
 		private set => SetProperty(ref _hasBackdropBrushInput, value);
 	}
 
+	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
+
 	internal bool UseBlurPadding { get; set; }
 
 	private SKImageFilter? GenerateGaussianBlurEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)

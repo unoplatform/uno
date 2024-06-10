@@ -40,7 +40,7 @@ public partial class ShapeVisual
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 		if (propertyName == nameof(Shapes))
 		{
-			_needsContinuousUpdates = _shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush is CompositionEffectBrush { HasBackdropBrushInput: true } or IOnlineBrush { IsOnline: true }) ?? false;
+			_needsContinuousUpdates = _shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
 		}
 	}
 

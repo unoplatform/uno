@@ -65,8 +65,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	}
 
 	internal override bool CanPaint => BorderBrush is { } || BackgroundBrush is { };
-	internal override bool RequiresRepaintOnEveryFrame
-		=> _backgroundBrush is CompositionEffectBrush { HasBackdropBrushInput: true } or IOnlineBrush { IsOnline: true } || _borderBrush is CompositionEffectBrush { HasBackdropBrushInput: true } or IOnlineBrush { IsOnline: true };
+	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
