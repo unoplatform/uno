@@ -110,6 +110,7 @@ namespace Private.Infrastructure
 				{"tab",                         VirtualKey.Tab},
 				{"esc",                         VirtualKey.Escape},
 				{"ctrl",                        VirtualKey.Control},
+				{"ctrlscan",                    VirtualKey.Control},
 				{"GamepadA",                    VirtualKey.GamepadA},
 				{"GamepadB",                    VirtualKey.GamepadB},
 				{"GamepadDpadRight",            VirtualKey.GamepadDPadRight},

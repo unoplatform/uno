@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Uno.UI;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
@@ -7,7 +6,6 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Markup;
 using System.ComponentModel;
-using System.Reflection;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Uno;
@@ -1094,7 +1092,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 		private static readonly KeyEventHandler OnKeyDownHandler =
-			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
+			(object sender, KeyRoutedEventArgs args) =>
+			{
+				var senderAsControl = (Control)sender;
+				//ToolTipService.CloseToolTipInternal(args); TODO:MZ: Implement
+				ProcessAcceleratorsIfApplicable(args, senderAsControl);
+				if (!args.Handled)
+				{
+					senderAsControl.OnKeyDown(args);
+				}
+			};
 
 		private static readonly KeyEventHandler OnKeyUpHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyUp(args);

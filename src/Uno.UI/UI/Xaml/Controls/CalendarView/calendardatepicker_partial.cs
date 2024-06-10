@@ -672,9 +672,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			VirtualKey key = VirtualKey.None;
-			VirtualKeyModifiers modifiers = VirtualKeyModifiers.None;
-
-			GetKeyboardModifiers(out modifiers);
+			VirtualKeyModifiers modifiers = GetKeyboardModifiers();
 
 			key = pArgs.Key;
 
@@ -782,9 +780,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// IFCPTR_RETURN(spPointerProperties);
 				isLeftButtonPressed = spPointerProperties.IsLeftButtonPressed;
 
-				VirtualKeyModifiers modifiers = VirtualKeyModifiers.None;
-
-				GetKeyboardModifiers(out modifiers);
+				VirtualKeyModifiers modifiers = GetKeyboardModifiers();
 
 				m_shouldPerformActions = (m_isPressedOnMain && !isLeftButtonPressed
 					&& modifiers == VirtualKeyModifiers.None);
