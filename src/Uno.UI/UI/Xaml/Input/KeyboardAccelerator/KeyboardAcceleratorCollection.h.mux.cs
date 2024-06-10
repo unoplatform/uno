@@ -12,7 +12,7 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 #if HAS_UNO // TODO: Uno specific - workaround for the lack of support for Enter/Leave on DOs.
 	private ParentVisualTreeListener _parentVisualTreeListener;
 
-	public KeyboardAcceleratorCollection()
+	public KeyboardAcceleratorCollection(DependencyObject parent) : base(parent, true)
 	{
 		_parentVisualTreeListener = new ParentVisualTreeListener(this);
 		_parentVisualTreeListener.ParentLoaded += (s, e) => Enter(null, new EnterParams(true));
