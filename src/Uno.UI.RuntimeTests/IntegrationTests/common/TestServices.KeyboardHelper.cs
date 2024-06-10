@@ -30,6 +30,7 @@ namespace Private.Infrastructure
 				{"backspace",                   VirtualKey.Back},
 				{"clear",                       VirtualKey.Clear},
 				{"enter",                       VirtualKey.Enter},
+				{"equal",                       (global::Windows.System.VirtualKey)187},
 				{"return",                      VirtualKey.Enter},
 				{"numpadenter",                 VirtualKey.Enter},
 				{"shift",                       VirtualKey.Shift},
