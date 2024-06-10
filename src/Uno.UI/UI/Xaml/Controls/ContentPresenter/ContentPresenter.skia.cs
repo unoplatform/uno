@@ -1,5 +1,4 @@
 ﻿using System;
-<<<<<<< HEAD
 using System.Runtime.InteropServices;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
@@ -11,14 +10,6 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Xaml.Controls;
-=======
-using System.Collections.Generic;
-using Uno.Disposables;
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
-using Uno.UI;
-using Windows.Foundation;
->>>>>>> 88c15faf01 (fix: Avoid using DependencyObjectStore after it has been disposed)
 
 namespace Microsoft.UI.Xaml.Controls;
 
