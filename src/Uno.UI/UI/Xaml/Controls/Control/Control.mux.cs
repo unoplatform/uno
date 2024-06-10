@@ -5,11 +5,14 @@
 #nullable enable
 
 using System;
+using DirectUI;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -185,5 +188,35 @@ namespace Microsoft.UI.Xaml.Controls
 			var contentRoot = VisualTree.GetContentRootForElement(this);
 			return contentRoot?.InputManager.LastInputDeviceType == InputDeviceType.GamepadOrRemote;
 		}
+
+		private static void ProcessAcceleratorsIfApplicable(KeyRoutedEventArgs spArgsAsKEA, Control pSenderAsControl)
+		{
+			VirtualKey originalKey = spArgsAsKEA.OriginalKey;
+			VirtualKeyModifiers keyModifiers = GetKeyboardModifiers();
+
+			if (KeyboardAcceleratorUtility.IsKeyValidForAccelerators(originalKey, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(keyModifiers)))
+			{
+				KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
+					originalKey,
+					keyModifiers,
+					VisualTree.GetContentRootForElement(pSenderAsControl)!.GetAllLiveKeyboardAccelerators(),
+					pSenderAsControl,
+					out var handled,
+					out var handledShouldNotImpedeTextInput,
+					null,
+					false);
+
+				if (handled)
+				{
+					spArgsAsKEA.Handled = true;
+				}
+				if (handledShouldNotImpedeTextInput)
+				{
+					spArgsAsKEA.HandledShouldNotImpedeTextInput = true;
+				}
+			}
+		}
+
+		private protected static VirtualKeyModifiers GetKeyboardModifiers() => CoreImports.Input_GetKeyboardModifiers();
 	}
 }

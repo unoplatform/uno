@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (property == KeyboardAcceleratorsProperty)
 			{
-				defaultValue = new KeyboardAcceleratorCollection();
+				defaultValue = new KeyboardAcceleratorCollection(this);
 				return true;
 			}
 			else if (property == IsTabStopProperty)
