@@ -119,7 +119,9 @@ namespace Windows.Storage.Pickers
 #endif
 		public static void SetMultipleFilesLimit(this FileOpenPicker picker, int limit)
 		{
+#if __IOS__
 			picker.SetMultipleFileLimit(limit);
+#endif
 		}
 	}
 }
