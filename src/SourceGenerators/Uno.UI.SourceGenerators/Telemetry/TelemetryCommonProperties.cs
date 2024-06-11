@@ -26,13 +26,15 @@ namespace Uno.UI.SourceGenerators.Telemetry
 	internal class TelemetryCommonProperties
 	{
 		public TelemetryCommonProperties(
+			string storageDirectoryPath,
 			Func<string> getCurrentDirectory = null)
 		{
 			_getCurrentDirectory = getCurrentDirectory ?? Directory.GetCurrentDirectory;
+			_storageDirectoryPath = storageDirectoryPath;
 		}
 
 		private Func<string> _getCurrentDirectory;
-
+		private string _storageDirectoryPath;
 		public const string OSVersion = "OS Version";
 		public const string OSPlatform = "OS Platform";
 		public const string OutputRedirected = "Output Redirected";
@@ -60,6 +62,17 @@ namespace Uno.UI.SourceGenerators.Telemetry
 
 		private string GetMachineId()
 		{
+			var machineHashPath = Path.Combine(_storageDirectoryPath, ".machinehash");
+
+			if (File.Exists(machineHashPath))
+			{
+				if (File.ReadAllText(machineHashPath) is { Length: 32 /* hash */ or 36 /* guid */ } readHash)
+				{
+					return readHash;
+				}
+			}
+
+			string hash = null;
 			try
 			{
 				var macAddr =
@@ -69,14 +82,24 @@ namespace Uno.UI.SourceGenerators.Telemetry
 					select nic.GetPhysicalAddress().ToString()
 				).FirstOrDefault();
 
-				return HashBuilder.Build(macAddr);
+				hash = HashBuilder.Build(macAddr);
+
+				if (!Directory.Exists(Path.GetDirectoryName(machineHashPath)))
+				{
+					Directory.CreateDirectory(Path.GetDirectoryName(machineHashPath));
+				}
+
+				File.WriteAllText(machineHashPath, hash);
 			}
 			catch (Exception e)
 			{
 				Debug.Fail($"Failed to get Mac address: {e}");
 
-				return Guid.NewGuid().ToString();
+				// if the hash was set, but the write failed, let's continue.
+				hash ??= Guid.NewGuid().ToString();
 			}
+
+			return hash;
 		}
 
 		private string GetProductVersion()
