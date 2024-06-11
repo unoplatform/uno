@@ -19,6 +19,8 @@ using Microsoft.UI.Xaml.Shapes;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
+using TwoPaneView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView;
+
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
