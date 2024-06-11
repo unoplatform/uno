@@ -241,39 +241,6 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - task: DownloadBuildArtifacts@0
-    condition: gt(variables['System.JobAttempt'], 1)
-    continueOnError: true
-    displayName: Download previous test runs failed tests
-    inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-   ## First ui tests run
-  - bash: |
-      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
-      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
-      SITE_SUFFIX: "$(SITE_SUFFIX)"
-
-    displayName: 'Running UI Tests'
-
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
-      testResultsFormat: 'NUnit'
-      # This is the first run, we don't fail if there are failed tests, or if results file is missing. We'll wait for the second run.
-      # Note: failTaskOnMissingResultsFile default is false.
-      failTaskOnFailedTests: false
-      searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
-
-   ## Second ui tests run
   - bash: |
       chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
       $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
@@ -292,7 +259,7 @@ jobs:
       testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
-      # This is the second run, if TestResult-original.xml is missing *and* this is a UI tests run, we fail.
+      # If TestResult-original.xml is missing *and* this is a UI tests run, we fail.
       failTaskOnMissingResultsFile: $(IS_UI_TESTS)
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
@@ -303,7 +270,7 @@ jobs:
       testRunTitle: 'WebAssembly Runtime Tests Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
-      # This is the second run, if RuntimeTestResults*.xml is missing *and* this is a runtime tests run, we fail.
+      # If RuntimeTestResults*.xml is missing *and* this is a runtime tests run, we fail.
       failTaskOnMissingResultsFile: $(IS_RUNTIME_TESTS)
 
   - task: PublishBuildArtifacts@1
