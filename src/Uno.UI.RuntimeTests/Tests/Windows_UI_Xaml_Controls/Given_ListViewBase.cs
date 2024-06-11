@@ -2394,6 +2394,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __IOS__
+		[Ignore("Fails on iOS 17, crashes the simulator")]
+#endif
 		public async Task When_Items_Their_Own_Container_In_OnItemsChanged_Removal()
 		{
 			var list = new OnItemsChangedListView();
