@@ -18,6 +18,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 /// </summary>
 public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 {
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	private bool _subscribedToXamlRoot;
+#endif
+
 	private const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
 	private const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";
 
@@ -46,13 +50,38 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 		};
 	}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	private protected override void OnLoaded()
+	{
+		if (!_subscribedToXamlRoot)
+		{
+			var xamlRoot = XamlRoot;
+			xamlRoot!.Changed += OnXamlRootChanged;
+			m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
+			_subscribedToXamlRoot = true;
+		}
+
+		base.OnLoaded();
+	}
+#endif
+
 	protected override void OnApplyTemplate()
 	{
 		m_loaded = true;
 
 		var xamlRoot = XamlRoot;
+		// Uno-specific workaround: On some platforms (mainly mobile), we can get here with incorrectly null xamlRoot.
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		_subscribedToXamlRoot = xamlRoot is not null;
+		if (_subscribedToXamlRoot)
+		{
+			xamlRoot!.Changed += OnXamlRootChanged;
+			m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
+		}
+#else
 		xamlRoot!.Changed += OnXamlRootChanged;
 		m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
+#endif
 
 		SetScrollViewerProperties(c_pane1ScrollViewerName, m_pane1LoadedRevoker);
 		SetScrollViewerProperties(c_pane2ScrollViewerName, m_pane2LoadedRevoker);
