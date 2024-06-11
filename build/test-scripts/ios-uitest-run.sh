@@ -92,8 +92,13 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
+<<<<<<< HEAD
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-16-1"
 export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (5th generation)"
+=======
+export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-2"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
+>>>>>>> ac5532cebb (chore: Bump to 17.2)
 
 export UnoTargetFrameworkOverride="net7.0-ios"
 
