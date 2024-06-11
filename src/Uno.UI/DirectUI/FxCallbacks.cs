@@ -18,12 +18,6 @@ internal static class FxCallbacks
 	internal static void XamlRoot_RaiseChanged(XamlRoot xamlRoot) => xamlRoot.RaiseChangedEvent();
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	internal static bool KeyboardAccelerator_RaiseKeyboardAcceleratorInvoked(
-		KeyboardAccelerator pNativeAccelerator,
-		DependencyObject pElement) =>
-		KeyboardAccelerator.RaiseKeyboardAcceleratorInvoked(pNativeAccelerator, pElement);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static void UIElement_RaiseProcessKeyboardAccelerators(
 		UIElement pUIElement,
 		VirtualKey key,
@@ -31,4 +25,12 @@ internal static class FxCallbacks
 		ref bool pHandled,
 		ref bool pHandledShouldNotImpedeTextInput) =>
 		UIElement.RaiseProcessKeyboardAcceleratorsStatic(pUIElement, key, keyModifiers, ref pHandled, ref pHandledShouldNotImpedeTextInput);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	internal static bool KeyboardAccelerator_RaiseKeyboardAcceleratorInvoked(KeyboardAccelerator pNativeAccelerator, DependencyObject pElement) =>
+		KeyboardAccelerator.RaiseKeyboardAcceleratorInvoked(pNativeAccelerator, pElement);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	internal static void KeyboardAccelerator_SetToolTip(KeyboardAccelerator pNativeAccelerator, DependencyObject pParentControl) =>
+		KeyboardAccelerator.SetToolTip(pNativeAccelerator, pParentControl);
 }

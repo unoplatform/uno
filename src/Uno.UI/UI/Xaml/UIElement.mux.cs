@@ -614,6 +614,13 @@ namespace Microsoft.UI.Xaml
 
 		private void OnKeyDown(KeyRoutedEventArgs pEventArgs)
 		{
+#if HAS_UNO // Uno specific: In case of WinUI this method is called only if not already handled
+			if (pEventArgs.Handled)
+			{
+				return;
+			}
+#endif
+
 			/*
 			1. We take different paths for raising events depending on whether the source is a UIElement or a Control
 			2. The DXAML layer OnKeyDown virtual is defined on Control

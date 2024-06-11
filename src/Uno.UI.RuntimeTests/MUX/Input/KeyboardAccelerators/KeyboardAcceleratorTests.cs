@@ -2372,7 +2372,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 
 			focusButton = (Button)rootPanel.FindName("FocusButton");
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
-			overflowButton = (AppBarButton)commandBar.FindName("overflowButton");
+			overflowButton = (AppBarButton)commandBar.SecondaryCommands[0];
 			ctrlQAccelerator = overflowButton.KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
@@ -2428,10 +2428,10 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
-			focusButton = (Button)rootPanel.FindName("FocusButton");
-			secondaryButton = (AppBarButton)commandBar.FindName("secondaryButton");
-			ctrlQAccelerator = secondaryButton.KeyboardAccelerators[0];
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
+			focusButton = (Button)rootPanel.FindName("FocusButton");
+			secondaryButton = (AppBarButton)commandBar.SecondaryCommands[0];
+			ctrlQAccelerator = secondaryButton.KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2499,10 +2499,10 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
-			focusButton = (Button)rootPanel.FindName("FocusButton");
-			overflowButton = (AppBarButton)commandBar.FindName("overflowButton");
-			ctrlQAccelerator = overflowButton.KeyboardAccelerators[0];
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
+			focusButton = (Button)rootPanel.FindName("FocusButton");
+			overflowButton = (AppBarButton)commandBar.SecondaryCommands[0];
+			ctrlQAccelerator = overflowButton.KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -2555,10 +2555,10 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
-			focusButton = (Button)rootPanel.FindName("FocusButton");
-			overflowButton = (AppBarButton)commandBar.FindName("overflowButton");
-			ctrlQAccelerator = overflowButton.KeyboardAccelerators[0];
 			commandBar = (CommandBar)rootPanel.FindName("commandBar");
+			focusButton = (Button)rootPanel.FindName("FocusButton");
+			overflowButton = (AppBarButton)commandBar.PrimaryCommands[0];
+			ctrlQAccelerator = overflowButton.KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
