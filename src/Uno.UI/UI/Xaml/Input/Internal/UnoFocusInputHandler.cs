@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using DirectUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
@@ -48,6 +49,19 @@ internal class UnoFocusInputHandler
 		{
 			e.Handled = TryHandleDirectionalFocus(e.OriginalKey);
 		}
+
+		var contentRoot = VisualTree.GetContentRootForElement(_rootElement);
+		if (contentRoot == null)
+		{
+			return;
+		}
+
+		var liveAccelerators = contentRoot.GetAllLiveKeyboardAccelerators();
+		e.Handled = KeyboardAcceleratorUtility.ProcessGlobalAccelerators(
+			e.OriginalKey,
+			CoreImports.Input_GetKeyboardModifiers(),
+			liveAccelerators
+		);
 	}
 
 	internal bool TryHandleTabFocus(bool isShiftDown)
