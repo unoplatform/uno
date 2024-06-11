@@ -20,21 +20,21 @@ internal static class DiagnosticViewRegistry
 	internal static IImmutableList<DiagnosticViewRegistration> Registrations => _registrations;
 
 	/// <summary>
-	/// Register a global diagnostic provider that can be displayed on any window.
+	/// Register a global diagnostic view that can be displayed on any window.
 	/// </summary>
-	/// <param name="provider">A diagnostic provider to display.</param>
-	public static void Register(IDiagnosticViewProvider provider)
+	/// <param name="view">A diagnostic view to display.</param>
+	public static void Register(IDiagnosticView view)
 	{
 		ImmutableInterlocked.Update(
 			ref _registrations,
 			static (providers, provider) => providers.Add(provider),
-			new DiagnosticViewRegistration(DiagnosticViewRegistrationMode.One, provider));
+			new DiagnosticViewRegistration(DiagnosticViewRegistrationMode.One, view));
 
 		Added?.Invoke(null, _registrations);
 	}
 }
 
-internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, IDiagnosticViewProvider Provider);
+internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, IDiagnosticView Provider);
 
 internal enum DiagnosticViewRegistrationMode
 {

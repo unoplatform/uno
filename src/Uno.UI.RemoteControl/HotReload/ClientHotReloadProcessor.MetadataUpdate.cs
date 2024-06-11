@@ -88,7 +88,7 @@ partial class ClientHotReloadProcessor
 		if (snd is Window { RootElement.XamlRoot: { } xamlRoot } window)
 		{
 			window.Activated -= ShowDiagnosticsOnFirstActivation;
-			DiagnosticsOverlay.Get(xamlRoot).IsVisible = true;
+			DiagnosticsOverlay.Get(xamlRoot).Show();
 		}
 	}
 

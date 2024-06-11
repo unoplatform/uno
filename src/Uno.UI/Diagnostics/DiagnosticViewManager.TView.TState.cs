@@ -5,14 +5,14 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
 
-internal class DiagnosticViewHelper<TView, TState>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView, TState> update)
+internal class DiagnosticViewManager<TView, TState>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView, TState> update)
 	where TView : FrameworkElement
 {
 	private event EventHandler<TState>? _changed;
 	private bool _hasState;
 	private TState? _state;
 
-	public DiagnosticViewHelper(Func<TView> factory, Action<TView, TState> update)
+	public DiagnosticViewManager(Func<TView> factory, Action<TView, TState> update)
 		: this(_ => factory(), (_, view, state) => update(view, state))
 	{
 	}

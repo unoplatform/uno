@@ -48,7 +48,7 @@ public partial class ClientHotReloadProcessor
 
 	private class StatusSink
 	{
-		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", (view, status) => view.Update(status));
+		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.Update(status));
 
 		private HotReloadState? _serverState;
 		private ImmutableDictionary<long, HotReloadServerOperationData> _serverOperations = ImmutableDictionary<long, HotReloadServerOperationData>.Empty;

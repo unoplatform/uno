@@ -4,7 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 
 namespace Uno.Diagnostics.UI;
@@ -17,12 +20,14 @@ public sealed partial class DiagnosticsOverlay
 		private Queue<Action> _pending2 = new();
 		private List<Action>? _recurrents;
 
+		private readonly DiagnosticsOverlay _owner;
 		private readonly DispatcherQueue _dispatcher;
 		private DispatcherQueueTimer? _timer;
 		private int _updatesScheduled;
 
-		public Context(DispatcherQueue dispatcher)
+		public Context(DiagnosticsOverlay owner, DispatcherQueue dispatcher)
 		{
+			_owner = owner;
 			_dispatcher = dispatcher;
 		}
 
@@ -87,6 +92,12 @@ public sealed partial class DiagnosticsOverlay
 					}
 				}
 			}
+		}
+
+		/// <inheritdoc />
+		public void Notify(DiagnosticViewNotification notif)
+		{
+			_owner.Notify(notif, this);
 		}
 
 		private void DoUpdates()
