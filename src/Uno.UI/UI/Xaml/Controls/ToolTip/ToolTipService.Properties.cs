@@ -75,11 +75,11 @@ public partial class ToolTipService
 	internal static DependencyProperty KeyboardAcceleratorToolTipObjectProperty { get; } =
 		DependencyProperty.RegisterAttached(
 			"KeyboardAcceleratorToolTipObject",
-			typeof(object),
+			typeof(ToolTip),
 			typeof(ToolTipService),
 			new FrameworkPropertyMetadata(default, OnToolTipChanged));
 
-	internal static object GetKeyboardAcceleratorToolTipObject(DependencyObject element) => element.GetValue(KeyboardAcceleratorToolTipObjectProperty);
+	internal static ToolTip GetKeyboardAcceleratorToolTipObject(DependencyObject element) => (ToolTip)element.GetValue(KeyboardAcceleratorToolTipObjectProperty);
 
-	internal static void SetKeyboardAcceleratorToolTipObject(DependencyObject element, object value) => element.SetValue(KeyboardAcceleratorToolTipObjectProperty, value);
+	internal static void SetKeyboardAcceleratorToolTipObject(DependencyObject element, ToolTip value) => element.SetValue(KeyboardAcceleratorToolTipObjectProperty, value);
 }
