@@ -8,7 +8,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;')) OR $(IsDesktop) == 'true'">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
