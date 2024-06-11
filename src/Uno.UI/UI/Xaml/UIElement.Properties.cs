@@ -174,7 +174,7 @@ namespace Microsoft.UI.Xaml
 				nameof(KeyboardAcceleratorPlacementMode),
 				typeof(KeyboardAcceleratorPlacementMode),
 				typeof(UIElement),
-				new FrameworkPropertyMetadata(KeyboardAcceleratorPlacementMode.Auto));
+				new FrameworkPropertyMetadata(KeyboardAcceleratorPlacementMode.Auto, FrameworkPropertyMetadataOptions.Inherits));
 
 		/// <summary>
 		/// Gets or sets a value that indicates the control tooltip that displays the accelerator key combination.
