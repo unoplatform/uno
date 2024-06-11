@@ -26,18 +26,29 @@ namespace Microsoft.UI.Composition
 		// i.e, only cause the Action to be GC'ed if SkiaCompositionSurface is GC'ed.
 		private Action? _onFrameChanged;
 
-		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged)
+		// Don't set directly. Use SetFrameProviderAndOnFrameChanged instead
+		private IFrameProvider? FrameProvider
 		{
-			_frameProvider?.Dispose();
-			_frameProvider = provider;
-			_onFrameChanged = onFrameChanged;
+			get => _frameProvider;
+			set
+			{
+				_frameProvider?.Dispose();
+				_frameProvider = value;
+				OnPropertyChanged(nameof(FrameProvider), isSubPropertyChange: false);
+			}
 		}
 
-		public SKImage? Image => _frameProvider?.CurrentImage;
+		public SKImage? Image => FrameProvider?.CurrentImage;
 
 		internal SkiaCompositionSurface(SKImage image)
 		{
-			_frameProvider = FrameProviderFactory.Create(image);
+			FrameProvider = FrameProviderFactory.Create(image);
+		}
+
+		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged)
+		{
+			FrameProvider = provider;
+			_onFrameChanged = onFrameChanged;
 		}
 
 		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
