@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Extensions;
@@ -15,22 +17,28 @@ internal class ParentVisualTreeListener
 		_owner = owner;
 
 		owner.RegisterParentChangedCallbackStrong(null, OnParentChanged);
+
+		if (_owner.GetParent() is { } existingParent)
+		{
+			OnParentChanged(existingParent);
+		}
 	}
 
-	public event EventHandler ParentChanging;
+	public event EventHandler? ParentChanging;
 
-	public event EventHandler ParentLoaded;
+	public event EventHandler? ParentLoaded;
 
-	public event EventHandler ParentUnloaded;
+	public event EventHandler? ParentUnloaded;
 
-	private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+	private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args) => OnParentChanged(args.NewParent);
+
+	private void OnParentChanged(object? newParent)
 	{
 		ParentChanging?.Invoke(this, EventArgs.Empty);
 		// Unsubscribe from the previous parent
-		_registrations.Dispose();
+		_registrations.Disposable = null;
 
-		if (args.NewParent is DependencyObject newParent &&
-			newParent.FindFirstParent<FrameworkElement>() is FrameworkElement nearestFeParent)
+		if (_owner.FindFirstParent<FrameworkElement>() is FrameworkElement nearestFeParent)
 		{
 			nearestFeParent.Loaded += OnParentLoaded;
 			nearestFeParent.Unloaded += OnParentUnloaded;
@@ -48,7 +56,7 @@ internal class ParentVisualTreeListener
 		}
 	}
 
-	private void OnParentUnloaded(object sender, RoutedEventArgs e) => ParentLoaded?.Invoke(this, EventArgs.Empty);
+	private void OnParentLoaded(object sender, RoutedEventArgs e) => ParentLoaded?.Invoke(this, EventArgs.Empty);
 
-	private void OnParentLoaded(object sender, RoutedEventArgs e) => ParentUnloaded?.Invoke(this, EventArgs.Empty);
+	private void OnParentUnloaded(object sender, RoutedEventArgs e) => ParentUnloaded?.Invoke(this, EventArgs.Empty);
 }
