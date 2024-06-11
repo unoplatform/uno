@@ -983,7 +983,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			button.KeyboardAccelerators.Add(ctrlAAccelerator);
 
 			ownedButton = (Button)rootPanel.FindName("ownedButton");
-			ownedCtrlAAccelerator = button.KeyboardAccelerators[0];
+			ownedCtrlAAccelerator = ownedButton.KeyboardAccelerators[0];
 			ownedCtrlAAccelerator.ScopeOwner = button;
 
 			elementList = new FrameworkElement[3] { button, rootPanel, ownedButton };
