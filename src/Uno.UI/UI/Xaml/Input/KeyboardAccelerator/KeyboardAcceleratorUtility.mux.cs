@@ -326,7 +326,7 @@ internal static class KeyboardAcceleratorUtility
 		bool isValidNonSymbolAccessKey = (originalKey == VirtualKey.Enter)
 						   || (originalKey == VirtualKey.Escape)
 						   || (originalKey == VirtualKey.Back)
-						   || (((modifierKeys & KEY_MODIFIER_CTRL) != KEY_MODIFIER_CTRL) && (originalKey == VirtualKey.Tab))
+						   || (((modifierKeys & KEY_MODIFIER_CTRL) == KEY_MODIFIER_CTRL) && (originalKey == VirtualKey.Tab))
 						   || ((VirtualKey.Space <= originalKey) && (originalKey <= VirtualKey.Down))
 						   || ((originalKey >= VirtualKey.Snapshot) && (originalKey <= VirtualKey.Delete));
 
