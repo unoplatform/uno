@@ -250,10 +250,9 @@ namespace Windows.UI
 			}
 			else
 			{
-				r = 0xFF;
-				g = 0x0;
-				b = 0x0;
+				throw new ArgumentException($"Cannot parse color '{colorCode}'.");
 			}
+
 			return new Color(a, r, g, b);
 		}
 
