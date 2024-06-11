@@ -7,12 +7,12 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
 
-internal class DiagnosticViewHelper<TView>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView> update)
+internal class DiagnosticViewManager<TView>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView> update)
 	where TView : FrameworkElement
 {
 	private event EventHandler? _changed;
 
-	public DiagnosticViewHelper(Func<TView> factory, Action<TView> update)
+	public DiagnosticViewManager(Func<TView> factory, Action<TView> update)
 		: this(_ => factory(), (_, t) => update(t))
 	{
 	}

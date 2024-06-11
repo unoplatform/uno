@@ -19,4 +19,6 @@ public interface IDiagnosticViewContext
 	void ScheduleRecurrent(Action action);
 
 	void AbortRecurrent(Action action);
+
+	void Notify(DiagnosticViewNotification notification);
 }

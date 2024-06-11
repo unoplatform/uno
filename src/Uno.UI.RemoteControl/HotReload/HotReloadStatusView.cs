@@ -1,20 +1,45 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
+using Path = System.IO.Path;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
+[TemplateVisualState(GroupName = "Status", Name = StatusUnknownVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusErrorVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusInitializingVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusIdleVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusProcessingVisualStateName)]
+[TemplateVisualState(GroupName = "Result", Name = ResultNoneVisualStateName)]
+[TemplateVisualState(GroupName = "Result", Name = ResultSuccessVisualStateName)]
+[TemplateVisualState(GroupName = "Result", Name = ResultFailedVisualStateName)]
 internal sealed partial class HotReloadStatusView : Control
 {
+	private const string StatusUnknownVisualStateName = "Unknown";
+	private const string StatusErrorVisualStateName = "Error";
+	private const string StatusInitializingVisualStateName = "Initializing";
+	private const string StatusIdleVisualStateName = "Idle";
+	private const string StatusProcessingVisualStateName = "Processing";
+
+	private const string ResultNoneVisualStateName = "None";
+	private const string ResultSuccessVisualStateName = "Success";
+	private const string ResultFailedVisualStateName = "Failed";
+
 	#region HeadLine (DP)
 	public static DependencyProperty HeadLineProperty { get; } = DependencyProperty.Register(
 		nameof(HeadLine),
@@ -43,8 +68,40 @@ internal sealed partial class HotReloadStatusView : Control
 	}
 	#endregion
 
-	public HotReloadStatusView()
+	#region SuccessNotification (DP)
+	public static readonly DependencyProperty SuccessNotificationProperty = DependencyProperty.Register(
+		nameof(SuccessNotification),
+		typeof(DiagnosticViewNotification),
+		typeof(HotReloadStatusView),
+		new PropertyMetadata(default(DiagnosticViewNotification?)));
+
+	public DiagnosticViewNotification? SuccessNotification
 	{
+		get => (DiagnosticViewNotification?)GetValue(SuccessNotificationProperty);
+		set => SetValue(SuccessNotificationProperty, value);
+	}
+	#endregion
+
+	#region FailureNotification (DP)
+	public static readonly DependencyProperty FailureNotificationProperty = DependencyProperty.Register(
+		nameof(FailureNotification),
+		typeof(DiagnosticViewNotification),
+		typeof(HotReloadStatusView),
+		new PropertyMetadata(default(DiagnosticViewNotification?)));
+
+	public DiagnosticViewNotification? FailureNotification
+	{
+		get => (DiagnosticViewNotification?)GetValue(FailureNotificationProperty);
+		set => SetValue(FailureNotificationProperty, value);
+	}
+	#endregion
+
+	private readonly IDiagnosticViewContext _ctx;
+	private string _resultState = "None";
+
+	public HotReloadStatusView(IDiagnosticViewContext ctx)
+	{
+		_ctx = ctx;
 		DefaultStyleKey = typeof(HotReloadStatusView);
 		History = [];
 
@@ -57,7 +114,23 @@ internal sealed partial class HotReloadStatusView : Control
 		UpdateHeadline(status.State);
 
 		VisualStateManager.GoToState(this, GetStatusVisualState(status.State), true);
-		VisualStateManager.GoToState(this, GetResultVisualState(), true);
+
+		var resultState = GetResultVisualState();
+		if (resultState != _resultState)
+		{
+			_resultState = resultState;
+			VisualStateManager.GoToState(this, resultState, true);
+			switch (resultState)
+			{
+				case ResultSuccessVisualStateName when SuccessNotification is not null:
+					_ctx.Notify(SuccessNotification);
+					break;
+
+				case ResultFailedVisualStateName when FailureNotification is not null:
+					_ctx.Notify(FailureNotification);
+					break;
+			}
+		}
 	}
 
 	private void SyncOperations(Status status)
@@ -156,11 +229,11 @@ internal sealed partial class HotReloadStatusView : Control
 	private static string GetStatusVisualState(HotReloadState state)
 		=> state switch
 		{
-			HotReloadState.Disabled => "Disabled",
-			HotReloadState.Initializing => "Initializing",
-			HotReloadState.Idle => "Idle",
-			HotReloadState.Processing => "Processing",
-			_ => "Unknown"
+			HotReloadState.Disabled => StatusErrorVisualStateName,
+			HotReloadState.Initializing => StatusInitializingVisualStateName,
+			HotReloadState.Idle => StatusIdleVisualStateName,
+			HotReloadState.Processing => StatusProcessingVisualStateName,
+			_ => StatusUnknownVisualStateName
 		};
 
 	private string GetResultVisualState()
@@ -168,10 +241,12 @@ internal sealed partial class HotReloadStatusView : Control
 		var operations = History;
 		if (operations is { Count: 0 } || operations.Any(op => !op.IsCompleted))
 		{
-			return "None"; // Makes sure to restore to previous None!
+			return ResultNoneVisualStateName; // Makes sure to restore to previous None!
 		}
 
-		return operations[0].IsSuccess ? "Success" : "Failed";
+		return operations[0].IsSuccess
+			? ResultSuccessVisualStateName
+			: ResultFailedVisualStateName;
 	}
 }
 

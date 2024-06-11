@@ -14,7 +14,7 @@ namespace Uno.Diagnostics.UI;
 
 public sealed partial class DiagnosticsOverlay
 {
-	private record DiagnosticElement(DiagnosticsOverlay Overlay, IDiagnosticViewProvider Provider, IDiagnosticViewContext Coordinator) : IDisposable
+	private record DiagnosticElement(DiagnosticsOverlay Overlay, IDiagnosticView Provider, IDiagnosticViewContext Context) : IDisposable
 	{
 		private UIElement? _preview;
 		private CancellationTokenSource? _details;
@@ -25,7 +25,7 @@ public sealed partial class DiagnosticsOverlay
 		{
 			try
 			{
-				var preview = Provider.GetPreview(Coordinator);
+				var preview = Provider.GetElement(Context);
 				var element = preview as UIElement ?? DiagnosticViewHelper.CreateText(preview.ToString());
 
 				if (ToolTipService.GetToolTip(element) is null)
@@ -59,9 +59,12 @@ public sealed partial class DiagnosticsOverlay
 				try
 				{
 					var ct = new CancellationTokenSource();
-					Interlocked.Exchange(ref _details, ct)?.Cancel();
+					if (Interlocked.Exchange(ref _details, ct) is { IsCancellationRequested: false } previous)
+					{
+						await previous.CancelAsync();
+					}
 
-					var details = await Provider.GetDetailsAsync(Coordinator, ct.Token);
+					var details = await Provider.GetDetailsAsync(Context, ct.Token);
 					switch (details)
 					{
 						case null:

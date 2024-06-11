@@ -7,15 +7,19 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
 
+/// <summary>
+/// A generic diagnostic view that can be updated with a state.
+/// </summary>
 internal class DiagnosticView<TView, TState>(
+	string id,
 	string name,
-	Func<TView> preview,
+	Func<IDiagnosticViewContext, TView> factory,
 	Action<TView, TState> update,
 	Func<IDiagnosticViewContext, TState, CancellationToken, ValueTask<object?>>? details = null)
-	: IDiagnosticViewProvider
+	: IDiagnosticView
 	where TView : FrameworkElement
 {
-	private readonly DiagnosticViewHelper<TView, TState> _statusView = new(preview, update);
+	private readonly DiagnosticViewManager<TView, TState> _elementsManager = new(factory, (_, view, state) => update(view, state));
 
 	private bool _hasState;
 	private TState? _state;
@@ -24,17 +28,20 @@ internal class DiagnosticView<TView, TState>(
 	{
 		_state = status;
 		_hasState = true;
-		_statusView.NotifyChanged(status);
+		_elementsManager.NotifyChanged(status);
 	}
 
 	/// <inheritdoc />
-	string IDiagnosticViewProvider.Name => name;
+	string IDiagnosticView.Id => id;
 
 	/// <inheritdoc />
-	object IDiagnosticViewProvider.GetPreview(IDiagnosticViewContext context)
-		=> _statusView.GetView(context);
+	string IDiagnosticView.Name => name;
 
 	/// <inheritdoc />
-	async ValueTask<object?> IDiagnosticViewProvider.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
+	object IDiagnosticView.GetElement(IDiagnosticViewContext context)
+		=> _elementsManager.GetView(context);
+
+	/// <inheritdoc />
+	async ValueTask<object?> IDiagnosticView.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
 		=> _hasState && details is not null ? await details(context, _state!, ct) : null;
 }

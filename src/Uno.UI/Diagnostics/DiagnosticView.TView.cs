@@ -8,30 +8,35 @@ using Microsoft.UI.Xaml;
 namespace Uno.Diagnostics.UI;
 
 /// <summary>
-/// A generic diagnostic view provider.
+/// A generic diagnostic view.
 /// </summary>
 internal class DiagnosticView<TView>(
+	string id,
 	string name,
-	Func<IDiagnosticViewContext, TView> preview,
+	Func<IDiagnosticViewContext, TView> factory,
 	Func<IDiagnosticViewContext, CancellationToken, ValueTask<object?>>? details = null)
-	: IDiagnosticViewProvider
+	: IDiagnosticView
 	where TView : UIElement
 {
 	public DiagnosticView(
+		string id,
 		string name,
 		Func<TView> preview,
 		Func<CancellationToken, ValueTask<object?>>? details = null)
-		: this(name, _ => preview(), async (_, ct) => details is null ? null : await details(ct))
+		: this(id, name, _ => preview(), async (_, ct) => details is null ? null : await details(ct))
 	{
 	}
 
 	/// <inheritdoc />
-	string IDiagnosticViewProvider.Name => name;
+	string IDiagnosticView.Id => id;
 
 	/// <inheritdoc />
-	object IDiagnosticViewProvider.GetPreview(IDiagnosticViewContext context) => preview(context);
+	string IDiagnosticView.Name => name;
 
 	/// <inheritdoc />
-	async ValueTask<object?> IDiagnosticViewProvider.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
+	object IDiagnosticView.GetElement(IDiagnosticViewContext context) => factory(context);
+
+	/// <inheritdoc />
+	async ValueTask<object?> IDiagnosticView.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
 		=> details is null ? null : await details(context, ct);
 }

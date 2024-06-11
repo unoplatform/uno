@@ -9,10 +9,12 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.Diagnostics.UI;
 
-internal sealed class DiagnosticCounter(string name, string description) : IDiagnosticViewProvider
+internal sealed class DiagnosticCounter(string name, string description) : IDiagnosticView
 {
-	private DiagnosticViewHelper<TextBlock>? _preview;
+	private DiagnosticViewManager<TextBlock>? _preview;
 	private long _value;
+
+	public string Id => name;
 
 	public string Name => name;
 
@@ -32,10 +34,10 @@ internal sealed class DiagnosticCounter(string name, string description) : IDiag
 		_preview?.NotifyChanged();
 	}
 
-	object IDiagnosticViewProvider.GetPreview(IDiagnosticViewContext context)
+	object IDiagnosticView.GetElement(IDiagnosticViewContext context)
 		=> (_preview ??= DiagnosticViewHelper.CreateText(() => _value)).GetView(context);
 
-	ValueTask<object?> IDiagnosticViewProvider.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
+	ValueTask<object?> IDiagnosticView.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
 		=> new($"current: {_value}\r\n\r\n{Description}");
 }
 #endif

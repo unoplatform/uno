@@ -6,7 +6,6 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Colors = Microsoft.UI.Colors;
 
 namespace Uno.Diagnostics.UI;
 
@@ -23,11 +22,10 @@ internal class DiagnosticViewHelper
 			Foreground = new SolidColorBrush(_white)
 		};
 
-	public static DiagnosticViewHelper<TextBlock> CreateText<T>(Func<T> value)
+	public static DiagnosticViewManager<TextBlock> CreateText<T>(Func<T> value)
 		where T : struct
 		=> new(() => CreateText(value().ToString()), tb => tb.Text = value().ToString());
 
-	public static DiagnosticViewHelper<TextBlock> CreateText<T>(Func<string?> value)
-		where T : struct
+	public static DiagnosticViewManager<TextBlock> CreateText(Func<string?> value)
 		=> new(() => CreateText(value()), tb => tb.Text = value() ?? "--");
 }
