@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<Target Name="_UnoRemoveReferences"
-			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)" Condition="$(ShouldComputeInputPris)">
+			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)">
 		<ItemGroup>
 			<_UnoReferencePathToRemove
 				Include="@(ReferencePath)"
@@ -48,7 +48,8 @@
 	</Target>
 
 	<Target Name="_UnoIncludeUIToolkit"
-			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)">
+			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)"
+			Condition="$(ShouldComputeInputPris)">
 		
 		<!-- 
 		Since we're not using the standard packaging mechanism, the Uno.UI.Toolkit resources
