@@ -92,6 +92,7 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
+<<<<<<< HEAD
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-16-1"
 export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
 
@@ -109,9 +110,8 @@ fi
 echo "Current system date"
 date
 
-## Install iOS 16.4 simulators
-xcodes runtimes install --keep-archive 'iOS 16.1' || true
-
+<<<<<<< HEAD
+=======
 # Wait while ios runtime 16.1 is not having simulators. The install process may 
 # take a few seconds and "simctl list devices" may not return devices.
 while true; do
@@ -126,6 +126,7 @@ while true; do
 	sleep 5
 done
 
+>>>>>>> 3d6d42d4e1 (chore: Use iOS 16.4 to avoid using xcodes)
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
 xcrun simctl list devices --json > $DEVICELIST_FILEPATH
