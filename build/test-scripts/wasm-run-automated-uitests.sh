@@ -83,8 +83,14 @@ dotnet test \
 	-v m \
 	|| true
 
+echo "Killing dotnet serve"
+
+jobs
+
 ## terminate dotnet serve
 kill %%
+
+echo "Killed!"
 
 ## Copy the results file to the results folder
 cp --backup=t $UNO_ORIGINAL_TEST_RESULTS $UNO_UITEST_SCREENSHOT_PATH
@@ -102,8 +108,13 @@ cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.xml
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
+echo "Running NUnitTransformTool"
+
 dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 
 ## Fail the build when no test results could be read
 dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
+
+echo "Ran NUnitTransformTool"
+
 popd
