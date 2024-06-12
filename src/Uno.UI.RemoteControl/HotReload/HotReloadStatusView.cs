@@ -106,6 +106,18 @@ internal sealed partial class HotReloadStatusView : Control
 		History = [];
 
 		UpdateHeadline(null);
+
+		Loaded += OnLoaded;
+	}
+
+	private static void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		// A bit hackish, but for now when the hot-reload indicator is present, we request to dev-server indicator to show only if the state is important.
+		if (sender is HotReloadStatusView { XamlRoot: { } root }
+			&& DiagnosticsOverlay.Get(root).Find(nameof(RemoteControlStatusView)) is RemoteControlStatusView devServerView)
+		{
+			devServerView.IsAutoHideEnabled = true;
+		}
 	}
 
 	public void Update(Status status)

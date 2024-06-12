@@ -34,7 +34,7 @@ internal static class DiagnosticViewRegistry
 	}
 }
 
-internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, IDiagnosticView Provider);
+internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, IDiagnosticView View);
 
 internal enum DiagnosticViewRegistrationMode
 {

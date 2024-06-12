@@ -14,23 +14,23 @@ namespace Uno.Diagnostics.UI;
 
 public sealed partial class DiagnosticsOverlay
 {
-	private record DiagnosticElement(DiagnosticsOverlay Overlay, IDiagnosticView Provider, IDiagnosticViewContext Context) : IDisposable
+	private record DiagnosticElement(DiagnosticsOverlay Overlay, IDiagnosticView View, IDiagnosticViewContext Context) : IDisposable
 	{
-		private UIElement? _preview;
+		private UIElement? _value;
 		private CancellationTokenSource? _details;
 
-		public UIElement Preview => _preview ??= CreatePreview();
+		public UIElement Value => _value ??= CreateValue();
 
-		private UIElement CreatePreview()
+		private UIElement CreateValue()
 		{
 			try
 			{
-				var preview = Provider.GetElement(Context);
+				var preview = View.GetElement(Context);
 				var element = preview as UIElement ?? DiagnosticViewHelper.CreateText(preview.ToString());
 
 				if (ToolTipService.GetToolTip(element) is null)
 				{
-					ToolTipService.SetToolTip(element, Provider.Name);
+					ToolTipService.SetToolTip(element, View.Name);
 				}
 
 				if (element is not ButtonBase)
@@ -42,10 +42,10 @@ public sealed partial class DiagnosticsOverlay
 			}
 			catch (Exception e)
 			{
-				this.Log().Error($"Failed to get preview for {Provider.Name}.", e);
+				this.Log().Error($"Failed to get preview for {View.Name}.", e);
 
 				var element = DiagnosticViewHelper.CreateText("**");
-				ToolTipService.SetToolTip(element, $"Failed to get preview for {Provider.Name}.");
+				ToolTipService.SetToolTip(element, $"Failed to get preview for {View.Name}.");
 				return element;
 			}
 		}
@@ -64,7 +64,7 @@ public sealed partial class DiagnosticsOverlay
 						await previous.CancelAsync();
 					}
 
-					var details = await Provider.GetDetailsAsync(Context, ct.Token);
+					var details = await View.GetDetailsAsync(Context, ct.Token);
 					switch (details)
 					{
 						case null:
@@ -78,7 +78,7 @@ public sealed partial class DiagnosticsOverlay
 						case UIElement element:
 						{
 							var flyout = new Flyout { Content = element };
-							flyout.ShowAt(Preview, new FlyoutShowOptions());
+							flyout.ShowAt(Value, new FlyoutShowOptions());
 							ct.Token.Register(flyout.Hide);
 							break;
 						}
@@ -88,7 +88,7 @@ public sealed partial class DiagnosticsOverlay
 							var dialog = new ContentDialog
 							{
 								XamlRoot = Overlay._root,
-								Title = Provider.Name,
+								Title = View.Name,
 								Content = details.ToString(),
 								CloseButtonText = "Close",
 							};
@@ -99,7 +99,7 @@ public sealed partial class DiagnosticsOverlay
 				}
 				catch (Exception e)
 				{
-					this.Log().Error($"Failed to show details for {Provider.Name}.", e);
+					this.Log().Error($"Failed to show details for {View.Name}.", e);
 				}
 			}
 		}

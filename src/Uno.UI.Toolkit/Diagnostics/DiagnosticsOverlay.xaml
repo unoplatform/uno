@@ -15,7 +15,7 @@
 		<Setter Property="BorderBrush" Value="Black" />
 		<Setter Property="Background" Value="DarkGray" />
 		<Setter Property="CornerRadius" Value="4" />
-		<Setter Property="Height" Value="24" />
+		<Setter Property="Height" Value="32" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:DiagnosticsOverlay">
@@ -48,7 +48,7 @@
 								<VisualState x:Name="Visible">
 									<VisualState.Setters>
 										<Setter Target="PART_Notification.MaxWidth" Value="512" />
-										<Setter Target="PART_Notification.Margin" Value="0,4" />
+										<Setter Target="PART_Notification.Margin" Value="4,0" />
 									</VisualState.Setters>
 								</VisualState>
 							</VisualStateGroup>
@@ -101,12 +101,13 @@
 							<StackPanel
 								x:Name="PART_Elements"
 								MaxWidth="0"
-								Padding="4"
 								Spacing="4"
-								Orientation="Horizontal" />
+								Padding="4,0"
+								Orientation="Horizontal"
+								VerticalAlignment="Center" />
 						</StackPanel>
 
-						<ContentPresenter 
+						<ContentPresenter
 							x:Name="PART_Notification"
 							VerticalAlignment="Center" />
 					</StackPanel>

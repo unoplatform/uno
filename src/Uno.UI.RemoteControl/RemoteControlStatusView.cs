@@ -15,15 +15,43 @@ internal sealed partial class RemoteControlStatusView : Ellipse
 	public RemoteControlStatusView()
 	{
 		Fill = new SolidColorBrush(Colors.Gray);
-		Width = 16;
-		Height = 16;
+		Width = 20;
+		Height = 20;
 	}
+
+	public bool IsAutoHideEnabled { get; set; }
 
 	public void Update(Status status)
 	{
 		((SolidColorBrush)Fill).Color = GetStatusColor(status);
 		ToolTipService.SetToolTip(this, GetStatusSummary(status));
+
+		if (IsAutoHideEnabled)
+		{
+			Visibility = IsImportantState(status)
+				? Microsoft.UI.Xaml.Visibility.Visible
+				: Microsoft.UI.Xaml.Visibility.Collapsed;
+		}
 	}
+
+	private static bool IsImportantState(Status status)
+		=> status.State switch
+		{
+			ConnectionState.NoServer => true,
+			ConnectionState.ConnectionTimeout => true,
+			ConnectionState.ConnectionFailed => true,
+			ConnectionState.Reconnecting => true,
+			ConnectionState.Disconnected => true,
+
+			ConnectionState.Connected when status.IsVersionValid is false => true,
+			ConnectionState.Connected when status.InvalidFrames.Count is not 0 => true,
+			ConnectionState.Connected when status.MissingRequiredProcessors is { IsEmpty: false } => true,
+			ConnectionState.Connected when status.KeepAlive.State is not KeepAliveState.Ok => true,
+
+			ConnectionState.Connected => false,
+
+			_ => false
+		};
 
 	private static Color GetStatusColor(Status status)
 		=> status.State switch
@@ -38,6 +66,7 @@ internal sealed partial class RemoteControlStatusView : Ellipse
 
 			ConnectionState.Connected when status.IsVersionValid is false => Colors.Orange,
 			ConnectionState.Connected when status.InvalidFrames.Count is not 0 => Colors.Orange,
+			ConnectionState.Connected when status.MissingRequiredProcessors is { IsEmpty: false } => Colors.Orange,
 			ConnectionState.Connected when status.KeepAlive.State is not KeepAliveState.Ok => Colors.Yellow,
 			ConnectionState.Connected => Colors.Green,
 
