@@ -98,7 +98,7 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
   - Setting `builder.SetMinimumLevel(LogLevel.Information)` to `LogLevel.Debug` or `Trace`
   - Setting `builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug )` to `LogLevel.Debug` or `Trace`
 
-  The diagnostics messages will apper in the app's debug output.
+  The diagnostics messages will appear in the app's debug output.
 - If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each csproj project heads):
 
   ```xml
