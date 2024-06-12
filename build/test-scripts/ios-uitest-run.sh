@@ -109,8 +109,6 @@ fi
 echo "Current system date"
 date
 
-<<<<<<< HEAD
-=======
 # Wait while ios runtime 16.1 is not having simulators. The install process may 
 # take a few seconds and "simctl list devices" may not return devices.
 while true; do
@@ -125,7 +123,6 @@ while true; do
 	sleep 5
 done
 
->>>>>>> 3d6d42d4e1 (chore: Use iOS 16.4 to avoid using xcodes)
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
 xcrun simctl list devices --json > $DEVICELIST_FILEPATH
