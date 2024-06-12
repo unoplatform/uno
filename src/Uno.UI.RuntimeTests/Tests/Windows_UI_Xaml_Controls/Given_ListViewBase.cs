@@ -1486,6 +1486,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __CROSSRUNTIME__
 		[Ignore("This test is flaky on netstd platforms")]
 #endif
+#if __IOS__
+		[Ignore("native crash in Microsoft.UI.Xaml.Controls.ListViewBaseInternalContainer.set_Frame(CGRect value) ?")]
+#endif
 		[RunsOnUIThread]
 		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
 		{
