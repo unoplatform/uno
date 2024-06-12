@@ -17,6 +17,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 using Microsoft.UI.Windowing;
+using Uno.UI.Core;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
@@ -213,6 +214,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 		Activated?.Invoke(Window, activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
+		KeyboardStateTracker.Reset();
 	}
 
 	public void Close() => NativeWindowWrapper?.Close();
