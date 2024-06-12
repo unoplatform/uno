@@ -139,6 +139,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var oldSV = m_tpScrollViewer;
 			base.OnApplyTemplate();
 
+			HookTemplate();
+
 			// Uno docs: Due to differences in Uno's FlipView and WinUI's FlipView (i.e, when the ScrollViewer is
 			// initialized - related to OnItemsHostAvailable which is missing in Uno), the base OnApplyTemplate can
 			// mess up with m_tpScrollViewer. So, we bring it back.
@@ -470,6 +472,10 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollViewer spScrollViewer;
 
 				GetTemplatePart<ScrollViewer>("ScrollingHost", out spScrollViewer);
+				if (spScrollViewer is null)
+				{
+					return;
+				}
 
 				m_tpScrollViewer = spScrollViewer;
 				m_tpScrollViewer.ForceChangeToCurrentView = true;

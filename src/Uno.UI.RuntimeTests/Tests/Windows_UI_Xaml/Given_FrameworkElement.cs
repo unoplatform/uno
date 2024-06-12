@@ -1224,43 +1224,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			const int expectedCount =
 #if WINAPPSDK
-				8;
+				9;
 #else
-				10;
+				11;
 #endif
 
 			Assert.AreEqual(expectedCount, events.Count);
 			Assert.AreEqual("Parent Loading", events[0]);
 			Assert.AreEqual("Child Loading", events[1]);
-			Assert.AreEqual("Parent SizeChanged", events[2]);
-			Assert.AreEqual("Child SizeChanged", events[3]);
+			Assert.AreEqual("Child OnApplyTemplate", events[2]);
+			Assert.AreEqual("Parent SizeChanged", events[3]);
+			Assert.AreEqual("Child SizeChanged", events[4]);
 
 			// On WinUI, order isn't guaranteed. Different runs of test can produce different order of LayoutUpdated.
 			// In Uno as well, we put elements that are interested in LayoutUpdated event in a CWT, so the order
 			// isn't guaranteed as well.
-			if (events[4] == "Child LayoutUpdated")
+			if (events[5] == "Child LayoutUpdated")
 			{
-				Assert.AreEqual("Parent LayoutUpdated", events[5]);
+				Assert.AreEqual("Parent LayoutUpdated", events[6]);
 			}
 			else
 			{
-				Assert.AreEqual("Parent LayoutUpdated", events[4]);
-				Assert.AreEqual("Child LayoutUpdated", events[5]);
+				Assert.AreEqual("Parent LayoutUpdated", events[5]);
+				Assert.AreEqual("Child LayoutUpdated", events[6]);
 			}
 
-			Assert.AreEqual("Child Loaded", events[6]);
-			Assert.AreEqual("Parent Loaded", events[7]);
+			Assert.AreEqual("Child Loaded", events[7]);
+			Assert.AreEqual("Parent Loaded", events[8]);
 
 
 #if HAS_UNO
-			if (events[8] == "Child LayoutUpdated")
+			if (events[9] == "Child LayoutUpdated")
 			{
-				Assert.AreEqual("Parent LayoutUpdated", events[9]);
+				Assert.AreEqual("Parent LayoutUpdated", events[10]);
 			}
 			else
 			{
-				Assert.AreEqual("Parent LayoutUpdated", events[8]);
-				Assert.AreEqual("Child LayoutUpdated", events[9]);
+				Assert.AreEqual("Parent LayoutUpdated", events[9]);
+				Assert.AreEqual("Child LayoutUpdated", events[10]);
 			}
 #endif
 		}
@@ -1269,13 +1270,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class ControlLoggingEventsSequence : StackPanel
 	{
+		private sealed partial class CustomButton : Button
+		{
+			private readonly List<string> _events;
+
+			public CustomButton(List<string> events)
+			{
+				_events = events;
+			}
+
+			protected override void OnApplyTemplate()
+			{
+				_events.Add("Child OnApplyTemplate");
+				base.OnApplyTemplate();
+			}
+		}
+
 		private readonly List<string> _events = new();
 
 		public IReadOnlyList<string> Events => _events.AsReadOnly();
 
 		public ControlLoggingEventsSequence()
 		{
-			var btn = new Button() { Content = "Click" };
+			var btn = new CustomButton(_events) { Content = "Click" };
 			btn.Loading += Btn_Loading;
 			btn.Loaded += Btn_Loaded;
 			btn.LayoutUpdated += Btn_LayoutUpdated;
@@ -1285,6 +1302,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			LayoutUpdated += ControlLoggingEventsSequence_LayoutUpdated;
 			SizeChanged += ControlLoggingEventsSequence_SizeChanged;
 			this.Children.Add(btn);
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			_events.Add("Parent OnApplyTemplate");
+			base.OnApplyTemplate();
 		}
 
 		private void Btn_SizeChanged(object sender, SizeChangedEventArgs args) => _events.Add("Child SizeChanged");

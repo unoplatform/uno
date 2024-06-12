@@ -225,10 +225,12 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void SetUpdateControlTemplate(bool forceUpdate = false)
 		{
 			if (
-				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate
-				|| forceUpdate
-				|| this.HasParent()
-				|| CanCreateTemplateWithoutParent
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate ||
+#endif
+				forceUpdate ||
+				this.HasParent() ||
+				CanCreateTemplateWithoutParent
 			)
 			{
 				UpdateTemplate();
