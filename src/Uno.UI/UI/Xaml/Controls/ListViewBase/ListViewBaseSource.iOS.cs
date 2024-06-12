@@ -834,6 +834,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			set
 			{
+				if (this is null)
+				{
+					// Don't fail on null instance from native call
+					return;
+				}
+
 				base.Frame = value;
 
 				try
