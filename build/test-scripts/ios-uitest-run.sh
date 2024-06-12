@@ -92,7 +92,7 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
-export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-16-1"
+export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-2"
 export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
 
 export UnoTargetFrameworkOverride="net8.0-ios17.0"
@@ -108,9 +108,6 @@ fi
 
 echo "Current system date"
 date
-
-## Install iOS 16.4 simulators
-xcodes runtimes install --keep-archive 'iOS 16.1' || true
 
 # Wait while ios runtime 16.1 is not having simulators. The install process may 
 # take a few seconds and "simctl list devices" may not return devices.
@@ -240,7 +237,6 @@ else
 		-c Release \
 		-l:"console;verbosity=normal" \
 		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-		--logger "console;verbosity=detailed" \
 		--filter "$UNO_TESTS_FILTER" \
 		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
 		-v m \
@@ -249,7 +245,10 @@ fi
 
 # export the simulator logs
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
-export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
+export LOG_FILE_DIRECTORY=$LOG_FILEPATH/$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`
+export LOG_FILEPATH_FULL=$LOG_FILE_DIRECTORY/DeviceLog-`date +"%Y%m%d%H%M%S"`.txt
+
+mkdir -p $LOG_FILE_DIRECTORY
 
 cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
 
@@ -262,6 +261,10 @@ xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PRE
 
 ## Capture the device logs
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
+
+## Shutting down simulator to reclaim memory
+echo "Shutting down simulator"
+xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
 echo "Dumping device logs to $LOG_FILEPATH_FULL"
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
@@ -282,6 +285,9 @@ fi
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "##vso[task.logissue type=error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
 fi
+
+echo "Copying crash reports"
+cp -R ~/Library/Logs/DiagnosticReports/* $LOG_FILE_DIRECTORY
 
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
