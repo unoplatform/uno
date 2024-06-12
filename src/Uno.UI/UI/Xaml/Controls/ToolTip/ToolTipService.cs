@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using Uno.UI;
 using Uno.Disposables;
+using Uno.UI;
 using Windows.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+
 
 #if __IOS__
 using UIKit;
@@ -16,6 +14,9 @@ using AppKit;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+/// <summary>
+/// Represents a service that provides static methods to display a ToolTip.
+/// </summary>
 public partial class ToolTipService
 {
 	private static ToolTip m_CurrentToolTip;
@@ -23,76 +24,63 @@ public partial class ToolTipService
 	private static DispatcherTimer m_OpenTimer;
 	private static DispatcherTimer m_CloseTimer;
 
-	private static void OnToolTipChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+	private static void RegisterToolTip(
+		DependencyObject owner,
+		FrameworkElement container,
+		object toolTipAsObject,
+		bool isKeyboardAcceleratorToolTip)
 	{
 		if (!FeatureConfiguration.ToolTip.UseToolTips)
 		{
-			return; // ToolTips are disabled
+			// ToolTips are disabled.
+			return;
 		}
 
-		if (!(dependencyObject is FrameworkElement owner))
+		if (owner is null || container is null)
+		{
+			// ToolTip must have an owner.
+			return;
+		}
+
+		var toolTip = ConvertToToolTip(toolTipAsObject);
+
+		toolTip.Placement = GetPlacement(toolTip);
+		toolTip.SetAnchor(GetPlacementTarget(container) ?? container);
+
+		if (isKeyboardAcceleratorToolTip)
+		{
+			ToolTipService.SetKeyboardAcceleratorToolTipObject(owner, toolTip);
+		}
+		else
+		{
+			ToolTipService.SetToolTipReference(owner, toolTip);
+		}
+
+		toolTip.OwnerEventSubscriptions = SubscribeToEvents(container, toolTip);
+	}
+
+	private static void UnregisterToolTip(DependencyObject owner, FrameworkElement container, bool isKeyboardAcceleratorToolTip)
+	{
+		ToolTip toolTipReference = null;
+		if (isKeyboardAcceleratorToolTip)
+		{
+			toolTipReference = ToolTipService.GetKeyboardAcceleratorToolTipObject(owner);
+		}
+		else
+		{
+			toolTipReference = ToolTipService.GetToolTipReference(owner);
+		}
+
+		if (toolTipReference is null)
 		{
 			return;
 		}
 
-		if (e.NewValue is null)
-		{
-			DisposePreviousToolTip();
-		}
-		else if (e.NewValue is ToolTip newToolTip)
-		{
-			var previousToolTip = GetToolTipReference(owner);
+		toolTipReference.OwnerEventSubscriptions?.Dispose();
+		toolTipReference.OwnerEventSubscriptions = null;
+		CloseToolTipImpl(toolTipReference);
 
-			// dispose the previous tooltip
-			if (previousToolTip != null && newToolTip != previousToolTip)
-			{
-				DisposePreviousToolTip(previousToolTip);
-			}
-
-			// setup new tooltip
-			if (newToolTip != previousToolTip)
-			{
-				SetupToolTip(newToolTip);
-			}
-		}
-		else
-		{
-			var previousToolTip = GetToolTipReference(owner);
-			if (e.OldValue is ToolTip oldPrevious && oldPrevious == previousToolTip)
-			{
-				// dispose and setup a new tooltip
-				// to avoid corrupting previous tooltip's content with new value
-				DisposePreviousToolTip(previousToolTip);
-				SetupToolTip(new ToolTip { Content = e.NewValue });
-			}
-			else if (previousToolTip != null)
-			{
-				// update the old tooltip with new content
-				previousToolTip.Content = e.NewValue;
-			}
-			else
-			{
-				// setup a new tooltip
-				SetupToolTip(new ToolTip { Content = e.NewValue });
-			}
-		}
-
-		void SetupToolTip(ToolTip toolTip)
-		{
-			toolTip.Placement = GetPlacement(toolTip);
-			toolTip.SetAnchor(GetPlacementTarget(owner) ?? owner);
-
-			SetToolTipReference(owner, toolTip);
-			toolTip.OwnerEventSubscriptions = SubscribeToEvents(owner, toolTip);
-		}
-		void DisposePreviousToolTip(ToolTip toolTip = null)
-		{
-			toolTip ??= GetToolTipReference(owner);
-
-			toolTip.OwnerEventSubscriptions?.Dispose();
-			toolTip.OwnerEventSubscriptions = null;
-			SetToolTipReference(owner, null);
-		}
+		owner.ClearValue(isKeyboardAcceleratorToolTip ? KeyboardAcceleratorToolTipObjectProperty : ToolTipReferenceProperty);
 	}
 
 	private static void OnPlacementChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs e)
@@ -196,7 +184,7 @@ public partial class ToolTipService
 
 	private static void OnOwnerLoaded(object sender, RoutedEventArgs e)
 	{
-		if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			owner.PointerEntered += OnPointerEntered;
 			owner.PointerExited += OnPointerExited;
@@ -216,7 +204,7 @@ public partial class ToolTipService
 
 	private static void OnOwnerUnloaded(object sender, RoutedEventArgs e)
 	{
-		if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			CloseToolTipImpl(toolTip);
 
@@ -240,7 +228,7 @@ public partial class ToolTipService
 		// so we are dropping any subsequent events from this frame-id.
 		if (e.FrameId == m_LastEnteredFrameId) return;
 
-		if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			if (toolTip.IsOpen) return;
 
@@ -257,7 +245,7 @@ public partial class ToolTipService
 
 	private static void OnPointerExited(object sender, PointerRoutedEventArgs e)
 	{
-		if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			CloseToolTipImpl(toolTip);
 		}
@@ -265,7 +253,7 @@ public partial class ToolTipService
 
 	private static void OnTapped(object sender, TappedRoutedEventArgs e)
 	{
-		if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			CloseToolTipImpl(toolTip);
 		}
@@ -273,7 +261,7 @@ public partial class ToolTipService
 
 	private static void OnKeyDown(object sender, KeyRoutedEventArgs args)
 	{
-		if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			switch (args.Key)
 			{
@@ -290,7 +278,7 @@ public partial class ToolTipService
 
 	private static void OnPointerPressed(object sender, PointerRoutedEventArgs e)
 	{
-		if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
 			{

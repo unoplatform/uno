@@ -77,7 +77,7 @@ public partial class ToolTipService
 			"KeyboardAcceleratorToolTipObject",
 			typeof(ToolTip),
 			typeof(ToolTipService),
-			new FrameworkPropertyMetadata(default, OnToolTipChanged));
+			new FrameworkPropertyMetadata(default));
 
 	internal static ToolTip GetKeyboardAcceleratorToolTipObject(DependencyObject element) => (ToolTip)element.GetValue(KeyboardAcceleratorToolTipObjectProperty);
 
