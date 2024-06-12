@@ -387,7 +387,7 @@ namespace MUXControlsTestApp
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 #if __IOS__
-		[Ignore("Fails on iOS 17")]
+		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task ValidateTreeViewItemSourceChangeUpdatesChevronOpacity()
 		{
@@ -532,7 +532,7 @@ namespace MUXControlsTestApp
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 #if __IOS__
-		[Ignore("Fails on iOS 17")]
+		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task TreeViewPendingSelectedNodesTest()
 		{
@@ -581,7 +581,7 @@ namespace MUXControlsTestApp
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 #if __IOS__
-		[Ignore("Fails on iOS 17")]
+		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task TreeViewSelectionChangedSingleMode()
 		{
