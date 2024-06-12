@@ -699,7 +699,7 @@ public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 
 {protectedModifier} {virtualModifier} void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 {{
-	__Store.SetTemplatedParent(e.NewValue as FrameworkElement);
+	__Store.SetTemplatedParent(e?.NewValue as FrameworkElement);
 	OnTemplatedParentChangedPartial(e);
 }}
 
