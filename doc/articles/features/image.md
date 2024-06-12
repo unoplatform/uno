@@ -4,7 +4,8 @@ uid: Uno.Features.Image
 
 # The Image Control
 
-This page details the specific aspects of the `Image` control for Uno Platform. General information about `Image` is available WinUI [official documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.image).
+This page details the specific aspects of the `Image` control for Uno Platform. General information about `Image` is available in WinUI [official documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.image).
+
 
 ## Support for `ms-appx`
 
