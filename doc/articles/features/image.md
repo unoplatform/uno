@@ -6,7 +6,6 @@ uid: Uno.Features.Image
 
 This page details the specific aspects of the `Image` control for Uno Platform. General information about `Image` is available in WinUI [official documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.image).
 
-
 ## Support for `ms-appx`
 
 `ms-appx` supports reading images provided as `Content` assets in your project. See [`StorageFile.GetFileFromApplicationUriAsync`](xref:Uno.Features.FileManagement#support-for-storagefilegetfilefromapplicationuriasync) for more details.
