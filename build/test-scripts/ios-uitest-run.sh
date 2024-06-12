@@ -263,6 +263,10 @@ xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PRE
 ## Capture the device logs
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
 
+## Shutting down simulator to reclaim memory
+echo "Shutting down simulator"
+xcrun simctl shutdown "$UITEST_IOSDEVICE_ID"
+
 echo "Dumping device logs to $LOG_FILEPATH_FULL"
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 
