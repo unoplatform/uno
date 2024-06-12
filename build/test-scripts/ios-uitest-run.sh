@@ -237,7 +237,6 @@ else
 		-c Release \
 		-l:"console;verbosity=normal" \
 		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-		--logger "console;verbosity=detailed" \
 		--filter "$UNO_TESTS_FILTER" \
 		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
 		-v m \
