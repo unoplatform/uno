@@ -92,9 +92,13 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 ### Common issues
 
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
-- The file named `RemoteControlGenerator\RemoteControl.g.cs` in the analyzers node for your project contains the connection information, verify that the information host addresses and the port number.
 - WinAppSDK on Windows-specific issues
   - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
+- You can troubleshoot hot reload further from the DevServer client running in the app by:
+  - Setting `builder.SetMinimumLevel(LogLevel.Information)` to `LogLevel.Debug` or `Trace`
+  - Setting `builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug )` to `LogLevel.Debug` or `Trace`
+
+  The diagnostics messages will apper in the app's debug output.
 - If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each csproj project heads):
 
   ```xml
@@ -103,6 +107,8 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
     <GenerateAssemblyInfo Condition="'$(Configuration)'=='Debug'">false</GenerateAssemblyInfo>
   </PropertyGroup>
   ```
+  
+  Also [make sure](https://github.com/dotnet/sdk/issues/36666#issuecomment-2162173453) that you're not referencing `Microsoft.SourceLink.*` packages.
 
 - If you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app startup to Uno 5 or later:
   - Add the following lines to the shared library project `csproj` file :
@@ -143,12 +149,15 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 
 ### VS Code
 
-- The output window in Code has an output named "Uno Platform - Hot Reload" in its drop-down. Diagnostics messages from the extension appear there.
-- Hot Reload is not supported for WebAssembly and Skia Desktop when using the debugger. Start your app using `Ctrl+F5`.
+- Hot Reload **is not supported for WebAssembly and Skia Desktop** when using the debugger. Start your app using `Ctrl+F5`.
+- The output window in Code has an output named **Uno Platform - Hot Reload** in its drop-down. Diagnostics messages from the extension appear there.
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
-- Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
+- Make sure that the selected project in the status bar is:
+  - Not the solution file, but rather the project platform you are debugging.
+  - Aligned with the platform you chose to debug with (`net8.0-desktop` with `Desktop` debug profile, `net8.0-ios`/`android` for `Mobile debug`, etc...)
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
 - When working on Skia Desktop apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Uno Platform Desktop (Debug)` target is selected.
+- The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform - Hot Reload** output window, restart Code or use `Developer: Reload Window` in the command palette.
 
 ## Next Steps
 
