@@ -54,7 +54,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	public TimeSpan ConnectionRetryInterval { get; } = TimeSpan.FromMilliseconds(_connectionRetryInterval);
 	private const int _connectionRetryInterval = 5_000;
 
-	private readonly IDiagnosticsSink _diagnostics = new DiagnosticsSink();
+	private readonly IStatusSink _status;
 	private static readonly TimeSpan _keepAliveInterval = TimeSpan.FromSeconds(30);
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
@@ -69,6 +69,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	private RemoteControlClient(Type appType, ServerEndpointAttribute[]? endpoints = null)
 	{
 		AppType = appType;
+		_status = new StatusSink(this);
 
 		// Environment variables are the first priority as they are used by runtime tests engine to test hot-reload.
 		// They should be considered as the default values and in any case they must take precedence over the assembly-provided values.
@@ -113,13 +114,13 @@ public partial class RemoteControlClient : IRemoteControlClient
 			this.Log().LogError("Failed to get any remote control server endpoint from the IDE.");
 
 			_connection = Task.FromResult<Connection?>(null);
-			_diagnostics.Report(ConnectionState.NoServer);
+			_status.Report(ConnectionState.NoServer);
 			return;
 		}
 
 		// Enable hot-reload
 		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
-		_diagnostics.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+		_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
 
 		_connection = StartConnection();
 	}
@@ -151,7 +152,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			// We have a socket (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
 			lock (_connectionGate)
 			{
-				_diagnostics.Report(ConnectionState.Reconnecting);
+				_status.Report(ConnectionState.Reconnecting);
 
 				if (connectionTask == _connection)
 				{
@@ -162,7 +163,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			connection = await _connection;
 		}
 
-		_diagnostics.ReportActiveConnection(connection);
+		_status.ReportActiveConnection(connection);
 
 		return connection?.Socket;
 	}
@@ -178,7 +179,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					this.Log().LogWarning($"No server addresses provided, skipping.");
 				}
 
-				_diagnostics.Report(ConnectionState.NoServer);
+				_status.Report(ConnectionState.NoServer);
 				return default;
 			}
 
@@ -188,7 +189,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			const bool isHttps = false;
 #endif
 
-			_diagnostics.Report(ConnectionState.Connecting);
+			_status.Report(ConnectionState.Connecting);
 
 			var pending = _serverAddresses
 				.Where(adr => adr.port != 0 || Uri.TryCreate(adr.endpoint, UriKind.Absolute, out _))
@@ -217,7 +218,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 						this.Log().LogError("Failed to connect to the server (timeout).");
 					}
 
-					_diagnostics.Report(ConnectionState.ConnectionTimeout);
+					_status.Report(ConnectionState.ConnectionTimeout);
 					AbortPending();
 
 					return null;
@@ -238,7 +239,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			// Abort all other pending connections
 			AbortPending();
 
-			_diagnostics.ReportActiveConnection(connected);
+			_status.ReportActiveConnection(connected);
 
 			if (connected is null)
 			{
@@ -256,7 +257,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					this.Log().LogDebug($"Connected to {connected!.EndPoint}");
 				}
 
-				DevServerDiagnostics.Current = _diagnostics;
+				DevServerDiagnostics.Current = _status;
 				_ = ProcessMessages(connected!.Socket!);
 
 				return connected;
@@ -477,7 +478,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	{
 		if (frame.TryGetContent(out KeepAliveMessage? pong))
 		{
-			_diagnostics.ReportPong(pong);
+			_status.ReportPong(pong);
 
 			if (pong.AssemblyVersion != _ping.AssemblyVersion && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -493,7 +494,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 		}
 		else
 		{
-			_diagnostics.ReportPong(null);
+			_status.ReportPong(null);
 
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -509,7 +510,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	{
 		if (frame.TryGetContent(out ProcessorsDiscoveryResponse? response))
 		{
-			_diagnostics.ReportServerProcessors(response);
+			_status.ReportServerProcessors(response);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -536,7 +537,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 				}
 
 				_ping = _ping.Next();
-				_diagnostics.ReportPing(_ping);
+				_status.ReportPing(_ping);
 				await SendMessage(_ping);
 			}
 			catch (Exception error)
@@ -546,7 +547,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					this.Log().Trace("Keepalive failed");
 				}
 
-				_diagnostics.ReportKeepAliveAborted(error);
+				_status.ReportKeepAliveAborted(error);
 				Interlocked.CompareExchange(ref _keepAliveTimer, null, timer);
 				timer?.Dispose();
 			}

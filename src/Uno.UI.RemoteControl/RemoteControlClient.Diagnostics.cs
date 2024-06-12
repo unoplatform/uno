@@ -12,7 +12,9 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient
 {
-	private interface IDiagnosticsSink : DevServerDiagnostics.ISink
+	internal event EventHandler<Status>? StatusChanged;
+
+	private interface IStatusSink : DevServerDiagnostics.ISink
 	{
 		void ReportActiveConnection(Connection? connection);
 
@@ -94,7 +96,7 @@ public partial class RemoteControlClient
 
 	internal record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
 
-	private class DiagnosticsSink : IDiagnosticsSink
+	private class StatusSink(RemoteControlClient owner) : IStatusSink
 	{
 		private ConnectionState _state = ConnectionState.Idle;
 		private readonly DiagnosticView<RemoteControlStatusView, Status> _view = DiagnosticView.Register<RemoteControlStatusView, Status>(
@@ -106,7 +108,11 @@ public partial class RemoteControlClient
 			=> new(_state, _isVersionValid, (_keepAliveState, _roundTrip), _missingRequiredProcessors, (_invalidFrames, _invalidFrameTypes));
 
 		private void NotifyStatusChanged()
-			=> _view.Update(BuildStatus());
+		{
+			var status = BuildStatus();
+			_view.Update(status);
+			owner.StatusChanged?.Invoke(owner, status);
+		}
 
 		#region Connection status
 		public void ReportActiveConnection(Connection? connection)
@@ -149,7 +155,7 @@ public partial class RemoteControlClient
 
 		private static void OnPongLateOrTimeout(object? state)
 		{
-			var that = (DiagnosticsSink)state!;
+			var that = (StatusSink)state!;
 
 			if (that._keepAliveState is KeepAliveState.Late)
 			{

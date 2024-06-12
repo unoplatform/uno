@@ -2,8 +2,10 @@
 #if WINAPPSDK || HAS_UNO_WINUI
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
@@ -12,6 +14,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Extensions.Specialized;
+using Uno.Extensions;
+using static Microsoft.UI.Xaml.Controls.CollectionChangedOperation;
 
 namespace Uno.Diagnostics.UI;
 
@@ -49,8 +54,9 @@ public sealed partial class DiagnosticsOverlay : Control
 
 	private readonly XamlRoot _root;
 	private readonly object _updateGate = new();
-	private readonly List<IDiagnosticView> _localProviders = new();
+	private readonly List<IDiagnosticView> _localRegistrations = new();
 	private readonly Dictionary<IDiagnosticView, DiagnosticElement> _elements = new();
+	private readonly Dictionary<string, bool> _configuredElementVisibilities = new();
 
 	private DispatcherQueue? _dispatcher;
 	private Context? _context;
@@ -110,9 +116,13 @@ public sealed partial class DiagnosticsOverlay : Control
 	/// Make the overlay visible.
 	/// </summary>
 	/// <remarks>This can be invoked from any thread.</remarks>>
-	public void Show(bool isExpanded = false)
+	public void Show(bool? isExpanded = false)
 	{
 		_isVisible = true;
+		if (isExpanded is not null)
+		{
+			_isExpanded = isExpanded.Value;
+		}
 		EnqueueUpdate();
 	}
 
@@ -127,27 +137,57 @@ public sealed partial class DiagnosticsOverlay : Control
 	}
 
 	/// <summary>
+	/// Hide the given view from the overlay.
+	/// </summary>
+	/// <param name="viewId"><see cref="IDiagnosticView.Id"/> of the <see cref="IDiagnosticView"/> to hide.</param>
+	public void Hide(string viewId)
+	{
+		lock (_updateGate)
+		{
+			_configuredElementVisibilities[viewId] = false;
+		}
+		EnqueueUpdate();
+	}
+
+	/// <summary>
+	/// Hide the given view from the overlay.
+	/// </summary>
+	/// <param name="viewId"><see cref="IDiagnosticView.Id"/> of the <see cref="IDiagnosticView"/> to hide.</param>
+	/// <remarks>This will also make this overlay visible (cf. <see cref="Show(bool?)"/>).</remarks>
+	public void Show(string viewId)
+	{
+		lock (_updateGate)
+		{
+			_configuredElementVisibilities[viewId] = true;
+		}
+		Show();
+	}
+
+	/// <summary>
 	/// Add a UI diagnostic element to this overlay.
 	/// </summary>
-	/// <remarks>This will also make this overlay visible (cf. <see cref="Show"/>).</remarks>
+	/// <remarks>This will also make this overlay visible (cf. <see cref="Show(bool?)"/>).</remarks>
 	public void Add(string id, string name, UIElement preview, Func<UIElement>? details = null)
 		=> Add(new DiagnosticView(id, name, _ => preview, (_, ct) => new(details?.Invoke())));
 
 	/// <summary>
 	/// Add a UI diagnostic element to this overlay.
 	/// </summary>
-	/// <remarks>This will also make this overlay visible (cf. <see cref="Show"/>).</remarks>
+	/// <remarks>This will also make this overlay visible (cf. <see cref="Show(bool?)"/>).</remarks>
 	/// <param name="provider">The provider to add.</param>
 	public void Add(IDiagnosticView provider)
 	{
 		lock (_updateGate)
 		{
-			_localProviders.Add(provider);
+			_localRegistrations.Add(provider);
 		}
 
 		EnqueueUpdate(); // Making IsVisible = true wil (try) to re-enqueue the update, but safer to keep it here anyway.
 		Show();
 	}
+
+	public UIElement? Find(string viewId)
+		=> _elements.Values.FirstOrDefault(elt => elt.View.Id == viewId)?.Value;
 
 	/// <inheritdoc />
 	protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -250,29 +290,52 @@ public sealed partial class DiagnosticsOverlay : Control
 				}
 			}
 
+			var visibleViews = 0;
 			lock (_updateGate)
 			{
-				var providers = DiagnosticViewRegistry
+				var viewsThatShouldBeMaterialized = DiagnosticViewRegistry
 					.Registrations
 					.Where(ShouldMaterialize)
-					.Select(reg => reg.Provider)
-					.Concat(_localProviders)
+					.Select(reg => reg.View)
+					.Concat(_localRegistrations)
 					.Distinct()
 					.ToList();
 
-				foreach (var provider in providers)
+				foreach (var view in viewsThatShouldBeMaterialized)
 				{
-					if (!_elements.ContainsKey(provider))
+					ref var element = ref CollectionsMarshal.GetValueRefOrAddDefault(_elements, view, out var hasElement);
+					if (!hasElement)
 					{
-						var element = new DiagnosticElement(this, provider, _context!);
-						_elements[provider] = element;
-
-						_elementsPanel.Children.Add(element.Preview);
+						element = new DiagnosticElement(this, view, _context!);
+						_elementsPanel.Children.Add(element.Value);
 					}
 				}
 
-				ShowHost(host, true);
+				foreach (var element in _elements.Values)
+				{
+					if (_configuredElementVisibilities.GetValueOrDefault(element.View.Id, true))
+					{
+						var currentIndex = _elementsPanel.Children.IndexOf(element.Value);
+						if (currentIndex is -1)
+						{
+							_elementsPanel.Children.Insert(visibleViews, element.Value);
+						}
+						else if (currentIndex != visibleViews)
+						{
+							Debug.Fail("Invalid index, patching");
+							_elementsPanel.Children.Move((uint)currentIndex, (uint)visibleViews);
+						}
+
+						visibleViews++;
+					}
+					else
+					{
+						_elementsPanel.Children.Remove(element.Value);
+					}
+				}
 			}
+
+			ShowHost(host, isVisible: visibleViews is not 0);
 		});
 	}
 
@@ -289,12 +352,20 @@ public sealed partial class DiagnosticsOverlay : Control
 		=> host.IsOpen = isVisible;
 
 	private bool ShouldMaterialize(DiagnosticViewRegistration registration)
-		=> registration.Mode switch
+	{
+		if (_configuredElementVisibilities.TryGetValue(registration.View.Id, out var isVisible) && isVisible)
+		{
+			// We explicitly requested to show that view, so yes we have to materialize it!
+			return true;
+		}
+
+		return registration.Mode switch
 		{
 			DiagnosticViewRegistrationMode.All => true,
 			DiagnosticViewRegistrationMode.OnDemand => false,
-			_ => _overlays.Count(overlay => overlay.Value.IsMaterialized(registration.Provider)) is 0
+			_ => _overlays.Count(overlay => overlay.Value.IsMaterialized(registration.View)) is 0
 		};
+	}
 
 	private bool IsMaterialized(IDiagnosticView provider)
 	{
