@@ -246,7 +246,10 @@ fi
 
 # export the simulator logs
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
-export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
+export LOG_FILE_DIRECTORY=$LOG_FILEPATH/$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`
+export LOG_FILEPATH_FULL=$LOG_FILE_DIRECTORY/DeviceLog-`date +"%Y%m%d%H%M%S"`.txt
+
+mkdir -p $LOG_FILE_DIRECTORY
 
 cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
 
@@ -279,6 +282,9 @@ fi
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "##vso[task.logissue type=error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
 fi
+
+echo "Copying crash reports"
+cp -R ~/Library/Logs/DiagnosticReports/* $LOG_FILE_DIRECTORY
 
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
