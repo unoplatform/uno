@@ -35,6 +35,7 @@ On some platforms, you can further customize the file-picking experience by util
 | SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔ |
 | SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔ |
 | SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✔ |
+| SetMultipleFileLimit()  | ✖   | ✖           | ✖      | ✔     | ✖ |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
 *(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used to apply `image/*` and `video/*` filters*\
@@ -157,6 +158,24 @@ else
 > [!IMPORTANT]
 > On Uno Platform Targets, the `Path` information found on the `StorageFile` object returned from either the `PickMultipleFilesAsync()` or `PickSingleFileAsync()` method cannot be used with Windows File System APIs. This means that, for example, this `Path` cannot be used to initialize a `FileInfo` object.
 >
+> [!NOTE]
+> On iOS, when making multiple selections, you can limit the number of items selected by calling the `SetMultipleFileLimit()` method and specifying the maximum number of items.
+>
+
+##### Limiting the number of items
+
+```csharp
+var fileOpenPicker = new FileOpenPicker();
+fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+fileOpenPicker.FileTypeFilter.Add(".jpg");
+fileOpenPicker.FileTypeFilter.Add(".png");
+//The user will be able to pick up to three files.
+fileOpenPicker.SetMultipleFileLimit(3);
+
+var pickedFiles = await fileOpenPicker.PickMultipleFilesAsync();
+...
+```
+
 > [!NOTE]
 > `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 >
