@@ -19,7 +19,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	{
 		[DataRow(Stretch.Fill, false)]
 		[DataRow(Stretch.Fill, true)]
+#if !__IOS__
+		// See https://github.com/unoplatform/uno/issues/9080
 		[DataRow(Stretch.UniformToFill, false)]
+#endif
 		[DataRow(Stretch.UniformToFill, true)]
 #if !__ANDROID__
 		// Stretch.None is broken on Android.
@@ -27,7 +30,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[DataRow(Stretch.None, false)]
 		[DataRow(Stretch.None, true)]
 #endif
+#if !__IOS__
+		// See https://github.com/unoplatform/uno/issues/9080
 		[DataRow(Stretch.Uniform, false)]
+#endif
 		[DataRow(Stretch.Uniform, true)]
 		[TestMethod]
 		public async Task When_Stretch(Stretch stretch, bool useRectangle)
