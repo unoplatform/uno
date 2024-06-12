@@ -45,6 +45,9 @@ using static Uno.UI.Extensions.ViewExtensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
+#if __IOS__
+	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
+#endif
 	public partial class Given_ListViewBase // resources
 	{
 		private ResourceDictionary _testsResources;
@@ -1486,9 +1489,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __CROSSRUNTIME__
 		[Ignore("This test is flaky on netstd platforms")]
 #endif
-#if __IOS__
-		[Ignore("native crash in Microsoft.UI.Xaml.Controls.ListViewBaseInternalContainer.set_Frame(CGRect value) ?")]
-#endif
 		[RunsOnUIThread]
 		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
 		{
@@ -2397,9 +2397,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__
-		[Ignore("Fails on iOS 17, crashes the simulator")]
-#endif
 		public async Task When_Items_Their_Own_Container_In_OnItemsChanged_Removal()
 		{
 			var list = new OnItemsChangedListView();
