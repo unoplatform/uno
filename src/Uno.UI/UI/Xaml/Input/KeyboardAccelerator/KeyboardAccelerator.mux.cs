@@ -34,14 +34,32 @@ partial class KeyboardAccelerator
 			//	IFCEXPECT_ASSERT_RETURN(pEventManager);
 			//	IFC_RETURN(pEventManager->AddRequestsInOrder(this, m_pEventList));
 			//}
-			KeyboardAcceleratorCollection collection = (KeyboardAcceleratorCollection)this.GetParentInternal(false /* publicParentOnly */);
-			DependencyObject pParentElement = collection.GetParentInternal(false /* publicParentOnly */);
+#if HAS_UNO // The logic is reversed here, as DOCollection sets its parent as parent of its items.
+			var parent = this.GetParentInternal(false /* publicParentOnly */);
+			UIElement parentElement = null;
+			KeyboardAcceleratorCollection collection = null;
+			if (parent is KeyboardAcceleratorCollection kaCollection)
+			{
+				collection = kaCollection;
+				DependencyObject pParentElement = kaCollection.GetParentInternal(false /* publicParentOnly */);
+			}
+			else if (parent is UIElement parentUIElement)
+			{
+				parentElement = parentUIElement;
+				collection = (KeyboardAcceleratorCollection)parentUIElement.KeyboardAccelerators;
+			}
+
+			if (parentElement is null || collection is null)
+			{
+				return;
+			}
+#endif
 
 			// Do not set tooltip if
 			// 1. Parent element has disabled the keyboard accelerator tooltip.
 			// 2. current keyboard accelerator is disabled.
 
-			UIElement element = (UIElement)pParentElement;
+			UIElement element = (UIElement)parentElement;
 
 			var kaPlacementMode = (KeyboardAcceleratorPlacementMode)element.GetValue(UIElement.KeyboardAcceleratorPlacementModeProperty);
 
@@ -63,7 +81,7 @@ partial class KeyboardAccelerator
 				{
 					if (accelerator == this)
 					{
-						FxCallbacks.KeyboardAccelerator_SetToolTip(this, pParentElement);
+						FxCallbacks.KeyboardAccelerator_SetToolTip(this, parentElement);
 					}
 					break;
 				}
