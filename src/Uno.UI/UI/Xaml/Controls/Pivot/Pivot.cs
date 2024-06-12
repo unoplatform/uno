@@ -167,6 +167,8 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						pivotItem.PivotHeaderItem = headerItem;
 						headerItem.Content = pivotItem.Header;
+						pivotItem.KeyTipTarget = headerItem;
+						pivotItem.KeyboardAcceleratorPlacementTarget = headerItem;
 					}
 					else
 					{
