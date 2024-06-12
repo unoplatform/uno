@@ -625,7 +625,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
 				string dataContextChangedInvokeArgument;
-				if (typeSymbol.Is(_frameworkElementSymbol))
+				var isFrameworkElement = typeSymbol.Is(_frameworkElementSymbol);
+				if (isFrameworkElement)
 				{
 					// We can pass 'this' safely to a parameter of type FrameworkElement.
 					dataContextChangedInvokeArgument = "this";
@@ -643,6 +644,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 					// error CS0039: Cannot convert type '{0}' to '{1}' via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion
 					dataContextChangedInvokeArgument = "null";
 				}
+
+				string lifeCycleDataContextPropagation = isFrameworkElement ? "" : $"DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));";
 
 				builder.AppendMultiLineIndented($@"
 
@@ -670,7 +673,12 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 {protectedModifier} {virtualModifier} void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 {{
 	OnDataContextChangedPartial(e);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE // TODO (Important): We will need UNO_HAS_ENHANCED_LIFECYCLE to be defined for consuming apps as well.
+	{lifeCycleDataContextPropagation}
+#else
 	DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
+#endif
 }}
 
 #endregion

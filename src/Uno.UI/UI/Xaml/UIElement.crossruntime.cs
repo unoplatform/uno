@@ -47,6 +47,18 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal int Depth { get; private set; } = int.MinValue;
 
+		private protected bool RaiseDataContextChanged(object newValue)
+		{
+			if (DataContextChanged is { } dataContextChanged)
+			{
+				var args = new DataContextChangedEventArgs(newValue);
+				dataContextChanged.Invoke(this as FrameworkElement, args);
+				return args.Handled;
+			}
+
+			return false;
+		}
+
 		internal void RaiseLoaded()
 		{
 			if (IsLoaded)
