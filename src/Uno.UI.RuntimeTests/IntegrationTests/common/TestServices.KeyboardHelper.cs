@@ -16,9 +16,24 @@ namespace Private.Infrastructure
 		{
 			static KeyboardHelper()
 			{
+				// a-z
 				for (VirtualKey key = VirtualKey.A; key <= VirtualKey.Z; key++)
 				{
 					m_vKeyMapping.Add(char.ToLower((char)key).ToString(), key);
+				}
+
+				// 0-9
+				for (VirtualKey key = VirtualKey.Number0; key <= VirtualKey.Number9; key++)
+				{
+					var number = key - VirtualKey.Number0;
+					m_vKeyMapping.Add(number.ToString(CultureInfo.InvariantCulture), key);
+				}
+
+				// f1 - f24
+				for (VirtualKey key = VirtualKey.F1; key <= VirtualKey.F24; key++)
+				{
+					var number = (key - VirtualKey.F1) + 1;
+					m_vKeyMapping.Add("f" + number.ToString(CultureInfo.InvariantCulture), key);
 				}
 			}
 
@@ -67,30 +82,6 @@ namespace Private.Infrastructure
 				{"separator",                   VirtualKey.Separator},
 				{"-",                           VirtualKey.Subtract},
 				{"/",                           VirtualKey.Divide},
-				{"f1",                          VirtualKey.F1},
-				{"f2",                          VirtualKey.F2},
-				{"f3",                          VirtualKey.F3},
-				{"f4",                          VirtualKey.F4},
-				{"f5",                          VirtualKey.F5},
-				{"f6",                          VirtualKey.F6},
-				{"f7",                          VirtualKey.F7},
-				{"f8",                          VirtualKey.F8},
-				{"f9",                          VirtualKey.F9},
-				{"f10",                         VirtualKey.F10},
-				{"f11",                         VirtualKey.F11},
-				{"f12",                         VirtualKey.F12},
-				{"f13",                         VirtualKey.F13},
-				{"f14",                         VirtualKey.F14},
-				{"f15",                         VirtualKey.F15},
-				{"f16",                         VirtualKey.F16},
-				{"f17",                         VirtualKey.F17},
-				{"f18",                         VirtualKey.F18},
-				{"f19",                         VirtualKey.F19},
-				{"f20",                         VirtualKey.F20},
-				{"f21",                         VirtualKey.F21},
-				{"f22",                         VirtualKey.F22},
-				{"f23",                         VirtualKey.F23},
-				{"f24",                         VirtualKey.F24},
 				{"numlock",                     VirtualKey.NumberKeyLock},
 				{"scrolllock",                  VirtualKey.Scroll},
 				{"lshift",                      VirtualKey.LeftShift},
