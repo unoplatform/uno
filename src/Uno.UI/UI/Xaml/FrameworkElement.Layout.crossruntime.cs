@@ -168,6 +168,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerMeasureCore(Size availableSize)
 		{
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Measuring {this},{this.GetDebugName()} with availableSize {availableSize}.");
+			}
+
 			// Uno TODO
 			//CLayoutManager* pLayoutManager = VisualTree::GetLayoutManagerForElement(this);
 			//bool bInLayoutTransition = pLayoutManager ? pLayoutManager->GetTransitioningElement() == this : false;
@@ -351,6 +356,11 @@ namespace Microsoft.UI.Xaml
 				desiredSize.Height = LayoutRound(desiredSize.Height);
 			}
 
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Measured {this},{this.GetDebugName()}: desiredSize is {desiredSize}.");
+			}
+
 #if __SKIA__
 			if (desiredSize != DesiredSize)
 #endif
@@ -432,6 +442,10 @@ namespace Microsoft.UI.Xaml
 		private void InnerArrangeCore(Rect finalRect)
 		{
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect})");
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Arranging {this},{this.GetDebugName()} with finalRect {finalRect}.");
+			}
 
 			// Uno TODO:
 			//CLayoutManager* pLayoutManager = VisualTree::GetLayoutManagerForElement(this);
@@ -718,6 +732,11 @@ namespace Microsoft.UI.Xaml
 			var visualOffset = new Point(offsetX, offsetY);
 			var clippedFrame = GetClipRect(needsClipBounds, visualOffset, finalRect, new Size(maxWidth, maxHeight), margin);
 			ArrangeNative(visualOffset, clippedFrame);
+
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Arranged {this},{this.GetDebugName()}: {clippedFrame}.");
+			}
 
 			AfterArrange();
 		}

@@ -2,11 +2,13 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Uno.UI;
-using Uno.UI.Xaml;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml
 {
@@ -25,6 +27,11 @@ namespace Microsoft.UI.Xaml
 			if (ShouldInterceptInvalidate || IsMeasureDirty || IsLayoutFlagSet(LayoutFlag.MeasuringSelf))
 			{
 				return;
+			}
+
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] InvalidateMeasure {this},{this.GetDebugName()}");
 			}
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
@@ -79,6 +86,11 @@ namespace Microsoft.UI.Xaml
 			if (IsArrangeDirty)
 			{
 				return; // Already dirty
+			}
+
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"[LayoutCycleTracing] InvalidateArrange {this},{this.GetDebugName()}");
 			}
 
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
