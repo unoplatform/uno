@@ -91,6 +91,8 @@ public class UnoInitializeComponentAnalyzerTests
 	public async Task CalledFromNonGeneratedPartial_ConstructorHasParameter_NoDiagnostic()
 	{
 		var code = """
+			using System;
+
 			namespace MyNamespace;
 
 			public partial class C : Microsoft.UI.Xaml.Application
