@@ -67,7 +67,7 @@ public class UnoInitializeComponentAnalyzer : DiagnosticAnalyzer
 					{
 						if (!isCalled &&
 							initializeComponent.Equals(((IInvocationOperation)context.Operation).TargetMethod, SymbolEqualityComparer.Default) &&
-							context.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Constructor, Parameters.Length: 0 })
+							context.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Constructor })
 						{
 							isCalled = true;
 						}
