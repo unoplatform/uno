@@ -492,6 +492,12 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateFontPartial();
 		}
 
+		private protected override void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+		{
+			base.OnFontStretchChanged(oldValue, newValue);
+			UpdateFontPartial();
+		}
+
 		protected override void OnFontWeightChanged(FontWeight oldValue, FontWeight newValue)
 		{
 			base.OnFontWeightChanged(oldValue, newValue);

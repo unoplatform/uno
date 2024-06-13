@@ -150,7 +150,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+				if (font.CanChange)
+				{
+					// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+					// needed for the rendering to happen correct on the next frame.
+					font.FontUpdated += OnFontFamilyChanged;
+				}
+
 				return font.LineHeight;
 			}
 		}
