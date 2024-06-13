@@ -165,16 +165,22 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Parent == null)
 			{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				var previousParent = this.GetParent();
+#endif
 
 				Popup.Child = this;
 
+				// ToolTip DataContext should have the correct local value through FrameworkElement.NotifyOfDataContextChange under
+				// UNO_HAS_ENHANCED_LIFECYCLE.
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				// The tooltip is integrated into the PopupPanel, which automatically
 				// propagates its own datacontext through inheritance. This ends up changing
 				// the DataContext of the tooltip to a local value which cannot be overriden
 				// through the tooltip's own actual parent (the control that owns the TooltipService).
 				// Restoring the original parent ensures that an incorrect DataContext property will not flow through.
 				this.SetParent(previousParent);
+#endif
 			}
 			else if (!ReferenceEquals(Parent, _popup))
 			{

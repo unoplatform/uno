@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // Popup.h, Popup.cpp
 
+using Uno.UI.Xaml;
+
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
@@ -14,4 +16,18 @@ public partial class Popup
 			cancel = flyout.Hide(canCancel: true);
 		}
 	}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	internal override void NotifyOfDataContextChange(DataContextChangedParams args)
+	{
+		var child = Child;
+
+		base.NotifyOfDataContextChange(args);
+
+		if (child is FrameworkElement childAsFE)
+		{
+			childAsFE.OnAncestorDataContextChanged(args);
+		}
+	}
+#endif
 }
