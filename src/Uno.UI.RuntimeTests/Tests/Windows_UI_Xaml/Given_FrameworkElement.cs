@@ -742,11 +742,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Size(120, 50), grid.AvailableSizeUsedForMeasure);
 
 			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
-
-#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
 			Assert.AreEqual(new Size(100, 15), content.DesiredSize);
-#endif
 
 			grid.Arrange(new Rect(default, new Size(50, 50)));
 
@@ -756,14 +753,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(10);
 			await TestServices.WindowHelper.WaitForIdle();
 
-#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			var ls1 = LayoutInformation.GetLayoutSlot(grid);
 			Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
 			var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
 			Assert.AreEqual(new Rect(0, 0, 120, 50), ls2);
 			var ls3 = LayoutInformation.GetLayoutSlot(content);
 			Assert.AreEqual(new Rect(0, 0, 100, 15), ls3);
-#endif
 		}
 
 		[TestMethod]
