@@ -20,6 +20,8 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
+		private int _multipleFileLimit;
+
 		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var tcs = new TaskCompletionSource<StorageFile?>();
@@ -51,6 +53,11 @@ namespace Windows.Storage.Pickers
 			return tcs.Task;
 		}
 
+		internal void SetMultipleFileLimit(int limit)
+		{
+			_multipleFileLimit = limit;
+		}
+		
 		private UIViewController GetViewController(bool multiple, int limit, TaskCompletionSource<StorageFile?[]> completionSource)
 		{
 			var iOS14AndAbove = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
