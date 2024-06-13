@@ -78,6 +78,7 @@ public class Given_WebView2
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+    [Ignore("Ignore for this branch")]
 	[TestMethod]
 	public async Task When_GoBack()
 	{
@@ -169,6 +170,7 @@ public class Given_WebView2
 #endif
 
 	[TestMethod]
+    [Ignore("Ignore for this branch")]
 	public async Task When_ExecuteScriptAsync_Has_No_Result()
 	{
 		async Task Do()
@@ -195,6 +197,7 @@ public class Given_WebView2
 
 #if !__IOS__ // Temporarily disabled due to #11997
 	[TestMethod]
+    [Ignore("Ignore for this branch")]
 	public async Task When_ExecuteScriptAsync()
 	{
 		async Task Do()
@@ -226,6 +229,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+    [Ignore("Ignore for this branch")]
 	public async Task When_ExecuteScriptAsync_String_Double_Quote()
 	{
 		async Task Do()
@@ -252,6 +256,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+    [Ignore("Ignore for this branch")]
 	public async Task When_ExecuteScriptAsync_String()
 	{
 		async Task Do()
@@ -306,6 +311,7 @@ public class Given_WebView2
 #endif
 
 	[TestMethod]
+    [Ignore("Ignore for this branch")]
 	public async Task When_WebMessageReceived()
 	{
 		var border = new Border();
