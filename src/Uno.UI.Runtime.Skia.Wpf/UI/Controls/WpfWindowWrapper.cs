@@ -23,7 +23,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	public WpfWindowWrapper(UnoWpfWindow wpfWindow, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
-		_wpfWindow.Host.SizeChanged += OnHostSizeChanged;
 		_wpfWindow.Activated += OnNativeActivated;
 		_wpfWindow.Deactivated += OnNativeDeactivated;
 		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
@@ -31,6 +30,8 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.Closed += OnNativeClosed;
 		_wpfWindow.DpiChanged += OnNativeDpiChanged;
 		_wpfWindow.StateChanged += OnNativeStateChanged;
+		_wpfWindow.Host.SizeChanged += (_, e) => OnHostSizeChanged(e.NewSize);
+		OnHostSizeChanged(new Size(_wpfWindow.Width, _wpfWindow.Height));
 	}
 
 	private void OnNativeStateChanged(object? sender, EventArgs e) => UpdateIsVisible();
@@ -61,9 +62,9 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.ExtendContentIntoTitleBar(extend);
 	}
 
-	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+	private void OnHostSizeChanged(Size size)
 	{
-		Bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
+		Bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(size.Width, size.Height));
 		VisibleBounds = Bounds;
 	}
 
