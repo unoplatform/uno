@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  UnoCheck_Version: '1.20.2'
+  UnoCheck_Version: '1.24.0'
 
   # Only convert using NetPrevious
   UnoDisableNetCurrentMobile: true
@@ -71,11 +71,6 @@ jobs:
     - run: | 
         & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac
       name: Run uno-check
-
-    - name: Workload restore
-      run: |
-        cd src\Uno.UI
-        dotnet workload restore Uno.UI.netcoremobile.csproj
 
     - name: Convert source tree to UWP
       run: |
