@@ -13,6 +13,8 @@
 
 		<!-- Required to override the `win10-xxx` identifiers that cannot work with class libraries -->
 		<RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)'==''">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+
+		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
