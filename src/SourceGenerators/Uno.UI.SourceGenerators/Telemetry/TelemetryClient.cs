@@ -25,6 +25,8 @@ namespace Uno.UI.SourceGenerators.Telemetry
 		private Dictionary<string, double> _commonMeasurements;
 		private TelemetryConfiguration _telemetryConfig;
 		private Task _trackEventTask;
+		private string _storageDirectoryPath;
+		private string _settingsStorageDirectoryPath;
 		private PersistenceChannel.PersistenceChannel _persistenceChannel;
 		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
 		private const string TelemetryOptout = "UNO_PLATFORM_TELEMETRY_OPTOUT";
@@ -120,12 +122,24 @@ namespace Uno.UI.SourceGenerators.Telemetry
 		{
 			try
 			{
+				_storageDirectoryPath = Path.Combine(Path.GetTempPath(), ".uno", "telemetry");
+
+				// Store the settings on in the user profile for linux
+				if (RuntimeEnvironment.OperatingSystemPlatform == Platform.Linux)
+				{
+					_settingsStorageDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".uno", "telemetry");
+				}
+				else
+				{
+					_settingsStorageDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Uno Platform", "telemetry");
+				}
+
 				_persistenceChannel = new PersistenceChannel.PersistenceChannel(
-					storageDirectoryPath: Path.Combine(Path.GetTempPath(), ".uno", "telemetry"));
+					storageDirectoryPath: _storageDirectoryPath);
 
 				_persistenceChannel.SendingInterval = TimeSpan.FromMilliseconds(1);
 
-				_commonProperties = new TelemetryCommonProperties().GetTelemetryCommonProperties();
+				_commonProperties = new TelemetryCommonProperties(_settingsStorageDirectoryPath).GetTelemetryCommonProperties();
 				_commonMeasurements = new Dictionary<string, double>();
 
 				_telemetryConfig = new TelemetryConfiguration { InstrumentationKey = InstrumentationKey };
