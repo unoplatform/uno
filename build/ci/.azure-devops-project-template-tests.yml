@@ -77,7 +77,6 @@ jobs:
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - template: templates/dotnet-mobile-install-mac.yml
 

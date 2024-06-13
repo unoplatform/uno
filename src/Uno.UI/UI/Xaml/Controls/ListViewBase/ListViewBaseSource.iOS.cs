@@ -834,9 +834,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			set
 			{
+				if (this is null)
+				{
+					// Don't fail on null instance from native call
+					return;
+				}
+
+				base.Frame = value;
+
 				try
 				{
-					base.Frame = value;
 					UpdateContentViewFrame();
 				}
 				catch (Exception ex)
@@ -851,14 +858,27 @@ namespace Microsoft.UI.Xaml.Controls
 			get => base.Bounds;
 			set
 			{
-				if (_measuredContentSize.HasValue)
+				if (this is null)
 				{
-					// At some points, eg during a collection change, iOS seems to apply an outdated size even after we've updated the 
-					// LayoutAttributes. Keep the good size.
-					SetExtent(ref value, _measuredContentSize.Value);
+					// Don't fail on null instance from native call
+					return;
 				}
-				base.Bounds = value;
-				UpdateContentViewFrame();
+
+				try
+				{
+					if (_measuredContentSize.HasValue)
+					{
+						// At some points, eg during a collection change, iOS seems to apply an outdated size even after we've updated the 
+						// LayoutAttributes. Keep the good size.
+						SetExtent(ref value, _measuredContentSize.Value);
+					}
+					base.Bounds = value;
+					UpdateContentViewFrame();
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("ListViewBaseInternalContainer.Bounds set failed: " + ex);
+				}
 			}
 		}
 

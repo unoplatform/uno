@@ -109,7 +109,6 @@ stages:
       vmPoolLinux: '$(linuxScaledPool)'
       macOSImageName: '$(macOSVMImage)'
       xCodeRoot: '$(xCodeRoot)'
-      XamarinSDKVersion: '$(XamarinSDKVersion)'
 
 - stage: unit_tests
   displayName: Tests - Unit
@@ -176,7 +175,6 @@ stages:
     parameters:
       vmImage: '$(macOSVMImage)'
       xCodeRoot: '$(xCodeRoot)'
-      XamarinSDKVersion: '$(XamarinSDKVersion)'
   
 - stage: android_tests
   displayName: Tests - Android
@@ -191,7 +189,6 @@ stages:
       vmMacOSImage: '$(macOSVMImage)'
       vmLinuxPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
-      XamarinSDKVersion: '$(XamarinSDKVersion)'
   
 - stage: ios_tests
   displayName: Tests - iOS
@@ -204,9 +201,7 @@ stages:
       vmImage: '$(macOSVMImage)'
       vmImageTest: '$(macOSVMImage_UITests)'
       xCodeRootBuild: '$(xCodeRoot)'
-      XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-      XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK  
