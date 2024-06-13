@@ -26,6 +26,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_ContentPresenter
 {
 	[TestMethod]
+	public async Task When_DC_Changes()
+	{
+		var SUT = new ContentPresenter()
+		{
+			DataContext = "Hello"
+		};
+
+		var btn = new Button();
+		var changed = new List<string>();
+		btn.DataContextChanged += (sender, args) => changed.Add($"sender.DataContext: {sender.DataContext}, args.NewValue: {args.NewValue}");
+
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+
+		SUT.Content = btn;
+
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+
+		Assert.IsNull(btn.DataContext);
+
+		SUT.DataContext = "Hello2";
+
+		Assert.IsNull(btn.DataContext);
+
+		Assert.AreEqual(0, changed.Count);
+
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+		Assert.AreEqual(1, changed.Count);
+
+		Assert.IsNull(btn.DataContext);
+
+		SUT.DataContext = "Hello3";
+
+		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+		Assert.AreEqual(2, changed.Count);
+
+		Assert.AreEqual("Hello3", btn.DataContext);
+
+		Assert.AreEqual("sender.DataContext: , args.NewValue: ", changed[0]);
+		Assert.AreEqual("sender.DataContext: Hello3, args.NewValue: Hello3", changed[1]);
+	}
+
+	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
 	{
 		var SUT = new ContentPresenter()
