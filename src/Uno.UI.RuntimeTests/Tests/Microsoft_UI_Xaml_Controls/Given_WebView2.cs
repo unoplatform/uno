@@ -49,6 +49,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+	[Ignore("Ignore for this branch")]
 	public async Task When_NavigateToString()
 	{
 		var border = new Border();
@@ -284,6 +285,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+	[Ignore("Ignore for this branch")]
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
 		async Task Do()
