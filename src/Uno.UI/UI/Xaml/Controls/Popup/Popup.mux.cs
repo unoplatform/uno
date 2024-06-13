@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
 {
-	internal void OnClosing(ref bool cancel)
+	internal virtual void OnClosing(ref bool cancel)
 	{
 		// If this popup is associated with a flyout, then give it a chance to cancel closing.
 		if (AssociatedFlyout is { } flyout)

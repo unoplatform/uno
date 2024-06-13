@@ -58,11 +58,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal bool IsTargetPositionSet => m_isTargetPositionSet;
 
-		private bool m_isPositionedForDateTimePicker;
+		private protected bool m_isPositionedForDateTimePicker;
 
 		private bool m_openingCanceled;
 
-		[NotImplemented]
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
 		internal FlyoutPlacementMode EffectivePlacement => m_hasPlacementOverride ? m_placementOverride : Placement;

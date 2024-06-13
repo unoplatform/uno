@@ -1,14 +1,13 @@
-﻿namespace Microsoft.UI.Xaml
+﻿namespace Microsoft.UI.Xaml;
+
+/// <summary>
+/// Internal implemenation for <see cref="DependencyObject"/>
+/// </summary>
+internal partial interface IDependencyObjectInternal
 {
 	/// <summary>
-	/// Internal implementation for <see cref="DependencyObject"/>
+	/// Invoked on every <see cref="DependencyProperty"/> changes, automatically generated for every <see cref="DependencyObject"/> implementing type.
 	/// </summary>
-	internal partial interface IDependencyObjectInternal
-	{
-		/// <summary>
-		/// Invoked on every <see cref="DependencyProperty"/> changes, automatically generated for every <see cref="DependencyObject"/> implementing type.
-		/// </summary>
-		/// <param name="args"></param>
-		void OnPropertyChanged2(DependencyPropertyChangedEventArgs args);
-	}
+	/// <param name="args"></param>
+	void OnPropertyChanged2(DependencyPropertyChangedEventArgs args);
 }
