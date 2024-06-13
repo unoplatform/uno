@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml
 			return this.GetBindingExpression(FrameworkElement.DataContextProperty) is not null;
 		}
 
-		private void NotifyOfDataContextChange(DataContextChangedParams args)
+		internal void NotifyOfDataContextChange(DataContextChangedParams args)
 		{
 			DataContextChangedParams tempArgs = new DataContextChangedParams(args.OriginalSource, args.DataContextChangedReason);
 			DataContextChangedParams argsToForward = args;
