@@ -19,3 +19,13 @@ In order to fix this, add the following to your csproj (Xamarin, `net6.0-ios`, `
   <MtouchExtraArgs>$(MtouchExtraArgs) --registrar=static</MtouchExtraArgs>
 </PropertyGroup>
 ```
+## Error while retreving IOS device in VS code
+
+When switching to an iOS debugging target in VS Code, you might encounter an error stating that the iOS device could not be retrieved. The error message may appear as follows:
+
+```
+[Info]: Project reload forced to switch to net8.0-ios | Debug
+[Error] Could not retrieve ios devices within 10 seconds. Aborting...
+```
+To resolve this issue, you can download Xcodes. Open the latest version of Xcode and click the Make Active button. After completing this step, restart your machine. This should resolve the error when switching to an iOS debugging target in VS Code.
+
