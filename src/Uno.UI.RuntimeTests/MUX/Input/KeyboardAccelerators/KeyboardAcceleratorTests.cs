@@ -2111,8 +2111,8 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			var focusButton1 = (Button)rootPanel.FindName("focusButton1");
 			ButtonFlyout = (Flyout)focusButton1.Flyout;
-			flyoutButton1 = (Button)ButtonFlyout.Content.FindViewsByName("flyoutButton1")[0];
-			flyoutButton2 = (Button)ButtonFlyout.Content.FindViewsByName("flyoutButton2")[0];
+			flyoutButton1 = (Button)VisualTreeUtils.FindVisualChildByName((FrameworkElement)ButtonFlyout.Content, "flyoutButton1");
+			flyoutButton2 = (Button)VisualTreeUtils.FindVisualChildByName((FrameworkElement)ButtonFlyout.Content, "flyoutButton2");
 			ctrl1Accelerator = flyoutButton1.KeyboardAccelerators[0];
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
 			ctrl2Accelerator = flyoutButton2.KeyboardAccelerators[0];
