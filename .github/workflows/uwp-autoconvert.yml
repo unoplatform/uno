@@ -18,7 +18,6 @@ env:
   # Only convert using NetPrevious
   UnoDisableNetCurrentMobile: true
   UnoDisableNetCurrent: true
-  DOTNET_INSTALL_DIR: ${{ vars.RUNNER_TEMP }}
 
 jobs:
   build:
@@ -38,6 +37,8 @@ jobs:
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3
       with:
         global-json-file: global.json
+      env:
+        DOTNET_INSTALL_DIR: ${{ vars.RUNNER_TEMP }}
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@31b3198b2de324472547fecec2c0f721b70c38e2 # v0.9.15
