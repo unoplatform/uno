@@ -72,8 +72,16 @@ In C#:
 
 ```csharp
 #if __WASM__
-Uno.UI.Xaml.Controls.TextBox.SetIsPointerCaptureRequired(myTextBox, true);
+myTextBox.IsPointerCaptureRequired = true;
 #endif
 ```
+
+Or in XAML:
+
+```xml
+<TextBox wasm:IsPointerCaptureRequired="True" />
+```
+
+> Follow [Platform-specific XAML guide](xref:Uno.Development.PlatformSpecificXaml) to add the `wasm` namespace.
 
 The value only affects WebAssembly, all other targets capture by default.
