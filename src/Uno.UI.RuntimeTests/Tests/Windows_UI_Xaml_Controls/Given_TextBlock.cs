@@ -35,6 +35,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
+		[TestMethod]
+		[DataRow((ushort)400, FontStyle.Italic, FontStretch.Condensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_Condensed-MediumItalic.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-Regular.ttf")]
+		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf")]
+		[DataRow((ushort)700, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf")]
+		public async Task When_Font_Has_Manifest(ushort weight, FontStyle style, FontStretch stretch, string ttfFile)
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontStyle = style,
+				FontStretch = stretch,
+				FontWeight = new FontWeight(weight),
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/OpenSans/OpenSans.ttf"),
+			};
+
+			var expectedTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(ttfFile)
+			};
+
+			var differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf";
+			if (ttfFile == differentTtf)
+			{
+				differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf";
+			}
+
+			var differentTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(differentTtf),
+			};
+
+			var sp = new StackPanel()
+			{
+				Children =
+				{
+					SUT,
+					expectedTB,
+					differentTB,
+				},
+			};
+
+			await UITestHelper.Load(sp);
+			var actual = await UITestHelper.ScreenShot(SUT);
+			var expected = await UITestHelper.ScreenShot(expectedTB);
+			var different = await UITestHelper.ScreenShot(differentTB);
+			await ImageAssert.AreEqualAsync(actual, expected);
+			await ImageAssert.AreNotEqualAsync(actual, different);
+		}
+
 #if __SKIA__
 		[TestMethod]
 		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
@@ -42,7 +98,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_FontFallback()
 		{
 			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);

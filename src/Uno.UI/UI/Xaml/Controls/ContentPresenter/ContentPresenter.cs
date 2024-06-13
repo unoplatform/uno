@@ -330,6 +330,27 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		);
 	#endregion
 
+	#region FontStretch
+
+	public FontStretch FontStretch
+	{
+		get => (FontStretch)this.GetValue(FontStretchProperty);
+		set => this.SetValue(FontStretchProperty, value);
+	}
+
+	public static DependencyProperty FontStretchProperty { get; } =
+		DependencyProperty.Register(
+			nameof(FontStretch),
+			typeof(FontStretch),
+			typeof(ContentPresenter),
+			new FrameworkPropertyMetadata(
+				FontStretch.Normal,
+				FrameworkPropertyMetadataOptions.Inherits,
+				(s, e) => ((ContentPresenter)s)?.OnFontStretchChanged((FontStretch)e.OldValue, (FontStretch)e.NewValue)
+			)
+		);
+	#endregion
+
 	#region TextWrapping Dependency Property
 
 	public TextWrapping TextWrapping
@@ -745,6 +766,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 	partial void OnFontStyleChangedPartial(FontStyle oldValue, FontStyle newValue);
+
+	private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+	{
+		OnFontStretchChangedPartial(oldValue, newValue);
+	}
+
+	partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);
 
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
