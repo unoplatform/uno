@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml
 			return this.GetBindingExpression(FrameworkElement.DataContextProperty) is not null;
 		}
 
-		internal void NotifyOfDataContextChange(DataContextChangedParams args)
+		internal virtual void NotifyOfDataContextChange(DataContextChangedParams args)
 		{
 			DataContextChangedParams tempArgs = new DataContextChangedParams(args.OriginalSource, args.DataContextChangedReason);
 			DataContextChangedParams argsToForward = args;
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void OnAncestorDataContextChanged(DataContextChangedParams args)
+		internal void OnAncestorDataContextChanged(DataContextChangedParams args)
 		{
 			// Only process the change if we care about it
 			var isContextChangeRelevant = IsDataContextChangeRelevant(args);
