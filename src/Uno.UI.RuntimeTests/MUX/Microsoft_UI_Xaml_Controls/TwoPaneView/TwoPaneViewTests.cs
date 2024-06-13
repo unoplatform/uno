@@ -20,6 +20,9 @@ using Private.Infrastructure;
 using System.Threading.Tasks;
 
 using TwoPaneView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView;
+using TwoPaneViewPriority = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewPriority;
+using TwoPaneViewWideModeConfiguration = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration;
+using TwoPaneViewTallModeConfiguration = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;
