@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
@@ -2257,9 +2258,9 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
-			ButtonFlyout = (Flyout)rootPanel.FindName("ButtonFlyout");
-			flyoutButton1 = (Button)rootPanel.FindName("flyoutButton1");
 			focusButton = (Button)rootPanel.FindName("focusButton");
+			ButtonFlyout = (Flyout)focusButton.ContextFlyout;
+			flyoutButton1 = VisualTreeUtils.FindVisualChildByType<Button>(ButtonFlyout.Content);
 			ctrl1Accelerator = flyoutButton1.KeyboardAccelerators[0];
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
 		});
