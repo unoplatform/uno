@@ -50,8 +50,8 @@
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_PackageId>Uno.UI</_PackageId>
-			<_PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_PackageId>
+			<_PackageId>uno.ui</_PackageId>
+			<_PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">uno.winui</_PackageId>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_PackageId)\$(UnoNugetOverrideVersion)\buildTransitive\Uno.UI.Tasks</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
