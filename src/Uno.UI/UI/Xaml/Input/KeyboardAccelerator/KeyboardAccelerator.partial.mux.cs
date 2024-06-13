@@ -127,7 +127,7 @@ partial class KeyboardAccelerator
 				return csharpFormatString;
 			}
 
-			joiningFormatString = ConvertCppFormatStringToCSharp(joiningFormatString); // TODO:MZ: Verify this and improve
+			joiningFormatString = ConvertCppFormatStringToCSharp(joiningFormatString);
 
 			keyboardAcceleratorString = string.Format(CultureInfo.InvariantCulture, joiningFormatString, keyboardAcceleratorString, keyName);
 		}

@@ -36,7 +36,6 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 
 	private void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
 	{
-		//TODO:MZ Implement this
 		//base.Leave(pNamescopeOwner, leaveParams);
 
 		if (leaveParams.IsLive)// || leaveParams.IsForKeyboardAccelerator)

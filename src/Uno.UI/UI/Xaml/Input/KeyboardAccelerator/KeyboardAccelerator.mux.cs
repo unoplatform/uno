@@ -22,7 +22,8 @@ partial class KeyboardAccelerator
 
 		if (enterParams.IsLive)
 		{
-			//TODO:MZ Do we need this part?
+			// TODO Uno: We currently don't require this, but may need to
+			// bring it in later.
 			// If there are events registered on this element, ask the
 			// EventManager to extract them and create a request for every event.
 			//var core = GetContext();
