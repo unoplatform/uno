@@ -64,6 +64,11 @@ jobs:
 
     - run: echo "JavaSdkDirectory=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
       name: Select JDK 11 (Java sdk directory)
+  
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.300'
 
     - run: |
         & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
