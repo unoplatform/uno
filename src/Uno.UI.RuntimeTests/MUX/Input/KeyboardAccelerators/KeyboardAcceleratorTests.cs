@@ -828,7 +828,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 	public async Task ValidateOnProcessKeyboardAcceleratorsEventOrdering()
 	{
 		const string rootPanelXaml =
-				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='rootPanel'>
+				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='rootPanel' Width='300' Height='300'>
                     </StackPanel>";
 
 		StackPanel rootPanel = null;
@@ -879,7 +879,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 	public async Task ValidateOnProcessKeyboardAcceleratorsEventOrderingWhenHandlingArgs()
 	{
 		const string rootPanelXaml =
-				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='rootPanel'>
+				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='rootPanel' Width='300' Height='300'>
                     </StackPanel>";
 
 		StackPanel rootPanel = null;
