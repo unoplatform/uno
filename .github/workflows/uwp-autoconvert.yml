@@ -38,7 +38,9 @@ jobs:
       with:
         global-json-file: global.json
       env:
-        DOTNET_INSTALL_DIR: $(RUNNER_TEMP)
+        DOTNET_INSTALL_DIR: ${{ runner.temp }}\dotnet
+        DOTNET_ROOT: ${{ runner.temp }}\dotnet
+
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@31b3198b2de324472547fecec2c0f721b70c38e2 # v0.9.15
