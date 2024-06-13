@@ -185,6 +185,36 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => (FontStretch)GetValue(FontStretchProperty);
+			set => SetValue(FontStretchProperty, value);
+		}
+
+		public static DependencyProperty FontStretchProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FontStretch),
+				typeof(FontStretch),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: FontStretch.Normal,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontStretchChanged()
+				)
+			);
+
+		private void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+			InvalidateTextBlock();
+		}
+
+		partial void OnFontStretchChangedPartial();
+
+		#endregion
+
 		#region TextWrapping Dependency Property
 
 		public TextWrapping TextWrapping

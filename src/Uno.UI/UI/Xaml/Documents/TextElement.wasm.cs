@@ -21,6 +21,8 @@ namespace Microsoft.UI.Xaml.Documents
 			this.SetFontStyle(ReadLocalValue(FontStyleProperty));
 		}
 
+		// TODO: FontStretch
+
 		partial void OnFontSizeChangedPartial()
 		{
 			this.SetFontSize(ReadLocalValue(FontSizeProperty));

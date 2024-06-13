@@ -177,6 +177,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
 
+		// TODO: FontStretch?
+
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
 			if (IsTextSelectionEnabled)

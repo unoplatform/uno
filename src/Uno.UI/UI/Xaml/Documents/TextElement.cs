@@ -109,6 +109,35 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#endregion
 
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => (FontStretch)this.GetValue(FontStretchProperty);
+			set => this.SetValue(FontStyleProperty, value);
+		}
+
+		public static DependencyProperty FontStretchProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FontStretch),
+				typeof(FontStretch),
+				typeof(TextElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: FontStretch.Normal,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStretchChanged()
+				)
+			);
+
+		protected virtual void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+		}
+
+		partial void OnFontStretchChangedPartial();
+
+		#endregion
+
 		#region FontSize Dependency Property
 
 		public double FontSize
