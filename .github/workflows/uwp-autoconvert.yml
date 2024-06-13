@@ -18,6 +18,7 @@ env:
   # Only convert using NetPrevious
   UnoDisableNetCurrentMobile: true
   UnoDisableNetCurrent: true
+  DOTNET_INSTALL_DIR: ${{ vars.RUNNER_TEMP }}
 
 jobs:
   build:
@@ -64,15 +65,10 @@ jobs:
 
     - run: echo "JavaSdkDirectory=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
       name: Select JDK 11 (Java sdk directory)
-  
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '8.0.201'
 
     - run: |
         & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
-      name: Install .NET Workloads
+      name: Install Uno Check
     - run: | 
         & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac
       name: Run uno-check
