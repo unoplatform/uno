@@ -487,6 +487,13 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void ApplyTemplate(out bool addedVisuals)
+		{
+			addedVisuals = ApplyTemplate();
+		}
+#endif
+
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.
 		/// </summary>

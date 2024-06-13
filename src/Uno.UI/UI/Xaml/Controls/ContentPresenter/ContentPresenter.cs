@@ -122,7 +122,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.None,
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnContentChanged(e.OldValue, e.NewValue)
 			)
 		);
@@ -774,13 +774,21 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			ContentTemplateRoot = null;
 		}
 
-		TrySetDataContextFromContent(newValue);
+		//TrySetDataContextFromContent(newValue);
 
 		if (IsInLiveTree)
 		{
 			TryRegisterNativeElement(oldValue, newValue);
 		}
 
+		//SetUpdateTemplate();
+	}
+
+	private protected override void ApplyTemplate(out bool addedVisuals)
+	{
+		base.ApplyTemplate(out addedVisuals);
+		// This should not be the responsibility of ContentPresenter.
+		// Ideally, we should have a virtual 'GetTemplate()' method on FrameworkElement and let FrameworkElement.ApplyTemplate materialize the template.
 		SetUpdateTemplate();
 	}
 

@@ -45,6 +45,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
 			private readonly INamedTypeSymbol? _frameworkElementSymbol;
+			private readonly INamedTypeSymbol? _uiElementSymbol;
 			private readonly bool _isUnoSolution;
 			private readonly string[] _analyzerSuppressions;
 
@@ -65,6 +66,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 				_frameworkElementSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.FrameworkElement");
+				_uiElementSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.UIElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 			}
@@ -625,8 +627,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
 				string dataContextChangedInvokeArgument;
-				var isFrameworkElement = typeSymbol.Is(_frameworkElementSymbol);
-				if (isFrameworkElement)
+				if (typeSymbol.Is(_frameworkElementSymbol))
 				{
 					// We can pass 'this' safely to a parameter of type FrameworkElement.
 					dataContextChangedInvokeArgument = "this";
@@ -645,7 +646,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 					dataContextChangedInvokeArgument = "null";
 				}
 
-				string lifeCycleDataContextPropagation = isFrameworkElement ? "" : $"DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));";
+				string lifeCycleDataContextPropagation = typeSymbol.Is(_uiElementSymbol) ? "" : $"DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));";
 
 				builder.AppendMultiLineIndented($@"
 

@@ -161,6 +161,16 @@ namespace Microsoft.UI.Xaml
 
 		}
 
+		private protected virtual void ApplyTemplate(out bool addedVisuals)
+		{
+			addedVisuals = false; // overridden in Control
+		}
+
+		private void InvokeApplyTemplate(out bool addedVisuals)
+		{
+			ApplyTemplate(out addedVisuals);
+		}
+
 		private void InnerMeasureCore(Size availableSize)
 		{
 			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
@@ -191,13 +201,11 @@ namespace Microsoft.UI.Xaml
 			//if (!bInLayoutTransition)
 			{
 				// Templates should be applied here.
-				//bTemplateApplied = InvokeApplyTemplate();
+				InvokeApplyTemplate(out _ /*bTemplateApplied*/);
 
 				// TODO: BEGIN Uno specific
 				if (this is Control thisAsControl)
 				{
-					thisAsControl.ApplyTemplate();
-
 					// Update bindings to ensure resources defined
 					// in visual parents get applied.
 					this.UpdateResourceBindings();

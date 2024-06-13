@@ -1,21 +1,22 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.DataBinding;
+using System.Collections;
 using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.UI.Xaml.Data;
+using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
-using System.Linq;
-using System.Threading;
-using Uno.Collections;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
-using System.Collections;
-using System.Globalization;
+using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.ApplicationModel.Calls;
 
 #if __ANDROID__
@@ -2099,6 +2100,14 @@ namespace Microsoft.UI.Xaml
 			}
 
 			CheckThemeBindings(previousParent, value);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			if (value is FrameworkElement { IsActiveInVisualTree: true } &&
+				ActualInstance is FrameworkElement actualInstance)
+			{
+				actualInstance.NotifyOfDataContextChange(new DataContextChangedParams(actualInstance, DataContextChangedReason.EnteringLiveTree));
+			}
+#endif
 		}
 
 		/// <summary>
