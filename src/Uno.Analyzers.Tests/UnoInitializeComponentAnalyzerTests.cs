@@ -88,6 +88,30 @@ public class UnoInitializeComponentAnalyzerTests
 	}
 
 	[TestMethod]
+	public async Task CalledFromNonGeneratedPartial_ConstructorHasParameter_NoDiagnostic()
+	{
+		var code = """
+			using System;
+
+			namespace MyNamespace;
+
+			public partial class C : Microsoft.UI.Xaml.Application
+			{
+				public C(Action _)
+				{
+					InitializeComponent();
+				}
+			}
+			""";
+
+		// Analyzer checks for the presence of "XamlCodeGenerator" as part of the file path
+		// The actual file path is not exactly XamlCodeGenerator.cs in practice, but it contains it (it's a sub directory in real)
+		// This comes from https://github.com/dotnet/roslyn/blob/bcc2a181652894b74d241864c2ca3663de0e4d3a/src/Compilers/Core/Portable/SourceGeneration/GeneratorDriver.cs#L412-L416
+		await VerifyAsync(("Test.cs", code), ("XamlCodeGenerator.cs", InitComponentImpl));
+		await VerifyAsync(("XamlCodeGenerator.cs", InitComponentImpl), ("Test.cs", code));
+	}
+
+	[TestMethod]
 	public async Task CalledFromGeneratedPartial_NoDiagnostic()
 	{
 		var code = """
