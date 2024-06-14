@@ -14,6 +14,8 @@
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">8.0</SupportedOSPlatformVersion>
 
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
+
+		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
 	<PropertyGroup>

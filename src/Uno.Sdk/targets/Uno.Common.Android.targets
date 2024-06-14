@@ -5,6 +5,8 @@
 		<EnableDefaultAndroidItems Condition="$(EnableDefaultAndroidItems) == ''">false</EnableDefaultAndroidItems>
 
 		<AndroidManifest Condition=" $(AndroidManifest) == '' AND $(_IsUnoSingleProjectAndLegacy) == 'true' AND Exists('$(AndroidProjectFolder)AndroidManifest.xml') ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
+
+		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.Android.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
