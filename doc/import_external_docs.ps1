@@ -9,15 +9,15 @@ $external_docs = @{
     # use either commit, or branch name to use its latest commit
     "uno.wasm.bootstrap" = "b82e783c02ed495fcb14787ae55fe6c50f796800" #latest main commit
     "uno.themes"         = "9ea2ee38186b55745cd211bcf628b06821067465" #latest release branch commit
-    "uno.toolkit.ui"     = "438f84ac73d687d6ec4246002c7cb4295a7e4809" #latest release branch commit
-    "uno.check"          = "4a7dd7290daf0aabfbb8efabcd2b067898b7f45e" #latest main commit
+    "uno.toolkit.ui"     = "f3ef5ba7d3890a44acbc53abb02f81e0f13a9af1" #latest release branch commit
+    "uno.check"          = "198eaa13bf041f52001e525c095f3dd3716796da" #latest main commit
     "uno.xamlmerge.task" = "21f02c98702b875a9942047ca042e41810b6fe56" #latest main commit
-    "figma-docs"         = "529c1e3c67cb350f2e4b8969d76f6501d9ec8cb0" #latest main commit
-    "uno.resizetizer"    = "d5659362b965a48e2fb07e0ed7845bb6deefbf3f" #latest main commit
+    "figma-docs"         = "842a2792282b88586a337381b2b3786e779973b4" #latest main commit
+    "uno.resizetizer"    = "f66b9b8cd89c5c1fbfdfeda8f601f998fa9f4395" #latest main commit
     "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
-    "uno.extensions"     = "a527c0412d13c1c5f5c42e2c9e755860ce13d348" #latest release branch commit
-    "workshops"          = "6f56d41eb7f76e5af7dbda88928cd28999cdf6d8" #latest master commit
-    "uno.samples"        = "275f289d31b83c7bd7469c328d63d001c0dc140f" #latest master commit
+    "uno.extensions"     = "61d2f87ae68efdb4fd4ebdd4d4638dbcc991ba4b" #latest release branch commit
+    "workshops"          = "3b5bd04b4833305df698ceec51056b6ef6db3190" #latest master commit
+    "uno.samples"        = "04295c6596272c7686f8e67c1e6398149babbf3e" #latest master commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
