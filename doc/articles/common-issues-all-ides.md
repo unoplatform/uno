@@ -25,6 +25,12 @@ Similar error messages using various libraries:
 
 - `Don't know how to detect when XXX is activated/deactivated, you may need to implement IActivationForViewFetcher` (ReactiveUI)
 
+## `Layout cycle detected` exception
+
+Layout cycle means that the measuring couldn't get stabilized. For example, during an element arrange, its measure was invalidated, then it's measured again then arranged, and you go into this cycle. Uno and WinUI keep this loop for 250 iterations. If the loop hasn't stabilized, you get an exception with message `Layout cycle detected`. This error is sometimes tricky to debug, so, you can use `DebugSettings.LayoutCycleTracingLevel` so that some information are printed out.
+
+When the last 10 iterations out of 150 are reached, we will start logging some information as warnings. Those logs are prefixed with `[LayoutCycleTracing]` and include information such as when an element is measured or arranged, and when measure or arrange is invalidated.
+
 ## Cannot build with both Uno.WinUI and Uno.UI NuGet packages referenced
 
 This issue generally happens when referencing an Uno.UI (using UWP APIs) NuGet package in an application that uses Uno.WinUI (Using WinAppSDK APIs).
