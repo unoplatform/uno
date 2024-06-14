@@ -28,6 +28,7 @@ using ButtonBase = Microsoft.UI.Xaml.Controls.Primitives.ButtonBase;
 using Uno.UI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Controls;
+using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
