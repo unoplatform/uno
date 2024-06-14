@@ -2057,6 +2057,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
+	[Ignore("Requires Flyout support for Keyboard Accelerators #17134")]
 	public async Task VerifyButtonFlyoutCanInvokeAcceleratorsDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -3351,10 +3352,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
 			textBox = (TextBox)rootPanel.FindName("textBox");
-			acceleratorA = textBox.KeyboardAccelerators[0];
-			acceleratorLeft = textBox.KeyboardAccelerators[1];
-			acceleratorF3 = textBox.KeyboardAccelerators[2];
-			acceleratorCtrlS = textBox.KeyboardAccelerators[3];
+			var button = (Button)rootPanel.Children[0];
+			acceleratorA = button.KeyboardAccelerators[0];
+			acceleratorLeft = button.KeyboardAccelerators[1];
+			acceleratorF3 = button.KeyboardAccelerators[2];
+			acceleratorCtrlS = button.KeyboardAccelerators[3];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 

@@ -28,6 +28,7 @@ using Uno.UI;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+using DirectUI;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
@@ -1048,7 +1049,20 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnTappedPartial();
 
 		/// <inheritdoc />
-		protected override void OnKeyDown(KeyRoutedEventArgs args) => OnKeyDownPartial(args);
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			OnKeyDownPartial(args);
+
+			var modifiers = CoreImports.Input_GetKeyboardModifiers();
+			if (!args.Handled && KeyboardAcceleratorUtility.IsKeyValidForAccelerators(args.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
+			{
+				bool shouldNotImpedeTextInput = KeyboardAcceleratorUtility.TextInputHasPriorityForKey(
+					args.Key,
+					modifiers.HasFlag(VirtualKeyModifiers.Control),
+					modifiers.HasFlag(VirtualKeyModifiers.Menu));
+				args.HandledShouldNotImpedeTextInput = shouldNotImpedeTextInput;
+			}
+		}
 
 		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
 
