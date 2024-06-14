@@ -687,15 +687,17 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			MaterializableList<UIElement>? pCollection = null;
+			IEnumerable<DependencyObject>? pCollection = null;
 			if (pElement.CanHaveChildren())
 			{
-				pCollection = pElement.GetChildren();
+				pCollection = Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(pElement);
 			}
+
 			if (pCollection is null)
 			{
 				return;
 			}
+
 			//For each child make recursive call
 			foreach (var pDOChild in pCollection)
 			{
