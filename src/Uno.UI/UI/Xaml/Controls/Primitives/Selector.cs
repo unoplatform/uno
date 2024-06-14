@@ -683,14 +683,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						ChangeSelectedItem(selectorItem, false, true);
 					}
 				}
-				else if (iVCE.CollectionChange == CollectionChange.ItemRemoved)
-				{
-					// If the removed item is the currently selected one, Set SelectedIndex to -1
-					if ((int)iVCE.Index == SelectedIndex)
-					{
-						ResetIndexIfNeeded();
-					}
-				}
 				//Prevent SelectedIndex been >= Items.Count
 				var sItem = ItemFromIndex(SelectedIndex);
 
