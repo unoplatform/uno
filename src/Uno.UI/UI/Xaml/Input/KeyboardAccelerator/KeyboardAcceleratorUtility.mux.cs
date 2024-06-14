@@ -6,7 +6,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Windows.WinRT.Paltypes;
 using static Windows.WinRT.WinUser;
 
