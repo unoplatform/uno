@@ -26,6 +26,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_ContentPresenter
 {
 	[TestMethod]
+	public async Task When_DataContext_Is_Inherited()
+	{
+		var parentStackPanel = new StackPanel();
+		var cp = new ContentPresenter() { Width = 100, Height = 100, };
+		parentStackPanel.Children.Add(cp);
+		await UITestHelper.Load(parentStackPanel);
+
+		var sp = new StackPanel() { Width = 100, Height = 100 };
+		cp.Content = sp;
+
+		parentStackPanel.DataContext = "Parent DataContext";
+		var changed = new List<string>();
+		sp.DataContextChanged += (sender, args) => changed.Add($"{sender.DataContext},{args.NewValue}");
+		await TestServices.WindowHelper.WaitForLoaded(cp);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, changed.Count);
+		Assert.AreEqual("Parent DataContext", changed[0]);
+	}
+
+	[TestMethod]
+	public async Task When_DataContext_Is_Inherited2()
+	{
+		var parentStackPanel = new StackPanel() { Width = 100, Height = 100, DataContext = "Parent DataContext" };
+		await UITestHelper.Load(parentStackPanel);
+
+		var btn = new Button();
+		btn.DataContextChanged += (a, b) => { _ = a.GetValue(FrameworkElement.DataContextProperty); };
+		btn.Content = "Click";
+		parentStackPanel.Children.Add(btn);
+
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
 	public async Task When_Content_Changes_And_Is_Non_UIElement()
 	{
 		var SUT = new ContentPresenter() { Tag = "SUT" };
