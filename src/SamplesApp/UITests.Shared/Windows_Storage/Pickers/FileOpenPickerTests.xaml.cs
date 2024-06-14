@@ -212,7 +212,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 				StatusMessage = "Picking multiple files...";
 #if __IOS__
-				filePicker.SetLimit(MaxFiles);
+				filePicker.SetMultipleFilesLimit(MaxFiles);
 #endif
 				var pickedFiles = await filePicker.PickMultipleFilesAsync();
 				if (pickedFiles.Any())
