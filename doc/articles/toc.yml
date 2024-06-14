@@ -81,7 +81,12 @@
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
         href: xref:Uno.Tutorials.AzureStaticWepApps
       - name: How to use Windows Community Toolkit
-        href: xref:Uno.Development.CommunityToolkit
+        topicHref: xref:Uno.Development.CommunityToolkit
+        items:
+          - name: Windows Community Toolkit - Version 8.x
+            href: xref:Uno.Development.CommunityToolkit.v8
+          - name: Windows Community Toolkit - Version 7.x
+            href: xref:Uno.Development.CommunityToolkit.v7
       - name: How to manually add a splash screen
         href: xref:Uno.Development.SplashScreen
       - name: How to use native Frame navigation
