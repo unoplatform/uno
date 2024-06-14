@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND '$(IsPackable)' != 'true'">
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))" />
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))  OR $(IsDesktop) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Svg.Skia" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'" />
 	</ItemGroup>
 </Project>
