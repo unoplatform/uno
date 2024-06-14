@@ -79,12 +79,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Value_Decimal()
 		{
-			if (!FeatureConfiguration.ToolTip.UseToolTips)
-			{
-				Assert.Inconclusive("ToolTips are not enabled on this target");
-				return;
-			}
-
 			var slider = new Slider()
 			{
 				Value = 0.5,

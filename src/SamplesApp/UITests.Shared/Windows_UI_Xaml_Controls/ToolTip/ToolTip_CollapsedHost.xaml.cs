@@ -26,9 +26,6 @@ namespace UITests.Windows_UI_Xaml_Controls.ToolTip
 
 		public ToolTip_CollapsedHost()
 		{
-#if HAS_UNO
-			FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
 			this.InitializeComponent();
 		}
 	}
