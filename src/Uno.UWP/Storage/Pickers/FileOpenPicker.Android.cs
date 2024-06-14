@@ -47,10 +47,17 @@ namespace Windows.Storage.Pickers
 			var tcs = new TaskCompletionSource<StorageFile?>();
 			NativeDispatcher.Main.Enqueue(async () =>
 			{
-				var files = await PickFilesAsync(false, token);
-				var file = files.Count > 0 ? files[0] : null;
+				try
+				{
+					var files = await PickFilesAsync(false, token);
+					var file = files.Count > 0 ? files[0] : null;
 
-				tcs.TrySetResult(file);
+					tcs.TrySetResult(file);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
 			});
 
 			return tcs.Task;
@@ -61,8 +68,15 @@ namespace Windows.Storage.Pickers
 			var tcs = new TaskCompletionSource<IReadOnlyList<StorageFile>>();
 			NativeDispatcher.Main.Enqueue(async () =>
 			{
-				var files = await PickFilesAsync(true, token);
-				tcs.TrySetResult(files);
+				try
+				{
+					var files = await PickFilesAsync(true, token);
+					tcs.TrySetResult(files);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
 			});
 
 			return tcs.Task;
