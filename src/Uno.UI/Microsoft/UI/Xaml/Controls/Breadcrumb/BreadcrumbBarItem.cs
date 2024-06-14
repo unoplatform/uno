@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBarItem.cpp, tag winui3/release/1.4.2
+// MUX Reference BreadcrumbBarItem.cpp, tag winui3/release/1.5.3, commit 2a60e27
 
 #nullable enable
 
 using System.Collections.ObjectModel;
 using Uno.Disposables;
+using Uno.UI.DataBinding;
 using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -124,15 +125,6 @@ public partial class BreadcrumbBarItem : ContentControl
 	{
 		base.OnApplyTemplate();
 
-		//#if HAS_UNO
-		//		// TODO: Uno specific: Parent may not be set yet, wait for later #4689
-		//		if (m_parentBreadcrumb is null || )
-		//		{
-		//			// Postpone template application for later
-		//			return;
-		//		}
-		//#endif
-
 		if (m_isEllipsisDropDownItem)
 		{
 			UpdateEllipsisDropDownItemCommonVisualState(false /*useTransitions*/);
@@ -238,7 +230,7 @@ public partial class BreadcrumbBarItem : ContentControl
 	{
 		MUX_ASSERT(!m_isEllipsisDropDownItem);
 
-		m_parentBreadcrumb = parent;
+		m_parentBreadcrumb = WeakReferencePool.RentWeakReference(this, parent);
 	}
 
 	internal void SetEllipsisDropDownItemDataTemplate(object? newDataTemplate)
@@ -269,7 +261,7 @@ public partial class BreadcrumbBarItem : ContentControl
 
 	private void RaiseItemClickedEvent(object content, int index)
 	{
-		if (m_parentBreadcrumb is { } breadcrumb)
+		if (m_parentBreadcrumb?.Target is BreadcrumbBar breadcrumb)
 		{
 			var breadcrumbImpl = breadcrumb;
 			breadcrumbImpl.RaiseItemClickedEvent(content, index);
@@ -375,14 +367,13 @@ public partial class BreadcrumbBarItem : ContentControl
 
 		// The new list contains all the elements in reverse order
 		int itemsSourceSize = ellipsisItemsSource.Count;
-
-		// The itemsSourceSize should always be at least 1 as it must always contain the ellipsis item
-		MUX_ASSERT(itemsSourceSize > 0);
-
-		for (int i = itemsSourceSize - 1; i >= 0; --i)
+		if (itemsSourceSize > 0)
 		{
-			var item = ellipsisItemsSource[i];
-			newItemsSource.Add(item);
+			for (int i = itemsSourceSize - 1; i >= 0; --i)
+			{
+				var item = ellipsisItemsSource[i];
+				newItemsSource.Add(item);
+			}
 		}
 
 		return newItemsSource;
@@ -520,7 +511,7 @@ public partial class BreadcrumbBarItem : ContentControl
 	{
 		MUX_ASSERT(!m_isEllipsisDropDownItem);
 
-		if (m_parentBreadcrumb is { } breadcrumb)
+		if (m_parentBreadcrumb?.Target is { } breadcrumb)
 		{
 			if (breadcrumb is BreadcrumbBar breadcrumbImpl)
 			{
@@ -590,6 +581,8 @@ public partial class BreadcrumbBarItem : ContentControl
 				ellipsisItemsRepeater.Name(s_ellipsisItemsRepeaterPartName);
 				AutomationProperties.SetName(ellipsisItemsRepeater, s_ellipsisItemsRepeaterAutomationName);
 				ellipsisItemsRepeater.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+				ellipsisItemsRepeater.Layout = new StackLayout();
 
 				m_ellipsisElementFactory = new BreadcrumbElementFactory();
 				ellipsisItemsRepeater.ItemTemplate = m_ellipsisElementFactory;

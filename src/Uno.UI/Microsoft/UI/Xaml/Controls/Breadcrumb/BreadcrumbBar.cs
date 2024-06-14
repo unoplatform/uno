@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBar.cpp, tag winui3/release/1.4.2
+// MUX Reference controls\dev\Breadcrumb\BreadcrumbBar.cpp, tag winui3/release/1.5.3, commit 2a60e27
 
 #nullable enable
 
@@ -497,7 +497,7 @@ public partial class BreadcrumbBar : Control
 			{
 				var focusedIndex = itemsRepeater.GetElementIndex(focusedElement);
 
-				if (focusedIndex >= 0)
+				if (focusedIndex >= 0 && indexIncrement != 0)
 				{
 					focusedIndex += indexIncrement;
 					var itemCount = itemsRepeater.ItemsSourceView.Count;
@@ -567,45 +567,6 @@ public partial class BreadcrumbBar : Control
 		return MoveFocus(movementNext);
 	}
 
-	// If we haven't handled the key yet and the original source was the first(for up and left)
-	// or last(for down and right) element in the repeater we need to handle the key so
-	// BreadcrumbBarItem doesn't, which would result in the behavior.
-	private bool HandleEdgeCaseFocus(bool first, object source)
-	{
-		if (m_itemsRepeater is { } itemsRepeater)
-		{
-			if (source is UIElement sourceAsUIElement)
-			{
-				int GetIndex()
-				{
-					if (first)
-					{
-						return 0;
-					}
-					if (itemsRepeater.ItemsSourceView is { } itemsSourceView)
-					{
-						return itemsSourceView.Count - 1;
-					}
-					return -1;
-				}
-				var index = GetIndex();
-
-				if (itemsRepeater.GetElementIndex(sourceAsUIElement) == index)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private FindNextElementOptions GetFindNextElementOptions()
-	{
-		var findNextElementOptions = new FindNextElementOptions();
-		findNextElementOptions.SearchRoot = this;
-		return findNextElementOptions;
-	}
-
 	private void OnChildPreviewKeyDown(object sender, KeyRoutedEventArgs args)
 	{
 		bool flowDirectionIsLTR = (FlowDirection == FlowDirection.LeftToRight);
@@ -623,14 +584,14 @@ public partial class BreadcrumbBar : Control
 			else if ((flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadRight)) ||
 						(!flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadLeft)))
 			{
-				var options = GetFindNextElementOptions();
+				var options = new FindNextElementOptions();
+				options.SearchRoot = XamlRoot?.Content;
 				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Next, options))
 				{
 					args.Handled = true;
 					return;
 				}
 			}
-			args.Handled = HandleEdgeCaseFocus(false, args.OriginalSource);
 		}
 		// Moving to previous element
 		else if ((flowDirectionIsLTR && keyIsLeft) || (!flowDirectionIsLTR && keyIsRight))
@@ -643,54 +604,14 @@ public partial class BreadcrumbBar : Control
 			else if ((flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadLeft)) ||
 						(!flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadRight)))
 			{
-				var options = GetFindNextElementOptions();
+				var options = new FindNextElementOptions();
+				options.SearchRoot = XamlRoot?.Content;
 				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Previous, options))
 				{
 					args.Handled = true;
 					return;
 				}
 			}
-			args.Handled = HandleEdgeCaseFocus(true, args.OriginalSource);
-		}
-		else if (args.Key == VirtualKey.Down)
-		{
-			if (args.OriginalKey != VirtualKey.GamepadDPadDown)
-			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right, GetFindNextElementOptions()))
-				{
-					args.Handled = true;
-					return;
-				}
-			}
-			else
-			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right))
-				{
-					args.Handled = true;
-					return;
-				}
-			}
-			args.Handled = HandleEdgeCaseFocus(false, args.OriginalSource);
-		}
-		else if (args.Key == VirtualKey.Up)
-		{
-			if (args.OriginalKey != VirtualKey.GamepadDPadUp)
-			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Left, GetFindNextElementOptions()))
-				{
-					args.Handled = true;
-					return;
-				}
-			}
-			else
-			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Left))
-				{
-					args.Handled = true;
-					return;
-				}
-			}
-			args.Handled = HandleEdgeCaseFocus(true, args.OriginalSource);
 		}
 	}
 

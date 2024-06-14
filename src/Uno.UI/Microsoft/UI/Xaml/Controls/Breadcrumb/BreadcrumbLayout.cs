@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbLayout.cpp, tag winui3/release/1.4.2
+// MUX Reference BreadcrumbLayout.cpp, tag winui3/release/1.5.3, commit 2a60e27
 
 #nullable enable
 
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.DataBinding;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -14,7 +15,7 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 {
 	public BreadcrumbLayout(BreadcrumbBar breadcrumb)
 	{
-		m_breadcrumb = breadcrumb;
+		m_breadcrumb = WeakReferencePool.RentWeakReference(this, breadcrumb);
 	}
 
 	private int GetItemCount(NonVirtualizingLayoutContext context)
@@ -184,7 +185,7 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 			}
 		}
 
-		if (m_breadcrumb is BreadcrumbBar breadcrumb)
+		if (m_breadcrumb?.Target is BreadcrumbBar breadcrumb)
 		{
 			breadcrumb.ReIndexVisibleElementsForAccessibility();
 		}
