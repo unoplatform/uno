@@ -64,6 +64,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #endif
 
 	private bool _firstLoadResetDone;
+	private bool _inOnApplyTemplate;
+	private bool _dataContextInvalid;
 	private View _contentTemplateRoot;
 	private bool _appliedTemplate;
 
@@ -74,6 +76,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public ContentPresenter()
 	{
+		_dataContextInvalid = true;
+
 #if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
 #endif
@@ -122,7 +126,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnContentChanged(e.OldValue, e.NewValue)
 			)
 		);
@@ -772,6 +776,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
+			Invalidate(true);
+		}
+		else
+		{
+			Invalidate(false);
 		}
 
 		//TrySetDataContextFromContent(newValue);
@@ -786,31 +795,43 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private protected override void ApplyTemplate(out bool addedVisuals)
 	{
-		base.ApplyTemplate(out addedVisuals);
-		// This should not be the responsibility of ContentPresenter.
-		// Ideally, we should have a virtual 'GetTemplate()' method on FrameworkElement and let FrameworkElement.ApplyTemplate materialize the template.
-		SetUpdateTemplate();
+		addedVisuals = false;
+
+		if (_inOnApplyTemplate)
+		{
+			base.ApplyTemplate(out addedVisuals);
+			return;
+		}
+
+		if (VisualTreeHelper.GetChildrenCount(this) == 0)
+		{
+			_inOnApplyTemplate = true;
+			TrySetDataContextFromContent(Content);
+
+			// This should not be the responsibility of ContentPresenter.
+			// Ideally, we should have a virtual 'GetTemplate()' method on FrameworkElement and let FrameworkElement.ApplyTemplate materialize the template.
+			SetUpdateTemplate();
+
+			addedVisuals = VisualTreeHelper.GetChildrenCount(this) != 0;
+		}
+		else if (_dataContextInvalid)
+		{
+			TrySetDataContextFromContent(Content);
+		}
+
+		_dataContextInvalid = false;
+		_inOnApplyTemplate = false;
 	}
 
 	private void TrySetDataContextFromContent(object value)
 	{
-		if (value == null)
+		if (value == null || value is View)
 		{
 			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 		}
 		else
 		{
-			if (!(value is View))
-			{
-				// If the content is not a view, we apply the content as the
-				// DataContext of the materialized content.
-				DataContext = value;
-			}
-			else
-			{
-				// Restore DataContext propagation if the content is a view
-				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
-			}
+			DataContext = value;
 		}
 	}
 
@@ -823,16 +844,32 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 	{
-		if (ContentTemplateRoot != null)
-		{
-			ContentTemplateRoot = null;
-		}
+		//if (ContentTemplateRoot != null)
+		//{
+		//	ContentTemplateRoot = null;
+		//}
 
-		SetUpdateTemplate();
+		//SetUpdateTemplate();
+
+		Invalidate(true);
 	}
 
 	protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 	{
+	}
+
+	private void Invalidate(bool clearChildren)
+	{
+		if (clearChildren)
+		{
+			ClearChildren();
+		}
+		else
+		{
+			_dataContextInvalid = true;
+		}
+
+		InvalidateMeasure();
 	}
 
 	partial void UnregisterContentTemplateRoot();
@@ -956,14 +993,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 		base.Enter(@params, depth);
 
-		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
-		{
-			SetUpdateTemplate();
-		}
+		//if (ContentTemplateRoot == null)
+		//{
+		//	SetUpdateTemplate();
+		//}
 
 		// When the control is loaded, set the TemplatedParent
 		// as it may have been reset during the last unload.
-		SynchronizeContentTemplatedParent();
+		//SynchronizeContentTemplatedParent();
 
 #if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();

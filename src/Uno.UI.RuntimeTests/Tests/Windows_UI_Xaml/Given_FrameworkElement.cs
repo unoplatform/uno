@@ -48,6 +48,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public partial class Given_FrameworkElement
 	{
+		private partial class FrameworkElementWithFrameworkElementDependencyProperty : FrameworkElement
+		{
+			public FrameworkElement MyChild
+			{
+				get => (FrameworkElement)GetValue(MyChildProperty);
+				set => SetValue(MyChildProperty, value);
+			}
+
+			public static DependencyProperty MyChildProperty { get; } =
+				DependencyProperty.Register(nameof(MyChild), typeof(FrameworkElement), typeof(FrameworkElementWithFrameworkElementDependencyProperty), new PropertyMetadata(null));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FrameworkElementWithFrameworkElementDependencyProperty()
+		{
+			var parent = new FrameworkElementWithFrameworkElementDependencyProperty() { Width = 100, Height = 100 };
+			var child = new Button() { Content = "Hello" };
+			parent.MyChild = child;
+			await UITestHelper.Load(parent);
+			parent.DataContext = "MyDataContext";
+
+			Assert.IsNull(child.DataContext);
+		}
+
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
