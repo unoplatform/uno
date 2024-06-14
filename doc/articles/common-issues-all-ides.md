@@ -27,7 +27,9 @@ Similar error messages using various libraries:
 
 ## `Layout cycle detected` exception
 
-Layout cycle means that the measuring couldn't get stabilized. For example, during an element arrange, its measure was invalidated, then it's measured again then arranged, and you go into this cycle. Uno and WinUI keep this loop for 250 iterations. If the loop hasn't stabilized, you get an exception with message `Layout cycle detected`. This error is sometimes tricky to debug, so, you can use `DebugSettings.LayoutCycleTracingLevel` so that some information are printed out.
+Layout cycle means that the measuring of a specific part of the visual tree couldn't get stabilized. For example, during an element `Arrange` pass, its measure was invalidated, then it's measured again then arranged, and the app will fall into a layout cycle. 
+
+Uno Platform and WinUI run this loop for 250 iterations. If the loop hasn't stabilized, the app will fail with an exception with the message `Layout cycle detected`. This error is sometimes tricky to debug, you can set `Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel = true` in order to get additional troubleshooting information printed out in the app's logs.
 
 When the last 10 iterations out of 150 are reached, we will start logging some information as warnings. Those logs are prefixed with `[LayoutCycleTracing]` and include information such as when an element is measured or arranged, and when measure or arrange is invalidated.
 
