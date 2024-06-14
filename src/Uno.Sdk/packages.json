@@ -125,11 +125,7 @@
 	},
 	{
 		"group": "MsalClient",
-<<<<<<< HEAD
-		"version": "4.60.3",
-=======
 		"version": "4.61.3",
->>>>>>> 2cf99e0fa3 (fix: builds fail with latest MSAL updates)
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
