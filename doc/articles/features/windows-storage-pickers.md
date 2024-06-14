@@ -154,6 +154,9 @@ else
 }
 ```
 
+> [!IMPORTANT]
+> On Uno Platform Targets, the `Path` information found on the `StorageFile` object returned from either the `PickMultipleFilesAsync()` or `PickSingleFileAsync()` method cannot be used with Windows File System APIs. This means that, for example, this `Path` cannot be used to initialize a `FileInfo` object.
+>
 > [!NOTE]
 > `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 >
