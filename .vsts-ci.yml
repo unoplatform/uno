@@ -107,9 +107,10 @@ jobs:
     poolName: '$(windowsScaledPool)'
     vmImageLinux: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-uap.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+# Disabled for expired cert
+# - template: build/ci/.azure-devops-uap.yml
+#   parameters:
+#     vmImage: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-unit-tests.yml
   parameters:
