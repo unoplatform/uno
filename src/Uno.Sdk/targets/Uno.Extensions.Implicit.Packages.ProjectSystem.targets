@@ -10,8 +10,9 @@
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';AuthenticationMsal;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" Condition="$(IsMSALSupported) == 'true'" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Identity.Client.Extensions.Msal" ProjectSystem="true" Condition="$(IsMSALSupported) == 'true'" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" Condition="$(IsMSALSupported) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';AuthenticationOidc;'))">
