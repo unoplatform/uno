@@ -10,6 +10,7 @@
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
+		<_UnoProjectSystemPackageReference Remove="SkiaSharp.Views.Uno.WinUI" Condition="!$(UnoFeatures.Contains(';skia;')) AND $(IsBrowserWasm)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true' AND '$(IsBrowserWasm)' != 'true' ">
