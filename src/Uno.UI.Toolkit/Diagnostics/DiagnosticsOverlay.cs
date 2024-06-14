@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#if WINAPPSDK || HAS_UNO_WINUI
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,16 +6,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Uno.Extensions.Specialized;
-using Uno.Extensions;
-using static Microsoft.UI.Xaml.Controls.CollectionChangedOperation;
 
 namespace Uno.Diagnostics.UI;
 
@@ -58,7 +52,6 @@ public sealed partial class DiagnosticsOverlay : Control
 	private readonly Dictionary<IDiagnosticView, DiagnosticElement> _elements = new();
 	private readonly Dictionary<string, bool> _configuredElementVisibilities = new();
 
-	private DispatcherQueue? _dispatcher;
 	private Context? _context;
 	private Popup? _overlayHost;
 	private bool _isVisible;
@@ -82,21 +75,19 @@ public sealed partial class DiagnosticsOverlay : Control
 	private DiagnosticsOverlay(XamlRoot root)
 	{
 		_root = root;
-		_dispatcher = root.Content?.DispatcherQueue;
-		_context = _dispatcher is null ? null : new Context(this, _dispatcher);
+		_context = Context.TryCreate(this);
 
 		root.Changed += static (snd, e) =>
 		{
 			var overlay = Get(snd);
-			var dispatcher = snd.Content?.DispatcherQueue;
-			if (dispatcher != overlay._dispatcher) // Is this even possible ???
+			var context = Context.TryCreate(overlay);
+			if (context != overlay._context) // I.e. dispatcher changed ... is this even possible ???
 			{
 				lock (overlay._updateGate)
 				{
-					overlay._dispatcher = dispatcher;
-					overlay._context = dispatcher is null ? null : new Context(overlay, dispatcher);
+					overlay._context = context;
 
-					// Clean all dispatcher bound state
+					// Clean all dispatcher bound states
 					overlay._overlayHost = null;
 					overlay._elementsPanel = null;
 					foreach (var element in overlay._elements.Values)
@@ -253,16 +244,16 @@ public sealed partial class DiagnosticsOverlay : Control
 
 	private void EnqueueUpdate(bool forceUpdate = false)
 	{
-		var dispatcher = _dispatcher;
+		var context = _context;
 		var isHidden = !_isVisible;
 		if ((isHidden && !forceUpdate)
-			|| dispatcher is null
+			|| context is null
 			|| Interlocked.CompareExchange(ref _updateEnqueued, 1, 0) is not 0)
 		{
 			return;
 		}
 
-		dispatcher.TryEnqueue(() =>
+		context.Schedule(() =>
 		{
 			_updateEnqueued = 0;
 
@@ -375,4 +366,3 @@ public sealed partial class DiagnosticsOverlay : Control
 		}
 	}
 }
-#endif
