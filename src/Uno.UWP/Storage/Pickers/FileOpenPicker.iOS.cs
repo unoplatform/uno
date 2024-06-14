@@ -57,7 +57,7 @@ namespace Windows.Storage.Pickers
 		{
 			_multipleFileLimit = limit;
 		}
-		
+
 		private UIViewController GetViewController(bool multiple, int limit, TaskCompletionSource<StorageFile?[]> completionSource)
 		{
 			var iOS14AndAbove = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
