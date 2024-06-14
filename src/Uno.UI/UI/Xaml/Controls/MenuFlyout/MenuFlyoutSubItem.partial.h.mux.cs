@@ -12,7 +12,11 @@ using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-[ContentProperty(Name = nameof(Items))]
-public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
+partial class MenuFlyoutSubItem
 {
+	
+    // ISubMenuOwner implementation
+	bool ISubMenuOwner.IsSubMenuOpen => IsOpen;
+
+	bool ISubMenuOwner.IsSubMenuPositionedAbsolutely => true;
 }
