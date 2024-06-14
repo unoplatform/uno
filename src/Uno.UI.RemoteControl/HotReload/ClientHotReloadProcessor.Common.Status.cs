@@ -14,7 +14,12 @@ namespace Uno.UI.RemoteControl.HotReload;
 
 public partial class ClientHotReloadProcessor
 {
-	private readonly StatusSink _status = new();
+	/// <summary>
+	/// Raised when the status of the hot-reload engine changes.
+	/// </summary>
+	internal EventHandler<Status>? StatusChanged;
+
+	private readonly StatusSink _status;
 
 	internal enum HotReloadSource
 	{
@@ -41,12 +46,18 @@ public partial class ClientHotReloadProcessor
 		Ignored = 256,
 	}
 
+	/// <summary>
+	/// The aggregated status of the hot-reload engine.
+	/// </summary>
+	/// <param name="State">The global state of the hot-reload engine (combining server and client state).</param>
+	/// <param name="Server">State and history of all hot-reload operations detected on the server.</param>
+	/// <param name="Local">State and history of all hot-reload operation received by this client.</param>
 	internal record Status(
 		HotReloadState State,
 		(HotReloadState State, IImmutableList<HotReloadServerOperationData> Operations) Server,
 		(HotReloadState State, IImmutableList<HotReloadClientOperation> Operations) Local);
 
-	private class StatusSink
+	private class StatusSink(ClientHotReloadProcessor owner)
 	{
 		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.Update(status));
 
@@ -89,7 +100,10 @@ public partial class ClientHotReloadProcessor
 		}
 
 		private void NotifyStatusChanged()
-			=> _view.Update(GetStatus());
+		{
+			_view.Update(GetStatus());
+			owner.StatusChanged?.Invoke(this, GetStatus());
+		}
 
 		private Status GetStatus()
 		{
@@ -130,7 +144,7 @@ public partial class ClientHotReloadProcessor
 		private ImmutableList<Exception> _exceptions = ImmutableList<Exception>.Empty;
 		private int _result = -1;
 
-		public HotReloadClientOperation(HotReloadSource source, Type[] types, Action onUpdated)
+		internal HotReloadClientOperation(HotReloadSource source, Type[] types, Action onUpdated)
 		{
 			Source = source;
 			Types = types;
@@ -146,7 +160,7 @@ public partial class ClientHotReloadProcessor
 
 		public Type[] Types { get; }
 
-		public string[] CuratedTypes => _curatedTypes ??= Types
+		internal string[] CuratedTypes => _curatedTypes ??= Types
 			.Select(t =>
 			{
 				var name = t.Name;
@@ -166,16 +180,16 @@ public partial class ClientHotReloadProcessor
 
 		public string? IgnoreReason { get; private set; }
 
-		public void ReportError(MethodInfo source, Exception error)
+		internal void ReportError(MethodInfo source, Exception error)
 			=> ReportError(error); // For now we just ignore the source
 
-		public void ReportError(Exception error)
+		internal void ReportError(Exception error)
 		{
 			ImmutableInterlocked.Update(ref _exceptions, static (errors, error) => errors.Add(error), error);
 			_onUpdated();
 		}
 
-		public void ReportCompleted()
+		internal void ReportCompleted()
 		{
 			var result = (_exceptions, AbortReason: IgnoreReason) switch
 			{
@@ -195,7 +209,7 @@ public partial class ClientHotReloadProcessor
 			}
 		}
 
-		public void ReportIgnored(string reason)
+		internal void ReportIgnored(string reason)
 		{
 			IgnoreReason = reason;
 			ReportCompleted();
