@@ -15,6 +15,10 @@ using Private.Infrastructure;
 using Windows.System;
 using FocusHelper = Uno.UI.RuntimeTests.MUX.Input.Focus.FocusHelper;
 
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
+#endif
+
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
 
@@ -3516,6 +3520,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		Verify.AreEqual(args.Element, element);
 	}
 
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
 	public partial class MyButton : Button
 	{
 		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
@@ -3601,6 +3606,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			this.resetEvent.WaitOne(timeout);
 		}
 	}
+#pragma warning restore CS0108
 
 	public static void verifySelectedPivotItemChanged(
 		object sender,
