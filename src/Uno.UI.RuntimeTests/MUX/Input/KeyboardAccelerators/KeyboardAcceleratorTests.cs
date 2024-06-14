@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
 
 [TestClass]
-public class KeyboardAcceleratorTests : MUXApiTestBase
+public partial class KeyboardAcceleratorTests : MUXApiTestBase
 {
 	#region BasicKeyboardAcceleratorToolTipVerification
 
@@ -3516,7 +3516,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		Verify.AreEqual(args.Element, element);
 	}
 
-	public class MyButton : Button
+	public partial class MyButton : Button
 	{
 		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
 		public bool HasFired = false;
@@ -3539,7 +3539,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		}
 	}
 
-	public class ButtonWithEventOrdering : Button
+	public partial class ButtonWithEventOrdering : Button
 	{
 		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
 		public StringBuilder eventOrder = null;
@@ -3574,7 +3574,7 @@ public class KeyboardAcceleratorTests : MUXApiTestBase
 		}
 	}
 
-	public class StackPanelWithProcessKeyboardAcceleratorOverride : StackPanel
+	public partial class StackPanelWithProcessKeyboardAcceleratorOverride : StackPanel
 	{
 		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
 

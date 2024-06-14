@@ -8,6 +8,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
+using Uno.UI.Core;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -17,11 +18,9 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 using Microsoft.UI.Windowing;
-using Uno.UI.Core;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
-
 #endif
 
 namespace Uno.UI.Xaml.Controls;
