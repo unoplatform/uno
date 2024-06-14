@@ -27,6 +27,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 	{
 		_rcClient = rcClient;
+		_status = new(this);
 	}
 
 	partial void InitializeMetadataUpdater();
