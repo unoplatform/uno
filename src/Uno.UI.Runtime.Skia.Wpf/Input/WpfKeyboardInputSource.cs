@@ -35,7 +35,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(args.Key);
+			var virtualKey = ConvertKey(args.Key, args.SystemKey);
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"OnKeyPressEvent: {args.Key} -> {virtualKey}");
@@ -64,7 +64,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(args.Key);
+			var virtualKey = ConvertKey(args.Key, args.SystemKey);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -136,8 +136,13 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		return modifiers;
 	}
 
-	private static VirtualKey ConvertKey(Key key)
+	private static VirtualKey ConvertKey(Key key, Key systemKey)
 	{
+		if (key == Key.System)
+		{
+			return (VirtualKey)System.Windows.Input.KeyInterop.VirtualKeyFromKey(systemKey);
+		}
+
 		return (VirtualKey)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
 	}
 
