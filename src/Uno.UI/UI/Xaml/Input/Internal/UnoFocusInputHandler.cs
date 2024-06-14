@@ -50,18 +50,27 @@ internal class UnoFocusInputHandler
 			e.Handled = TryHandleDirectionalFocus(e.OriginalKey);
 		}
 
-		var contentRoot = VisualTree.GetContentRootForElement(_rootElement);
-		if (contentRoot == null)
+		if (!e.Handled && !e.HandledShouldNotImpedeTextInput)
 		{
-			return;
-		}
+			var modifiers = CoreImports.Input_GetKeyboardModifiers();
+			if (!KeyboardAcceleratorUtility.IsKeyValidForAccelerators(e.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
+			{
+				return;
+			}
 
-		var liveAccelerators = contentRoot.GetAllLiveKeyboardAccelerators();
-		e.Handled = KeyboardAcceleratorUtility.ProcessGlobalAccelerators(
-			e.OriginalKey,
-			CoreImports.Input_GetKeyboardModifiers(),
-			liveAccelerators
-		);
+			var contentRoot = VisualTree.GetContentRootForElement(_rootElement);
+			if (contentRoot == null)
+			{
+				return;
+			}
+
+			var liveAccelerators = contentRoot.GetAllLiveKeyboardAccelerators();
+			e.Handled = KeyboardAcceleratorUtility.ProcessGlobalAccelerators(
+				e.OriginalKey,
+				modifiers,
+				liveAccelerators
+			);
+		}
 	}
 
 	internal bool TryHandleTabFocus(bool isShiftDown)
