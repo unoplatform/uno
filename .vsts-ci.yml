@@ -18,6 +18,7 @@ trigger:
     - '**/*.md'
     - '*.md'
     - 'build/cSpell.json'
+    - 'build/.markdownlint.json'
     
 pr: 
   branches:
@@ -39,6 +40,7 @@ pr:
     - '**/*.md'
     - '*.md'
     - 'build/cSpell.json'
+    - 'build/.markdownlint.json'
 
 resources:
   containers:
