@@ -1,21 +1,28 @@
 ﻿#nullable enable
-#if WINUI || HAS_UNO_WINUI
 using System;
-using System.Collections.Generic;
 using System.Linq;
+
+#if WINAPPSDK || HAS_UNO_WINUI
+using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
+#endif
 
 namespace Uno.Diagnostics.UI;
 
 public sealed partial class DiagnosticsOverlay
 {
-	private sealed class Context : IDiagnosticViewContext, IDisposable
+	private sealed record Context : IDiagnosticViewContext, IDisposable
 	{
+#if !WINAPPSDK && !HAS_UNO_WINUI
+		public static Context? TryCreate(DiagnosticsOverlay owner) => null;
+		public void Schedule(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
+		void IDiagnosticViewContext.ScheduleRecurrent(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
+		void IDiagnosticViewContext.AbortRecurrent(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
+		void IDiagnosticViewContext.Notify(DiagnosticViewNotification notification) => throw new NotSupportedException("Diag overlay is not supported on UWP");
+		void IDisposable.Dispose() { }
+#else
 		private Queue<Action> _pending = new();
 		private Queue<Action> _pending2 = new();
 		private List<Action>? _recurrents;
@@ -25,7 +32,17 @@ public sealed partial class DiagnosticsOverlay
 		private DispatcherQueueTimer? _timer;
 		private int _updatesScheduled;
 
-		public Context(DiagnosticsOverlay owner, DispatcherQueue dispatcher)
+		public static Context? TryCreate(DiagnosticsOverlay owner)
+		{
+			if (owner._root.Content?.DispatcherQueue is { } dispatcher)
+			{
+				return new Context(owner, dispatcher);
+			}
+
+			return null;
+		}
+
+		private Context(DiagnosticsOverlay owner, DispatcherQueue dispatcher)
 		{
 			_owner = owner;
 			_dispatcher = dispatcher;
@@ -170,6 +187,6 @@ public sealed partial class DiagnosticsOverlay
 			_updatesScheduled = -4096;
 			_timer?.Stop();
 		}
+#endif
 	}
 }
-#endif
