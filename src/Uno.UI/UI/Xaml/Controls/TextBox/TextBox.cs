@@ -979,7 +979,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			bool isPointerCaptureRequired =
 #if __WASM__
-				Uno.UI.Xaml.Controls.TextBox.GetIsPointerCaptureRequired(this);
+				IsPointerCaptureRequired;
 #else
 				true;
 #endif
