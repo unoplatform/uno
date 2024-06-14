@@ -27,5 +27,5 @@ When switching to an iOS debugging target in VS Code, you might encounter an err
 [Info]: Project reload forced to switch to net8.0-ios | Debug
 [Error] Could not retrieve ios devices within 10 seconds. Aborting...
 ```
-To resolve this issue, you can download [Xcodes](https://www.xcodes.app). Inside Xcodes.app, select the correct version of Xcode and click the **Make Active** button to make it the default Xcode for your Mac. After completing this step, you can speed up the process and use the new default Xcode for simulators, open the Command Palette and select `Developer: Reload Window`. This should resolve the error when switching to an IOS debugging target in VS Code.
+To resolve this issue, you can download [Xcodes](https://www.xcodes.app). Inside Xcodes.app, select the correct version of Xcode and click the **Make Active** button to make it the default Xcode for your Mac. After completing this step, you can speed up the process and use the new default Xcode for simulators, open the Command Palette and select `Developer: Reload Window`. This should resolve the error when switching to an iOS debugging target in VS Code.
 
