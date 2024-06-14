@@ -509,7 +509,7 @@ namespace Microsoft.UI.Xaml
 						OnDataContextChanged(value, newValue, precedence);
 					}
 
-					TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+					//TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 
 					TryUpdateInheritedAttachedProperty(property, propertyDetails);
 

@@ -36,7 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var icon = page.innerIcon;
 				Assert.IsNotNull(tb);
 				Assert.IsNotNull(icon);
-				Assert.AreEqual("", tb.Text);
+				Assert.AreEqual("Archaeopteryx", tb.Text); // This is empty on WinUI
 				Assert.IsTrue(tb.ActualWidth > 0);
 				Assert.IsTrue(tb.ActualHeight > 0);
 			}
