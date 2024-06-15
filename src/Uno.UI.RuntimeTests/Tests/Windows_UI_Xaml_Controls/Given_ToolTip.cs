@@ -61,13 +61,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_After()
 		{
-#if HAS_UNO
-			if (!FeatureConfiguration.ToolTip.UseToolTips)
-			{
-				Assert.Inconclusive();
-			}
-#endif
-
 			try
 			{
 				var toggleButton = new ToggleButton();
@@ -116,13 +109,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_Before()
 		{
-#if HAS_UNO
-			if (!FeatureConfiguration.ToolTip.UseToolTips)
-			{
-				Assert.Inconclusive();
-			}
-#endif
-
 			try
 			{
 				var toggleButton = new ToggleButton();
@@ -197,13 +183,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_Nested()
 		{
-#if HAS_UNO
-			if (!FeatureConfiguration.ToolTip.UseToolTips)
-			{
-				Assert.Inconclusive();
-			}
-#endif
-
 			try
 			{
 				var toggleButton = new ToggleButton();
@@ -275,10 +254,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private async Task When_Switch_Theme_Inner(Func<Brush, Color> backgroundColorGetter)
 		{
-#if HAS_UNO
-			var originalToolTipsSetting = Uno.UI.FeatureConfiguration.ToolTip.UseToolTips;
-			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
 			try
 			{
 				var textBlock = new TextBlock() { Text = "Test" };
@@ -320,7 +295,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-				Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = originalToolTipsSetting;
 #endif
 			}
 		}
@@ -329,10 +303,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToolTip_Popup_XamlRoot()
 		{
-#if HAS_UNO
-			var originalToolTipsSetting = Uno.UI.FeatureConfiguration.ToolTip.UseToolTips;
-			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
 			var toolTip = new ToolTip();
 			try
 			{
@@ -357,9 +327,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				toolTip.IsOpen = false;
-#if HAS_UNO
-				Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = originalToolTipsSetting;
-#endif
 			}
 		}
 #if HAS_UNO && !__MACOS__
