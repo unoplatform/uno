@@ -641,7 +641,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
 			if (pTemplatedParent != null
-				&& this is not NativeCommandBarPresenter) // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
+#if ANDROID || __IOS__
+				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
+#endif
+				)
 			{
 				// bool needsRefresh = false;
 				DependencyProperty pdpTarget;
