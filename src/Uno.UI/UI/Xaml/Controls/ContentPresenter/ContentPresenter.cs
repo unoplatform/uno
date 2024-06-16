@@ -15,6 +15,7 @@ using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
+using Uno.UI.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
@@ -639,7 +640,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
-			if (pTemplatedParent != null)
+			if (pTemplatedParent != null
+				&& this is not NativeCommandBarPresenter) // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
 			{
 				// bool needsRefresh = false;
 				DependencyProperty pdpTarget;
