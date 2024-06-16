@@ -138,15 +138,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			var oldDetails = _details;
 			var xLock = X11Helper.XLock(display);
-			using var notifyDisposable = Disposable.Create(() =>
+			using var notifyDisposable = new DisposableStruct<(DisposableStruct<object>, DisplayInformationDetails, DisplayInformationDetails, DisplayInformation)>(static args =>
 			{
+				var (xLock, details, oldDetails, owner) = args;
 				// dispose lock before raising DpiChanged in case a user defined callback takes too long.
 				xLock.Dispose();
-				if (_details != oldDetails)
+				if (details != oldDetails)
 				{
-					_owner.NotifyDpiChanged();
+					owner.NotifyDpiChanged();
 				}
-			});
+			}, (xLock, _details, oldDetails, _owner));
 
 			if (_host.Closed.IsCompleted)
 			{
