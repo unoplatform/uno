@@ -223,7 +223,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsTextSelectionEnabled)
 			{
-				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1 )
+				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1)
 				{
 					var chunk = GetChunkAt(Text, index);
 

@@ -931,7 +931,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// last line selected
 			ImageAssert.HasColorInRectangle(
 				bitmap,
-				new Rectangle(0, bitmap.Height * 5 /6, bitmap.Width, bitmap.Height / 6),
+				new Rectangle(0, bitmap.Height * 5 / 6, bitmap.Width, bitmap.Height / 6),
 				SUT.SelectionHighlightColor.Color);
 		}
 
