@@ -2,6 +2,8 @@ using System;
 
 namespace Uno.Disposables;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 /// <summary>
 /// This Disposable is used with using statements to imitate golang-style defer statements and RAII-like logic
 /// without allocating or boxing.
