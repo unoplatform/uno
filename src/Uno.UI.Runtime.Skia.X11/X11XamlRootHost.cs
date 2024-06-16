@@ -190,7 +190,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 			var pixels = bitmap.Pixels;
 			var data = Marshal.AllocHGlobal((pixels.Length + 2) * sizeof(IntPtr));
+<<<<<<< HEAD
 			using var _1 = Disposable.Create(() => Marshal.FreeHGlobal(data));
+=======
+			using var _freeDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, data);
+>>>>>>> 809a954255 (perf: add a DisposableStruct<T> to do allocation-less disposing)
 
 			var ptr = (IntPtr*)data.ToPointer();
 			*(ptr++) = bitmap.Width;
@@ -439,4 +443,131 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+<<<<<<< HEAD
+=======
+
+	public unsafe void AttachSubWindow(IntPtr window)
+	{
+		using var lockDisposable = X11Helper.XLock(RootX11Window.Display);
+		// this seems to be necessary or else the WM will keep detaching the subwindow
+		XWindowAttributes attributes = default;
+		_ = XLib.XGetWindowAttributes(RootX11Window.Display, window, ref attributes);
+		attributes.override_direct = /* True */ 1;
+
+		IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
+		Marshal.StructureToPtr(attributes, attr, false);
+		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
+		Marshal.FreeHGlobal(attr);
+
+		_ = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
+		_ = XLib.XFlush(RootX11Window.Display);
+		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
+	}
+
+	public void QueueUpdateTopWindowClipRect()
+	{
+		_updateTopWindowClipOnNextRender = true;
+		_xamlRoot.QueueInvalidateRender();
+	}
+
+	private unsafe void UpdateTopWindowClipRect()
+	{
+		using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
+
+		XWindowAttributes attributes = default;
+		_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
+
+		var region = X11Helper.CreateRegion(0, 0, (short)attributes.width, (short)attributes.height);
+		using var regionDisposable = new DisposableStruct<IntPtr>(static r => { _ = X11Helper.XDestroyRegion(r); }, region);
+
+		// Reset ShapeBounding to the full viewport
+		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
+		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, region, X11Helper.ShapeSet);
+
+		// Subtract the areas that contain native elements
+		var array1 = X11NativeElementHostingExtension.GetNativeElementRects(this).ToArray();
+		IntPtr nativeRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array1.Length);
+		using var dataDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, nativeRects);
+		new Span<XRectangle>(array1).CopyTo(new Span<XRectangle>(nativeRects.ToPointer(), array1.Length));
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
+
+		// Add back the areas that contain popups
+		var array2 =
+			VisualTreeHelper.GetOpenPopupsForXamlRoot(_xamlRoot)
+			.Select(p => p.Child)
+			.Select(e => e.TransformToVisual(null).TransformBounds(new Rect(Point.Zero, e.RenderSize)))
+			.Select(rect => new XRectangle { X = (short)rect.X, Y = (short)rect.Y, H = (short)rect.Height, W = (short)rect.Width })
+			.ToArray();
+		IntPtr flyoutRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array2.Length);
+		using var rectsDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, flyoutRects);
+		new Span<XRectangle>(array2).CopyTo(new Span<XRectangle>(flyoutRects.ToPointer(), array2.Length));
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
+		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
+
+		XLib.XSync(TopX11Window.Display, false);
+	}
+
+	private unsafe void SynchronizedShutDown(X11Window x11Window)
+	{
+		// This is extremely extremely delicate. You want to prevent any
+
+		if (x11Window == TopX11Window)
+		{
+			var waitForIdle = () =>
+			{
+				using var lockDiposable = X11Helper.XLock(TopX11Window.Display);
+				_ = XLib.XFlush(TopX11Window.Display);
+				_ = XLib.XSync(TopX11Window.Display, false);
+				_synchronizedShutDownTopWindowIdleCounter++;
+			};
+			for (int i = 0; i < 10; i++)
+			{
+				QueueAction(this, waitForIdle);
+			}
+		}
+		else // RootX11Window
+		{
+			Debug.Assert(x11Window == RootX11Window);
+
+			SpinWait.SpinUntil(() => _synchronizedShutDownTopWindowIdleCounter == 10);
+			if (x11Window == RootX11Window)
+			{
+				// Be very cautious about making any changes here.
+				using var rootLockDiposable = X11Helper.XLock(RootX11Window.Display);
+				using var topLockDiposable = X11Helper.XLock(TopX11Window.Display);
+				_ = XLib.XFlush(TopX11Window.Display);
+				_ = XLib.XFlush(RootX11Window.Display);
+				_ = XLib.XDestroyWindow(TopX11Window.Display, TopX11Window.Window);
+				_ = XLib.XDestroyWindow(RootX11Window.Display, RootX11Window.Window);
+				_ = XLib.XFlush(RootX11Window.Display);
+			}
+		}
+	}
+
+	private void RegisterForBackgroundColor()
+	{
+		UpdateRendererBackground();
+
+		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
+	}
+
+	private void UpdateRendererBackground()
+	{
+		if (_window.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
+		{
+			if (_renderer is not null)
+			{
+				_renderer.SetBackgroundColor(brush.Color);
+			}
+		}
+		else if (_window.Background is not null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+			}
+		}
+	}
+>>>>>>> 809a954255 (perf: add a DisposableStruct<T> to do allocation-less disposing)
 }

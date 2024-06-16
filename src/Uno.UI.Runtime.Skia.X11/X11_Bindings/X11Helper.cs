@@ -96,11 +96,11 @@ internal static partial class X11Helper
 	// For some reason, using XLockDisplay and XLockDisplay seems to cause a deadlock,
 	// specifically when using GLX. We use a managed locking implementation instead,
 	// which might even be faster anyway depending on how slow socket I/O is.
-	public static IDisposable XLock(IntPtr display)
+	public static DisposableStruct<object> XLock(IntPtr display)
 	{
 		var @lock = _displayToLock.GetOrAdd(display, _ => new object());
 		Monitor.Enter(@lock);
-		return new LockDisposable(@lock);
+		return new DisposableStruct<object>(Monitor.Exit, @lock);
 	}
 
 	public static bool XamlRootHostFromApplicationView(ApplicationView view, [NotNullWhen(true)] out X11XamlRootHost? x11XamlRootHost)
@@ -486,10 +486,5 @@ internal static partial class X11Helper
 		public int fd;
 		public short events;
 		public short revents;
-	}
-
-	private struct LockDisposable(object @lock) : IDisposable
-	{
-		public void Dispose() => Monitor.Exit(@lock);
 	}
 }

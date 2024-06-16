@@ -51,7 +51,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage.Streams;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
@@ -337,10 +336,14 @@ internal class X11ClipboardExtension : IClipboardExtension
 				out var length,
 				out IntPtr _,
 				out IntPtr atomsArray);
+<<<<<<< HEAD
 			using var _3 = Disposable.Create(() =>
 			{
 				var _ = XLib.XFree(atomsArray);
 			});
+=======
+			using var atomsDisposable = new DisposableStruct<IntPtr>(static aa => { _ = XLib.XFree(aa); }, atomsArray);
+>>>>>>> 809a954255 (perf: add a DisposableStruct<T> to do allocation-less disposing)
 
 			/* Make sure we got the Atom list we want */
 			if (format != 32)
@@ -673,10 +676,14 @@ internal class X11ClipboardExtension : IClipboardExtension
 			out var nitems,
 			out var _,
 			out var prop);
+<<<<<<< HEAD
 		using var _6 = Disposable.Create(() =>
 		{
 			var _ = XLib.XFree(prop);
 		});
+=======
+		using var propDisposable = new DisposableStruct<IntPtr>(static p => { _ = XLib.XFree(p); }, prop);
+>>>>>>> 809a954255 (perf: add a DisposableStruct<T> to do allocation-less disposing)
 
 		if (nitems == IntPtr.Zero)
 		{
@@ -766,10 +773,14 @@ internal class X11ClipboardExtension : IClipboardExtension
 			out var bytes_after,
 			out var prop);
 		var readonlyProp = prop;
+<<<<<<< HEAD
 		using var propDisposable = Disposable.Create(() =>
 		{
 			var _ = XLib.XFree(readonlyProp);
 		});
+=======
+		using var propDisposable = new DisposableStruct<IntPtr>(static rop => { _ = XLib.XFree(rop); }, readonlyProp);
+>>>>>>> 809a954255 (perf: add a DisposableStruct<T> to do allocation-less disposing)
 
 		var incrAtom = X11Helper.GetAtom(x11Window.Display, X11Helper.INCR);
 		if (actualTypeAtom == incrAtom)
@@ -789,11 +800,18 @@ internal class X11ClipboardExtension : IClipboardExtension
 			XWindowAttributes attributes = default;
 			var _8 = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
 
-			using var maskDisposable = Disposable.Create(() =>
+			using var maskDisposable = new DisposableStruct<(X11Window, XWindowAttributes)>(static args =>
 			{
+<<<<<<< HEAD
 				var _ = XLib.XSelectInput(x11Window.Display, x11Window.Window, attributes.your_event_mask);
 			});
 			var _9 = XLib.XSelectInput(x11Window.Display, x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+=======
+				var (window, attrs) = args;
+				_ = XLib.XSelectInput(window.Display, window.Window, attrs.your_event_mask);
+			}, (x11Window, attributes));
+			_ = XLib.XSelectInput(x11Window.Display, x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+>>>>>>> 809a954255 (perf: add a DisposableStruct<T> to do allocation-less disposing)
 
 			while (true)
 			{
@@ -828,10 +846,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 					out bytes_after,
 					out prop);
 				var readonlyProp2 = prop;
-				using var propDisposable2 = Disposable.Create(() =>
-				{
-					var _ = XLib.XFree(readonlyProp2);
-				});
+				using var propDisposable2 = new DisposableStruct<IntPtr>(static rop => { _ = XLib.XFree(rop); }, readonlyProp2);
 
 				if (typeof(X11ClipboardExtension).Log().IsEnabled(LogLevel.Trace))
 				{
@@ -924,11 +939,18 @@ internal class X11ClipboardExtension : IClipboardExtension
 		XWindowAttributes attributes = default;
 		var _1 = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
 
-		using var maskDisposable = Disposable.Create(() =>
+		using var maskDisposable = new DisposableStruct<(X11Window, XWindowAttributes)>(static args =>
 		{
+<<<<<<< HEAD
 			var _ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, attributes.your_event_mask);
 		});
 		var _2 = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+=======
+			var (window, attrs) = args;
+			_ = XLib.XSelectInput(window.Display, window.Window, attrs.your_event_mask);
+		}, (_x11Window, attributes));
+		_ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+>>>>>>> 809a954255 (perf: add a DisposableStruct<T> to do allocation-less disposing)
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
