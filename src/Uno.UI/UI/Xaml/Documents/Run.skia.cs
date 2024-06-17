@@ -59,9 +59,7 @@ namespace Microsoft.UI.Xaml.Documents
 					var fi = FontDetailsCache.GetFont(symbolTypeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
 					if (fi.CanChange)
 					{
-						// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
-						// needed for the rendering to happen correct on the next frame.
-						fi.FontUpdated += OnFontFamilyChanged;
+						fi.RegisterElementForFontLoaded(this);
 					}
 
 					font = fi.Font;

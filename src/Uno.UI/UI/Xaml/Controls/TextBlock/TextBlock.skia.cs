@@ -153,9 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
 				if (font.CanChange)
 				{
-					// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
-					// needed for the rendering to happen correct on the next frame.
-					font.FontUpdated += OnFontFamilyChanged;
+					font.RegisterElementForFontLoaded(this);
 				}
 
 				return font.LineHeight;
