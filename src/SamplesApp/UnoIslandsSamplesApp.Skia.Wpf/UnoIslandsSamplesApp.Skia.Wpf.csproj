@@ -71,6 +71,7 @@
 			<Project>{e2985032-e07e-4d8b-b716-8c96bb519ae3}</Project>
 			<Name>Uno.Skia</Name>
 		</ProjectReference>
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
 		<ProjectReference Include="..\UnoIslandsSamplesApp.Skia\UnoIslandsSamplesApp.Skia.csproj" />
 	</ItemGroup>
 

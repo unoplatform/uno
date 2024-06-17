@@ -117,9 +117,8 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	[JSExport]
 	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
 	{
-		Console.WriteLine($"Managed OnScroll {horizontalOffset}, {verticalOffset}");
 		var @this = Instance;
-		if (GCHandle.FromIntPtr(handle).Target is ShapeVisual { Owner: UIElement owner })
+		if (GCHandle.FromIntPtr(handle).Target is ShapeVisual { Owner.Target: UIElement owner })
 		{
 			// TODO: We shouldn't check individual scrollers.
 			// Instead, we should scroll using automation peers once they are implemented correctly for SCP and ScrollPresenter

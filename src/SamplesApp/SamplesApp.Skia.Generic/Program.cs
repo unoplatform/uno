@@ -59,19 +59,28 @@ namespace SkiaSharpExample
 
 		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)
 		{
-			if (Uri.TryCreate(typeof(MainClass).Assembly.Location, UriKind.RelativeOrAbsolute, out var asm))
+			try
 			{
-				var appPath = Path.GetDirectoryName(asm.LocalPath)!;
-
-				var asmPath = Path.Combine(appPath, assemblyName.Name! + ".dll");
-
-				if (File.Exists(asmPath))
+				if (Uri.TryCreate(typeof(MainClass).Assembly.Location, UriKind.RelativeOrAbsolute, out var asm))
 				{
-					return alc.LoadFromAssemblyPath(asmPath);
-				}
-			}
+					var appPath = Path.GetDirectoryName(asm.LocalPath)!;
 
-			return null;
+					var asmPath = Path.Combine(appPath, assemblyName.Name! + ".dll");
+
+					if (File.Exists(asmPath))
+					{
+						return alc.LoadFromAssemblyPath(asmPath);
+					}
+				}
+
+				return null;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				Console.WriteLine($"Error processing {assemblyName.Name}. SamplesApp.Skia.Generic assembly location: {typeof(MainClass).Assembly.Location}");
+				throw;
+			}
 		}
 	}
 }

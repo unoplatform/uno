@@ -17,7 +17,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
 		private readonly ManagedWeakReference _textBox;
-		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser();
@@ -25,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public TextBoxView(TextBox textBox)
 		{
 			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
-			_isPasswordBox = textBox is PasswordBox;
+			IsPasswordBox = textBox is PasswordBox;
 
 			DisplayBlock = new TextBlock();
 			SetFlowDirectionAndTextAlignment();
