@@ -97,7 +97,7 @@ internal static class FontDetailsCache
 			]
 		} 
 		 */
-		
+
 		var manifest = JsonSerializer.Deserialize<FontManifest>(jsonStream, _options);
 		if (manifest?.Fonts is null || manifest.Fonts.Length == 0)
 		{
@@ -191,14 +191,24 @@ internal static class FontDetailsCache
 				skTypeFace = null;
 				task.ContinueWith(task =>
 				{
-					if (task.IsCompletedSuccessfully)
+					try
 					{
-						OnFontLoaded(name, task.Result);
+						if (task.IsCompletedSuccessfully)
+						{
+							OnFontLoaded(name, task.Result);
+						}
+						else
+						{
+							// Load failed.
+							OnFontLoaded(name, null);
+						}
 					}
-					else
+					catch (Exception e)
 					{
-						// Load failed.
-						OnFontLoaded(name, null);
+						if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
+						{
+							typeof(FontDetailsCache).Log().LogError($"Failed to load font {name} from ms-appx: {e}");
+						}
 					}
 				});
 			}
