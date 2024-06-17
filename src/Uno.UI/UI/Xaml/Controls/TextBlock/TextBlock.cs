@@ -803,6 +803,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correct on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
+
 		/// <summary>
 		/// Gets whether the TextBlock is using the fast path in which Inlines
 		/// have not been initialized and don't need to be synchronized.
