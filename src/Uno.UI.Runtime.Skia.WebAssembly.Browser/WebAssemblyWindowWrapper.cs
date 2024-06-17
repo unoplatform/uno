@@ -48,8 +48,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal Window? Window { get; private set; }
 
-	internal new XamlRoot? XamlRoot { get; private set; }
-
 	public override string Title
 	{
 		get => NativeMethods.GetWindowTitle();
@@ -76,7 +74,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
 		Window = window;
-		XamlRoot = xamlRoot;
+		SetXamlRoot(xamlRoot);
 	}
 
 	[JSExport]
