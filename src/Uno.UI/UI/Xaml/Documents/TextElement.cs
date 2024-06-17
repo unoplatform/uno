@@ -73,6 +73,10 @@ namespace Microsoft.UI.Xaml.Documents
 				)
 			);
 
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correct on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
+
 		protected virtual void OnFontFamilyChanged()
 		{
 			OnFontFamilyChangedPartial();

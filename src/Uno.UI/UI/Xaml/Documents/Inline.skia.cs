@@ -35,9 +35,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 				if (_fontInfo.CanChange)
 				{
-					// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
-					// needed for the rendering to happen correct on the next frame.
-					_fontInfo.FontUpdated += OnFontFamilyChanged;
+					_fontInfo.RegisterElementForFontLoaded(this);
 				}
 
 				return _fontInfo;

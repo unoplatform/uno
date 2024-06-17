@@ -1,8 +1,10 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using HarfBuzzSharp;
+using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -28,7 +30,10 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 	internal Font Font { get; private set; } = Font;
 	internal bool CanChange { get; private set; } = CanChange;
 
-	internal event Action? FontUpdated;
+	private List<DependencyObject>? _waitingList;
+
+	internal void RegisterElementForFontLoaded(DependencyObject dependencyObject)
+		=> (_waitingList ??= new List<DependencyObject>()).Add(dependencyObject);
 
 	internal static Blob? GetTable(Tag tag, SKTypeface skTypeFace)
 	{
@@ -56,14 +61,32 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 		SKFontMetrics = SKFont.Metrics;
 		Font = CreateHarfBuzzFont(skTypeFace);
 
-		FontUpdated?.Invoke();
-		FontUpdated = null;
+		if (_waitingList is not null)
+		{
+			foreach (var element in _waitingList)
+			{
+				if (element is TextElement textElement)
+				{
+					textElement.OnFontLoaded();
+				}
+				else if (element is TextBlock textBlock)
+				{
+					textBlock.OnFontLoaded();
+				}
+				else
+				{
+					throw new InvalidOperationException($"Unknown element type '{element}' in waiting list");
+				}
+			}
+		}
+
+		_waitingList = null;
 		CanChange = false;
 	}
 
 	internal void LoadFailed()
 	{
-		FontUpdated = null;
+		_waitingList = null;
 		CanChange = false;
 	}
 
