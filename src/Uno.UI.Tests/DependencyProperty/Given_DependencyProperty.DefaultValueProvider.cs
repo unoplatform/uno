@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.BinderTests;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace Uno.UI.Tests.DependencyPropertyTests
 {
@@ -70,6 +72,16 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 			Assert.AreEqual(expected, ((IDependencyObjectStoreProvider)defaultValueTest).Store.GetPropertyDetails(DefaultValueTest.TestValueProperty).GetDefaultValue());
 			Assert.AreEqual(expected, defaultValueTest.TestValue);
 		}
+
+		[TestMethod]
+		public void When_SetParentInGetDefaultValue()
+		{
+			DPCollectionDefaultValue value = new DPCollectionDefaultValue();
+			// The issue happens inside TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
+			// where it initially starts off with 16 entries, but setting the child collection
+			// as a child makes it expand to 32 entries, which caused the already-in-progress code to lose reference.
+			value.GetValue(DPCollectionDefaultValue.ChildCollectionProperty);
+		}
 	}
 
 	internal partial class DefaultValueTest : UIElement
@@ -109,6 +121,30 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 			}
 
 			return base.GetDefaultValue2(property, out value);
+		}
+	}
+
+	internal partial class DPCollectionDefaultValue : UIElement
+	{
+		public IList<DependencyObject> ChildCollection
+		{
+			get { return (IList<DependencyObject>)GetValue(ChildCollectionProperty); }
+			set { SetValue(ChildCollectionProperty, value); }
+		}
+
+		public static readonly DependencyProperty ChildCollectionProperty =
+			DependencyProperty.Register("ChildCollection", typeof(IList<DependencyObject>), typeof(DPCollectionDefaultValue), new PropertyMetadata(null));
+
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == ChildCollectionProperty)
+			{
+				defaultValue = new DependencyObjectCollection();
+				defaultValue.SetParent(this);
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 	}
 
