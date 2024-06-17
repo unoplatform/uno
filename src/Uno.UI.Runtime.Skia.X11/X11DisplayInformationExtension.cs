@@ -1,4 +1,4 @@
-﻿// Mostly from the FrameBuffer implementation, xdpyinfo, xrandr and Avalonia
+﻿// Mostly from the FrameBuffer implementation, xdpyinfo, xrandr, xrdb and Avalonia
 
 // Copyright 1988, 1998  The Open Group
 // Copyright 2005 Hitachi, Ltd.
@@ -68,9 +68,62 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// COPYRIGHT 1987, 1991
+// DIGITAL EQUIPMENT CORPORATION
+// MAYNARD, MASSACHUSETTS
+// MASSACHUSETTS INSTITUTE OF TECHNOLOGY
+// CAMBRIDGE, MASSACHUSETTS
+// ALL RIGHTS RESERVED.
+//
+// THE INFORMATION IN THIS SOFTWARE IS SUBJECT TO CHANGE WITHOUT NOTICE AND
+// SHOULD NOT BE CONSTRUED AS A COMMITMENT BY DIGITAL EQUIPMENT CORPORATION.
+// DIGITAL MAKES NO REPRESENTATIONS ABOUT THE SUITABILITY OF THIS SOFTWARE FOR
+// ANY PURPOSE.  IT IS SUPPLIED "AS IS" WITHOUT EXPRESS OR IMPLIED WARRANTY.
+//
+// IF THE SOFTWARE IS MODIFIED IN A MANNER CREATING DERIVATIVE COPYRIGHT RIGHTS,
+// APPROPRIATE LEGENDS MAY BE PLACED ON THE DERIVATIVE WORK IN ADDITION TO THAT
+// SET FORTH ABOVE.
+//
+// Permission to use, copy, modify, and distribute this software and its
+// documentation for any purpose and without fee is hereby granted, provided
+// that the above copyright notice appear in all copies and that both that
+// copyright notice and this permission notice appear in supporting
+// documentation, and that the name of Digital Equipment Corporation not be
+// used in advertising or publicity pertaining to distribution of the software
+// without specific, written prior permission.
+//
+// ----------------------------------------------------------------
+//
+// Copyright 1991, Digital Equipment Corporation.
+// Copyright 1991, 1994, 1998  The Open Group
+//
+// Permission to use, copy, modify, distribute, and sell this software and its
+// documentation for any purpose is hereby granted without fee, provided that
+// the above copyright notice appear in all copies and that both that
+// copyright notice and this permission notice appear in supporting
+// documentation.
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
+// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// Except as contained in this notice, the name of The Open Group shall
+// not be used in advertising or otherwise to promote the sale, use or
+// other dealings in this Software without prior written authorization
+// from The Open Group.
+//
+
 // https://gitlab.freedesktop.org/xorg/app/xdpyinfo/-/blob/d14333b852377f1e43ee2fe0fc737453e6dfccd9/xdpyinfo.c
 // https://gitlab.freedesktop.org/xorg/app/xrandr/-/blob/71ab94418ead8f59c6124e8b3e53f8df7340f095/xrandr.c
 // https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/Screens/X11Screen.Providers.cs
+// https://gitlab.freedesktop.org/xorg/app/xrdb/-/blob/ff688ceacaddb8e2f345caadfe33e408d97782a0/xrdb.c
 
 using System;
 using System.Diagnostics.CodeAnalysis;
