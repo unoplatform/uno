@@ -489,6 +489,11 @@ h5 {
   }
 }
 
+// Specific case for paragraphs under embedded videos
+.embeddedvideo + p {
+  margin-top: 10px;
+}
+
 // Algolia
 .DocSearch-Hit-content-wrapper {
   height: 100%;
