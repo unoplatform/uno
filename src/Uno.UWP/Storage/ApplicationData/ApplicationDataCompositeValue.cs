@@ -26,6 +26,16 @@ public partial class ApplicationDataCompositeValue :
 	}
 
 	/// <summary>
+	/// Creates and initializes a new instance of the with the specified dictionary.
+	/// </summary>
+	/// <param name="dictionary">Dictionary.</param>
+	/// <exception cref="ArgumentNullException">Thrown if parameter is null.</exception>
+	internal ApplicationDataCompositeValue(Dictionary<string, object?> dictionary)
+	{
+		_dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+	}
+
+	/// <summary>
 	/// Occurs when the observable map has changed.
 	/// </summary>
 	public event MapChangedEventHandler<string, object?>? MapChanged;
@@ -188,8 +198,7 @@ public partial class ApplicationDataCompositeValue :
 	/// </summary>
 	/// <param name="item">Item to remove.</param>
 	/// <returns>True if found.</returns>
-	public bool Remove(KeyValuePair<string, object?> item) =>
-		Contains(item) && Remove(item.Key);
+	public bool Remove(KeyValuePair<string, object?> item) => Contains(item) && Remove(item.Key);
 
 	/// <summary>
 	/// Returns an enumerator for the property set.
