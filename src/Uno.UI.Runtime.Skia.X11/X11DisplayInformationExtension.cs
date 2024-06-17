@@ -73,8 +73,10 @@
 // https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/Screens/X11Screen.Providers.cs
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -172,7 +174,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				var yres = X11Helper.XHeightOfScreen(screen) * InchesToMilliMeters / X11Helper.XHeightMMOfScreen(screen);
 				var dpi = (float)Math.Round(Math.Sqrt(xres * yres)); // TODO: what to do if dpi in the 2 normal directions is different??
 
-				var rawScale = _scaleOverride ?? dpi / DisplayInformation.BaseDpi;
+				var rawScale = _scaleOverride ?? (TryGetDpiFromXResources(display, out var xrdbScaling) ? xrdbScaling.Value : dpi / DisplayInformation.BaseDpi);
 
 				var flooredScale = FloorScale(rawScale);
 
@@ -232,6 +234,32 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				>= 1.00f => 1.00f,
 				_ => 1.00f,
 			};
+
+		private bool TryGetDpiFromXResources(IntPtr display, [NotNullWhen(true)] out double? scaling)
+		{
+			using var lockDiposable = X11Helper.XLock(display);
+
+			var xdefs = X11Helper.XResourceManagerString(display);
+			if (xdefs != IntPtr.Zero)
+			{
+				IntPtr xrdb = X11Helper.XrmGetStringDatabase(xdefs);
+				using var databaseDisposable = new DisposableStruct<IntPtr>(X11Helper.XrmDestroyDatabase, xrdb);
+				var resourceName = Marshal.StringToHGlobalAnsi("Xft.dpi");
+				using var resourceNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, resourceName);
+				var found = X11Helper.XrmGetResource(xrdb, resourceName, resourceName, out _, out X11Helper.XrmValue value);
+				// don't free value.addr. It's managed by the X server.
+				if (found && value.addr != IntPtr.Zero)
+				{
+					if (Marshal.PtrToStringAnsi(value.addr, (int)value.size) is { } str && int.TryParse(str, out var result))
+					{
+						scaling = result / DisplayInformation.BaseDpi;
+						return true;
+					}
+				}
+			}
+			scaling = null;
+			return false;
+		}
 
 		// START OF EXCERPT 1
 		// 1.2 Introduction to version 1.2 of the extension
@@ -386,8 +414,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var rawWidth = (uint)Math.Round(logicalWidth * 1.0 / xScaling);
 			var rawHeight = (uint)Math.Round(logicalHeight * 1.0 / yScaling);
 
-			// TODO: how to reconcile different x and y scaling? for now just take max
-			var rawScale = _scaleOverride ?? (1 / Math.Min(xScaling, yScaling));
+			// With XRandR, we don't use the xScaling and yScaling values, since the server will "stretch" the window to
+			// the required scaling. We don't need to do any scale by <x|y>Scaling ourselves.
+			var rawScale = _scaleOverride ?? (TryGetDpiFromXResources(display, out var xrdbScaling) ? xrdbScaling.Value : 1);
 			var flooredScale = FloorScale(rawScale);
 
 			return new DisplayInformationDetails(

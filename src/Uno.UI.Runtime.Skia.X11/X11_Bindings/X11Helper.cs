@@ -393,6 +393,19 @@ internal static partial class X11Helper
 	public static partial int XHeightOfScreen(IntPtr screen);
 
 	[LibraryImport(libX11)]
+	public static partial IntPtr XResourceManagerString(IntPtr display);
+
+	[LibraryImport(libX11)]
+	public static partial IntPtr XrmGetStringDatabase(IntPtr data);
+
+	[LibraryImport(libX11)]
+	public static partial void XrmDestroyDatabase(IntPtr database);
+
+	[LibraryImport(libX11)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	public static partial bool XrmGetResource(IntPtr database, IntPtr str_name, IntPtr str_class, out IntPtr str_type_return, out XrmValue value_return);
+
+	[LibraryImport(libX11)]
 	public static partial IntPtr XCreateRegion();
 
 	[LibraryImport(libX11)]
@@ -571,6 +584,15 @@ internal static partial class X11Helper
 		public int _3_1;
 		public int _3_2;
 		public int _3_3;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+	public struct XrmValue
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+	{
+		public uint size;
+		public IntPtr addr;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
