@@ -136,10 +136,7 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 			out _,
 			out IntPtr prop);
 
-		using var _3 = Disposable.Create(() =>
-		{
-			var _ = XLib.XFree(prop);
-		});
+		using var _3 = new DisposableStruct<IntPtr>(static p => { _ = XLib.XFree(p); }, prop);
 
 		if (actualType == X11Helper.None)
 		{

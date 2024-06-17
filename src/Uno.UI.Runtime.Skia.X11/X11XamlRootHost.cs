@@ -216,7 +216,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 			var pixels = bitmap.Pixels;
 			var data = Marshal.AllocHGlobal((pixels.Length + 2) * sizeof(IntPtr));
-			using var _freeDisposable = Disposable.Create(() => Marshal.FreeHGlobal(data));
+			using var _freeDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, data);
 
 			var ptr = (IntPtr*)data.ToPointer();
 			*(ptr++) = bitmap.Width;
@@ -554,10 +554,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
 
 		var region = X11Helper.CreateRegion(0, 0, (short)attributes.width, (short)attributes.height);
-		using var regionDisposable = Disposable.Create(() =>
-		{
-			var _ = X11Helper.XDestroyRegion(region);
-		});
+		using var regionDisposable = new DisposableStruct<IntPtr>(static r => { _ = X11Helper.XDestroyRegion(r); }, region);
 
 		// Reset ShapeBounding to the full viewport
 		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
@@ -566,7 +563,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Subtract the areas that contain native elements
 		var array1 = X11NativeElementHostingExtension.GetNativeElementRects(this).ToArray();
 		IntPtr nativeRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array1.Length);
-		using var dataDisposable = Disposable.Create(() => Marshal.FreeHGlobal(nativeRects));
+		using var dataDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, nativeRects);
 		new Span<XRectangle>(array1).CopyTo(new Span<XRectangle>(nativeRects.ToPointer(), array1.Length));
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
@@ -579,7 +576,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			.Select(rect => new XRectangle { X = (short)rect.X, Y = (short)rect.Y, H = (short)rect.Height, W = (short)rect.Width })
 			.ToArray();
 		IntPtr flyoutRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array2.Length);
-		using var rectsDisposable = Disposable.Create(() => Marshal.FreeHGlobal(flyoutRects));
+		using var rectsDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, flyoutRects);
 		new Span<XRectangle>(array2).CopyTo(new Span<XRectangle>(flyoutRects.ToPointer(), array2.Length));
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
 		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);

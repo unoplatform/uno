@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -149,10 +147,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			if (_xShapesPresent.Value)
 			{
 				var region = X11Helper.CreateRegion((short)clipRect.Left, (short)clipRect.Top, (short)clipRect.Width, (short)clipRect.Height);
-				using var regionDisposable = Disposable.Create(() =>
-				{
-					var _ = X11Helper.XDestroyRegion(region);
-				});
+				using var regionDisposable = new DisposableStruct<IntPtr>(static r => { _ = X11Helper.XDestroyRegion(r); }, region);
 				X11Helper.XShapeCombineRegion(_display, nativeWindow.WindowId, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
 			}
 			else
