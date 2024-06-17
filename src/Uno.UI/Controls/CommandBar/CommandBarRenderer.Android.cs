@@ -162,7 +162,7 @@ namespace Uno.UI.Controls
 			// Content
 			var content = element.Content;
 			native.Title = content as string;
-			if (content is UIElement contentAsUIElement && contentAsUIElement.Parent is UIElement parent)
+			if (_contentContainer.Child != content && content is UIElement contentAsUIElement && contentAsUIElement.Parent is UIElement parent)
 			{
 				parent.RemoveChild(contentAsUIElement);
 			}
