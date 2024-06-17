@@ -245,7 +245,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var start = i;
 				var c = text[i];
-				if (c is '\r' or '\t')
+				if (c is '\r')
+				{
+					i++;
+					if (text[i] is '\n')
+					{
+						i++;
+					}
+				}
+				else if (c is '\n' or '\t')
 				{
 					i++;
 				}

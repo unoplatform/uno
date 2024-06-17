@@ -801,7 +801,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new TextBlock
 			{
-				Text = "Hello world",
+				Text = "hello uno",
 				IsTextSelectionEnabled = true,
 			};
 
@@ -888,7 +888,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_IsTextSelectionEnabled_DoubleTapped_Wrapping()
+		public async Task When_IsTextSelectionEnabled_Wrapping_DoubleTapped()
 		{
 			var SUT = new TextBlock
 			{
