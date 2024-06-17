@@ -43,7 +43,7 @@ public class Given_ContentPresenter
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(1, changed.Count);
-		Assert.AreEqual("Parent DataContext", changed[0]);
+		Assert.AreEqual("Parent DataContext,Parent DataContext", changed[0]);
 	}
 
 	[TestMethod]

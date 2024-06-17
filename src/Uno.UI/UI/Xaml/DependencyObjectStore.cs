@@ -537,6 +537,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if false
 		/// <summary>
 		/// Tries to apply the DataContext to the new and previous values when DataContext Value is inherited
 		/// </summary>
@@ -607,6 +608,7 @@ namespace Microsoft.UI.Xaml
 		{
 			SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
 		}
+#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static void TryClearBinding(object? value, DependencyPropertyDetails propertyDetails)
@@ -1957,7 +1959,8 @@ namespace Microsoft.UI.Xaml
 			// Raise the common property change callback of WinUI
 			// This is raised *after* the data bound properties are updated
 			// but before the registered property callbacks
-			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
+			var skipOnPropertyChanged2 = property == FrameworkElement.DataContextProperty && newPrecedence == DependencyPropertyValuePrecedences.Inheritance;
+			if (!skipOnPropertyChanged2 && actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
