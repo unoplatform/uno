@@ -278,5 +278,30 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 
 			Assert.IsNull(SUT.Values["ThisKeyDoesNotExist"]);
 		}
+
+		[TestMethod]
+		public void When_KeyDoesNotExist_TryGetValue()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsFalse(SUT.Values.TryGetValue("ThisKeyDoesNotExist", out var value));
+			Assert.IsNull(value);
+		}
+
+		[TestMethod]
+		public void When_KeyDoesNotExist_Remove()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsFalse(SUT.Values.Remove("ThisKeyDoesNotExist"));
+		}
+
+		[TestMethod]
+		public void When_KeyDoesNotExist_ContainsKey()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsFalse(SUT.Values.ContainsKey("ThisKeyDoesNotExist"));
+		}
 	}
 }
