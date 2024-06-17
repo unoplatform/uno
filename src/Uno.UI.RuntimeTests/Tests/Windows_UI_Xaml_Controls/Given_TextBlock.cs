@@ -801,7 +801,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new TextBlock
 			{
-				Text = "Hello world",
+				Text = "hello uno",
 				IsTextSelectionEnabled = true,
 			};
 
@@ -885,6 +885,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_Wrapping_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Width = 50,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Awordthatislongerthananentireline",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			ImageAssert.DoesNotHaveColorInRectangle(
+				bitmap,
+				new Rectangle(new System.Drawing.Point(), bitmap.Size),
+				SUT.SelectionHighlightColor.Color);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// first line selected
+			ImageAssert.HasColorInRectangle(
+				bitmap,
+				new Rectangle(0, 0, bitmap.Width, bitmap.Height / 6),
+				SUT.SelectionHighlightColor.Color);
+			// last line selected
+			ImageAssert.HasColorInRectangle(
+				bitmap,
+				new Rectangle(0, bitmap.Height * 5 / 6, bitmap.Width, bitmap.Height / 6),
+				SUT.SelectionHighlightColor.Color);
 		}
 
 		[TestMethod]
