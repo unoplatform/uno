@@ -52,7 +52,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	private readonly Dictionary<IDiagnosticView, DiagnosticElement> _elements = new();
 	private readonly Dictionary<string, bool> _configuredElementVisibilities = new();
 
-	private Context? _context;
+	private ViewContext? _context;
 	private Popup? _overlayHost;
 	private bool _isVisible;
 	private bool _isExpanded;
@@ -75,12 +75,12 @@ public sealed partial class DiagnosticsOverlay : Control
 	private DiagnosticsOverlay(XamlRoot root)
 	{
 		_root = root;
-		_context = Context.TryCreate(this);
+		_context = ViewContext.TryCreate(this);
 
 		root.Changed += static (snd, e) =>
 		{
 			var overlay = Get(snd);
-			var context = Context.TryCreate(overlay);
+			var context = ViewContext.TryCreate(overlay);
 			if (context != overlay._context) // I.e. dispatcher changed ... is this even possible ???
 			{
 				lock (overlay._updateGate)
@@ -180,6 +180,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	public UIElement? Find(string viewId)
 		=> _elements.Values.FirstOrDefault(elt => elt.View.Id == viewId)?.Value;
 
+#if HAS_UNO
 	/// <inheritdoc />
 	protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 	{
@@ -187,6 +188,7 @@ public sealed partial class DiagnosticsOverlay : Control
 
 		EnqueueUpdate(forceUpdate: newValue is not Visibility.Visible); // Force update when hiding.
 	}
+#endif
 
 	/// <inheritdoc />
 	protected override void OnApplyTemplate()
@@ -212,6 +214,7 @@ public sealed partial class DiagnosticsOverlay : Control
 			_anchor.Tapped += OnAnchorTapped;
 			_anchor.ManipulationDelta += OnAnchorManipulated;
 			_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
+			RenderTransform = new TranslateTransform { X = 15, Y = 15 };
 		}
 		if (_notificationPresenter is not null)
 		{
@@ -313,7 +316,7 @@ public sealed partial class DiagnosticsOverlay : Control
 						}
 						else if (currentIndex != visibleViews)
 						{
-							Debug.Fail("Invalid index, patching");
+							global::System.Diagnostics.Debug.Fail("Invalid index, patching");
 							_elementsPanel.Children.Move((uint)currentIndex, (uint)visibleViews);
 						}
 
