@@ -167,7 +167,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 				}
 
-				SetIconFromFile(iconPath);
+				Task.Run(() => SetIconFromFile(iconPath));
 			}
 			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
@@ -176,7 +176,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				}
 
-				SetIconFromFile(scaledPath);
+				Task.Run(() => SetIconFromFile(scaledPath));
 			}
 			else
 			{
