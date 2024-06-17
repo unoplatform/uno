@@ -172,7 +172,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else if (args.DataContextChangedReason == DataContextChangedReason.NewDataContext)
 			{
-				var isPropertyLocal = this.IsDependencyPropertySet(DataContextProperty);
+				var isPropertyLocal = this.IsDependencyPropertyLocallySet(DataContextProperty);
 
 				// We only care about the DC change if the local DC is not set
 				return !isPropertyLocal;
