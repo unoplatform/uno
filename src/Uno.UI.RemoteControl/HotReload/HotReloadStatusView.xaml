@@ -6,9 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+	mc:Ignorable="d">
 
 	<DataTemplate x:Key="OperationTemplate">
 		<Border BorderThickness="8,0,0,0" Padding="8" Width="300">
@@ -125,13 +123,13 @@
 									<StackPanel Margin="-5" Spacing="8">
 										<TextBlock Text="{TemplateBinding HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" />
 										<ScrollViewer MaxHeight="400">
-											<ItemsRepeater
+											<mux:ItemsRepeater
 												ItemsSource="{TemplateBinding History}"
 												ItemTemplate="{StaticResource OperationTemplate}">
-												<ItemsRepeater.Layout>
+												<mux:ItemsRepeater.Layout>
 													<StackLayout Spacing="5" />
-												</ItemsRepeater.Layout>
-											</ItemsRepeater>
+												</mux:ItemsRepeater.Layout>
+											</mux:ItemsRepeater>
 										</ScrollViewer>
 									</StackPanel>
 								</Flyout>

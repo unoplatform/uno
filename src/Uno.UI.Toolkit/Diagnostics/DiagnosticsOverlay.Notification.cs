@@ -16,7 +16,8 @@ public sealed partial class DiagnosticsOverlay
 		HideNotification();
 	}
 
-	private void Notify(DiagnosticViewNotification notif, Context context)
+#pragma warning disable IDE0051 // Not used on windows UWP
+	private void Notify(DiagnosticViewNotification notif, ViewContext context)
 	{
 		if (!_isVisible || _isExpanded)
 		{
@@ -52,6 +53,7 @@ public sealed partial class DiagnosticsOverlay
 			}
 		}
 	}
+#pragma warning restore IDE0051
 
 	private void HideNotification()
 	{

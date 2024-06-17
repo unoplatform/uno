@@ -28,12 +28,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.Common.Status.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\HotReloadServerResult.cs" />
-	  <UpToDateCheckInput Remove="RemoteControlStatusView.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

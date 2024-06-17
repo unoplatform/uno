@@ -13,14 +13,14 @@ namespace Uno.Diagnostics.UI;
 
 public sealed partial class DiagnosticsOverlay
 {
-	private sealed record Context : IDiagnosticViewContext, IDisposable
+	private sealed record ViewContext : IDiagnosticViewContext, IDisposable
 	{
 #if !WINAPPSDK && !HAS_UNO_WINUI
-		public static Context? TryCreate(DiagnosticsOverlay owner) => null;
+		public static ViewContext? TryCreate(DiagnosticsOverlay owner) => null;
 		public void Schedule(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
 		void IDiagnosticViewContext.ScheduleRecurrent(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
 		void IDiagnosticViewContext.AbortRecurrent(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
-		void IDiagnosticViewContext.Notify(DiagnosticViewNotification notification) => throw new NotSupportedException("Diag overlay is not supported on UWP");
+		void IDiagnosticViewContext.Notify(DiagnosticViewNotification notif) { }
 		void IDisposable.Dispose() { }
 #else
 		private Queue<Action> _pending = new();
@@ -32,17 +32,17 @@ public sealed partial class DiagnosticsOverlay
 		private DispatcherQueueTimer? _timer;
 		private int _updatesScheduled;
 
-		public static Context? TryCreate(DiagnosticsOverlay owner)
+		public static ViewContext? TryCreate(DiagnosticsOverlay owner)
 		{
 			if (owner._root.Content?.DispatcherQueue is { } dispatcher)
 			{
-				return new Context(owner, dispatcher);
+				return new ViewContext(owner, dispatcher);
 			}
 
 			return null;
 		}
 
-		private Context(DiagnosticsOverlay owner, DispatcherQueue dispatcher)
+		private ViewContext(DiagnosticsOverlay owner, DispatcherQueue dispatcher)
 		{
 			_owner = owner;
 			_dispatcher = dispatcher;
@@ -113,9 +113,7 @@ public sealed partial class DiagnosticsOverlay
 
 		/// <inheritdoc />
 		public void Notify(DiagnosticViewNotification notif)
-		{
-			_owner.Notify(notif, this);
-		}
+			=> _owner.Notify(notif, this);
 
 		private void DoUpdates()
 		{
