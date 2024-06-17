@@ -193,6 +193,10 @@ namespace Microsoft.UI.Xaml
 					_entries = entries = newEntries;
 				}
 
+				// Avoid using ref here, as TryResolveDefaultValueFromProviders execution could execute code which
+				// could cause the entries array to be expanded by bucket size and to be reallocated, which would
+				// cause the reference to be invalidated. Example of this is a child property which calls child.SetParent(this).
+				// Even though the _entries size may change, the offset and bucketRemainder will still be valid.
 				var propertyEntry = entries[offset + bucketRemainder];
 				if (propertyEntry is null)
 				{
