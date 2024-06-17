@@ -141,4 +141,17 @@ public class Given_DataTypeSerializer
 		// Assert
 		Assert.AreEqual("System.Int32:42", result);
 	}
+
+	[TestMethod]
+	public void When_Value_Contains_Separator_But_No_Type()
+	{
+		// Arrange
+		string value = "IContain:But does not mean a type";
+
+		// Act
+		var result = DataTypeSerializer.Deserialize(value);
+
+		// Assert
+		Assert.IsNull(result);
+	}
 }
