@@ -24,11 +24,11 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Uno.UI;
+using DirectUI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-using DirectUI;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
