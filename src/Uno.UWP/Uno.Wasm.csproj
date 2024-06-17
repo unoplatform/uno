@@ -69,7 +69,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 	</ItemGroup>

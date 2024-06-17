@@ -1813,7 +1813,8 @@ namespace Uno.UWPSyncGenerator
 				{ "DocsGeneration", "true" }, // Detect that source generation is running
 				{ "LangVersion", CSharpLangVersion },
 				{ "NoBuild", "True" },
-				{ "RunAnalyzers", "false" }
+				{ "RunAnalyzers", "false" },
+				{ "SyncGeneratorRunning", "true" }
 				//{ "DesignTimeBuild", "true" },
 				//{ "UseHostCompilerIfAvailable", "false" },
 				//{ "UseSharedCompilation", "false" },
