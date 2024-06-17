@@ -15,7 +15,7 @@ namespace Uno.Disposables;
 /// </remarks>
 /// <param name="disposingAction">The action that is fired on disposing.</param>
 /// <param name="argToAction">The argument supplied to the <paramref name="disposingAction"/></param>
-public struct DisposableStruct<T>(Action<T> disposingAction, T argToAction) : IDisposable
+internal struct DisposableStruct<T>(Action<T> disposingAction, T argToAction) : IDisposable
 {
 	private bool _disposed;
 
