@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 using TwoPaneView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView;
@@ -33,8 +34,9 @@ public partial class Given_TwoPaneView
 	[TestMethod]
 	public async Task When_ApplyTemplate_Should_Not_Throw()
 	{
-		var SUT = new MyTwoPaneView();
-		await UITestHelper.Load(SUT);
+		var SUT = new MyTwoPaneView() { Width = 100, Height = 100 };
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForIdle();
 		Assert.IsTrue(SUT.TemplateApplied);
 		Assert.IsNull(SUT.ExceptionThrown);
 	}
