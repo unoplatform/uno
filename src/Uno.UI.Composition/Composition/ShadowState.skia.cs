@@ -3,7 +3,6 @@
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using Windows.UI;
-using Windows.UI.Composition;
 
 namespace Uno.UI.Composition.Composition;
 
