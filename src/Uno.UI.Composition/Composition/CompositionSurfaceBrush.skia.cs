@@ -97,7 +97,7 @@ namespace Microsoft.UI.Composition
 					// We scale the backgroundArea with the dpi scaling and then scale with 1 / dpi scaling in the shader,
 					// This is conceptually a noop, but it actually affects quality. For example, if you have a hi-res image
 					// that should be drawn in a 500x500 rectangle. If the scaling is 2x, it will actually be drawn in a
-					// 1000x1000 rectangle. We don't want to resize the image to 500x500 and then stretch it to 1000x100.
+					// 1000x1000 rectangle. We don't want to resize the image to 500x500 and then stretch it to 1000x1000.
 					// Instead, we resize it to 1000x1000 directly and counteract the global 2x scaling done by the
 					// renderer by telling the shader to scale by 1/2.
 					backgroundArea = backgroundArea with { Width = backgroundArea.Width * scale, Height = backgroundArea.Height * scale };
