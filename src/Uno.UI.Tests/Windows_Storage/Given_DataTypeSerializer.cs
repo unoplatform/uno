@@ -154,4 +154,35 @@ public class Given_DataTypeSerializer
 		// Assert
 		Assert.IsNull(result);
 	}
+
+	[TestMethod]
+	public void When_ApplicationDataCompositeValue_Deserialize()
+	{
+		// Arrange
+		string value = "Windows.Storage.ApplicationDataCompositeValue:{\"key\":\"System.String:value\"}";
+
+		// Act
+		var result = DataTypeSerializer.Deserialize(value);
+
+		// Assert
+		Assert.IsInstanceOfType(result, typeof(ApplicationDataCompositeValue));
+		var compositeValue = (ApplicationDataCompositeValue)result;
+		Assert.AreEqual("value", compositeValue["key"]);
+	}
+
+	[TestMethod]
+	public void When_ApplicationDataCompositeValue_Serialize()
+	{
+		// Arrange
+		var value = new ApplicationDataCompositeValue
+		{
+			["key"] = "value"
+		};
+
+		// Act
+		var result = DataTypeSerializer.Serialize(value);
+
+		// Assert
+		Assert.AreEqual("Windows.Storage.ApplicationDataCompositeValue:{\"key\":\"System.String:value\"}", result);
+	}
 }
