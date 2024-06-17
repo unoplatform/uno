@@ -30,23 +30,9 @@ It typically looks similar to this:
 >
 > At this time, the NuGet package Manager does not parse or manage Sdks provided by NuGet. If you would like to see this feature added, please be sure to provide your [feedback or upvote this issue](https://github.com/NuGet/Home/issues/13127).
 
-To find the version to update to, pick the latest stable build from the [Uno.WinUI](https://www.nuget.org/packages/Uno.WinUI) package with either:
+To find the version to update to, pick the latest stable build from the [Uno.Sdk](https://www.nuget.org/packages/Uno.Sdk) package with either:
 
 - When using Visual Studio 2022, use the NuGet Package Manager
-- Use [`dotnet outdated`](https://github.com/dotnet-outdated/dotnet-outdated):
-  - Install the tool using:
-
-    ```dotnetcli
-    dotnet tool install --global dotnet-outdated-tool
-    ```
-
-  - Then, at the root of the solution, run the tool with:
-
-    ```dotnetcli
-    dotnet outdated
-    ```
-
-  - When available, the tool will provide the versions which can be updated.
 - [Uno.WinUI in Nuget Package Explorer](https://nuget.info/packages/Uno.WinUI)
 - [Uno.WinUI in nuget.org](https://www.nuget.org/packages/Uno.WinUI)
 
