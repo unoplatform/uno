@@ -351,6 +351,76 @@ internal static partial class X11Helper
 	[LibraryImport(libX11)]
 	public static partial int XHeightOfScreen(IntPtr screen);
 
+<<<<<<< HEAD
+=======
+	[LibraryImport(libX11)]
+	public static partial IntPtr XResourceManagerString(IntPtr display);
+
+	[LibraryImport(libX11)]
+	public static partial IntPtr XrmGetStringDatabase(IntPtr data);
+
+	[LibraryImport(libX11)]
+	public static partial void XrmDestroyDatabase(IntPtr database);
+
+	[LibraryImport(libX11)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	public static partial bool XrmGetResource(IntPtr database, IntPtr str_name, IntPtr str_class, out IntPtr str_type_return, out XrmValue value_return);
+
+	[LibraryImport(libX11)]
+	public static partial IntPtr XCreateRegion();
+
+	[LibraryImport(libX11)]
+	public static partial int XDestroyRegion(IntPtr region);
+
+	[LibraryImport(libX11)]
+	public unsafe static partial int XUnionRectWithRegion(
+		XRectangle* rectangle,
+		IntPtr src_region,
+		IntPtr dest_region_return
+	);
+
+	public unsafe static IntPtr CreateRegion(short x, short y, short w, short h)
+	{
+		IntPtr region = XCreateRegion();
+		XRectangle rectangle;
+		rectangle.X = x;
+		rectangle.Y = y;
+		rectangle.W = w;
+		rectangle.H = h;
+		var _ = XUnionRectWithRegion(&rectangle, region, region);
+
+		return region;
+	}
+
+	[LibraryImport(libX11Randr)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	public static partial bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
+
+	[LibraryImport(libXext)]
+	public static partial void XShapeCombineRegion(
+		IntPtr display,
+		IntPtr window,
+		int dest_kind,
+		int x_off,
+		int y_off,
+		IntPtr region,
+		int op
+	);
+
+	[LibraryImport(libXext)]
+	public unsafe static partial void XShapeCombineRectangles(
+		IntPtr display,
+		IntPtr window,
+		int dest_kind,
+		int x_off,
+		int y_off,
+		XRectangle* rectangles,
+		int n_rects,
+		int op,
+		int ordering
+	);
+
+>>>>>>> 83f19277e5 (feat: add X11 support for reading DPI scaling from X resources (Xft.dpi))
 	[LibraryImport(libX11Randr)]
 	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
 
@@ -476,6 +546,15 @@ internal static partial class X11Helper
 		public int _3_1;
 		public int _3_2;
 		public int _3_3;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+	public struct XrmValue
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+	{
+		public uint size;
+		public IntPtr addr;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
