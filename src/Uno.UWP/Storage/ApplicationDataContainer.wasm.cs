@@ -82,7 +82,10 @@ namespace Windows.Storage
 					for (int i = 0; i < Count; i++)
 					{
 						var rawValue = ApplicationDataContainerInterop.GetValueByIndex(_locality, i);
-						values.Add(DataTypeSerializer.Deserialize(rawValue));
+						if (DataTypeSerializer.Deserialize(rawValue) is { } value)
+						{
+							values.Add(value);
+						}
 					}
 
 					return values.AsReadOnly();
