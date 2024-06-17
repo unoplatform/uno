@@ -42,6 +42,7 @@ internal static class FontDetailsCache
 		{
 			new JsonStringEnumConverter(),
 		},
+		TypeInfoResolver = FontManifestSerializerContext.Default,
 	};
 
 	internal static void OnFontLoaded(string font, SKTypeface? typeface)
@@ -96,6 +97,7 @@ internal static class FontDetailsCache
 			]
 		} 
 		 */
+		
 		var manifest = JsonSerializer.Deserialize<FontManifest>(jsonStream, _options);
 		if (manifest?.Fonts is null || manifest.Fonts.Length == 0)
 		{
