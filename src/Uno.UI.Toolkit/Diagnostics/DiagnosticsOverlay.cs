@@ -205,9 +205,9 @@ public sealed partial class DiagnosticsOverlay : Control
 
 		base.OnApplyTemplate();
 
-		_elementsPanel = GetTemplateChild<Panel>(ElementsPanelPartName);
-		_anchor = GetTemplateChild<UIElement>(AnchorPartName);
-		_notificationPresenter = GetTemplateChild<ContentPresenter>(NotificationPartName);
+		_elementsPanel = GetTemplateChild(ElementsPanelPartName) as Panel;
+		_anchor = GetTemplateChild(AnchorPartName) as UIElement;
+		_notificationPresenter = GetTemplateChild(NotificationPartName) as ContentPresenter;
 
 		if (_anchor is not null)
 		{

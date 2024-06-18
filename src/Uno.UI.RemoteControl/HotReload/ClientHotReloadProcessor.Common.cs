@@ -32,6 +32,19 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
+		private static ClientHotReloadProcessor? _instance;
+
+#if HAS_UNO
+		private static ClientHotReloadProcessor? Instance => _instance;
+#else
+		private static ClientHotReloadProcessor? Instance => _instance ??= new();
+
+		private ClientHotReloadProcessor()
+		{
+			_status = new(this);
+		}
+#endif
+
 		private static async IAsyncEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
 			object? instance,
 			Func<FrameworkElement, string, Task<TMatch?>> predicate,
