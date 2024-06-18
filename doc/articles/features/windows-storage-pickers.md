@@ -157,7 +157,25 @@ else
 
 > [!IMPORTANT]
 > On Uno Platform Targets, the `Path` information found on the `StorageFile` object returned from either the `PickMultipleFilesAsync()` or `PickSingleFileAsync()` method cannot be used with Windows File System APIs. This means that, for example, this `Path` cannot be used to initialize a `FileInfo` object.
->
+> If you need to access file size, use the `GetBasicProperties()` or `GetBasicPropertiesAsync()` methods. Both methods provide access to the `Size` and the `DateModified.` For the file extension, use the `FileType` property.
+
+##### Accessing information about the File
+
+```csharp
+var fileOpenPicker = new FileOpenPicker();
+...
+
+var pickedFile = await fileOpenPicker.PickSingleFileAsync();
+
+if (pickedFile != null)
+{
+    var extension = pickedFile.FileType;
+
+    var properties = await pickedFile.GetBasicPropertiesAsync();    
+    var size = properties.Size;
+}
+```
+
 > [!NOTE]
 > On iOS, when making multiple selections, you can limit the number of items selected by calling the `SetMultipleFileLimit()` method and specifying the maximum number of items.
 >
