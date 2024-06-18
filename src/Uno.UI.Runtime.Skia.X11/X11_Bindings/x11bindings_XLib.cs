@@ -51,8 +51,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		[LibraryImport(libX11)]
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		public static extern int XCloseDisplay(IntPtr display);
+=======
+		public static partial int XCloseDisplay(IntPtr display);
+>>>>>>> 4f0fd0c729 (chore: build error)
 
 		[LibraryImport(libX11)]
 		public static partial int XDefaultDepth(IntPtr display, int screen);
