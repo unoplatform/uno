@@ -33,10 +33,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	<Content Include="buildTransitive\Uno.UI.DevServer.targets">
-		<PackagePath>build</PackagePath>
-		<Pack>true</Pack>
-	</Content>
+		<Content Include="buildTransitive\Uno.UI.DevServer.targets">
+			<PackagePath>build</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,6 +66,16 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Page Remove="Themes\Generic.xaml" />
+
+		<Page Remove="RemoteControlStatusView.xaml" />
+		<Compile Remove="RemoteControlStatusView.cs" />
+
+		<Page Remove="HotReload\HotReloadStatusView.xaml" />
+		<Compile Remove="HotReload\HotReloadStatusView.cs" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

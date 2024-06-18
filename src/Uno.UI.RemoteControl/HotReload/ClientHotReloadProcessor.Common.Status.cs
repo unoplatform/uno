@@ -59,7 +59,9 @@ public partial class ClientHotReloadProcessor
 
 	private class StatusSink(ClientHotReloadProcessor owner)
 	{
+#if HAS_UNO_WINUI
 		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.Update(status));
+#endif
 
 		private HotReloadState? _serverState;
 		private ImmutableDictionary<long, HotReloadServerOperationData> _serverOperations = ImmutableDictionary<long, HotReloadServerOperationData>.Empty;
@@ -101,11 +103,14 @@ public partial class ClientHotReloadProcessor
 
 		private void NotifyStatusChanged()
 		{
-			_view.Update(GetStatus());
-			owner.StatusChanged?.Invoke(this, GetStatus());
+			var status = BuildStatus();
+#if HAS_UNO_WINUI
+			_view.Update(status);
+#endif
+			owner.StatusChanged?.Invoke(this, status);
 		}
 
-		private Status GetStatus()
+		private Status BuildStatus()
 		{
 			var serverState = _serverState ?? (_localOperations.Any() ? HotReloadState.Idle /* no info */ : HotReloadState.Initializing);
 			var localState = _localOperations.Any(op => op.Result is null) ? HotReloadState.Processing : HotReloadState.Idle;

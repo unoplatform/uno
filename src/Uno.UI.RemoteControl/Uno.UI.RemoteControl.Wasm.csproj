@@ -57,6 +57,16 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+	
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Page Remove="Themes\Generic.xaml" />
+
+		<Page Remove="RemoteControlStatusView.xaml" />
+		<Compile Remove="RemoteControlStatusView.cs" />
+
+		<Page Remove="HotReload\HotReloadStatusView.xaml" />
+		<Compile Remove="HotReload\HotReloadStatusView.cs" />
+	</ItemGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 

@@ -54,7 +54,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	public TimeSpan ConnectionRetryInterval { get; } = TimeSpan.FromMilliseconds(_connectionRetryInterval);
 	private const int _connectionRetryInterval = 5_000;
 
-	private readonly IStatusSink _status;
+	private readonly StatusSink _status;
 	private static readonly TimeSpan _keepAliveInterval = TimeSpan.FromSeconds(30);
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
