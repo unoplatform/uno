@@ -1430,7 +1430,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ScrollIntoView(0);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(Microsoft.UI.Colors.Gainsboro, ((SolidColorBrush)((SelectorItem)SUT.ContainerFromIndex(0)).FindFirstChild<Grid>().Background).Color);
+			Assert.AreEqual(Microsoft.UI.Colors.Gainsboro, ((SolidColorBrush)((SelectorItem)SUT.ContainerFromIndex(0)).FindFirstDescendant<Grid>().Background).Color);
 		}
 #endif
 
