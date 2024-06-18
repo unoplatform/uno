@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnContentChanged(object oldContent, object newContent)
 		{
-			if (IsContentPresenterBypassEnabled)
+			//if (IsContentPresenterBypassEnabled)
 			{
 				if (newContent is View
 					// This case is to support the ability for the content
@@ -341,7 +341,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
-			if (IsContentPresenterBypassEnabled)
+			//if (IsContentPresenterBypassEnabled)
 			{
 
 				var dataTemplate = this.ResolveContentTemplate();
