@@ -274,4 +274,52 @@ public class Given_ApplicationDataCompositeValue
 		// Assert
 		CollectionAssert.AreEqual(new[] { "key1", "key2" }, result.Keys.Order().ToArray());
 	}
+
+	[TestMethod]
+	public void When_Set_Null()
+	{
+		// Arrange
+		var dictionary = new Dictionary<string, object>
+		{
+			{ "key1", "value1" },
+			{ "key2", "value2" }
+		};
+
+		// Act
+		var result = new ApplicationDataCompositeValue();
+		foreach (var item in dictionary)
+		{
+			result.Add(item.Key, item.Value);
+		}
+
+		// Assert
+		Assert.AreEqual(2, result.Count);
+
+		result["key2"] = null;
+
+		Assert.AreEqual(1, result.Count);		
+	}
+
+	[TestMethod]
+	public void When_Add_Null()
+	{
+		// Arrange
+		var dictionary = new Dictionary<string, object>
+		{
+			{ "key1", "value1" },
+			{ "key2", "value2" }
+		};
+
+		// Act
+		var result = new ApplicationDataCompositeValue();
+		foreach (var item in dictionary)
+		{
+			result.Add(item.Key, item.Value);
+		}
+
+		result.Add("key3", null);
+
+		// Assert
+		Assert.AreEqual(2, result.Count);		
+	}
 }
