@@ -3232,6 +3232,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates content dialog behavior. Content dialog should not block key inputs to its text box.")]
+	[Ignore("Requires ContentDialog support #17131")]
 	public async Task ValidateTextBoxInContentDialogReceivesInput()
 	{
 		const string rootPanelXaml =
