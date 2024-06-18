@@ -291,29 +291,29 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 			var saveCount = canvas.SaveCount;
 #endif
-			if (_requiresRepaint || RequiresRepaintOnEveryFrame)
-			{
-				_requiresRepaint = false;
-				if (RequiresRepaintOnEveryFrame)
+				if (_requiresRepaint || RequiresRepaintOnEveryFrame)
 				{
-					// why bother with a recorder when it's going to get repainted next frame? just paint directly on the surface
-					Paint(session);
+					_requiresRepaint = false;
+					if (RequiresRepaintOnEveryFrame)
+					{
+						// why bother with a recorder when it's going to get repainted next frame? just paint directly on the surface
+						Paint(session);
+					}
+					else
+					{
+						_recorder ??= new SKPictureRecorder();
+						var recordingCanvas = _recorder.BeginRecording(new SKRect(float.NegativeInfinity, float.NegativeInfinity, float.PositiveInfinity, float.PositiveInfinity));
+						var recorderSession = _factory.CreateInstance(this, session.Surface, recordingCanvas, session.IsPopupSurface, session.Filters, session.RootTransform);
+						// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+						Paint(in recorderSession);
+						_picture = _recorder.EndRecording();
+					}
 				}
-				else
-				{
-					_recorder ??= new SKPictureRecorder();
-					var recordingCanvas = _recorder.BeginRecording(new SKRect(float.NegativeInfinity, float.NegativeInfinity, float.PositiveInfinity, float.PositiveInfinity));
-					var recorderSession = _factory.CreateInstance(this, session.Surface, recordingCanvas, session.IsPopupSurface, session.Filters, session.RootTransform);
-					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					Paint(in recorderSession);
-					_picture = _recorder.EndRecording();
-				}
-			}
 
-			if (_picture is { })
-			{
-				session.Canvas.DrawPicture(_picture);
-			}
+				if (_picture is { })
+				{
+					session.Canvas.DrawPicture(_picture);
+				}
 #if DEBUG
 			Debug.Assert(saveCount == canvas.SaveCount);
 #endif
