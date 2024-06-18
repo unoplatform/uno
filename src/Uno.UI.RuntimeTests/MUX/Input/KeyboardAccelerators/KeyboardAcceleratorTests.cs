@@ -1,4 +1,5 @@
-﻿using System;
+#if HAS_UNO
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -3626,3 +3627,4 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	#endregion
 }
+#endif
