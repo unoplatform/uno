@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Helpers;
 
-namespace Uno.UI.Toolkit;
+namespace Windows.Storage.Helpers;
 
 partial class StorageFileHelper
 {

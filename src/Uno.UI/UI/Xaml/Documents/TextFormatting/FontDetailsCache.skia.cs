@@ -16,6 +16,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using Windows.Storage.Helpers;
 using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -135,14 +136,21 @@ internal static class FontDetailsCache
 			// TODO (This comment should be resolved during code review):
 			// Should the user be responsible for adding ".manifest" to the ms-appx path himself?
 			// The benefit of the user doing so is that we will not have to first check if a manifest exists.
-			var manifestUri = new Uri(uri.OriginalString + ".manifest");
-			var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
-			var manifestStream = await manifestFile.OpenStreamForReadAsync();
-			uri = new Uri(GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
+			var path = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart('/');
+			if (await StorageFileHelper.ExistsInPackage(path))
+			{
+				var manifestUri = new Uri(uri.OriginalString + ".manifest");
+				var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
+				var manifestStream = await manifestFile.OpenStreamForReadAsync();
+				uri = new Uri(GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
+			}
 		}
 		catch
 		{
-			// manifest file is not found or cannot be read. Ignore it.
+			if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(FontDetailsCache).Log().LogError($"Failed to load font manifest for {uri}");
+			}
 		}
 
 		var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
