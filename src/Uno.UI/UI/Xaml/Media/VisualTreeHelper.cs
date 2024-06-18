@@ -303,7 +303,8 @@ namespace Microsoft.UI.Xaml.Media
 			var host = new ContentPresenter
 			{
 				IsNativeHost = true,
-				Content = nativeView
+				Content = nativeView,
+				ContentTemplate = null
 			};
 
 			// Propagate layout-related attached properties to the managed wrapper, so the host panel takes them into account
