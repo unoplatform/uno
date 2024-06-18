@@ -117,7 +117,7 @@ public partial class ApplicationDataCompositeValue :
 			// Add or update and raise map changed accrodingly			
 			if (_dictionary.TryGetValue(key, out var existingValue))
 			{
-				if (value != existingValue)
+				if (!Equals(value, existingValue))
 				{
 					_dictionary[key] = value;
 					MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemChanged, key));
