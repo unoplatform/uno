@@ -313,6 +313,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			size = new Size(InitialWidth, InitialHeight);
 		}
 
+<<<<<<< HEAD
 		IntPtr window;
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
@@ -333,11 +334,34 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				XLib.XWhitePixel(display, screen));
 			XLib.XSelectInput(display, window, EventsMask);
 			_x11Window = new X11Window(display, window);
+=======
+		// For the root window (that does nothing but act as an anchor for children,
+		// we don't bother with OpenGL, since we don't render on this window anyway.
+		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
+		IntPtr rootUnoWindow = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
+		XLib.XSelectInput(display, rootUnoWindow, RootEventsMask);
+		XLib.XSelectInput(display, rootXWindow, (IntPtr)EventMask.PropertyChangeMask); // to update dpi when X resources change
+		_x11Window = new X11Window(display, rootUnoWindow);
+		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
+		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
+		{
+			_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, rootUnoWindow);
+		}
+		else
+		{
+			var topWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, rootUnoWindow);
+			XLib.XSelectInput(topWindowDisplay, topWindow, TopEventsMask);
+			_x11TopWindow = new X11Window(display, topWindow);
+>>>>>>> f21ec962c7 (chore: listen to X resource updates)
 		}
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
+<<<<<<< HEAD
 		var _3 = XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
+=======
+		_ = XLib.XSetWMProtocols(display, rootUnoWindow, new[] { deleteWindow }, 1);
+>>>>>>> f21ec962c7 (chore: listen to X resource updates)
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -360,7 +384,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
+<<<<<<< HEAD
 	private unsafe X11Window CreateGLXWindow(IntPtr display, int screen, Size size)
+=======
+	private unsafe static X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
+>>>>>>> f21ec962c7 (chore: listen to X resource updates)
 	{
 		int[] glxAttribs = {
 			GlxConsts.GLX_X_RENDERABLE    , /* True */ 1,
@@ -429,6 +457,60 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
+<<<<<<< HEAD
+=======
+	private static IntPtr CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	{
+		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
+		var success = matchVisualInfoResult != 0;
+		if (!success)
+		{
+			matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, FallbackColorDepth, 4, out info);
+
+			success = matchVisualInfoResult != 0;
+			if (!success)
+			{
+				if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(X11XamlRootHost).Log().Error("XLIB ERROR: Cannot match visual info");
+				}
+				throw new InvalidOperationException("XLIB ERROR: Cannot match visual info");
+			}
+		}
+
+		var visual = info.visual;
+		var depth = info.depth;
+
+		var xSetWindowAttributes = new XSetWindowAttributes()
+		{
+			backing_store = 1,
+			bit_gravity = Gravity.NorthWestGravity,
+			win_gravity = Gravity.NorthWestGravity,
+			// Settings to true when WindowStyle is None
+			//override_redirect = true,
+			colormap = XLib.XCreateColormap(display, parent, visual, /* AllocNone */ 0),
+			border_pixel = 0,
+			// Settings background pixel to zero means Transparent background,
+			// and it will use the background color from `Window.SetBackground`
+			background_pixel = IntPtr.Zero,
+		};
+		var valueMask =
+				0
+				| SetWindowValuemask.BackPixel
+				| SetWindowValuemask.BorderPixel
+				| SetWindowValuemask.BitGravity
+				| SetWindowValuemask.WinGravity
+				| SetWindowValuemask.BackingStore
+				| SetWindowValuemask.ColorMap
+			//| SetWindowValuemask.OverrideRedirect
+			;
+		var window = XLib.XCreateWindow(display, parent, 0, 0, (int)size.Width,
+			(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
+			(UIntPtr)(valueMask), ref xSetWindowAttributes);
+		return window;
+	}
+
+>>>>>>> f21ec962c7 (chore: listen to X resource updates)
 	private bool IsOpenGLSupported(IntPtr display)
 	{
 		try

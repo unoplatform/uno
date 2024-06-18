@@ -45,6 +45,7 @@ internal static partial class X11Helper
 	public static readonly IntPtr AnyPropertyType = IntPtr.Zero;
 	public static readonly IntPtr PropertyNewValue = IntPtr.Zero;
 
+	public const string RESOURCE_MANAGER = "RESOURCE_MANAGER";
 	public const string WM_DELETE_WINDOW = "WM_DELETE_WINDOW";
 	public const string _NET_ACTIVE_WINDOW = "_NET_ACTIVE_WINDOW";
 	public const string _NET_WM_STATE = "_NET_WM_STATE";

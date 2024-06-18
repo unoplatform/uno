@@ -194,7 +194,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			var oldDetails = _details;
 			var xLock = X11Helper.XLock(display);
+<<<<<<< HEAD
 			using var _2 = Disposable.Create(() =>
+=======
+			using var notifyDisposable = Disposable.Create(() =>
+>>>>>>> f21ec962c7 (chore: listen to X resource updates)
 			{
 				// dispose lock before raising DpiChanged in case a user defined callback takes too long.
 				xLock.Dispose();
@@ -227,7 +231,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				var yres = X11Helper.XHeightOfScreen(screen) * InchesToMilliMeters / X11Helper.XHeightMMOfScreen(screen);
 				var dpi = (float)Math.Round(Math.Sqrt(xres * yres)); // TODO: what to do if dpi in the 2 normal directions is different??
 
-				var rawScale = _scaleOverride ?? (TryGetXResource(display, XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : dpi / DisplayInformation.BaseDpi);
+				var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : dpi / DisplayInformation.BaseDpi);
 
 				var flooredScale = FloorScale(rawScale);
 
@@ -288,10 +292,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				_ => 1.00f,
 			};
 
-		private bool TryGetXResource(IntPtr display, string resourceName, [NotNullWhen(true)] out double? scaling)
+		private bool TryGetXResource(string resourceName, [NotNullWhen(true)] out double? scaling)
 		{
-			using var lockDiposable = X11Helper.XLock(display);
-
+			// For some reason, querying the resources with a preexisting display yields outdated values, so
+			// we have to open a new display here.
+			IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
+			using var displayDisposable = new DisposableStruct<IntPtr>(static d => { _ = XLib.XCloseDisplay(d); }, display);
 			var xdefs = X11Helper.XResourceManagerString(display);
 			if (xdefs != IntPtr.Zero)
 			{
@@ -468,7 +474,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			// With XRandR, we don't use the xScaling and yScaling values, since the server will "stretch" the window to
 			// the required scaling. We don't need to do any scale by <x|y>Scaling ourselves.
-			var rawScale = _scaleOverride ?? (TryGetXResource(display, XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : 1);
+			var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : 1);
 			var flooredScale = FloorScale(rawScale);
 
 			return new DisplayInformationDetails(
