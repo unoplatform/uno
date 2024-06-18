@@ -20,6 +20,12 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
 
+#if HAS_UNO_WINUI
+using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+#else
+using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
+#endif
+
 namespace Uno.UI.RemoteControl.HotReload;
 
 partial class ClientHotReloadProcessor
@@ -83,12 +89,14 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-	private static void ShowDiagnosticsOnFirstActivation(object snd, WindowActivatedEventArgs windowActivatedEventArgs)
+	private static void ShowDiagnosticsOnFirstActivation(object snd, _WindowActivatedEventArgs windowActivatedEventArgs)
 	{
 		if (snd is Window { RootElement.XamlRoot: { } xamlRoot } window)
 		{
 			window.Activated -= ShowDiagnosticsOnFirstActivation;
+#if HAS_UNO_WINUI // No diag to show currently
 			DiagnosticsOverlay.Get(xamlRoot).Show();
+#endif
 		}
 	}
 

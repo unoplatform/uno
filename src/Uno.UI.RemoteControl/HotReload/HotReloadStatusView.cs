@@ -50,7 +50,7 @@ internal sealed partial class HotReloadStatusView : Control
 	public string HeadLine
 	{
 		get => (string)GetValue(HeadLineProperty);
-		set => SetValue(HeadLineProperty, value);
+		private set => SetValue(HeadLineProperty, value);
 	}
 	#endregion
 
@@ -122,7 +122,7 @@ internal sealed partial class HotReloadStatusView : Control
 
 	public void Update(Status status)
 	{
-		SyncOperations(status);
+		UpdateHistory(status);
 		UpdateHeadline(status.State);
 
 		VisualStateManager.GoToState(this, GetStatusVisualState(status.State), true);
@@ -145,17 +145,17 @@ internal sealed partial class HotReloadStatusView : Control
 		}
 	}
 
-	private void SyncOperations(Status status)
+	private void UpdateHistory(Status status)
 	{
-		var operations = History;
-		var vms = operations.ToDictionary(op => (op.IsServer, op.Id));
+		var history = History;
+		var vms = history.ToDictionary(op => (op.IsServer, op.Id));
 
 		foreach (var srvOp in status.Server.Operations)
 		{
 			if (!vms.TryGetValue((true, srvOp.Id), out var vm))
 			{
 				vm = new HotReloadEntryViewModel(true, srvOp.Id, srvOp.StartTime);
-				operations.Insert(FindIndex(srvOp.StartTime), vm);
+				history.Insert(FindIndex(srvOp.StartTime), vm);
 			}
 
 			string[] files = srvOp.FilePaths.Select(Path.GetFileName).ToArray()!;
@@ -182,7 +182,7 @@ internal sealed partial class HotReloadStatusView : Control
 			if (!vms.TryGetValue((false, localOp.Id), out var vm))
 			{
 				vm = new HotReloadEntryViewModel(false, localOp.Id, localOp.StartTime);
-				operations.Insert(FindIndex(localOp.StartTime), vm);
+				history.Insert(FindIndex(localOp.StartTime), vm);
 			}
 
 			var types = localOp.CuratedTypes;
@@ -201,7 +201,7 @@ internal sealed partial class HotReloadStatusView : Control
 			vm.RaiseChanged();
 		}
 
-		string Join(string[] items, string itemType, int maxItems = 5)
+		static string Join(string[] items, string itemType, int maxItems = 5)
 			=> items switch
 			{
 				{ Length: 0 } => "",
@@ -212,9 +212,9 @@ internal sealed partial class HotReloadStatusView : Control
 
 		int FindIndex(DateTimeOffset date)
 		{
-			for (var i = 0; i < operations.Count; i++)
+			for (var i = 0; i < history.Count; i++)
 			{
-				if (operations[i].Start > date)
+				if (history[i].Start > date)
 				{
 					return i - 1;
 				}
@@ -224,19 +224,21 @@ internal sealed partial class HotReloadStatusView : Control
 		}
 	}
 
-	public string UpdateHeadline(HotReloadState? state)
-		=> HeadLine = state switch
+	public void UpdateHeadline(HotReloadState? state)
+	{
+		HeadLine = state switch
 		{
 			null => """
-				State of the hot-reload engine is unknown.
-				This usually indicates that connection to the dev-server failed, but if running within VisualStudio, updates might still be detected.
-				""",
+					State of the hot-reload engine is unknown.
+					This usually indicates that connection to the dev-server failed, but if running within VisualStudio, updates might still be detected.
+					""",
 			HotReloadState.Disabled => "Hot-reload server is disabled.",
 			HotReloadState.Initializing => "Hot-reload engine is initializing.",
 			HotReloadState.Idle => "Hot-reload server is ready and listening for file changes.",
 			HotReloadState.Processing => "Hot-reload engine is processing file changes",
 			_ => "Unable to determine the state of the hot-reload engine."
 		};
+	}
 
 	private static string GetStatusVisualState(HotReloadState state)
 		=> state switch
