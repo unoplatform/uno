@@ -140,6 +140,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	{
 		private const string EnvironmentUnoDisplayScaleOverride = "UNO_DISPLAY_SCALE_OVERRIDE";
 		private const double InchesToMilliMeters = 25.4;
+		private const string XftDotdpi = "Xft.dpi";
 
 		private readonly float? _scaleOverride;
 		private readonly DisplayInformation _owner;
@@ -227,7 +228,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				var yres = X11Helper.XHeightOfScreen(screen) * InchesToMilliMeters / X11Helper.XHeightMMOfScreen(screen);
 				var dpi = (float)Math.Round(Math.Sqrt(xres * yres)); // TODO: what to do if dpi in the 2 normal directions is different??
 
-				var rawScale = _scaleOverride ?? (TryGetDpiFromXResources(display, out var xrdbScaling) ? xrdbScaling.Value : dpi / DisplayInformation.BaseDpi);
+				var rawScale = _scaleOverride ?? (TryGetXResource(display, XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : dpi / DisplayInformation.BaseDpi);
 
 				var flooredScale = FloorScale(rawScale);
 
@@ -288,7 +289,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				_ => 1.00f,
 			};
 
-		private bool TryGetDpiFromXResources(IntPtr display, [NotNullWhen(true)] out double? scaling)
+		private bool TryGetXResource(IntPtr display, string resourceName, [NotNullWhen(true)] out double? scaling)
 		{
 			using var lockDiposable = X11Helper.XLock(display);
 
@@ -297,9 +298,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{
 				IntPtr xrdb = X11Helper.XrmGetStringDatabase(xdefs);
 				using var databaseDisposable = new DisposableStruct<IntPtr>(X11Helper.XrmDestroyDatabase, xrdb);
-				var resourceName = Marshal.StringToHGlobalAnsi("Xft.dpi");
-				using var resourceNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, resourceName);
-				var found = X11Helper.XrmGetResource(xrdb, resourceName, resourceName, out _, out X11Helper.XrmValue value);
+				var resourceNamePtr = Marshal.StringToHGlobalAnsi(resourceName);
+				using var resourceNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, resourceNamePtr);
+				var found = X11Helper.XrmGetResource(xrdb, resourceNamePtr, resourceNamePtr, out _, out X11Helper.XrmValue value);
 				// don't free value.addr. It's managed by the X server.
 				if (found && value.addr != IntPtr.Zero)
 				{
@@ -469,7 +470,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			// With XRandR, we don't use the xScaling and yScaling values, since the server will "stretch" the window to
 			// the required scaling. We don't need to do any scale by <x|y>Scaling ourselves.
-			var rawScale = _scaleOverride ?? (TryGetDpiFromXResources(display, out var xrdbScaling) ? xrdbScaling.Value : 1);
+			var rawScale = _scaleOverride ?? (TryGetXResource(display, XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : 1);
 			var flooredScale = FloorScale(rawScale);
 
 			return new DisplayInformationDetails(
