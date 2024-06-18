@@ -25,67 +25,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
-		/// <summary>
-		/// Gets or sets the access key (mnemonic) for this element.
-		/// </summary>
-		/// <remarks>
-		/// Setting this property enables the AccessKeyDisplayRequested event to be raised.
-		/// </remarks>
-		public string AccessKey
-		{
-			get => (string)GetValue(AccessKeyProperty);
-			set => SetValue(AccessKeyProperty, value);
-		}
-
-		/// <summary>
-		/// Identifies for the AccessKey dependency property.
-		/// </summary>
-		public static DependencyProperty AccessKeyProperty { get; } =
-			DependencyProperty.Register(
-				nameof(AccessKey),
-				typeof(string),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(default(string)));
-
-		/// <summary>
-		/// Gets or sets a source element that provides the access key scope for this element,
-		/// even if it's not in the visual tree of the source element.
-		/// </summary>
-		public DependencyObject AccessKeyScopeOwner
-		{
-			get => (DependencyObject)this.GetValue(AccessKeyScopeOwnerProperty);
-			set => SetValue(AccessKeyScopeOwnerProperty, value);
-		}
-
-		/// <summary>
-		/// Identifies for the AccessKeyScopeOwner dependency property.
-		/// </summary>
-		public static DependencyProperty AccessKeyScopeOwnerProperty { get; } =
-			DependencyProperty.Register(
-				nameof(AccessKeyScopeOwner),
-				typeof(DependencyObject),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
-
-		/// <summary>
-		/// Gets or sets a value that indicates whether an element defines its own access key scope.
-		/// </summary>
-		public bool IsAccessKeyScope
-		{
-			get => (bool)GetValue(IsAccessKeyScopeProperty);
-			set => SetValue(IsAccessKeyScopeProperty, value);
-		}
-
-		/// <summary>
-		/// Identifies for the IsAccessKeyScope dependency property.
-		/// </summary>
-		public static DependencyProperty IsAccessKeyScopeProperty { get; } =
-			DependencyProperty.Register(
-				nameof(IsAccessKeyScope),
-				typeof(bool),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(default(bool)));
-
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true)]
 		public static DependencyProperty IsHitTestVisibleProperty { get; } = CreateIsHitTestVisibleProperty();
 
