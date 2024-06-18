@@ -244,6 +244,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
 				FontStyle,
+				FontStretch,
 				FontFamily,
 				FontSize,
 				CharacterSpacing,

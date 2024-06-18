@@ -34,18 +34,6 @@ internal static class FontDetailsCache
 	private static Dictionary<FontCacheEntry, FontDetails> _fontCache = new();
 	private static object _fontCacheGate = new();
 
-	private static JsonSerializerOptions _options = new JsonSerializerOptions()
-	{
-		AllowTrailingCommas = true,
-		PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-		ReadCommentHandling = JsonCommentHandling.Skip,
-		Converters =
-		{
-			new JsonStringEnumConverter(),
-		},
-		TypeInfoResolver = FontManifestSerializerContext.Default,
-	};
-
 	internal static void OnFontLoaded(string font, SKTypeface? typeface)
 	{
 		_typefaceCache[font] = typeface;
@@ -72,63 +60,6 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static string GetFamilyNameFromManifest(Stream jsonStream, FontWeight weight, FontStyle style, FontStretch stretch)
-	{
-		/*
-		 {
-			"fonts": [
-				{
-					"font_style": "normal",
-					"font_weight": 400,
-					"font_stretch": "normal",
-					"family_name": "ms-appx:///path/to/ExampleFontFamily-Regular.ttf"
-				},
-				{
-					"font_style": "italic",
-					"font_weight": "Normal",
-					"font_stretch": "normal",
-					"family_name": "ms-appx:///path/to/ExampleFontFamily-Italic.ttf"
-				},
-				{
-					"font_style": "normal",
-					"font_weight": 700,
-					"font_stretch": "normal",
-					"family_name": "ms-appx:///path/to/ExampleFontFamily-Bold.ttf"
-				}
-			]
-		} 
-		 */
-
-		var manifest = JsonSerializer.Deserialize<FontManifest>(jsonStream, _options);
-		if (manifest?.Fonts is null || manifest.Fonts.Length == 0)
-		{
-			throw new ArgumentException("Font manifest file is incorrect.");
-		}
-
-		var bestSoFar = manifest.Fonts[0];
-		for (int i = 1; i < manifest.Fonts.Length; i++)
-		{
-			var candidateMatch = manifest.Fonts[i];
-			if (candidateMatch.FontWeight != bestSoFar.FontWeight && Math.Abs(candidateMatch.FontWeight - weight.Weight) < Math.Abs(bestSoFar.FontWeight - weight.Weight))
-			{
-				// candidateMatch is a better match than bestSoFar. So it's now our new bestSoFar.
-				bestSoFar = candidateMatch;
-			}
-			else if (candidateMatch.FontStyle != bestSoFar.FontStyle && candidateMatch.FontStyle == style)
-			{
-				// The current bestSoFar
-				bestSoFar = candidateMatch;
-			}
-			else if (stretch != FontStretch.Undefined && candidateMatch.FontStretch != bestSoFar.FontStretch && Math.Abs(candidateMatch.FontStretch - stretch) < Math.Abs(bestSoFar.FontStretch - stretch))
-			{
-				// candidateMatch is a better match than bestSoFar. So it's now our new bestSoFar.
-				bestSoFar = candidateMatch;
-			}
-		}
-
-		return bestSoFar.FamilyName;
-	}
-
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
 		try
@@ -142,7 +73,7 @@ internal static class FontDetailsCache
 				var manifestUri = new Uri(uri.OriginalString + ".manifest");
 				var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
 				var manifestStream = await manifestFile.OpenStreamForReadAsync();
-				uri = new Uri(GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
+				uri = new Uri(FontManifestHelpers.GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
 			}
 		}
 		catch
