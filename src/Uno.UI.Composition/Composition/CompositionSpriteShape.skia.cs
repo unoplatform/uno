@@ -40,8 +40,10 @@ namespace Microsoft.UI.Composition
 						// workaround until SkiaSharp adds support for SaveLayerRec
 						fillPaint.FilterQuality = SKFilterQuality.High;
 						// Here, we need to draw directly on the surface's canvas, otherwise
-						// you can get an AccessViolationException. session.Canvas is possibly a RecorderCanvas
-						// from an SKPictureRecorder, so we bypass it and use Surface.Canvas.
+						// you can get an AccessViolationException (most likely because DrawSurface needs the
+						// receiver SKCanvas object to be the same as the first argument's SKSurface.Canvas).
+						// session.Canvas is possibly a RecorderCanvas from an SKPictureRecorder, so we bypass
+						// it and use Surface.Canvas.
 						var sessionCanvas = session.Surface.Canvas;
 						sessionCanvas.SaveLayer(fillPaint);
 						sessionCanvas.Scale(1.0f / sessionCanvas.TotalMatrix.ScaleX);
