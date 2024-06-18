@@ -136,7 +136,10 @@ internal class DataTypeSerializer
 		var composite = new ApplicationDataCompositeValue();
 		foreach (var entry in dictionary)
 		{
-			composite.Add(entry.Key, Deserialize(entry.Value));
+			if (Deserialize(entry.Value) is { } nonNullValue)
+			{
+				composite.Add(entry.Key, nonNullValue);
+			}
 		}
 
 		return composite;

@@ -425,7 +425,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.AreEqual(3, result.Count);
 			Assert.AreEqual("value3", result["key1"]);
 			Assert.AreEqual("value2", result["key2"]);
-			Assert.AreEqual("value4", result["key4"]);
+			Assert.AreEqual("value4", result["key3"]);
 		}
 	}
 }

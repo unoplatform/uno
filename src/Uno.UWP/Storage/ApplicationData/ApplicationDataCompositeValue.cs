@@ -3,6 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Uno.Extensions.Specialized;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage;
@@ -11,12 +14,12 @@ namespace Windows.Storage;
 /// Represents related app settings that must be serialized and deserialized atomically.
 /// </summary>
 public partial class ApplicationDataCompositeValue :
-	IDictionary<string, object?>,
-	IEnumerable<KeyValuePair<string, object?>>,
-	IObservableMap<string, object?>,
+	IDictionary<string, object>,
+	IEnumerable<KeyValuePair<string, object>>,
+	IObservableMap<string, object>,
 	IPropertySet
 {
-	private readonly Dictionary<string, object?> _dictionary = new();
+	private readonly Dictionary<string, object> _dictionary = new();
 
 	/// <summary>
 	/// Creates and initializes a new, initially empty, instance of the object.
@@ -30,15 +33,20 @@ public partial class ApplicationDataCompositeValue :
 	/// </summary>
 	/// <param name="dictionary">Dictionary.</param>
 	/// <exception cref="ArgumentNullException">Thrown if parameter is null.</exception>
-	internal ApplicationDataCompositeValue(Dictionary<string, object?> dictionary)
+	internal ApplicationDataCompositeValue(Dictionary<string, object> dictionary)
 	{
-		_dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+		if (dictionary is null)
+		{
+			throw new ArgumentNullException(nameof(dictionary));
+		}
+
+		_dictionary = dictionary.Where(i => i.Value is not null).ToDictionary();
 	}
 
 	/// <summary>
 	/// Occurs when the observable map has changed.
 	/// </summary>
-	public event MapChangedEventHandler<string, object?>? MapChanged;
+	public event MapChangedEventHandler<string, object>? MapChanged;
 
 	/// <summary>
 	/// Gets the number of items contained in the property set.
@@ -60,8 +68,13 @@ public partial class ApplicationDataCompositeValue :
 	/// </summary>
 	/// <param name="key">The key to insert.</param>
 	/// <param name="value">The value to insert.</param>
-	public void Add(string key, object? value)
+	public void Add(string key, object value)
 	{
+		if (value is null)
+		{
+			return;
+		}
+
 		_dictionary.Add(key, value);
 		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
 	}
@@ -95,12 +108,13 @@ public partial class ApplicationDataCompositeValue :
 	/// <param name="key">The key to retrieve.</param>
 	/// <param name="value">The value correspodning with the key.</param>
 	/// <returns>True if found.</returns>
-	public bool TryGetValue(string key, out object? value)
+	public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value)
 	{
 		if (key is null)
 		{
 			throw new ArgumentNullException(nameof(key));
 		}
+
 		return _dictionary.TryGetValue(key, out value);
 	}
 
@@ -109,12 +123,18 @@ public partial class ApplicationDataCompositeValue :
 	/// </summary>
 	/// <param name="key">The key.</param>
 	/// <returns>Value.</returns>
-	public object? this[string key]
+	public object this[string key]
 	{
 		get => _dictionary[key];
 		set
 		{
-			// Add or update and raise map changed accrodingly			
+			if (value is null)
+			{
+				Remove(key);
+				return;
+			}
+
+			// Add or update and raise map changed accordingly			
 			if (_dictionary.TryGetValue(key, out var existingValue))
 			{
 				if (!Equals(value, existingValue))
@@ -125,8 +145,7 @@ public partial class ApplicationDataCompositeValue :
 			}
 			else
 			{
-				_dictionary.Add(key, value);
-				MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
+				Add(key, value);
 			}
 		}
 	}
@@ -139,13 +158,13 @@ public partial class ApplicationDataCompositeValue :
 	/// <summary>
 	/// Returns all values in the property set.
 	/// </summary>
-	public ICollection<object?> Values => _dictionary.Values;
+	public ICollection<object> Values => _dictionary.Values;
 
 	/// <summary>
 	/// Adds an item to the property set.
 	/// </summary>
 	/// <param name="item">Item to be added.</param>
-	public void Add(KeyValuePair<string, object?> item) => Add(item.Key, item.Value);
+	public void Add(KeyValuePair<string, object> item) => Add(item.Key, item.Value);
 
 	/// <summary>
 	/// Clears the property set.
@@ -161,7 +180,7 @@ public partial class ApplicationDataCompositeValue :
 	/// </summary>
 	/// <param name="item">Item to check.</param>
 	/// <returns>True if found.</returns>
-	public bool Contains(KeyValuePair<string, object?> item) =>
+	public bool Contains(KeyValuePair<string, object> item) =>
 		TryGetValue(item.Key, out var val) && Equals(item.Value, val);
 
 	/// <summary>
@@ -169,7 +188,7 @@ public partial class ApplicationDataCompositeValue :
 	/// </summary>
 	/// <param name="array">Array to copy to.</param>
 	/// <param name="arrayIndex">Index of the start of the copy.</param>
-	public void CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex)
+	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 	{
 		if (array == null)
 		{
@@ -198,13 +217,13 @@ public partial class ApplicationDataCompositeValue :
 	/// </summary>
 	/// <param name="item">Item to remove.</param>
 	/// <returns>True if found.</returns>
-	public bool Remove(KeyValuePair<string, object?> item) => Contains(item) && Remove(item.Key);
+	public bool Remove(KeyValuePair<string, object> item) => Contains(item) && Remove(item.Key);
 
 	/// <summary>
 	/// Returns an enumerator for the property set.
 	/// </summary>
 	/// <returns>Enumerator.</returns>
-	public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() => _dictionary.GetEnumerator();
+	public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _dictionary.GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
