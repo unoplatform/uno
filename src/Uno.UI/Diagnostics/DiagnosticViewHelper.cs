@@ -11,7 +11,7 @@ namespace Uno.Diagnostics.UI;
 
 internal class DiagnosticViewHelper
 {
-	private static readonly Color _white = new(255, 255, 255, 255);
+	private static readonly Color _white = new Color { A = 255, R = 255, G = 255, B = 255 };
 
 	public static TextBlock CreateText(string? text)
 		=> new()

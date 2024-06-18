@@ -75,30 +75,34 @@ partial class ClientHotReloadProcessor
 		get => _currentWindow;
 		set
 		{
+#if HAS_UNO_WINUI
 			if (_currentWindow is not null)
 			{
 				_currentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
 			}
+#endif
 
 			_currentWindow = value;
 
+#if HAS_UNO_WINUI
 			if (_currentWindow is not null)
 			{
 				_currentWindow.Activated += ShowDiagnosticsOnFirstActivation;
 			}
+#endif
 		}
 	}
 
+#if HAS_UNO_WINUI // No diag to show currently
 	private static void ShowDiagnosticsOnFirstActivation(object snd, _WindowActivatedEventArgs windowActivatedEventArgs)
 	{
 		if (snd is Window { RootElement.XamlRoot: { } xamlRoot } window)
 		{
 			window.Activated -= ShowDiagnosticsOnFirstActivation;
-#if HAS_UNO_WINUI // No diag to show currently
 			DiagnosticsOverlay.Get(xamlRoot).Show();
-#endif
 		}
 	}
+#endif
 
 	/// <summary>
 	/// Run on UI thread to reload the visual tree with updated types
@@ -432,12 +436,12 @@ partial class ClientHotReloadProcessor
 	{
 		try
 		{
-			_instance?._status.ConfigureSourceForNextOperation(HotReloadSource.Manual);
+			Instance?._status.ConfigureSourceForNextOperation(HotReloadSource.Manual);
 			UpdateApplication(Array.Empty<Type>());
 		}
 		finally
 		{
-			_instance?._status.ConfigureSourceForNextOperation(default);
+			Instance?._status.ConfigureSourceForNextOperation(default);
 		}
 	}
 
@@ -447,7 +451,7 @@ partial class ClientHotReloadProcessor
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void UpdateApplication(Type[] types)
 	{
-		var hr = _instance?._status.ReportLocalStarting(types);
+		var hr = Instance?._status.ReportLocalStarting(types);
 
 		foreach (var type in types)
 		{

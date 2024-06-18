@@ -25,7 +25,6 @@ namespace Uno.UI.RemoteControl.HotReload
 		private bool _linkerEnabled;
 		private HotReloadAgent? _agent;
 		private bool _serverMetadataUpdatesEnabled;
-		private static ClientHotReloadProcessor? _instance;
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
