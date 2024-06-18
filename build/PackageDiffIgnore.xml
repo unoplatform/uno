@@ -1860,6 +1860,23 @@
 			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar\..*" reason="Not in UWP" isRegex="true" />
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="5.3">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_KeyboardAccelerators(System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Input.KeyboardAccelerator&gt; value)" reason="Keyboard Accelerators setter is not public" />
+		</Methods>
+	</IgnoreSet>
   <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">
