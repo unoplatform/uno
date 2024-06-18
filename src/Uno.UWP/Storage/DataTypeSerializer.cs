@@ -1,8 +1,10 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Text.Json;
 using Uno.Extensions.Specialized;
 
 namespace Windows.Storage;
@@ -35,7 +37,36 @@ internal class DataTypeSerializer
 		typeof(uint),
 		typeof(ulong),
 		typeof(Uri),
+		typeof(ApplicationDataCompositeValue)
 	};
+
+	public static string Serialize(object value)
+	{
+		if (value is null)
+		{
+			throw new ArgumentNullException(nameof(value));
+		}
+
+		var type = value.GetType();
+
+		if (!SupportedTypes.Contains(type))
+		{
+			throw new NotSupportedException($"Type {value.GetType()} is not supported");
+		}
+
+		string serializedValue;
+		if (type == typeof(ApplicationDataCompositeValue))
+		{
+			var composite = (ApplicationDataCompositeValue)value;
+			serializedValue = SerializeCompositeValue(composite);
+		}
+		else
+		{
+			serializedValue = Convert.ToString(value, CultureInfo.InvariantCulture) ?? "";
+		}
+
+		return value.GetType().FullName + ":" + serializedValue;
+	}
 
 	public static object? Deserialize(string? value)
 	{
@@ -64,6 +95,10 @@ internal class DataTypeSerializer
 			{
 				return TimeSpan.Parse(valueField, CultureInfo.InvariantCulture);
 			}
+			else if (dataType == typeof(ApplicationDataCompositeValue))
+			{
+				return DeserializeCompositeValue(valueField);
+			}
 			else if (dataType is not null)
 			{
 				return Convert.ChangeType(valueField, dataType!, CultureInfo.InvariantCulture);
@@ -73,20 +108,40 @@ internal class DataTypeSerializer
 		return null;
 	}
 
-	public static string Serialize(object value)
+	private static string SerializeCompositeValue(ApplicationDataCompositeValue composite)
 	{
-		if (value is null)
+		Dictionary<string, string?> targetDictionary = new();
+		foreach (var entry in composite)
 		{
-			throw new ArgumentNullException(nameof(value));
+			string? serializedValue = null;
+			if (entry.Value is not null)
+			{
+				serializedValue = Serialize(entry.Value);
+			}
+
+			targetDictionary.Add(entry.Key, serializedValue);
 		}
 
-		if (!SupportedTypes.Contains(value.GetType()))
+		return JsonSerializer.Serialize(targetDictionary);
+	}
+
+	private static ApplicationDataCompositeValue DeserializeCompositeValue(string value)
+	{
+		var dictionary = JsonSerializer.Deserialize<Dictionary<string, string?>>(value);
+		if (dictionary is null)
 		{
-			throw new NotSupportedException($"Type {value.GetType()} is not supported");
+			throw new InvalidOperationException("Failed to deserialize ApplicationDataCompositeValue");
 		}
 
-		var valueAsString = Convert.ToString(value, CultureInfo.InvariantCulture);
+		var composite = new ApplicationDataCompositeValue();
+		foreach (var entry in dictionary)
+		{
+			if (Deserialize(entry.Value) is { } nonNullValue)
+			{
+				composite.Add(entry.Key, nonNullValue);
+			}
+		}
 
-		return value.GetType().FullName + Separator + valueAsString;
+		return composite;
 	}
 }

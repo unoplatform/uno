@@ -154,4 +154,71 @@ public class Given_DataTypeSerializer
 		// Assert
 		Assert.IsNull(result);
 	}
+
+	[TestMethod]
+	public void When_ApplicationDataCompositeValue_Deserialize()
+	{
+		// Arrange
+		string value = "Windows.Storage.ApplicationDataCompositeValue:{\"key\":\"System.String:value\"}";
+
+		// Act
+		var result = DataTypeSerializer.Deserialize(value);
+
+		// Assert
+		Assert.IsInstanceOfType(result, typeof(ApplicationDataCompositeValue));
+		var compositeValue = (ApplicationDataCompositeValue)result;
+		Assert.AreEqual("value", compositeValue["key"]);
+	}
+
+	[TestMethod]
+	public void When_ApplicationDataCompositeValue_Serialize()
+	{
+		// Arrange
+		var value = new ApplicationDataCompositeValue
+		{
+			["key"] = "value"
+		};
+
+		// Act
+		var result = DataTypeSerializer.Serialize(value);
+
+		// Assert
+		Assert.AreEqual("Windows.Storage.ApplicationDataCompositeValue:{\"key\":\"System.String:value\"}", result);
+	}
+
+	[TestMethod]
+	public void When_ApplicationDataCompositeValue_Nested_Serialize()
+	{
+		// Arrange
+		var value = new ApplicationDataCompositeValue
+		{
+			["key"] = new ApplicationDataCompositeValue
+			{
+				["nested"] = "value"
+			}
+		};
+
+		// Act
+		var result = DataTypeSerializer.Serialize(value);
+
+		// Assert
+		Assert.AreEqual("Windows.Storage.ApplicationDataCompositeValue:{\"key\":\"Windows.Storage.ApplicationDataCompositeValue:{\\u0022nested\\u0022:\\u0022System.String:value\\u0022}\"}", result);
+	}
+
+	[TestMethod]
+	public void When_ApplicationDataCompositeValue_Nested_Deserialize()
+	{
+		// Arrange
+		string value = "Windows.Storage.ApplicationDataCompositeValue:{\"key\":\"Windows.Storage.ApplicationDataCompositeValue:{\\u0022nested\\u0022:\\u0022System.String:value\\u0022}\"}";
+
+		// Act
+		var result = DataTypeSerializer.Deserialize(value);
+
+		// Assert
+		Assert.IsInstanceOfType(result, typeof(ApplicationDataCompositeValue));
+		var compositeValue = (ApplicationDataCompositeValue)result;
+		Assert.IsInstanceOfType(compositeValue["key"], typeof(ApplicationDataCompositeValue));
+		var nestedCompositeValue = (ApplicationDataCompositeValue)compositeValue["key"];
+		Assert.AreEqual("value", nestedCompositeValue["nested"]);
+	}
 }

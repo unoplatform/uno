@@ -278,5 +278,154 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 
 			Assert.IsNull(SUT.Values["ThisKeyDoesNotExist"]);
 		}
+
+		[TestMethod]
+		public void When_KeyDoesNotExist_TryGetValue()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsFalse(SUT.Values.TryGetValue("ThisKeyDoesNotExist", out var value));
+			Assert.IsNull(value);
+		}
+
+		[TestMethod]
+		public void When_KeyDoesNotExist_Remove()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsFalse(SUT.Values.Remove("ThisKeyDoesNotExist"));
+		}
+
+		[TestMethod]
+		public void When_KeyDoesNotExist_ContainsKey()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsFalse(SUT.Values.ContainsKey("ThisKeyDoesNotExist"));
+		}
+
+		[TestMethod]
+		public void When_Store_Composite()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			var composite = new ApplicationDataCompositeValue();
+			composite["key1"] = "value1";
+			composite["key2"] = "value2";
+
+			SUT.Values["composite"] = composite;
+
+			var result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.ContainsKey("key1"));
+			Assert.IsFalse(result.ContainsKey("key3"));
+		}
+
+		[TestMethod]
+		public void When_Change_Key_In_Composite_Instance()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			var composite = new ApplicationDataCompositeValue();
+			composite["key1"] = "value1";
+			composite["key2"] = "value2";
+
+			SUT.Values["composite"] = composite;
+
+			var result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.ContainsKey("key1"));
+			Assert.IsFalse(result.ContainsKey("key3"));
+
+			result["key1"] = "value3";
+
+			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+			Assert.IsNotNull(result);
+
+			Assert.AreEqual("value1", result["key1"]);
+		}
+
+		[TestMethod]
+		public void When_Remove_Key_From_Composite_Instance()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			var composite = new ApplicationDataCompositeValue();
+			composite["key1"] = "value1";
+			composite["key2"] = "value2";
+
+			SUT.Values["composite"] = composite;
+
+			var result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.ContainsKey("key1"));
+			Assert.IsFalse(result.ContainsKey("key3"));
+
+			result.Remove("key1");
+
+			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+			Assert.IsNotNull(result);
+
+			Assert.IsTrue(result.ContainsKey("key1"));
+		}
+
+		[TestMethod]
+		public void When_Clear_Composite_Instance()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			var composite = new ApplicationDataCompositeValue();
+			composite["key1"] = "value1";
+			composite["key2"] = "value2";
+
+			SUT.Values["composite"] = composite;
+
+			var result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.ContainsKey("key1"));
+			Assert.IsFalse(result.ContainsKey("key3"));
+
+			result.Clear();
+
+			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+			Assert.IsNotNull(result);
+
+			Assert.AreEqual(2, result.Count);
+		}
+
+		[TestMethod]
+		public void When_Composite_Changed_Overwrite()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			var composite = new ApplicationDataCompositeValue();
+			composite["key1"] = "value1";
+			composite["key2"] = "value2";
+
+			SUT.Values["composite"] = composite;
+
+			var result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.ContainsKey("key1"));
+			Assert.IsFalse(result.ContainsKey("key3"));
+
+			result["key1"] = "value3";
+			result["key3"] = "value4";
+
+			SUT.Values["composite"] = result;
+
+			result = SUT.Values["composite"] as ApplicationDataCompositeValue;
+			Assert.IsNotNull(result);
+
+			Assert.AreEqual(3, result.Count);
+			Assert.AreEqual("value3", result["key1"]);
+			Assert.AreEqual("value2", result["key2"]);
+			Assert.AreEqual("value4", result["key3"]);
+		}
 	}
 }
