@@ -244,9 +244,9 @@ internal partial class X11XamlRootHost
 							{
 								if (@event.PropertyEvent.atom == X11Helper.GetAtom(x11Window.Display, X11Helper.RESOURCE_MANAGER))
 								{
-									if (this.Log().IsEnabled(LogLevel.Information))
+									if (this.Log().IsEnabled(LogLevel.Debug))
 									{
-										this.Log().Info($"X resources changed. Updating DPI scaling.");
+										this.Log().Debug($"X resources changed. Updating DPI scaling.");
 									}
 									XWindowAttributes attributes = default;
 									_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
