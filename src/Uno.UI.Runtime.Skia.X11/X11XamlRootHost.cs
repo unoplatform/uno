@@ -154,6 +154,16 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
+		Task.Run(SetWindowIcon);
+
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
+		{
+			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+	}
+
+	private void SetWindowIcon()
+	{
 		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
 		{
 			var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
@@ -184,11 +194,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
 				}
 			}
-		}
-
-		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
-		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 
 		unsafe void SetIconFromFile(string iconPath)
