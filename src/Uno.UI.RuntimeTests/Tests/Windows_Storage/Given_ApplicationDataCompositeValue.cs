@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Storage;
+using FluentAssertions;
 
 namespace Uno.UI.Tests.Windows_Storage;
 
@@ -18,7 +15,7 @@ public class Given_ApplicationDataCompositeValue
 		var result = new ApplicationDataCompositeValue();
 
 		// Assert
-		Assert.AreEqual(0, result.Count);
+		result.Count.Should().Be(0);
 	}
 
 #if HAS_UNO
@@ -27,18 +24,18 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue(dictionary);
 
 		// Assert
-		Assert.AreEqual(2, result.Count);
-		Assert.AreEqual("value1", result["key1"]);
-		Assert.AreEqual("value2", result["key2"]);
+		result.Count.Should().Be(2);
+		result["key1"].Should().Be("value1");
+		result["key2"].Should().Be("value2");
 	}
 #endif
 
@@ -47,10 +44,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -60,9 +57,9 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.AreEqual(2, result.Count);
-		Assert.AreEqual("value1", result["key1"]);
-		Assert.AreEqual("value2", result["key2"]);
+		result.Count.Should().Be(2);
+		result["key1"].Should().Be("value1");
+		result["key2"].Should().Be("value2");
 	}
 
 	[TestMethod]
@@ -70,10 +67,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -83,8 +80,8 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.IsTrue(result.ContainsKey("key1"));
-		Assert.IsFalse(result.ContainsKey("key3"));
+		result.ContainsKey("key1").Should().BeTrue();
+		result.ContainsKey("key3").Should().BeFalse();
 	}
 
 	[TestMethod]
@@ -92,10 +89,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -105,9 +102,9 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.IsTrue(result.Remove("key1"));
-		Assert.IsFalse(result.ContainsKey("key1"));
-		Assert.AreEqual(1, result.Count);
+		result.Remove("key1").Should().BeTrue();
+		result.ContainsKey("key1").Should().BeFalse();
+		result.Count.Should().Be(1);
 	}
 
 	[TestMethod]
@@ -115,10 +112,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -128,9 +125,9 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.IsTrue(result.TryGetValue("key1", out var value));
-		Assert.AreEqual("value1", value);
-		Assert.IsFalse(result.TryGetValue("key3", out _));
+		result.TryGetValue("key1", out var value).Should().BeTrue();
+		value.Should().Be("value1");
+		result.TryGetValue("key3", out _).Should().BeFalse();
 	}
 
 	[TestMethod]
@@ -138,10 +135,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -151,9 +148,9 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.AreEqual("value1", result["key1"]);
+		result["key1"].Should().Be("value1");
 		result["key1"] = "value3";
-		Assert.AreEqual("value3", result["key1"]);
+		result["key1"].Should().Be("value3");
 	}
 
 	[TestMethod]
@@ -161,10 +158,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		int count = 0;
 		var result = new ApplicationDataCompositeValue();
@@ -177,7 +174,7 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.AreEqual(2, count);
+		count.Should().Be(2);
 	}
 
 	[TestMethod]
@@ -187,7 +184,7 @@ public class Given_ApplicationDataCompositeValue
 		var result = new ApplicationDataCompositeValue();
 
 		// Assert
-		Assert.IsFalse(result.IsReadOnly);
+		result.IsReadOnly.Should().BeFalse();
 	}
 
 	[TestMethod]
@@ -195,10 +192,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -208,7 +205,7 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.AreEqual(2, result.Count);
+		result.Count.Should().Be(2);
 	}
 
 	[TestMethod]
@@ -216,10 +213,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -230,7 +227,7 @@ public class Given_ApplicationDataCompositeValue
 		result.Clear();
 
 		// Assert
-		Assert.AreEqual(0, result.Count);
+		result.Count.Should().Be(0);
 	}
 
 	[TestMethod]
@@ -238,10 +235,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -251,7 +248,7 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		CollectionAssert.AreEqual(new[] { "value1", "value2" }, result.Values.Order().ToArray());
+		result.Values.Order().ToArray().Should().BeEquivalentTo(new[] { "value1", "value2" });
 	}
 
 	[TestMethod]
@@ -259,10 +256,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -272,7 +269,7 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		CollectionAssert.AreEqual(new[] { "key1", "key2" }, result.Keys.Order().ToArray());
+		result.Keys.Order().ToArray().Should().BeEquivalentTo(new[] { "key1", "key2" });
 	}
 
 	[TestMethod]
@@ -280,10 +277,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -293,11 +290,11 @@ public class Given_ApplicationDataCompositeValue
 		}
 
 		// Assert
-		Assert.AreEqual(2, result.Count);
+		result.Count.Should().Be(2);
 
 		result["key2"] = null;
 
-		Assert.AreEqual(1, result.Count);		
+		result.Count.Should().Be(1);
 	}
 
 	[TestMethod]
@@ -305,10 +302,10 @@ public class Given_ApplicationDataCompositeValue
 	{
 		// Arrange
 		var dictionary = new Dictionary<string, object>
-		{
-			{ "key1", "value1" },
-			{ "key2", "value2" }
-		};
+			{
+				{ "key1", "value1" },
+				{ "key2", "value2" }
+			};
 
 		// Act
 		var result = new ApplicationDataCompositeValue();
@@ -320,6 +317,6 @@ public class Given_ApplicationDataCompositeValue
 		result.Add("key3", null);
 
 		// Assert
-		Assert.AreEqual(2, result.Count);		
+		result.Count.Should().Be(2);
 	}
 }
