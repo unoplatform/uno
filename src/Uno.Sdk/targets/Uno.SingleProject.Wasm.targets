@@ -33,10 +33,6 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
-		<Content Include="$(WasmProjectFolder)manifest.webmanifest"
-			Condition="Exists('$(WasmProjectFolder)manifest.webmanifest')"
-			Exclude="@(Content)"
-			IsDefaultItem="true" />
 		<EmbeddedResource Include="$(WasmProjectFolder)WasmCSS\Fonts.css"
 			Condition="Exists('$(WasmProjectFolder)WasmCSS\Fonts.css')"
 			Exclude="@(EmbeddedResource)"
