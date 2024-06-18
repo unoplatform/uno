@@ -54,6 +54,10 @@ namespace Microsoft.UI.Composition
 			if (Brush is CompositionEffectBrush { HasBackdropBrushInput: true })
 			{
 				// workaround until SkiaSharp adds support for SaveLayerRec, see https://github.com/mono/SkiaSharp/issues/2773
+
+				// Here, we need to draw directly on the surface's canvas, otherwise
+				// you can get an AccessViolationException. session.Canvas is possibly a RecorderCanvas
+				// from an SKPictureRecorder, so we bypass it and use Surface.Canvas.
 				var sessionCanvas = session.Surface.Canvas;
 				sessionCanvas.SaveLayer(_paint);
 				sessionCanvas.Scale(1.0f / sessionCanvas.TotalMatrix.ScaleX);
