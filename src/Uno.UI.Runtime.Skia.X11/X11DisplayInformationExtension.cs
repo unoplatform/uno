@@ -1,4 +1,4 @@
-﻿// Mostly from the FrameBuffer implementation, xdpyinfo, xrandr and Avalonia
+﻿// Mostly from the FrameBuffer implementation, xdpyinfo, xrandr, xrdb and Avalonia
 
 // Copyright 1988, 1998  The Open Group
 // Copyright 2005 Hitachi, Ltd.
@@ -68,13 +68,68 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// COPYRIGHT 1987, 1991
+// DIGITAL EQUIPMENT CORPORATION
+// MAYNARD, MASSACHUSETTS
+// MASSACHUSETTS INSTITUTE OF TECHNOLOGY
+// CAMBRIDGE, MASSACHUSETTS
+// ALL RIGHTS RESERVED.
+//
+// THE INFORMATION IN THIS SOFTWARE IS SUBJECT TO CHANGE WITHOUT NOTICE AND
+// SHOULD NOT BE CONSTRUED AS A COMMITMENT BY DIGITAL EQUIPMENT CORPORATION.
+// DIGITAL MAKES NO REPRESENTATIONS ABOUT THE SUITABILITY OF THIS SOFTWARE FOR
+// ANY PURPOSE.  IT IS SUPPLIED "AS IS" WITHOUT EXPRESS OR IMPLIED WARRANTY.
+//
+// IF THE SOFTWARE IS MODIFIED IN A MANNER CREATING DERIVATIVE COPYRIGHT RIGHTS,
+// APPROPRIATE LEGENDS MAY BE PLACED ON THE DERIVATIVE WORK IN ADDITION TO THAT
+// SET FORTH ABOVE.
+//
+// Permission to use, copy, modify, and distribute this software and its
+// documentation for any purpose and without fee is hereby granted, provided
+// that the above copyright notice appear in all copies and that both that
+// copyright notice and this permission notice appear in supporting
+// documentation, and that the name of Digital Equipment Corporation not be
+// used in advertising or publicity pertaining to distribution of the software
+// without specific, written prior permission.
+//
+// ----------------------------------------------------------------
+//
+// Copyright 1991, Digital Equipment Corporation.
+// Copyright 1991, 1994, 1998  The Open Group
+//
+// Permission to use, copy, modify, distribute, and sell this software and its
+// documentation for any purpose is hereby granted without fee, provided that
+// the above copyright notice appear in all copies and that both that
+// copyright notice and this permission notice appear in supporting
+// documentation.
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
+// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// Except as contained in this notice, the name of The Open Group shall
+// not be used in advertising or otherwise to promote the sale, use or
+// other dealings in this Software without prior written authorization
+// from The Open Group.
+//
+
 // https://gitlab.freedesktop.org/xorg/app/xdpyinfo/-/blob/d14333b852377f1e43ee2fe0fc737453e6dfccd9/xdpyinfo.c
 // https://gitlab.freedesktop.org/xorg/app/xrandr/-/blob/71ab94418ead8f59c6124e8b3e53f8df7340f095/xrandr.c
 // https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/Screens/X11Screen.Providers.cs
+// https://gitlab.freedesktop.org/xorg/app/xrdb/-/blob/ff688ceacaddb8e2f345caadfe33e408d97782a0/xrdb.c
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -85,6 +140,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	{
 		private const string EnvironmentUnoDisplayScaleOverride = "UNO_DISPLAY_SCALE_OVERRIDE";
 		private const double InchesToMilliMeters = 25.4;
+		private const string XftDotdpi = "Xft.dpi";
 
 		private readonly float? _scaleOverride;
 		private readonly DisplayInformation _owner;
@@ -138,16 +194,15 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			var oldDetails = _details;
 			var xLock = X11Helper.XLock(display);
-			using var notifyDisposable = new DisposableStruct<(DisposableStruct<object>, DisplayInformationDetails, DisplayInformationDetails, DisplayInformation)>(static args =>
+			using var notifyDisposable = Disposable.Create(() =>
 			{
-				var (xLock, details, oldDetails, owner) = args;
 				// dispose lock before raising DpiChanged in case a user defined callback takes too long.
 				xLock.Dispose();
-				if (details != oldDetails)
+				if (_details != oldDetails)
 				{
-					owner.NotifyDpiChanged();
+					_owner.NotifyDpiChanged();
 				}
-			}, (xLock, _details, oldDetails, _owner));
+			});
 
 			if (_host.Closed.IsCompleted)
 			{
@@ -172,7 +227,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				var yres = X11Helper.XHeightOfScreen(screen) * InchesToMilliMeters / X11Helper.XHeightMMOfScreen(screen);
 				var dpi = (float)Math.Round(Math.Sqrt(xres * yres)); // TODO: what to do if dpi in the 2 normal directions is different??
 
-				var rawScale = _scaleOverride ?? dpi / DisplayInformation.BaseDpi;
+				var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : dpi / DisplayInformation.BaseDpi);
 
 				var flooredScale = FloorScale(rawScale);
 
@@ -232,6 +287,34 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				>= 1.00f => 1.00f,
 				_ => 1.00f,
 			};
+
+		private bool TryGetXResource(string resourceName, [NotNullWhen(true)] out double? scaling)
+		{
+			// For some reason, querying the resources with a preexisting display yields outdated values, so
+			// we have to open a new display here.
+			IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
+			using var displayDisposable = new DisposableStruct<IntPtr>(static d => { _ = XLib.XCloseDisplay(d); }, display);
+			var xdefs = X11Helper.XResourceManagerString(display);
+			if (xdefs != IntPtr.Zero)
+			{
+				IntPtr xrdb = X11Helper.XrmGetStringDatabase(xdefs);
+				using var databaseDisposable = new DisposableStruct<IntPtr>(X11Helper.XrmDestroyDatabase, xrdb);
+				var resourceNamePtr = Marshal.StringToHGlobalAnsi(resourceName);
+				using var resourceNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, resourceNamePtr);
+				var found = X11Helper.XrmGetResource(xrdb, resourceNamePtr, resourceNamePtr, out _, out X11Helper.XrmValue value);
+				// don't free value.addr. It's managed by the X server.
+				if (found && value.addr != IntPtr.Zero)
+				{
+					if (Marshal.PtrToStringAnsi(value.addr, (int)value.size) is { } str && int.TryParse(str, out var result))
+					{
+						scaling = result / DisplayInformation.BaseDpi;
+						return true;
+					}
+				}
+			}
+			scaling = null;
+			return false;
+		}
 
 		// START OF EXCERPT 1
 		// 1.2 Introduction to version 1.2 of the extension
@@ -386,8 +469,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var rawWidth = (uint)Math.Round(logicalWidth * 1.0 / xScaling);
 			var rawHeight = (uint)Math.Round(logicalHeight * 1.0 / yScaling);
 
-			// TODO: how to reconcile different x and y scaling? for now just take max
-			var rawScale = _scaleOverride ?? (1 / Math.Min(xScaling, yScaling));
+			// With XRandR, we don't use the xScaling and yScaling values, since the server will "stretch" the window to
+			// the required scaling. We don't need to do any scale by <x|y>Scaling ourselves.
+			var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : 1);
 			var flooredScale = FloorScale(rawScale);
 
 			return new DisplayInformationDetails(
