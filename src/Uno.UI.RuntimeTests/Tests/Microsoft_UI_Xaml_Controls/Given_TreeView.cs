@@ -369,6 +369,43 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
+		{
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new TreeView
+					{
+						ItemsSource = "12",
+						ItemTemplateSelector = new TreeItemTemplateSelector
+						{
+							Template = new DataTemplate(() => new Border
+							{
+								Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+								Width = 100,
+								Height = 100,
+								Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							})
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sp);
+
+			var screenshot = await UITestHelper.ScreenShot(sp.FindFirstDescendant<TreeView>());
+
+			ImageAssert.HasColorAt(screenshot, new Point(screenshot.Width / 2, screenshot.Height / 4), Microsoft.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenshot, new Point(screenshot.Width / 2, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
+
+			Assert.AreEqual(102, ((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight);
+			Assert.AreEqual(102, ((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight);
+			Assert.AreEqual("1", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
+			Assert.AreEqual("2", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
+		}
+
+		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -915,6 +952,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 					}
 				}
 			}
+		}
+
+		public class TreeItemTemplateSelector : DataTemplateSelector
+		{
+			public DataTemplate Template { get; set; }
+			protected override DataTemplate SelectTemplateCore(object item) => Template;
 		}
 	}
 
