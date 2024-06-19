@@ -1,14 +1,13 @@
-﻿namespace Microsoft.UI.Xaml.Controls
-{
-	public partial interface IMenu
-	{
-		void Close();
+﻿namespace Microsoft.UI.Xaml.Controls;
 
-		IMenu ParentMenu
-		{
-			get;
-			set;
-		}
+public partial interface IMenu
+{
+	void Close();
+
+	IMenu ParentMenu
+	{
+		get;
+		set;
 	}
 }
 

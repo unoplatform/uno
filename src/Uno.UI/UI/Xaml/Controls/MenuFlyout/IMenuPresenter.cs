@@ -1,26 +1,25 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls;
+
+public partial interface IMenuPresenter
 {
-	public partial interface IMenuPresenter
+	void CloseSubMenu();
+
+	IMenu OwningMenu
 	{
-		void CloseSubMenu();
+		get;
+		set;
+	}
 
-		IMenu OwningMenu
-		{
-			get;
-			set;
-		}
+	ISubMenuOwner Owner
+	{
+		get;
+		set;
+	}
 
-		ISubMenuOwner Owner
-		{
-			get;
-			set;
-		}
-
-		IMenuPresenter SubPresenter
-		{
-			get;
-			set;
-		}
+	IMenuPresenter SubPresenter
+	{
+		get;
+		set;
 	}
 }
 
