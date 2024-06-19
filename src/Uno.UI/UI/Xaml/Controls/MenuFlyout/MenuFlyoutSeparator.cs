@@ -1,11 +1,14 @@
-﻿#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Microsoft.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Represents a horizontal line that separates items in an MenuFlyout.
+/// </summary>
+public partial class MenuFlyoutSeparator : MenuFlyoutItemBase
 {
-	public partial class MenuFlyoutSeparator : MenuFlyoutItemBase
+	/// <summary>
+	/// Initializes a new instance of the MenuFlyoutSeparator class.
+	/// </summary>
+	public MenuFlyoutSeparator()
 	{
-		public MenuFlyoutSeparator()
-		{
-		}
 	}
 }
