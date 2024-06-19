@@ -21,5 +21,10 @@ namespace Microsoft.UI.Xaml.Controls
 			var accessibilityView = AutomationProperties.GetAccessibilityView(parent);
 			AutomationProperties.SetAccessibilityView(this, accessibilityView);
 		}
+
+		public ImplicitTextBlock()
+		{
+
+		}
 	}
 }
