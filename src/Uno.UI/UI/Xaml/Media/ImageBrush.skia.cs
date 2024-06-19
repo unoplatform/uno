@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Composition;
+﻿using System.Numerics;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -23,6 +24,7 @@ partial class ImageBrush
 			surfaceBrush.HorizontalAlignmentRatio = GetHorizontalAlignmentRatio(AlignmentX);
 			surfaceBrush.VerticalAlignmentRatio = GetVerticalAlignmentRatio(AlignmentY);
 			surfaceBrush.Surface = data.CompositionSurface;
+			surfaceBrush.RelativeTransform = RelativeTransform?.MatrixCore ?? Matrix3x2.Identity;
 		}
 	}
 

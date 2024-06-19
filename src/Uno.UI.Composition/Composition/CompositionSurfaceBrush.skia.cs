@@ -7,6 +7,7 @@ using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using Windows.Graphics.Display;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Composition
 {
@@ -88,8 +89,19 @@ namespace Microsoft.UI.Composition
 				}
 				else
 				{
-					var matrix = Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+					// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
+					// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
+					//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
+					// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
+					// 	* Apply the brush’s RelativeTransform, if it has one.
+					// 	* Project the transformed output onto the area to paint.
+					// 	* Apply the brush’s Transform, if it has one.
+					var matrix = Matrix3x2.Identity;
+					matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
 					matrix *= TransformMatrix;
+					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
+					matrix *= RelativeTransform;
+					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
 					// The brush is not tied to a specific window, so we can't get the scaling of a specific XamlRoot and
 					// instead we settle for the main window's scaling which should hopefully be the same.
