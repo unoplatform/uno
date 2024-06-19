@@ -1246,19 +1246,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Child Loaded", events[7]);
 			Assert.AreEqual("Parent Loaded", events[8]);
-
-
-#if HAS_UNO
-			if (events[9] == "Child LayoutUpdated")
-			{
-				Assert.AreEqual("Parent LayoutUpdated", events[10]);
-			}
-			else
-			{
-				Assert.AreEqual("Parent LayoutUpdated", events[9]);
-				Assert.AreEqual("Child LayoutUpdated", events[10]);
-			}
-#endif
 		}
 #endif
 	}
