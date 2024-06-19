@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\ToggleMenuFlyoutItem_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -26,7 +23,5 @@ partial class ToggleMenuFlyoutItem
 			nameof(IsChecked),
 			typeof(bool),
 			typeof(ToggleMenuFlyoutItem),
-			new FrameworkPropertyMetadata(
-				defaultValue: false,
-				propertyChangedCallback: (s, e) => (s as ToggleMenuFlyoutItem)?.OnIsCheckedChanged((bool)e.OldValue, (bool)e.NewValue)));
+			new FrameworkPropertyMetadata(false));
 }
