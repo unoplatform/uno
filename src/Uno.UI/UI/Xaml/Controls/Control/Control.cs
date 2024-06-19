@@ -209,7 +209,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
-			//this.ApplyTemplate();
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			_updateTemplate = true;
+			SetUpdateControlTemplate();
+#endif
 		}
 		#endregion
 
@@ -228,6 +231,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 				CleanupView(_templatedRoot);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+				UnregisterSubView();
+#endif
+
 				_templatedRoot = value;
 
 				if (value != null)
@@ -236,6 +243,39 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						provider.Store.SetValue(provider.Store.TemplatedParentProperty, this, DependencyPropertyValuePrecedences.Local);
 					}
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+					RegisterSubView(value);
+
+					if (_templatedRoot != null)
+					{
+						RegisterContentTemplateRoot();
+
+						if (
+							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
+						{
+							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
+
+							// Note: we however still allow if already 'IsLoading':
+							//
+							// If this child is added to its parent while this parent is 'IsLoading' itself (eg. loading its template),
+							// the parent will invoke the Loading on this child element (and the PostLoading which will "dequeue" the _applyTemplateShouldBeInvoked),
+							// which will set the 'IsLoading' flag.
+							//
+							// The parent will then apply its own style, which might set/change the template of this element (if data-bound or set using VisualState),
+							// which would end here and set this _applyTemplateShouldBeInvoked flag (if IsLoaded were not allowed!).
+							//
+							// The parent will then invoke the Loading on all its children, but as this child has already been flagged as 'IsLoading',
+							// it will be ignored and the 'PostLoading' won't be invokes a second time, driving the control to never "dequeue" the _applyTemplateShouldBeInvoked.
+							_applyTemplateShouldBeInvoked = true;
+						}
+						else
+						{
+							_applyTemplateShouldBeInvoked = false;
+							OnApplyTemplate();
+						}
+					}
+#endif
 				}
 			}
 		}
@@ -391,6 +431,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void OnLoaded()
 		{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			SetUpdateControlTemplate();
+#endif
+
 			base.OnLoaded();
 		}
 
@@ -414,6 +458,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.
 		/// </summary>
@@ -423,6 +468,7 @@ namespace Microsoft.UI.Xaml.Controls
 			InvokeApplyTemplate(out var addedVisuals);
 			return addedVisuals;
 		}
+#endif
 
 		private protected override ControlTemplate GetTemplate() => Template;
 
@@ -496,10 +542,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
 
-			//if (oldValue == Visibility.Collapsed && newValue == Visibility.Visible)
-			//{
-			//	SetUpdateControlTemplate();
-			//}
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			if (oldValue == Visibility.Collapsed && newValue == Visibility.Visible)
+			{
+				SetUpdateControlTemplate();
+			}
+#endif
 
 			OnIsFocusableChanged();
 		}
