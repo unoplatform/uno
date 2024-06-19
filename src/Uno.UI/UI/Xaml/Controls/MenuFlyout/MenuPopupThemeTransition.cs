@@ -32,6 +32,4 @@ internal class MenuPopupThemeTransition : PopupThemeTransition
 
 	public static readonly DependencyProperty DirectionProperty =
 		DependencyProperty.Register(nameof(Direction), typeof(AnimationDirection), typeof(MenuPopupThemeTransition), new FrameworkPropertyMetadata(AnimationDirection.Left));
-
-
 }
