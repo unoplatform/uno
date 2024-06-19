@@ -1,15 +1,13 @@
-﻿#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-using Uno;
-
-namespace Microsoft.UI.Xaml.Controls.Primitives
+/// <summary>
+/// Provides calculated values that can be referenced as TemplatedParent sources when defining templates for a MenuFlyoutPresenter control.
+/// Not intended for general use.
+/// </summary>
+public partial class MenuFlyoutPresenterTemplateSettings : DependencyObject
 {
-	public partial class MenuFlyoutPresenterTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
-	{
-		public double FlyoutContentMinWidth
-		{
-			get; internal set;
-		}
-	}
+	/// <summary>
+	/// Gets the minimum width of flyout content.
+	/// </summary>
+	public double FlyoutContentMinWidth { get; internal set; }
 }
