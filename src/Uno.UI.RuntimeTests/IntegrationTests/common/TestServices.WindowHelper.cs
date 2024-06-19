@@ -10,9 +10,12 @@ using Microsoft.UI.Xaml.Tests.Enterprise;
 using MUXControlsTestApp.Utilities;
 using System.Linq;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
-using Uno.UI.DirectUI;
 using System.Reflection.Metadata.Ecma335;
 using UIElement = Microsoft.UI.Xaml.UIElement;
+
+#if HAS_UNO
+using Uno.UI.DirectUI;
+#endif
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -433,6 +436,7 @@ namespace Private.Infrastructure
 #endif
 			}
 
+#if HAS_UNO
 			internal async static Task<ToolTip> TestGetActualToolTip(UIElement element)
 			{
 				ToolTip toolTip = null;
@@ -442,6 +446,7 @@ namespace Private.Infrastructure
 				});
 				return toolTip;
 			}
+#endif
 		}
 	}
 }
