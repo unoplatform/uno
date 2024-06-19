@@ -5,6 +5,7 @@ using Microsoft.UI.Composition;
 using Windows.UI;
 using Microsoft/* UWP don't rename */.UI.Xaml.Media;
 using System.Collections.Generic;
+using Windows.Foundation;
 using Uno;
 
 namespace Microsoft.UI.Xaml.Media
@@ -151,6 +152,7 @@ namespace Microsoft.UI.Xaml.Media
 					surfaceBrush.HorizontalAlignmentRatio = GetHorizontalAlignmentRatio(brush.AlignmentX);
 					surfaceBrush.VerticalAlignmentRatio = GetVerticalAlignmentRatio(brush.AlignmentY);
 					surfaceBrush.Surface = data.CompositionSurface;
+					surfaceBrush.RelativeTransform = brush.RelativeTransform?.ToMatrix(new Point()) ?? Matrix3x2.Identity;
 				}
 			};
 
