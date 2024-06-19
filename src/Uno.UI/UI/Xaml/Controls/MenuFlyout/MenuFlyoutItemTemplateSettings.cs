@@ -1,7 +1,13 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives
+﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
+
+/// <summary>
+/// Provides calculated values that can be referenced as TemplatedParent sources when defining templates for a MenuFlyoutPresenter control.
+/// Not intended for general use.
+/// </summary>
+public partial class MenuFlyoutItemTemplateSettings : DependencyObject
 {
-	public partial class MenuFlyoutItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
-	{
-		public double KeyboardAcceleratorTextMinWidth { get; internal set; }
-	}
+	/// <summary>
+	/// Gets the minimum width allocated for the accelerator key tip of an MenuFlyout.
+	/// </summary>
+	public double KeyboardAcceleratorTextMinWidth { get; internal set; }
 }
