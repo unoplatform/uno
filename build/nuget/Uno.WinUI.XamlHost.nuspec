@@ -16,25 +16,25 @@
 			<group targetFramework="net8.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net8.0-ios">
+			<group targetFramework="net8.0-ios17.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net8.0-maccatalyst">
+			<group targetFramework="net8.0-maccatalyst17.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net8.0-macos">
+			<group targetFramework="net8.0-macos14.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net9.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net9.0-ios">
+			<group targetFramework="net9.0-ios17.2">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net9.0-maccatalyst">
+			<group targetFramework="net9.0-maccatalyst17.2">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net9.0-macos">
+			<group targetFramework="net9.0-macos14.2">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 		</dependencies>
@@ -43,26 +43,26 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-ios17.0\Uno.UI.XamlHost.dll" target="lib\net8.0-ios" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-ios17.0\Uno.UI.XamlHost.pdb" target="lib\net8.0-ios" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-ios17.0\Uno.UI.XamlHost.dll" target="lib\net8.0-ios17.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-ios17.0\Uno.UI.XamlHost.pdb" target="lib\net8.0-ios17.0" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.XamlHost.dll" target="lib\net8.0-maccatalyst" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.XamlHost.pdb" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.XamlHost.dll" target="lib\net8.0-maccatalyst17.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.XamlHost.pdb" target="lib\net8.0-maccatalyst17.0" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-macos14.0\Uno.UI.XamlHost.dll" target="lib\net8.0-macos" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-macos14.0\Uno.UI.XamlHost.pdb" target="lib\net8.0-macos" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-macos14.0\Uno.UI.XamlHost.dll" target="lib\net8.0-macos14.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-macos14.0\Uno.UI.XamlHost.pdb" target="lib\net8.0-macos14.0" />
 
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-android\Uno.UI.XamlHost.dll" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-android\Uno.UI.XamlHost.pdb" target="lib\net8.0-android30.0" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-ios17.2\Uno.UI.XamlHost.dll" target="lib\net9.0-ios" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-ios17.2\Uno.UI.XamlHost.pdb" target="lib\net9.0-ios" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-ios17.2\Uno.UI.XamlHost.dll" target="lib\net9.0-ios17.2" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-ios17.2\Uno.UI.XamlHost.pdb" target="lib\net9.0-ios17.2" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.XamlHost.dll" target="lib\net9.0-maccatalyst" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.XamlHost.pdb" target="lib\net9.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.XamlHost.dll" target="lib\net9.0-maccatalyst17.2" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.XamlHost.pdb" target="lib\net9.0-maccatalyst17.2" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-macos14.2\Uno.UI.XamlHost.dll" target="lib\net9.0-macos" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-macos14.2\Uno.UI.XamlHost.pdb" target="lib\net9.0-macos" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-macos14.2\Uno.UI.XamlHost.dll" target="lib\net9.0-macos14.2" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-macos14.2\Uno.UI.XamlHost.pdb" target="lib\net9.0-macos14.2" />
 
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-android\Uno.UI.XamlHost.dll" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net9.0-android\Uno.UI.XamlHost.pdb" target="lib\net9.0-android30.0" />
