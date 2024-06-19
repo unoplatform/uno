@@ -1,8 +1,9 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ToggleMenuFlyoutItemAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+// MUX Reference dxaml\xcp\dxaml\lib\ToggleMenuFlyoutItemAutomationPeer_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
 
-using System.Collections.Generic;
+using System;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
