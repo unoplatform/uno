@@ -6,6 +6,7 @@ using Uno.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
+using Windows.Graphics.Display;
 
 namespace Microsoft.UI.Composition
 {
@@ -87,6 +88,21 @@ namespace Microsoft.UI.Composition
 				}
 				else
 				{
+					var matrix = Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+					matrix *= TransformMatrix;
+
+					// The brush is not tied to a specific window, so we can't get the scaling of a specific XamlRoot and
+					// instead we settle for the main window's scaling which should hopefully be the same.
+					var scale = DisplayInformation.GetForCurrentViewSafe().LogicalDpi / DisplayInformation.BaseDpi;
+					// We scale the backgroundArea with the dpi scaling and then scale with 1 / dpi scaling in the shader,
+					// This is conceptually a noop, but it actually affects quality. For example, if you have a hi-res image
+					// that should be drawn in a 500x500 rectangle. If the scaling is 2x, it will actually be drawn in a
+					// 1000x1000 rectangle. We don't want to resize the image to 500x500 and then stretch it to 1000x1000.
+					// Instead, we resize it to 1000x1000 directly and counteract the global 2x scaling done by the
+					// renderer by telling the shader to scale by 1/2.
+					backgroundArea = backgroundArea with { Width = backgroundArea.Width * scale, Height = backgroundArea.Height * scale };
+					matrix *= Matrix3x2.CreateScale(1 / scale);
+
 					// Adding image downscaling in the shader matrix directly is very blurry
 					// since the default downsampler in Skia is really low quality (but really fast).
 					// We force Lanczos instead.
@@ -96,8 +112,6 @@ namespace Microsoft.UI.Composition
 #pragma warning restore CS0612 // Type or member is obsolete
 					var resizedImage = SKImage.FromBitmap(resizedBitmap);
 
-					var matrix = Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
-					matrix *= TransformMatrix;
 					var imageShader = SKShader.CreateImage(resizedImage, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 
 					if (UsePaintColorToColorSurface)
