@@ -66,9 +66,9 @@ To do so:
     <TargetFrameworks Condition=" '$(OverrideTargetFramework)' != '' ">$(OverrideTargetFramework)</TargetFrameworks>
     ```
 
-- Once done, if you're in Visual Studio 2022, you may need to close and re-open your solution, or otherwise click the reload button. For other IDEs, the projects will reload automatically.
+- Once done, if you're in Visual Studio 2022, you may need to close and re-open your solution or otherwise click the reload button. For other IDEs, the projects will reload automatically.
 
-At this point, you'll notice that the list of target frameworks available in the debugger will have reduced to the list you added in `OverrideTargetFramework`.
+At this point, you'll notice that the list of target frameworks available in the debugger will have been reduced to the list you added in `OverrideTargetFramework`.
 
 ## Improve performance using the Uno Platform templates (5.1 and earlier)
 
@@ -96,7 +96,7 @@ While building with the command line `dotnet build -f net7.0-ios` only builds th
 
 Considering that during development, it is common to work on a single platform at a given time, the two sections below contain a suggested set of changes to the Uno Platform solution that can be performed on the solution to restrict the active build platform, and therefore significantly speed up build times and make intellisense respond faster.
 
-Choose the section that covers your cases, whether you're using a solution built using Uno Platform 5.0 templates, or if it was created with an earlier version.
+Choose the section covering your cases, whether you're using a solution built using Uno Platform 5.0 templates or created with an earlier version.
 
 ## Improve your own solution (4.9 and earlier)
 
