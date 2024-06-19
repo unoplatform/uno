@@ -11,21 +11,22 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.ThemeDictionaries>
+				<!-- GlobalThemeResource_Test01 used in ResourceMarkupTest_Setup -->
+				
 				<ResourceDictionary x:Key="HighContrast">
-					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
-									 Color="Red" />
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Red" />
 				</ResourceDictionary>
 				<ResourceDictionary x:Key="Default">
-					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
-									 Color="Gray" />
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Gray" />
+					<x:String x:Key="GlobalThemeResource_TestText">global App.Resources-default</x:String>
 				</ResourceDictionary>
 				<ResourceDictionary x:Key="Dark">
-					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
-									 Color="Blue" />
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Blue" />
+					<x:String x:Key="GlobalThemeResource_TestText">global App.Resources-dark</x:String>
 				</ResourceDictionary>
 				<ResourceDictionary x:Key="Light">
-					<SolidColorBrush x:Key="GlobalThemeResource_Test01"
-									 Color="Yellow" />
+					<SolidColorBrush x:Key="GlobalThemeResource_Test01" Color="Yellow" />
+					<x:String x:Key="GlobalThemeResource_TestText">global App.Resources-light</x:String>
 				</ResourceDictionary>
 			</ResourceDictionary.ThemeDictionaries>
 
@@ -163,6 +164,9 @@
 				<ios:Setter Property="Width"
 							Value="41" />
 			</Style>
+
+			<!-- used by ResourceMarkupTest_Setup -->
+			<x:String x:Key="GlobalStaticResource_TestText">global App.Resources</x:String>
 
 		</ResourceDictionary>
 

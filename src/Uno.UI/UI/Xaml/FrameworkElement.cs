@@ -926,7 +926,7 @@ namespace Microsoft.UI.Xaml
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
 			Resources?.UpdateThemeBindings(updateReason);
-			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason, resourceContextProvider: null);
 
 			// After theme change, the focus visual brushes may not reflect the correct settings
 			_focusVisualBrushesInitialized = false;

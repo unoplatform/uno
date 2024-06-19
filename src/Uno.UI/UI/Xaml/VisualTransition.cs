@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml
 				{
 					// Set the theme changed flag on so the update processes
 					// the children.
-					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
+					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource, resourceContextProvider: null);
 				}
 			}
 		}

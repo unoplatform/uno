@@ -60,6 +60,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly Dictionary<(string? Theme, string ResourceKey), string> _topLevelQualifiedKeys = new Dictionary<(string?, string), string>();
 		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
+		private readonly Stack<LogicalScope> _logicalScopeStack = new Stack<LogicalScope>();
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
 		private int _resourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
@@ -387,6 +388,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
+							using var scopeAutoDisposable = LogicalScope(topLevelControl);
+
 							BuildInitializeComponent(writer, topLevelControl, controlBaseType);
 							if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
 							{
@@ -1249,13 +1252,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLineIndented($"var owner = Owner;");
 
+						// fixme@xy: because we are reserving resource context on the fly (we cant predict ahead of time),
+						// member here are not in the document order anymore. we must keep them in document order.
+						// fixme@xy?: it would be nice to adjust components id as per document order too, if possible?
 						for (var i = 0; i < CurrentScope.Components.Count; i++)
 						{
 							var component = CurrentScope.Components[i];
 
 							if (HasMarkupExtensionNeedingComponent(component.XamlObject) && IsDependencyObject(component.XamlObject))
 							{
-								writer.AppendLineIndented($"owner.{component.MemberName}.UpdateResourceBindings();");
+								writer.AppendLineIndented($"owner.{component.MemberName}.UpdateResourceBindings(resourceContextProvider: {(component.ResourceContext is { } ctx ? $"owner.{ctx.MemberName}" : "null")});");
 							}
 						}
 					}
@@ -3043,13 +3049,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendIndented(GenerateRootPhases(objectDefinition, closureName) ?? "");
 					}
 
-					if (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition))
+					componentDefinition = CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition);
+					if (componentDefinition is { } || // element can also be register for component by a descendant DO as its resource provider
+						HasXBindMarkupExtension(objectDefinition) ||
+						HasMarkupExtensionNeedingComponent(objectDefinition))
 					{
 						writer.AppendLineIndented($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
 						var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
 						if (!_isTopLevelDictionary || isInsideFrameworkTemplate)
 						{
-							componentDefinition = AddComponentForCurrentScope(objectDefinition);
+							componentDefinition ??= AddComponentForCurrentScope(objectDefinition);
 
 							var componentName = componentDefinition.MemberName;
 
@@ -4084,7 +4093,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (IsDependencyProperty(declaringType, member.Member.Name))
 					{
 						var propertyOwner = declaringType;
-						writer.AppendLineInvariantIndented("global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, isHotReloadSupported: {5}, context: {6});", closureName, propertyOwner!.GetFullyQualifiedTypeIncludingGlobal(), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", _isHotReloadEnabled ? "true" : "false", ParseContextPropertyAccess);
+						if (member.Owner is { } owner && !IsFrameworkElement(owner.Type))
+						{
+							if (_logicalScopeStack.FirstOrDefault(x => IsFrameworkElement(x.Object.Type)) is { } nearestFE)
+							{
+								var thisComponent = GetOrAddComponentForCurrentScope(owner);
+								thisComponent.ResourceContext = GetOrAddComponentForCurrentScope(nearestFE.Object);
+							}
+						}
+
+						var args = string.Join(", ", new string[]
+						{
+							closureName!,
+							$"{propertyOwner!.GetFullyQualifiedTypeIncludingGlobal()}.{member.Member.Name}Property",
+							$"\"{resourceKey}\"",
+							$"isThemeResourceExtension: {(isThemeResourceExtension ? "true" : "false")}",
+							$"isHotReloadSupported: {(_isHotReloadEnabled ? "true" : "false")}",
+							$"context: {ParseContextPropertyAccess}",
+						});
+						writer.AppendLineInvariantIndented($"global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource({args});");
 					}
 					else if (IsAttachedProperty(member))
 					{
@@ -5831,6 +5858,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
 
+			using var scopeAutoDisposable = LogicalScope(xamlObjectDefinition);
+
 			TryAnnotateWithGeneratorSource(writer);
 			var typeName = xamlObjectDefinition.Type.Name;
 			var fullTypeName = xamlObjectDefinition.Type.Name;
@@ -6304,9 +6333,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition, namespaces: null);
 									xamlObjectDef.Members.AddRange(members);
 
-									AddComponentForParentScope(xamlObjectDef);
-
-									var componentName = CurrentScope.Components.Last().MemberName;
+									var componentName = AddComponentForParentScope(xamlObjectDef).MemberName;
 									writer.AppendLineIndented($"__that.{componentName} = {closureName};");
 
 									if (!isInsideFrameworkTemplate)
@@ -6378,7 +6405,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										// TODO for https://github.com/unoplatform/uno/issues/6700
 									}
-
 								}
 							}
 							else
@@ -6692,12 +6718,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return new DisposableAction(() => _scopeStack.Pop());
 		}
 
+		private ComponentDefinition GetOrAddComponentForCurrentScope(XamlObjectDefinition objectDefinition)
+		{
+			if (CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition) is not { } component)
+			{
+				component = AddComponentForCurrentScope(objectDefinition);
+			}
+
+			return component;
+		}
+
 		private ComponentDefinition AddComponentForCurrentScope(XamlObjectDefinition objectDefinition)
 		{
 			// Prefix with the run ID so that we can leverage the removal of fields/properties during HR sessions
 			var componentDefinition = new ComponentDefinition(
 				objectDefinition,
-				true,
+				IsWeakReference: true,
 				$"_component_{CurrentScope.ComponentCount}");
 			CurrentScope.Components.Add(componentDefinition);
 
@@ -6709,11 +6745,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return componentDefinition;
 		}
 
-		private void AddComponentForParentScope(XamlObjectDefinition objectDefinition)
+		private ComponentDefinition AddComponentForParentScope(XamlObjectDefinition objectDefinition)
 		{
 			// Add the element stub as a strong reference, so that the
 			// stub can be brought back if the loaded state changes.
-			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, IsWeakReference: false, $"_component_{CurrentScope.ComponentCount}"));
+			var component = new ComponentDefinition(
+				objectDefinition,
+				IsWeakReference: false,
+				$"_component_{CurrentScope.ComponentCount}");
+			CurrentScope.Components.Add(component);
 
 			if (_xLoadScopeStack.Count > 1)
 			{
@@ -6721,6 +6761,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				parent.Components.Add(new ComponentEntry(CurrentScope.Components.Last().MemberName, objectDefinition));
 			}
+
+			return component;
 		}
 
 		private void AddXBindEventHandlerToScope(string fieldName, string ownerTypeName, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
@@ -6803,6 +6845,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				suffix = "-" + suffix;
 			}
 			return "/*{0} L:{1}{2}*/".InvariantCultureFormat(callerName, lineNumber, suffix);
+		}
+
+		private IDisposable LogicalScope(XamlObjectDefinition o)
+		{
+			// fixme@xy: this should belong under CurrentScope (as its member)
+			_logicalScopeStack.Push(new(o));
+
+			return new DisposableAction(() => _logicalScopeStack.Pop());
 		}
 	}
 }

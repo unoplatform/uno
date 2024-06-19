@@ -629,7 +629,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (item is IDependencyObjectStoreProvider provider)
 				{
-					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
+					provider.Store.UpdateResourceBindings(updateReason, resourceContextProvider: null, containingDictionary: this);
 				}
 			}
 
