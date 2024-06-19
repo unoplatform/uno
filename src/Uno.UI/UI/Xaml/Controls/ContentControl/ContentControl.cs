@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if !__SKIA__
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ using System.Linq;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Uno;
+using Microsoft.UI.Xaml.Media;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -102,7 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// (ie if created in code by new SomeControl())
 					// NOTE: There's a case we currently don't support: if the Content is a DependencyObject but *not* a FrameworkElement, then
 					// the DataContext won't get propagated and any bindings won't get updated.
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((ContentControl)s)?.OnContentChanged(e.OldValue, e.NewValue)
 				)
 			);
@@ -154,29 +157,29 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnContentChanged(object oldContent, object newContent)
 		{
 			//if (IsContentPresenterBypassEnabled)
-			{
-				if (newContent is View
-					// This case is to support the ability for the content
-					// control to be templated while having a Content as a view.
-					// The template then needs to TemplateBind to the Content to function
-					// properly.
-					&& Template == null
-				)
-				{
-					// If the content is a view, no need to delay the inclusion in the visual tree
-					ContentTemplateRoot = newContent as View;
-				}
-				else if (oldContent != null && newContent == null)
-				{
-					// The content is being reset, remove the existing content properly.
-					ContentTemplateRoot = null;
-				}
+			//{
+			//	if (newContent is View
+			//		// This case is to support the ability for the content
+			//		// control to be templated while having a Content as a view.
+			//		// The template then needs to TemplateBind to the Content to function
+			//		// properly.
+			//		&& Template == null
+			//	)
+			//	{
+			//		// If the content is a view, no need to delay the inclusion in the visual tree
+			//		ContentTemplateRoot = newContent as View;
+			//	}
+			//	else if (oldContent != null && newContent == null)
+			//	{
+			//		// The content is being reset, remove the existing content properly.
+			//		ContentTemplateRoot = null;
+			//	}
 
-				if (newContent != null)
-				{
-					SetUpdateTemplate();
-				}
-			}
+			//	if (newContent != null)
+			//	{
+			//		SetUpdateTemplate();
+			//	}
+			//}
 		}
 
 		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
@@ -210,8 +213,8 @@ namespace Microsoft.UI.Xaml.Controls
 			if (this.HasParent() || CanCreateTemplateWithoutParent)
 			{
 				UpdateContentTemplateRoot();
-				SyncDataContext();
-				this.InvalidateMeasure();
+				//SyncDataContext();
+				//this.InvalidateMeasure();
 			}
 		}
 
@@ -307,15 +310,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
+		//private protected override void OnLoaded()
+		//{
+		//	base.OnLoaded();
 
-			if (IsContentPresenterBypassEnabled)
-			{
-				SetUpdateTemplate();
-			}
-		}
+		//	if (IsContentPresenterBypassEnabled)
+		//	{
+		//		SetUpdateTemplate();
+		//	}
+		//}
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -376,6 +379,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private protected override void ApplyTemplate(out bool addedVisuals)
+		{
+			addedVisuals = false;
+
+			if (VisualTreeHelper.GetChildrenCount(this) == 0)
+			{
+				SetUpdateTemplate();
+				addedVisuals = VisualTreeHelper.GetChildrenCount(this) > 0;
+			}
+		}
+
 		private void SetContentTemplateRootToPlaceholder()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -395,41 +409,41 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnDataContextChanged(e);
 
-			if (IsContentPresenterBypassEnabled)
-			{
-				SyncDataContext();
-			}
+			//if (IsContentPresenterBypassEnabled)
+			//{
+			//	SyncDataContext();
+			//}
 		}
 
-		protected virtual void SyncDataContext()
-		{
-			if (IsContentPresenterBypassEnabled)
-			{
-				// This case is to support the ability for the content
-				// control to be templated while having a Content as a view.
-				// The template then needs to TemplateBind to the Content to function
-				// properly.
-				if (Content is View)
-				{
-					ResetContentDataContextOverride();
-				}
-				else
-				{
-					if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
-						// The DataContext may be set directly on the template root
-						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(provider.Store.DataContextProperty))
-					)
-					{
-						_localContentDataContextOverride = true;
-						provider.Store.SetValue(provider.Store.DataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
-					}
-				}
-			}
-			else
-			{
-				ResetContentDataContextOverride();
-			}
-		}
+		//protected virtual void SyncDataContext()
+		//{
+		//	if (IsContentPresenterBypassEnabled)
+		//	{
+		//		// This case is to support the ability for the content
+		//		// control to be templated while having a Content as a view.
+		//		// The template then needs to TemplateBind to the Content to function
+		//		// properly.
+		//		if (Content is View)
+		//		{
+		//			ResetContentDataContextOverride();
+		//		}
+		//		else
+		//		{
+		//			if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
+		//				// The DataContext may be set directly on the template root
+		//				(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(provider.Store.DataContextProperty))
+		//			)
+		//			{
+		//				_localContentDataContextOverride = true;
+		//				provider.Store.SetValue(provider.Store.DataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
+		//			}
+		//		}
+		//	}
+		//	else
+		//	{
+		//		ResetContentDataContextOverride();
+		//	}
+		//}
 
 		private void ResetContentDataContextOverride()
 		{
@@ -517,3 +531,4 @@ namespace Microsoft.UI.Xaml.Controls
 #nullable enable
 	}
 }
+#endif

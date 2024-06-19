@@ -771,6 +771,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
+		if (TemplatedParent is ContentControl contentControl)
+		{
+			contentControl.ConsiderContentPresenterForContentTemplateRoot(this, newValue);
+		}
+
 		if (oldValue is View || newValue is View)
 		{
 			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)

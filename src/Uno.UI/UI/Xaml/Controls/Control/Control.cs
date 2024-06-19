@@ -208,7 +208,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty TemplateProperty { get; } =
 			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
-		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
+		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
 			_updateTemplate = true;
 			SetUpdateControlTemplate();
