@@ -1,14 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutSubItem_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
+
 using System.Collections.Generic;
-using Uno.Disposables;
-using Uno.UI.Extensions;
-using Uno.UI.Xaml.Core;
-using Windows.Foundation;
-using Windows.System;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -36,7 +30,21 @@ partial class MenuFlyoutSubItem
 	/// <summary>
 	/// Gets the collection used to generate the content of the sub-menu.
 	/// </summary>
-	public IList<MenuFlyoutItemBase> Items => m_tpItems;
+	public IList<MenuFlyoutItemBase> Items
+	{
+		get => (IList<MenuFlyoutItemBase>)this.GetValue(ItemsProperty);
+		private set => this.SetValue(ItemsProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the Items dependency property.
+	/// </summary>
+	internal static DependencyProperty ItemsProperty { get; } =
+		DependencyProperty.Register(
+			nameof(Items),
+			typeof(IList<MenuFlyoutItemBase>),
+			typeof(MenuFlyout),
+			new FrameworkPropertyMetadata(defaultValue: null));
 
 	/// <summary>
 	/// Gets or sets the text content of a MenuFlyoutSubItem.
