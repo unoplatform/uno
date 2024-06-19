@@ -172,7 +172,8 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			if (_backgroundBrush is { } && !_backgroundPathValid)
 			{
 				_backgroundPathValid = true;
-				// we don't pass down <inner|outer>Area directly, since it contains the thickness offsets
+				// We don't pass down <inner|outer>Area directly, since it contains the thickness offsets.
+				// Instead, we only pass the Size (without the X and Y offsets).
 				// The offsets shouldn't be part of the background path calculations, but should be done
 				// at the point of rendering by translation the final output by the thickness.
 				// This matters because if the path is for an image with a scaling RelativeTransform.
