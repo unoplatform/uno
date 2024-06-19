@@ -813,9 +813,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			_inOnApplyTemplate = true;
 			TrySetDataContextFromContent(Content);
 
-			// This should not be the responsibility of ContentPresenter.
-			// Ideally, we should have a virtual 'GetTemplate()' method on FrameworkElement and let FrameworkElement.ApplyTemplate materialize the template.
-			SetUpdateTemplate();
+			if (ContentTemplate is not null || GetSelectedContentTemplate() is not null)
+			{
+				base.ApplyTemplate(out addedVisuals);
+			}
 
 			addedVisuals = VisualTreeHelper.GetChildrenCount(this) != 0;
 		}
@@ -1455,4 +1456,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 	partial void SetUpdateTemplatePartial();
+
+	internal override FrameworkTemplate GetTemplate()
+	{
+		return (ContentTemplate ?? GetSelectedContentTemplate()) /*?? default content presenter template */;
+	}
+
+	private DataTemplate GetSelectedContentTemplate()
+		=> (TemplatedParent as ContentControl)?.SelectedContentTemplate;
 }

@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Will be set to Template when it is applied
 		/// </summary>
-		private ControlTemplate _controlTemplateUsedLastUpdate;
+		private FrameworkTemplate _controlTemplateUsedLastUpdate;
 
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
@@ -587,6 +587,8 @@ namespace Microsoft.UI.Xaml.Controls
 			OnIsFocusableChanged();
 		}
 
+		internal override FrameworkTemplate GetTemplate() => Template;
+
 		private void UpdateTemplate()
 		{
 			// If TemplatedRoot is null, it must be updated even if the templates haven't changed
@@ -595,13 +597,15 @@ namespace Microsoft.UI.Xaml.Controls
 				_controlTemplateUsedLastUpdate = null;
 			}
 
-			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
-			{
-				_controlTemplateUsedLastUpdate = Template;
+			var template = GetTemplate();
 
-				if (Template != null)
+			if (_updateTemplate && !object.Equals(template, _controlTemplateUsedLastUpdate))
+			{
+				_controlTemplateUsedLastUpdate = template;
+
+				if (template != null)
 				{
-					TemplatedRoot = Template.LoadContentCached();
+					TemplatedRoot = template.LoadContentCached();
 				}
 				else
 				{

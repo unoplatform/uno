@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml
 {
@@ -161,9 +162,18 @@ namespace Microsoft.UI.Xaml
 
 		}
 
+		internal virtual FrameworkTemplate? GetTemplate() => null;
+
 		private protected virtual void ApplyTemplate(out bool addedVisuals)
 		{
-			addedVisuals = false; // overridden in Control
+			addedVisuals = false;
+			if (VisualTreeHelper.GetChildrenCount(this) == 0 &&
+				GetTemplate() is { } template &&
+				template.LoadContentCached() is { } child)
+			{
+				addedVisuals = true;
+				AddChild(child);
+			}
 		}
 
 		private void InvokeApplyTemplate(out bool addedVisuals)
