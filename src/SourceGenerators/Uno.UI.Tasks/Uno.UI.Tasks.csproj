@@ -32,10 +32,6 @@
 		<Compile Include="..\Uno.UI.SourceGenerators\BindableTypeProviders\LinkerHintsHelpers.cs" Link="Helpers\LinkerHintsHelpers.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="external\linker\" />
-	</ItemGroup>
-
 	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
 		<ItemGroup>
 			<_unoTasksFiles Include="$(OutputPath)\*.*" />
