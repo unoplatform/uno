@@ -1294,7 +1294,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
-		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary? containingDictionary = null)
+		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null, ResourceDictionary? containingDictionary = null)
 		{
 			if (updateReason == ResourceUpdateReason.None)
 			{
@@ -1305,7 +1305,7 @@ namespace Microsoft.UI.Xaml
 
 			if (updateReason == ResourceUpdateReason.ThemeResource)
 			{
-				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
 				{
 					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
@@ -1313,7 +1313,7 @@ namespace Microsoft.UI.Xaml
 
 				_properties.UpdateBindingExpressions();
 
-				foreach (var dict in dictionariesInScope)
+				for (int i = 0; i < dictionariesInScope.Length; i++)
 				{
 					ResourceResolver.PopSourceFromScope();
 				}
@@ -1321,11 +1321,11 @@ namespace Microsoft.UI.Xaml
 
 			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
-				UpdateChildResourceBindings(updateReason);
+				UpdateChildResourceBindings(updateReason, resourceContextProvider);
 				return;
 			}
 
-			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 
 			var bindings = _resourceBindings.GetAllBindings();
 
@@ -1334,7 +1334,7 @@ namespace Microsoft.UI.Xaml
 				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 			}
 
-			UpdateChildResourceBindings(updateReason);
+			UpdateChildResourceBindings(updateReason, resourceContextProvider);
 		}
 
 		/// <remarks>
@@ -1434,7 +1434,7 @@ namespace Microsoft.UI.Xaml
 
 		private bool _isUpdatingChildResourceBindings;
 
-		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason)
+		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 		{
 			if (_isUpdatingChildResourceBindings)
 			{
@@ -1446,7 +1446,7 @@ namespace Microsoft.UI.Xaml
 			{
 				try
 				{
-					InnerUpdateChildResourceBindings(updateReason);
+					InnerUpdateChildResourceBindings(updateReason, resourceContextProvider);
 				}
 				finally
 				{
@@ -1469,7 +1469,7 @@ namespace Microsoft.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
+		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 		{
 			_isUpdatingChildResourceBindings = true;
 
@@ -1491,7 +1491,7 @@ namespace Microsoft.UI.Xaml
 				{
 					foreach (var innerValue in dependencyObjectCollection)
 					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
 					}
 				}
 
@@ -1499,65 +1499,56 @@ namespace Microsoft.UI.Xaml
 				{
 					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
 					}
 				}
 
 				if (propertyValue is DependencyObject dependencyObject)
 				{
-					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason);
+					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason, resourceContextProvider);
 				}
 			}
 		}
 
-		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason)
+		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 		{
+			// propagate to non-FE DO
 			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
 			{
-				storeProvider.Store.UpdateResourceBindings(updateReason);
+				storeProvider.Store.UpdateResourceBindings(
+					updateReason,
+					// when propagating to non-FE, we need to inject a FE as the resource context
+					resourceContextProvider: resourceContextProvider ?? ActualInstance as FrameworkElement
+				);
 			}
 		}
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
+		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(
+			bool includeAppResources,
+			FrameworkElement? resourceContextProvider = null,
+			ResourceDictionary? containingDictionary = null)
 		{
 			if (containingDictionary is not null)
 			{
 				yield return containingDictionary;
 			}
 
-			var candidate = ActualInstance;
-			var candidateFE = candidate as FrameworkElement;
-
+			// for non-FE, favor context provider over actual-instance
+			var candidate = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
 			while (candidate is not null)
 			{
-				var parent = candidate.GetParent() as DependencyObject;
-
-				if (candidateFE is not null)
+				if (candidate is FrameworkElement fe)
 				{
-					if (candidateFE.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (fe.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
-						yield return candidateFE.Resources;
-					}
-
-					if (parent is FrameworkElement fe)
-					{
-						// If the parent is a framework element, cast only once and assign
-						// the result to both variables.
-						candidate = candidateFE = fe;
-					}
-					else
-					{
-						candidate = parent;
+						yield return fe.Resources;
 					}
 				}
-				else
-				{
-					candidateFE = parent as FrameworkElement;
-					candidate = parent;
-				}
+
+				candidate = candidate.GetParent() as DependencyObject;
 			}
 
 			if (includeAppResources && Application.Current != null)
