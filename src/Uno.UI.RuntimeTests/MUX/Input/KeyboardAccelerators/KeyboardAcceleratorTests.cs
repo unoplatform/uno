@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Tests.Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Windows.System;
+using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
 using FocusHelper = Uno.UI.RuntimeTests.MUX.Input.Focus.FocusHelper;
 
 #if !HAS_UNO_WINUI
@@ -1176,7 +1177,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
                         <Button x:Name='button' Content='button'>
                             <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator x:Name='keyboardAccelerator' Modifiers='Control' Key='A' IsEnabled='false'/>
+                                <KeyboardAccelerator x:Name='keyboardAccelerator' Modifiers='Control' Key='A'/>
                             </Button.KeyboardAccelerators>
                         </Button>
                     </StackPanel>";
@@ -1198,6 +1199,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 			button = (Button)rootPanel.FindName("button");
 			ctrlAAccelerator = button.KeyboardAccelerators[0];
+			ctrlAAccelerator.IsEnabled = false;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -3315,6 +3317,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators and Text Input behavior. Key input in currently focused TextBox should only be used to generate text input.")]
+#if __ANDROID__ || __IOS__
+	[Ignore("We cannot simulate keyboard input into focused TextBox on Android and iOS #")]
+#endif
 	public async Task ValidateTextInputAndKeyboardAccelerator()
 	{
 		const string rootPanelXaml =
