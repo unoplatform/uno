@@ -93,7 +93,7 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-#if HAS_UNO_WINUI // No diag to show currently
+#if HAS_UNO_WINUI // No diag to show currently on windows (so no WINUI)
 	private static void ShowDiagnosticsOnFirstActivation(object snd, _WindowActivatedEventArgs windowActivatedEventArgs)
 	{
 		if (snd is Window { RootElement.XamlRoot: { } xamlRoot } window)

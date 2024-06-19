@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if WINAPPSDK || HAS_UNO_WINUI
+#if WINUI || HAS_UNO_WINUI
 using System;
 using System.Linq;
 using System.Threading;

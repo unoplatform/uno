@@ -1,5 +1,5 @@
 ﻿#nullable enable
-
+#if WINUI || HAS_UNO_WINUI
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -60,3 +60,4 @@ public sealed partial class DiagnosticsOverlay
 		VisualStateManager.GoToState(this, NotificationCollapsedStateName, true);
 	}
 }
+#endif
