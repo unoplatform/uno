@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+#if WINUI || HAS_UNO
 using Uno.Foundation.Logging;
+#endif
 
 namespace Uno.Diagnostics.UI;
 
@@ -41,7 +43,9 @@ public sealed partial class DiagnosticsOverlay
 			}
 			catch (Exception e)
 			{
+#if WINUI || HAS_UNO
 				this.Log().Error($"Failed to get preview for {View.Name}.", e);
+#endif
 
 				var element = DiagnosticViewHelper.CreateText("**");
 				ToolTipService.SetToolTip(element, $"Failed to get preview for {View.Name}.");
@@ -98,7 +102,9 @@ public sealed partial class DiagnosticsOverlay
 				}
 				catch (Exception e)
 				{
+#if WINUI || HAS_UNO
 					this.Log().Error($"Failed to show details for {View.Name}.", e);
+#endif
 				}
 			}
 		}
