@@ -14,7 +14,7 @@ using System.Reflection.Metadata.Ecma335;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 
 #if HAS_UNO
-using Uno.UI.DirectUI;
+using DirectUI;
 #endif
 
 #if WINAPPSDK

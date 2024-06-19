@@ -1,4 +1,4 @@
-#if HAS_UNO
+﻿#if HAS_UNO
 using System;
 using System.Text;
 using System.Threading;
@@ -3317,8 +3317,8 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators and Text Input behavior. Key input in currently focused TextBox should only be used to generate text input.")]
-#if __ANDROID__ || __IOS__
-	[Ignore("We cannot simulate keyboard input into focused TextBox on Android and iOS #")]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task ValidateTextInputAndKeyboardAccelerator()
 	{
