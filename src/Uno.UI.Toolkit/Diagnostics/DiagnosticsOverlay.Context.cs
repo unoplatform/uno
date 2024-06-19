@@ -1,13 +1,11 @@
 ﻿#nullable enable
+#if WINUI || HAS_UNO_WINUI
 using System;
 using System.Linq;
-
-#if WINAPPSDK || HAS_UNO_WINUI
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.UI.Dispatching;
 using Uno.Foundation.Logging;
-#endif
 
 namespace Uno.Diagnostics.UI;
 
@@ -15,14 +13,6 @@ public sealed partial class DiagnosticsOverlay
 {
 	private sealed record ViewContext : IDiagnosticViewContext, IDisposable
 	{
-#if !WINAPPSDK && !HAS_UNO_WINUI
-		public static ViewContext? TryCreate(DiagnosticsOverlay owner) => null;
-		public void Schedule(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
-		void IDiagnosticViewContext.ScheduleRecurrent(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
-		void IDiagnosticViewContext.AbortRecurrent(Action action) => throw new NotSupportedException("Diag overlay is not supported on UWP");
-		void IDiagnosticViewContext.Notify(DiagnosticViewNotification notif) { }
-		void IDisposable.Dispose() { }
-#else
 		private Queue<Action> _pending = new();
 		private Queue<Action> _pending2 = new();
 		private List<Action>? _recurrents;
@@ -185,6 +175,6 @@ public sealed partial class DiagnosticsOverlay
 			_updatesScheduled = -4096;
 			_timer?.Stop();
 		}
-#endif
 	}
 }
+#endif

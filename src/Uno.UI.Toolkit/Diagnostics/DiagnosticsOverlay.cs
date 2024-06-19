@@ -1,4 +1,5 @@
 ﻿#nullable enable
+#if WINUI || HAS_UNO_WINUI
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -369,3 +370,4 @@ public sealed partial class DiagnosticsOverlay : Control
 		}
 	}
 }
+#endif

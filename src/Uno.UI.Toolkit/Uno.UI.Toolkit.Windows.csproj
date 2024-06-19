@@ -26,19 +26,6 @@
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="Uno.UI\Behaviors\VisibleBoundsPadding.cs" />
 		<Compile Include="..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
-		
-		<!-- Diagnostics overlay -->
-		<Compile Include="..\Uno.Foundation\Diagnostics\DiagnosticViewNotification.cs" Link="Uno.Foundation\Diagnostics\DiagnosticViewNotification.cs" />
-		<Compile Include="..\Uno.Foundation\Diagnostics\DiagnosticViewRegistry.cs" Link="Uno.Foundation\Diagnostics\DiagnosticViewRegistry.cs" />
-		<Compile Include="..\Uno.Foundation\Diagnostics\IDiagnosticView.cs" Link="Uno.Foundation\Diagnostics\IDiagnosticView.cs" />
-		<Compile Include="..\Uno.Foundation\Diagnostics\IDiagnosticViewContext.cs" Link="Uno.Foundation\Diagnostics\IDiagnosticViewContext.cs" />
-		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.cs" Link="Uno.UI\Diagnostics\DiagnosticView.cs" />
-		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.Factories.cs" Link="Uno.UI\Diagnostics\DiagnosticView.Factories.cs" />
-		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.TView.cs" Link="Uno.UI\Diagnostics\DiagnosticView.TView.cs" />
-		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.TView.TState.cs" Link="Uno.UI\Diagnostics\DiagnosticView.TView.TState.cs" />
-		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewHelper.cs" Link="Uno.UI\Diagnostics\DiagnosticViewHelper.cs" />
-		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewManager.TView.cs" Link="Uno.UI\Diagnostics\DiagnosticViewManager.TView.cs" />
-		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewManager.TView.TState.cs" Link="Uno.UI\Diagnostics\DiagnosticViewManager.TView.TState.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
@@ -65,6 +52,19 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\**\*.HotReload.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\%(FileName)%(Extension)" />
 
 		<!--<Compile Include="..\Uno.UI\UI\Xaml\Media\VisualTreeHelper.crossruntime.cs" Link="Uno.UI\UI\Xaml\Media\VisualTreeHelper.crossruntime.cs" />-->
+		
+		<!-- Diagnostics overlay -->
+		<Compile Include="..\Uno.Foundation\Diagnostics\DiagnosticViewNotification.cs" Link="Uno.Foundation\Diagnostics\DiagnosticViewNotification.cs" />
+		<Compile Include="..\Uno.Foundation\Diagnostics\DiagnosticViewRegistry.cs" Link="Uno.Foundation\Diagnostics\DiagnosticViewRegistry.cs" />
+		<Compile Include="..\Uno.Foundation\Diagnostics\IDiagnosticView.cs" Link="Uno.Foundation\Diagnostics\IDiagnosticView.cs" />
+		<Compile Include="..\Uno.Foundation\Diagnostics\IDiagnosticViewContext.cs" Link="Uno.Foundation\Diagnostics\IDiagnosticViewContext.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.cs" Link="Uno.UI\Diagnostics\DiagnosticView.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.Factories.cs" Link="Uno.UI\Diagnostics\DiagnosticView.Factories.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.TView.cs" Link="Uno.UI\Diagnostics\DiagnosticView.TView.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticView.TView.TState.cs" Link="Uno.UI\Diagnostics\DiagnosticView.TView.TState.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewHelper.cs" Link="Uno.UI\Diagnostics\DiagnosticViewHelper.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewManager.TView.cs" Link="Uno.UI\Diagnostics\DiagnosticViewManager.TView.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewManager.TView.TState.cs" Link="Uno.UI\Diagnostics\DiagnosticViewManager.TView.TState.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
