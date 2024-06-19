@@ -11,11 +11,14 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// <summary>
 /// Exposes ToggleMenuFlyoutItem types to Microsoft UI Automation.
 /// </summary>
-public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutomationPeer, Provider.IToggleProvider
+public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutomationPeer, IToggleProvider
 {
-	public ToggleMenuFlyoutItemAutomationPeer(Controls.ToggleMenuFlyoutItem owner) : base(owner)
+	/// <summary>
+	/// Initializes a new instance of the ToggleMenuFlyoutItemAutomationPeer class.
+	/// </summary>
+	/// <param name="owner">The owner element to create for.</param>
+	public ToggleMenuFlyoutItemAutomationPeer(ToggleMenuFlyoutItem owner) : base(owner)
 	{
-
 	}
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
@@ -24,36 +27,38 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 		{
 			return this;
 		}
-		else
-		{
-			return base.GetPatternCore(patternInterface);
-		}
+
+		return base.GetPatternCore(patternInterface);
 	}
 
-	protected override string GetClassNameCore() => nameof(Controls.ToggleMenuFlyoutItem);
+	protected override string GetClassNameCore() => nameof(ToggleMenuFlyoutItem);
 
-	protected override AutomationControlType GetAutomationControlTypeCore()
-		=> AutomationControlType.MenuItem;
+	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.MenuItem;
 
 	protected override string GetAcceleratorKeyCore()
 	{
-		var acceleratorKey = base.GetAcceleratorKeyCore();
+		var returnValue = base.GetAcceleratorKeyCore();
 
-		if (string.IsNullOrEmpty(acceleratorKey))
+		if (returnValue is null)
 		{
-			return (Owner as Controls.ToggleMenuFlyoutItem).KeyboardAcceleratorTextOverride;
+			// If AutomationProperties.AcceleratorKey hasn't been set, then return the value of our KeyboardAcceleratorTextOverride property.
+			var ownerAsToggleMenuFlyoutItem = (ToggleMenuFlyoutItem)Owner;
+			var keyboardAcceleratorTextOverride = ownerAsToggleMenuFlyoutItem.KeyboardAcceleratorTextOverride;
+			returnValue = GetTrimmedKeyboardAcceleratorTextOverride(keyboardAcceleratorTextOverride);
 		}
 
-		return acceleratorKey;
+		return returnValue;
 	}
 
 	protected override int GetPositionInSetCore()
 	{
+		// First retrieve any valid value being directly set on the container, that value will get precedence.
 		var returnValue = base.GetPositionInSetCore();
 
+		// if it still is default value, calculate it ourselves.
 		if (returnValue == -1)
 		{
-			returnValue = GetPositionOrSizeOfSetHelper(isSetCount: false);
+			returnValue = MenuFlyoutPresenter.GetPositionInSetHelper((MenuFlyoutItemBase)Owner);
 		}
 
 		return returnValue;
@@ -61,74 +66,30 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 
 	protected override int GetSizeOfSetCore()
 	{
+		// First retrieve any valid value being directly set on the container, that value will get precedence.
 		var returnValue = base.GetSizeOfSetCore();
 
+		// if it still is default value, calculate it ourselves.
 		if (returnValue == -1)
 		{
-			returnValue = GetPositionOrSizeOfSetHelper(isSetCount: true);
+			returnValue = MenuFlyoutPresenter.GetSizeOfSetHelper((MenuFlyoutItemBase)Owner);
 		}
 
 		return returnValue;
 	}
 
-	// MUX reference: GetPositionOrSetCount in ToggleMenuFlyoutItemAutomationPeer_Partial.cpp
-	private int GetPositionOrSizeOfSetHelper(bool isSetCount)
-	{
-		if (Owner is not ToggleMenuFlyoutItem owner)
-		{
-			return -1;
-		}
-
-		IList<MenuFlyoutItemBase> items = null;
-
-		var parent = VisualTreeHelper.GetParent(owner);
-		if (parent is MenuFlyoutSubItem subItem)
-		{
-			items = subItem.Items;
-		}
-		else if (parent is MenuFlyout menuFlyout)
-		{
-			items = menuFlyout.Items;
-		}
-
-		if (items is null)
-		{
-			return -1;
-		}
-
-		var count = 0;
-		var position = -1;
-
-		foreach (var item in items)
-		{
-			if (item is MenuFlyoutSeparator)
-			{
-				continue;
-			}
-
-			count++;
-
-			if (item == owner)
-			{
-				position = count;
-			}
-		}
-
-		return isSetCount ? count : position;
-	}
-
 	/// <summary>
 	/// Cycles through the toggle states of a control.
 	/// </summary>
-	/// <exception cref="ElementNotEnabledException"></exception>
 	public void Toggle()
 	{
-		if (!IsEnabled())
+		var isEnabled = IsEnabled();
+		if (!isEnabled)
 		{
-			throw new ElementNotEnabledException();
+			throw new InvalidOperationException("Element is not enabled");
 		}
 
-		(Owner as Controls.ToggleMenuFlyoutItem).Invoke();
+		((ToggleMenuFlyoutItem)Owner).Invoke();
 	}
 
 	/// <summary>
@@ -138,39 +99,37 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 	{
 		get
 		{
-			var isChecked = (Owner as Controls.ToggleMenuFlyoutItem).IsChecked;
+			var isChecked = ((ToggleMenuFlyoutItem)Owner).IsChecked;
+			return isChecked ? Automation.ToggleState.On : Automation.ToggleState.Off;
+		}
+	}
 
-			if (isChecked)
+	internal void RaiseToggleStatePropertyChangedEvent(object oldValue, object newValue)
+	{
+		var oldState = ConvertToToggleState(oldValue);
+		var newState = ConvertToToggleState(newValue);
+		if (oldState != newState)
+		{
+			RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, oldState, newState);
+		}
+	}
+
+	private static ToggleState ConvertToToggleState(object value)
+	{
+		var state = Automation.ToggleState.Indeterminate;
+
+		if (value is bool boolValue)
+		{
+			if (boolValue)
 			{
-				return ToggleState.On;
+				state = Automation.ToggleState.On;
 			}
 			else
 			{
-				return ToggleState.Off;
+				state = Automation.ToggleState.Off;
 			}
 		}
-	}
 
-	internal void RaisePropertyChangedEvent(object oldValue, object newValue)
-	{
-		var oldToggleState = ConvertToToggleState(oldValue);
-		var newToggleState = ConvertToToggleState(newValue);
-
-		if (oldToggleState != newToggleState)
-		{
-			RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, oldToggleState, newToggleState);
-		}
-	}
-
-	/// <summary>
-	/// Convert the Boolean in Inspectable to the ToggleState Enum, if the Inspectable is NULL that corresponds to Indeterminate state.
-	/// </summary>
-	private ToggleState ConvertToToggleState(object value)
-	{
-		if (value is bool v)
-		{
-			return v ? ToggleState.On : ToggleState.Off;
-		}
-		return ToggleState.Indeterminate;
+		return state;
 	}
 }
