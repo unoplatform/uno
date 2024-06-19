@@ -177,6 +177,6 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
     }
     ```
 
-[!INCLUDE [View Model](includes/include-wrap.md)]
+[!INCLUDE [Wrap Up](includes/include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM).
