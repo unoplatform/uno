@@ -1,90 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using Uno.Disposables;
-using Uno.UI.Extensions;
-using Uno.UI.Xaml.Core;
-using Windows.Foundation;
-using Windows.System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutSubItem_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
+
+using System.Linq;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Disposables;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-[ContentProperty(Name = nameof(Items))]
 public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 {
-	// Popup for the MenuFlyoutSubItem
-	Popup m_tpPopup;
-
-	// Presenter for the MenuFlyoutSubItem
-	Control m_tpPresenter;
-
-	// In Threshold, MenuFlyout uses the MenuPopupThemeTransition.
-	// UNO TODO Transition m_tpMenuPopupThemeTransition = null;
-
-	// Event pointer for the Loaded event
-	// IDisposable m_epLoadedHandler;
-
-	// Event pointer for the size changed on the MenuFlyoutSubItem's presenter
-	IDisposable m_epPresenterSizeChangedHandler;
-
-	// Helper to which to delegate cascading menu functionality.
-	CascadingMenuHelper m_menuHelper;
-
-	// Weak reference the parent that owns the menu that this item belongs to.
-	private WeakReference m_wrParentOwner;
-
-	DependencyObjectCollection<MenuFlyoutItemBase> m_tpItems;
-
-	public string Text
-	{
-		get => (string)this.GetValue(TextProperty) ?? "";
-		set => SetValue(TextProperty, value);
-	}
-
-	public IList<MenuFlyoutItemBase> Items => m_tpItems;
-
-	public IconElement Icon
-	{
-		get => (IconElement)this.GetValue(IconProperty);
-		set => this.SetValue(IconProperty, value);
-	}
-
-	public static Microsoft.UI.Xaml.DependencyProperty TextProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		"Text",
-		typeof(string),
-		typeof(MenuFlyoutSubItem),
-		new FrameworkPropertyMetadata(default(string)));
-
-	public static Microsoft.UI.Xaml.DependencyProperty IconProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		"Icon",
-		typeof(IconElement),
-		typeof(MenuFlyoutSubItem),
-		new FrameworkPropertyMetadata(default(IconElement)));
-
-	public MenuFlyoutSubItem()
-	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: ", this));
-#endif // MFSI_DEBUG
-
-		PrepareState();
-
-		DefaultStyleKey = typeof(MenuFlyoutSubItem);
-	}
-
 	void PrepareState()
 	{
 #if MFSI_DEBUG
 		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: PrepareState.", this));
 #endif // MFSI_DEBUG
 
+		//base.PrepareState();
+
 		// Create the sub menu items collection and set the owner
-		m_tpItems = new DependencyObjectCollection<MenuFlyoutItemBase>(this);
+		var spItems = new DependencyObjectCollection<MenuFlyoutItemBase>(this);
+		m_tpItems = spItems;
+		Items = spItems;
 
 		m_menuHelper = new CascadingMenuHelper();
 		m_menuHelper.Initialize(this);
@@ -122,10 +68,6 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	{
 		base.OnPointerEntered(args);
 
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnPointerEntered.", this));
-#endif // MFSI_DEBUG
-
 		UpdateParentOwner(null /*parentMenuFlyoutPresenter*/);
 		m_menuHelper.OnPointerEntered(args);
 	}
@@ -155,42 +97,23 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	}
 
 	// PointerPressed event handler that ensures the pressed state.
-
 	protected override void OnPointerPressed(PointerRoutedEventArgs args)
 	{
 		base.OnPointerPressed(args);
-
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnPointerPressed.", this));
-#endif // MFSI_DEBUG
-
 		m_menuHelper.OnPointerPressed(args);
 	}
 
 	// PointerReleased event handler that shows MenuFlyoutSubItem in
 	// case of touch input.
-
 	protected override void OnPointerReleased(PointerRoutedEventArgs args)
 	{
 		base.OnPointerReleased(args);
-
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnPointerReleased.", this));
-#endif // MFSI_DEBUG
-
 		m_menuHelper.OnPointerReleased(args);
-
 	}
-
 
 	protected override void OnGotFocus(RoutedEventArgs args)
 	{
 		base.OnGotFocus(args);
-
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnGotFocus.", this));
-#endif // MFSI_DEBUG
-
 		m_menuHelper.OnGotFocus(args);
 	}
 
@@ -198,11 +121,6 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	protected override void OnLostFocus(RoutedEventArgs args)
 	{
 		base.OnLostFocus(args);
-
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnLostFocus.", this));
-#endif // MFSI_DEBUG
-
 		m_menuHelper.OnLostFocus(args);
 	}
 
@@ -213,10 +131,6 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	protected override void OnKeyDown(KeyRoutedEventArgs args)
 	{
 		base.OnKeyDown(args);
-
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnKeyDown.", this));
-#endif // MFSI_DEBUG
 
 		bool handled = args.Handled;
 		bool shouldHandleEvent = false;
@@ -250,58 +164,41 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	protected override void OnKeyUp(KeyRoutedEventArgs args)
 	{
 		base.OnKeyUp(args);
-
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnKeyUp.", this));
-#endif // MFSI_DEBUG
-
 		m_menuHelper.OnKeyUp(args);
 	}
 
 	// Ensure the creating the popup and menu presenter to show the
-	void EnsurePopupAndPresenter()
+	private void EnsurePopupAndPresenter()
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: EnsurePopupAndPresenter.", this));
-#endif // MFSI_DEBUG
-
-		if (m_tpPopup == null)
+		if (m_tpPopup is null)
 		{
-			MenuFlyoutPresenter spParentMenuFlyoutPresenter = null;
-			Control spPresenter;
 			UIElement spPresenterAsUI;
 			FrameworkElement spPresenterAsFE;
-			Popup spPopup;
-
-			spPopup = new Popup();
+			Popup spPopup = new();
 			spPopup.IsSubMenu = true;
 			spPopup.IsLightDismissEnabled = false;
 
-			spParentMenuFlyoutPresenter = GetParentMenuFlyoutPresenter();
-#if false // UNO TODO Windowed Popup is not available
+			var spParentMenuFlyoutPresenter = GetParentMenuFlyoutPresenter();
 			if (spParentMenuFlyoutPresenter != null)
 			{
-				spParentMenuFlyout = spParentMenuFlyoutPresenter.GetParentMenuFlyout();
+				var spParentMenuFlyout = spParentMenuFlyoutPresenter.GetParentMenuFlyout();
 				// Set the windowed Popup if the MenuFlyout is set the windowed Popup
-				if (spParentMenuFlyout && spParentMenuFlyout.IsWindowedPopup())
+				if (spParentMenuFlyout is not null && spParentMenuFlyout.IsWindowedPopup)
 				{
-					ASSERT((CPopup*)(spPopup as Popup.GetHandle()).DoesPlatformSupportWindowedPopup(DXamlCore.GetCurrent().GetHandle()));
-
-					((CPopup*)(spPopup as Popup.GetHandle()).SetIsWindowed());
+					spPopup.SetIsWindowed();
 
 					// Ensure the sub menu is the windowed Popup
-					ASSERT((CPopup*)(spPopup as Popup.GetHandle()).IsWindowed());
+					global::System.Diagnostics.Debug.Assert((spPopup.IsWindowed())
 
-					xaml.IXamlRoot xamlRoot = XamlRoot.GetForElementStatic(spParentMenuFlyoutPresenter);
-					if (xamlRoot)
+					XamlRoot xamlRoot = XamlRoot.GetForElement(spParentMenuFlyoutPresenter);
+					if (xamlRoot is not null)
 					{
-						(spPopup as Popup.XamlRoot = xamlRoot);
+						spPopup.XamlRoot = xamlRoot;
 					}
 				}
 			}
-#endif
 
-			spPresenter = CreateSubPresenter();
+			var spPresenter = CreateSubPresenter();
 			spPresenterAsUI = spPresenter;
 
 			if (spParentMenuFlyoutPresenter != null)
@@ -320,47 +217,42 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 			spPresenterAsFE = spPresenter;
 
 			spPresenterAsFE.SizeChanged += OnPresenterSizeChanged;
-			m_epPresenterSizeChangedHandler = Disposable.Create(() => spPresenterAsFE.SizeChanged -= OnPresenterSizeChanged);
+			m_epPresenterSizeChangedHandler.Disposable = Disposable.Create(() => spPresenterAsFE.SizeChanged -= OnPresenterSizeChanged);
 
-			m_menuHelper.SetSubMenuPresenter(spPresenter as Control);
+			m_menuHelper.SetSubMenuPresenter(spPresenter);
 		}
 	}
 
-	void ForwardPresenterProperties(
+	private void ForwardPresenterProperties(
 		MenuFlyout pOwnerMenuFlyout,
 		MenuFlyoutPresenter pParentMenuFlyoutPresenter,
 		MenuFlyoutPresenter pSubMenuFlyoutPresenter)
 	{
-		Style spStyle;
-		ElementTheme parentPresenterTheme;
-		object spDataContext;
-		FrameworkElement spPopupAsFE;
-		MenuFlyoutPresenter spSubMenuFlyoutPresenter = pSubMenuFlyoutPresenter;
-		Control spSubMenuFlyoutPresenterAsControl;
+		var spSubMenuFlyoutPresenter = pSubMenuFlyoutPresenter;
 		DependencyObject spThisAsDO = this;
 
 		global::System.Diagnostics.Debug.Assert(pOwnerMenuFlyout != null && pParentMenuFlyoutPresenter != null && pSubMenuFlyoutPresenter != null);
 
-		spSubMenuFlyoutPresenterAsControl = spSubMenuFlyoutPresenter;
+		Control spSubMenuFlyoutPresenterAsControl = spSubMenuFlyoutPresenter;
 
 		// Set the sub presenter style from the MenuFlyout's presenter style
-		spStyle = pOwnerMenuFlyout.MenuFlyoutPresenterStyle;
+		Style spStyle = pOwnerMenuFlyout.MenuFlyoutPresenterStyle;
 
 		if (spStyle != null)
 		{
-			((Control)pSubMenuFlyoutPresenter).Style = spStyle;
+			pSubMenuFlyoutPresenter.Style = spStyle;
 		}
 		else
 		{
-			((Control)pSubMenuFlyoutPresenter).ClearValue(FrameworkElement.StyleProperty);
+			pSubMenuFlyoutPresenter.ClearValue(FrameworkElement.StyleProperty);
 		}
 
 		// Set the sub presenter's RequestTheme from the parent presenter's RequestTheme
-		parentPresenterTheme = pParentMenuFlyoutPresenter.RequestedTheme;
+		ElementTheme parentPresenterTheme = pParentMenuFlyoutPresenter.RequestedTheme;
 		pSubMenuFlyoutPresenter.RequestedTheme = parentPresenterTheme;
 
 		// Set the sub presenter's DataContext from the parent presenter's DataContext
-		spDataContext = pParentMenuFlyoutPresenter.DataContext;
+		object spDataContext = pParentMenuFlyoutPresenter.DataContext;
 		pSubMenuFlyoutPresenter.DataContext = spDataContext;
 
 		// Set the sub presenter's FlowDirection from the current sub menu item's FlowDirection
@@ -368,8 +260,11 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		pSubMenuFlyoutPresenter.FlowDirection = flowDirection;
 
 		// Set the popup's FlowDirection from the current FlowDirection
-		spPopupAsFE = m_tpPopup;
+		FrameworkElement spPopupAsFE = m_tpPopup;
 		spPopupAsFE.FlowDirection = flowDirection;
+		// Also set the popup's theme. If there is a SystemBackdrop on the menu, it'll be watching the theme on the popup
+		// itself rather than the presenter set as the popup's child.
+		spPopupAsFE.RequestedTheme = parentPresenterTheme;
 
 		// Set the sub presenter's Language from the parent presenter's Language
 		pSubMenuFlyoutPresenter.Language = pParentMenuFlyoutPresenter.Language;
@@ -378,13 +273,27 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		var isTextScaleFactorEnabled = pParentMenuFlyoutPresenter.IsTextScaleFactorEnabledInternal;
 		pSubMenuFlyoutPresenter.IsTextScaleFactorEnabledInternal = isTextScaleFactorEnabled;
 
-		ElementSoundMode soundMode = ElementSoundPlayerService.Instance.GetEffectiveSoundMode(spThisAsDO as DependencyObject);
+		ElementSoundMode soundMode = ElementSoundPlayerService.Instance.GetEffectiveSoundMode(spThisAsDO);
 
-		(spSubMenuFlyoutPresenterAsControl as Control).ElementSoundMode = soundMode;
+		spSubMenuFlyoutPresenterAsControl.ElementSoundMode = soundMode;
+	}
+
+	private void ForwardSystemBackdropToPopup(MenuFlyout ownerMenuFlyout)
+	{
+		// Set the popup's SystemBackdrop from the parent flyout's SystemBackdrop. Note that the top-level menu is a
+		// MenuFlyout with a SystemBackdrop property, but submenus are MenyFlyoutSubItems with no SystemBackdrop property,
+		// so we just use the one set on the top-level menu. SystemBackdrop can handle having multiple parents, and will
+		// keep a separate controller/configuration object per place it's used.
+		var flyoutSystemBackdrop = ownerMenuFlyout.SystemBackdrop;
+		var popupSystemBackdrop = m_tpPopup.SystemBackdrop;
+		if (flyoutSystemBackdrop != popupSystemBackdrop)
+		{
+			m_tpPopup.SystemBackdrop = flyoutSystemBackdrop;
+		}
 	}
 
 	// Ensure that any currently open MenuFlyoutSubItems are closed
-	void EnsureCloseExistingSubItems()
+	private void EnsureCloseExistingSubItems()
 	{
 #if MFSI_DEBUG
 		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: EnsureCloseExistingSubItems.", this));
@@ -413,43 +322,31 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 
 	}
 
-	bool IsOpen => m_tpPopup?.IsOpen ?? false;
+	internal bool IsOpen => m_tpPopup?.IsOpen ?? false;
 
-	Control
-	CreateSubPresenter()
+	private Control CreateSubPresenter()
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: CreateSubPresenter.", this));
-#endif // MFSI_DEBUG
-
-		MenuFlyoutPresenter spPresenter = new MenuFlyoutPresenter();
+		MenuFlyoutPresenter spPresenter = new();
 
 		// Specify the sub MenuFlyoutPresenter
-		(spPresenter as MenuFlyoutPresenter).IsSubPresenter = true;
+		spPresenter.IsSubPresenter = true;
 		(spPresenter as IMenuPresenter).Owner = this;
 
 		return spPresenter;
 	}
 
-	void UpdateParentOwner(MenuFlyoutPresenter parentMenuFlyoutPresenter)
+	private void UpdateParentOwner(MenuFlyoutPresenter parentMenuFlyoutPresenter)
 	{
-		MenuFlyoutPresenter parentPresenter = parentMenuFlyoutPresenter;
-		if (parentPresenter == null)
+		var parentPresenter = parentMenuFlyoutPresenter;
+		if (parentPresenter is null)
 		{
 			parentPresenter = GetParentMenuFlyoutPresenter();
 		}
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: UpdateParentOwner - parentPresenter=0x%p.", this, parentPresenter));
-#endif // MFSI_DEBUG
 
 		if (parentPresenter != null)
 		{
 			ISubMenuOwner parentSubMenuOwner;
 			parentSubMenuOwner = (parentPresenter as IMenuPresenter).Owner;
-
-#if MFSI_DEBUG
-			IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: UpdateParentOwner - parentSubMenuOwner=0x%p.", this, parentSubMenuOwner));
-#endif // MFSI_DEBUG
 
 			if (parentSubMenuOwner != null)
 			{
@@ -460,15 +357,11 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 
 	// Set the popup open or close status for MenuFlyoutSubItem and ensure the
 	// focus to the current presenter.
-	void SetIsOpen(bool isOpen)
+	private void SetIsOpen(bool isOpen)
 	{
 		bool isOpened = false;
 
 		isOpened = m_tpPopup.IsOpen;
-
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: SetIsOpen isOpen=%d, isOpened=%d.", this, isOpen, isOpened));
-#endif // MFSI_DEBUG
 
 		if (isOpen != isOpened)
 		{
@@ -492,13 +385,12 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 				UpdateParentOwner(parentPresenter);
 			}
 
-				// UNO TODO
-				VisualTree visualTree = VisualTree.GetForElement(this);
-				if (visualTree is not null)
-				{
-					// Put the popup on the same VisualTree as this flyout sub item to make sure it shows up in the right place
-					m_tpPopup.SetVisualTree(visualTree);
-				}
+			VisualTree visualTree = VisualTree.GetForElement(this);
+			if (visualTree is not null)
+			{
+				// Put the popup on the same VisualTree as this flyout sub item to make sure it shows up in the right place
+				m_tpPopup.SetVisualTree(visualTree);
+			}
 
 			// Set the popup open or close state
 			m_tpPopup.IsOpen = isOpen;
@@ -508,58 +400,28 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 			if (isOpen)
 			{
 				// Set the focus to the displayed sub menu presenter to navigate the each sub items
-				m_tpPresenter.Focus(FocusState.Programmatic);
-
-				// UNO TODO
-				// (DependencyObject.SetFocusedElement(
-				// 	spPresenterAsDO as DependencyObject,
-				// 	xaml.FocusState_Programmatic,
-				// 	false /*animateIfBringIntoView*/,
-				// 	&focusUpdated));
+				this.SetFocusedElement(m_tpPresenter, FocusState.Programmatic, false);
 			}
 			else
 			{
 				// Set the focus to the sub menu item
-				this.Focus(FocusState.Programmatic);
-
-				// UNO TODO
-				//(DependencyObject.SetFocusedElement(
-				//	spThisAsDO as DependencyObject,
-				//	xaml.FocusState_Programmatic,
-				//	false /*animateIfBringIntoView*/,
-				//	&focusUpdated));
+				this.SetFocusedElement(this, FocusState.Programmatic, false);
 			}
 
 			UpdateVisualState();
 		}
-
-
 	}
 
-	internal void Open()
-	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Open.", this));
-#endif // MFSI_DEBUG
+	internal void Open() => m_menuHelper.OpenSubMenu();
 
-		m_menuHelper.OpenSubMenu();
-	}
-
-	internal void Close()
-	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Close.", this));
-#endif // MFSI_DEBUG
-
-		m_menuHelper.CloseSubMenu();
-
-	}
+	internal void Close() => m_menuHelper.CloseSubMenu();
 
 	private protected override void ChangeVisualState(bool bUseTransitions)
 	{
 		bool hasToggleMenuItem = false;
 		bool hasIconMenuItem = false;
 		bool bIsPopupOpened = false;
+		bool showSubMenuOpenedState = false;
 		MenuFlyoutPresenter spPresenter;
 
 		var bIsEnabled = IsEnabled;
@@ -578,12 +440,18 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 			bIsPopupOpened = m_tpPopup.IsOpen;
 		}
 
+		var isDelayCloseTimerRunning = m_menuHelper.IsDelayCloseTimerRunning();
+		if (bIsPopupOpened && !isDelayCloseTimerRunning)
+		{
+			showSubMenuOpenedState = true;
+		}
+
 		// CommonStates
 		if (!bIsEnabled)
 		{
 			VisualStateManager.GoToState(this, "Disabled", bUseTransitions);
 		}
-		else if (bIsPopupOpened)
+		else if (showSubMenuOpenedState)
 		{
 			VisualStateManager.GoToState(this, "SubMenuOpened", bUseTransitions);
 		}
@@ -651,22 +519,11 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	// MenuFlyoutSubItem's presenter size changed event handler that
 	// adjust the sub presenter position to the proper space area
 	// on the available window rect.
-	void OnPresenterSizeChanged(
-	object pSender,
-	SizeChangedEventArgs args)
+	private void OnPresenterSizeChanged(object pSender, SizeChangedEventArgs args)
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnPresenterSizeChanged.", this));
-#endif // MFSI_DEBUG
-
-		m_menuHelper.OnPresenterSizeChanged(pSender, args, m_tpPopup as Popup);
-
-#if false // UNO TODO
-		if (m_tpMenuPopupThemeTransition == null)
+		if (m_tpMenuPopupThemeTransition == null && ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition"))
 		{
-
-			MenuFlyoutPresenter parentMenuFlyoutPresenter;
-			parentMenuFlyoutPresenter = GetParentMenuFlyoutPresenter();
+			MenuFlyoutPresenter parentMenuFlyoutPresenter = GetParentMenuFlyoutPresenter();
 
 			// Get how many sub menus deep we are. We need this number to know what kind of Z
 			// offset to use for displaying elevation. The menus aren't parented in the visual
@@ -677,60 +534,35 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 				depth = parentMenuFlyoutPresenter.GetDepth() + 1;
 			}
 
-			Transition spMenuPopupChildTransition;
-			(MenuFlyout.PreparePopupThemeTransitionsAndShadows((Popup*)(m_tpPopup), 0.67 /* closedRatioConstant */, depth, &spMenuPopupChildTransition));
-			(spMenuPopupChildTransition as MenuPopupThemeTransition.Direction = xaml_primitives.AnimationDirection_Top);
+			Transition spMenuPopupChildTransition = MenuFlyout.PreparePopupThemeTransitionsAndShadows(m_tpPopup, 0.67 /* closedRatioConstant */, depth);
+			((MenuPopupThemeTransition)spMenuPopupChildTransition).Direction = AnimationDirection.Top;
 			m_tpMenuPopupThemeTransition = spMenuPopupChildTransition;
 		}
+
+		m_menuHelper.OnPresenterSizeChanged(pSender, args, m_tpPopup as Popup);
 
 		// Update the OpenedLength property of the ThemeTransition.
 		double openedLength = (m_tpPresenter as Control).ActualHeight;
 
 		(m_tpMenuPopupThemeTransition as MenuPopupThemeTransition).OpenedLength = openedLength;
-#endif
 	}
 
-#if false
-	void ClearStateFlags()
+	private void ClearStateFlags()
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: ClearStateFlags.", this));
-#endif // MFSI_DEBUG
-
 		m_menuHelper.ClearStateFlags();
-
 	}
 
-	void OnIsEnabledChanged(/*IsEnabledChangedEventArgs* args*/)
+	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs args)
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnIsEnabledChanged.", this));
-#endif // MFSI_DEBUG
-
-		m_menuHelper.OnIsEnabledChanged();
+		m_menuHelper.OnIsEnabledChanged(args);
 	}
 
-	void OnVisibilityChanged()
+	protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OnVisibilityChanged.", this));
-#endif // MFSI_DEBUG
-
 		m_menuHelper.OnVisibilityChanged();
-
 	}
-#endif
 
-	protected override AutomationPeer OnCreateAutomationPeer()
-	{
-		//*ppAutomationPeer = null;
-		//MenuFlyoutSubItemAutomationPeer spAutomationPeer;
-		//(ActivationAPI.ActivateAutomationInstance(KnownTypeIndex.MenuFlyoutSubItemAutomationPeer, GetHandle(), spAutomationPeer.GetAddressOf()));
-		//(spAutomationPeer.Owner = this);
-		//*ppAutomationPeer = spAutomationPeer.Detach();
-
-		return null;
-	}
+	protected override AutomationPeer OnCreateAutomationPeer() => new MenuFlyoutSubItemAutomationPeer(this);
 
 	private protected override string GetPlainText() => Text;
 
@@ -739,7 +571,16 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	ISubMenuOwner ISubMenuOwner.ParentOwner
 	{
 		get => m_wrParentOwner?.Target as ISubMenuOwner;
-		set => m_wrParentOwner = new WeakReference(value);
+		set => m_wrParentOwner = WeakReferencePool.RentWeakReference(this, value);
+	}
+
+	private void SetSubMenuDirection(bool isSubMenuDirectionUp)
+	{
+		if (m_tpMenuPopupThemeTransition is not null)
+		{
+			((MenuPopupThemeTransition)m_tpMenuPopupThemeTransition).Direction = isSubMenuDirectionUp ?
+				AnimationDirection.Bottom : AnimationDirection.Top;
+		}
 	}
 
 	void ISubMenuOwner.PrepareSubMenu()
@@ -756,13 +597,10 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 
 	void ISubMenuOwner.OpenSubMenu(Point position)
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: OpenSubMenu.", this));
-#endif // MFSI_DEBUG
-
 		EnsurePopupAndPresenter();
 		EnsureCloseExistingSubItems();
 
+		MenuFlyout parentMenuFlyout = null;
 		MenuFlyoutPresenter parentMenuFlyoutPresenter;
 		parentMenuFlyoutPresenter = GetParentMenuFlyoutPresenter();
 
@@ -772,7 +610,6 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 			owningMenu = (parentMenuFlyoutPresenter as IMenuPresenter).OwningMenu;
 			(m_tpPresenter as IMenuPresenter).OwningMenu = owningMenu;
 
-			MenuFlyout parentMenuFlyout;
 			parentMenuFlyout = parentMenuFlyoutPresenter.GetParentMenuFlyout();
 
 			if (parentMenuFlyout != null)
@@ -793,26 +630,29 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		m_tpPopup.VerticalOffset = position.Y;
 		SetIsOpen(true);
 
-
+		if (parentMenuFlyout is not null)
+		{
+			// Note: This is the call that propagates the SystemBackdrop object set on either this FlyoutBase or its
+			// MenuFlyoutPresenter to the Popup. A convenient place to do this is in ForwardTargetPropertiesToPresenter, but we
+			// see cases where the MenuFlyoutPresenter's SystemBackdrop property is null until it enters the tree via the
+			// Popup::Open call above. So trying to propagate it before opening the popup actually finds no SystemBackdrop, and
+			// the popup is left with a transparent background. Do the propagation after the popup opens instead. Windowed
+			// popups support having a backdrop set after the popup is open.
+			ForwardSystemBackdropToPopup(parentMenuFlyout);
+		}
 	}
 
 	void ISubMenuOwner.PositionSubMenu(Point position)
 	{
-#if MFSI_DEBUG
-		IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: PositionSubMenu - (%f, %f).", this, position.X, position.Y));
-#endif // MFSI_DEBUG
-
-		if (position.X != float.NegativeInfinity)
+		if (position.X != double.NegativeInfinity)
 		{
 			m_tpPopup.HorizontalOffset = position.X;
 		}
 
-		if (position.Y != float.NegativeInfinity)
+		if (position.Y != double.NegativeInfinity)
 		{
 			m_tpPopup.VerticalOffset = position.Y;
 		}
-
-
 	}
 
 	void ISubMenuOwner.ClosePeerSubMenus()
@@ -865,18 +705,50 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 
 	void ISubMenuOwner.RaiseAutomationPeerExpandCollapse(bool isOpen)
 	{
-		// UNO TODO
-		//AutomationPeer spAutomationPeer;
-		//bool isListener = false;
+		var isListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged);
+		if (isListener)
+		{
+			var spAutomationPeer = GetOrCreateAutomationPeer();
+			if (spAutomationPeer is not null)
+			{
+				(spAutomationPeer as MenuFlyoutSubItemAutomationPeer).RaiseExpandCollapseAutomationEvent(isOpen);
+			}
+		}
+	}
 
-		//AutomationPeer.ListenerExistsHelper(xaml_automation_peers.AutomationEvents_PropertyChanged, &isListener);
-		//if (isListener)
-		//{
-		//	(GetOrCreateAutomationPeer(&spAutomationPeer));
-		//	if (spAutomationPeer)
-		//	{
-		//		(spAutomationPeer as MenuFlyoutSubItemAutomationPeer.RaiseExpandCollapseAutomationEvent(isOpen));
-		//	}
-		//}
+	internal void QueueRefreshItemsSource()
+	{
+		// The items source might change multiple times in a single tick, so we'll coalesce the refresh
+		// into a single event once all of the changes have completed.
+		if (m_tpPresenter is not null && !_itemsSourceRefreshPending)
+		{
+			var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+			var wrThis = WeakReferencePool.RentSelfWeakReference(this);
+
+			dispatcherQueue.TryEnqueue(
+				() =>
+				{
+					var thisMenuFlyoutSubItem = wrThis.Target as MenuFlyoutSubItem;
+
+					if (thisMenuFlyoutSubItem is not null)
+					{
+						thisMenuFlyoutSubItem.RefreshItemsSource();
+					}
+				});
+
+			_itemsSourceRefreshPending = true;
+		}
+	}
+
+	private void RefreshItemsSource()
+	{
+		_itemsSourceRefreshPending = false;
+
+		global::System.Diagnostics.Debug.Assert(m_tpPresenter is not null);
+
+		// Setting the items source to null and then back to Items causes the presenter to pick up any changes.
+		((ItemsControl)m_tpPresenter).ItemsSource = null;
+		((ItemsControl)m_tpPresenter).ItemsSource = m_tpItems;
 	}
 }
