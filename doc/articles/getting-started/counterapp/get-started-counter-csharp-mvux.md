@@ -85,7 +85,7 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Main Page - Other Elements](includes/include-elements-csharp.md)]
 
-[!INCLUDE [View Model](includes/include-mvux.md)]
+[!INCLUDE [Main Model](includes/include-mvux.md)]
 
 ## Data Binding
 
@@ -177,6 +177,6 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     }
     ```
 
-[!INCLUDE [View Model](includes/include-wrap.md)]
+[!INCLUDE [Wrap up](includes/include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVUX).
