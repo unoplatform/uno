@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Uno.Disposables;
-using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -675,7 +669,7 @@ internal class CascadingMenuHelper
 		UpdateOwnerVisualState();
 	}
 
-	internal void OnIsEnabledChanged()
+	internal void OnIsEnabledChanged(IsEnabledChangedEventArgs args)
 	{
 		Control ownerAsControl = m_wpOwner?.Target as Control;
 
@@ -959,5 +953,11 @@ internal class CascadingMenuHelper
 		{
 			ownerAsControl.UpdateVisualState(true /* useTransitions */);
 		}
+	}
+
+	internal bool IsDelayCloseTimerRunning()
+	{
+		// TODO Uno: Implement this
+		return false;
 	}
 }
