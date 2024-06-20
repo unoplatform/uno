@@ -10,8 +10,8 @@
 		<TargetPlatformIdentifier>BrowserWasm</TargetPlatformIdentifier>
 		<TargetFrameworkIdentifier>BrowserWasm</TargetFrameworkIdentifier>
 		<TargetPlatformSupported>true</TargetPlatformSupported>
-		<TargetPlatformVersion>$([System.Text.RegularExpressions.Regex]::Match($(TargetFramework), '\d+.\d+'))</TargetPlatformVersion>
-		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">8.0</SupportedOSPlatformVersion>
+		<TargetPlatformVersion>1.0</TargetPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">1.0</SupportedOSPlatformVersion>
 
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
 
