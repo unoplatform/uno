@@ -41,7 +41,7 @@ partial class ContentPresenter
 
 	partial void TryRegisterNativeElement(object oldValue, object newValue)
 	{
-		if (IsNativeHost && IsLoaded)
+		if (IsNativeHost && IsActiveInVisualTree)
 		{
 			DetachNativeElement(oldValue);
 		}
@@ -59,9 +59,9 @@ partial class ContentPresenter
 				throw new InvalidOperationException("ContentTemplateSelector cannot be set when the Content is a native element");
 			}
 
-			if (IsLoaded)
+			if (IsActiveInVisualTree)
 			{
-				//If loaded, attach immediately. If not, don't attach since OnLoaded will attach later.
+				//If in visual tree, attach immediately. If not, don't attach since Enter will attach later.
 				AttachNativeElement();
 			}
 		}

@@ -757,7 +757,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		TrySetDataContextFromContent(newValue);
 
-		if (IsLoaded)
+		if (IsActiveInVisualTree)
 		{
 			TryRegisterNativeElement(oldValue, newValue);
 		}
@@ -941,6 +941,27 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();
 #endif
+
+		// We do this in Enter not Loaded since Loaded is a lot more tricky
+		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)
+		if (!IsNativeHost)
+		{
+			TryRegisterNativeElement(null, Content);
+		}
+		if (IsNativeHost)
+		{
+			AttachNativeElement();
+		}
+	}
+
+	internal override void Leave(LeaveParams @params)
+	{
+		base.Leave(@params);
+
+		if (IsNativeHost)
+		{
+			DetachNativeElement(Content);
+		}
 	}
 #endif
 
@@ -971,7 +992,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
-#endif
 
 		if (!IsNativeHost)
 		{
@@ -981,16 +1001,19 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		{
 			AttachNativeElement();
 		}
+#endif
 	}
 
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		if (IsNativeHost)
 		{
 			DetachNativeElement(Content);
 		}
+#endif
 	}
 
 	private bool ResetDataContextOnFirstLoad()
