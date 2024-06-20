@@ -28,7 +28,7 @@ namespace Uno.UI.RemoteControl.HotReload;
 [TemplateVisualState(GroupName = "Result", Name = ResultNoneVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultSuccessVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultFailedVisualStateName)]
-internal sealed partial class HotReloadStatusView : Control
+public sealed partial class HotReloadStatusView : Control
 {
 	private const string StatusUnknownVisualStateName = "Unknown";
 	private const string StatusErrorVisualStateName = "Error";
@@ -61,7 +61,7 @@ internal sealed partial class HotReloadStatusView : Control
 		typeof(HotReloadStatusView),
 		new PropertyMetadata(default(ObservableCollection<HotReloadEntryViewModel>)));
 
-	public ObservableCollection<HotReloadEntryViewModel> History
+	internal ObservableCollection<HotReloadEntryViewModel> History
 	{
 		get => (ObservableCollection<HotReloadEntryViewModel>)GetValue(HistoryProperty);
 		private init => SetValue(HistoryProperty, value);
@@ -224,7 +224,7 @@ internal sealed partial class HotReloadStatusView : Control
 		}
 	}
 
-	public void UpdateHeadline(HotReloadState? state)
+	private void UpdateHeadline(HotReloadState? state)
 	{
 		HeadLine = state switch
 		{

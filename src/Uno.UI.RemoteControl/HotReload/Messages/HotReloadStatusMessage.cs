@@ -14,7 +14,7 @@ namespace Newtonsoft.Json
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
-	internal record HotReloadStatusMessage(
+	public record HotReloadStatusMessage(
 		[property: JsonProperty] HotReloadState State,
 		[property: JsonProperty] IImmutableList<HotReloadServerOperationData> Operations)
 		: IMessage
@@ -30,7 +30,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		string IMessage.Name => Name;
 	}
 
-	internal record HotReloadServerOperationData(
+	public record HotReloadServerOperationData(
 		long Id,
 		DateTimeOffset StartTime,
 		ImmutableHashSet<string> FilePaths,

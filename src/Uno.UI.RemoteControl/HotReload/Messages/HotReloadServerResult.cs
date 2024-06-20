@@ -6,7 +6,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages;
 /// <summary>
 /// The result of a hot-reload operation on server.
 /// </summary>
-internal enum HotReloadServerResult
+public enum HotReloadServerResult
 {
 	/// <summary>
 	/// Hot-reload completed with no changes.

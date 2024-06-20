@@ -21,14 +21,14 @@ public partial class ClientHotReloadProcessor
 
 	private readonly StatusSink _status;
 
-	internal enum HotReloadSource
+	public enum HotReloadSource
 	{
 		Runtime,
 		DevServer,
 		Manual
 	}
 
-	internal enum HotReloadClientResult
+	public enum HotReloadClientResult
 	{
 		/// <summary>
 		/// Successful hot-reload.
@@ -52,7 +52,7 @@ public partial class ClientHotReloadProcessor
 	/// <param name="State">The global state of the hot-reload engine (combining server and client state).</param>
 	/// <param name="Server">State and history of all hot-reload operations detected on the server.</param>
 	/// <param name="Local">State and history of all hot-reload operation received by this client.</param>
-	internal record Status(
+	public record Status(
 		HotReloadState State,
 		(HotReloadState State, IImmutableList<HotReloadServerOperationData> Operations) Server,
 		(HotReloadState State, IImmutableList<HotReloadClientOperation> Operations) Local);
@@ -120,7 +120,7 @@ public partial class ClientHotReloadProcessor
 		}
 	}
 
-	internal class HotReloadClientOperation
+	public class HotReloadClientOperation
 	{
 		#region Current
 		[ThreadStatic]
@@ -149,7 +149,7 @@ public partial class ClientHotReloadProcessor
 		private ImmutableList<Exception> _exceptions = ImmutableList<Exception>.Empty;
 		private int _result = -1;
 
-		internal HotReloadClientOperation(HotReloadSource source, Type[] types, Action onUpdated)
+		public HotReloadClientOperation(HotReloadSource source, Type[] types, Action onUpdated)
 		{
 			Source = source;
 			Types = types;
@@ -194,7 +194,7 @@ public partial class ClientHotReloadProcessor
 			_onUpdated();
 		}
 
-		internal void ReportCompleted()
+		public void ReportCompleted()
 		{
 			var result = (_exceptions, AbortReason: IgnoreReason) switch
 			{

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
@@ -11,7 +12,6 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -27,6 +27,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Private.Infrastructure;
+using Uno.Diagnostics.UI;
+using Uno.UI.RemoteControl.HotReload;
+using Uno.UI.RemoteControl.HotReload.Messages;
+using Frame = Microsoft.UI.Xaml.Controls.Frame;
+using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -110,6 +115,30 @@ namespace SamplesApp
 		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			EnsureMainWindow();
+
+
+			var hr = DiagnosticView.Register<HotReloadStatusView, ClientHotReloadProcessor.Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.Update(status));
+			_mainWindow.Activated += ShowDiagOverlay;
+
+			async void ShowDiagOverlay(object sender, WindowActivatedEventArgs args)
+			{
+				_mainWindow!.Activated -= ShowDiagOverlay;
+				await Task.Delay(1000);
+				DiagnosticsOverlay.Get(_mainWindow.Content!.XamlRoot!).Show();
+
+				var local = new ClientHotReloadProcessor.HotReloadClientOperation(ClientHotReloadProcessor.HotReloadSource.DevServer, [typeof(MainPage)], () => { });
+				var status = new ClientHotReloadProcessor.Status(
+					HotReloadState.Idle,
+					Server: (HotReloadState.Idle, [new HotReloadServerOperationData(1, DateTimeOffset.Now.AddSeconds(-5), ["testfile.txt"], DateTimeOffset.Now, HotReloadServerResult.Success)]),
+					Local: (HotReloadState.Idle, [local]));
+
+				hr.Update(status);
+
+				await Task.Delay(10000);
+				local.ReportCompleted();
+
+				hr.Update(status);
+			}
 
 			SetupAndroidEnvironment();
 
