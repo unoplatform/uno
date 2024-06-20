@@ -21792,8 +21792,7 @@
                     <ControlTemplate TargetType="Thumb">
                       <!-- Uno specific (LinearGradientBrush borders): We need additional Grid here #6457 -->
                       <Grid>
-                        <!-- Uno specific: WinUI uses Margin -2 here, which causes clipping for us. #16484 -->
-                        <Border x:Name="ThumbBorder" Margin="0" Background="{ThemeResource SliderOuterThumbBackground}" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
+                        <Border x:Name="ThumbBorder" Margin="-2" Background="{ThemeResource SliderOuterThumbBackground}" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
                           <Ellipse x:Name="SliderInnerThumb" RenderTransformOrigin="0.5, 0.5" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderInnerThumbWidth}" Height="{ThemeResource SliderInnerThumbHeight}">
                             <Ellipse.RenderTransform>
                               <CompositeTransform />
