@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutSubItem_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
 
-using System.Linq;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -183,12 +182,13 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 			{
 				var spParentMenuFlyout = spParentMenuFlyoutPresenter.GetParentMenuFlyout();
 				// Set the windowed Popup if the MenuFlyout is set the windowed Popup
-				if (spParentMenuFlyout is not null && spParentMenuFlyout.IsWindowedPopup)
+				// TODO Uno: Windowed popup support
+				if (spParentMenuFlyout is not null) //&& spParentMenuFlyout.IsWindowedPopup())
 				{
-					spPopup.SetIsWindowed();
+					//spPopup.SetIsWindowed();
 
 					// Ensure the sub menu is the windowed Popup
-					global::System.Diagnostics.Debug.Assert((spPopup.IsWindowed())
+					// global::System.Diagnostics.Debug.Assert((spPopup.IsWindowed())
 
 					XamlRoot xamlRoot = XamlRoot.GetForElement(spParentMenuFlyoutPresenter);
 					if (xamlRoot is not null)
@@ -733,7 +733,7 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 					{
 						return;
 					}
-					
+
 					var thisMenuFlyoutSubItem = wrThis.Target as MenuFlyoutSubItem;
 
 					if (thisMenuFlyoutSubItem is not null)

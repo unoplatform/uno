@@ -72,7 +72,7 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 	{
 		get
 		{
-			InitializeKeyboardAcceleratorText()
+			InitializeKeyboardAcceleratorText();
 			return (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty) ?? "";
 		}
 
