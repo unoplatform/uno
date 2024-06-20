@@ -216,7 +216,7 @@ internal sealed partial class HotReloadStatusView : Control
 			{
 				if (history[i].Start > date)
 				{
-					return i - 1;
+					return i;
 				}
 			}
 

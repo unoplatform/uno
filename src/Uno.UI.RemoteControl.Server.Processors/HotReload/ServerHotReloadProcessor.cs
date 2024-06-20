@@ -304,10 +304,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
 			}
 
-			public async ValueTask CompleteUsingIntermediates()
+			public async ValueTask CompleteUsingIntermediates(Exception? exception = null)
 			{
-				Debug.Assert(_aggregatedFilesCount == _filePaths.Count);
-				await Complete(_aggregatedResult);
+				if (exception is null)
+				{
+					//Debug.Assert(_aggregatedFilesCount == _filePaths.Count);
+					await Complete(_aggregatedResult);
+				}
+				else
+				{
+					await Complete(HotReloadServerResult.Failed, exception);
+				}
 			}
 
 			/// <summary>
