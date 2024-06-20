@@ -11,4 +11,7 @@
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';opensans;'))">
+		<UseOpenSans>true</UseOpenSans>
+	</PropertyGroup>
 </Project>

@@ -3,7 +3,6 @@
 	<Import Project="..\Directory.Build.targets"/>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
-		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.4.0-dev.6" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" />
 	</ItemGroup>
 

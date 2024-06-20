@@ -10,7 +10,13 @@ The `FontFamily` of many controls (e.g. `TextBox` or `Control`) property allows 
 
 ## Default text font
 
-The default text font on WinUI is Segoe UI, which has been the default in Uno as well. However, Segoe UI isn't available on macOS, Linux, Browsers running on macOS or Linux. Therefore, starting with Uno 5.3, we have changed the default text font for Uno Platform to OpenSans which is served through [Uno.Fonts.OpenSans NuGet package](https://nuget.org/packages/Uno.Fonts.OpenSans). To control the default font, use `FeatureConfiguration.Font.DefaultTextFontFamily`.
+The default text font on WinUI is Segoe UI, which is default in Uno as well. However, Segoe UI isn't available on macOS, Linux, Browsers running on macOS or Linux. Therefore, starting with Uno 5.4, we introduce the ability to change the default text font for Uno Platform to OpenSans which is served through [Uno.Fonts.OpenSans NuGet package](https://nuget.org/packages/Uno.Fonts.OpenSans).
+
+If you are using Uno.Sdk, add `OpenSans` to `UnoFeatures` to switch to OpenSans. Otherwise, add a `PackageReference` to `Uno.Fonts.Fluent` and also set `DefaultTextFontFamily` in application initialization:
+
+```csharp
+global::Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
+```
 
 ## Adding a custom font in the App assets folder
 
