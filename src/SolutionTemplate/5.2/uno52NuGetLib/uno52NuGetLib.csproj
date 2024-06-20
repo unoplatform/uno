@@ -51,6 +51,35 @@
 			ExpectedMissingReferences="@(ExpectedMissingReference)" />
 	</Target>
 
+
+	<Target Name="_UnoValidateSelfAssets"
+			 AfterTargets="Build" DependsOnTargets="Pack">
+
+		<ItemGroup>
+			<!-- extract files from @(NuGetPackOutput) that end in .nupkg -->
+			<_OutputNugetFile Include="@(NuGetPackOutput)" Condition="'%(Extension)' == '.nupkg'" />			
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_tempNuGetOutput>$(IntermediateOutputPath)__NuGetPackage</_tempNuGetOutput>
+		</PropertyGroup>
+		
+		<!-- Decompress the _OutputNugetFile to a temp folder -->
+		<Unzip
+			SourceFiles="@(_OutputNugetFile)"
+			DestinationFolder="$(_tempNuGetOutput)" />
+
+		<ItemGroup>
+			<!-- Validates that assets are properly included -->
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-browserwasm1.0\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-desktop1.0\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-ios17.2\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-android34.0\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-maccatalyst17.2\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-windows10.0.19041\uno52NuGetLib\Assets\test.xml" />
+		</ItemGroup>
+	</Target>
+
 	<UsingTask TaskName="ValidatePackageReferences" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<NuGetPackOutputFiles ParameterType="System.String[]" Required="true" />
