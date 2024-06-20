@@ -175,5 +175,39 @@ partial class ContentPresenter : IFrameworkTemplatePoolAware
 
 		IsUsingDefaultTemplate = ContentTemplateRoot is ImplicitTextBlock;
 	}
+
+	private void SetContentTemplateRootToPlaceholder()
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
+		}
+
+		var textBlock = new ImplicitTextBlock(this);
+
+		void setBinding(DependencyProperty property, string path)
+			=> textBlock.SetBinding(
+				property,
+				new Binding
+				{
+					Path = new PropertyPath(path),
+					Source = this,
+					Mode = BindingMode.OneWay
+				}
+			);
+
+		if (!IsNativeHost)
+		{
+			setBinding(TextBlock.TextProperty, nameof(Content));
+			setBinding(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
+			setBinding(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
+			setBinding(TextBlock.TextWrappingProperty, nameof(TextWrapping));
+			setBinding(TextBlock.MaxLinesProperty, nameof(MaxLines));
+			setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+		}
+
+		ContentTemplateRoot = textBlock;
+		IsUsingDefaultTemplate = true;
+	}
 }
 #endif
