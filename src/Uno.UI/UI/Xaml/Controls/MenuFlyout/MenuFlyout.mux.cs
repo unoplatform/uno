@@ -1,59 +1,58 @@
-﻿namespace Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml;
+
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class MenuFlyout
 {
 	internal static void KeyboardAcceleratorFlyoutItemEnter(
-		DependencyObject* element,
-		DependencyObject* pNamescopeOwner,
-		KnownPropertyIndex collectionPropertyIndex,
+		DependencyObject element,
+		DependencyObject pNamescopeOwner,
+		DependencyProperty property,
 		EnterParams parameters)
 	{
-		CValue value;
-		IFC_RETURN(element->GetValueByIndex(collectionPropertyIndex, &value));
+		var value = element.GetValue(property);
+		if (value is MenuFlyoutItemBaseCollection items)
+		{
+			// This is a dead enter to register any keyboard accelerators that may be present in the MenuFlyout items
+			// to the list of live accelerators
+			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false };
+			//params.fSkipNameRegistration = true;
+			//params.fUseLayoutRounding = false;
+			//params.fCoercedIsEnabled = false;
 
-		if (CMenuFlyoutItemBaseCollection * const items = do_pointer_cast<CMenuFlyoutItemBaseCollection>(value.AsObject()))
-
-	{
-        // This is a dead enter to register any keyboard accelerators that may be present in the MenuFlyout items
-        // to the list of live accelerators
-        params.fIsForKeyboardAccelerator = true;
-        params.fIsLive = false;
-        params.fSkipNameRegistration = true;
-        params.fUseLayoutRounding = false;
-        params.fCoercedIsEnabled = false;
-
-			for (CDependencyObject* item : *items)
+			foreach (MenuFlyoutItemBase item in items)
 			{
-				IFC_RETURN(item->Enter(pNamescopeOwner, params));
+				if (item.KeyboardAccelerators is KeyboardAcceleratorCollection kac)
+				{
+					kac.Enter(pNamescopeOwner, parameters);
+				}
 			}
 		}
-
-		return S_OK;
 	}
 
 	internal static void KeyboardAcceleratorFlyoutItemLeave(
 		DependencyObject element,
 		DependencyObject pNamescopeOwner,
-		KnownPropertyIndex collectionPropertyIndex,
+		DependencyProperty property,
 		LeaveParams parameters)
 	{
-		CValue value;
-		IFC_RETURN(element->GetValueByIndex(collectionPropertyIndex, &value));
+		var value = element.GetValue(property);
+		if (value is MenuFlyoutItemBaseCollection items)
+		{
+			// This is a dead leave to remove any keyboard accelerators that may be present in the MenuFlyout items
+			// from the list of live accelerators
+			parameters = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false };
+			//params.fSkipNameRegistration = true;
+			//params.fUseLayoutRounding = false;
+			//params.fCoercedIsEnabled = false;
 
-		if (CMenuFlyoutItemBaseCollection * const items = do_pointer_cast<CMenuFlyoutItemBaseCollection>(value.AsObject()))
-
-	{
-        // This is a dead leave to remove any keyboard accelerators that may be present in the MenuFlyout items
-        // from the list of live accelerators
-        params.fIsForKeyboardAccelerator = true;
-        params.fIsLive = false;
-        params.fSkipNameRegistration = true;
-        params.fUseLayoutRounding = false;
-        params.fCoercedIsEnabled = false;
-
-			for (CDependencyObject* item : *items)
+			foreach (MenuFlyoutItemBase item in items)
 			{
-				IFC_RETURN(item->Leave(pNamescopeOwner, params));
+				if (item.KeyboardAccelerators is KeyboardAcceleratorCollection kac)
+				{
+					kac.Leave(pNamescopeOwner, parameters);
+				}
 			}
 		}
 	}
@@ -61,12 +60,12 @@ partial class MenuFlyout
 	private void EnterImpl(DependencyObject namescopeOwner, EnterParams parameters)
 	{
 		//base.EnterImpl(pNamescopeOwner, params));
-		IFC_RETURN(KeyboardAcceleratorFlyoutItemEnter(this, pNamescopeOwner, KnownPropertyIndex::MenuFlyout_Items, params));
+		KeyboardAcceleratorFlyoutItemEnter(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
 	}
 
 	private void LeaveImpl(DependencyObject namescopeOwner, LeaveParams parameters)
 	{
 		//base.LeaveImpl(pNamescopeOwner, params);
-		IFC_RETURN(KeyboardAcceleratorFlyoutItemLeave(this, pNamescopeOwner, KnownPropertyIndex::MenuFlyout_Items, params));
+		KeyboardAcceleratorFlyoutItemLeave(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
 	}
 }
