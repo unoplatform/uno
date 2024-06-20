@@ -42,9 +42,9 @@ public abstract partial class MenuFlyoutItemBase : Control
 			if (spParentFlyout != null)
 			{
 				shouldBeNarrow =
-					(spParentFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.Mouse) ||
-					(spParentFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.Pen) ||
-					(spParentFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.Keyboard);
+					(spParentFlyout.InputDeviceTypeUsedToOpen == Uno.UI.Xaml.Input.InputDeviceType.Mouse) ||
+					(spParentFlyout.InputDeviceTypeUsedToOpen == Uno.UI.Xaml.Input.InputDeviceType.Pen) ||
+					(spParentFlyout.InputDeviceTypeUsedToOpen == Uno.UI.Xaml.Input.InputDeviceType.Keyboard);
 			}
 		}
 

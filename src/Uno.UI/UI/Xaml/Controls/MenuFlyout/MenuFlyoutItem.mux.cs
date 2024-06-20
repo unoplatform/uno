@@ -512,7 +512,7 @@ partial class MenuFlyoutItem
 		// since if we don't have any menu items with accelerator text, we won't be showing any accelerator text anyway.
 		if (hasMenuItemWithKeyboardAcceleratorText)
 		{
-			isKeyboardPresent = DXamlCore.Current.GetIsKeyboardPresent();
+			isKeyboardPresent = DXamlCore.Current.IsKeyboardPresent;
 		}
 
 		// CommonStates
