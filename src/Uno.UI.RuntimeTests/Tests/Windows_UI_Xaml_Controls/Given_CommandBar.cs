@@ -5,14 +5,10 @@ using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.RuntimeTests.Helpers;
-<<<<<<< HEAD
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-=======
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
->>>>>>> bb648dd5f5 (chore: Add missing usings)
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
@@ -29,9 +25,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_CommandBar
 	{
-<<<<<<< HEAD
-=======
-		[TestMethod]
 		public async Task TestNativeCommandBarIcon()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -94,7 +87,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
 		}
 
->>>>>>> 066594c5db (test: Test for native command bar with icon)
 #if __IOS__
 		[TestMethod]
 		[RequiresFullWindow]
