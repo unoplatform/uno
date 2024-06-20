@@ -201,14 +201,11 @@ namespace UITests.Shared.Windows_Storage.Pickers
 					filePicker.CommitButtonText = CommitButtonText;
 				}
 				filePicker.FileTypeFilter.AddRange(FileTypeFilter);
-<<<<<<< HEAD
-=======
 
 				StatusMessage = "Picking multiple files...";
 #if __IOS__
 				filePicker.SetMultipleFilesLimit(MaxFiles);
 #endif
->>>>>>> 4f104a0220 (test: update FileOpenPicker sample with max file)
 				var pickedFiles = await filePicker.PickMultipleFilesAsync();
 				if (pickedFiles.Any())
 				{
