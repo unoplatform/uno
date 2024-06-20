@@ -246,6 +246,12 @@ internal static class SubPropertyHelpers
 		{
 			existingValue.Z = ValidateValue<float>(propertyValue);
 		}
+		else if (subPropertyName.Equals("XY", StringComparison.OrdinalIgnoreCase))
+		{
+			var xy = ValidateValue<Vector2>(propertyValue);
+			existingValue.X = xy.X;
+			existingValue.Y = xy.Y;
+		}
 		else
 		{
 			throw new Exception($"Cannot update color with a sub-property named '{subPropertyName}'.");
@@ -496,6 +502,10 @@ internal static class SubPropertyHelpers
 		else if (subPropertyName.Equals("Z", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Z;
+		}
+		else if (subPropertyName.Equals("XY", StringComparison.OrdinalIgnoreCase))
+		{
+			return new Vector2(existingValue.X, existingValue.Y);
 		}
 		else
 		{
