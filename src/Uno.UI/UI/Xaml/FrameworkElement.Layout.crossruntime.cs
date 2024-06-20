@@ -212,7 +212,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private protected virtual ControlTemplate? GetTemplate()
+		private protected virtual FrameworkTemplate? GetTemplate()
 		{
 			return null;
 		}

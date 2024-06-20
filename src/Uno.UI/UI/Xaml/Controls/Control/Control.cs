@@ -470,7 +470,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-		private protected override ControlTemplate GetTemplate() => Template;
+		private protected override FrameworkTemplate GetTemplate() => Template;
 
 		/// <summary>
 		/// Applies default Style and implicit/explicit Style if not applied already, and materializes template.
