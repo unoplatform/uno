@@ -8,30 +8,30 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal class MenuFlyoutItemBaseCollection : DependencyObjectCollection<MenuFlyoutItemBase>
 {
+	private readonly DependencyObject _owner;
+
+	public MenuFlyoutItemBaseCollection(DependencyObject owner) : base(owner)
+	{
+		_owner = owner;
+	}
+
 #if HAS_UNO // Our API is a bit different from WinUI
 	private protected override void OnCollectionChanged() => NotifyMenuFlyoutOfCollectionChange();
 #endif
 
 	private void NotifyMenuFlyoutOfCollectionChange()
 	{
-		ctl::ComPtr<DependencyObject> ownerAsDO;
-		IFC_RETURN(DXamlCore::GetCurrent()->GetPeer(static_cast<CCollection*>(GetHandle())->GetOwner(), &ownerAsDO));
-
-		auto ownerAsMenuFlyout = ownerAsDO.AsOrNull<MenuFlyout>();
-
-		if (ownerAsMenuFlyout)
+		if (_owner is MenuFlyout menuFlyout)
 		{
-			IFC_RETURN(ownerAsMenuFlyout.Cast<MenuFlyout>()->QueueRefreshItemsSource());
+			menuFlyout.QueueRefreshItemsSource();
+		}
+		else if (_owner is MenuFlyoutSubItem menuFlyoutSubItem)
+		{
+			menuFlyoutSubItem.QueueRefreshItemsSource();
 		}
 		else
 		{
-			auto ownerAsMenuFlyoutSubItem = ownerAsDO.AsOrNull<MenuFlyoutSubItem>();
-
-			// MenuFlyoutItemBaseCollection is only used by MenuFlyout and MenuFlyoutSubItem.
-			// If another type is added, this will need to change.
-			IFCEXPECT_RETURN(ownerAsMenuFlyoutSubItem != nullptr);
-
-			IFC_RETURN(ownerAsMenuFlyoutSubItem.Cast<MenuFlyoutSubItem>()->QueueRefreshItemsSource());
+			throw new InvalidOperationException("Unknown owner of MenuFlyoutItemBaseCollection.");
 		}
 	}
 }
