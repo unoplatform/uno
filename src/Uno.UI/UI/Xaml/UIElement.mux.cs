@@ -614,8 +614,14 @@ namespace Microsoft.UI.Xaml
 
 		private void OnKeyDown(KeyRoutedEventArgs pEventArgs)
 		{
-#if HAS_UNO // Uno specific: In case of WinUI this method is called only if not already handled
+#if HAS_UNO // Uno specific: In case of WinUI this logic is called only
+			// if not already handled and only on non-controls
 			if (pEventArgs.Handled)
+			{
+				return;
+			}
+
+			if (this is Control control)
 			{
 				return;
 			}

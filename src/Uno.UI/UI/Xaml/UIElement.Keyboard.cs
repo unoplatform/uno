@@ -16,7 +16,7 @@ partial class UIElement
 		switch (routedEvent.Flag)
 		{
 			case RoutedEventFlag.KeyDown:
-				OnKeyDown(keyArgs); // TODO:MZ: Only if not a Control!
+				OnKeyDown(keyArgs);
 				break;
 		}
 	}

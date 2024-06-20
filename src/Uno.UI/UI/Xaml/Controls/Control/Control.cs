@@ -32,8 +32,6 @@ using AppKit;
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-// TODO:MZ: Add handling of KeyDown in FireEvent!
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control : FrameworkElement
@@ -1097,7 +1095,7 @@ namespace Microsoft.UI.Xaml.Controls
 			(object sender, KeyRoutedEventArgs args) =>
 			{
 				var senderAsControl = (Control)sender;
-				//ToolTipService.CloseToolTipInternal(args); TODO:MZ: Implement
+				// ToolTipService.CloseToolTipInternal(args); TODO:MZ:KA
 				ProcessAcceleratorsIfApplicable(args, senderAsControl);
 				if (!args.Handled)
 				{
