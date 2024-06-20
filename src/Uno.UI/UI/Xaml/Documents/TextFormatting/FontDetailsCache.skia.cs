@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using HarfBuzzSharp;
 using SkiaSharp;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
@@ -76,12 +77,17 @@ internal static class FontDetailsCache
 				uri = new Uri(FontManifestHelpers.GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
 			}
 		}
-		catch
+		catch (Exception e)
 		{
 			if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 			{
-				typeof(FontDetailsCache).Log().LogError($"Failed to load font manifest for {uri}");
+				typeof(FontDetailsCache).Log().LogError($"Failed to load font manifest for {uri}: {e}");
 			}
+		}
+
+		if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(FontDetailsCache).Log().LogDebug($"Fetching font from {uri}");
 		}
 
 		var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
@@ -108,7 +114,7 @@ internal static class FontDetailsCache
 			name = FeatureConfiguration.Font.DefaultTextFontFamily;
 		}
 
-		if (Uri.TryCreate(name, UriKind.Absolute, out var uri) && uri.Scheme == "ms-appx")
+		if (Uri.TryCreate(name, UriKind.Absolute, out var uri) && uri.IsLocalResource())
 		{
 			var task = LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 			if (task.IsCompleted)
