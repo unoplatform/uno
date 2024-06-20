@@ -4,6 +4,8 @@ internal struct EnterParams
 {
 	public bool IsLive;
 
+	public bool IsForKeyboardAccelerator;
+
 	public EnterParams()
 	{
 		IsLive = true;
