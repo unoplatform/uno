@@ -28,7 +28,7 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		//base.PrepareState();
 
 		// Create the sub menu items collection and set the owner
-		var spItems = new DependencyObjectCollection<MenuFlyoutItemBase>(this);
+		var spItems = new MenuFlyoutItemBaseCollection(this);
 		m_tpItems = spItems;
 		Items = spItems;
 
@@ -729,6 +729,11 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 			dispatcherQueue.TryEnqueue(
 				() =>
 				{
+					if (!wrThis.IsAlive)
+					{
+						return;
+					}
+					
 					var thisMenuFlyoutSubItem = wrThis.Target as MenuFlyoutSubItem;
 
 					if (thisMenuFlyoutSubItem is not null)
