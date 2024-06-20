@@ -181,7 +181,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		// Handwritten bicubic resampling adapted from https://stackoverflow.com/a/42179924
-		private const string ImageResamplingShader= @"
+		private const string ImageResamplingShader = @"
 uniform shader image;
 uniform vec2 imageSize;
 
