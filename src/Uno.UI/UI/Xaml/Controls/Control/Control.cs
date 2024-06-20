@@ -207,7 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
-		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
+		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 			_updateTemplate = true;
