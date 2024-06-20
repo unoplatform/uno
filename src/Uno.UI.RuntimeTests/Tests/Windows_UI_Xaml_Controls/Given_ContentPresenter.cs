@@ -344,7 +344,7 @@ public class Given_ContentPresenter
 		TestServices.WindowHelper.WindowContent = SUT;
 
 		var wref = SetContent();
-		Assert.AreEqual(wref.Target, SUT.DataContext);
+		Assert.AreEqual(null, SUT.DataContext);
 
 		SUT.Content = null;
 
