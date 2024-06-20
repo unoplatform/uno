@@ -86,6 +86,8 @@
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 
+		<CompilerVisibleProperty Include="UseOpenSans" />
+
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
