@@ -234,7 +234,7 @@ Cleanup:
 		//return S_OK;
 	}
 
-	private static Transition PreparePopupThemeTransitionsAndShadows(Popup popup, double closedRatioConstant, int depth)
+	internal static Transition PreparePopupThemeTransitionsAndShadows(Popup popup, double closedRatioConstant, int depth)
 	{
 		return null;
 		// UNO TODO
