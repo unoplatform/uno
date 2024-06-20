@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
+
 
 using Microsoft.UI.Input;
 
@@ -106,7 +101,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 		var parentFlyout = GetParentMenuFlyout();
 
 		// We should wrap around at the bottom or the top of the presenter if the user isn't using a gamepad or remote.
-		var shouldWrap = parentFlyout != null ? (parentFlyout.InputDeviceTypeUsedToOpen != FocusInputDeviceKind.GameController) : true;
+		var shouldWrap = parentFlyout != null ? (parentFlyout.InputDeviceTypeUsedToOpen != Uno.UI.Xaml.Input.InputDeviceType.GamepadOrRemote) : true;
 
 		var nCount = Items.Size;
 
@@ -381,6 +376,18 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 		//		ApplyElevationEffect(spChildAsUIE, GetDepth());
 		//	}
 		//}
+	}
+
+	internal string GetOwnerName()
+	{
+		var parentMenuFlyout = GetParentMenuFlyout();
+
+		if (parentMenuFlyout is not null)
+		{
+			return parentMenuFlyout.GetValue(FrameworkElement.NameProperty) as string; // TODO Uno: Should be DependencyObject.Name
+		}
+
+		return null;
 	}
 
 	// UNO TODO
@@ -732,7 +739,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 		{
 			// Query MenuFlyout Content MinWidth, given the input mode, from resource dictionary.
 			var flyoutContentMinWidth = ResourceResolver.ResolveTopLevelResourceDouble(
-				(ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.Touch || ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.GameController)
+				(ownerFlyout.InputDeviceTypeUsedToOpen == Uno.UI.Xaml.Input.InputDeviceType.Touch || ownerFlyout.InputDeviceTypeUsedToOpen == Uno.UI.Xaml.Input.InputDeviceType.GamepadOrRemote)
 					? "FlyoutThemeTouchMinWidth" : "FlyoutThemeMinWidth"
 			);
 			var visibleBounds = this.LayoutSlotWithMarginsAndAlignments;
@@ -847,8 +854,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 		}
 	}
 
-#if false
-	int GetPositionInSetHelper(MenuFlyoutItemBase item)
+	internal static int GetPositionInSetHelper(MenuFlyoutItemBase item)
 	{
 		var returnValue = -1;
 
@@ -856,7 +862,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 
 		if (presenter != null)
 		{
-			var indexOfItem = Items.IndexOf(item);
+			var indexOfItem = presenter.Items.IndexOf(item);
 
 			if (indexOfItem != -1)
 			{
@@ -866,7 +872,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 
 				for (var i = 0; i < indexOfItem; ++i)
 				{
-					var child = Items[i] as DependencyObject;
+					var child = presenter.Items[i] as DependencyObject;
 
 					if (child != null)
 					{
@@ -898,7 +904,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 		return returnValue;
 	}
 
-	int GetSizeOfSetHelper(MenuFlyoutItemBase item)
+	internal static int GetSizeOfSetHelper(MenuFlyoutItemBase item)
 	{
 		var returnValue = -1;
 
@@ -906,7 +912,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 
 		if (presenter != null)
 		{
-			var itemsCount = Items.Count;
+			var itemsCount = presenter.Items.Count;
 
 			// Iterate through the parent presenters items and subtract the
 			// number of separaters and collapsed items from the total count
@@ -915,7 +921,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 
 			for (var i = 0; i < itemsCount; ++i)
 			{
-				var child = Items[i] as DependencyObject;
+				var child = presenter.Items[i] as DependencyObject;
 
 				if (child != null)
 				{
@@ -946,7 +952,7 @@ public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 
 		return returnValue;
 	}
-#endif
+
 	ISubMenuOwner IMenuPresenter.Owner
 	{
 		get => m_wrOwner?.Target as ISubMenuOwner;
