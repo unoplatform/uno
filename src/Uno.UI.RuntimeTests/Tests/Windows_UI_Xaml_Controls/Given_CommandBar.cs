@@ -8,7 +8,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using static Private.Infrastructure.TestServices;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
