@@ -65,7 +65,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private bool _firstLoadResetDone;
 	private View _contentTemplateRoot;
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	private bool _appliedTemplate;
+#endif
 
 	/// <summary>
 	/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
@@ -122,7 +125,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
+#else
 				options: FrameworkPropertyMetadataOptions.None,
+#endif
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnContentChanged(e.OldValue, e.NewValue)
 			)
 		);
@@ -639,9 +646,18 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#endregion
 
-	protected override void OnApplyTemplate()
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	private protected override void ApplyTemplate(out bool addedVisuals)
+#else
+	private void ApplyTemplate(out bool addedVisuals)
+#endif
 	{
-		base.OnApplyTemplate();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		base.ApplyTemplate(out addedVisuals);
+#else
+		addedVisuals = false;
+#endif
 
 		// Applying the template will not delete existing visuals. This will be done conditionally
 		// when the template is invalidated.
@@ -967,17 +983,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 		base.OnLoaded();
 
-
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		// WinUI has some special handling for ContentPresenter and ContentControl where even though they aren't Controls,
 		// they use OnApplyTemplate. As a workaround for now, we just call OnApplyTemplate here.
 		if (!_appliedTemplate)
 		{
 			_appliedTemplate = true;
-			OnApplyTemplate();
+			ApplyTemplate(out _);
 		}
 
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
 			SetUpdateTemplate();
