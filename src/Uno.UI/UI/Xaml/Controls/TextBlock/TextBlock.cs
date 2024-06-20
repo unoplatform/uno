@@ -189,21 +189,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public FontStretch FontStretch
 		{
-			get => (FontStretch)GetValue(FontStretchProperty);
-			set => SetValue(FontStretchProperty, value);
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
 		}
 
-		public static DependencyProperty FontStretchProperty { get; } =
-			DependencyProperty.Register(
-				nameof(FontStretch),
-				typeof(FontStretch),
-				typeof(TextBlock),
-				new FrameworkPropertyMetadata(
-					defaultValue: FontStretch.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontStretchChanged()
-				)
-			);
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 
 		private void OnFontStretchChanged()
 		{
