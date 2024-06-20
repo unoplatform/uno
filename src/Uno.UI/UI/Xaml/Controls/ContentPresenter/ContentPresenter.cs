@@ -767,10 +767,11 @@ public partial class ContentPresenter : FrameworkElement
 
 			if (previousValue != null)
 			{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				CleanupView(previousValue);
 
 				UnregisterContentTemplateRoot();
-
+#endif
 				UpdateContentTransitions(this.ContentTransitions, null);
 			}
 
@@ -780,7 +781,9 @@ public partial class ContentPresenter : FrameworkElement
 
 			if (_contentTemplateRoot != null)
 			{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				RegisterContentTemplateRoot();
+#endif
 
 				UpdateContentTransitions(null, this.ContentTransitions);
 			}

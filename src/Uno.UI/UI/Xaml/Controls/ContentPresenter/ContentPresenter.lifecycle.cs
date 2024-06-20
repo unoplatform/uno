@@ -193,6 +193,8 @@ partial class ContentPresenter
 		}
 
 	Cleanup:
+		// Uno-specific
+		ContentTemplateRoot = VisualTreeHelper.GetChild(this, 0) as UIElement;
 		_dataContextInvalid = false;
 		_inOnApplyTemplate = false;
 	}
@@ -241,6 +243,8 @@ partial class ContentPresenter
 		if (clearChildren)
 		{
 			ClearChildren();
+
+			IsUsingDefaultTemplate = false;
 		}
 		else
 		{
@@ -280,6 +284,10 @@ partial class ContentPresenter
 		textBlock.HorizontalAlignment = HorizontalAlignment.Left;
 		textBlock.VerticalAlignment = VerticalAlignment.Top;
 		BindDefaultTextBlock(textBlock);
+
+		// Uno-specific
+		ContentTemplateRoot = textBlock;
+
 		IsUsingDefaultTemplate = true;
 
 		return textBlock;
