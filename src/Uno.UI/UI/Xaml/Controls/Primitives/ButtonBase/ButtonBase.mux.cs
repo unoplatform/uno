@@ -238,10 +238,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				if (newCommand != null)
 				{
-					newCommand.CanExecuteChanged += CanExecuteChangedHandler;
+					CanExecuteChangedWeakEventManager.AddHandler(newCommand, CanExecuteChangedHandler);
 					_canExecuteChangedHandler.Disposable = Disposable.Create(() =>
 					{
-						newCommand.CanExecuteChanged -= CanExecuteChangedHandler;
+						CanExecuteChangedWeakEventManager.RemoveHandler(newCommand, CanExecuteChangedHandler);
 					});
 				}
 
