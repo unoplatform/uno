@@ -82,12 +82,13 @@ partial class ContentPresenter
 				}
 
 				dpTarget = ContentPresenter.ContentProperty;
-				if (store.GetCurrentHighestValuePrecedence(dpTarget) == DependencyPropertyValuePrecedences.DefaultValue && !store.IsPropertyTemplateBound(dpTarget))
-				{
-					DependencyProperty dpSource = ContentControl.ContentProperty;
-					store.SetTemplateBinding(dpTarget, dpSource);
-					needsRefresh = true;
-				}
+				// UNO TODO: This doesn't work correctly because TemplatedParent is incorrect in Uno.
+				//if (store.GetCurrentHighestValuePrecedence(dpTarget) == DependencyPropertyValuePrecedences.DefaultValue && !store.IsPropertyTemplateBound(dpTarget))
+				//{
+				//	DependencyProperty dpSource = ContentControl.ContentProperty;
+				//	store.SetTemplateBinding(dpTarget, dpSource);
+				//	needsRefresh = true;
+				//}
 
 				// Setting up the binding doesn't get you the values.  We need to call refresh to get the latest value
 				// for m_pContentTemplate, SelectedContentTemplate and/or m_pContent for the tests below.
