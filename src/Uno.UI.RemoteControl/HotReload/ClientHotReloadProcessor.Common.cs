@@ -76,6 +76,10 @@ namespace Uno.UI.RemoteControl.HotReload
 			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
 #endif
 
+#if !HAS_UNO
+			var parentDataContext = (parentAsContentControl as FrameworkElement)?.DataContext;
+			var oldDataContext = oldView.DataContext;
+#endif
 			if ((parentAsContentControl?.Content as FrameworkElement) == oldView)
 			{
 				parentAsContentControl.Content = newView;
@@ -108,6 +112,37 @@ namespace Uno.UI.RemoteControl.HotReload
 				VisualTreeHelper.SwapViews(oldView, newView);
 			}
 #endif
+
+#if !HAS_UNO
+			if (oldView is FrameworkElement oldViewAsFE && newView is FrameworkElement newViewAsFE)
+			{
+				ApplyDataContext(parentDataContext, oldViewAsFE, newViewAsFE, oldDataContext);
+			}
+#endif
 		}
+
+#if !HAS_UNO
+		private static void ApplyDataContext(
+			object? parentDataContext,
+			FrameworkElement oldView,
+			FrameworkElement newView,
+			object? oldDataContext)
+		{
+			if (oldView == null || newView == null)
+			{
+				return;
+			}
+
+			if ((newView.DataContext is null || newView.DataContext == parentDataContext)
+				&& (oldDataContext is not null && oldDataContext != parentDataContext))
+			{
+				// If the DataContext is not provided by the page itself, it may
+				// have been provided by an external actor. Copy the value as is
+				// in the DataContext of the new element.
+
+				newView.DataContext = oldDataContext;
+			}
+		}
+#endif
 	}
 }
