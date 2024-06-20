@@ -3532,7 +3532,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
 	public partial class MyButton : Button
 	{
-		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
+		private readonly UnoAutoResetEvent resetEvent = new UnoAutoResetEvent(false);
 		public bool HasFired = false;
 
 		protected override void OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)
@@ -3544,18 +3544,18 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 		public async Task Wait()
 		{
-			this.resetEvent.WaitOne(TimeSpan.FromSeconds(1));
+			await this.resetEvent.WaitOne(TimeSpan.FromSeconds(1));
 		}
 
 		public async Task WaitForNoThrow(TimeSpan timeout)
 		{
-			this.resetEvent.WaitOne(timeout);
+			await this.resetEvent.WaitOne(timeout);
 		}
 	}
 
 	public partial class ButtonWithEventOrdering : Button
 	{
-		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
+		private readonly UnoAutoResetEvent resetEvent = new UnoAutoResetEvent(false);
 		public StringBuilder eventOrder = null;
 		public bool HasFired = false;
 		public bool shouldSetHandled = false;
@@ -3570,12 +3570,12 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 		public async Task Wait()
 		{
-			this.resetEvent.WaitOne(TimeSpan.FromSeconds(1));
+			await this.resetEvent.WaitOne(TimeSpan.FromSeconds(1));
 		}
 
 		public async Task WaitForNoThrow(TimeSpan timeout)
 		{
-			this.resetEvent.WaitOne(timeout);
+			await this.resetEvent.WaitOne(timeout);
 		}
 
 		private string GetHandled(bool handled)
@@ -3590,7 +3590,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	public partial class StackPanelWithProcessKeyboardAcceleratorOverride : StackPanel
 	{
-		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
+		private readonly UnoAutoResetEvent resetEvent = new UnoAutoResetEvent(false);
 
 		public bool HasFired = false;
 		protected override void OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)
@@ -3607,12 +3607,12 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 		public async Task Wait()
 		{
-			this.resetEvent.WaitOne(TimeSpan.FromSeconds(1));
+			await this.resetEvent.WaitOne(TimeSpan.FromSeconds(1));
 		}
 
 		public async Task WaitForNoThrow(TimeSpan timeout)
 		{
-			this.resetEvent.WaitOne(timeout);
+			await this.resetEvent.WaitOne(timeout);
 		}
 	}
 #pragma warning restore CS0108
