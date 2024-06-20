@@ -2,6 +2,10 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:toolkit="using:Uno.UI.Toolkit">
 
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="ms-appx:///Uno.UI.Toolkit/Diagnostics/DiagnosticsOverlay.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
 	<Style TargetType="toolkit:ElevatedView">
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="Template">

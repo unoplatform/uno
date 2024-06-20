@@ -17,26 +17,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath = "";
 
-		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(
+		public static async Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
 			Dictionary<string, string> properties,
-			CancellationToken cancellationToken)
-		{
-			var taskCompletionSource = new TaskCompletionSource<(Solution, WatchHotReloadService)>(TaskCreationOptions.RunContinuationsAsynchronously);
-			CreateProject(taskCompletionSource, projectPath, reporter, metadataUpdateCapabilities, properties, cancellationToken);
-
-			return taskCompletionSource.Task;
-		}
-
-		static async void CreateProject(
-			TaskCompletionSource<(Solution, WatchHotReloadService)> taskCompletionSource,
-			string projectPath,
-			IReporter reporter,
-			string[] metadataUpdateCapabilities,
-			Dictionary<string, string> properties,
-			CancellationToken cancellationToken)
+			CancellationToken ct)
 		{
 			if (properties.TryGetValue("UnoEnCLogPath", out var EnCLogPath))
 			{
@@ -78,31 +64,30 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 						reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
 					};
 
-					await workspace.OpenProjectAsync(projectPath, cancellationToken: cancellationToken);
+					await workspace.OpenProjectAsync(projectPath, cancellationToken: ct);
 					break;
 				}
 				catch (InvalidOperationException) when (i > 1)
 				{
 					// When we load the work space right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
 					// We retry a few times to let the build complete.
-					await Task.Delay(5_000, cancellationToken);
+					await Task.Delay(5_000, ct);
 				}
 			}
 			var currentSolution = workspace.CurrentSolution;
 			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
-			await hotReloadService.StartSessionAsync(currentSolution, cancellationToken);
+			await hotReloadService.StartSessionAsync(currentSolution, ct);
 
 			// Read the documents to memory
-			await Task.WhenAll(
-				currentSolution.Projects.SelectMany(p => p.Documents.Concat(p.AdditionalDocuments)).Select(d => d.GetTextAsync(cancellationToken)));
+			await Task.WhenAll(currentSolution.Projects.SelectMany(p => p.Documents.Concat(p.AdditionalDocuments)).Select(d => d.GetTextAsync(ct)));
 
 			// Warm up the compilation. This would help make the deltas for first edit appear much more quickly
 			foreach (var project in currentSolution.Projects)
 			{
-				await project.GetCompilationAsync(cancellationToken);
+				await project.GetCompilationAsync(ct);
 			}
 
-			taskCompletionSource.TrySetResult((currentSolution, hotReloadService));
+			return (currentSolution, hotReloadService);
 		}
 
 		public static void InitializeRoslyn(string? workDir)

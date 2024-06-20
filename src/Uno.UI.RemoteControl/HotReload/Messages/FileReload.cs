@@ -4,7 +4,11 @@ using Uno.Extensions;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
-	internal class FileReload : IMessage
+	/// <summary>
+	/// Message sent by the dev-server when it detects a file change in the solution.
+	/// </summary>
+	/// <remarks>This is being sent only for xaml and cs files.</remarks>
+	internal class FileReload : IMessage // a.k.a. FileUpdated
 	{
 		public const string Name = nameof(FileReload);
 
@@ -15,7 +19,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public string? Content { get; set; }
 
 		[JsonIgnore]
-		public string Scope => HotReloadConstants.HotReload;
+		public string Scope => WellKnownScopes.HotReload;
 
 		[JsonIgnore]
 		string IMessage.Name => Name;

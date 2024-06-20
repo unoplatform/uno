@@ -28,7 +28,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		public bool EnableMetadataUpdates { get; set; }
 
-		public string Scope => HotReloadConstants.HotReload;
+		public string Scope => WellKnownScopes.HotReload;
 
 		string IMessage.Name => Name;
 

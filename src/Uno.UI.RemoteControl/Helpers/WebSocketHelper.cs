@@ -31,20 +31,16 @@ public static class WebSocketHelper
 					return null;
 				}
 
+				if (result.Count != 0)
+				{
+					await mem.WriteAsync(buff, 0, result.Count, token);
+				}
+
 				if (result.EndOfMessage)
 				{
-					if (result.Count != 0)
-					{
-						await mem.WriteAsync(buff, 0, result.Count);
-					}
-
 					mem.Position = 0;
 
 					return Frame.Read(mem);
-				}
-				else
-				{
-					await mem.WriteAsync(buff, 0, result.Count);
 				}
 			}
 		}
@@ -59,6 +55,6 @@ public static class WebSocketHelper
 		using var stream = manager.GetStream();
 		frame.WriteTo(stream);
 
-		await webSocket.SendAsync(new ArraySegment<byte>(stream.GetBuffer(), 0, (int)stream.Length), WebSocketMessageType.Binary, true, ct);
+		await webSocket.SendAsync(new ArraySegment<byte>(stream.GetBuffer(), 0, (int)stream.Position), WebSocketMessageType.Binary, true, ct);
 	}
 }

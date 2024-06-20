@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ namespace Uno.UI.RemoteControl.HotReload
 		private bool _linkerEnabled;
 		private HotReloadAgent? _agent;
 		private bool _serverMetadataUpdatesEnabled;
-		private static ClientHotReloadProcessor? _instance;
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
@@ -141,7 +141,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			return Array.Empty<string>();
 		}
 
-		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
+		private void ProcessAssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
 			try
 			{
@@ -174,6 +174,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						UpdatedTypes = ReadIntArray(changedTypesReader)
 					};
 
+					_status.ConfigureSourceForNextOperation(HotReloadSource.DevServer);
 					_agent?.ApplyDeltas(new[] { delta });
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -195,6 +196,10 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					this.Log().Error($"An exception occurred when applying IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload.ModuleId})", e);
 				}
+			}
+			finally
+			{
+				_status.ConfigureSourceForNextOperation(default); // runtime
 			}
 		}
 
