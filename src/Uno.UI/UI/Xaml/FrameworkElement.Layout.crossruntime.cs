@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml
 				if (template is not null)
 				{
 					//SetIsUpdatingBindings(true);
-					var child = template.LoadContentCached();
+					var child = template.LoadContent(this);
 
 					// BEGIN Uno-specific
 					if (this is Control control)

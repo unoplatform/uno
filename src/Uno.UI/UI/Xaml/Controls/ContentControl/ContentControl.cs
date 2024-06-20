@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿#if !UNO_HAS_ENHANCED_LIFECYCLE
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -522,3 +524,4 @@ namespace Microsoft.UI.Xaml.Controls
 #nullable enable
 	}
 }
+#endif
