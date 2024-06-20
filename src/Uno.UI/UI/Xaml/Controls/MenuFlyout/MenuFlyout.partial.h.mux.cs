@@ -13,7 +13,7 @@ partial class MenuFlyout
 	private MenuFlyoutItemBaseCollection m_tpItems;
 
 	// In Threshold, MenuFlyout uses the MenuPopupThemeTransition.
-	private Transition m_tpMenuPopupThemeTransition;
+	// private Transition m_tpMenuPopupThemeTransition;
 
 	private InputDeviceType m_inputDeviceTypeUsedToOpen;
 

@@ -35,7 +35,7 @@ partial class MenuFlyoutSubItem
 	private readonly SerialDisposable m_epLoadedHandler = new();
 
 	// Event pointer for the size changed on the MenuFlyoutSubItem's presenter
-	private readonly SerialDisposable m_epPresenterSizeChangedHandler;
+	private readonly SerialDisposable m_epPresenterSizeChangedHandler = new();
 
 	// Helper to which to delegate cascading menu functionality.
 	private CascadingMenuHelper m_menuHelper;

@@ -28,16 +28,16 @@ partial class MenuFlyoutItem
 	private bool m_bIsPointerOver;
 
 	// Whether the pointer is currently pressed over the
-	private bool m_bIsPressed;
+	internal bool m_bIsPressed;
 
 	// Whether the pointer's left button is currently down.
-	private bool m_bIsPointerLeftButtonDown;
+	internal bool m_bIsPointerLeftButtonDown;
 
 	// True if the SPACE or ENTER key is currently pressed, false otherwise.
-	private bool m_bIsSpaceOrEnterKeyDown;
+	internal bool m_bIsSpaceOrEnterKeyDown;
 
 	// True if the NAVIGATION_ACCEPT or GAMEPAD_A vkey is currently pressed, false otherwise.
-	private bool m_bIsNavigationAcceptOrGamepadAKeyDown;
+	internal bool m_bIsNavigationAcceptOrGamepadAKeyDown;
 
 	// On pointer released we perform some actions depending on control. We decide to whether to perform them
 	// depending on some parameters including but not limited to whether released is followed by a pressed, which
