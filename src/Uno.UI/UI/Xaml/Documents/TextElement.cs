@@ -118,21 +118,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public FontStretch FontStretch
 		{
-			get => (FontStretch)this.GetValue(FontStretchProperty);
-			set => this.SetValue(FontStyleProperty, value);
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
 		}
 
-		public static DependencyProperty FontStretchProperty { get; } =
-			DependencyProperty.Register(
-				nameof(FontStretch),
-				typeof(FontStretch),
-				typeof(TextElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: FontStretch.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStretchChanged()
-				)
-			);
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 
 		protected virtual void OnFontStretchChanged()
 		{
