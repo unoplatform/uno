@@ -2,6 +2,12 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="$(DefaultItemExcludes)" IsDefaultItem="true" />
 	</ItemGroup>
+	
+	<PropertyGroup>
+		<!-- It's never useful to include bin/obj folders, even when UseArtifactsOutput is false  -->
+		<DefaultItemExcludes Condition="!$(DefaultItemExcludes.Contains('bin/**'))">$(DefaultItemExcludes);bin/**</DefaultItemExcludes>
+		<DefaultItemExcludes Condition="!$(DefaultItemExcludes.Contains('obj/**'))">$(DefaultItemExcludes);obj/**</DefaultItemExcludes>
+	</PropertyGroup>
 
 	<ItemGroup Condition=" !$(IsWinAppSdk) ">
 		<!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
