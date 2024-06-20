@@ -11,6 +11,11 @@ namespace Windows.Foundation;
 [DebuggerDisplay("[Rect {Size}@{Location}]")]
 public partial struct Rect
 {
+	// TODO: These are floats in WinUI. Consider matching it.
+	// NOTE: These are actually public in WinUI as well, but for now we don't need to match that.
+	internal double _width;
+	internal double _height;
+
 	private const string _negativeErrorMessage = "Non-negative number required.";
 	private const float Epsilon = 0.00001f;
 
@@ -20,8 +25,8 @@ public partial struct Rect
 	{
 		X = double.PositiveInfinity,
 		Y = double.PositiveInfinity,
-		Width = double.NegativeInfinity,
-		Height = double.NegativeInfinity
+		_width = double.NegativeInfinity,
+		_height = double.NegativeInfinity
 	};
 
 	internal static Rect Infinite { get; } = new Rect
@@ -32,11 +37,21 @@ public partial struct Rect
 		Height = double.PositiveInfinity
 	};
 
+	internal static Rect InvalidRect { get; } = new Rect
+	{
+		X = -1,
+		Y = -1,
+		_width = -1,
+		_height = -1
+	};
+
 	public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
 
 	public Rect(double x, double y, double width, double height)
 	{
+#if !__SKIA__ && !__WASM__
 		if (!Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight)
+#endif
 		{
 			if (width < 0)
 			{
@@ -92,8 +107,34 @@ public partial struct Rect
 
 	public double X { get; set; }
 	public double Y { get; set; }
-	public double Width { get; set; }
-	public double Height { get; set; }
+
+	public double Width
+	{
+		get => _width;
+		set
+		{
+			if (value < 0.0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(Width), _negativeErrorMessage);
+			}
+
+			_width = value;
+		}
+	}
+
+	public double Height
+	{
+		get => _height;
+		set
+		{
+			if (value < 0.0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(Height), _negativeErrorMessage);
+			}
+
+			_height = value;
+		}
+	}
 
 	public double Left => X;
 	public double Top => Y;

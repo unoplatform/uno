@@ -1123,8 +1123,8 @@ internal partial class RPGraph
 			CalculateMeasureRectVertically(node, availableSize, out nodeMeasureRectY, out nodeMeasureRectHeight);
 			node.m_measureRect.X = nodeMeasureRectX;
 			node.m_measureRect.Y = nodeMeasureRectY;
-			node.m_measureRect.Width = nodeMeasureRectWidth;
-			node.m_measureRect.Height = nodeMeasureRectHeight;
+			node.m_measureRect._width = nodeMeasureRectWidth;
+			node.m_measureRect._height = nodeMeasureRectHeight;
 
 			constrainedAvailableSize.Width = Math.Max(node.m_measureRect.Width, 0.0f);
 			constrainedAvailableSize.Height = Math.Max(node.m_measureRect.Height, 0.0f);
@@ -1141,7 +1141,7 @@ internal partial class RPGraph
 				double nodeArrangeRectX, nodeArrangeRectWidth;
 				CalculateArrangeRectHorizontally(node, out nodeArrangeRectX, out nodeArrangeRectWidth);
 				node.m_arrangeRect.X = nodeArrangeRectX;
-				node.m_arrangeRect.Width = nodeArrangeRectWidth;
+				node.m_arrangeRect._width = nodeArrangeRectWidth;
 				node.SetArrangedHorizontally(true);
 			}
 
@@ -1150,7 +1150,7 @@ internal partial class RPGraph
 				double nodeArrangeRectY, nodeArrangeRectHeight;
 				CalculateArrangeRectVertically(node, out nodeArrangeRectY, out nodeArrangeRectHeight);
 				node.m_arrangeRect.Y = nodeArrangeRectY;
-				node.m_arrangeRect.Height = nodeArrangeRectHeight;
+				node.m_arrangeRect._height = nodeArrangeRectHeight;
 				node.SetArrangedVertically(true);
 			}
 		}
@@ -1180,11 +1180,11 @@ internal partial class RPGraph
 			double nodeMeasureRectX, nodeMeasureRectWidth;
 			CalculateMeasureRectHorizontally(node, finalSize, out nodeMeasureRectX, out nodeMeasureRectWidth);
 			node.m_measureRect.X = nodeMeasureRectX;
-			node.m_measureRect.Width = nodeMeasureRectWidth;
+			node.m_measureRect._width = nodeMeasureRectWidth;
 			double nodeArrangeRectX, nodeArrangeRectWidth;
 			CalculateArrangeRectHorizontally(node, out nodeArrangeRectX, out nodeArrangeRectWidth);
 			node.m_arrangeRect.X = nodeArrangeRectX;
-			node.m_arrangeRect.Width = nodeArrangeRectWidth;
+			node.m_arrangeRect._width = nodeArrangeRectWidth;
 			node.SetArrangedHorizontally(true);
 		}
 	}
@@ -1213,11 +1213,11 @@ internal partial class RPGraph
 			double nodeMeasureRectY, nodeMeasureRectHeight;
 			CalculateMeasureRectVertically(node, finalSize, out nodeMeasureRectY, out nodeMeasureRectHeight);
 			node.m_measureRect.Y = nodeMeasureRectY;
-			node.m_measureRect.Height = nodeMeasureRectHeight;
+			node.m_measureRect._height = nodeMeasureRectHeight;
 			double nodeArrangeRectY, nodeArrangeRectHeight;
 			CalculateArrangeRectVertically(node, out nodeArrangeRectY, out nodeArrangeRectHeight);
 			node.m_arrangeRect.Y = nodeArrangeRectY;
-			node.m_arrangeRect.Height = nodeArrangeRectHeight;
+			node.m_arrangeRect._height = nodeArrangeRectHeight;
 			node.SetArrangedVertically(true);
 		}
 	}
