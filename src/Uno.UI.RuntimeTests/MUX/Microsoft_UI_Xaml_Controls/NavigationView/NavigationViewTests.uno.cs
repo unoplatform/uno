@@ -9,6 +9,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
 using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using Uno.UI.Toolkit.Extensions;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 

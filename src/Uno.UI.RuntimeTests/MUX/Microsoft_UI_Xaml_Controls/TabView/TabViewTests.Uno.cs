@@ -5,12 +5,17 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
+#if !HAS_UNO
+	// For Uno, there is another partial that has the attribute
+	// The attribute has AllowMultiple = false so only one partial should have it.
+	[TestClass]
+#endif
 	public partial class TabViewTests
 	{
-#if HAS_UNO
 		[TestMethod]
 #if __IOS__
 		[Ignore("Currently fails on iOS")]
@@ -24,7 +29,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				tabView = new TabView();
-				TestServices.WindowHelper.WindowContent = tabView;
+
+				await UITestHelper.Load(tabView);
 
 				var items = new ObservableCollection<int>()
 				{
@@ -52,6 +58,5 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Assert.AreEqual(1, containerContentChangingCounter);
 			});
 		}
-#endif
 	}
 }
