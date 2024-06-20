@@ -20,11 +20,11 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 	}
 #endif
 
-	private void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
+	internal void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
 	{
 		//base.Enter(pNamescopeOwner, enterParams);
 
-		if (enterParams.IsLive)// || enterParams.IsForKeyboardAccelerator)
+		if (enterParams.IsLive || enterParams.IsForKeyboardAccelerator)
 		{
 			ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
 			if (pContentRoot != null)
@@ -34,11 +34,11 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 		}
 	}
 
-	private void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
+	internal void Leave(DependencyObject pNamescopeOwner, LeaveParams leaveParams)
 	{
 		//base.Leave(pNamescopeOwner, leaveParams);
 
-		if (leaveParams.IsLive)// || leaveParams.IsForKeyboardAccelerator)
+		if (leaveParams.IsLive || leaveParams.IsForKeyboardAccelerator)
 		{
 			ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
 			if (pContentRoot != null)

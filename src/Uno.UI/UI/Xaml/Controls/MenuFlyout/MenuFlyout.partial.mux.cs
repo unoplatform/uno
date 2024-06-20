@@ -1,10 +1,16 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\MenuFlyout_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
+
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using static Uno.UI.FeatureConfiguration;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -19,7 +25,22 @@ partial class MenuFlyout
 		m_inputDeviceTypeUsedToOpen = Uno.UI.Xaml.Input.InputDeviceType.None;
 
 		PrepareState();
+
+#if HAS_UNO // Uno specific: Simulate enter/leave lifecycle events
+		ListenToParentLifecycle();
+#endif
 	}
+
+#if HAS_UNO // TODO: Uno specific - workaround for the lack of support for Enter/Leave on DOs.
+	private ParentVisualTreeListener _parentVisualTreeListener;
+
+	private void ListenToParentLifecycle()
+	{
+		_parentVisualTreeListener = new ParentVisualTreeListener(this);
+		_parentVisualTreeListener.ParentLoaded += (s, e) => EnterImpl(null, new EnterParams(true));
+		_parentVisualTreeListener.ParentUnloaded += (s, e) => LeaveImpl(null, new LeaveParams(true));
+	}
+#endif
 
 	// Prepares object's state
 	private void PrepareState()
@@ -144,7 +165,7 @@ Cleanup:
 		AutomationPeer.RaiseEventIfListener(menuFlyoutPresenter, AutomationEvents.MenuOpened);
 	}
 
-	internal override void OnClosing(ref bool cancel)
+	private protected override void OnClosing(ref bool cancel)
 	{
 		base.OnClosing(ref cancel);
 
@@ -270,65 +291,56 @@ Cleanup:
 		//*transition = spMenuPopupChildTransition.Detach();
 		//return S_OK;
 	}
-	// TODO:MZ: FROM HERE
 
-	void AutoAdjustPlacement(MajorPlacementMode pPlacement)
+	private void UpdatePresenterVisualState(MajorPlacementMode placement, bool doForceTransitions)
+	{
+		//base.UpdatePresenterVisualState(placement);
+
+		// MenuFlyoutPresenter has different visual states depending on the flyout's placement.
+		//if (doForceTransitions)
+		//{
+		//	// In order to play the storyboards of the visual states that belong to the
+		//	// MenuFlyoutPresenter, we need to force a visual state transition.
+		//	GetPresenter().ResetVisualState();
+		//}
+
+		//GetPresenter().UpdateVisualStateForPlacement(placement);
+	}
+
+	private void AutoAdjustPlacement(MajorPlacementMode pPlacement)
 	{
 		// UNO TODO
 		// Rect windowRect = default;
 		// (DXamlCore.GetCurrent().GetContentBoundsForElement(GetHandle(), &windowRect));
 	}
 
+	private void UpdatePresenterVisualState(MajorPlacementMode placement) => UpdatePresenterVisualState(placement, true);
+
+	//internal override void ShowAt(FrameworkElement placementTarget)
+	//{
+	//	m_openWindowed = false;
+	//	ShowAtCore(placementTarget, new FlyoutShowOptions());
+	//}
+
+	/// <summary>
+	/// Shows the flyout placed at the specified offset in relation to the specified target element.
+	/// </summary>
+	/// <param name="targetElement">The element to use as the flyout's placement target.</param>
+	/// <param name="point">The point at which to offset the flyout from the specified target element.</param>
 	public void ShowAt(UIElement targetElement, Point point)
 	{
-		ShowAtCore((FrameworkElement)targetElement, new FlyoutShowOptions { Position = point });
-	}
-
-
-	void ShowAtImpl(UIElement pTargetElement, Point targetPoint)
-	{
-		var targetElement = pTargetElement;
-
 		var showOptions = new FlyoutShowOptions();
-		showOptions.Position = targetPoint;
+		showOptions.Position = point;
 
-		try
-		{
-			m_openingWindowedInProgress = true;
-
-			ShowAt(targetElement, showOptions);
-		}
-		finally
-		{
-			m_openingWindowedInProgress = false;
-		}
+		ShowAt(targetElement, showOptions);
 	}
 
-	internal FocusInputDeviceKind InputDeviceTypeUsedToOpen => m_inputDeviceTypeUsedToOpen;
+	internal InputDeviceType InputDeviceTypeUsedToOpen => m_inputDeviceTypeUsedToOpen;
 
-	internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+	private void CacheInputDeviceTypeUsedToOpen(UIElement pTargetElement)
 	{
-		base.OnDataContextChanged(e);
-
-		SetFlyoutItemsDataContext();
-	}
-
-	private void SetFlyoutItemsDataContext()
-	{
-		// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
-		Items?.ForEach(item => item?.SetValue(
-			UIElement.DataContextProperty,
-			this.DataContext,
-			precedence: DependencyPropertyValuePrecedences.Inheritance
-		));
-	}
-
-
-	void CacheInputDeviceTypeUsedToOpen(UIElement pTargetElement)
-	{
-		// UNO TODO
-		//CContentRoot* contentRoot = VisualTree.GetContentRootForElement(pTargetElement);
-		//InputDeviceTypeUsedToOpen = contentRoot.GetInputManager().GetLastInputDeviceType();
+		ContentRoot contentRoot = VisualTree.GetContentRootForElement(pTargetElement);
+		m_inputDeviceTypeUsedToOpen = contentRoot.InputManager.LastInputDeviceType;
 	}
 
 #if false
@@ -343,23 +355,6 @@ Cleanup:
 		DependencyObject target = pCoreTarget;
 
 		pCoreMenuFlyout.ShowAtImpl(target as FrameworkElement, point);
-	}
-
-	void OnProcessKeyboardAcceleratorsImpl(ProcessKeyboardAcceleratorEventArgs pArgs)
-	{
-
-	}
-#endif
-
-
-
-#if false
-	bool IsWindowedPopup()
-	{
-		return false;
-
-		// UNO TODO
-		// return CPopup.DoesPlatformSupportWindowedPopup(DXamlCore.GetCurrent().GetHandle()) && (FlyoutBase.IsWindowedPopup() || m_openingWindowedInProgress);
 	}
 #endif
 

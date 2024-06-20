@@ -72,6 +72,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
 
+		internal void EnsurePopupAndPresenter() => EnsurePopupCreated(); // TODO Uno: Approximation of WinUI EnsurePopupAndPresenter
+
 		private void EnsurePopupCreated()
 		{
 			if (_popup == null)
@@ -536,7 +538,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			Opening?.Invoke(this, EventArgs.Empty);
 		}
 
-		private void OnClosing(ref bool cancel)
+		private protected virtual void OnClosing(ref bool cancel)
 		{
 			var closing = new FlyoutBaseClosingEventArgs();
 			Closing?.Invoke(this, closing);
