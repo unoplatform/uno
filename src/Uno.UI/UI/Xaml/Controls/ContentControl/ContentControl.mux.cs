@@ -11,6 +11,11 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = nameof(Content))]
 public partial class ContentControl : Control
 {
+	public ContentControl()
+	{
+		DefaultStyleKey = typeof(ContentControl);
+	}
+
 	public object Content
 	{
 		get => GetValue(ContentProperty);
