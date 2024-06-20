@@ -650,7 +650,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// Applying the template will not delete existing visuals. This will be done conditionally
 		// when the template is invalidated.
 		// Uno specific: since we don't call this early enough, we have to comment out the condition
-		// if (GetChildren().Count == 0)
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		if (!HasTemplateChild())
+#endif
 		{
 			ContentControl pTemplatedParent = TemplatedParent as ContentControl;
 
@@ -724,6 +726,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				// 	IFC(pTemplatedParent->RefreshTemplateBindings(TemplateBindingsRefreshType::All));
 				// }
 			}
+
+			TrySetDataContextFromContent(Content);
+			SetUpdateTemplate();
+
+			addedVisuals = HasTemplateChild();
 		}
 	}
 
@@ -771,14 +778,17 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			ContentTemplateRoot = null;
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		TrySetDataContextFromContent(newValue);
-
+#endif
 		if (IsLoaded)
 		{
 			TryRegisterNativeElement(oldValue, newValue);
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		SetUpdateTemplate();
+#endif
 	}
 
 	private void TrySetDataContextFromContent(object value)
