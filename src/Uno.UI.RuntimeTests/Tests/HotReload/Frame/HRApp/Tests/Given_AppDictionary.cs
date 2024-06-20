@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Reflection.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
@@ -92,7 +91,7 @@ public class Given_Dictionary : BaseTestClass
 		{
 			if (root.FindName("tb01") is TextBlock tb)
 			{
-				if(tb.Foreground is SolidColorBrush scb)
+				if (tb.Foreground is SolidColorBrush scb)
 				{
 					return scb.Color == color;
 				}

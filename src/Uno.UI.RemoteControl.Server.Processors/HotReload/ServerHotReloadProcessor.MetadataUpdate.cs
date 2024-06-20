@@ -152,14 +152,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					{
 						ProcessSolutionChanged(hotReload, file, CancellationToken.None).Wait();
 					}
+
+					await hotReload.CompleteUsingIntermediates();
 				}
 				catch (Exception e)
 				{
 					_reporter.Warn($"Internal error while processing hot-reload ({e.Message}).");
-				}
-				finally
-				{
-					await hotReload.CompleteUsingIntermediates();
+
+					await hotReload.CompleteUsingIntermediates(e);
 				}
 			}
 		}
@@ -168,6 +168,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			if (!await EnsureSolutionInitializedAsync() || _currentSolution is null || _hotReloadService is null)
 			{
+				hotReload.NotifyIntermediate(file, HotReloadServerResult.NoChanges);
 				return false;
 			}
 
@@ -202,6 +203,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				_reporter.Verbose($"Could not find document with path {file} in the workspace.");
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
+				hotReload.NotifyIntermediate(file, HotReloadServerResult.NoChanges);
 				return false;
 			}
 
