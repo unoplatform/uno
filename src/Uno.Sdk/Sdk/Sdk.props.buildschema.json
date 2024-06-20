@@ -254,6 +254,10 @@
 			"description": "Provides an explicit override for the version of Prism to use.",
 			"type": "nuget-version"
 		},
+		"UnoFontsVersion": {
+			"description": "Provides an explicit override for the version of Uno.Fonts packages to use.",
+			"type": "nuget-version"
+		},
 		"AndroidXNavigationVersion": {
 			"description": "Provides an explicit override for the version of AndroidX.Navigation to use.",
 			"type": "nuget-version"
@@ -498,6 +502,10 @@
 				"Prism": {
 					"description": "Adds Prism support for Uno.WinUI.",
 					"helpUrl": "https://aka.platform.uno/feature-prism"
+				},
+				"OpenSans": {
+					"description": "Adds OpenSans fonts and makes it the default.",
+					"helpUrl": "https://aka.platform.uno/feature-opensans"
 				},
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",

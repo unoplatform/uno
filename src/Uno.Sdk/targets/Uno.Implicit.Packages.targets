@@ -68,6 +68,7 @@
 				UnoDspTasksVersion="$(UnoDspTasksVersion)"
 				CommunityToolkitMvvmVersion="$(CommunityToolkitMvvmVersion)"
 				PrismVersion="$(PrismVersion)"
+				UnoFontsVersion="$(UnoFontsVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
 				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"

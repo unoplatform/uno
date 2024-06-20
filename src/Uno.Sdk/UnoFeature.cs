@@ -83,6 +83,8 @@ public enum UnoFeature
 
 	Prism,
 
+	UnoFonts,
+
 	[UnoArea(UnoArea.Core)]
 	Skia,
 

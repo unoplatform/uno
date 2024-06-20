@@ -198,7 +198,7 @@ namespace Uno.UI
 			/// <summary>
 			/// The default font family for text when a font isn't explicitly specified (e.g. for a TextBlock)
 			/// </summary>
-			public static string DefaultTextFontFamily { get; set; } = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans-Regular-VariableFont_wdth,wght.ttf";
+			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
 
 			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
