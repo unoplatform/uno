@@ -1,4 +1,9 @@
-﻿using System.Windows.Input;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutItem_Partial.cpp, tag winui3/release/1.5.4, commit 98a60c8
+
+using System.Windows.Input;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -9,8 +14,8 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 	/// </summary>
 	public ICommand Command
 	{
-		get { return (ICommand)GetValue(CommandProperty); }
-		set { SetValue(CommandProperty, value); }
+		get => (ICommand)GetValue(CommandProperty);
+		set => SetValue(CommandProperty, value);
 	}
 
 	/// <summary>
@@ -28,8 +33,8 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 	/// </summary>
 	public object CommandParameter
 	{
-		get { return (object)GetValue(CommandParameterProperty); }
-		set { SetValue(CommandParameterProperty, value); }
+		get => (object)GetValue(CommandParameterProperty);
+		set => SetValue(CommandParameterProperty, value);
 	}
 
 	/// <summary>
@@ -65,7 +70,12 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 	/// </summary>
 	public string KeyboardAcceleratorTextOverride
 	{
-		get => (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty) ?? "";
+		get
+		{
+			InitializeKeyboardAcceleratorText()
+			return (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty) ?? "";
+		}
+
 		set => this.SetValue(KeyboardAcceleratorTextOverrideProperty, value);
 	}
 
@@ -89,8 +99,8 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 	/// </summary>
 	public string Text
 	{
-		get { return (string)GetValue(TextProperty) ?? ""; }
-		set { SetValue(TextProperty, value); }
+		get => (string)GetValue(TextProperty) ?? "";
+		set => SetValue(TextProperty, value);
 	}
 
 	/// <summary>
@@ -102,6 +112,8 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 			propertyType: typeof(string),
 			ownerType: typeof(MenuFlyoutItem),
 			typeMetadata: new FrameworkPropertyMetadata(default(string)));
+
+	internal bool PreventDismissOnPointer { get; set; }
 
 	/// <summary>
 	/// Occurs when a menu item is clicked.
