@@ -310,7 +310,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(flyoutItem);
 
-			flyoutItem.InvokeClick();
+			flyoutItem.Invoke();
 
 			// Force close the flyout as InvokeClick does not do so.
 			item.CloseMenuFlyout();
@@ -321,7 +321,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(flyoutItem.IsEnabled);
 
-			flyoutItem.InvokeClick();
+			flyoutItem.Invoke();
 			item.CloseMenuFlyout();
 		}
 
