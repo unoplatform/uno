@@ -16,5 +16,10 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		DefaultStyleKey = typeof(MenuFlyoutSubItem);
 
 		PrepareState();
+
+#if HAS_UNO // Uno specific: Simulate enter/leave lifecycle events
+		this.Loaded += (s, e) => EnterImpl(this, new Uno.UI.Xaml.EnterParams());
+		this.Unloaded += (s, e) => LeaveImpl(this, new Uno.UI.Xaml.LeaveParams());
+#endif
 	}
 }
