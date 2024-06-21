@@ -63,6 +63,7 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
 		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.Uno.cs" />
 		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\Expander\ExpanderTests_APITests.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\TeachingTip/TeachingTipTests.cs" />
 		<!-- We remove WebView2 tests, as the installed version of Microsoft.UI.Xaml does not include this control -->
 		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Microsoft_UI_Xaml_Controls\Given_WebView2.cs" />
 	</ItemGroup>
