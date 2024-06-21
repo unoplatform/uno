@@ -58,6 +58,9 @@ $projects =
     # 5.2 Uno Lib
     @("5.2/uno52Lib/uno52Lib.csproj", ""),
 
+    # 5.2 Uno NuGet Lib
+    @("5.2/uno52NuGetLib/uno52NuGetLib.csproj", ""),
+
     # 5.2 Uno SingleProject Lib
     @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", ""),
 
