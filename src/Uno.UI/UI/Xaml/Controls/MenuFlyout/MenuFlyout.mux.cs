@@ -21,13 +21,20 @@ partial class MenuFlyout
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
 
+#if HAS_UNO // Custom implementation: Simulate enter/leave for KAs on all targets
 			foreach (MenuFlyoutItemBase item in items)
 			{
 				if (item.KeyboardAccelerators is KeyboardAcceleratorCollection kac)
 				{
 					kac.Enter(pNamescopeOwner, parameters);
 				}
+
+				if (item is MenuFlyoutSubItem subItem)
+				{
+					subItem.EnterImpl(pNamescopeOwner, parameters);
+				}
 			}
+#endif
 		}
 	}
 
@@ -47,13 +54,20 @@ partial class MenuFlyout
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
 
+#if HAS_UNO // Custom implementation: Simulate enter/leave for KAs on all targets
 			foreach (MenuFlyoutItemBase item in items)
 			{
 				if (item.KeyboardAccelerators is KeyboardAcceleratorCollection kac)
 				{
 					kac.Leave(pNamescopeOwner, parameters);
 				}
+
+				if (item is MenuFlyoutSubItem subItem)
+				{
+					subItem.LeaveImpl(pNamescopeOwner, parameters);
+				}
 			}
+#endif
 		}
 	}
 
