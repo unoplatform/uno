@@ -1858,6 +1858,11 @@
 
 		<Methods>
 			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar\..*" reason="Not in UWP" isRegex="true" />
+
+			<!-- BEGIN Keyboard accelerators -->
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_KeyboardAccelerators(System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Input.KeyboardAccelerator&gt; value)" reason="Keyboard Accelerators setter is not public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_KeyboardAccelerators(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Input.KeyboardAccelerator&gt; value)" reason="Keyboard Accelerators setter is not public" />
+			<!-- END Keyboard accelerators -->
 		</Methods>
 	</IgnoreSet>
   <!--
