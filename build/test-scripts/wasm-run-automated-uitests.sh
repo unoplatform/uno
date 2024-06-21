@@ -19,6 +19,10 @@ dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/too
 dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
+# Workaround an issue where dotnet test gets stuck.
+# If this is removed and everything works, then remove it! :)
+export MSBUILDENSURESTDOUTFORTASKPROCESSES=1
+
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
 export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome
@@ -83,8 +87,14 @@ dotnet test \
 	-v m \
 	|| true
 
+echo "Killing dotnet serve"
+
+jobs
+
 ## terminate dotnet serve
 kill %%
+
+echo "Killed!"
 
 ## Copy the results file to the results folder
 cp --backup=t $UNO_ORIGINAL_TEST_RESULTS $UNO_UITEST_SCREENSHOT_PATH
@@ -102,8 +112,13 @@ cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.xml
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
+echo "Running NUnitTransformTool"
+
 dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 
 ## Fail the build when no test results could be read
 dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
+
+echo "Ran NUnitTransformTool"
+
 popd

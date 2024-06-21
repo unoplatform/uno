@@ -234,12 +234,21 @@ public partial class Given_HotReloadWorkspace
 		if (_process is null or { HasExited: true })
 		{
 			var version = GetDotnetMajorVersion();
-			var runtimeVersionPath = version <= 5 ? "netcoreapp3.1" : $"net{version}.0";
+			var runtimeVersionPath = $"net{version}.0";
 
 			// Use the debug configuration so that remote control
 			// gets properly enabled.
 			var toolsPath = Path.Combine(GetRCHostAppPath(), "Debug");
 			var hostBinPath = Path.Combine(toolsPath, runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
+
+			// GetDotnetMajorVersion() will return the .NET SDK version.
+			// We may be building with TargetFramework being one version earlier.
+			if (!File.Exists(hostBinPath))
+			{
+				version--;
+				runtimeVersionPath = $"net{version}.0";
+				hostBinPath = Path.Combine(toolsPath, runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
+			}
 
 			if (!File.Exists(hostBinPath))
 			{
