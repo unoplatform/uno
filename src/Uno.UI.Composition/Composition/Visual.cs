@@ -130,7 +130,7 @@ namespace Microsoft.UI.Composition
 			{
 				_parent = value;
 #if __SKIA__
-				SetAsPopupVisual(value?._isPopupVisual ?? false, inherited: true);
+				SetAsPopupVisual(value?.IsPopupVisual ?? false, inherited: true);
 #endif
 			}
 		}

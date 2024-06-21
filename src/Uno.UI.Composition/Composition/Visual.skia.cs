@@ -19,14 +19,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
-	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 
-	// a visual is a flyout visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual
-	private bool? _isPopupVisual;
-	private bool _isPopupVisualInherited;
-	internal bool IsPopupVisual => _isPopupVisual ?? _isPopupVisualInherited;
+	private VisualFlags _flags = VisualFlags.MatrixDirty;
 
+	internal bool IsPopupVisual => (_flags & VisualFlags.IsPopupVisualSet) != 0 ? (_flags & VisualFlags.IsPopupVisual) != 0 : (_flags & VisualFlags.IsPopupVisualInherited) != 0;
+	internal bool IsNativeHostVisual
+	{
+		get => (_flags & VisualFlags.IsNativeHostVisual) != 0;
+		set
+		{
+			if (value)
+			{
+				_flags |= VisualFlags.IsNativeHostVisual;
+			}
+			else
+			{
+				_flags &= ~VisualFlags.IsNativeHostVisual;
+			}
+		}
+	}
+
+	/// <summary>A visual is a popup visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual</summary>
 	/// <remarks>call with a null <paramref name="isPopupVisual"/> to unset.</remarks>
 	internal void SetAsPopupVisual(bool? isPopupVisual, bool inherited = false)
 	{
@@ -35,11 +49,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		if (inherited)
 		{
-			_isPopupVisualInherited = isPopupVisual!.Value;
+			_flags |= (isPopupVisual!.Value ? VisualFlags.IsPopupVisualInherited : 0);
+		}
+		else if (isPopupVisual is { })
+		{
+			_flags |= (isPopupVisual.Value ? VisualFlags.IsPopupVisual : 0);
+			_flags |= VisualFlags.IsPopupVisualSet;
 		}
 		else
 		{
-			_isPopupVisual = isPopupVisual;
+			_flags &= ~VisualFlags.IsPopupVisualSet;
 		}
 
 		var newValue = IsPopupVisual;
@@ -55,8 +74,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
-		var matrixDirty = _matrixDirty;
-		_matrixDirty = true;
+		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
+		_flags |= VisualFlags.MatrixDirty;
 		return !matrixDirty;
 	}
 
@@ -76,9 +95,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// This contradicts the traditional linear algebraic definitions, but works out in practice (e.g.
 			// if the canvas is scaled very early, you want all the offsets to scale with it)
 			// https://learn.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/transforms/matrix
-			if (_matrixDirty)
+			if ((_flags & VisualFlags.MatrixDirty) != 0)
 			{
-				_matrixDirty = false;
+				_flags &= ~VisualFlags.MatrixDirty;
 
 				// Start out with the final matrix of the parent
 				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
@@ -107,7 +126,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 #if DEBUG
-	internal string TotalMatrixString => $"{(_matrixDirty ? "-dirty-" : "")}{_totalMatrix}";
+	internal string TotalMatrixString => $"{((_flags & VisualFlags.MatrixDirty) != 0 ? "-dirty-" : "")}{_totalMatrix}";
 #endif
 
 	public CompositionClip? Clip
@@ -288,5 +307,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		return session;
+	}
+
+	[Flags]
+	internal enum VisualFlags : byte
+	{
+		IsPopupVisualSet = 1,
+		IsPopupVisual = 2,
+		IsPopupVisualInherited = 4,
+		IsNativeHostVisual = 8,
+		MatrixDirty = 16
 	}
 }
