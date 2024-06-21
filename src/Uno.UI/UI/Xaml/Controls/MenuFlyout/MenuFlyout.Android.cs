@@ -82,7 +82,7 @@ public partial class MenuFlyout
 		var items = Items.OfType<MenuFlyoutItem>().Where(i => i.Visibility == Visibility.Visible).ToArray();
 		var item = items[e.Item.ItemId];
 
-		item.InvokeClick();
+		item.Invoke();
 	}
 
 	private View GetActualTarget()
