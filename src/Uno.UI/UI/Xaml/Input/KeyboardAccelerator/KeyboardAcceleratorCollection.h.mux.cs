@@ -14,9 +14,10 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 
 	public KeyboardAcceleratorCollection(DependencyObject parent) : base(parent, true)
 	{
-		_parentVisualTreeListener = new ParentVisualTreeListener(this);
-		_parentVisualTreeListener.ParentLoaded += (s, e) => Enter(null, new EnterParams(true));
-		_parentVisualTreeListener.ParentUnloaded += (s, e) => Leave(null, new LeaveParams(true));
+		_parentVisualTreeListener = new ParentVisualTreeListener(
+			this,
+			() => Enter(null, new EnterParams(true)),
+			() => Leave(null, new LeaveParams(true)));
 	}
 #endif
 
