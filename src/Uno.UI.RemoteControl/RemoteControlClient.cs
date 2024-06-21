@@ -24,7 +24,7 @@ using Windows.Networking.Sockets;
 
 namespace Uno.UI.RemoteControl;
 
-public class RemoteControlClient : IRemoteControlClient
+public partial class RemoteControlClient : IRemoteControlClient
 {
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
 	public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
@@ -37,7 +37,6 @@ public class RemoteControlClient : IRemoteControlClient
 
 	internal static RemoteControlClient Initialize(Type appType, ServerEndpointAttribute[]? endpoints)
 		=> Instance = new RemoteControlClient(appType, endpoints);
-
 
 	public event RemoteControlFrameReceivedEventHandler? FrameReceived;
 	public event RemoteControlClientEventEventHandler? ClientEvent;
@@ -55,18 +54,22 @@ public class RemoteControlClient : IRemoteControlClient
 	public TimeSpan ConnectionRetryInterval { get; } = TimeSpan.FromMilliseconds(_connectionRetryInterval);
 	private const int _connectionRetryInterval = 5_000;
 
+	private readonly StatusSink _status;
+	private static readonly TimeSpan _keepAliveInterval = TimeSpan.FromSeconds(30);
 	private readonly (string endpoint, int port)[]? _serverAddresses;
-	private readonly Dictionary<string, IRemoteControlProcessor> _processors = new();
+	private readonly Dictionary<string, IClientProcessor> _processors = new();
 	private readonly List<IRemoteControlPreProcessor> _preprocessors = new();
 	private readonly object _connectionGate = new();
 	private Task<Connection?> _connection; // null if no server, socket only null if connection was established once but lost since then
 	private Timer? _keepAliveTimer;
+	private KeepAliveMessage _ping = new();
 
 	private record Connection(Uri EndPoint, Stopwatch Since, WebSocket? Socket);
 
 	private RemoteControlClient(Type appType, ServerEndpointAttribute[]? endpoints = null)
 	{
 		AppType = appType;
+		_status = new StatusSink(this);
 
 		// Environment variables are the first priority as they are used by runtime tests engine to test hot-reload.
 		// They should be considered as the default values and in any case they must take precedence over the assembly-provided values.
@@ -111,17 +114,21 @@ public class RemoteControlClient : IRemoteControlClient
 			this.Log().LogError("Failed to get any remote control server endpoint from the IDE.");
 
 			_connection = Task.FromResult<Connection?>(null);
+			_status.Report(ConnectionState.NoServer);
 			return;
 		}
 
+		// Enable hot-reload
 		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
+		_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+
 		_connection = StartConnection();
 	}
 
 	public IEnumerable<object> Processors
 		=> _processors.Values;
 
-	internal IRemoteControlProcessor[] RegisteredProcessors
+	internal IClientProcessor[] RegisteredProcessors
 		=> _processors.Values.ToArray();
 
 	internal Task WaitForConnection()
@@ -130,7 +137,7 @@ public class RemoteControlClient : IRemoteControlClient
 	public Task WaitForConnection(CancellationToken ct)
 		=> _connection;
 
-	private void RegisterProcessor(IRemoteControlProcessor processor)
+	private void RegisterProcessor(IClientProcessor processor)
 		=> _processors[processor.Scope] = processor;
 
 	public void RegisterPreProcessor(IRemoteControlPreProcessor preprocessor)
@@ -145,6 +152,8 @@ public class RemoteControlClient : IRemoteControlClient
 			// We have a socket (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
 			lock (_connectionGate)
 			{
+				_status.Report(ConnectionState.Reconnecting);
+
 				if (connectionTask == _connection)
 				{
 					_connection = Connect(connection.EndPoint, CancellationToken.None);
@@ -153,6 +162,8 @@ public class RemoteControlClient : IRemoteControlClient
 
 			connection = await _connection;
 		}
+
+		_status.ReportActiveConnection(connection);
 
 		return connection?.Socket;
 	}
@@ -168,6 +179,7 @@ public class RemoteControlClient : IRemoteControlClient
 					this.Log().LogWarning($"No server addresses provided, skipping.");
 				}
 
+				_status.Report(ConnectionState.NoServer);
 				return default;
 			}
 
@@ -176,6 +188,8 @@ public class RemoteControlClient : IRemoteControlClient
 #else
 			const bool isHttps = false;
 #endif
+
+			_status.Report(ConnectionState.Connecting);
 
 			var pending = _serverAddresses
 				.Where(adr => adr.port != 0 || Uri.TryCreate(adr.endpoint, UriKind.Absolute, out _))
@@ -204,6 +218,7 @@ public class RemoteControlClient : IRemoteControlClient
 						this.Log().LogError("Failed to connect to the server (timeout).");
 					}
 
+					_status.Report(ConnectionState.ConnectionTimeout);
 					AbortPending();
 
 					return null;
@@ -224,6 +239,8 @@ public class RemoteControlClient : IRemoteControlClient
 			// Abort all other pending connections
 			AbortPending();
 
+			_status.ReportActiveConnection(connected);
+
 			if (connected is null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
@@ -240,6 +257,7 @@ public class RemoteControlClient : IRemoteControlClient
 					this.Log().LogDebug($"Connected to {connected!.EndPoint}");
 				}
 
+				DevServerDiagnostics.Current = _status;
 				_ = ProcessMessages(connected!.Socket!);
 
 				return connected;
@@ -387,14 +405,15 @@ public class RemoteControlClient : IRemoteControlClient
 
 		while (await WebSocketHelper.ReadFrame(socket, CancellationToken.None) is HotReload.Messages.Frame frame)
 		{
-			if (frame.Scope == "RemoteControlServer")
+			if (frame.Scope == WellKnownScopes.DevServerChannel)
 			{
 				if (frame.Name == KeepAliveMessage.Name)
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"Server Keepalive frame");
-					}
+					ProcessPong(frame);
+				}
+				else if (frame.Name == ProcessorsDiscoveryResponse.Name)
+				{
+					ProcessServerProcessorsDiscovered(frame);
 				}
 			}
 			else
@@ -419,7 +438,17 @@ public class RemoteControlClient : IRemoteControlClient
 
 					if (!skipProcessing)
 					{
-						await processor.ProcessFrame(frame);
+						try
+						{
+							await processor.ProcessFrame(frame);
+						}
+						catch (Exception e)
+						{
+							if (this.Log().IsEnabled(LogLevel.Error))
+							{
+								this.Log().LogError($"Error while processing frame [{frame.Scope}/{frame.Name}]", e);
+							}
+						}
 					}
 				}
 				else
@@ -439,8 +468,53 @@ public class RemoteControlClient : IRemoteControlClient
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogError($"Error while processing frame {frame.Scope}/{frame.Name}", error);
+					this.Log().LogError($"Error while notifying frame received {frame.Scope}/{frame.Name}", error);
 				}
+			}
+		}
+	}
+
+	private void ProcessPong(Frame frame)
+	{
+		if (frame.TryGetContent(out KeepAliveMessage? pong))
+		{
+			_status.ReportPong(pong);
+
+			if (pong.AssemblyVersion != _ping.AssemblyVersion && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Trace(
+					$"Server pong frame (a.k.a. KeepAlive), but version differs from client (server: {pong.AssemblyVersion} | client: {_ping.AssemblyVersion})."
+					+ $"This usually indicates that an old instance of the dev-server is being re-used or a partial deployment of the application."
+					+ "Some feature like hot-reload are most likely to fail. To fix this, you might have to restart Visual Studio.");
+			}
+			else if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Server pong frame (a.k.a. KeepAlive) with valid version ({pong.AssemblyVersion}).");
+			}
+		}
+		else
+		{
+			_status.ReportPong(null);
+
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Trace(
+					"Server pong frame (a.k.a. KeepAlive), but failed to deserialize it's content. "
+					+ $"This usually indicates a version mismatch between client and server (client: {_ping.AssemblyVersion})."
+					+ "Some feature like hot-reload are most likely to fail. To fix this, you might have to restart Visual Studio.");
+			}
+		}
+	}
+
+	private void ProcessServerProcessorsDiscovered(Frame frame)
+	{
+		if (frame.TryGetContent(out ProcessorsDiscoveryResponse? response))
+		{
+			_status.ReportServerProcessors(response);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Server loaded processors: \r\n{response.Processors.Select(p => $"\t- {p.Type} v {p.Version} (from {p.AssemblyPath})").JoinBy("\r\n")}.");
 			}
 		}
 	}
@@ -452,8 +526,6 @@ public class RemoteControlClient : IRemoteControlClient
 			return;
 		}
 
-		KeepAliveMessage keepAlive = new();
-
 		Timer? timer = default;
 		timer = new Timer(async _ =>
 		{
@@ -464,15 +536,18 @@ public class RemoteControlClient : IRemoteControlClient
 					this.Log().Trace($"Sending Keepalive frame from client");
 				}
 
-				await SendMessage(keepAlive);
+				_ping = _ping.Next();
+				_status.ReportPing(_ping);
+				await SendMessage(_ping);
 			}
-			catch (Exception)
+			catch (Exception error)
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
 					this.Log().Trace("Keepalive failed");
 				}
 
+				_status.ReportKeepAliveAborted(error);
 				Interlocked.CompareExchange(ref _keepAliveTimer, null, timer);
 				timer?.Dispose();
 			}
@@ -480,7 +555,7 @@ public class RemoteControlClient : IRemoteControlClient
 
 		if (Interlocked.CompareExchange(ref _keepAliveTimer, timer, null) is null)
 		{
-			timer.Change(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+			timer.Change(_keepAliveInterval, _keepAliveInterval);
 		}
 	}
 

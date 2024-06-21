@@ -2,5 +2,4 @@
 
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-public record IdeMessage;
-
+public record IdeMessage(string Scope);

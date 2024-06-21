@@ -1,35 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
-using Microsoft.Build.Framework;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.ProjectSystem.Build;
-using Microsoft.VisualStudio.ProjectSystem.Debug;
-using Microsoft.VisualStudio.ProjectSystem.Properties;
-using Microsoft.VisualStudio.ProjectSystem.VS;
+using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using StreamJsonRpc;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
@@ -48,6 +33,7 @@ public partial class EntryPoint : IDisposable
 	private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
 	private const string UnoVSExtensionLoadedProperty = "_UnoVSExtensionLoaded";
 
+	private readonly CancellationTokenSource _ct = new();
 	private readonly DTE _dte;
 	private readonly DTE2 _dte2;
 	private readonly string _toolsPath;
@@ -112,6 +98,8 @@ public partial class EntryPoint : IDisposable
 		_ = _debuggerObserver.ObserveProfilesAsync();
 
 		_ = _globalPropertiesChanged();
+
+		TelemetryHelper.DataModelTelemetrySession.AddSessionChannel(new TelemetryEventListener(this));
 	}
 
 	private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -319,23 +307,21 @@ public partial class EntryPoint : IDisposable
 			}
 			var runtimeVersionPath = $"net{version}.0";
 
-			var sb = new StringBuilder();
-
 			var pipeGuid = Guid.NewGuid();
 
 			var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
-			string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
+			var arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				WindowStyle = ProcessWindowStyle.Hidden,
 				WorkingDirectory = Path.Combine(_toolsPath, "host"),
-			};
 
-			// redirect the output
-			pi.RedirectStandardOutput = true;
-			pi.RedirectStandardError = true;
+				// redirect the output
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			};
 
 			_process = new System.Diagnostics.Process();
 
@@ -351,16 +337,14 @@ public partial class EntryPoint : IDisposable
 			_process.BeginErrorReadLine();
 
 			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
-			_ideChannelClient.ForceHotReloadRequested += IdeChannelClient_ForceHotReloadRequested;
+			_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
 			_ideChannelClient.ConnectToHost();
 
 			_ = _globalPropertiesChanged();
 		}
 	}
 
-#pragma warning disable VSTHRD100 // Avoid async void methods
-	private async void IdeChannelClient_ForceHotReloadRequested(object sender, ForceHotReloadIdeMessage message)
-#pragma warning restore VSTHRD100 // Avoid async void methods
+	private async Task OnForceHotReloadRequestedAsync(object? sender, ForceHotReloadIdeMessage request)
 	{
 		try
 		{
@@ -369,12 +353,14 @@ public partial class EntryPoint : IDisposable
 			// Send a message back to indicate that the request has been received and acted upon.
 			if (_ideChannelClient is not null)
 			{
-				await _ideChannelClient.SendToDevServerAsync(new HotReloadRequestedIdeMessage());
+				await _ideChannelClient.SendToDevServerAsync(new HotReloadRequestedIdeMessage(request.CorrelationId, Result.Success()), _ct.Token);
 			}
 		}
-		catch (Exception e)
+		catch (Exception e) when (_ideChannelClient is not null)
 		{
-			_debugAction?.Invoke($"Failed to execute command to ForceHotReload: {e}");
+			await _ideChannelClient.SendToDevServerAsync(new HotReloadRequestedIdeMessage(request.CorrelationId, Result.Fail(e)), _ct.Token);
+
+			throw;
 		}
 	}
 
@@ -442,6 +428,7 @@ public partial class EntryPoint : IDisposable
 
 		try
 		{
+			_ct.Cancel(false);
 			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
 		}
@@ -453,12 +440,10 @@ public partial class EntryPoint : IDisposable
 
 	private class Logger(EntryPoint entryPoint) : ILogger
 	{
-		private readonly EntryPoint _entryPoint = entryPoint;
-
-		public void Debug(string message) => _entryPoint._debugAction?.Invoke(message);
-		public void Error(string message) => _entryPoint._errorAction?.Invoke(message);
-		public void Info(string message) => _entryPoint._infoAction?.Invoke(message);
-		public void Warn(string message) => _entryPoint._warningAction?.Invoke(message);
-		public void Verbose(string message) => _entryPoint._verboseAction?.Invoke(message);
+		public void Debug(string message) => entryPoint._debugAction?.Invoke(message);
+		public void Error(string message) => entryPoint._errorAction?.Invoke(message);
+		public void Info(string message) => entryPoint._infoAction?.Invoke(message);
+		public void Warn(string message) => entryPoint._warningAction?.Invoke(message);
+		public void Verbose(string message) => entryPoint._verboseAction?.Invoke(message);
 	}
 }

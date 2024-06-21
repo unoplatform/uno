@@ -6,7 +6,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.UI.RemoteControl;
 
-internal interface IRemoteControlProcessor
+internal interface IClientProcessor
 {
 	string Scope { get; }
 
