@@ -85,7 +85,8 @@ internal partial class WpfNativeElementHostingExtension : ContentPresenter.INati
 				new(arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height)
 			);
 
-			contentAsUIElement.Clip = new RectangleGeometry(new System.Windows.Rect(0, clipRect.Y, Math.Round(clipRect.Width), Math.Round(clipRect.Height)));
+			// no longer needed now that we draw everything above of the native elements but kept for reference
+			// contentAsUIElement.Clip = new RectangleGeometry(new System.Windows.Rect(0, clipRect.Y, Math.Round(clipRect.Width), Math.Round(clipRect.Height)));
 		}
 		else
 		{
