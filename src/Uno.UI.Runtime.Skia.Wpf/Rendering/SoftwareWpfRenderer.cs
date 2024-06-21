@@ -84,7 +84,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				SkiaRenderHelper.RenderRootVisual(width, height, rootVisual, surface, canvas);
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, surface, canvas);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
 				{

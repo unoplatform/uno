@@ -97,7 +97,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var compositor = Compositor.GetSharedCompositor();
-				SkiaRenderHelper.RenderRootVisual(scaledWidth, scaledHeight, rootVisual, _surface, canvas);
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(scaledWidth, scaledHeight, rootVisual, _surface);
 
 				if (compositor.IsSoftwareRenderer is null)
 				{

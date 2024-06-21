@@ -115,7 +115,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
 
-				_renderTarget = new GRBackendRenderTarget(w, h, samples, stencil, glInfo);
+				_renderTarget = new GRBackendRenderTarget(w, h, samples, 8, glInfo);
 
 				// create the surface
 				_surface?.Dispose();
@@ -143,7 +143,10 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					SkiaRenderHelper.RenderRootVisual(w, h, rootVisual, _surface, canvas);
+					// OpenGL rendering on Gtk doesn't work well with transparency
+					// even though stencil buffer support is present and the color includes alpha
+					// SkiaRenderHelper.RenderRootVisual(w, h, rootVisual, _surface, canvas);
+					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual, null);
 				}
 			}
 

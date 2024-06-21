@@ -55,8 +55,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		UpdateRendererBackground();
 		_renderer.BackgroundColor = SKColors.Transparent;
 
-		var area = (Widget)new DrawingArea();
-		var area2 = (Widget)_renderer;
+		var area = _renderer is GLRenderSurfaceBase ? (Widget)_renderer : new Box(Orientation.Vertical, 0);
 
 		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
 		_xamlRoot!.Changed += OnXamlRootChanged;
@@ -70,32 +69,34 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		{
 			UpdateWindowSize(area.AllocatedWidth, area.AllocatedHeight);
 		};
-		area2.Realized += (s, e) =>
-		{
-			area2.Window.PassThrough = true;
-		};
-
-		// PassThrough makes it so that any pointer event will fall through.
-		// We can't selectively pass certain events through, so we can either
-		// pass through all the events, or none of them. We go with the
-		// former. This means that clicking on a popup on top of a native element
-		// will pass the pointer event to the native element even if it's supposed
-		// to be hidden behind the popup.
-		area2.Realized += (s, e) =>
-		{
-			area2.Window.PassThrough = true;
-		};
-
-		area.SizeAllocated += (s, e) =>
-		{
-			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
-		};
 
 		var overlay = new Overlay();
 		overlay.Add(area);
 		overlay.AddOverlay(_nativeOverlayLayer);
-		overlay.AddOverlay(area2);
-		overlay.SetOverlayPassThrough(area2, true);
+
+		// we don't enable airspace when using OpenGL due to problems with transparency
+		if (_renderer is SoftwareRenderSurface)
+		{
+			var area2 = (Widget)_renderer;
+			// PassThrough makes it so that any pointer event will fall through.
+			// We can't selectively pass certain events through, so we can either
+			// pass through all the events, or none of them. We go with the
+			// former. This means that clicking on a popup on top of a native element
+			// will pass the pointer event to the native element even if it's supposed
+			// to be hidden behind the popup.
+			area2.Realized += (s, e) =>
+			{
+				area2.Window.PassThrough = true;
+			};
+
+			area.SizeAllocated += (s, e) =>
+			{
+				UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
+			};
+			overlay.AddOverlay(area2);
+			overlay.SetOverlayPassThrough(area2, true);
+		}
+
 		_eventBox.Add(overlay);
 		_gtkWindow.Add(_eventBox);
 	}

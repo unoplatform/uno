@@ -1,4 +1,3 @@
-using System;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
@@ -10,14 +9,36 @@ namespace Uno.UI.Helpers;
 internal static class SkiaRenderHelper
 {
 	// reusable paths to avoid repetitive allocations
-	private static SKPath _mainPath = new SKPath();
 	private static SKPath _visualPath = new SKPath();
 	private static SKPath _clipPath = new SKPath();
-	private static SKPath _negativePath = new SKPath();
 
-	public static void RenderRootVisual(int width, int height, ShapeVisual rootVisual, SKSurface surface, SKCanvas canvas)
+	/// <summary>
+	/// Does a rendering cycle and returns a path that represents the total area that was drawn
+	/// </summary>
+	public static void RenderRootVisualAndClearNativeAreas(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	{
+		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+		// we clear the "negative" of what was drawn
+		var negativePath = new SKPath();
+		negativePath.AddRect(new SKRect(0, 0, width, height));
+		negativePath = negativePath.Op(path, SKPathOp.Difference);
+		var canvas = surface.Canvas;
+		canvas.Save();
+		canvas.ClipPath(negativePath);
+		canvas.Clear(SKColors.Transparent);
+		canvas.Restore();
+	}
+
+	/// <summary>
+	/// Does a rendering cycle and returns a path that represents the total area that was drawn
+	/// </summary>
+	public static SKPath RenderRootVisualAndReturnPath(int width, int height, ShapeVisual rootVisual, SKSurface surface)
 	{
 		var nativeRects = ContentPresenter.GetNativeRects();
+
+		// the entire viewport
+		var mainPath = new SKPath();
+		mainPath.AddRect(new SKRect(0, 0, width, height));
 
 		if (nativeRects.IsEmpty)
 		{
@@ -25,12 +46,9 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
+			var canvas = surface.Canvas;
 			// Assuming the canvas we're drawing on is on top of the native elements,
 			// we want to crop out "see-through windows" so we can see the native elements underneath the canvas
-
-			// the entire viewport
-			(_mainPath ??= new SKPath()).Reset();
-			_mainPath.AddRect(new SKRect(0, 0, width, height));
 
 			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, (session, visual) =>
 			{
@@ -41,7 +59,7 @@ internal static class SkiaRenderHelper
 					_clipPath.AddRect(canvas.DeviceClipBounds);
 					(_visualPath ??= new SKPath()).Reset();
 					_visualPath.AddRect(visual.TotalMatrix.ToMatrix3x2().Transform(new Rect(new Point(), visual.Size.ToSize())).ToSKRect());
-					_mainPath = _mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Difference);
+					mainPath = mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Difference);
 				}
 
 				// plus the popups
@@ -52,19 +70,11 @@ internal static class SkiaRenderHelper
 					(_visualPath ??= new SKPath()).Reset();
 					_visualPath.AddRect(visual.TotalMatrix.ToMatrix3x2().Transform(new Rect(new Point(), visual.Size.ToSize())).ToSKRect());
 					// note that popups are always traversed last in the tree, so there are no "races" between the paths of PopupVisuals and NativeHostVisuals
-					_mainPath = _mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Union);
+					mainPath = mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Union);
 				}
 			});
-
-			// mainPath is now everywhere we want to actually draw
-			// so we clear the "negative" of that
-			(_negativePath ??= new SKPath()).Reset();
-			_negativePath.AddRect(new SKRect(0, 0, width, height));
-			_negativePath = _negativePath.Op(_mainPath, SKPathOp.Difference);
-			canvas.Save();
-			canvas.ClipPath(_negativePath);
-			canvas.Clear(SKColors.Transparent);
-			canvas.Restore();
 		}
+
+		return mainPath;
 	}
 }
