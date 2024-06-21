@@ -9,13 +9,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Windows.System;
-using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
 using FocusHelper = Uno.UI.RuntimeTests.MUX.Input.Focus.FocusHelper;
+using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
@@ -1556,8 +1555,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 			ButtonWithFlyout = (Button)rootPanel.FindName("ButtonWithFlyout");
 			MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("MenuItem")).KeyboardAccelerators[0];
-			Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_MenuItem_KA")).KeyboardAccelerators[0];
-			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_Sub_MenuItem_KA")).KeyboardAccelerators[0];
+			var menuFlyout = (ButtonWithFlyout.Flyout as MenuFlyout);
+			var rootSubItem = (MenuFlyoutSubItem)menuFlyout.Items[1];
+			Sub_MenuItem_KA = ((MenuFlyoutItem)rootSubItem.Items[1]).KeyboardAccelerators[0];
+			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)((MenuFlyoutSubItem)rootSubItem.Items[0]).Items[0]).KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1632,8 +1633,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 			ButtonWithoutFlyout = (Button)rootPanel.FindName("ButtonWithoutFlyout");
 			MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("MenuItem")).KeyboardAccelerators[0];
-			Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_MenuItem_KA")).KeyboardAccelerators[0];
-			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_Sub_MenuItem_KA")).KeyboardAccelerators[0];
+			var menuBar = (MenuBar)rootPanel.Children[0];
+			var mainItem = menuBar.Items[0];
+			var rootSubItem = (MenuFlyoutSubItem)mainItem.Items[1];
+			Sub_MenuItem_KA = ((MenuFlyoutItem)rootSubItem.Items[1]).KeyboardAccelerators[0];
+			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)((MenuFlyoutSubItem)rootSubItem.Items[0]).Items[0]).KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
