@@ -86,13 +86,23 @@ namespace Microsoft.UI.Xaml
 			set => SetContextFlyoutValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null)]
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
 		internal static DependencyProperty KeyboardAcceleratorsProperty { get; } = CreateKeyboardAcceleratorsProperty();
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{
 			get => GetKeyboardAcceleratorsValue();
 			private set => SetKeyboardAcceleratorsValue(value);
+		}
+
+		private void OnKeyboardAcceleratorsChanged()
+		{
+#if HAS_UNO // TODO: Uno specific - WinUI does analogous action in EnterEffectiveValue
+			if (KeyboardAccelerators is KeyboardAcceleratorCollection collection)
+			{
+				collection.Enter(null, new EnterParams(IsLoaded) { IsForKeyboardAccelerator = true });
+			}
+#endif
 		}
 
 		/// <summary>
