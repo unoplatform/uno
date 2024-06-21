@@ -4565,11 +4565,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Build the parser context for ProvideValue(IXamlServiceProvider)
 			var providerDetails = new string[]
 			{
-				// BuildParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
+				// CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType, object rootObject)
 				target ?? "null",
 				$"typeof({globalized.PvtpDeclaringType})",
 				$"\"{member.Member.Name}\"",
 				$"typeof({globalized.PvtpType})",
+				// the ResourceOwner for an ResDict is the RD's singleton instance, not the RD itself
+				$"({CurrentResourceOwnerName} as object as {DictionaryProviderInterfaceName})?.GetResourceDictionary() ?? (object){CurrentResourceOwnerName}",
 			};
 			var provider = $"{globalized.MarkupHelper}.CreateParserContext({providerDetails.JoinBy(", ")})";
 
