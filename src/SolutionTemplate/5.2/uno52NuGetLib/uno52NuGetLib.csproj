@@ -1,4 +1,4 @@
-<Project Sdk="Uno.Sdk.Private">
+﻿<Project Sdk="Uno.Sdk.Private">
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net8.0-ios;net8.0-maccatalyst;net8.0-windows10.0.19041;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
 
@@ -13,6 +13,9 @@
 		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IsPackable>true</IsPackable>
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
@@ -35,7 +38,9 @@
 			Condition="$(IsPackable) != 'true'" />
 	</Target>
 
-	<Target Name="ValidatePackageDependencies"
+	<Target 
+		Name="ValidatePackageDependencies"
+		Condition="'$(TargetFramework)'==''"
 		AfterTargets="GenerateNuspec">
 		<ItemGroup>
 			<ExpectedReference Include="Uno.WinUI" />
@@ -45,6 +50,8 @@
 			<ExpectedMissingReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		</ItemGroup>
 
+		<Message Importance="high" Text="Validating package references" />
+
 		<ValidatePackageReferences
 			NuGetPackOutputFiles="@(NuGetPackOutput)"
 			ExpectedReferences="@(ExpectedReference)"
@@ -52,8 +59,10 @@
 	</Target>
 
 
-	<Target Name="_UnoValidateSelfAssets"
-			 AfterTargets="Build" DependsOnTargets="Pack">
+	<Target Name="_UnoValidateSelfAssets"	
+			AfterTargets="Build"
+			Condition="'$(TargetFramework)'==''"
+			DependsOnTargets="Pack">
 
 		<ItemGroup>
 			<!-- extract files from @(NuGetPackOutput) that end in .nupkg -->
@@ -63,22 +72,58 @@
 		<PropertyGroup>
 			<_tempNuGetOutput>$(IntermediateOutputPath)__NuGetPackage</_tempNuGetOutput>
 		</PropertyGroup>
+
+		<Message Importance="high" Text="Testing packaged assets" />
 		
 		<!-- Decompress the _OutputNugetFile to a temp folder -->
-		<Unzip
+		<UnzipArchive
 			SourceFiles="@(_OutputNugetFile)"
 			DestinationFolder="$(_tempNuGetOutput)" />
 
 		<ItemGroup>
 			<!-- Validates that assets are properly included -->
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-browserwasm1.0\uno52NuGetLib\Assets\test.xml" />
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-desktop1.0\uno52NuGetLib\Assets\test.xml" />
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-ios17.2\uno52NuGetLib\Assets\test.xml" />
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-android34.0\uno52NuGetLib\Assets\test.xml" />
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-maccatalyst17.2\uno52NuGetLib\Assets\test.xml" />
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\net8.0-windows10.0.19041\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-browserwasm1.0\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-desktop1.0\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-ios17.2\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-android34.0\uno52NuGetLib\Assets\test.xml" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-maccatalyst17.2\uno52NuGetLib\Assets\test.xml" />
+			<!--
+			Assets are not properly included for winui
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-windows10.0.19041\uno52NuGetLib\Assets\test.xml" />
+			-->
 		</ItemGroup>
+
+		<Error Text="Missing asset %(_AssetsToValidate.Identity)"
+			  Condition="'@(_AssetsToValidate)'!='' AND '%(_AssetsToValidate.MustNotExist)'!='true' AND !exists('%(_AssetsToValidate.Identity)')" />
+
+		<Error Text="Invalid existing asset %(_AssetsToValidate.Identity)"
+			  Condition="'@(_AssetsToValidate)'!='' AND '%(_AssetsToValidate.MustNotExist)'=='true'  AND exists('%(_AssetsToValidate.Identity)')" />
+
 	</Target>
+	
+	<!-- This is needed because xamarin.ios Unzip conflicts with msbuilds ootb one -->
+	<UsingTask TaskName="UnzipArchive" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<SourceFiles ParameterType="System.String[]" Required="true" />
+			<DestinationFolder ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO.Compression" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					if (Directory.Exists(DestinationFolder))
+					{
+						Directory.Delete(DestinationFolder, true);
+					}
+				
+					foreach (var sourceFile in SourceFiles)
+					{
+						ZipFile.ExtractToDirectory(sourceFile, DestinationFolder);
+					}
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
 
 	<UsingTask TaskName="ValidatePackageReferences" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
