@@ -74,7 +74,7 @@ public class Given_CalendarDatePicker
 				{
 					continue;
 				}
-				var background = (backgroundBrush as SolidColorBrush)?.Color ?? ((RevealBackgroundBrush)backgroundBrush).Color;
+				var background = (backgroundBrush as SolidColorBrush)?.Color ?? ((Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBackgroundBrush)backgroundBrush).Color;
 
 				// Skip colored dates (selected), or those with opacity of zero.
 				if (background.R == background.G && background.G == background.B && background.A != 0)
@@ -108,7 +108,7 @@ public class Given_CalendarDatePicker
 				{
 					continue;
 				}
-				var background = (backgroundBrush as SolidColorBrush)?.Color ?? ((RevealBackgroundBrush)backgroundBrush).Color;
+				var background = (backgroundBrush as SolidColorBrush)?.Color ?? ((Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBackgroundBrush)backgroundBrush).Color;
 
 				// Skip colored dates (selected), or those with opacity of zero.
 				if (background.R == background.G && background.G == background.B && background.A != 0)
