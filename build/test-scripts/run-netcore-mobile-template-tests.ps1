@@ -278,10 +278,10 @@ $projects =
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-browserwasm", "-p:ImplicitUsings=disable"), $true, $true),
     @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-desktop", "-p:ImplicitUsings=disable"), $true, $true),
 
-     #
+    #
     # 5.2 Uno NuGet Lib
     #
-    @("5.2/uno52Lib/uno52Lib.csproj", @(), $true, $true),
+    @("5.2/uno52NuGetLib/uno52NuGetLib.csproj", @(), $true, $true),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @("5.2/uno52Lib/uno52Lib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false, $true),
