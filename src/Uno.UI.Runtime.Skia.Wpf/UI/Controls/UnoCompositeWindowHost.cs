@@ -73,7 +73,7 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 
 		_nativeOverlayLayer = new WpfCanvas();
 		// Transparency doesn't work with the OpenGL renderer, so we have to use the software renderer for the top layer
-		_renderLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this, true));
+		_renderLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this));
 
 		Loaded += WpfHost_Loaded;
 		Unloaded += (_, _) => _backgroundDisposable.Dispose();

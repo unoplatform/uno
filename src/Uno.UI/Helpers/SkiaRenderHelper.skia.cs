@@ -1,3 +1,4 @@
+using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
@@ -9,7 +10,6 @@ internal static class SkiaRenderHelper
 {
 	public static void RenderRootVisual(int width, int height, ShapeVisual rootVisual, SKSurface surface, SKCanvas canvas)
 	{
-
 		var mainPath = new SKPath();
 		mainPath.AddRect(new SKRect(0, 0, width, height));
 		foreach (var rect in ContentPresenter.GetNativeRects())
@@ -32,7 +32,9 @@ internal static class SkiaRenderHelper
 		var negativePath = new SKPath();
 		negativePath.AddRect(new SKRect(0, 0, width, height));
 		negativePath = negativePath.Op(mainPath, SKPathOp.Difference);
+		canvas.Save();
 		canvas.ClipPath(negativePath);
 		canvas.Clear(SKColors.Transparent);
+		canvas.Restore();
 	}
 }

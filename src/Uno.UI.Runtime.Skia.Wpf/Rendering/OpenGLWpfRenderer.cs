@@ -1,5 +1,4 @@
-﻿
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Runtime.InteropServices;
@@ -10,7 +9,6 @@ using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Windows.Graphics.Display;
 using Uno.UI.Helpers;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -24,25 +22,20 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
-	private readonly bool _isTopSurface;
 	private WinUI.XamlRoot? _xamlRoot;
 	private nint _hwnd;
 	private nint _hdc;
+	private int _pixelFormat;
 	private nint _glContext;
 	private GRContext? _grContext;
 	private SKSurface? _surface;
 	private GRBackendRenderTarget? _renderTarget;
 	private WriteableBitmap? _backBuffer;
 
-	public OpenGLWpfRenderer(IWpfXamlRootHost host, bool isTopSurface)
+	public OpenGLWpfRenderer(IWpfXamlRootHost host)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_isTopSurface = isTopSurface;
-		if (isTopSurface)
-		{
-			BackgroundColor = SKColors.Transparent;
-		}
 	}
 
 	public SKColor BackgroundColor { get; set; }
@@ -77,18 +70,23 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		pfd.nVersion = 1;
 		pfd.dwFlags = NativeMethods.PFD_DRAW_TO_WINDOW | NativeMethods.PFD_SUPPORT_OPENGL | NativeMethods.PFD_DOUBLEBUFFER;
 		pfd.iPixelType = NativeMethods.PFD_TYPE_RGBA;
-		pfd.cColorBits = 24;
+		pfd.cColorBits = 32;
 		pfd.cRedBits = 8;
 		pfd.cGreenBits = 8;
 		pfd.cBlueBits = 8;
-		pfd.cAlphaBits = 0;
+		pfd.cAlphaBits = 8;
 		pfd.cDepthBits = 16;
+		pfd.cStencilBits = 1; // anything > 0 is fine, we will most likely get 8
 		pfd.iLayerType = NativeMethods.PFD_MAIN_PLANE;
 
 		// Choose the best matching pixel format
-		var pixelFormat = NativeMethods.ChoosePixelFormat(_hdc, ref pfd);
+		_pixelFormat = NativeMethods.ChoosePixelFormat(_hdc, ref pfd);
 
-		if (pixelFormat == 0)
+		// To inspect the chosen pixel format:
+		// NativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
+		// NativeMethods.DescribePixelFormat(_hdc, _pixelFormat, (uint)Marshal.SizeOf<NativeMethods.PIXELFORMATDESCRIPTOR>(), ref temp_pfd);
+
+		if (_pixelFormat == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -99,7 +97,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 		// Set the pixel format for the device context
-		if (NativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
+		if (NativeMethods.SetPixelFormat(_hdc, _pixelFormat, ref pfd) == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -202,7 +200,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			_surface?.Dispose();
 			_surface = SKSurface.Create(_grContext, _renderTarget, surfaceOrigin, colorType);
 
-			_backBuffer = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
+			_backBuffer = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -245,7 +243,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private (int framebuffer, int stencil, int samples) GetGLBuffers()
 	{
 		NativeMethods.glGetIntegerv(NativeMethods.GL_FRAMEBUFFER_BINDING, out var framebuffer);
-		NativeMethods.glGetIntegerv(NativeMethods.GL_STENCIL, out var stencil);
+		NativeMethods.glGetIntegerv(NativeMethods.GL_STENCIL_BITS, out var stencil);
 		NativeMethods.glGetIntegerv(NativeMethods.GL_SAMPLES, out var samples);
 
 		return (framebuffer, stencil, samples);

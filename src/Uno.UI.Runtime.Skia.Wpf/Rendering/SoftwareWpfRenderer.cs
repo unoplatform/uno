@@ -18,19 +18,13 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 {
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
-	private readonly bool _isTopSurface;
 	private WriteableBitmap? _bitmap;
 	private XamlRoot? _xamlRoot;
 
-	public SoftwareWpfRenderer(IWpfXamlRootHost host, bool isTopSurface)
+	public SoftwareWpfRenderer(IWpfXamlRootHost host)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
-		_isTopSurface = isTopSurface;
-		if (isTopSurface)
-		{
-			BackgroundColor = SKColors.Transparent;
-		}
 	}
 
 	public SKColor BackgroundColor { get; set; } = SKColors.White;

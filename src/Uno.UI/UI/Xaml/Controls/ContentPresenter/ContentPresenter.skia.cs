@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -13,9 +15,12 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
+	private Rect _lastFinalRect;
 #if DEBUG
 	private bool _nativeElementAttached;
 #endif
+
+	internal static ImmutableList<Rect> GetNativeRects() => _nativeHosts.Select(nh => nh._lastFinalRect).ToImmutableList();
 
 	partial void InitializePlatform()
 	{
@@ -82,14 +87,14 @@ partial class ContentPresenter
 		var arrangeRect = this.GetAbsoluteBoundsRect();
 		var ev = GetParentViewport().Effective;
 
-		Rect clippingBounds;
+		Rect clipRect;
 		if (ev.IsEmpty)
 		{
-			clippingBounds = new Rect(0, 0, 0, 0);
+			clipRect = new Rect(0, 0, 0, 0);
 		}
 		else if (ev.IsInfinite)
 		{
-			clippingBounds = null;
+			clipRect = null;
 		}
 		else
 		{
@@ -97,13 +102,20 @@ partial class ContentPresenter
 			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
 			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
 			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
-			clippingBounds = new Rect(left, top, width, height);
+			clipRect = new Rect(left, top, width, height);
 		}
+
+		var clipInGlobalCoordinates = new Rect(
+			arrangeRect.X + clipRect.X,
+			arrangeRect.Y + clipRect.Y,
+			clipRect.Width,
+			clipRect.Height);
+		_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates) ?? new Rect(arrangeRect.X, arrangeRect.Y, 0, 0);
 
 		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
 			Content,
 			arrangeRect,
-			clippingBounds);
+			clipRect);
 	}
 
 	partial void AttachNativeElement()
