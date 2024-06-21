@@ -35,6 +35,7 @@ On some platforms, you can further customize the file-picking experience by util
 | SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔ |
 | SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔ |
 | SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✔ |
+| SetMultipleFileLimit()  | ✖   | ✖           | ✖      | ✔     | ✖ |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
 *(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used to apply `image/*` and `video/*` filters*\
@@ -152,6 +153,24 @@ else
 {
     // No file was picked or the dialog was cancelled.
 }
+```
+
+> [!NOTE]
+> On iOS, when making multiple selections, you can limit the number of items selected by calling the `SetMultipleFileLimit()` method and specifying the maximum number of items.
+>
+
+##### Limiting the number of items
+
+```csharp
+var fileOpenPicker = new FileOpenPicker();
+fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+fileOpenPicker.FileTypeFilter.Add(".jpg");
+fileOpenPicker.FileTypeFilter.Add(".png");
+//The user will be able to pick up to three files.
+fileOpenPicker.SetMultipleFileLimit(3);
+
+var pickedFiles = await fileOpenPicker.PickMultipleFilesAsync();
+...
 ```
 
 > [!NOTE]
