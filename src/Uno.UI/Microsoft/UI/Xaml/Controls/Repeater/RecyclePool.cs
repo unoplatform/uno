@@ -68,8 +68,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					// the enter/leave cost during recycling.
 					// TODO: prioritize elements with the same owner to those without an owner.
 					var winrtOwner = owner;
-					var iter = elements.FindIndex(elemInfo => elemInfo.Owner == winrtOwner || elemInfo.Owner == null);
-
+					var iter=-1;
+					for (int i = 0; i < elements.Count; i++)
+					{
+						if ((elemInfo.Owner == winrtOwner) || (elemInfo.Owner == null))
+						{
+							iter=i;
+							break;
+						}
+					}
 					if (iter < 0)
 					{
 						iter = elements.Count - 1;
