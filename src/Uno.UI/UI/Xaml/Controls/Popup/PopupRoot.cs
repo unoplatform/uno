@@ -27,9 +27,6 @@ internal partial class PopupRoot : Panel
 
 	public PopupRoot()
 	{
-#if __SKIA__
-		Visual.SetAsPopupVisual(true);
-#endif
 		KeyDown += OnKeyDown;
 		Loaded += OnRootLoaded;
 		Unloaded += OnRootUnloaded;

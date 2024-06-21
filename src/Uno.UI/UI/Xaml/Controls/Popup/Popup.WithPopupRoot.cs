@@ -44,6 +44,11 @@ public partial class Popup
 		{
 			PopupPanel.Children.Add(newChild);
 		}
+
+#if __SKIA__
+		oldChild?.Visual?.SetAsPopupVisual(false);
+		newChild?.Visual?.SetAsPopupVisual(true);
+#endif
 	}
 
 	partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
