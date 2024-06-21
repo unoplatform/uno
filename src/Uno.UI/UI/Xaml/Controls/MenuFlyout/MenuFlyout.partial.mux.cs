@@ -36,9 +36,10 @@ partial class MenuFlyout
 
 	private void ListenToParentLifecycle()
 	{
-		_parentVisualTreeListener = new ParentVisualTreeListener(this);
-		_parentVisualTreeListener.ParentLoaded += (s, e) => EnterImpl(null, new EnterParams(true));
-		_parentVisualTreeListener.ParentUnloaded += (s, e) => LeaveImpl(null, new LeaveParams(true));
+		_parentVisualTreeListener = new ParentVisualTreeListener(
+			this,
+			() => EnterImpl(null, new EnterParams(true)),
+			() => LeaveImpl(null, new LeaveParams(true)));
 	}
 #endif
 
