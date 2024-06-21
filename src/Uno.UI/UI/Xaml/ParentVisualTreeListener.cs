@@ -10,12 +10,15 @@ namespace Uno.UI.Xaml;
 internal class ParentVisualTreeListener
 {
 	private readonly DependencyObject _owner;
+	private readonly Action _onLoaded;
+	private readonly Action _onUnloaded;
 	private readonly SerialDisposable _registrations = new();
 
-	public ParentVisualTreeListener(DependencyObject owner)
+	public ParentVisualTreeListener(DependencyObject owner, Action onLoaded, Action onUnloaded)
 	{
 		_owner = owner;
-
+		_onLoaded = onLoaded;
+		_onUnloaded = onUnloaded;
 		owner.RegisterParentChangedCallbackStrong(null, OnParentChanged);
 
 		if (_owner.GetParent() is { } existingParent)
@@ -24,17 +27,10 @@ internal class ParentVisualTreeListener
 		}
 	}
 
-	public event EventHandler? ParentChanging;
-
-	public event EventHandler? ParentLoaded;
-
-	public event EventHandler? ParentUnloaded;
-
 	private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args) => OnParentChanged(args.NewParent);
 
 	private void OnParentChanged(object? newParent)
 	{
-		ParentChanging?.Invoke(this, EventArgs.Empty);
 		// Unsubscribe from the previous parent
 		_registrations.Disposable = null;
 
@@ -45,7 +41,7 @@ internal class ParentVisualTreeListener
 
 			if (nearestFeParent.IsLoaded)
 			{
-				ParentLoaded?.Invoke(this, EventArgs.Empty);
+				_onLoaded?.Invoke();
 			}
 
 			_registrations.Disposable = Disposable.Create(() =>
@@ -56,7 +52,7 @@ internal class ParentVisualTreeListener
 		}
 	}
 
-	private void OnParentLoaded(object sender, RoutedEventArgs e) => ParentLoaded?.Invoke(this, EventArgs.Empty);
+	private void OnParentLoaded(object sender, RoutedEventArgs e) => _onLoaded?.Invoke();
 
-	private void OnParentUnloaded(object sender, RoutedEventArgs e) => ParentUnloaded?.Invoke(this, EventArgs.Empty);
+	private void OnParentUnloaded(object sender, RoutedEventArgs e) => _onUnloaded?.Invoke();
 }
