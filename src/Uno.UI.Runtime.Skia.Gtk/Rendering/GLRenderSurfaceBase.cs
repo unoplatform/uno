@@ -144,7 +144,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual, _isPopupSurface);
+					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual);
 				}
 			}
 

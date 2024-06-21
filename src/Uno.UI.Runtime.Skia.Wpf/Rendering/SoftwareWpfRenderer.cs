@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Windows.Graphics.Display;
+using Microsoft.UI.Composition;
 using Visibility = System.Windows.Visibility;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -85,11 +85,12 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 		_bitmap.Lock();
 		using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
 		{
-			surface.Canvas.Clear(BackgroundColor);
-			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
+			var canvas = surface.Canvas;
+			canvas.Clear(BackgroundColor);
+			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, _isPopupSurface);
+				rootVisual.Compositor.RenderRootVisual(surface, rootVisual);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
 				{

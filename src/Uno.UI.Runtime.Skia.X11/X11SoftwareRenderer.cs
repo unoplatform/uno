@@ -78,8 +78,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 					// but we draw everything on top of the native windows and then "cutout holes"
 					// in this top rendered area to see the native windows, so we render twice
 					// with isPopupSurface = true and false
-					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, false);
-					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, true);
+					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
 				}
 
 				canvas.Flush();

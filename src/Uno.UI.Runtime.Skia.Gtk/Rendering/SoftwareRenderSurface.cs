@@ -98,7 +98,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var compositor = Compositor.GetSharedCompositor();
-				compositor.RenderRootVisual(_surface, rootVisual, _isPopupSurface);
+				compositor.RenderRootVisual(_surface, rootVisual);
 
 				if (compositor.IsSoftwareRenderer is null)
 				{
