@@ -43,7 +43,7 @@ partial class MenuFlyoutSubItem
 		DependencyProperty.Register(
 			nameof(Items),
 			typeof(IList<MenuFlyoutItemBase>),
-			typeof(MenuFlyout),
+			typeof(MenuFlyoutSubItem),
 			new FrameworkPropertyMetadata(defaultValue: null));
 
 	/// <summary>

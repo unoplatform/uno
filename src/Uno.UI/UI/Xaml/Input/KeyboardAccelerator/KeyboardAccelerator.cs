@@ -18,8 +18,10 @@ public partial class KeyboardAccelerator : DependencyObject
 	public KeyboardAccelerator()
 	{
 #if HAS_UNO
-		_parentVisualTreeListener = new ParentVisualTreeListener(this);
-		_parentVisualTreeListener.ParentLoaded += (s, e) => EnterImpl(null, new EnterParams(true));
+		_parentVisualTreeListener = new ParentVisualTreeListener(
+			this,
+			() => EnterImpl(null, new EnterParams(true)),
+			null);
 #endif
 	}
 }
