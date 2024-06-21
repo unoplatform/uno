@@ -6,7 +6,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal static class WpfRendererProvider
 {
-	public static IWpfRenderer CreateForHost(IWpfXamlRootHost host, bool isPopupSurface, RenderSurfaceType? surfaceType = null)
+	public static IWpfRenderer CreateForHost(IWpfXamlRootHost host, bool isTopSurface, RenderSurfaceType? surfaceType = null)
 	{
 		var requestedRenderer = surfaceType ?? host.RenderSurfaceType ?? RenderSurfaceType.OpenGL;
 
@@ -20,8 +20,8 @@ internal static class WpfRendererProvider
 		{
 			renderer = requestedRenderer switch
 			{
-				RenderSurfaceType.Software => new SoftwareWpfRenderer(host, isPopupSurface),
-				RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(host, isPopupSurface),
+				RenderSurfaceType.Software => new SoftwareWpfRenderer(host, isTopSurface),
+				RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(host, isTopSurface),
 				_ => throw new InvalidOperationException($"Render Surface type {host.RenderSurfaceType} is not supported")
 			};
 
