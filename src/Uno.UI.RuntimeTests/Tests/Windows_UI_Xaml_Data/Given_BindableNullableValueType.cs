@@ -16,7 +16,11 @@ public class Given_BindableNullableValueType
 		var x = new BindableNullableValueTypeTestPage();
 		var tb = x.textBlock;
 		tb.Tag = "10";
-		Assert.AreEqual(10, x.MyProperty);
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
+		Assert.AreEqual(null, x.MyProperty);
+#else
+		Assert.AreEqual("10", x.MyProperty);
+#endif
 		tb.Tag = null;
 		Assert.AreEqual(null, x.MyProperty);
 	}

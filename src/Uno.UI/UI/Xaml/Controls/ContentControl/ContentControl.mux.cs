@@ -223,7 +223,7 @@ public partial class ContentControl : Control
 	private const string c_strTextTemplateStorage = """
 		<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 			<Grid Background="{TemplateBinding Background}">
-				<ImplicitTextBlock Text="{Binding}" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Left" TextWrapping="NoWrap" />
+				<TextBlock Text="{Binding}" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Left" TextWrapping="NoWrap" />
 			</Grid>
 		</ControlTemplate>
 		""";
