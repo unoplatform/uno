@@ -14,6 +14,7 @@ using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -39,7 +40,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		private GRContext? _grContext;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
-		private bool _isTopSurface;
 
 		/// <summary>
 		/// This field determines if OpenGL ES shouls be used or not.
@@ -52,7 +52,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		public SKColor BackgroundColor { get; set; }
 
-		public GLRenderSurfaceBase(IGtkXamlRootHost host, bool isTopSurface)
+		public GLRenderSurfaceBase(IGtkXamlRootHost host)
 		{
 			_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 			_xamlRoot.Changed += OnXamlRootChanged;
@@ -63,7 +63,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			Realized += GLRenderSurface_Realized;
 
 			HasDepthBuffer = false;
-			HasStencilBuffer = false;
+			HasStencilBuffer = true;
 
 			// AutoRender must be disabled to avoid having the GLArea re-render the
 			// composition Visuals after pointer interactions, causing undefined behaviors
@@ -71,7 +71,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			// and arranged properly.
 			AutoRender = false;
 			_host = host;
-			_isTopSurface = isTopSurface;
 		}
 
 		public Widget Widget => this;
@@ -144,7 +143,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual);
+					SkiaRenderHelper.RenderRootVisual(w, h, rootVisual, _surface, canvas);
 				}
 			}
 

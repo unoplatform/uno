@@ -27,8 +27,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	private readonly CompositeDisposable _disposables = new();
 
 	private XamlRoot? _xamlRoot;
-	private IGtkRenderer? _bottomRenderer;
-	private IGtkRenderer? _topRenderer;
+	private IGtkRenderer? _renderer;
 
 	public UnoGtkWindowHost(GtkWindow gtkWindow, WinUIWindow winUIWindow)
 	{
@@ -52,14 +51,12 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	public async Task InitializeAsync()
 	{
-		_bottomRenderer = await GtkRendererProvider.CreateForHostAsync(this);
-		// Transparency doesn't work with the OpenGL renderer, so we have to use the software renderer for the top layer
-		_topRenderer = await GtkRendererProvider.CreateForHostAsync(this, Gtk.RenderSurfaceType.Software);
+		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
 		UpdateRendererBackground();
-		_topRenderer.BackgroundColor = SKColors.Transparent;
+		_renderer.BackgroundColor = SKColors.Transparent;
 
-		var area = (Widget)_bottomRenderer;
-		var area2 = (Widget)_topRenderer;
+		var area = (Widget)new DrawingArea();
+		var area2 = (Widget)_renderer;
 
 		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
 		_xamlRoot!.Changed += OnXamlRootChanged;
@@ -125,9 +122,9 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	{
 		if (_winUIWindow.Background is WinUI.Media.SolidColorBrush brush)
 		{
-			if (_bottomRenderer is not null)
+			if (_renderer is not null)
 			{
-				_bottomRenderer.BackgroundColor = brush.Color;
+				_renderer.BackgroundColor = brush.Color;
 			}
 		}
 		else
@@ -143,9 +140,8 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	{
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 
-		_bottomRenderer?.InvalidateRender();
-		_topRenderer?.InvalidateRender();
+		_renderer?.InvalidateRender();
 	}
 
-	public void TakeScreenshot(string filePath) => _bottomRenderer?.TakeScreenshot(filePath);
+	public void TakeScreenshot(string filePath) => _renderer?.TakeScreenshot(filePath);
 }

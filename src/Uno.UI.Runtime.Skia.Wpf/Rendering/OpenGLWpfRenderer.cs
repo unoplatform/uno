@@ -11,6 +11,7 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Windows.Graphics.Display;
+using Uno.UI.Helpers;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
@@ -216,11 +217,11 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(BackgroundColor);
-			_surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
+			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(_surface, rootVisual);
+				SkiaRenderHelper.RenderRootVisual(width, height, rootVisual, _surface, canvas);
 			}
 		}
 

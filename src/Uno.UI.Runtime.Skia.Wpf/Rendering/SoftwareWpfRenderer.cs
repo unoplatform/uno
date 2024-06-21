@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Microsoft.UI.Composition;
+using Uno.UI.Helpers;
 using Visibility = System.Windows.Visibility;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -90,7 +90,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual);
+				SkiaRenderHelper.RenderRootVisual(width, height, rootVisual, surface, canvas);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
 				{

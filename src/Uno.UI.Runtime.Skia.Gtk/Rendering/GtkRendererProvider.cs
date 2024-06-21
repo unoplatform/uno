@@ -9,9 +9,9 @@ namespace Uno.UI.Runtime.Skia.Gtk.Rendering;
 
 internal static class GtkRendererProvider
 {
-	public static async Task<IGtkRenderer> CreateForHostAsync(IGtkXamlRootHost host, bool isTopSurface, RenderSurfaceType? renderSurfaceType = null)
+	public static async Task<IGtkRenderer> CreateForHostAsync(IGtkXamlRootHost host)
 	{
-		renderSurfaceType ??= host.RenderSurfaceType;
+		RenderSurfaceType? renderSurfaceType = host.RenderSurfaceType;
 		if (TryReadRenderSurfaceTypeEnvironment(out var overridenSurfaceType))
 		{
 			renderSurfaceType = overridenSurfaceType;
@@ -83,15 +83,15 @@ internal static class GtkRendererProvider
 			}
 		}
 
-		return BuildRenderSurfaceType(renderSurfaceType.Value, host, isTopSurface);
+		return BuildRenderSurfaceType(renderSurfaceType.Value, host);
 	}
 
-	private static IGtkRenderer BuildRenderSurfaceType(RenderSurfaceType renderSurfaceType, IGtkXamlRootHost host, bool isTopSurface)
+	private static IGtkRenderer BuildRenderSurfaceType(RenderSurfaceType renderSurfaceType, IGtkXamlRootHost host)
 		=> renderSurfaceType switch
 		{
-			RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(host, isTopSurface),
-			RenderSurfaceType.OpenGL => new OpenGLRenderSurface(host, isTopSurface),
-			RenderSurfaceType.Software => new SoftwareRenderSurface(host, isTopSurface),
+			RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(host),
+			RenderSurfaceType.OpenGL => new OpenGLRenderSurface(host),
+			RenderSurfaceType.Software => new SoftwareRenderSurface(host),
 			_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {GtkHost.Current!.RenderSurfaceType}")
 		};
 

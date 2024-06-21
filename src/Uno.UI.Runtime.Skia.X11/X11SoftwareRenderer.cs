@@ -74,7 +74,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (host.RootElement?.Visual is { } rootVisual)
 				{
-					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
+					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, null);
 				}
 
 				canvas.Flush();

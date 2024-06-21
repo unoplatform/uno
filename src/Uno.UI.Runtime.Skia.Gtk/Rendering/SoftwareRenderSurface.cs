@@ -15,6 +15,7 @@ using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Pango;
+using Uno.UI.Helpers;
 using Context = Cairo.Context;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -26,7 +27,6 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 	private int _bheight, _bwidth;
 	private ImageSurface? _gtkSurface;
 	private int renderCount;
-	private bool _isTopSurface;
 
 	private float _scale = 1;
 	private XamlRoot _xamlRoot;
@@ -36,7 +36,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 	public SKColor BackgroundColor { get; set; }
 		= SKColors.White;
 
-	public SoftwareRenderSurface(IGtkXamlRootHost host, bool isTopSurface)
+	public SoftwareRenderSurface(IGtkXamlRootHost host)
 	{
 		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		_xamlRoot.Changed += OnXamlRootChanged;
@@ -52,7 +52,6 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			}
 		}
 		_host = host;
-		_isTopSurface = isTopSurface;
 	}
 
 	public Widget Widget => this;
@@ -98,7 +97,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var compositor = Compositor.GetSharedCompositor();
-				compositor.RenderRootVisual(_surface, rootVisual);
+				SkiaRenderHelper.RenderRootVisual(scaledWidth, scaledHeight, rootVisual, _surface, canvas);
 
 				if (compositor.IsSoftwareRenderer is null)
 				{
