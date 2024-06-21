@@ -40,7 +40,7 @@ public partial class MenuFlyout
 
 				if (item != null)
 				{
-					item.InvokeClick();
+					item.Invoke();
 					Hide();
 				}
 			};
