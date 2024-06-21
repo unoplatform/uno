@@ -75,7 +75,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 						case MenuFlyoutItem flyoutItem:
 							var subPlatformItem2 = new NSMenuItem(flyoutItem.Text, (s, e) => OnItemActivated(flyoutItem)) { Enabled = true };
-							flyoutItem.InvokeClick();
+							flyoutItem.Invoke();
 							platformItem.Submenu.AddItem(subPlatformItem2);
 							break;
 
@@ -89,7 +89,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void OnItemActivated(MenuFlyoutItem flyoutItem)
 		{
-			flyoutItem.InvokeClick();
+			flyoutItem.Invoke();
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
