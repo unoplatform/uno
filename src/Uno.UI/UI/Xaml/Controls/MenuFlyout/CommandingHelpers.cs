@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
-
+using Uno.UI.DataBinding;
 using ICommand = System.Windows.Input.ICommand;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -44,14 +44,23 @@ public class CommandingHelpers
 
 	class KeyboardAcceleratorCopyConverter : IValueConverter
 	{
+#if HAS_UNO // We have to pass in the target element so that we can set the parent of KeyboardAcceleratorCollection.
+		private readonly ManagedWeakReference _targetWeakRef;
+
+		public KeyboardAcceleratorCopyConverter(ManagedWeakReference targetWeakRef)
+		{
+			_targetWeakRef = targetWeakRef;
+		}
+#endif
+
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			if (value != null)
+			if (value != null && _targetWeakRef.IsAlive && _targetWeakRef.Target is DependencyObject element)
 			{
 				object valueAsI = value;
 
 				IList<KeyboardAccelerator> valueAsKeyboardAccelerators;
-				var returnValueAsKeyboardAcceleratorCollection = new DependencyObjectCollection<KeyboardAccelerator>();
+				var returnValueAsKeyboardAcceleratorCollection = new KeyboardAcceleratorCollection(element);
 
 				valueAsKeyboardAccelerators = valueAsI as IList<KeyboardAccelerator>;
 				int keyboardAcceleratorCount;
@@ -72,6 +81,9 @@ public class CommandingHelpers
 					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.KeyProperty, new Binding { Path = "Key", Source = keyboardAccelerator });
 					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ModifiersProperty, new Binding { Path = "Modifiers", Source = keyboardAccelerator });
 					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ScopeOwnerProperty, new Binding { Path = "ScopeOwner", Source = keyboardAccelerator });
+					returnValueAsKeyboardAcceleratorCollection.Add(keyboardAcceleratorCopy);
+
+
 				}
 
 				return returnValueAsKeyboardAcceleratorCollection;
@@ -162,7 +174,8 @@ public class CommandingHelpers
 
 		if (targetKeyboardAcceleratorCount == 0)
 		{
-			var converter = new KeyboardAcceleratorCopyConverter();
+			var weakReference = WeakReferencePool.RentSelfWeakReference(target);
+			var converter = new KeyboardAcceleratorCopyConverter(weakReference);
 			target.SetBinding(UIElement.KeyboardAcceleratorsProperty, new Binding { Path = "KeyboardAccelerators", Source = uiCommand, Converter = converter });
 		}
 	}

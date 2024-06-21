@@ -544,7 +544,10 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		// Update the OpenedLength property of the ThemeTransition.
 		double openedLength = (m_tpPresenter as Control).ActualHeight;
 
-		(m_tpMenuPopupThemeTransition as MenuPopupThemeTransition).OpenedLength = openedLength;
+		if (m_tpMenuPopupThemeTransition is MenuPopupThemeTransition menuTransition)
+		{
+			menuTransition.OpenedLength = openedLength;
+		}
 	}
 
 	private void ClearStateFlags()
