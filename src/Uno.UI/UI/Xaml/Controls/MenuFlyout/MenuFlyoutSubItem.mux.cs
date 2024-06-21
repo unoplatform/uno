@@ -13,13 +13,13 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class MenuFlyoutSubItem
 {
-	private void EnterImpl(DependencyObject pNamescopeOwner, EnterParams parameters)
+	internal void EnterImpl(DependencyObject pNamescopeOwner, EnterParams parameters)
 	{
 		//base.EnterImpl(pNamescopeOwner, parameters);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemEnter(this, pNamescopeOwner, MenuFlyoutSubItem.ItemsProperty, parameters);
 	}
 
-	private void LeaveImpl(DependencyObject pNamescopeOwner, LeaveParams parameters)
+	internal void LeaveImpl(DependencyObject pNamescopeOwner, LeaveParams parameters)
 	{
 		//base.LeaveImpl(pNamescopeOwner, parameters);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemLeave(this, pNamescopeOwner, MenuFlyoutSubItem.ItemsProperty, parameters);
