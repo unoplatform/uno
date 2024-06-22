@@ -3516,8 +3516,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Tab_Forces_NewLine_When_Not_Enough_Width()
 		{
-			using var _1 = new TextBoxFeatureConfigDisposable();
-			using var _2 = StyleHelper.UseFluentStyles();
+			using var _ = new TextBoxFeatureConfigDisposable();
 
 			// WinUI actually wraps when width <= 114, not <= 113 like we have here.
 			// But when width == 114, WinUI has a bug where it wraps, but it doesn't

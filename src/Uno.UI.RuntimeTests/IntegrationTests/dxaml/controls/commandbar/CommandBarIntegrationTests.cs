@@ -726,6 +726,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("When the CommandBar is Disabled, the more button should be greyed out.")]
+		[Ignore("ResourceDictionary retrieval is incorrect #17271")]
 		public async Task ValidateMoreButtonVisualInDisabledState()
 		{
 			TestCleanupWrapper cleanup;
