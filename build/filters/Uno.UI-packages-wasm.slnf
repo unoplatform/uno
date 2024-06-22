@@ -26,9 +26,9 @@
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Wasm.csproj",
       "Uno.UI.Runtime.WebAssembly\\Uno.UI.Runtime.WebAssembly.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Wasm.csproj",
+      "Uno.UI.XamlHost\\Uno.UI.XamlHost.Wasm.csproj",
       "Uno.UI\\Uno.UI.Wasm.csproj",
-      "Uno.UWP\\Uno.Wasm.csproj",
-      "Uno.UI.XamlHost\\Uno.UI.XamlHost.Wasm.csproj"
+      "Uno.UWP\\Uno.Wasm.csproj"
     ]
   }
 }
