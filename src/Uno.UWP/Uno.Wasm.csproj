@@ -39,7 +39,7 @@
 
 	<ItemGroup>
 
-		<EmbeddedResource Include="WasmScripts\**\*.js" />
+		<_UnoInjectedResource Include="WasmScripts\**\*.js" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 		
 		<TypeScriptCompile Include="..\Uno.UI\ts\types\**\*.ts" />
@@ -98,7 +98,7 @@
 		</PropertyGroup>
 		<ItemGroup>
 			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+			<_UnoInjectedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 		<Copy SourceFiles="$(OutputPath)/javascript/Uno.Wasm.d.ts" DestinationFolder="js" Condition="exists('$(_unoUIDTsFilePath)')" />
 	</Target>

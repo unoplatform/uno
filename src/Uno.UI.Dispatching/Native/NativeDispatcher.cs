@@ -131,7 +131,7 @@ namespace Uno.UI.Dispatching
 				}
 				catch (Exception exception)
 				{
-					@this.Log().Error("NativeDispatcher unhandled exception", exception);
+					@this.Log().Error("NativeDispatcher unhandled exception " + exception, exception);
 				}
 			}
 			else if (@this.Rendering == null && @this.Log().IsEnabled(LogLevel.Debug))
