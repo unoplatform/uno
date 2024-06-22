@@ -26,7 +26,6 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
 		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
 		{
-			textBox.SetPendingSelection(selectionStart, selectionLength);
 			textBox.TextBoxView.UpdateTextFromNative(text);
 		}
 	}

@@ -2056,12 +2056,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-            // Accounting for font difference on Wasm Skia, until we unify with Open Sans.
-            Assert.AreEqual(OperatingSystem.IsBrowser() ? 17 : 16, SUT.SelectionStart);
-            Assert.AreEqual(0, SUT.SelectionLength);
-        }
+			// Accounting for font difference on Wasm Skia, until we unify with Open Sans.
+			Assert.AreEqual(OperatingSystem.IsBrowser() ? 17 : 16, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
 
-        [TestMethod]
+		[TestMethod]
 		public async Task When_Multiline_UpDown_Caret_Position_Preserved()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

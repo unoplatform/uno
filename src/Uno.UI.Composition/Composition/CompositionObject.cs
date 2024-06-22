@@ -337,7 +337,6 @@ namespace Microsoft.UI.Composition
 		{
 			OnPropertyChangedCore(propertyName, isSubPropertyChange);
 			PropagateChanged();
-			RaiseContextStoreChanged();
 		}
 
 		private protected virtual void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)

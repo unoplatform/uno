@@ -81,16 +81,8 @@ namespace Windows.Storage
 
 					for (int i = 0; i < Count; i++)
 					{
-<<<<<<< HEAD
-						var rawValue = ApplicationDataContainerInterop.GetValueByIndex(_locality, i);
-						if (DataTypeSerializer.Deserialize(rawValue) is { } value)
-						{
-							values.Add(value);
-						}
-=======
 						var rawValue = NativeGetValueByIndex(_locality.ToStringInvariant(), i);
-						values.Add(DataTypeSerializer.Deserialize(rawValue));
->>>>>>> d296983cff (feat: Add support for wasm+skia runtime)
+						values.Add(DataTypeSerializer.Deserialize(rawValue) ?? "");
 					}
 
 					return values.AsReadOnly();

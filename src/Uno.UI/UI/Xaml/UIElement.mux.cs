@@ -148,13 +148,10 @@ namespace Microsoft.UI.Xaml
 				//		RRETURN(S_false);
 				//	}
 
-					// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
-					// having state. Otherwise, a stateless FX peer will be released, which will
-					// release the automation peer.
-					//MarkHasState();
-
-					m_tpAP = spAP;
-				}
+				// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
+				// having state. Otherwise, a stateless FX peer will be released, which will
+				// release the automation peer.
+				//MarkHasState();
 			}
 			else
 			{
@@ -165,8 +162,6 @@ namespace Microsoft.UI.Xaml
 				//}
 				//RRETURN(S_false);
 			}
-
-			return m_tpAP;
 		}
 
 		//UNO TODO: Implement GetClickablePointRasterizedClient on UIElement
