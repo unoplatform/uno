@@ -12,7 +12,7 @@ namespace Windows.UI.Core
 		/// Provide a action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Action<Action> DispatchOverride
+		internal static Action<Action> DispatchOverride
 		{
 			get => throw new NotSupportedException();
 			set => throw new NotSupportedException();
@@ -22,7 +22,7 @@ namespace Windows.UI.Core
 		/// Provide a action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Func<bool> HasThreadAccessOverride
+		internal static Func<bool> HasThreadAccessOverride
 		{
 			get => throw new NotSupportedException();
 			set => throw new NotSupportedException();
