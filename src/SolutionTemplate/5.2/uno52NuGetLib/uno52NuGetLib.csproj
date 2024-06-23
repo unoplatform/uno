@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <Project Sdk="Uno.Sdk">
 =======
 ﻿<Project Sdk="Uno.Sdk.Private">
 >>>>>>> 9d103b3395 (chore: Adjust validation)
+=======
+<Project Sdk="Uno.Sdk.Private">
+>>>>>>> 4d57436933 (chore: Adjust regression test for non-windows)
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net8.0-ios;net8.0-maccatalyst;net8.0-windows10.0.19041;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
 
@@ -48,8 +52,8 @@
 		AfterTargets="GenerateNuspec">
 		<ItemGroup>
 			<ExpectedReference Include="Uno.WinUI" />
-			<ExpectedReference Include="Microsoft.WindowsAppSDK" />
-			<ExpectedReference Include="Microsoft.Windows.SDK.BuildTools" />
+			<ExpectedReference Include="Microsoft.WindowsAppSDK" Condition="$([MSBuild]::IsOSPlatform('windows'))" />
+			<ExpectedReference Include="Microsoft.Windows.SDK.BuildTools" Condition="$([MSBuild]::IsOSPlatform('windows'))" />
 			<ExpectedMissingReference Include="Uno.Resizetizer" />
 			<ExpectedMissingReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		</ItemGroup>
