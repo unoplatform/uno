@@ -61,7 +61,7 @@ namespace SkiaSharpExample
 		{
 			try
 			{
-				if (Uri.TryCreate(typeof(MainClass).Assembly.Location, UriKind.RelativeOrAbsolute, out var asm))
+				if (Uri.TryCreate(typeof(MainClass).Assembly.Location, UriKind.Absolute, out var asm))
 				{
 					var appPath = Path.GetDirectoryName(asm.LocalPath)!;
 
