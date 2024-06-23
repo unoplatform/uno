@@ -323,6 +323,8 @@
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\Uno.WinUI.Runtime.Skia.Wpf.targets" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Wpf\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Wpf.targets" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 		<Move SourceFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\Uno.WinUI.Runtime.WebAssembly.props" DestinationFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\$(PackageNamePrefix).Runtime.WebAssembly.props" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 		<Move SourceFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\Uno.WinUI.Runtime.WebAssembly.targets" DestinationFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\$(PackageNamePrefix).Runtime.WebAssembly.targets" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\Uno.UI.Runtime.Skia.WebAssembly.Browser.props" DestinationFiles="..\src\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\$(PackageNamePrefix).Runtime.Skia.WebAssembly.Browser.props" />
+		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\Uno.UI.Runtime.Skia.WebAssembly.Browser.targets" DestinationFiles="..\src\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\$(PackageNamePrefix).Runtime.Skia.WebAssembly.Browser.targets" />
 	</Target>
 
 	<Target Name="BuildNuGetPackage" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
