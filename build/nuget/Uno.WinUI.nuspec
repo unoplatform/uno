@@ -289,10 +289,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-ios17.0\Uno.Foundation.pdb" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.UI.dll" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.UI.pdb" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Composition.dll" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Composition.pdb" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.dll" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.pdb" target="lib\net8.0-ios17.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Composition.dll" target="lib\net8.0-ios17.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Composition.pdb" target="lib\net8.0-ios17.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.dll" target="lib\net8.0-ios17.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.pdb" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\*.xml" target="lib\net8.0-ios17.0" />
@@ -312,10 +312,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.Foundation.pdb" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.dll" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.pdb" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Composition.dll" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Composition.pdb" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net8.0-maccatalyst17.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Composition.dll" target="lib\net8.0-maccatalyst17.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Composition.pdb" target="lib\net8.0-maccatalyst17.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net8.0-maccatalyst17.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\*.xml" target="lib\net8.0-maccatalyst17.0" />
@@ -335,10 +335,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-macos14.0\Uno.Foundation.pdb" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.UI.dll" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.UI.pdb" target="lib\net8.0-macos14.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-macos14.0\Uno.UI.Composition.dll" target="lib\net8.0-macos14.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-macos14.0\Uno.UI.Composition.pdb" target="lib\net8.0-macos14.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net8.0-macos14.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net8.0-macos14.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-macos14.0\Uno.UI.Composition.dll" target="lib\net8.0-macos14.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-macos14.0\Uno.UI.Composition.pdb" target="lib\net8.0-macos14.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net8.0-macos14.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\net8.0-macos14.0\Uno.Xaml.dll" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\net8.0-macos14.0\Uno.Xaml.pdb" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\net8.0-macos14.0\*.xml" target="lib\net8.0-macos14.0" />
@@ -358,10 +358,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-android\Uno.Foundation.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.UI.dll" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.UI.pdb" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-android\Uno.UI.Composition.dll" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-android\Uno.UI.Composition.pdb" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-android\Uno.UI.Dispatching.dll" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-android\Uno.UI.Dispatching.pdb" target="lib\net8.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-android\Uno.UI.Composition.dll" target="lib\net8.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-android\Uno.UI.Composition.pdb" target="lib\net8.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-android\Uno.UI.Dispatching.dll" target="lib\net8.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-android\Uno.UI.Dispatching.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI.BindingHelper.Android\bin\Release\net8.0-android\Uno.UI.BindingHelper.Android.dll" target="lib\net8.0-android30.0" />
@@ -384,10 +384,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-ios17.2\Uno.Foundation.pdb" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.UI.dll" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.UI.pdb" target="lib\net9.0-ios17.2" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-ios17.2\Uno.UI.Composition.dll" target="lib\net9.0-ios17.2" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-ios17.2\Uno.UI.Composition.pdb" target="lib\net9.0-ios17.2" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net9.0-ios17.2" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net9.0-ios17.2" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-ios17.2\Uno.UI.Composition.dll" target="lib\net9.0-ios17.2" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-ios17.2\Uno.UI.Composition.pdb" target="lib\net9.0-ios17.2" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net9.0-ios17.2" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\*.xml" target="lib\net9.0-ios17.2" />
@@ -407,10 +407,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\Uno.Foundation.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.dll" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.pdb" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.dll" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.pdb" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net9.0-maccatalyst17.2" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.dll" target="lib\net9.0-maccatalyst17.2" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.pdb" target="lib\net9.0-maccatalyst17.2" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net9.0-maccatalyst17.2" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\*.xml" target="lib\net9.0-maccatalyst17.2" />
@@ -430,10 +430,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-macos14.2\Uno.Foundation.pdb" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.UI.dll" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.UI.pdb" target="lib\net9.0-macos14.2" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.dll" target="lib\net9.0-macos14.2" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.pdb" target="lib\net9.0-macos14.2" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net9.0-macos14.2" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net9.0-macos14.2" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.dll" target="lib\net9.0-macos14.2" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.pdb" target="lib\net9.0-macos14.2" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net9.0-macos14.2" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\*.xml" target="lib\net9.0-macos14.2" />
@@ -453,10 +453,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-android\Uno.Foundation.pdb" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.UI.dll" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.UI.pdb" target="lib\net9.0-android30.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-android\Uno.UI.Composition.dll" target="lib\net9.0-android30.0" />
-		<file src="..\..\src\Uno.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-android\Uno.UI.Composition.pdb" target="lib\net9.0-android30.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-android\Uno.UI.Dispatching.dll" target="lib\net9.0-android30.0" />
-		<file src="..\..\src\Uno.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-android\Uno.UI.Dispatching.pdb" target="lib\net9.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-android\Uno.UI.Composition.dll" target="lib\net9.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-android\Uno.UI.Composition.pdb" target="lib\net9.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-android\Uno.UI.Dispatching.dll" target="lib\net9.0-android30.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-android\Uno.UI.Dispatching.pdb" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI.BindingHelper.Android\bin\Release\net9.0-android\Uno.UI.BindingHelper.Android.dll" target="lib\net9.0-android30.0" />
