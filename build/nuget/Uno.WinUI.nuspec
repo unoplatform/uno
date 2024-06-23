@@ -403,8 +403,8 @@
 		<!-- net9.0-maccatalyst17.2 -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.dll" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.pdb" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\Uno.Foundation.dll" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\Uno.Foundation.pdb" target="lib\net9.0-maccatalyst17.2" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.Foundation.dll" target="lib\net9.0-maccatalyst17.2" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.Foundation.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.dll" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.Composition.dll" target="lib\net9.0-maccatalyst17.2" />
