@@ -27,7 +27,6 @@ namespace Microsoft.UI.Xaml
 		private const KeyboardNavigationMode UnsetKeyboardNavigationMode = (KeyboardNavigationMode)3;
 
 		private KeyboardNavigationMode _keyboardNavigationMode = UnsetKeyboardNavigationMode;
-		private AutomationPeer? m_tpAP;
 
 		/// <summary>
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
@@ -148,10 +147,13 @@ namespace Microsoft.UI.Xaml
 				//		RRETURN(S_false);
 				//	}
 
-				// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
-				// having state. Otherwise, a stateless FX peer will be released, which will
-				// release the automation peer.
-				//MarkHasState();
+				//	// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
+				//	// having state. Otherwise, a stateless FX peer will be released, which will
+				//	// release the automation peer.
+				//	IFC(MarkHasState());
+
+				//	SetPtrValue(m_tpAP, spAP.Get());
+				//}
 			}
 			else
 			{
