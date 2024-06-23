@@ -18,10 +18,23 @@
 	<skia:ScrollViewer Height="300">
 		<StackPanel>
 			<Button x:Name="FullFlyoutButton"
-					Content="Show a Flyout. The native elements should NOT be visible through the flyout.">
+					Content="Show a big Flyout. The native elements should NOT be visible through the flyout.">
 				<Button.Flyout>
 					<Flyout Placement="Full">
 						<Border BorderBrush="Tomato"
+								BorderThickness="2"
+								Background="Gray">
+						</Border>
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+			<Button x:Name="BottomFlyoutButton"
+					Content="Show a small Flyout below">
+				<Button.Flyout>
+					<Flyout Placement="Bottom">
+						<Border BorderBrush="Tomato"
+								Width="200"
+								Height="200"
 								BorderThickness="2"
 								Background="Gray">
 						</Border>
