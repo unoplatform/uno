@@ -432,7 +432,7 @@ internal static partial class X11Helper
 		return region;
 	}
 
-	[LibraryImport(libX11Randr)]
+	[LibraryImport(libXext)]
 	[return: MarshalAs(UnmanagedType.Bool)]
 	public static partial bool XShapeQueryExtension(IntPtr dpy, out int event_base, out int error_base);
 
@@ -459,6 +459,32 @@ internal static partial class X11Helper
 		int op,
 		int ordering
 	);
+
+	[LibraryImport(libXext)]
+	public unsafe static partial void XShapeCombineMask (
+		IntPtr display,
+		IntPtr window,
+		int dest_kind,
+		int x_off,
+		int y_off,
+		IntPtr src,
+		int op
+	);
+
+	[LibraryImport(libX11)]
+	public unsafe static partial IntPtr XCreateBitmapFromData(
+		IntPtr display,
+		IntPtr window,
+        IntPtr data,
+        uint width,
+        uint height
+    );
+
+	[LibraryImport(libX11)]
+	public unsafe static partial int XFreePixmap(
+		IntPtr display,
+		IntPtr pixmap
+    );
 
 	[LibraryImport(libX11Randr)]
 	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);

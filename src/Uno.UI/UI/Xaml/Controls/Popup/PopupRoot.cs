@@ -18,13 +18,6 @@ internal partial class PopupRoot : Panel
 
 	private readonly SerialDisposable _subscriptions = new();
 
-	// This is needed for native element hosting.
-	internal
-#if IS_UNIT_TESTS
-		new
-#endif
-		event Action Arranged;
-
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
@@ -113,7 +106,6 @@ internal partial class PopupRoot : Panel
 			ArrangeElement(child, new Rect(new Point(), finalSize));
 		}
 
-		DispatcherQueue.TryEnqueue(() => Arranged?.Invoke());
 		return finalSize;
 	}
 

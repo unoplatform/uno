@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.UI;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -15,11 +12,9 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private static Dictionary<X11XamlRootHost, HashSet<X11NativeElementHostingExtension>> _hostToNativeElementHosts = new();
-	private Rect? _lastFinalRect;
 	private Rect? _lastArrangeRect;
 	private Rect? _lastClipRect;
 	private bool _layoutDirty = true;
-	private bool? _xShapesPresent;
 	private readonly ContentPresenter _presenter;
 	private readonly IntPtr _display;
 
@@ -30,26 +25,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	}
 
 	private XamlRoot? XamlRoot => _presenter.XamlRoot;
-
-	internal static IEnumerable<XRectangle> GetNativeElementRects(X11XamlRootHost host)
-	{
-		if (_hostToNativeElementHosts.TryGetValue(host, out var set))
-		{
-			foreach (var hostingExtension in set)
-			{
-				if (hostingExtension._lastFinalRect is { } rect)
-				{
-					yield return new XRectangle
-					{
-						X = (short)rect.X,
-						Y = (short)rect.Y,
-						H = (short)rect.Height,
-						W = (short)rect.Width
-					};
-				}
-			}
-		}
-	}
 
 	public bool IsNativeElement(object content) => content is X11NativeWindow;
 
@@ -62,6 +37,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			using var lockDiposable = X11Helper.XLock(_display);
 
 			host.AttachSubWindow(nativeWindow.WindowId);
+			_ = XLib.XMapWindow(_display, nativeWindow.WindowId);
 			_ = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
 
 			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
@@ -100,10 +76,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			_lastClipRect = null;
 			_lastArrangeRect = null;
-			_lastFinalRect = null;
 
 			xamlRoot.InvalidateRender -= UpdateLayout;
-			host.QueueUpdateTopWindowClipRect();
 		}
 		else
 		{
@@ -143,31 +117,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_ = XLib.XResizeWindow(_display, nativeWindow.WindowId, (int)arrangeRect.Width, (int)arrangeRect.Height);
 			_ = X11Helper.XMoveWindow(_display, nativeWindow.WindowId, (int)arrangeRect.X, (int)arrangeRect.Y);
 
-			_xShapesPresent ??= X11Helper.XShapeQueryExtension(_display, out _, out _);
-			if (_xShapesPresent.Value)
-			{
-				var region = X11Helper.CreateRegion((short)clipRect.Left, (short)clipRect.Top, (short)clipRect.Width, (short)clipRect.Height);
-				using var regionDisposable = new DisposableStruct<IntPtr>(static r => { _ = X11Helper.XDestroyRegion(r); }, region);
-				X11Helper.XShapeCombineRegion(_display, nativeWindow.WindowId, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn("Unable to clip an embedded X11 window, the X server doesn't support the X Nonrectangular Window Shape Extension Protocol.");
-				}
-			}
-
 			XLib.XSync(_display, false);
-
-			var clipInGlobalCoordinates = new Rect(
-				arrangeRect.X + clipRect.X,
-				arrangeRect.Y + clipRect.Y,
-				clipRect.Width,
-				clipRect.Height);
-			_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates);
-
-			host.QueueUpdateTopWindowClipRect();
 		}
 	}
 
@@ -175,17 +125,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 	public void ChangeNativeElementVisibility(object content, bool visible)
 	{
-		if (content is X11NativeWindow nativeWindow)
-		{
-			if (visible)
-			{
-				_ = XLib.XMapWindow(_display, nativeWindow.WindowId);
-			}
-			else
-			{
-				_ = X11Helper.XUnmapWindow(_display, nativeWindow.WindowId);
-			}
-		}
+		// no need to do anything here, X11AirspaceRenderHelper will take care of it automatically
 	}
 
 	// This doesn't seem to work as most (all?) WMs won't change the opacity for subwindows, only top-level windows
