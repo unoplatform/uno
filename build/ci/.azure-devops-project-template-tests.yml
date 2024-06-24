@@ -15,10 +15,6 @@ jobs:
   dependsOn:
     - Generate_Packages
 
-  variables:
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -59,10 +55,6 @@ jobs:
   dependsOn:
     - Generate_Packages
 
-  variables:
-    UnoDisableNetCurrent: true
-    UnoDisableNetCurrentMobile: true
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -98,10 +90,6 @@ jobs:
 
   dependsOn:
     - Generate_Packages
-
-  variables:
-    UnoDisableNetCurrent: true
-    UnoDisableNetCurrentMobile: true
 
   pool: ${{ parameters.vmPoolLinux }}
 

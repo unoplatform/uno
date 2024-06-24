@@ -13,9 +13,6 @@ jobs:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
 
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 

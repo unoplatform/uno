@@ -25,10 +25,6 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
     UITEST_ALLOW_RERUN: ${{ parameters.UITEST_ALLOW_RERUN }}
-
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
     
     UNO_UITEST_BUCKET_COUNT: 5
 

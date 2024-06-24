@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
-		<TargetFrameworks Condition="'$(UnoDisableNetCurrent)'!='true'">$(TargetFrameworks);$(NetCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
