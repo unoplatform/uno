@@ -7,7 +7,7 @@
 					'$(UnoRuntimeIdentifier)' != '' 
 					OR ( 
 						'$(UnoWinRTRuntimeIdentifier)' != '' 
-						AND '$(UnoUIWinRTRuntimeIdentifier)' != ''
+						AND '$(UnoUIRuntimeIdentifier)' != ''
 					)"
 				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile">
 
