@@ -20,7 +20,7 @@ partial class ContentPresenter
 	private bool _nativeElementAttached;
 #endif
 
-	internal static ImmutableList<Rect> GetNativeRects() => _nativeHosts.Select(nh => nh._lastFinalRect).ToImmutableList();
+	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
 	partial void InitializePlatform()
 	{
