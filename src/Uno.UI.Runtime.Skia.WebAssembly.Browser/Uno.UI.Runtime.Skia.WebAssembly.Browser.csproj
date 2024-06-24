@@ -46,7 +46,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
@@ -60,7 +60,7 @@
 	<!-- Typescript setup -->
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmScripts\**\*.js" />
+		<_UnoInjectedResource Include="WasmScripts\**\*.js" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 
@@ -97,7 +97,7 @@
 		</PropertyGroup>
 		<ItemGroup>
 			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+			<_UnoInjectedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 		<Copy SourceFiles="$(OutputPath)/javascript/Uno.Runtime.Wasm.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
 	</Target>
