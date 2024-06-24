@@ -11,6 +11,7 @@ using Uno.UI;
 using Uno;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -351,4 +352,10 @@ public partial class Popup
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 		DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+
+	internal void SetAssociatedVisualTree(VisualTree visualTree)
+	{
+		// TODO Uno: Implement this
+		//visualTree.AttachElement(this);
+	}
 }
