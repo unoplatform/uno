@@ -550,10 +550,12 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		}
 	}
 
+#if false // Never called in WinUI
 	private void ClearStateFlags()
 	{
 		m_menuHelper.ClearStateFlags();
 	}
+#endif
 
 	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs args)
 	{
@@ -577,7 +579,7 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		set => m_wrParentOwner = WeakReferencePool.RentWeakReference(this, value);
 	}
 
-	private void SetSubMenuDirection(bool isSubMenuDirectionUp)
+	void ISubMenuOwner.SetSubMenuDirection(bool isSubMenuDirectionUp)
 	{
 		if (m_tpMenuPopupThemeTransition is not null)
 		{
