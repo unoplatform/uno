@@ -2,7 +2,6 @@
 	<PropertyGroup>
 		<IsBrowserWasm>true</IsBrowserWasm>
 		<UsingUnoCommonWasmTargets>true</UsingUnoCommonWasmTargets>
-		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 
 		<EnableDefaultWasmItems Condition="$(EnableDefaultWasmItems) == ''">false</EnableDefaultWasmItems>
 
