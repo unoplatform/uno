@@ -33,6 +33,8 @@
 		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 
 		<PageExclusions>Themes\WinUI\Resources\**\*.xaml</PageExclusions>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
