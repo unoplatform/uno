@@ -42,14 +42,4 @@ public partial class FlyoutBase
 		//	}
 		//}
 	}
-
-	private bool IsWindowedPopup()
-	{
-		return false;
-		// TODO: Uno
-		//bool areWindowedPopupsSupported = CPopup::DoesPlatformSupportWindowedPopup(DXamlCore::GetCurrent()->GetHandle());
-		//bool isPopupWindowed = m_tpPopup ? static_cast<CPopup*>(m_tpPopup.Cast<Popup>()->GetHandle())->IsWindowed() : false;
-
-		//return areWindowedPopupsSupported && (isPopupWindowed || m_openingWindowedInProgress);
-	}
 }
