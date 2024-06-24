@@ -22,6 +22,8 @@ public partial interface ISubMenuOwner
 
 	void RaiseAutomationPeerExpandCollapse(bool isOpen);
 
+	void SetSubMenuDirection(bool isSubMenuDirectionUp);
+
 	bool IsSubMenuOpen
 	{
 		get;
