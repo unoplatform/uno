@@ -27,8 +27,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? UnoRuntimeEnabledPackage { get; set; }
 
-		[Required]
 		public string UnoRuntimeIdentifier { get; set; } = "";
+
+		public string UnoUIRuntimeIdentifier { get; set; } = "";
+
+		public string UnoWinRTRuntimeIdentifier { get; set; } = "";
 
 		/// <remarks>
 		/// Note that this property is not set to [Required] because
@@ -46,74 +49,25 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		{
 			try
 			{
-				List<ITaskItem> assemblies = new();
-				List<ITaskItem> debugSymbols = new();
-
-				foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
+				if (string.IsNullOrWhiteSpace(UnoRuntimeIdentifier))
 				{
-					var packageBasePath = package.GetMetadata("PackageBasePath");
+					// Single layer mode, Skia desktop or WebAssembly Browser + DOM.
 
-					if (!Version.TryParse(TargetFrameworkVersion?.Substring(1), out var targetFrameworkVersion))
-					{
-						targetFrameworkVersion = new(2, 0);
-					}
+					var (assemblies, debugSymbols) = EnumerateRuntimeFiles(UnoRuntimeIdentifier);
 
-					List<string> searchPaths = new();
-
-					if (targetFrameworkVersion >= new Version(9, 0))
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net9.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net9.0", UnoRuntimeIdentifier));
-					}
-
-					if (targetFrameworkVersion >= new Version(8, 0))
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net8.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", UnoRuntimeIdentifier));
-						searchPaths.Add(packageBasePath);
-					}
-
-					if (targetFrameworkVersion >= new Version(7, 0))
-					{
-						// Even if Uno does not support nte7.0 explicitly anymore, dependencies
-						// may still be providing net7.0 runtime support files (e.g. SkiaSharp)
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net7.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net7.0", UnoRuntimeIdentifier));
-					}
-
-					if (targetFrameworkVersion >= new Version(2, 0))
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));
-					}
-
-					if (searchPaths.Where(d => Directory.Exists(d) && Directory.EnumerateFiles(d, "*.dll").Any()).FirstOrDefault() is { } topMostDirectory)
-					{
-						foreach (var assembly in Directory.EnumerateFiles(topMostDirectory, "*.dll"))
-						{
-							assemblies.Add(new TaskItem(
-								assembly,
-								new Dictionary<string, string>
-								{
-									["NuGetPackageId"] = package.GetMetadata("Identity"),
-									["PathInPackage"] = $"uno-runtime/{Path.GetFileName(Path.GetDirectoryName(topMostDirectory))}/{UnoRuntimeIdentifier}/{Path.GetFileName(assembly)}"
-								}));
-						}
-
-						foreach (var debugSymbol in Directory.EnumerateFiles(topMostDirectory, "*.pdb"))
-						{
-							debugSymbols.Add(new TaskItem(
-								debugSymbol,
-								new Dictionary<string, string>
-								{
-									["NuGetPackageId"] = package.GetMetadata("Identity")
-								}));
-						}
-					}
+					Assemblies = assemblies;
+					DebugSymbols = debugSymbols;
 				}
+				else
+				{
+					// Two layer mode: Skia + WebAssembly.
+					string[] winrtAssemblies = ["uno", "uno.ui.dispatching", "uno.foundation"];
+					var (winRTAssemblies, winRTDebugSymbols) = EnumerateRuntimeFiles(UnoWinRTRuntimeIdentifier, includeFiles: winrtAssemblies);
+					var (uiAssemblies, uiDebugSymbols) = EnumerateRuntimeFiles(UnoUIRuntimeIdentifier, excludeFiles: winrtAssemblies);
 
-				Assemblies = assemblies.ToArray();
-				DebugSymbols = debugSymbols.ToArray();
+					Assemblies = winRTAssemblies.Concat(uiAssemblies).ToArray();
+					DebugSymbols = winRTDebugSymbols.Concat(uiDebugSymbols).ToArray();
+				}
 
 				return true;
 			}
@@ -123,6 +77,100 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				// and can't marshal non-CLR known exceptions.
 				throw new Exception(e.ToString());
 			}
+		}
+
+		private (ITaskItem[] assemblies, ITaskItem[] debugSymbols) EnumerateRuntimeFiles(
+			string unoRuntimeIdentifier
+			, string[]? includeFiles = null
+			, string[]? excludeFiles = null)
+		{
+			List<ITaskItem> assemblies = new();
+			List<ITaskItem> debugSymbols = new();
+
+			foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
+			{
+				var packageBasePath = package.GetMetadata("PackageBasePath");
+
+				if (!Version.TryParse(TargetFrameworkVersion?.Substring(1), out var targetFrameworkVersion))
+				{
+					targetFrameworkVersion = new(2, 0);
+				}
+
+				List<string> searchPaths = new();
+
+				if (targetFrameworkVersion >= new Version(9, 0))
+				{
+					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net9.0", unoRuntimeIdentifier));
+					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net9.0", unoRuntimeIdentifier));
+				}
+
+				if (targetFrameworkVersion >= new Version(8, 0))
+				{
+					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net8.0", unoRuntimeIdentifier));
+					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", unoRuntimeIdentifier));
+					searchPaths.Add(packageBasePath);
+				}
+
+				if (targetFrameworkVersion >= new Version(7, 0))
+				{
+					// Even if Uno does not support nte7.0 explicitly anymore, dependencies
+					// may still be providing net7.0 runtime support files (e.g. SkiaSharp)
+					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net7.0", UnoRuntimeIdentifier));
+					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net7.0", UnoRuntimeIdentifier));
+				}
+
+				if (targetFrameworkVersion >= new Version(2, 0))
+				{
+					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "netstandard2.0", unoRuntimeIdentifier));
+					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "netstandard2.0", unoRuntimeIdentifier));
+				}
+
+				if (searchPaths.Where(d => Directory.Exists(d) && Directory.EnumerateFiles(d, "*.dll").Any()).FirstOrDefault() is { } topMostDirectory)
+				{
+					var assemblyFiles = Directory.EnumerateFiles(topMostDirectory, "*.dll");
+
+					assemblyFiles = excludeFiles is not null
+						? assemblyFiles.Where(f => !excludeFiles.Contains(Path.GetFileNameWithoutExtension(f), StringComparer.OrdinalIgnoreCase))
+						: assemblyFiles;
+
+					assemblyFiles = includeFiles is not null
+						? assemblyFiles.Where(f => includeFiles.Contains(Path.GetFileNameWithoutExtension(f), StringComparer.OrdinalIgnoreCase))
+						: assemblyFiles;
+
+					foreach (var assembly in assemblyFiles)
+					{
+						assemblies.Add(new TaskItem(
+							assembly,
+							new Dictionary<string, string>
+							{
+								["NuGetPackageId"] = package.GetMetadata("Identity"),
+								["PathInPackage"] = $"uno-runtime/{Path.GetFileName(Path.GetDirectoryName(topMostDirectory))}/{unoRuntimeIdentifier}/{Path.GetFileName(assembly)}"
+							}));
+					}
+
+					var symbolFiles = Directory.EnumerateFiles(topMostDirectory, "*.pdb");
+
+					symbolFiles = excludeFiles is not null
+						? symbolFiles.Where(f => !excludeFiles.Contains(Path.GetFileNameWithoutExtension(f), StringComparer.OrdinalIgnoreCase))
+						: symbolFiles;
+
+					symbolFiles = includeFiles is not null
+						? symbolFiles.Where(f => includeFiles.Contains(Path.GetFileNameWithoutExtension(f), StringComparer.OrdinalIgnoreCase))
+						: symbolFiles;
+
+					foreach (var debugSymbol in symbolFiles)
+					{
+						debugSymbols.Add(new TaskItem(
+							debugSymbol,
+							new Dictionary<string, string>
+							{
+								["NuGetPackageId"] = package.GetMetadata("Identity")
+							}));
+					}
+				}
+			}
+
+			return (assemblies.ToArray(), debugSymbols.ToArray());
 		}
 	}
 }

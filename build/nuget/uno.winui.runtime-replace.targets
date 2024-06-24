@@ -3,8 +3,19 @@
 
 	<!-- Target used to override the uno-runtime targets -->
 	<Target Name="ReplaceUnoRuntime"
-				Condition="'$(UnoRuntimeIdentifier)'!=''"
+				Condition="
+					'$(UnoRuntimeIdentifier)' != '' 
+					OR ( 
+						'$(UnoWinRTRuntimeIdentifier)' != '' 
+						AND '$(UnoUIWinRTRuntimeIdentifier)' != ''
+					)"
 				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile">
+
+		<PropertyGroup>
+			<!-- Compatibility with the single-layer runtime replace -->
+			<_LibraryUnoRuntimeIdentifier>$(UnoRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
+			<_LibraryUnoRuntimeIdentifier Condition=" '$(_LibraryUnoRuntimeIdentifier)' == '' ">$(UnoWinRTRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
+		</PropertyGroup>
 
 		<ItemGroup>
 
@@ -24,10 +35,10 @@
 			-->
 			<!-- Add the files for the current selected runtime identifier -->
 			<RuntimeCopyLocalItemsMerged
-							Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+							Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
 							NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 			<RuntimeCopyLocalItemsMerged
-				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
 				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 
 			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
@@ -37,11 +48,11 @@
 				CopyLocal="true"
 				DestinationSubPath="%(FileName)%(Extension)"
 				CopyToPublishDirectory="true"
-				PathInPackage="uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
-			
+				PathInPackage="uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
+
 			<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 		</ItemGroup>
 
 		<!-- 
@@ -50,9 +61,11 @@
 		<RuntimeAssetsSelectorTask_v0
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
 			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			UnoWinRTRuntimeIdentifier="$(UnoWinRTRuntimeIdentifier.ToLowerInvariant())"
+			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
 			<Output TaskParameter="Assemblies" ItemName="RuntimeCopyLocalItemsMerged2" />
-				
+
 			<!-- Publish PDB files-->
 			<Output TaskParameter="DebugSymbols" ItemName="ReferenceCopyLocalPaths" />
 		</RuntimeAssetsSelectorTask_v0>
