@@ -87,6 +87,12 @@ public enum UnoFeature
 	Skia,
 
 	[UnoArea(UnoArea.Core)]
+	WebAssemblySkiaRenderer,
+
+	[UnoArea(UnoArea.Core)]
+	WebAssemblyDOMRenderer,
+
+	[UnoArea(UnoArea.Core)]
 	Lottie,
 
 	[UnoArea(UnoArea.Core)]
