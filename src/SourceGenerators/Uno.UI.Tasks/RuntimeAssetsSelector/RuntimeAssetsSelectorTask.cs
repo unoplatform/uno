@@ -49,7 +49,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		{
 			try
 			{
-				if (string.IsNullOrWhiteSpace(UnoRuntimeIdentifier))
+				if (!string.IsNullOrWhiteSpace(UnoRuntimeIdentifier))
 				{
 					// Single layer mode, Skia desktop or WebAssembly Browser + DOM.
 
