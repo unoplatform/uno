@@ -28,17 +28,19 @@ namespace Microsoft.UI.Xaml
 			{
 				private readonly int _hashCode;
 
-				public Entry(string? fontFamily, FontWeight fontWeight, TypefaceStyle style)
+				public Entry(string? fontFamily, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch)
 				{
 					FontFamily = fontFamily;
 					FontWeight = fontWeight;
-					Style = style;
-					_hashCode = (FontFamily?.GetHashCode() ?? 0) ^ FontWeight.GetHashCode() ^ Style.GetHashCode();
+					FontStyle = fontStyle;
+					FontStretch = fontStretch;
+					_hashCode = (FontFamily?.GetHashCode() ?? 0) ^ FontWeight.GetHashCode() ^ FontStyle.GetHashCode() ^ FontStretch.GetHashCode();
 				}
 
 				public string? FontFamily { get; }
 				public FontWeight FontWeight { get; }
-				public TypefaceStyle Style { get; }
+				public FontStyle FontStyle { get; }
+				public FontStretch FontStretch { get; }
 
 				public override bool Equals(object? other)
 				{
@@ -46,7 +48,8 @@ namespace Microsoft.UI.Xaml
 					{
 						return FontFamily == otherEntry.FontFamily
 							&& FontWeight == otherEntry.FontWeight
-							&& Style == otherEntry.Style;
+							&& FontStyle == otherEntry.FontStyle
+							&& FontStretch == otherEntry.FontStretch;
 					}
 
 					return false;

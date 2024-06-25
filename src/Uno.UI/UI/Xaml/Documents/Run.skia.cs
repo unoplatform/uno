@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		private List<Segment>? _segments;
 
-		internal IReadOnlyList<Segment> Segments => _segments ??= _segments = GetSegments();
+		internal IReadOnlyList<Segment> Segments => _segments ??= GetSegments();
 
 		private List<Segment> GetSegments()
 		{
@@ -56,7 +56,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 				if (symbolTypeface is { })
 				{
-					var fi = FontDetailsCache.GetFont(symbolTypeface.FamilyName, (float)FontSize, FontWeight, FontStyle);
+					var fi = FontDetailsCache.GetFont(symbolTypeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
+					if (fi.CanChange)
+					{
+						fi.RegisterElementForFontLoaded(this);
+					}
+
 					font = fi.Font;
 					wordBreakAfter = Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1));
 					font.GetScale(out fontScale, out _);

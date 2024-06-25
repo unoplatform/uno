@@ -23,6 +23,7 @@ namespace Uno.UI.Controls
 		private record Entry(
 			FontWeight FontWeight,
 			FontStyle FontStyle,
+			FontStretch FontStretch,
 			FontFamily FontFamily,
 			double FontSize,
 			double CharacterSpacing,
@@ -38,6 +39,7 @@ namespace Uno.UI.Controls
 			public bool Equals(Entry x, Entry y) =>
 				x.FontWeight == y.FontWeight
 				&& x.FontStyle == y.FontStyle
+				&& x.FontStretch == y.FontStretch
 				&& x.FontFamily == y.FontFamily
 				&& x.Foreground == y.Foreground
 				&& x.FontSize == y.FontSize
@@ -48,6 +50,7 @@ namespace Uno.UI.Controls
 			public int GetHashCode(Entry entry) =>
 				entry.FontWeight.GetHashCode()
 				^ entry.FontStyle.GetHashCode()
+				^ entry.FontStretch.GetHashCode()
 				^ entry.FontFamily?.GetHashCode() ?? 0
 				^ entry.Foreground.GetHashCode()
 				^ entry.FontSize.GetHashCode()
@@ -74,19 +77,19 @@ namespace Uno.UI.Controls
 		/// can be tricky to place properly.
 		/// </remarks>
 		/// <returns>A <see cref="TextPaint"/> instance.</returns>
-		public static TextPaint GetPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, Shader shader, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
+		public static TextPaint GetPaint(FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, Shader shader, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
 			if (shader != null)
 			{
 				// The "Shader" native object can't be use as a cache key
-				return InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, shader, baselineAlignment, textDecorations);
+				return InnerBuildPaint(fontWeight, fontStyle, fontStretch, fontFamily, fontSize, characterSpacing, foreground, shader, baselineAlignment, textDecorations);
 			}
 
-			var key = new Entry(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, textDecorations);
+			var key = new Entry(fontWeight, fontStyle, fontStretch, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, textDecorations);
 
 			if (!_entries.TryGetValue(key, out var paint))
 			{
-				_entries.Add(key, paint = InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, shader, baselineAlignment, textDecorations));
+				_entries.Add(key, paint = InnerBuildPaint(fontWeight, fontStyle, fontStretch, fontFamily, fontSize, characterSpacing, foreground, shader, baselineAlignment, textDecorations));
 				_entriesList.Add(key);
 
 				TryScavenge();
@@ -123,17 +126,15 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Color foreground, Shader shader, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
+		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch, FontFamily fontFamily, double fontSize, double characterSpacing, Color foreground, Shader shader, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
 			var paintSpecs = BuildPaintValueSpecs(fontSize, characterSpacing);
-
-			var typefaceStyle = TypefaceStyleHelper.GetTypefaceStyle(fontStyle, fontWeight);
 
 			return TextPaintPoolNative.BuildPaint(
 				paintSpecs.density,
 				paintSpecs.textSize,
 				paintSpecs.letterSpacing,
-				FontHelper.FontFamilyToTypeFace(fontFamily, fontWeight, typefaceStyle),
+				FontHelper.FontFamilyToTypeFace(fontFamily, fontWeight, fontStyle, fontStretch),
 				(int)((Android.Graphics.Color)foreground),
 				(textDecorations & TextDecorations.Underline) == TextDecorations.Underline,
 				(textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough,

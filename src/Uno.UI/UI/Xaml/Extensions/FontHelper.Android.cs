@@ -13,6 +13,10 @@ using Android.OS;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.Foundation.Logging;
+using Windows.Storage;
+using Uno.UI.Xaml.Media;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 namespace Microsoft.UI.Xaml
@@ -22,20 +26,21 @@ namespace Microsoft.UI.Xaml
 		private static bool _assetsListed;
 		private static readonly string DefaultFontFamilyName = "sans-serif";
 
-		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
+		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch)
 		{
-			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, style);
+			var style = TypefaceStyleHelper.GetTypefaceStyle(fontStyle, fontWeight);
+			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, fontStyle, fontStretch);
 
 			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry, out var typeFace))
 			{
-				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, style);
+				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, style, fontStretch);
 				_fontFamilyToTypeFaceDictionary.Add(entry, typeFace);
 			}
 
 			return typeFace;
 		}
 
-		internal static Typeface? InternalFontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style)
+		internal static Typeface? InternalFontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style, FontStretch fontStretch)
 		{
 			if (fontFamily?.Source == null || fontFamily.Equals(FontFamily.Default))
 			{
@@ -58,14 +63,14 @@ namespace Microsoft.UI.Xaml
 
 					source = source.TrimStart("ms-appx://", ignoreCase: true);
 
-					if (!TryLoadFromPath(style, source, out typeface))
+					if (!TryLoadFromPath(style, fontWeight, fontStretch, source, out typeface))
 					{
 						// The lookup used to be performed without the assets folder, even if its required to specify it
 						// with UWP. Keep this behavior for backward compatibility.
 						var legacySource = source.TrimStart("/assets/", ignoreCase: true);
 
 						// The path for AndroidAssets is not encoded, unlike assets processed by the RetargetAssets tool.
-						if (!TryLoadFromPath(style, legacySource, out typeface, encodePath: false))
+						if (!TryLoadFromPath(style, fontWeight, fontStretch, legacySource, out typeface, encodePath: false))
 						{
 							throw new InvalidOperationException($"Unable to find [{fontFamily.Source}] from the application's assets.");
 						}
@@ -100,7 +105,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private static bool TryLoadFromPath(TypefaceStyle style, string source, out Typeface? typeface, bool encodePath = true)
+		private static bool TryLoadFromPath(TypefaceStyle style, FontWeight weight, FontStretch stretch, string source, out Typeface? typeface, bool encodePath = true)
 		{
 			source = FontFamilyHelper.RemoveHashFamilyName(source);
 
@@ -112,6 +117,8 @@ namespace Microsoft.UI.Xaml
 			var encodedSource = encodePath
 				? AndroidResourceNameEncoder.EncodeFileSystemPath(source, prefix: "")
 				: source;
+
+			encodedSource = TryAdjustFromManifest(encodedSource, encodePath, style, weight, stretch);
 
 			// We need to lookup assets manually, as assets are stored this way by android, but windows
 			// is case insensitive.
@@ -147,6 +154,24 @@ namespace Microsoft.UI.Xaml
 
 			typeface = null;
 			return false;
+		}
+
+		private static string TryAdjustFromManifest(string source, bool encodePath, TypefaceStyle style, FontWeight weight, FontStretch fontStretch)
+		{
+			var manifestPath = source + ".manifest";
+			manifestPath = encodePath ? AndroidResourceNameEncoder.EncodeFileSystemPath(manifestPath, prefix: "") : manifestPath;
+			manifestPath = AssetsHelper.FindAssetFile(manifestPath);
+
+			if (manifestPath is not null)
+			{
+				using var jsonStream = ContextHelper.Current.Assets!.Open(manifestPath);
+				var fontStyle = (style & TypefaceStyle.Italic) != 0 ? FontStyle.Italic : FontStyle.Normal;
+				var familyName = FontManifestHelpers.GetFamilyNameFromManifest(jsonStream, weight, fontStyle, fontStretch);
+				familyName = familyName.TrimStart("ms-appx://", ignoreCase: true);
+				return encodePath ? AndroidResourceNameEncoder.EncodeFileSystemPath(familyName, prefix: "") : familyName;
+			}
+
+			return source;
 		}
 
 		private static FontFamily GetDefaultFontFamily(FontWeight fontWeight)

@@ -72,6 +72,10 @@ namespace Microsoft.UI.Xaml.Documents
 				)
 			);
 
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correct on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
+
 		protected virtual void OnFontFamilyChanged()
 		{
 			OnFontFamilyChangedPartial();
@@ -106,6 +110,35 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		partial void OnFontStyleChangedPartial();
+
+		#endregion
+
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => (FontStretch)this.GetValue(FontStretchProperty);
+			set => this.SetValue(FontStyleProperty, value);
+		}
+
+		public static DependencyProperty FontStretchProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FontStretch),
+				typeof(FontStretch),
+				typeof(TextElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: FontStretch.Normal,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStretchChanged()
+				)
+			);
+
+		protected virtual void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+		}
+
+		partial void OnFontStretchChangedPartial();
 
 		#endregion
 

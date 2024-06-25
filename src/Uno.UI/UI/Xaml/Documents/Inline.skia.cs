@@ -27,7 +27,20 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		internal FontDetails FontInfo => _fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+		internal FontDetails FontInfo
+		{
+			get
+			{
+				_fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+
+				if (_fontInfo.CanChange)
+				{
+					_fontInfo.RegisterElementForFontLoaded(this);
+				}
+
+				return _fontInfo;
+			}
+		}
 
 		internal float LineHeight => FontInfo.LineHeight;
 
@@ -44,6 +57,12 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
+			InvalidateFontInfo();
+		}
+
+		protected override void OnFontStretchChanged()
+		{
+			base.OnFontStretchChanged();
 			InvalidateFontInfo();
 		}
 

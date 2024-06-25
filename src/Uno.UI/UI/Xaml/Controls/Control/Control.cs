@@ -706,6 +706,27 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		#endregion
 
+		#region FontStretch
+
+		public FontStretch FontStretch
+		{
+			get => (FontStretch)this.GetValue(FontStretchProperty);
+			set => this.SetValue(FontStretchProperty, value);
+		}
+
+		public static DependencyProperty FontStretchProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FontStretch),
+				typeof(FontStretch),
+				typeof(Control),
+				new FrameworkPropertyMetadata(
+					FontStretch.Normal,
+					FrameworkPropertyMetadataOptions.Inherits,
+					(s, e) => ((Control)s)?.OnFontStretchChanged((FontStretch)e.OldValue, (FontStretch)e.NewValue)
+				)
+			);
+		#endregion
+
 		#region Padding DependencyProperty
 
 		public Thickness Padding
@@ -964,6 +985,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnFontStyleChangedPartial(FontStyle oldValue, FontStyle newValue);
+
+		private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+		{
+			OnFontStretchChangedPartial(oldValue, newValue);
+		}
+
+		partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);
 
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
