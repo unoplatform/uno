@@ -13,7 +13,7 @@ internal sealed partial class RemoteControlStatusView : Ellipse
 {
 	private readonly RemoteControlClient? _devServer;
 
-#if __IOS__
+#if __ANDROID__
 	public new const string Id = nameof(RemoteControlStatusView);
 #else
 	public const string Id = nameof(RemoteControlStatusView);
