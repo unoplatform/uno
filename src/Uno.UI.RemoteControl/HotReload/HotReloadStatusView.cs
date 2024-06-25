@@ -16,10 +16,12 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
+using static Uno.UI.RemoteControl.RemoteControlStatus;
 using Path = System.IO.Path;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
+[TemplatePart(Name = DevServerStatusPartName, Type = typeof(RemoteControlStatusView))]
 [TemplateVisualState(GroupName = "Status", Name = StatusUnknownVisualStateName)]
 [TemplateVisualState(GroupName = "Status", Name = StatusErrorVisualStateName)]
 [TemplateVisualState(GroupName = "Status", Name = StatusInitializingVisualStateName)]
@@ -30,6 +32,8 @@ namespace Uno.UI.RemoteControl.HotReload;
 [TemplateVisualState(GroupName = "Result", Name = ResultFailedVisualStateName)]
 internal sealed partial class HotReloadStatusView : Control
 {
+	private const string DevServerStatusPartName = "PART_DevServerStatus";
+
 	private const string StatusUnknownVisualStateName = "Unknown";
 	private const string StatusErrorVisualStateName = "Error";
 	private const string StatusInitializingVisualStateName = "Initializing";
@@ -97,7 +101,11 @@ internal sealed partial class HotReloadStatusView : Control
 	#endregion
 
 	private readonly IDiagnosticViewContext _ctx;
-	private string _resultState = "None";
+	private string _resultState = ResultNoneVisualStateName;
+
+	private Status? _hotReloadStatus;
+	private (RemoteControlStatusView view, long token)? _devServer;
+	private Classification _devServerState;
 
 	public HotReloadStatusView(IDiagnosticViewContext ctx)
 	{
@@ -107,42 +115,71 @@ internal sealed partial class HotReloadStatusView : Control
 
 		UpdateHeadline(null);
 
-		Loaded += OnLoaded;
-	}
-
-	private static void OnLoaded(object sender, RoutedEventArgs e)
-	{
-		// A bit hackish, but for now when the hot-reload indicator is present, we request to dev-server indicator to show only if the state is important.
-		if (sender is HotReloadStatusView { XamlRoot: { } root }
-			&& DiagnosticsOverlay.Get(root).Find(nameof(RemoteControlStatusView)) is RemoteControlStatusView devServerView)
+		Loaded += static (snd, _) =>
 		{
-			devServerView.IsAutoHideEnabled = true;
-		}
-	}
-
-	public void Update(Status status)
-	{
-		UpdateHistory(status);
-		UpdateHeadline(status.State);
-
-		VisualStateManager.GoToState(this, GetStatusVisualState(status.State), true);
-
-		var resultState = GetResultVisualState();
-		if (resultState != _resultState)
-		{
-			_resultState = resultState;
-			VisualStateManager.GoToState(this, resultState, true);
-			switch (resultState)
+			// Make sure to hide the diagnostics overlay when the view is loaded (in case the template was applied while out of the visual tree).
+			if (snd is HotReloadStatusView { _devServer: not null, XamlRoot: { } root })
 			{
-				case ResultSuccessVisualStateName when SuccessNotification is not null:
-					_ctx.Notify(SuccessNotification);
-					break;
+				DiagnosticsOverlay.Get(root).Hide(RemoteControlStatusView.Id);
+			}
+		};
+	}
 
-				case ResultFailedVisualStateName when FailureNotification is not null:
-					_ctx.Notify(FailureNotification);
-					break;
+	/// <inheritdoc />
+	protected override void OnApplyTemplate()
+	{
+		if (_devServer is { } devServer)
+		{
+			devServer.view.UnregisterPropertyChangedCallback(RemoteControlStatusView.StatusProperty, devServer.token);
+		}
+
+		base.OnApplyTemplate();
+
+		if (GetTemplateChild(DevServerStatusPartName) is RemoteControlStatusView { HasServer: true } devServerView)
+		{
+			var token = devServerView.RegisterPropertyChangedCallback(
+				RemoteControlStatusView.StatusProperty,
+				(snd, _) => OnDevServerStatusChanged(((RemoteControlStatusView)snd).Status));
+			_devServer = (devServerView, token);
+
+			if (XamlRoot is { } root)
+			{
+				DiagnosticsOverlay.Get(root).Hide(RemoteControlStatusView.Id);
 			}
 		}
+	}
+
+	private void OnDevServerStatusChanged(RemoteControlStatus devServerStatus)
+	{
+		_devServerState = devServerStatus.GetSummary().kind;
+
+		UpdateStatusVisualState();
+	}
+
+	public void OnHotReloadStatusChanged(Status status)
+	{
+		_hotReloadStatus = status;
+
+		UpdateHeadline(status);
+		UpdateHistory(status);
+
+		UpdateStatusVisualState();
+	}
+
+	public void UpdateHeadline(Status? status)
+	{
+		HeadLine = status?.State switch
+		{
+			null => """
+					State of the hot-reload engine is unknown.
+					This usually indicates that connection to the dev-server failed, but if running within VisualStudio, updates might still be detected.
+					""",
+			HotReloadState.Disabled => "Hot-reload server is disabled.",
+			HotReloadState.Initializing => "Hot-reload engine is initializing.",
+			HotReloadState.Idle => "Hot-reload server is ready and listening for file changes.",
+			HotReloadState.Processing => "Hot-reload engine is processing file changes",
+			_ => "Unable to determine the state of the hot-reload engine."
+		};
 	}
 
 	private void UpdateHistory(Status status)
@@ -201,6 +238,30 @@ internal sealed partial class HotReloadStatusView : Control
 			vm.RaiseChanged();
 		}
 
+		// Finally once we synced the history, we update the "result" visual state.
+		var resultState = history switch
+		{
+			{ Count: 0 } => ResultNoneVisualStateName,
+			_ when history.Any(op => !op.IsCompleted) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
+			[{ IsSuccess: true }, ..] => ResultSuccessVisualStateName,
+			_ => ResultFailedVisualStateName
+		};
+		if (resultState != _resultState)
+		{
+			_resultState = resultState;
+			VisualStateManager.GoToState(this, resultState, true);
+			switch (resultState)
+			{
+				case ResultSuccessVisualStateName when SuccessNotification is not null:
+					_ctx.Notify(SuccessNotification);
+					break;
+
+				case ResultFailedVisualStateName when FailureNotification is not null:
+					_ctx.Notify(FailureNotification);
+					break;
+			}
+		}
+
 		static string Join(string[] items, string itemType, int maxItems = 5)
 			=> items switch
 			{
@@ -224,43 +285,24 @@ internal sealed partial class HotReloadStatusView : Control
 		}
 	}
 
-	public void UpdateHeadline(HotReloadState? state)
+	private void UpdateStatusVisualState()
 	{
-		HeadLine = state switch
+		var state = (_devServerStatus: _devServerState, _hotReloadStatus?.State) switch
 		{
-			null => """
-					State of the hot-reload engine is unknown.
-					This usually indicates that connection to the dev-server failed, but if running within VisualStudio, updates might still be detected.
-					""",
-			HotReloadState.Disabled => "Hot-reload server is disabled.",
-			HotReloadState.Initializing => "Hot-reload engine is initializing.",
-			HotReloadState.Idle => "Hot-reload server is ready and listening for file changes.",
-			HotReloadState.Processing => "Hot-reload engine is processing file changes",
-			_ => "Unable to determine the state of the hot-reload engine."
-		};
-	}
+			(Classification.Error or Classification.Warning, _) => StatusErrorVisualStateName,
+			(_, HotReloadState.Disabled) => StatusErrorVisualStateName,
 
-	private static string GetStatusVisualState(HotReloadState state)
-		=> state switch
-		{
-			HotReloadState.Disabled => StatusErrorVisualStateName,
-			HotReloadState.Initializing => StatusInitializingVisualStateName,
-			HotReloadState.Idle => StatusIdleVisualStateName,
-			HotReloadState.Processing => StatusProcessingVisualStateName,
+			(_, HotReloadState.Initializing) => StatusInitializingVisualStateName,
+			(Classification.Info, _) => StatusInitializingVisualStateName,
+
+			(_, HotReloadState.Idle) => StatusIdleVisualStateName,
+
+			(_, HotReloadState.Processing) => StatusProcessingVisualStateName,
+
 			_ => StatusUnknownVisualStateName
 		};
 
-	private string GetResultVisualState()
-	{
-		var operations = History;
-		if (operations is { Count: 0 } || operations.Any(op => !op.IsCompleted))
-		{
-			return ResultNoneVisualStateName; // Makes sure to restore to previous None!
-		}
-
-		return operations[0].IsSuccess
-			? ResultSuccessVisualStateName
-			: ResultFailedVisualStateName;
+		VisualStateManager.GoToState(this, state, true);
 	}
 }
 

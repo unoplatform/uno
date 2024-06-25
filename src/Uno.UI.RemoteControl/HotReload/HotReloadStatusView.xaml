@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:devServer="using:Uno.UI.RemoteControl"
 	xmlns:local="using:Uno.UI.RemoteControl.HotReload"
 	xmlns:diag="using:Uno.Diagnostics.UI"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -122,6 +123,10 @@
 								<Flyout>
 									<StackPanel Margin="-5" Spacing="8">
 										<TextBlock Text="{TemplateBinding HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" />
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<devServer:RemoteControlStatusView x:Name="PART_DevServerStatus" VerticalAlignment="Center" />
+											<TextBlock Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" VerticalAlignment="Center" />
+										</StackPanel>
 										<ScrollViewer MaxHeight="400">
 											<mux:ItemsRepeater
 												ItemsSource="{TemplateBinding History}"
