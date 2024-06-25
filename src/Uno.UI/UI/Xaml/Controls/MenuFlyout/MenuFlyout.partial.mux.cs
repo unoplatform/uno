@@ -212,6 +212,7 @@ Cleanup:
 		}
 	}
 
+#if false // TODO Uno: Unused for now
 	private void PreparePopupTheme(Popup pPopup, MajorPlacementMode placementMode, FrameworkElement pPlacementTarget)
 	{
 		// UNO TODO
@@ -240,6 +241,7 @@ Cleanup:
 
 		//return S_OK;
 	}
+#endif
 
 	internal static Transition PreparePopupThemeTransitionsAndShadows(Popup popup, double closedRatioConstant, int depth)
 	{
@@ -299,6 +301,7 @@ Cleanup:
 		//return S_OK;
 	}
 
+#if false // Unused in WinUI
 	private void UpdatePresenterVisualState(MajorPlacementMode placement, bool doForceTransitions)
 	{
 		//base.UpdatePresenterVisualState(placement);
@@ -322,6 +325,7 @@ Cleanup:
 	}
 
 	private void UpdatePresenterVisualState(MajorPlacementMode placement) => UpdatePresenterVisualState(placement, true);
+#endif
 
 	//internal override void ShowAt(FrameworkElement placementTarget)
 	//{
