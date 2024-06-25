@@ -14,6 +14,12 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
+#if HAS_UNO_WINUI
+using MUXDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+#else
+using MUXDispatcherQueue = Windows.System.DispatcherQueue;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
@@ -729,7 +735,7 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		// into a single event once all of the changes have completed.
 		if (m_tpPresenter is not null && !_itemsSourceRefreshPending)
 		{
-			var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+			var dispatcherQueue = MUXDispatcherQueue.GetForCurrentThread();
 
 			var wrThis = WeakReferencePool.RentSelfWeakReference(this);
 
