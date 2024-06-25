@@ -461,7 +461,7 @@ internal static partial class X11Helper
 	);
 
 	[LibraryImport(libXext)]
-	public unsafe static partial void XShapeCombineMask (
+	public unsafe static partial void XShapeCombineMask(
 		IntPtr display,
 		IntPtr window,
 		int dest_kind,
@@ -475,16 +475,16 @@ internal static partial class X11Helper
 	public unsafe static partial IntPtr XCreateBitmapFromData(
 		IntPtr display,
 		IntPtr window,
-        IntPtr data,
-        uint width,
-        uint height
-    );
+		IntPtr data,
+		uint width,
+		uint height
+	);
 
 	[LibraryImport(libX11)]
 	public unsafe static partial int XFreePixmap(
 		IntPtr display,
 		IntPtr pixmap
-    );
+	);
 
 	[LibraryImport(libX11Randr)]
 	public unsafe static partial XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
