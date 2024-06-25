@@ -306,6 +306,13 @@ namespace Microsoft.UI.Xaml
 			return propertyDetails.GetValue((DependencyPropertyValuePrecedences)Math.Max((int)highestPriority, (int)precedence.Value));
 		}
 
+		internal bool TryGetOnDemandProperty(DependencyProperty property, out object? value)
+		{
+			ValidatePropertyOwner(property);
+			var propertyDetails = _properties.GetPropertyDetails(property);
+			return propertyDetails.TryGetOnDemandProperty(out value);
+		}
+
 		/// <summary>
 		/// Determines the current highest dependency property value precedence
 		/// </summary>
