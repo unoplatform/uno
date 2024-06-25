@@ -92,7 +92,7 @@ jobs:
       ArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net8.0 /bl:$(build.artifactstagingdirectory)\build-skia-wasm-browser.binlog
+  - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net8.0 /bl:$(build.artifactstagingdirectory)\build-skia-wasm-browser.binlog
     displayName: Build Wasm Skia Head
 
   - task: PublishBuildArtifacts@1
