@@ -524,7 +524,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.{_xClassName?.ClassName}.DrawableResourcesIdResolver.Resolve);");
 			writer.AppendLineIndented($"#endif");
 
-			if (_isWasm)
+			if (_isWasm
+				// Only applicable when building for Wasm DOM support
+				&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
 			{
 				writer.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
 				writer.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
