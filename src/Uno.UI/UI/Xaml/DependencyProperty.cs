@@ -62,7 +62,13 @@ namespace Microsoft.UI.Xaml
 			_flags |= attached ? Flags.IsAttached : Flags.None;
 			_flags |= typeof(DependencyObjectCollection).IsAssignableFrom(propertyType) ? Flags.IsDependencyObjectCollection : Flags.None;
 			_flags |= GetIsTypeNullable(propertyType) ? Flags.IsTypeNullable : Flags.None;
-			_flags |= (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() is true ? Flags.HasWeakStorage : Flags.None;
+
+			if (defaultMetadata is FrameworkPropertyMetadata { Options: { } options })
+			{
+				_flags |= options.HasWeakStorage() ? Flags.HasWeakStorage : Flags.None;
+				_flags |= options.IsOnDemandProperty() ? Flags.IsOnDemandProperty : Flags.None;
+			}
+
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
 
 			if (ownerType == typeof(FrameworkElement))
@@ -115,6 +121,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsDependencyObjectCollection
 			=> (_flags & Flags.IsDependencyObjectCollection) != 0;
+
+		internal bool IsOnDemandProperty
+			=> (_flags & Flags.IsOnDemandProperty) != 0;
 
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.
@@ -440,6 +449,12 @@ namespace Microsoft.UI.Xaml
 			return result;
 		}
 
+		internal object CreateDefaultValueObject()
+		{
+			// See CDependencyProperty::CreateDefaultValueObject in WinUI.
+			return Activator.CreateInstance(_propertyType);
+		}
+
 		/// <summary>
 		/// Clears all the property registrations, when used in unit tests.
 		/// </summary>
@@ -557,6 +572,8 @@ namespace Microsoft.UI.Xaml
 			IsUnoType = (1 << 4),
 
 			ValidateNotNegativeAndNotNaN = (1 << 5),
+
+			IsOnDemandProperty = (1 << 6),
 		}
 	}
 }

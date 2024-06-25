@@ -308,6 +308,7 @@ namespace Microsoft.UI.Xaml
 
 		internal bool TryGetOnDemandProperty(DependencyProperty property, out object? value)
 		{
+			Debug.Assert(property.IsOnDemandProperty);
 			ValidatePropertyOwner(property);
 			var propertyDetails = _properties.GetPropertyDetails(property);
 			return propertyDetails.TryGetOnDemandProperty(out value);

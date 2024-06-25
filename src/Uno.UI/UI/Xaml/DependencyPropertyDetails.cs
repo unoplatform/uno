@@ -126,11 +126,11 @@ namespace Microsoft.UI.Xaml
 			hasInherits = false;
 		}
 
-		internal object? GetDefaultValue()
+		private object? GetDefaultValue()
 		{
 			if (!HasDefaultValueSet)
 			{
-				_defaultValue = Metadata.DefaultValue;
+				_defaultValue = Property.IsOnDemandProperty ? Property.CreateDefaultValueObject() : Metadata.DefaultValue;
 
 				// Ensures that the default value of non-nullable properties is not null
 				if (_defaultValue == null && !Property.IsTypeNullable)
