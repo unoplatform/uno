@@ -9,7 +9,7 @@
 		<TargetFrameworkIdentifier>Desktop</TargetFrameworkIdentifier>
 		<TargetPlatformSupported>true</TargetPlatformSupported>
 		<TargetPlatformVersion>1.0</TargetPlatformVersion>
-		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">1.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" '$(SupportedOSPlatformVersion)' == '' ">1.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<!-- Enable the netx.0-desktop target -->
