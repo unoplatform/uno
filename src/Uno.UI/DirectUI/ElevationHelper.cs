@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\phone\lib\ElevationHelper.cpp, tag winui3/release/1.5.4, commit 98a60c8
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
