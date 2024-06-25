@@ -22,21 +22,18 @@
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 
+	<!--
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
-		<!--<WasmShellEnableAOTDeduplication>false</WasmShellEnableAOTDeduplication>-->
 		<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
-		<!--<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>-->
-
 	</PropertyGroup>
 	
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
 		<WasmShellEnableAotProfile Include="aot.profile" />
 		<WasmShellExtraEmccFlags Include="-s INITIAL_MEMORY=300MB"/>
-
-	<!---s INITIAL_MEMORY=-->
 	</ItemGroup>
+	-->
 	
 	<ItemGroup>
 	  <_WebToolingArtifacts Remove="Properties\launchSettings.json" />
