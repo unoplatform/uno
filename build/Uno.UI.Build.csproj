@@ -71,13 +71,8 @@
 	</Target>
 
 	<Target Name="BuildCIMobile">
-
-		<PropertyGroup>
-			<NetCoreMobileFilter>filters\Uno.UI-packages-netcoremobile-net8.slnf</NetCoreMobileFilter>
-			<NetCoreMobileFilter Condition="'$(UnoDisableNetCurrentMobile)'=='true'">filters\Uno.UI-packages-netcoremobile.slnf</NetCoreMobileFilter>
-		</PropertyGroup>
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
-			Projects="$(NetCoreMobileFilter)"
+			Projects="filters\Uno.UI-packages-netcoremobile.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
 			BuildInParallel="true" />

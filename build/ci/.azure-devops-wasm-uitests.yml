@@ -11,10 +11,6 @@ jobs:
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   strategy:
     matrix:
       UWP:
@@ -39,7 +35,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net8-$(GitVersion.FullSemVer).binlog
+      dotnet msbuild /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net8.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net8-$(GitVersion.FullSemVer).binlog
 
     displayName: 'Build sample app (net8.0)'
 
@@ -139,8 +135,6 @@ jobs:
         UITEST_TEST_TIMEOUT: '120s'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
       net8_benchmarks:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -148,8 +142,6 @@ jobs:
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
       net8_uwp_runtimetests_group_00:
         SITE_SUFFIX: 'net8.0-UWP'
@@ -159,8 +151,6 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
       net8_uwp_runtimetests_group_01:
         SITE_SUFFIX: 'net8.0-UWP'
@@ -170,8 +160,6 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
       net8_uwp_runtimetests_group_02:
         SITE_SUFFIX: 'net8.0-UWP'
@@ -181,8 +169,6 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
       net8_winui_runtimetests_group_00:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -192,8 +178,6 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
       net8_winui_runtimetests_group_01:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -203,8 +187,6 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
       net8_winui_runtimetests_group_02:
         SITE_SUFFIX: 'net8.0-WinUI'
@@ -214,8 +196,6 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
 
   pool: ${{ parameters.poolName }}
 

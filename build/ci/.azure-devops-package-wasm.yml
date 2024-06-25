@@ -15,9 +15,6 @@ jobs:
 
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
-    # Disabled until the wasm bootstrap can be updated to .NET 8 Pre 3 or later
-    UnoDisableNetCurrentMobile: true
-
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
