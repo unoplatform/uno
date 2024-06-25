@@ -4,7 +4,7 @@
 	<Target Name="_UnoSkiaWebAssemblyFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WEBASSEMBLY_BROWSER</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WEBASSEMBLY_BROWSER;__WASM__</DefineConstants>
 		</PropertyGroup>
 
 		<Error 
@@ -12,5 +12,31 @@
 			Text="Unable to Uno.WinUI.Runtime.Skia.WebAssembly.Browser and Uno.UI.WebAssembly cannot be used at the same time." />
 
 	</Target>
+
+	<Choose>
+		<When Condition="'$(IsUnoHead)' == 'True'">
+
+			<!--
+				This section is an extract of
+				 - https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/SkiaSharp.NativeAssets.WebAssembly/buildTransitive/SkiaSharp.targets#L4
+				 - https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/HarfBuzzSharp.NativeAssets.WebAssembly/buildTransitive/HarfBuzzSharp.targets#L5
+				
+				In order to support a two-layered rendering mode.
+			-->
+
+			<ItemGroup>
+				<Content Include="@(SkiaSharpStaticLibrary)" Visible="false" />
+				<Content Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" />
+			</ItemGroup>
+
+			<ItemGroup>
+				<!-- Include the GL symbol when running under net7 (https://github.com/dotnet/runtime/issues/76077) -->
+				<WasmShellEmccExportedRuntimeMethod Include="GL" />
+
+				<!-- Enable GLCtx when threading is available -->
+				<WasmShellExtraEmccFlags Condition="'$(WasmShellEnableThreads)'=='True'" Include="-s OFFSCREEN_FRAMEBUFFER=1" />
+			</ItemGroup>
+		</When>
+	</Choose>
 
 </Project>
