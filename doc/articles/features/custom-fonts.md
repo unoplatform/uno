@@ -16,10 +16,11 @@ In order to use a custom font in your application:
 2. Reference it using the `ms-appx:///` scheme:
 
    ```xml
-   <Setter Property="FontFamily" Value="ms-appx:///[MyApp]/Assets/Fonts/yourfont.ttf#Your Font Name" />
+   <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont.ttf#Your Font Name" />
    ```
 
-   You will need to replace `[MyApp]` by the name of the **App Code Library** project in your solution. It is generally of the same name as the solution when created from the Uno Platform templates.
+   > [!TIP]
+   > If your font is located in a **Class Library**, you'll need to use a path like `ms-appx:///MyClassLibrary1/Assets/Fonts/yourfont.ttf#Your Font Name`. You will need to replace `MyClassLibrary1` by the name class library project, or its `AssemblyName` if it was changed manually.
 
 ## Fonts preloading on WebAssembly
 
