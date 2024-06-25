@@ -66,7 +66,7 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Skipping already declared property TitleBar
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Graphics.SizeInt32 ClientSize
 		{
