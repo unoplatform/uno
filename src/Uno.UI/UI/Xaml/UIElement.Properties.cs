@@ -95,12 +95,16 @@ namespace Microsoft.UI.Xaml
 			private set => SetKeyboardAcceleratorsValue(value);
 		}
 
-		private void OnKeyboardAcceleratorsChanged()
+		private void OnKeyboardAcceleratorsChanged(IList<KeyboardAccelerator> oldValue, IList<KeyboardAccelerator> newValue)
 		{
-#if HAS_UNO // TODO: Uno specific - WinUI does analogous action in EnterEffectiveValue
-			if (KeyboardAccelerators is KeyboardAcceleratorCollection collection)
+#if HAS_UNO // TODO: Uno specific - WinUI does analogous action in Enter/LeaveEffectiveValue
+			if (oldValue is KeyboardAcceleratorCollection oldCollection)
 			{
-				collection.Enter(null, new EnterParams(IsLoaded) { IsForKeyboardAccelerator = true });
+				oldCollection.Leave(null, new LeaveParams(false) { IsForKeyboardAccelerator = true });
+			}
+			if (newValue is KeyboardAcceleratorCollection newCollection)
+			{
+				newCollection.Enter(null, new EnterParams(false) { IsForKeyboardAccelerator = true });
 			}
 #endif
 		}
