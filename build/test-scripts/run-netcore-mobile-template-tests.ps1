@@ -317,10 +317,19 @@ $projects =
     ##
     ## When adding new template versions, create them in a separate version named folder
     ## using all the specific features that can be impacted by the use of the Uno.SDK
+
+    ## Empty array to avoid having to deal last line with ending commas
+    @()
 );
 
 for($i = 0; $i -lt $projects.Length; $i++)
 {
+    if ($projects[$i].Length -eq 0)
+    {
+        # Empty end line support, see above.
+        continue
+    }
+
     $projectPath=$projects[$i][0];
     $projectOptions=$projects[$i][1];
     $buildWithNetCore=$projects[$i][2];
