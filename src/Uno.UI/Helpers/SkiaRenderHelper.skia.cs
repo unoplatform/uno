@@ -11,8 +11,8 @@ namespace Uno.UI.Helpers;
 internal static class SkiaRenderHelper
 {
 	// reusable paths to avoid repetitive allocations
-	private static SKPath _visualPath = new SKPath();
-	private static SKPath _clipPath = new SKPath();
+	private static readonly SKPath _visualPath = new SKPath();
+	private static readonly SKPath _clipPath = new SKPath();
 
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
