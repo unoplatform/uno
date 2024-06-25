@@ -5,6 +5,13 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
 
+/// <summary>
+/// A helper class used to create instances and propagate updates to a diagnostic view.
+/// </summary>
+/// <typeparam name="TView">Type of FrameworkElement used as diagnostic view.</typeparam>
+/// <typeparam name="TState">Type of the state used to update the <typeparamref name="TView"/>.</typeparam>
+/// <param name="factory">Factory to create an instance of the <typeparamref name="TView"/>.</param>
+/// <param name="update">Delegate to use to update the <typeparamref name="TView"/> on <see cref="NotifyChanged"/>.</param>
 internal class DiagnosticViewManager<TView, TState>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView, TState> update)
 	where TView : FrameworkElement
 {

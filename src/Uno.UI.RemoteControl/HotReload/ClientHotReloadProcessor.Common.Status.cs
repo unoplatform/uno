@@ -60,7 +60,7 @@ public partial class ClientHotReloadProcessor
 	private class StatusSink(ClientHotReloadProcessor owner)
 	{
 #if HAS_UNO_WINUI
-		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.Update(status));
+		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.OnHotReloadStatusChanged(status));
 #endif
 
 		private HotReloadState? _serverState;
