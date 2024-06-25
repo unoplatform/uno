@@ -54,7 +54,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		_host = hostControl;
-		_renderLayer = host is UnoCompositeWindowHost compositeWindowHost ? compositeWindowHost.RenderLayer : hostControl;
+		_renderLayer = host is UnoWpfWindowHost compositeWindowHost ? compositeWindowHost.RenderLayer : hostControl;
 
 		// we only use the top layer for events since subscribing on the hostControl will receive
 		// extra and/or out-of-order events.

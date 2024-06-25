@@ -17,7 +17,7 @@ using MUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
-internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
+internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 {
 	private const string NativeOverlayLayerHost = "NativeOverlayLayerHost";
 	private const string RenderLayerHost = "RenderLayerHost";
@@ -27,10 +27,10 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			xmlns:controls="clr-namespace:Uno.UI.Runtime.Skia.Wpf.UI.Controls;assembly=Uno.UI.Runtime.Skia.Wpf"
-			TargetType="{x:Type controls:UnoCompositeWindowHost}">
+			TargetType="{x:Type controls:UnoWpfWindowHost}">
 			<Setter Property="Template">
 				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type controls:UnoCompositeWindowHost}">
+					<ControlTemplate TargetType="{x:Type controls:UnoWpfWindowHost}">
 						<Grid>
 							<Border
 								Background="{x:Null}"
@@ -59,7 +59,7 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 
 	private readonly SerialDisposable _backgroundDisposable = new();
 
-	public UnoCompositeWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
+	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
 		_winUIWindow = winUIWindow;
