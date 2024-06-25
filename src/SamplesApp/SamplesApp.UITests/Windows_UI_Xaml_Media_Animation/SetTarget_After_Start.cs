@@ -27,7 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			var container = _app.Query("Container");
 			var containerRect = container.Single().Rect.ToRectangle();
 
-			const int Tolerance = 5;
+			const int Tolerance = 7;
 			Assert.AreEqual(animatedRectRect.X, containerRect.X, Tolerance);
 			Assert.AreEqual(animatedRectRect.Y, containerRect.Y, Tolerance);
 

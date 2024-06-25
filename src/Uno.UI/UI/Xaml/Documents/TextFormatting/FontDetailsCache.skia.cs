@@ -36,17 +36,12 @@ internal static class FontDetailsCache
 
 		SKTypeface? skTypeFace;
 
-		SKTypeface GetDefaultTypeFace()
-		{
-			// if Segoe UI is not found, it will automatically return a system default
-			return SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant);
-		}
-
 		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
 		{
-			skTypeFace = GetDefaultTypeFace();
+			name = FeatureConfiguration.Font.DefaultTextFontFamily;
 		}
-		else if (XamlFilePathHelper.TryGetMsAppxAssetPath(name, out var path))
+
+		if (XamlFilePathHelper.TryGetMsAppxAssetPath(name, out var path))
 		{
 			var filePath = global::System.IO.Path.Combine(
 				Package.Current.InstalledLocation.Path
@@ -68,7 +63,8 @@ internal static class FontDetailsCache
 				typeof(Inline).Log().LogWarning($"The font {name} could not be found, using system default");
 			}
 
-			skTypeFace = GetDefaultTypeFace();
+			skTypeFace = SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
+				?? SKTypeface.FromFamilyName(string.Empty, skWeight, skWidth, skSlant);
 		}
 
 		Blob? GetTable(Face face, Tag tag)
