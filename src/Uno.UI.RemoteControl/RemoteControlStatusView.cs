@@ -13,7 +13,11 @@ internal sealed partial class RemoteControlStatusView : Ellipse
 {
 	private readonly RemoteControlClient? _devServer;
 
+#if __IOS__
+	public new const string Id = nameof(RemoteControlStatusView);
+#else
 	public const string Id = nameof(RemoteControlStatusView);
+#endif
 
 	#region Status (DP)
 	public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
