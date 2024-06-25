@@ -128,11 +128,6 @@
 
 	</Target>
 
-	<Target Name="ReplaceUnoRuntime2" BeforeTargets="BuildDist">
-	
-		<!--<Copy SourceFiles="$(OutputPath)\Uno.UI.Dispatching.dll" DestinationFolder="c:\temp" />-->
-	</Target>
-
 	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
