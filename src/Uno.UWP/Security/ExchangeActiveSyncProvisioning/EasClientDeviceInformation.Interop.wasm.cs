@@ -8,6 +8,9 @@ namespace __Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			[JSImport("globalThis.Windows.System.Profile.AnalyticsVersionInfo.getUserAgent")]
 			internal static partial string GetUserAgent();
+
+			[JSImport("globalThis.Windows.System.Profile.AnalyticsVersionInfo.getBrowserName")]
+			internal static partial string GetBrowserName();
 		}
 	}
 }
