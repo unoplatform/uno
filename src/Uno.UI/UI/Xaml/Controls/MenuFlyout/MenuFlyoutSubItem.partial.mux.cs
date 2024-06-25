@@ -280,6 +280,7 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 
 	private void ForwardSystemBackdropToPopup(MenuFlyout ownerMenuFlyout)
 	{
+#if HAS_UNO_WINUI // This only applies to WinUI
 		// Set the popup's SystemBackdrop from the parent flyout's SystemBackdrop. Note that the top-level menu is a
 		// MenuFlyout with a SystemBackdrop property, but submenus are MenyFlyoutSubItems with no SystemBackdrop property,
 		// so we just use the one set on the top-level menu. SystemBackdrop can handle having multiple parents, and will
@@ -290,6 +291,7 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 		{
 			m_tpPopup.SystemBackdrop = flyoutSystemBackdrop;
 		}
+#endif
 	}
 
 	// Ensure that any currently open MenuFlyoutSubItems are closed

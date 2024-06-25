@@ -62,7 +62,9 @@ partial class MenuFlyoutItem
 
 	internal virtual bool HasToggle() => false;
 
+#if false // Unused in WinUI
 	private bool GetIsPressed() => m_bIsPressed;
 
 	private bool GetIsPointerOver() => m_bIsPointerOver;
+#endif
 }
