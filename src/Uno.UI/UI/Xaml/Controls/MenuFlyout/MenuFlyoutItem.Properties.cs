@@ -115,8 +115,10 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 
 	internal bool PreventDismissOnPointer { get; set; }
 
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
 	/// <summary>
 	/// Occurs when a menu item is clicked.
 	/// </summary>
 	public event RoutedEventHandler Click;
+#pragma warning restore CS0108
 }
