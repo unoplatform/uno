@@ -39,7 +39,8 @@ internal static class FontDetailsCache
 		SKTypeface GetDefaultTypeFace()
 		{
 			return SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
-				?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
+				?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant)
+				?? SKTypeface.FromFamilyName(null);
 		}
 
 		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
