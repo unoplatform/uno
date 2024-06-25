@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Xaml.Media.Animation;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutPresenter_Partial.h, tag winui3/release/1.5.4, commit 98a60c8
+
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase;
 
@@ -39,30 +43,38 @@ partial class MenuFlyoutPresenter
 
 	private MajorPlacementMode m_mostRecentPlacement;
 
+#if false // Unused in WinUI
 	// References the panels in the template.
 	private UIElement m_tpOuterBorder;
+#endif
 
+#if false // TODO Uno: Unused for now
 	private Timeline m_tpTopPortraitTimeline;
 	private Timeline m_tpBottomPortraitTimeline;
 	private Timeline m_tpLeftLandscapeTimeline;
 	private Timeline m_tpRightLandscapeTimeline;
+#endif
 
 	private ScrollViewer m_tpScrollViewer;
 
-	internal bool IsSubPresenter => m_isSubPresenter;
+	internal bool IsSubPresenter
+	{
+		get => m_isSubPresenter;
+		set => m_isSubPresenter = value;
+	}
 
 	/// <summary>
 	/// Returns true if the ItemsSource contains at least one ToggleMenuFlyoutItem; false otherwise.
 	/// </summary>
-	private bool GetContainsToggleItems() => m_containsToggleItems;
+	internal bool GetContainsToggleItems() => m_containsToggleItems;
 
 	/// <summary>
 	/// Returns true if the ItemsSource contains at least one MenuFlyoutItem with an Icon; false otherwise.
 	/// </summary>
-	private bool GetContainsIconItems() => m_containsIconItems;
+	internal bool GetContainsIconItems() => m_containsIconItems;
 
 	/// <summary>
 	/// Returns true if the ItemsSource contains at least one MenuFlyoutItem with an keyboard accelerator; false otherwise.
 	/// </summary>
-	private bool GetContainsItemsWithKeyboardAcceleratorText() => m_containsItemsWithKeyboardAcceleratorText;
+	internal bool GetContainsItemsWithKeyboardAcceleratorText() => m_containsItemsWithKeyboardAcceleratorText;
 }
