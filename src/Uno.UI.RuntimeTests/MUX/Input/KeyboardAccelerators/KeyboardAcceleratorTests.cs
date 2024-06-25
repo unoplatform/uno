@@ -2209,9 +2209,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
-			ButtonFlyout = (Flyout)rootPanel.FindName("ButtonFlyout");
-			flyoutButton1 = (Button)rootPanel.FindName("flyoutButton1");
-			flyoutButton2 = (Button)rootPanel.FindName("flyoutButton2");
+			var button1 = (Button)rootPanel.FindName("focusButton1");
+			ButtonFlyout = (Flyout)button1.ContextFlyout;
+			var stackPanel = (StackPanel)ButtonFlyout.Content;
+			flyoutButton1 = (Button)stackPanel.Children[0];
+			flyoutButton2 = (Button)stackPanel.Children[1];
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrl1Accelerator = flyoutButton1.KeyboardAccelerators[0];
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
@@ -2842,7 +2844,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView fires the accelerators on its attached ContextFlyout.")]
-	[Ignore("Requires ContextFlyout support for Keyboard Accelerators #17134")]
 	public async Task VerifyListViewContextFlyoutCanInvokeHiddenAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3098,7 +3099,6 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView does not fire the accelerators on its attached ContextFlyout, as it is scoped to be local.")]
-	[Ignore("Requires ContextFlyout support for Keyboard Accelerators #17134")]
 	public async Task VerifyListViewContextFlyoutCanNotInvokeHiddenLocallyScopedAccelerator()
 	{
 		const string rootPanelXaml =
