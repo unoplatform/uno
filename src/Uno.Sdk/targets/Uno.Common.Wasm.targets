@@ -11,7 +11,7 @@
 		<TargetFrameworkIdentifier>BrowserWasm</TargetFrameworkIdentifier>
 		<TargetPlatformSupported>true</TargetPlatformSupported>
 		<TargetPlatformVersion>1.0</TargetPlatformVersion>
-		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">1.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" '$(SupportedOSPlatformVersion)' == '' ">1.0</SupportedOSPlatformVersion>
 
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
 
