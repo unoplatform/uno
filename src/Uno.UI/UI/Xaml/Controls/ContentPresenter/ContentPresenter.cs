@@ -757,7 +757,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		TrySetDataContextFromContent(newValue);
 
-		if (IsActiveInVisualTree)
+		if (IsInLiveTree)
 		{
 			TryRegisterNativeElement(oldValue, newValue);
 		}
