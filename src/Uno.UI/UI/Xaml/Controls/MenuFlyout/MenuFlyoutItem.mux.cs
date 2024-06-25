@@ -325,7 +325,7 @@ partial class MenuFlyoutItem
 		if (!handled)
 		{
 			var key = pArgs.Key;
-			handled = KeyPressMenuFlyout.KeyDown(key, this);
+			handled = MenuFlyout.KeyProcess.KeyDown(key, this);
 			pArgs.Handled = handled;
 		}
 	}
@@ -339,7 +339,7 @@ partial class MenuFlyoutItem
 		if (!handled)
 		{
 			var key = (pArgs.Key);
-			KeyPressMenuFlyout.KeyUp(key, this);
+			MenuFlyout.KeyProcess.KeyUp(key, this);
 			pArgs.Handled = true;
 		}
 	}
