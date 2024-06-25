@@ -3,181 +3,38 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.Messages;
 using Frame = Uno.UI.RemoteControl.HotReload.Messages.Frame;
+using static Uno.UI.RemoteControl.RemoteControlStatus;
 
 namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient
 {
-	internal event EventHandler<Status>? StatusChanged;
+	internal event EventHandler<RemoteControlStatus>? StatusChanged;
 
-	#region Status object model
-	internal enum ConnectionState
+	internal RemoteControlStatus Status => _status.BuildStatus();
+
+	private class StatusSink : DevServerDiagnostics.ISink
 	{
-		/// <summary>
-		/// Client as not been started yet
-		/// </summary>
-		Idle,
-
-		/// <summary>
-		/// No server information to connect to.
-		/// </summary>
-		NoServer,
-
-		/// <summary>
-		/// Attempting to connect to the server.
-		/// </summary>
-		Connecting,
-
-		/// <summary>
-		/// Reach timeout while trying to connect to the server.
-		/// Connection HAS NOT been established.
-		/// </summary>
-		ConnectionTimeout,
-
-		/// <summary>
-		/// Connection to the server failed.
-		/// Connection HAS NOT been established.
-		/// </summary>
-		ConnectionFailed,
-
-		/// <summary>
-		/// Connection to the server has been established.
-		/// </summary>
-		Connected,
-
-		/// <summary>
-		/// Reconnecting to the server.
-		/// Connection has been established once but lost since then, reconnecting to the SAME server.
-		/// </summary>
-		Reconnecting,
-
-		/// <summary>
-		/// Disconnected from the server.
-		/// Connection has been established once but lost since then and cannot be restored for now but will be retried later.
-		/// </summary>
-		Disconnected
-	}
-
-	internal enum KeepAliveState
-	{
-		Idle,
-		Ok, // Got ping/pong in expected delays
-		Late, // Sent ping without response within delay
-		Lost, // Got an invalid pong response
-		Aborted // KeepAlive was aborted
-	}
-
-	internal record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
-
-	internal record Status(
-		ConnectionState State,
-		bool? IsVersionValid,
-		(KeepAliveState State, long RoundTrip) KeepAlive,
-		ImmutableHashSet<MissingProcessor> MissingRequiredProcessors,
-		(long Count, ImmutableHashSet<Type> Types) InvalidFrames)
-	{
-		public (StatusClassification kind, string message) GetSummary()
-		{
-			var (kind, message) = State switch
-			{
-				ConnectionState.Idle => (StatusClassification.Info, "Initializing..."),
-				ConnectionState.NoServer => (StatusClassification.Error, "No server configured, cannot initialize connection."),
-				ConnectionState.Connecting => (StatusClassification.Info, "Connecting to dev-server."),
-				ConnectionState.ConnectionTimeout => (StatusClassification.Error, "Failed to connect to dev-server (timeout)."),
-				ConnectionState.ConnectionFailed => (StatusClassification.Error, "Failed to connect to dev-server (error)."),
-				ConnectionState.Reconnecting => (StatusClassification.Info, "Connection to dev-server has been lost, reconnecting."),
-				ConnectionState.Disconnected => (StatusClassification.Error, "Connection to dev-server has been lost, will retry later."),
-
-				ConnectionState.Connected when IsVersionValid is false => (StatusClassification.Warning, "Connected to dev-server, but version mis-match with client."),
-				ConnectionState.Connected when InvalidFrames.Count is not 0 => (StatusClassification.Warning, $"Connected to dev-server, but received {InvalidFrames.Count} invalid frames from the server."),
-				ConnectionState.Connected when MissingRequiredProcessors is { IsEmpty: false } => (StatusClassification.Warning, "Connected to dev-server, but some required processors are missing on server."),
-				ConnectionState.Connected when KeepAlive.State is KeepAliveState.Late => (StatusClassification.Info, "Connected to dev-server, but keep-alive messages are taking longer than expected."),
-				ConnectionState.Connected when KeepAlive.State is KeepAliveState.Lost => (StatusClassification.Warning, "Connected to dev-server, but last keep-alive messages have been lost."),
-				ConnectionState.Connected when KeepAlive.State is KeepAliveState.Aborted => (StatusClassification.Warning, "Connected to dev-server, but keep-alive has been aborted."),
-				ConnectionState.Connected => (StatusClassification.Ok, "Connected to dev-server."),
-
-				_ => (StatusClassification.Warning, State.ToString()),
-			};
-
-			if (KeepAlive.RoundTrip >= 0)
-			{
-				message += $" (ping {KeepAlive.RoundTrip}ms)";
-			}
-
-			return (kind, message);
-		}
-
-		internal string GetDescription()
-		{
-			var details = new StringBuilder(GetSummary().message);
-
-			if (MissingRequiredProcessors is { Count: > 0 } missing)
-			{
-				details.AppendLine();
-				details.AppendLine();
-				details.AppendLine("Some processor(s) requested by the client are missing on the server:");
-
-				foreach (var m in missing)
-				{
-					details.AppendLine($"- {m.TypeFullName} v{m.Version}: {m.Details}");
-					if (m.Error is not null)
-					{
-						details.AppendLine($"  {m.Error}");
-					}
-				}
-			}
-
-			if (InvalidFrames.Types is { Count: > 0 } invalidFrameTypes)
-			{
-				details.AppendLine();
-				details.AppendLine();
-				details.AppendLine($"Received {InvalidFrames.Count} invalid frames from the server. Failing frame types ({invalidFrameTypes.Count}):");
-
-				foreach (var type in invalidFrameTypes)
-				{
-					details.AppendLine($"- {type.FullName}");
-				}
-			}
-
-			return details.ToString();
-		}
-	}
-
-	internal enum StatusClassification
-	{
-		Ok,
-		Info,
-		Warning,
-		Error
-	}
-	#endregion
-
-	private class StatusSink(RemoteControlClient owner) : DevServerDiagnostics.ISink
-	{
+		private readonly RemoteControlClient _owner;
 		private ConnectionState _state = ConnectionState.Idle;
-#if HAS_UNO_WINUI
-		private readonly DiagnosticView<RemoteControlStatusView, Status> _view = DiagnosticView.Register<RemoteControlStatusView, Status>(
-			"Dev-server",
-			(view, status) => view.Update(status),
-			status => status.GetDescription());
-#endif
 
-		public Status BuildStatus()
+		public StatusSink(RemoteControlClient owner)
+		{
+			_owner = owner;
+#if HAS_UNO_WINUI
+			DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner));
+#endif
+		}
+
+		public RemoteControlStatus BuildStatus()
 			=> new(_state, _isVersionValid, (_keepAliveState, _roundTrip), _missingRequiredProcessors, (_invalidFrames, _invalidFrameTypes));
 
 		private void NotifyStatusChanged()
-		{
-			var status = BuildStatus();
-#if HAS_UNO_WINUI
-			_view.Update(status);
-#endif
-			owner.StatusChanged?.Invoke(owner, status);
-		}
+			=> _owner.StatusChanged?.Invoke(_owner, BuildStatus());
 
 		#region Connection status
 		public void ReportActiveConnection(Connection? connection)
