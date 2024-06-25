@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Xaml.Input;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\core\core\elements\MenuFlyout.cpp, tag winui3/release/1.5.4, commit 98a60c8
+
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
