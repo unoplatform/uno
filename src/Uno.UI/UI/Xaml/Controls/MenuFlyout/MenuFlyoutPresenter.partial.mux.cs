@@ -306,12 +306,12 @@ partial class MenuFlyoutPresenter
 
 		UpdateVisualState(false);
 	}
-#endif
 
 	private void ResetVisualState()
 	{
 		VisualStateManager.GoToState(this, "None", false);
 	}
+#endif
 
 	private protected override void ChangeVisualState(
 	   // true to use transitions when updating the visual state, false
