@@ -68,7 +68,7 @@ $projects =
     @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", ""),
 
     # 5.2 Uno App with Library reference
-    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", "")
+    @("5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", ""),
 
     # 5.4 Wasm+Skia
     @("5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", "")
