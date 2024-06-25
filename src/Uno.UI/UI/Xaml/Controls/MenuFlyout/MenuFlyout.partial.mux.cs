@@ -12,6 +12,12 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class MenuFlyout
@@ -409,7 +415,7 @@ Cleanup:
 		// into a single event once all of the changes have completed.
 		if (GetPresenter() is not null && !m_itemsSourceRefreshPending)
 		{
-			var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+			var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
 			var wrThis = WeakReferencePool.RentSelfWeakReference(this);
 
