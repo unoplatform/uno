@@ -38,8 +38,8 @@ internal static class FontDetailsCache
 
 		SKTypeface GetDefaultTypeFace()
 		{
-			// if Segoe UI is not found, it will automatically return a system default
-			return SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant);
+			return SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
+				?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
 		}
 
 		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
