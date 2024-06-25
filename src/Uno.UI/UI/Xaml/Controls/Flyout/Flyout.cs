@@ -100,6 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public Flyout()
 		{
+			InitializeKeyboardAccelerators();
 		}
 
 		protected internal override void Close()
