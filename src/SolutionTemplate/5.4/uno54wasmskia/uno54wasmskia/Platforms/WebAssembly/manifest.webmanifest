@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "uno54wasmskia",
+  "display": "standalone",
+  "name": "uno54wasmskia",
+  "short_name": "uno54wasmskia",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
