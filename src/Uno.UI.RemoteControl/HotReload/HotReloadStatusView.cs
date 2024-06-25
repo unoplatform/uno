@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Data;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
@@ -197,8 +198,13 @@ internal sealed partial class HotReloadStatusView : Control
 
 			string[] files = srvOp.FilePaths.Select(Path.GetFileName).ToArray()!;
 
-			vm.IsCompleted = srvOp.Result is not null;
-			vm.IsSuccess = srvOp.Result is HotReloadServerResult.Success or HotReloadServerResult.NoChanges;
+			vm.IsSuccess = srvOp.Result switch
+			{
+				null => null,
+				HotReloadServerResult.Success or HotReloadServerResult.NoChanges => true,
+				_ => false
+			};
+
 			vm.Description = srvOp.Result switch
 			{
 				null => $"Processing changes{Join(files, "files")}.",
@@ -224,7 +230,6 @@ internal sealed partial class HotReloadStatusView : Control
 
 			var types = localOp.CuratedTypes;
 
-			vm.IsCompleted = localOp.Result is not null;
 			vm.IsSuccess = localOp.Result is HotReloadClientResult.Success;
 			vm.Description = localOp.Result switch
 			{
@@ -303,8 +308,45 @@ internal sealed partial class HotReloadStatusView : Control
 		};
 
 		VisualStateManager.GoToState(this, state, true);
+	private string GetResultVisualState()
+	{
+		var operations = History;
+		if (operations is { Count: 0 } || operations.Any(op => op.IsSuccess is null))
+		{
+			return ResultNoneVisualStateName; // Makes sure to restore to previous None!
+		}
+
+		return operations[0].IsSuccess switch
+		{
+			true => ResultSuccessVisualStateName,
+			false => ResultFailedVisualStateName,
+			_ => ResultNoneVisualStateName
+		};
 	}
 }
+
+#nullable disable
+internal sealed class BoolToObjectConverter : IValueConverter
+{
+	public object TrueValue { get; set; }
+
+	public object FalseValue { get; set; }
+
+	public object NullValue { get; set; }
+
+	public object Convert(object value, Type targetType, object parameter, string language)
+	{
+		if (value == null)
+		{
+			return NullValue;
+		}
+
+		return (bool)value ? TrueValue : FalseValue;
+	}
+
+	public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException("Only one-way conversion is supported.");
+}
+#nullable enable
 
 [Microsoft.UI.Xaml.Data.Bindable]
 internal sealed record HotReloadEntryViewModel(bool IsServer, long Id, DateTimeOffset Start) : INotifyPropertyChanged
@@ -312,19 +354,12 @@ internal sealed record HotReloadEntryViewModel(bool IsServer, long Id, DateTimeO
 	/// <inheritdoc />
 	public event PropertyChangedEventHandler? PropertyChanged;
 
-	public bool IsCompleted { get; set; }
-	public bool IsSuccess { get; set; }
+	public bool? IsSuccess { get; set; }
 	public TimeSpan? Duration { get; set; }
 	public string? Description { get; set; }
 
 	// Quick patch as we don't have MVUX
 	public string Title => $"{Start.LocalDateTime:T} - {(IsServer ? "Server" : "Application")}{GetDuration()}".ToString(CultureInfo.CurrentCulture);
-	public Color Color => (IsCompleted, IsSuccess) switch
-	{
-		(false, _) => Colors.Yellow,
-		(true, false) => Colors.Red,
-		(true, true) => Colors.Green,
-	};
 
 	public void RaiseChanged()
 		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
