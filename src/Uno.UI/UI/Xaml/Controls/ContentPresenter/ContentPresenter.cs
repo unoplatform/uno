@@ -948,7 +948,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		{
 			TryRegisterNativeElement(null, Content);
 		}
-		if (IsNativeHost)
+		if (IsNativeHost) // IsNativeHost can become true after the above TryRegisterNativeElement call, so this is not an if-else situation
 		{
 			AttachNativeElement();
 		}
