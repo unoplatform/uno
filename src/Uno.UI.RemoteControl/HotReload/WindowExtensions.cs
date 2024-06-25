@@ -14,8 +14,15 @@ public static class WindowExtensions
 	/// Enables the UI Update cycle of HotReload to be handled by Uno
 	/// </summary>
 	/// <param name="window">The window of the application where UI updates will be applied</param>
+	public static void EnableHotReload(this Window window)
+		=> ClientHotReloadProcessor.SetWindow(window, false);
+
+	/// <summary>
+	/// Enables the UI Update cycle of HotReload to be handled by Uno
+	/// </summary>
+	/// <param name="window">The window of the application where UI updates will be applied</param>
 	/// <param name="disableIndicator">Request to not show the on-canvas indicator by default.</param>
-	public static void EnableHotReload(this Window window, bool disableIndicator = true)
+	public static void EnableHotReload(this Window window, bool disableIndicator)
 		=> ClientHotReloadProcessor.SetWindow(window, disableIndicator);
 
 	/// <summary>
