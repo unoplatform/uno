@@ -471,7 +471,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			void BitmapImage_ImageFailed(object sender, ExceptionRoutedEventArgs e) => logs.Add("BitmapImage_ImageFailed");
 			void BitmapImage_DownloadProgress(object sender, DownloadProgressEventArgs e) => logs.Add("BitmapImage_DownloadProgress");
-			void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) => logs.Add("BitmapImage_ImageOpened");
+			void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) => logs.Add($"BitmapImage_ImageOpened. {bitmapImage.PixelWidth}x{bitmapImage.PixelHeight}");
 			void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e) => logs.Add("Image_ImageFailed");
 			void Image_ImageOpened(object sender, RoutedEventArgs e)
 			{
@@ -486,7 +486,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitFor(() => imageOpened);
 
 			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
-			Assert.AreEqual("BitmapImage_ImageOpened", logs[0]);
+			Assert.AreEqual("BitmapImage_ImageOpened. 100x150", logs[0]);
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
 		}
 
