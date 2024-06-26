@@ -6,6 +6,7 @@
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+					xmlns:xaml="clr-namespace:Microsoft.UI.Xaml;assembly=Uno.UI"
 					mc:Ignorable="d">
 
 	<ResourceDictionary.ThemeDictionaries>
@@ -41,7 +42,7 @@
 		NullValue="{StaticResource HotReloadServerChange}" />
 
 	<DataTemplate x:Key="OperationTemplate">
-		<StackPanel Spacing="10" Margin="0,0,0,10">
+		<StackPanel Spacing="10">
 			<StackPanel Orientation="Horizontal">
 				<Grid Margin="8">
 					<Ellipse
@@ -63,14 +64,14 @@
 					VerticalAlignment="Center"
 					TextWrapping="WrapWholeWords"
 					FontSize="14"
-					MaxWidth="380">
+					MaxWidth="340">
 					<Run Text="{Binding Title}" FontWeight="SemiLight" />
 					<LineBreak />
 					<Run Text="{Binding Description}" />
 				</TextBlock>
 			</StackPanel>
 
-			<Rectangle Height="1" Width="400" Fill="{ThemeResource DividerFillBrush}" />
+			<Rectangle Height="1" HorizontalAlignment="Stretch" Fill="{ThemeResource DividerFillBrush}" />
 		</StackPanel>
 	</DataTemplate>
 
@@ -124,24 +125,64 @@
 				<ControlTemplate TargetType="local:HotReloadStatusView">
 					<Grid x:Name="Root" Width="20" Height="20">
 						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="Result">
-								<VisualState x:Name="None">
+							<VisualStateGroup x:Name="Status">
+								<VisualState x:Name="Unknown">
 									<VisualState.Setters>
-										<Setter Target="DotIcon.Data" Value="{StaticResource HotReloadServerChange}" />
-										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadProcessingFillBrush}" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadNeutralFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
-								<VisualState x:Name="Success">
+								<VisualState x:Name="Error">
 									<VisualState.Setters>
-										<Setter Target="DotIcon.Data" Value="{StaticResource HotReloadSuccess}" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadFailedFillBrush}" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Initializing">
+									<VisualState.Setters>
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadInitializingFillBrush}" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Idle">
+									<VisualState.Setters>
 										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadSuccessFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
+								<VisualState x:Name="Processing">
+									<VisualState.Setters>
+										<Setter Target="DotIcon.Data" Value="{StaticResource HotReloadProcessing}" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadProcessingFillBrush}" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+
+							<VisualStateGroup x:Name="Result">
+								<VisualState x:Name="None" />
+								<VisualState x:Name="Success">
+									<VisualState.Setters>
+										<Setter Target="ResultDotIcon.Data" Value="{StaticResource HotReloadSuccess}" />
+										<Setter Target="ResultDot.Fill" Value="{StaticResource HotReloadSuccessFillBrush}" />
+									</VisualState.Setters>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDotIcon" Storyboard.TargetProperty="Data">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="{x:Null}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDot" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="Transparent" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 								<VisualState x:Name="Failed">
 									<VisualState.Setters>
-										<Setter Target="DotIcon.Data" Value="{StaticResource HotReloadFailed}" />
-										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadFailedFillBrush}" />
+										<Setter Target="ResultDotIcon.Data" Value="{StaticResource HotReloadFailed}" />
+										<Setter Target="ResultDot.Fill" Value="{StaticResource HotReloadFailedFillBrush}" />
 									</VisualState.Setters>
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDotIcon" Storyboard.TargetProperty="Data">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="{x:Null}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDot" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="Transparent" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
 								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
@@ -152,38 +193,39 @@
 									<Flyout.FlyoutPresenterStyle>
 										<Style TargetType="FlyoutPresenter">
 											<Setter Property="CornerRadius" Value="8" />
+											<Setter Property="MaxWidth" Value="420" />
+											<Setter Property="MaxHeight" Value="420" />
 										</Style>
 									</Flyout.FlyoutPresenterStyle>
-									<ScrollViewer MaxHeight="400" MaxWidth="400">
-										<StackPanel CornerRadius="8" Spacing="10" >
+
+									<StackPanel CornerRadius="8" Spacing="10" >
+										<StackPanel Orientation="Horizontal" Spacing="10">
+											<devServer:RemoteControlStatusView
+												x:Name="PART_DevServerStatus"
+												VerticalAlignment="Center" />
 											<TextBlock
-												Text="{TemplateBinding HeadLine}"
+												MaxWidth="380"
+												Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}" 
 												FontSize="14"
 												FontWeight="SemiLight"
-												TextWrapping="WrapWholeWords" />
-
-											<StackPanel Orientation="Horizontal" Spacing="10">
-												<devServer:RemoteControlStatusView 
-													x:Name="PART_DevServerStatus" 
-													VerticalAlignment="Center" />
-												<TextBlock
-													MaxWidth="380"
-													Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}" 
-													FontSize="14"
-													FontWeight="SemiLight"
-													TextWrapping="WrapWholeWords" 
-													VerticalAlignment="Center" />
-											</StackPanel>
-
-											<mux:ItemsRepeater
-												ItemsSource="{TemplateBinding History}"
-												ItemTemplate="{StaticResource OperationTemplate}">
-												<mux:ItemsRepeater.Layout>
-													<StackLayout Spacing="5" />
-												</mux:ItemsRepeater.Layout>
-											</mux:ItemsRepeater>
+												TextWrapping="WrapWholeWords" 
+												VerticalAlignment="Center" />
 										</StackPanel>
-									</ScrollViewer>
+
+										<TextBlock
+											Text="{TemplateBinding HeadLine}"
+											FontSize="14"
+											FontWeight="SemiLight"
+											TextWrapping="WrapWholeWords" />
+
+										<mux:ItemsRepeater
+											ItemsSource="{TemplateBinding History}"
+											ItemTemplate="{StaticResource OperationTemplate}">
+											<mux:ItemsRepeater.Layout>
+												<StackLayout Spacing="10" />
+											</mux:ItemsRepeater.Layout>
+										</mux:ItemsRepeater>
+									</StackPanel>
 								</Flyout>
 							</Button.Flyout>
 
@@ -199,6 +241,19 @@
 									Stretch="Uniform"
 									Width="12"
 									Data="{StaticResource HotReloadServerChange}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+
+								<Ellipse
+									x:Name="ResultDot"
+									Fill="Transparent"
+									Width="20"
+									Height="20" />
+								<Path
+									x:Name="ResultDotIcon"
+									Fill="White"
+									Stretch="Uniform"
+									Width="12"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center" />
 							</Grid>

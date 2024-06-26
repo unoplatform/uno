@@ -55,7 +55,7 @@ internal record RemoteControlStatus(
 
 			foreach (var m in missing)
 			{
-				details.AppendLine($"- {m.TypeFullName} v{m.Version}: {m.Details}");
+				details.AppendLine($"- {m.TypeFullName}: {m.Details}");
 				if (m.Error is not null)
 				{
 					details.AppendLine($"  {m.Error}");
