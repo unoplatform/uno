@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -584,27 +585,31 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		#region Helpers
 		private static IObservable<IList<string>> ToObservable(FileSystemWatcher watcher)
-			=> Observable.Create<string>(o =>
+			=> Observable.Defer(() =>
 			{
 				// Create an observable instead of using the FromEventPattern which
 				// does not register to events properly.
 				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
 				// Visual Studio uses to save files.
 
-				void changed(object s, FileSystemEventArgs args) => o.OnNext(args.FullPath);
-				void renamed(object s, RenamedEventArgs args) => o.OnNext(args.FullPath);
+				var subject = new Subject<string>();
+
+				void changed(object s, FileSystemEventArgs args) => subject.OnNext(args.FullPath);
+				void renamed(object s, RenamedEventArgs args) => subject.OnNext(args.FullPath);
 
 				watcher.Changed += changed;
 				watcher.Created += changed;
 				watcher.Renamed += renamed;
 
-				return Disposable.Create(() =>
-				{
-					watcher.Changed -= changed;
-					watcher.Created -= changed;
-					watcher.Renamed -= renamed;
-				});
-			}).Buffer(TimeSpan.FromMilliseconds(250));
+				return subject
+					.Buffer(() => subject.Throttle(TimeSpan.FromMilliseconds(250))) // Wait for 250 ms without any file change
+					.Finally(() =>
+					{
+						watcher.Changed -= changed;
+						watcher.Created -= changed;
+						watcher.Renamed -= renamed;
+					});
+			});
 		#endregion
 	}
 }
