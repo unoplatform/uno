@@ -292,15 +292,14 @@ namespace Microsoft.UI.Xaml
 			var value = precedence.HasValue ? details.GetValue(precedence.Value) : details.GetValue();
 			var newDefaultValueSet = details.HasDefaultValueSet;
 
-			var createdValue = details.GetValue();
-			if (!oldDefaultValueSet && newDefaultValueSet && createdValue is DependencyObject createdValueAsDO)
+			if (!oldDefaultValueSet && newDefaultValueSet && value is DependencyObject valueAsDO)
 			{
 				// The default value for OnDemandProperty was created by this call.
 				// We need EnterEffectiveValue.
-				(ActualInstance as UIElement)?.EnterEffectiveValue(details.Property, createdValueAsDO);
+				(ActualInstance as UIElement)?.EnterEffectiveValue(details.Property, valueAsDO);
 			}
 
-			return createdValue;
+			return value;
 		}
 
 		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
