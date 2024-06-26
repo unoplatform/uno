@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 					object valueAsI = value;
 
 					IList<KeyboardAccelerator> valueAsKeyboardAccelerators;
-					var returnValueAsKeyboardAcceleratorCollection = new DependencyObjectCollection<KeyboardAccelerator>();
+					var returnValueAsKeyboardAcceleratorCollection = new KeyboardAcceleratorCollection();
 
 					valueAsKeyboardAccelerators = valueAsI as IList<KeyboardAccelerator>;
 					int keyboardAcceleratorCount;

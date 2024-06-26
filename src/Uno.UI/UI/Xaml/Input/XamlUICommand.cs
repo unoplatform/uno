@@ -19,9 +19,6 @@ public partial class XamlUICommand : DependencyObject, ICommand
 {
 	public XamlUICommand()
 	{
-		// TODO: Uno specific - we need to initialize KeyboardAccelerators here
-		// WinUI does this automatically on demand via IsValueCreatedOnDemand.
-		SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>());
 	}
 
 	/// <summary>
@@ -137,9 +134,9 @@ public partial class XamlUICommand : DependencyObject, ICommand
 	public static DependencyProperty KeyboardAcceleratorsProperty { get; } =
 		DependencyProperty.Register(
 			nameof(KeyboardAccelerators),
-			typeof(IList<KeyboardAccelerator>),
+			typeof(KeyboardAcceleratorCollection),
 			typeof(XamlUICommand),
-			new FrameworkPropertyMetadata(default(IList<KeyboardAccelerator>)));
+			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.IsOnDemandProperty));
 
 	/// <summary>
 	/// Identifies the Label dependency property.
