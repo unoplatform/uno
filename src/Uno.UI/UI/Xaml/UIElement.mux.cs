@@ -831,6 +831,15 @@ namespace Microsoft.UI.Xaml
 				IsActiveInVisualTree = true;
 			}
 
+			if (__Store.TryGetOnDemandProperty(KeyboardAcceleratorsProperty, out var acceleratorCollection))
+			{
+				// HACK: We should generalize Enter to enter all relevant DPs in a general way.
+				// Relevant WinUI pieces:
+				// https://github.com/microsoft/microsoft-ui-xaml/blob/539e4de5bb6bf5973cc74110aa926b450b8aa53c/dxaml/xcp/core/core/elements/depends.cpp#L992-L1013
+				// https://github.com/microsoft/microsoft-ui-xaml/blob/539e4de5bb6bf5973cc74110aa926b450b8aa53c/dxaml/xcp/components/DependencyObject/PropertySystem.cpp#L1163-L1196
+				(acceleratorCollection as KeyboardAcceleratorCollection)?.Enter(@params);
+			}
+
 			foreach (var child in _children)
 			{
 				if (child == this)
@@ -919,7 +928,7 @@ namespace Microsoft.UI.Xaml
 				//	useLayoutRounding:  GetUseLayoutRounding(),
 				//	visualTree: VisualTree.GetForElementNoRef(this, LookupOptions.NoFallback)
 				//);
-				EnterParams enterParams = new EnterParams(isLive: IsActiveInVisualTree);
+				EnterParams enterParams = new EnterParams(isLive: IsInLiveTree);
 
 				//enterParams.fCheckForResourceOverrides = ShouldCheckForResourceOverrides();
 
