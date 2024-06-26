@@ -18,6 +18,6 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
 		var unoWpfWindow = new UnoWpfWindow(window, xamlRoot);
-		return new WpfWindowWrapper(unoWpfWindow, xamlRoot);
+		return new WpfWindowWrapper(unoWpfWindow, window, xamlRoot);
 	}
 }

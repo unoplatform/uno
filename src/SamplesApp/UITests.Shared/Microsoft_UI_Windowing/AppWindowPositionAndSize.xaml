@@ -1,0 +1,20 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Windowing.AppWindowPositionAndSize"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Windowing"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:DefaultBindMode="TwoWay"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="8" Spacing="8">
+        <NumberBox Header="X" Value="{x:Bind ViewModel.X}" />
+        <NumberBox Header="Y" Value="{x:Bind ViewModel.Y}" />
+        <Button Click="{x:Bind ViewModel.Move}">Move</Button>
+        <NumberBox Header="Width" Value="{x:Bind ViewModel.Width}" />
+        <NumberBox Header="Height" Value="{x:Bind ViewModel.Height}" />
+        <Button Click="{x:Bind ViewModel.Resize}">Resize</Button>
+    </StackPanel>
+</Page>

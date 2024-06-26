@@ -67,22 +67,25 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	public X11Window RootX11Window => _x11Window!.Value;
 	public X11Window TopX11Window => _x11TopWindow!.Value;
 
-	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action configureCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
 		_xamlRoot = xamlRoot;
 		_wrapper = wrapper;
 		_window = winUIWindow;
-
-		_resizeCallback = size =>
-		{
-			// copy the root window dimensions to the top window
-			using var _1 = X11Helper.XLock(TopX11Window.Display);
-			_ = XLib.XResizeWindow(TopX11Window.Display, TopX11Window.Window, (int)size.Width, (int)size.Height);
-			resizeCallback(size);
-		};
 		_closingCallback = closingCallback;
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
+		_configureCallback = configureCallback;
+
+		_configureTimer = new DispatcherTimer();
+		_configureTimer.Interval = new TimeSpan(1000 / 16);
+		_configureTimer.Tick += (_, _) =>
+		{
+			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
+			{
+				_configureCallback();
+			}
+		};
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
@@ -357,8 +360,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			XLib.XSelectInput(topWindowDisplay, topWindow, TopEventsMask);
 			_x11TopWindow = new X11Window(display, topWindow);
 		}
-
-		QueueAction(this, () => _resizeCallback(size));
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);

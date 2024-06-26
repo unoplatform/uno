@@ -6,6 +6,7 @@ using System.Threading;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -15,10 +16,13 @@ internal partial class X11XamlRootHost
 {
 	private static int _threadCount;
 
-	private readonly Action<Size> _resizeCallback;
 	private readonly Action _closingCallback;
 	private readonly Action<bool> _focusCallback;
 	private readonly Action<bool> _visibilityCallback;
+	private readonly Action _configureCallback;
+
+	private readonly DispatcherTimer _configureTimer;
+	private int _needsConfigureCallback;
 
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
@@ -155,18 +159,17 @@ internal partial class X11XamlRootHost
 					switch (@event.type)
 					{
 						case XEventName.PropertyNotify:
-							using (X11Helper.XLock(x11Window.Display))
+							if (@event.PropertyEvent.atom == X11Helper.GetAtom(x11Window.Display, X11Helper.RESOURCE_MANAGER))
 							{
-								if (@event.PropertyEvent.atom == X11Helper.GetAtom(x11Window.Display, X11Helper.RESOURCE_MANAGER))
+								if (this.Log().IsEnabled(LogLevel.Debug))
 								{
-									if (this.Log().IsEnabled(LogLevel.Debug))
-									{
-										this.Log().Debug($"X resources changed. Updating DPI scaling.");
-									}
-									XWindowAttributes attributes = default;
-									_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
-									UpdateSizeAndDpi(new Size(attributes.width, attributes.height));
+									this.Log().Debug($"X resources changed. Updating DPI scaling.");
 								}
+								QueueAction(this, () =>
+								{
+									_displayInformationExtension?.UpdateDetails();
+									_wrapper.RasterizationScale = (float)(_displayInformationExtension?.RawPixelsPerViewPixel ?? 1.0f);
+								});
 							}
 							break;
 						default:
@@ -200,8 +203,14 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
-							var configureEvent = @event.ConfigureEvent;
-							UpdateSizeAndDpi(new Size(configureEvent.width, configureEvent.height));
+							if (Interlocked.Exchange(ref _needsConfigureCallback, 1) == 0)
+							{
+								// We do this in a timer because if you "continuously" change position/size
+								// values by dragging for example, you will get an explosion of configure
+								// events and responding to all of them synchronously would block the UI
+								// for so long in some cases.
+								_configureTimer.Start();
+							}
 							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () => _focusCallback(true));
@@ -268,15 +277,6 @@ internal partial class X11XamlRootHost
 			}
 		}
 		// ReSharper disable once FunctionNeverReturns
-	}
-	private void UpdateSizeAndDpi(Size size)
-	{
-		QueueAction(this, () =>
-		{
-			_displayInformationExtension?.UpdateDetails();
-			_wrapper.RasterizationScale = (float)(_displayInformationExtension?.RawPixelsPerViewPixel ?? 1.0f);
-			_resizeCallback(size);
-		});
 	}
 
 	public static void QueueAction(IXamlRootHost host, Action action)

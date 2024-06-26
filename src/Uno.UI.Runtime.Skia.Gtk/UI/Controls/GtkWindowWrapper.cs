@@ -25,7 +25,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
 	private bool _wasShown;
 
-	public GtkWindowWrapper(UnoGtkWindow gtkWindow, XamlRoot xamlRoot) : base(xamlRoot)
+	public GtkWindowWrapper(UnoGtkWindow gtkWindow, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_gtkWindow = gtkWindow ?? throw new ArgumentNullException(nameof(gtkWindow));
 		_gtkWindow.Shown += OnWindowShown;

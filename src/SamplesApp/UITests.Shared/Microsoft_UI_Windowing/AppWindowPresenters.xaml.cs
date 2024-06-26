@@ -15,7 +15,7 @@ using Windows.Foundation.Collections;
 
 namespace UITests.Microsoft_UI_Windowing;
 
-[Sample("Microsoft.UI.Windowing", IsManualTest = true, ViewModelType = typeof(AppWindowPresentersViewModel),
+[Sample("Windowing", IsManualTest = true, ViewModelType = typeof(AppWindowPresentersViewModel),
 	Description =
 		"Clicking the buttons should change the window presenter and the mode of the window." +
 		"CompactOverlay is not yet implemented in Uno Platform, so it will show an error instead.")]

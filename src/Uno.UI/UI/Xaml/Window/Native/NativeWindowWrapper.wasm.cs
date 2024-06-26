@@ -1,8 +1,7 @@
 using System;
-using System.Runtime.InteropServices.JavaScript;
 using Uno.Disposables;
-using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using static __Uno.UI.Xaml.Controls.NativeWindowWrapper;
@@ -40,7 +39,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void RaiseNativeSizeChanged(double width, double height)
 	{
@@ -69,4 +68,8 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 		SetFullScreenMode(true);
 		return Disposable.Create(() => SetFullScreenMode(false));
 	}
+
+	public override void Move(PointInt32 position) => NativeMethods.MoveWindow(position.X, position.Y);
+
+	public override void Resize(SizeInt32 size) => NativeMethods.ResizeWindow(size.Width, size.Height);
 }

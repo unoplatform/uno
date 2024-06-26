@@ -1627,7 +1627,7 @@ namespace Uno.UI {
 			if (element) {
 				element.parentElement.removeChild(element);
 			}
-			
+
 			let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
 			if (bootstrapperLoaders.length > 0) {
 				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
@@ -1732,7 +1732,7 @@ namespace Uno.UI {
 
 		public getIsOverflowing(elementId: number): boolean {
 			const element = this.getView(elementId) as HTMLElement;
-			
+
 			return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
 		}
 
@@ -1740,6 +1740,14 @@ namespace Uno.UI {
 			const element = this.getView(elementId) as HTMLElement;
 
 			element.setAttribute("tabindex", isFocusable ? "0" : "-1");
+		}
+
+		public resizeWindow(width: number, height: number) {
+			window.resizeTo(width, height);
+		}
+
+		public moveWindow(x: number, y: number) {
+			window.moveTo(x, y);
 		}
 	}
 
