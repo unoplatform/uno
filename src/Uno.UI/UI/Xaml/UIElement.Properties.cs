@@ -2,30 +2,20 @@
 #pragma warning disable CS0067
 #endif
 
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.Disposables;
-using System.Linq;
-using Windows.Devices.Input;
-using Windows.System;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI;
-using Uno;
-using Uno.UI.Controls;
-using Uno.UI.Media;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using Microsoft.UI.Xaml.Markup;
-
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using Microsoft.UI.Input;
 using Uno.UI.Xaml;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.System;
+using Microsoft.UI.Xaml.Input;
 
 #if __IOS__
 using UIKit;
@@ -101,8 +91,52 @@ namespace Microsoft.UI.Xaml
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{
-			get => GetKeyboardAcceleratorsValue() ?? (KeyboardAccelerators = new List<KeyboardAccelerator>());
-			set => SetKeyboardAcceleratorsValue(value);
+			get => GetKeyboardAcceleratorsValue();
+			private set => SetKeyboardAcceleratorsValue(value);
 		}
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the control tooltip displays
+		/// the key combination for its associated keyboard accelerator.
+		/// </summary>
+		public KeyboardAcceleratorPlacementMode KeyboardAcceleratorPlacementMode
+		{
+			get => (KeyboardAcceleratorPlacementMode)GetValue(KeyboardAcceleratorPlacementModeProperty);
+			set => SetValue(KeyboardAcceleratorPlacementModeProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the KeyboardAcceleratorPlacementMode dependency property.
+		/// </summary>
+		public static DependencyProperty KeyboardAcceleratorPlacementModeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(KeyboardAcceleratorPlacementMode),
+				typeof(KeyboardAcceleratorPlacementMode),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(KeyboardAcceleratorPlacementMode.Auto, FrameworkPropertyMetadataOptions.Inherits));
+
+		/// <summary>
+		/// Gets or sets a value that indicates the control tooltip that displays the accelerator key combination.
+		/// </summary>
+		public DependencyObject KeyboardAcceleratorPlacementTarget
+		{
+			get => (DependencyObject)GetValue(KeyboardAcceleratorPlacementTargetProperty);
+			set => SetValue(KeyboardAcceleratorPlacementTargetProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the KeyboardAcceleratorPlacementTarget dependency property.
+		/// </summary>
+		public static DependencyProperty KeyboardAcceleratorPlacementTargetProperty { get; } =
+			DependencyProperty.Register(
+				nameof(KeyboardAcceleratorPlacementTarget),
+				typeof(DependencyObject),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		/// <summary>
+		/// Occurs when a keyboard shortcut (or accelerator) is pressed.
+		/// </summary>
+		public event TypedEventHandler<UIElement, ProcessKeyboardAcceleratorEventArgs> ProcessKeyboardAccelerators;
 	}
 }

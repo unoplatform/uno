@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ToolTipService
 	{
 		// Skipping already declared property PlacementProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -22,14 +22,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToolTipService.GetPlacement(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToolTipService.SetPlacement(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.Primitives.PlacementMode)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.PlacementTargetProperty.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.UIElement GetPlacementTarget(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			return (global::Microsoft.UI.Xaml.UIElement)element.GetValue(PlacementTargetProperty);
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetPlacementTarget(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.UIElement value)
 		{

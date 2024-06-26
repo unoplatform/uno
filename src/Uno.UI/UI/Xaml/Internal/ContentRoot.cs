@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using DirectUI;
 using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
@@ -12,6 +13,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
@@ -198,8 +200,47 @@ internal partial class ContentRoot
 		}
 	}
 
+	// CKeyboardAcceleratorCollection can be added multiple times through initial Live Enters and then
+	// Flyouts Open operations ( I can think of). We need reference counting on accelerator collection
+	// so that closing flyout will only decrement the ref count and will not remove keyboard accelerator
+	// collections which might be still alive. Collection will only be removed if ref count goes down to 0.
+	// As of now Add/ Remove reference and then collection is triggered through Enter and Leave mechanism only.
+	// If one has to update ref counts explicitly, please make sure to take care of life time of those collections.
+	internal VectorOfKACollectionAndRefCountPair GetAllLiveKeyboardAccelerators() => _allLiveKeyboardAccelerators;
+
 	//TODO Uno: This might need to be adjusted when we have proper lifetime handling
 	internal bool IsShuttingDown() => false;
+
+	internal void AddToLiveKeyboardAccelerators(KeyboardAcceleratorCollection kaCollection)
+	{
+		var weakCollection = ((IWeakReferenceProvider)kaCollection).WeakReference;
+
+		var index = _allLiveKeyboardAccelerators.FindIndex(entry => entry.KeyboardAcceleratorCollectionWeak == weakCollection);
+
+		if (index >= 0)
+		{
+			_allLiveKeyboardAccelerators[index] = _allLiveKeyboardAccelerators[index] with { Count = _allLiveKeyboardAccelerators[index].Count + 1 };
+		}
+		else
+		{
+			_allLiveKeyboardAccelerators.Add(new(weakCollection, 1));
+		}
+	}
+
+	internal void RemoveFromLiveKeyboardAccelerators(KeyboardAcceleratorCollection kaCollection)
+	{
+		var weakCollection = ((IWeakReferenceProvider)kaCollection).WeakReference;
+		var index = _allLiveKeyboardAccelerators.FindIndex(entry => entry.KeyboardAcceleratorCollectionWeak == weakCollection);
+
+		if (index >= 0)
+		{
+			_allLiveKeyboardAccelerators[index] = _allLiveKeyboardAccelerators[index] with { Count = _allLiveKeyboardAccelerators[index].Count - 1 };
+			if (_allLiveKeyboardAccelerators[index].Count == 0)
+			{
+				_allLiveKeyboardAccelerators.RemoveAt(index);
+			}
+		}
+	}
 
 	internal XamlRoot GetOrCreateXamlRoot() => VisualTree.GetOrCreateXamlRoot();
 

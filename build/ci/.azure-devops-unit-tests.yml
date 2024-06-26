@@ -34,10 +34,6 @@ jobs:
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   steps:
   - checkout: self
     clean: true
@@ -51,6 +47,13 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
+
+  # We need just the .NET 8 runtime (not the SDK).
+  # Building with .NET 9 SDK is fine, but running the app when the TFM is net8.0 requires the .NET 8 runtime
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'runtime'
+      version: '8.x'
 
   - task: DownloadBuildArtifacts@0
     displayName: Download build artifact

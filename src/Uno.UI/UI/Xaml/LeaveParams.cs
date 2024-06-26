@@ -1,5 +1,4 @@
-﻿#if UNO_HAS_ENHANCED_LIFECYCLE
-namespace Uno.UI.Xaml;
+﻿namespace Uno.UI.Xaml;
 
 internal struct LeaveParams
 {
@@ -15,4 +14,3 @@ internal struct LeaveParams
 		IsLive = isLive;
 	}
 }
-#endif

@@ -51,10 +51,15 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct);
 					if (imageData.Kind == ImageDataKind.Error)
 					{
+						PixelWidth = 0;
+						PixelHeight = 0;
 						RaiseImageFailed(imageData.Error);
 					}
 					else if (imageData.Kind == ImageDataKind.CompositionSurface)
 					{
+						var image = imageData.CompositionSurface.Image;
+						PixelWidth = image.Width;
+						PixelHeight = image.Height;
 						RaiseImageOpened();
 					}
 

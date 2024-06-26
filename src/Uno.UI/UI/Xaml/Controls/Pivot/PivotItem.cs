@@ -46,7 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (dependencyObject is PivotItem item && item.PivotHeaderItem != null)
 			{
 				item.PivotHeaderItem.Content = args.NewValue;
-
 			}
 		}
 

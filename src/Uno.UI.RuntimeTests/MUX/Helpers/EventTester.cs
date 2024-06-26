@@ -89,6 +89,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 				this.AddEvent();
 			});
 
+#if !__WASM__
 			if (this.options.HasFlag(EventTesterOptions.CaptureWindowBefore))
 			{
 				this.CaptureWindowAsync("Before").Wait(this.Timeout);
@@ -97,6 +98,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			{
 				this.CaptureScreenAsync("Before").Wait(this.Timeout);
 			}
+#endif
 		}
 
 		protected EventTester(TSender sender, Type senderType, string eventName, Action<object, TEventArgs> action, EventTesterOptions options)
@@ -436,6 +438,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 					//	Log.Comment($"Disposing Event '{this.eventName}', executions count: {this.ExecuteCount}");
 					//}
 
+#if !__WASM__
 					if (this.options.HasFlag(EventTesterOptions.CaptureWindowAfter))
 					{
 						this.CaptureWindowAsync("After").Wait(this.Timeout);
@@ -444,6 +447,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 					{
 						this.CaptureScreenAsync("After").Wait(this.Timeout);
 					}
+#endif
 
 					resetEvent.Dispose();
 					this.isDisposing = false;

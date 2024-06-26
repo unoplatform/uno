@@ -154,6 +154,16 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
+		Task.Run(SetWindowIcon);
+
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
+		{
+			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+	}
+
+	private void SetWindowIcon()
+	{
 		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
 		{
 			var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
@@ -184,11 +194,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
 				}
 			}
-		}
-
-		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
-		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 
 		unsafe void SetIconFromFile(string iconPath)
@@ -336,17 +341,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// For the root window (that does nothing but act as an anchor for children,
 		// we don't bother with OpenGL, since we don't render on this window anyway.
-		IntPtr rootWindow = CreateSoftwareRenderWindow(display, screen, size, XLib.XRootWindow(display, screen));
-		XLib.XSelectInput(display, rootWindow, RootEventsMask);
-		_x11Window = new X11Window(display, rootWindow);
+		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
+		IntPtr rootUnoWindow = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
+		XLib.XSelectInput(display, rootUnoWindow, RootEventsMask);
+		XLib.XSelectInput(display, rootXWindow, (IntPtr)EventMask.PropertyChangeMask); // to update dpi when X resources change
+		_x11Window = new X11Window(display, rootUnoWindow);
+		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
-			_x11TopWindow = CreateGLXWindow(display, screen, size, rootWindow);
+			_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, rootUnoWindow);
 		}
 		else
 		{
-			var topWindow = CreateSoftwareRenderWindow(display, screen, size, rootWindow);
-			XLib.XSelectInput(display, topWindow, TopEventsMask);
+			var topWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, rootUnoWindow);
+			XLib.XSelectInput(topWindowDisplay, topWindow, TopEventsMask);
 			_x11TopWindow = new X11Window(display, topWindow);
 		}
 
@@ -354,7 +362,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
-		_ = XLib.XSetWMProtocols(display, rootWindow, new[] { deleteWindow }, 1);
+		_ = XLib.XSetWMProtocols(display, rootUnoWindow, new[] { deleteWindow }, 1);
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -378,7 +386,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
-	private unsafe X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	private unsafe static X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
 	{
 		int[] glxAttribs = {
 			GlxConsts.GLX_X_RENDERABLE    , /* True */ 1,
@@ -447,7 +455,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
-	private IntPtr CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	private static IntPtr CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
 	{
 		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
 		var success = matchVisualInfoResult != 0;
@@ -458,9 +466,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			success = matchVisualInfoResult != 0;
 			if (!success)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("XLIB ERROR: Cannot match visual info");
+					typeof(X11XamlRootHost).Log().Error("XLIB ERROR: Cannot match visual info");
 				}
 				throw new InvalidOperationException("XLIB ERROR: Cannot match visual info");
 			}

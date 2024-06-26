@@ -26,6 +26,36 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 		}
 	}
 
+	private static void AdjustPath(string dotnetSharedDirectory, string runtimeVersion, ref string windowsDesktopFrameworkPath)
+	{
+		// In at least preview SDKs, the .NET runtime version is different from the .NET Desktop runtime version for the same .NET SDK.
+		// For example, .NET SDK 9.0.100-preview.4 has these runtimes:
+		// .NET Runtime 9.0.0-preview.4.24266.19
+		// ASP.NET Core Runtime 9.0.0-preview.4.24267.6
+		//.NET Desktop Runtime 9.0.0-preview.4.24267.11
+		// This is a quite hacky to get to the right path where we don't exactly know the version beforehand.
+		var indexOfPreview = runtimeVersion.IndexOf("-preview", StringComparison.Ordinal);
+		if (indexOfPreview > -1)
+		{
+			var mainVersion = runtimeVersion.Substring(0, indexOfPreview);
+			var directories = Directory.GetDirectories(Path.GetFullPath(Path.Combine(dotnetSharedDirectory, "Microsoft.WindowsDesktop.App")));
+			foreach (var directory in directories)
+			{
+				var possibleVersion = Path.GetFileName(directory);
+				var possibleIndexOfPreview = possibleVersion?.IndexOf("-preview", StringComparison.Ordinal) ?? -1;
+				if (possibleIndexOfPreview > -1)
+				{
+					var desktopRuntimeVersion = possibleVersion!.Substring(0, possibleIndexOfPreview);
+					windowsDesktopFrameworkPath = Path.GetFullPath(Path.Combine(
+						dotnetSharedDirectory,
+						"Microsoft.WindowsDesktop.App",
+						possibleVersion));
+					break;
+				}
+			}
+		}
+	}
+
 	private void RegisterAssemblyResolver()
 	{
 		AssemblyLoadContext.Default.Resolving += OnAssemblyResolving;
@@ -45,6 +75,11 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 				dotnetShared,
 				"Microsoft.WindowsDesktop.App",
 				version));
+
+			if (!Directory.Exists(_windowsDesktopFrameworkPath))
+			{
+				AdjustPath(dotnetShared, version, ref _windowsDesktopFrameworkPath);
+			}
 
 			if (!Directory.Exists(_windowsDesktopFrameworkPath))
 			{

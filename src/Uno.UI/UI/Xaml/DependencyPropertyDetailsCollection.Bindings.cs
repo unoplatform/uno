@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.UI.Xaml.Data;
 using Uno.Collections;
@@ -219,6 +220,19 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return null;
+		}
+
+		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
+		{
+			foreach (var templateBinding in _templateBindings)
+			{
+				if (templateBinding.TargetPropertyDetails.Property == dependencyProperty)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		internal void UpdateBindingExpressions()

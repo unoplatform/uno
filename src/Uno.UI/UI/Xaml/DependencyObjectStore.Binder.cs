@@ -438,6 +438,18 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
+		{
+			SetBinding(
+				targetProperty,
+				new Binding
+				{
+					Path = sourceProperty.Name,
+					RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+				}
+			);
+		}
+
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
@@ -642,6 +654,9 @@ namespace Microsoft.UI.Xaml
 
 		public Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
+
+		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
+			=> _properties.IsPropertyTemplateBound(dependencyProperty);
 
 		/// <summary>
 		/// BindingPath Registration handler for DependencyProperty instances

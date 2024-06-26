@@ -36,10 +36,6 @@ jobs:
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
@@ -184,10 +180,6 @@ jobs:
 
     CI_Build: true
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
@@ -211,8 +203,15 @@ jobs:
       cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
       dotnet build -c Debug
       cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
-      dotnet build -c Debug -p:UnoDisableNetCurrent=true
+      dotnet build -c Debug
     displayName: Build HR dependencies
+
+  # We need just the .NET 8 runtime (not the SDK).
+  # Building with .NET 9 SDK is fine, but running the app when the TFM is net8.0 requires the .NET 8 runtime
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'runtime'
+      version: '8.x'
 
   - script: |
         cd $(SamplesAppArtifactPath)

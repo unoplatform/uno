@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using DirectUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
@@ -47,6 +48,28 @@ internal class UnoFocusInputHandler
 			VirtualKey.GamepadDPadRight)
 		{
 			e.Handled = TryHandleDirectionalFocus(e.OriginalKey);
+		}
+
+		if (!e.Handled && !e.HandledShouldNotImpedeTextInput)
+		{
+			var modifiers = CoreImports.Input_GetKeyboardModifiers();
+			if (!KeyboardAcceleratorUtility.IsKeyValidForAccelerators(e.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
+			{
+				return;
+			}
+
+			var contentRoot = VisualTree.GetContentRootForElement(_rootElement);
+			if (contentRoot == null)
+			{
+				return;
+			}
+
+			var liveAccelerators = contentRoot.GetAllLiveKeyboardAccelerators();
+			e.Handled = KeyboardAcceleratorUtility.ProcessGlobalAccelerators(
+				e.OriginalKey,
+				modifiers,
+				liveAccelerators
+			);
 		}
 	}
 

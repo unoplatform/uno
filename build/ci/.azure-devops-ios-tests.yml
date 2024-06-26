@@ -59,10 +59,6 @@ jobs:
     SourceLinkEnabled: falses
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   steps:
   - checkout: self
     clean: true
@@ -120,12 +116,6 @@ jobs:
       value: false
     - name: NUGET_PACKAGES
       value: $(Pipeline.Workspace)/.nuget/packages
-
-    # Only build for NetPrevious
-    - name: UnoDisableNetCurrentMobile
-      value: true
-    - name: UnoDisableNetCurrent
-      value: true
 
   steps:
   - checkout: self

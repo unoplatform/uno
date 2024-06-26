@@ -19,9 +19,6 @@ export UITEST_IS_LOCAL=true
 
 mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY
 
-export UnoDisableNetCurrentMobile=true
-export UnoDisableNetCurrent=true
-
 # Comment out the following line to avoid full rebuild for subsequent runs
 # pushd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile
 # dotnet publish -f net7.0-android -c Release -p:UnoTargetFrameworkOverride=net7.0-android /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/android-netcoremobile-sampleapp.binlog

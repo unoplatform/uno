@@ -1,4 +1,5 @@
-﻿	#nullable disable
+﻿#nullable disable
+#pragma warning disable IDE0051 // Members used for testing by reflection
 
 using System;
 using System.Formats.Asn1;

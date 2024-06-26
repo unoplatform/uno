@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (property == KeyboardAcceleratorsProperty)
 			{
-				defaultValue = new List<KeyboardAccelerator>(0);
+				defaultValue = new KeyboardAcceleratorCollection(this);
 				return true;
 			}
 			else if (property == IsTabStopProperty)
@@ -907,7 +907,7 @@ namespace Microsoft.UI.Xaml
 				_traceLayoutCycle = false;
 			}
 
-			throw new InvalidOperationException("Layout cycle detected.");
+			throw new InvalidOperationException("Layout cycle detected. For more information, see https://aka.platform.uno/layout-cycle");
 #endif
 		}
 

@@ -107,6 +107,11 @@ namespace Windows.Storage
 
 			public bool Remove(string key)
 			{
+				if (!ContainsKey(key))
+				{
+					return false;
+				}
+
 				NSUserDefaults.StandardUserDefaults.RemoveObject((NSString)key);
 				NSUserDefaults.StandardUserDefaults.Synchronize();
 
