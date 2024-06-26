@@ -1217,12 +1217,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(sut);
 			var events = sut.Events;
 
-			const int expectedCount =
-#if WINAPPSDK
-				9;
-#else
-				11;
-#endif
+			const int expectedCount = 9;
 
 			Assert.AreEqual(expectedCount, events.Count);
 			Assert.AreEqual("Parent Loading", events[0]);
@@ -1246,19 +1241,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Child Loaded", events[7]);
 			Assert.AreEqual("Parent Loaded", events[8]);
-
-
-#if HAS_UNO
-			if (events[9] == "Child LayoutUpdated")
-			{
-				Assert.AreEqual("Parent LayoutUpdated", events[10]);
-			}
-			else
-			{
-				Assert.AreEqual("Parent LayoutUpdated", events[9]);
-				Assert.AreEqual("Child LayoutUpdated", events[10]);
-			}
-#endif
 		}
 #endif
 	}

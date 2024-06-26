@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿#if !UNO_HAS_ENHANCED_LIFECYCLE
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -192,7 +194,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (CanCreateTemplateWithoutParent)
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// This is still not aligned with WinUI.
+				this.ApplyTemplate();
+#else
 				SetUpdateControlTemplate();
+#endif
 			}
 		}
 
@@ -517,3 +524,4 @@ namespace Microsoft.UI.Xaml.Controls
 #nullable enable
 	}
 }
+#endif
