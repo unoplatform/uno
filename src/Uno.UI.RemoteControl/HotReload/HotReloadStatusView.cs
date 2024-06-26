@@ -5,15 +5,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.UI;
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Data;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
@@ -247,7 +240,7 @@ internal sealed partial class HotReloadStatusView : Control
 		var resultState = history switch
 		{
 			{ Count: 0 } => ResultNoneVisualStateName,
-			_ when history.Any(op => !op.IsCompleted) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
+			_ when history.Any(op => op.IsSuccess is null) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
 			[{ IsSuccess: true }, ..] => ResultSuccessVisualStateName,
 			_ => ResultFailedVisualStateName
 		};
@@ -308,45 +301,8 @@ internal sealed partial class HotReloadStatusView : Control
 		};
 
 		VisualStateManager.GoToState(this, state, true);
-	private string GetResultVisualState()
-	{
-		var operations = History;
-		if (operations is { Count: 0 } || operations.Any(op => op.IsSuccess is null))
-		{
-			return ResultNoneVisualStateName; // Makes sure to restore to previous None!
-		}
-
-		return operations[0].IsSuccess switch
-		{
-			true => ResultSuccessVisualStateName,
-			false => ResultFailedVisualStateName,
-			_ => ResultNoneVisualStateName
-		};
 	}
 }
-
-#nullable disable
-internal sealed class BoolToObjectConverter : IValueConverter
-{
-	public object TrueValue { get; set; }
-
-	public object FalseValue { get; set; }
-
-	public object NullValue { get; set; }
-
-	public object Convert(object value, Type targetType, object parameter, string language)
-	{
-		if (value == null)
-		{
-			return NullValue;
-		}
-
-		return (bool)value ? TrueValue : FalseValue;
-	}
-
-	public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException("Only one-way conversion is supported.");
-}
-#nullable enable
 
 [Microsoft.UI.Xaml.Data.Bindable]
 internal sealed record HotReloadEntryViewModel(bool IsServer, long Id, DateTimeOffset Start) : INotifyPropertyChanged

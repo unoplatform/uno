@@ -7,16 +7,13 @@
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 					mc:Ignorable="d">
+
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Light">
-			<SolidColorBrush x:Key="DividerFillBrush"
-							 Opacity="0.08"
-							 Color="#000000" />
+			<SolidColorBrush x:Key="DividerFillBrush" Opacity="0.08" Color="#000000" />
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="Dark">
-			<SolidColorBrush x:Key="DividerFillBrush"
-							 Opacity="0.08"
-							 Color="#FFFFFF" />
+			<SolidColorBrush x:Key="DividerFillBrush" Opacity="0.08" Color="#FFFFFF" />
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 
@@ -31,49 +28,49 @@
 	<SolidColorBrush x:Key="HotReloadInitializingFillBrush">#FD9E0F</SolidColorBrush>
 	<SolidColorBrush x:Key="HotReloadProcessingFillBrush">#FCDF49</SolidColorBrush>
 
-	<local:BoolToObjectConverter x:Key="BooleanToDotFill"
-								 TrueValue="{StaticResource HotReloadSuccessFillBrush}"
-								 FalseValue="{StaticResource HotReloadFailedFillBrush}"
-								 NullValue="{StaticResource HotReloadProcessingFillBrush}" />
+	<local:NullableBoolToObjectConverter
+		x:Key="BooleanToDotFill"
+		TrueValue="{StaticResource HotReloadSuccessFillBrush}"
+		FalseValue="{StaticResource HotReloadFailedFillBrush}"
+		NullValue="{StaticResource HotReloadProcessingFillBrush}" />
 
-	<local:BoolToObjectConverter x:Key="BooleanToDotPathData"
-								 TrueValue="{StaticResource HotReloadSuccess}"
-								 FalseValue="{StaticResource HotReloadFailed}"
-								 NullValue="{StaticResource HotReloadServerChange}" />
+	<local:NullableBoolToObjectConverter
+		x:Key="BooleanToDotPathData"
+		TrueValue="{StaticResource HotReloadSuccess}"
+		FalseValue="{StaticResource HotReloadFailed}"
+		NullValue="{StaticResource HotReloadServerChange}" />
 
 	<DataTemplate x:Key="OperationTemplate">
-		<StackPanel>
+		<StackPanel Spacing="10" Margin="0,0,0,10">
 			<StackPanel Orientation="Horizontal">
 				<Grid Margin="8">
-					<Ellipse x:Name="FlyoutDot"
-							 Fill="{Binding IsSuccess, Converter={StaticResource BooleanToDotFill}}"
-							 Width="40"
-							 Height="40" />
-					<Path x:Name="FlyoutDotIcon"
-						  Fill="White"
-						  Stretch="Uniform"
-						  Width="24"
-						  Data="{Binding IsSuccess, Converter={StaticResource BooleanToDotPathData}}"
-						  HorizontalAlignment="Center"
-						  VerticalAlignment="Center" />
+					<Ellipse
+						x:Name="FlyoutDot"
+						Fill="{Binding IsSuccess, Converter={StaticResource BooleanToDotFill}}"
+						Width="40"
+						Height="40" />
+					<Path
+						x:Name="FlyoutDotIcon"
+						Fill="White"
+						Stretch="Uniform"
+						Width="24"
+						Data="{Binding IsSuccess, Converter={StaticResource BooleanToDotPathData}}"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center" />
 				</Grid>
 
-				<TextBlock TextWrapping="WrapWholeWords"
-						   MaxWidth="380"
-						   VerticalAlignment="Center">
-					<Run Text="{Binding Title}"
-						 FontSize="14"
-						 FontWeight="SemiLight" />
+				<TextBlock
+					VerticalAlignment="Center"
+					TextWrapping="WrapWholeWords"
+					FontSize="14"
+					MaxWidth="380">
+					<Run Text="{Binding Title}" FontWeight="SemiLight" />
 					<LineBreak />
-					<Run Text="{Binding Description}"
-						 FontSize="14" />
+					<Run Text="{Binding Description}" />
 				</TextBlock>
 			</StackPanel>
 
-			<Rectangle Margin="0,10"
-					   Height="1"
-					   Width="400"
-					   Fill="{ThemeResource DividerFillBrush}" />
+			<Rectangle Height="1" Width="400" Fill="{ThemeResource DividerFillBrush}" />
 		</StackPanel>
 	</DataTemplate>
 
@@ -83,15 +80,17 @@
 				<diag:DiagnosticViewNotification Duration="0:0:10">
 					<diag:DiagnosticViewNotification.Content>
 						<Grid>
-							<Ellipse Fill="{StaticResource HotReloadSuccessFillBrush}"
-									 Width="20"
-									 Height="20" />
-							<Path Fill="White"
-								  Stretch="Uniform"
-								  Width="12"
-								  Data="{StaticResource HotReloadSuccess}"
-								  HorizontalAlignment="Center"
-								  VerticalAlignment="Center" />
+							<Ellipse
+								Fill="{StaticResource HotReloadSuccessFillBrush}"
+								Width="20"
+								Height="20" />
+							<Path
+								Fill="White"
+								Stretch="Uniform"
+								Width="12"
+								Data="{StaticResource HotReloadSuccess}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
 						</Grid>
 					</diag:DiagnosticViewNotification.Content>
 				</diag:DiagnosticViewNotification>
@@ -103,15 +102,17 @@
 				<diag:DiagnosticViewNotification Duration="0:0:0">
 					<diag:DiagnosticViewNotification.Content>
 						<Grid>
-							<Ellipse Fill="{StaticResource HotReloadFailedFillBrush}"
-									 Width="20"
-									 Height="20" />
-							<Path Fill="White"
-								  Stretch="Uniform"
-								  Width="12"
-								  Data="{StaticResource HotReloadFailed}"
-								  HorizontalAlignment="Center"
-								  VerticalAlignment="Center" />
+							<Ellipse
+								Fill="{StaticResource HotReloadFailedFillBrush}"
+								Width="20"
+								Height="20" />
+							<Path
+								Fill="White"
+								Stretch="Uniform"
+								Width="12"
+								Data="{StaticResource HotReloadFailed}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
 						</Grid>
 					</diag:DiagnosticViewNotification.Content>
 				</diag:DiagnosticViewNotification>
@@ -121,9 +122,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:HotReloadStatusView">
-					<Grid x:Name="Root"
-						  Width="20"
-						  Height="20">
+					<Grid x:Name="Root" Width="20" Height="20">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="Result">
 								<VisualState x:Name="None">
@@ -147,9 +146,7 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 
-						<Button Padding="0"
-								Margin="-2"
-								Background="Transparent">
+						<Button Padding="0" Margin="-2" Background="Transparent">
 							<Button.Flyout>
 								<Flyout>
 									<Flyout.FlyoutPresenterStyle>
@@ -157,42 +154,53 @@
 											<Setter Property="CornerRadius" Value="8" />
 										</Style>
 									</Flyout.FlyoutPresenterStyle>
-									<StackPanel Margin="-5"
-												CornerRadius="8">
-										<TextBlock Text="{TemplateBinding HeadLine}"
-												   FontSize="14"
-												   FontWeight="SemiLight"
-												   TextWrapping="WrapWholeWords"
-												   Margin="0,0,0,10" />
+									<ScrollViewer MaxHeight="400" MaxWidth="400">
+										<StackPanel CornerRadius="8" Spacing="10" >
+											<TextBlock
+												Text="{TemplateBinding HeadLine}"
+												FontSize="14"
+												FontWeight="SemiLight"
+												TextWrapping="WrapWholeWords" />
 
-										<StackPanel Orientation="Horizontal" Spacing="8">
-											<devServer:RemoteControlStatusView x:Name="PART_DevServerStatus" VerticalAlignment="Center" />
-											<TextBlock Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" VerticalAlignment="Center" />
-										</StackPanel>
-										<ScrollViewer MaxHeight="400">
-											<mux:ItemsRepeater ItemsSource="{TemplateBinding History}"
-															   ItemTemplate="{StaticResource OperationTemplate}">
+											<StackPanel Orientation="Horizontal" Spacing="10">
+												<devServer:RemoteControlStatusView 
+													x:Name="PART_DevServerStatus" 
+													VerticalAlignment="Center" />
+												<TextBlock
+													MaxWidth="380"
+													Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}" 
+													FontSize="14"
+													FontWeight="SemiLight"
+													TextWrapping="WrapWholeWords" 
+													VerticalAlignment="Center" />
+											</StackPanel>
+
+											<mux:ItemsRepeater
+												ItemsSource="{TemplateBinding History}"
+												ItemTemplate="{StaticResource OperationTemplate}">
 												<mux:ItemsRepeater.Layout>
 													<StackLayout Spacing="5" />
 												</mux:ItemsRepeater.Layout>
 											</mux:ItemsRepeater>
-										</ScrollViewer>
-									</StackPanel>
+										</StackPanel>
+									</ScrollViewer>
 								</Flyout>
 							</Button.Flyout>
 
 							<Grid>
-								<Ellipse x:Name="Dot"
-										 Fill="Gray"
-										 Width="20"
-										 Height="20" />
-								<Path x:Name="DotIcon"
-									  Fill="White"
-									  Stretch="Uniform"
-									  Width="12"
-									  Data="{StaticResource HotReloadServerChange}"
-									  HorizontalAlignment="Center"
-									  VerticalAlignment="Center" />
+								<Ellipse
+									x:Name="Dot"
+									Fill="Gray"
+									Width="20"
+									Height="20" />
+								<Path
+									x:Name="DotIcon"
+									Fill="White"
+									Stretch="Uniform"
+									Width="12"
+									Data="{StaticResource HotReloadServerChange}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
 							</Grid>
 						</Button>
 					</Grid>
