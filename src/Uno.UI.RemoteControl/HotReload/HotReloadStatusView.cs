@@ -136,6 +136,11 @@ internal sealed partial class HotReloadStatusView : Control
 				(snd, _) => OnDevServerStatusChanged(((RemoteControlStatusView)snd).Status));
 			_devServer = (devServerView, token);
 
+			if (devServerView.Parent is Panel devServerTouchTarget) // TODO: The RemoteControlStatusView should be a templatable control and do that by it own...
+			{
+				devServerTouchTarget.Tapped += (snd, _) => devServerView.ShowDetails();
+			}
+
 			if (XamlRoot is { } root)
 			{
 				DiagnosticsOverlay.Get(root).Hide(RemoteControlStatusView.Id);
@@ -197,7 +202,6 @@ internal sealed partial class HotReloadStatusView : Control
 				HotReloadServerResult.Success or HotReloadServerResult.NoChanges => true,
 				_ => false
 			};
-
 			vm.Description = srvOp.Result switch
 			{
 				null => $"Processing changes{Join(files, "files")}.",
@@ -223,7 +227,12 @@ internal sealed partial class HotReloadStatusView : Control
 
 			var types = localOp.CuratedTypes;
 
-			vm.IsSuccess = localOp.Result is HotReloadClientResult.Success;
+			vm.IsSuccess = localOp.Result switch
+			{
+				null => null,
+				HotReloadClientResult.Success => true,
+				_ => false
+			};
 			vm.Description = localOp.Result switch
 			{
 				null => $"Processing changes{Join(types, "types")} (total of {localOp.Types.Length} types updated).",
@@ -287,11 +296,13 @@ internal sealed partial class HotReloadStatusView : Control
 	{
 		var state = (_devServerStatus: _devServerState, _hotReloadStatus?.State) switch
 		{
-			(Classification.Error or Classification.Warning, _) => StatusErrorVisualStateName,
+			(Classification.Error, _) => StatusErrorVisualStateName,
 			(_, HotReloadState.Disabled) => StatusErrorVisualStateName,
 
 			(_, HotReloadState.Initializing) => StatusInitializingVisualStateName,
 			(Classification.Info, _) => StatusInitializingVisualStateName,
+
+			(Classification.Warning, _) when !HasSuccessfulLocalOperation(_hotReloadStatus) => StatusUnknownVisualStateName, // e.g. invalid processors version
 
 			(_, HotReloadState.Idle) => StatusIdleVisualStateName,
 
@@ -301,6 +312,10 @@ internal sealed partial class HotReloadStatusView : Control
 		};
 
 		VisualStateManager.GoToState(this, state, true);
+
+		static bool HasSuccessfulLocalOperation(Status? status)
+			=> status is not null
+				&& status.Local.Operations.Any(op => op.Result is HotReloadClientResult.Success);
 	}
 }
 
