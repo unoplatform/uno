@@ -59,7 +59,7 @@ jobs:
       artifact: NugetPackages-Artifacts-skia-macos-native-SamplesApp-$(XAML_FLAVOR_BUILD)
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk.binlog
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk.binlog
     displayName: Build GTK Head
 
   - task: PublishBuildArtifacts@1
@@ -70,7 +70,7 @@ jobs:
       ArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
   - task: PublishBuildArtifacts@1
@@ -81,7 +81,7 @@ jobs:
       ArtifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net8.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net8.0 -f net8.0 /bl:$(build.artifactstagingdirectory)\build-generic.binlog
     displayName: Build Generic Skia Head
 
   - task: PublishBuildArtifacts@1
