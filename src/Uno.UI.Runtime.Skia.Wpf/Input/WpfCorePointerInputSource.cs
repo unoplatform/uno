@@ -40,7 +40,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	private readonly FrameworkElement _topLayer = default!;
+	private readonly FrameworkElement _renderLayer = default!;
 	private readonly WpfControl? _host;
 	private PointerEventArgs? _previous;
 
@@ -54,38 +54,38 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		_host = hostControl;
-		_topLayer = host is UnoCompositeWindowHost compositeWindowHost ? compositeWindowHost.FlyoutLayer : hostControl;
+		_renderLayer = host is UnoWpfWindowHost compositeWindowHost ? compositeWindowHost.RenderLayer : hostControl;
 
 		// we only use the top layer for events since subscribing on the hostControl will receive
 		// extra and/or out-of-order events.
-		_topLayer.MouseEnter += HostOnMouseEnter;
-		_topLayer.MouseLeave += HostOnMouseLeave;
+		_renderLayer.MouseEnter += HostOnMouseEnter;
+		_renderLayer.MouseLeave += HostOnMouseLeave;
 
-		_topLayer.StylusMove += HostControlOnStylusMove;
-		_topLayer.StylusDown += HostControlOnStylusDown;
-		_topLayer.StylusUp += HostControlOnStylusUp;
+		_renderLayer.StylusMove += HostControlOnStylusMove;
+		_renderLayer.StylusDown += HostControlOnStylusDown;
+		_renderLayer.StylusUp += HostControlOnStylusUp;
 
-		_topLayer.MouseMove += HostOnMouseMove;
-		_topLayer.MouseDown += HostOnMouseDown;
-		_topLayer.MouseUp += HostOnMouseUp;
+		_renderLayer.MouseMove += HostOnMouseMove;
+		_renderLayer.MouseDown += HostOnMouseDown;
+		_renderLayer.MouseUp += HostOnMouseUp;
 
-		_topLayer.LostMouseCapture += HostOnMouseCaptureLost;
+		_renderLayer.LostMouseCapture += HostOnMouseCaptureLost;
 
 		// Hook for native events
-		if (_topLayer.IsLoaded)
+		if (_renderLayer.IsLoaded)
 		{
 			HookNative(null, null);
 		}
 		else
 		{
-			_topLayer.Loaded += HookNative;
+			_renderLayer.Loaded += HookNative;
 		}
 
 		void HookNative(object? sender, RoutedEventArgs? e)
 		{
-			_topLayer.Loaded -= HookNative;
+			_renderLayer.Loaded -= HookNative;
 
-			var win = Window.GetWindow(_topLayer);
+			var win = Window.GetWindow(_renderLayer);
 
 			var fromDependencyObject = PresentationSource.FromDependencyObject(win);
 			var hwndSource = fromDependencyObject as HwndSource;
@@ -93,7 +93,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		}
 	}
 
-	public bool HasCapture => _topLayer.IsMouseCaptured;
+	public bool HasCapture => _renderLayer.IsMouseCaptured;
 
 	public CoreCursor PointerCursor
 	{
@@ -105,16 +105,16 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	public Windows.Foundation.Point PointerPosition { get; }
 
 	public void SetPointerCapture(PointerIdentifier pointer)
-		=> _topLayer.CaptureMouse();
+		=> _renderLayer.CaptureMouse();
 
 	public void SetPointerCapture()
-		=> _topLayer.CaptureMouse();
+		=> _renderLayer.CaptureMouse();
 
 	public void ReleasePointerCapture(PointerIdentifier pointer)
-		=> _topLayer.ReleaseMouseCapture();
+		=> _renderLayer.ReleaseMouseCapture();
 
 	public void ReleasePointerCapture()
-		=> _topLayer.ReleaseMouseCapture();
+		=> _renderLayer.ReleaseMouseCapture();
 
 	private RoutedEventArgs? _lastArgs;
 
@@ -245,7 +245,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 
 					var l = (int)lparam;
 					var screenPosition = new System.Windows.Point(GetLoWord(l), GetHiWord(l));
-					var wpfPosition = _topLayer.PointFromScreen(screenPosition);
+					var wpfPosition = _renderLayer.PointFromScreen(screenPosition);
 					var position = new Windows.Foundation.Point(wpfPosition.X, wpfPosition.Y);
 
 					var properties = new PointerPointProperties
@@ -311,7 +311,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		if (args is WpfMouseEventArgs mouseEventArgs)
 		{
 			pointerId = 1;
-			position = mouseEventArgs.GetPosition(_topLayer);
+			position = mouseEventArgs.GetPosition(_renderLayer);
 			properties = new()
 			{
 				IsLeftButtonPressed = mouseEventArgs.LeftButton == MouseButtonState.Pressed,
@@ -326,7 +326,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		else if (args is StylusEventArgs stylusEventArgs)
 		{
 			pointerId = (uint)stylusEventArgs.StylusDevice.Id;
-			position = stylusEventArgs.GetPosition(_topLayer);
+			position = stylusEventArgs.GetPosition(_renderLayer);
 
 			var isTouch = stylusEventArgs.StylusDevice.TabletDevice?.Type == TabletDeviceType.Touch;
 			bool isLeftButtonPressed;
@@ -348,7 +348,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 				IsInRange = !stylusEventArgs.InAir,
 			};
 
-			var stylusPointCollection = stylusEventArgs.GetStylusPoints(_topLayer);
+			var stylusPointCollection = stylusEventArgs.GetStylusPoints(_renderLayer);
 			if (stylusPointCollection.Count > 0)
 			{
 				var stylusPoint = stylusPointCollection[0];

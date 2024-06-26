@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
-using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
@@ -22,6 +22,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private Size _lastSize;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
+		private X11AirspaceRenderHelper? _airspaceHelper;
 		private SKColor _background = SKColors.White;
 
 		public void SetBackgroundColor(SKColor color) => _background = color;
@@ -35,7 +36,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public void Dispose() => _grContext.Dispose();
 
-		void IX11Renderer.InvalidateRender()
+		void IX11Renderer.Render()
 		{
 			using var lockDiposable = X11Helper.XLock(_x11Window.Display);
 
@@ -73,10 +74,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var width = attributes.width;
 			var height = attributes.height;
 
-			if (_surface == null || _renderTarget == null || _lastSize != new Size(width, height))
+			if (_surface == null || _airspaceHelper == null || _renderTarget == null || _lastSize != new Size(width, height))
 			{
 				_renderTarget?.Dispose();
 				_surface?.Dispose();
+				_airspaceHelper?.Dispose();
 
 				var skColorType = SKColorType.Rgba8888; // this is Rgba8888 regardless of SKImageInfo.PlatformColorType
 				var grSurfaceOrigin = GRSurfaceOrigin.BottomLeft; // to match OpenGL's origin
@@ -85,6 +87,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				_renderTarget = new GRBackendRenderTarget(width, height, glXInfo.sampleCount, glXInfo.stencilBits, glInfo);
 				_surface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, skColorType);
+				_airspaceHelper = new X11AirspaceRenderHelper(_x11Window.Display, _x11Window.Window, width, height);
 				_lastSize = new Size(width, height);
 			}
 
@@ -100,12 +103,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					// Unlike the other skia platforms, we don't have multiple "layers",
-					// but we draw everything on top of the native windows and then "cutout holes"
-					// in this top rendered area to see the native windows, so we render twice
-					// with isPopupSurface = true and false
-					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, false);
-					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, true);
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface);
+					if (path is { })
+					{
+						_airspaceHelper.XShapeClip(path);
+					}
 				}
 			}
 

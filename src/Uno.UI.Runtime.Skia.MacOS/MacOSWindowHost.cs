@@ -77,7 +77,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 			if (RootElement?.Visual is { } rootVisual)
 			{
-				RootElement.XamlRoot?.Compositor.RenderRootVisual(surface, rootVisual, false);
+				RootElement.XamlRoot?.Compositor.RenderRootVisual(surface, rootVisual, null);
 			}
 		}
 

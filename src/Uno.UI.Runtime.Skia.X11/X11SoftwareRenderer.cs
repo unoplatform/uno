@@ -1,6 +1,7 @@
 ﻿using System;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
@@ -11,6 +12,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		private SKBitmap? _bitmap;
 		private SKSurface? _surface;
+		private X11AirspaceRenderHelper? _airspaceHelper;
 		private IntPtr? _xImage;
 		private int _renderCount;
 		private IntPtr? _gc;
@@ -18,7 +20,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public void SetBackgroundColor(SKColor color) => _background = color;
 
-		void IX11Renderer.InvalidateRender()
+		void IX11Renderer.Render()
 		{
 			using var lockDiposable = X11Helper.XLock(x11window.Display);
 
@@ -42,10 +44,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 
 			// reset the bitmap if the size has changed
-			if (_bitmap == null || _surface == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
+			if (_bitmap == null || _airspaceHelper == null || _surface == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
 			{
 				_bitmap?.Dispose();
 				_surface?.Dispose();
+				_airspaceHelper?.Dispose();
 
 				if (_xImage is { } xImage)
 				{
@@ -61,6 +64,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				_bitmap = new SKBitmap(width, height);
 				_surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
+				_airspaceHelper = new X11AirspaceRenderHelper(x11window.Display, x11window.Window, width, height);
 			}
 
 			var canvas = _surface.Canvas;
@@ -74,12 +78,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (host.RootElement?.Visual is { } rootVisual)
 				{
-					// Unlike the other skia platforms, we don't have multiple "layers",
-					// but we draw everything on top of the native windows and then "cutout holes"
-					// in this top rendered area to see the native windows, so we render twice
-					// with isPopupSurface = true and false
-					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, false);
-					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual, true);
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface);
+					if (path is { })
+					{
+						_airspaceHelper.XShapeClip(path);
+					}
 				}
 
 				canvas.Flush();

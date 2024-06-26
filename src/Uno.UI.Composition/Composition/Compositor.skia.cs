@@ -30,7 +30,7 @@ public partial class Compositor
 		}
 	}
 
-	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, bool isPopupSurface)
+	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, Action<Visual.PaintingSession, Visual>? postRenderAction)
 	{
 		if (rootVisual is null)
 		{
@@ -42,7 +42,7 @@ public partial class Compositor
 			animation.RaiseAnimationFrame();
 		}
 
-		rootVisual.RenderRootVisual(surface, null, isPopupSurface);
+		rootVisual.RenderRootVisual(surface, null, postRenderAction);
 
 		RecursiveDispatchAnimationFrames();
 	}

@@ -19,7 +19,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		private static DefaultNativeContext NativeContext
 			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
 
-		public OpenGLRenderSurface(IGtkXamlRootHost host, bool isPopupSurface) : base(host, isPopupSurface)
+		public OpenGLRenderSurface(IGtkXamlRootHost host) : base(host)
 		{
 			SetRequiredVersion(3, 3);
 
@@ -98,6 +98,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			_gl.GetInteger(GLEnum.Stencil, out var stencil);
 			_gl.GetInteger(GLEnum.Samples, out var samples);
 
+			// Note: stencil and samples will always be zero even if there actually is a stencil buffer and MSAA is enabled
 			return (framebuffer, stencil, samples);
 		}
 

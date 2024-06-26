@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,6 @@ using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
@@ -62,7 +60,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private X11Window? _x11TopWindow;
 	private IX11Renderer? _renderer;
 
-	private bool _updateTopWindowClipOnNextRender = true;
+	private bool _renderDirty = true;
+	private readonly DispatcherTimer _renderTimer;
 
 	public X11Window RootX11Window => _x11Window!.Value;
 	public X11Window TopX11Window => _x11TopWindow!.Value;
@@ -72,6 +71,18 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_xamlRoot = xamlRoot;
 		_wrapper = wrapper;
 		_window = winUIWindow;
+
+		_renderTimer = new DispatcherTimer();
+		_renderTimer.Interval = new TimeSpan(1000 / 16);
+		_renderTimer.Tick += (sender, o) =>
+		{
+			if (_renderDirty)
+			{
+				_renderer?.Render();
+				_renderDirty = false;
+			}
+		};
+		_renderTimer.Start();
 
 		_resizeCallback = size =>
 		{
@@ -380,8 +391,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			_renderer = new X11SoftwareRenderer(this, TopX11Window);
 		}
-
-		QueueAction(this, () => _xamlRoot.VisualTree.PopupRoot!.Arranged += UpdateTopWindowClipRect);
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
@@ -518,15 +527,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
-	void IXamlRootHost.InvalidateRender()
-	{
-		if (_updateTopWindowClipOnNextRender)
-		{
-			_updateTopWindowClipOnNextRender = false;
-			UpdateTopWindowClipRect();
-		}
-		_renderer?.InvalidateRender();
-	}
+	void IXamlRootHost.InvalidateRender() => _renderDirty = true;
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
 
@@ -548,51 +549,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
 	}
 
-	public void QueueUpdateTopWindowClipRect()
-	{
-		_updateTopWindowClipOnNextRender = true;
-		_xamlRoot.QueueInvalidateRender();
-	}
-
-	private unsafe void UpdateTopWindowClipRect()
-	{
-		using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
-
-		XWindowAttributes attributes = default;
-		_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
-
-		var region = X11Helper.CreateRegion(0, 0, (short)attributes.width, (short)attributes.height);
-		using var regionDisposable = new DisposableStruct<IntPtr>(static r => { _ = X11Helper.XDestroyRegion(r); }, region);
-
-		// Reset ShapeBounding to the full viewport
-		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
-		X11Helper.XShapeCombineRegion(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, region, X11Helper.ShapeSet);
-
-		// Subtract the areas that contain native elements
-		var array1 = X11NativeElementHostingExtension.GetNativeElementRects(this).ToArray();
-		IntPtr nativeRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array1.Length);
-		using var dataDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, nativeRects);
-		new Span<XRectangle>(array1).CopyTo(new Span<XRectangle>(nativeRects.ToPointer(), array1.Length));
-		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
-		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)nativeRects, array1.Length, X11Helper.ShapeSubtract, X11Helper.Unsorted);
-
-		// Add back the areas that contain popups
-		var array2 =
-			VisualTreeHelper.GetOpenPopupsForXamlRoot(_xamlRoot)
-			.Select(p => p.Child)
-			.Select(e => e.TransformToVisual(null).TransformBounds(new Rect(Point.Zero, e.RenderSize)))
-			.Select(rect => new XRectangle { X = (short)rect.X, Y = (short)rect.Y, H = (short)rect.Height, W = (short)rect.Width })
-			.ToArray();
-		IntPtr flyoutRects = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(XRectangle)) * array2.Length);
-		using var rectsDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, flyoutRects);
-		new Span<XRectangle>(array2).CopyTo(new Span<XRectangle>(flyoutRects.ToPointer(), array2.Length));
-		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeBounding, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
-		X11Helper.XShapeCombineRectangles(TopX11Window.Display, TopX11Window.Window, X11Helper.ShapeInput, 0, 0, (XRectangle*)flyoutRects, array2.Length, X11Helper.ShapeUnion, X11Helper.Unsorted);
-
-		XLib.XSync(TopX11Window.Display, false);
-	}
-
-	private unsafe void SynchronizedShutDown(X11Window x11Window)
+	private void SynchronizedShutDown(X11Window x11Window)
 	{
 		// This is extremely extremely delicate. You want to prevent any
 

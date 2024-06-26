@@ -42,7 +42,7 @@ internal class UnoWpfWindow : WpfWindow
 		Width = (int)preferredWindowSize.Width;
 		Height = (int)preferredWindowSize.Height;
 
-		Host = new UnoCompositeWindowHost(this, winUIWindow);
+		Host = new UnoWpfWindowHost(this, winUIWindow);
 		WpfManager.XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);

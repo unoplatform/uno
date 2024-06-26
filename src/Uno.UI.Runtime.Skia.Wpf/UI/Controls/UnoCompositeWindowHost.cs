@@ -17,28 +17,21 @@ using MUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
-internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
+internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 {
 	private const string NativeOverlayLayerHost = "NativeOverlayLayerHost";
-	private const string BottomLayerHost = "BottomLayerHost";
-	private const string FlyoutLayerHost = "FlyoutLayerHost";
+	private const string RenderLayerHost = "RenderLayerHost";
 	private readonly Style _style = (Style)XamlReader.Parse(
 		"""
 		<Style
 			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			xmlns:controls="clr-namespace:Uno.UI.Runtime.Skia.Wpf.UI.Controls;assembly=Uno.UI.Runtime.Skia.Wpf"
-			TargetType="{x:Type controls:UnoCompositeWindowHost}">
+			TargetType="{x:Type controls:UnoWpfWindowHost}">
 			<Setter Property="Template">
 				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type controls:UnoCompositeWindowHost}">
+					<ControlTemplate TargetType="{x:Type controls:UnoWpfWindowHost}">
 						<Grid>
-							<Border
-								Background="{x:Null}"
-								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
-								<ContentPresenter x:Name="BottomLayerHost" />
-							</Border>
 							<Border
 								Background="{x:Null}"
 								BorderBrush="{TemplateBinding BorderBrush}"
@@ -49,7 +42,7 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 								Background="{x:Null}"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}">
-								<ContentPresenter x:Name="FlyoutLayerHost" />
+								<ContentPresenter x:Name="RenderLayerHost" />
 							</Border>
 						</Grid>
 					</ControlTemplate>
@@ -61,13 +54,12 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 	private readonly UnoWpfWindow _wpfWindow;
 	private readonly MUX.Window _winUIWindow;
 
-	private readonly RenderingLayerHost _bottomLayer;
 	private readonly WpfCanvas _nativeOverlayLayer;
-	private readonly RenderingLayerHost _flyoutLayer;
+	private readonly RenderingLayerHost _renderLayer;
 
 	private readonly SerialDisposable _backgroundDisposable = new();
 
-	public UnoCompositeWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
+	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
 		_winUIWindow = winUIWindow;
@@ -79,10 +71,9 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 
 		FocusVisualStyle = null;
 
-		_bottomLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this, false));
 		_nativeOverlayLayer = new WpfCanvas();
 		// Transparency doesn't work with the OpenGL renderer, so we have to use the software renderer for the top layer
-		_flyoutLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this, true, RenderSurfaceType.Software));
+		_renderLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this));
 
 		Loaded += WpfHost_Loaded;
 		Unloaded += (_, _) => _backgroundDisposable.Dispose();
@@ -91,8 +82,8 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 		_backgroundDisposable.Disposable = _winUIWindow.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
 	}
 
-	public WpfControl FlyoutLayer => _flyoutLayer;
-	public WpfControl BottomLayer => _flyoutLayer;
+	public WpfControl RenderLayer => _renderLayer;
+	public WpfControl BottomLayer => _renderLayer;
 
 	private void WpfHost_Loaded(object _, System.Windows.RoutedEventArgs __)
 	{
@@ -100,19 +91,17 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 		if (Parent is WpfControl control)
 		{
 			control.FocusVisualStyle = null;
-			_bottomLayer.FocusVisualStyle = null;
-			_flyoutLayer.FocusVisualStyle = null;
+			_renderLayer.FocusVisualStyle = null;
 		}
 	}
 
 	void UpdateRendererBackground()
 	{
 		// the flyout layer always has a transparent background so that elements underneath can be seen.
-		_flyoutLayer.Renderer.BackgroundColor = SKColors.Transparent;
+		_renderLayer.Renderer.BackgroundColor = SKColors.Transparent;
 
 		if (_winUIWindow.Background is MUX.Media.SolidColorBrush brush)
 		{
-			_bottomLayer.Renderer.BackgroundColor = brush.Color;
 			_wpfWindow.Background = new System.Windows.Media.SolidColorBrush(brush.Color.ToWpfColor());
 		}
 		else
@@ -128,17 +117,13 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 	{
 		base.OnApplyTemplate();
 
-		if (GetTemplateChild(BottomLayerHost) is WpfContentPresenter bottomLayerHost)
-		{
-			bottomLayerHost.Content = _bottomLayer;
-		}
 		if (GetTemplateChild(NativeOverlayLayerHost) is WpfContentPresenter nativeOverlayLayerHost)
 		{
 			nativeOverlayLayerHost.Content = _nativeOverlayLayer;
 		}
-		if (GetTemplateChild(FlyoutLayerHost) is WpfContentPresenter flyoutLayerHost)
+		if (GetTemplateChild(RenderLayerHost) is WpfContentPresenter renderLayerHost)
 		{
-			flyoutLayerHost.Content = _flyoutLayer;
+			renderLayerHost.Content = _renderLayer;
 		}
 	}
 
@@ -147,8 +132,7 @@ internal class UnoCompositeWindowHost : WpfControl, IWpfWindowHost
 	void IXamlRootHost.InvalidateRender()
 	{
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
-		_bottomLayer.InvalidateVisual();
-		_flyoutLayer.InvalidateVisual();
+		_renderLayer.InvalidateVisual();
 		InvalidateVisual();
 	}
 

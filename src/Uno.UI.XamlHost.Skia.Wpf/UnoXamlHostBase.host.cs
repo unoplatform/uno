@@ -104,7 +104,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 
 		if (_renderer is null)
 		{
-			_renderer = WpfRendererProvider.CreateForHost(this, false);
+			_renderer = WpfRendererProvider.CreateForHost(this);
 		}
 
 		_renderer?.Render(drawingContext);

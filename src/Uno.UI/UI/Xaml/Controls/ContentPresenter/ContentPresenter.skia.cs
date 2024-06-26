@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -13,9 +15,12 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
+	private Rect _lastFinalRect;
 #if DEBUG
 	private bool _nativeElementAttached;
 #endif
+
+	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
 	partial void InitializePlatform()
 	{
@@ -41,7 +46,7 @@ partial class ContentPresenter
 
 	partial void TryRegisterNativeElement(object oldValue, object newValue)
 	{
-		if (IsNativeHost && IsLoaded)
+		if (IsNativeHost && IsInLiveTree)
 		{
 			DetachNativeElement(oldValue);
 		}
@@ -49,6 +54,7 @@ partial class ContentPresenter
 		if (_nativeElementHostingExtension.Value?.IsNativeElement(newValue) ?? false)
 		{
 			IsNativeHost = true;
+			Visual.IsNativeHostVisual = true;
 
 			if (ContentTemplate is not null)
 			{
@@ -59,15 +65,16 @@ partial class ContentPresenter
 				throw new InvalidOperationException("ContentTemplateSelector cannot be set when the Content is a native element");
 			}
 
-			if (IsLoaded)
+			if (IsInLiveTree)
 			{
-				//If loaded, attach immediately. If not, don't attach since OnLoaded will attach later.
+				//If in visual tree, attach immediately. If not, don't attach since Enter will attach later.
 				AttachNativeElement();
 			}
 		}
-		else if (IsNativeHost)
+		else
 		{
 			IsNativeHost = false;
+			Visual.IsNativeHostVisual = false;
 		}
 	}
 
@@ -82,14 +89,14 @@ partial class ContentPresenter
 		var arrangeRect = this.GetAbsoluteBoundsRect();
 		var ev = GetParentViewport().Effective;
 
-		Rect clippingBounds;
+		Rect clipRect;
 		if (ev.IsEmpty)
 		{
-			clippingBounds = new Rect(0, 0, 0, 0);
+			clipRect = new Rect(0, 0, 0, 0);
 		}
 		else if (ev.IsInfinite)
 		{
-			clippingBounds = null;
+			clipRect = null;
 		}
 		else
 		{
@@ -97,13 +104,20 @@ partial class ContentPresenter
 			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
 			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
 			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
-			clippingBounds = new Rect(left, top, width, height);
+			clipRect = new Rect(left, top, width, height);
 		}
+
+		var clipInGlobalCoordinates = new Rect(
+			arrangeRect.X + clipRect.X,
+			arrangeRect.Y + clipRect.Y,
+			clipRect.Width,
+			clipRect.Height);
+		_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates) ?? new Rect(arrangeRect.X, arrangeRect.Y, 0, 0);
 
 		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
 			Content,
 			arrangeRect,
-			clippingBounds);
+			clipRect);
 	}
 
 	partial void AttachNativeElement()
