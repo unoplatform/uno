@@ -71,6 +71,9 @@ jobs:
   - powershell: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
+  - bash: brew install ninja
+    displayName: Install ninja build for Skia WebAssembly build
+
   - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
