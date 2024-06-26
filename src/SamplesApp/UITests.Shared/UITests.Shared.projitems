@@ -9638,6 +9638,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\When_RadialGradientBrush_Circle_With_Non_Equal_Center_And_Origin_Expected.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\When_RadialGradientBrush_Ellipse_With_Equal_Center_And_Origin_Expected.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\When_RadialGradientBrush_Ellipse_With_Non_Equal_Center_And_Origin_Expected.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\wpfembedding.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\x11embedding.png" />
     <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml" />
     <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\LockScreen.png" />
