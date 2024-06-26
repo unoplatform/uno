@@ -70,27 +70,23 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-	internal static Window? CurrentWindow
+	internal static void SetWindow(Window window, bool disableIndicator)
 	{
-		get => _currentWindow;
-		set
+#if HAS_UNO_WINUI
+		if (_currentWindow is not null)
 		{
-#if HAS_UNO_WINUI
-			if (_currentWindow is not null)
-			{
-				_currentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
-			}
-#endif
-
-			_currentWindow = value;
-
-#if HAS_UNO_WINUI
-			if (_currentWindow is not null)
-			{
-				_currentWindow.Activated += ShowDiagnosticsOnFirstActivation;
-			}
-#endif
+			_currentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
 		}
+#endif
+
+		_currentWindow = window;
+
+#if HAS_UNO_WINUI
+		if (_currentWindow is not null && !disableIndicator)
+		{
+			_currentWindow.Activated += ShowDiagnosticsOnFirstActivation;
+		}
+#endif
 	}
 
 #if HAS_UNO_WINUI // No diag to show currently on windows (so no WINUI)
@@ -485,12 +481,12 @@ partial class ClientHotReloadProcessor
 		}
 
 #if WINUI
-		if (CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
+		if (_currentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
 			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #else
-		if (CurrentWindow is { Dispatcher: { } dispatcher } window)
+		if (_currentWindow is { Dispatcher: { } dispatcher } window)
 		{
 			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
