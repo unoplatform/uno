@@ -858,6 +858,15 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual void Leave(LeaveParams @params)
 		{
+			if (__Store.TryGetOnDemandProperty(KeyboardAcceleratorsProperty, out var acceleratorCollection))
+			{
+				// HACK: We should generalize Leave to leave all relevant DPs in a general way.
+				// Relevant WinUI pieces:
+				// https://github.com/microsoft/microsoft-ui-xaml/blob/539e4de5bb6bf5973cc74110aa926b450b8aa53c/dxaml/xcp/core/core/elements/depends.cpp#L1271-L1290
+				// https://github.com/microsoft/microsoft-ui-xaml/blob/539e4de5bb6bf5973cc74110aa926b450b8aa53c/dxaml/xcp/components/DependencyObject/PropertySystem.cpp#L1405-L1428
+				(acceleratorCollection as KeyboardAcceleratorCollection)?.Leave(@params);
+			}
+
 			foreach (var child in _children)
 			{
 				if (child == this)
@@ -896,5 +905,74 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+
+		internal void EnterEffectiveValue(DependencyProperty dp, DependencyObject obj)
+		{
+			// UNO TODO: For now, this is only relevant for KeyboardAcceleratorsProperty
+			// However, we should in future add IsVisualTreeProperty flag and align it properly with WinUI.
+			if (/*dp.IsVisualTreeProperty*/ dp == KeyboardAcceleratorsProperty)
+			{
+				//EnterParams enterParams = new EnterParams(
+				//	isLive: IsActiveInVisualTree,
+				//	skipNameRegistration: false,
+				//	coercedIsEnabled: GetCoercedIsEnabled(),
+				//	useLayoutRounding:  GetUseLayoutRounding(),
+				//	visualTree: VisualTree.GetForElementNoRef(this, LookupOptions.NoFallback)
+				//);
+				EnterParams enterParams = new EnterParams(isLive: IsActiveInVisualTree);
+
+				//enterParams.fCheckForResourceOverrides = ShouldCheckForResourceOverrides();
+
+				// This will let us register keyboard accelerator collections added through codebehind.
+				if (dp == KeyboardAcceleratorsProperty && obj is KeyboardAcceleratorCollection { Count: > 0 })
+				{
+					enterParams.IsForKeyboardAccelerator = true;
+				}
+
+				// Set the parent of collection items or the DO so we can can do a bottom-up tree walk to propagate dirty flags.
+				if (/*obj is PresentationFrameworkCollection*/ obj is DependencyObjectCollectionBase collectionObj)
+				{
+					// Store the owner and association, if the collection requires it.
+					collectionObj.SetParent(this);
+					//collectionObj.SetAndPropagateOwner(this, pDP.GetRenderChangedHandler()));
+
+					//if (pDP->AffectsMeasure())
+					//{
+					//	collectionObj->SetAffectsOwnerMeasure(true);
+					//}
+
+					//if (pDP->AffectsArrange())
+					//{
+					//	collectionObj->SetAffectsOwnerArrange(true);
+					//}
+
+					//if (obj->IsParentAware())
+					//{
+					//	// Be the parent for this collection.
+					//	obj.AddParent(this, false, pDP->GetRenderChangedHandler()));
+					//}
+				}
+				else /*if (obj->IsParentAware())*/
+				{
+					obj.SetParent(this);
+					//IFC_RETURN(obj->AddParent(this, true, pDP->GetRenderChangedHandler()));
+
+					//if (pDP->IsInherited())
+					//{
+					//	// This bit is only cleared for CMultiParentShareableDOs (in RemoveParent),
+					//	// so it should only be set for those types.  Setting it on a single-parent
+					//	// DO is unexpected since it wouldn't be cleaned up correctly.
+					//	ASSERT(obj->DoesAllowMultipleParents());
+					//	obj->SetIsValueOfInheritedProperty(true);
+					//}
+				}
+
+				if (obj is KeyboardAcceleratorCollection kac)
+				{
+					// Special case KeyboardAcceleratorCollection as we don't yet support Enter on 'DependencyObject's in general.
+					kac.Enter(/*GetStandardNameScopeOwner(),*/ enterParams);
+				}
+			}
+		}
 	}
 }

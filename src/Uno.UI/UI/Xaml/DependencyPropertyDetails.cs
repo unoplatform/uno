@@ -425,7 +425,7 @@ namespace Microsoft.UI.Xaml
 		private bool HasWeakStorage
 			=> (_flags & Flags.WeakStorage) != 0;
 
-		private bool HasDefaultValueSet
+		internal bool HasDefaultValueSet
 			=> (_flags & Flags.DefaultValueSet) != 0;
 
 		internal bool HasValueInherits

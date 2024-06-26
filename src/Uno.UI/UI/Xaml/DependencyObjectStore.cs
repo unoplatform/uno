@@ -284,6 +284,25 @@ namespace Microsoft.UI.Xaml
 			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
 		}
 
+		private object? GetOnDemandProperty(DependencyPropertyDetails details, DependencyPropertyValuePrecedences? precedence)
+		{
+			// If we have OnDemandProperty, we want to EnterEffectiveValue when the value is first created.
+			Debug.Assert(details.Property.IsOnDemandProperty);
+			var oldDefaultValueSet = details.HasDefaultValueSet;
+			var value = precedence.HasValue ? details.GetValue(precedence.Value) : details.GetValue();
+			var newDefaultValueSet = details.HasDefaultValueSet;
+
+			var createdValue = details.GetValue();
+			if (!oldDefaultValueSet && newDefaultValueSet && createdValue is DependencyObject createdValueAsDO)
+			{
+				// The default value for OnDemandProperty was created by this call.
+				// We need EnterEffectiveValue.
+				(ActualInstance as UIElement)?.EnterEffectiveValue(details.Property, createdValueAsDO);
+			}
+
+			return createdValue;
+		}
+
 		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
 			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
@@ -293,12 +312,12 @@ namespace Microsoft.UI.Xaml
 
 			if (precedence == null)
 			{
-				return propertyDetails.GetValue();
+				return propertyDetails.Property.IsOnDemandProperty ? GetOnDemandProperty(propertyDetails, null) : propertyDetails.GetValue();
 			}
 
 			if (isPrecedenceSpecific)
 			{
-				return propertyDetails.GetValue(precedence.Value);
+				return propertyDetails.Property.IsOnDemandProperty ? GetOnDemandProperty(propertyDetails, precedence) : propertyDetails.GetValue(precedence.Value);
 			}
 
 			var highestPriority = GetCurrentHighestValuePrecedence(propertyDetails);
