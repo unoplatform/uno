@@ -19,6 +19,7 @@ In order to fix this, add the following to your csproj (Xamarin, `net6.0-ios`, `
   <MtouchExtraArgs>$(MtouchExtraArgs) --registrar=static</MtouchExtraArgs>
 </PropertyGroup>
 ```
+
 ## Error while retrieving IOS device in VS code
 
 When switching to an iOS debugging target in VS Code, you might encounter an error stating that the iOS device could not be retrieved. The error message may appear as follows:
