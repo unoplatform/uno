@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  UnoCheck_Version: '1.24.0-dev.12'
+  UnoCheck_Version: '1.25.0-dev.7'
 
 jobs:
   build:
