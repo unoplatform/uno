@@ -86,14 +86,17 @@ namespace Microsoft.UI.Xaml
 			set => SetContextFlyoutValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null)]
-		internal static DependencyProperty KeyboardAcceleratorsProperty { get; } = CreateKeyboardAcceleratorsProperty();
-
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{
-			get => GetKeyboardAcceleratorsValue();
-			private set => SetKeyboardAcceleratorsValue(value);
+			get => (IList<KeyboardAccelerator>)GetValue(KeyboardAcceleratorsProperty);
+			private set => SetValue(KeyboardAcceleratorsProperty, value);
 		}
+
+		internal static DependencyProperty KeyboardAcceleratorsProperty { get; } = DependencyProperty.Register(
+			nameof(KeyboardAccelerators),
+			typeof(KeyboardAcceleratorCollection), // Intentionally not IList<KeyboardAccelerator> to match WinUI
+			typeof(UIElement),
+			new FrameworkPropertyMetadata(defaultValue: null, FrameworkPropertyMetadataOptions.IsOnDemandProperty));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the control tooltip displays
