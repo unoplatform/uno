@@ -470,7 +470,7 @@ jobs:
 
   - script: |
         cd $(SamplesAppArtifactPath)
-        dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-macos-runtime-tests-results.xml'
+        dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-macos-runtime-tests-results.xml
 
     displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
     env:
