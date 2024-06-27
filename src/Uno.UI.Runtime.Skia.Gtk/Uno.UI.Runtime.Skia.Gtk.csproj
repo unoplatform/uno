@@ -17,9 +17,6 @@
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
-		<!-- Don't install GTK at this step, let the app head do it -->
-		<SkipGtkInstall>true</SkipGtkInstall>
 	</PropertyGroup>
 
 	<ItemGroup>
