@@ -81,7 +81,7 @@ public partial class AcrylicBrush
 		if (_isConnected)
 		{
 			// TODO: Currently we are force recreating the brush even if it exists because Composition animations aren't implemented yet
-			CreateAcrylicBrush(false /* useCrossFadeEffect */, true /* forceCreateAcrylicBrush */);
+			CreateAcrylicBrush(useCrossFadeEffect: false, forceCreateAcrylicBrush: true);
 		}
 	}
 
