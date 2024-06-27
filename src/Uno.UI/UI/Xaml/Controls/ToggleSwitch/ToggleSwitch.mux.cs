@@ -358,7 +358,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-		public Point AutomationGetClickablePoint()
+		internal Point AutomationGetClickablePoint()
 		{
 			//UNO TODO: Implement AutomationGetClickablePoint on ToggleSwitch
 			return new Point();

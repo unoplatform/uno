@@ -1458,61 +1458,61 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Scroll content by one page to the left.
 		/// </summary>
-		public void PageLeft()
+		internal void PageLeft()
 			=> HandleHorizontalScroll(ScrollEventType.LargeDecrement);
 
 		/// <summary>
 		/// Scroll content by one line to the right.
 		/// </summary>
-		public void LineLeft()
+		internal void LineLeft()
 			=> HandleHorizontalScroll(ScrollEventType.SmallDecrement);
 
 		/// <summary>
 		/// Scroll content by one line to the right.
 		/// </summary>
-		public void LineRight()
+		internal void LineRight()
 			=> HandleHorizontalScroll(ScrollEventType.SmallIncrement);
 
 		/// <summary>
 		/// Scroll content by one page to the right.
 		/// </summary>
-		public void PageRight()
+		internal void PageRight()
 			=> HandleHorizontalScroll(ScrollEventType.LargeIncrement);
 
 		/// <summary>
 		/// Scroll content by one page to the top.
 		/// </summary>
-		public void PageUp()
+		internal void PageUp()
 			=> HandleVerticalScroll(ScrollEventType.LargeDecrement);
 
 		/// <summary>
 		/// Scroll content by one line to the top.
 		/// </summary>
-		public void LineUp()
+		internal void LineUp()
 			=> HandleVerticalScroll(ScrollEventType.SmallDecrement);
 
 		/// <summary>
 		/// Scroll content by one line to the bottom.
 		/// </summary>
-		public void LineDown()
+		internal void LineDown()
 			=> HandleVerticalScroll(ScrollEventType.SmallIncrement);
 
 		/// <summary>
 		/// Scroll content by one page to the bottom.
 		/// </summary>
-		public void PageDown()
+		internal void PageDown()
 			=> HandleVerticalScroll(ScrollEventType.LargeIncrement);
 
 		/// <summary>
 		/// Scroll content to the beginning.
 		/// </summary>
-		public void PageHome()
+		internal void PageHome()
 			=> HandleVerticalScroll(ScrollEventType.First);
 
 		/// <summary>
 		/// Scroll content to the end.
 		/// </summary>
-		public void PageEnd()
+		internal void PageEnd()
 			=> HandleVerticalScroll(ScrollEventType.Last);
 
 		/// <summary>
