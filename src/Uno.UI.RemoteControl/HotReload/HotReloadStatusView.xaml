@@ -199,16 +199,16 @@
 									</Flyout.FlyoutPresenterStyle>
 
 									<StackPanel CornerRadius="8" Spacing="10" >
-										<StackPanel Orientation="Horizontal" Spacing="10">
+										<StackPanel Orientation="Horizontal" Spacing="10" Visibility="{Binding ElementName=PART_DevServerStatus, Path=Status.IsProblematic}">
 											<devServer:RemoteControlStatusView
 												x:Name="PART_DevServerStatus"
 												VerticalAlignment="Center" />
 											<TextBlock
 												MaxWidth="380"
-												Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}" 
+												Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}"
 												FontSize="14"
 												FontWeight="SemiLight"
-												TextWrapping="WrapWholeWords" 
+												TextWrapping="WrapWholeWords"
 												VerticalAlignment="Center" />
 										</StackPanel>
 
