@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using Windows.UI;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,13 +13,20 @@ namespace Uno.UI.RemoteControl;
 
 internal sealed partial class RemoteControlStatusView : Ellipse
 {
-	private readonly RemoteControlClient? _devServer;
-
 #if __ANDROID__
 	public new const string Id = nameof(RemoteControlStatusView);
 #else
 	public const string Id = nameof(RemoteControlStatusView);
 #endif
+
+	private static readonly Color _gray = Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
+	private static readonly Color _green = Color.FromArgb(0xFF, 0x09, 0xB5, 0x09);
+	private static readonly Color _yellow = Color.FromArgb(0xFF, 0xFC, 0xDF, 0x49);
+	private static readonly Color _orange = Color.FromArgb(0xFF, 0xFD, 0x9E, 0x0F);
+	private static readonly Color _red = Color.FromArgb(0xFF, 0xF3, 0x00, 0x00);
+
+	private readonly RemoteControlClient? _devServer;
+	private CancellationTokenSource? _details;
 
 	#region Status (DP)
 	public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
@@ -92,13 +101,33 @@ internal sealed partial class RemoteControlStatusView : Ellipse
 		var (kind, message) = status.GetSummary();
 		((SolidColorBrush)Fill).Color = kind switch
 		{
-			Classification.Ok => Colors.Green,
-			Classification.Info => Colors.Yellow,
-			Classification.Warning => Colors.Orange,
-			Classification.Error => Colors.Red,
-			_ => Colors.Gray
+			Classification.Ok => _green,
+			Classification.Info => _yellow,
+			Classification.Warning => _orange,
+			Classification.Error => _red,
+			_ => _gray
 		};
 		HeadLine = message;
 		ToolTipService.SetToolTip(this, message);
+	}
+
+	internal void ShowDetails()
+	{
+		if (_devServer is null)
+		{
+			return;
+		}
+
+		_details?.Cancel();
+		_details = new CancellationTokenSource();
+
+		var dialog = new ContentDialog
+		{
+			XamlRoot = XamlRoot,
+			Title = "Hot reload",
+			Content = _devServer.Status.GetDescription(),
+			CloseButtonText = "Close",
+		};
+		_ = dialog.ShowAsync().AsTask(_details.Token);
 	}
 }

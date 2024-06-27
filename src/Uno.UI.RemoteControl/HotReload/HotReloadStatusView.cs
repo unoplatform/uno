@@ -5,14 +5,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.UI;
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
@@ -142,6 +136,11 @@ internal sealed partial class HotReloadStatusView : Control
 				(snd, _) => OnDevServerStatusChanged(((RemoteControlStatusView)snd).Status));
 			_devServer = (devServerView, token);
 
+			if (devServerView.Parent is Panel devServerTouchTarget) // TODO: The RemoteControlStatusView should be a templatable control and do that by it own...
+			{
+				devServerTouchTarget.Tapped += (snd, _) => devServerView.ShowDetails();
+			}
+
 			if (XamlRoot is { } root)
 			{
 				DiagnosticsOverlay.Get(root).Hide(RemoteControlStatusView.Id);
@@ -197,8 +196,12 @@ internal sealed partial class HotReloadStatusView : Control
 
 			string[] files = srvOp.FilePaths.Select(Path.GetFileName).ToArray()!;
 
-			vm.IsCompleted = srvOp.Result is not null;
-			vm.IsSuccess = srvOp.Result is HotReloadServerResult.Success or HotReloadServerResult.NoChanges;
+			vm.IsSuccess = srvOp.Result switch
+			{
+				null => null,
+				HotReloadServerResult.Success or HotReloadServerResult.NoChanges => true,
+				_ => false
+			};
 			vm.Description = srvOp.Result switch
 			{
 				null => $"Processing changes{Join(files, "files")}.",
@@ -224,8 +227,12 @@ internal sealed partial class HotReloadStatusView : Control
 
 			var types = localOp.CuratedTypes;
 
-			vm.IsCompleted = localOp.Result is not null;
-			vm.IsSuccess = localOp.Result is HotReloadClientResult.Success;
+			vm.IsSuccess = localOp.Result switch
+			{
+				null => null,
+				HotReloadClientResult.Success => true,
+				_ => false
+			};
 			vm.Description = localOp.Result switch
 			{
 				null => $"Processing changes{Join(types, "types")} (total of {localOp.Types.Length} types updated).",
@@ -242,7 +249,7 @@ internal sealed partial class HotReloadStatusView : Control
 		var resultState = history switch
 		{
 			{ Count: 0 } => ResultNoneVisualStateName,
-			_ when history.Any(op => !op.IsCompleted) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
+			_ when history.Any(op => op.IsSuccess is null) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
 			[{ IsSuccess: true }, ..] => ResultSuccessVisualStateName,
 			_ => ResultFailedVisualStateName
 		};
@@ -289,11 +296,13 @@ internal sealed partial class HotReloadStatusView : Control
 	{
 		var state = (_devServerStatus: _devServerState, _hotReloadStatus?.State) switch
 		{
-			(Classification.Error or Classification.Warning, _) => StatusErrorVisualStateName,
+			(Classification.Error, _) => StatusErrorVisualStateName,
 			(_, HotReloadState.Disabled) => StatusErrorVisualStateName,
 
 			(_, HotReloadState.Initializing) => StatusInitializingVisualStateName,
 			(Classification.Info, _) => StatusInitializingVisualStateName,
+
+			(Classification.Warning, _) when !HasSuccessfulLocalOperation(_hotReloadStatus) => StatusUnknownVisualStateName, // e.g. invalid processors version
 
 			(_, HotReloadState.Idle) => StatusIdleVisualStateName,
 
@@ -303,6 +312,10 @@ internal sealed partial class HotReloadStatusView : Control
 		};
 
 		VisualStateManager.GoToState(this, state, true);
+
+		static bool HasSuccessfulLocalOperation(Status? status)
+			=> status is not null
+				&& status.Local.Operations.Any(op => op.Result is HotReloadClientResult.Success);
 	}
 }
 
@@ -312,19 +325,12 @@ internal sealed record HotReloadEntryViewModel(bool IsServer, long Id, DateTimeO
 	/// <inheritdoc />
 	public event PropertyChangedEventHandler? PropertyChanged;
 
-	public bool IsCompleted { get; set; }
-	public bool IsSuccess { get; set; }
+	public bool? IsSuccess { get; set; }
 	public TimeSpan? Duration { get; set; }
 	public string? Description { get; set; }
 
 	// Quick patch as we don't have MVUX
 	public string Title => $"{Start.LocalDateTime:T} - {(IsServer ? "Server" : "Application")}{GetDuration()}".ToString(CultureInfo.CurrentCulture);
-	public Color Color => (IsCompleted, IsSuccess) switch
-	{
-		(false, _) => Colors.Yellow,
-		(true, false) => Colors.Red,
-		(true, true) => Colors.Green,
-	};
 
 	public void RaiseChanged()
 		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
