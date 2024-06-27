@@ -13,7 +13,6 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
-		private static SKRuntimeEffect? _effect;
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
 
 		bool ISizedBrush.IsSized => true;
@@ -106,31 +105,9 @@ namespace Microsoft.UI.Composition
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
 					// The image rescaling (i.e resampling) algorithm in the shader directly is really low quality (but really fast).
-					// SkiaSharp 3 introduces new SKSamplingOptions, but for now there is no alternative to writing
-					// the shader logic by hand.
-					// When we move to SkiaSharp3, remove this
-					// ******************************************************************************
-					if (_effect is null)
-					{
-						_effect = SKRuntimeEffect.Create(ImageResamplingShader, out var error);
-						if (error is { } e)
-						{
-							throw new InvalidOperationException(e);
-						}
-					}
-
-					var uniforms = new SKRuntimeEffectUniforms(_effect)
-					{
-						{ "imageSize", new[] { (float)backgroundArea.Width, (float)backgroundArea.Height } }
-					};
-					var children = new SKRuntimeEffectChildren(_effect)
-					{
-						["image"] = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal)
-					};
-
-					var imageShader = _effect.ToShader(false, uniforms, children, matrix.ToSKMatrix());
-					// ******************************************************************************
-					// and replace with this one line (and maybe add mipmapping
+					// There is no sound workaround for this at the moment. See https://github.com/unoplatform/uno/issues/17325.
+					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
+					// SkiaSharp 3 introduces new SKSamplingOptions. When we move to SkiaSharp 3, replace the line about with this one.
 					// var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.Mitchell), matrix.ToSKMatrix());
 
 					if (UsePaintColorToColorSurface)
@@ -179,53 +156,5 @@ namespace Microsoft.UI.Composition
 			if (Surface is ISkiaSurface skiaSurface)
 				skiaSurface.UpdateSurface(session);
 		}
-
-		// Handwritten bicubic resampling adapted from https://stackoverflow.com/a/42179924
-		private const string ImageResamplingShader = @"
-uniform shader image;
-uniform vec2 imageSize;
-
-vec4 cubic(float v) {
-    vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
-    vec4 s = n * n * n;
-    float x = s.x;
-    float y = s.y - 4.0 * s.x;
-    float z = s.z - 4.0 * s.y + 6.0 * s.x;
-    float w = 6.0 - x - y - z;
-    return vec4(x, y, z, w) * (1.0/6.0);
-}
-
-vec4 main(vec2 texCoords){
-	vec2 texSize = imageSize; // SkSL coords to GLSL coords
-	texCoords = texCoords / texSize;
-	vec2 invTexSize = 1.0 / texSize;
-
-	texCoords = texCoords * texSize - 0.5;
-
-	vec2 fxy = fract(texCoords);
-	texCoords -= fxy;
-
-	vec4 xcubic = cubic(fxy.x);
-	vec4 ycubic = cubic(fxy.y);
-
-	vec4 c = texCoords.xxyy + vec2(-0.5, +1.5).xyxy;
-
-	vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
-	vec4 offset = c + vec4 (xcubic.yw, ycubic.yw) / s;
-
-	offset *= invTexSize.xxyy;
-	offset *= texSize.xxyy; // GLSL coords to SkSL coords
-
-	vec4 sample0 = sample(image, offset.xz);
-	vec4 sample1 = sample(image, offset.yz);
-	vec4 sample2 = sample(image, offset.xw);
-	vec4 sample3 = sample(image, offset.yw);
-
-	float sx = s.x / (s.x + s.y);
-	float sy = s.z / (s.z + s.w);
-
-	return mix(mix(sample3, sample2, sx), mix(sample1, sample0, sx), sy);
-}
-";
 	}
 }
