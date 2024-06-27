@@ -889,10 +889,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			SetUpdateTemplate();
 		}
 
-		// When the control is loaded, set the TemplatedParent
-		// as it may have been reset during the last unload.
-		SynchronizeContentTemplatedParent();
-
 #if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();
 #endif
