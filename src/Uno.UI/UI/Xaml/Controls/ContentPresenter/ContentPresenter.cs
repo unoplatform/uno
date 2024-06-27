@@ -832,56 +832,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 			_contentTemplateRoot = value;
 
-			SynchronizeContentTemplatedParent();
-
 			if (_contentTemplateRoot != null)
 			{
 				RegisterContentTemplateRoot();
 
 				UpdateContentTransitions(null, this.ContentTransitions);
-			}
-		}
-	}
-
-	private void SynchronizeContentTemplatedParent()
-	{
-		if (IsNativeHost)
-		{
-			// In this case, the ContentPresenter is not used as part of the child of a
-			// templated control, and we must not take the outer templated parent, but rather
-			// the immediate template parent (as if the native view was not wrapped).
-			// Needs to be reevaluated with https://github.com/unoplatform/uno/issues/1621
-			if (_contentTemplateRoot is IFrameworkElement binder)
-			{
-				binder.TemplatedParent = this.TemplatedParent;
-			}
-		}
-		else
-		{
-			if (_contentTemplateRoot is IFrameworkElement binder)
-			{
-				binder.TemplatedParent = FindTemplatedParent();
-
-				DependencyObject FindTemplatedParent()
-				{
-					// ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-					if (_contentTemplateRoot is ImplicitTextBlock) return this;
-
-					// Sometimes when content is a child view defined in the xaml, the direct TemplatedParent should be used,
-					// but only if the content hasnt been overwritten yet. If the content has been overwritten,
-					// either ImplicitTextBlock or the DataTemplate (requiring the outter TemplatedParent) would has been used.
-					if (!SynchronizeContentWithOuterTemplatedParent && _dataTemplateUsedLastUpdate == null)
-					{
-						return this.TemplatedParent;
-					}
-
-					return (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
-				}
-			}
-			else if (_contentTemplateRoot is DependencyObject dependencyObject)
-			{
-				// Propagate binding context correctly
-				dependencyObject.SetParent(this);
 			}
 		}
 	}
@@ -963,13 +918,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		{
 			SetUpdateTemplate();
 		}
-#endif
 
-		// When the control is loaded, set the TemplatedParent
-		// as it may have been reset during the last unload.
-		SynchronizeContentTemplatedParent();
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
 #endif
 
