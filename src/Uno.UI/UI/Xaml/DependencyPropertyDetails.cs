@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml
 			hasInherits = false;
 		}
 
-		private object? GetDefaultValue()
+		internal object? GetDefaultValue()
 		{
 			if (!HasDefaultValueSet)
 			{
