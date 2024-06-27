@@ -910,11 +910,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.TopLevelVisiblity = true;
 
-			Assert.IsNotNull(SUT.topLevelContent);
-			Assert.IsNotNull(SUT.innerTextBlock);
-			Assert.AreEqual("My inner text", SUT.innerTextBlock.Text);
+			// Changing the visibility DOES NOT materialize the lazily-loaded element.
+			Assert.IsNull(SUT.topLevelContent);
+			Assert.IsNull(SUT.innerTextBlock);
 
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.IsNotNull(SUT.topLevelContent);
+			Assert.IsNotNull(SUT.innerTextBlock);
 			Assert.AreEqual(Visibility.Visible, topLevelContent.Visibility);
 
 			SUT.InnerText = "Updated !";
@@ -946,15 +948,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			data.TopLevelVisiblity = true;
 
-			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			// Changing the visibility DOES NOT materialize the lazily-loaded element.
+			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
 
+			// Calling FindName on an element inside a lazy-loaded element won't materialize the lazy-loaded element
 			var innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
-			Assert.IsNotNull(innerTextBlock);
-			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
+			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			Assert.IsNull(innerTextBlock);
 
 			data.TopLevelVisiblity = false;
 
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
+			Assert.IsNotNull(innerTextBlock);
+			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
 		}
 
