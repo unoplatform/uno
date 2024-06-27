@@ -22,6 +22,7 @@
         mtkView.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
         mtkView.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
         mtkView.sampleCount = 1;
+        mtkView.framebufferOnly = false;
 #if DEBUG
         NSLog(@"initWithMetalKitView: paused %s enableSetNeedsDisplay %s", mtkView.paused ? "true" : "false", mtkView.enableSetNeedsDisplay ? "true" : "false");
 #endif
