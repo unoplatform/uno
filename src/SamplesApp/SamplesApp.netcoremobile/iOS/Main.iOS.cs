@@ -7,7 +7,7 @@ namespace SamplesApp.iOS
 		// This is the main entry point of the application.
 		static void Main(string[] args)
 		{
-#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT && !DEBUG
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 #endif
