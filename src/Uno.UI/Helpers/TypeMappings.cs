@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -57,7 +58,7 @@ public static class TypeMappings
 	/// </summary>
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<TOriginalType>()
+	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOriginalType>()
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType());
 
 	/// <summary>
@@ -66,7 +67,7 @@ public static class TypeMappings
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <param name="args">The arguments used to create the instance, passed to the ctor</param>
 	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<TOriginalType>(params object[] args)
+	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TOriginalType>(params object[] args)
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
 
 	internal static Type GetMappedType(this Type originalType) =>
