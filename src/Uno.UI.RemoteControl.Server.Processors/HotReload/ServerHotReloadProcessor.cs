@@ -290,34 +290,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-			// Note: This is a patch until the dev-server based hot-reload treat files per batch instead of file per file.
-			private HotReloadServerResult _aggregatedResult = HotReloadServerResult.NoChanges;
-			private int _aggregatedFilesCount;
-			public void NotifyIntermediate(string file, HotReloadServerResult result)
-			{
-				if (Interlocked.Increment(ref _aggregatedFilesCount) is 1)
-				{
-					_aggregatedResult = result;
-					return;
-				}
-
-				_aggregatedResult = (HotReloadServerResult)Math.Max((int)_aggregatedResult, (int)result);
-				_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
-			}
-
-			public async ValueTask CompleteUsingIntermediates(Exception? exception = null)
-			{
-				if (exception is null)
-				{
-					//Debug.Assert(_aggregatedFilesCount == _filePaths.Count);
-					await Complete(_aggregatedResult);
-				}
-				else
-				{
-					await Complete(HotReloadServerResult.Failed, exception);
-				}
-			}
-
 			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
 			/// </summary>
@@ -584,7 +556,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Helpers
-		private static IObservable<IList<string>> ToObservable(FileSystemWatcher watcher)
+		private static IObservable<IList<string>> ToObservable(params FileSystemWatcher[] watchers)
 			=> Observable.Defer(() =>
 			{
 				// Create an observable instead of using the FromEventPattern which
@@ -597,18 +569,97 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				void changed(object s, FileSystemEventArgs args) => subject.OnNext(args.FullPath);
 				void renamed(object s, RenamedEventArgs args) => subject.OnNext(args.FullPath);
 
-				watcher.Changed += changed;
-				watcher.Created += changed;
-				watcher.Renamed += renamed;
+				foreach (var watcher in watchers)
+				{
+					watcher.Changed += changed;
+					watcher.Created += changed;
+					watcher.Renamed += renamed;
+				}
 
 				return subject
 					.Buffer(() => subject.Throttle(TimeSpan.FromMilliseconds(250))) // Wait for 250 ms without any file change
 					.Finally(() =>
 					{
+						foreach (var watcher in watchers)
+						{
+							watcher.Changed -= changed;
+							watcher.Created -= changed;
+							watcher.Renamed -= renamed;
+						}
+					});
+			});
+
+		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
+			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
+			{
+				// Create an observable instead of using the FromEventPattern which
+				// does not register to events properly.
+				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
+				// Visual Studio uses to save files.
+
+				var gate = new object();
+				var buffer = default((ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task)?);
+				var bufferTimer = new Timer(CloseBuffer);
+
+				void changed(object s, FileSystemEventArgs args) => OnNext(args.FullPath);
+				void renamed(object s, RenamedEventArgs args) => OnNext(args.FullPath);
+
+				foreach (var watcher in watchers)
+				{
+					watcher.Changed += changed;
+					watcher.Created += changed;
+					watcher.Renamed += renamed;
+				}
+
+				void OnNext(string file)
+				{
+					if (!filter(file))
+					{
+						return;
+					}
+
+					lock (gate)
+					{
+						if (buffer is null)
+						{
+							buffer = (ImmutableHashSet.CreateBuilder<string>(_pathsComparer), new());
+							o.OnNext(buffer.Value.task.Task);
+						}
+
+						buffer.Value.items.Add(file);
+						bufferTimer.Change(250, Timeout.Infinite); // Wait for 250 ms without any file change
+					}
+				}
+
+				void CloseBuffer(object? state)
+				{
+					(ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task) completingBuffer;
+					if (buffer is null)
+					{
+						Debug.Fail("Should not happen.");
+						return;
+					}
+
+					lock (gate)
+					{
+						completingBuffer = buffer.Value;
+						buffer = default;
+					}
+
+					completingBuffer.task.SetResult(completingBuffer.items.ToImmutable());
+				}
+
+				return Disposable.Create(() =>
+				{
+					foreach (var watcher in watchers)
+					{
 						watcher.Changed -= changed;
 						watcher.Created -= changed;
 						watcher.Renamed -= renamed;
-					});
+					}
+
+					bufferTimer.Dispose();
+				});
 			});
 		#endregion
 	}
