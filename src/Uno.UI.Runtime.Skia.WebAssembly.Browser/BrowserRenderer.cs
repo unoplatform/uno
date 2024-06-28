@@ -1,22 +1,13 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Foundation;
 using SkiaSharp;
-using Uno.Extensions;
 using MUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Hosting;
-using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
-using System.Runtime;
-using System.Threading;
-using Microsoft.UI.Xaml;
-using static Uno.UI.Runtime.Skia.BrowserRenderer;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -157,7 +148,7 @@ internal partial class BrowserRenderer
 			_surface.Canvas.Scale((float)scale);
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				Microsoft.UI.Xaml.Window.Current?.Compositor.RenderRootVisual(_surface, rootVisual, null);
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(_renderTarget.Width, _renderTarget.Height, rootVisual, _surface);
 			}
 		}
 

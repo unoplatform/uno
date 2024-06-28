@@ -1,12 +1,10 @@
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -59,6 +57,7 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 		ApiExtensibility.Register(typeof(ContentPresenter.INativeElementHostingExtension), o => new WebAssemblyNativeElementHostingExtension());
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new WebAssemblyWindowFactoryExtension(this));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new BrowserInvisibleTextBoxViewExtension(o));
+		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new BrowserNativeElementHostingExtension(o));
 
 		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
