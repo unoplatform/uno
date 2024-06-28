@@ -171,11 +171,11 @@ internal sealed partial class HotReloadStatusView : Control
 		{
 			null => """
 					State of the hot-reload engine is unknown.
-					This usually indicates that connection to the dev-server failed, but if running within VisualStudio, updates might still be detected.
+					This usually indicates that connection to the IDE failed, but if running within VisualStudio, updates might still be detected.
 					""",
-			HotReloadState.Disabled => "Hot-reload server is disabled.",
+			HotReloadState.Disabled => "Hot-reload is disabled.",
 			HotReloadState.Initializing => "Hot-reload engine is initializing.",
-			HotReloadState.Idle => "Hot-reload server is ready and listening for file changes.",
+			HotReloadState.Idle => "Hot-reload engine is ready and listening for file changes.",
 			HotReloadState.Processing => "Hot-reload engine is processing file changes",
 			_ => "Unable to determine the state of the hot-reload engine."
 		};
@@ -184,65 +184,30 @@ internal sealed partial class HotReloadStatusView : Control
 	private void UpdateHistory(Status status)
 	{
 		var history = History;
-		var vms = history.ToDictionary(op => (op.IsServer, op.Id));
+		var vms = history.ToDictionary(op => (IsServer: op.IsIDE, op.Id));
 
 		foreach (var srvOp in status.Server.Operations)
 		{
-			if (!vms.TryGetValue((true, srvOp.Id), out var vm))
+			if (vms.TryGetValue((true, srvOp.Id), out var vm))
 			{
-				vm = new HotReloadEntryViewModel(true, srvOp.Id, srvOp.StartTime);
-				history.Insert(FindIndex(srvOp.StartTime), vm);
+				vm.Update(srvOp);
 			}
-
-			string[] files = srvOp.FilePaths.Select(Path.GetFileName).ToArray()!;
-
-			vm.IsSuccess = srvOp.Result switch
+			else
 			{
-				null => null,
-				HotReloadServerResult.Success or HotReloadServerResult.NoChanges => true,
-				_ => false
-			};
-			vm.Description = srvOp.Result switch
-			{
-				null => $"Processing changes{Join(files, "files")}.",
-				HotReloadServerResult.NoChanges => $"No changes detected by the server{Join(files, "files")}.",
-				HotReloadServerResult.Success => $"Server successfully detected and compiled changes{Join(files, "files")}.",
-				HotReloadServerResult.RudeEdit => $"Server detected changes{Join(files, "files")} but is not able to apply them.",
-				HotReloadServerResult.Failed => $"Server detected changes{Join(files, "files")} but is not able to compile them.",
-				HotReloadServerResult.Aborted => $"Hot-reload has been aborted (usually because some other changes has been detected).",
-				HotReloadServerResult.InternalError => "Hot-reload failed for due to an internal error.",
-				_ => $"Unknown server operation result: {srvOp.Result}."
-			};
-			vm.Duration = srvOp.EndTime is not null ? srvOp.EndTime - srvOp.StartTime : null;
-			vm.RaiseChanged();
+				history.Insert(FindIndex(srvOp.StartTime), new HotReloadEntryViewModel(srvOp));
+			}
 		}
 
 		foreach (var localOp in status.Local.Operations)
 		{
-			if (!vms.TryGetValue((false, localOp.Id), out var vm))
+			if (vms.TryGetValue((false, localOp.Id), out var vm))
 			{
-				vm = new HotReloadEntryViewModel(false, localOp.Id, localOp.StartTime);
-				history.Insert(FindIndex(localOp.StartTime), vm);
+				vm.Update(localOp);
 			}
-
-			var types = localOp.CuratedTypes;
-
-			vm.IsSuccess = localOp.Result switch
+			else
 			{
-				null => null,
-				HotReloadClientResult.Success => true,
-				_ => false
-			};
-			vm.Description = localOp.Result switch
-			{
-				null => $"Processing changes{Join(types, "types")} (total of {localOp.Types.Length} types updated).",
-				HotReloadClientResult.Success => $"Application received changes{Join(types, "types")} and updated the view (total of {localOp.Types.Length} types updated).",
-				HotReloadClientResult.Failed => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but failed to update the view ({localOp.Exceptions.FirstOrDefault()?.Message}).",
-				HotReloadClientResult.Ignored => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but view was not been updated because {localOp.IgnoreReason}.",
-				_ => $"Unknown application operation result: {localOp.Result}."
-			};
-			vm.Duration = localOp.EndTime is not null ? localOp.EndTime - localOp.StartTime : null;
-			vm.RaiseChanged();
+				history.Insert(FindIndex(localOp.StartTime), new HotReloadEntryViewModel(localOp));
+			}
 		}
 
 		// Finally once we synced the history, we update the "result" visual state.
@@ -268,15 +233,6 @@ internal sealed partial class HotReloadStatusView : Control
 					break;
 			}
 		}
-
-		static string Join(string[] items, string itemType, int maxItems = 5)
-			=> items switch
-			{
-				{ Length: 0 } => "",
-				{ Length: 1 } => $" in {items[0]}",
-				{ Length: < 3 } => $" in {string.Join(",", items[..^1])} and {items[^1]}",
-				_ => $" in {string.Join(",", items[..3])} and {items.Length - 3} other {itemType}"
-			};
 
 		int FindIndex(DateTimeOffset date)
 		{
@@ -320,7 +276,7 @@ internal sealed partial class HotReloadStatusView : Control
 }
 
 [Microsoft.UI.Xaml.Data.Bindable]
-internal sealed record HotReloadEntryViewModel(bool IsServer, long Id, DateTimeOffset Start) : INotifyPropertyChanged
+internal sealed record HotReloadEntryViewModel(bool IsIDE, long Id, DateTimeOffset Start) : INotifyPropertyChanged
 {
 	/// <inheritdoc />
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -330,9 +286,71 @@ internal sealed record HotReloadEntryViewModel(bool IsServer, long Id, DateTimeO
 	public string? Description { get; set; }
 
 	// Quick patch as we don't have MVUX
-	public string Title => $"{Start.LocalDateTime:T} - {(IsServer ? "Server" : "Application")}{GetDuration()}".ToString(CultureInfo.CurrentCulture);
+	public string Title => $"{Start.LocalDateTime:T} - {(IsIDE ? "IDE" : "Application")}{GetDuration()}".ToString(CultureInfo.CurrentCulture);
 
-	public void RaiseChanged()
+	public HotReloadEntryViewModel(HotReloadClientOperation localOp)
+		: this(false, localOp.Id, localOp.StartTime)
+	{
+		Update(localOp);
+	}
+
+	public HotReloadEntryViewModel(HotReloadServerOperationData srvOp)
+		: this(true, srvOp.Id, srvOp.StartTime)
+	{
+		Update(srvOp);
+	}
+
+	internal void Update(HotReloadClientOperation localOp)
+	{
+		var types = localOp.CuratedTypes;
+
+		IsSuccess = localOp.Result switch
+		{
+			null => null,
+			HotReloadClientResult.Success => true,
+			_ => false
+		};
+		Description = localOp.Result switch
+		{
+			null => $"Processing changes{Join(types, "types")} (total of {localOp.Types.Length} types updated).",
+			HotReloadClientResult.Success => $"Application received changes{Join(types, "types")} and updated the view (total of {localOp.Types.Length} types updated).",
+			HotReloadClientResult.Failed => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but failed to update the view ({localOp.Exceptions.FirstOrDefault()?.Message}).",
+			HotReloadClientResult.Ignored when localOp.Types is null or { Length: 0 } => $"Application received changes{Join(types, "types")} but view was not been updated because {localOp.IgnoreReason}.",
+			HotReloadClientResult.Ignored => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but view was not been updated because {localOp.IgnoreReason}.",
+			_ => $"Unknown application operation result: {localOp.Result}."
+		};
+		Duration = localOp.EndTime is not null ? localOp.EndTime - localOp.StartTime : null;
+
+		RaiseChanged();
+	}
+
+	public void Update(HotReloadServerOperationData srvOp)
+	{
+		string[] files = srvOp.FilePaths.Select(Path.GetFileName).ToArray()!;
+
+		IsSuccess = srvOp.Result switch
+		{
+			null => null,
+			HotReloadServerResult.Success or HotReloadServerResult.NoChanges => true,
+			_ => false
+		};
+		Description = srvOp.Result switch
+		{
+			null => $"Processing changes{Join(files, "files")}.",
+			HotReloadServerResult.NoChanges => $"No changes detected by the server{Join(files, "files")}.",
+			HotReloadServerResult.Success => $"IDE successfully detected and compiled changes{Join(files, "files")}.",
+			HotReloadServerResult.RudeEdit => $"IDE detected changes{Join(files, "files")} but is not able to apply them.",
+			HotReloadServerResult.Failed => $"IDE detected changes{Join(files, "files")} but is not able to compile them.",
+			HotReloadServerResult.Aborted => $"Hot-reload has been cancelled (usually because some other changes has been detected).",
+			HotReloadServerResult.InternalError => "Hot-reload failed for due to an internal error.",
+			_ => $"Unknown IDE operation result: {srvOp.Result}."
+		};
+		Duration = srvOp.EndTime is not null ? srvOp.EndTime - srvOp.StartTime : null;
+
+		RaiseChanged();
+	}
+
+	private void RaiseChanged()
 		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
 
 	private string GetDuration()
@@ -340,7 +358,16 @@ internal sealed record HotReloadEntryViewModel(bool IsServer, long Id, DateTimeO
 		{
 			null => string.Empty,
 			{ TotalMilliseconds: < 1000 } ms => $" - {ms.TotalMilliseconds:F0} ms",
-			{ TotalSeconds: < 3 } s => $" - {s.TotalSeconds:N2} s",
+			{ TotalSeconds: < 3 } s => $" - {s.TotalSeconds:N0} s",
 			{ } d => $" - {d:g}"
+		};
+
+	private static string Join(string[] items, string itemType)
+		=> items switch
+		{
+			{ Length: 0 } => "",
+			{ Length: 1 } => $" in {items[0]}",
+			{ Length: <= 3 } => $" in {string.Join(",", items[..^1])} and {items[^1]}",
+			_ => $" in {string.Join(",", items[..3])} and {items.Length - 3} other {itemType}"
 		};
 }

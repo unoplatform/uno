@@ -196,7 +196,7 @@ public partial class ClientHotReloadProcessor
 
 		internal void ReportCompleted()
 		{
-			var result = (_exceptions, AbortReason: IgnoreReason) switch
+			var result = (_exceptions, IgnoreReason) switch
 			{
 				({ Count: > 0 }, _) => HotReloadClientResult.Failed,
 				(_, not null) => HotReloadClientResult.Ignored,
