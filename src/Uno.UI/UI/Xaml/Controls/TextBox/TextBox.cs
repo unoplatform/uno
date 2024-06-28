@@ -977,8 +977,15 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			if (ShouldFocusOnPointerPressed(args)
-				// UWP Captures pointer is not Touch
+			bool isPointerCaptureRequired =
+#if __WASM__
+				IsPointerCaptureRequired;
+#else
+				true;
+#endif
+
+			if (ShouldFocusOnPointerPressed(args) // UWP Captures if the pointer is not Touch
+				&& isPointerCaptureRequired
 				&& CapturePointer(args.Pointer))
 			{
 				Focus(FocusState.Pointer);
