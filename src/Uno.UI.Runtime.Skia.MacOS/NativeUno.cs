@@ -306,4 +306,16 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_cursor_set(CoreCursorType cursorType);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_native_create_sample(nint window, string text);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_set_opacity(nint element, double opacity);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_set_visibility(nint element, [MarshalAs(UnmanagedType.I1)] bool visible);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_measure(nint element, double childWidth, double childHeight, double availableWidth, double availableHeight, out double width, out double height);
 }
