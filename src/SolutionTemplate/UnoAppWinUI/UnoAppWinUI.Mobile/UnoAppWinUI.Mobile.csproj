@@ -45,7 +45,7 @@
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
-        <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+        <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.37" />
       </ItemGroup>
       <ItemGroup>
         <AndroidEnvironment Include="Android/environment.conf" />

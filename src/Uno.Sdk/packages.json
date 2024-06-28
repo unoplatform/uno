@@ -51,7 +51,7 @@
 	},
 	{
 		"group": "UniversalImageLoading",
-		"version": "1.9.36",
+		"version": "1.9.37",
 		"packages": [
 			"Uno.UniversalImageLoader"
 		]
