@@ -116,7 +116,7 @@ public partial class Window : UIWindow
 
 					(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
 
-					handled = true;
+					handled = routerArgs.Handled;
 				}
 			}
 			catch (Exception e)
@@ -173,7 +173,7 @@ public partial class Window : UIWindow
 
 					(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
 
-					handled = true;
+					handled = routerArgs.Handled;
 				}
 			}
 			catch (Exception e)
