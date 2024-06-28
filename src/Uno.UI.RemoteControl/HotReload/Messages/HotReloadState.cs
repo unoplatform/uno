@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Uno.UI.RemoteControl.HotReload.Messages;
+namespace Uno.UI.RemoteControl.HotReload;
 
 internal enum HotReloadState
 {

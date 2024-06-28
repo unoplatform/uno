@@ -8,7 +8,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Uno.Diagnostics.UI;
+
+#if HAS_UNO_WINUI
 using Uno.UI.RemoteControl.HotReload.Messages;
+#else
+using HotReloadServerOperationData = object;
+#pragma warning disable CS0649 // Field _serverState is not used on windows, we need to keep it to default
+#endif
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -68,6 +74,7 @@ public partial class ClientHotReloadProcessor
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
 
+#if HAS_UNO_WINUI
 		public void ReportServerStatus(HotReloadStatusMessage status)
 		{
 			_serverState = status.State;
@@ -85,6 +92,7 @@ public partial class ClientHotReloadProcessor
 				return updatedHistory.ToImmutable();
 			}
 		}
+#endif
 
 		public void ConfigureSourceForNextOperation(HotReloadSource source)
 			=> _source = source;
