@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Uno.Extensions;
 using Windows.Graphics.Display;
 using Windows.Storage.Helpers;
 
@@ -10,7 +11,13 @@ internal static partial class PlatformImageHelpers
 {
 	internal static async Task<string> GetScaledPath(Uri uri, ResolutionScale? scaleOverride)
 	{
-		var path = uri.OriginalString;
+		// When using ms-appx on Wasm Skia, we still get the uri as ms-appx://path/to/image.png
+		// When using ms-appx on Wasm native, we get the uri as /path/to/image.png
+		// For now, we handle both cases here.
+		// However, we should align both callers to always use the same format.
+		var isLocalResource = uri.IsLocalResource();
+		var path = isLocalResource ? uri.PathAndQuery.TrimStart("/") : uri.OriginalString;
+
 		if (!string.IsNullOrEmpty(path))
 		{
 			var assets = await AssetResolver.Assets;
@@ -39,14 +46,23 @@ internal static partial class PlatformImageHelpers
 
 					if (assets.Contains(filePath))
 					{
-						return AssetsPathBuilder.BuildAssetUri(filePath);
+						if (isLocalResource)
+						{
+							// This is the case for Wasm Skia.
+							return $"ms-appx:///{directory}/{filename}.scale-{probeScale}{extension}";
+						}
+						else
+						{
+							// This is the case for Wasm native.
+							return AssetsPathBuilder.BuildAssetUri(filePath);
+						}
 					}
 				}
 			}
 
-			return AssetsPathBuilder.BuildAssetUri(path);
+			return uri.OriginalString;
 		}
 
-		return path;
+		return uri.OriginalString;
 	}
 }
