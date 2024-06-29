@@ -507,6 +507,8 @@ namespace Microsoft.UI.Xaml
 				// when visibility changes.
 				parent.InvalidateMeasure();
 			}
+
+			ClearPointersStateOnVisibilityChangeIfNeeded(newVisibility);
 		}
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
@@ -688,6 +690,7 @@ namespace Microsoft.UI.Xaml
 		protected virtual void OnIsHitTestVisibleChanged(bool oldValue, bool newValue)
 		{
 			OnIsHitTestVisibleChangedPartial(oldValue, newValue);
+			ClearPointersStateIfNeeded();
 		}
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue);
@@ -1212,6 +1215,13 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private partial void ClearPointerStateOnRecycle();
+
+		internal bool IsViewHitOrTagExternallyDefined() =>
+#if __WASM__
+			(HtmlTagIsExternallyDefined && !FeatureConfiguration.FrameworkElement.UseLegacyHitTest) ||
+#endif
+				IsViewHit();
+
 
 		internal virtual bool IsViewHit() => true;
 

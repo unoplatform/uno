@@ -135,9 +135,9 @@ namespace Uno.UI.Xaml
 
 		#region SetPointerEvents
 
-		internal static void SetPointerEvents(IntPtr htmlId, bool enabled)
+		internal static void SetPointerEvents(IntPtr htmlId, string value)
 		{
-			NativeMethods.SetPointerEvents(htmlId, enabled);
+			NativeMethods.SetPointerEvents(htmlId, value);
 		}
 
 		[TSInteropMessage]
@@ -146,7 +146,7 @@ namespace Uno.UI.Xaml
 		{
 			public IntPtr HtmlId;
 
-			public bool Enabled;
+			public string Value;
 		}
 
 		#endregion
@@ -1160,7 +1160,7 @@ namespace Uno.UI.Xaml
 			internal static partial void SetPointerCapture(IntPtr htmlId, double pointerId);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
-			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
+			internal static partial void SetPointerEvents(IntPtr htmlId, string value);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
 			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);

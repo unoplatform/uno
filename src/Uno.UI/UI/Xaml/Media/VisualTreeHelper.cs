@@ -422,13 +422,12 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		}
 
-		internal static readonly GetHitTestability DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
-
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
 			XamlRoot? xamlRoot,
-			GetHitTestability? getTestability = null,
-			StalePredicate? isStale = null
+			bool isForDrop = false,
+			StalePredicate? isStale = null,
+			UIElement? forceCollapsed = null
 #if TRACE_HIT_TESTING
 			, [CallerMemberName] string caller = "")
 		{
@@ -440,7 +439,7 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 			if (xamlRoot?.VisualTree.RootElement is UIElement root)
 			{
-				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
+				return SearchDownForTopMostElementAt(position, root, isForDrop, isStale, forceCollapsed);
 			}
 
 			return default;
@@ -453,20 +452,22 @@ namespace Microsoft.UI.Xaml.Media
 		internal static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
 			Point position,
 			UIElement element,
-			GetHitTestability getVisibility,
-			StalePredicate? isStale)
+			bool isForDrop,
+			StalePredicate? isStale,
+			UIElement? forceCollapsed)
 		{
 			var stale = default(Branch?);
-			HitTestability elementHitTestVisibility;
-			(elementHitTestVisibility, getVisibility) = getVisibility(element);
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
-			TRACE($"- hit test visibility: {elementHitTestVisibility}");
 #endif
+			if (isForDrop && element.AllowDrop)
+			{
+				isForDrop = false;
+			}
 
 			// If the element is not hit testable, do not even try to validate it nor its children.
-			if (elementHitTestVisibility == HitTestability.Collapsed)
+			if (element.Visibility == Visibility.Collapsed || !element.IsEnabledOverride() || !element.IsHitTestVisible || element == forceCollapsed)
 			{
 				// Even if collapsed, if the element is stale, we search down for the real stale leaf
 				if (isStale?.Method.Invoke(element) ?? false)
@@ -592,7 +593,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			while (child.MoveNext())
 			{
-				var childResult = SearchDownForTopMostElementAt(testPosition, child.Current!, getVisibility, isChildStale);
+				var childResult = SearchDownForTopMostElementAt(testPosition, child.Current!, isForDrop, isChildStale, forceCollapsed);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
 				if (childResult.stale is not null)
@@ -662,7 +663,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
 			// and the position is in actual bounds (which might be different than the clipping bounds)
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
+			if (!isForDrop && element.IsViewHitOrTagExternallyDefined() && renderingBounds.Contains(testPosition))
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);

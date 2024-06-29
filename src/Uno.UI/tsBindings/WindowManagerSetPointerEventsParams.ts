@@ -3,7 +3,7 @@ class WindowManagerSetPointerEventsParams
 {
 	/* Pack=4 */
 	public HtmlId : number;
-	public Enabled : boolean;
+	public Value : string;
 	public static unmarshal(pData:number) : WindowManagerSetPointerEventsParams
 	{
 		const ret = new WindowManagerSetPointerEventsParams();
@@ -13,7 +13,16 @@ class WindowManagerSetPointerEventsParams
 		}
 		
 		{
-			ret.Enabled = Boolean(Module.getValue(pData + 4, "i32"));
+			const ptr = Module.getValue(pData + 4, "*");
+			if(ptr !== 0)
+			{
+				ret.Value = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.Value = null;
+			}
 		}
 		return ret;
 	}

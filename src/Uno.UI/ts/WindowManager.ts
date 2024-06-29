@@ -821,20 +821,20 @@ namespace Uno.UI {
 			this.setAsArranged(element);
 		}
 
-		private setPointerEvents(htmlId: number, enabled: boolean) {
+		private setPointerEvents(htmlId: number, value: string) {
 			const element = this.getView(htmlId);
-			element.style.pointerEvents = enabled ? "auto" : "none";
+			element.style.pointerEvents = value;
 		}
 
 		public setPointerEventsNative(pParams: number): boolean {
 			const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
-			this.setPointerEvents(params.HtmlId, params.Enabled);
+			this.setPointerEvents(params.HtmlId, params.Value);
 
 			return true;
 		}
 
-		public setPointerEventsNativeFast(htmlId: number, enabled: boolean) {
-			this.getView(htmlId).style.pointerEvents = enabled ? "auto" : "none";
+		public setPointerEventsNativeFast(htmlId: number, value: string) {
+			this.getView(htmlId).style.pointerEvents = value;
 		}
 
 		/**

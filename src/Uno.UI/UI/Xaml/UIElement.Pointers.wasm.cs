@@ -36,8 +36,8 @@ namespace Microsoft.UI.Xaml;
 
 public partial class UIElement : DependencyObject
 {
-	private static TSInteropMarshaller.HandleRef<NativePointerEventArgs> _pointerEventArgs;
-	private static TSInteropMarshaller.HandleRef<NativePointerEventResult> _pointerEventResult;
+	private static TSInteropMarshaller.HandleRef<NativePointerEventArgs>? _pointerEventArgs;
+	private static TSInteropMarshaller.HandleRef<NativePointerEventResult>? _pointerEventResult;
 
 	private static Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape? _lastSetCursor;
 
@@ -148,7 +148,7 @@ public partial class UIElement : DependencyObject
 		{
 			_logTrace?.Trace("Receiving native pointer event.");
 
-			var args = _pointerEventArgs.Value;
+			var args = _pointerEventArgs!.Value;
 			var element = GetElementFromHandle(args.HtmlId);
 
 			if (element is null)
@@ -291,7 +291,7 @@ public partial class UIElement : DependencyObject
 		}
 		finally
 		{
-			_pointerEventResult.Value = new NativePointerEventResult
+			_pointerEventResult!.Value = new NativePointerEventResult
 			{
 				Result = (byte)result.Value
 			};
@@ -379,88 +379,6 @@ public partial class UIElement : DependencyObject
 			SetStyle("touch-action", "none");
 		}
 	}
-
-	#region HitTestVisibility
-	internal void UpdateHitTest()
-	{
-		this.CoerceValue(HitTestVisibilityProperty);
-	}
-
-	[GeneratedDependencyProperty(DefaultValue = HitTestability.Collapsed, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-	internal static DependencyProperty HitTestVisibilityProperty { get; } = CreateHitTestVisibilityProperty();
-
-	internal HitTestability HitTestVisibility
-	{
-		get => GetHitTestVisibilityValue();
-		set => SetHitTestVisibilityValue(value);
-	}
-
-	/// <summary>
-	/// This calculates the final hit-test visibility of an element.
-	/// </summary>
-	/// <returns></returns>
-	private object CoerceHitTestVisibility(object baseValue)
-	{
-		if (this is RootVisual or XamlIsland)
-		{
-			return HitTestability.Visible;
-		}
-
-		// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
-		var baseHitTestVisibility = (HitTestability)baseValue;
-
-		// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
-		if (baseHitTestVisibility == HitTestability.Collapsed)
-		{
-			return HitTestability.Collapsed;
-		}
-
-		// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
-		// SvgElements are an exception here since they won't be loaded.
-		if (!(IsLoaded || HtmlTagIsSvg) || !IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
-		{
-			return HitTestability.Collapsed;
-		}
-
-		// Special case for external html element, we are always considering them as hit testable.
-		if (HtmlTagIsExternallyDefined && !FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
-		{
-			return HitTestability.Visible;
-		}
-
-		// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.		
-		if (IsViewHit())
-		{
-			return HitTestability.Visible;
-		}
-
-		// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
-		return HitTestability.Invisible;
-	}
-
-	private protected virtual void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
-	{
-		ApplyHitTestVisibility(newValue);
-	}
-
-	private void ApplyHitTestVisibility(HitTestability value)
-	{
-		// By default, elements have 'pointer-event' set to 'none' (see Uno.UI.css .uno-uielement class)
-		// which is aligned with HitTestVisibilityProperty's default value of Visible.
-		// If HitTestVisibilityProperty is calculated to Invisible or Collapsed,
-		// we don't want to be the target of hit-testing and raise any pointer events.
-		// This is done by setting 'pointer-events' to 'none'.
-		// However setting it to 'none' will allow pointer event to pass through the element (a.k.a. Invisible)
-
-		WindowManagerInterop.SetPointerEvents(HtmlId, value is HitTestability.Visible);
-
-		if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-		{
-			UpdateDOMProperties();
-		}
-	}
-
-	#endregion
 
 	[TSInteropMessage(Marshaller = CodeGeneration.Disabled, UnMarshaller = CodeGeneration.Enabled)]
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]

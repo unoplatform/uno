@@ -51,20 +51,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_HTMLElement_ExternalElement_Override_Then_IsHitTestable()
-		{
-			var SUT = new MyCustomComponent();
-
-			TestServices.WindowHelper.WindowContent = SUT;
-			await TestServices.WindowHelper.WaitForIdle();
-			await TestServices.WindowHelper.WaitFor(() => SUT.IsLoaded);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(HitTestability.Visible, SUT.HitTestVisibility);
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
 		public void When_HTMLElement_ExternalElement_Override_Twice()
 		{
 			var SUT = new MyLine2();

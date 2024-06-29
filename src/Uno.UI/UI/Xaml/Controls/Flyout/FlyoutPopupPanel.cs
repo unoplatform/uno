@@ -58,8 +58,7 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 		}
 
 		var point = args.GetCurrentPoint(null);
-		var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(XamlRoot?.VisualTree.PopupRoot as UIElement ?? this);
-		var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot, hitTestIgnoringThis);
+		var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot, forceCollapsed: XamlRoot?.VisualTree.PopupRoot as UIElement ?? this);
 
 		if (elementHitUnderOverlay is null)
 		{

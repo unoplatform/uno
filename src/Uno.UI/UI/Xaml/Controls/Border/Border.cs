@@ -307,6 +307,10 @@ public partial class Border : FrameworkElement
 		UpdateBorder();
 #endif
 		OnBackgroundChangedPartial();
+
+#if __WASM__
+		RefreshPointerEvents();
+#endif
 	}
 
 	partial void OnBackgroundChangedPartial();

@@ -13,6 +13,7 @@ using Windows.Devices.Haptics;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 using Uno.Extensions;
@@ -21,6 +22,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -65,16 +67,6 @@ namespace Microsoft.UI.Xaml
 
 	partial class UIElement
 	{
-		static UIElement()
-		{
-			var uiElement = typeof(UIElement);
-			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
-			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#endif
-		}
-
 		#region ManipulationMode (DP)
 		public static DependencyProperty ManipulationModeProperty { get; } = DependencyProperty.Register(
 			"ManipulationMode",
@@ -178,15 +170,13 @@ namespace Microsoft.UI.Xaml
 
 		private bool IsGestureRecognizerCreated => _gestures != null;
 
-		private static readonly PropertyChangedCallback ClearPointersStateIfNeeded = (DependencyObject sender, DependencyPropertyChangedEventArgs dp) =>
+		private void ClearPointersStateOnVisibilityChangeIfNeeded(Visibility newVisibility)
 		{
 			// As the Visibility DP is not inherited, when a control becomes invisible we validate that if any
 			// of its children is capturing a pointer, and we release those captures.
 			// As the number of capture is usually really small, we assume that its more performant to walk the tree
 			// when the visibility changes instead of creating another coalesced DP.
-			if (dp.NewValue is Visibility visibility
-				&& visibility != Visibility.Visible
-				&& PointerCapture.Any(out var captures))
+			if (newVisibility != Visibility.Visible && PointerCapture.Any(out var captures))
 			{
 				for (var captureIndex = 0; captureIndex < captures.Count; captureIndex++)
 				{
@@ -196,7 +186,7 @@ namespace Microsoft.UI.Xaml
 					for (var targetIndex = 0; targetIndex < targets.Count; targetIndex++)
 					{
 						var target = targets[targetIndex];
-						if (target.Element.HasParent(sender))
+						if (target.Element.HasParent(this))
 						{
 							target.Element.Release(capture, PointerCaptureKind.Any);
 						}
@@ -204,12 +194,26 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (sender is UIElement elt && elt.GetHitTestVisibility() == HitTestability.Collapsed)
+			ClearPointersStateIfNeeded();
+		}
+
+		private protected void ClearPointersStateIfNeeded()
+		{
+			if (Visibility == Visibility.Collapsed || !IsEnabledOverride() || !IsHitTestVisible)
 			{
 				_currentPointerEventDispatch.VisualTreeAltered = true;
-				elt.ClearPointerState();
+				ClearPointerStateOnTree();
 			}
-		};
+		}
+
+		private void ClearPointerStateOnTree()
+		{
+			ClearPointerState();
+			foreach (var child in VisualTreeHelper.GetManagedVisualChildren(this))
+			{
+				child.ClearPointerStateOnTree();
+			}
+		}
 
 		private static readonly RoutedEventHandler ClearPointersStateOnUnload = (object sender, RoutedEventArgs args) =>
 		{
@@ -267,7 +271,34 @@ namespace Microsoft.UI.Xaml
 		internal HitTestability GetHitTestVisibility()
 		{
 #if __WASM__ || __SKIA__ || __MACOS__
-			return HitTestVisibility;
+			var element = this;
+			while (element is not null)
+			{
+				if (!element.IsEnabledOverride() || !element.IsHitTestVisible)
+				{
+					return HitTestability.Collapsed;
+				}
+
+				element = GetParentUIElement(element);
+			}
+
+			return HitTestability.Visible;
+
+			static UIElement GetParentUIElement(UIElement element)
+			{
+				var parent = VisualTreeHelper.GetParent(element);
+				while (parent is not null)
+				{
+					if (parent is UIElement parentUIElement)
+					{
+						return parentUIElement;
+					}
+
+					parent = VisualTreeHelper.GetParent(parent);
+				}
+
+				return null;
+			}
 #else
 			// This is a coalesced HitTestVisible and should be unified with it
 			// We should follow the WASM way and unify it on all platforms!
@@ -276,7 +307,6 @@ namespace Microsoft.UI.Xaml
 			{
 				return HitTestability.Collapsed;
 			}
-
 			if (this is Microsoft.UI.Xaml.Controls.Control ctrl)
 			{
 				return ctrl.IsLoaded && ctrl.IsEnabled
