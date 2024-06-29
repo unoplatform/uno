@@ -17,10 +17,32 @@ using Uno.UI.RuntimeTests.MUX.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_TimePicker
 	{
 		[TestMethod]
-		[RunsOnUIThread]
+		public async Task When_MinuteIncrement_In_Range_Should_Be_Set_Properly()
+		{
+			var timePicker = new TimePicker();
+			Assert.AreEqual(1, timePicker.MinuteIncrement);
+
+			timePicker.MinuteIncrement = 59;
+			Assert.AreEqual(59, timePicker.MinuteIncrement);
+		}
+
+		[TestMethod]
+		public async Task When_MinuteIncrement_Not_In_Range_Should_Throw_And_Keep_OldValue()
+		{
+			var timePicker = new TimePicker();
+			timePicker.MinuteIncrement = 17;
+			Assert.AreEqual(17, timePicker.MinuteIncrement);
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = 60);
+			Assert.AreEqual(17, timePicker.MinuteIncrement);
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = -1);
+			Assert.AreEqual(17, timePicker.MinuteIncrement);
+		}
+
+		[TestMethod]
 		public async Task When_SettingNullTime_ShouldNotCrash()
 		{
 			var timePicker = new TimePicker();
@@ -39,7 +61,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_PM_Opened_And_Closed()
 		{
 			// This tests whether the looping selector does not unexpectedly
@@ -65,7 +86,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15409")]
 		public async Task When_Opened_From_Button_Flyout()
 		{
@@ -104,12 +124,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Unloaded_Native() => await When_Opened_And_Unloaded(true);
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded(false);
 
@@ -159,12 +177,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Native() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Managed() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
 
@@ -204,7 +220,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __IOS__
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
 		{
@@ -213,7 +228,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Light_Native_Flyout_Theme() => await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Light);
 
