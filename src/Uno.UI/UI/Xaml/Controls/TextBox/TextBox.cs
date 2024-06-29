@@ -295,8 +295,7 @@ namespace Microsoft.UI.Xaml.Controls
 					defaultValue: string.Empty,
 					options: FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextChanged(e),
-					coerceValueCallback: (d, v, _) => ((TextBox)d)?.CoerceText(v),
-					defaultUpdateSourceTrigger: UpdateSourceTrigger.Explicit
+					coerceValueCallback: (d, v, _) => ((TextBox)d)?.CoerceText(v)
 				)
 			);
 

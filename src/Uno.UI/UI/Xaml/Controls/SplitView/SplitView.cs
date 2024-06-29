@@ -29,6 +29,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public SplitView()
 		{
 			DefaultStyleKey = typeof(SplitView);
+
+			TemplateSettings = new SplitViewTemplateSettings(this);
 		}
 
 #if __IOS__
@@ -266,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(SplitViewTemplateSettings),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					new SplitViewTemplateSettings(null),
+					null,
 					(s, e) => ((SplitView)s)?.OnTemplateSettingsPropertyChanged(e)
 				)
 			);
@@ -367,7 +369,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateTemplateSettings()
 		{
-			this.TemplateSettings = new SplitViewTemplateSettings(this);
+			var templateSettings = TemplateSettings;
+
+			templateSettings.OpenPaneLength = OpenPaneLength;
+			templateSettings.CompactPaneLength = CompactPaneLength;
 		}
 
 		/// <summary>

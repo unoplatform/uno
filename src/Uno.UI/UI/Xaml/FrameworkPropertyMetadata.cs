@@ -13,9 +13,6 @@ namespace Microsoft.UI.Xaml
 	/// </remarks>
 	public class FrameworkPropertyMetadata : PropertyMetadata
 	{
-		private bool _isDefaultUpdateSourceTriggerSet;
-		private UpdateSourceTrigger _defaultUpdateSourceTrigger;
-
 		public FrameworkPropertyMetadata(
 			object defaultValue
 		) : base(defaultValue)
@@ -138,37 +135,7 @@ namespace Microsoft.UI.Xaml
 			Options = options.WithDefault();
 		}
 
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback,
-			UpdateSourceTrigger defaultUpdateSourceTrigger
-		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
-		{
-			Options = options.WithDefault();
-			DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;
-		}
-
 		public FrameworkPropertyMetadataOptions Options { get; set; } = FrameworkPropertyMetadataOptions.Default;
-
-		public UpdateSourceTrigger DefaultUpdateSourceTrigger
-		{
-			get
-			{
-				// UpdateSourceTrigger.Default doesn't make sense as a value for DefaultUpdateSourceTrigger,
-				// as it is usually used to indicate that a binding should use DefaultUpdateSourceTrigger,
-				// which should be either UpdateSourceTrigger.PropertyChanged (by default) or UpdateSourceTrigger.Explicit.
-				return _defaultUpdateSourceTrigger == UpdateSourceTrigger.Default
-					? UpdateSourceTrigger.PropertyChanged
-					: _defaultUpdateSourceTrigger;
-			}
-			private set
-			{
-				_defaultUpdateSourceTrigger = value;
-				_isDefaultUpdateSourceTriggerSet = true;
-			}
-		}
 
 		protected internal override void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
 		{
@@ -176,11 +143,6 @@ namespace Microsoft.UI.Xaml
 
 			if (baseMetadata is FrameworkPropertyMetadata baseFrameworkMetadata)
 			{
-				if (!_isDefaultUpdateSourceTriggerSet)
-				{
-					DefaultUpdateSourceTrigger = baseFrameworkMetadata.DefaultUpdateSourceTrigger;
-				}
-
 				// Merge options flags
 				Options |= baseFrameworkMetadata.Options;
 			}
