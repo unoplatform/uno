@@ -33,6 +33,23 @@ Uno Platform and WinUI run this loop for 250 iterations. If the loop hasn't stab
 
 When the last 10 iterations out of 150 are reached, we will start logging some information as warnings. Those logs are prefixed with `[LayoutCycleTracing]` and include information such as when an element is measured or arranged, and when measure or arrange is invalidated.
 
+One possible cause of layout cycle is incorrect usage of `LayoutUpdated` event. This event isn't really tied to a specific `FrameworkElement` and is fired whenever any element changes its layout in the visual tree. So, using this event to add or remove an element to the visual tree can lead to layout cycle. The simplest example is having XAML similar to the following
+
+```xaml
+<StackPanel x:Name="sp" LayoutUpdated="sp_LayoutUpdated" />
+```
+
+and code behind:
+
+```csharp
+private void sp_LayoutUpdated(object sender, object e)
+{
+    sp.Children.Add(new Button() { Content = "Button" });
+}
+```
+
+In this case, when `LayoutUpdated` is first fired, you add a new child to the `StackPanel` which will cause visual tree root to have its measure invalidated, then `LayoutUpdated` gets fired again, causing visual tree root to have its measured invalidated again, and so on. This ends up causing a layout cycle.
+
 ## Cannot build with both Uno.WinUI and Uno.UI NuGet packages referenced
 
 This issue generally happens when referencing an Uno.UI (using UWP APIs) NuGet package in an application that uses Uno.WinUI (Using WinAppSDK APIs).
