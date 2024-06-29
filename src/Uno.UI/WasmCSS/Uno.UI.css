@@ -30,9 +30,17 @@ body {
   display: inline;
   outline: none;
   /*
-    Disable pointer events by default to match HitTestVisibilityProperty default value.
+    For each element, we have 3 hit test visibility modes:
+      1. Visible: The element is visible and can be hit tested.
+      2. Invisible: The element is not hit testable, but its descendants can be.
+      3. Collapsed: The element is not hit testable, and its descendants are not either.
+    We will make it that our default is "inherit".
+    For elements that are not hit testable, it's enough to set "none" on them and that will be inherited properly.
+    For elements that are visible, we will not touch them and leave the "inherit" default take place.
+    For elements that are invisible, we will set "none" on them, but update the direct children to "auto" (if visible) or "none" (if collapsed).
+
   */
-  pointer-events: none;
+  pointer-events: inherit;
   /*
     Padding & margin are required for measure/arrange to behave well:
     margin & padding are calculated through Xaml elements.

@@ -80,12 +80,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var expected = new Rect(25, 205, 80, 40);
 			RectAssert.AreEqual(expected, bounds);
 
-			GetHitTestability getHitTestability = null;
-			getHitTestability = element => (element as FrameworkElement)?.Background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
-
 			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot, getHitTestability);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot);
 				Assert.AreEqual(sut, hitTest.element);
 			}
 

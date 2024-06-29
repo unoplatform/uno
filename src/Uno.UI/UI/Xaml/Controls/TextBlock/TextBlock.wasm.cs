@@ -192,8 +192,6 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnTextChangedPartial()
 		{
 			_textChanged = true;
-
-			UpdateHitTest();
 		}
 
 		partial void ClearTextPartial() => SetHtmlContent("");

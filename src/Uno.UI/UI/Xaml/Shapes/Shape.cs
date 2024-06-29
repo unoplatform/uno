@@ -155,7 +155,13 @@ namespace Microsoft.UI.Xaml.Shapes
 		#endregion
 
 		internal override bool IsViewHit()
+#if __WASM__
+			// We stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
+			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
+			=> false;
+#else
 			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
+#endif
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{

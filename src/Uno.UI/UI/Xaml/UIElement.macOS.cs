@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml
 		{
 			Initialize();
 			InitializePointers();
-
-			UpdateHitTest();
 		}
 
 		internal bool IsMeasureDirtyPath
@@ -50,15 +48,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
-		{
-			UpdateHitTest();
-		}
-
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
-			UpdateHitTest();
-
 			var isNewVisibilityHidden = newValue.IsHidden();
 
 			if (base.Hidden == isNewVisibilityHidden)
