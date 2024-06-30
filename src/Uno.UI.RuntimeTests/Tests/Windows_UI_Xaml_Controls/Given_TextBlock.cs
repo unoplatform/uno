@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
@@ -18,10 +17,9 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
+using Windows.ApplicationModel.DataTransfer;
 
 #if __SKIA__
-using System;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using SkiaSharp;
@@ -241,6 +239,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Trailing space shouldn't wrap
 			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		public async Task Copy_And_Paste_All_Text()
+		{
+			var SUT = new TextBlock { Text = "Some text", IsTextSelectionEnabled = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.SelectAll();
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			var dataPackage = Clipboard.GetContent();
+			var text = await dataPackage.GetTextAsync();
+			Assert.AreEqual("Some text", text);
 		}
 
 		[TestMethod]
