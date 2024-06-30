@@ -25,7 +25,7 @@ using _View = UIKit.UIView;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
-#if !HAS_UNO || __ANDROID__ || __IOS__
+#if !HAS_UNO || __ANDROID__ || __IOS__ || __WASM__
 [TestClass]
 [RunsOnUIThread]
 public class Given_WebView2

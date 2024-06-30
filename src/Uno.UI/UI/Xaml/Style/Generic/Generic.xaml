@@ -7745,6 +7745,26 @@
 		</Setter>
 	</not_netstdref:Style>
 
+	<wasm:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<NativeWebView />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
+
+	<wasm:Style TargetType="mux:WebView2">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<NativeWebView />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
+
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
 		<Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
 		<Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
