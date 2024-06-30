@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// The content presenter is used for compatibility with WPF concepts,
 /// but the ContentSource property is not available, because there are ControlTemplates for now.
 /// </remarks>
-[ContentProperty(Name = "Content")]
+[ContentProperty(Name = nameof(Content))]
 public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 	, ICustomClippingElement
@@ -117,12 +117,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty ContentProperty { get; } =
 		DependencyProperty.Register(
-			"Content",
+			nameof(Content),
 			typeof(object),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.None,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnContentChanged(e.OldValue, e.NewValue)
 			)
 		);
@@ -140,12 +140,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
 	public static DependencyProperty ContentTemplateProperty { get; } =
 		DependencyProperty.Register(
-			"ContentTemplate",
+			nameof(ContentTemplate),
 			typeof(DataTemplate),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				null,
-				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 			)
 		);
@@ -254,12 +254,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontWeightProperty { get; } =
 		DependencyProperty.Register(
-			"FontWeight",
+			nameof(FontWeight),
 			typeof(FontWeight),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontWeights.Normal,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue)
 			)
 		);
@@ -276,12 +276,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontSizeProperty { get; } =
 		DependencyProperty.Register(
-			"FontSize",
+			nameof(FontSize),
 			typeof(double),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				14.0,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 			)
 		);
@@ -298,12 +298,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontFamilyProperty { get; } =
 		DependencyProperty.Register(
-			"FontFamily",
+			nameof(FontFamily),
 			typeof(FontFamily),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontFamily.Default,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily)
 			)
 		);
@@ -319,12 +319,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontStyleProperty { get; } =
 		DependencyProperty.Register(
-			"FontStyle",
+			nameof(FontStyle),
 			typeof(FontStyle),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontStyle.Normal,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
 			)
 		);
@@ -368,11 +368,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty MaxLinesProperty { get; } =
 		DependencyProperty.Register(
-			"MaxLines",
+			nameof(MaxLines),
 			typeof(int),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 			)
 		);
@@ -545,12 +546,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty BorderThicknessProperty { get; } =
 		DependencyProperty.Register(
-			"BorderThickness",
+			nameof(BorderThickness),
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				(Thickness)Thickness.Empty,
-				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
 		);

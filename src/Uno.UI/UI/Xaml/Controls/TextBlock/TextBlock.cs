@@ -149,6 +149,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnInlinesChangedPartial();
 			InvalidateTextBlock();
+			InvalidateMeasure();
 		}
 
 		partial void OnInlinesChangedPartial();
@@ -170,7 +171,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontStyle.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontStyleChanged()
 				)
 			);
@@ -200,6 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextWrappingChanged()
 				)
 			);
@@ -229,7 +231,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontWeights.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontWeightChanged()
 				)
 			);
@@ -264,6 +266,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
 					coerceValueCallback: CoerceText,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) =>
 						((TextBlock)s).OnTextChanged((string)e.OldValue, (string)e.NewValue)
 				)
@@ -314,7 +317,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontFamily.Default,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontFamilyChanged()
 				)
 			);
@@ -344,7 +347,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 14.0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontSizeChanged()
 				)
 			);
@@ -374,6 +377,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnMaxLinesChanged()
 				)
 			);
@@ -403,6 +407,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextTrimming.None,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextTrimmingChanged()
 				)
 			);
@@ -531,7 +536,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetTextAlignmentValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = TextAlignment.Left, ChangedCallback = true, ChangedCallbackName = nameof(OnTextAlignmentChanged))]
+		[GeneratedDependencyProperty(DefaultValue = TextAlignment.Left, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnTextAlignmentChanged))]
 		public static DependencyProperty TextAlignmentProperty { get; } = CreateTextAlignmentProperty();
 
 		private void OnTextAlignmentChanged()
@@ -560,6 +565,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextAlignment.Left,
+					FrameworkPropertyMetadataOptions.AffectsArrange,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnHorizontalTextAlignmentChanged()
 				)
 			);
@@ -580,9 +586,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LineHeightProperty { get; } =
-			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new FrameworkPropertyMetadata(0d,
-				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged())
-			);
+			DependencyProperty.Register(
+				nameof(LineHeight),
+				typeof(double),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					0d,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged()));
 
 		private void OnLineHeightChanged()
 		{
@@ -603,10 +614,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LineStackingStrategyProperty { get; } =
-			DependencyProperty.Register("LineStackingStrategy", typeof(LineStackingStrategy), typeof(TextBlock),
-				new FrameworkPropertyMetadata(LineStackingStrategy.MaxHeight,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged())
-			);
+			DependencyProperty.Register(
+				nameof(LineStackingStrategy),
+				typeof(LineStackingStrategy),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					LineStackingStrategy.MaxHeight,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged()));
 
 		private void OnLineStackingStrategyChanged()
 		{
@@ -628,12 +643,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
-				"Padding",
+				nameof(Padding),
 				typeof(Thickness),
 				typeof(TextBlock),
-				new FrameworkPropertyMetadata((Thickness)Thickness.Empty,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged())
-			);
+				new FrameworkPropertyMetadata(
+					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged()));
 
 		private void OnPaddingChanged()
 		{
@@ -655,12 +671,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty CharacterSpacingProperty { get; } =
 			DependencyProperty.Register(
-				"CharacterSpacing",
+				nameof(CharacterSpacing),
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
 				)
 			);
@@ -690,7 +706,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextDecorationsChanged()
 				)
 			);
@@ -1201,11 +1217,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		private void InvalidateTextBlock()
-		{
-			InvalidateTextBlockPartial();
-			InvalidateMeasure();
-		}
+		private void InvalidateTextBlock() => InvalidateTextBlockPartial();
 
 		partial void InvalidateTextBlockPartial();
 

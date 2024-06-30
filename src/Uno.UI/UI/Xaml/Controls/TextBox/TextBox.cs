@@ -518,10 +518,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty PlaceholderTextProperty { get; } =
 			DependencyProperty.Register(
-				"PlaceholderText",
+				nameof(PlaceholderText),
 				typeof(string),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: string.Empty)
+				new FrameworkPropertyMetadata(defaultValue: string.Empty, options: FrameworkPropertyMetadataOptions.AffectsMeasure)
 			);
 
 		#endregion
@@ -689,11 +689,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty TextWrappingProperty { get; } =
 			DependencyProperty.Register(
-				"TextWrapping",
+				nameof(TextWrapping),
 				typeof(TextWrapping),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged())
 				);
 
@@ -786,10 +787,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register("Header",
+			DependencyProperty.Register(
+				nameof(Header),
 				typeof(object),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -801,12 +805,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register("HeaderTemplate",
+			DependencyProperty.Register(
+				nameof(HeaderTemplate),
 				typeof(DataTemplate),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -888,7 +893,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextAlignmentProperty { get; } =
-			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
+			DependencyProperty.Register(
+				nameof(TextAlignment),
+				typeof(TextAlignment),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+					TextAlignment.Left,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
 
 
 		private void OnTextAlignmentChanged(TextAlignment newValue) => OnTextAlignmentChangedPartial(newValue);
