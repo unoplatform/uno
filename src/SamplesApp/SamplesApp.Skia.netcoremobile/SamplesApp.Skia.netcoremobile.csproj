@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!--<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>-->
-		<TargetFrameworks>net7.0-android</TargetFrameworks>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
-	<!--<Import Project="../../targetframework-override.props" />-->
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<SingleProject>true</SingleProject>
@@ -184,7 +183,7 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
-
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
