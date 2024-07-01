@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
@@ -44,13 +43,17 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 	public void ChangeNativeElementVisibility(object content, bool visible)
 	{
-		// no need to do anything here, airspace clipping logic will take care of it automatically
 	}
 
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		Debug.Assert(content is string);
 		NativeMethods.ChangeNativeElementOpacity((string)content, opacity);
+	}
+
+	public static void SetSvgClipPathForNativeElementHost(string path)
+	{
+		NativeMethods.SetSvgClipPathForNativeElementHost(path);
 	}
 
 	public Windows.Foundation.Size MeasureNativeElement(object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize) => availableSize;
@@ -74,5 +77,8 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.changeNativeElementOpacity")]
 		internal static partial string ChangeNativeElementOpacity(string content, double opacity);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.setSvgClipPathForNativeElementHost")]
+		internal static partial string SetSvgClipPathForNativeElementHost(string path);
 	}
 }

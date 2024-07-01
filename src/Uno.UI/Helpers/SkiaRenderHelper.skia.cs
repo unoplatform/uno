@@ -15,9 +15,10 @@ internal static class SkiaRenderHelper
 	private static readonly SKPath _clipPath = new SKPath();
 
 	/// <summary>
-	/// Does a rendering cycle and returns a path that represents the total area that was drawn
+	/// Does a rendering cycle, clips to the total area that was drawn
+	/// and returns this area or null if the entire window is drawn.
 	/// </summary>
-	public static void RenderRootVisualAndClearNativeAreas(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	public static SKPath? RenderRootVisualAndClearNativeAreas(int width, int height, ShapeVisual rootVisual, SKSurface surface)
 	{
 		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
 		if (path is { })
@@ -32,6 +33,8 @@ internal static class SkiaRenderHelper
 			canvas.Clear(SKColors.Transparent);
 			canvas.Restore();
 		}
+
+		return path;
 	}
 
 	/// <summary>
