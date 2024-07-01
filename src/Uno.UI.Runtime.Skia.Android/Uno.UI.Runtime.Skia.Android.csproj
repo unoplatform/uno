@@ -49,12 +49,12 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
-	<!-- <ItemGroup> -->
-		<!-- <Content Include="buildTransitive/*.targets"> -->
-			<!-- <Pack>true</Pack> -->
-			<!-- <PackagePath>buildTransitive</PackagePath> -->
-		<!-- </Content> -->
-	<!-- </ItemGroup> -->
+	<ItemGroup>
+		<Content Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
 
 	<!--<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />-->
 
