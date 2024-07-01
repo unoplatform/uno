@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -323,4 +324,10 @@ public partial class Popup
 
 	// On WinUi, a popup is not IsTabStop but is somehow focusable. This is a workaround to match that behaviour.
 	internal override bool IsFocusableForFocusEngagement() => true;
+
+	internal void SetAssociatedVisualTree(VisualTree visualTree)
+	{
+		// TODO Uno: Implement this
+		//visualTree.AttachElement(this);
+	}
 }
