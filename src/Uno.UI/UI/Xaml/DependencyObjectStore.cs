@@ -1,21 +1,22 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.DataBinding;
+using System.Collections;
 using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.UI.Xaml.Data;
+using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
-using System.Linq;
-using System.Threading;
-using Uno.Collections;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
-using System.Collections;
-using System.Globalization;
+using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.ApplicationModel.Calls;
 
 #if __ANDROID__
@@ -508,7 +509,7 @@ namespace Microsoft.UI.Xaml
 						OnDataContextChanged(value, newValue, precedence);
 					}
 
-					TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+					//TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 
 					TryUpdateInheritedAttachedProperty(property, propertyDetails);
 
@@ -536,6 +537,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if false
 		/// <summary>
 		/// Tries to apply the DataContext to the new and previous values when DataContext Value is inherited
 		/// </summary>
@@ -606,6 +608,7 @@ namespace Microsoft.UI.Xaml
 		{
 			SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
 		}
+#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static void TryClearBinding(object? value, DependencyPropertyDetails propertyDetails)
@@ -1955,7 +1958,8 @@ namespace Microsoft.UI.Xaml
 			// Raise the common property change callback of WinUI
 			// This is raised *after* the data bound properties are updated
 			// but before the registered property callbacks
-			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
+			var skipOnPropertyChanged2 = property == FrameworkElement.DataContextProperty && newPrecedence == DependencyPropertyValuePrecedences.Inheritance;
+			if (!skipOnPropertyChanged2 && actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
 				doInternal.OnPropertyChanged2(eventArgs);
 			}
@@ -2080,6 +2084,14 @@ namespace Microsoft.UI.Xaml
 			}
 
 			CheckThemeBindings(previousParent, value);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			if (value is FrameworkElement { IsActiveInVisualTree: true } &&
+				ActualInstance is FrameworkElement actualInstance)
+			{
+				actualInstance.NotifyOfDataContextChange(new DataContextChangedParams(actualInstance, DataContextChangedReason.EnteringLiveTree));
+			}
+#endif
 		}
 
 		/// <summary>

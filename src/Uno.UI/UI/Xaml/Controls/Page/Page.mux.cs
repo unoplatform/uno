@@ -6,13 +6,13 @@
 
 using System;
 using System.Runtime.CompilerServices;
-
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -91,5 +91,25 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void NotifyOfDataContextChange(DataContextChangedParams args)
+		{
+			base.NotifyOfDataContextChange(args);
+
+			var topBar = TopAppBar;
+			var bottomBar = BottomAppBar;
+
+			if (topBar is null && bottomBar is null)
+			{
+				return;
+			}
+
+			object newDataContext = args.ResolvedNewDataContext ? args.NewDataContext : DataContext;
+
+			topBar?.SetValue(FrameworkElement.DataContextProperty, newDataContext);
+			bottomBar?.SetValue(FrameworkElement.DataContextProperty, newDataContext);
+		}
+#endif
 	}
 }

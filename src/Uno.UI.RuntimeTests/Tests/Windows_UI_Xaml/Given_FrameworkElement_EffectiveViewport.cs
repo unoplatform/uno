@@ -1180,7 +1180,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await WaitForIdle();
 
 			Assert.AreEqual(1, changedCount);
-			Assert.AreEqual(2, childChangedCount);
+			Assert.AreEqual(1, childChangedCount);
 		}
 
 		private async Task RetryAssert(Action assertion)

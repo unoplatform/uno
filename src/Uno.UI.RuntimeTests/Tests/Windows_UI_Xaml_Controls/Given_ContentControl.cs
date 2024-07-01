@@ -14,6 +14,8 @@ using static Private.Infrastructure.TestServices;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentControlPages;
 using Windows_UI_Xaml_Controls;
+using Microsoft.UI.Xaml.Media;
+
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -63,6 +65,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public void Init()
 		{
 			_testsResources = new TestsResources();
+		}
+
+		[TestMethod]
+		public async Task When_Content_Is_FrameworkElement()
+		{
+			var contentControl = new ContentControl();
+			Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(contentControl));
+			contentControl.Content = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+
+			Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(contentControl));
+
+			await UITestHelper.Load(contentControl);
+
+			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(contentControl));
 		}
 
 		[TestMethod]

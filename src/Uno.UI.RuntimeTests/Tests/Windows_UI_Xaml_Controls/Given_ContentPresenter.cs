@@ -26,6 +26,118 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_ContentPresenter
 {
 	[TestMethod]
+	public async Task When_DataContext_Is_Inherited()
+	{
+		var parentStackPanel = new StackPanel();
+		var cp = new ContentPresenter() { Width = 100, Height = 100, };
+		parentStackPanel.Children.Add(cp);
+		await UITestHelper.Load(parentStackPanel);
+
+		var sp = new StackPanel() { Width = 100, Height = 100 };
+		cp.Content = sp;
+
+		parentStackPanel.DataContext = "Parent DataContext";
+		var changed = new List<string>();
+		sp.DataContextChanged += (sender, args) => changed.Add($"{sender.DataContext},{args.NewValue}");
+		await TestServices.WindowHelper.WaitForLoaded(cp);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, changed.Count);
+		Assert.AreEqual("Parent DataContext,Parent DataContext", changed[0]);
+	}
+
+	[TestMethod]
+	public async Task When_DataContext_Is_Inherited2()
+	{
+		var parentStackPanel = new StackPanel() { Width = 100, Height = 100, DataContext = "Parent DataContext" };
+		await UITestHelper.Load(parentStackPanel);
+
+		var btn = new Button();
+		btn.DataContextChanged += (a, b) => { _ = a.GetValue(FrameworkElement.DataContextProperty); };
+		btn.Content = "Click";
+		parentStackPanel.Children.Add(btn);
+
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	public async Task When_Content_Changes_And_Is_Non_UIElement()
+	{
+		var SUT = new ContentPresenter() { Tag = "SUT" };
+		SUT.Content = "Hello";
+
+		SUT.DataContextChanged += (sender, args) =>
+		{
+
+		};
+
+		SUT.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (s, e) =>
+		{
+
+		});
+
+		Assert.IsNull(SUT.DataContext);
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual("Hello", SUT.DataContext);
+
+		SUT.Content = "Hello2";
+
+		Assert.AreEqual("Hello", SUT.DataContext);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("Hello2", SUT.DataContext);
+	}
+
+	[TestMethod]
+	public async Task When_DC_Changes()
+	{
+		var SUT = new ContentPresenter()
+		{
+			DataContext = "Hello"
+		};
+
+		var btn = new Button();
+		var changed = new List<string>();
+		btn.DataContextChanged += (sender, args) => changed.Add($"sender.DataContext: {sender.DataContext}, args.NewValue: {args.NewValue}");
+
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+
+		SUT.Content = btn;
+
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+
+		Assert.IsNull(btn.DataContext);
+
+		SUT.DataContext = "Hello2";
+
+		Assert.IsNull(btn.DataContext);
+
+		Assert.AreEqual(0, changed.Count);
+
+		Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+		Assert.AreEqual(1, changed.Count);
+
+		Assert.IsNull(btn.DataContext);
+
+		SUT.DataContext = "Hello3";
+
+		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT));
+		Assert.AreEqual(2, changed.Count);
+
+		Assert.AreEqual("Hello3", btn.DataContext);
+
+		Assert.AreEqual("sender.DataContext: , args.NewValue: ", changed[0]);
+		Assert.AreEqual("sender.DataContext: Hello3, args.NewValue: Hello3", changed[1]);
+	}
+
+	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
 	{
 		var SUT = new ContentPresenter()
@@ -101,7 +213,7 @@ public class Given_ContentPresenter
 
 		sut.emptyTestRoot.DataContext = "43";
 
-		Assert.AreEqual("43", GetTextBlockText(sut, "emptyTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "emptyTest"));
 	}
 
 	[TestMethod]
@@ -111,16 +223,16 @@ public class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("43", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 
 		sut.priorityTestRoot.DataContext = "44";
-		Assert.AreEqual("44", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 
 		sut.priorityTestRoot.Content = "45";
-		Assert.AreEqual("45", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 
 		sut.priorityTestRoot.DataContext = "46";
-		Assert.AreEqual("46", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 	}
 
 	[TestMethod]
@@ -130,7 +242,7 @@ public class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("42", GetTextBlockText(sut, "sameValueTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "sameValueTest"));
 	}
 
 	[TestMethod]
@@ -140,19 +252,19 @@ public class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("DataContext", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestRoot.DataContext = "46";
-		Assert.AreEqual("46", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestRoot.DataContext = "47";
-		Assert.AreEqual("47", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestInner.DataContext = "48";
-		Assert.AreEqual("48", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestRoot.DataContext = "49";
-		Assert.AreEqual("48", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 	}
 
 	[TestMethod]
@@ -201,7 +313,7 @@ public class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("DataContext", GetTextBlockText(sut, "sameValueChangingTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "sameValueChangingTest"));
 	}
 
 	[TestMethod]
@@ -211,7 +323,7 @@ public class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("42", GetTextBlockText(sut, "nullContentChanged"));
+		Assert.AreEqual("", GetTextBlockText(sut, "nullContentChanged"));
 	}
 
 	static string GetTextBlockText(FrameworkElement sut, string v)
@@ -344,7 +456,7 @@ public class Given_ContentPresenter
 		TestServices.WindowHelper.WindowContent = SUT;
 
 		var wref = SetContent();
-		Assert.AreEqual(wref.Target, SUT.DataContext);
+		Assert.AreEqual(null, SUT.DataContext);
 
 		SUT.Content = null;
 

@@ -45,6 +45,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
 			private readonly INamedTypeSymbol? _frameworkElementSymbol;
+			private readonly INamedTypeSymbol? _uiElementSymbol;
 			private readonly bool _isUnoSolution;
 			private readonly string[] _analyzerSuppressions;
 
@@ -65,6 +66,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 				_frameworkElementSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.FrameworkElement");
+				_uiElementSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.UIElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 			}
@@ -644,6 +646,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 					dataContextChangedInvokeArgument = "null";
 				}
 
+				string lifeCycleDataContextPropagation = typeSymbol.Is(_uiElementSymbol) ? "" : $"DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));";
+
 				builder.AppendMultiLineIndented($@"
 
 #region DataContext DependencyProperty
@@ -670,7 +674,12 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 {protectedModifier} {virtualModifier} void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 {{
 	OnDataContextChangedPartial(e);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE // TODO (Important): We will need UNO_HAS_ENHANCED_LIFECYCLE to be defined for consuming apps as well.
+	{lifeCycleDataContextPropagation}
+#else
 	DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
+#endif
 }}
 
 #endregion
