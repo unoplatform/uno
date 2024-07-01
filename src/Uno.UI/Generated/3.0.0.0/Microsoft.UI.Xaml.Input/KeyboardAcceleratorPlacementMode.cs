@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Input
 {
-#if false
+#if false || false || false || false || false || false || false || false
 	public enum KeyboardAcceleratorPlacementMode
 	{
-#if false
-		Auto = 0,
-#endif
-#if false
-		Hidden = 1,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode.Hidden
 	}
 #endif
 }

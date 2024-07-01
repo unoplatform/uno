@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Panel : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property ChildrenTransitions
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.BrushTransition BackgroundTransition
 		{
 			get
@@ -23,10 +23,30 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Skipping already declared property Background
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public global::Microsoft.UI.Xaml.Media.Brush Background
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(BackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared property Children
 		// Skipping already declared property IsItemsHost
-		// Skipping already declared property BackgroundProperty
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty BackgroundProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Background), typeof(global::Microsoft.UI.Xaml.Media.Brush),
+			typeof(global::Microsoft.UI.Xaml.Controls.Panel),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
+#endif
 		// Skipping already declared property ChildrenTransitionsProperty
 		// Skipping already declared property IsItemsHostProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Panel.Panel()

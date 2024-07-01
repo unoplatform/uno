@@ -3,12 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PivotItemEventArgs
 	{
-		// Skipping already declared property Item
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public global::Microsoft.UI.Xaml.Controls.PivotItem Item
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PivotItem PivotItemEventArgs.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PivotItem%20PivotItemEventArgs.Item");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PivotItemEventArgs", "PivotItem PivotItemEventArgs.Item");
+			}
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.PivotItemEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.PivotItemEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.Item.get

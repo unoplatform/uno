@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PackageId
@@ -11,11 +11,29 @@ namespace Windows.ApplicationModel
 		// Skipping already declared property Architecture
 		// Skipping already declared property FamilyName
 		// Skipping already declared property FullName
-		// Skipping already declared property Name
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PackageId.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PackageId.Name");
+			}
+		}
+#endif
 		// Skipping already declared property Publisher
 		// Skipping already declared property PublisherId
 		// Skipping already declared property ResourceId
-		// Skipping already declared property Version
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public global::Windows.ApplicationModel.PackageVersion Version
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PackageVersion PackageId.Version is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageVersion%20PackageId.Version");
+			}
+		}
+#endif
 		// Skipping already declared property Author
 		// Skipping already declared property ProductId
 		// Forced skipping of method Windows.ApplicationModel.PackageId.Name.get

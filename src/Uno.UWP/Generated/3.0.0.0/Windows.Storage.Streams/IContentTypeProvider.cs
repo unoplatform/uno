@@ -3,12 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IContentTypeProvider
 	{
-		// Skipping already declared property ContentType
+#if false || false || __TVOS__ || false || false || false || false || false
+		string ContentType
+		{
+			get;
+		}
+#endif
 		// Forced skipping of method Windows.Storage.Streams.IContentTypeProvider.ContentType.get
 	}
 }

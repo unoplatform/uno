@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class BlockCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.Block>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Documents.Block>
@@ -23,8 +23,8 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.ReplaceAll(Microsoft.UI.Xaml.Documents.Block[])
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.First()
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Documents.Block>
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Documents.Block this[int index]
 		{
 			get

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InputPointerSource : global::Microsoft.UI.Input.InputObject
@@ -33,8 +33,8 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerRoutedTo.remove
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerWheelChanged.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.InputPointerSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
 			throw new global::System.NotImplementedException("The member InputPointerSource InputPointerSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputPointerSource%20InputPointerSource.GetForIsland%28ContentIsland%20island%29");

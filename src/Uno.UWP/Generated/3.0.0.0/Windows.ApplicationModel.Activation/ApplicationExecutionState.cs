@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum ApplicationExecutionState
 	{
 		// Skipping already declared field Windows.ApplicationModel.Activation.ApplicationExecutionState.NotRunning

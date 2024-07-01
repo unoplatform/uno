@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum CompositionGetValueStatus
 	{
 		// Skipping already declared field Microsoft.UI.Composition.CompositionGetValueStatus.Succeeded

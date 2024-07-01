@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum ZoomUnit
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.ZoomUnit.NoAmount

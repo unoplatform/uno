@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemsRepeater : global::Microsoft.UI.Xaml.FrameworkElement
@@ -13,10 +13,23 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ItemsSource
 		// Skipping already declared property ItemTemplate
 		// Skipping already declared property HorizontalCacheLength
-		// Skipping already declared property Background
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public global::Microsoft.UI.Xaml.Media.Brush Background
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(BackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared property ItemsSourceView
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider ItemTransitionProvider
 		{
 			get
@@ -29,14 +42,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Skipping already declared property BackgroundProperty
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty BackgroundProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Background), typeof(global::Microsoft.UI.Xaml.Media.Brush),
+			typeof(global::Microsoft.UI.Xaml.Controls.ItemsRepeater),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
+#endif
 		// Skipping already declared property HorizontalCacheLengthProperty
 		// Skipping already declared property ItemTemplateProperty
 		// Skipping already declared property ItemsSourceProperty
 		// Skipping already declared property LayoutProperty
 		// Skipping already declared property VerticalCacheLengthProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ItemTransitionProviderProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ItemTransitionProvider), typeof(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider),

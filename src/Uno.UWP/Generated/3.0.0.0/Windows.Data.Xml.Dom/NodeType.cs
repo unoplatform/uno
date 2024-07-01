@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum NodeType
 	{
 		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.Invalid

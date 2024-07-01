@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum CameraCaptureUIVideoFormat
 	{
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIVideoFormat.Mp4
