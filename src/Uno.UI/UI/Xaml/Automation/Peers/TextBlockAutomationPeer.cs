@@ -1,26 +1,59 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TextBlockAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using DirectUI;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers;
+
+/// <summary>
+/// Exposes TextBlock types to UI Automation.
+/// </summary>
+public partial class TextBlockAutomationPeer : FrameworkElementAutomationPeer
 {
-	public partial class TextBlockAutomationPeer : FrameworkElementAutomationPeer
+	private TextAdapter m_textPattern;
+
+	public TextBlockAutomationPeer(TextBlock owner) : base(owner)
 	{
-		public TextBlockAutomationPeer(TextBlock owner) : base(owner)
+	}
+
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		if (patternInterface == PatternInterface.Text)
 		{
+			if (m_textPattern == null)
+			{
+				if (Owner is TextBlock owner)
+				{
+					m_textPattern = new TextAdapter(owner);
+				}
+			}
+			return m_textPattern;
 		}
 
-		protected override string GetClassNameCore()
+		return base.GetPatternCore(patternInterface);
+	}
+
+	protected override string GetClassNameCore() => nameof(TextBlock);
+
+	protected override AutomationControlType GetAutomationControlTypeCore()
+		=> AutomationControlType.Text;
+
+	protected override IList<AutomationPeer> GetChildrenCore()
+	{
+		if (Owner is TextBlock owner)
 		{
-			return base.GetClassNameCore();
+			var children = new ObservableCollection<AutomationPeer>();
+			foreach (var inline in owner.Inlines)
+			{
+				inline.AppendAutomationPeerChildren(-1, int.MaxValue);
+			}
+			return children;
 		}
 
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Text;
-		}
+		return base.GetChildrenCore();
 	}
 }

@@ -1,31 +1,34 @@
-﻿#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference HyperlinkButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+
+using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers;
+
+/// <summary>
+/// Exposes HyperlinkButton types to Microsoft UI Automation.
+/// </summary>
+public partial class HyperlinkButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IInvokeProvider
 {
-	public partial class HyperlinkButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IInvokeProvider
+	public HyperlinkButtonAutomationPeer(HyperlinkButton owner) : base(owner)
 	{
-		public HyperlinkButtonAutomationPeer(HyperlinkButton owner) : base(owner)
+	}
+
+	protected override string GetClassNameCore() => "Hyperlink";
+
+	protected override AutomationControlType GetAutomationControlTypeCore()
+		=> AutomationControlType.Hyperlink;
+
+	public void Invoke()
+	{
+		if (!IsEnabled())
 		{
+			// UIA_E_ELEMENTNOTENABLED
+			throw new ElementNotEnabledException();
 		}
 
-		protected override string GetClassNameCore()
-		{
-			return "Hyperlink";
-		}
-
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Hyperlink;
-		}
-
-		public void Invoke()
-		{
-			if (IsEnabled())
-			{
-				(Owner as HyperlinkButton).AutomationPeerClick();
-			}
-		}
+		(Owner as HyperlinkButton).AutomationPeerClick();
 	}
 }

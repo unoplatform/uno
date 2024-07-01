@@ -1,66 +1,66 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference SliderAutomationPeer_Partial.cpp
-
+// MUX Reference SliderAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 using System;
 using DirectUI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers;
+
+/// <summary>
+/// Exposes Slider types to Microsoft UI Automation.
+/// </summary>
+public partial class SliderAutomationPeer : RangeBaseAutomationPeer
 {
+	private readonly Slider _owner;
+
 	/// <summary>
-	/// Exposes Slider types to Microsoft UI Automation.
+	/// Initializes a new instance of the SliderAutomationPeer class.
 	/// </summary>
-	public partial class SliderAutomationPeer : RangeBaseAutomationPeer
+	/// <param name="owner">The Slider to create a peer for.</param>
+	public SliderAutomationPeer(Slider owner) : base(owner)
 	{
-		private readonly Slider _owner;
+		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the SliderAutomationPeer class.
-		/// </summary>
-		/// <param name="owner">The Slider to create a peer for.</param>
-		public SliderAutomationPeer(Slider owner) : base(owner)
+	protected override string GetClassNameCore() => nameof(Slider);
+
+	protected override AutomationControlType GetAutomationControlTypeCore()
+		=> AutomationControlType.Slider;
+
+	protected override Point GetClickablePointCore()
+		=> new(DoubleUtil.NaN, DoubleUtil.NaN);
+
+	protected override AutomationOrientation GetOrientationCore()
+	{
+		var orientation = _owner.Orientation;
+		if (orientation == Orientation.Horizontal)
 		{
-			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
+			return AutomationOrientation.Horizontal;
+		}
+		else
+		{
+			return AutomationOrientation.Vertical;
+		}
+	}
+
+	private protected override bool ChildIsAcceptable(UIElement element)
+	{
+		var childIsAcceptable = base.ChildIsAcceptable(element);
+
+		if (childIsAcceptable)
+		{
+			var elementHorizontalTemplate = _owner.ElementHorizontalTemplate;
+			var elementVerticalTemplate = _owner.ElementVerticalTemplate;
+
+			if (element == elementHorizontalTemplate || element == elementVerticalTemplate)
+			{
+				var visibility = element.Visibility;
+				childIsAcceptable = visibility == Visibility.Visible;
+			}
 		}
 
-		protected override string GetClassNameCore() => nameof(Slider);
-
-		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Slider;
-
-		protected override Point GetClickablePointCore() => new Point(DoubleUtil.NaN, DoubleUtil.NaN);
-
-		protected override AutomationOrientation GetOrientationCore()
-		{
-			var orientation = _owner.Orientation;
-			if (orientation == Orientation.Horizontal)
-			{
-				return AutomationOrientation.Horizontal;
-			}
-			else
-			{
-				return AutomationOrientation.Vertical;
-			}
-		}
-
-		private protected override bool ChildIsAcceptable(UIElement element)
-		{
-			var childIsAcceptable = base.ChildIsAcceptable(element);
-
-			if (childIsAcceptable)
-			{
-				var elementHorizontalTemplate = _owner.ElementHorizontalTemplate;
-				var elementVerticalTemplate = _owner.ElementVerticalTemplate;
-
-				if (element == elementHorizontalTemplate || element == elementVerticalTemplate)
-				{
-					var visibility = element.Visibility;
-					childIsAcceptable = visibility == Visibility.Visible;
-				}
-			}
-
-			return childIsAcceptable;
-		}
+		return childIsAcceptable;
 	}
 }

@@ -950,6 +950,18 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 #endif
 
+		internal UIElement ElementHorizontalScrollBar()
+		{
+			//UNO TODO: Implement ElementHorizontalScrollBar on ScrollViewer
+			return new();
+		}
+
+		internal UIElement ElementVerticalScrollBar()
+		{
+			//UNO TODO: Implement ElementVerticalScrollBar on ScrollViewer
+			return new();
+		}
+
 		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
@@ -1444,6 +1456,66 @@ namespace Microsoft.UI.Xaml.Controls
 			=> ChangeView(null, offset, null, false);
 
 		/// <summary>
+		/// Scroll content by one page to the left.
+		/// </summary>
+		internal void PageLeft()
+			=> HandleHorizontalScroll(ScrollEventType.LargeDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the right.
+		/// </summary>
+		internal void LineLeft()
+			=> HandleHorizontalScroll(ScrollEventType.SmallDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the right.
+		/// </summary>
+		internal void LineRight()
+			=> HandleHorizontalScroll(ScrollEventType.SmallIncrement);
+
+		/// <summary>
+		/// Scroll content by one page to the right.
+		/// </summary>
+		internal void PageRight()
+			=> HandleHorizontalScroll(ScrollEventType.LargeIncrement);
+
+		/// <summary>
+		/// Scroll content by one page to the top.
+		/// </summary>
+		internal void PageUp()
+			=> HandleVerticalScroll(ScrollEventType.LargeDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the top.
+		/// </summary>
+		internal void LineUp()
+			=> HandleVerticalScroll(ScrollEventType.SmallDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the bottom.
+		/// </summary>
+		internal void LineDown()
+			=> HandleVerticalScroll(ScrollEventType.SmallIncrement);
+
+		/// <summary>
+		/// Scroll content by one page to the bottom.
+		/// </summary>
+		internal void PageDown()
+			=> HandleVerticalScroll(ScrollEventType.LargeIncrement);
+
+		/// <summary>
+		/// Scroll content to the beginning.
+		/// </summary>
+		internal void PageHome()
+			=> HandleVerticalScroll(ScrollEventType.First);
+
+		/// <summary>
+		/// Scroll content to the end.
+		/// </summary>
+		internal void PageEnd()
+			=> HandleVerticalScroll(ScrollEventType.Last);
+
+		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
 		/// </summary>
 		/// <param name="horizontalOffset">A value between 0 and ScrollableWidth that specifies the distance the content should be scrolled horizontally.</param>
@@ -1728,5 +1800,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+
+		/// <summary>
+		/// Handles the vertical ScrollBar.Scroll event and updates the UI.
+		/// </summary>
+		internal void HandleVerticalScroll(ScrollEventType scrollEventType, double offset = 0)
+		{
+			//UNO TODO: Implement HandleVerticalScroll on ScrollViewer
+		}
+
+		/// <summary>
+		/// Handles the horizontal ScrollBar.Scroll event and updates the UI.
+		/// </summary>
+		internal void HandleHorizontalScroll(ScrollEventType scrollEventType, double offset = 0)
+		{
+			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
+		}
 	}
 }

@@ -6,13 +6,18 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
+/// <summary>
+/// Exposes CheckBox types to Microsoft UI Automation.
+/// </summary>
 public partial class CheckBoxAutomationPeer : ToggleButtonAutomationPeer
 {
 	public CheckBoxAutomationPeer(CheckBox owner) : base(owner)
 	{
+
 	}
 
 	protected override string GetClassNameCore() => nameof(CheckBox);
 
-	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.CheckBox;
+	protected override AutomationControlType GetAutomationControlTypeCore()
+		=> AutomationControlType.CheckBox;
 }
