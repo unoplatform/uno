@@ -40,10 +40,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		private const string __baseUri_prefix_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
-			NameScope.SetNameScope(this, __nameScope);
+			if (NameScope.GetNameScope(this) is { } existingRootNameScope)
+			{
+				__nameScope = existingRootNameScope;
+			}
+			else
+			{
+				NameScope.SetNameScope(this, __nameScope);
+			}
 			var __that = this;
 			base.IsParsing = true;
 			// Source 0\Binding_ElementName_In_Template.xaml (Line 1:2)
@@ -122,7 +129,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			private const string __baseUri_prefix_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			public _View Build(object __ResourceOwner_1)
 			{
 				_View __rootInstance = null;
@@ -167,7 +174,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 					{
 						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+						((global::Microsoft.UI.Xaml.NameScope)__nameScope).Owner = d;
 					}
 					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 				}

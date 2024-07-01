@@ -23,6 +23,8 @@ using Uno.Disposables;
 using DirectUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -120,16 +122,16 @@ namespace Microsoft.UI.Xaml.Controls
 			m_itemsAreSized = false;
 		}
 
-		internal override void Enter(EnterParams @params, int depth)
+		internal override void Enter(INameScope nameScope, EnterParams @params, int depth)
 		{
-			base.Enter(@params, depth);
+			base.Enter(nameScope, @params, depth);
 
 			HookTemplate();
 		}
 
-		internal override void Leave(LeaveParams @params)
+		internal override void Leave(INameScope nameScope, LeaveParams @params)
 		{
-			base.Leave(@params);
+			base.Leave(nameScope, @params);
 
 			UnhookTemplate();
 		}

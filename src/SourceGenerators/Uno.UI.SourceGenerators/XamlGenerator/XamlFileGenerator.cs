@@ -433,7 +433,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType)
 		{
-			writer.AppendLineIndented("private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
+			writer.AppendLineIndented("private global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
@@ -753,7 +753,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var topLevelControlType = GetType(topLevelControl.Type);
 			if (!IsWindow(topLevelControlType)) // Window is not a DependencyObject
 			{
-				writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
+				// In VisualTree.AddRoot, we may have already set the NameScope.
+				// In this case, use the existing namescope.
+				using (writer.BlockInvariant("if (NameScope.GetNameScope(this) is {{ }} existingRootNameScope)"))
+				{
+					writer.AppendLineIndented("__nameScope = existingRootNameScope;");
+				}
+				using (writer.BlockInvariant("else"))
+				{
+					writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
+				}
 			}
 			writer.AppendLineIndented("var __that = this;");
 			TrySetParsing(writer, topLevelControlType, isInitializer: false);
@@ -791,9 +800,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (IsWindow(topLevelControlType)) // Window is not a DependencyObject
 			{
-				writer.AppendLineIndented("if (__that.Content != null)");
-				using var _ = writer.Block();
-				writer.AppendLineIndented("NameScope.SetNameScope(__that.Content, __nameScope);");
+				using (writer.BlockInvariant("if (__that.Content != null)"))
+				{
+					// In VisualTree.AddRoot, we may have already set the NameScope.
+					// In this case, use the existing namescope.
+					using (writer.BlockInvariant("if (NameScope.GetNameScope(__that.Content) is {{ }} existingRootNameScope)"))
+					{
+						writer.AppendLineIndented("__nameScope = existingRootNameScope;");
+					}
+					using (writer.BlockInvariant("else"))
+					{
+						writer.AppendLineIndented("NameScope.SetNameScope(__that.Content, __nameScope);");
+					}
+				}
 			}
 
 			writer.AppendLineIndented("OnInitializeCompleted();");
@@ -914,7 +933,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								using (ResourceOwnerScope())
 								{
-									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
+									writer.AppendLineIndented("global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
 									{
@@ -934,7 +953,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											using (writer.BlockInvariant("if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)", kvp.Value.ReturnType))
 											{
 												writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);");
-												writer.AppendLineIndented("__nameScope.Owner = d;");
+												writer.AppendLineIndented("((global::Microsoft.UI.Xaml.NameScope)__nameScope).Owner = d;");
 											}
 
 											writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
@@ -1307,7 +1326,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						using (WrapSingleton())
 						{
 							// Build singleton
-							writer.AppendLineInvariantIndented("private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
+							writer.AppendLineInvariantIndented("private static global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 							writer.AppendLineInvariantIndented("private static {0} __that;", DictionaryProviderInterfaceName);
 							using (writer.BlockInvariant("internal static {0} Instance", DictionaryProviderInterfaceName))
 							{

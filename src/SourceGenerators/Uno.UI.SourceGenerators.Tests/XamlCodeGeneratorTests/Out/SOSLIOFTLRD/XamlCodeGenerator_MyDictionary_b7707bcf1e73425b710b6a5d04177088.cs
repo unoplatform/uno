@@ -62,7 +62,7 @@ namespace MyProject
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		internal sealed class ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
-			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			private static global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
 			internal static global::Uno.UI.IXamlResourceDictionaryProvider Instance
 			{

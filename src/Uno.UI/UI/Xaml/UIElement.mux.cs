@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Windows.System;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml
 {
@@ -822,7 +823,7 @@ namespace Microsoft.UI.Xaml
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		// Doesn't exactly match WinUI code.
-		internal virtual void Enter(EnterParams @params, int depth)
+		internal virtual void Enter(INameScope? nameScope, EnterParams @params, int depth)
 		{
 			Depth = depth;
 
@@ -843,7 +844,7 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
-				child.Enter(@params, depth + 1);
+				child.Enter(nameScope, @params, depth + 1);
 			}
 
 			if (@params.IsLive)
@@ -856,7 +857,7 @@ namespace Microsoft.UI.Xaml
 			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 		}
 
-		internal virtual void Leave(LeaveParams @params)
+		internal virtual void Leave(INameScope? nameScope, LeaveParams @params)
 		{
 			foreach (var child in _children)
 			{
@@ -870,7 +871,7 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
-				child.Leave(@params);
+				child.Leave(nameScope, @params);
 			}
 
 			if (IsActiveInVisualTree)

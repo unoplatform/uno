@@ -43,7 +43,7 @@ namespace TestRepro
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			var __resourceLocator = new global::System.Uri("file:///C:/Project/0/MainPage.xaml");
@@ -52,7 +52,14 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.Application.LoadComponent(this, __resourceLocator);
 				return;
 			}
-			NameScope.SetNameScope(this, __nameScope);
+			if (NameScope.GetNameScope(this) is { } existingRootNameScope)
+			{
+				__nameScope = existingRootNameScope;
+			}
+			else
+			{
+				NameScope.SetNameScope(this, __nameScope);
+			}
 			var __that = this;
 			base.IsParsing = true;
 			Resources[
@@ -322,7 +329,7 @@ namespace TestRepro
 			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			public _View Build(object __ResourceOwner_1)
 			{
 				_View __rootInstance = null;
@@ -392,7 +399,7 @@ namespace TestRepro
 					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 					{
 						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+						((global::Microsoft.UI.Xaml.NameScope)__nameScope).Owner = d;
 					}
 					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 				}
@@ -423,7 +430,7 @@ namespace TestRepro
 			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::Microsoft.UI.Xaml.Markup.INameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			public _View Build(object __ResourceOwner_1)
 			{
 				_View __rootInstance = null;
@@ -447,7 +454,7 @@ namespace TestRepro
 					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 					{
 						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+						((global::Microsoft.UI.Xaml.NameScope)__nameScope).Owner = d;
 					}
 					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 				}
