@@ -13,6 +13,10 @@
 			FindReferenceAssembliesForReferences;
 			MarkupCompilePass1;
 		</_UnoRemoveReferences_BeforeTargets>
+
+		<!-- Copy from https://github.com/microsoft/WindowsAppSDK/pull/4124 -->
+		<ShouldComputeInputPris Condition="'$(ShouldComputeInputPris)' == '' AND ('$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe')">true</ShouldComputeInputPris>
+		<ShouldComputeInputPris Condition="'$(ShouldComputeInputPris)' == ''">false</ShouldComputeInputPris>
 	</PropertyGroup>
 
 	<Target Name="_UnoRemoveReferences"
@@ -44,7 +48,8 @@
 	</Target>
 
 	<Target Name="_UnoIncludeUIToolkit"
-			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)">
+			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)"
+			Condition="$(ShouldComputeInputPris)">
 		
 		<!-- 
 		Since we're not using the standard packaging mechanism, the Uno.UI.Toolkit resources
