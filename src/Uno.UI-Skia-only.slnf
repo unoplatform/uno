@@ -11,6 +11,7 @@
       "SamplesApp\\SamplesApp.Skia.Generic\\SamplesApp.Skia.Generic.csproj",
       "SamplesApp\\SamplesApp.Skia.Gtk\\SamplesApp.Skia.Gtk.csproj",
       "SamplesApp\\SamplesApp.Skia.WebAssembly.Browser\\SamplesApp.Skia.WebAssembly.Browser.csproj",
+      "SamplesApp\\SamplesApp.Skia.Wpf\\SamplesApp.Skia.Wpf.csproj",
       "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
