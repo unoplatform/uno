@@ -131,18 +131,11 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		}
 	}
 
-	private RoutedEventArgs? _lastArgs;
-
 	#region Native events
 
-	private void HostOnMouseEvent(InputEventArgs args, TypedEventHandler<object, PointerEventArgs>? @event,
-		bool? isReleaseOrCancel = null, [CallerArgumentExpression(nameof(@event))] string eventName = "")
+	private void HostOnMouseEvent(InputEventArgs args, TypedEventHandler<object, PointerEventArgs>? ev,
+		bool? isReleaseOrCancel = null, [CallerArgumentExpression(nameof(ev))] string eventName = "")
 	{
-		if (_lastArgs == args)
-		{
-			return;
-		}
-		_lastArgs = args;
 		var current = SynchronizationContext.Current;
 		try
 		{
@@ -153,28 +146,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			}
 
 			var eventArgs = BuildPointerArgs(args, isReleaseOrCancel);
-
-			// Is the pointer inside an element in the flyout layer? if so, raise in managed
-			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_host!);
-			var managedHitTestResult = Microsoft.UI.Xaml.Media.VisualTreeHelper.SearchDownForTopMostElementAt(eventArgs.CurrentPoint.Position, xamlRoot!.VisualTree.PopupRoot!, Microsoft.UI.Xaml.Media.VisualTreeHelper.DefaultGetTestability, null);
-			if (managedHitTestResult.element is { })
-			{
-				@event?.Invoke(this, eventArgs);
-			}
-			else
-			{
-				// if not, is it on top of a native element? if so, raise in native
-				var windowsFoundationPosition = eventArgs.CurrentPoint.Position;
-				var result = VisualTreeHelper.HitTest(((IWpfXamlRootHost)_host!).NativeOverlayLayer!, new Point(windowsFoundationPosition.X, windowsFoundationPosition.Y));
-				if (result?.VisualHit is UIElement element)
-				{
-					element.RaiseEvent(args);
-				}
-				else // if not, then raise in managed
-				{
-					@event?.Invoke(this, eventArgs);
-				}
-			}
+			ev?.Invoke(this, eventArgs);
 			_previous = eventArgs;
 		}
 		catch (Exception e)
@@ -186,6 +158,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			SynchronizationContext.SetSynchronizationContext(current);
 		}
 	}
+
 	private void HostOnMouseEnter(object sender, WpfMouseEventArgs args)
 	{
 		HostOnMouseEvent(args, PointerEntered);

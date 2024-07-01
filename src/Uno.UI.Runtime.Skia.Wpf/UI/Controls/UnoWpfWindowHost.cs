@@ -37,13 +37,13 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 								Background="{x:Null}"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}">
-								<ContentPresenter x:Name="NativeOverlayLayerHost" />
+								<ContentPresenter x:Name="RenderLayerHost" />
 							</Border>
 							<Border
 								Background="{x:Null}"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}">
-								<ContentPresenter x:Name="RenderLayerHost" />
+								<ContentPresenter x:Name="NativeOverlayLayerHost" />
 							</Border>
 						</Grid>
 					</ControlTemplate>

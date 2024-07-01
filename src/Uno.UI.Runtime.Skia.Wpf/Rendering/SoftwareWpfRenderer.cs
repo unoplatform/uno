@@ -84,12 +84,21 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, surface);
+				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
+				rootVisual.Compositor.IsSoftwareRenderer = true;
 
-				if (rootVisual.Compositor.IsSoftwareRenderer is null)
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+				var negativePath = new SKPath();
+				if (path is { })
 				{
-					rootVisual.Compositor.IsSoftwareRenderer = true;
+					negativePath.AddRect(new SKRect(0, 0, width, height));
+					negativePath = negativePath.Op(path, SKPathOp.Difference);
 				}
+
+				_host.NativeOverlayLayer!.Clip ??= new PathGeometry();
+				((PathGeometry)_host.NativeOverlayLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+
+				rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
 			}
 		}
 

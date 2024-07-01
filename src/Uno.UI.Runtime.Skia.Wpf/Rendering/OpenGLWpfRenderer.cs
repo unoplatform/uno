@@ -229,7 +229,16 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, _surface);
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface);
+				var negativePath = new SKPath();
+				if (path is { })
+				{
+					negativePath.AddRect(new SKRect(0, 0, _renderTarget.Width, _renderTarget.Height));
+					negativePath = negativePath.Op(path, SKPathOp.Difference);
+				}
+
+				_host.NativeOverlayLayer!.Clip ??= new PathGeometry();
+				((PathGeometry)_host.NativeOverlayLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
 			}
 		}
 
