@@ -80,6 +80,9 @@
 
 		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 
+		<!-- Ensure _GenerateCompileInputs is run BEFORE CoreCompile so that EmbeddedResources (e.g, uno.css) are included -->
+		<CoreCompileDependsOn>$(CoreCompileDependsOn);_GenerateCompileInputs</CoreCompileDependsOn>
+
 		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
 	</PropertyGroup>
 
