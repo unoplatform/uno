@@ -71,9 +71,9 @@ partial class App
 			return;
 		}
 
-		if (OperatingSystem.IsBrowser())
+		if (OperatingSystem.IsBrowser() || OperatingSystem.IsAndroid())
 		{
-			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
+			// Reading Package.appxmanifest isn't supported on Wasm or Android, even if running Skia.
 			return;
 		}
 
@@ -185,7 +185,10 @@ partial class App
 		void AssertContainsIdProps(StorageFolder folder)
 		{
 			Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal), $"{folder.Path} does not contain {appName}");
-			Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
+			if (!OperatingSystem.IsAndroid())
+			{
+				Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
+			}
 		}
 
 		void AssertCanCreateFile(StorageFolder folder)

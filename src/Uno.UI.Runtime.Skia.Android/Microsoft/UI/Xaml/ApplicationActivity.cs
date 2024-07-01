@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml
 				canvas.Clear(SKColors.Red);
 				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
 				canvas.Scale((float)scale);
-				window.Compositor.RenderRootVisual(e.Surface, root.Visual);
+				window.Compositor.RenderRootVisual(e.Surface, root.Visual, isPopupSurface: false);
 				_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
 			}
 		}
