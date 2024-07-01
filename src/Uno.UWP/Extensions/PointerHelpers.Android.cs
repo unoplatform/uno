@@ -5,7 +5,7 @@ using Android.Views;
 using Windows.Devices.Input;
 using Windows.UI.Input;
 
-namespace Microsoft.UI.Xaml.Extensions;
+namespace Uno.UI.Xaml.Extensions;
 
 internal static class PointerHelpers
 {

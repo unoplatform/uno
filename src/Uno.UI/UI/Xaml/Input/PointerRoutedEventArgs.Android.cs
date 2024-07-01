@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Android.OS;
 using Android.Views;
+using Microsoft.UI.Xaml.Extensions;
+using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Xaml.Extensions;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Extensions;
-using Android.OS;
-using Uno.Extensions;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -27,7 +28,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// <summary>
 		/// The stylus is moved after having been pressed while holding the barrel button
 		/// </summary>
-		internal const MotionEventActions StylusWithBarrelMove = PointerHelpers.StylusWithBarrelDown;
+		internal const MotionEventActions StylusWithBarrelMove = PointerHelpers.StylusWithBarrelMove;
 		/// <summary>
 		/// The stylus is released after having been pressed while holding the barrel button
 		/// </summary>
@@ -60,7 +61,7 @@ namespace Microsoft.UI.Xaml.Input
 			var nativePointerButtons = nativeEvent.ButtonState;
 			var nativePointerType = nativeEvent.GetToolType(_pointerIndex);
 			var pointerType = nativePointerType.ToPointerDeviceType();
-			var isInContact = PointerHelpers.IsInContact(nativeEvent, (PointerDeviceType)pointerType, nativePointerAction, nativePointerButtons);
+			var isInContact = PointerHelpers.IsInContact(nativeEvent, pointerType, nativePointerAction, nativePointerButtons);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
@@ -68,7 +69,7 @@ namespace Microsoft.UI.Xaml.Input
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
 
-			_properties = PointerHelpers.GetProperties(nativeEvent, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons); // Last: we need the Pointer property to be set!
+			_properties = new(PointerHelpers.GetProperties(nativeEvent, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange: true, isInContact)); // Last: we need the Pointer property to be set!
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
