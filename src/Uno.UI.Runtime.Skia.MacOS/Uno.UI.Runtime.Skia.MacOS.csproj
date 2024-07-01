@@ -7,7 +7,7 @@
 		<DefineConstants>UNO_REFERENCE_API;HAS_UNO_SKIA</DefineConstants>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
