@@ -93,6 +93,9 @@ public enum UnoFeature
 	WebAssemblyDOMRenderer,
 
 	[UnoArea(UnoArea.Core)]
+	AndroidSkiaRenderer,
+
+	[UnoArea(UnoArea.Core)]
 	Lottie,
 
 	[UnoArea(UnoArea.Core)]
