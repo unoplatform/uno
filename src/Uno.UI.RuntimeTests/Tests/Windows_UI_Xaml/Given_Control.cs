@@ -19,6 +19,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_Control
 	{
+		private partial class XamlRootValidator : Button
+		{
+			private readonly List<XamlRoot> _xamlRoots = new();
+
+			protected override void OnApplyTemplate()
+			{
+				_xamlRoots.Add(XamlRoot);
+				base.OnApplyTemplate();
+			}
+
+			public void AssertNonNullRoots()
+			{
+				Assert.AreEqual(1, _xamlRoots.Count);
+				Assert.IsNotNull(_xamlRoots[0]);
+			}
+		}
+
 		private partial class CustomControl : Control
 		{
 			public Size AvailableSizePassedToMeasureOverride { get; private set; }
@@ -65,6 +82,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_OnApplyTemplate_Should_Have_XamlRoot()
+		{
+			var btn = new XamlRootValidator();
+			await UITestHelper.Load(btn);
+			btn.AssertNonNullRoots();
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]

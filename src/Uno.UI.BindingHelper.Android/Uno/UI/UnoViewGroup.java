@@ -443,6 +443,7 @@ public abstract class UnoViewGroup
 		super.onAttachedToWindow();
 
 		if(!_isManagedLoaded) {
+			beforeOnNativeLoaded();
 			onNativeLoaded();
 			_isManagedLoaded = true;
 		}
@@ -454,6 +455,10 @@ public abstract class UnoViewGroup
 	}
 
 	protected abstract void onNativeLoaded();
+
+	protected void beforeOnNativeLoaded() {
+
+	}
 
 	protected final void onDetachedFromWindow()
 	{
