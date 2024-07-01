@@ -121,15 +121,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
 			}
 
-			Console.WriteLine("Completed typing world");
-
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
-
-			Console.WriteLine("Raised home");
-
 			await WindowHelper.WaitForIdle();
-
-			Console.WriteLine("Waited for Idle");
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
@@ -345,7 +338,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-
 		[TestMethod]
 		public async Task When_Ctrl_Delete()
 		{
@@ -367,23 +359,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			Console.WriteLine("Raising CTRL+Del");
-
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.Control));
 			await WindowHelper.WaitForIdle();
-
-			Console.WriteLine("Raised CTRL+Del");
 
 			Assert.AreEqual("ipsum dolor", SUT.Text);
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			//SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.Control));
-			//await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
 
-			//Assert.AreEqual("dolor", SUT.Text);
-			//Assert.AreEqual(0, SUT.SelectionStart);
-			//Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual("dolor", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		[TestMethod]
