@@ -12,6 +12,9 @@
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
 
+		<!-- https://github.com/xamarin/xamarin-android/issues/9007 -->
+		<_GlobalPropertiesToRemoveFromProjectReferences>$(_GlobalPropertiesToRemoveFromProjectReferences);_ComputeFilesToPublishForRuntimeIdentifiers</_GlobalPropertiesToRemoveFromProjectReferences>
+
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
