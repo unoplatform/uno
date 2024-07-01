@@ -60,7 +60,14 @@ internal static partial class PlatformImageHelpers
 				}
 			}
 
-			return uri.OriginalString;
+			if (isLocalResource)
+			{
+				return uri.OriginalString;
+			}
+			else
+			{
+				return AssetsPathBuilder.BuildAssetUri(path);
+			}
 		}
 
 		return uri.OriginalString;
