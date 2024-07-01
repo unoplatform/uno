@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
 using Uno.Foundation.Logging;
 using Windows.Storage;
 
@@ -10,6 +12,13 @@ namespace Uno.UI.Xaml.Media;
 
 public static class FontFamilyHelper
 {
+	private static async Task<SKTypeface> LoadTypefaceAsync(Uri uri)
+	{
+		var storageFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
+		var stream = await storageFile.OpenStreamForReadAsync();
+		return SKTypeface.FromStream(stream);
+	}
+
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
 	/// </summary>
@@ -18,30 +27,42 @@ public static class FontFamilyHelper
 	{
 		if (Uri.TryCreate(family.Source, UriKind.Absolute, out var uri) && uri.Scheme == "ms-appx")
 		{
-			var task = StorageFile.GetFileFromApplicationUriAsync(uri).AsTask().ContinueWith(task =>
-			{
-				var storageFile = task.Result;
-				return storageFile.OpenStreamForReadAsync().AsTask();
-			});
+			var task = LoadTypefaceAsync(uri);
 
-			// TODO: Handle task failures. On failures, we should call OnFontLoaded(name, null)
-			if (task.IsCompleted && task.Result.IsCompleted)
+			if (task.IsCompleted)
 			{
-				// The font is loaded synchronously. This is very unlikely (impossible?) to happen on Wasm?
-				var stream = task.Result.Result;
-				FontDetailsCache.OnFontLoaded(family.Source, stream);
+				if (task.IsCompletedSuccessfully)
+				{
+					// The font is loaded synchronously. This is very unlikely (impossible?) to happen on Wasm?
+					var stream = task.Result;
+					FontDetailsCache.OnFontLoaded(family.Source, stream);
+				}
+				else
+				{
+					if (typeof(FontFamilyHelper).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(FontFamilyHelper).Log().LogError($"Font {family.Source} could not be loaded. {task.Exception}");
+					}
+					FontDetailsCache.OnFontLoaded(family.Source, null);
+				}
 			}
 			else
 			{
 				task.ContinueWith(task =>
 				{
-					task.Result.ContinueWith(task =>
+					if (task.IsCompletedSuccessfully)
 					{
-						task.ContinueWith(tas =>
+						var stream = task.Result;
+						FontDetailsCache.OnFontLoaded(family.Source, stream);
+					}
+					else
+					{
+						if (typeof(FontFamilyHelper).Log().IsEnabled(LogLevel.Error))
 						{
-							FontDetailsCache.OnFontLoaded(family.Source, task.Result);
-						});
-					});
+							typeof(FontFamilyHelper).Log().LogError($"Font {family.Source} could not be loaded. {task.Exception}");
+						}
+						FontDetailsCache.OnFontLoaded(family.Source, null);
+					}
 				});
 			}
 
