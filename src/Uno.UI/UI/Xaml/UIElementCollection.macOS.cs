@@ -85,7 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool RemoveCore(UIElement item)
 		{
 			item.RemoveFromSuperview();
-
+			item.Shutdown();
 			return true;
 		}
 

@@ -47,7 +47,7 @@ namespace Windows.UI.ViewManagement
 				{
 					// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
 					// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
-					while (double.IsPositiveInfinity(scp.LastAvailableSize.Height)
+					while (double.IsPositiveInfinity(scp.m_previousAvailableSize.Height)
 						&& scp.FindFirstParent<ScrollContentPresenter>(includeCurrent: false) is { } outerScv)
 					{
 						scp = outerScv;

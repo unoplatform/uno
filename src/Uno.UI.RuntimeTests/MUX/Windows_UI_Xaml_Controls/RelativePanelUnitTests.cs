@@ -26,11 +26,7 @@ namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Controls
 			float width,
 			float height)
 		{
-#if __CROSSRUNTIME__
 			element.m_desiredSize = new Size(width, height);
-#else
-			LayoutInformation.SetDesiredSize(element, new Size(width, height));
-#endif
 
 			var node = new RPNode(element);
 			graph.GetNodes().AddFirst(node);

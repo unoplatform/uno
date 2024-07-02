@@ -10,19 +10,17 @@ partial class LayoutInformation
 	private static readonly UnsafeWeakAttachedDictionary<object, string> _layoutProperties = new();
 
 	#region AvailableSize
-	public static Size GetAvailableSize(UIElement element)
-		=> element.LastAvailableSize;
 
 	internal static Size GetAvailableSize(object view)
-		=> view is IUIElement iue
-			? iue.LastAvailableSize
+		=> view is UIElement iue
+			? GetAvailableSize(iue)
 			: _layoutProperties.GetValue(view, "availablesize", () => default(Size));
 
 	internal static void SetAvailableSize(object view, Size value)
 	{
-		if (view is IUIElement iue)
+		if (view is UIElement iue)
 		{
-			iue.LastAvailableSize = value;
+			iue.m_previousAvailableSize = value;
 		}
 		else
 		{
@@ -32,19 +30,17 @@ partial class LayoutInformation
 	#endregion
 
 	#region LayoutSlot
-	public static Rect GetLayoutSlot(FrameworkElement element)
-		=> element.LayoutSlot;
 
 	internal static Rect GetLayoutSlot(object view)
-		=> view is IUIElement iue
-			? iue.LayoutSlot
+		=> view is UIElement iue
+			? GetLayoutSlot(iue)
 			: _layoutProperties.GetValue(view, "layoutslot", () => default(Rect));
 
 	internal static void SetLayoutSlot(object view, Rect value)
 	{
-		if (view is IUIElement iue)
+		if (view is UIElement iue)
 		{
-			iue.LayoutSlot = value;
+			iue.m_finalRect = value;
 		}
 		else
 		{
@@ -55,15 +51,15 @@ partial class LayoutInformation
 
 	#region DesiredSize
 	internal static Size GetDesiredSize(UIElement element)
-		=> element.DesiredSize;
+		=> element.m_desiredSize;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static Size GetDesiredSize(object view)
 	{
 		switch (view)
 		{
-			case IUIElement iue:
-				return iue.DesiredSize;
+			case UIElement iue:
+				return iue.m_desiredSize;
 			default:
 				return _layoutProperties.GetValue(view, "desiredSize", () => default(Size));
 		}
@@ -73,8 +69,8 @@ partial class LayoutInformation
 	{
 		switch (view)
 		{
-			case IUIElement iue:
-				iue.DesiredSize = desiredSize;
+			case UIElement iue:
+				iue.m_desiredSize = desiredSize;
 				break;
 			default:
 				_layoutProperties.SetValue(view, "desiredSize", desiredSize);

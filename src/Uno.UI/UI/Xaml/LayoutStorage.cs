@@ -15,7 +15,10 @@ partial class UIElement
 	internal Size m_desiredSize;
 	internal Rect m_finalRect;
 	//internal Point m_offset;
+#if UNO_REFERENCE_API
+	// On mobile, stored in Layouter
 	internal Size m_unclippedDesiredSize;
+#endif
 	internal Size m_size;
 
 	// Stores the layout clip, which is always an axis-aligned rect.
@@ -37,8 +40,45 @@ partial class UIElement
 		m_desiredSize = default;
 		m_finalRect = default;
 		//m_offset = default;
+#if UNO_REFERENCE_API
 		m_unclippedDesiredSize = default;
+#endif
 		m_size = default;
 		//m_pLayoutClipGeometry = default;
+	}
+
+	internal void EnsureLayoutStorage()
+		=> HasLayoutStorage = true;
+
+	internal void Shutdown()
+	{
+		// Cancel all active transitions.
+		//if (Transition.HasActiveTransition(this) && this.GetContext() is not null)
+		//{
+		//	try
+		//	{
+		//		Transition.CancelTransitions(this);
+		//	}
+		//	catch
+		//	{
+		//	}
+		//}
+
+
+		// Cancel and clean-up unloading transitions as well.
+		//IGNOREHR(m_pChildren->RemoveAllUnloadingChildren(false /* removeFromKeepAliveList */, nullptr /* dcompTreeHost */));
+		foreach (var child in VisualTreeHelper.GetManagedVisualChildren(this))
+		{
+			child.Shutdown();
+		}
+
+		ResetLayoutInformation();
+		HasLayoutStorage = false;
+
+		//Clearing all layout flags except the expecting events.
+		//m_layoutFlags &= LF_EXPECTED_EVENTS;
+
+		// note we do not change the life cycle of an element here. it will get
+		// the left tree value from the LeaveImpl call
 	}
 }

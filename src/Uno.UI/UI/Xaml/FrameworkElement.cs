@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml
 		private FrameworkElementLayouter _layouter;
 
 		ILayouter ILayouterElement.Layouter => _layouter;
-		Size ILayouterElement.LastAvailableSize => LastAvailableSize;
+		Size ILayouterElement.LastAvailableSize => m_previousAvailableSize;
 		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
 		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
@@ -192,9 +192,59 @@ namespace Microsoft.UI.Xaml
 			=> _renderTransform?.UpdateSize(newSize);
 #endif
 
-#if !UNO_REFERENCE_API
-		internal void SetActualSize(Size size) => AssignedActualSize = size;
-#endif
+		private protected override double GetActualHeight()
+		{
+			var height = Height;
+			if (double.IsNaN(height))
+			{
+				height = Math.Min(MinHeight, double.PositiveInfinity);
+			}
+
+			if (IsMeasureDirty && !HasLayoutStorage)
+			{
+				height = 0;
+			}
+			else if (HasLayoutStorage)
+			{
+				height = RenderSize.Height;
+			}
+			else
+			{
+				height = ComputeHeightInMinMaxRange(height);
+			}
+
+			return height;
+		}
+
+		private protected override double GetActualWidth()
+		{
+			var width = Width;
+			if (double.IsNaN(width))
+			{
+				width = Math.Min(MinWidth, double.PositiveInfinity);
+			}
+
+			if (IsMeasureDirty && !HasLayoutStorage)
+			{
+				width = 0;
+			}
+			else if (HasLayoutStorage)
+			{
+				width = RenderSize.Width;
+			}
+			else
+			{
+				width = ComputeWidthInMinMaxRange(width);
+			}
+
+			return width;
+		}
+
+		private double ComputeWidthInMinMaxRange(double width)
+			=> Math.Max(Math.Min(width, MaxWidth), MinWidth);
+
+		private double ComputeHeightInMinMaxRange(double height)
+			=> Math.Max(Math.Min(height, MaxHeight), MinHeight);
 
 		partial void Initialize()
 		{

@@ -1,8 +1,5 @@
-﻿#if __CROSSRUNTIME__
-using System.Runtime.CompilerServices;
+﻿using System;
 using Windows.Foundation;
-using Uno.Collections;
-using System;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -44,4 +41,3 @@ partial class LayoutInformation
 		return default;
 	}
 }
-#endif

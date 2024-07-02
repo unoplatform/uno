@@ -44,60 +44,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private protected override double GetActualHeight()
-		{
-			var height = Height;
-			if (double.IsNaN(height))
-			{
-				height = Math.Min(MinHeight, double.PositiveInfinity);
-			}
-
-			if (IsMeasureDirty && !HasLayoutStorage)
-			{
-				height = 0;
-			}
-			else if (HasLayoutStorage)
-			{
-				height = RenderSize.Height;
-			}
-			else
-			{
-				height = ComputeHeightInMinMaxRange(height);
-			}
-
-			return height;
-		}
-
-		private protected override double GetActualWidth()
-		{
-			var width = Width;
-			if (double.IsNaN(width))
-			{
-				width = Math.Min(MinWidth, double.PositiveInfinity);
-			}
-
-			if (IsMeasureDirty && !HasLayoutStorage)
-			{
-				width = 0;
-			}
-			else if (HasLayoutStorage)
-			{
-				width = RenderSize.Width;
-			}
-			else
-			{
-				width = ComputeWidthInMinMaxRange(width);
-			}
-
-			return width;
-		}
-
-		private double ComputeWidthInMinMaxRange(double width)
-			=> Math.Max(Math.Min(width, MaxWidth), MinWidth);
-
-		private double ComputeHeightInMinMaxRange(double height)
-			=> Math.Max(Math.Min(height, MaxHeight), MinHeight);
-
 		partial void OnLoading();
 
 		private void OnFwEltLoading()
@@ -816,7 +762,7 @@ namespace Microsoft.UI.Xaml
 
 				Size clippingSize = default;
 
-				// EnsureLayoutStorage();
+				EnsureLayoutStorage();
 
 				// If clipping is forced, ensure the clip is at least as small as the RenderSize.
 				//if (forceClipToRenderSize)

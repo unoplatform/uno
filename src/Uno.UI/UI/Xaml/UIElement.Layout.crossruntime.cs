@@ -14,46 +14,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private protected void EnsureLayoutStorage()
-			=> HasLayoutStorage = true;
-
-		private protected void Shutdown()
-		{
-			// Cancel all active transitions.
-			//if (Transition.HasActiveTransition(this) && this.GetContext() is not null)
-			//{
-			//	try
-			//	{
-			//		Transition.CancelTransitions(this);
-			//	}
-			//	catch
-			//	{
-			//	}
-			//}
-
-			if (_children is { Count: > 0 })
-			{
-				// Cancel and clean-up unloading transitions as well.
-				//IGNOREHR(m_pChildren->RemoveAllUnloadingChildren(false /* removeFromKeepAliveList */, nullptr /* dcompTreeHost */));
-
-				foreach (var child in _children)
-				{
-					child.Shutdown();
-				}
-			}
-
-			ResetLayoutInformation();
-			HasLayoutStorage = false;
-
-			//Clearing all layout flags except the expecting events.
-			//m_layoutFlags &= LF_EXPECTED_EVENTS;
-
-			// note we do not change the life cycle of an element here. it will get
-			// the left tree value from the LeaveImpl call
-		}
-
-		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
-
 		/// <summary>
 		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a re-layout.
 		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).

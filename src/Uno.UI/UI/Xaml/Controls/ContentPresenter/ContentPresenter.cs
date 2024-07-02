@@ -1261,6 +1261,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				contentSize.Width,
 				contentSize.Height);
 
+			if (child is UIElement childAsUIElement)
+			{
+				childAsUIElement.EnsureLayoutStorage();
+			}
 			ArrangeElement(child, arrangeRect);
 		}
 
@@ -1322,12 +1326,20 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var padding = Padding;
 		var borderThickness = BorderThickness;
 
-		var measuredSize = MeasureFirstChild(
-			new Size(
-				size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
-				size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
-			)
-		);
+		var child = this.FindFirstChild();
+		Size measuredSize = default;
+		if (child is not null)
+		{
+			measuredSize = MeasureElement(child,
+				new Size(
+					size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
+					size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
+				));
+			if (child is UIElement childAsUIElement)
+			{
+				childAsUIElement.EnsureLayoutStorage();
+			}
+		}
 
 #if UNO_SUPPORTS_NATIVEHOST
 		if (IsNativeHost)
