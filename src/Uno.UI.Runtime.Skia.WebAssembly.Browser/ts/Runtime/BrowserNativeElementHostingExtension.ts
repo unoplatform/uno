@@ -1,26 +1,23 @@
 namespace Uno.UI.Runtime.Skia {
 	export class BrowserNativeElementHostingExtension {
-		private static initialized: boolean;
-		private static clipPathsda: SVGPathElement;
+		private static clipPath: SVGPathElement;
 
 		public static setSvgClipPathForNativeElementHost(path: string) {
-			if (!this.initialized) {
-				this.initialized = true;
-
+			if (!document.getElementById("unoNativeElementHostClipPath")) {
 				const svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 				svgContainer.setAttribute("width", "0");
 				svgContainer.setAttribute("height", "0");
 				const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
 				const clipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
 				clipPath.setAttribute("id", "unoNativeElementHostClipPath");
-				this.clipPathsda = document.createElementNS("http://www.w3.org/2000/svg", "path");
-				clipPath.appendChild(this.clipPathsda);
+				this.clipPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				clipPath.appendChild(this.clipPath);
 				defs.appendChild(clipPath);
 				svgContainer.appendChild(defs);
 				document.body.appendChild(svgContainer);
-				clipPath.appendChild(this.clipPathsda);
+				clipPath.appendChild(this.clipPath);
 			}
-			this.clipPathsda.setAttributeNS(null, "d", path);
+			this.clipPath.setAttributeNS(null, "d", path);
 		}
 
 		public static isNativeElement(content: string): boolean {
@@ -29,7 +26,7 @@ namespace Uno.UI.Runtime.Skia {
 
 		private static getNativeElementHost(): HTMLElement {
 			let nativeElementHost = document.getElementById("uno-native-element-host");
-			if (nativeElementHost === undefined || nativeElementHost === null) {
+			if (!nativeElementHost) {
 				nativeElementHost = document.createElement("div");
 				nativeElementHost.id = "uno-native-element-host";
 				nativeElementHost.style.position = "absolute";
