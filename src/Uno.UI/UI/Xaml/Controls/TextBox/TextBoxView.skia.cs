@@ -9,6 +9,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
