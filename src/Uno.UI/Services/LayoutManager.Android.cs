@@ -50,7 +50,7 @@ namespace Uno.UI.Services
 				{
 					typeof(LayoutManager).Log().LogDebug($"Measuring {view} with {GetAncestorCount(view)} ancestors in visual tree.");
 				}
-				IFrameworkElementHelper.Measure(view, view.AssignedActualSize.Add(view.Margin));
+				IFrameworkElementHelper.Measure(view, view.RenderSize.Add(view.Margin));
 			}
 			foreach (var view in queue)
 			{

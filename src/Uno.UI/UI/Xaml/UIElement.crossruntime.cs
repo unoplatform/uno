@@ -102,6 +102,8 @@ namespace Microsoft.UI.Xaml
 
 		private void OnChildRemoved(UIElement child)
 		{
+			child.Shutdown();
+
 			if (!child._isFrameworkElement)
 			{
 				return;

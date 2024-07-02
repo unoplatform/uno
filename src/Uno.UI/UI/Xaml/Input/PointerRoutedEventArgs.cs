@@ -1,15 +1,16 @@
-﻿using Windows.Foundation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using System.Threading;
+using Uno;
+using Uno.UI.Core;
+using Uno.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
-using Uno;
-using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Uno.UI.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -81,7 +82,7 @@ namespace Microsoft.UI.Xaml.Input
 		}
 
 		internal bool IsPointCoordinatesOver(UIElement element)
-			=> new Rect(default, element.AssignedActualSize).Contains(GetCurrentPoint(element).Position);
+			=> new Rect(default, element.ActualSize.ToSize()).Contains(GetCurrentPoint(element).Position);
 
 		/// <inheritdoc />
 		public override string ToString()

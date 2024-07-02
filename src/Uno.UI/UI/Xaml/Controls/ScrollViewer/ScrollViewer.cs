@@ -1367,8 +1367,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// updates. The ScrollContentPresenter will scroll smoothly since the native scrolling/rendering
 			// is on a separate thread, but the ScrollBars will be frozen until the end of the (long) scrolling
 			// duration.
-			_horizontalScrollbar?.Arrange(_horizontalScrollbar.LayoutSlot);
-			_verticalScrollbar?.Arrange(_verticalScrollbar.LayoutSlot);
+			_horizontalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_horizontalScrollbar));
+			_verticalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_verticalScrollbar));
 #endif
 		}
 

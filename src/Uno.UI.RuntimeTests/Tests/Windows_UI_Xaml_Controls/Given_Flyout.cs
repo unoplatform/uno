@@ -520,6 +520,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			menuBarItem.CloseMenuFlyout();
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -546,8 +547,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = stackPanel;
 			await TestServices.WindowHelper.WaitForLoaded(stackPanel);
 
-			var tb = new TextBlock();
-			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = "." });
+			var tb = new TextBlock() { Tag = "SUT" };
+			const string EmptyPath =
+#if HAS_UNO
+				".";
+#else
+				"";
+#endif
+			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(EmptyPath) });
 			var SUT = new Flyout
 			{
 				Content = tb
@@ -559,14 +566,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.ShowAttachedFlyout(b1);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("41", tb.Text);
-			SUT.Close();
+			SUT.Hide();
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			FlyoutBase.ShowAttachedFlyout(b2);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("42", tb.Text);
-			SUT.Close();
+			SUT.Hide();
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

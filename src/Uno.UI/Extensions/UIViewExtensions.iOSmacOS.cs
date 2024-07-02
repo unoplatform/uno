@@ -646,7 +646,7 @@ namespace AppKit
 						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
 						.Append(fe != null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
 						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
-						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
+						.Append(uiElement != null ? $" AvailableSize={uiElement.m_previousAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.Append(uiElement?.GetElementSpecificDetails())
 						.Append(uiElement?.GetElementGridOrCanvasDetails())

@@ -94,7 +94,7 @@ internal partial class RootVisual : Panel, IRootElement
 
 			if (true)//child.GetIsArrangeDirty() || child.GetIsOnArrangeDirtyPath())
 			{
-				//child.EnsureLayoutStorage();
+				child.EnsureLayoutStorage();
 
 				var childRect = new Rect(x, y, finalSize.Width, finalSize.Height);
 

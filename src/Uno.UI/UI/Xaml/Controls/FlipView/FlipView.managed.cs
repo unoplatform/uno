@@ -1188,7 +1188,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (spVirtualizingPanel != null)
 			{
-				width = (double)((spVirtualizingPanel as VirtualizingPanel)?.LastAvailableSize.Width);
+				width = LayoutInformation.GetAvailableSize(spVirtualizingPanel as VirtualizingPanel).Width;
 			}
 
 			double pWidth;
@@ -1224,7 +1224,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (spVirtualizingPanel != null)
 			{
-				height = (double)((spVirtualizingPanel as VirtualizingPanel)?.LastAvailableSize.Height);
+				height = LayoutInformation.GetAvailableSize(spVirtualizingPanel as VirtualizingPanel).Height;
 			}
 
 			double pHeight;

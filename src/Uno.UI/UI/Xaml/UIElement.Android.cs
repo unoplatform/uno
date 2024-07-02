@@ -87,6 +87,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
+
+			Shutdown();
 		}
 
 		private void OnChildManagedViewAddedOrRemoved(UIElement uiElement)

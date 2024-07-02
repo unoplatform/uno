@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Media
 		private static bool IsElementIntersecting(Point intersectingPoint, UIElement uiElement)
 		{
 			GeneralTransform transformToRoot = uiElement.TransformToVisual(null);
-			var target = transformToRoot.TransformBounds(uiElement.LayoutSlot);
+			var target = transformToRoot.TransformBounds(LayoutInformation.GetLayoutSlot(uiElement));
 			return target.Contains(intersectingPoint);
 		}
 

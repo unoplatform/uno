@@ -368,7 +368,6 @@ namespace <#= mixin.NamespaceName #>
 
 #if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
 					RenderSize = _actualSize;
-					AssignedActualSize = _actualSize;
 #endif
 
 					CGAffineTransform? oldTransform = null;

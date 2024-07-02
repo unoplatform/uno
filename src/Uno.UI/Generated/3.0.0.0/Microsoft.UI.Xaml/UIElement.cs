@@ -463,16 +463,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Size DesiredSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Size UIElement.DesiredSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20UIElement.DesiredSize");
-			}
-		}
-#endif
+		// Skipping already declared property DesiredSize
 		// Skipping already declared property FocusState
 		// Skipping already declared property KeyboardAccelerators
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

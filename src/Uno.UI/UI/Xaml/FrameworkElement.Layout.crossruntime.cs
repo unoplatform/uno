@@ -24,11 +24,6 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
-		/// <summary>
-		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
-		/// </summary>
-		private Size _unclippedDesiredSize;
-
 		private bool m_firedLoadingEvent;
 
 		private const double SIZE_EPSILON = 0.05d;
@@ -275,8 +270,8 @@ namespace Microsoft.UI.Xaml
 
 				// Here is the "true minimum" desired size - the one that is
 				// for sure enough for the control to render its content.
-				// EnsureLayoutStorage();
-				_unclippedDesiredSize = desiredSize;
+				EnsureLayoutStorage();
+				m_unclippedDesiredSize = desiredSize;
 
 				// More layout transforms processing here.
 
@@ -366,13 +361,13 @@ namespace Microsoft.UI.Xaml
 #endif
 			{
 				// DesiredSize must include margins
-				LayoutInformation.SetDesiredSize(this, desiredSize);
+				m_desiredSize = desiredSize;
 #if __SKIA__
 				this.OnDesiredSizeChanged();
 #endif
 			}
 
-			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
+			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={m_unclippedDesiredSize}");
 		}
 
 		private protected virtual void OnDesiredSizeChanged()
@@ -472,10 +467,9 @@ namespace Microsoft.UI.Xaml
 			Size clientSize = default;
 			double offsetX = 0, offsetY = 0;
 
-			// Uno TODO:
-			//IFC_RETURN(EnsureLayoutStorage());
+			EnsureLayoutStorage();
 
-			unclippedDesiredSize = _unclippedDesiredSize;
+			unclippedDesiredSize = m_unclippedDesiredSize;
 			oldRenderSize = RenderSize;
 
 			//if (!bInLayoutTransition)
@@ -768,7 +762,7 @@ namespace Microsoft.UI.Xaml
 
 				Size clippingSize = default;
 
-				// EnsureLayoutStorage();
+				EnsureLayoutStorage();
 
 				// If clipping is forced, ensure the clip is at least as small as the RenderSize.
 				//if (forceClipToRenderSize)

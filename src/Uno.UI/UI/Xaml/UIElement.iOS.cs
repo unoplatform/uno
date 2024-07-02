@@ -190,8 +190,9 @@ namespace Microsoft.UI.Xaml
 								// the offset to be included in LVI.LayoutSlot already. The if-case guards against that case.
 								parentElement = listViewBaseInternalContainer.FindFirstParent<UIElement>();
 								if (listViewBaseInternalContainer.Content is { } container &&
-									container.LayoutSlot.Left == container.Margin.Left &&
-									container.LayoutSlot.Top == container.Margin.Top)
+									LayoutInformation.GetLayoutSlot(container) is { } layoutSlot &&
+									layoutSlot.Left == container.Margin.Left &&
+									layoutSlot.Top == container.Margin.Top)
 								{
 									matrix.M31 += (float)parent.Frame.X;
 									matrix.M32 += (float)parent.Frame.Y;
