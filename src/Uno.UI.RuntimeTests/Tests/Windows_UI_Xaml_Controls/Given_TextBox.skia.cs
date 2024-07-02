@@ -3516,22 +3516,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Tab_Forces_NewLine_When_Not_Enough_Width()
 		{
-			using var _ = new TextBoxFeatureConfigDisposable();
+			using var _1 = new TextBoxFeatureConfigDisposable();
+			using var _2 = StyleHelper.UseFluentStyles();
 
-			var SUT = new TextBox
+			// WinUI actually wraps when width <= 114, not <= 113 like we have here.
+			// But when width == 114, WinUI has a bug where it wraps, but it doesn't
+			// increase the height of the TextBox, so most of the new line (due to wrapping)
+			// is out of view :/.
+			var sp = new StackPanel
 			{
-				Width = 120,
-				TextWrapping = TextWrapping.Wrap,
-				Text = "\t"
+				Children =
+				{
+					new TextBox
+					{
+						Width = 114,
+						TextWrapping = TextWrapping.Wrap,
+						Text = "\t\t",
+						FontFamily = new FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")
+					},
+					new TextBox
+					{
+						Width = 113,
+						TextWrapping = TextWrapping.Wrap,
+						Text = "\t\t",
+						FontFamily = new FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")
+					},
+				}
 			};
 
-			WindowHelper.WindowContent = SUT;
+			await UITestHelper.Load(sp);
 
-			var height = (await UITestHelper.Load(SUT)).Height;
-
-			SUT.Text = "\t\t";
-			await WindowHelper.WaitForIdle();
-			Assert.AreNotEqual(height, SUT.GetAbsoluteBounds().Height);
+			Assert.AreNotEqual(sp.Children[0].ActualSize.Y, sp.Children[1].ActualSize.Y);
 		}
 
 		[TestMethod]
