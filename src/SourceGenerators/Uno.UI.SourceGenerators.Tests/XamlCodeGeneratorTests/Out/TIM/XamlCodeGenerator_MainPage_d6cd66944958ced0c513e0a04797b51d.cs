@@ -281,10 +281,10 @@ namespace TestRepro
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings();
-				owner._component_1.UpdateResourceBindings();
-				owner._component_2.UpdateResourceBindings();
-				owner._component_3.UpdateResourceBindings();
+				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_1.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_2.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_3.UpdateResourceBindings(resourceContextProvider: null);
 			}
 			void IMainPage_Bindings.StopTracking()
 			{

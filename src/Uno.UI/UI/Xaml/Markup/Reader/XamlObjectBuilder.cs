@@ -605,7 +605,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// Delay resolve static resources
 			foreach (var provider in delayedResolutionList)
 			{
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, rd);
+				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
 			}
 		}
 
