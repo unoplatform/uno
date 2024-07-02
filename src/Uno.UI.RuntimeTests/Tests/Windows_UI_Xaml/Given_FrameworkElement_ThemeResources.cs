@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			Assert.AreEqual(Colors.Black, (SUT.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(Color.FromArgb(0xE4, 0, 0, 0), (SUT.Foreground as SolidColorBrush)?.Color);
 
 			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();
@@ -75,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			using (ThemeHelper.UseDarkTheme())
 			{
-				await OpenAndCheckComboBox(comboBox, Colors.White, Color.FromArgb(255, 43, 43, 43));
+				await OpenAndCheckComboBox(comboBox, Colors.White, Color.FromArgb(255, 44, 44, 44));
 
 			}
 		}
@@ -92,11 +92,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			comboBox.ItemsSource = "abcdef".ToArray();
 
-			await OpenAndCheckComboBox(comboBox, Colors.Black, Color.FromArgb(255, 242, 242, 242));
+			await OpenAndCheckComboBox(comboBox, Color.FromArgb(228, 0, 0, 0), Color.FromArgb(255, 249, 249, 249));
 
 			using (ThemeHelper.UseDarkTheme())
 			{
-				await OpenAndCheckComboBox(comboBox, Colors.White, Color.FromArgb(255, 43, 43, 43));
+				await OpenAndCheckComboBox(comboBox, Colors.White, Color.FromArgb(255, 44, 44, 44));
 
 			}
 		}
@@ -114,7 +114,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var popup = comboBox.FindFirstChild<Popup>();
 				var popupBorder = popup.Child as Border;
 				Assert.IsNotNull(popupBorder);
-				Assert.AreEqual(expectedBackground, (popupBorder.Background as SolidColorBrush)?.Color);
+				var acrylicBrush = popupBorder.Background as AcrylicBrush;
+				var color = acrylicBrush.FallbackColor;
+				var actualColor = Color.FromArgb((byte)(color.A * acrylicBrush.Opacity), color.R, color.G, color.B);
+				Assert.AreEqual(expectedBackground, actualColor);
 			}
 			finally
 			{

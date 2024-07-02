@@ -23,7 +23,7 @@
 				<ToolTip x:Name="ctl3" Background="Green" Width="80" CornerRadius="{x:Bind ToRadius(cornerRadius.Value), Mode=OneWay}">
 					<TextBlock Foreground="Yellow" HorizontalAlignment="Center">ToolTip<LineBreak/>(Control)</TextBlock>
 				</ToolTip>
-				<Button x:Name="ctl4" Background="Green" Width="80" Height="100" CornerRadius="{x:Bind ToRadius(cornerRadius.Value), Mode=OneWay}">
+				<Button x:Name="ctl4" Background="Green" Width="80" Height="100" BorderThickness="0" CornerRadius="{x:Bind ToRadius(cornerRadius.Value), Mode=OneWay}">
 					<TextBlock Foreground="Yellow" HorizontalAlignment="Center">Button<LineBreak/>(Control)</TextBlock>
 				</Button>
 				<ScrollViewer x:Name="ctl5" Background="Green" Width="80" CornerRadius="{x:Bind ToRadius(cornerRadius.Value), Mode=OneWay}">

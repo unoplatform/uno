@@ -726,6 +726,7 @@ namespace Microsoft.UI.Xaml
 			var routedArgs = new DragStartingEventArgs(this, ptArgs);
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
+			UpdateLayout(); // we need a layout cycle before a possible DragEnter just in case DragStarting causes the visual tree to change
 
 			// We capture the original position of the pointer before going async,
 			// so we have the closet location of the "down" possible.

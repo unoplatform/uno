@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(false)]
 		public async Task When_NavigationViewButtonStyles(bool useFluent)
 		{
-			using var _ = useFluent ? StyleHelper.UseFluentStyles() : null;
+			using var _ = useFluent ? null : StyleHelper.UseUwpStyles();
 
 			var normalBtn = (Button)XamlReader.Load("""
 				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonNormalStyle}" />

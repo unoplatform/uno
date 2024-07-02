@@ -240,16 +240,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		[TestMethod]
-		public Task When_Switch_Theme_UWP() => When_Switch_Theme_Inner(brush => (brush as SolidColorBrush).Color);
+		public Task When_Switch_Theme_Fluent() => When_Switch_Theme_Inner(brush => (brush as AcrylicBrush).TintColor);
 
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		[TestMethod]
-		public async Task When_Switch_Theme_Fluent()
+		public async Task When_Switch_Theme_Uwp()
 		{
-			using var _ = StyleHelper.UseFluentStyles();
-			await When_Switch_Theme_Inner(brush => (brush as AcrylicBrush).TintColor);
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_Switch_Theme_Inner(brush => (brush as SolidColorBrush).Color);
 		}
 
 		private async Task When_Switch_Theme_Inner(Func<Brush, Color> backgroundColorGetter)

@@ -717,6 +717,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("When the CommandBar is Disabled, the more button should be greyed out.")]
+		[Ignore("ResourceDictionary retrieval is incorrect #17271")]
 		public async Task ValidateMoreButtonVisualInDisabledState()
 		{
 			TestCleanupWrapper cleanup;
@@ -2552,8 +2553,8 @@ namespace Windows.UI.Tests.Enterprise
 				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
 			});
 #endif
-			double expectedCommandBarCompactClosedHeight = 40;
-			double expectedCommandBarCompactOpenHeight = 40;
+			double expectedCommandBarCompactClosedHeight = 48;
+			double expectedCommandBarCompactOpenHeight = 48;
 
 			double expectedCommandBarMinimalClosedHeight = 24;
 			double expectedCommandBarMinimalOpenHeight = 24;

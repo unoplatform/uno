@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 
@@ -47,12 +47,10 @@ public class Given_PathIcon
 	}
 
 	[TestMethod]
-	public async Task When_Themed_Fluent()
+	public async Task When_Themed_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			await When_Themed();
-		}
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed();
 	}
 
 	[TestMethod]
@@ -96,11 +94,9 @@ public class Given_PathIcon
 
 
 	[TestMethod]
-	public async Task When_Themed_Path_Fluent()
+	public async Task When_Themed_Path_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			await When_Themed_Path();
-		}
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed_Path();
 	}
 }

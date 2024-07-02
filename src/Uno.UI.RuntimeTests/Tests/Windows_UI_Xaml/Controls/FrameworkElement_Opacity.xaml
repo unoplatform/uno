@@ -7,7 +7,9 @@
 	  mc:Ignorable="d"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<StackPanel>
+	<!-- As the test is about opacity, the background can have effect on test outcome -->
+	<!-- To make the test stable when using UWP/Fluent styles, and when running with Light/Dark themes, we explicitly set the background -->
+	<StackPanel Background="White">
 		<TextBlock Text="Opacity 1.0 ██████████"
 				   x:Name="tbOpacity1_0"
 				   x:FieldModifier="public"

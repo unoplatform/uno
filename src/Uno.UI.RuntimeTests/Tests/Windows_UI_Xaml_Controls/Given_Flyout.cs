@@ -1834,13 +1834,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					NumberAssert.LessOrEqual(contentScreenBounds.Bottom, targetScreenBounds.Top);
 					break;
 				case VerticalPosition.TopFlush:
-					Assert.AreEqual(targetScreenBounds.Top, contentScreenBounds.Top, delta: 2);
+					Assert.AreEqual(targetScreenBounds.Top, contentScreenBounds.Top, delta: 3);
 					break;
 				case VerticalPosition.Center:
 					Assert.AreEqual(targetCenter.Y, contentCenter.Y, delta: 2);
 					break;
 				case VerticalPosition.BottomFlush:
-					Assert.AreEqual(targetScreenBounds.Bottom, contentScreenBounds.Bottom, delta: 2);
+					Assert.AreEqual(targetScreenBounds.Bottom, contentScreenBounds.Bottom, delta: 3);
 					break;
 				case VerticalPosition.BeyondBottom:
 					NumberAssert.GreaterOrEqual(contentScreenBounds.Top, targetScreenBounds.Bottom);

@@ -13,14 +13,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Windows.UI.Core;
+using Uno.Extensions;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -102,7 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
 #if __ANDROID__
-			LeakTestStyles.Default // Fluent styles disabled - #14341
+			LeakTestStyles.Uwp // Fluent styles disabled - #14341
 #else
 			LeakTestStyles.All
 #endif
@@ -179,7 +179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __IOS__
 			LeakTestStyles.None // Disabled - #10344
 #elif __ANDROID__
-			LeakTestStyles.Default // Fluent styles disabled - #14340
+			LeakTestStyles.Uwp // Fluent styles disabled - #14340
 #else
 			LeakTestStyles.All
 #endif
@@ -187,18 +187,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(MediaPlayerElement), 15)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
 		{
-			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
+			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
 			{
 				// Test for leaks both without and with fluent styles
 				await When_Add_Remove_Inner(controlTypeRaw, count);
 			}
 
-			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
+			if (leakTestStyles.HasFlag(LeakTestStyles.Uwp))
 			{
-				using (var themeHelper = StyleHelper.UseFluentStyles())
-				{
-					await When_Add_Remove_Inner(controlTypeRaw, count);
-				}
+				using var _ = StyleHelper.UseUwpStyles();
+				await When_Add_Remove_Inner(controlTypeRaw, count);
 			}
 		}
 
@@ -439,9 +437,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		public enum LeakTestStyles
 		{
 			None = 0,
-			Default = 1,
-			Fluent = 2,
-			All = Default | Fluent
+			Fluent = 1,
+			Uwp = 2,
+			All = Fluent | Uwp
 		}
 	}
 }

@@ -69,38 +69,38 @@ namespace Uno.UI.RuntimeTests.Helpers
 			return Disposable.Create(() => appResources.MergedDictionaries.Remove(resources));
 		}
 
-
-
 		/// <summary>
 		/// Ensure Fluent styles are available for the course of a single test.
 		/// </summary>
-		public static IDisposable UseFluentStyles()
+		public static IDisposable UseUwpStyles()
 		{
-#if WINAPPSDK // Disabled on Windows for now because 19041 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.Windows
-			return null;
+#if WINAPPSDK // Disabled on WinUI as removing the resource dictionary causes a crash.
+			return Disposable.Empty;
 #else
 
 			NativeDispatcher.CheckThreadAccess();
 
 			var resources = Application.Current.Resources;
-			if (resources is Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources>().Any())
+			var xamlResources = resources.MergedDictionaries.OfType<Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources>().FirstOrDefault();
+			if (xamlResources is null)
 			{
-				return null;
+				return Disposable.Empty;
 			}
 
-			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
-			resources.MergedDictionaries.Insert(0, xcr);
-
-			// Force default brushes to be reloaded
-			DefaultBrushes.ResetDefaultThemeBrushes();
-			ResetIslandRootForeground();
+			resources.MergedDictionaries.Remove(xamlResources);
+			ForceReload();
 
 			return new DisposableAction(() =>
 			{
-				resources.MergedDictionaries.Remove(xcr);
+				resources.MergedDictionaries.Insert(0, xamlResources);
+				ForceReload();
+			});
+
+			static void ForceReload()
+			{
 				DefaultBrushes.ResetDefaultThemeBrushes();
 				ResetIslandRootForeground();
-			});
+			}
 #endif
 		}
 
