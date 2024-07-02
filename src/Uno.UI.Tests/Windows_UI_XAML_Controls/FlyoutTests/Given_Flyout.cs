@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Tests.FlyoutTests
 {
@@ -52,7 +53,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			button.Focus(FocusState.Programmatic);
 			flyout.ShowAt(button);
 
-			Assert.AreEqual(button.LayoutSlot.X, flyout._popup.LayoutSlot.X);
+			Assert.AreEqual(LayoutInformation.GetLayoutSlot(button).X, LayoutInformation.GetLayoutSlot(flyout._popup).X);
 		}
 
 		[TestMethod]

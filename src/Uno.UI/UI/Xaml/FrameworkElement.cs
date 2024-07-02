@@ -192,6 +192,7 @@ namespace Microsoft.UI.Xaml
 			=> _renderTransform?.UpdateSize(newSize);
 #endif
 
+#if !IS_UNIT_TESTS
 		private protected override double GetActualHeight()
 		{
 			var height = Height;
@@ -245,6 +246,7 @@ namespace Microsoft.UI.Xaml
 
 		private double ComputeHeightInMinMaxRange(double height)
 			=> Math.Max(Math.Min(height, MaxHeight), MinHeight);
+#endif
 
 		partial void Initialize()
 		{
