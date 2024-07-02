@@ -71,7 +71,7 @@ partial class App
 			return;
 		}
 
-		if (OperatingSystem.IsBrowser() || OperatingSystem.IsAndroid())
+		if (IsNonDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm or Android, even if running Skia.
 			return;
@@ -149,7 +149,7 @@ partial class App
 	public void AssertApplicationData()
 	{
 #if __SKIA__
-		if (OperatingSystem.IsBrowser())
+		if (IsNonDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
 			return;
@@ -185,10 +185,7 @@ partial class App
 		void AssertContainsIdProps(StorageFolder folder)
 		{
 			Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal), $"{folder.Path} does not contain {appName}");
-			if (!OperatingSystem.IsAndroid())
-			{
-				Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
-			}
+			Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
 		}
 
 		void AssertCanCreateFile(StorageFolder folder)
@@ -230,4 +227,13 @@ partial class App
 		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 #endif
 	}
+
+#if __SKIA__
+	private bool IsNonDesktop() =>
+		OperatingSystem.IsBrowser() ||
+		OperatingSystem.IsAndroid() ||
+		OperatingSystem.IsIOS() ||
+		OperatingSystem.IsMacCatalyst() ||
+		OperatingSystem.IsTvOS();
+#endif
 }
