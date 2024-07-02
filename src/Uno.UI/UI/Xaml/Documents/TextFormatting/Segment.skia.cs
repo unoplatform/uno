@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 	internal sealed class Segment
 	{
 		// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
-		private const float TabStopWidth = 50;
+		private const float TabStopWidth = 48;
 
 		private readonly List<GlyphInfo>? _glyphs;
 		private readonly FontDetails? _fallbackFont;

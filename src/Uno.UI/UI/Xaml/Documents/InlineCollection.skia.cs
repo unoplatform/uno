@@ -169,7 +169,6 @@ namespace Microsoft.UI.Xaml.Documents
 			bool previousLineWrapped = false;
 
 			float availableWidth = wrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
-			availableWidth -= CaretThickness; // In case the text width is _exactly_ equal to availableWidth, the caret would not be visible at the end without this line
 			float widestLineWidth = 0, widestLineHeight = 0;
 
 			float x = 0;
@@ -836,6 +835,23 @@ namespace Microsoft.UI.Xaml.Documents
 					// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
 					// but we still render the caret at the end of the visible area like WinUI does.
 					caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+				}
+
+				if (Math.Round(caretLocation + CaretThickness) > _lastArrangedSize.Width)
+				{
+					// WinUI draws the caret one-pixel early if the text takes (almost) all the available width.
+					// Try this and move the caret to the end (after the l):
+					// new TextBox
+					// {
+					// 	Width = 94,
+					// 	TextWrapping = TextWrapping.Wrap,
+					// 	Text = "abcdefghijkl",
+					// 	FontFamily = new FontFamily("/Assets/Roboto-Regular.ttf#Roboto")
+					// }
+					// and try again with
+					// 	Width = 95,
+					// Notice how the caret is drawn one pixel later in the second case even though the text is the exact same.
+					caretLocation--;
 				}
 
 				if (caretLocation != float.MinValue && fireEvents)
