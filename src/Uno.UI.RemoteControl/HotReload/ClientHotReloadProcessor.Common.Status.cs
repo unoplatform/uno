@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Threading;
 using Uno.Diagnostics.UI;
 
-#if HAS_UNO_WINUI
+#if HAS_UNO
 using Uno.UI.RemoteControl.HotReload.Messages;
 #else
 using HotReloadServerOperationData = object;
@@ -65,7 +65,7 @@ public partial class ClientHotReloadProcessor
 
 	private class StatusSink(ClientHotReloadProcessor owner)
 	{
-#if HAS_UNO_WINUI
+#if HAS_UNO
 		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.OnHotReloadStatusChanged(status));
 #endif
 
@@ -74,7 +74,7 @@ public partial class ClientHotReloadProcessor
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
 
-#if HAS_UNO_WINUI
+#if HAS_UNO
 		public void ReportServerStatus(HotReloadStatusMessage status)
 		{
 			_serverState = status.State;
@@ -112,7 +112,7 @@ public partial class ClientHotReloadProcessor
 		private void NotifyStatusChanged()
 		{
 			var status = BuildStatus();
-#if HAS_UNO_WINUI
+#if HAS_UNO
 			_view.Update(status);
 #endif
 			owner.StatusChanged?.Invoke(this, status);
