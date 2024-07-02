@@ -39,6 +39,7 @@ The following conditional symbols are predefined for each Uno platform:
 | --------------- | ------------------ | ------- |
 | Android         | `__ANDROID__`      | |
 | iOS             | `__IOS__`          | |
+| tvOS            | `__TVOS__`         | |
 | Catalyst        | `__MACCATALYST__`  | |
 | macOS           | `__MACOS__`        | |
 | WebAssembly     | `__WASM__`         | Only available in the `net8.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
