@@ -71,7 +71,7 @@ partial class App
 			return;
 		}
 
-		if (IsNonDesktop())
+		if (Uno.UI.Helpers.SkiaTargetHelper.IsNonDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm or Android, even if running Skia.
 			return;
@@ -149,7 +149,7 @@ partial class App
 	public void AssertApplicationData()
 	{
 #if __SKIA__
-		if (IsNonDesktop())
+		if (Uno.UI.Helpers.SkiaTargetHelper.IsNonDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
 			return;
@@ -227,13 +227,4 @@ partial class App
 		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 #endif
 	}
-
-#if __SKIA__
-	private bool IsNonDesktop() =>
-		OperatingSystem.IsBrowser() ||
-		OperatingSystem.IsAndroid() ||
-		OperatingSystem.IsIOS() ||
-		OperatingSystem.IsMacCatalyst() ||
-		OperatingSystem.IsTvOS();
-#endif
 }

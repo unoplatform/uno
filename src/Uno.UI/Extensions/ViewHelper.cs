@@ -47,7 +47,7 @@ namespace Uno.UI
 		internal static double PhysicalToLogicalPixels(double value)
 		{
 			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
-			if (OperatingSystem.IsAndroid())
+			if (Uno.UI.Helpers.SkiaTargetHelper.IsNonDesktop())
 			{
 				return value / _cachedDensity;
 			}
@@ -58,7 +58,7 @@ namespace Uno.UI
 		internal static double LogicalToPhysicalPixels(double value)
 		{
 			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
-			if (OperatingSystem.IsAndroid())
+			if (Uno.UI.Helpers.SkiaTargetHelper.IsNonDesktop())
 			{
 				if (double.IsNaN(value))
 				{
