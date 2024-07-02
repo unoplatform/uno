@@ -466,7 +466,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							{
 								var targetFramework = split[3];
 								if (targetFramework.Contains("-android") ||
-									targetFramework.Contains("-ios"))
+									targetFramework.Contains("-ios")) TODO MZ
 								{
 									var packageVersion = split[1];
 
