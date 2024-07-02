@@ -65,10 +65,13 @@ platform/wasm 🌐:
 
 platform/ios 🍎:
   - '**/*.iOS.cs'
+  - '**/*.UIKit.cs'
   - '**/*.iOSmacOS.cs'
+  - '**/*.Apple.cs'
   - '**/*.Xamarin.cs'
 
 platform/macos 🍏:
   - '**/*.macOS.cs'
   - '**/*.iOSmacOS.cs'
+  - '**/*.Apple.cs'
   - '**/*.Xamarin.cs'

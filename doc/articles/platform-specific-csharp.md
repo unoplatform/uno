@@ -101,8 +101,11 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.skia.cs` is built only for `net8.0-desktop`
 * `*.reference.cs` is built only for `net8.0-desktop`
 * `*.iOS.cs` is built only for `net8.0-ios` and `net8.0-maccatalyst`
+* `*.tvOS.cs` is built only for `net8.0-tvos`
+* `*.UIKit.cs` is built only for `net8.0-ios` and `net8.0-maccatalyst` and `net8.0-tvos`
 * `*.macOS.cs` is built only for `net8.0-macos`
 * `*.iOSmacOS.cs` is built only for `net8.0-ios` and `net8.0-macos`
+* `*.Apple.cs` is built only for `net8.0-ios` and `net8.0-maccatalyst` and `net8.0-tvos` and `net8.0-macos`
 * `*.Android.cs` is built only for `net8.0-android`
 
 Using file name conventions allows for reducing the use of `#if` compiler directives.

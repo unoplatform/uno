@@ -239,8 +239,11 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 - `*.skia.cs`
 - `*.reference.cs`
 - `*.iOS.cs`(iOS & MacCatalyst)
+- `*.tvOS.cs`(tvOS)
+- `*.UIKit.cs`(iOS & MacCatalyst & tvOS)
 - `*.macOS.cs` (MacOS not MacCatalyst)
 - `*.iOSmacOS.cs` (iOS, MacCatalyst, & MacOS)
+- `*.Apple.cs` (iOS, MacCatalyst, tvOS & MacOS)
 - `*.Android.cs`
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.

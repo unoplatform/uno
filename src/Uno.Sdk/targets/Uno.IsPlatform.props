@@ -5,6 +5,8 @@
 		<IsMacOS>false</IsMacOS>
 		<IsMacCatalyst>false</IsMacCatalyst>
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
+		<IsTvOS>false</IsTvOS>
+		<IsAppleUIKit>false</IsAppleUIKit>
 		<IsWinAppSdk>false</IsWinAppSdk>
 		<IsBrowserWasm>false</IsBrowserWasm>
 		<IsDesktop>false</IsDesktop>
@@ -18,6 +20,7 @@
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 			<PropertyGroup>
+				<IsAppleUIKit>true</IsAppleUIKit>
 				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 				<IsIOS>true</IsIOS>
 			</PropertyGroup>
@@ -29,8 +32,15 @@
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 			<PropertyGroup>
+				<IsAppleUIKit>true</IsAppleUIKit>
 				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 				<IsMacCatalyst>true</IsMacCatalyst>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
+			<PropertyGroup>
+				<IsAppleUIKit>true</IsAppleUIKit>
+				<IsTvOS>true</IsTvOS>
 			</PropertyGroup>
 		</When>
 		<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->

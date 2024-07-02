@@ -200,6 +200,9 @@
 		<IsIOS>false</IsIOS>
 		<IsIOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='ios'">true</IsIOS>
 
+		<IsTvOS>false</IsTvOS>
+		<IsTvOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='tvos'">true</IsTvOS>
+
 		<IsMacOS>false</IsMacOS>
 		<IsMacOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='macos'">true</IsMacOS>
 
@@ -208,6 +211,12 @@
 
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
+
+		<IsAppleUIKit>false</IsAppleUIKit>
+		<IsAppleUIKit Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsAppleUIKit>
+
+		<IsApple>false</IsApple>
+		<IsApple Condition="$(IsIOSOrCatalyst) or $(IsTvOS) or $(IsMacOS)">true</IsApple>
 
 		<_IsUnitTests>false</_IsUnitTests>
 		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
