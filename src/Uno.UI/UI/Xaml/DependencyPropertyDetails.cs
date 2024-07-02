@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Represents the stack of values used by the Dependency Property Value Precedence system
 	/// </summary>
-	internal class DependencyPropertyDetails : IEnumerable<object?>, IEnumerable, IDisposable
+	internal class DependencyPropertyDetails : IDisposable
 	{
 		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
 		private readonly Type _dependencyObjectType;
@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (!HasDefaultValueSet)
 			{
-				_defaultValue = Metadata.DefaultValue;
+				_defaultValue = Property.IsOnDemandProperty ? Property.CreateDefaultValueObject() : Metadata.DefaultValue;
 
 				// Ensures that the default value of non-nullable properties is not null
 				if (_defaultValue == null && !Property.IsTypeNullable)
@@ -142,6 +142,25 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return _defaultValue;
+		}
+
+		internal bool TryGetOnDemandProperty(out object? value)
+		{
+			if (_highestPrecedence != DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				value = GetValue();
+				return true;
+			}
+
+			if (HasDefaultValueSet)
+			{
+				value = _defaultValue;
+				return true;
+			}
+
+			// Avoid creating default value.
+			value = null;
+			return false;
 		}
 
 		/// <summary>
@@ -406,7 +425,7 @@ namespace Microsoft.UI.Xaml
 		private bool HasWeakStorage
 			=> (_flags & Flags.WeakStorage) != 0;
 
-		private bool HasDefaultValueSet
+		internal bool HasDefaultValueSet
 			=> (_flags & Flags.DefaultValueSet) != 0;
 
 		internal bool HasValueInherits
@@ -442,20 +461,6 @@ namespace Microsoft.UI.Xaml
 				return _stack;
 			}
 		}
-
-		#region IEnumerable implementation
-
-		public IEnumerator<object?> GetEnumerator()
-		{
-			return Stack.Cast<object?>().GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return Stack.GetEnumerator();
-		}
-
-		#endregion
 
 		public override string ToString()
 		{

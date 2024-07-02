@@ -265,10 +265,10 @@ namespace Microsoft.UI.Xaml
 		internal static (object value, DependencyPropertyValuePrecedences precedence)[] GetValueForEachPrecedences(
 			this DependencyObject instance, DependencyProperty property)
 		{
-			var propertyDetails = GetStore(instance).GetPropertyDetails(property).ToList();
+			var propertyDetails = GetStore(instance).GetPropertyDetails(property);
 
 			return Enum.GetValues<DependencyPropertyValuePrecedences>()
-				.Select(precedence => (propertyDetails[(int)precedence], precedence))
+				.Select(precedence => (propertyDetails.GetValue(precedence), precedence))
 				.ToArray();
 		}
 

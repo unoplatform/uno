@@ -67,6 +67,9 @@ namespace Microsoft.UI.Xaml
 		public static bool HasWeakStorage(this FrameworkPropertyMetadataOptions options)
 			=> (options & FrameworkPropertyMetadataOptions.WeakStorage) != 0;
 
+		internal static bool IsOnDemandProperty(this FrameworkPropertyMetadataOptions options)
+			=> (options & FrameworkPropertyMetadataOptions.IsOnDemandProperty) != 0;
+
 		/// <summary>
 		/// Defines the default flags for a FrameworkPropertyMetadata if not explicitly opt-out (cf. <see cref="FrameworkPropertyMetadataOptions.Default"/>).
 		/// </summary>

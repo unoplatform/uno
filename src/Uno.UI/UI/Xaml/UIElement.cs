@@ -208,12 +208,7 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal virtual bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
-			if (property == KeyboardAcceleratorsProperty)
-			{
-				defaultValue = new KeyboardAcceleratorCollection(this);
-				return true;
-			}
-			else if (property == IsTabStopProperty)
+			if (property == IsTabStopProperty)
 			{
 				defaultValue = IsTabStopDefaultValue;
 				return true;

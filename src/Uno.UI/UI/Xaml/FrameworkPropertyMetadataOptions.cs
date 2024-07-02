@@ -72,6 +72,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		KeepCoercedWhenEquals = 1 << 10, // 1024
 
+		IsOnDemandProperty = 1 << 11, // 2048
+
 		/// <summary>
 		/// The default options set when creating a <see cref="FrameworkPropertyMetadata"/>.
 		/// </summary>
