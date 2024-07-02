@@ -75,7 +75,6 @@ namespace Microsoft.UI.Xaml
 			);
 
 			InitializePointers();
-			UpdateHitTest();
 		}
 
 		~UIElement()
@@ -357,7 +356,6 @@ namespace Microsoft.UI.Xaml
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			InvalidateMeasure();
-			UpdateHitTest();
 
 			WindowManagerInterop.SetVisibility(HtmlId, newValue == Visibility.Visible);
 
@@ -390,8 +388,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
-			UpdateHitTest();
-
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
 				UpdateDOMProperties();
@@ -402,6 +398,38 @@ namespace Microsoft.UI.Xaml
 				// Need to invalidate the parent when the visibility changes to ensure its
 				// algorithm is doing its layout properly.
 				parent.InvalidateMeasure();
+			}
+
+			RefreshPointerEvents();
+		}
+
+		private protected void RefreshPointerEvents(bool parentIsInvisible = false)
+		{
+			if (!parentIsInvisible)
+			{
+				// We pass true when we are sure the parent is invisible.
+				// If we got false, we need to calculate it.
+				var parent = this.GetVisualTreeParent();
+				parentIsInvisible = parent.IsEnabledOverride() && parent.IsHitTestVisible && !parent.IsViewHit();
+			}
+
+			if (!IsEnabledOverride() || !IsHitTestVisible)
+			{
+				WindowManagerInterop.SetPointerEvents(HtmlId, "none");
+			}
+			else if (this.IsViewHit())
+			{
+				// If the parent is not hit testable, but its descendants could be hit testable, we
+				// should set auto explicitly on the direct children of the parent.
+				WindowManagerInterop.SetPointerEvents(HtmlId, parentIsInvisible ? "auto" : "");
+			}
+			else
+			{
+				WindowManagerInterop.SetPointerEvents(HtmlId, "none");
+				foreach (var child in _children)
+				{
+					child.RefreshPointerEvents(true);
+				}
 			}
 		}
 

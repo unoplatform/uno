@@ -54,11 +54,14 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+#if __WASM__
+			RefreshPointerEvents();
+#endif
+
 			IsLoading = false;
 			IsLoaded = true;
 
 			OnFwEltLoaded();
-			UpdateHitTest();
 		}
 
 		// Overloads for the FrameworkElement to raise the events
@@ -73,7 +76,6 @@ namespace Microsoft.UI.Xaml
 			Depth = int.MinValue;
 
 			OnFwEltUnloaded();
-			UpdateHitTest();
 		}
 
 		private void OnChildAdded(UIElement child)

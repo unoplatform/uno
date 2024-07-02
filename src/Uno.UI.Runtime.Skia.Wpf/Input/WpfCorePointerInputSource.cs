@@ -141,7 +141,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 
 			// Is the pointer inside an element in the flyout layer? if so, raise in managed
 			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_host!);
-			var managedHitTestResult = Microsoft.UI.Xaml.Media.VisualTreeHelper.SearchDownForTopMostElementAt(eventArgs.CurrentPoint.Position, xamlRoot!.VisualTree.PopupRoot!, Microsoft.UI.Xaml.Media.VisualTreeHelper.DefaultGetTestability, null);
+			var managedHitTestResult = Microsoft.UI.Xaml.Media.VisualTreeHelper.SearchDownForTopMostElementAt(eventArgs.CurrentPoint.Position, xamlRoot!.VisualTree.PopupRoot!, isForDrop: false, isStale: null, forceCollapsed: null);
 			if (managedHitTestResult.element is { })
 			{
 				@event?.Invoke(this, eventArgs);

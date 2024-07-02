@@ -67,7 +67,8 @@ namespace Microsoft.UI.Xaml.Documents
 					("href", uri)
 				);
 			}
-			UpdateHitTest();
+
+			RefreshPointerEvents();
 		}
 
 		internal override bool IsViewHit()

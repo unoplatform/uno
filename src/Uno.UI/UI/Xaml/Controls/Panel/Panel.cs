@@ -238,6 +238,10 @@ public partial class Panel : FrameworkElement, IPanel
 		UpdateBorder();
 #endif
 		OnBackgroundChangedPartial();
+
+#if __WASM__
+		RefreshPointerEvents();
+#endif
 	}
 
 	partial void OnBackgroundChangedPartial();
