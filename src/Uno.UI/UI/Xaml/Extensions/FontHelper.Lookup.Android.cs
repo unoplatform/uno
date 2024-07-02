@@ -28,17 +28,17 @@ namespace Microsoft.UI.Xaml
 			{
 				private readonly int _hashCode;
 
-				public Entry(string? fontFamily, FontWeight fontWeight, TypefaceStyle style)
+				public Entry(string? fontFamily, FontWeight fontWeight, bool italic)
 				{
 					FontFamily = fontFamily;
 					FontWeight = fontWeight;
-					Style = style;
-					_hashCode = (FontFamily?.GetHashCode() ?? 0) ^ FontWeight.GetHashCode() ^ Style.GetHashCode();
+					Italic = italic;
+					_hashCode = (FontFamily?.GetHashCode() ?? 0) ^ FontWeight.GetHashCode() ^ Italic.GetHashCode();
 				}
 
 				public string? FontFamily { get; }
 				public FontWeight FontWeight { get; }
-				public TypefaceStyle Style { get; }
+				public bool Italic { get; }
 
 				public override bool Equals(object? other)
 				{
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml
 					{
 						return FontFamily == otherEntry.FontFamily
 							&& FontWeight == otherEntry.FontWeight
-							&& Style == otherEntry.Style;
+							&& Italic == otherEntry.Italic;
 					}
 
 					return false;

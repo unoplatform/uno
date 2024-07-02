@@ -127,13 +127,11 @@ namespace Uno.UI.Controls
 		{
 			var paintSpecs = BuildPaintValueSpecs(fontSize, characterSpacing);
 
-			var typefaceStyle = TypefaceStyleHelper.GetTypefaceStyle(fontStyle, fontWeight);
-
 			return TextPaintPoolNative.BuildPaint(
 				paintSpecs.density,
 				paintSpecs.textSize,
 				paintSpecs.letterSpacing,
-				FontHelper.FontFamilyToTypeFace(fontFamily, fontWeight, typefaceStyle),
+				FontHelper.FontFamilyToTypeFace(fontFamily, fontWeight, fontStyle),
 				(int)((Android.Graphics.Color)foreground),
 				(textDecorations & TextDecorations.Underline) == TextDecorations.Underline,
 				(textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough,
