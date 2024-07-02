@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {

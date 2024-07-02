@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 using DirectUI;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 
 using Uno.Extensions;
@@ -22,8 +22,8 @@ using Uno.Foundation.Logging;
 
 using IndexPath = Uno.UI.IndexPath;
 using static System.Math;
-using static Microsoft.UI.Xaml.Controls.Primitives.GeneratorDirection;
-using Microsoft.UI.Xaml.Documents;
+using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
+using Windows.UI.Xaml.Documents;
 
 
 #if __MACOS__
@@ -34,10 +34,10 @@ using UIKit;
 #if __IOS__ || __ANDROID__
 using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
 #else
-using _Panel = Microsoft.UI.Xaml.Controls.Panel;
+using _Panel = Windows.UI.Xaml.Controls.Panel;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 #if __IOS__ || __ANDROID__
 	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject

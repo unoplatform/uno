@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -34,10 +34,10 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using CoreGraphics;
 #elif IS_UNIT_TESTS || __WASM__
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal abstract partial class Layouter : ILayouter
 	{
@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Alignment==Stretch --> arrange at the slot size minus margins
 				// Alignment!=Stretch --> arrange at the unclippedDesiredSize
-				if (Panel is not Microsoft.UI.Xaml.Shapes.Shape and not ContentControl)
+				if (Panel is not Windows.UI.Xaml.Shapes.Shape and not ContentControl)
 				{
 					// Uno specific: Shapes arrange is relying on "wrong" layouter logic to be arranged properly
 					// The "Panel is not Shape" check should be removed when we're removing the legacy shape measure/arrange

@@ -5,8 +5,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.Diagnostics.UI;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
@@ -275,7 +275,7 @@ internal sealed partial class HotReloadStatusView : Control
 	}
 }
 
-[Microsoft.UI.Xaml.Data.Bindable]
+[Windows.UI.Xaml.Data.Bindable]
 internal sealed record HotReloadEntryViewModel(bool IsIDE, long Id, DateTimeOffset Start) : INotifyPropertyChanged
 {
 	/// <inheritdoc />

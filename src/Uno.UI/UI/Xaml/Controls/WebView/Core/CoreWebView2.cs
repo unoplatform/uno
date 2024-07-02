@@ -211,7 +211,7 @@ public partial class CoreWebView2
 
 	internal void RaiseUnsupportedUriSchemeIdentified(Uri targetUri, out bool handled)
 	{
-		var args = new Microsoft.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
+		var args = new Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
 		UnsupportedUriSchemeIdentified?.Invoke(this, args);
 
 		handled = args.Handled;

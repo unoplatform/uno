@@ -6,11 +6,11 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class NativeTimePickerFlyout
 {

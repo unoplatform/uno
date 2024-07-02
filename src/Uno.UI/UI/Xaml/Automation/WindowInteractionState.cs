@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation;
+﻿namespace Windows.UI.Xaml.Automation;
 
 /// <summary>
 /// Defines values that specify the current state of the window for purposes of user or programmatic interaction.

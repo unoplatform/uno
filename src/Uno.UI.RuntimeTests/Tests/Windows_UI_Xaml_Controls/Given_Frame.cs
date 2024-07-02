@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -150,7 +150,7 @@ public partial class FrameNavigateFirstPage : Page
 		Loaded += FrameNavigateFirstPage_Loaded;
 	}
 
-	private async void FrameNavigateFirstPage_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	private async void FrameNavigateFirstPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		if (!NavigateInCtor)
 		{

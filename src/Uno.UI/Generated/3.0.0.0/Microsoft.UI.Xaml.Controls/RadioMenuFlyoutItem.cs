@@ -22,14 +22,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.AreCheckStatesEnabledProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetAreCheckStatesEnabled(global::Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem @object, bool value)
+		public static void SetAreCheckStatesEnabled(global::Windows.UI.Xaml.Controls.MenuFlyoutSubItem @object, bool value)
 		{
 			@object.SetValue(AreCheckStatesEnabledProperty, value);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetAreCheckStatesEnabled(global::Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem @object)
+		public static bool GetAreCheckStatesEnabled(global::Windows.UI.Xaml.Controls.MenuFlyoutSubItem @object)
 		{
 			return (bool)@object.GetValue(AreCheckStatesEnabledProperty);
 		}

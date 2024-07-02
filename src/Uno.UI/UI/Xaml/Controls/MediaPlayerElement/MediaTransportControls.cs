@@ -9,10 +9,10 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Media.Playback;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using DirectUI;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -38,7 +38,7 @@ using Uno.UI;
 
 using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same name root namespace from ios/macos
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaTransportControls : Control
 	{
@@ -780,7 +780,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (listView.SelectedItem is not null)
 				{
-					if (listView.SelectedItem is Microsoft.UI.Xaml.Controls.ListViewItem item)
+					if (listView.SelectedItem is Windows.UI.Xaml.Controls.ListViewItem item)
 					{
 						ResetControlsVisibilityTimer();
 

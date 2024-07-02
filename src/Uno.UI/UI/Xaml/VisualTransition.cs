@@ -1,14 +1,14 @@
 ﻿using Uno.Extensions;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Data;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[ContentProperty(Name = "Storyboard")]
 	public partial class VisualTransition : DependencyObject
@@ -81,12 +81,12 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "Duration VisualTransition.GeneratedDuration", LogLevel.Debug);
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualTransition", "Duration VisualTransition.GeneratedDuration", LogLevel.Debug);
 				return _generatedDuration;
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "Duration VisualTransition.GeneratedDuration", LogLevel.Debug);
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualTransition", "Duration VisualTransition.GeneratedDuration", LogLevel.Debug);
 				_generatedDuration = value;
 			}
 		}

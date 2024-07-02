@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.JavaScript;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
 using Windows.Globalization;
 using Windows.Graphics.Display;
@@ -31,9 +31,9 @@ using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchA
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-using NativeMethods = __Microsoft.UI.Xaml.Application.NativeMethods;
+using NativeMethods = __Windows.UI.Xaml.Application.NativeMethods;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (!_startInvoked)
 			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml
 		[JSExport]
 		internal static int DispatchVisibilityChange(bool isVisible)
 		{
-			var application = Microsoft.UI.Xaml.Application.Current;
+			var application = Windows.UI.Xaml.Application.Current;
 			if (isVisible)
 			{
 				application?.RaiseLeavingBackground(() =>

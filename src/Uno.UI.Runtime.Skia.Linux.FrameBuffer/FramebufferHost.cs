@@ -12,9 +12,9 @@ using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 using Windows.Graphics.Display;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Helpers;
-using WUX = Microsoft.UI.Xaml;
+using WUX = Windows.UI.Xaml;
 using System.Threading.Tasks;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer

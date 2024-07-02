@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
@@ -19,7 +19,7 @@ using AppKit;
 using _Color = AppKit.NSColor;
 #endif
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	partial class Shape
 	{

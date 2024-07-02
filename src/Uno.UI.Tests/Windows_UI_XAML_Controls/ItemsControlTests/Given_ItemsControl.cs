@@ -8,9 +8,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
@@ -25,7 +25,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 		[TestMethod]
 		public void When_EarlyItems()
 		{
-			var style = new Style(typeof(Microsoft.UI.Xaml.Controls.ItemsControl))
+			var style = new Style(typeof(Windows.UI.Xaml.Controls.ItemsControl))
 			{
 				Setters =  {
 					new Setter<ItemsControl>("Template", t =>
@@ -572,7 +572,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 		}
 
 		private Style BuildBasicContainerStyle() =>
-			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
+			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
 			{
 				Setters =  {
 					new Setter<ListViewItem>("Template", t =>

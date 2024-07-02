@@ -1,10 +1,10 @@
 ﻿using System;
 using Uno.UI;
 using System.Linq;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
 using Uno.UI.Xaml;
 using Windows.Foundation;
@@ -29,10 +29,10 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control : FrameworkElement
 	{
@@ -1008,10 +1008,10 @@ namespace Microsoft.UI.Xaml.Controls
 		[NotImplemented] // For WinUI code compatibility, not implemented yet
 		private protected virtual void OnRightTappedUnhandled(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
-		protected virtual void OnDragEnter(global::Microsoft.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnDrop(global::Microsoft.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
 #if __WASM__ || __SKIA__
 		protected virtual void OnPreviewKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
@@ -1073,16 +1073,16 @@ namespace Microsoft.UI.Xaml.Controls
 			(object sender, HoldingRoutedEventArgs args) => ((Control)sender).OnHolding(args);
 
 		private static readonly DragEventHandler OnDragEnterHandler =
-			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
 
 		private static readonly DragEventHandler OnDragOverHandler =
-			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
 
 		private static readonly DragEventHandler OnDragLeaveHandler =
-			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
 
 		private static readonly DragEventHandler OnDropHandler =
-			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
 #if __WASM__ || __SKIA__
 		private static readonly KeyEventHandler OnPreviewKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyDown(args);
@@ -1117,7 +1117,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
 		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
 		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
-		private static readonly Type[] _dragArgsType = new[] { typeof(global::Microsoft.UI.Xaml.DragEventArgs) };
+		private static readonly Type[] _dragArgsType = new[] { typeof(global::Windows.UI.Xaml.DragEventArgs) };
 		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
 		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
 		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };

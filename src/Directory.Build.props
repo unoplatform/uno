@@ -33,7 +33,7 @@
 		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
 		<Deterministic>true</Deterministic>
 
-		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
+		<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
 
 		<!-- Resizetizer codegen is not supported in UWP -->
 		<UnoResizetizerDisableWindowIconExtensions Condition="'$(UNO_UWP_BUILD)'=='true'">true</UnoResizetizerDisableWindowIconExtensions>

@@ -4,10 +4,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
@@ -17,7 +17,7 @@ using Windows.UI;
 
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 
 #if WINAPPSDK

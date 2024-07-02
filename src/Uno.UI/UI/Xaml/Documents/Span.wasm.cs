@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Documents
+﻿namespace Windows.UI.Xaml.Documents
 {
 	partial class Span
 	{

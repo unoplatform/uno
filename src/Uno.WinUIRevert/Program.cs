@@ -51,13 +51,13 @@ namespace UnoWinUIRevert
 
 			// Generic replacements
 			var genericReplacements = new[] {
-				("Microsoft.UI.Xaml", "Windows.UI.Xaml"),
-				("Microsoft.UI.Composition", "Windows.UI.Composition"),
-				("Microsoft.UI.Colors", "Windows.UI.Colors"),
-				("Microsoft.UI.Text", "Windows.UI.Text"),
-				("Microsoft.UI.ColorHelper", "Windows.UI.ColorHelper"),
-				("__LinkerHints.Is_Microsoft_UI_Xaml", "__LinkerHints.Is_Windows_UI_Xaml"),
-				("__LinkerHints.Is_Windows_UI_Xaml_Controls_LayoutPanel", "__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel"),
+				("Windows.UI.Xaml", "Windows.UI.Xaml"),
+				("Windows.UI.Composition", "Windows.UI.Composition"),
+				("Windows.UI.Colors", "Windows.UI.Colors"),
+				("Windows.UI.Text", "Windows.UI.Text"),
+				("Windows.UI.ColorHelper", "Windows.UI.ColorHelper"),
+				("__LinkerHints.Is_Windows_UI_Xaml", "__LinkerHints.Is_Windows_UI_Xaml"),
+				("__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel", "__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel"),
 			};
 
 			ReplaceInFolders(basePath, genericReplacements);
@@ -70,7 +70,7 @@ namespace UnoWinUIRevert
 			ReplaceInFolders(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressRing"), progressRingReplacements);
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressRing", "ProgressRing.xaml"), "\"legacy:ProgressRing\"", "\"ProgressRing\"");
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Xaml", "Style", "Generic", "Generic.Native.xaml"), "legacy:ProgressRing", "ProgressRing");
-			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "Microsoft", "UI", "Xaml", "Controls", "ProgressRing", "ProgressRing.xaml"), "using:Uno.UI.Controls.Legacy", "using:Microsoft.UI.Xaml.Controls");
+			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "Microsoft", "UI", "Xaml", "Controls", "ProgressRing", "ProgressRing.xaml"), "using:Uno.UI.Controls.Legacy", "using:Windows.UI.Xaml.Controls");
 
 			ReplaceInFile(Path.Combine(basePath, @"src", "SourceGenerators", "Uno.UI.SourceGenerators", "XamlGenerator", "XamlConstants.cs"), "Microsoft.UI", "Windows.UI");
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Xaml", "Markup", "Reader", "XamlConstants.cs"), "Microsoft.UI", "Windows.UI");
@@ -103,25 +103,25 @@ namespace UnoWinUIRevert
 				ReplaceInFolders(
 					styleFolder,
 					new[] {
-					("using:Windows.UI.Xaml", "using:Microsoft.UI.Xaml") }
+					("using:Windows.UI.Xaml", "using:Windows.UI.Xaml") }
 					, searchPattern: "*.xaml"
 				);
 				ReplaceInFolders(
 					styleFolder,
 					new[] {
-					("using:Windows.UI.Xaml", "using:Microsoft.UI.Xaml") }
+					("using:Windows.UI.Xaml", "using:Windows.UI.Xaml") }
 					, searchPattern: "*.xamltest"
 				);
 			}
 
 			// Revert specifically for pathless casting test where
 			// the namespace needs to be explicitly specified for a downcast
-			// diverging from the common use of explicit "using:Microsoft.UI.Xaml"
+			// diverging from the common use of explicit "using:Windows.UI.Xaml"
 			// which reference MUX controls in a WUX source tree.
 			ReplaceInFolders(
 				Path.Combine(basePath, "src", "Uno.UI.Tests"),
 				new[] {
-				("using:Microsoft.UI.Xaml", "using:Windows.UI.Xaml") }
+				("using:Windows.UI.Xaml", "using:Windows.UI.Xaml") }
 				, searchPattern: "xBind_PathLessCasting.xaml"
 			);
 		}

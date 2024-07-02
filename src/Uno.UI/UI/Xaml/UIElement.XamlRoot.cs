@@ -5,7 +5,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 {

@@ -1,6 +1,6 @@
-using Windows.System;
+﻿using Windows.System;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 /// <summary>
 /// Provides event data for the ProcessKeyboardAccelerators event.

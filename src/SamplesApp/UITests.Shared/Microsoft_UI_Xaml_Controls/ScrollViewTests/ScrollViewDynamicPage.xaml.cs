@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Dispatching;
 using Uno.UI.Samples.Controls;
@@ -188,10 +188,10 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 			{
 				case ScrollingContentOrientation.Horizontal:
 					wuxScrollViewer.HorizontalScrollBarVisibility = MuxScrollBarVisibilityToWuxScrollBarVisibility(scrollView.HorizontalScrollBarVisibility);
-					wuxScrollViewer.VerticalScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
+					wuxScrollViewer.VerticalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
 					break;
 				case ScrollingContentOrientation.Vertical:
-					wuxScrollViewer.HorizontalScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
+					wuxScrollViewer.HorizontalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
 					wuxScrollViewer.VerticalScrollBarVisibility = MuxScrollBarVisibilityToWuxScrollBarVisibility(scrollView.VerticalScrollBarVisibility);
 					break;
 				case ScrollingContentOrientation.Both:
@@ -199,8 +199,8 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 					wuxScrollViewer.VerticalScrollBarVisibility = MuxScrollBarVisibilityToWuxScrollBarVisibility(scrollView.VerticalScrollBarVisibility);
 					break;
 				case ScrollingContentOrientation.None:
-					wuxScrollViewer.HorizontalScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
-					wuxScrollViewer.VerticalScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
+					wuxScrollViewer.HorizontalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
+					wuxScrollViewer.VerticalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
 					break;
 			}
 		}
@@ -636,13 +636,13 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 				scrollView.Background = null;
 				break;
 			case 1:
-				scrollView.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+				scrollView.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
 				break;
 			case 2:
-				scrollView.Background = new SolidColorBrush(Microsoft.UI.Colors.AliceBlue);
+				scrollView.Background = new SolidColorBrush(Windows.UI.Colors.AliceBlue);
 				break;
 			case 3:
-				scrollView.Background = new SolidColorBrush(Microsoft.UI.Colors.Aqua);
+				scrollView.Background = new SolidColorBrush(Windows.UI.Colors.Aqua);
 				break;
 		}
 
@@ -792,7 +792,7 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 			{
 				case ScrollingContentOrientation.Vertical:
 				case ScrollingContentOrientation.None:
-					wuxScrollViewer.HorizontalScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
+					wuxScrollViewer.HorizontalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
 					break;
 				default:
 					wuxScrollViewer.HorizontalScrollBarVisibility = MuxScrollBarVisibilityToWuxScrollBarVisibility(scrollView.HorizontalScrollBarVisibility);
@@ -817,7 +817,7 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 			{
 				case ScrollingContentOrientation.Horizontal:
 				case ScrollingContentOrientation.None:
-					wuxScrollViewer.VerticalScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
+					wuxScrollViewer.VerticalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled;
 					break;
 				default:
 					wuxScrollViewer.VerticalScrollBarVisibility = MuxScrollBarVisibilityToWuxScrollBarVisibility(scrollView.VerticalScrollBarVisibility);
@@ -1703,15 +1703,15 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 		{
 			cmbBackground.SelectedIndex = 0;
 		}
-		else if ((scrollView.Background as SolidColorBrush).Color == Microsoft.UI.Colors.Transparent)
+		else if ((scrollView.Background as SolidColorBrush).Color == Windows.UI.Colors.Transparent)
 		{
 			cmbBackground.SelectedIndex = 1;
 		}
-		else if ((scrollView.Background as SolidColorBrush).Color == Microsoft.UI.Colors.AliceBlue)
+		else if ((scrollView.Background as SolidColorBrush).Color == Windows.UI.Colors.AliceBlue)
 		{
 			cmbBackground.SelectedIndex = 2;
 		}
-		else if ((scrollView.Background as SolidColorBrush).Color == Microsoft.UI.Colors.Aqua)
+		else if ((scrollView.Background as SolidColorBrush).Color == Windows.UI.Colors.Aqua)
 		{
 			cmbBackground.SelectedIndex = 3;
 		}
@@ -1777,18 +1777,18 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 	{
 		largeImg = new Image() { Source = new BitmapImage(new Uri("ms-appx:/Assets/LargeWisteria.jpg")) };
 		LinearGradientBrush lgb = new LinearGradientBrush() { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
-		GradientStop gs = new GradientStop() { Color = Microsoft.UI.Colors.Blue, Offset = 0.0 };
+		GradientStop gs = new GradientStop() { Color = Windows.UI.Colors.Blue, Offset = 0.0 };
 		lgb.GradientStops.Add(gs);
-		gs = new GradientStop() { Color = Microsoft.UI.Colors.White, Offset = 0.5 };
+		gs = new GradientStop() { Color = Windows.UI.Colors.White, Offset = 0.5 };
 		lgb.GradientStops.Add(gs);
-		gs = new GradientStop() { Color = Microsoft.UI.Colors.Red, Offset = 1.0 };
+		gs = new GradientStop() { Color = Windows.UI.Colors.Red, Offset = 1.0 };
 		lgb.GradientStops.Add(gs);
 		rectangle = new Rectangle() { Fill = lgb };
 		rectangle.Name = "rect";
 		button = new Button() { Content = "Button" };
 		button.Name = "btn";
 		Rectangle borderChild = new Rectangle() { Fill = lgb };
-		border = new Border() { BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse), BorderThickness = new Thickness(5), Child = borderChild };
+		border = new Border() { BorderBrush = new SolidColorBrush(Windows.UI.Colors.Chartreuse), BorderThickness = new Thickness(5), Child = borderChild };
 		border.Name = "bdr";
 
 		sp1 = new StackPanel();
@@ -1804,10 +1804,10 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 
 		sp2 = new StackPanel();
 		sp2.Name = "sp2";
-		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Indigo) });
-		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Orange) });
-		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Purple) });
-		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Goldenrod) });
+		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Indigo) });
+		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Orange) });
+		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Purple) });
+		sp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Goldenrod) });
 
 		viewbox = new Viewbox();
 		viewbox.Name = "viewbox";
@@ -1820,7 +1820,7 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 		wuxButton = new Button() { Content = "Button" };
 		wuxButton.Name = "wuxBtn";
 		borderChild = new Rectangle() { Fill = lgb };
-		wuxBorder = new Border() { BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse), BorderThickness = new Thickness(5), Child = borderChild };
+		wuxBorder = new Border() { BorderBrush = new SolidColorBrush(Windows.UI.Colors.Chartreuse), BorderThickness = new Thickness(5), Child = borderChild };
 		wuxBorder.Name = "wuxBdr";
 
 		wuxSp1 = new StackPanel();
@@ -1836,10 +1836,10 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 
 		wuxSp2 = new StackPanel();
 		wuxSp2.Name = "wuxSp2";
-		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Indigo) });
-		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Orange) });
-		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Purple) });
-		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Microsoft.UI.Colors.Goldenrod) });
+		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Indigo) });
+		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Orange) });
+		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Purple) });
+		wuxSp2.Children.Add(new Rectangle() { Height = 200, Fill = new SolidColorBrush(Windows.UI.Colors.Goldenrod) });
 
 		wuxViewbox = new Viewbox();
 		wuxViewbox.Name = "wuxViewbox";
@@ -2006,38 +2006,38 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 		}
 	}
 
-	private Microsoft.UI.Xaml.Controls.ScrollBarVisibility MuxScrollBarVisibilityToWuxScrollBarVisibility(ScrollingScrollBarVisibility muxScrollBarVisibility)
+	private Windows.UI.Xaml.Controls.ScrollBarVisibility MuxScrollBarVisibilityToWuxScrollBarVisibility(ScrollingScrollBarVisibility muxScrollBarVisibility)
 	{
 		switch (muxScrollBarVisibility)
 		{
 			case ScrollingScrollBarVisibility.Auto:
-				return Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Auto;
+				return Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto;
 			case ScrollingScrollBarVisibility.Hidden:
-				return Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Hidden;
+				return Windows.UI.Xaml.Controls.ScrollBarVisibility.Hidden;
 			default:
-				return Microsoft.UI.Xaml.Controls.ScrollBarVisibility.Visible;
+				return Windows.UI.Xaml.Controls.ScrollBarVisibility.Visible;
 		}
 	}
 
-	private Microsoft.UI.Xaml.Controls.ScrollMode MuxScrollModeToWuxScrollMode(ScrollingScrollMode muxScrollMode)
+	private Windows.UI.Xaml.Controls.ScrollMode MuxScrollModeToWuxScrollMode(ScrollingScrollMode muxScrollMode)
 	{
 		switch (muxScrollMode)
 		{
 			case ScrollingScrollMode.Disabled:
-				return Microsoft.UI.Xaml.Controls.ScrollMode.Disabled;
+				return Windows.UI.Xaml.Controls.ScrollMode.Disabled;
 			default:
-				return Microsoft.UI.Xaml.Controls.ScrollMode.Enabled;
+				return Windows.UI.Xaml.Controls.ScrollMode.Enabled;
 		}
 	}
 
-	private Microsoft.UI.Xaml.Controls.ZoomMode MuxZoomModeToWuxZoomMode(ScrollingZoomMode muxZoomMode)
+	private Windows.UI.Xaml.Controls.ZoomMode MuxZoomModeToWuxZoomMode(ScrollingZoomMode muxZoomMode)
 	{
 		switch (muxZoomMode)
 		{
 			case ScrollingZoomMode.Disabled:
-				return Microsoft.UI.Xaml.Controls.ZoomMode.Disabled;
+				return Windows.UI.Xaml.Controls.ZoomMode.Disabled;
 			default:
-				return Microsoft.UI.Xaml.Controls.ZoomMode.Enabled;
+				return Windows.UI.Xaml.Controls.ZoomMode.Enabled;
 		}
 	}
 
@@ -2057,7 +2057,7 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 		AppendAsyncEventMessage($"Content.PointerWheelChanged args.Handled={args.Handled}");
 	}
 
-	private void ScrollView_GettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
+	private void ScrollView_GettingFocus(UIElement sender, Windows.UI.Xaml.Input.GettingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;
@@ -2072,7 +2072,7 @@ public sealed partial class ScrollViewDynamicPage : TestPage
 		AppendAsyncEventMessage("ScrollView.LostFocus");
 	}
 
-	private void ScrollView_LosingFocus(UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
+	private void ScrollView_LosingFocus(UIElement sender, Windows.UI.Xaml.Input.LosingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;

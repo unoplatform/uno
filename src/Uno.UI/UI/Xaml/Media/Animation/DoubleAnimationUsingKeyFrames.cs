@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
 using System.Linq;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Diagnostics;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
 	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline

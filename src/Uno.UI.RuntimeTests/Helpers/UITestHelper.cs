@@ -12,13 +12,13 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Popups;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Markup;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 
@@ -129,9 +129,9 @@ public static class UITestHelper
 				{
 					new Border
 					{
-						BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Black),
+						BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black),
 						BorderThickness = new Thickness(1),
-						Background = new SolidColorBrush(Microsoft.UI.Colors.Gray),
+						Background = new SolidColorBrush(Windows.UI.Colors.Gray),
 						Width = bitmap.Width * bitmap.ImplicitScaling + 2,
 						Height = bitmap.Height * bitmap.ImplicitScaling + 2,
 						Child = img = new Image

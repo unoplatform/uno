@@ -2,8 +2,8 @@
 #if WINUI || HAS_UNO_WINUI
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.Diagnostics.UI;
 

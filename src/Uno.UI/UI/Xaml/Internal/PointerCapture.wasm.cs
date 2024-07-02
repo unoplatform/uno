@@ -3,8 +3,8 @@
 using System;
 using System.Linq;
 using Windows.Devices.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Xaml.Core;

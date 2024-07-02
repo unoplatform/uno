@@ -2,7 +2,7 @@
 
 using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.RemoteControl.HotReload;
 

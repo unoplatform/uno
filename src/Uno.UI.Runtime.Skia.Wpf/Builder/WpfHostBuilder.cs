@@ -166,7 +166,7 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 		set => _wpfApplication = value;
 	}
 
-	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public SkiaHost Create(Func<Windows.UI.Xaml.Application> appBuilder)
 		=> new WpfHost(appBuilder, _wpfApplication);
 
 	private static class NativeMethods

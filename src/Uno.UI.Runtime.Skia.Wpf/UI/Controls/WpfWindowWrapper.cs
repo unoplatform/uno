@@ -6,12 +6,12 @@ using System.Windows;
 using System.Windows.Media;
 using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
+using WinUIApplication = Windows.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 

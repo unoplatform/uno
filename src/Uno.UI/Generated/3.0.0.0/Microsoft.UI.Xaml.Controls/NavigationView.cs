@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NavigationView : global::Microsoft.UI.Xaml.Controls.ContentControl
+	public partial class NavigationView : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property PaneToggleButtonStyle
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.MenuItemContainerStyle.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.MenuItemContainerStyleSelector.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.MenuItemContainerStyleSelector.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationView.MenuItemFromContainer(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationView.MenuItemFromContainer(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationView.ContainerFromMenuItem(object)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.SelectionChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.SelectionChanged.remove

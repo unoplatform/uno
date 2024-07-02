@@ -211,7 +211,7 @@ internal class NativeWebViewWrapper : INativeWebView
 
 	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
 	{
-		var argumentString = Microsoft.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+		var argumentString = Windows.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
 
 		TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 		ct.Register(() => tcs.TrySetCanceled());

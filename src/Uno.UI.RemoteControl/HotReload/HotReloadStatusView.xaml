@@ -5,8 +5,8 @@
 					xmlns:diag="using:Uno.Diagnostics.UI"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-					xmlns:xaml="clr-namespace:Microsoft.UI.Xaml;assembly=Uno.UI"
+					xmlns:mux="using:Windows.UI.Xaml.Controls"
+					xmlns:xaml="clr-namespace:Windows.UI.Xaml;assembly=Uno.UI"
 					mc:Ignorable="d">
 
 	<ResourceDictionary.ThemeDictionaries>

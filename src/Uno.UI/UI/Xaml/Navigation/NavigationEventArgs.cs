@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Navigation
+namespace Windows.UI.Xaml.Navigation
 {
 	public sealed partial class NavigationEventArgs
 	{

@@ -4,8 +4,8 @@ using System.Text;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
@@ -110,7 +110,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 				}
 			}
 #elif __WASM__
-			var serializedTheme = Uno.Foundation.WebAssemblyRuntime.InvokeJS("Microsoft.UI.Xaml.Application.getDefaultSystemTheme()");
+			var serializedTheme = Uno.Foundation.WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
 
 			if (serializedTheme != null)
 			{

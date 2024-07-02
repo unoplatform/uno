@@ -4,7 +4,7 @@ using System.Threading;
 using Android.Animation;
 using Android.Widget;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Android.Views;
 using Uno.Disposables;
 using Uno.UI;
@@ -136,16 +136,16 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				switch (player.Stretch)
 				{
-					case Microsoft.UI.Xaml.Media.Stretch.None:
+					case Windows.UI.Xaml.Media.Stretch.None:
 						_animation.SetScaleType(ImageView.ScaleType.Center);
 						break;
-					case Microsoft.UI.Xaml.Media.Stretch.Uniform:
+					case Windows.UI.Xaml.Media.Stretch.Uniform:
 						_animation.SetScaleType(ImageView.ScaleType.CenterInside);
 						break;
-					case Microsoft.UI.Xaml.Media.Stretch.Fill:
+					case Windows.UI.Xaml.Media.Stretch.Fill:
 						_animation.SetScaleType(ImageView.ScaleType.FitCenter);
 						break;
-					case Microsoft.UI.Xaml.Media.Stretch.UniformToFill:
+					case Windows.UI.Xaml.Media.Stretch.UniformToFill:
 						_animation.SetScaleType(ImageView.ScaleType.CenterCrop);
 						break;
 				}

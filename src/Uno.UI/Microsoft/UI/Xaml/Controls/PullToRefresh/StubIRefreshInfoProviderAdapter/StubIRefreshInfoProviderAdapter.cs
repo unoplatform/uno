@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Private.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 

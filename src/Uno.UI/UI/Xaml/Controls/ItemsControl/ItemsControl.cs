@@ -6,9 +6,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -29,11 +29,11 @@ using AppKit;
 using _View = AppKit.NSView;
 using _ViewGroup = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
-using _ViewGroup = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
+using _ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class ItemsControl : Control, IItemsControl
@@ -1129,7 +1129,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Unset content of container. This should be called when the container is no longer going to be used.
 		/// </summary>
-		internal void CleanUpContainer(global::Microsoft.UI.Xaml.DependencyObject element)
+		internal void CleanUpContainer(global::Windows.UI.Xaml.DependencyObject element)
 		{
 			// Determine the item characteristics manually, as the item
 			// does not exist anymore in the Items or ItemsSource.

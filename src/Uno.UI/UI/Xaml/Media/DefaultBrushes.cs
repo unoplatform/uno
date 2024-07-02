@@ -4,8 +4,8 @@ using System.Diagnostics;
 using Uno.Helpers.Theming;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Media;
 

@@ -228,7 +228,7 @@
 				DataSource
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.IItemsControl">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.IItemsControl">
 			<Mappings>
 				ItemsSource
 			</Mappings>
@@ -243,17 +243,17 @@
 				ItemsSource
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.ItemsControl">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ItemsControl">
 			<Mappings>
 				ItemsSource
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.PasswordBox">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.PasswordBox">
 			<Mappings>
 				Password
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.TextBox">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBox">
 			<Mappings>
 				Text
 				Uno.UI.Behaviors.TextBoxBehavior.Text
@@ -261,37 +261,37 @@
 				nVentive.Umbrella.Views.Behaviors.PasswordBoxBehavior.Text
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.Button">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Button">
 			<Mappings>
 				Command
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.ToggleButton">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ToggleButton">
 			<Mappings>
 				IsChecked
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.HyperlinkButton">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.HyperlinkButton">
 			<Mappings>
 				Command
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.TextBlock">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBlock">
 			<Mappings>
 				Text
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.Image">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Image">
 			<Mappings>
 				Source
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.DatePicker">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.DatePicker">
 			<Mappings>
 				Date
 			</Mappings>
 		</CustomUiAutomationMemberMapping>
-		<CustomUiAutomationMemberMapping Include="Microsoft.UI.Xaml.Controls.ComboBox">
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ComboBox">
 			<Mappings>
 				ItemsSource
 			</Mappings>

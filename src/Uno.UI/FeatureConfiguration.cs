@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI
@@ -94,12 +94,12 @@ namespace Uno.UI
 		public static class CompositionTarget
 		{
 			/// <summary>
-			/// The delay between invocations of the <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
+			/// The delay between invocations of the <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
 			/// Lower values will increase the rate at which the event fires, at the expense of increased CPU usage.
 			///
 			/// This property is only used on WebAssembly.
 			/// </summary>
-			/// <remarks>The <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
+			/// <remarks>The <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
 			public static int RenderEventThrottle { get; set; } = 30;
 		}
 
@@ -122,7 +122,7 @@ namespace Uno.UI
 			public static bool UseLegacyContentAlignment { get; set; }
 
 			/// <summary>
-			/// Enables the lazy materialization of <see cref="Microsoft.UI.Xaml.Controls.Control"/> template. This behavior
+			/// Enables the lazy materialization of <see cref="Windows.UI.Xaml.Controls.Control"/> template. This behavior
 			/// is not aligned with UWP, which materializes templates immediately, making x:Name controls available
 			/// in the constructor of a control.
 			/// </summary>
@@ -218,8 +218,8 @@ namespace Uno.UI
 		{
 #if __ANDROID__
 			/// <summary>
-			/// Controls the propagation of <see cref="Microsoft.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Microsoft.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
+			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
+			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
 			/// or native visual tree traversal.
 			/// </summary>
 			/// <remarks>
@@ -324,7 +324,7 @@ namespace Uno.UI
 
 			/// <summary>
 			/// By default, light dismiss is disabled in UWP/WinUI unless
-			/// <see cref="Microsoft.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
+			/// <see cref="Windows.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
 			/// In earlier versions of Uno Platform, this property defaulted
 			/// to true, which was an incorrect behavior. If your code depends on this
 			/// legacy behavior, use this property to override it.
@@ -350,11 +350,11 @@ namespace Uno.UI
 
 #if __IOS__ || __ANDROID__
 			/// <summary>
-			/// Sets a flag indicating whether <see cref="Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
+			/// Sets a flag indicating whether <see cref="Windows.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
 			/// </summary>
 			/// <remarks>
-			/// Regardless of the value set, <see cref="Uno.UI.Helpers.ListViewHelper.InstantScrollToIndex(Microsoft.UI.Xaml.Controls.ListViewBase, int)"/>
-			/// and <see cref="Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(Microsoft.UI.Xaml.Controls.ListViewBase, int)"/>
+			/// Regardless of the value set, <see cref="Uno.UI.Helpers.ListViewHelper.InstantScrollToIndex(Windows.UI.Xaml.Controls.ListViewBase, int)"/>
+			/// and <see cref="Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(Windows.UI.Xaml.Controls.ListViewBase, int)"/>
 			/// can be used to force a specific behavior.
 			/// </remarks>
 			public static bool AnimateScrollIntoView { get; set; } = true;
@@ -444,23 +444,23 @@ namespace Uno.UI
 
 			/// <summary>
 			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
-			/// and <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
+			/// and <see cref="Windows.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
 			{
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Frame_Available)
 				{
 					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
 				}
 
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CommandBar_Available)
 				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
 				}
 
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_AppBarButton_Available)
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_AppBarButton_Available)
 				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
 				}
 			}
 
@@ -472,7 +472,7 @@ namespace Uno.UI
 			/// Whether instances of <typeparamref name="TControl"/> should use the UWP default style.
 			/// If false, the native default style (if one exists) will be used.
 			/// </param>
-			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Microsoft.UI.Xaml.Controls.Control
+			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Windows.UI.Xaml.Controls.Control
 				=> UseUWPDefaultStylesOverride[typeof(TControl)] = useUWPDefaultStyle;
 		}
 
@@ -501,7 +501,7 @@ namespace Uno.UI
 
 #if __ANDROID__
 			/// <summary>
-			/// The legacy <see cref="Microsoft.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
+			/// The legacy <see cref="Windows.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
 			/// This property defaults to <see langword="false"/> matching UWP, where InputScope only affects the keyboard layout,
 			/// but doesn't do any validation.
 			/// </summary>
@@ -661,7 +661,7 @@ namespace Uno.UI
 		public static class VisualState
 		{
 			/// <summary>
-			/// When this is set, the <see cref="Microsoft.UI.Xaml.VisualState.Setters"/> will be applied synchronously when changing state,
+			/// When this is set, the <see cref="Windows.UI.Xaml.VisualState.Setters"/> will be applied synchronously when changing state,
 			/// unlike UWP which waits the for the end of the <see cref="VisualTransition.Storyboard"/> (if any) to apply them.
 			/// </summary>
 			/// <remarks>This flag is for backward compatibility with old versions of uno and should not be turned on.</remarks>
@@ -694,7 +694,7 @@ namespace Uno.UI
 		{
 #if __IOS__
 			/// <summary>
-			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
+			/// Gets or set whether the <see cref="Windows.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
 			/// </summary>
 			/// <remarks>
 			/// Important: This flag will only have an impact on iOS 14 devices
@@ -720,9 +720,9 @@ namespace Uno.UI
 		{
 #if __ANDROID__
 			/// <summary>
-			/// Gets or sets whether the <see cref="Microsoft.UI.Xaml.Controls.TimePickerFlyout"/> uses legacy time setting.
+			/// Gets or sets whether the <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout"/> uses legacy time setting.
 			/// Legacy time setting is about preserving days, seconds, and milliseconds of
-			/// <see cref="Microsoft.UI.Xaml.Controls.TimePickerFlyout.Time"/>.
+			/// <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout.Time"/>.
 			/// </summary>
 			/// <remarks>
 			/// This flag defaults to <see langword="false"/> to match UWP behavior, where a value set from UI is
@@ -756,8 +756,8 @@ namespace Uno.UI
 			/// Gets or set whether the EnableBitmapIconTint feature is on or off.
 			/// </summary>
 			/// <remarks>
-			/// This Feature will allow any <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>
-			/// inside a <see cref="Microsoft.UI.Xaml.Controls.CommandBar"/> to use the Foreground <see cref="SolidColorBrush"/>
+			/// This Feature will allow any <see cref="Windows.UI.Xaml.Controls.AppBarButton"/>
+			/// inside a <see cref="Windows.UI.Xaml.Controls.CommandBar"/> to use the Foreground <see cref="SolidColorBrush"/>
 			/// as their tint Color.
 			/// <para/>Default value is False.
 			/// </remarks>

@@ -1,12 +1,12 @@
 ﻿using Android.Views;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class ElementStub : FrameworkElement
 	{

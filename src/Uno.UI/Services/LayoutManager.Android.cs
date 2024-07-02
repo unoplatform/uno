@@ -7,7 +7,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Services
 {

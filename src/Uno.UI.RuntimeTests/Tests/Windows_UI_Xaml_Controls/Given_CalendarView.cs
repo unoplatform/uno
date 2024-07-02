@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
@@ -66,7 +66,7 @@ public class Given_CalendarView
 	public async Task When_ItemCornerRadius()
 	{
 		var calendarView = new CalendarView();
-		calendarView.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		calendarView.OutOfScopeBackground = new SolidColorBrush(Windows.UI.Colors.Red);
 		calendarView.CalendarItemCornerRadius = new CornerRadius(40);
 		calendarView.DayItemCornerRadius = new CornerRadius(20);
 

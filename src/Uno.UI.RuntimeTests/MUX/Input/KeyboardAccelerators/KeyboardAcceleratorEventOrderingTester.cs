@@ -3,11 +3,11 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Private.Infrastructure;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Tests.Common
+namespace Windows.UI.Xaml.Tests.Common
 {
 	public sealed class KeyboardAcceleratorEventOrderingTester : IAsyncDisposable
 	{

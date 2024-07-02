@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
@@ -13,7 +13,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
+using WinUIApplication = Windows.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 

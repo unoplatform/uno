@@ -6,7 +6,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Input;
 using Windows.ApplicationModel.Appointments;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.DataBinding
 {
@@ -561,7 +561,7 @@ namespace Uno.UI.DataBinding
 					}
 					else
 					{
-						// e.g. "(Microsoft.UI.Xaml.Controls.Border.Background)" and "Background" should match.
+						// e.g. "(Windows.UI.Xaml.Controls.Border.Background)" and "Background" should match.
 						return name1.Replace(")", "").Replace("(", "").Split(':', '.')[^1] ==
 							name2.Replace(")", "").Replace("(", "").Split(':', '.')[^1];
 					}

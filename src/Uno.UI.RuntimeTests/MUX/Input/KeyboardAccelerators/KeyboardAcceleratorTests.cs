@@ -4,13 +4,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Tests.Common;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Windows.System;
@@ -2736,7 +2736,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			args.Handled = true;
 		});
 
-		var button1ProcessKeyboardAcceleratorsHandler = new Action<object, Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs>((source, args) =>
+		var button1ProcessKeyboardAcceleratorsHandler = new Action<object, Windows.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs>((source, args) =>
 		{
 			Verify.Fail("Unexpected: ProcessKeyboardAccelerators raised.");
 		});

@@ -39,7 +39,7 @@ public class Given_DependencyObjectGenerator
 			using Android.Content;
 			using Windows.UI.Core;
 			using Microsoft.UI.Dispatching;
-			using Microsoft.UI.Xaml;
+			using Windows.UI.Xaml;
 
 			public class C : Android.Views.View, DependencyObject
 			{
@@ -67,7 +67,7 @@ public class Given_DependencyObjectGenerator
 	{
 		var test = """
 			using Windows.UI.Core;
-			using Microsoft.UI.Xaml;
+			using Windows.UI.Xaml;
 
 			internal partial class OuterClass
 			{
@@ -102,15 +102,15 @@ public class Given_DependencyObjectGenerator
 	 using Uno.UI;
 	 using Uno.UI.Controls;
 	 using Uno.UI.DataBinding;
-	 using Microsoft.UI.Xaml;
-	 using Microsoft.UI.Xaml.Data;
+	 using Windows.UI.Xaml;
+	 using Windows.UI.Xaml.Data;
 	 using Uno.Diagnostics.Eventing;
 	 #if __MACOS__
 	 using AppKit;
 	 #endif
 	 partial class OuterClass
 	 {
-	 	[global::Microsoft.UI.Xaml.Data.Bindable]
+	 	[global::Windows.UI.Xaml.Data.Bindable]
 	 	partial class Inner : IDependencyObjectStoreProvider, IWeakReferenceProvider
 	 	{
 	 		private DependencyObjectStore __storeBackingField;
@@ -249,17 +249,17 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		#endregion
 	 		
-	 		public void SetBinding(object target, string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
+	 		public void SetBinding(object target, string dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
 	 		{
 	 			__Store.SetBinding(target, dependencyProperty, binding);
 	 		}
 	 		
-	 		public void SetBinding(string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
+	 		public void SetBinding(string dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
 	 		{
 	 			__Store.SetBinding(dependencyProperty, binding);
 	 		}
 	 		
-	 		public void SetBinding(DependencyProperty dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
+	 		public void SetBinding(DependencyProperty dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
 	 		{
 	 			__Store.SetBinding(dependencyProperty, binding);
 	 		}
@@ -276,7 +276,7 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 	 		
-	 		public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
+	 		public global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	 			=>  __Store.GetBindingExpression(dependencyProperty);
 	 		
 	 		public void ResumeBindings()

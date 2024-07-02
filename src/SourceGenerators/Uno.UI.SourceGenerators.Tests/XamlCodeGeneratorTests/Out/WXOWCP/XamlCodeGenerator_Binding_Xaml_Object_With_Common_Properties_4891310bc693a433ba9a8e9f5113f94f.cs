@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 {
-	partial class Binding_Xaml_Object_With_Common_Properties : global::Microsoft.UI.Xaml.Controls.Page
+	partial class Binding_Xaml_Object_With_Common_Properties : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -56,13 +56,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			;
 			// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
+			new global::Windows.UI.Xaml.Controls.Grid
 			{
 				IsParsing = true,
 				// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 13:6)
 				Children = 
 				{
-					new global::Microsoft.UI.Xaml.Controls.TextBlock
+					new global::Windows.UI.Xaml.Controls.TextBlock
 					{
 						IsParsing = true,
 						Name = "topLevel",
@@ -77,18 +77,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						__that.topLevel = c0;
 						// FieldModifier public
 						c0.SetBinding(
-							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-							new Microsoft.UI.Xaml.Data.Binding()
+							global::Windows.UI.Xaml.Controls.TextBlock.TextProperty,
+							new Windows.UI.Xaml.Data.Binding()
 							{
 								Path = @"Tag",
 								ElementName = _topLevelSubject,
-								Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
+								Converter = (global::Windows.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Windows.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
 								ConverterParameter = @"topLevel",
 								ConverterLanguage = "topLevel",
-								UpdateSourceTrigger = global::Microsoft.UI.Xaml.Data.UpdateSourceTrigger.Default,
+								UpdateSourceTrigger = global::Windows.UI.Xaml.Data.UpdateSourceTrigger.Default,
 								TargetNullValue = @"TargetNullValue",
 								FallbackValue = @"FallbackValue",
-								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+								Mode = global::Windows.UI.Xaml.Data.BindingMode.OneWay,
 								RelativeSource = new RelativeSource(RelativeSourceMode.None),
 								Source = @"Source",
 							}
@@ -134,24 +134,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		public global::Windows.UI.Xaml.Controls.TextBlock topLevel
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;
 			}
 			set
 			{
 				_topLevelSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.TextBlock _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 			}
 			set
 			{
@@ -207,16 +207,16 @@ namespace MyProject
 {
 	static class Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.TextBlock instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.TextBlock Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply(this global::Windows.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Grid instance);
+		public delegate void XamlApplyHandler1(global::Windows.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler1 handler)
+		public static global::Windows.UI.Xaml.Controls.Grid Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply(this global::Windows.UI.Xaml.Controls.Grid instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

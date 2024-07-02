@@ -5,10 +5,10 @@ using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
@@ -21,7 +21,7 @@ using Microsoft.UI.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class TextBox
 {

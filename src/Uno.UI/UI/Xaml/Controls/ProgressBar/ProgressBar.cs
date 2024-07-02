@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ProgressBar : RangeBase
 	{
@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ProgressBar);
 		}
 
-		public global::Microsoft.UI.Xaml.Controls.Primitives.ProgressBarTemplateSettings TemplateSettings
+		public global::Windows.UI.Xaml.Controls.Primitives.ProgressBarTemplateSettings TemplateSettings
 		{
 			get;
 		}

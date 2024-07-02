@@ -4,21 +4,21 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using SampleControl.Entities;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Common;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 #if XAMARIN || UNO_REFERENCE_API
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
 using Microsoft.Graphics.Display;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Globalization;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Xaml;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno.Extensions;
 using Uno.Foundation;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public static class UIElementWasmExtensions
 	{

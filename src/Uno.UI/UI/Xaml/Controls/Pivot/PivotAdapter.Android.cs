@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 #pragma warning disable CS0618 // Type or member is obsolete
 	public class PivotAdapter : FragmentPagerAdapter

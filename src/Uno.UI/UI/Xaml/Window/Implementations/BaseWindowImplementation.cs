@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 using Uno.UI.Core;
@@ -15,8 +15,8 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+using WindowSizeChangedEventArgs = Windows.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowActivatedEventArgs = Windows.UI.Xaml.WindowActivatedEventArgs;
 using Microsoft.UI.Windowing;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;

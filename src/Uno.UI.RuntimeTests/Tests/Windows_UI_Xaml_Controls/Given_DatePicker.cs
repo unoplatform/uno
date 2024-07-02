@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.Disposables;
@@ -212,7 +212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private async Task When_Opened_And_Unloaded(bool useNative)
 		{
-			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+			var datePicker = new Windows.UI.Xaml.Controls.DatePicker();
 #if HAS_UNO
 			datePicker.UseNativeStyle = useNative;
 #endif
@@ -227,7 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var openFlyouts = FlyoutBase.OpenFlyouts;
 			Assert.AreEqual(1, openFlyouts.Count);
 			var associatedFlyout = openFlyouts[0];
-			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Windows.UI.Xaml.Controls.DatePickerFlyout));
 #endif
 
 			bool unloaded = false;
@@ -265,7 +265,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
 		{
 			// Open flyout, close it via method or via native dismiss, check if event on flyoutbase was invoked
-			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+			var datePicker = new Windows.UI.Xaml.Controls.DatePicker();
 #if HAS_UNO
 			datePicker.UseNativeStyle = useNative;
 #endif
@@ -285,7 +285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, openFlyouts.Count);
 			var associatedFlyout = openFlyouts[0];
 #endif
-			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Windows.UI.Xaml.Controls.DatePickerFlyout));
 			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
 
 			bool flyoutClosed = false;
@@ -318,7 +318,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private async Task When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle expectedStyle)
 		{
-			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+			var datePicker = new Windows.UI.Xaml.Controls.DatePicker();
 			datePicker.UseNativeStyle = true;
 
 			TestServices.WindowHelper.WindowContent = datePicker;
@@ -330,7 +330,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var openFlyouts = FlyoutBase.OpenFlyouts;
 			Assert.AreEqual(1, openFlyouts.Count);
 			var associatedFlyout = openFlyouts[0];
-			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Windows.UI.Xaml.Controls.DatePickerFlyout));
 			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
 
 			var nativeDatePickerFlyout = (NativeDatePickerFlyout)datePickerFlyout;

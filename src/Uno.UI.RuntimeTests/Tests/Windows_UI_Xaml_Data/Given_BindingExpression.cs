@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+﻿using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Disposables;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;

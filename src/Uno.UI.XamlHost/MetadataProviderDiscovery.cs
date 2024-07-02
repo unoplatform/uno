@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.UI.Xaml.Markup;
-using WUX = Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Markup;
+using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost;
 

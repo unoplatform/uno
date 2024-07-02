@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Data;
+﻿namespace Windows.UI.Xaml.Data;
 
 /// <summary>
 /// Provides info about a range of items in the data source.

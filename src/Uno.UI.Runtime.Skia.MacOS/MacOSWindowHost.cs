@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,9 +10,9 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
-using Window = Microsoft.UI.Xaml.Window;
+using Window = Windows.UI.Xaml.Window;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;

@@ -2,8 +2,8 @@
 using Foundation;
 using Windows.UI;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Documents;
 using UIKit;
 using Uno.Extensions;
 

@@ -987,7 +987,7 @@ namespace Uno.UI {
 
 			if (eventExtractorId) {
 				//
-				// NOTE TO MAINTAINERS: Keep in sync with Microsoft.UI.Xaml.UIElement.HtmlEventExtractor
+				// NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
 				//
 
 				switch (eventExtractorId) {
@@ -1580,25 +1580,25 @@ namespace Uno.UI {
 			if ((<any>globalThis).DotnetExports !== undefined) {
 				const exports = (<any>globalThis).DotnetExports.UnoUI;
 
-				WindowManager.resizeMethod = exports.Microsoft.UI.Xaml.Window.Resize;
-				WindowManager.dispatchEventMethod = exports.Microsoft.UI.Xaml.UIElement.DispatchEvent;
-				WindowManager.focusInMethod = exports.Microsoft.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
-				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
+				WindowManager.resizeMethod = exports.Windows.UI.Xaml.Window.Resize;
+				WindowManager.dispatchEventMethod = exports.Windows.UI.Xaml.UIElement.DispatchEvent;
+				WindowManager.focusInMethod = exports.Windows.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
+				WindowManager.dispatchSuspendingMethod = exports.Windows.UI.Xaml.Application.DispatchSuspending;
 			} else {
 				if (!WindowManager.resizeMethod) {
-					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Window:Resize");
+					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
 				}
 
 				if (!WindowManager.dispatchEventMethod) {
-					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:DispatchEvent");
+					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
 				}
 
 				if (!WindowManager.focusInMethod) {
-					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
 				}
 
 				if (!WindowManager.dispatchSuspendingMethod) {
-					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Application:DispatchSuspending");
+					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
 				}
 			}
 		}

@@ -16,7 +16,7 @@
 # What is the Uno Platform?
 The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
 
-It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
+It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Windows.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
 
 Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://learn.microsoft.com/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
 
@@ -70,9 +70,9 @@ For a larger example and features demo:
     * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
     * Any UWP project
 * Responsive Design:
-    * [Visual State Manager](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
+    * [Visual State Manager](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.VisualStateManager)
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
-    * [Adaptive Triggers](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.AdaptiveTrigger)
+    * [Adaptive Triggers](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.AdaptiveTrigger)
 * Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available

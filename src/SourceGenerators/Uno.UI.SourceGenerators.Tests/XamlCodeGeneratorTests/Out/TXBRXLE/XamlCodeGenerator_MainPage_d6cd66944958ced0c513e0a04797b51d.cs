@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
-	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class MainPage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -56,14 +56,14 @@ namespace TestRepro
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
+			new global::Windows.UI.Xaml.Controls.StackPanel
 			{
 				IsParsing = true,
 				// Source 0\MainPage.xaml (Line 12:3)
 				Children = 
 				{
-					new Microsoft.UI.Xaml.ElementStub( () => 
-					new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
+					new Windows.UI.Xaml.ElementStub( () => 
+					new global::Windows.UI.Xaml.Controls.Primitives.ToggleButton
 					{
 						IsParsing = true,
 						Name = "LoadElement",
@@ -88,18 +88,18 @@ namespace TestRepro
 						c1.Name = "LoadElement";
 						_LoadElementSubject.ElementInstance = c1;
 						c1.SetBinding(
-							global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
-							new Microsoft.UI.Xaml.Data.Binding()
+							global::Windows.UI.Xaml.ElementStub.LoadProperty,
+							new Windows.UI.Xaml.Data.Binding()
 							{
-								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-								Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
+								Mode = global::Windows.UI.Xaml.Data.BindingMode.OneWay,
+								Converter = (global::Windows.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Windows.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
 							}
 								.BindingApply(___b =>  /*defaultBindModeOneTime ToggleLoad.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ToggleLoad.IsChecked)) : (false, default), null , new [] {"ToggleLoad.IsChecked"}))
 						);
 						__that._component_1 = c1;
 						var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
 						var _component_1_update_subject_capture = _LoadElementSubject;
-						void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+						void _component_1_update(global::Windows.UI.Xaml.ElementStub sender)
 						{
 							if (_component_1_update_That.Target is global::TestRepro.MainPage that)
 							{
@@ -124,7 +124,7 @@ namespace TestRepro
 					}
 					))
 					,
-					new global::Microsoft.UI.Xaml.Controls.Button
+					new global::Windows.UI.Xaml.Controls.Button
 					{
 						IsParsing = true,
 						Name = "button1",
@@ -140,11 +140,11 @@ namespace TestRepro
 						__that.button1 = c2;
 						// FieldModifier public
 						c2.SetBinding(
-							global::Microsoft.UI.Xaml.Controls.Button.IsEnabledProperty,
-							new Microsoft.UI.Xaml.Data.Binding()
+							global::Windows.UI.Xaml.Controls.Button.IsEnabledProperty,
+							new Windows.UI.Xaml.Data.Binding()
 							{
-								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-								Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
+								Mode = global::Windows.UI.Xaml.Data.BindingMode.OneWay,
+								Converter = (global::Windows.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Windows.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
 							}
 								.BindingApply(___b =>  /*defaultBindModeOneTime LoadElement.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.LoadElement.IsChecked)) : (false, default), null , new [] {"LoadElement.IsChecked"}))
 						);
@@ -153,7 +153,7 @@ namespace TestRepro
 					}
 					))
 					,
-					new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
+					new global::Windows.UI.Xaml.Controls.Primitives.ToggleButton
 					{
 						IsParsing = true,
 						Name = "ToggleLoad",
@@ -209,72 +209,72 @@ namespace TestRepro
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton LoadElement
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		public global::Windows.UI.Xaml.Controls.Primitives.ToggleButton LoadElement
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_LoadElementSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Primitives.ToggleButton)_LoadElementSubject.ElementInstance;
 			}
 			set
 			{
 				_LoadElementSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.Button button1
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		public global::Windows.UI.Xaml.Controls.Button button1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
 			}
 			set
 			{
 				_button1Subject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton ToggleLoad
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		public global::Windows.UI.Xaml.Controls.Primitives.ToggleButton ToggleLoad
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_ToggleLoadSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Primitives.ToggleButton)_ToggleLoadSubject.ElementInstance;
 			}
 			set
 			{
 				_ToggleLoadSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton _component_0
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Primitives.ToggleButton _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Primitives.ToggleButton)_component_0_Holder.Instance;
 			}
 			set
 			{
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
-		private global::Microsoft.UI.Xaml.ElementStub _component_1
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: false);
+		private global::Windows.UI.Xaml.ElementStub _component_1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+				return (global::Windows.UI.Xaml.ElementStub)_component_1_Holder.Instance;
 			}
 			set
 			{
 				_component_1_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Button _component_2
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_2_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Button _component_2
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
 			}
 			set
 			{
@@ -339,30 +339,30 @@ namespace MyProject
 {
 	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.Primitives.ToggleButton instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.Primitives.ToggleButton MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.Primitives.ToggleButton instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.ElementStub instance);
+		public delegate void XamlApplyHandler1(global::Windows.UI.Xaml.ElementStub instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.ElementStub instance, XamlApplyHandler1 handler)
+		public static global::Windows.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.ElementStub instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Button instance);
+		public delegate void XamlApplyHandler2(global::Windows.UI.Xaml.Controls.Button instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler2 handler)
+		public static global::Windows.UI.Xaml.Controls.Button MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.Button instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
+		public delegate void XamlApplyHandler3(global::Windows.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler3 handler)
+		public static global::Windows.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;

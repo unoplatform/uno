@@ -20,11 +20,11 @@ using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
@@ -95,7 +95,7 @@ namespace Uno.UI.Samples.Tests
 			);
 
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow ??=
-				Microsoft.UI.Xaml.Window.Current;
+				Windows.UI.Xaml.Window.Current;
 
 			DataContext = null;
 
@@ -275,7 +275,7 @@ namespace Uno.UI.Samples.Tests
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
 #if HAS_UNO_WINUI || WINAPPSDK
-				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
+				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Windows.UI.Xaml.Window window)
 				{
 					window.Title = message;
 				}

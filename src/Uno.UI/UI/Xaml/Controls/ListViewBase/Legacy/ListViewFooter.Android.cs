@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Android.Views;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls.Legacy
 {

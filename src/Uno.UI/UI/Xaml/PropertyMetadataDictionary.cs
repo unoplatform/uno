@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -12,7 +12,7 @@ using Uno;
 using System.Threading;
 using Uno.Collections;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal class PropertyMetadataDictionary
 	{

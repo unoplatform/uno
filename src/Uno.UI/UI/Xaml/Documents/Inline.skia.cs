@@ -1,11 +1,11 @@
 ﻿using HarfBuzzSharp;
 using SkiaSharp;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Windows.UI.Xaml.Documents.TextFormatting;
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	partial class Inline
 	{

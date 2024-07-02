@@ -1,9 +1,9 @@
-#if UNO_HAS_BORDER_VISUAL
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+﻿#if UNO_HAS_BORDER_VISUAL
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 internal static class BorderHelper
 {

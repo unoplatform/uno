@@ -10,18 +10,18 @@ using Uno.Extensions.Specialized;
 using System.Diagnostics;
 using Uno.UI;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Uno.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Windows.Foundation;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Helpers;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Selector : ItemsControl
 	{
@@ -379,8 +379,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedValuePathProperty, value);
 		}
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
 			name: nameof(SelectedValuePath),
 			propertyType: typeof(string),
 			ownerType: typeof(Selector),
@@ -393,8 +393,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedValueProperty, value);
 		}
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
 			name: nameof(SelectedValue),
 			propertyType: typeof(object),
 			ownerType: typeof(Selector),
@@ -429,7 +429,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty IsSynchronizedWithCurrentItemProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
+			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(IsSynchronizedWithCurrentItem),
 				typeof(bool?),
 				typeof(Selector),

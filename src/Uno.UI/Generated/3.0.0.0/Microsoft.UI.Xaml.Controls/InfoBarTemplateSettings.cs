@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class InfoBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class InfoBarTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property IconElement
 		// Skipping already declared property IconElementProperty

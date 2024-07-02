@@ -4,7 +4,7 @@
 >
 	<UserControl.Resources>
 
-		<!-- Style for Microsoft.UI.Xaml.Controls.ListViewItem -->
+		<!-- Style for Windows.UI.Xaml.Controls.ListViewItem -->
 		<Style TargetType="ListViewItem"
 						 x:Key="ListViewItemExpanded">
 			<Setter Property="FontFamily"

@@ -33,7 +33,7 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 		public async Task Given_NonGeneric_Control_In_Global_Namespace()
 		{
 			const string inputSource = @"
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 public partial class MyAwesomeControl : Control
 {
@@ -60,7 +60,7 @@ partial class MyAwesomeControl
 		public async Task Given_Generic_Control_In_Global_Namespace()
 		{
 			const string inputSource = @"
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 public partial class MyAwesomeControl<T> : Control
 {
@@ -87,7 +87,7 @@ partial class MyAwesomeControl<T>
 		public async Task Given_Generic_Control_In_Non_Global_Namespace()
 		{
 			const string inputSource = @"
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace MyControls.Test
 {

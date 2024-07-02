@@ -9,7 +9,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 
