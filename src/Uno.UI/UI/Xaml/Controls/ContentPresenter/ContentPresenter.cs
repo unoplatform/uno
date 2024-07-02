@@ -806,6 +806,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 	{
+		SetUpdateTemplate();
 	}
 
 	partial void UnregisterContentTemplateRoot();
