@@ -1,24 +1,18 @@
 ﻿using System;
-using System.Globalization;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {
-	public class ColorPickerSliderAutomationPeer : AutomationPeer, IValueProvider
+	public partial class ColorPickerSliderAutomationPeer : SliderAutomationPeer, IValueProvider
 	{
-		// Uno Doc: Added for the Uno Platform
-		private readonly ColorPickerSlider _owner;
-
-		internal ColorPickerSliderAutomationPeer(ColorPickerSlider owner)
+		internal ColorPickerSliderAutomationPeer(ColorPickerSlider owner) : base(owner)
 		{
-			_owner = owner;
 		}
 
 		// IAutomationPeerOverrides
@@ -26,7 +20,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 		{
 			// If this slider is handling the alpha channel, then we don't want to do anything special for it -
 			// in that case, we'll just return the base SliderAutomationPeer.
-			if (_owner.ColorChannel != ColorPickerHsvChannel.Alpha && patternInterface == PatternInterface.Value)
+			if (((ColorPickerSlider)Owner).ColorChannel != ColorPickerHsvChannel.Alpha && patternInterface == PatternInterface.Value)
 			{
 				return this;
 			}
@@ -35,16 +29,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 		}
 
 		// IValueProvider properties and methods
-		public bool IsReadOnly
-		{
-			get => false;
-		}
+		bool IValueProvider.IsReadOnly => false;
 
-		public string Value
+		string IValueProvider.Value
 		{
 			get
 			{
-				ColorPickerSlider owner = _owner;
+				ColorPickerSlider owner = (ColorPickerSlider)Owner;
 				DependencyObject currentObject = owner;
 				ColorPicker owningColorPicker = null;
 
@@ -94,7 +85,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 			if (DownlevelHelper.ToDisplayNameExists())
 			{
 				string resourceStringWithName;
-				switch (_owner.ColorChannel)
+				switch (((ColorPickerSlider)Owner).ColorChannel)
 				{
 					case ColorPickerHsvChannel.Hue:
 						resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithColorName);
@@ -117,7 +108,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 			else
 			{
 				string resourceStringWithoutName;
-				switch (_owner.ColorChannel)
+				switch (((ColorPickerSlider)Owner).ColorChannel)
 				{
 					case ColorPickerHsvChannel.Hue:
 						resourceStringWithoutName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithoutColorName);
