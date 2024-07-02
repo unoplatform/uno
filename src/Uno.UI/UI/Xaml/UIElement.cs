@@ -42,7 +42,10 @@ using UIKit;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
+	public partial class UIElement : DependencyObject, IXUidProvider
+#if !__CROSSRUNTIME__
+		, IUIElement
+#endif
 	{
 		private protected static bool _traceLayoutCycle;
 
@@ -83,7 +86,7 @@ namespace Microsoft.UI.Xaml
 		// This is expressed in local coordinate space.
 		internal Rect Viewport { get; private set; } = Rect.Infinite;
 #endif
-		#endregion
+#endregion
 
 		/// <summary>
 		/// Is this view the top of the managed visual tree
@@ -308,13 +311,21 @@ namespace Microsoft.UI.Xaml
 
 		partial void UnsetShadow();
 
+#if !__CROSSRUNTIME__
 		internal Size AssignedActualSize { get; set; }
+#endif
 
 		internal bool IsLeavingFrame { get; set; }
 
+#if !__CROSSRUNTIME__
 		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
 
 		private protected virtual double GetActualHeight() => AssignedActualSize.Height;
+#else
+		private protected virtual double GetActualWidth() => 0;
+
+		private protected virtual double GetActualHeight() => 0;
+#endif
 
 		string IXUidProvider.Uid
 		{
@@ -1035,6 +1046,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if !__CROSSRUNTIME__
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>
@@ -1057,6 +1069,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
+#endif
 
 		/// <summary>
 		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
@@ -1068,11 +1081,14 @@ namespace Microsoft.UI.Xaml
 
 		internal bool NeedsClipToSlot { get; set; }
 
+#if !__CROSSRUNTIME__
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetDesiredSize(UIElement)"/>
 		/// </summary>
 		Size IUIElement.DesiredSize { get; set; }
+#endif
 
+#if !__CROSSRUNTIME__
 		private Size _size;
 
 		/// <summary>
@@ -1092,13 +1108,22 @@ namespace Microsoft.UI.Xaml
 					if (this is FrameworkElement frameworkElement)
 					{
 						frameworkElement.SetActualSize(_size);
-#if !UNO_HAS_ENHANCED_LIFECYCLE // Handled by EventManager with enhanced lifecycle.
 						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
-#endif
 					}
 				}
 			}
 		}
+#else
+		/// <summary>
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
+		/// </summary>
+		public Size RenderSize
+		{
+			get => HasLayoutStorage ? m_size : default;
+			internal set => m_size = value;
+		}
+#endif
+
 
 #if !UNO_REFERENCE_API
 		/// <summary>

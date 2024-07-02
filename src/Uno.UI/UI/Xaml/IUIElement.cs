@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !__CROSSRUNTIME__
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -26,3 +27,4 @@ namespace Microsoft.UI.Xaml
 	}
 }
 
+#endif

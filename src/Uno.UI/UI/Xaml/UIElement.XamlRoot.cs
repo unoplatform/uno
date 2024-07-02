@@ -7,7 +7,10 @@ using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
+public partial class UIElement : DependencyObject, IXUidProvider
+#if !__CROSSRUNTIME__
+	, IUIElement
+#endif
 {
 	private ManagedWeakReference? _visualTreeCacheWeakReference;
 

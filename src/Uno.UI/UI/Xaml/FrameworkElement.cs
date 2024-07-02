@@ -192,7 +192,9 @@ namespace Microsoft.UI.Xaml
 			=> _renderTransform?.UpdateSize(newSize);
 #endif
 
+#if !UNO_REFERENCE_API
 		internal void SetActualSize(Size size) => AssignedActualSize = size;
+#endif
 
 		partial void Initialize()
 		{
