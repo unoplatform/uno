@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Android.OS;
 using Android.Views;
-using Microsoft.UI.Xaml.Extensions;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Xaml.Extensions;

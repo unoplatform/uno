@@ -6,7 +6,7 @@ using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Input;
 
-namespace Microsoft.UI.Xaml.Extensions
+namespace Uno.UI.Xaml.Extensions
 {
 	internal static class MotionEventExtensions
 	{
