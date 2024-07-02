@@ -1869,8 +1869,27 @@
 			<!-- END Keyboard accelerators -->
 		</Methods>
 	</IgnoreSet>
-  <!--
-	Supported nodes (please keep at the bottom of this file):
+	<IgnoreSet baseVersion="5.4">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Does not exist in UWP; deleted" />
+			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, System.Type propertyDeclaringType, System.String propertyName, System.Type propertyType)" reason="Does not exist in UWP; signature changed" />
+		</Methods>
+	</IgnoreSet>
+
+	<!-- Supported nodes (please keep at the bottom of this file): -->
+	<!--
 	<IgnoreSet baseVersion="0.0">
 		<Types>
 		</Types>

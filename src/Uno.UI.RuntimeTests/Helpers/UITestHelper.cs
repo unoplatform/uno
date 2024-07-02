@@ -31,10 +31,26 @@ namespace Uno.UI.RuntimeTests.Helpers;
 
 public static class UITestHelper
 {
-	public static async Task<Windows.Foundation.Rect> Load(FrameworkElement element)
+	/// <summary>
+	/// Loads an element onto the test area, and wait for it to be loaded before returning.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="element">The element to be loaded onto the test area.</param>
+	/// <param name="isLoaded">optional, function to override the default is-loaded check.</param>
+	/// <returns>Loaded element absolute bounds.</returns>
+	/// <remarks>The default is-loaded check fails on 0 height/width, or empty list-view, overload the <paramref name="isLoaded"/> with <code>x => x.IsLoaded</code> or <code>x => x.GetTemplateRoot() != null</code> to bypass that.</remarks>
+	public static async Task<Rect> Load<T>(T element, Func<T, bool>? isLoaded = null) where T : FrameworkElement
 	{
 		TestServices.WindowHelper.WindowContent = element;
-		await TestServices.WindowHelper.WaitForLoaded(element);
+
+		if (isLoaded is null)
+		{
+			await TestServices.WindowHelper.WaitForLoaded(element);
+		}
+		else
+		{
+			await TestServices.WindowHelper.WaitFor(() => element.IsLoaded, message: $"Timeout waiting on {element} to be loaded with custom criteria.");
+		}
 		await TestServices.WindowHelper.WaitForIdle();
 
 		return element.GetAbsoluteBounds();

@@ -74,20 +74,18 @@ namespace Uno.UI.Helpers
 		public static void SetVisualTransitionLazy(VisualTransition target, Action builder)
 			=> target.LazyBuilder = builder;
 
-		public static IXamlServiceProvider CreateParserContext(object? target, ProvideValueTargetProperty? property)
+		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType, object? rootObject = null)
 			=> new XamlServiceProviderContext
 			{
 				TargetObject = target,
-				TargetProperty = property,
+				TargetProperty = new ProvideValueTargetProperty
+				{
+					DeclaringType = propertyDeclaringType,
+					Name = propertyName,
+					Type = propertyType,
+				},
+				RootObject = rootObject,
 			};
-
-		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
-			=> CreateParserContext(target, new ProvideValueTargetProperty
-			{
-				DeclaringType = propertyDeclaringType,
-				Name = propertyName,
-				Type = propertyType,
-			});
 
 		/// <summary>
 		/// Attaches a property to an object, using a weak reference.
