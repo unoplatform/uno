@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Data;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml
 {
@@ -136,6 +137,21 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public FrameworkPropertyMetadataOptions Options { get; set; } = FrameworkPropertyMetadataOptions.Default;
+
+		// Kept for binary compat only.
+		// This property should be removed, and the whole FrameworkPropertyMetadata should be internal.
+		public UpdateSourceTrigger DefaultUpdateSourceTrigger
+		{
+			get
+			{
+				if (this == TextBox.TextProperty.GetMetadata(typeof(TextBox)))
+				{
+					return UpdateSourceTrigger.Explicit;
+				}
+
+				return UpdateSourceTrigger.PropertyChanged;
+			}
+		}
 
 		protected internal override void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
 		{
