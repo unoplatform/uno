@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-ios</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-tvos</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -11,7 +11,7 @@
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
-		<Description>This package provides the platform support for Skia Android in Uno Platform projects.</Description>
+		<Description>This package provides the platform support for Skia Apple iOS, Mac Catalyst, and tvOS in Uno Platform projects.</Description>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.AppleUIKit</PackageId>
@@ -51,12 +51,12 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
-	<!-- <ItemGroup> -->
-	<!-- <Content Include="buildTransitive/*.targets"> -->
-	<!-- <Pack>true</Pack> -->
-	<!-- <PackagePath>buildTransitive</PackagePath> -->
-	<!-- </Content> -->
-	<!-- </ItemGroup> -->
+	<ItemGroup>
+		<Content Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
 
 	<!--<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />-->
 
