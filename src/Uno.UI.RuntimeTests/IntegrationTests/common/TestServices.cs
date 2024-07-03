@@ -74,11 +74,7 @@ namespace Private.Infrastructure
 		{
 			get
 			{
-#if __WASM__ // TODO Uno: To be adjusted for #2302
-				return false;
-#else
 				return WindowHelper.RootElementDispatcher.HasThreadAccess;
-#endif
 			}
 		}
 

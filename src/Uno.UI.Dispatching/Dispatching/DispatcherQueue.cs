@@ -36,12 +36,7 @@ namespace Windows.System
 		{
 			if (_current == null) // Do not even check for thread access if we already have a value!
 			{
-				// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
-				if (
-#if __WASM__
-					NativeDispatcher.IsThreadingSupported &&
-#endif
-					!NativeDispatcher.Main.HasThreadAccess)
+				if (!NativeDispatcher.Main.HasThreadAccess)
 				{
 					return default;
 				}
