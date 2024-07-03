@@ -20,10 +20,6 @@ namespace Uno.UI.Runtime.Skia {
 			this.clipPath.setAttributeNS(null, "d", path);
 		}
 
-		public static isNativeElement(content: string): boolean {
-			return document.getElementById(content) instanceof HTMLElement;
-		}
-
 		private static getNativeElementHost(): HTMLElement {
 			let nativeElementHost = document.getElementById("uno-native-element-host");
 			if (!nativeElementHost) {
@@ -41,19 +37,47 @@ namespace Uno.UI.Runtime.Skia {
 			return nativeElementHost;
 		}
 
-		public static attachNativeElement(content: string) {
+		// We have a store to put elements in before they are loaded/unloaded as native elements.
+		// We have to put these elements somewhere we can access, so we do so in a hidden div.
+		// Only elements in the store are considered part of the "uno world" and can be
+		// embedded inside the uno canvas. Clients need to request html elements to be added
+		// to the store before any native hosting takes place.
+		private static getNativeElementStore(): HTMLElement {
+			let nativeElementStore = document.getElementById("uno-native-element-store");
+			if (!nativeElementStore) {
+				nativeElementStore = document.createElement("div");
+				nativeElementStore.id = "uno-native-element-store";
+				nativeElementStore.style.visibility = "collapse";
+				let unoBody = document.getElementById("uno-body");
+				unoBody.insertBefore(nativeElementStore, unoBody.firstChild);
+			}
 
+			return nativeElementStore;
+		}
+
+		public static isNativeElement(content: string): boolean {
+			for (let child of this.getNativeElementStore().children) {
+				if (child.id === content) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static attachNativeElement(content: string) {
 			let element = document.getElementById(content);
-			this.getNativeElementHost().appendChild(element);
+			element.remove(); // remove from the store
+			this.getNativeElementHost().appendChild(element); // add to the native host
 		}
 
 		public static detachNativeElement(content: string) {
-			let element = document.getElementById(content) as HTMLElement;
-			element.remove();
+			let element = document.getElementById(content);
+			element.remove(); // remove from the native host
+			this.getNativeElementStore().appendChild(element); // add to the native host
 		}
 
 		public static arrangeNativeElement(content: string, x: number, y: number, width: number, height: number) {
-			let element = document.getElementById(content) as HTMLElement;
+			let element = document.getElementById(content);
 			element.style.position = "absolute"
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
@@ -62,25 +86,37 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static changeNativeElementOpacity(content: string, opacity: number) {
-			let element = document.getElementById(content) as HTMLElement;
+			let element = document.getElementById(content);
 			element.style.opacity = opacity.toString();
 		}
 
-		public static createSampleComponent(s: string): string {
-			let element = document.createElement("div");
+		public static createHtmlElementAndAddToStore(id: string, tagName: string) {
+			let element = document.createElement(tagName);
+			element.id = id;
+			this.getNativeElementStore().appendChild(element);
+		}
+
+		public static addToStore(id: string) {
+			this.getNativeElementStore().appendChild(document.getElementById(id));
+		}
+
+		public static disposeHtmlElement(id: string) {
+			document.getElementById(id).remove();
+		}
+
+		public static createSampleComponent(parentId: string, text: string) {
+			let element = document.getElementById(parentId);
+
 			let btn = document.createElement("button");
-			btn.textContent = s;
+			btn.textContent = text;
 			btn.style.display = "inline-block";
 			btn.style.width = "100%";
 			btn.style.height = "100%";
 			btn.style.backgroundColor = "#ff69b4"; /* Hot pink */
 			btn.style.color = "white";
-			element.appendChild(btn);
 
-			element.id = (Math.random() + 1).toString(36).substring(7);
-			document.body.appendChild(element);
-			element.addEventListener("pointerdown", _ => alert(`button ${s} clicked`));
-			return element.id;
+			element.appendChild(btn);
+			element.addEventListener("pointerdown", _ => alert(`button ${text} clicked`));
 		}
 	}
 }
