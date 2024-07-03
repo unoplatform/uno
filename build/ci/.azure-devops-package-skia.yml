@@ -41,7 +41,7 @@ jobs:
 
   - template: templates/gitversion.yml
   
-  - template: templates/dotnet-mobile-install-windows.yml
+  - template: templates/dotnet-mobile-install-linux.yml
   
   ## Restore skia-macos native assets
   - task: DownloadPipelineArtifact@2
