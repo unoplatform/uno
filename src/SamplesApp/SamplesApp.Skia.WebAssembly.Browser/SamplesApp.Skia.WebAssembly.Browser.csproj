@@ -103,7 +103,10 @@
 	<!-- Required for assets to be included (manual only inside the uno solution, commonly included through build inclusion in nuget packages -->
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
-	<Target Name="ReplaceUnoRuntime" AfterTargets="ResolveReferences">
+	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
+
+	<!-- Name it as ReplaceUnoRuntime2 so that it doesn't overwrite ReplaceUnoRuntime from uno.winui.runtime-replace.targets -->
+	<Target Name="ReplaceUnoRuntime2" AfterTargets="ResolveReferences">
 
 		<ItemGroup>
 			<_AssemblyCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.FusionName)' != '' and '%(ReferenceCopyLocalPaths.FusionName)'=='Uno, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null'" />
