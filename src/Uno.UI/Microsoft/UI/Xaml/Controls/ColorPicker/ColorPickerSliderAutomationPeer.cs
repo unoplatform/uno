@@ -7,6 +7,10 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Automation.Peers;
+#endif
+
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {
 	public partial class ColorPickerSliderAutomationPeer : SliderAutomationPeer, IValueProvider
