@@ -76,46 +76,79 @@
 	</DataTemplate>
 
 	<Style TargetType="local:HotReloadStatusView">
+		<Setter Property="ProcessingNotification">
+			<Setter.Value>
+				<diag:DiagnosticViewNotification Duration="0:0:0" Options="EvenIfExpended">
+					<diag:DiagnosticViewNotification.ContentTemplate>
+						<DataTemplate>
+							<Grid>
+								<Ellipse
+									Fill="{StaticResource HotReloadProcessingFillBrush}"
+									Width="20"
+									Height="20" />
+								<Path
+									Fill="White"
+									Stretch="Uniform"
+									Width="12"
+									Data="{StaticResource HotReloadProcessing}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+								<TextBlock Text="Processing" />
+							</Grid>
+						</DataTemplate>
+					</diag:DiagnosticViewNotification.ContentTemplate>
+				</diag:DiagnosticViewNotification>
+			</Setter.Value>
+		</Setter>
+
 		<Setter Property="SuccessNotification">
 			<Setter.Value>
-				<diag:DiagnosticViewNotification Duration="0:0:10">
-					<diag:DiagnosticViewNotification.Content>
-						<Grid>
-							<Ellipse
-								Fill="{StaticResource HotReloadSuccessFillBrush}"
-								Width="20"
-								Height="20" />
-							<Path
-								Fill="White"
-								Stretch="Uniform"
-								Width="12"
-								Data="{StaticResource HotReloadSuccess}"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center" />
-						</Grid>
-					</diag:DiagnosticViewNotification.Content>
+				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
+					<diag:DiagnosticViewNotification.ContentTemplate>
+						<DataTemplate>
+							<Grid>
+								<Ellipse
+									Fill="{StaticResource HotReloadSuccessFillBrush}"
+									Width="20"
+									Height="20" />
+								<Path
+									Fill="White"
+									Stretch="Uniform"
+									Width="12"
+									Data="{StaticResource HotReloadSuccess}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+								<TextBlock Text="OK" />
+								<TextBlock Margin="20,0,0,0" Text="{Binding Description}" />
+							</Grid>
+						</DataTemplate>
+					</diag:DiagnosticViewNotification.ContentTemplate>
 				</diag:DiagnosticViewNotification>
 			</Setter.Value>
 		</Setter>
 
 		<Setter Property="FailureNotification">
 			<Setter.Value>
-				<diag:DiagnosticViewNotification Duration="0:0:0">
-					<diag:DiagnosticViewNotification.Content>
-						<Grid>
-							<Ellipse
-								Fill="{StaticResource HotReloadFailedFillBrush}"
-								Width="20"
-								Height="20" />
-							<Path
-								Fill="White"
-								Stretch="Uniform"
-								Width="12"
-								Data="{StaticResource HotReloadFailed}"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center" />
-						</Grid>
-					</diag:DiagnosticViewNotification.Content>
+				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
+					<diag:DiagnosticViewNotification.ContentTemplate>
+						<DataTemplate>
+							<Grid>
+								<Ellipse
+									Fill="{StaticResource HotReloadFailedFillBrush}"
+									Width="20"
+									Height="20" />
+								<Path
+									Fill="White"
+									Stretch="Uniform"
+									Width="12"
+									Data="{StaticResource HotReloadFailed}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+								<TextBlock Text="NO" />
+								<TextBlock Margin="20,0,0,0" Text="{Binding Description}" />
+							</Grid>
+						</DataTemplate>
+					</diag:DiagnosticViewNotification.ContentTemplate>
 				</diag:DiagnosticViewNotification>
 			</Setter.Value>
 		</Setter>
@@ -141,49 +174,24 @@
 										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadInitializingFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
-								<VisualState x:Name="Idle">
+								<VisualState x:Name="Ready">
 									<VisualState.Setters>
 										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadSuccessFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Processing">
+									<!-- The processing visual state is the same as ready, visually we rely only on the notifications for the processing. -->
 									<VisualState.Setters>
-										<Setter Target="DotIcon.Data" Value="{StaticResource HotReloadProcessing}" />
-										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadProcessingFillBrush}" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadSuccessFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 							</VisualStateGroup>
 
 							<VisualStateGroup x:Name="Result">
+								<!-- Visually we rely only on the notifications for the results. -->
 								<VisualState x:Name="None" />
-								<VisualState x:Name="Success">
-									<VisualState.Setters>
-										<Setter Target="ResultDotIcon.Data" Value="{StaticResource HotReloadSuccess}" />
-										<Setter Target="ResultDot.Fill" Value="{StaticResource HotReloadSuccessFillBrush}" />
-									</VisualState.Setters>
-									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDotIcon" Storyboard.TargetProperty="Data">
-											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="{x:Null}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDot" Storyboard.TargetProperty="Fill">
-											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="Transparent" />
-										</ObjectAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="Failed">
-									<VisualState.Setters>
-										<Setter Target="ResultDotIcon.Data" Value="{StaticResource HotReloadFailed}" />
-										<Setter Target="ResultDot.Fill" Value="{StaticResource HotReloadFailedFillBrush}" />
-									</VisualState.Setters>
-									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDotIcon" Storyboard.TargetProperty="Data">
-											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="{x:Null}" />
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDot" Storyboard.TargetProperty="Fill">
-											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="Transparent" />
-										</ObjectAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
+								<VisualState x:Name="Success" />
+								<VisualState x:Name="Failed" />
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 
@@ -241,19 +249,6 @@
 									Stretch="Uniform"
 									Width="12"
 									Data="{StaticResource HotReloadServerChange}"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-
-								<Ellipse
-									x:Name="ResultDot"
-									Fill="Transparent"
-									Width="20"
-									Height="20" />
-								<Path
-									x:Name="ResultDotIcon"
-									Fill="White"
-									Stretch="Uniform"
-									Width="12"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center" />
 							</Grid>

@@ -120,8 +120,8 @@ public partial class ClientHotReloadProcessor
 
 		private Status BuildStatus()
 		{
-			var serverState = _serverState ?? (_localOperations.Any() ? HotReloadState.Idle /* no info */ : HotReloadState.Initializing);
-			var localState = _localOperations.Any(op => op.Result is null) ? HotReloadState.Processing : HotReloadState.Idle;
+			var serverState = _serverState ?? (_localOperations.Any() ? HotReloadState.Ready /* no info */ : HotReloadState.Initializing);
+			var localState = _localOperations.Any(op => op.Result is null) ? HotReloadState.Processing : HotReloadState.Ready;
 			var globalState = _serverState is HotReloadState.Disabled ? HotReloadState.Disabled : (HotReloadState)Math.Max((int)serverState, (int)localState);
 
 			return new(globalState, (serverState, _serverOperations.Values.ToImmutableArray()), (localState, _localOperations));

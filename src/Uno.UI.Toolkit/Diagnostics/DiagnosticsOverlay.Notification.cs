@@ -19,7 +19,8 @@ public sealed partial class DiagnosticsOverlay
 #pragma warning disable IDE0051 // Not used on windows UWP
 	private void Notify(DiagnosticViewNotification notif, ViewContext context)
 	{
-		if (!_isVisible || _isExpanded)
+		if (!_isVisible
+			|| (_isExpanded && !notif.Options.HasFlag(DiagnosticViewNotificationDisplayOptions.EvenIfExpended)))
 		{
 			return;
 		}
@@ -44,6 +45,7 @@ public sealed partial class DiagnosticsOverlay
 			}
 
 			presenter.Content = notif.Content;
+			presenter.ContentTemplate = notif.ContentTemplate as DataTemplate;
 			VisualStateManager.GoToState(this, NotificationVisibleStateName, true);
 
 			if (notif.Duration is { TotalMilliseconds: > 0 } duration)
