@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Uno.Extensions.Specialized;
 using Windows.Storage;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
@@ -7,6 +8,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	[TestClass]
 	public class Given_ApplicationStorage
 	{
+
+		[TestMethod]
+		public async Task When_ExistFilesInPackage()
+		{
+			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync(null);
+
+			Assert.IsTrue(fileExists.Any());
+		}
+
+		[TestMethod]
+		public async Task When_ExtensionsFilterCountDifferentFromAllInPackage()
+		{
+			var filteredFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync([".png"]);
+			var allFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync(null);
+
+			Assert.IsFalse(allFileExists.Count() == filteredFileExists.Count());
+		}
+
+		[TestMethod]
+		public async Task When_ExtensionsFilterOnlyPathsForPngFiles()
+		{
+			var filteredFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync([".png"]);
+			var allFileExists = await Uno.UI.Toolkit.StorageFileHelper.GetFilesInDirectoryAsync(null);
+
+			Assert.IsTrue(filteredFileExists.Count() == filteredFileExists.Where(e => e.ToString().EndsWith(".png")).Count());
+		}
 
 		[TestMethod]
 		public async Task When_FileDoesNotExistsInPackage()
