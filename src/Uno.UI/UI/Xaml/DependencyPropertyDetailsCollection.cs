@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml
 				var propertyEntry = entries[offset + bucketRemainder];
 				if (propertyEntry is null)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty || property == _templatedParentProperty);
+					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty);
 					_entries[offset + bucketRemainder] = propertyEntry;
 
 					if (TryResolveDefaultValueFromProviders(property, out var value))

@@ -229,7 +229,9 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
-		internal bool IsTemplatedParentFrozen { get; set; }
+
+		// todo@xy: to verify https://github.com/unoplatform/uno/pull/15732; disabled for using deleted code
+		//internal bool IsTemplatedParentFrozen { get; set; }
 
 		/// <summary>
 		/// Gets a unique identifier for the current DependencyObject.
@@ -452,10 +454,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 		{
-			if (IsTemplatedParentFrozen && property == FrameworkElement.TemplatedParentProperty)
-			{
-				return;
-			}
+			// fixme@xy: IsTemplatedParentFrozen
+			//if (IsTemplatedParentFrozen && property == FrameworkElement.TemplatedParentProperty)
+			//{
+			//	return;
+			//}
 
 			if (precedence == DependencyPropertyValuePrecedences.Coercion)
 			{
@@ -1232,12 +1235,11 @@ namespace Microsoft.UI.Xaml
 
 
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-#if false // todo@xy: to verify https://github.com/unoplatform/uno/pull/15732; disabled for using deleted code
-					if (!IsTemplatedParentFrozen)
-					{
-						SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-					}
-#endif
+					// fixme@xy: IsTemplatedParentFrozen
+					// if (!IsTemplatedParentFrozen)
+					// {
+					// 	SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					// }
 				}
 			}
 			finally
@@ -1597,7 +1599,8 @@ namespace Microsoft.UI.Xaml
 				for (var propertyIndex = 0; propertyIndex < props.Length; propertyIndex++)
 				{
 					var prop = props[propertyIndex];
-					if (!IsTemplatedParentFrozen || prop != TemplatedParentProperty)
+					// fixme@xy: verify
+					//if (!IsTemplatedParentFrozen || prop != TemplatedParentProperty)
 					{
 						store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
 					}

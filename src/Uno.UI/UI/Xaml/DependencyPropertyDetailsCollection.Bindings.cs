@@ -202,11 +202,11 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
 		{
-			foreach (var templateBinding in _templateBindings)
+			foreach (var binding in _bindings)
 			{
-				if (templateBinding.TargetPropertyDetails.Property == dependencyProperty)
+				if (binding.TargetPropertyDetails.Property == dependencyProperty)
 				{
-					return true;
+					return binding.ParentBinding.IsTemplateBinding;
 				}
 			}
 
@@ -216,11 +216,6 @@ namespace Microsoft.UI.Xaml
 		internal void UpdateBindingExpressions()
 		{
 			foreach (var binding in _bindings)
-			{
-				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
-			}
-
-			foreach (var binding in _templateBindings)
 			{
 				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
 			}
@@ -242,11 +237,6 @@ namespace Microsoft.UI.Xaml
 		internal void OnThemeChanged()
 		{
 			foreach (var binding in _bindings)
-			{
-				RefreshBindingValueIfNecessary(binding);
-			}
-
-			foreach (var binding in _templateBindings)
 			{
 				RefreshBindingValueIfNecessary(binding);
 			}

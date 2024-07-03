@@ -77,7 +77,8 @@ public partial class TeachingTip : ContentControl
 		m_container = (Border)GetTemplateChild(s_containerName);
 		m_rootElement = m_container.Child;
 #if HAS_UNO // Done to work around issue #15749
-		m_rootElement.FreezeTemplatedParent();
+		// fixme@xy: IsTemplatedParentFrozen
+		//m_rootElement.FreezeTemplatedParent();
 #endif
 		m_tailOcclusionGrid = (Grid)GetTemplateChild(s_tailOcclusionGridName);
 		m_contentRootGrid = (Grid)GetTemplateChild(s_contentRootGridName);
