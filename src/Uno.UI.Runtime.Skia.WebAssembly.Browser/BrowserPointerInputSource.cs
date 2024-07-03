@@ -159,7 +159,20 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 	[NotImplemented] public bool HasCapture => false;
 
-	[NotImplemented] public CoreCursor PointerCursor { get; set; } = new(CoreCursorType.Arrow, 0);
+	private CoreCursor _pointerCursor = new(CoreCursorType.Arrow, 0);
+
+	public CoreCursor PointerCursor
+	{
+		get => _pointerCursor;
+		set
+		{
+			_pointerCursor = value;
+			SetCursor(value.Type.ToCssCursor());
+		}
+	}
+
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.setCursor")]
+	private static partial void SetCursor(string cssCursor);
 
 	public Point PointerPosition => _lastPoint?.Position ?? default;
 

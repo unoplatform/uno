@@ -90,6 +90,10 @@ namespace Uno.UI.Runtime.Skia {
 			this.onResize(this.owner, document.documentElement.clientWidth, document.documentElement.clientHeight);
 		}
 
+		public static setCursor(cssCursor: string) {
+			document.body.style.cursor = cssCursor;
+		}
+
 		private onfocusin(event: Event) {
 			//const newFocus = event.target;
 			//const handle = (newFocus as HTMLElement).getAttribute("XamlHandle");
