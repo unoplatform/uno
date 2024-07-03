@@ -1844,6 +1844,7 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="5.2">
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
 		</Types>
 
 		<Events>
@@ -1892,7 +1893,7 @@
 
 			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
-
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
 		</Methods>
 	</IgnoreSet>
 	<![CDATA[
