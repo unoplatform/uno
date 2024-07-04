@@ -21,7 +21,10 @@ namespace Microsoft.UI.Xaml.Documents
 			this.SetFontStyle(ReadLocalValue(FontStyleProperty));
 		}
 
-		// TODO: FontStretch
+		partial void OnFontStretchChangedPartial()
+		{
+			this.SetFontStretch(ReadLocalValue(FontStretchProperty));
+		}
 
 		partial void OnFontSizeChangedPartial()
 		{
