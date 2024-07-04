@@ -16,7 +16,9 @@ public partial class SkiaWasmHtmlElement : IDisposable
 		{
 			throw new NotSupportedException($"{nameof(SkiaWasmHtmlElement)} is only supported on the Wasm target with the skia backend.");
 		}
+#if __SKIA__
 		ElementId = elementId;
+#endif
 	}
 
 	/// <summary>
