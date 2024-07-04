@@ -25,12 +25,6 @@ internal partial class AndroidInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		private readonly TextBoxView _owner;
 		private int _selectionChangeSuspended;
 
-		internal void SuspendSelectionChange()
-			=> _selectionChangeSuspended++;
-
-		internal void ResumeSelectionChange()
-			=> _selectionChangeSuspended--;
-
 		public InvisibleEditText(TextBoxView owner) : base(ContextHelper.Current)
 		{
 			SetBackgroundColor(Color.Transparent);
@@ -51,10 +45,14 @@ internal partial class AndroidInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			_owner = owner;
 		}
 
+		internal void SuspendSelectionChange()
+			=> _selectionChangeSuspended++;
+
+		internal void ResumeSelectionChange()
+			=> _selectionChangeSuspended--;
+
 		public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent? e)
-		{
-			return true;
-		}
+			=> true;
 
 		protected override void OnTextChanged(ICharSequence? text, int start, int lengthBefore, int lengthAfter)
 		{

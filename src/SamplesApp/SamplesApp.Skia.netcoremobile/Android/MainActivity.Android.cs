@@ -34,8 +34,5 @@ namespace SamplesApp.Droid
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : ApplicationActivity
 	{
-		// private HandlerThread _pixelCopyHandlerThread;
-
-
 	}
 }

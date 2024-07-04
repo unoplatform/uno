@@ -112,43 +112,6 @@ namespace SamplesApp.Droid
 				this.Log().LogDebug($"Trying to handle intent with data: {intent?.Data?.ToString() ?? "(null)"}");
 			}
 
-			//var handled = false;
-			//if (_lastHandledIntent != intent)
-			//{
-			//	_lastHandledIntent = intent;
-			//	if (intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
-			//	{
-			//		if (this.Log().IsEnabled(LogLevel.Debug))
-			//		{
-			//			this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
-			//		}
-
-			//		_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
-			//		handled = true;
-			//	}
-			//	else if (intent.Data != null)
-			//	{
-			//		if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
-			//		{
-			//			if (this.Log().IsEnabled(LogLevel.Debug))
-			//			{
-			//				this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
-			//			}
-
-			//			_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
-			//			handled = true;
-			//		}
-			//		else
-			//		{
-			//			// log warning and continue with normal launch
-			//			if (this.Log().IsEnabled(LogLevel.Warning))
-			//			{
-			//				this.Log().LogWarning("URI cannot be parsed from Intent.Data, continuing unhandled");
-			//			}
-			//		}
-			//	}
-			//}
-
 			return false;
 		}
 

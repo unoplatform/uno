@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -14,15 +14,9 @@
 		<IsUnoHead>true</IsUnoHead>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
-
-		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</InvariantGlobalization>
-
-		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
-		<!-- <MtouchExtraArgs Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
 
 		<!--
 		Required for Catalyst nuget restore to revalidate
@@ -74,49 +68,6 @@
 			</ItemGroup>
 		</When>
 
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst'">
-			<PropertyGroup>
-				<SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
-				
-				<!-- Configure the GC -->
-				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
-
-				<!-- Required for unknown crash as of .NET 6 Mobile Preview 13 -->
-				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
-
-				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
-				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
-			</PropertyGroup>
-			
-			<ItemGroup>
-				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.6.0" />
-				<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
-			</ItemGroup>
-			
-			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
-				<MtouchUseLlvm>true</MtouchUseLlvm>
-				<CodeSigningKey>Apple Distribution: Uno Platform Inc. (PD74CHS9Z5)</CodeSigningKey>
-				<PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
-				<ApplicationTitle>Uno Dev Samples</ApplicationTitle>
-				<CreatePackage>true</CreatePackage>
-				<EnablePackageSigning>true</EnablePackageSigning>
-				<EnableCodeSigning>true</EnableCodeSigning>
-				<CodeSignEntitlements>MacCatalyst\Entitlements.plist</CodeSignEntitlements>
-
-				<CodesignProvision>Uno Dev Samples</CodesignProvision>
-
-				<!-- https://github.com/xamarin/xamarin-macios/issues/14686 -->
-				<_LibMonoLinkMode>Static</_LibMonoLinkMode>
-				<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
-			</PropertyGroup>
-			
-			<ItemGroup>
-				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="MacCatalyst\Resources\WebContent\css\site.css" />
-				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="MacCatalyst\Resources\WebContent\index.html" />
-				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="MacCatalyst\Resources\WebContent\js\site.js" />			
-			</ItemGroup>
-		</When>
-
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
 			<PropertyGroup>
 				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
@@ -144,12 +95,6 @@
 				<AndroidAsset Include="..\LinkedFiles\WebContent\css\site.css" Link="Android\Assets\WebContent\css\site.css" />
 				<AndroidAsset Include="..\LinkedFiles\WebContent\index.html" Link="Android\Assets\WebContent\index.html" />
 				<AndroidEnvironment Include="Android\environment.conf" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='macos'">
-			<ItemGroup>
-				<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 			</ItemGroup>
 		</When>
 	</Choose>
@@ -181,14 +126,12 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
-		<!-- TODO (IMPORTANT BEFORE MERGE): Is it okay this is netcoremobile? or should it really be Reference? -->
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="MacOS\" />
 	  <Folder Include="Properties\" />
 	</ItemGroup>
 

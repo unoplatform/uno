@@ -396,22 +396,5 @@ namespace Uno.UI
 				this.Log().ErrorFormat("Failed to dispose view", e);
 			}
 		}
-
-		//public override bool DispatchTouchEvent(MotionEvent? ev)
-		//{
-		//	if (_trace.IsEnabled)
-		//	{
-		//		if (ev.Action == MotionEventActions.Down)
-		//		{
-		//			_trace.WriteEvent(TraceProvider.TouchStart);
-		//		}
-		//		if (ev.Action == MotionEventActions.Up)
-		//		{
-		//			_trace.WriteEvent(TraceProvider.TouchStop);
-		//		}
-		//	}
-
-		//	return base.DispatchTouchEvent(ev);
-		//}
 	}
 }

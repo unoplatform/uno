@@ -71,7 +71,9 @@ public partial class AndroidResourcesGenerator : ISourceGenerator
 					}
 				}
 
-				// TODO (IMPORTANT BEFORE MERGE): Call from application instead of being module initializer.
+				// TODO: Should we call from application instead of being module initializer?
+				// Would the call be part of the templates? Would it be a friction for updating old solutions?
+				// Or is it okay to keep as ModuleInitializer?
 				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.ModuleInitializerAttribute]");
 				using (writer.BlockInvariant("internal static void AndroidResourcesInitializer()"))
 				{
