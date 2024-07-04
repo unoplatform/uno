@@ -101,20 +101,10 @@
 				<diag:DiagnosticViewNotification Duration="0:0:0" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
-							<Grid>
-								<Ellipse
-									Fill="{StaticResource HotReloadProcessingFillBrush}"
-									Width="20"
-									Height="20" />
-								<Path
-									Fill="White"
-									Stretch="Uniform"
-									Width="12"
-									Data="{StaticResource HotReloadProcessing}"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-								<TextBlock Text="Processing" />
-							</Grid>
+							<StackPanel Orientation="Horizontal">
+								<ProgressRing Height="12" Width="12" />
+								<TextBlock Margin="20,0,0,0" Text="Processing..." />
+							</StackPanel>
 						</DataTemplate>
 					</diag:DiagnosticViewNotification.ContentTemplate>
 				</diag:DiagnosticViewNotification>
@@ -126,21 +116,14 @@
 				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
-							<Grid>
-								<Ellipse
-									Fill="{StaticResource HotReloadSuccessFillBrush}"
-									Width="20"
-									Height="20" />
-								<Path
-									Fill="White"
-									Stretch="Uniform"
-									Width="12"
-									Data="{StaticResource HotReloadSuccess}"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-								<TextBlock Text="OK" />
+							<StackPanel Orientation="Horizontal">
+								<ContentControl 
+									ContentTemplate="{StaticResource HotReloadIconSuccess}"												
+									HorizontalAlignment="Center"												
+									VerticalAlignment="Center"
+									Margin="-2,-2,0,0" />
 								<TextBlock Margin="20,0,0,0" Text="{Binding Description}" />
-							</Grid>
+							</StackPanel>
 						</DataTemplate>
 					</diag:DiagnosticViewNotification.ContentTemplate>
 				</diag:DiagnosticViewNotification>
@@ -152,21 +135,14 @@
 				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
-							<Grid>
-								<Ellipse
-									Fill="{StaticResource HotReloadFailedFillBrush}"
-									Width="20"
-									Height="20" />
-								<Path
-									Fill="White"
-									Stretch="Uniform"
-									Width="12"
-									Data="{StaticResource HotReloadFailed}"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-								<TextBlock Text="NO" />
+							<StackPanel Orientation="Horizontal">
+								<ContentControl 
+									ContentTemplate="{StaticResource HotReloadIconFailed}"												
+									HorizontalAlignment="Center"												
+									VerticalAlignment="Center"
+									Margin="-2,-2,0,0" />
 								<TextBlock Margin="20,0,0,0" Text="{Binding Description}" />
-							</Grid>
+							</StackPanel>
 						</DataTemplate>
 					</diag:DiagnosticViewNotification.ContentTemplate>
 				</diag:DiagnosticViewNotification>
@@ -262,7 +238,7 @@
 							<Grid>
 								<ContentControl 
 									x:Name="HotReloadIcon"												
-									ContentTemplate="{StaticResource HotReloadIconConnectionSuccess}"												
+									ContentTemplate="{StaticResource HotReloadIconConnectionWarning}"												
 									HorizontalAlignment="Center"												
 									VerticalAlignment="Center"
 									Margin="-2,-2,0,0"
