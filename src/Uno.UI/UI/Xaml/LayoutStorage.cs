@@ -1,6 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference LayoutStorage.h and LayoutStorage.cpp
+
+#if !UNO_REFERENCE_API
+// Layout storage causes issues on Android at least. We disable it on layouter-based platforms for now.
+#define LAYOUTER_WORKAROUND
+#endif
+
+using System.Diagnostics;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 
@@ -32,10 +39,17 @@ partial class UIElement
 	// since this is only possible with children of a Canvas, which does not apply any layout clip, this works out fine.
 	//private RectangleGeometry m_pLayoutClipGeometry;
 
+#if LAYOUTER_WORKAROUND
+	// Causes issues for Layouter-based platforms.
+	internal bool HasLayoutStorage => true;
+#else
 	internal bool HasLayoutStorage;
+#endif
 
+	[Conditional("UNO_REFERENCE_API")]
 	internal void ResetLayoutInformation()
 	{
+#if !LAYOUTER_WORKAROUND
 		m_previousAvailableSize = default;
 		m_desiredSize = default;
 		m_finalRect = default;
@@ -45,13 +59,21 @@ partial class UIElement
 #endif
 		m_size = default;
 		//m_pLayoutClipGeometry = default;
+#endif
 	}
 
+	[Conditional("UNO_REFERENCE_API")]
 	internal void EnsureLayoutStorage()
-		=> HasLayoutStorage = true;
+	{
+#if !LAYOUTER_WORKAROUND
+		HasLayoutStorage = true;
+#endif
+	}
 
+	[Conditional("UNO_REFERENCE_API")]
 	internal void Shutdown()
 	{
+#if !LAYOUTER_WORKAROUND
 		// Cancel all active transitions.
 		//if (Transition.HasActiveTransition(this) && this.GetContext() is not null)
 		//{
@@ -80,5 +102,6 @@ partial class UIElement
 
 		// note we do not change the life cycle of an element here. it will get
 		// the left tree value from the LeaveImpl call
+#endif
 	}
 }

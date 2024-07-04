@@ -279,6 +279,7 @@ namespace Microsoft.UI.Xaml
 						// We're remeasuring it.
 
 						var previousDesiredSize = child.DesiredSize;
+						child.EnsureLayoutStorage();
 						child.Measure(child.m_previousAvailableSize);
 						if (child.DesiredSize != previousDesiredSize)
 						{
