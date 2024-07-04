@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Extensions;
-using System.ComponentModel;
-using Uno.Disposables;
-using System.Windows.Input;
-using Uno;
-using Uno.UI.DataBinding;
-using Uno.Presentation;
-using Uno.Foundation.Logging;
 using System.Globalization;
-using System.Reflection;
-using Uno.UI;
-using Uno.UI.Converters;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Data
 {
@@ -309,16 +301,17 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		/// <summary>
-		/// Turns UpdateSourceTrigger.Default to DependencyProperty's FrameworkPropertyMetadata.DefaultUpdateSourceTrigger
+		/// Turns UpdateSourceTrigger.Default to PropertyChanged, except for TextBox.TextProperty it's Explicit
 		/// </summary>
-		/// <returns></returns>
+		/// <remarks>
+		/// For TextBox.TextProperty, it should be LostFocus, but for now, it's Explicit and we are getting the
+		/// same behavior by explicitly updating the binding on losing focus in TextBox code.
+		/// </remarks>
 		private UpdateSourceTrigger ResolveUpdateSourceTrigger()
 		{
 			if (ParentBinding.UpdateSourceTrigger == UpdateSourceTrigger.Default)
 			{
-				var metadata = TargetPropertyDetails.Property?.GetMetadata(_targetOwnerType) as FrameworkPropertyMetadata;
-				return metadata?.DefaultUpdateSourceTrigger
-					?? UpdateSourceTrigger.PropertyChanged;
+				return TargetPropertyDetails.Property == TextBox.TextProperty ? UpdateSourceTrigger.Explicit : UpdateSourceTrigger.PropertyChanged;
 			}
 			else
 			{

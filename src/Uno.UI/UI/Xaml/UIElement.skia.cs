@@ -252,8 +252,8 @@ namespace Microsoft.UI.Xaml
 
 			if (newValue == Visibility.Collapsed)
 			{
-				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
-				_size = new Size(0, 0);
+				m_desiredSize = new Size(0, 0);
+				m_size = new Size(0, 0);
 			}
 
 			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)

@@ -30,5 +30,11 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
 
 		partial void InitializePartial();
+
+		internal (ButtonBase previousButton, ButtonBase nextButton) GetPreviousAndNextButtons()
+		{
+			// UNO TODO: Implement GetPreviousAndNextButtons on FlipView
+			return (null, null);
+		}
 	}
 }

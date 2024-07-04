@@ -1,25 +1,78 @@
-﻿<ResourceDictionary
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:devServer="using:Uno.UI.RemoteControl"
-	xmlns:local="using:Uno.UI.RemoteControl.HotReload"
-	xmlns:diag="using:Uno.Diagnostics.UI"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:devServer="using:Uno.UI.RemoteControl"
+					xmlns:local="using:Uno.UI.RemoteControl.HotReload"
+					xmlns:diag="using:Uno.Diagnostics.UI"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+					xmlns:xaml="clr-namespace:Microsoft.UI.Xaml;assembly=Uno.UI"
+					mc:Ignorable="d">
+
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Light">
+			<SolidColorBrush x:Key="DividerFillBrush" Opacity="0.08" Color="#000000" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+			<SolidColorBrush x:Key="DividerFillBrush" Opacity="0.08" Color="#FFFFFF" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+
+	<x:String x:Key="HotReloadServerChange">M12.9531 16.5C12.8594 16.5 12.7682 16.4635 12.6797 16.3906C12.5964 16.3125 12.5417 16.2292 12.5156 16.1406L10.9375 10.5938L9.96875 13.1719C9.93229 13.2708 9.86979 13.3516 9.78125 13.4141C9.69792 13.4714 9.60417 13.5 9.5 13.5H6.5C6.36458 13.5 6.2474 13.4505 6.14844 13.3516C6.04948 13.2526 6 13.1354 6 13C6 12.8646 6.04948 12.7474 6.14844 12.6484C6.2474 12.5495 6.36458 12.5 6.5 12.5H9.15625L10.5312 8.82031C10.5677 8.73177 10.625 8.65625 10.7031 8.59375C10.7865 8.53125 10.8776 8.5 10.9766 8.5C11.0859 8.5 11.1901 8.53385 11.2891 8.60156C11.388 8.66406 11.4531 8.75 11.4844 8.85938L13.125 14.625L14.0547 12.7734C14.0964 12.6901 14.1589 12.625 14.2422 12.5781C14.3255 12.526 14.4115 12.5 14.5 12.5H17.5C17.6354 12.5 17.7526 12.5495 17.8516 12.6484C17.9505 12.7474 18 12.8646 18 13C18 13.1354 17.9505 13.2526 17.8516 13.3516C17.7526 13.4505 17.6354 13.5 17.5 13.5H14.8125L13.4453 16.2266C13.3932 16.3255 13.3229 16.3958 13.2344 16.4375C13.151 16.4792 13.0573 16.5 12.9531 16.5Z</x:String>
+	<x:String x:Key="HotReloadProcessing">M7.7002 12.5C7.7002 12.3711 7.72559 12.25 7.77637 12.1367C7.82715 12.0234 7.89355 11.9258 7.97559 11.8438C8.06152 11.7578 8.16113 11.6895 8.27441 11.6387C8.3877 11.5879 8.50879 11.5625 8.6377 11.5625C8.7666 11.5625 8.8877 11.5879 9.00098 11.6387C9.11426 11.6895 9.21191 11.7578 9.29395 11.8438C9.37988 11.9258 9.44824 12.0234 9.49902 12.1367C9.5498 12.25 9.5752 12.3711 9.5752 12.5C9.5752 12.6289 9.5498 12.75 9.49902 12.8633C9.44824 12.9766 9.37988 13.0762 9.29395 13.1621C9.21191 13.2441 9.11426 13.3105 9.00098 13.3613C8.8877 13.4121 8.7666 13.4375 8.6377 13.4375C8.50879 13.4375 8.3877 13.4121 8.27441 13.3613C8.16113 13.3105 8.06152 13.2441 7.97559 13.1621C7.89355 13.0762 7.82715 12.9766 7.77637 12.8633C7.72559 12.75 7.7002 12.6289 7.7002 12.5ZM11.4502 12.5C11.4502 12.3711 11.4756 12.25 11.5264 12.1367C11.5771 12.0234 11.6436 11.9258 11.7256 11.8438C11.8115 11.7578 11.9111 11.6895 12.0244 11.6387C12.1377 11.5879 12.2588 11.5625 12.3877 11.5625C12.5166 11.5625 12.6377 11.5879 12.751 11.6387C12.8643 11.6895 12.9619 11.7578 13.0439 11.8438C13.1299 11.9258 13.1982 12.0234 13.249 12.1367C13.2998 12.25 13.3252 12.3711 13.3252 12.5C13.3252 12.6289 13.2998 12.75 13.249 12.8633C13.1982 12.9766 13.1299 13.0762 13.0439 13.1621C12.9619 13.2441 12.8643 13.3105 12.751 13.3613C12.6377 13.4121 12.5166 13.4375 12.3877 13.4375C12.2588 13.4375 12.1377 13.4121 12.0244 13.3613C11.9111 13.3105 11.8115 13.2441 11.7256 13.1621C11.6436 13.0762 11.5771 12.9766 11.5264 12.8633C11.4756 12.75 11.4502 12.6289 11.4502 12.5ZM15.2002 12.5C15.2002 12.3711 15.2256 12.25 15.2764 12.1367C15.3271 12.0234 15.3936 11.9258 15.4756 11.8438C15.5615 11.7578 15.6611 11.6895 15.7744 11.6387C15.8877 11.5879 16.0088 11.5625 16.1377 11.5625C16.2666 11.5625 16.3877 11.5879 16.501 11.6387C16.6143 11.6895 16.7119 11.7578 16.7939 11.8438C16.8799 11.9258 16.9482 12.0234 16.999 12.1367C17.0498 12.25 17.0752 12.3711 17.0752 12.5C17.0752 12.6289 17.0498 12.75 16.999 12.8633C16.9482 12.9766 16.8799 13.0762 16.7939 13.1621C16.7119 13.2441 16.6143 13.3105 16.501 13.3613C16.3877 13.4121 16.2666 13.4375 16.1377 13.4375C16.0088 13.4375 15.8877 13.4121 15.7744 13.3613C15.6611 13.3105 15.5615 13.2441 15.4756 13.1621C15.3936 13.0762 15.3271 12.9766 15.2764 12.8633C15.2256 12.75 15.2002 12.6289 15.2002 12.5Z</x:String>
+	<x:String x:Key="HotReloadFailed">M12.7727 13.3848L9.84302 16.3203C9.72192 16.4414 9.57349 16.502 9.39771 16.502C9.22192 16.502 9.07349 16.4434 8.95239 16.3262C8.83521 16.2051 8.77661 16.0566 8.77661 15.8809C8.77661 15.7051 8.83716 15.5566 8.95825 15.4355L11.8879 12.5L8.95825 9.57031C8.83716 9.44922 8.77661 9.30273 8.77661 9.13086C8.77661 9.04492 8.79224 8.96289 8.82349 8.88477C8.85474 8.80664 8.89771 8.74023 8.95239 8.68555C9.01099 8.63086 9.07739 8.58789 9.15161 8.55664C9.22583 8.52148 9.30786 8.50391 9.39771 8.50391C9.56958 8.50391 9.71606 8.56445 9.83716 8.68555L12.7727 11.6211L15.7024 8.68555C15.8274 8.56055 15.9758 8.49805 16.1477 8.49805C16.2336 8.49805 16.3137 8.51562 16.3879 8.55078C16.4661 8.58203 16.5325 8.62695 16.5872 8.68555C16.6458 8.74023 16.6907 8.80664 16.7219 8.88477C16.7532 8.95898 16.7688 9.03906 16.7688 9.125C16.7688 9.29688 16.7083 9.44336 16.5872 9.56445L13.6516 12.5L16.5872 15.4355C16.7122 15.5605 16.7747 15.709 16.7747 15.8809C16.7747 15.9668 16.7571 16.0469 16.7219 16.1211C16.6907 16.1953 16.6458 16.2617 16.5872 16.3203C16.5325 16.375 16.4661 16.4199 16.3879 16.4551C16.3137 16.4863 16.2336 16.502 16.1477 16.502C15.9719 16.502 15.8235 16.4414 15.7024 16.3203L12.7727 13.3848Z</x:String>
+	<x:String x:Key="HotReloadSuccess">M21.5821 5.54289C21.9726 5.93342 21.9726 6.56658 21.5821 6.95711L10.2526 18.2867C9.86452 18.6747 9.23627 18.6775 8.84475 18.293L2.29929 11.8644C1.90527 11.4774 1.89956 10.8443 2.28655 10.4503C2.67354 10.0562 3.30668 10.0505 3.70071 10.4375L9.53911 16.1717L20.1679 5.54289C20.5584 5.15237 21.1916 5.15237 21.5821 5.54289Z</x:String>
+
+	<SolidColorBrush x:Key="HotReloadNeutralFillBrush">#8A8A8A</SolidColorBrush>
+	<SolidColorBrush x:Key="HotReloadFailedFillBrush">#F30000</SolidColorBrush>
+	<SolidColorBrush x:Key="HotReloadSuccessFillBrush">#09B509</SolidColorBrush>
+	<SolidColorBrush x:Key="HotReloadInitializingFillBrush">#FD9E0F</SolidColorBrush>
+	<SolidColorBrush x:Key="HotReloadProcessingFillBrush">#FCDF49</SolidColorBrush>
+
+	<local:NullableBoolToObjectConverter
+		x:Key="BooleanToDotFill"
+		TrueValue="{StaticResource HotReloadSuccessFillBrush}"
+		FalseValue="{StaticResource HotReloadFailedFillBrush}"
+		NullValue="{StaticResource HotReloadProcessingFillBrush}" />
+
+	<local:NullableBoolToObjectConverter
+		x:Key="BooleanToDotPathData"
+		TrueValue="{StaticResource HotReloadSuccess}"
+		FalseValue="{StaticResource HotReloadFailed}"
+		NullValue="{StaticResource HotReloadServerChange}" />
 
 	<DataTemplate x:Key="OperationTemplate">
-		<Border BorderThickness="8,0,0,0" Padding="8" Width="300">
-			<Border.BorderBrush>
-				<SolidColorBrush Color="{Binding Color}" />
-			</Border.BorderBrush>
-			<TextBlock TextWrapping="WrapWholeWords">
-				<Run Text="{Binding Title}" FontSize="12" FontWeight="Bold" />
-				<LineBreak />
-				<Run Text="{Binding Description}" FontSize="10" />
-			</TextBlock>
-		</Border>
+		<StackPanel Spacing="10">
+			<StackPanel Orientation="Horizontal">
+				<Grid Margin="8">
+					<Ellipse
+						x:Name="FlyoutDot"
+						Fill="{Binding IsSuccess, Converter={StaticResource BooleanToDotFill}}"
+						Width="40"
+						Height="40" />
+					<Path
+						x:Name="FlyoutDotIcon"
+						Fill="White"
+						Stretch="Uniform"
+						Width="24"
+						Data="{Binding IsSuccess, Converter={StaticResource BooleanToDotPathData}}"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center" />
+				</Grid>
+
+				<TextBlock
+					VerticalAlignment="Center"
+					TextWrapping="WrapWholeWords"
+					FontSize="14"
+					MaxWidth="340">
+					<Run Text="{Binding Title}" FontWeight="SemiLight" />
+					<LineBreak />
+					<Run Text="{Binding Description}" />
+				</TextBlock>
+			</StackPanel>
+
+			<Rectangle Height="1" HorizontalAlignment="Stretch" Fill="{ThemeResource DividerFillBrush}" />
+		</StackPanel>
 	</DataTemplate>
 
 	<Style TargetType="local:HotReloadStatusView">
@@ -27,7 +80,19 @@
 			<Setter.Value>
 				<diag:DiagnosticViewNotification Duration="0:0:10">
 					<diag:DiagnosticViewNotification.Content>
-						<Ellipse Width="20" Height="20" Fill="Green" />
+						<Grid>
+							<Ellipse
+								Fill="{StaticResource HotReloadSuccessFillBrush}"
+								Width="20"
+								Height="20" />
+							<Path
+								Fill="White"
+								Stretch="Uniform"
+								Width="12"
+								Data="{StaticResource HotReloadSuccess}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</Grid>
 					</diag:DiagnosticViewNotification.Content>
 				</diag:DiagnosticViewNotification>
 			</Setter.Value>
@@ -37,7 +102,19 @@
 			<Setter.Value>
 				<diag:DiagnosticViewNotification Duration="0:0:0">
 					<diag:DiagnosticViewNotification.Content>
-						<Ellipse Width="20" Height="20" Fill="Red" />
+						<Grid>
+							<Ellipse
+								Fill="{StaticResource HotReloadFailedFillBrush}"
+								Width="20"
+								Height="20" />
+							<Path
+								Fill="White"
+								Stretch="Uniform"
+								Width="12"
+								Data="{StaticResource HotReloadFailed}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</Grid>
 					</diag:DiagnosticViewNotification.Content>
 				</diag:DiagnosticViewNotification>
 			</Setter.Value>
@@ -51,98 +128,134 @@
 							<VisualStateGroup x:Name="Status">
 								<VisualState x:Name="Unknown">
 									<VisualState.Setters>
-										<Setter Target="Dot.Fill" Value="Gray" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadNeutralFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Error">
 									<VisualState.Setters>
-										<Setter Target="Dot.Fill" Value="Red" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadFailedFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Initializing">
 									<VisualState.Setters>
-										<Setter Target="Dot.Fill" Value="Orange" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadInitializingFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Idle">
 									<VisualState.Setters>
-										<Setter Target="Dot.Fill" Value="Green" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadSuccessFillBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Processing">
 									<VisualState.Setters>
-										<Setter Target="Dot.Fill" Value="Yellow" />
+										<Setter Target="DotIcon.Data" Value="{StaticResource HotReloadProcessing}" />
+										<Setter Target="Dot.Fill" Value="{StaticResource HotReloadProcessingFillBrush}" />
 									</VisualState.Setters>
-									<Storyboard>
-										<DoubleAnimationUsingKeyFrames
-											RepeatBehavior="Forever"
-											Storyboard.TargetName="Dot"
-											Storyboard.TargetProperty="Opacity">
-											<LinearDoubleKeyFrame KeyTime="0:0:0" Value="1" />
-											<LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0.3" />
-											<LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1" />
-										</DoubleAnimationUsingKeyFrames>
-									</Storyboard>
 								</VisualState>
 							</VisualStateGroup>
+
 							<VisualStateGroup x:Name="Result">
-								<VisualState x:Name="None">
-									<VisualState.Setters>
-										<Setter Target="Text.Text" Value="HR" />
-									</VisualState.Setters>
-								</VisualState>
+								<VisualState x:Name="None" />
 								<VisualState x:Name="Success">
 									<VisualState.Setters>
-										<Setter Target="Text.Text" Value="OK" />
+										<Setter Target="ResultDotIcon.Data" Value="{StaticResource HotReloadSuccess}" />
+										<Setter Target="ResultDot.Fill" Value="{StaticResource HotReloadSuccessFillBrush}" />
 									</VisualState.Setters>
 									<Storyboard>
-										<ObjectAnimationUsingKeyFrames
-											Storyboard.TargetName="Text"
-											Storyboard.TargetProperty="Text">
-											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="HR" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDotIcon" Storyboard.TargetProperty="Data">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="{x:Null}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDot" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="Transparent" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="Failed">
 									<VisualState.Setters>
-										<Setter Target="Text.Text" Value="❌" />
+										<Setter Target="ResultDotIcon.Data" Value="{StaticResource HotReloadFailed}" />
+										<Setter Target="ResultDot.Fill" Value="{StaticResource HotReloadFailedFillBrush}" />
 									</VisualState.Setters>
 									<Storyboard>
-										<ObjectAnimationUsingKeyFrames
-											Storyboard.TargetName="Text"
-											Storyboard.TargetProperty="Text">
-											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="HR" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDotIcon" Storyboard.TargetProperty="Data">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="{x:Null}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ResultDot" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0:0:10" Value="Transparent" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 
-						<Button Padding="0" Margin="-2">
+						<Button Padding="0" Margin="-2" Background="Transparent">
 							<Button.Flyout>
 								<Flyout>
-									<StackPanel Margin="-5" Spacing="8">
-										<TextBlock Text="{TemplateBinding HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" />
-										<StackPanel Orientation="Horizontal" Spacing="8">
-											<devServer:RemoteControlStatusView x:Name="PART_DevServerStatus" VerticalAlignment="Center" />
-											<TextBlock Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}" FontSize="10" TextWrapping="WrapWholeWords" VerticalAlignment="Center" />
+									<Flyout.FlyoutPresenterStyle>
+										<Style TargetType="FlyoutPresenter">
+											<Setter Property="CornerRadius" Value="8" />
+											<Setter Property="MaxWidth" Value="420" />
+											<Setter Property="MaxHeight" Value="420" />
+										</Style>
+									</Flyout.FlyoutPresenterStyle>
+
+									<StackPanel CornerRadius="8" Spacing="10" >
+										<StackPanel Orientation="Horizontal" Spacing="10" Visibility="{Binding ElementName=PART_DevServerStatus, Path=Status.IsProblematic}">
+											<devServer:RemoteControlStatusView
+												x:Name="PART_DevServerStatus"
+												VerticalAlignment="Center" />
+											<TextBlock
+												MaxWidth="380"
+												Text="{Binding ElementName=PART_DevServerStatus, Path=HeadLine}"
+												FontSize="14"
+												FontWeight="SemiLight"
+												TextWrapping="WrapWholeWords"
+												VerticalAlignment="Center" />
 										</StackPanel>
-										<ScrollViewer MaxHeight="400">
-											<mux:ItemsRepeater
-												ItemsSource="{TemplateBinding History}"
-												ItemTemplate="{StaticResource OperationTemplate}">
-												<mux:ItemsRepeater.Layout>
-													<StackLayout Spacing="5" />
-												</mux:ItemsRepeater.Layout>
-											</mux:ItemsRepeater>
-										</ScrollViewer>
+
+										<TextBlock
+											Text="{TemplateBinding HeadLine}"
+											FontSize="14"
+											FontWeight="SemiLight"
+											TextWrapping="WrapWholeWords" />
+
+										<mux:ItemsRepeater
+											ItemsSource="{TemplateBinding History}"
+											ItemTemplate="{StaticResource OperationTemplate}">
+											<mux:ItemsRepeater.Layout>
+												<StackLayout Spacing="10" />
+											</mux:ItemsRepeater.Layout>
+										</mux:ItemsRepeater>
 									</StackPanel>
 								</Flyout>
 							</Button.Flyout>
 
 							<Grid>
-								<Ellipse x:Name="Dot" Width="20" Height="20" Fill="Gray" />
-								<TextBlock x:Name="Text" HorizontalAlignment="Center" VerticalAlignment="Center" Text="HR" FontSize="8" />
+								<Ellipse
+									x:Name="Dot"
+									Fill="Gray"
+									Width="20"
+									Height="20" />
+								<Path
+									x:Name="DotIcon"
+									Fill="White"
+									Stretch="Uniform"
+									Width="12"
+									Data="{StaticResource HotReloadServerChange}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+
+								<Ellipse
+									x:Name="ResultDot"
+									Fill="Transparent"
+									Width="20"
+									Height="20" />
+								<Path
+									x:Name="ResultDotIcon"
+									Fill="White"
+									Stretch="Uniform"
+									Width="12"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
 							</Grid>
 						</Button>
 					</Grid>

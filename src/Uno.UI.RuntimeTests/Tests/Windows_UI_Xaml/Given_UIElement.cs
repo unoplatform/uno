@@ -809,60 +809,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if HAS_UNO // Cannot Set the LayoutInformation on UWP
-		[TestMethod]
-		[RunsOnUIThread]
-		public void When_UpdateLayout_Then_TreeNotMeasuredUsingCachedValue()
-		{
-			if (TestServices.WindowHelper.RootElement is Panel root)
-			{
-				var sut = new Grid
-				{
-					HorizontalAlignment = HorizontalAlignment.Stretch,
-					VerticalAlignment = VerticalAlignment.Stretch
-				};
-
-				var originalRootAvailableSize = LayoutInformation.GetAvailableSize(root);
-				var originalRootDesiredSize = LayoutInformation.GetDesiredSize(root);
-				var originalRootLayoutSlot = LayoutInformation.GetLayoutSlot(root);
-
-				Size availableSize;
-				Rect layoutSlot;
-				try
-				{
-					LayoutInformation.SetAvailableSize(root, default);
-					LayoutInformation.SetDesiredSize(root, default);
-					LayoutInformation.SetLayoutSlot(root, default);
-
-					root.Children.Add(sut);
-					sut.UpdateLayout();
-
-					availableSize = LayoutInformation.GetAvailableSize(sut);
-					layoutSlot = LayoutInformation.GetLayoutSlot(sut);
-				}
-				finally
-				{
-					LayoutInformation.SetAvailableSize(root, originalRootAvailableSize);
-					LayoutInformation.SetDesiredSize(root, originalRootDesiredSize);
-					LayoutInformation.SetLayoutSlot(root, originalRootLayoutSlot);
-
-					root.Children.Remove(sut);
-					try { root.UpdateLayout(); }
-					catch { } // Make sure to restore visual tree if test has failed!
-				}
-
-				Assert.AreNotEqual(default, availableSize);
-#if !__IOS__ // Arrange is async on iOS!
-				Assert.AreNotEqual(default, layoutSlot);
-#endif
-			}
-			else
-			{
-				Assert.Inconclusive("The RootElement is not a Panel");
-			}
-		}
-#endif
-
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_UpdateLayout_Then_ReentrancyNotAllowed()

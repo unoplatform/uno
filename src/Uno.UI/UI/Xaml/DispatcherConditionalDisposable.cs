@@ -27,11 +27,7 @@ namespace Microsoft.UI.Xaml
 
 		protected override void TargetFinalized()
 		{
-			if (CoreDispatcher.Main.HasThreadAccess
-#if __WASM__
-				|| !NativeDispatcher.IsThreadingSupported
-#endif
-				)
+			if (CoreDispatcher.Main.HasThreadAccess)
 			{
 				DispatchedTargetFinalized();
 			}

@@ -18,6 +18,7 @@ using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -370,6 +371,12 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+		}
+
+		internal protected virtual List<AutomationPeer> AppendAutomationPeerChildren(int startPos, int endPos)
+		{
+			//return S_OK;
+			return null;
 		}
 	}
 }

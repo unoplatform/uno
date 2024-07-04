@@ -71,6 +71,7 @@ public partial class IconElement : FrameworkElement
 		{
 			// Measure the child
 			_rootGrid.Measure(availableSize);
+			_rootGrid.EnsureLayoutStorage();
 			return _rootGrid.DesiredSize;
 		}
 

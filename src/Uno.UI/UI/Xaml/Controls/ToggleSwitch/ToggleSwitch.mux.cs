@@ -358,22 +358,23 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-		//private void
-		//AutomationGetClickablePoint(
-		//    _Out_ wf.Point* result)
-		//{
-		//	auto clickableElement =
-		//		_tpThumb ?
-		//		static_cast<UIElement*>(_tpThumb.Cast<Thumb>()) :
-		//		static_cast<UIElement*>(this);
+		internal Point AutomationGetClickablePoint()
+		{
+			//UNO TODO: Implement AutomationGetClickablePoint on ToggleSwitch
+			return new Point();
 
-		//	XPOINTF point;
-		//	static_cast<CUIElement*>(clickableElement.GetHandle()).GetClickablePointRasterizedClient(&point));
+			//	auto clickableElement =
+			//		_tpThumb ?
+			//		static_cast<UIElement*>(_tpThumb.Cast<Thumb>()) :
+			//		static_cast<UIElement*>(this);
 
-		//	*result = { point.x, point.y };
+			//	XPOINTF point;
+			//	static_cast<CUIElement*>(clickableElement.GetHandle()).GetClickablePointRasterizedClient(&point));
 
-		//	return S_OK;
-		//}
+			//	*result = { point.x, point.y };
+
+			//	return S_OK;
+		}
 
 		protected override AutomationPeer OnCreateAutomationPeer() =>
 			new ToggleSwitchAutomationPeer(this);

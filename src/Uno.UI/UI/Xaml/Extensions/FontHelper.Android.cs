@@ -22,20 +22,21 @@ namespace Microsoft.UI.Xaml
 		private static bool _assetsListed;
 		private static readonly string DefaultFontFamilyName = "sans-serif";
 
-		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
+		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, FontStyle fontStyle)
 		{
-			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, style);
+			var italic = fontStyle is FontStyle.Italic or FontStyle.Oblique;
+			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, italic);
 
 			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry, out var typeFace))
 			{
-				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, style);
+				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, italic);
 				_fontFamilyToTypeFaceDictionary.Add(entry, typeFace);
 			}
 
 			return typeFace;
 		}
 
-		internal static Typeface? InternalFontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style)
+		internal static Typeface? InternalFontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, bool italic)
 		{
 			if (fontFamily?.Source == null || fontFamily.Equals(FontFamily.Default))
 			{
@@ -58,14 +59,14 @@ namespace Microsoft.UI.Xaml
 
 					source = source.TrimStart("ms-appx://", ignoreCase: true);
 
-					if (!TryLoadFromPath(style, source, out typeface))
+					if (!TryLoadFromPath(fontWeight.Weight, italic, source, out typeface))
 					{
 						// The lookup used to be performed without the assets folder, even if its required to specify it
 						// with UWP. Keep this behavior for backward compatibility.
 						var legacySource = source.TrimStart("/assets/", ignoreCase: true);
 
 						// The path for AndroidAssets is not encoded, unlike assets processed by the RetargetAssets tool.
-						if (!TryLoadFromPath(style, legacySource, out typeface, encodePath: false))
+						if (!TryLoadFromPath(fontWeight.Weight, italic, legacySource, out typeface, encodePath: false))
 						{
 							throw new InvalidOperationException($"Unable to find [{fontFamily.Source}] from the application's assets.");
 						}
@@ -73,7 +74,12 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
+					var style = TypefaceStyleHelper.GetTypefaceStyle(italic, fontWeight);
 					typeface = Android.Graphics.Typeface.Create(fontFamily.Source, style);
+					if (typeface is not null && typeface.Weight != fontWeight.Weight)
+					{
+						typeface = Android.Graphics.Typeface.Create(typeface, fontWeight.Weight, italic);
+					}
 				}
 
 				return typeface;
@@ -100,7 +106,24 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private static bool TryLoadFromPath(TypefaceStyle style, string source, out Typeface? typeface, bool encodePath = true)
+		private static string FontStretchToPercentage(FontStretch fontStretch)
+		{
+			return fontStretch switch
+			{
+				FontStretch.UltraCondensed => "50",
+				FontStretch.ExtraCondensed => "62.5",
+				FontStretch.Condensed => "75",
+				FontStretch.SemiCondensed => "87.5",
+				FontStretch.Normal => "100",
+				FontStretch.SemiExpanded => "112.5",
+				FontStretch.Expanded => "125",
+				FontStretch.ExtraExpanded => "150",
+				FontStretch.UltraExpanded => "200",
+				_ => "100",
+			};
+		}
+
+		private static bool TryLoadFromPath(int weight, bool italic, string source, out Typeface? typeface, bool encodePath = true)
 		{
 			source = FontFamilyHelper.RemoveHashFamilyName(source);
 
@@ -118,13 +141,18 @@ namespace Microsoft.UI.Xaml
 			string actualAsset = AssetsHelper.FindAssetFile(encodedSource);
 			if (actualAsset != null)
 			{
-				typeface = Android.Graphics.Typeface.CreateFromAsset(Android.App.Application.Context.Assets, actualAsset);
+				var builder = new Android.Graphics.Typeface.Builder(Android.App.Application.Context.Assets!, actualAsset);
+				// TODO: Use the actual FontStretch instead of Normal when we support FontStretch.
+				// NOTE: We are unable to use 'ital' axis here. If that axis doesn't exist in the
+				// font file, italic will break badly. However, if it exists, we will render "reasonable" (but not ideal) italic text.
+				builder.SetFontVariationSettings($"'wght' {weight}, 'wdth' {FontStretchToPercentage(FontStretch.Normal)}");
+				typeface = builder.Build();
 
 				if (typeface is not null)
 				{
-					if (style != typeface.Style)
+					if (typeface.Weight != weight || typeface.IsItalic != italic)
 					{
-						typeface = Typeface.Create(typeface, style);
+						typeface = Typeface.Create(typeface, weight, italic);
 					}
 
 					return true;

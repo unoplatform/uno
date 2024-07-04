@@ -12,16 +12,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			InitializeBinder();
 
-			if (splitView != null)
-			{
-				CompactPaneLength = splitView.CompactPaneLength;
-				OpenPaneLength = splitView.OpenPaneLength;
-			}
-			else
-			{
-				CompactPaneLength = (double)SplitView.CompactPaneLengthProperty.GetMetadata(typeof(SplitView)).DefaultValue;
-				OpenPaneLength = (double)SplitView.OpenPaneLengthProperty.GetMetadata(typeof(SplitView)).DefaultValue;
-			}
+			CompactPaneLength = splitView.CompactPaneLength;
+			OpenPaneLength = splitView.OpenPaneLength;
 		}
 
 		public GridLength CompactPaneGridLength { get { return new GridLength((float)CompactPaneLength, GridUnitType.Pixel); } }
@@ -30,8 +22,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public double NegativeOpenPaneLengthMinusCompactLength { get { return NegativeOpenPaneLength - CompactPaneLength; } }
 		public double OpenPaneLengthMinusCompactLength { get { return OpenPaneLength - CompactPaneLength; } }
 
-		public double OpenPaneLength { get; }
-		public double CompactPaneLength { get; }
+		public double OpenPaneLength { get; internal set; }
+		public double CompactPaneLength { get; internal set; }
 
 		/// <summary>
 		/// These properties were added to facilitate clipping while RectangleGeometry.Transform is not supported

@@ -10,6 +10,9 @@
 		<AssemblyName>Uno.UI.MediaPlayer.Skia.Gtk</AssemblyName>
 		<RootNamespace>Uno.UI.MediaPlayer.Skia.Gtk</RootNamespace>
 		<IsPackable>false</IsPackable>
+
+		<!-- Don't install GTK at this step, let the app head do it -->
+		<SkipGtkInstall>true</SkipGtkInstall>
 	</PropertyGroup>
 
 	<PropertyGroup>

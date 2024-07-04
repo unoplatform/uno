@@ -468,7 +468,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
-			=> MeasureFirstChild(availableSize);
+		{
+			var child = this.FindFirstChild();
+			if (child is not null)
+			{
+				var measuredSize = MeasureElement(child, availableSize);
+				if (child is UIElement childAsUIElement)
+				{
+					childAsUIElement.EnsureLayoutStorage();
+				}
+
+				return measuredSize;
+			}
+
+			return new Size(0, 0);
+		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
