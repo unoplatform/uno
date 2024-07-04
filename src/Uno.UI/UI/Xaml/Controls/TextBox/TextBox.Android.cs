@@ -387,10 +387,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Parent != null && _textBoxView != null)
 			{
-				var style = TypefaceStyleHelper.GetTypefaceStyle(FontStyle, FontWeight);
-				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
-
-				_textBoxView.SetTypeface(typeface, style);
+				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight, FontStyle);
+				_textBoxView.Typeface = typeface;
 				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)FontSize)));
 			}
 		}
