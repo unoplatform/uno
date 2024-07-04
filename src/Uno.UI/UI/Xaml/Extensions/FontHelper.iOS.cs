@@ -18,6 +18,7 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using CoreText;
 using ObjCRuntime;
+using Uno.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml;
 
@@ -37,20 +38,16 @@ internal static class FontHelper
 	internal static UIFont? TryGetFont(
 		FontProperties fontProperties,
 		FontFamily requestedFamily,
-		float? preferredBodyFontSize = null)
-	{
-		return _tryGetFont(fontProperties, requestedFamily, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
-	}
+		float? preferredBodyFontSize = null) =>
+		_tryGetFont(fontProperties, requestedFamily, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
 
 	/// <summary>
 	/// Based on iOS settings of text size in General->Accessibility->LargerText
 	/// </summary>
 	/// <param name="size"></param>
 	/// <returns>Scaled font size</returns>
-	internal static nfloat GetScaledFontSize(nfloat size, float? preferredBodyFontSize = null)
-	{
-		return GetScaledFontSize(size, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
-	}
+	internal static nfloat GetScaledFontSize(nfloat size, float? preferredBodyFontSize = null) =>
+		GetScaledFontSize(size, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
 
 	/// <summary>
 	/// Based on iOS settings of text size in General->Accessibility->LargerText.
@@ -123,6 +120,24 @@ internal static class FontHelper
 	}
 
 	#region Load Custom Font
+
+	private static string TryAdjustFromManifest(string source, FontProperties properties)
+	{
+		var manifestPath = source + ".manifest";
+		manifestPath = AssetsHelper.FindAssetFile(manifestPath);
+
+		if (manifestPath is not null)
+		{
+			using var jsonStream = ContextHelper.Current.Assets!.Open(manifestPath);
+			var fontStyle = (style & TypefaceStyle.Italic) != 0 ? FontStyle.Italic : FontStyle.Normal;
+			var familyName = FontManifestHelpers.GetFamilyNameFromManifest(jsonStream, properties.Weight, properties.Style, properties.Stretch);
+			familyName = familyName.TrimStart("ms-appx://", ignoreCase: true);
+			return encodePath ? AndroidResourceNameEncoder.EncodeFileSystemPath(familyName, prefix: "") : familyName;
+		}
+
+		return source;
+	}
+
 	private static UIFont? GetCustomFont(string fontPath, FontProperties fontProperties)
 	{
 		if (typeof(FontHelper).Log().IsEnabled(LogLevel.Trace))
@@ -151,16 +166,17 @@ internal static class FontHelper
 
 		if (font is not null)
 		{
-			font = ApplyWeightAndStyle(font, fontProperties);
+			font = ApplyFontProperties(font, fontProperties);
 		}
 
 		return font;
 	}
 
-	private static UIFont ApplyWeightAndStyle(UIFont font, nfloat size, FontWeight fontWeight, FontStyle fontStyle)
+	private static UIFont ApplyFontProperties(UIFont font, FontProperties fontProperties)
 	{
 		font = ApplyWeight(font, size, fontWeight);
 		font = ApplyStyle(font, size, fontStyle);
+		font = ApplyStretch(font, size, FontStretch);
 		return font;
 	}
 
@@ -317,7 +333,7 @@ internal static class FontHelper
 	#endregion
 
 	#region Load System Font
-	private static UIFont? GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
+	private static UIFont? GetSystemFont(FontProperties fontProperties, string fontFamilyName)
 	{
 		//based on Fonts available @ http://iosfonts.com/
 		//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)
@@ -326,14 +342,14 @@ internal static class FontHelper
 		if (!rootFontFamilyName.IsNullOrEmpty())
 		{
 			var font = new StringBuilder(rootFontFamilyName);
-			if (fontWeight != FontWeights.Normal || fontStyle == FontStyle.Italic)
+			if (fontProperties.Weight != FontWeights.Normal || fontProperties.Style == FontStyle.Italic)
 			{
 				font.Append('-');
-				font.Append(GetFontWeight(fontWeight));
-				font.Append(GetFontStyle(fontStyle));
+				font.Append(GetFontWeightString(fontProperties.Weight));
+				font.Append(GetFontStyleString(fontProperties.Style));
 			}
 
-			var updatedFont = UIFont.FromName(font.ToString(), size);
+			var updatedFont = UIFont.FromName(font.ToString(), fontProperties.Size);
 			if (updatedFont != null)
 			{
 				return updatedFont;
@@ -344,13 +360,13 @@ internal static class FontHelper
 				typeof(FontHelper).Log().Warn("Failed to get system font based on " + font);
 			}
 
-			return UIFont.FromName(rootFontFamilyName, size);
+			return UIFont.FromName(rootFontFamilyName, fontProperties.Size);
 		}
 
 		return null;
 	}
 
-	private static string GetFontWeight(FontWeight fontWeight)
+	private static string GetFontWeightString(FontWeight fontWeight)
 	{
 		if (fontWeight == FontWeights.Normal)
 		{
@@ -409,7 +425,7 @@ internal static class FontHelper
 		return string.Empty;
 	}
 
-	private static string GetFontStyle(FontStyle fontStyle)
+	private static string GetFontStyleString(FontStyle fontStyle)
 	{
 		if (fontStyle == FontStyle.Italic)
 		{
