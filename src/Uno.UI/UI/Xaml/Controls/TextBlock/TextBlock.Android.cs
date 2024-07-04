@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Invalidate _paint
 		partial void OnFontWeightChangedPartial() => _paint = null;
 		partial void OnFontStyleChangedPartial() => _paint = null;
-		// TODO: FontStretch?
+		partial void OnFontStretchChangedPartial() => _paint = null;
 		partial void OnFontFamilyChangedPartial() => _paint = null;
 		partial void OnFontSizeChangedPartial() => _paint = null;
 		partial void OnCharacterSpacingChangedPartial() => _paint = null;
