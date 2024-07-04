@@ -18,6 +18,19 @@ internal enum EntrySource
 	Application
 }
 
+[Flags]
+internal enum EntryIcon
+{
+	// Status
+	Loading = 0x1,
+	Success = 0x2,
+	Warning = 0x4,
+	Error = 0x8,
+
+	// Source
+	Connection = 0x1 << 8,
+	HotReload = 0x2 << 8,
+}
 
 internal record DevServerEntry() : HotReloadLogEntry(EntrySource.DevServer, -1, DateTimeOffset.Now);
 
@@ -108,6 +121,18 @@ internal record HotReloadLogEntry(EntrySource Source, long Id, DateTimeOffset Ti
 	public string TimeInfo => string.IsNullOrEmpty(GetDuration())
 		? $"{Timestamp.LocalDateTime:HH:mm:ss}"
 		: $"{GetDuration()} - {Timestamp.LocalDateTime:HH:mm:ss}";
+
+	public EntryIcon Icon => (Source, IsSuccess) switch
+	{
+		(EntrySource.DevServer or EntrySource.Engine, null) => EntryIcon.Connection | EntryIcon.Warning, // Connection orange indicator
+		(EntrySource.DevServer or EntrySource.Engine, true) => EntryIcon.Connection | EntryIcon.Success, // Connection green indicator
+		(EntrySource.DevServer or EntrySource.Engine, false) => EntryIcon.Connection | EntryIcon.Error, // Connection red indicator
+
+		// EntrySource.Application or EntrySource.Server
+		(_, null) => EntryIcon.HotReload | EntryIcon.Loading, // Loading wheel
+		(_, true) => EntryIcon.HotReload | EntryIcon.Success, // Fire with green indicator
+		(_, false) => EntryIcon.HotReload | EntryIcon.Error, // Fire with red indicator
+	};
 
 	public string GetSource()
 		=> Source switch
