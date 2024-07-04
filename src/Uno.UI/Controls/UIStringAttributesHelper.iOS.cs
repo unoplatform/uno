@@ -74,7 +74,7 @@ namespace Uno.UI
 				}
 			}
 
-			var font = UIFontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily, tuple.preferredBodyFontSize);
+			var font = FontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily, tuple.preferredBodyFontSize);
 			var attributes = new UIStringAttributes()
 			{
 				// TODO: Handle other brushes.
