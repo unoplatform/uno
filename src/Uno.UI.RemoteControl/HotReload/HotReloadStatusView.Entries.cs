@@ -103,7 +103,11 @@ internal record HotReloadLogEntry(EntrySource Source, long Id, DateTimeOffset Ti
 	public string? Description { get; set; }
 
 	// Quick patch as we don't have MVUX
-	public string Title => $"{Timestamp.LocalDateTime:T} - {Source}{GetDuration()}".ToString(CultureInfo.CurrentCulture);
+	public string Title => $"{Source}";
+
+	public string TimeInfo => string.IsNullOrEmpty(GetDuration())
+		? $"{Timestamp.LocalDateTime:HH:mm:ss}"
+		: $"{GetDuration()} - {Timestamp.LocalDateTime:HH:mm:ss}";
 
 	public string GetSource()
 		=> Source switch
@@ -122,9 +126,9 @@ internal record HotReloadLogEntry(EntrySource Source, long Id, DateTimeOffset Ti
 		=> Duration switch
 		{
 			null => string.Empty,
-			{ TotalMilliseconds: < 1000 } ms => $" - {ms.TotalMilliseconds:F0} ms",
-			{ TotalSeconds: < 3 } s => $" - {s.TotalSeconds:N0} s",
-			{ } d => $" - {d:g}"
+			{ TotalMilliseconds: < 1000 } ms => $"{ms.TotalMilliseconds:F0} ms",
+			{ TotalSeconds: < 3 } s => $"{s.TotalSeconds:N0} s",
+			{ } d => $"{d:g}"
 		};
 
 	protected static string Join(string[] items, string itemType)
