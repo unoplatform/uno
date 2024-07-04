@@ -8,22 +8,35 @@ using Uno.Extensions;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-internal sealed class NullableBoolToObjectConverter : IValueConverter
+internal sealed class EntryIconToObjectConverter : IValueConverter
 {
-	public object? TrueValue { get; set; }
-
-	public object? FalseValue { get; set; }
-
-	public object? NullValue { get; set; }
+	public object? SuccessValue { get; set; }
+	public object? FailedValue { get; set; }
+	public object? ConnectionSuccessValue { get; set; }
+	public object? ConnectionFailedValue { get; set; }
+	public object? ConnectionWarningValue { get; set; }
 
 	public object? Convert(object? value, Type targetType, object parameter, string language)
-		=> value switch
+	{
+		if (value is not null)
 		{
-			null => NullValue,
-			true => TrueValue,
-			false => FalseValue,
-			_ => throw new NotSupportedException("Only nullable boolean values are supported."),
-		};
+			var ei = (EntryIcon)value;
+
+			if (ei.HasFlag(EntryIcon.Connection))
+			{
+				if (ei.HasFlag(EntryIcon.Success)) return ConnectionSuccessValue;
+				if (ei.HasFlag(EntryIcon.Error)) return ConnectionFailedValue;
+				if (ei.HasFlag(EntryIcon.Warning)) return ConnectionWarningValue;
+			}
+			else if (ei.HasFlag(EntryIcon.HotReload))
+			{
+				if (ei.HasFlag(EntryIcon.Success)) return SuccessValue;
+				if (ei.HasFlag(EntryIcon.Error)) return FailedValue;
+			}
+		}
+
+		return ConnectionWarningValue;
+	}
 
 	public object ConvertBack(object value, Type targetType, object parameter, string language)
 		=> throw new NotSupportedException("Only one-way conversion is supported.");
