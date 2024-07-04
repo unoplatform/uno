@@ -1,8 +1,8 @@
 using System;
 using Android.Views;
 using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
