@@ -4,6 +4,7 @@
 	<PropertyGroup>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<SupportsFontManifest>true</SupportsFontManifest>
 		<UnoIsSkiaLinuxFramebufferHead>true</UnoIsSkiaLinuxFramebufferHead>
 	</PropertyGroup>
 
