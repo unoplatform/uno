@@ -140,8 +140,6 @@ namespace Microsoft.UI.Xaml
 				? AndroidResourceNameEncoder.EncodeFileSystemPath(source, prefix: "")
 				: source;
 
-			encodedSource = TryAdjustFromManifest(encodedSource, encodePath, style, weight, stretch);
-
 			// We need to lookup assets manually, as assets are stored this way by android, but windows
 			// is case insensitive.
 			string actualAsset = AssetsHelper.FindAssetFile(encodedSource);
@@ -180,24 +178,6 @@ namespace Microsoft.UI.Xaml
 
 			typeface = null;
 			return false;
-		}
-
-		private static string TryAdjustFromManifest(string source, bool encodePath, TypefaceStyle style, FontWeight weight, FontStretch fontStretch)
-		{
-			var manifestPath = source + ".manifest";
-			manifestPath = encodePath ? AndroidResourceNameEncoder.EncodeFileSystemPath(manifestPath, prefix: "") : manifestPath;
-			manifestPath = AssetsHelper.FindAssetFile(manifestPath);
-
-			if (manifestPath is not null)
-			{
-				using var jsonStream = ContextHelper.Current.Assets!.Open(manifestPath);
-				var fontStyle = (style & TypefaceStyle.Italic) != 0 ? FontStyle.Italic : FontStyle.Normal;
-				var familyName = FontManifestHelpers.GetFamilyNameFromManifest(jsonStream, weight, fontStyle, fontStretch);
-				familyName = familyName.TrimStart("ms-appx://", ignoreCase: true);
-				return encodePath ? AndroidResourceNameEncoder.EncodeFileSystemPath(familyName, prefix: "") : familyName;
-			}
-
-			return source;
 		}
 
 		private static FontFamily GetDefaultFontFamily(FontWeight fontWeight)
