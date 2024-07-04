@@ -8,6 +8,10 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
+#if !HAS_UNO_WINUI
+using Windows.UI.Input;
+#endif
+
 namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
