@@ -102,6 +102,7 @@ internal partial class PopupRoot : Panel
 				continue;
 			}
 
+			child.EnsureLayoutStorage();
 			// Note: The popup alignment is ensure by the PopupPanel itself
 			ArrangeElement(child, new Rect(new Point(), finalSize));
 		}

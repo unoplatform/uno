@@ -334,7 +334,7 @@ UIElement GetChild()
 		infiniteSize.Height = double.PositiveInfinity;
 
 		m_pContainerVisual.Measure(infiniteSize);
-		//m_pContainerVisual.EnsureLayoutStorage();
+		m_pContainerVisual.EnsureLayoutStorage();
 
 		// Desired size would be my child's desired size plus the border
 		childDesiredSize.Width = m_pContainerVisual.DesiredSize.Width;
@@ -359,7 +359,7 @@ UIElement GetChild()
 		//IFCEXPECT(m_pContainerVisual);
 
 		// Determine the scale factor given the final size
-		//m_pContainerVisual.EnsureLayoutStorage();
+		m_pContainerVisual.EnsureLayoutStorage();
 		var desiredSize = m_pContainerVisual.DesiredSize;
 		var scale = ComputeScaleFactor(finalSize, desiredSize);
 
