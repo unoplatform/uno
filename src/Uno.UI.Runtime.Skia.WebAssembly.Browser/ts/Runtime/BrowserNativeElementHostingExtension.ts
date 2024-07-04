@@ -47,7 +47,7 @@ namespace Uno.UI.Runtime.Skia {
 			if (!nativeElementStore) {
 				nativeElementStore = document.createElement("div");
 				nativeElementStore.id = "uno-native-element-store";
-				nativeElementStore.style.visibility = "collapse";
+				nativeElementStore.style.display = "none";
 				let unoBody = document.getElementById("uno-body");
 				unoBody.insertBefore(nativeElementStore, unoBody.firstChild);
 			}

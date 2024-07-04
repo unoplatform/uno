@@ -8,32 +8,43 @@ public partial class SkiaWasmHtmlElement : IDisposable
 {
 	public string ElementId { get; }
 
-	public SkiaWasmHtmlElement(string elementId, string tagName)
+	private SkiaWasmHtmlElement(string elementId)
 	{
 #if __SKIA__
 		if (!OperatingSystem.IsBrowser())
-		{
-			throw new InvalidOperationException($"{nameof(SkiaWasmHtmlElement)} is only usable on the Wasm target with the skia backend.");
-		}
 #endif
+		{
+			throw new NotSupportedException($"{nameof(SkiaWasmHtmlElement)} is only supported on the Wasm target with the skia backend.");
+		}
+		ElementId = elementId;
+	}
+
+	/// <summary>
+	/// Creates an HTML element and wraps it in a <see cref="SkiaWasmHtmlElement"/>
+	/// instance to be managed by Uno's native element hosting logic. After this call,
+	/// the HTML element is considered owned by the returned <see cref="SkiaWasmHtmlElement"/>
+	/// instance and will handle the dimensions and placement of the element in the DOM.
+	/// </summary>
+	/// <param name="elementId">The id that will be set to the created element. This id must be globally unique.</param>
+	/// <param name="tagName">The HTML tag name of the created element.</param>
+	public static SkiaWasmHtmlElement CreateHtmlElement(string elementId, string tagName)
+	{
 		CreateHtmlElementAndAddToStore(elementId, tagName);
-		ElementId = elementId;
+		return new SkiaWasmHtmlElement(elementId);
 	}
 
-	public SkiaWasmHtmlElement(string elementId)
+	/// <summary>
+	/// Wraps a preexisting HTML element in the DOM in a <see cref="SkiaWasmHtmlElement"/>
+	/// instance to be managed by Uno's native element hosting logic. After this call,
+	/// the HTML element is considered owned by the returned <see cref="SkiaWasmHtmlElement"/>
+	/// instance and will handle the dimensions and placement of the element in the DOM.
+	/// </summary>
+	/// <param name="elementId">The id of the element. The DOM must contain an element with this id.</param>
+	public static SkiaWasmHtmlElement OwnHtmlElement(string elementId)
 	{
-#if __SKIA__
-		if (!OperatingSystem.IsBrowser())
-		{
-			throw new InvalidOperationException($"{nameof(SkiaWasmHtmlElement)} is only usable on the Wasm target with the skia backend.");
-		}
-#endif
 		AddToStore(elementId);
-		ElementId = elementId;
+		return new SkiaWasmHtmlElement(elementId);
 	}
-
-	[JSImport($"eval")]
-	public static partial void Eval(string script);
 
 	[JSImport($"globalThis.Uno.UI.Runtime.Skia.BrowserNativeElementHostingExtension.createHtmlElementAndAddToStore")]
 	private static partial void CreateHtmlElementAndAddToStore(string id, string tagName);
