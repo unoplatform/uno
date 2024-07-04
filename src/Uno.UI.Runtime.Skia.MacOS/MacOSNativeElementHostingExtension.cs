@@ -38,12 +38,9 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			// TODO uno_native_arrange(element.Handle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height, clipRect.Left, clipRect.Top, clipRect.Width, clipRect.Height);
 		}
-		else
+		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-			}
+			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 	}
 
@@ -53,12 +50,9 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			// TODO uno_native_attach(element.Handle);
 		}
-		else
+		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-			}
+			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 	}
 
@@ -70,12 +64,9 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			// note: no marshaling needed as CGFloat is double for 64bits apps
 			NativeUno.uno_native_set_opacity(element.Handle, opacity);
 		}
-		else
+		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-			}
+			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 	}
 
@@ -86,18 +77,24 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			// https://developer.apple.com/documentation/appkit/nsview/1483369-hidden?language=objc
 			NativeUno.uno_native_set_visibility(element.Handle, visible);
 		}
-		else
+		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-			}
+			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 	}
 
 	public object? CreateSampleComponent(string text)
 	{
-		var handle = NativeUno.uno_native_create_sample(_window!.Handle, text);
+		if (_window is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"CreateSampleComponent failed as no MacOSWindowNative could be found.");
+			}
+			return null;
+		}
+
+		var handle = NativeUno.uno_native_create_sample(_window.Handle, text);
 		return new MacOSNativeElement(handle);
 	}
 
@@ -107,12 +104,9 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			// TODO uno_native_detach(element.Handle);
 		}
-		else
+		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-			}
+			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 	}
 
@@ -125,14 +119,11 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			// TODO uno_native_is_attached(element.Handle);
 			return false;
 		}
-		else
+		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Object `{nameof(owner)}` is a {owner.GetType().FullName} and not a MacOSNativeElement subclass.");
-			}
-			return false;
+			this.Log().Debug($"Object `{nameof(owner)}` is a {owner.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
+		return false;
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
@@ -142,13 +133,10 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			NativeUno.uno_native_measure(element.Handle, childMeasuredSize.Width, childMeasuredSize.Height, availableSize.Width, availableSize.Height, out var width, out var height);
 			return new Size(width, height);
 		}
-		else
+		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-			}
-			return Size.Empty;
+			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
+		return Size.Empty;
 	}
 }
