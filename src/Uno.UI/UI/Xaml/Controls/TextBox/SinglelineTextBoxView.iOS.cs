@@ -12,6 +12,7 @@ using Windows.UI;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml;
 using static Uno.UI.FeatureConfiguration;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -168,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (textBox != null)
 			{
-				var newFont = FontHelper.TryGetFont((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontFamily);
+				var newFont = FontHelper.TryGetFont(new((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontStretch), textBox.FontFamily);
 
 				if (newFont != null)
 				{
