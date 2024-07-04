@@ -55,10 +55,6 @@
 	  <TypeScriptCompile Remove="ts\Windows\Storage\AssetManager.ts" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\Windows\ApplicationModel\Core\CoreApplication.ts" />
-	  <UpToDateCheckInput Remove="ts\Windows\Storage\AssetManager.ts" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="tsconfig.json" />
