@@ -87,7 +87,7 @@
 				VerticalAlignment="Center"
 				Margin="0,0,8,4" />
 
-			<StackPanel Spacing="2" Width="270" VerticalAlignment="Center" Grid.Column="2">
+			<StackPanel Width="270" VerticalAlignment="Center" Grid.Column="2">
 				<TextBlock
 					VerticalAlignment="Center"
 					TextWrapping="WrapWholeWords"
