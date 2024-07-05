@@ -115,27 +115,25 @@ internal static class FontHelper
 
 		return ApplyStyle(
 			UIFont.SystemFontOfSize(properties.Size, properties.Weight.ToUIFontWeight()),
-			properties.Size,
-			properties.Style);
+			properties);
 	}
 
 	#region Load Custom Font
 
-	private static string TryAdjustFromManifest(string source, FontProperties properties)
+	private static string TryAdjustFromManifest(NSUrl manifestUrl, FontProperties properties)
 	{
-		var manifestPath = source + ".manifest";
-		manifestPath = AssetsHelper.FindAssetFile(manifestPath);
+		var fontData = NSData.FromUrl(manifestUrl);
 
-		if (manifestPath is not null)
-		{
-			using var jsonStream = ContextHelper.Current.Assets!.Open(manifestPath);
-			var fontStyle = (style & TypefaceStyle.Italic) != 0 ? FontStyle.Italic : FontStyle.Normal;
-			var familyName = FontManifestHelpers.GetFamilyNameFromManifest(jsonStream, properties.Weight, properties.Style, properties.Stretch);
-			familyName = familyName.TrimStart("ms-appx://", ignoreCase: true);
-			return encodePath ? AndroidResourceNameEncoder.EncodeFileSystemPath(familyName, prefix: "") : familyName;
-		}
+		using var jsonStream = new MemoryStream(fontData.ToArray());
+		var familyName = FontManifestHelpers.GetFamilyNameFromManifest(
+			jsonStream,
+			properties.Weight,
+			properties.Style,
+			properties.Stretch);
 
-		return source;
+		familyName = familyName.TrimStart("ms-appx://", ignoreCase: true);
+
+		return familyName;
 	}
 
 	private static UIFont? GetCustomFont(string fontPath, FontProperties fontProperties)
@@ -149,7 +147,31 @@ internal static class FontHelper
 		UIFont? font;
 		//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
 		var indexOfHash = fontPath.IndexOf('#');
+
+		var actualFontPath = "";
+		bool testFontFamilyName = false;
+		bool skipAdjustments = false;
 		if (indexOfHash > 0 && indexOfHash < fontPath.Length - 1)
+		{
+			actualFontPath = fontPath.Substring(0, indexOfHash);
+		}
+		else
+		{
+			actualFontPath = fontPath;
+		}
+
+		if (GetFontManifestUrl(actualFontPath) is { } manifestUrl &&
+			TryAdjustFromManifest(manifestUrl, fontProperties) is { } adjustedPath)
+		{
+			fontPath = adjustedPath;
+			skipAdjustments = true;
+		}
+		else
+		{
+			testFontFamilyName = true;
+		}
+
+		if (testFontFamilyName && indexOfHash > 0 && indexOfHash < fontPath.Length - 1)
 		{
 			font = GetFontFromFamilyName(fontProperties.Size, fontPath.Substring(indexOfHash + 1))
 				?? GetFontFromFile(fontProperties.Size, fontPath.Substring(0, indexOfHash));
@@ -164,30 +186,44 @@ internal static class FontHelper
 			font = GetDefaultFont(fontProperties);
 		}
 
-		if (font is not null)
+		if (font is not null && !skipAdjustments)
 		{
-			font = ApplyFontProperties(font, fontProperties);
+			//font = ApplyFontProperties(font, fontProperties);
 		}
 
 		return font;
 	}
 
+	private static NSUrl? GetFontManifestUrl(string actualFontPath)
+	{
+		var fileName = actualFontPath;
+		var fileExtension = "manifest";
+
+		var url = NSBundle
+			.MainBundle
+			.GetUrlForResource(
+				name: Path.GetFileName(fileName),
+				fileExtension: fileExtension,
+				subdirectory: Path.GetDirectoryName(actualFontPath));
+
+		return url;
+	}
+
 	private static UIFont ApplyFontProperties(UIFont font, FontProperties fontProperties)
 	{
-		font = ApplyWeight(font, size, fontWeight);
-		font = ApplyStyle(font, size, fontStyle);
-		font = ApplyStretch(font, size, FontStretch);
+		font = ApplyWeight(font, fontProperties);
+		font = ApplyStyle(font, fontProperties);
 		return font;
 	}
 
-	private static UIFont ApplyWeight(UIFont font, nfloat size, FontWeight fontWeight)
+	private static UIFont ApplyWeight(UIFont font, FontProperties fontProperties)
 	{
-		if (fontWeight.Weight == FontWeights.Bold.Weight && !font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Bold))
+		if (fontProperties.Weight.Weight == FontWeights.Bold.Weight && !font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Bold))
 		{
 			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits | UIFontDescriptorSymbolicTraits.Bold);
 			if (descriptor != null)
 			{
-				font = UIFont.FromDescriptor(descriptor, size);
+				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
 			}
 			else
 			{
@@ -195,14 +231,14 @@ internal static class FontHelper
 			}
 		}
 		else if (
-			fontWeight.Weight != FontWeights.SemiBold.Weight && // For some reason, when we load a Semibold font, we must keep the native Bold flag.
-			fontWeight.Weight < FontWeights.Bold.Weight &&
+			fontProperties.Weight.Weight != FontWeights.SemiBold.Weight && // For some reason, when we load a Semibold font, we must keep the native Bold flag.
+			fontProperties.Weight.Weight < FontWeights.Bold.Weight &&
 			font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Bold))
 		{
 			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits & ~UIFontDescriptorSymbolicTraits.Bold);
 			if (descriptor != null)
 			{
-				font = UIFont.FromDescriptor(descriptor, size);
+				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
 			}
 			else
 			{
@@ -213,26 +249,26 @@ internal static class FontHelper
 		return font;
 	}
 
-	private static UIFont ApplyStyle(UIFont font, nfloat size, FontStyle fontStyle)
+	private static UIFont ApplyStyle(UIFont font, FontProperties fontProperties)
 	{
-		if (fontStyle == FontStyle.Italic && !font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Italic))
+		if (fontProperties.Style == FontStyle.Italic && !font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Italic))
 		{
 			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits | UIFontDescriptorSymbolicTraits.Italic);
 			if (descriptor != null)
 			{
-				font = UIFont.FromDescriptor(descriptor, size);
+				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
 			}
 			else
 			{
 				typeof(FontHelper).Log().Error($"Can't apply Italic on font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
 			}
 		}
-		else if (fontStyle == FontStyle.Normal && font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Italic))
+		else if (fontProperties.Style == FontStyle.Normal && font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Italic))
 		{
 			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits & ~UIFontDescriptorSymbolicTraits.Italic);
 			if (descriptor != null)
 			{
-				font = UIFont.FromDescriptor(descriptor, size);
+				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
 			}
 			else
 			{
