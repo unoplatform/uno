@@ -83,7 +83,7 @@ public enum UnoFeature
 
 	Prism,
 
-	UnoFonts,
+	OpenSans,
 
 	[UnoArea(UnoArea.Core)]
 	Skia,
