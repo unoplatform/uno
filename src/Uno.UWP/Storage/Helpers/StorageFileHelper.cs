@@ -12,10 +12,10 @@ namespace Windows.Storage.Helpers;
 internal partial class StorageFileHelper
 {
 	/// <summary>
-	/// Determines if an asset or resource exists within application package
+	/// Determines if an asset or resource exists within the application package
 	/// </summary>
 	/// <param name="fileName">relative file path</param>
-	/// <returns>A task that will complete with a result of true if file exists, otherwise with a result of false.</returns>
+	/// <returns>A task that will complete with a result of true if the file exists, otherwise with a result of false.</returns>
 	public static async Task<bool> ExistsInPackage(string fileName) => await FileExistsInPackage(fileName);
 
 #if IS_UNIT_TESTS || __NETSTD_REFERENCE__
