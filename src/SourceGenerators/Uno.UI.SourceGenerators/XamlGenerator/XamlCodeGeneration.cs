@@ -388,7 +388,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
-				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
+				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>(SymbolEqualityComparer.Default);
 				Parallel.ForEach(filesFull, file =>
 				{
 					var topLevelControl = file.Objects.FirstOrDefault();
@@ -595,7 +595,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						where typeName.Name.EndsWith("GlobalStaticResources", StringComparison.Ordinal)
 						select typeName;
 
-			_ambientGlobalResources = query.Distinct().ToArray();
+			_ambientGlobalResources = query.Distinct(SymbolEqualityComparer.Default).Cast<INamedTypeSymbol>().ToArray();
 		}
 
 		// Get keys of localized strings
