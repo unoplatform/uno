@@ -12,9 +12,13 @@
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Name="Light">
 			<SolidColorBrush x:Key="HotReloadPathFillBrush" Opacity="0.9">#000000</SolidColorBrush>
+			<SolidColorBrush x:Key="NotificationBackgroundBrush">#F9F9F9</SolidColorBrush>
+			<SolidColorBrush x:Key="NotificationBorderBrush">#EBEBEB</SolidColorBrush>
 		</ResourceDictionary>
 		<ResourceDictionary x:Name="Dark">
 			<SolidColorBrush x:Key="HotReloadPathFillBrush">#FFFFFF</SolidColorBrush>
+			<SolidColorBrush x:Key="NotificationBackgroundBrush">#282828</SolidColorBrush>
+			<SolidColorBrush x:Key="NotificationBorderBrush">#1C1C1C</SolidColorBrush>
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 
@@ -92,13 +96,13 @@
 			</StackPanel>
 
 			<TextBlock 
-				Text="{Binding TimeInfo}"
-				VerticalAlignment="Center"
-				HorizontalAlignment="Right"
-				TextAlignment="Right"
-				Margin="20,0,0,0"
-				FontSize="9"
-				Opacity="0.45" />
+					Text="{Binding TimeInfo}"
+					VerticalAlignment="Center"
+					HorizontalAlignment="Right"
+					TextAlignment="Right"
+					Margin="20,0,0,0"
+					FontSize="9"
+					Opacity="0.45" />
 		</StackPanel>
 	</DataTemplate>
 
@@ -108,9 +112,25 @@
 				<diag:DiagnosticViewNotification Duration="0:0:0" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
-							<StackPanel Orientation="Horizontal">
-								<ProgressRing Height="12" Width="12" />
-								<TextBlock Margin="20,0,0,0" Text="Processing..." />
+							<StackPanel 
+								Orientation="Horizontal"
+								Background="{ThemeResource NotificationBackgroundBrush}"
+								BorderThickness="1"
+								BorderBrush="{ThemeResource NotificationBorderBrush}"
+								Height="32"
+								CornerRadius="4">
+								<ProgressRing 
+									Height="12"
+									Width="12"
+									Margin="4,0,0,0"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Center" />
+								<TextBlock 
+									Margin="8,0"
+									Text="Processing..."
+									FontSize="11"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Center" />
 							</StackPanel>
 						</DataTemplate>
 					</diag:DiagnosticViewNotification.ContentTemplate>
@@ -123,13 +143,24 @@
 				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
-							<StackPanel Orientation="Horizontal">
+							<StackPanel 
+								Orientation="Horizontal"
+								Background="{ThemeResource NotificationBackgroundBrush}"
+								BorderThickness="1"
+								BorderBrush="{ThemeResource NotificationBorderBrush}"
+								Height="32"
+								CornerRadius="4">
 								<ContentControl 
 									ContentTemplate="{StaticResource HotReloadIconSuccess}"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
-									Margin="-2,-2,0,0" />
-								<TextBlock Margin="20,0,0,0" Text="{Binding Description}" />
+									Margin="4,-2,0,0" />
+								<TextBlock
+									Margin="8,0"
+									Text="{Binding Description}"
+									FontSize="11"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Center" />
 							</StackPanel>
 						</DataTemplate>
 					</diag:DiagnosticViewNotification.ContentTemplate>
@@ -142,13 +173,24 @@
 				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
-							<StackPanel Orientation="Horizontal">
+							<StackPanel
+								Orientation="Horizontal"
+								Background="{ThemeResource NotificationBackgroundBrush}"
+								BorderThickness="1"
+								BorderBrush="{ThemeResource NotificationBorderBrush}"
+								Height="32"
+								CornerRadius="4">
 								<ContentControl 
 									ContentTemplate="{StaticResource HotReloadIconFailed}"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
-									Margin="-2,-2,0,0" />
-								<TextBlock Margin="20,0,0,0" Text="{Binding Description}" />
+									Margin="4,-2,0,0" />
+								<TextBlock 
+									Margin="8,0" 
+									Text="{Binding Description}"
+									FontSize="11"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Center" />
 							</StackPanel>
 						</DataTemplate>
 					</diag:DiagnosticViewNotification.ContentTemplate>
