@@ -160,7 +160,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.RudeEdit:
-				//case HotReloadEvent.RudeEditDialogButton:
 					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
 					break;
 			}

@@ -8,26 +8,27 @@ using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Diagnostics.UI;
+using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
 using static Uno.UI.RemoteControl.RemoteControlStatus;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
 [TemplateVisualState(GroupName = "Status", Name = StatusUnknownVisualStateName)]
-[TemplateVisualState(GroupName = "Status", Name = StatusErrorVisualStateName)]
 [TemplateVisualState(GroupName = "Status", Name = StatusInitializingVisualStateName)]
 [TemplateVisualState(GroupName = "Status", Name = StatusReadyVisualStateName)]
-[TemplateVisualState(GroupName = "Status", Name = StatusProcessingVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusWarningVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusErrorVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultNoneVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultSuccessVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultFailedVisualStateName)]
 internal sealed partial class HotReloadStatusView : Control
 {
 	private const string StatusUnknownVisualStateName = "Unknown";
-	private const string StatusErrorVisualStateName = "Error";
 	private const string StatusInitializingVisualStateName = "Initializing";
 	private const string StatusReadyVisualStateName = "Ready";
-	private const string StatusProcessingVisualStateName = "Processing";
+	private const string StatusErrorVisualStateName = "Error";
+	private const string StatusWarningVisualStateName = "Warning";
 
 	private const string ResultNoneVisualStateName = "None";
 	private const string ResultSuccessVisualStateName = "Success";
@@ -118,7 +119,7 @@ internal sealed partial class HotReloadStatusView : Control
 		DefaultStyleKey = typeof(HotReloadStatusView);
 		History = [];
 
-		UpdateNotificationStates();
+		UpdateViusalStates(false);
 
 		Loaded += static (snd, _) =>
 		{
@@ -150,8 +151,7 @@ internal sealed partial class HotReloadStatusView : Control
 
 		UpdateLog(oldStatus, devServerStatus);
 
-		UpdateNotificationStates();
-		UpdateStatusVisualState();
+		UpdateViusalStates();
 	}
 
 	public void OnHotReloadStatusChanged(Status status)
@@ -161,8 +161,7 @@ internal sealed partial class HotReloadStatusView : Control
 
 		UpdateLog(oldStatus, status);
 
-		UpdateNotificationStates();
-		UpdateStatusVisualState();
+		UpdateViusalStates();
 	}
 
 	private void UpdateLog(RemoteControlStatus? oldStatus, RemoteControlStatus newStatus)
@@ -172,29 +171,29 @@ internal sealed partial class HotReloadStatusView : Control
 			return;
 		}
 
-		var notif = (oldStatus, newStatus) switch
+		var (iconState, desc) = (oldStatus, newStatus) switch
 		{
-			(_, { State: ConnectionState.NoServer }) => "No endpoint found.",
-			(_, { State: ConnectionState.Connecting }) => "Connecting...",
-			({ State: not ConnectionState.ConnectionTimeout }, { State: ConnectionState.ConnectionTimeout }) => "Timeout.",
-			({ State: not ConnectionState.ConnectionFailed }, { State: ConnectionState.ConnectionFailed }) => "Connection error.",
+			(_, { State: ConnectionState.NoServer }) => (EntryIcon.Error, "No endpoint found"),
+			(_, { State: ConnectionState.Connecting }) => (EntryIcon.Loading, "Connecting..."),
+			({ State: not ConnectionState.ConnectionTimeout }, { State: ConnectionState.ConnectionTimeout }) => (EntryIcon.Error, "Timeout"),
+			({ State: not ConnectionState.ConnectionFailed }, { State: ConnectionState.ConnectionFailed }) => (EntryIcon.Error, "Connection error"),
 
-			({ IsVersionValid: not false }, { IsVersionValid: false }) => "Version mismatch",
-			({ InvalidFrames.Count: 0 }, { InvalidFrames.Count: > 0 }) => "Unknown messages.",
-			({ MissingRequiredProcessors.IsEmpty: true }, { MissingRequiredProcessors.IsEmpty: false }) => "Processors missing.",
+			({ IsVersionValid: not false }, { IsVersionValid: false }) => (EntryIcon.Warning, "Version mismatch"),
+			({ InvalidFrames.Count: 0 }, { InvalidFrames.Count: > 0 }) => (EntryIcon.Warning, "Unknown messages"),
+			({ MissingRequiredProcessors.IsEmpty: true }, { MissingRequiredProcessors.IsEmpty: false }) => (EntryIcon.Warning, "Processors missing"),
 
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Late }) => "Connection lost (> 1000ms).",
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Lost }) => "Connection lost (> 1s).",
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Aborted }) => "Connection lost (keep-alive).",
-			({ State: ConnectionState.Connected }, { State: ConnectionState.Disconnected }) => "Connection lost.",
+			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Late }) => (EntryIcon.Error, "Connection lost (> 1000ms)"),
+			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Lost }) => (EntryIcon.Error, "Connection lost (> 1s)"),
+			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Aborted }) => (EntryIcon.Error, "Connection lost (keep-alive)"),
+			({ State: ConnectionState.Connected }, { State: ConnectionState.Disconnected }) => (EntryIcon.Error, "Connection lost"),
 
-			({ State: ConnectionState.Connected }, { State: ConnectionState.Reconnecting }) => "Connection lost (reconnecting).",
+			({ State: ConnectionState.Connected }, { State: ConnectionState.Reconnecting }) => (EntryIcon.Error, "Connection lost (reconnecting)"),
 
-			_ => null
+			_ => (default, default)
 		};
-		if (notif is not null)
+		if (desc is not null)
 		{
-			Insert(History, new DevServerEntry { Description = notif });
+			Insert(History, new DevServerEntry { Description = desc, Icon = iconState | EntryIcon.Connection });
 		}
 	}
 
@@ -235,41 +234,59 @@ internal sealed partial class HotReloadStatusView : Control
 		switch (oldStatus?.State ?? HotReloadState.Initializing, status.State)
 		{
 			case ( < HotReloadState.Ready, HotReloadState.Ready):
-				Insert(log, new EngineEntry { Description = "Connected." });
+				Insert(log, new EngineEntry { Title = "Connected", Icon = EntryIcon.Connection | EntryIcon.Success });
 				break;
 
 			case (not HotReloadState.Disabled, HotReloadState.Disabled):
-				Insert(log, new EngineEntry { Description = "Cannot initialize." });
+				Insert(log, new EngineEntry { Title = "Cannot initialize", Icon = EntryIcon.Connection | EntryIcon.Error });
 				break;
 		}
 	}
 
-	public void UpdateNotificationStates()
+	public void UpdateViusalStates(bool useTransitions = true)
 	{
 		var log = History;
 
-		HeadLine = log
-			.LastOrDefault(e => e.Source is EntrySource.Engine or EntrySource.DevServer)
-			?.Description;
+		var connectionEntry = log.FirstOrDefault(e => e.Source is EntrySource.Engine or EntrySource.DevServer);
+		var operationEntries = log.Where(entry => entry.Source is EntrySource.Server or EntrySource.Application).ToList();
 
-		var history = log
-			.Where(entry => entry.Source is EntrySource.Server or EntrySource.Application)
-			.ToList();
-		var resultState = history switch
+		// Update the "status"(a.k.a. "connection state") visual state.
+		if (connectionEntry is null)
+		{
+			HeadLine = null;
+			VisualStateManager.GoToState(this, StatusUnknownVisualStateName, useTransitions);
+		}
+		else
+		{
+			HeadLine = connectionEntry.Description;
+			var state = (connectionEntry.Icon & ~(EntryIcon.HotReload | EntryIcon.Connection)) switch
+			{
+				EntryIcon.Loading => StatusInitializingVisualStateName,
+				EntryIcon.Success => StatusReadyVisualStateName,
+				EntryIcon.Warning when operationEntries.Any(op => op.IsSuccess ?? false) => StatusReadyVisualStateName,
+				EntryIcon.Warning => StatusWarningVisualStateName,
+				EntryIcon.Error => StatusErrorVisualStateName,
+				_ => StatusUnknownVisualStateName
+			};
+			VisualStateManager.GoToState(this, state, useTransitions);
+		}
+
+		// Then the "result" visual state (en send notifications).
+		var resultState = operationEntries switch
 		{
 			{ Count: 0 } => ResultNoneVisualStateName,
-			_ when history.Any(op => op.IsSuccess is null) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
+			_ when operationEntries.Any(op => op.IsSuccess is null) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
 			[{ IsSuccess: true }, ..] => ResultSuccessVisualStateName,
 			_ => ResultFailedVisualStateName
 		};
 		if (resultState != _resultState)
 		{
 			_resultState = resultState;
-			VisualStateManager.GoToState(this, resultState, true);
+			VisualStateManager.GoToState(this, resultState, useTransitions);
 
 			var notif = resultState switch
 			{
-				ResultNoneVisualStateName when history is { Count: > 0 } => ProcessingNotification,
+				ResultNoneVisualStateName when operationEntries is { Count: > 0 } => ProcessingNotification,
 				ResultSuccessVisualStateName => SuccessNotification,
 				ResultFailedVisualStateName => FailureNotification,
 				_ => default
@@ -278,38 +295,12 @@ internal sealed partial class HotReloadStatusView : Control
 			{
 				if (notif.Content is null or HotReloadLogEntry)
 				{
-					notif.Content = history[0];
+					notif.Content = operationEntries[0];
 				}
 
 				_ctx.Notify(notif);
 			}
 		}
-	}
-
-	private void UpdateStatusVisualState()
-	{
-		var state = (_devServerStatus?.GetSummary().kind ?? Classification.Ok, _hotReloadStatus?.State) switch
-		{
-			(Classification.Error, _) => StatusErrorVisualStateName,
-			(_, HotReloadState.Disabled) => StatusErrorVisualStateName,
-
-			(_, HotReloadState.Initializing) => StatusInitializingVisualStateName,
-			(Classification.Info, _) => StatusInitializingVisualStateName,
-
-			(Classification.Warning, _) when !HasSuccessfulLocalOperation(_hotReloadStatus) => StatusUnknownVisualStateName, // e.g. invalid processors version
-
-			(_, HotReloadState.Ready) => StatusReadyVisualStateName,
-
-			(_, HotReloadState.Processing) => StatusProcessingVisualStateName,
-
-			_ => StatusUnknownVisualStateName
-		};
-
-		VisualStateManager.GoToState(this, state, true);
-
-		static bool HasSuccessfulLocalOperation(Status? status)
-			=> status is not null
-				&& status.Local.Operations.Any(op => op.Result is HotReloadClientResult.Success);
 	}
 
 	#region Misc helpers
