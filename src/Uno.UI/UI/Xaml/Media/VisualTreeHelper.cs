@@ -354,6 +354,13 @@ namespace Microsoft.UI.Xaml.Media
 				.OfType<T>()
 				?? Enumerable.Empty<T>();
 
+#if __CROSSRUNTIME__
+		// This overload is more performant than GetChildren(DependecnyObject) below.
+		// As the parameter type is more specific, the compiler will prefer it when the argument is UIElement.
+		internal static MaterializableList<UIElement> GetChildren(UIElement element)
+			=> element._children;
+#endif
+
 		public static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
 			=> GetChildren<DependencyObject>(view);
 
@@ -400,23 +407,15 @@ namespace Microsoft.UI.Xaml.Media
 			throw new NotImplementedException("ReplaceChild not implemented on this platform.");
 		}
 
-		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
+		internal static void ClearChildren(UIElement view)
 		{
 #if __ANDROID__
-			var children = GetChildren<_View>(view).ToList();
 			view.RemoveAllViews();
-
-			return children;
 #elif __IOS__ || __MACOS__
-			var children = view.ChildrenShadow.ToList();
+			var children = view.ChildrenShadow;
 			children.ForEach(v => v.RemoveFromSuperview());
-
-			return children;
 #elif __CROSSRUNTIME__
-			var children = GetChildren<_View>(view).ToList();
 			view.ClearChildren();
-
-			return children;
 #else
 			throw new NotImplementedException("ClearChildren not implemented on this platform.");
 #endif

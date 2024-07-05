@@ -15,6 +15,7 @@ namespace Microsoft.UI.Composition;
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
+	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
@@ -279,8 +280,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	private protected virtual void ApplyPostPaintingClipping(in SKCanvas canvas) { }
 
-	private protected virtual IList<Visual> GetChildrenInRenderOrder() => Array.Empty<Visual>();
-	internal IList<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
+	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
+	// This has the side effect of having to return an empty list here.
+	// The caller then shouldn't mutate the list, otherwise, things will go wrong badly.
+	// An alternative is to return null and check for null on the call sites.
+	private protected virtual List<Visual> GetChildrenInRenderOrder() => s_emptyList;
+
+	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
+	internal List<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
