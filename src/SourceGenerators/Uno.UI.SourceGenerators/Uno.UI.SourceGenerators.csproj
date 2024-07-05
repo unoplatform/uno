@@ -6,6 +6,9 @@
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<!-- Too noisy for us right now -->
+		<EnforceExtendedAnalyzerRules>false</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,6 +18,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
