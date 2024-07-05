@@ -211,10 +211,6 @@
 
 									<StackPanel CornerRadius="8" Spacing="10" >
 										<StackPanel Orientation="Horizontal" Spacing="10" Visibility="{Binding ElementName=PART_DevServerStatus, Path=Status.IsProblematic}">
-											<devServer:RemoteControlStatusView
-												x:Name="PART_DevServerStatus"
-												VerticalAlignment="Center"
-												Visibility="Collapsed" />
 											<TextBlock
 												MaxWidth="380"
 												Text="Events"
@@ -237,17 +233,17 @@
 
 							<Grid>
 								<ContentControl 
-									x:Name="HotReloadIcon"												
-									ContentTemplate="{StaticResource HotReloadIconConnectionWarning}"												
-									HorizontalAlignment="Center"												
+									x:Name="HotReloadIcon"
+									ContentTemplate="{StaticResource HotReloadIconConnectionWarning}"
+									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
 									Margin="-2,-2,0,0"
 									Visibility="Collapsed" />
 
 								<ProgressRing 
-									x:Name="HotReloadProgressRing"			  
-									Height="12" 									  
-									Width="12" 	  
+									x:Name="HotReloadProgressRing"
+									Height="12"
+									Width="12"
 									Visibility="Visible" />
 							</Grid>
 						</Button>

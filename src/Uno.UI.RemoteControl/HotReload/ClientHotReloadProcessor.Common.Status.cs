@@ -74,10 +74,16 @@ public partial class ClientHotReloadProcessor
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
 
+		public void ReportServerState(HotReloadState state)
+		{
+			_serverState = state;
+			NotifyStatusChanged();
+		}
+
 #if HAS_UNO_WINUI
 		public void ReportServerStatus(HotReloadStatusMessage status)
 		{
-			_serverState = status.State;
+			_serverState ??= status.State; // Do not override the state if it has already been set (debugger attached with dev-server)
 			ImmutableInterlocked.Update(ref _serverOperations, UpdateOperations, status.Operations);
 			NotifyStatusChanged();
 
@@ -180,7 +186,7 @@ public partial class ClientHotReloadProcessor
 				var versionIndex = t.Name.IndexOf('#');
 				return versionIndex < 0
 					? default!
-					: $"{name[..versionIndex]} (v{name[(versionIndex + 1)..]})";
+					: name[..versionIndex];
 			})
 			.Where(t => t is not null)
 			.ToArray();
