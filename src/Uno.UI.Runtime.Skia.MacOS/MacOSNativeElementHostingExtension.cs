@@ -9,14 +9,14 @@ using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSNativeElement
+internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 {
 	internal MacOSNativeElement(nint handle)
 	{
-		Handle = handle;
+		NativeHandle = handle;
 	}
 
-	public nint Handle { get; private set; }
+	public nint NativeHandle { get; private set; }
 }
 
 internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
@@ -36,7 +36,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (content is MacOSNativeElement element)
 		{
-			// TODO uno_native_arrange(element.Handle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height, clipRect.Left, clipRect.Top, clipRect.Width, clipRect.Height);
+			NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height, clipRect.Left, clipRect.Top, clipRect.Width, clipRect.Height);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -48,7 +48,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (content is MacOSNativeElement element)
 		{
-			// TODO uno_native_attach(element.Handle);
+			NativeUno.uno_native_attach(element.NativeHandle);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -62,7 +62,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			// https://developer.apple.com/documentation/appkit/nsview/1483560-alphavalue?language=objc
 			// note: no marshaling needed as CGFloat is double for 64bits apps
-			NativeUno.uno_native_set_opacity(element.Handle, opacity);
+			NativeUno.uno_native_set_opacity(element.NativeHandle, opacity);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -75,7 +75,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		if (content is MacOSNativeElement element)
 		{
 			// https://developer.apple.com/documentation/appkit/nsview/1483369-hidden?language=objc
-			NativeUno.uno_native_set_visibility(element.Handle, visible);
+			NativeUno.uno_native_set_visibility(element.NativeHandle, visible);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -102,7 +102,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (content is MacOSNativeElement element)
 		{
-			// TODO uno_native_detach(element.Handle);
+			NativeUno.uno_native_detach(element.NativeHandle);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -116,8 +116,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (nativeElement is MacOSNativeElement element)
 		{
-			// TODO uno_native_is_attached(element.Handle);
-			return false;
+			return NativeUno.uno_native_is_attached(element.NativeHandle);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -130,7 +129,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (content is MacOSNativeElement element)
 		{
-			NativeUno.uno_native_measure(element.Handle, childMeasuredSize.Width, childMeasuredSize.Height, availableSize.Width, availableSize.Height, out var width, out var height);
+			NativeUno.uno_native_measure(element.NativeHandle, childMeasuredSize.Width, childMeasuredSize.Height, availableSize.Width, availableSize.Height, out var width, out var height);
 			return new Size(width, height);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))

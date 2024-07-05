@@ -311,6 +311,19 @@ internal static partial class NativeUno
 	internal static partial nint uno_native_create_sample(nint window, string text);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_arrange(nint element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_attach(nint element);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_detach(nint element);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_native_is_attached(nint element);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_set_opacity(nint element, double opacity);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
