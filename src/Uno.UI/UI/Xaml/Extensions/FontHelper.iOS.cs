@@ -188,7 +188,7 @@ internal static class FontHelper
 
 		if (font is not null && !skipAdjustments)
 		{
-			//font = ApplyFontProperties(font, fontProperties);
+			font = ApplyFontProperties(font, fontProperties);
 		}
 
 		return font;
@@ -230,21 +230,6 @@ internal static class FontHelper
 				typeof(FontHelper).Log().Error($"Can't apply Bold on font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
 			}
 		}
-		else if (
-			fontProperties.Weight.Weight != FontWeights.SemiBold.Weight && // For some reason, when we load a Semibold font, we must keep the native Bold flag.
-			fontProperties.Weight.Weight < FontWeights.Bold.Weight &&
-			font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Bold))
-		{
-			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits & ~UIFontDescriptorSymbolicTraits.Bold);
-			if (descriptor != null)
-			{
-				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
-			}
-			else
-			{
-				typeof(FontHelper).Log().Error($"Can't remove Bold from font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
-			}
-		}
 
 		return font;
 	}
@@ -261,18 +246,6 @@ internal static class FontHelper
 			else
 			{
 				typeof(FontHelper).Log().Error($"Can't apply Italic on font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
-			}
-		}
-		else if (fontProperties.Style == FontStyle.Normal && font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Italic))
-		{
-			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits & ~UIFontDescriptorSymbolicTraits.Italic);
-			if (descriptor != null)
-			{
-				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
-			}
-			else
-			{
-				typeof(FontHelper).Log().Error($"Can't remove Italic from font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
 			}
 		}
 
