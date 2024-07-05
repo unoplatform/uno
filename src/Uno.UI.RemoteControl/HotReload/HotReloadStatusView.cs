@@ -234,7 +234,7 @@ internal sealed partial class HotReloadStatusView : Control
 		// Add a log entry for the **status** change.
 		switch (oldStatus?.State ?? HotReloadState.Initializing, status.State)
 		{
-			case (< HotReloadState.Ready, HotReloadState.Ready):
+			case ( < HotReloadState.Ready, HotReloadState.Ready):
 				Insert(log, new EngineEntry { Description = "Connected." });
 				break;
 

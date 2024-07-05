@@ -112,9 +112,12 @@ internal record HotReloadLogEntry(EntrySource Source, long Id, DateTimeOffset Ti
 	public string? Title { get; set; }
 	public string? Description { get; set; }
 
-	public string TimeInfo => Duration is null
-		? $"{Timestamp.LocalDateTime:HH:mm:ss}"
-		: $"{GetDuration()} - {Timestamp.LocalDateTime:HH:mm:ss}";
+	public string TimeInfo => Duration switch
+	{
+		null => $"{Timestamp:T}",
+		{ TotalMilliseconds: < 1000 } ms => $"{ms.TotalMilliseconds:F0} ms - {Timestamp:T}",
+		{ } s => $"{s.TotalSeconds:N0} s - {Timestamp:T}",
+	};
 
 	public EntryIcon Icon => (Source, IsSuccess) switch
 	{
@@ -128,26 +131,8 @@ internal record HotReloadLogEntry(EntrySource Source, long Id, DateTimeOffset Ti
 		(_, false) => EntryIcon.HotReload | EntryIcon.Loading, // Fir with red indicator
 	};
 
-	public string GetSource()
-		=> Source switch
-		{
-			EntrySource.DevServer => "Dev-Server",
-			EntrySource.Engine => "Engine",
-			EntrySource.Server => "IDE",
-			EntrySource.Application => "Application",
-			_ => "Unknown"
-		};
-
 	protected void RaiseChanged()
 		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-
-	private string GetDuration()
-		=> Duration switch
-		{
-			null => string.Empty,
-			{ TotalMilliseconds: < 1000 } ms => $" - {ms.TotalMilliseconds:F0} ms",
-			{ } s => $" - {s.TotalSeconds:N0} s"
-		};
 
 	protected static string Join(string[] items, int? total = null, int max = 5)
 	{
