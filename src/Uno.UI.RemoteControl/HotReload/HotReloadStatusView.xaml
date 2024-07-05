@@ -149,7 +149,7 @@
 
 		<Setter Property="SuccessNotification">
 			<Setter.Value>
-				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
+				<diag:DiagnosticViewNotification Duration="0:0:5" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
 							<StackPanel 
@@ -179,7 +179,7 @@
 
 		<Setter Property="FailureNotification">
 			<Setter.Value>
-				<diag:DiagnosticViewNotification Duration="0:0:10" Options="EvenIfExpended">
+				<diag:DiagnosticViewNotification Duration="0:0:5" Options="EvenIfExpended">
 					<diag:DiagnosticViewNotification.ContentTemplate>
 						<DataTemplate>
 							<StackPanel
