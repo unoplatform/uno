@@ -73,14 +73,21 @@
 	<local:NullStringToCollapsedConverter x:Key="NullStringToCollapsed" />
 
 	<DataTemplate x:Key="OperationTemplate">
-		<StackPanel Orientation="Horizontal">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			
 			<ContentControl 
 				ContentTemplate="{Binding Icon, Converter={StaticResource EntryIconToContentTemplate}}"
+				Grid.Column="1"
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center"
 				Margin="0,0,8,4" />
 
-			<StackPanel Spacing="2" Width="270" VerticalAlignment="Center">
+			<StackPanel Spacing="2" Width="270" VerticalAlignment="Center" Grid.Column="2">
 				<TextBlock
 					VerticalAlignment="Center"
 					TextWrapping="WrapWholeWords"
@@ -98,13 +105,14 @@
 
 			<TextBlock 
 					Text="{Binding TimeInfo}"
+					Grid.Column="3"
 					VerticalAlignment="Center"
 					HorizontalAlignment="Right"
 					TextAlignment="Right"
 					Margin="20,0,0,0"
 					FontSize="9"
 					Opacity="0.45" />
-		</StackPanel>
+		</Grid>
 	</DataTemplate>
 
 	<Style TargetType="local:HotReloadStatusView">
