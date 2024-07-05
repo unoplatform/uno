@@ -44,7 +44,7 @@ internal record DevServerEntry() : HotReloadLogEntry(EntrySource.DevServer, -1, 
 
 		return desc is null
 			? null
-			: new DevServerEntry { Description = desc, Icon = iconState | EntryIcon.Connection };
+			: new DevServerEntry { Title = desc, Icon = iconState | EntryIcon.Connection };
 	}
 }
 
