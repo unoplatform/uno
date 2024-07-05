@@ -102,11 +102,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				{
 					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net9.0", unoRuntimeIdentifier));
 					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net9.0", unoRuntimeIdentifier));
-					if (unoRuntimeIdentifier == "Android")
+					if (unoRuntimeIdentifier == "android")
 					{
 						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net9.0-android30.0"));
 					}
-					else if (unoRuntimeIdentifier == "iOS")
+					else if (unoRuntimeIdentifier == "ios")
 					{
 						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net9.0-ios17.2"));
 					}
@@ -117,11 +117,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net8.0", unoRuntimeIdentifier));
 					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", unoRuntimeIdentifier));
 					searchPaths.Add(packageBasePath);
-					if (unoRuntimeIdentifier == "Android")
+					if (unoRuntimeIdentifier == "android")
 					{
 						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net8.0-android30.0"));
 					}
-					else if (unoRuntimeIdentifier == "iOS")
+					else if (unoRuntimeIdentifier == "ios")
 					{
 						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net8.0-ios17.0"));
 					}
