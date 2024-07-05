@@ -179,17 +179,41 @@ public partial class ClientHotReloadProcessor
 
 		public Type[] Types { get; }
 
-		internal string[] CuratedTypes => _curatedTypes ??= Types
-			.Select(t =>
+		internal string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
+
+		private string[] GetCuratedTypes()
+		{
+			return Types
+				.Select(GetFriendlyName)
+				.Where(name => name is { Length: > 0 })
+				.Distinct()
+				.ToArray()!;
+
+			string? GetFriendlyName(Type type)
 			{
-				var name = t.Name;
-				var versionIndex = t.Name.IndexOf('#');
-				return versionIndex < 0
-					? default!
-					: name[..versionIndex];
-			})
-			.Where(t => t is not null)
-			.ToArray();
+				var name = type.FullName ?? type.Name;
+
+				var versionIndex = name.IndexOf('#');
+				if (versionIndex >= 0)
+				{
+					name = name[..versionIndex];
+				}
+
+				var nestingIndex = name.IndexOf('+');
+				if (nestingIndex >= 0)
+				{
+					name = name[..nestingIndex];
+				}
+
+				var endOfNamespaceIndex = name.LastIndexOf('.');
+				if (endOfNamespaceIndex >= 0)
+				{
+					name = name[(endOfNamespaceIndex + 1)..];
+				}
+
+				return name;
+			}
+		}
 
 		public DateTimeOffset? EndTime { get; private set; }
 

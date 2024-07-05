@@ -114,7 +114,7 @@ internal record ApplicationEntry : HotReloadLogEntry
 			HotReloadClientResult.Failed => "An error occured",
 			_ => null
 		};
-		Description = Join("type", localOp.CuratedTypes, localOp.Types.Length);
+		Description = Join("type", localOp.CuratedTypes);
 		Duration = localOp.EndTime is not null ? localOp.EndTime - localOp.StartTime : null;
 
 		RaiseChanged();
