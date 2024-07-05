@@ -964,18 +964,6 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 #endif
 
-		internal UIElement ElementHorizontalScrollBar()
-		{
-			//UNO TODO: Implement ElementHorizontalScrollBar on ScrollViewer
-			return new();
-		}
-
-		internal UIElement ElementVerticalScrollBar()
-		{
-			//UNO TODO: Implement ElementVerticalScrollBar on ScrollViewer
-			return new();
-		}
-
 		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
