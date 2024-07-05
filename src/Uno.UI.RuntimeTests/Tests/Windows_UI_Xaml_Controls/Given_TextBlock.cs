@@ -60,12 +60,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				FontWeight = new FontWeight(weight),
 				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/OpenSans/OpenSans.ttf"),
 			};
+			var SUTContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = SUT
+			};
 
 			var expectedTB = new TextBlock
 			{
 				Text = "Hello World!",
 				FontSize = 18,
 				FontFamily = new FontFamily(ttfFile)
+			};
+			var expectedTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = expectedTB
 			};
 
 			var differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf";
@@ -80,21 +92,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				FontSize = 18,
 				FontFamily = new FontFamily(differentTtf),
 			};
+			var differentTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = differentTB
+			};
 
 			var sp = new StackPanel()
 			{
 				Children =
 				{
-					SUT,
-					expectedTB,
-					differentTB,
+					SUTContainer,
+					expectedTBContainer,
+					differentTBContainer,
 				},
 			};
 
 			await UITestHelper.Load(sp);
-			var actual = await UITestHelper.ScreenShot(SUT);
-			var expected = await UITestHelper.ScreenShot(expectedTB);
-			var different = await UITestHelper.ScreenShot(differentTB);
+			var actual = await UITestHelper.ScreenShot(SUTContainer);
+			var expected = await UITestHelper.ScreenShot(expectedTBContainer);
+			var different = await UITestHelper.ScreenShot(differentTBContainer);
 			await ImageAssert.AreEqualAsync(actual, expected);
 			await ImageAssert.AreNotEqualAsync(actual, different);
 		}
