@@ -258,7 +258,7 @@
 
 						<Button Padding="0" Background="Transparent" BorderBrush="Transparent">
 							<Button.Flyout>
-								<Flyout>
+								<Flyout Placement="BottomEdgeAlignedLeft">
 									<Flyout.FlyoutPresenterStyle>
 										<Style TargetType="FlyoutPresenter">
 											<Setter Property="CornerRadius" Value="8" />
@@ -269,7 +269,6 @@
 
 									<StackPanel CornerRadius="8" Spacing="10" >
 										<TextBlock
-											MaxWidth="380"
 											Text="Events"
 											FontSize="11"
 											FontWeight="SemiLight"
