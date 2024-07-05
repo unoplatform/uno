@@ -8,9 +8,7 @@ using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Diagnostics.UI;
-using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
-using static Uno.UI.RemoteControl.RemoteControlStatus;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -119,7 +117,7 @@ internal sealed partial class HotReloadStatusView : Control
 		DefaultStyleKey = typeof(HotReloadStatusView);
 		History = [];
 
-		UpdateViusalStates(false);
+		UpdateVisualStates(false);
 
 		Loaded += static (snd, _) =>
 		{
@@ -151,7 +149,7 @@ internal sealed partial class HotReloadStatusView : Control
 
 		UpdateLog(oldStatus, devServerStatus);
 
-		UpdateViusalStates();
+		UpdateVisualStates();
 	}
 
 	public void OnHotReloadStatusChanged(Status status)
@@ -161,39 +159,14 @@ internal sealed partial class HotReloadStatusView : Control
 
 		UpdateLog(oldStatus, status);
 
-		UpdateViusalStates();
+		UpdateVisualStates();
 	}
 
 	private void UpdateLog(RemoteControlStatus? oldStatus, RemoteControlStatus newStatus)
 	{
-		if (oldStatus is not null && oldStatus.State == newStatus.State)
+		if (DevServerEntry.TryCreateNew(oldStatus, newStatus) is { } entry)
 		{
-			return;
-		}
-
-		var (iconState, desc) = (oldStatus, newStatus) switch
-		{
-			(_, { State: ConnectionState.NoServer }) => (EntryIcon.Error, "No endpoint found"),
-			(_, { State: ConnectionState.Connecting }) => (EntryIcon.Loading, "Connecting..."),
-			({ State: not ConnectionState.ConnectionTimeout }, { State: ConnectionState.ConnectionTimeout }) => (EntryIcon.Error, "Timeout"),
-			({ State: not ConnectionState.ConnectionFailed }, { State: ConnectionState.ConnectionFailed }) => (EntryIcon.Error, "Connection error"),
-
-			({ IsVersionValid: not false }, { IsVersionValid: false }) => (EntryIcon.Warning, "Version mismatch"),
-			({ InvalidFrames.Count: 0 }, { InvalidFrames.Count: > 0 }) => (EntryIcon.Warning, "Unknown messages"),
-			({ MissingRequiredProcessors.IsEmpty: true }, { MissingRequiredProcessors.IsEmpty: false }) => (EntryIcon.Warning, "Processors missing"),
-
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Late }) => (EntryIcon.Error, "Connection lost (> 1000ms)"),
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Lost }) => (EntryIcon.Error, "Connection lost (> 1s)"),
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Aborted }) => (EntryIcon.Error, "Connection lost (keep-alive)"),
-			({ State: ConnectionState.Connected }, { State: ConnectionState.Disconnected }) => (EntryIcon.Error, "Connection lost"),
-
-			({ State: ConnectionState.Connected }, { State: ConnectionState.Reconnecting }) => (EntryIcon.Error, "Connection lost (reconnecting)"),
-
-			_ => (default, default)
-		};
-		if (desc is not null)
-		{
-			Insert(History, new DevServerEntry { Description = desc, Icon = iconState | EntryIcon.Connection });
+			Insert(History, entry);
 		}
 	}
 
@@ -202,7 +175,7 @@ internal sealed partial class HotReloadStatusView : Control
 		// Add or update the entries for the **operations** (server and the application).
 		foreach (var srvOp in status.Server.Operations)
 		{
-			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_serverHrEntries, srvOp.Id, out bool exists);
+			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_serverHrEntries, srvOp.Id, out var exists);
 			if (exists)
 			{
 				entry!.Update(srvOp);
@@ -215,7 +188,7 @@ internal sealed partial class HotReloadStatusView : Control
 
 		foreach (var localOp in status.Local.Operations)
 		{
-			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_appHrEntries, localOp.Id, out bool exists);
+			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_appHrEntries, localOp.Id, out var exists);
 			if (exists)
 			{
 				entry!.Update(localOp);
@@ -231,19 +204,13 @@ internal sealed partial class HotReloadStatusView : Control
 		SyncLog(log, _appHrEntries.Values);
 
 		// Add a log entry for the **status** change.
-		switch (oldStatus?.State ?? HotReloadState.Initializing, status.State)
+		if (EngineEntry.TryCreateNew(oldStatus, status) is { } engineEntry)
 		{
-			case ( < HotReloadState.Ready, HotReloadState.Ready):
-				Insert(log, new EngineEntry { Title = "Connected", Icon = EntryIcon.Connection | EntryIcon.Success });
-				break;
-
-			case (not HotReloadState.Disabled, HotReloadState.Disabled):
-				Insert(log, new EngineEntry { Title = "Cannot initialize", Icon = EntryIcon.Connection | EntryIcon.Error });
-				break;
+			Insert(log, engineEntry);
 		}
 	}
 
-	public void UpdateViusalStates(bool useTransitions = true)
+	public void UpdateVisualStates(bool useTransitions = true)
 	{
 		var log = History;
 

@@ -166,7 +166,7 @@
 									Margin="4,-2,0,0" />
 								<TextBlock
 									Margin="8,0"
-									Text="{Binding Description}"
+									Text="{Binding ToastDescription}"
 									FontSize="11"
 									VerticalAlignment="Center"
 									HorizontalAlignment="Center" />
@@ -196,7 +196,7 @@
 									Margin="4,-2,0,0" />
 								<TextBlock 
 									Margin="8,0" 
-									Text="{Binding Description}"
+									Text="{Binding ToastDescription}"
 									FontSize="11"
 									VerticalAlignment="Center"
 									HorizontalAlignment="Center" />
