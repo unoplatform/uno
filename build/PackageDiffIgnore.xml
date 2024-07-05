@@ -1858,7 +1858,7 @@
 
 		<Methods>
 			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar\..*" reason="Not in UWP" isRegex="true" />
-      
+
 			<!-- AutomationPeers -->
 			<Member fullName="System.Void Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
@@ -1867,26 +1867,46 @@
 			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_KeyboardAccelerators(System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Input.KeyboardAccelerator&gt; value)" reason="Keyboard Accelerators setter is not public" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_KeyboardAccelerators(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Input.KeyboardAccelerator&gt; value)" reason="Keyboard Accelerators setter is not public" />
 			<!-- END Keyboard accelerators -->
+
+			<!-- MarkupExtensions\XamlServiceProvider -->
+			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
+			<Member fullName="Windows.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Windows.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
+
 		</Methods>
 	</IgnoreSet>
-  <!--
-	Supported nodes (please keep at the bottom of this file):
-	<IgnoreSet baseVersion="0.0">
-		<Types>
-		</Types>
 
-		<Events>
-		</Events>
+	<![CDATA[
+		The 'baseVersion' should be the current latest stable version published on nuget, 
+		NOT what will be published by the PR in progress.
+		To test locally, you need to install: 
+			; the tool version can be found from the failed task OR look for "ValidatePackage" in Uno.UI.Build.csproj
+			dotnet tool install --global Uno.PackageDiff --version 1.1.0-dev.25
+		Then, run this command: // the command is supposed to be one line
+			generatepkgdiff
+				--base=path/to/the-latest-stable-from-nuget-org/uno.winui.5.2.175.nupkg
+				--other=path/to/nupkg-from-the-pr-artifact/Uno.WinUI.5.4.0-PullRequest-17260-131308-17260.nupkg
+				--diffignore=path/to/this-repo/build/PackageDiffIgnore.xml
+				--outfile=diff.md
+			| findstr Error
+	]]>
+	<!--
+		Supported nodes (please keep at the bottom of this file):
+		<IgnoreSet baseVersion="0.0">
+			<Types>
+			</Types>
 
-		<Fields>
-		</Fields>
+			<Events>
+			</Events>
 
-		<Properties>
-		</Properties>
+			<Fields>
+			</Fields>
 
-		<Methods>
-		</Methods>
-	</IgnoreSet>
+			<Properties>
+			</Properties>
+
+			<Methods>
+			</Methods>
+		</IgnoreSet>
 	-->
   </IgnoreSets>
 </DiffIgnore>
