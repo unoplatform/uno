@@ -147,9 +147,12 @@ internal sealed partial class HotReloadStatusView : Control
 		var oldStatus = _devServerStatus;
 		_devServerStatus = devServerStatus;
 
-		UpdateLog(oldStatus, devServerStatus);
+		DispatcherQueue.TryEnqueue(() =>
+		{
+			UpdateLog(oldStatus, devServerStatus);
 
-		UpdateVisualStates();
+			UpdateVisualStates();
+		});
 	}
 
 	public void OnHotReloadStatusChanged(Status status)
