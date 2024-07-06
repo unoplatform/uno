@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(FlyoutPresenter);
 		}
 
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			if (args.Property == AllowFocusOnInteractionProperty)
 			{

@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Handle the custom property changed event and call the OnPropertyChanged methods.
 		internal override void OnPropertyChanged2(
-			DependencyPropertyChangedEventArgs args)
+			PropertyChangedParams args)
 		{
 			base.OnPropertyChanged2(args);
 

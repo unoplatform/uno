@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private protected void OnInvalidateRender() => _weakEventManager.HandleEvent(nameof(InvalidateRender));
 
-		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal virtual void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty || args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{

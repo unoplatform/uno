@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			Unloaded += (s, e) => LeaveImpl();
 		}
 
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			base.OnPropertyChanged2(args);
 

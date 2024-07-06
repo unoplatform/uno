@@ -337,7 +337,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Basically these Alignment properties only affect Arrange, but in CalendarView
 		// the item size and Panel size are also affected when we change the property from
 		// stretch to unstretch, or vice versa. In these cases we need to invalidate panels' measure.
-		private void OnAlignmentChanged(DependencyPropertyChangedEventArgs args)
+		private void OnAlignmentChanged(PropertyChangedParams args)
 		{
 			//uint oldAlignment = 0;
 			//uint newAlignment = 0;
@@ -383,7 +383,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Handle the custom property changed event and call the OnPropertyChanged methods.
 		internal override void OnPropertyChanged2(
-			DependencyPropertyChangedEventArgs args)
+			PropertyChangedParams args)
 		{
 			base.OnPropertyChanged2(args);
 

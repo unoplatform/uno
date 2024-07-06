@@ -261,7 +261,7 @@ public sealed partial class TickBar
 		return finalSize;
 	}
 
-	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+	internal override void OnPropertyChanged2(PropertyChangedParams args)
 	{
 		base.OnPropertyChanged2(args);
 

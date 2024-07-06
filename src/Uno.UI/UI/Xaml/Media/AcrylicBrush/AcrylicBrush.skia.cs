@@ -61,7 +61,7 @@ public partial class AcrylicBrush
 		_noiseBrush = null;
 	}
 
-	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+	internal override void OnPropertyChanged2(PropertyChangedParams args)
 	{
 		switch (args.Property.Name)
 		{

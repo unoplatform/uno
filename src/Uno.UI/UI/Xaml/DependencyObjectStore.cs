@@ -1885,7 +1885,7 @@ namespace Microsoft.UI.Xaml
 			bool bypassesPropagation = false
 		)
 		{
-			var eventArgs = new DependencyPropertyChangedEventArgs(property, previousValue, previousPrecedence, newValue, newPrecedence, bypassesPropagation);
+			var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
 			var propertyMetadata = propertyDetails.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
@@ -1924,7 +1924,7 @@ namespace Microsoft.UI.Xaml
 					var localChildrenStores = _childrenStores;
 					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 					{
-						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
+						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, newValue);
 					}
 				}
 			}
@@ -1946,33 +1946,56 @@ namespace Microsoft.UI.Xaml
 			// dependency property value through the cache.
 			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
 
+			DependencyPropertyChangedEventArgs? eventArgs = null;
+
 			// Raise the changes for the callback register to the property itself
-			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+			if (propertyMetadata.HasPropertyChanged)
+			{
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+				);
+				propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+			}
 
 			// Ensure binding is propagated
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+			OnDependencyPropertyChanged(propertyDetails, newValue);
 
 			// Raise the common property change callback of WinUI
 			// This is raised *after* the data bound properties are updated
 			// but before the registered property callbacks
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
-				doInternal.OnPropertyChanged2(eventArgs);
+				doInternal.OnPropertyChanged2(propertyChangedParams);
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
-			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+			if (propertyDetails.CanRaisePropertyChanged)
+			{
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+				);
+				propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+			}
 
 			// Raise the property change for generic handlers
 			var currentCallbacks = _genericCallbacks.Data;
 			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
 				var callback = currentCallbacks[callbackIndex];
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+				);
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
 		}
 
-		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
+		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
 			try
@@ -1982,7 +2005,7 @@ namespace Microsoft.UI.Xaml
 					childStore._parentUnregisteringInheritedProperties = true;
 				}
 
-				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs.NewValue);
+				childStore.OnParentPropertyChangedCallback(instanceRef, property, newValue);
 			}
 			finally
 			{

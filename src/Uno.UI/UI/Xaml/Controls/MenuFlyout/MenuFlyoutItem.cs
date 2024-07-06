@@ -21,10 +21,10 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Text))]
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase
 	{
-		// Whether the pointer is currently over the
+		// Whether the pointer is currently over the MenuFlyoutItem
 		bool m_bIsPointerOver = true;
 
-		// Whether the pointer is currently pressed over the
+		// Whether the pointer is currently pressed over the MenuFlyoutItem
 		internal bool m_bIsPressed = true;
 
 		// Whether the pointer's left button is currently down.
@@ -162,8 +162,6 @@ namespace Microsoft.UI.Xaml.Controls
 		void Initialize()
 		{
 			Loaded += (s, e) => ClearStateFlags();
-
-			this.RegisterDisposablePropertyChangedCallback((s, e, args) => OnPropertyChanged2(args));
 		}
 
 		// Apply a template to the
@@ -478,8 +476,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Handle the custom property changed event and call the OnPropertyChanged2 methods.
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
+			base.OnPropertyChanged2(args);
 			if (args.Property == UIElement.VisibilityProperty)
 			{
 				OnVisibilityChanged();

@@ -27,37 +27,37 @@ namespace Microsoft.UI.Xaml
 		internal DependencyPropertyChangedEventArgs(
 			DependencyProperty property,
 			object oldValue,
-			DependencyPropertyValuePrecedences oldPrecedence,
-			object newValue,
+			object newValue
+#if __IOS__ || __MACOS__
+			, DependencyPropertyValuePrecedences oldPrecedence,
 			DependencyPropertyValuePrecedences newPrecedence,
-			bool bypassesPropagation = false)
+			bool bypassesPropagation
+#endif
+			)
 		{
 			Property = property;
 			OldValue = oldValue;
-			OldPrecedence = oldPrecedence;
 			NewValue = newValue;
+#if __IOS__ || __MACOS__
+			OldPrecedence = oldPrecedence;
 			NewPrecedence = newPrecedence;
 			BypassesPropagation = bypassesPropagation;
+#endif
 		}
 
 		/// <summary>
 		/// Gets the new value of the dependency property.
 		/// </summary>
-		public object NewValue
-		{
-			get;
-			private set;
-		}
+		public object NewValue { get; }
 
 		/// <summary>
 		/// Gets the old value of the dependency property.
 		/// </summary>
-		public object OldValue
-		{
-			get;
-			private set;
-		}
+		public object OldValue { get; }
 
+		public DependencyProperty Property { get; }
+
+#if __IOS__ || __MACOS__
 		/// <summary>
 		/// Gets the dependency property value precedence of the new value
 		/// </summary>
@@ -86,10 +86,6 @@ namespace Microsoft.UI.Xaml
 			get;
 			private set;
 		}
-
-		public DependencyProperty Property
-		{
-			get;
-		}
+#endif
 	}
 }
