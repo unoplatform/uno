@@ -21,8 +21,6 @@ namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
-		private readonly SerialDisposable _fillSubscription = new();
-		private readonly SerialDisposable _strokeSubscription = new();
 		private readonly CompositionSpriteShape _shape;
 		private readonly CompositionPathGeometry _geometry;
 
@@ -70,11 +68,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnFillBrushChanged()
 		{
-			_fillSubscription.Disposable = null;
-
-			_shape.FillBrush = null;
-
-			_fillSubscription.Disposable = Brush.AssignAndObserveBrush(Fill, Visual.Compositor, compositionBrush => _shape.FillBrush = compositionBrush);
+			_shape.FillBrush = Fill?.GetOrCreateCompositionBrush(Visual.Compositor);
 		}
 
 		private void UpdateStrokeThickness()
@@ -102,11 +96,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnStrokeBrushChanged()
 		{
-			_strokeSubscription.Disposable = null;
-
-			_shape.StrokeBrush = null;
-
-			_strokeSubscription.Disposable = Brush.AssignAndObserveBrush(Stroke, Visual.Compositor, compositionBrush => _shape.StrokeBrush = compositionBrush);
+			_shape.StrokeBrush = Stroke?.GetOrCreateCompositionBrush(Visual.Compositor);
 		}
 	}
 }
