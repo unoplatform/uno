@@ -80,6 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_textBoxView.SetFontSize(FontSize);
 			_textBoxView.SetFontStyle(FontStyle);
 			_textBoxView.SetFontWeight(FontWeight);
+			_textBoxView.SetFontStretch(FontStretch);
 			_textBoxView.SetFontFamily(FontFamily);
 		}
 

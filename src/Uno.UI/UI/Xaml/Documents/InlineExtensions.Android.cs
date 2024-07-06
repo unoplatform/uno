@@ -34,6 +34,7 @@ namespace Microsoft.UI.Xaml.Documents
 			return Uno.UI.Controls.TextPaintPool.GetPaint(
 				inline.FontWeight,
 				inline.FontStyle,
+				inline.FontStretch,
 				inline.FontFamily,
 				inline.FontSize,
 				inline.CharacterSpacing,
