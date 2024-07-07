@@ -12,13 +12,13 @@ public partial class XamlCompositionBrushBase : Brush
 	{
 		if (_compositionBrush is null)
 		{
-			var compositionBrush = CompositionBrush;
-			if (compositionBrush is null)
+			if (CompositionBrush is null)
 			{
 				this.OnConnectedInternal();
 			}
 
-			_compositionBrush = new CompositionBrushWrapper(compositionBrush ?? compositor.CreateColorBrush(FallbackColorWithOpacity), compositor);
+			// Don't store CompositionBrush in a local variable. It has to be read again after the null check as OnConnectedInternal may set it.
+			_compositionBrush = new CompositionBrushWrapper(CompositionBrush ?? compositor.CreateColorBrush(FallbackColorWithOpacity), compositor);
 			SynchronizeCompositionBrush();
 		}
 

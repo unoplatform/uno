@@ -63,6 +63,8 @@ public partial class AcrylicBrush
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
+		base.OnPropertyChanged2(args);
+
 		switch (args.Property.Name)
 		{
 			case nameof(TintColor):
