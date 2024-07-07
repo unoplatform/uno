@@ -253,7 +253,9 @@ public partial class Border : FrameworkElement
 
 	#region BorderBrush Dependency Property
 
+#if !__SKIA__
 	private Action _borderBrushChanged;
+#endif
 
 #if __ANDROID__
 	//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
@@ -280,14 +282,15 @@ public partial class Border : FrameworkElement
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
+#if __SKIA__
+		this.UpdateBorderBrush();
+#else
 		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
 		{
-#if UNO_HAS_BORDER_VISUAL
-			this.UpdateBorderBrush();
-#else
-			UpdateBorder();
-#endif
+			UpdateBorder()
 		}));
+#endif
+
 #if __WASM__
 		if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 		{

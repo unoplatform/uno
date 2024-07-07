@@ -84,12 +84,13 @@ namespace Microsoft.UI.Xaml.Media
 
 			if (args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{
-				// TODO: Set wrapped brush directly here
+#if __SKIA__
 				var @this = (XamlCompositionBrushBase)this;
 				if (@this._compositionBrush is CompositionBrushWrapper wrapper)
 				{
 					wrapper.WrappedBrush = (args.NewValue as CompositionBrush) ?? wrapper.Compositor.CreateColorBrush(@this.FallbackColorWithOpacity);
 				}
+#endif
 
 				return;
 			}

@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 			else if (brush is CompositionBrushWrapper wrapper)
 			{
-				TrySetColorFromBrush(wrapper, srcBrush);
+				TrySetColorFromBrush(wrapper.WrappedBrush, srcBrush);
 			}
 		}
 	}
