@@ -348,11 +348,14 @@ namespace Microsoft.UI.Xaml
 
 					// This block is a manual enumeration to avoid the foreach pattern
 					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var settersEnumerator = target.setters.OfType<Setter>().GetEnumerator();
+					var settersEnumerator = target.setters.GetEnumerator();
 
 					while (settersEnumerator.MoveNext())
 					{
-						settersEnumerator.Current.ApplyValue(element);
+						if (settersEnumerator.Current is Setter setter)
+						{
+							setter.ApplyValue(element);
+						}
 					}
 				}
 				finally
@@ -407,9 +410,12 @@ namespace Microsoft.UI.Xaml
 
 			if (nextSetters is { })
 			{
-				foreach (var setter in nextSetters.OfType<Setter>())
+				foreach (var setterBase in nextSetters)
 				{
-					propertiesNotToClear[propsLength++] = setter.TryGetOrCreateBindingPath(element);
+					if (setterBase is Setter setter)
+					{
+						propertiesNotToClear[propsLength++] = setter.TryGetOrCreateBindingPath(element);
+					}
 				}
 			}
 
@@ -423,10 +429,11 @@ namespace Microsoft.UI.Xaml
 
 			if (prevSetters is { })
 			{
-				foreach (var setter in prevSetters.OfType<Setter>())
+				foreach (var setterBase in prevSetters)
 				{
 					// Setters with a null path are always cleared.
-					if (setter.TryGetOrCreateBindingPath(element) is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path)))
+					if (setterBase is Setter setter &&
+						(setter.TryGetOrCreateBindingPath(element) is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path))))
 					{
 						setter.ClearValue();
 					}
