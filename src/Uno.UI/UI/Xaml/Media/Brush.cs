@@ -77,21 +77,8 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty)
+			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty || args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{
-				return;
-			}
-
-			if (args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
-			{
-#if __SKIA__
-				var @this = (XamlCompositionBrushBase)this;
-				if (@this._compositionBrush is CompositionBrushWrapper wrapper)
-				{
-					wrapper.WrappedBrush = (args.NewValue as CompositionBrush) ?? wrapper.Compositor.CreateColorBrush(@this.FallbackColorWithOpacity);
-				}
-#endif
-
 				return;
 			}
 
