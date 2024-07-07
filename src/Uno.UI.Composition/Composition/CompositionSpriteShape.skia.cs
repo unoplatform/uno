@@ -34,8 +34,12 @@ namespace Microsoft.UI.Composition
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
 					fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
+					if (fill is CompositionBrushWrapper wrapper)
+					{
+						fill = wrapper.WrappedBrush;
+					}
 
-					if (FillBrush is CompositionEffectBrush { HasBackdropBrushInput: true })
+					if (fill is CompositionEffectBrush { HasBackdropBrushInput: true })
 					{
 						// workaround until SkiaSharp adds support for SaveLayerRec
 						fillPaint.FilterQuality = SKFilterQuality.High;

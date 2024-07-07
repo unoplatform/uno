@@ -29,12 +29,12 @@ internal static class BorderHelper
 
 	public static void UpdateBackground(this IBorderInfoProvider @this)
 	{
-		@this.BackgroundBrushSubscriptionDisposable.Disposable = Brush.AssignAndObserveBrush(@this.Background, @this.BorderVisual.Compositor, brush => @this.BorderVisual.BackgroundBrush = brush);
+		@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
 	}
 
 	public static void UpdateBorderBrush(this IBorderInfoProvider @this)
 	{
-		@this.BorderBrushSubscriptionDisposable.Disposable = Brush.AssignAndObserveBrush(@this.BorderBrush, @this.BorderVisual.Compositor, brush => @this.BorderVisual.BorderBrush = brush);
+		@this.BorderVisual.BorderBrush = @this.BorderBrush?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
 	}
 
 	public static void UpdateAllBorderProperties(this IBorderInfoProvider @this)
