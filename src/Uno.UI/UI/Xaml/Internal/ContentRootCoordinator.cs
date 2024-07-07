@@ -22,7 +22,9 @@ namespace Uno.UI.Xaml.Core
 			_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 		}
 
-		public IReadOnlyList<ContentRoot> ContentRoots => _contentRoots;
+		// The type is not IReadOnlyList or any kind of base class or interface intentionally.
+		// We want enumerating ContentRoots to not box enumerators.
+		public List<ContentRoot> ContentRoots => _contentRoots;
 
 		public ContentRoot? CoreWindowContentRoot
 		{
