@@ -1952,7 +1952,7 @@ namespace Microsoft.UI.Xaml
 			if (propertyMetadata.HasPropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);
@@ -1974,7 +1974,7 @@ namespace Microsoft.UI.Xaml
 			if (propertyDetails.CanRaisePropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);
@@ -1987,7 +1987,7 @@ namespace Microsoft.UI.Xaml
 			{
 				var callback = currentCallbacks[callbackIndex];
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);
