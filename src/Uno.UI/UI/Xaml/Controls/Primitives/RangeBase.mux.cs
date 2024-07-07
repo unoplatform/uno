@@ -49,7 +49,7 @@ public partial class RangeBase : Control
 		return pValue != null;
 	}
 
-	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+	internal override void OnPropertyChanged2(PropertyChangedParams args)
 	{
 		if (args.Property == MinimumProperty)
 		{
@@ -75,7 +75,7 @@ public partial class RangeBase : Control
 	}
 
 	private void HandlePropertyChanged(
-		DependencyPropertyChangedEventArgs args,
+		PropertyChangedParams args,
 		Action<RangeBaseAutomationPeer, double, double> onChanged,
 		Action<RangeBase, double, double> onChangedProtected)
 	{

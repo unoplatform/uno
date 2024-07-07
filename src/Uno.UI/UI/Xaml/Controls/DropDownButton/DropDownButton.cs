@@ -24,7 +24,7 @@ public partial class DropDownButton : Button
 		RegisterFlyoutEvents();
 	}
 
-	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+	internal override void OnPropertyChanged2(PropertyChangedParams args)
 	{
 		if (args.Property == Button.FlyoutProperty)
 		{
@@ -64,7 +64,7 @@ public partial class DropDownButton : Button
 		}
 	}
 
-	private void OnFlyoutPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	private void OnFlyoutPropertyChanged(DependencyObject dependencyObject, PropertyChangedParams args)
 	{
 		if (args.OldValue is Flyout flyout)
 		{

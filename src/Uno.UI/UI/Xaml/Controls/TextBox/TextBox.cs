@@ -712,7 +712,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 #if SUPPORTS_RTL
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			base.OnPropertyChanged2(args);
 			if (args.Property == FrameworkElement.FlowDirectionProperty)

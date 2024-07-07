@@ -201,7 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			base.OnPropertyChanged2(args);
 

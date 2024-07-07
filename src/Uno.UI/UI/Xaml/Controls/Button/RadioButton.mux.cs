@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Register("", this);
 		}
 
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			base.OnPropertyChanged2(args);
 

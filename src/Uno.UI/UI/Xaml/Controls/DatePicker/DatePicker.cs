@@ -1280,7 +1280,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Handle the custom propery changed event and call the
 		// OnPropertyChanged2 methods.
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			// DatePickerGenerated.OnPropertyChanged2(args);
 

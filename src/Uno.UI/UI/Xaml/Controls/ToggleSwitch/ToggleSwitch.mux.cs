@@ -234,7 +234,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return base.GetDefaultValue2(dependencyProperty, out value);
 		}
 
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(PropertyChangedParams args)
 		{
 			bool hasAutomationListener = false;
 

@@ -817,11 +817,11 @@ public override bool Equals(object other)
 
 				if (_isUnoSolution && !typeSymbol.IsSealed)
 				{
-					builder.AppendLineIndented("void IDependencyObjectInternal.OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);");
+					builder.AppendLineIndented("void IDependencyObjectInternal.OnPropertyChanged2(global::Microsoft.UI.Xaml.PropertyChangedParams args) => OnPropertyChanged2(args);");
 
 					if (typeSymbol.GetMethodsWithName("OnPropertyChanged2").None(m => m.Parameters.Length == 1))
 					{
-						builder.AppendLineIndented("internal virtual void OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) { }");
+						builder.AppendLineIndented("internal virtual void OnPropertyChanged2(global::Microsoft.UI.Xaml.PropertyChangedParams args) { }");
 					}
 				}
 			}
