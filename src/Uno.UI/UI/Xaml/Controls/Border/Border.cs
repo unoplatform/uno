@@ -287,7 +287,7 @@ public partial class Border : FrameworkElement
 #else
 		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
 		{
-			UpdateBorder()
+			UpdateBorder();
 		}));
 #endif
 
