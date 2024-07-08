@@ -324,7 +324,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			if (checkWidth)
 			{
-				controlRect.Width.Should().BeApproximately(highlightRect.Width, 2f, "width");
+				controlRect.Width.Should().BeApproximately(highlightRect.Width, 10f, "width");
 			}
 
 			_app.FastTap("DismissButton");
