@@ -139,7 +139,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.Ready:
-					_globalState = HotReloadState.Idle;
+					_globalState = HotReloadState.Ready;
 					await SendUpdate();
 					break;
 
@@ -160,7 +160,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.RudeEdit:
-				case HotReloadEvent.RudeEditDialogButton:
 					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
 					break;
 			}

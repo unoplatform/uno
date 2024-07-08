@@ -1,38 +1,32 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Diagnostics.UI;
-using Uno.UI.RemoteControl.HotReload.Messages;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
-using static Uno.UI.RemoteControl.RemoteControlStatus;
-using Path = System.IO.Path;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-[TemplatePart(Name = DevServerStatusPartName, Type = typeof(RemoteControlStatusView))]
 [TemplateVisualState(GroupName = "Status", Name = StatusUnknownVisualStateName)]
-[TemplateVisualState(GroupName = "Status", Name = StatusErrorVisualStateName)]
 [TemplateVisualState(GroupName = "Status", Name = StatusInitializingVisualStateName)]
-[TemplateVisualState(GroupName = "Status", Name = StatusIdleVisualStateName)]
-[TemplateVisualState(GroupName = "Status", Name = StatusProcessingVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusReadyVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusWarningVisualStateName)]
+[TemplateVisualState(GroupName = "Status", Name = StatusErrorVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultNoneVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultSuccessVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultFailedVisualStateName)]
 internal sealed partial class HotReloadStatusView : Control
 {
-	private const string DevServerStatusPartName = "PART_DevServerStatus";
-
 	private const string StatusUnknownVisualStateName = "Unknown";
-	private const string StatusErrorVisualStateName = "Error";
 	private const string StatusInitializingVisualStateName = "Initializing";
-	private const string StatusIdleVisualStateName = "Idle";
-	private const string StatusProcessingVisualStateName = "Processing";
+	private const string StatusReadyVisualStateName = "Ready";
+	private const string StatusErrorVisualStateName = "Error";
+	private const string StatusWarningVisualStateName = "Warning";
 
 	private const string ResultNoneVisualStateName = "None";
 	private const string ResultSuccessVisualStateName = "Success";
@@ -45,9 +39,9 @@ internal sealed partial class HotReloadStatusView : Control
 		typeof(HotReloadStatusView),
 		new PropertyMetadata(default(string), (snd, args) => ToolTipService.SetToolTip(snd, args.NewValue?.ToString())));
 
-	public string HeadLine
+	public string? HeadLine
 	{
-		get => (string)GetValue(HeadLineProperty);
+		get => (string?)GetValue(HeadLineProperty);
 		private set => SetValue(HeadLineProperty, value);
 	}
 	#endregion
@@ -55,14 +49,28 @@ internal sealed partial class HotReloadStatusView : Control
 	#region History (DP)
 	public static DependencyProperty HistoryProperty { get; } = DependencyProperty.Register(
 		nameof(History),
-		typeof(ObservableCollection<HotReloadEntryViewModel>),
+		typeof(ObservableCollection<HotReloadLogEntry>),
 		typeof(HotReloadStatusView),
-		new PropertyMetadata(default(ObservableCollection<HotReloadEntryViewModel>)));
+		new PropertyMetadata(default(ObservableCollection<HotReloadLogEntry>)));
 
-	public ObservableCollection<HotReloadEntryViewModel> History
+	public ObservableCollection<HotReloadLogEntry> History
 	{
-		get => (ObservableCollection<HotReloadEntryViewModel>)GetValue(HistoryProperty);
+		get => (ObservableCollection<HotReloadLogEntry>)GetValue(HistoryProperty);
 		private init => SetValue(HistoryProperty, value);
+	}
+	#endregion
+
+	#region ProcessingNotification (DP)
+	public static readonly DependencyProperty ProcessingNotificationProperty = DependencyProperty.Register(
+		nameof(ProcessingNotification),
+		typeof(DiagnosticViewNotification),
+		typeof(HotReloadStatusView),
+		new PropertyMetadata(default(DiagnosticViewNotification?)));
+
+	public DiagnosticViewNotification? ProcessingNotification
+	{
+		get => (DiagnosticViewNotification?)GetValue(ProcessingNotificationProperty);
+		set => SetValue(ProcessingNotificationProperty, value);
 	}
 	#endregion
 
@@ -98,8 +106,10 @@ internal sealed partial class HotReloadStatusView : Control
 	private string _resultState = ResultNoneVisualStateName;
 
 	private Status? _hotReloadStatus;
-	private (RemoteControlStatusView view, long token)? _devServer;
-	private Classification _devServerState;
+	private RemoteControlStatus? _devServerStatus;
+
+	private readonly Dictionary<long, ServerEntry> _serverHrEntries = new();
+	private readonly Dictionary<long, ApplicationEntry> _appHrEntries = new();
 
 	public HotReloadStatusView(IDiagnosticViewContext ctx)
 	{
@@ -107,138 +117,188 @@ internal sealed partial class HotReloadStatusView : Control
 		DefaultStyleKey = typeof(HotReloadStatusView);
 		History = [];
 
-		UpdateHeadline(null);
+		UpdateVisualStates(false);
 
 		Loaded += static (snd, _) =>
 		{
 			// Make sure to hide the diagnostics overlay when the view is loaded (in case the template was applied while out of the visual tree).
-			if (snd is HotReloadStatusView { _devServer: not null, XamlRoot: { } root })
+			if (snd is HotReloadStatusView { XamlRoot: { } root } that)
 			{
 				DiagnosticsOverlay.Get(root).Hide(RemoteControlStatusView.Id);
+				if (RemoteControlClient.Instance is { } devServer)
+				{
+					devServer.StatusChanged += that.OnDevServerStatusChanged;
+					that.OnDevServerStatusChanged(null, devServer.Status);
+				}
+			}
+		};
+		Unloaded += static (snd, _) =>
+		{
+			if (snd is HotReloadStatusView that
+				&& RemoteControlClient.Instance is { } devServer)
+			{
+				devServer.StatusChanged -= that.OnDevServerStatusChanged;
 			}
 		};
 	}
 
-	/// <inheritdoc />
-	protected override void OnApplyTemplate()
+	private void OnDevServerStatusChanged(object? sender, RemoteControlStatus devServerStatus)
 	{
-		if (_devServer is { } devServer)
+		var oldStatus = _devServerStatus;
+		_devServerStatus = devServerStatus;
+
+		DispatcherQueue.TryEnqueue(() =>
 		{
-			devServer.view.UnregisterPropertyChangedCallback(RemoteControlStatusView.StatusProperty, devServer.token);
-		}
+			UpdateLog(oldStatus, devServerStatus);
 
-		base.OnApplyTemplate();
-
-		if (GetTemplateChild(DevServerStatusPartName) is RemoteControlStatusView { HasServer: true } devServerView)
-		{
-			var token = devServerView.RegisterPropertyChangedCallback(
-				RemoteControlStatusView.StatusProperty,
-				(snd, _) => OnDevServerStatusChanged(((RemoteControlStatusView)snd).Status));
-			_devServer = (devServerView, token);
-
-			if (devServerView.Parent is Panel devServerTouchTarget) // TODO: The RemoteControlStatusView should be a templatable control and do that by it own...
-			{
-				devServerTouchTarget.Tapped += (snd, _) => devServerView.ShowDetails();
-			}
-
-			if (XamlRoot is { } root)
-			{
-				DiagnosticsOverlay.Get(root).Hide(RemoteControlStatusView.Id);
-			}
-		}
-	}
-
-	private void OnDevServerStatusChanged(RemoteControlStatus devServerStatus)
-	{
-		_devServerState = devServerStatus.GetSummary().kind;
-
-		UpdateStatusVisualState();
+			UpdateVisualStates();
+		});
 	}
 
 	public void OnHotReloadStatusChanged(Status status)
 	{
+		var oldStatus = _hotReloadStatus;
 		_hotReloadStatus = status;
 
-		UpdateHeadline(status);
-		UpdateHistory(status);
+		UpdateLog(oldStatus, status);
 
-		UpdateStatusVisualState();
+		UpdateVisualStates();
 	}
 
-	public void UpdateHeadline(Status? status)
+	private void UpdateLog(RemoteControlStatus? oldStatus, RemoteControlStatus newStatus)
 	{
-		HeadLine = status?.State switch
+		if (DevServerEntry.TryCreateNew(oldStatus, newStatus) is { } entry)
 		{
-			null => """
-					State of the hot-reload engine is unknown.
-					This usually indicates that connection to the IDE failed, but if running within VisualStudio, updates might still be detected.
-					""",
-			HotReloadState.Disabled => "Hot-reload is disabled.",
-			HotReloadState.Initializing => "Hot-reload engine is initializing.",
-			HotReloadState.Idle => "Hot-reload engine is ready and listening for file changes.",
-			HotReloadState.Processing => "Hot-reload engine is processing file changes",
-			_ => "Unable to determine the state of the hot-reload engine."
-		};
+			Insert(History, entry);
+		}
 	}
 
-	private void UpdateHistory(Status status)
+	private void UpdateLog(Status? oldStatus, Status status)
 	{
-		var history = History;
-		var vms = history.ToDictionary(op => (IsServer: op.IsIDE, op.Id));
-
+		// Add or update the entries for the **operations** (server and the application).
 		foreach (var srvOp in status.Server.Operations)
 		{
-			if (vms.TryGetValue((true, srvOp.Id), out var vm))
+			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_serverHrEntries, srvOp.Id, out var exists);
+			if (exists)
 			{
-				vm.Update(srvOp);
+				entry!.Update(srvOp);
 			}
 			else
 			{
-				history.Insert(FindIndex(srvOp.StartTime), new HotReloadEntryViewModel(srvOp));
+				entry = new ServerEntry(srvOp);
 			}
 		}
 
 		foreach (var localOp in status.Local.Operations)
 		{
-			if (vms.TryGetValue((false, localOp.Id), out var vm))
+			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_appHrEntries, localOp.Id, out var exists);
+			if (exists)
 			{
-				vm.Update(localOp);
+				entry!.Update(localOp);
 			}
 			else
 			{
-				history.Insert(FindIndex(localOp.StartTime), new HotReloadEntryViewModel(localOp));
+				entry = new ApplicationEntry(localOp);
 			}
 		}
 
-		// Finally once we synced the history, we update the "result" visual state.
-		var resultState = history switch
+		var log = History;
+		SyncLog(log, _serverHrEntries.Values);
+		SyncLog(log, _appHrEntries.Values);
+
+		// Add a log entry for the **status** change.
+		if (EngineEntry.TryCreateNew(oldStatus, status) is { } engineEntry)
+		{
+			Insert(log, engineEntry);
+		}
+	}
+
+	public void UpdateVisualStates(bool useTransitions = true)
+	{
+		var log = History;
+
+		var connectionEntry = log.FirstOrDefault(e => e.Source is EntrySource.Engine or EntrySource.DevServer);
+		var operationEntries = log.Where(entry => entry.Source is EntrySource.Server or EntrySource.Application).ToList();
+
+		// Update the "status"(a.k.a. "connection state") visual state.
+		if (connectionEntry is null)
+		{
+			HeadLine = null;
+			VisualStateManager.GoToState(this, StatusUnknownVisualStateName, useTransitions);
+		}
+		else
+		{
+			HeadLine = connectionEntry.Description;
+			var state = (connectionEntry.Icon & ~(EntryIcon.HotReload | EntryIcon.Connection)) switch
+			{
+				EntryIcon.Loading => StatusInitializingVisualStateName,
+				EntryIcon.Success => StatusReadyVisualStateName,
+				EntryIcon.Warning when operationEntries.Any(op => op.IsSuccess ?? false) => StatusReadyVisualStateName,
+				EntryIcon.Warning => StatusWarningVisualStateName,
+				EntryIcon.Error => StatusErrorVisualStateName,
+				_ => StatusUnknownVisualStateName
+			};
+			VisualStateManager.GoToState(this, state, useTransitions);
+		}
+
+		// Then the "result" visual state (en send notifications).
+		var resultState = operationEntries switch
 		{
 			{ Count: 0 } => ResultNoneVisualStateName,
-			_ when history.Any(op => op.IsSuccess is null) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
+			_ when operationEntries.Any(op => op.IsSuccess is null) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
 			[{ IsSuccess: true }, ..] => ResultSuccessVisualStateName,
 			_ => ResultFailedVisualStateName
 		};
 		if (resultState != _resultState)
 		{
 			_resultState = resultState;
-			VisualStateManager.GoToState(this, resultState, true);
-			switch (resultState)
-			{
-				case ResultSuccessVisualStateName when SuccessNotification is not null:
-					_ctx.Notify(SuccessNotification);
-					break;
+			VisualStateManager.GoToState(this, resultState, useTransitions);
 
-				case ResultFailedVisualStateName when FailureNotification is not null:
-					_ctx.Notify(FailureNotification);
-					break;
+			var notif = resultState switch
+			{
+				ResultNoneVisualStateName when operationEntries is { Count: > 0 } => ProcessingNotification,
+				ResultSuccessVisualStateName => SuccessNotification,
+				ResultFailedVisualStateName => FailureNotification,
+				_ => default
+			};
+			if (notif is not null)
+			{
+				if (notif.Content is null or HotReloadLogEntry)
+				{
+					notif.Content = operationEntries[0];
+				}
+
+				_ctx.Notify(notif);
 			}
 		}
+	}
+
+	#region Misc helpers
+	private static void SyncLog<TEntry>(ObservableCollection<HotReloadLogEntry> history, ICollection<TEntry> entries)
+		where TEntry : HotReloadLogEntry
+	{
+		foreach (var entry in entries)
+		{
+			if (entry.Title is null)
+			{
+				history.Remove(entry);
+			}
+			else if (!history.Contains(entry))
+			{
+				Insert(history, entry);
+			}
+		}
+	}
+
+	private static void Insert(ObservableCollection<HotReloadLogEntry> history, HotReloadLogEntry entry)
+	{
+		history.Insert(FindIndex(entry.Timestamp), entry);
 
 		int FindIndex(DateTimeOffset date)
 		{
 			for (var i = 0; i < history.Count; i++)
 			{
-				if (history[i].Start > date)
+				if (history[i].Timestamp > date)
 				{
 					return i;
 				}
@@ -247,127 +307,5 @@ internal sealed partial class HotReloadStatusView : Control
 			return 0;
 		}
 	}
-
-	private void UpdateStatusVisualState()
-	{
-		var state = (_devServerStatus: _devServerState, _hotReloadStatus?.State) switch
-		{
-			(Classification.Error, _) => StatusErrorVisualStateName,
-			(_, HotReloadState.Disabled) => StatusErrorVisualStateName,
-
-			(_, HotReloadState.Initializing) => StatusInitializingVisualStateName,
-			(Classification.Info, _) => StatusInitializingVisualStateName,
-
-			(Classification.Warning, _) when !HasSuccessfulLocalOperation(_hotReloadStatus) => StatusUnknownVisualStateName, // e.g. invalid processors version
-
-			(_, HotReloadState.Idle) => StatusIdleVisualStateName,
-
-			(_, HotReloadState.Processing) => StatusProcessingVisualStateName,
-
-			_ => StatusUnknownVisualStateName
-		};
-
-		VisualStateManager.GoToState(this, state, true);
-
-		static bool HasSuccessfulLocalOperation(Status? status)
-			=> status is not null
-				&& status.Local.Operations.Any(op => op.Result is HotReloadClientResult.Success);
-	}
-}
-
-[Microsoft.UI.Xaml.Data.Bindable]
-internal sealed record HotReloadEntryViewModel(bool IsIDE, long Id, DateTimeOffset Start) : INotifyPropertyChanged
-{
-	/// <inheritdoc />
-	public event PropertyChangedEventHandler? PropertyChanged;
-
-	public bool? IsSuccess { get; set; }
-	public TimeSpan? Duration { get; set; }
-	public string? Description { get; set; }
-
-	// Quick patch as we don't have MVUX
-	public string Title => $"{Start.LocalDateTime:T} - {(IsIDE ? "IDE" : "Application")}{GetDuration()}".ToString(CultureInfo.CurrentCulture);
-
-	public HotReloadEntryViewModel(HotReloadClientOperation localOp)
-		: this(false, localOp.Id, localOp.StartTime)
-	{
-		Update(localOp);
-	}
-
-	public HotReloadEntryViewModel(HotReloadServerOperationData srvOp)
-		: this(true, srvOp.Id, srvOp.StartTime)
-	{
-		Update(srvOp);
-	}
-
-	internal void Update(HotReloadClientOperation localOp)
-	{
-		var types = localOp.CuratedTypes;
-
-		IsSuccess = localOp.Result switch
-		{
-			null => null,
-			HotReloadClientResult.Success => true,
-			_ => false
-		};
-		Description = localOp.Result switch
-		{
-			null => $"Processing changes{Join(types, "types")} (total of {localOp.Types.Length} types updated).",
-			HotReloadClientResult.Success => $"Application received changes{Join(types, "types")} and updated the view (total of {localOp.Types.Length} types updated).",
-			HotReloadClientResult.Failed => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but failed to update the view ({localOp.Exceptions.FirstOrDefault()?.Message}).",
-			HotReloadClientResult.Ignored when localOp.Types is null or { Length: 0 } => $"Application received changes{Join(types, "types")} but view was not been updated because {localOp.IgnoreReason}.",
-			HotReloadClientResult.Ignored => $"Application received changes{Join(types, "types")} (total of {localOp.Types.Length} types updated) but view was not been updated because {localOp.IgnoreReason}.",
-			_ => $"Unknown application operation result: {localOp.Result}."
-		};
-		Duration = localOp.EndTime is not null ? localOp.EndTime - localOp.StartTime : null;
-
-		RaiseChanged();
-	}
-
-	public void Update(HotReloadServerOperationData srvOp)
-	{
-		string[] files = srvOp.FilePaths.Select(Path.GetFileName).ToArray()!;
-
-		IsSuccess = srvOp.Result switch
-		{
-			null => null,
-			HotReloadServerResult.Success or HotReloadServerResult.NoChanges => true,
-			_ => false
-		};
-		Description = srvOp.Result switch
-		{
-			null => $"Processing changes{Join(files, "files")}.",
-			HotReloadServerResult.NoChanges => $"No changes detected by the server{Join(files, "files")}.",
-			HotReloadServerResult.Success => $"IDE successfully detected and compiled changes{Join(files, "files")}.",
-			HotReloadServerResult.RudeEdit => $"IDE detected changes{Join(files, "files")} but is not able to apply them.",
-			HotReloadServerResult.Failed => $"IDE detected changes{Join(files, "files")} but is not able to compile them.",
-			HotReloadServerResult.Aborted => $"Hot-reload has been cancelled (usually because some other changes has been detected).",
-			HotReloadServerResult.InternalError => "Hot-reload failed for due to an internal error.",
-			_ => $"Unknown IDE operation result: {srvOp.Result}."
-		};
-		Duration = srvOp.EndTime is not null ? srvOp.EndTime - srvOp.StartTime : null;
-
-		RaiseChanged();
-	}
-
-	private void RaiseChanged()
-		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-
-	private string GetDuration()
-		=> Duration switch
-		{
-			null => string.Empty,
-			{ TotalMilliseconds: < 1000 } ms => $" - {ms.TotalMilliseconds:F0} ms",
-			{ TotalSeconds: < 3 } s => $" - {s.TotalSeconds:N0} s",
-			{ } d => $" - {d:g}"
-		};
-
-	private static string Join(string[] items, string itemType)
-		=> items switch
-		{
-			{ Length: 0 } => "",
-			{ Length: 1 } => $" in {items[0]}",
-			{ Length: <= 3 } => $" in {string.Join(",", items[..^1])} and {items[^1]}",
-			_ => $" in {string.Join(",", items[..3])} and {items.Length - 3} other {itemType}"
-		};
+	#endregion
 }
