@@ -185,6 +185,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+
+		private void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+			InvalidateTextBlock();
+		}
+
+		partial void OnFontStretchChangedPartial();
+
+		#endregion
+
 		#region TextWrapping Dependency Property
 
 		public TextWrapping TextWrapping
@@ -772,6 +793,10 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnIsTextTrimmedChangedPartial();
 
 		#endregion
+
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correctly on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
 
 		/// <summary>
 		/// Gets whether the TextBlock is using the fast path in which Inlines

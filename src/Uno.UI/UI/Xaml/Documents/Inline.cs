@@ -33,6 +33,8 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnFontWeightChanged() => base.OnFontWeightChanged();
 
 		protected override void OnFontSizeChanged() => base.OnFontSizeChanged();
+
+		protected override void OnFontStretchChanged() => base.OnFontStretchChanged();
 #endif
 	}
 }
