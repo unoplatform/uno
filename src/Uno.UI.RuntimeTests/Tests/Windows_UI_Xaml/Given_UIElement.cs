@@ -1649,6 +1649,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, dragOverCount);
 			Assert.AreEqual(0, dropCount);
 
+			mouse.MoveTo(new Windows.Foundation.Point(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top + 15), 1);
+			await TestServices.WindowHelper.WaitForIdle();
 			mouse.MoveTo(new Windows.Foundation.Point(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top + 10), 1);
 			await TestServices.WindowHelper.WaitForIdle();
 
