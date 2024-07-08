@@ -32,8 +32,8 @@ internal record DevServerEntry() : HotReloadLogEntry(EntrySource.DevServer, -1, 
 			({ InvalidFrames.Count: 0 }, { InvalidFrames.Count: > 0 }) => (EntryIcon.Warning, "Unknown messages"),
 			({ MissingRequiredProcessors.IsEmpty: true }, { MissingRequiredProcessors.IsEmpty: false }) => (EntryIcon.Warning, "Processors missing"),
 
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Late }) => (EntryIcon.Error, "Connection lost (> 1000ms)"),
-			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Lost }) => (EntryIcon.Error, "Connection lost (> 1s)"),
+			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Late }) => (EntryIcon.Error, "Connection lost (>1000ms)"),
+			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Lost }) => (EntryIcon.Error, "Connection lost (>1s)"),
 			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Aborted }) => (EntryIcon.Error, "Connection lost (keep-alive)"),
 			({ State: ConnectionState.Connected }, { State: ConnectionState.Disconnected }) => (EntryIcon.Error, "Connection lost"),
 
