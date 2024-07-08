@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeDashArray()
 		{
-			var compositionStrokeDashArray = new CompositionStrokeDashArray();
+			var compositionStrokeDashArray = new CompositionStrokeDashArray(_shape.Compositor);
 			var strokeDashArray = StrokeDashArray;
 			if (strokeDashArray is null)
 			{
