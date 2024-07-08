@@ -13,10 +13,15 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">ios-arm64</RuntimeIdentifiers>
+		<ApplicationId>uno.platform.samplesdev</ApplicationId>
+
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
+		
+		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</InvariantGlobalization>
 
 		<!--
 		Required for Catalyst nuget restore to revalidate
@@ -40,7 +45,13 @@
 		<ProjectCapability Include="DiagnoseCapabilities" />
 	</ItemGroup>
 
-	
+	<Target Name="AdjustCalabash" BeforeTargets="BeforeBuild">
+		<!-- Needs to be run as a target, as RuntimeIdentifier is set after the csproj is parsed -->
+		<PropertyGroup Condition="!$(RuntimeIdentifier.Contains('arm64'))">
+			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
+		</PropertyGroup>
+	</Target>
+
 	<Choose>
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">
@@ -52,7 +63,13 @@
 			</ItemGroup>
 
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
+
+				<!-- iOS 17 compatibility -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+				
+				<!-- TODO:MZ: Build issues  Failed to AOT compile Uno.UI.RuntimeTests.dll, aot-instances.dll, the AOT compiler exited with code 139 / 1. -->
+				<MtouchUseLlvm>false</MtouchUseLlvm>
 			</PropertyGroup>
 
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
@@ -62,6 +79,10 @@
 				<CodesignKey>iPhone Distribution</CodesignKey>
 				<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
+			</PropertyGroup>
+			
+			<PropertyGroup>
+				<UNOHAS_ARM64>$(RuntimeIdentifier.Contains('arm64'))</UNOHAS_ARM64>
 			</PropertyGroup>
 			
 			<ItemGroup>
@@ -160,6 +181,11 @@
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios17.0'">
+	  <CodesignKey>Apple Development: Created via API (L89KS38JH3)</CodesignKey>
+	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
 	</PropertyGroup>
 
 

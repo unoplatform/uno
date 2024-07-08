@@ -5,6 +5,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<Import Project="../targetframework-override.props" />
+	
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<authors>Uno Platform</authors>
