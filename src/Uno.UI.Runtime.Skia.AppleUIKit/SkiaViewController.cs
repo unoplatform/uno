@@ -60,6 +60,12 @@ public class SkiaViewController : UINavigationController, IRotationAwareViewCont
 		UIApplication.Notifications
 			.ObserveWillResignActive((sender, args) =>
 				VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator!.CoreWindowContentRoot!.XamlRoot));
+
+		// iOS 17+ only
+		if (UIDevice.CurrentDevice.CheckSystemVersion(17, 0))
+		{
+			((IUITraitChangeObservable)this).RegisterForTraitChanges<UITraitUserInterfaceStyle>((env, traits) => SystemThemeHelper.RefreshSystemTheme());
+		}
 	}
 
 	// This will handle when the status bar is showed / hidden by the system on iPhones
@@ -87,11 +93,11 @@ public class SkiaViewController : UINavigationController, IRotationAwareViewCont
 
 #pragma warning disable CA1422 // Validate platform compatibility
 	public override bool ShouldAutorotate() => CanAutorotate && base.ShouldAutorotate();
-#pragma warning restore CA1422 // Validate platform compatibility
 
 	public override void TraitCollectionDidChange(UITraitCollection? previousTraitCollection)
 	{
 		base.TraitCollectionDidChange(previousTraitCollection);
 		SystemThemeHelper.RefreshSystemTheme();
 	}
+#pragma warning restore CA1422 // Validate platform compatibility
 }

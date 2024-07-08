@@ -32,7 +32,7 @@ internal class RootViewController : UINavigationController, IXamlRootHost
 			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));
 			if (rootElement.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual);
+				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, null);
 			}
 		}
 	}
