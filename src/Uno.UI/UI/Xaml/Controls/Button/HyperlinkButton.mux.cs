@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// SetCursor(MouseCursorHand)
 		}
 
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnPropertyChanged2(args);
 

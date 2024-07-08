@@ -39,7 +39,7 @@ public partial class Popup : FrameworkElement, IPopup
 	/// </summary>
 	internal bool PropagatesDataContextToChild { get; set; } = true;
 
-	internal override void OnPropertyChanged2(PropertyChangedParams args)
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		if (args.Property == AllowFocusOnInteractionProperty ||
 			args.Property == AllowFocusWhenDisabledProperty)

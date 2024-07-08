@@ -203,7 +203,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			if (args.Property == IsOpenProperty)
 			{

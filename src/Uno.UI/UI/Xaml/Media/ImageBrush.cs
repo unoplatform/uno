@@ -97,7 +97,7 @@ namespace Microsoft.UI.Xaml.Media
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
 		#endregion
 
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnPropertyChanged2(args);
 			if (args.Property == ImageSourceProperty)
@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		private static void OnImageSourceChanged(ImageBrush brush, PropertyChangedParams args)
+		private static void OnImageSourceChanged(ImageBrush brush, DependencyPropertyChangedEventArgs args)
 		{
 			if (args.OldValue is ImageSource oldSource)
 			{

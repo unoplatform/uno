@@ -25,7 +25,7 @@ public partial class XamlCompositionBrushBase : Brush
 		return _compositionBrush;
 	}
 
-	internal override void OnPropertyChanged2(PropertyChangedParams args)
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
 

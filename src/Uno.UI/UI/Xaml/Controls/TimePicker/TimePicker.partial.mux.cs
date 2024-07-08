@@ -257,7 +257,7 @@ partial class TimePicker
 	/// <summary>
 	/// Handle the custom property changed event and call the
 	/// </summary>
-	internal override void OnPropertyChanged2(PropertyChangedParams args)
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
 

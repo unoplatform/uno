@@ -21,7 +21,7 @@ partial class StandardUICommand : IDependencyObjectInternal
 		PopulateForKind(kind);
 	}
 
-	void IDependencyObjectInternal.OnPropertyChanged2(PropertyChangedParams args)
+	void IDependencyObjectInternal.OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		//base.OnPropertyChanged2(args);
 
