@@ -11,6 +11,6 @@
 	</Target>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.4.0-dev.6" />
+		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.4.0-dev.10" />
 	</ItemGroup>
 </Project>
