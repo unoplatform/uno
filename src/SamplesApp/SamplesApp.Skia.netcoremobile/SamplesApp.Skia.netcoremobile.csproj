@@ -15,7 +15,7 @@
 
 		<ApplicationId>uno.platform.samplesdev</ApplicationId>
 
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-arm64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
@@ -70,6 +70,8 @@
 				
 				<!-- TODO:MZ: Build issues  Failed to AOT compile Uno.UI.RuntimeTests.dll, aot-instances.dll, the AOT compiler exited with code 139 / 1. -->
 				<MtouchUseLlvm>false</MtouchUseLlvm>
+				<UseInterpreter>true</UseInterpreter>
+				<MtouchInterpreter>all</MtouchInterpreter>
 			</PropertyGroup>
 
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
