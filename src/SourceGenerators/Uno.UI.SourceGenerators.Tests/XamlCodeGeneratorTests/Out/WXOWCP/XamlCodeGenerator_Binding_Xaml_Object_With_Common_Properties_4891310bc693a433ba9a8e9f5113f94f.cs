@@ -195,7 +195,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			void IBinding_Xaml_Object_With_Common_Properties_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings();
+				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
 			}
 			void IBinding_Xaml_Object_With_Common_Properties_Bindings.StopTracking()
 			{
