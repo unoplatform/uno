@@ -1767,4 +1767,303 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(800, 800));
 		Assert.AreEqual(new Size(20, 20), knob.DesiredSize);
 	}
+
+	[TestMethod]
+	public void When_One_Child_With_Margin_5()
+	{
+		var SUT = new Grid() { Name = "test" };
+
+		var c1 = new View
+		{
+			Name = "Child01",
+			Margin = new Thickness(5)
+		};
+
+		SUT.Children.Add(c1);
+
+		SUT.Measure(new Size(20, 20));
+
+		SUT.DesiredSize.Should().Be(new Size(10, 10));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 10));
+#endif
+
+		c1.DesiredSize.Should().Be(new Size(10, 10));
+
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(c1).Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
+#endif
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20));
+		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 20, 20));
+
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10));
+		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 20, 20));
+
+		SUT.Children.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void When_One_Child_With_Margin_1234()
+	{
+		var SUT = new Grid
+		{
+			Name = "test",
+			Padding = new Thickness(2)
+		};
+
+		var c1 = new View
+		{
+			Name = "Child01",
+			Margin = new Thickness(1, 2, 3, 4)
+		};
+
+		SUT.Children.Add(c1);
+
+		SUT.Measure(new Size(20, 20));
+
+		SUT.DesiredSize.Should().Be(new Size(8, 10));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(8, 10));
+#endif
+
+		c1.DesiredSize.Should().Be(new Size(4, 6));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(c1).Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
+#endif
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20));
+		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 20, 20));
+
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(12, 10));
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(12, 10));
+		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(16, 16));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(2, 2, 16, 16));
+
+		SUT.Children.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void When_One_Child_With_Margin_1234_Size8()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid
+		{
+			Name = "test",
+			Padding = new Thickness(2)
+		};
+
+		var c1 = new View
+		{
+			Name = "Child01",
+			Margin = new Thickness(1, 2, 3, 4)
+		};
+
+		SUT.Children.Add(c1);
+
+		SUT.Measure(new Size(8, 8));
+
+		SUT.DesiredSize.Should().Be(new Size(8, 8));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(8, 8));
+#endif
+		c1.DesiredSize.Should().Be(new Size(4, 4));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(c1).Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
+#endif
+
+		SUT.Arrange(new Rect(0, 0, 8, 8));
+
+		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 8, 8));
+		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(8, 8));
+
+		c1.SizePassedToArrangeOverride.Should().Be(default);
+		c1.SizePassedToMeasureOverride.Should().Be(default);
+		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(4, 4));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(2, 2, 4, 4));
+
+		SUT.Children.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void When_One_Child_With_Margin_Center_And_Center()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test" };
+
+		var c1 = new View
+		{
+			Name = "Child01",
+			Margin = new Thickness(0, 0, 0, 30),
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+			Height = 10,
+			Width = 10,
+		};
+
+		SUT.Children.Add(c1);
+
+		SUT.Measure(new Size(20, 20));
+
+		SUT.DesiredSize.Should().Be(new Size(10, 20));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20));
+#endif
+		c1.DesiredSize.Should().Be(new Size(10, 20));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
+#endif
+
+		SUT.Arrange(new Rect(0, 0, 50, 50));
+
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10));
+		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50));
+
+		SUT.Children.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void When_One_Child_With_Margin_Center_And_Bottom()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test" };
+
+		var c1 = new View
+		{
+			Name = "Child01",
+			Margin = new Thickness(0, 0, 0, 30),
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Bottom,
+			Height = 10,
+			Width = 10,
+		};
+
+		SUT.Children.Add(c1);
+
+		SUT.Measure(new Size(20, 20));
+
+		SUT.DesiredSize.Should().Be(new Size(10, 20));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20));
+#endif
+		c1.DesiredSize.Should().Be(new Size(10, 20));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
+#endif
+
+		SUT.Arrange(new Rect(0, 0, 50, 50));
+
+		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20));
+		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 50, 50));
+
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10));
+		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50));
+
+		SUT.Children.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void When_One_Child_With_Margin_Center_And_Top()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test" };
+
+		var c1 = new View
+		{
+			Name = "Child01",
+			Margin = new Thickness(0, 0, 0, 30),
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Top,
+			Height = 10,
+			Width = 10,
+		};
+
+		SUT.Children.Add(c1);
+
+		SUT.Measure(new Size(20, 20));
+
+		SUT.DesiredSize.Should().Be(new Size(10, 20));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20));
+#endif
+		c1.DesiredSize.Should().Be(new Size(10, 20));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
+#endif
+
+		SUT.Arrange(new Rect(0, 0, 50, 50));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10));
+		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50));
+
+		SUT.Children.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void When_One_Fixed_Size_Child_With_Margin_Right_And_Stretch()
+	{
+		var SUT = new Grid() { Name = "test" };
+
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+		var c1 = new View
+		{
+			Name = "Child01",
+			Margin = new Thickness(0, 0, 50, 0),
+			HorizontalAlignment = HorizontalAlignment.Stretch,
+			VerticalAlignment = VerticalAlignment.Stretch,
+			Height = 50,
+			Width = 50,
+		};
+		Grid.SetRow(c1, 0);
+		Grid.SetColumn(c1, 1);
+
+		SUT.Children.Add(c1);
+
+		SUT.Measure(new Size(300, 300));
+		SUT.DesiredSize.Should().Be(new Size(100, 50));
+		c1.DesiredSize.Should().Be(new Size(100, 50));
+#if !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(100, 50));
+#endif
+
+		SUT.Arrange(new Rect(0, 0, 300, 300));
+
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(100, 0, 100, 300));
+		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(double.PositiveInfinity, 300));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(50, 50));
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(50, 50));
+		SUT.Children.Should().HaveCount(1);
+	}
+
+#if !WINAPPSDK
+	private static Size GetUnclippedDesiredSize(UIElement element)
+	{
+#if UNO_REFERENCE_API
+		return element.m_unclippedDesiredSize;
+#else
+		var layouterElement = (ILayouterElement)element;
+		var layouter = (FrameworkElementLayouter)layouterElement.Layouter;
+		return layouter._unclippedDesiredSize;
+#endif
+	}
+#endif
 }
