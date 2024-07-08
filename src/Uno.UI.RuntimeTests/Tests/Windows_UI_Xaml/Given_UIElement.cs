@@ -48,6 +48,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("LayoutStorage not implemented properly for Layouter")]
+#endif
+		public async Task When_Not_In_Visual_Tree_Should_Reset_LayoutStorage()
+		{
+			var SUT = new TextBox { Text = "Some text", Margin = new Thickness(10) };
+			var border = new Border { Child = SUT };
+
+			await UITestHelper.Load(border);
+
+			Assert.AreNotEqual(default, SUT.DesiredSize);
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(default, SUT.DesiredSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[DataRow(200)]
 		[DataRow(10)]
 		public async Task When_Both_Layouting_Clip_And_Clip_DP(double newClipValue)
