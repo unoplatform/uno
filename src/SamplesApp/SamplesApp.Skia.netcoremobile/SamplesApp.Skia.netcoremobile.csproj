@@ -13,7 +13,7 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">ios-arm64</RuntimeIdentifiers>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
@@ -67,9 +67,7 @@
 			<ItemGroup>
 				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
-				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />		
-				
-				<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" />
+				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />
 			</ItemGroup>
 		</When>
 
@@ -130,6 +128,7 @@
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'" />
 	</ItemGroup>
 
 	<ItemGroup>
