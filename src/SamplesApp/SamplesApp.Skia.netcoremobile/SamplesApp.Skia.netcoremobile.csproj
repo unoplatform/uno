@@ -56,10 +56,10 @@
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">
 			<ItemGroup>
-				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.6.0" />
+				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 				<PackageReference Include="SkiaSharp" />
 				<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
-				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true'" />
+				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true' and !$(RuntimeIdentifier.Contains('arm64'))" />
 			</ItemGroup>
 
 			<PropertyGroup>
