@@ -14,10 +14,12 @@
 		<ResourceDictionary x:Name="Light">
 			<SolidColorBrush x:Key="DiagnosticsOverlayBackgroundBrush">#F9F9F9</SolidColorBrush>
 			<SolidColorBrush x:Key="DiagnosticsOverlayBorderBrush">#EBEBEB</SolidColorBrush>
+			<SolidColorBrush x:Key="DiagnosticsAnchorFillBrush" Opacity="0.6">#000000</SolidColorBrush>
 		</ResourceDictionary>
 		<ResourceDictionary x:Name="Dark">
 			<SolidColorBrush x:Key="DiagnosticsOverlayBackgroundBrush">#282828</SolidColorBrush>
 			<SolidColorBrush x:Key="DiagnosticsOverlayBorderBrush">#1C1C1C</SolidColorBrush>
+			<SolidColorBrush x:Key="DiagnosticsAnchorFillBrush" Opacity="0.8">#FFFFFF</SolidColorBrush>
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 
@@ -84,8 +86,7 @@
 									VerticalAlignment="Center"
 									HorizontalAlignment="Center"
 									Data="{StaticResource AnchorIcon}"
-									Fill="Black"
-									Opacity="0.6" />
+									Fill="{ThemeResource DiagnosticsAnchorFillBrush}" />
 							</Grid>
 
 							<StackPanel
