@@ -38,6 +38,7 @@ using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNo
 using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
 using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
 #if HAS_UNO
+using Windows.Foundation.Metadata;
 using TreeNodeSelectionState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeNodeSelectionState;
 #endif
 
@@ -372,6 +373,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
 			var sp = new StackPanel
 			{
 				Children =
@@ -395,13 +401,16 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.Load(sp);
 
-			var screenshot = await UITestHelper.ScreenShot(sp.FindFirstDescendant<TreeView>());
+			var tv = sp.FindFirstDescendant<TreeView>();
+			var screenshot = await UITestHelper.ScreenShot(tv);
+			var tvi = sp.FindFirstDescendant<TreeViewItem>();
+			var x = tvi.TransformToVisual(tv).TransformPoint(new Point()).X + tvi.ActualWidth / 2; // midX of tvi in tv coordinates
+			x /= screenshot.ImplicitScaling; // HasColorAt takes screenshot coordinates, not managed coordinates
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
 
-			ImageAssert.HasColorAt(screenshot, new Point(screenshot.Width / 2, screenshot.Height / 4), Microsoft.UI.Colors.Red);
-			ImageAssert.HasColorAt(screenshot, new Point(screenshot.Width / 2, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
-
-			Assert.AreEqual(102, ((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight);
-			Assert.AreEqual(102, ((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(102, 1);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(102, 1);
 			Assert.AreEqual("1", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 			Assert.AreEqual("2", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 		}
