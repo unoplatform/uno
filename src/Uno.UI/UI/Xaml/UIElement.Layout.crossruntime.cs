@@ -89,6 +89,7 @@ namespace Microsoft.UI.Xaml
 			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
 			{
 				this.Log().LogError($"[LayoutCycleTracing] InvalidateArrange {this},{this.GetDebugName()}");
+				this.Log().LogError($"[LayoutCycleTracing] {Environment.StackTrace}");
 			}
 
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
