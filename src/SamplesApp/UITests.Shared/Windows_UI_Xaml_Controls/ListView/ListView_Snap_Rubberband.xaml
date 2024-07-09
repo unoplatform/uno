@@ -76,8 +76,7 @@
 				<Setter.Value>
 					<ControlTemplate TargetType="ListViewItem">
 						<ContentPresenter Content="{TemplateBinding Content}"
-										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+										  ContentTemplate="{TemplateBinding ContentTemplate}" />
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>

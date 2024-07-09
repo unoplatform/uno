@@ -27,7 +27,6 @@
 							<ContentPresenter x:Name="ContentPresenter"
 											  ContentTransitions="{TemplateBinding ContentTransitions}"
 											  ContentTemplate="{TemplateBinding ContentTemplate}"
-											  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 											  Content="{TemplateBinding Content}"
 											  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 											  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"

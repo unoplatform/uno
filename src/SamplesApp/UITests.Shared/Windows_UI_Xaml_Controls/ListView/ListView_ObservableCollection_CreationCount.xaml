@@ -19,8 +19,7 @@
 					<ControlTemplate TargetType="ListViewItem">
 						<Grid>
 							<local:CounterGrid2 />
-							<ContentPresenter Content="{TemplateBinding Content}"
-											  not_win:ContentTemplate="{TemplateBinding ContentTemplate}" />
+							<ContentPresenter Content="{TemplateBinding Content}" />
 						</Grid>
 					</ControlTemplate>
 				</Setter.Value>
