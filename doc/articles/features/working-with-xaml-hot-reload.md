@@ -12,6 +12,7 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of 
 - XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**
 - All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio and VS Code. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support
+- Hot Reload **Indicator** visuals for an enhanced development experience on Uno Platform targets
 - What can be Hot Reloaded:
   - **XAML files** in the **main project** and **referenced projects libraries**
   - **C# Markup controls**
@@ -84,6 +85,43 @@ Mobile targets are currently using a limited version of XAML Hot Reload and do n
 ### [**WinAppSDK**](#tab/winappsdk)
 
 Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
+
+## Hot Reload Indicator
+
+Hot Reload displays a visual indicator to help you further monitor changes while developing. It displays new information every time Hot Reload is triggered. The indicator is enabled by default within the `EnableHotReload()` method which is located in the root `App.xaml.cs` file. This displays an overlay which hosts the visual indicator. If you wish to disable it, you simply have to provide the following boolean: `EnableHotReload(disableIndicator: true)`, removing the overlay from the view.
+
+<p align="center">
+  <img src="../Assets/features/hotreload/indicator.png" alt="A hot reload visual indicator" />
+</p>
+
+> [!TIP]
+> The overlay can be moved by using the anchor on the left hand side.
+
+The indicator displays the current connection status. Clicking on it will open a flyout containing all events or changes that were applied by Hot Reload. These events display more details about Hot Reload changes, such as its status and impacted files.
+
+<p align="center">
+  <img src="../Assets/features/hotreload/indicator-flyout.png" alt="A window showing events from Hot Reload" />
+</p>
+
+### Statuses
+
+Here's a summary of what icons and statuses you can expect:
+
+**Connection**:
+
+![The icon shown on a successful connection](../Assets/features/hotreload/status-connection-success.png) Success
+
+![The icon shown on a failed connection](../Assets/features/hotreload/status-connection-failed.png) Failed
+
+![The icon shown on a successful connection, with warnings](../Assets/features/hotreload/status-connection-warning.png) Warning (Usually indicates an issue that can be solved by restarting your IDE)
+
+**Operation**:
+
+![The icon shown when Hot Reload succeeded](../Assets/features/hotreload/status-success.png) Success
+
+![The icon shown when Hot Reload failed](../Assets/features/hotreload/status-failed.png) Failed
+
+![The icon shown when Hot Reload is in progress](../Assets/features/hotreload/status-processing.png) Processing (Hot Reload is processing the changes or initializing)
 
 ---
 
