@@ -368,6 +368,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(1, listControl.SelectedIndex);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
 		{
@@ -404,6 +405,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual("1", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 			Assert.AreEqual("2", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
