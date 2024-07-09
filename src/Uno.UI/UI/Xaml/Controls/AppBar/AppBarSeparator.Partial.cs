@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(AppBarSeparator);
 		}
 
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			if (args.Property == AppBarSeparator.IsCompactProperty
 				|| args.Property == AppBarSeparator.UseOverflowStyleProperty)

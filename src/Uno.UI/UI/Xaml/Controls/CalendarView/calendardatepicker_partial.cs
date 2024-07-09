@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return;
 		}
 
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			//CalendarDatePickerGenerated.OnPropertyChanged2(args);
 

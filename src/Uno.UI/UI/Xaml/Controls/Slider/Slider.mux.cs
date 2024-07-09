@@ -89,7 +89,7 @@ public partial class Slider
 		return value != null;
 	}
 
-	internal override void OnPropertyChanged2(PropertyChangedParams args)
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
 

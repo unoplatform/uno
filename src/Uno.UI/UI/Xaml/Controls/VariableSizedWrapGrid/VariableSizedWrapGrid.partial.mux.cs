@@ -34,7 +34,7 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 	/// methods.
 	/// </summary>
 	/// <param name="args">Args.</param>
-	internal override void OnPropertyChanged2(PropertyChangedParams args)
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
 

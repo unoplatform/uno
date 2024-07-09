@@ -903,7 +903,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 		// properties changed handlers
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateMediaControlState(args.Property);
 		}

@@ -1876,7 +1876,7 @@ namespace Microsoft.UI.Xaml
 			bool bypassesPropagation = false
 		)
 		{
-			var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
+			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
 			var propertyMetadata = propertyDetails.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
@@ -1958,7 +1958,12 @@ namespace Microsoft.UI.Xaml
 			// but before the registered property callbacks
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
-				doInternal.OnPropertyChanged2(propertyChangedParams);
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+);
+				doInternal.OnPropertyChanged2(eventArgs);
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.

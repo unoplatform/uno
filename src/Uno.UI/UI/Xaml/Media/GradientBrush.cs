@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Media
 				)
 		);
 
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnPropertyChanged2(args);
 			if (args.Property == GradientStopsProperty)
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		private static void OnGradientStopsChanged(GradientBrush @this, PropertyChangedParams args)
+		private static void OnGradientStopsChanged(GradientBrush @this, DependencyPropertyChangedEventArgs args)
 		{
 			if (args.OldValue is GradientStopCollection oldValue)
 			{

@@ -476,7 +476,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Handle the custom property changed event and call the OnPropertyChanged2 methods.
-		internal override void OnPropertyChanged2(PropertyChangedParams args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnPropertyChanged2(args);
 			if (args.Property == UIElement.VisibilityProperty)
