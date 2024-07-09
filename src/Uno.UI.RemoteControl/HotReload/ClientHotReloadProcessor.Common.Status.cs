@@ -83,7 +83,10 @@ public partial class ClientHotReloadProcessor
 #if HAS_UNO_WINUI
 		public void ReportServerStatus(HotReloadStatusMessage status)
 		{
-			_serverState ??= status.State; // Do not override the state if it has already been set (debugger attached with dev-server)
+			if (_serverState is not HotReloadState.Disabled)
+			{
+				_serverState = status.State; // Do not override the state if it has already been set (debugger attached with dev-server)
+			}
 			ImmutableInterlocked.Update(ref _serverOperations, UpdateOperations, status.Operations);
 			NotifyStatusChanged();
 
