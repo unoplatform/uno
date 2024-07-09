@@ -40,8 +40,6 @@ To build your app from the CLI, on Windows, Linux, or macOS:
 
 - Once the build is done, the output is located in the `./publish` folder
 
-Once done, you can head over to [publishing section](xref:uno.publishing.webassembly#publishing).
-
 ## Publishing
 
 > [!NOTE]
