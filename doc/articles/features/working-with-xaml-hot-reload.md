@@ -8,7 +8,7 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of 
 
 ## Features
 
-- Supported in **Visual Studio 2022** (Windows) and **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod)
+- Supported in **Visual Studio 2022** (Windows), **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod) and Rider (Linux, macOS, Windows)
 - XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**
 - All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio and VS Code. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support
@@ -40,6 +40,13 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below)
 - Make changes to your XAML or C# code, then save your file
 
+### [**Rider**](#tab/rider)
+
+- Setup your environment by following our [getting started guide](xref:Uno.GetStarted.Rider)
+- Start the application without the debugger
+- Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below)
+- Make changes to your XAML or C# code, then save your file
+
 ---
 
 > [!IMPORTANT]
@@ -57,12 +64,19 @@ Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. T
   - With the debugger: The C# Dev Kit is handling hot reload [when enabled](https://code.visualstudio.com/docs/csharp/debugging#_hot-reload). As of December 20th, 2023, C# Dev Kit hot reload does not handle class libraries. To experience the best hot reload, do not use the debugger.
   - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# or XAML)
   - Adding new C# or XAML files to a project is not yet supported
+- Rider
+  - Hot Reload is only supported without the debugger.
+  - Adding new C# or XAML files to a project is not yet supported
 
 ### [**WebAssembly**](#tab/wasm)
 
 WebAssembly is currently providing both full and partial Hot Reload support, depending on the IDE.
 
 - In Visual Studio Code:
+  - Both C# and XAML Hot Reload are fully supported
+  - Adding new C# or XAML files to the project is not yet supported
+  - Hot Reload is not supported when using the debugger
+- In Rider:
   - Both C# and XAML Hot Reload are fully supported
   - Adding new C# or XAML files to the project is not yet supported
   - Hot Reload is not supported when using the debugger
@@ -78,12 +92,13 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
 Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
 
 - In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio toolbar.
-- In both VS and VS Code, C# Hot Reload is not yet supported
+- In VS, VS Code and Rider, [C# Hot Reload is not yet supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
 - XAML `x:Bind` hot reload is limited to simple expressions and events
 
 ### [**WinAppSDK**](#tab/winappsdk)
 
-Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
+- Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
+- Hot Reload is not support in Rider
 
 ---
 
@@ -158,6 +173,14 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
 - When working on Skia Desktop apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Uno Platform Desktop (Debug)` target is selected.
 - The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform - Hot Reload** output window, restart Code or use `Developer: Reload Window` in the command palette.
+
+### Rider
+
+- Hot Reload **is not supported** when using the debugger. Start your app without the debugger.
+- The output window in Rider has an output named **Uno Platform** in its side bar. Diagnostics messages from the extension appear there.
+- Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
+- If Hot Reload does not function properly, you can try closing and reopening the solution.
+- The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform** output window, close and reopen the solution.
 
 ## Next Steps
 
