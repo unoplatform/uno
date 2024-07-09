@@ -86,9 +86,17 @@ namespace Microsoft.UI.Xaml
 				return; // Already dirty
 			}
 
-			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Error))
+			if (_traceLayoutCycle)
 			{
-				this.Log().LogError($"[LayoutCycleTracing] InvalidateArrange {this},{this.GetDebugName()}");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"[LayoutCycleTracing] InvalidateArrange {this},{this.GetDebugName()}");
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"[LayoutCycleTracing] {Environment.StackTrace}");
+				}
 			}
 
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
