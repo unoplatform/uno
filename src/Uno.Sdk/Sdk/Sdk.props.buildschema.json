@@ -503,10 +503,6 @@
 					"description": "Adds Prism support for Uno.WinUI.",
 					"helpUrl": "https://aka.platform.uno/feature-prism"
 				},
-				"DefaultFontOpenSans": {
-					"description": "Adds OpenSans fonts and makes it the default.",
-					"helpUrl": "https://aka.platform.uno/feature-opensans"
-				},
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",
 					"helpUrl": "https://aka.platform.uno/feature-skia"
