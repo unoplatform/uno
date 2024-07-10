@@ -20,7 +20,7 @@ In order to fix this, add the following to your csproj (Xamarin, `net6.0-ios`, `
 </PropertyGroup>
 ```
 
-## Error while retrieving IOS device in VS code
+## Error while retrieving iOS device in VS code
 
 When switching to an iOS debugging target in VS Code, you might encounter an error stating that the iOS device could not be retrieved. The error message may appear as follows:
 
@@ -30,4 +30,3 @@ When switching to an iOS debugging target in VS Code, you might encounter an err
 ```
 
 To resolve this issue, download [Xcodes](https://www.xcodes.app). Inside Xcodes.app, select the correct version of Xcode and click the **Make Active** button to make it the default Xcode for your Mac. After completing this step, you can speed up the process and use the new default Xcode for simulators. On VS Code, open the Command Palette and select `Developer: Reload Window`. This should resolve the error when switching to an iOS debugging target in VS Code.
-
