@@ -8,7 +8,7 @@ This article details the migration steps required to migrate from one version to
 
 ## Uno Platform 5.3
 
-Uno Platform 5.3 contains an improved template and Uno.SDK versioning, new default text font and Rider support.
+Uno Platform 5.3 contains an improved template and Uno.SDK versioning, new default text font, and Rider support.
 
 The support for .NET 7 has been removed, since it was a Standard Term Support (STS) release which [ended in May 2024](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core). You can [upgrade your project to .NET 8](xref:Uno.Development.MigratingFromNet7ToNet8) using our guide.
 
