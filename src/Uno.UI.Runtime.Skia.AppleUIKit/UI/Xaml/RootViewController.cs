@@ -4,10 +4,11 @@ using SkiaSharp;
 using SkiaSharp.Views.iOS;
 using UIKit;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
-internal class RootViewController : UINavigationController, IXamlRootHost
+internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
 	private SKCanvasView _skCanvasView;
 	private XamlRoot _xamlRoot;

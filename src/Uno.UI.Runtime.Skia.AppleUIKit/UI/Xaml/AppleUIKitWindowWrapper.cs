@@ -7,6 +7,8 @@ using UIKit;
 using Uno.Disposables;
 using Uno.UI.Controls;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.AppleUIKit;
+using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -15,7 +17,7 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
+internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
 	private AppleUIKitWindow _nativeWindow;
 
@@ -28,6 +30,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 		_nativeWindow = new();
 
 		_mainController = new RootViewController(xamlRoot);
+		AppManager.XamlRootMap.Register(xamlRoot, (IAppleUIKitXamlRootHost)_mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 		ObserveOrientationAndSize();
@@ -146,6 +149,4 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
 #pragma warning restore CA1422 // Validate platform compatibility
 	}
-
-	public void InvalidateRender() => throw new NotImplementedException();
 }

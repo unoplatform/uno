@@ -6,6 +6,7 @@ using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
+using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
@@ -36,6 +37,7 @@ public class AppleUIKitSkiaHost : ISkiaApplicationHost
 		try
 		{
 			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
+			ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => AppleUIKitCorePointerInputSource.Instance);
 
 			UIApplication.Main(_args, null, typeof(UnoSkiaAppDelegate));
 		}
