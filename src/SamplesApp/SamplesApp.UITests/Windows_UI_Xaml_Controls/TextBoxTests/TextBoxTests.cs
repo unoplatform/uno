@@ -480,7 +480,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextProperty");
 
 			var textBox1 = _app.Marked("TextBox1");
+			var textBoxInner1 = textBox1.Descendant("ScrollContentPresenter");
 			var textBox2 = _app.Marked("TextBox2");
+			var textBoxInner2 = textBox2.Descendant("ScrollContentPresenter");
 			var textChangedTextBlock = _app.Marked("TextChangedTextBlock");
 			var lostFocusTextBlock = _app.Marked("LostFocusTextBlock");
 
@@ -489,14 +491,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 
 			// Change text and verify text of text blocks
-			textBox1.FastTap();
-			textBox1.ClearText();
-			textBox1.EnterText("Testing text property");
+			textBoxInner1.FastTap();
+			textBoxInner1.ClearText();
+			textBoxInner1.EnterText("Testing text property");
 			_app.WaitForText(textChangedTextBlock, "Testing text property");
 			_app.WaitForText(lostFocusTextBlock, "");
 
 			// change focus and assert
-			textBox2.FastTap();
+			textBoxInner2.FastTap();
 			_app.WaitForText(textChangedTextBlock, "Testing text property");
 			_app.WaitForText(lostFocusTextBlock, "Testing text property");
 		}
