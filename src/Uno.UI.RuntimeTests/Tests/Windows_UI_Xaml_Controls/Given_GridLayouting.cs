@@ -1871,10 +1871,17 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(8, 8));
 
 		SUT.DesiredSize.Should().Be(new Size(8, 8));
-#if !WINAPPSDK
+#if UNO_REFERENCE_API
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(8, 8));
+#elif !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(8, 10));
 #endif
+
+#if UNO_REFERENCE_API
 		c1.DesiredSize.Should().Be(new Size(4, 4));
+#else
+		c1.DesiredSize.Should().Be(new Size(4, 6));
+#endif
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
 #endif
@@ -1887,7 +1894,11 @@ public partial class Given_GridLayouting
 		c1.SizePassedToArrangeOverride.Should().Be(default);
 		c1.SizePassedToMeasureOverride.Should().Be(default);
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(4, 4));
+#if UNO_REFERENCE_API || WINAPPSDK
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(2, 2, 4, 4));
+#else
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(2, 2, 4, 6));
+#endif
 
 		SUT.Children.Should().HaveCount(1);
 	}
@@ -1912,12 +1923,19 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c1);
 
 		SUT.Measure(new Size(20, 20));
-
 		SUT.DesiredSize.Should().Be(new Size(10, 20));
-#if !WINAPPSDK
+
+#if UNO_REFERENCE_API
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20));
 #endif
+
+#if UNO_REFERENCE_API || WINAPPSDK
 		c1.DesiredSize.Should().Be(new Size(10, 20));
+#else
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30));
+		c1.DesiredSize.Should().Be(new Size(10, 30));
+#endif
+
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 #endif
@@ -1925,7 +1943,11 @@ public partial class Given_GridLayouting
 		SUT.Arrange(new Rect(0, 0, 50, 50));
 
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+#if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10));
+#else
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 0));
+#endif
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50));
 
@@ -1954,10 +1976,18 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 
 		SUT.DesiredSize.Should().Be(new Size(10, 20));
-#if !WINAPPSDK
+#if UNO_REFERENCE_API
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20));
+#elif !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30));
 #endif
+
+#if UNO_REFERENCE_API || WINAPPSDK
 		c1.DesiredSize.Should().Be(new Size(10, 20));
+#else
+		c1.DesiredSize.Should().Be(new Size(10, 30));
+#endif
+
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 #endif
@@ -1968,7 +1998,11 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 50, 50));
 
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+#if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10));
+#else
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 0));
+#endif
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50));
 
@@ -1997,17 +2031,25 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 
 		SUT.DesiredSize.Should().Be(new Size(10, 20));
-#if !WINAPPSDK
+#if UNO_REFERENCE_API
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20));
-#endif
 		c1.DesiredSize.Should().Be(new Size(10, 20));
+#elif !WINAPPSDK
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30));
+		c1.DesiredSize.Should().Be(new Size(10, 30));
+#endif
+
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 #endif
 
 		SUT.Arrange(new Rect(0, 0, 50, 50));
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+#if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10));
+#else
+		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 0));
+#endif
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50));
 
