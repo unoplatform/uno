@@ -13,7 +13,7 @@ internal sealed class UseOpenSansGenerator : IIncrementalGenerator
 	{
 		var useOpenSansProvider = context.AnalyzerConfigOptionsProvider.Select(static (provider, ct) =>
 		{
-			provider.GlobalOptions.TryGetValue("build_property.UseOpenSans", out var value);
+			provider.GlobalOptions.TryGetValue("build_property.UnoDefaultFontOpenSans", out var value);
 			return value?.Equals("true", StringComparison.OrdinalIgnoreCase) == true;
 		});
 
