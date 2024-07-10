@@ -137,9 +137,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// Select the inner content to avoid the browser tapping the header
 			// and incorrectly focus the inner input control but not the TextBox.
-			var textBoxInner1 = textBox1.Descendant("ScrollContentPresenter");
+			var textBoxInner1 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox1.Descendant("ScrollContentPresenter")
+				: textBox1;
+
 			var textBox2 = _app.Marked("textBox2");
-			var textBoxInner2 = textBox2.Descendant("ScrollContentPresenter");
+			var textBoxInner2 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox2.Descendant("ScrollContentPresenter")
+				: textBox2;
 
 			textBoxInner1.FastTap();
 			textBoxInner1.EnterText("hello 01");
@@ -480,9 +485,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextProperty");
 
 			var textBox1 = _app.Marked("TextBox1");
-			var textBoxInner1 = textBox1.Descendant("ScrollContentPresenter");
+
+			// Select the inner content to avoid the browser tapping the header
+			// and incorrectly focus the inner input control but not the TextBox.
+			var textBoxInner1 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox1.Descendant("ScrollContentPresenter")
+				: textBox1;
+
 			var textBox2 = _app.Marked("TextBox2");
-			var textBoxInner2 = textBox2.Descendant("ScrollContentPresenter");
+
+			var textBoxInner2 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox2.Descendant("ScrollContentPresenter")
+				: textBox2;
+
 			var textChangedTextBlock = _app.Marked("TextChangedTextBlock");
 			var lostFocusTextBlock = _app.Marked("LostFocusTextBlock");
 
