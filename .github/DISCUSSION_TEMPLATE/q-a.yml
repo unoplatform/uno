@@ -48,6 +48,6 @@ body:
       options:
         - Visual Studio 2022
         - Visual Studio Code
-        - Visual Studio for Mac
         - Rider Windows
         - Rider macOS
+        - Rider Linux

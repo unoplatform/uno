@@ -7,9 +7,6 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 > [!NOTE]
 > Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.Rider).
 
-<!-- markdownlint-disable MD028 -->
-> [!Video https://www.youtube-nocookie.com/embed/BQdj9rqLcos]
-
 ## Create the App
 
 Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the Uno Platform Live Wizard by following these steps:
@@ -46,42 +43,57 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
 ## Debug the App
 
+### [**Desktop**](#tab/desktop)
+
+Select the **MyUnoApp (Desktop)** debug profile then click the green arrow or the debug button.
+
+![A view of the Rider taskbar for Desktop](Assets/quick-start/run-desktop-rider.png)
+
 ### [**Android**](#tab/android)
 
-Set Android as your startup project. Run.
-![run-android-rider](Assets/quick-start/run-android-rider.png)
+Set the Android debug profile in the debugger toolbar, then click the green arrow or the debug button.
+![A view of the Rider taskbar for Android](Assets/quick-start/run-android-rider.png)
 
 > [!NOTE]
 > Whether you're using a physical device or the emulator, the app will install but will not automatically open. You will have to manually open it.
 
 ### [**WebAssembly**](#tab/wasm)
 
-Select Wasm as your startup project then run.
+Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow or the debug button.
 
-![run-wasm-rider](Assets/quick-start/run-wasm-rider.png)
+![A view of the Rider taskbar for WebAssembly](Assets/quick-start/run-wasm-rider.png)
 
 A new browser window will automatically run your application.
 
 > [!NOTE]
 > There is no debugging for WebAssembly within Rider for Uno Platform, but you can debug using the [built-in Chrome tools](external/uno.wasm.bootstrap/doc/debugger-support.md#how-to-use-the-browser-debugger).
 
+### [**iOS**](#tab/ios)
+
+Select the **MyUnoApp** debug profile with the mobile Apple logo then click the green arrow or the debug button.
+
+![A view of the Rider taskbar for iOS](Assets/quick-start/run-ios-rider.png)
+
+> [!NOTE]
+> Debugging iOS apps is only supported on macOS
+
 ### [**Catalyst**](#tab/catalyst)
 
-You will be able to build the Catalyst project, by selecting one of the project with the apple logo.
+Select the **MyUnoApp** debug profile with the desktop Apple logo then click the green arrow or the debug button.
 
-![run-catalyst-rider](Assets/quick-start/run-catalyst-rider.png)
+![A view of the Rider taskbar for Catalyst](Assets/quick-start/run-catalyst-rider.png)
 
-Alternatively, you can use a tool like VNC to run the simulator on a mac.  
+> [!NOTE]
+> Debugging Mac Catalyst apps is only supported on macOS
 
 ### [**WinUI/WinAppSDK**](#tab/winui)
 
-You will be able to build the Windows project.
+Select the **MyUnoApp (WinAppSDK Unpackaged)** debug profile then click the green arrow or the debug button.
 
-![run-winappsdk-rider](Assets/quick-start/run-winappsdk-rider.png)  
+![A view of the Rider taskbar for WinAppSDK](Assets/quick-start/run-winappsdk-rider.png)
 
-### [**Desktop**](#tab/desktop)
-
-Select the `net8.0-desktop` target framework, then Run.
+> [!NOTE]
+> Debugging Windows App SDK profile is only supported on Windows.
 
 ---
 

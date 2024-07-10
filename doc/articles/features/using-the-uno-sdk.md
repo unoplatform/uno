@@ -36,6 +36,7 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Serialization;
     Localization;
     Navigation;
+    OpenSans;
 </UnoFeatures>
 ```
 
@@ -76,6 +77,7 @@ Here are the supported features:
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
+| `OpenSans`             | Adds support for the [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) font, and sets it as the [default text font](xref:Uno.Features.CustomFonts#default-text-font).                                                                                                                                                                            |
 
 ## Implicit Packages
 
