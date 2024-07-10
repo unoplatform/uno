@@ -93,13 +93,13 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
 Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
 
 - In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio toolbar.
-- In VS, VS Code and Rider, [C# Hot Reload is not yet supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
+- In VS, VS Code, and Rider, [C# Hot Reload is not yet supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
 - XAML `x:Bind` hot reload is limited to simple expressions and events
 
 ### [**WinAppSDK**](#tab/winappsdk)
 
 - Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
-- Hot Reload is not support in Rider
+- Hot Reload is not supported in Rider
 
 ---
 
@@ -215,7 +215,7 @@ Here's a summary of what icons and statuses you can expect:
 ### Rider
 
 - Hot Reload **is not supported** when using the debugger. Start your app without the debugger.
-- The output window in Rider has an output named **Uno Platform** in its side bar. Diagnostics messages from the extension appear there.
+- The output window in Rider has an output named **Uno Platform** in its sidebar. Diagnostics messages from the extension appear there.
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
 - If Hot Reload does not function properly, you can try closing and reopening the solution.
 - The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform** output window, close and reopen the solution.
