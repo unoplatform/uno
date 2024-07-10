@@ -2,12 +2,14 @@ using System;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using UIKit;
 using Uno.Disposables;
 using Uno.UI.Controls;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 
@@ -19,6 +21,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 
 	private RootViewController _mainController;
 	private NSObject? _orientationRegistration;
+	private readonly DisplayInformation _displayInformation;
 
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot)
 	{
@@ -27,15 +30,21 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 		_mainController = new RootViewController(xamlRoot);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
-
 		ObserveOrientationAndSize();
 
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
+
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
 	}
 
 	public override AppleUIKitWindow NativeWindow => _nativeWindow;
+
+	private void DispatchDpiChanged() =>
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	protected override void ShowCore()
 	{
