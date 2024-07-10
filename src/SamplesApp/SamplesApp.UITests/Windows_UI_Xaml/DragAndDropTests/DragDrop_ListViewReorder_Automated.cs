@@ -195,7 +195,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			_app.WaitForElement(sut);
 
 			var sutBounds = _app.Query(sut).Single().Rect;
-			var x = sutBounds.X + 50;
+			var x = sutBounds.CenterX + 50;
 			var srcY = Item(sutBounds, from);
 			var dstY = Item(sutBounds, to);
 			var expectedY = expectedTo is null ? dstY : Item(sutBounds, expectedTo.Value);
