@@ -2061,7 +2061,7 @@ public partial class Given_GridLayouting
 		return element.m_unclippedDesiredSize;
 #else
 		var layouterElement = (ILayouterElement)element;
-		var layouter = (FrameworkElementLayouter)layouterElement.Layouter;
+		var layouter = (Layouter)layouterElement.Layouter;
 		return layouter._unclippedDesiredSize;
 #endif
 	}
