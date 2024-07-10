@@ -197,8 +197,11 @@ namespace Uno.UI
 
 			/// <summary>
 			/// The default font family for text when a font isn't explicitly specified (e.g. for a TextBlock)
-			/// This is often needs to be set by users on Linux, where Microsoft's Segoe UI isn't present
 			/// </summary>
+			/// <remarks>
+			/// The default is Segoe UI, which is not available on Mac and Linux as well as browsers running on Mac and Linux.
+			/// So, you can change to OpenSans. For more information, see https://aka.platform.uno/feature-opensans
+			/// </remarks>
 			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
 
 			/// <summary>

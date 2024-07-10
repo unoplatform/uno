@@ -134,23 +134,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_DeleteButton_Automated");
 
 			var textBox1 = _app.Marked("textBox1");
-			var textBox2 = _app.Marked("textBox2");
 
-			textBox1.FastTap();
-			textBox1.EnterText("hello 01");
+			// Select the inner content to avoid the browser tapping the header
+			// and incorrectly focus the inner input control but not the TextBox.
+			var textBoxInner1 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox1.Descendant("ScrollContentPresenter")
+				: textBox1;
+
+			var textBox2 = _app.Marked("textBox2");
+			var textBoxInner2 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox2.Descendant("ScrollContentPresenter")
+				: textBox2;
+
+			textBoxInner1.FastTap();
+			textBoxInner1.EnterText("hello 01");
 
 			_app.WaitForText(textBox1, "hello 01");
 
-			textBox2.FastTap();
-			textBox2.EnterText("hello 02");
+			textBoxInner2.FastTap();
+			textBoxInner2.EnterText("hello 02");
 
 			_app.WaitForText(textBox2, "hello 02");
 
 			var textBox1Result = _app.Query(textBox1).First();
 			var textBox2Result = _app.Query(textBox2).First();
 
-			// Focus the first textbox
-			textBox1.FastTap();
+			// Focus the firs	t textbox
+			textBoxInner1.FastTap();
 
 			var deleteButton1 = FindDeleteButton(textBox1Result);
 
@@ -159,7 +169,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.WaitForText(textBox1, "");
 
 			// Focus the first textbox
-			textBox2.FastTap();
+			textBoxInner2.FastTap();
 
 			var deleteButton2 = FindDeleteButton(textBox2Result);
 
@@ -475,7 +485,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextProperty");
 
 			var textBox1 = _app.Marked("TextBox1");
+
+			// Select the inner content to avoid the browser tapping the header
+			// and incorrectly focus the inner input control but not the TextBox.
+			var textBoxInner1 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox1.Descendant("ScrollContentPresenter")
+				: textBox1;
+
 			var textBox2 = _app.Marked("TextBox2");
+
+			var textBoxInner2 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox2.Descendant("ScrollContentPresenter")
+				: textBox2;
+
 			var textChangedTextBlock = _app.Marked("TextChangedTextBlock");
 			var lostFocusTextBlock = _app.Marked("LostFocusTextBlock");
 
@@ -484,14 +506,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 
 			// Change text and verify text of text blocks
-			textBox1.FastTap();
-			textBox1.ClearText();
-			textBox1.EnterText("Testing text property");
+			textBoxInner1.FastTap();
+			textBoxInner1.ClearText();
+			textBoxInner1.EnterText("Testing text property");
 			_app.WaitForText(textChangedTextBlock, "Testing text property");
 			_app.WaitForText(lostFocusTextBlock, "");
 
 			// change focus and assert
-			textBox2.FastTap();
+			textBoxInner2.FastTap();
 			_app.WaitForText(textChangedTextBlock, "Testing text property");
 			_app.WaitForText(lostFocusTextBlock, "Testing text property");
 		}
