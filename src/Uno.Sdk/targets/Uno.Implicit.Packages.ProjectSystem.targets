@@ -75,7 +75,7 @@
 		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';opensans;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';defaultfontopensans;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
 	</ItemGroup>
 
