@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				if (_fontInfo is null)
 				{
-					_fontInfo = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+					_fontInfo = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
 					if (_fontInfo.CanChange)
 					{
 						_fontInfo.RegisterElementForFontLoaded(this);
