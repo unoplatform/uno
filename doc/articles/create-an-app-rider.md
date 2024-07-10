@@ -52,7 +52,7 @@ Select the **MyUnoApp (Desktop)** debug profile then click the green arrow or th
 ### [**Android**](#tab/android)
 
 Set the Android debug profile in the debugger toolbar, then click the green arrow or the debug button.
-![A view of the Rider taskbar for android](Assets/quick-start/run-android-rider.png)
+![A view of the Rider taskbar for Android](Assets/quick-start/run-android-rider.png)
 
 > [!NOTE]
 > Whether you're using a physical device or the emulator, the app will install but will not automatically open. You will have to manually open it.

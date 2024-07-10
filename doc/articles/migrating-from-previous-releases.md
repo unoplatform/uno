@@ -32,7 +32,7 @@ If you are upgrading from an Uno Platform 5.2 project, you can remove the follow
 
 ### Default Text Font
 
-Starting from Uno Platform 5.3, the [default text font](xref:Uno.Features.CustomFonts#default-text-font) is now changed to [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) in the templates, when the [`OpenSans` feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) is specified.
+Starting from Uno Platform 5.3, the [default text font](xref:Uno.Features.CustomFonts#default-text-font) has been changed to [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) in the templates, when the [`OpenSans` feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) is specified.
 
 If you created your project with Uno Platform 5.2 or earlier, you can start using Open Sans by adding the `OpenSans` feature in your `.csproj` file.
 
