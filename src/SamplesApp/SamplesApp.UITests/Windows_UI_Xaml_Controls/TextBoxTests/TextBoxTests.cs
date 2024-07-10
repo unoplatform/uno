@@ -134,23 +134,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_DeleteButton_Automated");
 
 			var textBox1 = _app.Marked("textBox1");
-			var textBox2 = _app.Marked("textBox2");
 
-			textBox1.FastTap();
-			textBox1.EnterText("hello 01");
+			// Select the inner content to avoid the browser tapping the header
+			// and incorrectly focus the inner input control but not the TextBox.
+			var textBoxInner1 = textBox1.Descendant("ScrollContentPresenter");
+			var textBox2 = _app.Marked("textBox2");
+			var textBoxInner2 = textBox2.Descendant("ScrollContentPresenter");
+
+			textBoxInner1.FastTap();
+			textBoxInner1.EnterText("hello 01");
 
 			_app.WaitForText(textBox1, "hello 01");
 
-			textBox2.FastTap();
-			textBox2.EnterText("hello 02");
+			textBoxInner2.FastTap();
+			textBoxInner2.EnterText("hello 02");
 
 			_app.WaitForText(textBox2, "hello 02");
 
 			var textBox1Result = _app.Query(textBox1).First();
 			var textBox2Result = _app.Query(textBox2).First();
 
-			// Focus the first textbox
-			textBox1.FastTap();
+			// Focus the firs	t textbox
+			textBoxInner1.FastTap();
 
 			var deleteButton1 = FindDeleteButton(textBox1Result);
 
@@ -159,7 +164,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.WaitForText(textBox1, "");
 
 			// Focus the first textbox
-			textBox2.FastTap();
+			textBoxInner2.FastTap();
 
 			var deleteButton2 = FindDeleteButton(textBox2Result);
 
