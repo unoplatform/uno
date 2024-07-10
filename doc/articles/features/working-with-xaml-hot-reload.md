@@ -86,6 +86,8 @@ Mobile targets are currently using a limited version of XAML Hot Reload and do n
 
 Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
 
+---
+
 ## Hot Reload Indicator
 
 Hot Reload displays a visual indicator to help you further monitor changes while developing. It displays new information every time Hot Reload is triggered. The indicator is enabled by default within the `EnableHotReload()` method which is located in the root `App.xaml.cs` file. This displays an overlay which hosts the visual indicator. If you wish to disable it, you simply have to provide the following boolean: `EnableHotReload(disableIndicator: true)`, removing the overlay from the view.
@@ -122,8 +124,6 @@ Here's a summary of what icons and statuses you can expect:
 ![The icon shown when Hot Reload failed](../Assets/features/hotreload/status-failed.png) Failed
 
 ![The icon shown when Hot Reload is in progress](../Assets/features/hotreload/status-processing.png) Processing (Hot Reload is processing the changes or initializing)
-
----
 
 ## Troubleshooting
 
