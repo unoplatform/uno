@@ -6,7 +6,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		internal const string Title = "XAML Generation Failed";
 		internal const string MessageFormat = "{0}";
-		internal const string XamlGenerationFailureDescription = "XAML Generation Failed";
+		internal const string XamlGenerationFailureDescription = "XAML Generation Failed.";
 		internal const string XamlCategory = "XAML";
 		internal const string ResourcesCategory = "Resources";
 
@@ -43,7 +43,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 																							 ResourcesCategory,
 																							 DiagnosticSeverity.Error,
 																							 isEnabledByDefault: true,
-																							 description: "Resource Generation Failed"
+																							 description: "Resource Generation Failed."
 																							);
 	}
 }
