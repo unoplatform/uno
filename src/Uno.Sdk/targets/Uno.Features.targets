@@ -6,14 +6,10 @@
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
 
-		<UnoFeatures Condition="'$(UnoDisableOpenSans)'!='true'">$(UnoFeatures);defaultfontopensans</UnoFeatures>
+		<UseOpenSans Condition="'$(UseOpenSans)'==''">true</UseOpenSans>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<UseMaui>true</UseMaui>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$(UnoFeatures.Contains(';defaultfontopensans;'))">
-		<UseOpenSans>true</UseOpenSans>
 	</PropertyGroup>
 </Project>
