@@ -1,6 +1,10 @@
 using System;
+using Foundation;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using UIKit;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -58,89 +62,120 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	{
 	}
 
-	internal void TouchesBegan(MotionEvent e, int[] correction)
+	internal void TouchesBegan(UIView source, NSSet touches, UIEvent? evt)
 	{
 		try
 		{
-			var pointerIndex = 0; // TODO: ?
-			var nativePointerType = e.GetToolType(pointerIndex);
-			var pointerType = nativePointerType.ToPointerDeviceType();
-			var pointerDevice = PointerDevice.For(pointerType);
-			var pointerIdentifier = new PointerIdentifier(pointerType, id: 0);
-
-			var nativePointerAction = e.Action;
-			var nativePointerButtons = e.ButtonState;
-			var frameId = (uint)e.EventTime;
-			var ts = (ulong)(TimeSpan.TicksPerMillisecond * frameId);
-			var isInContact = PointerHelpers.IsInContact(e, pointerType, nativePointerAction, nativePointerButtons);
-			var isInRange = true; // TODO: ?
-			var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
-			var x = e.RawX;
-			var y = e.RawY;
-			var position = new Point((int)x - correction[0], (int)y - correction[1]).PhysicalToLogicalPixels();
-
-			var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
-
-			var point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, new PointerPointProperties(properties));
-			var args = new PointerEventArgs(point, keyModifiers);
-
-			switch (nativePointerAction)
+			foreach (UITouch touch in touches)
 			{
-				case MotionEventActions.HoverEnter when pointerType == Windows.Devices.Input.PointerDeviceType.Touch:
-				case MotionEventActions.HoverExit when pointerType == Windows.Devices.Input.PointerDeviceType.Touch:
-					// We get HoverEnter and HoverExit for touch only when TalkBack is enabled.
-					// We ignore these events.
-					break;
+				var args = CreatePointerEventArgs(source, touch);
 
-				case MotionEventActions.HoverEnter:
-					PointerEntered?.Invoke(this, args);
-					break;
-
-				case MotionEventActions.HoverExit when !isInContact:
-					// When a mouse button is pressed or pen touches the screen (a.k.a. becomes in contact), we receive an HoverExit before the Down.
-					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touched the screen)
-					// and we ignore them (as on UWP Exit is raised only when pointer moves out of bounds of the control, no matter the pressed state).
-					// As a side effect we will have to update the hover state on each Move in order to handle the case of press -> move out -> release.
-					PointerExited?.Invoke(this, args);
-					break;
-
-				case MotionEventActions.HoverExit:
-					break;
-
-				case MotionEventActions.Move:
-					PointerMoved?.Invoke(this, args);
-					break;
-
-				case MotionEventActions.Down:
-				case MotionEventActions.PointerDown:
-					if (pointerType == Windows.Devices.Input.PointerDeviceType.Touch)
-					{
-						PointerEntered?.Invoke(this, args);
-					}
-
-					PointerPressed?.Invoke(this, args);
-					break;
-
-				case MotionEventActions.Cancel:
-				case MotionEventActions.Up:
-					PointerReleased?.Invoke(this, args);
-
-					if (pointerType == Windows.Devices.Input.PointerDeviceType.Touch)
-					{
-						PointerExited?.Invoke(this, args);
-					}
-					break;
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(e), $"Unknown event ({e}-{nativePointerAction}).");
+				PointerEntered?.Invoke(this, args);
+				PointerPressed?.Invoke(this, args);
 			}
 		}
-		catch (Exception error)
+		catch (Exception e)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	internal void TouchesMoved(UIView source, NSSet touches, UIEvent? evt)
+	{
+		try
+		{
+			foreach (UITouch touch in touches)
 			{
-				this.Log().Error($"Failed to dispatch native pointer event: {error}");
+				var args = CreatePointerEventArgs(source, touch);
+
+				PointerMoved?.Invoke(this, args);
 			}
 		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	internal void TouchesEnded(UIView source, NSSet touches, UIEvent? evt)
+	{
+		try
+		{
+			foreach (UITouch touch in touches)
+			{
+				var args = CreatePointerEventArgs(source, touch);
+
+				PointerReleased?.Invoke(this, args);
+				PointerExited?.Invoke(this, args);
+			}
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	internal void TouchesCancelled(UIView source, NSSet touches, UIEvent? evt)
+	{
+		try
+		{
+			foreach (UITouch touch in touches)
+			{
+				var args = CreatePointerEventArgs(source, touch);
+
+				PointerCancelled?.Invoke(this, args);
+			}
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
+	{
+		var position = touch.LocationInView(source);
+		var pointerDeviceType = touch.Type.ToPointerDeviceType();
+		var isInContact =
+			touch.Phase == UITouchPhase.Began
+			|| touch.Phase == UITouchPhase.Moved
+			|| touch.Phase == UITouchPhase.Stationary;
+		var pointerDevice = PointerDevice.For(pointerDeviceType);
+		var pointerIdentifier = new PointerIdentifier(pointerDeviceType, 0); // TODO:MZ: Pointer identifiers
+		var properties = new PointerPointProperties
+		{
+			IsLeftButtonPressed = isInContact,
+			IsRightButtonPressed = touch.Type == UITouchType.Direct,
+			IsMiddleButtonPressed = false,
+			IsXButton1Pressed = false,
+			IsXButton2Pressed = false,
+			PointerUpdateKind = touch.Phase switch
+			{
+				UITouchPhase.Began => PointerUpdateKind.LeftButtonPressed,
+				UITouchPhase.Ended => PointerUpdateKind.LeftButtonReleased,
+				_ => PointerUpdateKind.Other
+			},
+			IsBarrelButtonPressed = false,
+			IsEraser = false,
+			IsHorizontalMouseWheel = false,
+			IsPrimary = true,
+			IsInRange = true,
+			Orientation = 0,
+			Pressure = (float)touch.Force,
+			TouchConfidence = isInContact,
+		};
+
+		var frameId = PointerHelpers.ToFrameId(touch.Timestamp);
+		var timestamp = PointerHelpers.ToTimeStamp(touch.Timestamp);
+		var pointerPoint = new PointerPoint(
+			frameId,
+			timestamp,
+			pointerDevice,
+			pointerIdentifier.Id,
+			position.ToPoint(),
+			position.ToPoint(),
+			isInContact,
+			properties);
+		return new PointerEventArgs(pointerPoint, Windows.System.VirtualKeyModifiers.None); // TODO:MZ: Key modifiers
 	}
 }
