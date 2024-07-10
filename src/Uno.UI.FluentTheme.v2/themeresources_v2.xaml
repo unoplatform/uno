@@ -17409,7 +17409,7 @@
                 <Setter Property="AllowFocusOnInteraction" Value="True" />
               </Style>
               <!-- New CommandBar Style -->
-              <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}">
+              <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}">
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="DefaultLabelPosition" Value="Collapsed" />
               </Style>
