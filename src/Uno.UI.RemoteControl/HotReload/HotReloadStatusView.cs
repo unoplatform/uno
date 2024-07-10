@@ -103,7 +103,7 @@ internal sealed partial class HotReloadStatusView : Control
 	#endregion
 
 	private readonly IDiagnosticViewContext _ctx;
-	private string _resultState = ResultNoneVisualStateName;
+	private (string state, HotReloadLogEntry? entry) _result = (ResultNoneVisualStateName, null);
 
 	private Status? _hotReloadStatus;
 	private RemoteControlStatus? _devServerStatus;
@@ -242,19 +242,22 @@ internal sealed partial class HotReloadStatusView : Control
 		}
 
 		// Then the "result" visual state (en send notifications).
-		var resultState = operationEntries switch
+		var result = operationEntries switch
 		{
-			{ Count: 0 } => ResultNoneVisualStateName,
-			_ when operationEntries.Any(op => op.IsSuccess is null) => ResultNoneVisualStateName, // Makes sure to restore to None while processing!
-			[{ IsSuccess: true }, ..] => ResultSuccessVisualStateName,
-			_ => ResultFailedVisualStateName
+			{ Count: 0 } => (ResultNoneVisualStateName, default),
+			_ when operationEntries.Any(op => op.IsSuccess is null) => (ResultNoneVisualStateName, default),
+			[ServerEntry { IsFinal: true, IsSuccess: true } e, ..] => (ResultSuccessVisualStateName, e),
+			[ServerEntry { IsFinal: true, IsSuccess: false } e, ..] => (ResultFailedVisualStateName, e),
+			[ApplicationEntry { IsSuccess: true } e, ..] => (ResultSuccessVisualStateName, e),
+			[ApplicationEntry { IsSuccess: false } e, ..] => (ResultFailedVisualStateName, e),
+			_ => (ResultNoneVisualStateName, default(HotReloadLogEntry))
 		};
-		if (resultState != _resultState)
+		if (result != _result)
 		{
-			_resultState = resultState;
-			VisualStateManager.GoToState(this, resultState, useTransitions);
+			_result = result;
+			VisualStateManager.GoToState(this, _result.state, useTransitions);
 
-			var notif = resultState switch
+			var notif = _result.state switch
 			{
 				ResultNoneVisualStateName when operationEntries is { Count: > 0 } => ProcessingNotification,
 				ResultSuccessVisualStateName => SuccessNotification,
