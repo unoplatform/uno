@@ -528,12 +528,7 @@ namespace SamplesApp
 #endif
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
-<<<<<<< HEAD
-=======
-			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-
 			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
->>>>>>> e9a3ded327 (chore: Switch SamplesApp)
 #endif
 		}
 
