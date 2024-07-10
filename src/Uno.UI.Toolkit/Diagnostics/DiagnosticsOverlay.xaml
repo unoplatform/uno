@@ -36,7 +36,8 @@
 						x:Name="Root"
 						CornerRadius="{TemplateBinding CornerRadius}"
 						Height="{TemplateBinding Height}"
-						Orientation="Horizontal">
+						Orientation="Horizontal"
+						Spacing="4">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="DisplayMode">
 								<VisualState x:Name="Compact">
@@ -51,16 +52,36 @@
 								</VisualState>
 							</VisualStateGroup>
 							<VisualStateGroup x:Name="Notification">
+								<VisualStateGroup.Transitions>
+									<VisualTransition To="Collapsed">
+										<Storyboard>
+											<DoubleAnimation
+												Storyboard.TargetName="PART_Notification"
+												Storyboard.TargetProperty="Opacity"
+												To="0"
+												Duration="0:0:1" />
+										</Storyboard>
+									</VisualTransition>
+									<VisualTransition To="Visible">
+										<Storyboard>
+											<DoubleAnimation
+												Storyboard.TargetName="PART_Notification"
+												Storyboard.TargetProperty="Opacity"
+												From="0.5"
+												To="1"
+												Duration="0:0:0.2" />
+										</Storyboard>
+									</VisualTransition>
+								</VisualStateGroup.Transitions>
 								<VisualState x:Name="Collapsed">
 									<VisualState.Setters>
 										<Setter Target="PART_Notification.MaxWidth" Value="0" />
-										<Setter Target="PART_Notification.Margin" Value="0" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Visible">
 									<VisualState.Setters>
 										<Setter Target="PART_Notification.MaxWidth" Value="512" />
-										<Setter Target="PART_Notification.Margin" Value="4,0" />
+										<Setter Target="PART_Notification.Opacity" Value="1" />
 									</VisualState.Setters>
 								</VisualState>
 							</VisualStateGroup>
@@ -100,6 +121,7 @@
 
 						<ContentPresenter
 							x:Name="PART_Notification"
+							Opacity="0.5"
 							VerticalAlignment="Center" />
 					</StackPanel>
 				</ControlTemplate>

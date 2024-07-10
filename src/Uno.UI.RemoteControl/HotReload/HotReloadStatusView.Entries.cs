@@ -67,11 +67,17 @@ internal record ServerEntry : HotReloadLogEntry
 		Update(srvOp);
 	}
 
+	/// <summary>
+	/// Indicates if this notification is the final one for the operation, INCLUDING application wide.
+	/// </summary>
+	public bool IsFinal { get; private set; }
+
 	public void Update(HotReloadServerOperationData srvOp)
 	{
+		IsFinal = srvOp.Result is not HotReloadServerResult.Success;
 		(IsSuccess, Icon) = srvOp.Result switch
 		{
-			null => (default(bool?), EntryIcon.HotReload | EntryIcon.Loading),
+			null => (default, EntryIcon.HotReload | EntryIcon.Loading),
 			HotReloadServerResult.Success or HotReloadServerResult.NoChanges => (true, EntryIcon.HotReload | EntryIcon.Success),
 			_ => (false, EntryIcon.HotReload | EntryIcon.Error)
 		};
