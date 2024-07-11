@@ -47,6 +47,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Bounds = bounds;
 		VisibleBounds = bounds;
+		Size = bounds.Size.ToSizeInt32();
 	}
 
 	protected override void ShowCore()
