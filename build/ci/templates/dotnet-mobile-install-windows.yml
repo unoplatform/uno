@@ -9,7 +9,7 @@ steps:
 
   - powershell: |
       & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major
+      & uno-check -v --ci --non-interactive --fix --skip psexecpolicy --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major
     displayName: Install .NET Workloads
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
