@@ -85,6 +85,13 @@
 		</controls:Grid>
 	</DataTemplate>
 
+	<Style x:Key="IndicatorButtonStyle" TargetType="Button">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="BorderThickness" Value="0" />
+	</Style>
+
 	<local:EntryIconToObjectConverter
 		x:Key="EntryIconToContentTemplate"
 		SuccessValue="{StaticResource HotReloadIconSuccess}"
@@ -270,7 +277,10 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 
-						<Button Height="24" Padding="0" Background="Transparent" BorderBrush="Transparent">
+						<Button Height="24" Style="{StaticResource IndicatorButtonStyle}">
+							<Button.Resources>
+								<SolidColorBrush x:Key="FilledButtonForegroundPointerOver" Color="Transparent" />
+							</Button.Resources>
 							<Button.Flyout>
 								<Flyout Placement="BottomEdgeAlignedLeft">
 									<Flyout.FlyoutPresenterStyle>
@@ -281,7 +291,7 @@
 										</Style>
 									</Flyout.FlyoutPresenterStyle>
 
-									<StackPanel CornerRadius="8" Spacing="10" >
+									<StackPanel Spacing="10" >
 										<TextBlock
 											Text="Events"
 											FontSize="11"
