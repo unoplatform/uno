@@ -95,7 +95,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
