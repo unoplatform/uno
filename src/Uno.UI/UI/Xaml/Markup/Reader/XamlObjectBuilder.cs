@@ -79,7 +79,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			return instance;
 		}
 
-		private object? LoadObject(XamlObjectDefinition? control, object? rootInstance, object? component = null, bool createInstanceFromXClass = false)
+		private object? LoadObject(
+			XamlObjectDefinition? control,
+			object? rootInstance,
+			object? component = null,
+			DependencyObject? templatedParent = null,
+			bool createInstanceFromXClass = false)
 		{
 			if (control == null)
 			{
@@ -97,14 +102,25 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			var type = TypeResolver.FindType(control.Type);
 			var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class" && m.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace);
 
+			void TrySetContextualProperties(object? instance, XamlObjectDefinition control)
+			{
+				if (instance is FrameworkElement fe)
+				{
+					if (_fileUri is { })
+					{
+						fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+					}
+					if (templatedParent is { })
+					{
+						fe.SetTemplatedParent(templatedParent);
+					}
+				}
+			}
+
 			if (createInstanceFromXClass && TypeResolver.FindType(classMember?.Value?.ToString()) is { } classType)
 			{
 				var created = Activator.CreateInstance(classType);
-
-				if (created is FrameworkElement fe && _fileUri is not null)
-				{
-					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
-				}
+				TrySetContextualProperties(created, control);
 
 				return created;
 			}
@@ -122,19 +138,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (type.Is<FrameworkTemplate>())
 			{
-				Func<_View?> builder = () =>
+				FrameworkTemplateBuilder builder = (o, tp) =>
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance) as _View;
+					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, templatedParent: tp) as _View;
 				};
 
-				var created = Activator.CreateInstance(type, builder);
-
-				if (created is FrameworkElement fe && _fileUri is not null)
-				{
-					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
-				}
+				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
+				TrySetContextualProperties(created, control);
 
 				return created;
 			}
@@ -146,7 +158,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					foreach (var member in control.Members.Where(m => m != unknownContent))
 					{
-						ProcessNamedMember(control, rd, member, rd);
+						ProcessNamedMember(control, rd, member, rd, templatedParent: null);
 					}
 
 					if (unknownContent is { })
@@ -187,15 +199,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				rootInstance ??= instance;
 
 				var instanceAsFrameworkElement = instance as FrameworkElement;
-
-				if (instanceAsFrameworkElement is not null)
+				if (instanceAsFrameworkElement is { })
 				{
 					instanceAsFrameworkElement.IsParsing = true;
-
-					if (_fileUri is not null)
-					{
-						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
-					}
+					TrySetContextualProperties(instanceAsFrameworkElement, control);
 				}
 
 				IDisposable? TryProcessStyle()
@@ -208,15 +215,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 							{
 								_styleTargetTypeStack.Push(targetType);
 
-								return Uno.Disposables.Disposable.Create(
-									() =>
+								return Uno.Disposables.Disposable.Create(() =>
+								{
+									if (_styleTargetTypeStack.Pop() != targetType)
 									{
-										if (_styleTargetTypeStack.Pop() != targetType)
-										{
-											throw new InvalidOperationException("StyleTargetType is out of synchronization");
-										}
+										throw new InvalidOperationException("StyleTargetType is out of synchronization");
 									}
-								);
+								});
 							}
 							else
 							{
@@ -232,7 +237,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					foreach (var member in control.Members)
 					{
-						ProcessNamedMember(control, instance, member, rootInstance);
+						ProcessNamedMember(control, instance, member, rootInstance, templatedParent);
 					}
 				}
 
@@ -295,7 +300,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			XamlObjectDefinition control,
 			object instance,
 			XamlMemberDefinition member,
-			object rootInstance)
+			object rootInstance,
+			DependencyObject? templatedParent)
 		{
 			// Exclude attached properties, must be set in the extended apply section.
 			// If there is no type attached, this can be a binding.
@@ -334,7 +340,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					&& TypeResolver.FindContentProperty(TypeResolver.FindType(control.Type)) == null
 					&& TypeResolver.IsCollectionOrListType(TypeResolver.FindType(control.Type)))
 				{
-					AddCollectionItems(instance, member.Objects, rootInstance);
+					AddCollectionItems(instance, member.Objects, rootInstance, templatedParent);
 				}
 				else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 				{
@@ -347,31 +353,21 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						{
 							// WinUI Grid succinct syntax
 							if (instance is Grid grid &&
-								(member.Member.Name == "ColumnDefinitions" || member.Member.Name == "RowDefinitions") &&
 								member.Member.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace &&
+								member.Member.Name is "ColumnDefinitions" or "RowDefinitions" &&
+								(member.Member.Name is "ColumnDefinitions") is var isColumnDefinition &&
 								member.Value is string definitions)
 							{
-								var values = definitions
-									.Split(',')
-									.Select(static definition => definition.Trim())
-									.ToArray();
-
-								foreach (var value in values)
+								var lengths = GridLength.ParseGridLength(definitions);
+								foreach (var length in lengths)
 								{
-									var gridLength = GridLength.ParseGridLength(value).FirstOrDefault();
-									if (member.Member.Name == "ColumnDefinitions")
+									if (isColumnDefinition)
 									{
-										grid.ColumnDefinitions.Add(new ColumnDefinition
-										{
-											Width = gridLength,
-										});
+										grid.ColumnDefinitions.Add(new ColumnDefinition { Width = length });
 									}
 									else
 									{
-										grid.RowDefinitions.Add(new RowDefinition
-										{
-											Height = gridLength,
-										});
+										grid.RowDefinitions.Add(new RowDefinition { Height = length });
 									}
 								}
 							}
@@ -400,7 +396,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							ProcessMemberElements(instance, member, propertyInfo, rootInstance);
+							ProcessMemberElements(instance, member, propertyInfo, rootInstance, templatedParent);
 						}
 					}
 				}
@@ -441,7 +437,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
-							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance);
+							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance, /* fixme@xy: should it be null here? */ templatedParent);
 						}
 						else
 						{
@@ -609,7 +605,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void ProcessMemberElements(DependencyObject instance, XamlMemberDefinition member, DependencyProperty property, object rootInstance)
+		private void ProcessMemberElements(
+			DependencyObject instance,
+			XamlMemberDefinition member,
+			DependencyProperty property,
+			object rootInstance,
+			DependencyObject? templatedParent)
 		{
 			if (TypeResolver.IsCollectionOrListType(property.Type))
 			{
@@ -627,29 +628,34 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				var collection = BuildInstance();
 
-				AddCollectionItems(collection, member.Objects, rootInstance);
+				AddCollectionItems(collection, member.Objects, rootInstance, templatedParent);
 
 				instance.SetValue(property, collection);
 			}
 			else
 			{
-				instance.SetValue(property, LoadObject(member.Objects.First(), rootInstance: rootInstance));
+				instance.SetValue(property, LoadObject(member.Objects.First(), rootInstance: rootInstance, templatedParent: templatedParent));
 			}
 		}
 
-		private void ProcessMemberElements(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo, object rootInstance)
+		private void ProcessMemberElements(
+			object instance,
+			XamlMemberDefinition member,
+			PropertyInfo propertyInfo,
+			object rootInstance,
+			DependencyObject? templatedParent)
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
 				if (propertyInfo.PropertyType.IsAssignableTo(typeof(ResourceDictionary)))
 				{
-					// A resource-dictionary property (typically FE.Resources) can only have two types of nested scenarios:
+					// A resource-dictionary property (typically FE.Resources) can only have two types of nested contents:
 					// 1. a single res-dict
 					// 2. zero-to-many non-res-dict resources
 					// Nesting multiple res-dict or a mix of (res-dict(s) + resource(s)) will throw:
 					// > Xaml Internal Error error WMC9999: This Member 'Resources' has more than one item, use the Items property
 					// It is also illegal to nested Page.Resources\ResourceDictionary.MergedDictionary without a ResourceDictionary node in between.
-					// > Xaml Xml Parsing Error error WMC9997: 'Unexpected 'PROPERTYELEMENT' in parse rule 'NonemptyPropertyElement ::= . PROPERTYELEMENT Content? ENDTAG.'.' Line number '13' and line position '5'.
+					// > Xaml Xml Parsing Error error WMC9997: 'Unexpected 'PROPERTYELEMENT' in parse rule 'NonemptyPropertyElement ::= . PROPERTYELEMENT Content? ENDTAG.'.'
 
 					// Case 1: a single res-dict
 					if (member.Objects is [var singleChild] &&
@@ -729,7 +735,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					&& TypeResolver.IsNewableType(propertyInfo.PropertyType))
 				{
 					var collection = Activator.CreateInstance(propertyInfo.PropertyType);
-					AddCollectionItems(collection!, member.Objects, rootInstance);
+					AddCollectionItems(collection!, member.Objects, rootInstance, templatedParent);
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
@@ -750,7 +756,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							AddCollectionItems(propertyInstance, member.Objects, rootInstance);
+							AddCollectionItems(propertyInstance, member.Objects, rootInstance, templatedParent);
 						}
 					}
 					else
@@ -765,7 +771,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				GetPropertySetter(propertyInfo).Invoke(instance, new[] { LoadObject(member.Objects.First(), rootInstance: rootInstance) });
+				GetPropertySetter(propertyInfo).Invoke(instance, new[]
+				{
+					LoadObject(member.Objects.First(), rootInstance: rootInstance, templatedParent: templatedParent)
+				});
 			}
 		}
 
@@ -1133,23 +1142,22 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void AddCollectionItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects, object rootInstance)
+		private void AddCollectionItems(
+			object collectionInstance,
+			IEnumerable<XamlObjectDefinition> nonBindingObjects,
+			object rootInstance,
+			DependencyObject? templatedParent)
 		{
-			MethodInfo? addMethodInfo = null;
-
+			var addMethodMap = new Dictionary<Type, MethodInfo>(); // review@xy: globally cache this lookup by (instance-type, item-type)?
 			foreach (var child in nonBindingObjects)
 			{
-				var item = LoadObject(child, rootInstance: rootInstance);
-
-				if (addMethodInfo == null)
+				var item = LoadObject(child, rootInstance: rootInstance, templatedParent: templatedParent);
+				var itemType = item?.GetType() ?? typeof(object);
+				if (!addMethodMap.TryGetValue(itemType, out var addMethodInfo))
 				{
-					addMethodInfo = collectionInstance
-						.GetType()
-						.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
-						.Where(m => m.Name == "Add")
-						.FirstOrDefault(m => m.GetParameters() is { Length: 1 } p
-							&& (item?.GetType() ?? typeof(object)).Is(p[0].ParameterType))
-						?? throw new InvalidOperationException($"The type {collectionInstance.GetType()} does not contains an Add({item?.GetType()}) method");
+					addMethodInfo =
+						FindAddMethod(collectionInstance, itemType) ??
+						throw new InvalidOperationException($"The type {collectionInstance.GetType()} does not contains an Add({itemType}) method");
 				}
 
 				addMethodInfo.Invoke(collectionInstance, new[] { item });
@@ -1162,8 +1170,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
 				.Where(m => m.Name == "Add")
 				.FirstOrDefault(m =>
-					m.GetParameters() is { Length: 1 } p &&
-					(itemType ?? typeof(object)).Is(p[0].ParameterType)
+					m.GetParameters() is [var arg0] &&
+					(itemType ?? typeof(object)).Is(arg0.ParameterType)
 				);
 		}
 

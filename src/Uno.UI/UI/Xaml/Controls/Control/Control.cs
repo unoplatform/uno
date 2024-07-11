@@ -574,6 +574,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (Template != null)
 				{
+					TemplatedRoot = null;
+					UnregisterSubView();
+
 					TemplatedRoot = Template.LoadContentCached(this);
 				}
 				else
@@ -582,7 +585,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				_updateTemplate = false;
-
 			}
 		}
 
