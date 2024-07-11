@@ -253,6 +253,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 		}
 
-		public bool OnPreDraw() => _windowWrapper.Visible;
+		public bool OnPreDraw() => _windowWrapper.IsVisible;
 	}
 }

@@ -238,7 +238,16 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 	}
 
-	public void Destroy() => throw new NotImplementedException();
-	public void Hide() => throw new NotImplementedException();
-	public void Show(bool activateWindow) => throw new NotImplementedException();
+	public void Destroy() { }
+
+	public void Hide() { }
+
+	public void Show(bool activateWindow)
+	{
+		Show();
+		if (activateWindow)
+		{
+			Activate();
+		}
+	}
 }

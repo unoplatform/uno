@@ -46,6 +46,7 @@ partial class AppWindow
 	/// </summary>
 	public AppWindowTitleBar TitleBar { get; }
 
+	/// <summary>
 	/// Gets the current size of the window's client area in client coordinates.
 	/// </summary>
 	public SizeInt32 ClientSize => _nativeAppWindow.ClientSize;
