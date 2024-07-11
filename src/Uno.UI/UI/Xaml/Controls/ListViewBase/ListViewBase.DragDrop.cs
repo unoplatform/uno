@@ -16,6 +16,7 @@ using _DragEventArgs = global::Microsoft.UI.Xaml.DragEventArgs;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -262,7 +263,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			that.m_tpPrimaryDraggedContainer = null;
 
-			that.ChangeSelectorItemsVisualState(true);
+			// CompleteReordering will remove the children and add them back on next measure.
+			// We defer ChangeSelectorItemsVisualState to the next measure so that the children are there and updated.
+			// An alternative could be to retrieve the children before CompleteReordering and then update the visual state here.
+			that.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => that.ChangeSelectorItemsVisualState(true));
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue
