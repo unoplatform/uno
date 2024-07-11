@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml
 
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
-		
+
 		// fixme@xy: IsTemplatedParentFrozen
 		//internal void FreezeTemplatedParent() => ((IDependencyObjectStoreProvider)this).Store.IsTemplatedParentFrozen = true;
 

@@ -221,7 +221,6 @@ partial class ItemsView : Control
 
 		ItemsRepeater itemsRepeater = GetTemplateChild<ItemsRepeater>(s_itemsRepeaterPartName);
 
-		
 		// fixme@xy: IsTemplatedParentFrozen
 		//// Uno specific: Workaround until https://github.com/unoplatform/uno/pull/12732 is merged
 		//itemsRepeater.SetValue(ItemsRepeater.TemplatedParentProperty, this);
