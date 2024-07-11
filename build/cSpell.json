@@ -110,7 +110,8 @@
 	"webservices",
 	"webapps",
 	"Haptics",
-	"autoplay"
+	"autoplay",
+	"Xcodes"
   ],
   "ignoreWords": [
 	"ADAL",
