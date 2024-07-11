@@ -111,6 +111,12 @@ internal static class FontDetailsCache
 			name = FeatureConfiguration.Font.DefaultTextFontFamily;
 		}
 
+		var hashIndex = name.IndexOf('#');
+		if (hashIndex > 0)
+		{
+			name = name.Substring(0, hashIndex);
+		}
+
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri) && uri.IsLocalResource())
 		{
 			var task = LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
