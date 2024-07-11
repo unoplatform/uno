@@ -1,3 +1,5 @@
+using Windows.Foundation;
+
 namespace Windows.Graphics;
 
 /// <summary>
@@ -5,6 +7,12 @@ namespace Windows.Graphics;
 /// </summary>
 public partial struct SizeInt32
 {
+	internal SizeInt32(int width, int height)
+	{
+		Width = width;
+		Height = height;
+	}
+
 	/// <summary>
 	/// The width of a surface.
 	/// </summary>
