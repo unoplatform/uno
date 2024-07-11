@@ -10,11 +10,17 @@ The `FontFamily` of many controls (e.g. `TextBox` or `Control`) property allows 
 
 ## Default text font
 
-The default text font on WinUI is Segoe UI. However, Segoe UI isn't available on macOS, Linux, or Browsers running on macOS or Linux. Therefore, starting with Uno 5.3, we are switching the default text font for Uno Platform to OpenSans which is served through [Uno.Fonts.OpenSans NuGet package](https://nuget.org/packages/Uno.Fonts.OpenSans).
+The default text font on WinUI is [Segoe UI](https://learn.microsoft.com/en-us/typography/font-list/segoe-ui). However, Segoe UI isn't available on macOS, Linux, or Browsers running on macOS or Linux.
 
-If you are using Uno.Sdk, OpenSans will be your default font starting with Uno 5.3. In order to restore the old behavior (Segoe UI), add `<UnoDefaultFontOpenSans>false</UnoDefaultFontOpenSans>` to a `PropertyGroup` in your project.
+In order to get a consistent experience across targets, Uno Platform 5.3 or later automatically sets the default text font to OpenSans by using the [Uno.Fonts.OpenSans](https://nuget.org/packages/Uno.Fonts.OpenSans) NuGet package. This font is used on all targets except Windows App SDK, where Segoe UI continues to be used.
 
-If you are not using Uno.Sdk, Segoe UI will remain the default. To switch to OpenSans, add a `PackageReference` to `Uno.Fonts.OpenSans` and also set `DefaultTextFontFamily` in application initialization:
+### Disabling Open Sans
+
+If you are upgrading to 5.3 or later and your project uses the Uno.Sdk, but want to keep the legacy behavior (Segoe UI), add `<UnoDefaultFont>None</UnoDefaultFont>` to a `PropertyGroup` in `Directory.Build.props` or your `.csproj`.
+
+### Using Open Sans in non-Uno.Sdk projects
+
+If you are not using Uno.Sdk (Uno Platform 5.1 or earlier project templates), Segoe UI remains the default font even when using Uno Platform 5.3 and later. To switch to OpenSans, add a `PackageReference` to `Uno.Fonts.OpenSans` and also set `DefaultTextFontFamily` in the `App.xaml.cs` file:
 
 ```csharp
 global::Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
