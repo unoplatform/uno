@@ -110,20 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property BorderThickness
 		// Skipping already declared property BorderBrush
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.BrushTransition BackgroundTransition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BrushTransition ContentPresenter.BackgroundTransition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrushTransition%20ContentPresenter.BackgroundTransition");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContentPresenter", "BrushTransition ContentPresenter.BackgroundTransition");
-			}
-		}
-#endif
+		// Skipping already declared property BackgroundTransition
 		// Skipping already declared property BackgroundSizing
 		// Skipping already declared property Background
 		// Skipping already declared property BackgroundProperty
