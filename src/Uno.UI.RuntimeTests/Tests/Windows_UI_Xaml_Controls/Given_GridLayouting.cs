@@ -1932,7 +1932,7 @@ public partial class Given_GridLayouting
 #if UNO_REFERENCE_API || WINAPPSDK
 		c1.DesiredSize.Should().Be(new Size(10, 20), because: "c1.DesiredSize");
 #else
-		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30), because: "SUT UnclippedDesiredSize);
+		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30), because: "SUT UnclippedDesiredSize");
 		c1.DesiredSize.Should().Be(new Size(10, 30), because: "c1.DesiredSize");
 #endif
 
