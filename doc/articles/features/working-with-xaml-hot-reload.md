@@ -60,7 +60,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. There are some restrictions that are listed below:
 
 - The Visual Studio 2022 for Windows support is fully available, with and without running under the debugger
-- As of VS 2022 17.9 XAML Hot Reload under WSL is not supported
+- As of VS 2022 17.9 XAML or C# Hot Reload under WSL is not supported
 - VS Code
   - With the debugger: The C# Dev Kit is handling hot reload [when enabled](https://code.visualstudio.com/docs/csharp/debugging#_hot-reload). As of December 20th, 2023, C# Dev Kit hot reload does not handle class libraries. To experience the best hot reload, do not use the debugger.
   - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# or XAML)
@@ -191,7 +191,7 @@ Here's a summary of what icons and statuses you can expect:
   - Open Tools / Options
   - Search for **.NET / C++ Hot Reload**
   - Ensure that all three checkboxes are checked (_**Enable hot reload when debugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_)
-- The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. Changing the MSBuild build output verbosity in `Tools/Options/Projects and Solutions/Build And Run` controls the log level.
+- The output window in VS has an output namegd `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. Changing the MSBuild build output verbosity in `Tools/Options/Projects and Solutions/Build And Run` controls the log level.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net8.0-windows10.xx`:
