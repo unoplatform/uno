@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
+using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
@@ -25,7 +26,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
 	private bool _wasShown;
 
-	public GtkWindowWrapper(UnoGtkWindow gtkWindow, XamlRoot xamlRoot) : base(window, xamlRoot)
+	public GtkWindowWrapper(UnoGtkWindow gtkWindow, WinUIWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_gtkWindow = gtkWindow ?? throw new ArgumentNullException(nameof(gtkWindow));
 		_gtkWindow.Shown += OnWindowShown;
@@ -134,6 +135,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	{
 		Bounds = new Rect(default, size);
 		VisibleBounds = Bounds;
+		Size = new Windows.Graphics.SizeInt32() { Height = (int)size.Height, Width = (int)size.Width };
 	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
@@ -196,11 +198,11 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		{
 			if (isVisible)
 			{
-				winUIApplication?.RaiseLeavingBackground(() => Visible = isVisible);
+				winUIApplication?.RaiseLeavingBackground(() => IsVisible = isVisible);
 			}
 			else
 			{
-				Visible = isVisible;
+				IsVisible = isVisible;
 				winUIApplication?.RaiseEnteredBackground(null);
 			}
 		}
