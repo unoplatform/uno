@@ -43,7 +43,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	private void OnNativeSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) => UpdateSizeFromNative();
 
 	private void UpdateSizeFromNative() =>
-		Size = new() { Width = (int)_wpfWindow.Width, Height = (int)_wpfWindow.Height };
+		Size = new() { Width = (int)_wpfWindow.ActualWidth, Height = (int)_wpfWindow.ActualHeight };
 
 	private void OnNativeLocationChanged(object? sender, EventArgs e) => UpdatePositionFromNative();
 

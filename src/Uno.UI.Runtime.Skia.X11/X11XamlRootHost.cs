@@ -84,13 +84,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		};
 		_renderTimer.Start();
 
-		_resizeCallback = size =>
-		{
-			// copy the root window dimensions to the top window
-			using var _1 = X11Helper.XLock(TopX11Window.Display);
-			_ = XLib.XResizeWindow(TopX11Window.Display, TopX11Window.Window, (int)size.Width, (int)size.Height);
-			resizeCallback(size);
-		};
 		_closingCallback = closingCallback;
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
