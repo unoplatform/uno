@@ -21,10 +21,10 @@ internal sealed class ColorBrushTransitionState
 	}
 
 	internal BorderVisual Visual { get; }
-	internal Color FromColor { get; }
-	internal Color ToColor { get; }
-	internal long StartTimestamp { get; }
-	internal long EndTimestamp { get; }
+	internal Color FromColor { get; set; }
+	internal Color ToColor { get; set; }
+	internal long StartTimestamp { get; set; }
+	internal long EndTimestamp { get; set; }
 
 	internal Color CurrentColor
 	{
@@ -72,6 +72,18 @@ public partial class Compositor
 	{
 		var start = TimestampInTicks;
 		var end = start + duration.Ticks;
+		foreach (var transition in _backgroundTransitions)
+		{
+			if (transition.Visual == visual)
+			{
+				transition.StartTimestamp = start;
+				transition.EndTimestamp = end;
+				transition.FromColor = fromColor;
+				transition.ToColor = toColor;
+				return;
+			}
+		}
+
 		_backgroundTransitions.Add(new ColorBrushTransitionState(visual, fromColor, toColor, start, end));
 	}
 
