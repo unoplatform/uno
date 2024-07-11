@@ -86,7 +86,6 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
     - Update to Uno.Wasm.Bootstrap 8.0.3 or later
     - Unregister any Web Worker associated with your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available.
-  - Hot Reload is not supported when using the debugger
 
 ### [**iOS, Android, and Catalyst**](#tab/mobile)
 
@@ -192,7 +191,6 @@ Here's a summary of what icons and statuses you can expect:
   - Open Tools / Options
   - Search for **.NET / C++ Hot Reload**
   - Ensure that all three checkboxes are checked (_**Enable hot reload when debugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_)
-- Hot Reload for WebAssembly is not supported when using the debugger. Start your app using `Ctrl+F5`.
 - The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. Changing the MSBuild build output verbosity in `Tools/Options/Projects and Solutions/Build And Run` controls the log level.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
