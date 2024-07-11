@@ -32,12 +32,9 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:DiagnosticsOverlay">
-					<StackPanel
-						x:Name="Root"
+					<Canvas
 						CornerRadius="{TemplateBinding CornerRadius}"
-						Height="{TemplateBinding Height}"
-						Orientation="Horizontal"
-						Spacing="4">
+						Height="{TemplateBinding Height}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="DisplayMode">
 								<VisualState x:Name="Compact">
@@ -85,22 +82,37 @@
 									</VisualState.Setters>
 								</VisualState>
 							</VisualStateGroup>
+							<VisualStateGroup x:Name="HorizontalDirection">
+								<VisualState x:Name="Right" />
+								<VisualState x:Name="Left">
+									<VisualState.Setters>
+										<Setter Target="PART_Anchor.(Grid.Column)" Value="1" />
+										<Setter Target="PART_Elements.(Grid.Column)" Value="0" />
+										<Setter Target="PART_Notification.(local:RelativePlacement.Mode)" Value="Left" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 
-						<StackPanel
+						<Grid
+							x:Name="PART_Toolbar"
 							BorderThickness="{TemplateBinding BorderThickness}"
 							BorderBrush="{ThemeResource DiagnosticsOverlayBorderBrush}"
 							CornerRadius="{TemplateBinding CornerRadius}"
 							Height="{TemplateBinding Height}"
-							Background="{ThemeResource DiagnosticsOverlayBackgroundBrush}"
-							Orientation="Horizontal">
+							Background="{ThemeResource DiagnosticsOverlayBackgroundBrush}">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
 
-							<Grid 
+							<Border
 								x:Name="PART_Anchor"
+								Grid.Column="0"
 								BorderThickness="0,0,1,0"
 								BorderBrush="{ThemeResource DiagnosticsOverlayBorderBrush}"
 								Background="{ThemeResource DiagnosticsOverlayBackgroundBrush}">
-								<Path 
+								<Path
 									Stretch="Uniform"
 									Width="12"
 									Height="16"
@@ -108,22 +120,24 @@
 									HorizontalAlignment="Center"
 									Data="{StaticResource AnchorIcon}"
 									Fill="{ThemeResource DiagnosticsAnchorFillBrush}" />
-							</Grid>
+							</Border>
 
 							<StackPanel
 								x:Name="PART_Elements"
+								Grid.Column="1"
 								MaxWidth="0"
 								Spacing="4"
 								Padding="4,0"
 								Orientation="Horizontal"
-								VerticalAlignment="Center" />
-						</StackPanel>
+								VerticalAlignment="Center"/>
+						</Grid>
 
 						<ContentPresenter
 							x:Name="PART_Notification"
+							local:RelativePlacement.Mode="Right"
 							Opacity="0.5"
 							VerticalAlignment="Center" />
-					</StackPanel>
+					</Canvas>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
