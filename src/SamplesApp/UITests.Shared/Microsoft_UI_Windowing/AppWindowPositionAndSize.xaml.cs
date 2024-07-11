@@ -130,6 +130,7 @@ internal class AppWindowPositionAndSizeViewModel : ViewModelBase
 		try
 		{
 			_appWindow.Move(Position);
+			UpdateProperties();
 		}
 		catch (Exception ex)
 		{
@@ -142,6 +143,7 @@ internal class AppWindowPositionAndSizeViewModel : ViewModelBase
 		try
 		{
 			_appWindow.Resize(Size);
+			UpdateProperties();
 		}
 		catch (Exception ex)
 		{
