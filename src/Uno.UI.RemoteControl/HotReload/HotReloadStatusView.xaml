@@ -10,6 +10,10 @@
 					xmlns:controls="clr-namespace:Microsoft.UI.Xaml.Controls;assembly=Uno.UI"
 					mc:Ignorable="d">
 
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="ms-appx:///Uno.UI.Toolkit/Diagnostics/DiagnosticsOverlay.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+	
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Name="Light">
 			<SolidColorBrush x:Key="HotReloadPathFillBrush" Opacity="0.9">#000000</SolidColorBrush>
@@ -84,13 +88,6 @@
 			<Path Data="M8.99286 14.3094C8.81369 14.0401 8.50741 13.8626 8.15967 13.8626C7.60738 13.8626 7.15967 14.3103 7.15967 14.8626C7.15967 15.4149 7.60738 15.8626 8.15967 15.8626C8.38259 15.8626 8.58848 15.7896 8.75476 15.6663C8.78003 15.1968 8.86161 14.7423 8.99286 14.3094Z" Fill="{ThemeResource HotReloadPathFillBrush}" />
 		</controls:Grid>
 	</DataTemplate>
-
-	<Style x:Key="IndicatorButtonStyle" TargetType="Button">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="Padding" Value="0" />
-		<Setter Property="BorderThickness" Value="0" />
-	</Style>
 
 	<local:EntryIconToObjectConverter
 		x:Key="EntryIconToContentTemplate"
@@ -277,7 +274,7 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 
-						<Button Height="24" Style="{StaticResource IndicatorButtonStyle}">
+						<Button Height="24">
 							<Button.Resources>
 								<SolidColorBrush x:Key="FilledButtonForegroundPointerOver" Color="Transparent" />
 							</Button.Resources>
