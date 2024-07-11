@@ -5,8 +5,6 @@
 		<UnoFeatures Condition="$(UnoFeatures) == ''">;</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
-
-		<UnoDefaultFontOpenSans Condition="'$(UnoDefaultFontOpenSans)'==''">true</UseOpenSans>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
