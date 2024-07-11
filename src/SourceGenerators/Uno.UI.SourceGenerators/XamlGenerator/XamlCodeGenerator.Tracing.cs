@@ -22,17 +22,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				try
 				{
-					var basePath = Path.Combine(tracingFolder, MakeRunId());
-					var sourcesPath = Path.Combine(basePath, "sources");
+					var basePath = Path.Combine(tracingFolder, context.GetMSBuildPropertyValue("MSBuildProjectName"));
+					//var sourcesPath = Path.Combine(basePath, "sources");
 
-					Directory.CreateDirectory(sourcesPath);
+					Directory.CreateDirectory(basePath);
 
-					DumpCommandLine(basePath);
+					//DumpCommandLine(basePath);
 
-					DumpMSBuildProperties(basePath, context);
-					DumpMSBuildItems(basePath, context);
+					//DumpMSBuildProperties(basePath, context);
+					//DumpMSBuildItems(basePath, context);
 
-					DumpGeneratedSourceFiles(sourcesPath, generatedSources);
+					DumpGeneratedSourceFiles(basePath, generatedSources);
 				}
 				catch
 				{

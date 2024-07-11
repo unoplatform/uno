@@ -120,7 +120,7 @@ static partial class ViewExtensions
 			{
 				yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
 			}
-			if (x is TextBlock tb && tb.Text is { Length: >0 } text)
+			if (x is TextBlock tb && tb.Text is { Length: > 0 } text)
 			{
 				yield return $"Text={text.Substring(0, Math.Min(50, text.Length)).Replace("\r", "\\r").Replace("\n", "\\n")}";
 			}
