@@ -50,14 +50,14 @@ Variable fonts are currently properly supported on Android and Wasm, have partia
 
 \* on Android and Wasm, if you set an aspect of a font that the variable font file doesn't have an axis for, the platform fakes it. For example, a variable font may have width and weight axes but not italic or slant. If you try to use italic, the platform will make "faux" italic. However, iOS doesn't have this behavior, which makes using variable fonts problematic in some cases.
 
-To overcome the issues for Skia and iOS, we introduced font manifest in Uno Platform 5.3. A font manifest is a json file that maps weight, stretch, and style to a static font. Note that font manifest is only supported on Skia and iOS because other platforms don't need it.
+To overcome the issues on Skia and iOS, we introduced the font manifest in Uno Platform 5.3. A font manifest is a JSON file that maps weight, stretch, and style to a static font. Note that the font manifest is only supported on Skia and iOS because other platforms don't need it.
 
 ### High level overview of how font manifest work
 
 When you specify `FontFamily="ms-appx:///path/to/myfont.ttf`:
 
-- On iOS and Skia, we check if `ms-appx:///path/to/myfont.ttf.manifest` exists, then from there we will find the correct static font file to use.
-- On other platforms, `ms-appx:///path/to/myfont.ttf` will be used right away. When this file is a variable font, things will work as expected.
+- On iOS and Skia, we check if `ms-appx:///path/to/myfont.ttf.manifest` exists. From there, we find the correct static font file to use.
+- On other platforms, `ms-appx:///path/to/myfont.ttf` will be used right away. When this file is a variable font, it will work as expected.
 
 ### Example manifest file
 
