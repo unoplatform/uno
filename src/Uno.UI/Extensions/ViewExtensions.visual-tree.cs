@@ -31,6 +31,7 @@ using _View = Microsoft.UI.Xaml.DependencyObject;
 
 using static System.Reflection.BindingFlags;
 using static Uno.UI.Extensions.PrettyPrint;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.Extensions;
 
@@ -86,10 +87,54 @@ static partial class ViewExtensions
 
 		static IEnumerable<string> GetDetails(object x)
 		{
+			if (x is FrameworkElement fe2)
+			{
+				//yield return $"TemplatedParent={fe2.GetTemplatedParent()?.GetType().Name ?? "<null>"}";
+			}
+			if (x is UIElement uie2)
+			{
+				//yield return $"DataContext={uie2.DataContext?.GetType().Name ?? "<null>"}";
+			}
+
+			// =====
+			if (x is Grid g)
+			{
+				if (g.ColumnDefinitions is { Count: > 0 } columns)
+				{
+					yield return $"Columns={string.Join(',', columns.Select(FormatGridDefinition))}";
+				}
+				if (g.RowDefinitions is { Count: > 0 } rows)
+				{
+					yield return $"Columns={string.Join(',', rows.Select(FormatGridDefinition))}";
+				}
+			}
+			if (x is FrameworkElement { Parent: Grid } fe3)
+			{
+				int c = Grid.GetColumn(fe3), cspan = Grid.GetColumnSpan(fe3),
+					r = Grid.GetRow(fe3), rspan = Grid.GetRowSpan(fe3);
+
+				yield return $"R{FormatRange(r, rspan)}C{FormatRange(c, cspan)}";
+				string FormatRange(int x, int span) => span > 1 ? $"{x}-{x + span - 1}" : x.ToStringInvariant();
+			}
 			if (x is ListViewItem lvi)
 			{
 				yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
 			}
+			if (x is TextBlock tb && tb.Text is { Length: >0 } text)
+			{
+				yield return $"Text={text.Substring(0, Math.Min(50, text.Length)).Replace("\r", "\\r").Replace("\n", "\\n")}";
+			}
+			if (x is ToggleButton tbtn)
+			{
+				yield return $"IsChecked={tbtn.IsChecked}";
+			}
+			if (x is SplitView sview)
+			{
+				yield return $"IsPaneOpen={sview.IsPaneOpen}";
+			}
+
+			// =====
+
 #if __ANDROID__
 			if (x is Android.Views.View v)
 			{
@@ -111,9 +156,9 @@ static partial class ViewExtensions
 			{
 				yield return $"Offset=({sv.HorizontalOffset},{sv.VerticalOffset}), Viewport=({sv.ViewportHeight},{sv.ViewportWidth}), Extent=({sv.ExtentHeight},{sv.ExtentWidth})";
 			}
-			if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
-			if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
-			if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
+			//if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
+			//if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
+			//if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
 
 			if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
 			if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";

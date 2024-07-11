@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
@@ -71,6 +72,31 @@ public static class PrettyPrint
 
 		return b.GetType().Name;
 	}
+	public static string FormatGridDefinition(ColumnDefinition def) => FormatGridDefinition((DefinitionBase)def);
+	public static string FormatGridDefinition(RowDefinition def) => FormatGridDefinition((DefinitionBase)def);
+	internal static string FormatGridDefinition(DefinitionBase def)
+	{
+		var (min, max) = (def.GetUserMinSize(), def.GetUserMaxSize());
+		var (size, type) = (def.GetUserSizeValue(), def.GetUserSizeType());
+
+		return min != 0d || max != double.PositiveInfinity
+			? $"[{min:#.##}~{FormatGridLength(size, type)}~{max:#.##}]" // [min~value~max]
+			: FormatGridLength(size, type); // value
+	}
+	public static string FormatGridLength(GridLength x) => FormatGridLength(x.Value, x.GridUnitType);
+	public static string FormatGridLength(double value, GridUnitType type) => type switch
+	{
+		GridUnitType.Auto => "A",
+		GridUnitType.Pixel => $"{value:#.##}",
+		GridUnitType.Star => value switch
+		{
+			0d => "0*",
+			1d => "*",
+
+			_ => $"{value:#.##}*"
+		},
+		_ => /* CS8524: (GridUnitType)123 */ $"{value:#.##}{type.ToString()}"
+	};
 
 	public static string EscapeMultiline(string s, bool escapeTabs = false)
 	{

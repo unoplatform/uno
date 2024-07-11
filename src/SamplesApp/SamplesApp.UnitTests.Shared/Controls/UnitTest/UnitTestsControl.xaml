@@ -13,8 +13,10 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
+
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="0" x:Name="failedTestDetailsRow" />
-			<!--Will be set to height = 100 if any exception-->
+			<!-- Will be set to height = 100 if any exception -->
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
@@ -23,7 +25,13 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Row="0">
+
+		<TextBox x:Name="testFilter"
+				 Grid.Row="0"
+				 Grid.ColumnSpan="3"
+				 PlaceholderText="Enter test filter here"
+				 HorizontalAlignment="Stretch" />
+		<StackPanel Grid.Row="1">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
@@ -31,44 +39,27 @@
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
-				<Button
-					x:Name="runButton"
-					Grid.Column="0"
-					Content="▶ Run"
-					Click="OnRunTests"
-					Margin="0,0,4,0"/>
-				<Button
-					x:Name="stopButton"
-					Grid.Column="1"
-					IsEnabled="False"
-					Content="⏹️ Stop"
-					Click="OnStopTests"
-					Margin="0,0,4,0" />
-				<TextBox
-					x:Name="testFilter"
-					Grid.Column="2"
-					PlaceholderText="Enter test filter here"
-					HorizontalAlignment="Stretch"
-					Margin="0,0,4,0"/>
-				<Button
-					Content="..."
-					Grid.Column="3">
+
+				<Button x:Name="runButton"
+						Grid.Column="0"
+						Content="▶ Run"
+						Click="OnRunTests"
+						Margin="0,0,4,0" />
+				<Button x:Name="stopButton"
+						Grid.Column="1"
+						IsEnabled="False"
+						Content="⏹️ Stop"
+						Click="OnStopTests"
+						Margin="0,0,4,0" />
+				<Button Content="..." Grid.Column="3">
 					<Button.Flyout>
 						<Flyout>
 							<StackPanel>
-								<ToggleButton
-									x:Name="consoleOutput"
-									Content="🖥️ Console Output"
-									/>
-								<ToggleButton
-									x:Name="runIgnored"
-									Content="🚫 Run [Ignore]"
-									/>
-								<ToggleButton
-									x:Name="retry"
-									IsChecked="True"
-									Content="➰ Auto retry"
-									/>
+								<ToggleButton x:Name="consoleOutput" Content="🖥️ Console Output" />
+								<ToggleButton x:Name="runIgnored" Content="🚫 Run [Ignore]" />
+								<ToggleButton x:Name="retry"
+											  IsChecked="True"
+											  Content="➰ Auto retry" />
 							</StackPanel>
 						</Flyout>
 					</Button.Flyout>
@@ -81,107 +72,84 @@
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<TextBlock
-					FontSize="15"
-					Text="🏃‍: "
-					/>
-				<TextBlock
-					FontSize="15"
-					x:Name="runTestCount"
-					Text="None" />
+				<TextBlock FontSize="15" Text="🏃‍: " />
+				<TextBlock FontSize="15"
+						   x:Name="runTestCount"
+						   Text="None" />
 
-				<TextBlock
-					FontSize="15"
-					Text=" 🚫: "
-					/>
-				<TextBlock
-					FontSize="15"
-					x:Name="ignoredTestCount"
-					Foreground="DarkGray"
-					Text="None" />
+				<TextBlock FontSize="15" Text=" 🚫: " />
+				<TextBlock FontSize="15"
+						   x:Name="ignoredTestCount"
+						   Foreground="DarkGray"
+						   Text="None" />
 
-				<TextBlock
-					FontSize="15"
-					Text=" ✔️: "
-					/>
-				<TextBlock
-					FontSize="15"
-					x:Name="succeededTestCount"
-					Foreground="DarkGreen"
-					Text="None" />
+				<TextBlock FontSize="15" Text=" ✔️: " />
+				<TextBlock FontSize="15"
+						   x:Name="succeededTestCount"
+						   Foreground="DarkGreen"
+						   Text="None" />
 
-				<TextBlock
-					FontSize="15"
-					Text=" ❌: " />
-				<TextBlock
-					FontSize="15"
-					x:Name="failedTestCount"
-					Foreground="Red"
-					Text="None" />
+				<TextBlock FontSize="15" Text=" ❌: " />
+				<TextBlock FontSize="15"
+						   x:Name="failedTestCount"
+						   Foreground="Red"
+						   Text="None" />
 			</StackPanel>
 		</StackPanel>
 
-		<ScrollViewer
-			Grid.Row="1"
-			VerticalScrollBarVisibility="Auto"
-			VerticalScrollMode="Auto"
-			HorizontalScrollBarVisibility="Auto"
-			HorizontalScrollMode="Auto">
-			<TextBlock
-				x:Name="failedTestDetails"
-				Opacity="0.8"
-				IsTextSelectionEnabled="True" />
+		<ScrollViewer Grid.Row="2"
+					  VerticalScrollBarVisibility="Auto"
+					  VerticalScrollMode="Auto"
+					  HorizontalScrollBarVisibility="Auto"
+					  HorizontalScrollMode="Auto">
+			<TextBlock x:Name="failedTestDetails"
+					   Opacity="0.8"
+					   IsTextSelectionEnabled="True" />
 		</ScrollViewer>
-		<Button
-			Grid.Row="1"
-			HorizontalAlignment="Right"
-			VerticalAlignment="Top"
-			Margin="0,0,24,0"
-			Background="#66CCCCCC"
-			Click="CopyFailedTestDetails">
+		<Button Grid.Row="2"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Top"
+				Margin="0,0,24,0"
+				Background="#66CCCCCC"
+				Click="CopyFailedTestDetails">
 			<TextBlock Text="Copy" Foreground="{StaticResource SystemControlForegroundAccentBrush}" />
 		</Button>
 
-		<Rectangle
-			Grid.Row="2"
-			Height="5"
-			Fill="{ThemeResource SystemControlForegroundAccentBrush}"
-			HorizontalAlignment="Stretch"
-			ManipulationMode="TranslateY"
-			ManipulationDelta="UpdateFailedTestDetailsSize"/>
+		<Rectangle Grid.Row="3"
+				   Height="5"
+				   Fill="{ThemeResource SystemControlForegroundAccentBrush}"
+				   HorizontalAlignment="Stretch"
+				   ManipulationMode="TranslateY"
+				   ManipulationDelta="UpdateFailedTestDetailsSize" />
 
-		<TextBlock x:Name="failedTests" Grid.Row="3" />
-		<TextBlock x:Name="runningState" Grid.Row="3" />
-		<ScrollViewer Grid.Row="3">
-			<StackPanel
-				x:Name="testResults"
-				Background="Black">
-			</StackPanel>
+		<TextBlock x:Name="failedTests" Grid.Row="4" />
+		<TextBlock x:Name="runningState" Grid.Row="4" />
+		<ScrollViewer Grid.Row="4">
+			<StackPanel x:Name="testResults" Background="Black" />
 		</ScrollViewer>
-		<Button
-			Grid.Row="3"
-			HorizontalAlignment="Right"
-			VerticalAlignment="Top"
-			Margin="0,0,24,0"
-			Background="#66CCCCCC"
-			Click="CopyTestResults">
+		<Button Grid.Row="4"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Top"
+				Margin="0,0,24,0"
+				Background="#66CCCCCC"
+				Click="CopyTestResults">
 			<TextBlock Text="Copy" Foreground="{StaticResource SystemControlForegroundAccentBrush}" />
 		</Button>
 
-		<Rectangle
-			Grid.Column="1"
-			Grid.RowSpan="4"
-			Width="5"
-			Fill="{ThemeResource SystemControlForegroundAccentBrush}"
-			VerticalAlignment="Stretch"
-			ManipulationMode="TranslateX"
-			ManipulationDelta="UpdateOuputSize"/>
+		<Rectangle Grid.Column="1"
+				   Grid.Row="1"
+				   Grid.RowSpan="4"
+				   Width="5"
+				   Fill="{ThemeResource SystemControlForegroundAccentBrush}"
+				   VerticalAlignment="Stretch"
+				   ManipulationMode="TranslateX"
+				   ManipulationDelta="UpdateOuputSize" />
 
-		<ContentControl
-			x:Name="unitTestContentRoot"
-			Grid.Column="2"
-			Grid.RowSpan="4"
-			HorizontalContentAlignment="Left"
-			VerticalAlignment="Top" />
+		<ContentControl x:Name="unitTestContentRoot"
+						Grid.Column="2"
+						Grid.Row="1"
+						Grid.RowSpan="4"
+						HorizontalContentAlignment="Left"
+						VerticalAlignment="Top" />
 	</Grid>
 </UserControl>

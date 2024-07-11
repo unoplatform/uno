@@ -20,6 +20,7 @@ internal sealed partial class EventManager
 {
 	private readonly ConditionalWeakTable<FrameworkElement, object?> _layoutUpdatedSubscribers = new();
 	private readonly Queue<SizeChangedQueueItem> _sizeChangedQueue = new(1024);
+	internal static Func<FrameworkElement, bool>? DebugGate { get; set; }
 
 	internal bool HasPendingSizeChangedEvents => _sizeChangedQueue is { Count: > 0 };
 
@@ -82,6 +83,10 @@ internal sealed partial class EventManager
 
 	public void EnqueueForSizeChanged(FrameworkElement element, Size oldSize)
 	{
+		if (DebugGate?.Invoke(element) == true)
+		{
+		}
+
 		// Uno-specific. Maybe render transforms should subscribe to SizeChanged instead.
 		element.UpdateRenderTransformSize(element.RenderSize);
 

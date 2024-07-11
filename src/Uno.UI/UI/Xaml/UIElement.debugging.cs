@@ -262,6 +262,22 @@ namespace Microsoft.UI.Xaml
 			}
 			return sb.ToString();
 		}
+
+		// review@xy: could keep?
+		internal string TreeGraph() => Uno.UI.Extensions.ViewExtensions.TreeGraph(this);
+		internal string TreeGraph(int depth)
+		{
+			var node = Uno.UI.Extensions.ViewExtensions.EnumerateAncestors(null).FirstOrDefault(); // just for grabbing the type
+			node = this;
+			foreach (var item in Uno.UI.Extensions.ViewExtensions.EnumerateAncestors(this))
+			{
+				if (item == null || 0 >= --depth) break;
+
+				node = item;
+			}
+
+			return Uno.UI.Extensions.ViewExtensions.TreeGraph(node);
+		}
 	}
 }
 #endif

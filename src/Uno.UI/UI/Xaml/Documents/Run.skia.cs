@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					var glyphs = GetGlyphs(buffer, s, textSizeX, textSizeY);
 
-					Debug.Assert(!(Text.AsSpan(s, length).Contains('\t')) || length == 1);
+					//Debug.Assert(!(Text.AsSpan(s, length).Contains('\t')) || length == 1); // DO NOT PUSH: debug code
 					if (length == 1 && text[s] == '\t')
 					{
 						glyphs[0] = glyphs[0] with { GlyphId = _getSpaceGlyph(fontInfo.Font) };

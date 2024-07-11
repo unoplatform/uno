@@ -42,11 +42,14 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleButton">
 					<Grid Background="{TemplateBinding Background}">
-						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-										  Content="{TemplateBinding Content}"
-										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  Foreground="{TemplateBinding Foreground}" />
+						<StackPanel>
+							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+											  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}"
+											  Foreground="{TemplateBinding Foreground}" />
+							<CheckBox IsChecked="{TemplateBinding IsChecked}" IsEnabled="False" />
+						</StackPanel>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
