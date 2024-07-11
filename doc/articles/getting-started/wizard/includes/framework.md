@@ -1,4 +1,4 @@
-This setting lets you choose the .NET version to target. The default is .NET 8.0, but you can change it to .NET 7.0!
+This setting lets you choose the .NET version to target. The default is .NET 8.0, but you can change it to .NET 9.0 Preview!
 
 - #### .NET 8.0
 
