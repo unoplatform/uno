@@ -145,11 +145,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(grid);
 
-			var borderThicknessZero = await UITestHelper.ScreenShot(button);
+			var borderThicknessZero = await UITestHelper.ScreenShot(grid);
 
 			button.Visibility = Visibility.Collapsed;
 
-			var opacityZero = await UITestHelper.ScreenShot(button);
+			var opacityZero = await UITestHelper.ScreenShot(grid);
 
 			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
 		}
