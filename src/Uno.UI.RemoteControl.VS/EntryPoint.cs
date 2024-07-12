@@ -148,35 +148,35 @@ public partial class EntryPoint : IDisposable
 		{
 			if (!_closing && _msBuildLogLevel >= 3 /* MSBuild Log Detailed */)
 			{
-				owPane.OutputString("[DEBUG] " + s + "\r\n");
+				owPane.OutputString($"[DEBUG][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_infoAction = s =>
 		{
 			if (!_closing && _msBuildLogLevel >= 2 /* MSBuild Log Normal */)
 			{
-				owPane.OutputString("[INFO] " + s + "\r\n");
+				owPane.OutputString($"[INFO][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_verboseAction = s =>
 		{
 			if (!_closing && _msBuildLogLevel >= 4 /* MSBuild Log Diagnostic */)
 			{
-				owPane.OutputString("[VERBOSE] " + s + "\r\n");
+				owPane.OutputString($"[VERBOSE][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_warningAction = s =>
 		{
 			if (!_closing && _msBuildLogLevel >= 1 /* MSBuild Log Minimal */)
 			{
-				owPane.OutputString("[WARNING] " + s + "\r\n");
+				owPane.OutputString($"[WARNING][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_errorAction = e =>
 		{
 			if (!_closing && _msBuildLogLevel >= 0 /* MSBuild Log Quiet */)
 			{
-				owPane.OutputString("[ERROR] " + e + "\r\n");
+				owPane.OutputString($"[ERROR][{DateTime.Now:HH:mm:ss.ff}] " + e + "\r\n");
 			}
 		};
 
