@@ -42,7 +42,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	private const string NotificationVisibleStateName = "Visible";
 
 	private const string HorizontalDirectionLeftVisualState = "Left";
-	private const string HorizontalDirectionRightVisualState = "Left";
+	private const string HorizontalDirectionRightVisualState = "Right";
 
 	private static readonly ConditionalWeakTable<XamlRoot, DiagnosticsOverlay> _overlays = new();
 
@@ -214,6 +214,13 @@ public sealed partial class DiagnosticsOverlay : Control
 			_notificationPresenter.Tapped -= OnNotificationTapped;
 		}
 
+#if __ANDROID__
+		if (_toolbar is not null)
+		{
+			_toolbar.SizeChanged += OnToolBarSizeChanged;
+		}
+#endif
+
 		base.OnApplyTemplate();
 
 		_toolbar = GetTemplateChild(ToolbarPartName) as FrameworkElement;
@@ -234,6 +241,21 @@ public sealed partial class DiagnosticsOverlay : Control
 			RelativePlacement.SetAnchor(_notificationPresenter, _toolbar);
 			_notificationPresenter.Tapped += OnNotificationTapped;
 		}
+#if __ANDROID__
+		if (_toolbar is not null)
+		{
+			_toolbar.SizeChanged += OnToolBarSizeChanged;
+		}
+
+		static void OnToolBarSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			// Patches pointer event dispatch on a 0x0 Canvas
+			if (sender is UIElement { TemplatedParent: DiagnosticsOverlay {TemplatedRoot: Canvas canvas } })
+			{
+				canvas.Width = args.NewSize.Width;
+			}
+		}
+#endif
 
 		VisualStateManager.GoToState(this, _isExpanded ? DisplayModeExpandedStateName : DisplayModeCompactStateName, false);
 		VisualStateManager.GoToState(this, NotificationCollapsedStateName, false);
