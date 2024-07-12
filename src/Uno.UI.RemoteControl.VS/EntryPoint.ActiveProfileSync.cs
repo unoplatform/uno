@@ -29,6 +29,9 @@ public partial class EntryPoint : IDisposable
 	private const string WasmTargetFrameworkIdentifier = "browserwasm";
 	private const string UnoSelectedTargetFrameworkProperty = "_UnoSelectedTargetFramework";
 	private CancellationTokenSource? _wasmProjectReloadTask;
+	private Stopwatch _lastOperation = new Stopwatch();
+	private TimeSpan _profileOrFrameworkDelay = TimeSpan.FromSeconds(1);
+	private bool _pendingRequestedChanged;
 
 	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework, bool forceReload = false)
 	{
@@ -46,6 +49,18 @@ public partial class EntryPoint : IDisposable
 				_debugAction?.Invoke($"Skipping for no previous framework");
 				return;
 			}
+
+			if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+			{
+				// This debouncing needs to happen when VS intermittently changes the active
+				// profile or target framework on project reloading. We skip the change if it
+				// is arbitrarily too close to the previous one.
+				_debugAction?.Invoke($"Skipping framework change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
+				return;
+			}
+
+			_pendingRequestedChanged = false;
+			_lastOperation.Restart();
 
 			var profiles = await _debuggerObserver.GetLaunchProfilesAsync();
 
@@ -81,6 +96,7 @@ public partial class EntryPoint : IDisposable
 				{
 					_debugAction?.Invoke($"Setting profile {selectedProfile}");
 
+					_pendingRequestedChanged = true;
 					await _debuggerObserver.SetActiveLaunchProfileAsync(selectedProfile.Name);
 				}
 			}
@@ -102,6 +118,18 @@ public partial class EntryPoint : IDisposable
 			return;
 		}
 
+		if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+		{
+			// This debouncing needs to happen when VS intermittently changes the active
+			// profile or target framework on project reloading. We skip the change if it
+			// is arbitrarily too close to the previous one.
+			_debugAction?.Invoke($"Skipping profile change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
+			return;
+		}
+
+		_pendingRequestedChanged = false;
+		_lastOperation.Restart();
+
 		var targetFrameworks = await _debuggerObserver.GetActiveTargetFrameworksAsync();
 		var profiles = await _debuggerObserver.GetLaunchProfilesAsync();
 
@@ -112,6 +140,7 @@ public partial class EntryPoint : IDisposable
 			{
 				_debugAction?.Invoke($"Setting framework {targetFramework}");
 
+				_pendingRequestedChanged = true;
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(targetFramework);
 			}
 			else if (profile.OtherSettings.TryGetValue(CompatibleTargetFrameworkProfileKey, out var compatibleTargetObject)
@@ -120,6 +149,7 @@ public partial class EntryPoint : IDisposable
 			{
 				_debugAction?.Invoke($"Setting framework {compatibleTarget}");
 
+				_pendingRequestedChanged = true;
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(compatibleTargetFramework);
 			}
 		}
@@ -205,9 +235,20 @@ public partial class EntryPoint : IDisposable
 							// properly keeps the value.
 							await WriteProjectUserSettingsAsync(newFramework);
 
+							var reloadStopWatch = Stopwatch.StartNew();
 							// Reload the project in-place. This allows to keep files related to
 							// this project opened even when reloading.
 							startupProject.ReloadProjectInSolution();
+							reloadStopWatch.Stop();
+
+							// Adjust the delay, but cannot be below 1s (fast machines) nor
+							// above 3s (very slow machines) to attempt to guess for other
+							// IDE delays after reloading a project.
+							_profileOrFrameworkDelay = TimeSpan.FromSeconds(
+								Math.Max(1.0, Math.Min(3.0, reloadStopWatch.Elapsed.TotalSeconds))
+							);
+
+							_debugAction?.Invoke($"Adjust in profile/framework change delay to {_profileOrFrameworkDelay}");
 
 							var sw2 = Stopwatch.StartNew();
 
