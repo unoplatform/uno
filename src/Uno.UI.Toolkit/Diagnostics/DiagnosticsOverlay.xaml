@@ -40,6 +40,9 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="local:DiagnosticsOverlay">
 					<Canvas Height="{TemplateBinding Height}">
+						<Canvas.Resources>
+							<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+						</Canvas.Resources>
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="DisplayMode">
 								<VisualState x:Name="Compact">
