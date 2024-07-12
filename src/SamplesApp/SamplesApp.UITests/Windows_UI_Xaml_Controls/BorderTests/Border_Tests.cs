@@ -230,6 +230,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 		//For other platform the test have been moved to runtime
 		//It will be moves to when an equivalent of TakesScreenshot exist for that target
 		[ActivePlatforms(Platform.Browser)]
+		[Ignore("LinearGradientBrush doesn't work well when there is a CornerRadius")]
 		public void Border_LinearGradient()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_LinearGradientBrush");
