@@ -3,7 +3,6 @@
 using System;
 using System.ComponentModel;
 using Microsoft.UI.Content;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
@@ -11,6 +10,12 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
 
 namespace Uno.UI.Xaml.Controls;
 
