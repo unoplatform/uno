@@ -191,7 +191,7 @@ Here's a summary of what icons and statuses you can expect:
   - Open Tools / Options
   - Search for **.NET / C++ Hot Reload**
   - Ensure that all three checkboxes are checked (_**Enable hot reload when debugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_)
-- The output window in VS has an output namegd `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. Changing the MSBuild build output verbosity in `Tools/Options/Projects and Solutions/Build And Run` controls the log level.
+- The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. Changing the MSBuild build output verbosity above "minimal" in **`**Tools/Options/Projects** and **Solutions/Build And Run** controls the log level.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net8.0-windows10.xx`:
