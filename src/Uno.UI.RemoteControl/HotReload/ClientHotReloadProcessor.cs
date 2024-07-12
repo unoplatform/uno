@@ -163,6 +163,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 	private async Task ProcessServerStatus(HotReloadStatusMessage status)
 	{
+#if HAS_UNO_WINUI
 		_status.ReportServerStatus(status);
+#endif
 	}
 }

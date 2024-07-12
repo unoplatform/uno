@@ -148,6 +148,15 @@
 		]
 	},
 	{
+		"group": "UnoFonts",
+		"version": "2.4.0",
+		"packages": [
+			"Uno.Fonts.OpenSans",
+			"Uno.Fonts.Fluent",
+			"Uno.Fonts.Roboto"
+		]
+	},
+	{
 		"group": "AndroidMaterial",
 		"version": "1.10.0.3",
 		"packages": [

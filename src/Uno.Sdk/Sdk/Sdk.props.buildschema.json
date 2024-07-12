@@ -254,6 +254,10 @@
 			"description": "Provides an explicit override for the version of Prism to use.",
 			"type": "nuget-version"
 		},
+		"UnoFontsVersion": {
+			"description": "Provides an explicit override for the version of Uno.Fonts packages to use.",
+			"type": "nuget-version"
+		},
 		"AndroidXNavigationVersion": {
 			"description": "Provides an explicit override for the version of AndroidX.Navigation to use.",
 			"type": "nuget-version"

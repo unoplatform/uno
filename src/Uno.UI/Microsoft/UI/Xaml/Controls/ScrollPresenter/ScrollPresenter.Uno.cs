@@ -35,8 +35,5 @@ partial class ScrollPresenter : IBorderInfoProvider
 
 #if UNO_HAS_BORDER_VISUAL
 	BorderVisual IBorderInfoProvider.BorderVisual => Visual as BorderVisual ?? throw new InvalidCastException($"{nameof(IBorderInfoProvider)}s should use a {nameof(BorderVisual)}.");
-
-	SerialDisposable IBorderInfoProvider.BorderBrushSubscriptionDisposable { get; set; } = new();
-	SerialDisposable IBorderInfoProvider.BackgroundBrushSubscriptionDisposable { get; set; } = new();
 #endif
 }

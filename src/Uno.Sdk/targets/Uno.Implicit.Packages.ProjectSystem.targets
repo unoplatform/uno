@@ -75,6 +75,10 @@
 		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(UnoDefaultFont)'=='OpenSans'">
+		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
+	</ItemGroup>
+
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Extensions.Implicit.Packages.ProjectSystem.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Android.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />

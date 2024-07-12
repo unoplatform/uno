@@ -30,7 +30,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 		{
 			private string? _defaultNamespace;
 
-			private readonly Dictionary<INamedTypeSymbol, GeneratedTypeInfo> _typeMap = new Dictionary<INamedTypeSymbol, GeneratedTypeInfo>();
+			private readonly Dictionary<INamedTypeSymbol, GeneratedTypeInfo> _typeMap = new Dictionary<INamedTypeSymbol, GeneratedTypeInfo>(SymbolEqualityComparer.Default);
 			private readonly Dictionary<string, (string type, List<string> members)> _substitutions = new Dictionary<string, (string type, List<string> members)>();
 			private ITypeSymbol? _dependencyPropertySymbol;
 			private INamedTypeSymbol? _dependencyObjectSymbol;

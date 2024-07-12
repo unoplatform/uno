@@ -45,6 +45,7 @@
 	"hectopascals",
 	"HoloLens",
 	"howto",
+	"hotreload",
 	"hotswap",
 	"Inlines",
 	"keychain",
@@ -109,7 +110,8 @@
 	"webservices",
 	"webapps",
 	"Haptics",
-	"autoplay"
+	"autoplay",
+	"Xcodes"
   ],
   "ignoreWords": [
 	"ADAL",

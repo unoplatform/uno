@@ -152,6 +152,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		private void TestButtonReleasedOutState(string target, params string[] expectedStates)
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.Buttons");
+
+			TakeScreenshot("TestButtonReleasedOutState_Initial");
+
 			TestVisualTests(target, ReleaseOut, true, expectedStates);
 		}
 

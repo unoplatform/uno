@@ -16,6 +16,7 @@ using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
 using ObjCRuntime;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -198,7 +199,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (textBox != null)
 			{
-				var newFont = UIFontHelper.TryGetFont((nfloat)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontFamily);
+				var newFont = FontHelper.TryGetFont(new((nfloat)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontStretch), textBox.FontFamily);
 
 				if (newFont != null)
 				{

@@ -28,7 +28,15 @@ namespace Uno.UI.RemoteControl.HotReload
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
-				=> _hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
+		{
+			// If we get a workspace loaded message, we can assume that we are running with the dev-server
+			// This mean that HR won't work with the debugger attached.
+			if (Debugger.IsAttached)
+			{
+				_status.ReportServerState(HotReloadState.Disabled);
+			}
+			_hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
+		}
 
 		/// <summary>
 		/// Waits for the server's hot reload workspace to be loaded

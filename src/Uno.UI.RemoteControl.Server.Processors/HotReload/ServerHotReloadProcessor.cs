@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
@@ -138,7 +139,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.Ready:
-					_globalState = HotReloadState.Idle;
+					_globalState = HotReloadState.Ready;
 					await SendUpdate();
 					break;
 
@@ -159,7 +160,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.RudeEdit:
-				case HotReloadEvent.RudeEditDialogButton:
 					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
 					break;
 			}

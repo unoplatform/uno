@@ -1,11 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
+﻿using Microsoft.UI.Composition;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media;
+
+public partial class SolidColorBrush : Brush
 {
-	public partial class SolidColorBrush : Brush
+	internal override CompositionBrush GetOrCreateCompositionBrush(Compositor compositor)
 	{
+		if (_compositionBrush is null)
+		{
+			_compositionBrush = compositor.CreateColorBrush();
+			SynchronizeCompositionBrush();
+		}
+
+		return _compositionBrush;
+	}
+
+	internal override void SynchronizeCompositionBrush()
+	{
+		base.SynchronizeCompositionBrush();
+		if (_compositionBrush is CompositionColorBrush compositionBrush)
+		{
+			compositionBrush.Color = ColorWithOpacity;
+		}
 	}
 }

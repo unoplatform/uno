@@ -69,7 +69,6 @@ namespace Microsoft.UI.Xaml
 		}
 		#endregion
 
-
 		#region Width Dependency Property
 		[GeneratedDependencyProperty(
 			DefaultValue = double.NaN,
@@ -239,6 +238,10 @@ namespace Microsoft.UI.Xaml
 		partial void OnUnloadedPartial();
 
 		private protected virtual void OnUnloaded() { }
+
+#if DEBUG && __NETSTD_REFERENCE__
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args) { }
+#endif
 
 		public override string ToString()
 		{

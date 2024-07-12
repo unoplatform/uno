@@ -56,7 +56,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	private ViewContext? _context;
 	private Popup? _overlayHost;
 	private bool _isVisible;
-	private bool _isExpanded;
+	private bool _isExpanded = true;
 	private int _updateEnqueued;
 	private Panel? _elementsPanel;
 	private UIElement? _anchor;
@@ -108,7 +108,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	/// Make the overlay visible.
 	/// </summary>
 	/// <remarks>This can be invoked from any thread.</remarks>>
-	public void Show(bool? isExpanded = false)
+	public void Show(bool? isExpanded = null)
 	{
 		_isVisible = true;
 		if (isExpanded is not null)
@@ -196,7 +196,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	{
 		if (_anchor is not null)
 		{
-			_anchor.Tapped -= OnAnchorTapped;
+			//_anchor.Tapped -= OnAnchorTapped;
 			_anchor.ManipulationDelta -= OnAnchorManipulated;
 		}
 		if (_notificationPresenter is not null)
@@ -212,7 +212,7 @@ public sealed partial class DiagnosticsOverlay : Control
 
 		if (_anchor is not null)
 		{
-			_anchor.Tapped += OnAnchorTapped;
+			//_anchor.Tapped += OnAnchorTapped;
 			_anchor.ManipulationDelta += OnAnchorManipulated;
 			_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
 			RenderTransform = new TranslateTransform { X = 15, Y = 15 };
@@ -227,12 +227,12 @@ public sealed partial class DiagnosticsOverlay : Control
 		EnqueueUpdate();
 	}
 
-	private void OnAnchorTapped(object sender, TappedRoutedEventArgs args)
-	{
-		_isExpanded = !_isExpanded;
-		VisualStateManager.GoToState(this, _isExpanded ? DisplayModeExpandedStateName : DisplayModeCompactStateName, true);
-		args.Handled = true;
-	}
+	//private void OnAnchorTapped(object sender, TappedRoutedEventArgs args)
+	//{
+	//	_isExpanded = !_isExpanded;
+	//	VisualStateManager.GoToState(this, _isExpanded ? DisplayModeExpandedStateName : DisplayModeCompactStateName, true);
+	//	args.Handled = true;
+	//}
 
 	private void OnAnchorManipulated(object sender, ManipulationDeltaRoutedEventArgs e)
 	{

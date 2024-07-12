@@ -8,6 +8,24 @@ The `FontFamily` of many controls (e.g. `TextBox` or `Control`) property allows 
 
 ![Character Map UWP providing font information](../Assets/features/customfonts/charactermapuwp.png)
 
+## Default text font
+
+The default text font on WinUI is [Segoe UI](https://learn.microsoft.com/en-us/typography/font-list/segoe-ui). However, Segoe UI isn't available on macOS, Linux, or Browsers running on macOS or Linux.
+
+In order to get a consistent experience across targets, Uno Platform 5.3 or later automatically sets the default text font to OpenSans by using the [Uno.Fonts.OpenSans](https://nuget.org/packages/Uno.Fonts.OpenSans) NuGet package. This font is used on all targets except Windows App SDK, where Segoe UI continues to be used.
+
+### Disabling Open Sans
+
+If you are upgrading to 5.3 or later and your project uses the Uno.Sdk, but want to keep the legacy behavior (Segoe UI), add `<UnoDefaultFont>None</UnoDefaultFont>` to a `PropertyGroup` in `Directory.Build.props` or your `.csproj`.
+
+### Using Open Sans in non-Uno.Sdk projects
+
+If you are not using Uno.Sdk (Uno Platform 5.1 or earlier project templates), Segoe UI remains the default font even when using Uno Platform 5.3 and later. To switch to OpenSans, add a `PackageReference` to `Uno.Fonts.OpenSans` and also set `DefaultTextFontFamily` in the `App.xaml.cs` file:
+
+```csharp
+global::Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
+```
+
 ## Adding a custom font in the App assets folder
 
 In order to use a custom font in your application:
@@ -21,6 +39,29 @@ In order to use a custom font in your application:
 
    > [!TIP]
    > If your font is located in a **Class Library**, you'll need to use a path like `ms-appx:///MyClassLibrary1/Assets/Fonts/yourfont.ttf#Your Font Name`. You will need to replace `MyClassLibrary1` by the name class library project, or its `AssemblyName` if it was changed manually.
+
+## Variable fonts and font manifest
+
+Variable fonts are font files that can store multiple variants. They contain axes that define an aspect of design that can be varied. Common axes are width (`wdth`), weight (`wght`), italic (`ital`), and slant (`slnt`).
+
+The width axis corresponds to `FontStretch` property in Uno Platform and WinAppSDK, the weight axis corresponds to the `FontWeight` property, and italic and slant axes correspond to the `FontStyle` property.
+
+Variable fonts are currently properly supported on Android and Wasm, have partial support on iOS\*, and not supported on Skia due to [SkiaSharp issue](https://github.com/mono/SkiaSharp/issues/2318).
+
+\* on Android and Wasm, if you set an aspect of a font that the variable font file doesn't have an axis for, the platform fakes it. For example, a variable font may have width and weight axes but not italic or slant. If you try to use italic, the platform will make "faux" italic. However, iOS doesn't have this behavior, which makes using variable fonts problematic in some cases.
+
+To overcome the issues on Skia and iOS, we introduced the font manifest in Uno Platform 5.3. A font manifest is a JSON file that maps weight, stretch, and style to a static font. Note that the font manifest is only supported on Skia and iOS because other platforms don't need it.
+
+### High level overview of how font manifest work
+
+When you specify `FontFamily="ms-appx:///path/to/myfont.ttf`:
+
+- On iOS and Skia, we check if `ms-appx:///path/to/myfont.ttf.manifest` exists. From there, we find the correct static font file to use.
+- On other platforms, `ms-appx:///path/to/myfont.ttf` will be used right away. When this file is a variable font, it will work as expected.
+
+### Example manifest file
+
+You can see an example manifest file from `Uno.Fonts.OpenSans` NuGet package on [uno.fonts GitHub repository](https://github.com/unoplatform/uno.fonts/blob/cbb838712a299f9da4b424b9b5152cacccb15466/nuget/OpenSans/Uno.Fonts.OpenSans/Fonts/OpenSans.ttf.manifest).
 
 ## Fonts preloading on WebAssembly
 

@@ -318,6 +318,86 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			Assert.IsFalse(TestableTreeViewItem.DraggingThrewException);
 		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#elif HAS_UNO && !HAS_UNO_WINUI
+		[Ignore("Fails on UWP branch as mixing WUX and MUX types causes errors.")]
+#endif
+		public async Task When_TreeViewItem_Dragged_NRE2()
+		{
+			using var _ = new DisposableAction(() => TestableTreeViewItem.DraggingThrewException = false);
+			var treeView = new TreeView
+			{
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tvi = new TestableTreeViewItem();
+					tvi.SetBinding(TreeViewItem.ItemsSourceProperty, new Binding("Items"));
+					tvi.SetBinding(ContentControl.ContentProperty, new Binding("Label"));
+					return tvi;
+				}),
+				ItemsSource = new ObservableCollection<TestTreeNodeModel>
+				{
+					new TestTreeNodeModel("Root 1")
+					{
+						Items =
+						{
+							new TestTreeNodeModel("Child 1.1"),
+							new TestTreeNodeModel("Child 1.2"),
+						}
+					},
+					new TestTreeNodeModel("Root 2")
+					{
+						Items =
+						{
+							new TestTreeNodeModel("Child 2.1"),
+						}
+					},
+				}
+			};
+
+			await UITestHelper.Load(treeView);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			treeView.RootNodes[0].IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			var ttv = treeView.TransformToVisual(null);
+
+			var test = new[]
+			{
+				("move", new Point(103, 29)),
+				("press", new Point()),
+				("move", new Point(103, 36)),
+				("move", new Point(103, 40)),
+				("move", new Point(103, 47)),
+				("release", new Point()),
+			};
+
+
+			foreach (var (action, position) in test)
+			{
+				if (action == "press")
+				{
+					mouse.Press();
+				}
+				else if (action == "release")
+				{
+					mouse.Release();
+				}
+				else
+				{
+					Assert.AreEqual("move", action);
+					mouse.MoveTo(ttv.TransformPoint(position), 1);
+				}
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsFalse(TestableTreeViewItem.DraggingThrewException);
+		}
 #endif
 
 		[TestMethod]

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Uno.UI.RemoteControl.HotReload.Messages;
+namespace Uno.UI.RemoteControl.HotReload;
 
 internal enum HotReloadState
 {
@@ -20,7 +20,7 @@ internal enum HotReloadState
 	/// <summary>
 	/// Indicates that the IDE/server is ready to process changes.
 	/// </summary>
-	Idle = 1,
+	Ready = 1,
 
 	/// <summary>
 	/// The IDE/server is computing changeset.

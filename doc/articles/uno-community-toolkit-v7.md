@@ -4,7 +4,9 @@ uid: Uno.Development.CommunityToolkit.v7
 
 # How to use Windows Community Toolkit - Version 7.x
 
-This tutorial will walk you through adding and implementing the `DataGrid` control but the same steps can be followed for any of the Uno ported Windows Community Toolkit controls versions 7.x.
+This tutorial will walk you through adding and implementing the `DataGrid` control but the same steps can be followed for **other\*** Uno ported Windows Community Toolkit controls versions 7.x.
+
+**\* See the [non-Windows platform compatibility](xref:Uno.Development.CommunityToolkit#non-windows-platform-compatibility) section for more details.**
 
 > [!NOTE]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [`DataGrid` Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/WindowsCommunityToolkit/Version-7.x/UnoWCTDataGridSample).

@@ -516,7 +516,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Sets the specified source <paramref name="value"/> on <paramref name="property"/>
 		/// </summary>
-		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
+		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object? value)
 		{
 			var unregisteringInheritedProperties = _unregisteringInheritedProperties || _parentUnregisteringInheritedProperties;
 			if (unregisteringInheritedProperties)
@@ -569,13 +569,13 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, DependencyPropertyChangedEventArgs args)
+		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, object? newValue)
 		{
-			SetBindingValue(propertyDetails, args.NewValue);
+			SetBindingValue(propertyDetails, newValue);
 
 			if (!propertyDetails.HasValueDoesNotInherit)
 			{
-				var newValueAsProvider = args.NewValue as IDependencyObjectStoreProvider;
+				var newValueAsProvider = newValue as IDependencyObjectStoreProvider;
 
 				if (propertyDetails.HasValueInherits)
 				{
@@ -585,11 +585,11 @@ namespace Microsoft.UI.Xaml
 							propertyDetails,
 
 							// Ensure DataContext propagation loops cannot happen
-							ReferenceEquals(newValueAsProvider.Store.Parent, ActualInstance) ? null : args.NewValue);
+							ReferenceEquals(newValueAsProvider.Store.Parent, ActualInstance) ? null : newValue);
 					}
 					else
 					{
-						SetChildrenBindableValue(propertyDetails, args.NewValue);
+						SetChildrenBindableValue(propertyDetails, newValue);
 					}
 				}
 				else

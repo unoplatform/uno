@@ -465,8 +465,10 @@ namespace Microsoft.UI.Xaml
 		internal IDisposable RegisterCallback(PropertyChangedCallback callback)
 			=> (_callbackManager ??= new DependencyPropertyCallbackManager()).RegisterCallback(callback);
 
-		internal void RaisePropertyChanged(DependencyObject actualInstanceAlias, DependencyPropertyChangedEventArgs eventArgs)
-			=> _callbackManager?.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+		internal bool CanRaisePropertyChanged => _callbackManager is not null;
+
+		internal void RaisePropertyChangedNoNullCheck(DependencyObject actualInstanceAlias, DependencyPropertyChangedEventArgs eventArgs)
+			=> _callbackManager!.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
 		private enum Flags : byte
