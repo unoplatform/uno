@@ -41,7 +41,7 @@ internal class GlobalJsonObserver
 		_warningAction = warningAction;
 		_errorAction = errorAction;
 
-		_debugAction($"GlobalJsonObserver: Starting");
+		_debugAction("GlobalJsonObserver: Starting");
 
 		try
 		{
@@ -81,7 +81,7 @@ internal class GlobalJsonObserver
 						unoSdkVersion = newVersion;
 
 						// Reload all projects that use the Uno.SDK
-						_debugAction($"GlobalJsonObserver: Uno.Sdk version changed to {unoSdkVersion}.");
+						_debugAction($"GlobalJsonObserver: Uno.Sdk version changed to {unoSdkVersion}");
 
 						_asyncPackage.JoinableTaskFactory.Run(async () =>
 						{
@@ -123,13 +123,14 @@ internal class GlobalJsonObserver
 
 			var infoBar = await factory.CreateAsync(
 				new InfoBarModel(
-					$"The Uno.Sdk version changed to {unoSdkVersion} and requires restarting Visual Studio."
-					, [
+					$"The Uno.Sdk version has changed to {unoSdkVersion}, and a restart of Visual Studio is required.",
+					new[]
+					{
 						restartVSItem,
 						moreInformationVSItem
-					]
-					, KnownMonikers.StatusError
-					, true));
+					},
+					KnownMonikers.StatusError,
+					true));
 
 			if (infoBar is not null)
 			{
