@@ -20,6 +20,7 @@ using Windows.Foundation;
 using Uno.UI.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -781,6 +782,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public bool IsSelectionActive { get; set; }
+
+		// This method returns a value indicating whether the object is selectable.
+		private protected bool IsSelectableHelper(object obj)
+		{
+			if (obj is Control control)
+			{
+				return control.IsEnabled && control.Visibility != Visibility.Collapsed &&
+					(control.IsTabStop || FocusProperties.CanHaveFocusableChildren(control));
+			}
+			else if (obj is UIElement uiElement)
+			{
+				return uiElement.Visibility != Visibility.Collapsed;
+			}
+
+			return true;
+		}
+
 
 		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
 		{

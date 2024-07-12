@@ -233,6 +233,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_PointerWheel()
+		{
+			var SUT = new ComboBox();
+			var items = new[] { "First", "Second", "Third" };
+			SUT.ItemsSource = items;
+			var rect = await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 0;
+			SUT.Focus(FocusState.Programmatic);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(rect.X + 2, rect.Y + 2);
+
+			mouse.WheelDown();
+
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			await WindowHelper.WaitForIdle();
+
+			mouse.WheelUp();
+
+			Assert.AreEqual(0, SUT.SelectedIndex);
+
+			await WindowHelper.WaitForIdle();
+
+			mouse.WheelUp();
+
+			Assert.AreEqual(0, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
