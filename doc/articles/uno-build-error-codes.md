@@ -109,6 +109,20 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
+### UNOB00012: The net8.0 TargetFramework must not be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0` TargetFramework is placed first in the `TargetFrameworks` property.
+
+Make sure that `net8.0` is not first in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnNetIsFirst>true</UnoDisableVSWarnNetIsFirst>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001
