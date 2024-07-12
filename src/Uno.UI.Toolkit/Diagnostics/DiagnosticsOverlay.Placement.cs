@@ -1,5 +1,5 @@
 ﻿#nullable enable
-
+#if WINUI || HAS_UNO_WINUI
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -221,3 +221,4 @@ public sealed partial class DiagnosticsOverlay
 		ApplicationData.Current.LocalSettings.Values[_originSettingsKey] = (int)_origin;
 	}
 }
+#endif
