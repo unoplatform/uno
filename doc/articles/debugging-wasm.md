@@ -48,7 +48,7 @@ To debug your application:
   - Select **MyApp (WebAssembly IIS Express)** as the debugging target
   - Select **Chrome** or **Microsoft Edge** as the Web Browser
   - Make sure script debugging is disabled<br/>
-   ![IIS express settings](Assets/quick-start/![alt text](image.png))
+   ![IIS express settings](Assets/quick-start/wasm-debugging-iis-express.png)
 
 - Start the debugging session using <kbd>Ctrl</kbd><kbd>F5</kbd> or _Debug_ > _Start Without Debugging_ from the menu, (<kbd>F5</kbd> will work, but the debugging experience won't be in Visual Studio)
 - Once your application has started, press <kbd>Alt</kbd><kbd>Shift</kbd><kbd>D</kbd> (in Chrome, on your application's tab)
