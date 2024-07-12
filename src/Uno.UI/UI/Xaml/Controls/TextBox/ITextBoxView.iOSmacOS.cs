@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
+
 #if __IOS__
 using UIKit;
 using ITextInput = UIKit.IUITextInput;

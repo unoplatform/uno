@@ -32,6 +32,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 7.0.0 which has a vulnerability -->
+		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.3" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>
