@@ -81,7 +81,12 @@ public sealed partial class DiagnosticsOverlay
 	public Rect GetSafeArea()
 	{
 		var bounds = _root.Bounds;
-		if (_statusBar?.OccludedRect is { Height: > 0 } occludedRect)
+		if (
+			_statusBar?.OccludedRect is { Height: > 0 } occludedRect
+#if __ANDROID__
+			&& (Window.Current?.IsStatusBarTranslucent() ?? true)
+#endif
+			)
 		{
 			bounds.Y += occludedRect.Height;
 			bounds.Height -= occludedRect.Height;
@@ -168,7 +173,9 @@ public sealed partial class DiagnosticsOverlay
 		}
 
 		// Update direction
-		var direction = distanceToRight < _rightDirectionDistance ? HorizontalDirectionLeftVisualState : HorizontalDirectionRightVisualState;
+		var direction = distanceToRight < Math.Min(_rightDirectionDistance, area.Width / 2.0)
+			? HorizontalDirectionLeftVisualState
+			: HorizontalDirectionRightVisualState;
 		VisualStateManager.GoToState(this, direction, true);
 
 		PersistLocation();
