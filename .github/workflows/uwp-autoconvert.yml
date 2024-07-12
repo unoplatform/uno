@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  UnoCheck_Version: '1.25.0'
+  UnoCheck_Version: '1.26.0-dev.6'
 
 jobs:
   build:
@@ -69,7 +69,7 @@ jobs:
         & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
       name: Install Uno Check
     - run: | 
-        & uno-check -v --ci --non-interactive --fix --skip psexecpolicy --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major
+        & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major
       name: Run uno-check
 
     - name: Convert source tree to UWP
