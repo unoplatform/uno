@@ -14,8 +14,14 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Color = Windows.UI.Color;
+
+#if HAS_UNO_WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

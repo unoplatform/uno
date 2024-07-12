@@ -13,7 +13,13 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI;
+using Color = Windows.UI.Color;
+
+#if HAS_UNO_WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
 
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
