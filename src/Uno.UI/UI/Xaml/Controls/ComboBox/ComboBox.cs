@@ -161,6 +161,104 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		protected override void OnPointerWheelChanged(PointerRoutedEventArgs e)
+		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
+			if (HasFocus())
+			{
+				if (!IsDropDownOpen)
+				{
+					var point = e.GetCurrentPoint(this);
+					var properties = point.Properties;
+					var delta = properties.MouseWheelDelta;
+					var selectedIndex = SelectedIndex;
+					if (delta < 0)
+					{
+						SelectNext(ref selectedIndex);
+					}
+					else
+					{
+						SelectPrev(ref selectedIndex);
+					}
+
+					SelectedIndex = selectedIndex;
+				}
+
+				e.Handled = true;
+			}
+
+			base.OnPointerWheelChanged(e);
+		}
+
+		// Selects the next item in the list.
+		private void SelectNext(ref int index)
+		{
+			var count = Items.Count;
+			if (count > 0)
+			{
+				int internalSelectedIndex = index + 1;
+				if (internalSelectedIndex <= count - 1)
+				{
+					SelectItemHelper(ref internalSelectedIndex, 1);
+					if (internalSelectedIndex != -1)
+					{
+						index = internalSelectedIndex;
+					}
+				}
+			}
+		}
+
+		// Selects the previous item in the list.
+		private void SelectPrev(ref int index)
+		{
+			var count = Items.Count;
+			if (count > 0)
+			{
+				int internalSelectedIndex = index - 1;
+				if (internalSelectedIndex >= 0)
+				{
+					SelectItemHelper(ref internalSelectedIndex, -1);
+					if (internalSelectedIndex != -1)
+					{
+						index = internalSelectedIndex;
+					}
+				}
+			}
+		}
+
+		// Given a direction, searches through list for next available item to select.
+		private void SelectItemHelper(ref int index, int increment)
+		{
+			var items = Items;
+			var count = items.Count;
+			bool isSelectable = false;
+
+			for (; index > -1 && index < count; index += increment)
+			{
+				var item = items[index];
+				isSelectable = IsSelectableHelper(item);
+				if (isSelectable)
+				{
+					var container = ContainerFromIndex(index);
+					isSelectable = IsSelectableHelper(container);
+					if (isSelectable)
+					{
+						break;
+					}
+				}
+			}
+
+			if (!isSelectable)
+			{
+				// If no selectable item was found, set index to -1 so selection will not be updated.
+				index = -1;
+			}
+		}
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
