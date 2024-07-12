@@ -8,7 +8,7 @@ static NSMutableSet<NSView*> *elements;
 
 @implementation UNOFlippedView : NSView
 
-// behave like UIView (top/left) instead of bottom/left
+// behave like UIView/UWP/WinUI, where the origin is top/left, instead of bottom/left
 -(BOOL) isFlipped {
     return YES;
 }
@@ -43,10 +43,6 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     NSLog(@"uno_native_create_sample #%p label: %@", sample, label.stringValue);
 #endif
     [window.contentViewController.view addSubview:sample];
-    if (!elements) {
-        elements = [[NSMutableSet alloc] initWithCapacity:10];
-    }
-    [elements addObject:sample];
     return sample;
 }
 
@@ -62,9 +58,12 @@ void uno_native_arrange(NSView *element, double arrangeLeft, double arrangeTop, 
 void uno_native_attach(NSView* element)
 {
 #if DEBUG
-    NSLog(@"uno_native_attach %p", element);
+    NSLog(@"uno_native_attach %p -> %s attached", element, [elements containsObject:element] ? "already" : "not");
 #endif
-    // TODO
+    if (!elements) {
+        elements = [[NSMutableSet alloc] initWithCapacity:10];
+    }
+    [elements addObject:element];
 }
 
 void uno_native_detach(NSView *element)
@@ -72,14 +71,16 @@ void uno_native_detach(NSView *element)
 #if DEBUG
     NSLog(@"uno_native_detach %p", element);
 #endif
-    // TODO
+    if (elements) {
+        [elements removeObject:element];
+    }
 }
 
 bool uno_native_is_attached(NSView* element)
 {
-    bool attached = false; // TODO
+    bool attached = elements ? [elements containsObject:element] : NO;
 #if DEBUG
-    NSLog(@"uno_native_is_attached %s", attached ? "TRUE" : "FALSE");
+    NSLog(@"uno_native_is_attached %s", attached ? "YES" : "NO");
 #endif
     return attached;
 }
