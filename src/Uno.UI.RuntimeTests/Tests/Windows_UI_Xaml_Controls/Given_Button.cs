@@ -14,6 +14,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -109,6 +111,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var command = new IsExecutingCommand(false);
 			await RunIsExecutingCommandCommon(command);
+		}
+
+		[TestMethod]
+		[DataRow(typeof(Button))]
+		[DataRow(typeof(ToggleButton))]
+		[DataRow(typeof(RepeatButton))]
+		public async Task When_BorderThickness_Zero(Type type)
+		{
+			var grid = new Grid
+			{
+				Width = 120,
+				Height = 120,
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var button = (ButtonBase)Activator.CreateInstance(type);
+
+			button.Content = "";
+			button.Background = new SolidColorBrush(Colors.Transparent);
+			button.BorderThickness = new Thickness(0);
+			button.Width = 100;
+			button.Height = 100;
+
+			grid.Children.Add(button);
+
+			await UITestHelper.Load(grid);
+
+			var borderThicknessZero = await UITestHelper.ScreenShot(button);
+
+			button.Visibility = Visibility.Collapsed;
+
+			var opacityZero = await UITestHelper.ScreenShot(button);
+
+			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
 		}
 
 		[TestMethod]

@@ -100,6 +100,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Hello2", tb.Text);
 		}
 
+		[TestMethod]
+		public async Task When_BorderThickness_Zero()
+		{
+			var grid = new Grid
+			{
+				Width = 120,
+				Height = 120,
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var textBox = new TextBox
+			{
+				Text = "",
+				Background = new SolidColorBrush(Colors.Transparent),
+				BorderThickness = new Thickness(0),
+				Width = 100,
+				Height = 100
+			};
+
+			grid.Children.Add(textBox);
+
+			await UITestHelper.Load(grid);
+
+			var borderThicknessZero = await UITestHelper.ScreenShot(textBox);
+
+			textBox.Visibility = Visibility.Collapsed;
+
+			var opacityZero = await UITestHelper.ScreenShot(textBox);
+
+			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
+		}
+
 #if __ANDROID__
 		[TestMethod]
 		public void When_InputScope_Null_And_ImeOptions()
