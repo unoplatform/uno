@@ -415,6 +415,16 @@ declare namespace Windows.System.Display {
         static deactivateScreenLock(): void;
     }
 }
+declare namespace Windows.System {
+    class Launcher {
+        /**
+        * Load the specified URL into a new tab or window
+        * @param url URL to load
+        * @returns "True" or "False", depending on whether a new window could be opened or not
+        */
+        open(url: string): string;
+    }
+}
 declare class BatteryManager {
     charging: boolean;
     level: number;

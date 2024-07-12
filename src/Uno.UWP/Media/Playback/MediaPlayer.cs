@@ -29,7 +29,6 @@ namespace Windows.Media.Playback
 				_source = value;
 
 				InitializeSource();
-
 				SourceChanged?.Invoke(this, null);
 
 				if (_source != null && AutoPlay)

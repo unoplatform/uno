@@ -73,6 +73,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public MediaTransportControls()
 		{
+			Visual.SetAsPopupVisual(true);
+
 			DefaultStyleKey = typeof(MediaTransportControls);
 
 			m_tpHideControlPanelTimer = new() { Interval = TimeSpan.FromSeconds(ControlPanelDisplayTimeoutInSecs) };

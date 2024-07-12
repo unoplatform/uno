@@ -86,7 +86,7 @@ partial class ContentPresenter
 			// might no longer be a NativeHost
 			return;
 		}
-		var arrangeRect = this.GetAbsoluteBoundsRect();
+		var arrangeRect = TransformToVisual(null).TransformBounds(LayoutSlotWithMarginsAndAlignments);
 		var ev = GetParentViewport().Effective;
 
 		Rect clipRect;

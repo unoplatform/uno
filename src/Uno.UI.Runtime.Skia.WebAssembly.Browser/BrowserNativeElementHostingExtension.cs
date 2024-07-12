@@ -34,6 +34,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
 	{
 		Debug.Assert(content is SkiaWasmHtmlElement);
+		Console.WriteLine($"ramez ArrangeNativeElement {arrangeRect}");
 		NativeMethods.ArrangeNativeElement(((SkiaWasmHtmlElement)content).ElementId, arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height);
 	}
 
