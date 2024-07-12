@@ -119,6 +119,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(typeof(RepeatButton))]
 		public async Task When_BorderThickness_Zero(Type type)
 		{
+			using var fluent = StyleHelper.UseFluentStyles();
 			var grid = new Grid
 			{
 				Width = 120,
