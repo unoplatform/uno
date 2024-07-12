@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.Graphics;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -29,5 +30,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Bounds = bounds;
 		VisibleBounds = bounds;
+		Size = bounds.Size.ToSizeInt32();
 	}
 }

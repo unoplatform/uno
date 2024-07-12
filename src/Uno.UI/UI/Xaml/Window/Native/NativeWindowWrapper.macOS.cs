@@ -14,6 +14,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
 using Uno.Disposables;
+using Windows.Graphics;
 using Windows.Graphics.Display;
 using Size = Windows.Foundation.Size;
 
