@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
 #else
 using Colors = Windows.UI.Colors;
