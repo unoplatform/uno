@@ -32,9 +32,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:DiagnosticsOverlay">
-					<Canvas
-						CornerRadius="{TemplateBinding CornerRadius}"
-						Height="{TemplateBinding Height}">
+					<Canvas Height="{TemplateBinding Height}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="DisplayMode">
 								<VisualState x:Name="Compact">
