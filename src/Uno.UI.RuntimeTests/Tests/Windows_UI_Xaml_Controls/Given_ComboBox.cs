@@ -232,6 +232,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
@@ -267,6 +268,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, SUT.SelectedIndex);
 		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
