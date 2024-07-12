@@ -214,7 +214,7 @@ public sealed partial class DiagnosticsOverlay : Control
 			_notificationPresenter.Tapped -= OnNotificationTapped;
 		}
 
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
 		if (_toolbar is not null)
 		{
 			_toolbar.SizeChanged += OnToolBarSizeChanged;
@@ -241,7 +241,7 @@ public sealed partial class DiagnosticsOverlay : Control
 			RelativePlacement.SetAnchor(_notificationPresenter, _toolbar);
 			_notificationPresenter.Tapped += OnNotificationTapped;
 		}
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
 		if (_toolbar is not null)
 		{
 			_toolbar.SizeChanged += OnToolBarSizeChanged;
@@ -250,7 +250,7 @@ public sealed partial class DiagnosticsOverlay : Control
 		static void OnToolBarSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			// Patches pointer event dispatch on a 0x0 Canvas
-			if (sender is UIElement { TemplatedParent: DiagnosticsOverlay {TemplatedRoot: Canvas canvas } })
+			if (sender is UIElement { TemplatedParent: DiagnosticsOverlay { TemplatedRoot: Canvas canvas } })
 			{
 				canvas.Width = args.NewSize.Width;
 			}
