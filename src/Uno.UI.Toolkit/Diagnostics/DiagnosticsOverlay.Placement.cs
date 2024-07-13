@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Toolkit.Extensions;
 
 namespace Uno.Diagnostics.UI;
 
@@ -43,7 +44,9 @@ public sealed partial class DiagnosticsOverlay
 
 	private PlacementOrigin _origin;
 	private Point _location; // The location, relative to the _origin
+#if HAS_UNO_WINUI
 	private StatusBar? _statusBar;
+#endif
 	private bool _isPlacementInit;
 
 	private void InitPlacement()
@@ -51,6 +54,7 @@ public sealed partial class DiagnosticsOverlay
 		CleanPlacement();
 		RestoreLocation();
 
+#if HAS_UNO_WINUI
 		if (ApiInformation.IsMethodPresent(typeof(StatusBar), nameof(StatusBar.GetForCurrentView))
 			&& StatusBar.GetForCurrentView() is { } statusBar)
 		{
@@ -59,6 +63,7 @@ public sealed partial class DiagnosticsOverlay
 			statusBar.Hiding += OnStatusBarChanged;
 			statusBar.Showing += OnStatusBarChanged;
 		}
+#endif
 
 		_isPlacementInit = true;
 	}
@@ -67,11 +72,13 @@ public sealed partial class DiagnosticsOverlay
 	{
 		_isPlacementInit = false;
 
+#if HAS_UNO_WINUI
 		if (_statusBar is { } statusBar)
 		{
 			statusBar.Hiding -= OnStatusBarChanged;
 			statusBar.Showing -= OnStatusBarChanged;
 		}
+#endif
 	}
 
 	/// <summary>
@@ -80,6 +87,7 @@ public sealed partial class DiagnosticsOverlay
 	/// <returns></returns>
 	public Rect GetSafeArea()
 	{
+#if HAS_UNO_WINUI
 		var bounds = _root.Bounds;
 		if (
 			_statusBar?.OccludedRect is { Height: > 0 } occludedRect
@@ -91,6 +99,9 @@ public sealed partial class DiagnosticsOverlay
 			bounds.Y += occludedRect.Height;
 			bounds.Height -= occludedRect.Height;
 		}
+#else
+		var bounds = new Rect(default, _root.Size);
+#endif
 
 		bounds.Width -= _toolbar?.ActualWidth ?? ActualWidth;
 		bounds.Height -= ActualHeight;
@@ -126,8 +137,10 @@ public sealed partial class DiagnosticsOverlay
 	private void OnAnchorManipulatedCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
 		=> UpdatePlacement();
 
+#if HAS_UNO_WINUI
 	private void OnStatusBarChanged(StatusBar sender, object args)
 		=> UpdatePlacement();
+#endif
 
 	private void UpdatePlacement()
 	{
