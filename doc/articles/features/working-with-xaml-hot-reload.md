@@ -60,7 +60,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. There are some restrictions that are listed below:
 
 - The Visual Studio 2022 for Windows support is fully available, with and without running under the debugger
-- As of VS 2022 17.9 XAML Hot Reload under WSL is not supported
+- As of VS 2022 17.9 XAML or C# Hot Reload under WSL is not supported
 - VS Code
   - With the debugger: The C# Dev Kit is handling hot reload [when enabled](https://code.visualstudio.com/docs/csharp/debugging#_hot-reload). As of December 20th, 2023, C# Dev Kit hot reload does not handle class libraries. To experience the best hot reload, do not use the debugger.
   - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# or XAML)
@@ -86,7 +86,6 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
     - Update to Uno.Wasm.Bootstrap 8.0.3 or later
     - Unregister any Web Worker associated with your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available.
-  - Hot Reload is not supported when using the debugger
 
 ### [**iOS, Android, and Catalyst**](#tab/mobile)
 
@@ -192,9 +191,8 @@ Here's a summary of what icons and statuses you can expect:
   - Open Tools / Options
   - Search for **.NET / C++ Hot Reload**
   - Ensure that all three checkboxes are checked (_**Enable hot reload when debugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_)
-- Hot Reload for WebAssembly is not supported when using the debugger. Start your app using `Ctrl+F5`.
-- The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. Changing the MSBuild build output verbosity in `Tools/Options/Projects and Solutions/Build And Run` controls the log level.
-- When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
+The output window in Visual Studio has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. You will need to have the **MSBuild project build output verbosity** above "minimal" in **Tools > Options > Projects and Solutions > Build And Run** to start having some logs in the `Uno Platform` output. These changes should take effect immediately without requiring a restart of Visual Studio. However, if you seem to not have more additional logs, try restarting Visual Studio. For more information regarding verbosity for build log, see the [related VS documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).
+- When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net8.0-windows10.xx`:
   - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).

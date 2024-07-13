@@ -47,6 +47,14 @@ Android deployment requires a few considerations:
         1. In the android section search for `Fast Deployment`
         1. uncheck all target platforms
 
+### My application does not start under WSL
+
+Your application may fail to run under WSL for multiple reasons:
+
+- Your app is in a path that contains spaces and/or characters such as `[` or `]`
+- [WSLg](xref:Uno.GetStarted.vs2022#additional-setup-for-windows-subsystem-for-linux-wsl) has not been installed
+- [X11 dependencies](xref:Uno.GetStarted.vs2022#additional-setup-for-skia-desktop-projects) have not been installed
+
 ## Legacy issues
 
 ### The XAML editor shows `The type 'page' does not support direct content` message
