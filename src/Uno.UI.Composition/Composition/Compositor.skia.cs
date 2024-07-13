@@ -36,15 +36,13 @@ public partial class Compositor
 	{
 		var start = TimestampInTicks;
 		var end = start + duration.Ticks;
-		foreach (var transition in _backgroundTransitions)
+
+		for (int i = 0; i < _backgroundTransitions.Count; i++)
 		{
-			if (transition.Visual == visual)
+			if (_backgroundTransitions[i].Visual == visual)
 			{
-				transition.StartTimestamp = start;
-				transition.EndTimestamp = end;
-				transition.FromColor = fromColor;
-				transition.ToColor = toColor;
-				return;
+				_backgroundTransitions.RemoveAt(i);
+				break;
 			}
 		}
 

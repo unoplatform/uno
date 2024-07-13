@@ -16,10 +16,10 @@ internal sealed class ColorBrushTransitionState
 	}
 
 	internal BorderVisual Visual { get; }
-	internal Color FromColor { get; set; }
-	internal Color ToColor { get; set; }
-	internal long StartTimestamp { get; set; }
-	internal long EndTimestamp { get; set; }
+	internal Color FromColor { get; }
+	internal Color ToColor { get; }
+	internal long StartTimestamp { get; }
+	internal long EndTimestamp { get; }
 
 	internal Color CurrentColor
 	{
