@@ -18,6 +18,7 @@ namespace Uno.Diagnostics.UI;
 /// <summary>
 /// An overlay layer used to inject analytics and diagnostics indicators into the UI.
 /// </summary>
+[TemplatePart(Name = ToolbarPartName, Type = typeof(FrameworkElement))]
 [TemplatePart(Name = ElementsPanelPartName, Type = typeof(Panel))]
 [TemplatePart(Name = AnchorPartName, Type = typeof(UIElement))]
 [TemplatePart(Name = NotificationPartName, Type = typeof(ContentPresenter))]
@@ -25,8 +26,11 @@ namespace Uno.Diagnostics.UI;
 [TemplateVisualState(GroupName = "DisplayMode", Name = DisplayModeExpandedStateName)]
 [TemplateVisualState(GroupName = "Notification", Name = NotificationCollapsedStateName)]
 [TemplateVisualState(GroupName = "Notification", Name = NotificationVisibleStateName)]
+[TemplateVisualState(GroupName = "HorizontalDirection", Name = HorizontalDirectionLeftVisualState)]
+[TemplateVisualState(GroupName = "HorizontalDirection", Name = HorizontalDirectionRightVisualState)]
 public sealed partial class DiagnosticsOverlay : Control
 {
+	private const string ToolbarPartName = "PART_Toolbar";
 	private const string ElementsPanelPartName = "PART_Elements";
 	private const string AnchorPartName = "PART_Anchor";
 	private const string NotificationPartName = "PART_Notification";
@@ -36,6 +40,9 @@ public sealed partial class DiagnosticsOverlay : Control
 
 	private const string NotificationCollapsedStateName = "Collapsed";
 	private const string NotificationVisibleStateName = "Visible";
+
+	private const string HorizontalDirectionLeftVisualState = "Left";
+	private const string HorizontalDirectionRightVisualState = "Right";
 
 	private static readonly ConditionalWeakTable<XamlRoot, DiagnosticsOverlay> _overlays = new();
 
@@ -58,6 +65,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	private bool _isVisible;
 	private bool _isExpanded = true;
 	private int _updateEnqueued;
+	private FrameworkElement? _toolbar;
 	private Panel? _elementsPanel;
 	private UIElement? _anchor;
 	private ContentPresenter? _notificationPresenter;
@@ -98,6 +106,7 @@ public sealed partial class DiagnosticsOverlay : Control
 					overlay._elements.Clear();
 				}
 			}
+			overlay.UpdatePlacement();
 			overlay.EnqueueUpdate();
 		};
 
@@ -198,14 +207,23 @@ public sealed partial class DiagnosticsOverlay : Control
 		{
 			//_anchor.Tapped -= OnAnchorTapped;
 			_anchor.ManipulationDelta -= OnAnchorManipulated;
+			_anchor.ManipulationCompleted -= OnAnchorManipulatedCompleted;
 		}
 		if (_notificationPresenter is not null)
 		{
 			_notificationPresenter.Tapped -= OnNotificationTapped;
 		}
 
+#if __ANDROID__ || __IOS__
+		if (_toolbar is not null)
+		{
+			_toolbar.SizeChanged += OnToolBarSizeChanged;
+		}
+#endif
+
 		base.OnApplyTemplate();
 
+		_toolbar = GetTemplateChild(ToolbarPartName) as FrameworkElement;
 		_elementsPanel = GetTemplateChild(ElementsPanelPartName) as Panel;
 		_anchor = GetTemplateChild(AnchorPartName) as UIElement;
 		_notificationPresenter = GetTemplateChild(NotificationPartName) as ContentPresenter;
@@ -214,13 +232,30 @@ public sealed partial class DiagnosticsOverlay : Control
 		{
 			//_anchor.Tapped += OnAnchorTapped;
 			_anchor.ManipulationDelta += OnAnchorManipulated;
+			_anchor.ManipulationCompleted += OnAnchorManipulatedCompleted;
 			_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
-			RenderTransform = new TranslateTransform { X = 15, Y = 15 };
+			RenderTransform = new TranslateTransform();
 		}
 		if (_notificationPresenter is not null)
 		{
+			RelativePlacement.SetAnchor(_notificationPresenter, _toolbar);
 			_notificationPresenter.Tapped += OnNotificationTapped;
 		}
+#if __ANDROID__ || __IOS__
+		if (_toolbar is not null)
+		{
+			_toolbar.SizeChanged += OnToolBarSizeChanged;
+		}
+
+		static void OnToolBarSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			// Patches pointer event dispatch on a 0x0 Canvas
+			if (sender is UIElement { TemplatedParent: DiagnosticsOverlay { TemplatedRoot: Canvas canvas } })
+			{
+				canvas.Width = args.NewSize.Width;
+			}
+		}
+#endif
 
 		VisualStateManager.GoToState(this, _isExpanded ? DisplayModeExpandedStateName : DisplayModeCompactStateName, false);
 		VisualStateManager.GoToState(this, NotificationCollapsedStateName, false);
@@ -233,18 +268,6 @@ public sealed partial class DiagnosticsOverlay : Control
 	//	VisualStateManager.GoToState(this, _isExpanded ? DisplayModeExpandedStateName : DisplayModeCompactStateName, true);
 	//	args.Handled = true;
 	//}
-
-	private void OnAnchorManipulated(object sender, ManipulationDeltaRoutedEventArgs e)
-	{
-		var transform = RenderTransform as TranslateTransform;
-		if (transform is null)
-		{
-			RenderTransform = transform = new TranslateTransform();
-		}
-
-		transform.X += e.Delta.Translation.X;
-		transform.Y += e.Delta.Translation.Y;
-	}
 
 	private void EnqueueUpdate(bool forceUpdate = false)
 	{
@@ -331,17 +354,25 @@ public sealed partial class DiagnosticsOverlay : Control
 			}
 
 			ShowHost(host, isVisible: visibleViews is not 0);
+			UpdatePlacement();
 		});
 	}
 
 	private static Popup CreateHost(XamlRoot root, DiagnosticsOverlay overlay)
-		=> new()
+	{
+		var host = new Popup
 		{
 			XamlRoot = root,
 			Child = overlay,
 			IsLightDismissEnabled = false,
-			LightDismissOverlayMode = LightDismissOverlayMode.Off,
+			LightDismissOverlayMode = LightDismissOverlayMode.Off
 		};
+
+		host.Opened += static (snd, e) => ((snd as Popup)?.Child as DiagnosticsOverlay)?.InitPlacement();
+		host.Closed += static (snd, e) => ((snd as Popup)?.Child as DiagnosticsOverlay)?.CleanPlacement();
+
+		return host;
+	}
 
 	private static void ShowHost(Popup host, bool isVisible)
 		=> host.IsOpen = isVisible;
