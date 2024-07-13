@@ -51,6 +51,7 @@ public partial class EntryPoint : IDisposable
 	private bool _isDisposed;
 	private IdeChannelClient? _ideChannelClient;
 	private ProfilesObserver _debuggerObserver;
+	private GlobalJsonObserver _globalJsonObserver;
 	private readonly Func<Task> _globalPropertiesChanged;
 	private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
 	private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
@@ -94,6 +95,8 @@ public partial class EntryPoint : IDisposable
 			, OnDebugProfileChangedAsync
 			, OnStartupProjectChangedAsync
 			, _debugAction);
+
+		_globalJsonObserver = new GlobalJsonObserver(asyncPackage, _dte, _debugAction, _infoAction, _warningAction, _errorAction);
 
 		_ = _debuggerObserver.ObserveProfilesAsync();
 
@@ -431,6 +434,7 @@ public partial class EntryPoint : IDisposable
 			_ct.Cancel(false);
 			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
+			_globalJsonObserver.Dispose();
 		}
 		catch (Exception e)
 		{
