@@ -5,7 +5,7 @@
 		<UnoSplashFolder Condition="$(UnoSplashFolder) == ''">$([MSBuild]::EnsureTrailingSlash('$(AssetsFolder)Splash'))</UnoSplashFolder>
 		<UnoIconBackgroundFile Condition="$(UnoIconBackgroundFile) == ''">$(UnoIconFolder)icon.svg</UnoIconBackgroundFile>
 		<UnoIconForegroundFile Condition="$(UnoIconForegroundFile) == ''">$(UnoIconFolder)icon_foreground.svg</UnoIconForegroundFile>
-		<UnoIconForegroundScale Condition="$(UnoIconForegroundScale) == ''">0.65</UnoIconForegroundScale>
+		<UnoIconForegroundScale Condition="$(UnoIconForegroundScale) == ''">1.00</UnoIconForegroundScale>
 		<UnoIconBackgroundColor Condition="$(UnoIconBackgroundColor) == ''">#00000000</UnoIconBackgroundColor>
 		<UnoSplashScreenFile Condition="$(UnoSplashScreenFile) == ''">$(UnoSplashFolder)splash_screen.svg</UnoSplashScreenFile>
 		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">128,128</UnoSplashScreenBaseSize>
