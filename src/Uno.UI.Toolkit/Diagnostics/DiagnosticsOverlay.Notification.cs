@@ -1,5 +1,6 @@
 ﻿#nullable enable
 #if WINUI || HAS_UNO_WINUI
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
