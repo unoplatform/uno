@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using SkiaSharp;
 using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
+using Windows.UI;
 
 namespace Microsoft.UI.Composition;
 
 public partial class Compositor
 {
 	private List<CompositionAnimation> _runningAnimations = new();
+	private List<ColorBrushTransitionState> _backgroundTransitions = new();
 
 	internal bool? IsSoftwareRenderer { get; set; }
 
@@ -30,6 +32,38 @@ public partial class Compositor
 		}
 	}
 
+	internal void RegisterBackgroundTransition(BorderVisual visual, Color fromColor, Color toColor, TimeSpan duration)
+	{
+		var start = TimestampInTicks;
+		var end = start + duration.Ticks;
+
+		for (int i = 0; i < _backgroundTransitions.Count; i++)
+		{
+			if (_backgroundTransitions[i].Visual == visual)
+			{
+				_backgroundTransitions.RemoveAt(i);
+				break;
+			}
+		}
+
+		_backgroundTransitions.Add(new ColorBrushTransitionState(visual, fromColor, toColor, start, end));
+	}
+
+	internal bool TryGetEffectiveBackgroundColor(CompositionSpriteShape shape, out Color color)
+	{
+		foreach (var transition in _backgroundTransitions)
+		{
+			if (transition.Visual.BackgroundShape == shape)
+			{
+				color = transition.CurrentColor;
+				return true;
+			}
+		}
+
+		color = default;
+		return false;
+	}
+
 	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, Action<Visual.PaintingSession, Visual>? postRenderAction)
 	{
 		if (rootVisual is null)
@@ -45,6 +79,13 @@ public partial class Compositor
 		rootVisual.RenderRootVisual(surface, null, postRenderAction);
 
 		RecursiveDispatchAnimationFrames();
+
+		_backgroundTransitions.RemoveAll(transition => TimestampInTicks >= transition.EndTimestamp);
+
+		if (_backgroundTransitions.Count > 0)
+		{
+			NativeDispatcher.Main.Enqueue(() => CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget), NativeDispatcherPriority.Idle);
+		}
 	}
 
 	private void RecursiveDispatchAnimationFrames()

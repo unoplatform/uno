@@ -49,6 +49,11 @@ public partial class Panel : FrameworkElement, IPanel
 		_children = new UIElementCollection(this);
 	}
 
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+	public BrushTransition BackgroundTransition { get; set; }
+
 #if UNO_HAS_BORDER_VISUAL
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
@@ -234,6 +239,7 @@ public partial class Panel : FrameworkElement, IPanel
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
+		BorderHelper.SetUpBrushTransitionIfAllowed((BorderVisual)this.Visual, e.OldValue as Brush, e.NewValue as Brush, this.BackgroundTransition);
 #else
 		UpdateBorder();
 #endif

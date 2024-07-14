@@ -45,6 +45,11 @@ public partial class Border : FrameworkElement
 #endif
 	}
 
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+	public BrushTransition BackgroundTransition { get; set; }
+
 #if !UNO_HAS_BORDER_VISUAL
 	internal BorderLayerRenderer BorderRenderer { get; }
 #endif
@@ -306,6 +311,7 @@ public partial class Border : FrameworkElement
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
+		BorderHelper.SetUpBrushTransitionIfAllowed((BorderVisual)this.Visual, e.OldValue as Brush, e.NewValue as Brush, this.BackgroundTransition);
 #else
 		UpdateBorder();
 #endif

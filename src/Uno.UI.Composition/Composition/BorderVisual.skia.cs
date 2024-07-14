@@ -32,6 +32,8 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
+	internal CompositionSpriteShape? BackgroundShape => _backgroundShape;
+
 	public CornerRadius CornerRadius
 	{
 		private get => _cornerRadius;
