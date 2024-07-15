@@ -40,7 +40,7 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
 ### Considerations for macOS and Linux
 
-When using macOS or Linux for developing your application and you have selected the WinAppSDK target, you may get the UNOB0014 error which mentions building on macOS or Linux is not supported. While Uno Platform is able to filter out unsupported targets from the command line and other IDE, Rider currently does not support this automatic filtering.
+When using macOS or Linux for developing your application and you have selected the WinAppSDK target, you may get the UNOB0014 error which mentions building on macOS or Linux is not supported. While Uno Platform is able to filter out unsupported targets from the command line and other IDE, Rider currently [does not support this automatic filtering](https://youtrack.jetbrains.com/issue/RIDER-114790/Unsupported-target-framework-filtering).
 
 To correct this, you'll need to modify your `csproj` file in order to make the project compatible.
 
