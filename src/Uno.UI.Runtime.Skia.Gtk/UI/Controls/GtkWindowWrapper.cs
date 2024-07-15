@@ -11,6 +11,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
