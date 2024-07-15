@@ -782,7 +782,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset);
 
-			for (var i = 0; i < 7; i++)
+			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
