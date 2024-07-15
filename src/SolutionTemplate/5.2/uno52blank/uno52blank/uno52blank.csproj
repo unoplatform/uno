@@ -61,8 +61,8 @@
           Condition=" '$(SkiaSharpVersion)' != '' AND $(SkiaSharpVersion.StartsWith('3'))">
 
     <!-- Validates that SkiaShap uno-runtime file is copied to the output folder -->
-    <Error Text="Missing asset $(OutputPath)\SkiaSharp.Views.Windows.dll"
-          Condition="!exists('$(OutputPath)\SkiaSharp.Views.Windows.dll')" />
+    <Error Text="Missing asset $(OutputPath)SkiaSharp.Views.Windows.dll"
+          Condition="!exists('$(OutputPath)SkiaSharp.Views.Windows.dll')" />
   </Target>
 
 </Project>
