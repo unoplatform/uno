@@ -2,6 +2,8 @@
 	<PropertyGroup>
 		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('$(DesktopProjectFolder)app.manifest')">$(DesktopProjectFolder)app.manifest</ApplicationManifest>
 		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('app.manifest')">app.manifest</ApplicationManifest>
+		<_DefaultInfoPlist Condition="Exists('$(DesktopProjectFolder)Info.plist')">$(DesktopProjectFolder)Info.plist</_DefaultInfoPlist>
+		<_DefaultEntitlementsPlist Condition="Exist('$(DesktopProjectFolder)Entitlements.plist')">$(DesktopProjectFolder)Entitlements.plist</_DefaultEntitlementsPlist>
 
 		<!-- Follow the Android, iOS, & MacCatalyst SDK's -->
 		<!-- Default to 1, if blank -->
@@ -13,6 +15,11 @@
 	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' AND $(Optimize) == 'true' ">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<SkiaInfoPlist Include="$(_DefaultInfoPlist)" Condition="$(_DefaultInfoPlist) == ''" IsDefaultItem="true" />
+		<SkiaEntitlementsPlist Include="$(_DefaultEntitlementsPlist)" Condition="$(_DefaultEntitlementsPlist) != ''" IsDefaultItem="true" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="$(DesktopProjectFolder)Package.appxmanifest"
@@ -38,6 +45,11 @@
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
 	</ItemGroup>
+
+	<Import Project="Uno.SingleProject.Desktop.Linux.Publish.targets"
+			Condition="$(NETCoreSdkRuntimeIdentifier.Contains('linux')) AND '$(IsUnoHead)' == 'true'" />
+	<Import Project="Uno.SingleProject.Desktop.MacOS.Publish.targets"
+			Condition="$(NETCoreSdkRuntimeIdentifier.Contains('osx')) AND '$(IsUnoHead)' == 'true'" />
 
 	<Target Name="_UnoRemoveTransitiveWPFDependency"
 			BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies"
