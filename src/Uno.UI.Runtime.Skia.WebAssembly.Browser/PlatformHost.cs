@@ -56,7 +56,7 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
-		ApiExtensibility.Register(typeof(Windows.UI.Core.INativeElementHostingExtension), o => new WebAssemblyNativeElementHostingExtension());
+		ApiExtensibility.Register(typeof(ContentPresenter.INativeElementHostingExtension), o => new WebAssemblyNativeElementHostingExtension());
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new WebAssemblyWindowFactoryExtension(this));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new BrowserInvisibleTextBoxViewExtension(o));
 
