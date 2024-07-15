@@ -16,6 +16,7 @@
 		<ApplicationId>uno.platform.samplesdev</ApplicationId>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">osx-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
