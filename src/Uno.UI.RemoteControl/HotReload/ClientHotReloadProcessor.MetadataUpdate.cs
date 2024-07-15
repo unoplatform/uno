@@ -453,7 +453,9 @@ partial class ClientHotReloadProcessor
 		}
 		else
 		{
-			_log.Trace("Invalid metadata update, ignore it."); // Avoid flicker on WASM
+			// https://github.com/dotnet/aspnetcore/issues/52937
+			// Explicitly ignore to avoid flicker on WASM
+			_log.Trace("Invalid metadata update, ignore it.");
 		}
 	}
 
