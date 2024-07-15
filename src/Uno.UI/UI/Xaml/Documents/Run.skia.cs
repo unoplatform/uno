@@ -54,7 +54,144 @@ namespace Microsoft.UI.Xaml.Documents
 				int lineBreakLength = 0;
 				bool wordBreakAfter = false;
 
-				if (symbolTypeface is { })
+				// Count leading spaces
+				while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
+				{
+					leadingSpaces++;
+					i++;
+				}
+
+				// Keep the segment going until we hit a word break opportunity or a line break
+				while (i < text.Length)
+				{
+					if (ProcessLineBreak(text, ref i, ref lineBreakLength))
+					{
+						break;
+					}
+
+					// Since tabs require special handling, we put tabs in separate segments.
+					// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
+					if (text[i] == '\t')
+					{
+						wordBreakAfter = true;
+						i++;
+						break;
+					}
+
+					if (i + 1 < text.Length && text[i + 1] == '\t')
+					{
+						if (char.IsWhiteSpace(text[i]))
+						{
+							trailingSpaces++;
+						}
+						wordBreakAfter = true;
+						i++;
+						break;
+					}
+
+					if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
+					{
+						if (char.IsWhiteSpace(text[i]))
+						{
+							trailingSpaces++;
+						}
+						wordBreakAfter = true;
+						i++;
+						break;
+					}
+
+					if (i + 1 < text.Length
+						&& char.IsSurrogate(text[i])
+						&& char.IsSurrogatePair(text[i], text[i + 1]))
+					{
+						var fontManager = SKFontManager.Default;
+						var codepoint = (int)((text[i] - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
+						symbolTypeface = fontManager
+							.MatchCharacter(codepoint);
+
+						if (symbolTypeface is not null)
+						{
+							surrogate = true;
+						}
+						else
+						{
+							// Under some Linux systems, the symbol may not be found
+							// in the default font and
+							// we have to skip the character and continue segments
+							// evaluation.
+
+							if (this.Log().IsEnabled(LogLevel.Trace))
+							{
+								this.Log().Trace($"Failed to match surrogate in the default system font (0x{codepoint:X4}, {(char)codepoint})");
+							}
+
+							i++;
+						}
+						break;
+					}
+					else if (!fontInfo.SKFont.ContainsGlyph(text[i]))
+					{
+						var oldTypeface = symbolTypeface;
+						symbolTypeface = SKFontManager.Default
+							.MatchCharacter(text[i]);
+
+						if (symbolTypeface is null)
+						{
+							// Under some Linux systems, the symbol may not be found
+							// in the default font and
+							// we have to skip the character and continue segments
+							// evaluation.
+							if (this.Log().IsEnabled(LogLevel.Trace))
+							{
+								this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)text[i]:X4}, {text[i]})");
+							}
+
+							i++;
+							break;
+						}
+
+						// If we already had a fallback typeface, and this one is different, we need to break the segment.
+						// However, we should keep the same segment while the fallback typeface is the same.
+						if (oldTypeface is not null && symbolTypeface != oldTypeface)
+						{
+							break;
+						}
+					}
+					i++;
+				}
+
+				// Tack on any trailing spaces or line breaks if this segment does not yet end in a line break
+
+				if (lineBreakLength == 0)
+				{
+					while (i < text.Length)
+					{
+						if (ProcessLineBreak(text, ref i, ref lineBreakLength))
+						{
+							break;
+						}
+
+						if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
+						{
+							trailingSpaces++;
+							i++;
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+
+				if (surrogate)
+				{
+					i += surrogate ? 2 : 0;
+					surrogate = false;
+				}
+
+				int length = i - s;
+
+				if (symbolTypeface is not null)
 				{
 					var fi = FontDetailsCache.GetFont(symbolTypeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
 					if (fi.CanChange)
@@ -63,141 +200,15 @@ namespace Microsoft.UI.Xaml.Documents
 					}
 
 					font = fi.Font;
-					wordBreakAfter = Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1));
+					wordBreakAfter = i < text.Length &&
+						(Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)));
 					font.GetScale(out fontScale, out _);
 					textSizeY = fontSize / fontScale;
 					textSizeX = textSizeY * fontInfo.SKFontScaleX;
-					i += surrogate ? 2 : 1;
-					surrogate = false;
 					fallbackFont = fi;
 					symbolTypeface = default;
 				}
-				else
-				{
-					// Count leading spaces
-					while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
-					{
-						leadingSpaces++;
-						i++;
-					}
 
-					// Keep the segment going until we hit a word break opportunity or a line break
-					while (i < text.Length)
-					{
-						if (ProcessLineBreak(text, ref i, ref lineBreakLength))
-						{
-							break;
-						}
-
-						// Since tabs require special handling, we put tabs in separate segments.
-						// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
-						if (text[i] == '\t')
-						{
-							wordBreakAfter = true;
-							i++;
-							break;
-						}
-
-						if (i + 1 < text.Length && text[i + 1] == '\t')
-						{
-							if (char.IsWhiteSpace(text[i]))
-							{
-								trailingSpaces++;
-							}
-							wordBreakAfter = true;
-							i++;
-							break;
-						}
-
-						if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
-						{
-							if (char.IsWhiteSpace(text[i]))
-							{
-								trailingSpaces++;
-							}
-							wordBreakAfter = true;
-							i++;
-							break;
-						}
-
-						if (i + 1 < text.Length
-							&& char.IsSurrogate(text[i])
-							&& char.IsSurrogatePair(text[i], text[i + 1]))
-						{
-							var fontManager = SKFontManager.Default;
-							var codepoint = (int)((text[i] - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
-							symbolTypeface = fontManager
-								.MatchCharacter(codepoint);
-
-							if (symbolTypeface is not null)
-							{
-								surrogate = true;
-							}
-							else
-							{
-								// Under some Linux systems, the symbol may not be found
-								// in the default font and
-								// we have to skip the character and continue segments
-								// evaluation.
-
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									this.Log().Trace($"Failed to match surrogate in the default system font (0x{codepoint:X4}, {(char)codepoint})");
-								}
-
-								i++;
-							}
-							break;
-						}
-						else if (!fontInfo.SKFont.ContainsGlyph(text[i]))
-						{
-							symbolTypeface = SKFontManager.Default
-								.MatchCharacter(text[i]);
-
-							if (symbolTypeface is null)
-							{
-								// Under some Linux systems, the symbol may not be found
-								// in the default font and
-								// we have to skip the character and continue segments
-								// evaluation.
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)text[i]:X4}, {text[i]})");
-								}
-
-								i++;
-							}
-
-							break;
-						}
-						i++;
-					}
-
-					// Tack on any trailing spaces or line breaks if this segment does not yet end in a line break
-
-					if (lineBreakLength == 0)
-					{
-						while (i < text.Length)
-						{
-							if (ProcessLineBreak(text, ref i, ref lineBreakLength))
-							{
-								break;
-							}
-
-							if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
-							{
-								trailingSpaces++;
-								i++;
-							}
-							else
-							{
-								break;
-							}
-						}
-					}
-				}
-
-				int length = i - s;
 				if (length > 0)
 				{
 					if (lineBreakLength == 2)
