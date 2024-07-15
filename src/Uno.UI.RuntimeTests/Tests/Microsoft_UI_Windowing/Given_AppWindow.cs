@@ -1,13 +1,10 @@
 ﻿#if HAS_UNO_WINUI
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Private.Infrastructure;
-using Uno.UI.Xaml;
 using Windows.Graphics;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
@@ -20,13 +17,7 @@ public class Given_AppWindow
 	[TestMethod]
 	public async Task When_Resize()
 	{
-		if (!OperatingSystem.IsLinux() &&
-			!OperatingSystem.IsWindows() ||
-			TestServices.WindowHelper.IsXamlIsland ||
-			IsGtk())
-		{
-			Assert.Inconclusive("This test only supported on Windows and Linux currently.");
-		}
+		AssertPositioningAndSizingSupport();
 
 		var appWindow = TestServices.WindowHelper.CurrentTestWindow.AppWindow;
 		AppWindowChangedEventArgs args = null;
@@ -54,13 +45,7 @@ public class Given_AppWindow
 	[TestMethod]
 	public async Task When_Move()
 	{
-		if (!OperatingSystem.IsLinux() &&
-			!OperatingSystem.IsWindows() ||
-			TestServices.WindowHelper.IsXamlIsland ||
-			IsGtk())
-		{
-			Assert.Inconclusive("This test only supported on Windows and Linux apps currently.");
-		}
+		AssertPositioningAndSizingSupport();
 
 		var appWindow = TestServices.WindowHelper.CurrentTestWindow.AppWindow;
 		AppWindowChangedEventArgs args = null;
@@ -82,6 +67,87 @@ public class Given_AppWindow
 		{
 			appWindow.Move(originalPosition);
 			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Equals(originalPosition));
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Resize_Before_Activate()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		AppWindowChangedEventArgs args = null;
+		void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+		{
+			args = e;
+		}
+		appWindow.Changed += OnChanged;
+		var originalSize = appWindow.Size;
+		var activated = false;
+		try
+		{
+			var adjustedSize = new SizeInt32() { Width = originalSize.Width + 10, Height = originalSize.Height + 10 };
+			appWindow.Resize(adjustedSize);
+			await TestServices.WindowHelper.WaitFor(() => args is not null);
+			Assert.IsTrue(args.DidSizeChange);
+			Assert.AreEqual(appWindow.Size, adjustedSize);
+
+			newWindow.Activate();
+			newWindow.Activated += (s, e) => activated = true;
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			Assert.AreEqual(appWindow.Size, adjustedSize);
+		}
+		finally
+		{
+			newWindow.Close();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Move_Before_Activate()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		AppWindowChangedEventArgs args = null;
+		void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+		{
+			args = e;
+		}
+		appWindow.Changed += OnChanged;
+		var originalPosition = appWindow.Position;
+		var activated = false;
+		try
+		{
+			var adjustedPosition = new PointInt32() { X = originalPosition.X + 10, Y = originalPosition.Y + 10 };
+			appWindow.Move(adjustedPosition);
+			await TestServices.WindowHelper.WaitFor(() => args is not null);
+			Assert.IsTrue(args.DidPositionChange);
+			Assert.AreEqual(appWindow.Position, adjustedPosition);
+
+			newWindow.Activate();
+			newWindow.Activated += (s, e) => activated = true;
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			Assert.AreEqual(appWindow.Position, adjustedPosition);
+		}
+		finally
+		{
+			newWindow.Close();
+		}
+	}
+
+	private void AssertPositioningAndSizingSupport()
+	{
+		if (!OperatingSystem.IsLinux() &&
+			!OperatingSystem.IsWindows() ||
+			TestServices.WindowHelper.IsXamlIsland ||
+			IsGtk())
+		{
+			Assert.Inconclusive("This test only supported on Windows and Linux apps currently.");
 		}
 	}
 
