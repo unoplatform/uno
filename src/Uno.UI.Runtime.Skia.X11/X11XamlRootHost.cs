@@ -72,10 +72,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_wrapper = wrapper;
 		_window = winUIWindow;
 
+		_closingCallback = closingCallback;
+		_focusCallback = focusCallback;
+		_visibilityCallback = visibilityCallback;
+		_configureCallback = configureCallback;
+
 		_renderTimer = new DispatcherTimer();
 		_renderTimer.Interval = new TimeSpan(1000 / 16);
 		_renderTimer.Tick += (sender, o) =>
 		{
+			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
+			{
+				_configureCallback();
+			}
+
 			if (_renderDirty)
 			{
 				_renderer?.Render();
@@ -83,21 +93,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		};
 		_renderTimer.Start();
-
-		_closingCallback = closingCallback;
-		_focusCallback = focusCallback;
-		_visibilityCallback = visibilityCallback;
-		_configureCallback = configureCallback;
-
-		_configureTimer = new DispatcherTimer();
-		_configureTimer.Interval = new TimeSpan(1000 / 16);
-		_configureTimer.Tick += (_, _) =>
-		{
-			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
-			{
-				_configureCallback();
-			}
-		};
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;

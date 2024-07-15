@@ -21,7 +21,6 @@ internal partial class X11XamlRootHost
 	private readonly Action<bool> _visibilityCallback;
 	private readonly Action _configureCallback;
 
-	private readonly DispatcherTimer _configureTimer;
 	private int _needsConfigureCallback;
 
 	private X11PointerInputSource? _pointerSource;
@@ -203,14 +202,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
-							if (Interlocked.Exchange(ref _needsConfigureCallback, 1) == 0)
-							{
-								// We do this in a timer because if you "continuously" change position/size
-								// values by dragging for example, you will get an explosion of configure
-								// events and responding to all of them synchronously would block the UI
-								// for so long in some cases.
-								_configureTimer.Start();
-							}
+							Interlocked.Exchange(ref _needsConfigureCallback, 1);
 							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () => _focusCallback(true));
