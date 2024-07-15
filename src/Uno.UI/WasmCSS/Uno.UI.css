@@ -278,7 +278,7 @@ input::-ms-clear {
   color: var(--selection-color);
 }
 
-/* Uno has it's own HR indicator, hide default indicator from dotnet. */
+/* Uno has its own HR indicator: hide default dotnet indicator. */
 #dotnet-hotreload-toast {
   visibility: collapse
 }
