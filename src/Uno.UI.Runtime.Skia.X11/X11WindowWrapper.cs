@@ -24,6 +24,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_xamlRoot = xamlRoot;
 
 		_host = new X11XamlRootHost(this, window, xamlRoot, UpdatePositionAndSize, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+		UpdatePositionAndSize(); // synchronously initialize Position and Size here before anyone reads their values
 
 		RasterizationScale = (float)XamlRoot.GetDisplayInformation(_xamlRoot).RawPixelsPerViewPixel;
 	}
