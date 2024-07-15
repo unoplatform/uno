@@ -113,7 +113,7 @@
 
 	
 	<Target Name="UnoFailOnUnsupportedTargetFrameworks"
-			Condition=" '$(UnoDisableRemoveUnsupportedTargetFrameworks)' != 'true' "
+			Condition=" '$(UnoDisableRemoveUnsupportedTargetFrameworks)' != 'true' AND '$(IsUnoHead)' == 'true' "
 			BeforeTargets="BeforeBuild">
 
 			<!-- 
