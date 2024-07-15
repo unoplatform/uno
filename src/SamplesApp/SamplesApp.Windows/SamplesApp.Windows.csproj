@@ -32,9 +32,8 @@
 		<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Core.Extensions" Version="4.0.1" />
-		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
+		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
 
 		<PackageReference Include="Microsoft.Graph">
