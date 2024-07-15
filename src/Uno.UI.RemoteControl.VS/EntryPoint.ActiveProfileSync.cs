@@ -42,6 +42,20 @@ public partial class EntryPoint : IDisposable
 		{
 			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload})");
 
+			if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+			{
+				// This debouncing needs to happen when VS intermittently changes the active
+				// profile or target framework on project reloading. We skip the change if it
+				// is arbitrarily too close to the previous one.
+				// Note that this block must be done before the IsNullOrEmpty(previousFramework)
+				// in order to catch automatic profile changes by VS when iOS is selected.
+				_debugAction?.Invoke($"Skipping framework change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
+				return;
+			}
+
+			_pendingRequestedChanged = false;
+			_lastOperation.Restart();
+
 			if (!forceReload && string.IsNullOrEmpty(previousFramework))
 			{
 				// The first change after a reload is always the active target. This happens
@@ -49,18 +63,6 @@ public partial class EntryPoint : IDisposable
 				_debugAction?.Invoke($"Skipping for no previous framework");
 				return;
 			}
-
-			if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
-			{
-				// This debouncing needs to happen when VS intermittently changes the active
-				// profile or target framework on project reloading. We skip the change if it
-				// is arbitrarily too close to the previous one.
-				_debugAction?.Invoke($"Skipping framework change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
-				return;
-			}
-
-			_pendingRequestedChanged = false;
-			_lastOperation.Restart();
 
 			var profiles = await _debuggerObserver.GetLaunchProfilesAsync();
 
@@ -110,6 +112,20 @@ public partial class EntryPoint : IDisposable
 		// In this case, a new TargetFramework was selected. We need to file a matching target framework, if any.
 		_debugAction?.Invoke($"OnDebugProfileChangedAsync({previousProfile},{newProfile})");
 
+		if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+		{
+			// This debouncing needs to happen when VS intermittently changes the active
+			// profile or target framework on project reloading. We skip the change if it
+			// is arbitrarily too close to the previous one.
+			// Note that this block must be done before the IsNullOrEmpty(previousProfile)
+			// in order to catch automatic profile changes by VS when iOS is selected.
+			_debugAction?.Invoke($"Skipping profile change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
+			return;
+		}
+
+		_pendingRequestedChanged = false;
+		_lastOperation.Restart();
+
 		if (string.IsNullOrEmpty(previousProfile))
 		{
 			// The first change after a reload is always the active target. This happens
@@ -117,18 +133,6 @@ public partial class EntryPoint : IDisposable
 			_debugAction?.Invoke($"Skipping for no previous profile");
 			return;
 		}
-
-		if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
-		{
-			// This debouncing needs to happen when VS intermittently changes the active
-			// profile or target framework on project reloading. We skip the change if it
-			// is arbitrarily too close to the previous one.
-			_debugAction?.Invoke($"Skipping profile change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
-			return;
-		}
-
-		_pendingRequestedChanged = false;
-		_lastOperation.Restart();
 
 		var targetFrameworks = await _debuggerObserver.GetActiveTargetFrameworksAsync();
 		var profiles = await _debuggerObserver.GetLaunchProfilesAsync();
@@ -252,32 +256,7 @@ public partial class EntryPoint : IDisposable
 
 							var sw2 = Stopwatch.StartNew();
 
-							while (sw2.Elapsed < TimeSpan.FromSeconds(5))
-							{
-								// Reset the startup project, as VS will move it to the next available
-								// project in the solution on unload.
-								if (_dte.Solution.SolutionBuild is SolutionBuild2 val)
-								{
-									_debugAction?.Invoke($"Setting startup project to {startupProjectUniqueName}");
-									val.StartupProjects = startupProjectUniqueName;
-								}
-
-								await Task.Delay(50);
-
-								if (await _dte.GetStartupProjectsAsync() is { Length: > 0 } newStartupProjects
-									&& newStartupProjects[0].UniqueName == startupProjectUniqueName)
-								{
-									_debugAction?.Invoke($"Startup project changed successfully");
-									break;
-								}
-								else
-								{
-									_debugAction?.Invoke($"Startup project was not changed, retrying...");
-									await Task.Delay(1000);
-								}
-
-								await WriteProjectUserSettingsAsync(newFramework);
-							}
+							await WriteProjectUserSettingsAsync(newFramework);
 						}
 					}
 				}
