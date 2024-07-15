@@ -113,7 +113,7 @@
 
 	
 	<Target Name="UnoFailOnUnsupportedTargetFrameworks"
-			Condition=" '$(UnoDisableRemoveUnsupportedTargetFrameworks)' != 'true' AND '$(IsUnoHead)' == 'true' "
+			Condition=" '$(UnoDisableRemoveUnsupportedTargetFrameworks)' != 'true' "
 			BeforeTargets="BeforeBuild">
 
 			<!-- 
@@ -126,6 +126,7 @@
 				Text="Building for Windows is not supported on non-Windows systems. See for more details: https://aka.platform.uno/UNOB0014"
 				Condition="
 					!$([MSBuild]::IsOSPlatform('windows'))
+					AND '$(IsUnoHead)' == 'true'
 					AND $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'windows' " />
 
 			<Error Code="UNOB0014"
