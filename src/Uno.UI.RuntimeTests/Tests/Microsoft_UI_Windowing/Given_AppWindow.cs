@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
@@ -20,7 +21,9 @@ public class Given_AppWindow
 	public async Task When_Resize()
 	{
 		if (!OperatingSystem.IsLinux() &&
-			!OperatingSystem.IsWindows())
+			!OperatingSystem.IsWindows() ||
+			TestServices.WindowHelper.IsXamlIsland ||
+			IsGtk())
 		{
 			Assert.Inconclusive("This test only supported on Windows and Linux currently.");
 		}
@@ -52,9 +55,11 @@ public class Given_AppWindow
 	public async Task When_Move()
 	{
 		if (!OperatingSystem.IsLinux() &&
-			!OperatingSystem.IsWindows())
+			!OperatingSystem.IsWindows() ||
+			TestServices.WindowHelper.IsXamlIsland ||
+			IsGtk())
 		{
-			Assert.Inconclusive("This test only supported on Windows and Linux currently.");
+			Assert.Inconclusive("This test only supported on Windows and Linux apps currently.");
 		}
 
 		var appWindow = TestServices.WindowHelper.CurrentTestWindow.AppWindow;
@@ -78,6 +83,20 @@ public class Given_AppWindow
 			appWindow.Move(originalPosition);
 			await TestServices.WindowHelper.WaitFor(() => appWindow.Position.Equals(originalPosition));
 		}
+	}
+
+	private bool IsGtk()
+	{
+		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+		foreach (Assembly a in assemblies)
+		{
+			if (a.GetName().Name == "GtkSharp")
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 #endif
 }
