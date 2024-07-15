@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Windows.UI.Core;
 
@@ -38,6 +40,8 @@ public class AppleUIKitSkiaHost : ISkiaApplicationHost
 		{
 			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
 			ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => AppleUIKitCorePointerInputSource.Instance);
+			ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => UnoKeyboardInputSource.Instance);
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new AndroidInvisibleTextBoxViewExtension(o));
 
 			UIApplication.Main(_args, null, typeof(UnoSkiaAppDelegate));
 		}

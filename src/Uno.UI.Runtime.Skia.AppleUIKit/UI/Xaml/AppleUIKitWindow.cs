@@ -23,4 +23,12 @@ internal class AppleUIKitWindow : UIWindow
 
 	public override void TouchesCancelled(NSSet touches, UIEvent? evt) =>
 		AppleUIKitCorePointerInputSource.Instance.TouchesCancelled(this, touches, evt);
+
+	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		if (!UnoKeyboardInputSource.Instance.TryHandlePresses(presses, evt))
+		{
+			base.PressesEnded(presses, evt);
+		}
+	}
 }

@@ -13,8 +13,6 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
 	public bool SupportsMultipleWindows => UIApplication.SharedApplication.SupportsMultipleScenes;
 
-	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
-	{
-		return new NativeWindowWrapper(window, xamlRoot);
-	}
+	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot) =>
+		new NativeWindowWrapper(window, xamlRoot);
 }
