@@ -111,6 +111,35 @@
 		</ItemGroup>
 	</Target>
 
+	
+	<Target Name="UnoFailOnUnsupportedTargetFrameworks"
+			Condition=" '$(UnoDisableRemoveUnsupportedTargetFrameworks)' != 'true' "
+			BeforeTargets="BeforeBuild">
+
+			<!-- 
+				This target is primarily used for Rider, which does not support 
+				UnoRemoveUnsupportedTargetFrameworks to filter frameworks.
+			-->
+
+			<Error Code="UNOB0014"
+				HelpLink="https://aka.platform.uno/UNOB0014"
+				Text="Building for Windows is not supported on non-Windows systems. See for more details: https://aka.platform.uno/UNOB0014"
+				Condition="
+					!$([MSBuild]::IsOSPlatform('windows'))
+					AND $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'windows' " />
+
+			<Error Code="UNOB0014"
+				HelpLink="https://aka.platform.uno/UNOB0014"
+				Text="Building for Apple platforms is not supported on Linux. See for more details: https://aka.platform.uno/UNOB0014"
+				Condition="
+					$([MSBuild]::IsOSPlatform('linux'))
+					AND (
+						$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios'
+						OR $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'maccatalyst'
+					)" />
+
+	</Target>
+
 	<Import Project="Uno.SingleProject.VS.Build.targets"
 			Condition=" '$(UnoSingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
 </Project>

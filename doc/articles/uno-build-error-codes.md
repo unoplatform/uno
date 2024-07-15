@@ -123,6 +123,12 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
+### UNOB0014: The target framework is not supported on macOS or Linux
+
+When building with Rider on Linux or macOS, unsupported target frameworks are not filtered automatically like other IDEs.
+
+See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Rider#considerations-for-macos-and-linux) for Rider.
+
 ## Compiler Errors
 
 ### UNO0001
