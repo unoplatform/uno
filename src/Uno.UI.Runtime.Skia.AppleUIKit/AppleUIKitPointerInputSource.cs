@@ -172,8 +172,8 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			timestamp,
 			pointerDevice,
 			pointerIdentifier.Id,
-			position.ToPoint(),
-			position.ToPoint(),
+			position,
+			position,
 			isInContact,
 			properties);
 		return new PointerEventArgs(pointerPoint, Windows.System.VirtualKeyModifiers.None); // TODO:MZ: Key modifiers
