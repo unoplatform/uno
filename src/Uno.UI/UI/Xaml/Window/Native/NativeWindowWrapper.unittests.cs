@@ -22,7 +22,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void RaiseNativeSizeChanged(double width, double height)
 	{

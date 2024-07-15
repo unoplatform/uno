@@ -135,7 +135,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	{
 		Bounds = new Rect(default, size);
 		VisibleBounds = Bounds;
-		Size = new Windows.Graphics.SizeInt32() { Height = (int)size.Height, Width = (int)size.Width };
+		Size = size.ToSizeInt32();
 	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
