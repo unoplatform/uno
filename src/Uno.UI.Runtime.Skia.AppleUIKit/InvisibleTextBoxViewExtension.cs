@@ -21,13 +21,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		private readonly TextBoxView _owner;
 		private int _selectionChangeSuspended;
 
-		public InvisibleUITextView(TextBoxView owner) : base(owner.XamlRoot.Context)
+		public InvisibleUITextView(TextBoxView owner)
 		{
+			_owner = owner;
 			BackgroundColor = UIColor.Clear;
 			TextColor = UIColor.Clear;
 
 			Text = owner.TextBox?.Text ?? string.Empty;
-			_owner = owner;
 		}
 
 		internal void SuspendSelectionChange() => _selectionChangeSuspended++;
@@ -50,28 +50,28 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		var textBox = _view.TextBox;
 
 		_nativeInput = new InvisibleUITextView(_view);
-		var relativeLayout = ApplicationActivity.Instance.RelativeLayout;
-		relativeLayout.AddView(_nativeInput);
-		_nativeInput.RequestFocus();
+		//var relativeLayout = ApplicationActivity.Instance.RelativeLayout;
+		//relativeLayout.AddView(_nativeInput);
+		//_nativeInput.RequestFocus();
 
-		var start = textBox?.SelectionStart ?? 0;
-		var length = textBox?.SelectionLength ?? 0;
-		_nativeInput.SetSelection(start, start + length);
-		InvalidateLayout();
+		//var start = textBox?.SelectionStart ?? 0;
+		//var length = textBox?.SelectionLength ?? 0;
+		//_nativeInput.SetSelection(start, start + length);
+		//InvalidateLayout();
 
-		InputMethodManager imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService)!;
-		imm.ShowSoftInput(_nativeEditText, ShowFlags.Implicit);
+		//InputMethodManager imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService)!;
+		//imm.ShowSoftInput(_nativeEditText, ShowFlags.Implicit);
 	}
 
 	public void EndEntry()
 	{
 		if (_nativeInput is not null)
 		{
-			InputMethodManager imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService)!;
-			imm.HideSoftInputFromWindow(_nativeInput.WindowToken, HideSoftInputFlags.None);
+			//InputMethodManager imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService)!;
+			//imm.HideSoftInputFromWindow(_nativeInput.WindowToken, HideSoftInputFlags.None);
 
-			ApplicationActivity.Instance.RelativeLayout.RemoveView(_nativeInput);
-			_nativeInput = null;
+			//ApplicationActivity.Instance.RelativeLayout.RemoveView(_nativeInput);
+			//_nativeInput = null;
 		}
 	}
 
@@ -83,18 +83,18 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_nativeInput is not null)
 		{
-			var width = _view.DisplayBlock.ActualWidth;
-			var height = _view.DisplayBlock.ActualHeight;
+			//var width = _view.DisplayBlock.ActualWidth;
+			//var height = _view.DisplayBlock.ActualHeight;
 
-			var position = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
-			var rect = new Rect(position.X, position.Y, width, height);
-			var physical = rect.LogicalToPhysicalPixels();
-			_nativeInput.Layout(
-				(int)physical.Left,
-				(int)physical.Top,
-				(int)physical.Right,
-				(int)physical.Bottom
-			);
+			//var position = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
+			//var rect = new Rect(position.X, position.Y, width, height);
+			//var physical = rect.LogicalToPhysicalPixels();
+			//_nativeInput.Layout(
+			//	(int)physical.Left,
+			//	(int)physical.Top,
+			//	(int)physical.Right,
+			//	(int)physical.Bottom
+			//);
 		}
 	}
 
@@ -118,7 +118,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	public int GetSelectionLengthBeforeKeyDown() => throw new NotImplementedException();
 	public int GetSelectionStart() => throw new NotImplementedException();
 	public int GetSelectionStartBeforeKeyDown() => throw new NotImplementedException();
-	public void Select(int start, int length)	{
+	public void Select(int start, int length)
+	{
 	}
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 

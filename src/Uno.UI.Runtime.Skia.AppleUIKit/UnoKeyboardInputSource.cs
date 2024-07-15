@@ -12,9 +12,10 @@ internal sealed class UnoKeyboardInputSource : IUnoKeyboardInputSource
 	private UnoKeyboardInputSource()
 	{
 	}
-
+#pragma warning disable CS0067
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+#pragma warning restore CS0067
 
 	public bool TryHandlePresses(NSSet<UIPress> presses, UIPressesEvent evt)
 	{
