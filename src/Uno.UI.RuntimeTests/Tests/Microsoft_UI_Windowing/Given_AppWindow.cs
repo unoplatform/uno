@@ -93,8 +93,8 @@ public class Given_AppWindow
 			Assert.IsTrue(args.DidSizeChange);
 			Assert.AreEqual(appWindow.Size, adjustedSize);
 
-			newWindow.Activate();
 			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
 			await TestServices.WindowHelper.WaitFor(() => activated);
 
 			Assert.AreEqual(appWindow.Size, adjustedSize);
@@ -122,14 +122,14 @@ public class Given_AppWindow
 		var activated = false;
 		try
 		{
-			var adjustedPosition = new PointInt32() { X = originalPosition.X + 10, Y = originalPosition.Y + 10 };
+			var adjustedPosition = new PointInt32() { X = 40, Y = 40 };
 			appWindow.Move(adjustedPosition);
 			await TestServices.WindowHelper.WaitFor(() => args is not null);
 			Assert.IsTrue(args.DidPositionChange);
 			Assert.AreEqual(appWindow.Position, adjustedPosition);
 
-			newWindow.Activate();
 			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
 			await TestServices.WindowHelper.WaitFor(() => activated);
 
 			Assert.AreEqual(appWindow.Position, adjustedPosition);

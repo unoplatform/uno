@@ -4,7 +4,6 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
-using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
@@ -21,6 +20,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 {
 	private readonly UnoWpfWindow _wpfWindow;
 	private bool _isFullScreen;
+	private bool _wasShown;
 
 	public WpfWindowWrapper(UnoWpfWindow wpfWindow, WinUIWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
@@ -42,8 +42,17 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	private void OnNativeSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) => UpdateSizeFromNative();
 
-	private void UpdateSizeFromNative() =>
-		Size = new() { Width = (int)_wpfWindow.ActualWidth, Height = (int)_wpfWindow.ActualHeight };
+	private void UpdateSizeFromNative()
+	{
+		if (!_wasShown)
+		{
+			Size = new() { Width = (int)_wpfWindow.Width, Height = (int)_wpfWindow.Height };
+		}
+		else
+		{
+			Size = new() { Width = (int)_wpfWindow.ActualWidth, Height = (int)_wpfWindow.ActualHeight };
+		}
+	}
 
 	private void OnNativeLocationChanged(object? sender, EventArgs e) => UpdatePositionFromNative();
 
@@ -66,6 +75,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	{
 		RasterizationScale = (float)VisualTreeHelper.GetDpi(_wpfWindow.Host).DpiScaleX;
 		_wpfWindow.Show();
+		_wasShown = true;
 		UpdatePositionFromNative();
 	}
 
@@ -166,11 +176,23 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	{
 		_wpfWindow.Left = position.X;
 		_wpfWindow.Top = position.Y;
+
+		if (!_wasShown)
+		{
+			// Set Position and trigger AppWindow.Changed
+			UpdatePositionFromNative();
+		}
 	}
 
 	public override void Resize(SizeInt32 size)
 	{
 		_wpfWindow.Width = size.Width;
 		_wpfWindow.Height = size.Height;
+
+		if (!_wasShown)
+		{
+			// Set size and trigger AppWindow.Changed
+			UpdateSizeFromNative();
+		}
 	}
 }
