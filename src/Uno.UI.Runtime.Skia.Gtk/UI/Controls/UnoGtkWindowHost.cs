@@ -112,7 +112,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 				_renderer.BackgroundColor = brush.Color;
 			}
 		}
-		else
+		else if (_winUIWindow.Background is not null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
