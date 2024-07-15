@@ -42,7 +42,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 		[ActivePlatforms(Platform.Browser)]
 		public void Check_CornerRadius_Border_Basic()
 		{
-			const string white = "#FFFFFF";
+			const string white = "#F3F3F3";
 
 			// Verify that border is drawn with CornerRadius
 			Run("Uno.UI.Samples.UITests.BorderTestsControl.Border_CornerRadius", skipInitialScreenshot: true);

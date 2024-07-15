@@ -117,7 +117,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_BorderThickness_Zero()
 		{
-			using var fluent = StyleHelper.UseFluentStyles();
 			var grid = new Grid
 			{
 				Width = 120,
