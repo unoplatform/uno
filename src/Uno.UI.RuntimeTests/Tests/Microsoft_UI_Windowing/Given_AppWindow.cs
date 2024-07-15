@@ -1,4 +1,4 @@
-﻿#if HAS_UNO_WINUI
+﻿#if HAS_UNO_WINUI || WINDOWS
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 [RunsOnUIThread]
 public class Given_AppWindow
 {
-#if __SKIA__
+#if __SKIA__ || WINDOWS
 	[TestMethod]
 	public async Task When_Resize()
 	{
@@ -101,7 +101,8 @@ public class Given_AppWindow
 		}
 		finally
 		{
-			newWindow.Close();
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
 		}
 	}
 
@@ -136,7 +137,8 @@ public class Given_AppWindow
 		}
 		finally
 		{
-			newWindow.Close();
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
 		}
 	}
 
