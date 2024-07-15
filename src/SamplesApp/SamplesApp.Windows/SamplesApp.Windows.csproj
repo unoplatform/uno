@@ -26,7 +26,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
-		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.0-dev.7" />
