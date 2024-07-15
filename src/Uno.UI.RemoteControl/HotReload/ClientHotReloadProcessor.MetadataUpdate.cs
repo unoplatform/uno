@@ -447,7 +447,7 @@ partial class ClientHotReloadProcessor
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void UpdateApplication(Type[] types)
 	{
-		if (types is { Length: >0 })
+		if (types is { Length: > 0 })
 		{
 			UpdateApplicationCore(types);
 		}
