@@ -201,7 +201,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
 		RaiseNativeSizeChanged(new Size(windowAttrs2.width, windowAttrs2.height));
 		// copy the root window dimensions to the top window
-		_ = XLib.XResizeWindow(display, window, windowAttrs2.width, windowAttrs2.height);
+		_ = XLib.XResizeWindow(display, _host.TopX11Window.Window, windowAttrs2.width, windowAttrs2.height);
 	}
 
 	internal void SetFullScreenMode(bool on)
