@@ -104,7 +104,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		{
 			_wpfWindow.Background = new System.Windows.Media.SolidColorBrush(brush.Color.ToWpfColor());
 		}
-		else
+		else if (_winUIWindow.Background is not null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
