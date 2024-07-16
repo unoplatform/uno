@@ -127,7 +127,7 @@
 				Condition="
 					!$([MSBuild]::IsOSPlatform('windows'))
 					AND '$(IsUnoHead)' == 'true'
-					AND $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'windows' " />
+					AND $(IsWinAppSdk) == 'true' " />
 
 			<Error Code="UNOB0014"
 				HelpLink="https://aka.platform.uno/UNOB0014"
