@@ -433,7 +433,7 @@ partial class ClientHotReloadProcessor
 		try
 		{
 			Instance?._status.ConfigureSourceForNextOperation(HotReloadSource.Manual);
-			UpdateApplication(Array.Empty<Type>());
+			UpdateApplicationCore([]);
 		}
 		finally
 		{
@@ -446,6 +446,20 @@ partial class ClientHotReloadProcessor
 	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void UpdateApplication(Type[] types)
+	{
+		if (types is { Length: > 0 })
+		{
+			UpdateApplicationCore(types);
+		}
+		else
+		{
+			// https://github.com/dotnet/aspnetcore/issues/52937
+			// Explicitly ignore to avoid flicker on WASM
+			_log.Trace("Invalid metadata update, ignore it.");
+		}
+	}
+
+	private static void UpdateApplicationCore(Type[] types)
 	{
 		var hr = Instance?._status.ReportLocalStarting(types);
 
