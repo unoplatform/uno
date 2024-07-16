@@ -67,7 +67,7 @@ Alternatively you may disable the Implicit Package References
 </PropertyGroup>
 ```
 
-### UNOB00010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
+### UNOB0010: The browserwasm TargetFramework must not be placed first in the TargetFrameworks property
 
 In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents debugging and Hot Reload from working properly for all targets when the `net8.0-browserwasm` TargetFramework is placed first in the `TargetFrameworks` property.
 
@@ -81,7 +81,7 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
-### UNOB00011: The desktop TargetFramework must be placed first in the TargetFrameworks property
+### UNOB0011: The desktop TargetFramework must be placed first in the TargetFrameworks property
 
 In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-desktop` TargetFramework is placed first in the `TargetFrameworks` property.
 
@@ -95,7 +95,7 @@ This warning can be disabled by adding the following to your `.csproj`:
 </PropertyGroup>
 ```
 
-### UNOB00012: The windows TargetFramework must not be placed first in the TargetFrameworks property
+### UNOB0012: The windows TargetFramework must not be placed first in the TargetFrameworks property
 
 In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0-windows10.xxx` TargetFramework is placed first in the `TargetFrameworks` property.
 
@@ -108,6 +108,26 @@ This warning can be disabled by adding the following to your `.csproj`:
   <UnoDisableVSWarnWindowsIsFirst>true</UnoDisableVSWarnWindowsIsFirst>
 </PropertyGroup>
 ```
+
+### UNOB0013: The net8.0 TargetFramework must not be placed first in the TargetFrameworks property
+
+In Visual Studio 2022, [an issue](https://aka.platform.uno/singleproject-vs-reload) prevents other platforms debugging from working properly when the `net8.0` TargetFramework is placed first in the `TargetFrameworks` property.
+
+Make sure that `net8.0` is not first in your `<TargetFrameworks>` property.
+
+This warning can be disabled by adding the following to your `.csproj`:
+
+```xml
+<PropertyGroup>
+  <UnoDisableVSWarnNetIsFirst>true</UnoDisableVSWarnNetIsFirst>
+</PropertyGroup>
+```
+
+### UNOB0014: The target framework is not supported on macOS or Linux
+
+When building with Rider on Linux or macOS, unsupported target frameworks are [not filtered automatically like other IDEs](https://youtrack.jetbrains.com/issue/RIDER-114790/Unsupported-target-framework-filtering).
+
+See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Rider#considerations-for-macos-and-linux) for Rider.
 
 ## Compiler Errors
 

@@ -13,7 +13,13 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI;
+using Color = Windows.UI.Color;
+
+#if HAS_UNO_WINUI || WINAPPSDK || WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
 
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
@@ -98,6 +104,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(expectedSetCount, vm.SetCount);
 			Assert.AreEqual("Hello2", tb.Text);
+		}
+
+		[TestMethod]
+		public async Task When_BorderThickness_Zero()
+		{
+			using var fluent = StyleHelper.UseFluentStyles();
+			var grid = new Grid
+			{
+				Width = 120,
+				Height = 120,
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var textBox = new TextBox
+			{
+				Text = "",
+				Background = new SolidColorBrush(Colors.Transparent),
+				BorderThickness = new Thickness(0),
+				Width = 100,
+				Height = 100
+			};
+
+			grid.Children.Add(textBox);
+
+			await UITestHelper.Load(grid);
+
+			var borderThicknessZero = await UITestHelper.ScreenShot(grid);
+
+			textBox.Visibility = Visibility.Collapsed;
+
+			var opacityZero = await UITestHelper.ScreenShot(grid);
+
+			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
 		}
 
 #if __ANDROID__

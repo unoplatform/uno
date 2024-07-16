@@ -33,7 +33,16 @@ namespace Microsoft.UI.Composition
 				if (FillBrush is { } fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
-					fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
+
+					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
+					{
+						fillPaint.Color = colorFromTransition.ToSKColor();
+					}
+					else
+					{
+						fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
+					}
+
 					if (fill is CompositionBrushWrapper wrapper)
 					{
 						fill = wrapper.WrappedBrush;

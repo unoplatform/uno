@@ -1,4 +1,5 @@
 #if UNO_HAS_BORDER_VISUAL
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
@@ -44,6 +45,34 @@ internal static class BorderHelper
 		@this.UpdateCornerRadius();
 		@this.UpdateBackgroundSizing();
 		@this.UpdateBorderThickness();
+	}
+
+	public static void SetUpBrushTransitionIfAllowed(BorderVisual visual, Brush fromBrush, Brush toBrush, BrushTransition transition)
+	{
+		if (transition is null)
+		{
+			return;
+		}
+
+		var oldBrush = fromBrush as SolidColorBrush;
+		var newBrush = toBrush as SolidColorBrush;
+
+		var oldBrushIsNullOrSolidColorBrush = oldBrush is not null || fromBrush is null;
+		//var oldBrushIsNullOrStatic = oldBrush == null || !oldBrush->IsEffectiveValueInSparseStorage(KnownPropertyIndex::SolidColorBrush_ColorAnimation);
+
+		if (// The new brush must exist and must be different from the old brush. The old brush can be either a SolidColorBrush
+			// or null (in which case it will fade in from transparent). The old brush can't be a non-null brush of some other type.
+			// TODO: If we want to allow null new brushes (fade to transparent), that's some unloading storage level of work.
+			newBrush is not null
+			&& oldBrushIsNullOrSolidColorBrush
+			&& oldBrush != newBrush
+			// SolidColorBrush animations work only on static brushes. Neither brush can be animating.
+			//&& oldBrushIsNullOrStatic
+			//&& !newBrush->IsEffectiveValueInSparseStorage(KnownPropertyIndex::SolidColorBrush_ColorAnimation)
+			)
+		{
+			visual.Compositor.RegisterBackgroundTransition(visual, oldBrush?.Color ?? Colors.Transparent, newBrush.Color, transition.Duration);
+		}
 	}
 }
 #endif

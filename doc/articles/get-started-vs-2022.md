@@ -51,7 +51,7 @@ To setup your environment for WSL:
 - Install the prerequisites for Linux mentioned below, in your installed distribution using the Ubuntu shell
 
 > [!NOTE]
-> Running Uno Platform apps using WSL makes use of [WSLg's support for Wayland](https://github.com/microsoft/wslg).
+> Running Uno Platform apps using WSL makes use of [WSLg's support for Wayland](https://github.com/microsoft/wslg#install-instructions-existing-wsl-install). In general, running `wsl --update`, then optionally rebooting the Windows machine can get you started.
 
 ## Additional Setup for Skia Desktop projects
 

@@ -114,6 +114,20 @@
 					Text="The windows TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0012)" />
 	</Target>
 
+	<Target Name="_UnoVSWarnNetIsFirst"
+			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+			Condition=" 
+			'$(UnoDisableVSWarnNetIsFirst)' != 'true'
+			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(_UnoTargetFrameworkCount)' != ''
+			AND $(_UnoTargetFrameworkCount) &gt; 1
+			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == ''
+			AND $(_UnoFirstOriginalTargetFramework.StartsWith('net'))">
+
+		<Warning Code="UNOB0013"
+				 Text="The $(_UnoFirstOriginalTargetFramework) TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0013)" />
+	</Target>
+
 	<!-- Include any additional targets that packages defined by other packages -->
 	<Import Project="$(AfterUnoSdkTargets)" Condition="'$(AfterUnoSdkTargets)' != ''"/>
 
