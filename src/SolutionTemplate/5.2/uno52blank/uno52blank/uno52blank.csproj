@@ -61,10 +61,7 @@
           Condition="
             '$(SkiaSharpVersion)' != '' 
             AND $(SkiaSharpVersion.StartsWith('3'))
-            AND (
-              '$(TargetFramework)' == 'net8.0-desktop'
-              OR '$(TargetFramework)' == 'net8.0-browserwasm'
-            )
+            AND '$(TargetFramework)' == 'net8.0-desktop'
           ">
 
     <!-- Validates that SkiaShap uno-runtime file is copied to the output folder -->
