@@ -17,20 +17,15 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout;
 
-[Sample("Flyouts", ViewModelType = typeof(Flyout_ToggleMenu_IsEnabledViewModel))]
+[Sample("Flyouts")]
 public sealed partial class Flyout_ToggleMenu_IsEnabled : Page
 {
 	public Flyout_ToggleMenu_IsEnabled()
 	{
 		this.InitializeComponent();
-
-		DataContextChanged += Flyout_ToggleMenu_IsEnabled_DataContextChanged;
 	}
 
-	internal Flyout_ToggleMenu_IsEnabledViewModel ViewModel { get; private set; }
-
-	private void Flyout_ToggleMenu_IsEnabled_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args) =>
-		ViewModel = args.NewValue as Flyout_ToggleMenu_IsEnabledViewModel;
+	internal Flyout_ToggleMenu_IsEnabledViewModel ViewModel { get; } = new Flyout_ToggleMenu_IsEnabledViewModel();
 }
 
 internal class Flyout_ToggleMenu_IsEnabledViewModel : ViewModelBase
