@@ -688,7 +688,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (_isDebug)
 				{
-					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+					//writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 				}
 
 				AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);

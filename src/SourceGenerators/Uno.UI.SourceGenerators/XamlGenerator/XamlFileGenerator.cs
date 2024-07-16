@@ -1398,7 +1398,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_isHotReloadEnabled)
 			{
-				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+				//writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 			}
 		}
 
