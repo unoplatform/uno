@@ -84,10 +84,10 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
 				{
-#if __IOS__ || __CATALYST__
+#if __IOS__ || __CATALYST__ || __ANDROID__
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace($"iOS/Catalyst do not support C# based XAML hot reload: https://github.com/unoplatform/uno/issues/15918");
+						this.Log().Trace($"iOS/Catalyst/Android do not support C# based XAML hot reload: https://github.com/unoplatform/uno/issues/15918");
 					}
 
 					_isIssue93860Fixed = false;
