@@ -54,5 +54,19 @@
       Condition="'%(BundleResource.LogicalName)' != '' And $([System.IO.Path]::IsPathRooted('%(BundleResource.LogicalName)'))" 
       Text="BundleResource.LogicalName must not contain a rooted path" />
   </Target>
+  
+  <!-- Validate SkiaSharp 3 -->
+  <Target Name="ValiateSkiaSharp3"
+          AfterTargets="AfterBuild"
+          Condition="
+            '$(SkiaSharpVersion)' != '' 
+            AND $(SkiaSharpVersion.StartsWith('3'))
+            AND '$(TargetFramework)' == 'net8.0-desktop'
+          ">
+
+    <!-- Validates that SkiaSharp uno-runtime file is copied to the output folder -->
+    <Error Text="Missing asset $(OutputPath)SkiaSharp.Views.Windows.dll"
+          Condition="!exists('$(OutputPath)SkiaSharp.Views.Windows.dll')" />
+  </Target>
 
 </Project>
