@@ -32,6 +32,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
 using MenuBarItemAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+using RuntimeTests.Windows_UI_Xaml_Controls.Flyout;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -46,41 +47,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_Toggle_IsEnabled_Via_Binding()
 		{
-			var menu = new MenuFlyout();
-			var toggleItem = new ToggleMenuFlyoutItem();
-			menu.Items.Add(toggleItem);
-			var button = new Button();
-			button.Flyout = menu;
-			var checkBox = new CheckBox();
-			// Bind the toggleItem.IsEnabled to checkbox.IsChecked
-			toggleItem.SetBinding(ToggleMenuFlyoutItem.IsEnabledProperty, new Binding { Source = checkBox, Path = "IsChecked", Mode = BindingMode.OneWay });
+			var page = new Flyout_ToggleMenu_IsEnabled();
 
-			WindowHelper.WindowContent = button;
-			await WindowHelper.WaitForLoaded(button);
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
 
-			button.Flyout.ShowAt(button);
+			var content = page.Content as StackPanel;
+			var button = content.Children.First() as Button;
+			var buttonPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer;
 
-			// The toggleItem should be disabled by default
-			Assert.IsFalse(toggleItem.IsEnabled);
+			var flyout = button.Flyout as MenuFlyout;
 
-			button.Flyout.Hide();
+			async Task AssertIsEnabled(bool expected)
+			{
+				buttonPeer.Invoke();
+				await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).First();
+				foreach (var item in flyout.Items)
+				{
+					// The toggleItem should be disabled by default
+					Assert.AreEqual(expected, item.IsEnabled);
+				}
+
+				popup.IsOpen = false;
+
+				await WindowHelper.WaitForIdle();
+			}
+
+			await AssertIsEnabled(false);
 
 			// Enable the toggleItem
-			checkBox.IsChecked = true;
+			page.ViewModel.AreItemsEnabled = true;
 
-			button.Flyout.ShowAt(button);
-
-			// The toggleItem should be enabled
-			Assert.IsTrue(toggleItem.IsEnabled);
-
-			button.Flyout.Hide();
+			await AssertIsEnabled(true);
 
 			// Disable the toggleItem
-			checkBox.IsChecked = false;
+			page.ViewModel.AreItemsEnabled = false;
 
-			button.Flyout.ShowAt(button);
-
-			Assert.IsFalse(toggleItem.IsEnabled);
+			await AssertIsEnabled(false);
 		}
 
 		[TestMethod]
