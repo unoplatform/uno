@@ -482,7 +482,10 @@ namespace Microsoft.UI.Xaml
 					// Resolve the stack once for the instance, for performance.
 					propertyDetails ??= _properties.GetPropertyDetails(property);
 
-					TryClearBinding(value, propertyDetails);
+					if (precedence <= DependencyPropertyValuePrecedences.Local)
+					{
+						TryClearBinding(value, propertyDetails);
+					}
 
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
