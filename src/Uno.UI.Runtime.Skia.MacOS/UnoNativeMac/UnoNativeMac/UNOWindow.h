@@ -328,6 +328,8 @@ void uno_window_notify_screen_change(NSWindow *window);
 
 @property(getter=isFlipped, readonly) BOOL flipped;
 
+@property CAShapeLayer *clipLayer;
+
 @end
 
 NS_ASSUME_NONNULL_END

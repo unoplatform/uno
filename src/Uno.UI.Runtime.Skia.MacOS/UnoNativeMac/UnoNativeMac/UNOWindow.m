@@ -94,6 +94,14 @@ NSWindow* uno_app_get_main_window(void)
     return YES;
 }
 
+-(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
+    self = [super initWithFrame:frameRect device:device];
+    if (self) {
+        self.clipLayer = [CAShapeLayer layer];
+    }
+    return self;
+}
+
 @end
 
 NSWindow* uno_window_create(double width, double height)
@@ -600,6 +608,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
 
 void uno_window_clip_svg(UNOWindow* window, const char* svg)
 {
+    UNOMetalFlippedView* v = window.contentView;
     if (svg) {
 #if DEBUG
         NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
@@ -628,19 +637,17 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
         CGPathAddLineToPoint(path, nil, 34, 523);
         CGPathCloseSubpath(path);
 
-        // TODO make a CAShapeLayer out of the given SVG, note: we already have a CAMetalLayer present
-        CAShapeLayer* layer = nil;
+        // TODO set the CAShapeLayer path to the given SVG
+        // note: we already have a CAMetalLayer present as the _main_ layer
         if (!window.contentView.layer.sublayers) {
-            layer = [CAShapeLayer layer];
-            [window.contentView.layer addSublayer:layer];
+            UNOMetalFlippedView* v = window.contentView;
+            [window.contentView.layer addSublayer:v.clipLayer];
         }
-        layer.path = path;
-        layer.fillRule = kCAFillRuleEvenOdd;
     } else {
 #if DEBUG
-        NSLog(@"uno_window_clip_svg %@ nil - reseting layer %@ mask to nil", window, window.contentView.layer.description);
+        NSLog(@"uno_window_clip_svg %@ reset", window);
 #endif
-        window.contentView.layer.sublayers = nil;
+        [v.clipLayer removeFromSuperlayer];
     }
 }
 
