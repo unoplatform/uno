@@ -38,7 +38,7 @@ public abstract class SdkTask : Task, ISdkTask
 			message = string.Empty;
 		}
 
-		Log.LogMessage(DefaultImportantance, message, arguments);
+		Log.LogMessage(DefaultImportance, message, arguments);
 	}
 
 	public void LogError(Exception exception)
