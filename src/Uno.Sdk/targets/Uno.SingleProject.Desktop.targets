@@ -50,6 +50,8 @@
 			Condition="$(NETCoreSdkRuntimeIdentifier.Contains('linux')) AND '$(IsUnoHead)' == 'true'" />
 	<Import Project="Uno.SingleProject.Desktop.MacOS.Publish.targets"
 			Condition="$(NETCoreSdkRuntimeIdentifier.Contains('osx')) AND '$(IsUnoHead)' == 'true'" />
+	<Import Project="Uno.SingleProject.Desktop.Windows.Publish.targets"
+			Condition="$(NETCoreSdkRuntimeIdentifier.Contains('win')) AND '$(IsUnoHead)' == 'true'" />
 
 	<Target Name="_UnoRemoveTransitiveWPFDependency"
 			BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies"

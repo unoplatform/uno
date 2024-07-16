@@ -7,18 +7,18 @@
 	</PropertyGroup>
 
 	<Target Name="RedirectPublishDir"
-          BeforeTargets="PrepareForPublish">
+			BeforeTargets="PrepareForPublish">
 		<PropertyGroup>
-		  <UnoAppPackagePublishDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(PublishDir)))))</UnoAppPackagePublishDir>
-		  <_UnoPublishDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(IntermediateOutputPath), 'unopublish'))))</_UnoPublishDir>
-		  <PublishDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(_UnoPublishDir), 'raw'))))</PublishDir>
-		  <UnoAppBundleTempDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath('$(_UnoPublishDir)', '$(ApplicationTitle).app'))))</UnoAppBundleTempDir>
-		  <UnoAppBundleTempContentsDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(UnoAppBundleTempDir), 'Contents'))))</UnoAppBundleTempContentsDir>
-		  <UnoAppBundleTempMacOSDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(UnoAppBundleTempContentsDir), 'MacOS'))))</UnoAppBundleTempMacOSDir>
-		  <UnoAppBundleTempResourcesDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(UnoAppBundleTempContentsDir), 'Resources'))))</UnoAppBundleTempResourcesDir>
+			<_UnoAppPackagePublishDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(PublishDir)))))</_UnoAppPackagePublishDir>
+			<_UnoPublishDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(IntermediateOutputPath), 'unopublish'))))</_UnoPublishDir>
+			<PublishDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(_UnoPublishDir), 'raw'))))</PublishDir>
+			<_UnoAppBundleTempDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath('$(_UnoPublishDir)', '$(ApplicationTitle).app'))))</_UnoAppBundleTempDir>
+			<_UnoAppBundleTempContentsDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(_UnoAppBundleTempDir), 'Contents'))))</_UnoAppBundleTempContentsDir>
+			<_UnoAppBundleTempMacOSDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(_UnoAppBundleTempContentsDir), 'MacOS'))))</_UnoAppBundleTempMacOSDir>
+			<_UnoAppBundleTempResourcesDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath($(_UnoAppBundleTempContentsDir), 'Resources'))))</_UnoAppBundleTempResourcesDir>
 		</PropertyGroup>
 
-		<RemoveDir Directories="$(UnoAppPackagePublishDir)" />
+		<RemoveDir Directories="$(_UnoAppPackagePublishDir)" />
 		<RemoveDir Directories="$(_UnoPublishDir)" />
 	</Target>
 
@@ -35,25 +35,25 @@
 			<PublishExclude Include="$(PublishDir)/**/runtimes/linux*/**" />
 			<PublishExclude Include="$(PublishDir)/**/runtimes/unix*/**" />
 			<PublishExclude Include="$(PublishDir)/**/*.ico" />
-			<_UnoPublishedFiles Include="$(PublishDir)/**" Exclude="@(PublishExclude)" PublishDir="$(UnoAppBundleTempMacOSDir)%(RecursiveDir)%(Filename)%(Extension)"/>
+			<_UnoPublishedFiles Include="$(PublishDir)/**" Exclude="@(PublishExclude)" PublishDir="$(_UnoAppBundleTempMacOSDir)%(RecursiveDir)%(Filename)%(Extension)"/>
 			<_PublishedIcon Include="$(_UnoIntermediateImages)Assets.xcassets/*.appiconset/**" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(_UnoPublishedFiles)"
-			DestinationFiles="@(_UnoPublishedFiles->'$(UnoAppBundleTempMacOSDir)%(RecursiveDir)%(Filename)%(Extension)')"
+			DestinationFiles="@(_UnoPublishedFiles->'$(_UnoAppBundleTempMacOSDir)%(RecursiveDir)%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true" />
 
-		<GenerateSkiaDesktopMacOSBundle_v0 
-				AssemblyName="$(AssemblyName)"
-				SdkDebugging="$(UnoSdkDebugging)"
-				BundledDotNetVersion="$(BundledNETCorePlatformsPackageVersion)"
-				UnoVersion="$(UnoVersion)"
-				TargetCulture="$(TargetCulture)"
-				ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
-				ApplicationVersion="$(ApplicationVersion)"
-				AppBundleDirectory="@(UnoAppBundleTempMacOSDir)"
-				PartialPlists="@(SkiaInfoPlist)"
-				EntitlementPlists="@(SkiaEntitlementsPlist)"
-				AppIconSets="@(_PublishedIcon)" />
+		<GenerateSkiaDesktopMacOSBundle_v0
+			AssemblyName="$(AssemblyName)"
+			SdkDebugging="$(UnoSdkDebugging)"
+			BundledDotNetVersion="$(BundledNETCorePlatformsPackageVersion)"
+			UnoVersion="$(UnoVersion)"
+			TargetCulture="$(TargetCulture)"
+			ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
+			ApplicationVersion="$(ApplicationVersion)"
+			AppBundleDirectory="@(_UnoAppBundleTempMacOSDir)"
+			PartialPlists="@(SkiaInfoPlist)"
+			EntitlementPlists="@(SkiaEntitlementsPlist)"
+			AppIconSets="@(_PublishedIcon)" />
 	</Target>
 </Project>
