@@ -3,12 +3,14 @@ using Android.Widget;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
+using Rect = Windows.Foundation.Rect;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private readonly ContentPresenter _owner;
+	private Rect? _physicalRect;
 
 	public AndroidSkiaNativeElementHostingExtension(ContentPresenter owner)
 	{
@@ -25,13 +27,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 				(int)physicalRect.Top,
 				(int)physicalRect.Right,
 				(int)physicalRect.Bottom);
-
-			var physicalClipRect = clipRect.LogicalToPhysicalPixels();
-			view.ClipBounds = new global::Android.Graphics.Rect(
-				(int)physicalClipRect.Left,
-				(int)physicalClipRect.Top,
-				(int)physicalClipRect.Right,
-				(int)physicalClipRect.Bottom);
+			_physicalRect = physicalRect;
 		}
 	}
 
@@ -39,11 +35,24 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			view.LayoutParameters = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MatchParent,
-				ViewGroup.LayoutParams.MatchParent);
+			ApplicationActivity.Instance.NativeLayerHost.AddView(view);
 
-			ApplicationActivity.Instance.RelativeLayout.AddView(view);
+			if (_physicalRect is { } physicalRect)
+			{
+				view.Layout(
+					(int)physicalRect.Left,
+					(int)physicalRect.Top,
+					(int)physicalRect.Right,
+					(int)physicalRect.Bottom);
+			}
+		}
+	}
+
+	public void DetachNativeElement(object content)
+	{
+		if (content is View view)
+		{
+			ApplicationActivity.Instance.NativeLayerHost.RemoveView(view);
 		}
 	}
 
@@ -65,18 +74,10 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 
 	public object CreateSampleComponent(string text)
 	{
-		return new EditText(ApplicationActivity.Instance.RelativeLayout.Context)
+		return new TextView(ApplicationActivity.Instance.NativeLayerHost.Context)
 		{
 			Text = text
 		};
-	}
-
-	public void DetachNativeElement(object content)
-	{
-		if (content is View view)
-		{
-			ApplicationActivity.Instance.AddContentView(view, null);
-		}
 	}
 
 	public bool IsNativeElement(object content) => content is View;

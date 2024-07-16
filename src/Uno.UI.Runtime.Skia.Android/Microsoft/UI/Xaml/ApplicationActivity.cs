@@ -24,6 +24,8 @@ using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.ViewManagement;
+using AndroidX.Core.Graphics;
+using Uno.UI.Helpers;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 
@@ -43,6 +45,8 @@ namespace Microsoft.UI.Xaml
 		internal RelativeLayout RelativeLayout { get; private set; } = null!;
 
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
+
+		internal RelativeLayout NativeLayerHost { get; private set; } = null!;
 
 		private InputPane _inputPane;
 		//private Android.Views.Window? _window;
@@ -207,14 +211,21 @@ namespace Microsoft.UI.Xaml
 		protected override void OnStart()
 		{
 			base.OnStart();
+
 			_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
+
 			_skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
 			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
-
-			RelativeLayout.AddView(_skCanvasView);
 			_skCanvasView.PaintSurface += OnPaintSurface;
+			RelativeLayout.AddView(_skCanvasView);
+
+			NativeLayerHost = new ClippedRelativeLayout(this);
+			NativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.MatchParent,
+				ViewGroup.LayoutParams.MatchParent);
+			RelativeLayout.AddView(NativeLayerHost);
 		}
 
 		private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
@@ -225,13 +236,23 @@ namespace Microsoft.UI.Xaml
 				canvas.Clear(SKColors.Red);
 				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
 				canvas.Scale((float)scale);
-				window.Compositor.RenderRootVisual(e.Surface, root.Visual, null);
+				var negativePath = new SKPath();
+				negativePath.AddRect(new SKRect(0, 0, (int)(window.Bounds.Width * scale), (int)(window.Bounds.Height * scale)));
+				if (SkiaRenderHelper.RenderRootVisualAndReturnPath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, e.Surface) is { } path)
+				{
+					negativePath = negativePath.Op(path, SKPathOp.Difference);
+				}
+				((ClippedRelativeLayout)NativeLayerHost).Path = negativePath;
 				_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
+				NativeLayerHost.Invalidate();
 			}
 		}
 
 		internal void InvalidateRender()
-			=> _skCanvasView?.Invalidate();
+		{
+			_skCanvasView?.Invalidate();
+			RelativeLayout.Invalidate();
+		}
 
 		private void OnInsetsChanged(Thickness insets)
 		{
@@ -382,5 +403,34 @@ namespace Microsoft.UI.Xaml
 		[Java.Interop.Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName!;
+
+		private class ClippedRelativeLayout : RelativeLayout
+		{
+			private SKPath? _path;
+
+			public ClippedRelativeLayout(Context context) : base(context)
+			{
+				SetWillNotDraw(false);
+			}
+
+			public SKPath? Path
+			{
+				get => _path;
+				set
+				{
+					_path = value;
+					Invalidate();
+				}
+			}
+
+			protected override void OnDraw(Canvas canvas)
+			{
+				base.OnDraw(canvas);
+				if (Path is { })
+				{
+					canvas.ClipPath(PathParser.CreatePathFromPathData(Path.ToSvgPathData()));
+				}
+			}
+		}
 	}
 }

@@ -51,31 +51,29 @@ internal static class SkiaRenderHelper
 			// Assuming the canvas we're drawing on is on top of the native elements,
 			// we want to crop out "see-through windows" so we can see the native elements underneath the canvas
 
-			// the entire viewport
-			var mainPath = new SKPath();
-			mainPath.AddRect(new SKRect(0, 0, width, height));
-
+			SKPath? mainPath = null;
 			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, (session, visual) =>
 			{
+				// the entire viewport
+				if (visual == rootVisual)
+				{
+					// we initialize the mainPath here to be able to factor the initial TotalMatrix into our rect.
+					// This matters for DPI scaling primarily.
+					mainPath = new SKPath();
+					mainPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, width, height)));
+				}
+
 				// minus the native-element areas
-				if (visual.IsNativeHostVisual)
+				// plus the popups
+				if (visual.IsNativeHostVisual || visual.IsPopupVisual)
 				{
 					_clipPath.Reset();
 					_clipPath.AddRect(canvas.DeviceClipBounds);
 					_visualPath.Reset();
-					_visualPath.AddRect(visual.TotalMatrix.ToMatrix3x2().Transform(new Rect(new Point(), visual.Size.ToSize())).ToSKRect());
-					mainPath = mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Difference);
-				}
-
-				// plus the popups
-				if (visual.IsPopupVisual)
-				{
-					_clipPath.Reset();
-					_clipPath.AddRect(canvas.DeviceClipBounds); // possible QoL improvement: find a way to get the tight clip path (e.g. for rounded corners) not just the bounding rect
-					_visualPath.Reset();
-					_visualPath.AddRect(visual.TotalMatrix.ToMatrix3x2().Transform(new Rect(new Point(), visual.Size.ToSize())).ToSKRect());
-					// note that popups are always traversed last in the tree, so there are no "races" between the paths of PopupVisuals and NativeHostVisuals
-					mainPath = mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Union);
+					_visualPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y)));
+					mainPath = mainPath!.Op(
+						_clipPath.Op(_visualPath, SKPathOp.Intersect),
+						visual.IsNativeHostVisual ? SKPathOp.Difference : SKPathOp.Union);
 				}
 			});
 

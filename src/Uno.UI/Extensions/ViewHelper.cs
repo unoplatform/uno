@@ -44,7 +44,7 @@ namespace Uno.UI
 		public static Point LogicalToPhysicalPixels(this Point point)
 			=> new Point(LogicalToPhysicalPixels(point.X), LogicalToPhysicalPixels(point.Y));
 
-		private static double PhysicalToLogicalPixels(double value)
+		internal static double PhysicalToLogicalPixels(double value)
 		{
 			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
 			if (OperatingSystem.IsAndroid())
@@ -55,7 +55,7 @@ namespace Uno.UI
 			return value;
 		}
 
-		private static double LogicalToPhysicalPixels(double value)
+		internal static double LogicalToPhysicalPixels(double value)
 		{
 			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
 			if (OperatingSystem.IsAndroid())
