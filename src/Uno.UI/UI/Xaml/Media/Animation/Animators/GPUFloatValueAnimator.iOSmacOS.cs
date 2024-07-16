@@ -360,6 +360,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// We need to review this.  This won't play along if other transforms are happening at the same time since we are animating the whole transform
 			if (transform.View is not _View view)
 			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("The View property of the SkewTransform is null.");
+				}
+
 				throw new InvalidOperationException("The View property of the SkewTransform is null.");
 			}
 
@@ -445,6 +450,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (view is null)
 			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("The View property of the Transform is null.");
+				}
+
 				throw new InvalidOperationException("The View property of the Transform is null.");
 			}
 
