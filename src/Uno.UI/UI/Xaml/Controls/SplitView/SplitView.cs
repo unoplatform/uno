@@ -405,7 +405,15 @@ namespace Microsoft.UI.Xaml.Controls
 #if __IOS__
 			PatchInvalidFinalState(stateName);
 #endif
-			VisualStateManager.GoToState(this, stateName, useTransitons);
+			var success = VisualStateManager.GoToState(this, stateName, useTransitons);
+#if __SKIA__
+			if (success)
+			{
+				// When the Pane is open in overlay mode, it should interact with native elements
+				// like a popup would, i.e. covering them.
+				Pane?.Visual.SetAsPopupVisual(IsPaneOpen && DisplayMode is SplitViewDisplayMode.Overlay or SplitViewDisplayMode.CompactOverlay);
+			}
+#endif
 
 			if (!IsPaneOpen)
 			{
