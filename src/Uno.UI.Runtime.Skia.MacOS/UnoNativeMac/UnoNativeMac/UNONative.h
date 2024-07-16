@@ -8,9 +8,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UNOFlippedView : NSView
-
-@property(getter=isFlipped, readonly) BOOL flipped;
+@interface UNORedView : NSView
 
 @end
 

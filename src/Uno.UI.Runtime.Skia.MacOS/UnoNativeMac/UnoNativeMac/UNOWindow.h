@@ -53,6 +53,7 @@ void uno_window_exit_full_screen(NSWindow *window);
 void uno_window_minimize(NSWindow *window, bool activateWindow);
 void uno_window_restore(NSWindow *window, bool activateWindow);
 
+void uno_window_clip_svg(UNOWindow* window, const char* svg);
 
 typedef NS_ENUM(sint32, OverlappedPresenterState) {
     OverlappedPresenterStateMaximized,
@@ -321,5 +322,12 @@ window_did_change_screen_parameters_fn_ptr uno_get_window_did_change_screen_para
 void uno_set_window_screen_change_callbacks(window_did_change_screen_fn_ptr screen, window_did_change_screen_parameters_fn_ptr parameters);
 
 void uno_window_notify_screen_change(NSWindow *window);
+
+
+@interface UNOMetalFlippedView : MTKView
+
+@property(getter=isFlipped, readonly) BOOL flipped;
+
+@end
 
 NS_ASSUME_NONNULL_END

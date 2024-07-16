@@ -87,6 +87,15 @@ NSWindow* uno_app_get_main_window(void)
     return main_window;
 }
 
+@implementation UNOMetalFlippedView : MTKView
+
+// behave like UIView/UWP/WinUI, where the origin is top/left, instead of bottom/left
+-(BOOL) isFlipped {
+    return YES;
+}
+
+@end
+
 NSWindow* uno_window_create(double width, double height)
 {
     CGRect size = NSMakeRect(0, 0, width, height);
@@ -98,7 +107,7 @@ NSWindow* uno_window_create(double width, double height)
     
     id device = uno_application_get_metal_device();
     if (device) {
-        MTKView *v = [[MTKView alloc] initWithFrame:size device:device];
+        UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
         v.enableSetNeedsDisplay = YES;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
@@ -587,6 +596,52 @@ void* uno_window_get_metal_context(UNOWindow* window)
     NSLog(@"uno_window_get_metal device %p queue %p", device, queue);
 #endif
     return gr_direct_context_make_metal(device, queue);
+}
+
+void uno_window_clip_svg(UNOWindow* window, const char* svg)
+{
+    if (svg) {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
+#endif
+        // FIXME: convert SVG string into a CGMutablePathRef, what's below is hardcoded to the initiall values
+        CGMutablePathRef path = CGPathCreateMutable();
+        // M613 246L776 246L776 261L613 261L613 246Z
+        CGPathMoveToPoint(path, nil, 613, 246);
+        CGPathAddLineToPoint(path, nil, 776, 246);
+        CGPathAddLineToPoint(path, nil, 776, 261);
+        CGPathAddLineToPoint(path, nil, 613, 261);
+        CGPathAddLineToPoint(path, nil, 613, 246);
+        CGPathCloseSubpath(path);
+        // M22 323L32 323L32 338L22 338L22 323Z
+        CGPathMoveToPoint(path, nil, 22, 323);
+        CGPathAddLineToPoint(path, nil, 32, 323);
+        CGPathAddLineToPoint(path, nil, 32, 338);
+        CGPathAddLineToPoint(path, nil, 22, 338);
+        CGPathAddLineToPoint(path, nil, 22, 323);
+        CGPathCloseSubpath(path);
+        // M34 523L22 523L22 538L34 538L34 523Z
+        CGPathMoveToPoint(path, nil, 34, 523);
+        CGPathAddLineToPoint(path, nil, 22, 523);
+        CGPathAddLineToPoint(path, nil, 22, 538);
+        CGPathAddLineToPoint(path, nil, 34, 538);
+        CGPathAddLineToPoint(path, nil, 34, 523);
+        CGPathCloseSubpath(path);
+
+        // TODO make a CAShapeLayer out of the given SVG, note: we already have a CAMetalLayer present
+        CAShapeLayer* layer = nil;
+        if (!window.contentView.layer.sublayers) {
+            layer = [CAShapeLayer layer];
+            [window.contentView.layer addSublayer:layer];
+        }
+        layer.path = path;
+        layer.fillRule = kCAFillRuleEvenOdd;
+    } else {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg %@ nil - reseting layer %@ mask to nil", window, window.contentView.layer.description);
+#endif
+        window.contentView.layer.sublayers = nil;
+    }
 }
 
 @implementation UNOWindow : NSWindow

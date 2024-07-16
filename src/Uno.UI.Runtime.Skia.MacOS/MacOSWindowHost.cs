@@ -16,6 +16,7 @@ using Window = Microsoft.UI.Xaml.Window;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -68,7 +69,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		SizeChanged?.Invoke(this, new Size(nativeWidth, nativeHeight));
 	}
 
-	private void Draw(SKSurface surface)
+	private void Draw(double nativeWidth, double nativeHeight, SKSurface surface)
 	{
 		using var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
@@ -77,7 +78,21 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 			if (RootElement?.Visual is { } rootVisual)
 			{
-				RootElement.XamlRoot?.Compositor.RenderRootVisual(surface, rootVisual, null);
+				// remove previous clipping (if any)
+				NativeUno.uno_window_clip_svg(_nativeWindow.Handle, null);
+				int width = (int)nativeWidth;
+				int height = (int)nativeHeight;
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+				// we clip the "negative" of what was drawn
+				if (path is { })
+				{
+					using var negativePath = new SKPath();
+					negativePath.AddRect(new SKRect(0, 0, width, height));
+					using var diffPath = negativePath.Op(path, SKPathOp.Difference);
+					// FIXME: clipping not working correctly, comment next line to get something better
+					// note: use an online svg viewer to visualize the clipping path
+					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, diffPath.ToSvgPathData());
+				}
 			}
 		}
 
@@ -112,7 +127,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		surface.Canvas.Scale(scale, scale);
 
-		Draw(surface);
+		Draw(nativeWidth, nativeHeight, surface);
 
 		_context?.Flush();
 	}
@@ -152,7 +167,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_rowBytes = info.RowBytes;
 		}
 
-		Draw(_surface!);
+		Draw(nativeWidth, nativeHeight, _surface!);
 
 		*data = _bitmap.GetPixels(out var bitmapSize);
 		*size = (int)bitmapSize;

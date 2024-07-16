@@ -6,12 +6,7 @@
 
 static NSMutableSet<NSView*> *elements;
 
-@implementation UNOFlippedView : NSView
-
-// behave like UIView/UWP/WinUI, where the origin is top/left, instead of bottom/left
--(BOOL) isFlipped {
-    return YES;
-}
+@implementation UNORedView : NSView
 
 // make the background red for easier tracking
 - (BOOL)wantsUpdateLayer
@@ -37,7 +32,7 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     label.stringValue = [NSString stringWithUTF8String:text];
     label.frame = NSMakeRect(0, 0, label.fittingSize.width, label.fittingSize.height);
 
-    NSView* sample = [[UNOFlippedView alloc] initWithFrame:label.frame];
+    NSView* sample = [[UNORedView alloc] initWithFrame:label.frame];
     [sample addSubview:label];
 #if DEBUG
     NSLog(@"uno_native_create_sample #%p label: %@", sample, label.stringValue);
