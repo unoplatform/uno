@@ -64,7 +64,7 @@
             AND '$(TargetFramework)' == 'net8.0-desktop'
           ">
 
-    <!-- Validates that SkiaShap uno-runtime file is copied to the output folder -->
+    <!-- Validates that SkiaSharp uno-runtime file is copied to the output folder -->
     <Error Text="Missing asset $(OutputPath)SkiaSharp.Views.Windows.dll"
           Condition="!exists('$(OutputPath)SkiaSharp.Views.Windows.dll')" />
   </Target>
