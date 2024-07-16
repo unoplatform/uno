@@ -29,17 +29,36 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
 1. In your terminal, navigate to the folder that will contain your new app.
 
-    > [!IMPORTANT]
-    > As of Rider 2023.3, the Uno Platform 5.2 `net8.0-browserwasm` and `net8.0-desktop` TargetFrameworks are not supported. See [this JetBrains article](https://aka.platform.uno/rider-desktop-wasm-support) for more details.
-    > To build an app using Uno Platform 5.1 templates that are compatible with Rider, run `dotnet new uninstall uno.templates` then `dotnet new install uno.templates::5.1.25`.
-
 1. Create a new project by pasting the command that was previously generated in the Live Wizard.
+
 1. Open the solution in Rider, you should now have a folder structure that looks like this:
 
     ![A screen showing the structure of the solution in Rider](Assets/quick-start/rider-folder-structure.png)
 
 > [!TIP]
 > If you are not able to run the online Live Wizard, you can explore the [`dotnet new` template](xref:Uno.GetStarted.dotnet-new) directly in the CLI.
+
+### Considerations for macOS and Linux
+
+When using macOS or Linux for developing your application and you have selected the WinAppSDK target, you may get the **UNOB0014** error which mentions building on macOS or Linux is not supported. While Uno Platform is able to filter out unsupported targets from the command line and other IDE, Rider currently [does not support this automatic filtering](https://youtrack.jetbrains.com/issue/RIDER-114790/Unsupported-target-framework-filtering).
+
+To correct this, you'll need to modify your `csproj` file in order to make the project compatible.
+
+You can change this line:
+
+```xml
+<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-windows10.0.19041;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
+```
+
+To be:
+
+```xml
+<TargetFrameworks>net8.0-android;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
+<TargetFrameworks Condition=" $([MSBuild]::IsOSPlatform('windows')) ">$(TargetFrameworks);net8.0-windows10.0.19041</TargetFrameworks>
+<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+```
+
+Make sure to adjust the list of target frameworks based on the platforms you have in your original list.
 
 ## Debug the App
 
