@@ -58,7 +58,14 @@
   <!-- Validate SkiaSharp 3 -->
   <Target Name="ValiateSkiaSharp3"
           AfterTargets="AfterBuild"
-          Condition=" '$(SkiaSharpVersion)' != '' AND $(SkiaSharpVersion.StartsWith('3'))">
+          Condition="
+            '$(SkiaSharpVersion)' != '' 
+            AND $(SkiaSharpVersion.StartsWith('3'))
+            AND (
+              '$(TargetFramework)' == 'net8.0-desktop'
+              OR '$(TargetFramework)' == 'net8.0-browserwasm'
+            )
+          ">
 
     <!-- Validates that SkiaShap uno-runtime file is copied to the output folder -->
     <Error Text="Missing asset $(OutputPath)SkiaSharp.Views.Windows.dll"
