@@ -84,7 +84,7 @@ public class GenerateSkiaDesktopMacOSBundle_v0 : SdkTask
 		var defaultPlistPath = items.SingleOrDefault(x => x.HasMetadata("IsDefaultItem") && bool.TryParse(x.GetMetadata("IsDefaultItem"), out var isDefault) && isDefault);
 		var plist = initialDictionary?.Clone() as PDictionary ?? [];
 
-		if(!string.IsNullOrEmpty(defaultPlistPath?.ItemSpec))
+		if (!string.IsNullOrEmpty(defaultPlistPath?.ItemSpec))
 		{
 			Merge(plist, PDictionary.FromFile(defaultPlistPath!.ItemSpec)!);
 		}
