@@ -97,6 +97,12 @@
 	</Target>
 
 	<ItemGroup>
+	  <Compile Update="Tests\Windows_UI_Xaml_Controls\Flyout_ToggleMenu_IsEnabled.xaml.cs">
+	    <DependentUpon>Flyout_ToggleMenu_IsEnabled.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
@@ -109,4 +115,10 @@
 	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Page Update="Tests\Windows_UI_Xaml_Controls\Flyout_ToggleMenu_IsEnabled.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
 </Project>
