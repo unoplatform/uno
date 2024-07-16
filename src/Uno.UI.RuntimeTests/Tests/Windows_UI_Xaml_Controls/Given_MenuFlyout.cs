@@ -44,6 +44,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+		public async Task When_Toggle_IsEnabled_Via_Binding()
+		{
+			var menu = new MenuFlyout();
+			var toggleItem = new ToggleMenuFlyoutItem();
+			menu.Items.Add(toggleItem);
+			var button = new Button();
+			button.Flyout = menu;
+			var checkBox = new CheckBox();
+			// Bind the toggleItem.IsEnabled to checkbox.IsChecked
+			toggleItem.SetBinding(ToggleMenuFlyoutItem.IsEnabledProperty, new Binding { Source = checkBox, Path = "IsChecked", Mode = BindingMode.OneWay });
+
+			WindowHelper.WindowContent = button;
+			await WindowHelper.WaitForLoaded(button);
+
+			button.Flyout.ShowAt(button);
+
+			// The toggleItem should be disabled by default
+			Assert.IsFalse(toggleItem.IsEnabled);
+
+			button.Flyout.Hide();
+
+			// Enable the toggleItem
+			checkBox.IsChecked = true;
+
+			button.Flyout.ShowAt(button);
+
+			// The toggleItem should be enabled
+			Assert.IsTrue(toggleItem.IsEnabled);
+
+			button.Flyout.Hide();
+
+			// Disable the toggleItem
+			checkBox.IsChecked = false;
+
+			button.Flyout.ShowAt(button);
+
+			Assert.IsFalse(toggleItem.IsEnabled);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
 		public async Task When_Native_AppBarButton_And_Managed_Popups()
 		{
 			using (StyleHelper.UseNativeFrameNavigation())
