@@ -380,6 +380,12 @@
 		},
 		"UnoImage": {
 			"description": "Provides an asset typically an SVG or PNG that will be resized for use across each target platform."
+		},
+		"SkiaInfoPlist": {
+			"description": "Provides an Info.plist file for Skia Desktop projects."
+		},
+		"SkiaEntitlementsPlist": {
+			"description": "Provides an Entitlements.plist file for Skia Desktop projects."
 		}
 	},
 	"types": {

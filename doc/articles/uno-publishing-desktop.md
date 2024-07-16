@@ -11,22 +11,61 @@ uid: uno.publishing.desktop
 
 ## Publish your app
 
-### Using Visual Studio 2022
+The recommended way to publish your `netX.0-desktop` app is to use the Command Line with `dotnet publish`. This provides a familiar mechanism you may already be used to along with a few additional properties. While it is technically possible to publish from Visual Studio 2022, it is not recommended and this will only produce an app for Windows.
 
-To publish your app with Visual Studio 2022:
+When publishing your desktop application you should be using Uno.Sdk 5.4 or later. Publishing the application will only produce an application for the platform of the host OS. You cannot for instance publish a Mac app on Windows or a Windows app on Linux.
 
-- In the debugger toolbar drop-down, select the `net8.0-desktop` target framework
-- Once the project has reloaded, right-click on the project and select **Publish**
-- Select the appropriate target for your publication, this example will use the **Folder**, then click **Next**
-- Choose an output folder for the published output, then click **Close**.
-- In the opened editor, click the **Configuration** "pen" to edit the configuration
-- In the opened popup, ensure that **Target Framework** is set to `net8.0-desktop`, then click **Save**
-- On the top right, click the **Publish** button
-- Once the build is done, the output is located in the publish folder
+> [!NOTE]
+> For the purposes of the documented commands we are using `net8.0-desktop` if you are using a later version of .NET such as .NET 9.0 be sure to update to use the appropriate version such as `net9.0-desktop`.
 
-Once done, you can head over to the [publishing section](xref:uno.publishing.webassembly#publishing).
+# [**Windows**](#tab/windows)
 
-### Using the Command Line
+- [ClickOnce](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=vs-2022) on Windows
+- Using a Zip file, then running the app using `dotnet [yourapp].dll`
+
+# [**MacOS**](#tab/macos)
+
+The Uno.Sdk supports publishing your app for MacOS in one of 3 ways.
+
+1) Generate an App Bundle (MyApp.app)
+2) Generate an Application Package Installer (MyApp.pkg)
+3) Generate an Apple Disk Image (MyApp.dmg)
+
+> [!NOTE]
+> At this time we do not support publishing an app that can install on either Intel or Apple Silicon. By default the published app will produce an artifact for the runtime of the host you publish on. You may optionally specify the the desired runtime to produce an artifact that can be installed on a different target runtime than the host operating system.
+
+> [!NOTE]
+> When publishing your app, the Uno.Sdk will enable a Self Contained publish. This will result in your app being ready to run on your users Mac without any additional steps like installing .NET.
+
+To get started with publishing you can simply run the following command to generate an App Bundle.
+
+```bash
+dotnet publish ./pathTo/Project.csproj -f net8.0-desktop
+```
+
+To specify the Runtime Identifier you must select one of the [available MacOS RID's](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog#macos-rids).
+
+```bash
+dotnet publish ./pathTo/Project.csproj -f net8.0-desktop -r osx-arm64
+```
+
+To generate an Application Package Installer or Apple Disk Image you optionally provide a package format argument as follows:
+
+```bash
+# Generates an Application Package Installer
+dotnet publish ./pathTo/Project.csproj -f net8.0-desktop /p:PackageFormat=pkg
+
+# Generates an Apple Disk Image
+dotnet publish ./pathTo/Project.csproj -f net8.0-desktop /p:PackageFormat=dmg
+```
+
+This is not needed to generate an App Bundle as this will always be provided and will be available in the publish folder.
+
+# [**Linux**](#tab/linux)
+
+Coming Soon
+
+---
 
 To build your app from the CLI, on Windows, Linux, or macOS:
 
@@ -38,14 +77,4 @@ To build your app from the CLI, on Windows, Linux, or macOS:
   dotnet publish -f net8.0-desktop -c Release -o ./publish
   ```
 
-- Once the build is done, the output is located in the `./publish` folder
 
-## Publishing
-
-> [!NOTE]
-> Work still in progress for publishing to some targets.
-
-Publishing your app can be done through different means:
-
-- [ClickOnce](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=vs-2022) on Windows
-- Using a Zip file, then running the app using `dotnet [yourapp].dll`
