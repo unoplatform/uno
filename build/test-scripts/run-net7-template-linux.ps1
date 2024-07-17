@@ -91,5 +91,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/release.binlog
     Assert-ExitCodeIsZero
 
-    dotnet clean $release "$projectPath"
+    pushd $projectPath
+    git clean -fdx
+    popd
 }

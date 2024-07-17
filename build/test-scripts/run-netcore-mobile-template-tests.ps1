@@ -357,7 +357,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
         }
     }
 
-    pushd "$projectPath"
+    pushd $projectPath
     git clean -fdx
     popd
 }
