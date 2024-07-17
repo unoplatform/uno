@@ -25,7 +25,7 @@
 	<Target Name="GenerateMacOSAppBundle"
 			AfterTargets="Publish">
 		<PropertyGroup>
-			<TargetCulture Condition="$(TargetCulture) == '' OR $(TargetCulture) == '*'">en</TargetCulture>
+			<TargetCulture Condition="$(TargetCulture) == '' OR $(TargetCulture) == '*'">en-US</TargetCulture>
 			<PackageFormat Condition="$(PackageFormat) == ''">app</PackageFormat>
 		</PropertyGroup>
 		
@@ -52,7 +52,7 @@
 			TargetCulture="$(TargetCulture)"
 			ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
 			ApplicationVersion="$(ApplicationVersion)"
-			AppBundleDirectory="$(UnoAppBundleTempDir)"
+			AppBundleDirectory="$(_UnoAppBundleTempDir)"
 			PartialPlists="@(SkiaInfoPlist)"
 			EntitlementPlists="@(SkiaEntitlementsPlist)"
 			AppIconSets="@(_PublishedIcon)"
