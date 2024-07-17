@@ -91,7 +91,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/release.binlog
     Assert-ExitCodeIsZero
 
-    pushd [System.IO.Path]::GetDirectoryName($projectPath)
+    pushd [System.IO.Path]::GetDirectoryName("$projectPath")
     git clean -fdx
     popd
 }
