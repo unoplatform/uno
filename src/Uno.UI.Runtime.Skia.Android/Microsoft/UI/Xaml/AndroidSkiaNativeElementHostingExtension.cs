@@ -3,6 +3,7 @@ using Android.Widget;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
+using Android.App;
 using Rect = Windows.Foundation.Rect;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -74,10 +75,19 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 
 	public object CreateSampleComponent(string text)
 	{
-		return new TextView(ApplicationActivity.Instance.NativeLayerHost.Context)
+		var btn = new global::Android.Widget.Button(ApplicationActivity.Instance.NativeLayerHost.Context)
 		{
 			Text = text
 		};
+
+		btn.Click += (_, _) =>
+		{
+			var builder = new AlertDialog.Builder(ApplicationActivity.Instance.NativeLayerHost.Context);
+			var dialog = builder.SetTitle("Button clicked")!.SetMessage($"Button {text} clicked!")!.Create();
+			dialog!.Show();
+		};
+
+		return btn;
 	}
 
 	public bool IsNativeElement(object content) => content is View;
