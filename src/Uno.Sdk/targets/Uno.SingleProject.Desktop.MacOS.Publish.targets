@@ -25,7 +25,7 @@
 	<Target Name="GenerateMacOSAppBundle"
 			AfterTargets="Publish">
 		<PropertyGroup>
-			<TargetCulture Condition="$(TargetCulture) == ''">en</TargetCulture>
+			<TargetCulture Condition="$(TargetCulture) == '' OR $(TargetCulture) == '*'">en</TargetCulture>
 			<PackageFormat Condition="$(PackageFormat) == ''">app</PackageFormat>
 		</PropertyGroup>
 		
@@ -36,7 +36,8 @@
 			<PublishExclude Include="$(PublishDir)/**/runtimes/unix*/**" />
 			<PublishExclude Include="$(PublishDir)/**/*.ico" />
 			<_UnoPublishedFiles Include="$(PublishDir)/**" Exclude="@(PublishExclude)" PublishDir="$(_UnoAppBundleTempMacOSDir)%(RecursiveDir)%(Filename)%(Extension)"/>
-			<_PublishedIcon Include="$(_UnoIntermediateImages)Assets.xcassets/*.appiconset/**" />
+			<_PublishedIcon Include="$(_UnoIntermediateImages)Assets.xcassets/*.appiconset/Contents.json" />
+			<_PackageAppxManifest Include="@(EmbeddedResource)" Condition="'%(Filename)%(Extension)' == 'Package.appxmanifest'" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(_UnoPublishedFiles)"
@@ -51,9 +52,23 @@
 			TargetCulture="$(TargetCulture)"
 			ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
 			ApplicationVersion="$(ApplicationVersion)"
-			AppBundleDirectory="@(_UnoAppBundleTempMacOSDir)"
+			AppBundleDirectory="$(UnoAppBundleTempDir)"
 			PartialPlists="@(SkiaInfoPlist)"
 			EntitlementPlists="@(SkiaEntitlementsPlist)"
-			AppIconSets="@(_PublishedIcon)" />
+			AppIconSets="@(_PublishedIcon)"
+			EmbeddedResources="@(_PackageAppxManifest)" />
+	</Target>
+
+	<Target Name="PublishMacOSAppBundle"
+			AfterTargets="GenerateMacOSAppBundle">
+		<ItemGroup>
+			<_UnoAppBundleFiles Include="$(_UnoPublishDir)$(ApplicationTitle).app/**" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(_UnoAppBundleFiles)"
+			DestinationFiles="@(_UnoAppBundleFiles->'$(UnoAppPackagePublishDir)$(ApplicationTitle).app/%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true" />
+
+		<Message Text="$(AssemblyName) -&gt; $(_UnoPublishDir)$(ApplicationTitle).app" Importance="High" />
 	</Target>
 </Project>

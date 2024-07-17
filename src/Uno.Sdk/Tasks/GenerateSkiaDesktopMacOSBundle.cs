@@ -36,26 +36,39 @@ public class GenerateSkiaDesktopMacOSBundle_v0 : SdkTask
 		var infoPlistPathInfo = new FileInfo(Path.Combine(AppBundleDirectory, "Info.plist"));
 
 		GetMergePlist(PartialPlists, CreateInfoPlist()).Save(infoPlistPathInfo.FullName);
+		LogMessage("Saving Info.plist -> {0}", infoPlistPathInfo.FullName);
+
 		var entitlements = GetMergePlist(EntitlementPlists);
 		if (entitlements.Any())
 		{
 			var entitlementsPlistPathInfo = new FileInfo(Path.Combine(AppBundleDirectory, "Extras", "Entitlements.plist"));
 			entitlementsPlistPathInfo.Directory.Create();
+			LogMessage("Saving Entitlements.plist -> {0}", entitlementsPlistPathInfo.FullName);
 			entitlements.Save(entitlementsPlistPathInfo.FullName);
+		}
+		else
+		{
+			LogMessage("Skipping saving Entitlements.plist as it has no values.");
 		}
 	}
 
 	private PDictionary CreateInfoPlist()
 	{
-		var packageAppxManifestItem = EmbeddedResources.Single(x => x.HasMetadata("LogicalName") && x.GetMetadata("LogicalName") == "Package.appxmanifest");
+		var packageAppxManifestItem = EmbeddedResources.SingleOrDefault(x => x.HasMetadata("LogicalName") && x.GetMetadata("LogicalName") == "Package.appxmanifest");
 		if (packageAppxManifestItem is null || !File.Exists(packageAppxManifestItem.ItemSpec))
 		{
 			throw new FileNotFoundException("Could not locate the Package.appxmanifest.");
 		}
 		var appxManifest = new AppxManifestReader(packageAppxManifestItem.ItemSpec, this);
 
-		var appIconSetItem = AppIconSets.SingleOrDefault() ?? throw new FileNotFoundException("Could not locate appiconst.");
+		var appIconSetItem = AppIconSets.SingleOrDefault(x => Path.GetFileName(x.ItemSpec) == "Contents.json") ?? throw new FileNotFoundException("Could not locate appiconst.");
 		var iconAppSet = new DirectoryInfo(appIconSetItem.ItemSpec);
+
+		foreach (var fi in iconAppSet.EnumerateFiles())
+		{
+			fi.CopyTo(Path.Combine(AppBundleDirectory, "Resources", iconAppSet.Name, fi.Name), true);
+			LogMessage($"Copying Icon: {fi.Name}");
+		}
 
 		return new PDictionary
 		{
