@@ -399,6 +399,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildPartials(writer);
 
+							BuildExplicitApplyMethods(writer);
+
 							BuildBackingFields(writer);
 
 							BuildChildSubclasses(writer);
@@ -552,7 +554,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				writer.AppendLineIndented("this");
 
-				using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
+				using (var blockWriter = CreateApplyBlock(writer, FindType(topLevelControl.Type), out var closure))
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
@@ -794,7 +796,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented("this");
 
 
-				using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
+				using (var blockWriter = CreateApplyBlock(writer, topLevelControlType, out var closure))
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
@@ -806,7 +808,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildLiteralProperties(blockWriter, topLevelControl, closure);
 				}
 
-				BuildExtendedProperties(writer, topLevelControl, useGenericApply: true);
+				BuildExtendedProperties(writer, topLevelControl, useGenericApply: false);
 			}
 
 			writer.AppendLineIndented(";");
@@ -827,6 +829,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var partialDefinition in _partials)
 			{
 				writer.AppendLineIndented($"partial {partialDefinition};");
+			}
+		}
+
+		private void BuildExplicitApplyMethods(IIndentedStringBuilder writer)
+		{
+			TryAnnotateWithGeneratorSource(writer);
+			foreach (var applyMethod in CurrentScope.ExplicitApplyMethods)
+			{
+				writer.AppendLineIndented(applyMethod);
 			}
 		}
 
@@ -937,11 +948,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								using (ResourceOwnerScope())
 								{
 									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
+									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
 
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
 									{
 										writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 										writer.AppendLineIndented($"var __that = this;");
+										writer.AppendLineIndented($"this.{CurrentResourceOwner} = {CurrentResourceOwner};");
 										writer.AppendLineIndented("__rootInstance = ");
 
 										// Is never considered in Global Resources because class encapsulation
@@ -971,6 +984,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								TryBuildElementStubHolders(writer);
 
 								BuildBackingFields(writer);
+
+								BuildExplicitApplyMethods(writer);
 
 								BuildChildSubclasses(writer);
 
@@ -3726,7 +3741,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
 						// creation of a WeakReference.
 						//
-						writer.AppendLineIndented($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+						var thatEventSource = eventSource != "__that" ? "__that." + eventSource : eventSource;
+			writer.AppendLineIndented($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({thatEventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
 						writer.AppendLineIndented($"/* second level */ {closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{sanitizedMemberValue}_That.Target as {_xClassName})?.{member.Value}({parms});");
 					}
@@ -3894,8 +3910,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, INamedTypeSymbol? appliedType, out string closureName)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			closureName = "c" + (_applyIndex++).ToString(CultureInfo.InvariantCulture);
-
+			closureName = "__p1";
 			//
 			// Since we're using strings to generate the code, we can't know ahead of time if
 			// content will be generated only by looking at the Xaml object model.
@@ -3931,7 +3946,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				closureName,
 				appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null,
 				delegateType,
-				!_isTopLevelDictionary && _isHotReloadEnabled);
+				!_isTopLevelDictionary,
+				RegisterApplyMethod,
+				appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object",
+				CurrentScope.ClassName,
+				$"ApplyMethod_{(_applyIndex++).ToString(CultureInfo.InvariantCulture)}");
+		}
+
+		private void RegisterApplyMethod(string applyMethodBody)
+		{
+			CurrentScope.ExplicitApplyMethods.Add(applyMethodBody);
 		}
 
 		private void RegisterPartial(string format, params object[] values)
@@ -6389,30 +6413,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									xamlObjectDef.Members.AddRange(members);
 
 									var componentName = AddComponentForParentScope(xamlObjectDef).MemberName;
-									writer.AppendLineIndented($"__that.{componentName} = {closureName};");
+									innerWriter.AppendLineIndented($"__that.{componentName} = {closureName};");
 
 									if (!isInsideFrameworkTemplate)
 									{
 										EnsureXClassName();
 
-										writer.AppendLineIndented($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+										innerWriter.AppendLineIndented($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
 										if (nameMember != null)
 										{
-											writer.AppendLineIndented($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
+											innerWriter.AppendLineIndented($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
 										}
 
-										using (writer.BlockInvariant($"void {componentName}_update(global::Microsoft.UI.Xaml.ElementStub sender)"))
+										using (innerWriter.BlockInvariant($"void {componentName}_update(global::Microsoft.UI.Xaml.ElementStub sender)"))
 										{
-											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
+											using (innerWriter.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
 											{
 
-												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
+												using (innerWriter.BlockInvariant($"if (sender.IsMaterialized)"))
 												{
-													writer.AppendLineIndented($"that.Bindings.UpdateResources();");
+													innerWriter.AppendLineIndented($"that.Bindings.UpdateResources();");
 													if (nameMember?.Value is string xName)
 													{
-														writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
+														innerWriter.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
 													}
 												}
 
@@ -6427,43 +6451,43 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											}
 										}
 
-										writer.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
+										innerWriter.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
 
-										writer.AppendLineIndented($"var owner = this;");
+										innerWriter.AppendLineIndented($"var owner = this;");
 
 										if (_isHotReloadEnabled)
 										{
 											// Attach the current context to itself to avoid having a closure in the lambda
-											writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"{componentName}_owner\", owner);");
+											innerWriter.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"{componentName}_owner\", owner);");
 										}
 
-										using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
+										using (innerWriter.BlockInvariant($"void {componentName}_materializing(object sender)"))
 										{
 											if (_isHotReloadEnabled)
 											{
-												writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{componentName}_owner\");");
+												innerWriter.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{componentName}_owner\");");
 											}
 
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
 											// in order for the component field to be filled, and Bindings.Update() to do its work.
 
-											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
+											using (innerWriter.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
 											{
 												if (CurrentXLoadScope != null)
 												{
 													foreach (var component in CurrentXLoadScope.Components)
 													{
-														writer.AppendLineIndented($"that.{component.VariableName}.ApplyXBind();");
-														writer.AppendLineIndented($"that.{component.VariableName}.UpdateResourceBindings();");
+														innerWriter.AppendLineIndented($"that.{component.VariableName}.ApplyXBind();");
+														innerWriter.AppendLineIndented($"that.{component.VariableName}.UpdateResourceBindings();");
 													}
 
-													BuildxBindEventHandlerInitializers(writer, CurrentXLoadScope.xBindEventsHandlers, "that.");
+													BuildxBindEventHandlerInitializers(innerWriter, CurrentXLoadScope.xBindEventsHandlers, "that.");
 												}
 											}
 										}
 
-										writer.AppendLineIndented($"{closureName}.Materializing += {componentName}_materializing;");
+										innerWriter.AppendLineIndented($"{closureName}.Materializing += {componentName}_materializing;");
 									}
 									else
 									{
