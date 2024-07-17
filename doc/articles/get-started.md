@@ -6,9 +6,11 @@ uid: Uno.GetStarted
 
 Download the Uno Platform extension for your IDE.
 
+<!-- markdownlint-disable MD001 -->
+
 <div class="row">
 
-<!-- Visual Sudio -->
+<!-- Visual Studio -->
 <div class="col-md-4 col-xs-12 ">
 <a href="https://aka.platform.uno/vs-extension-marketplace">
 <div class="alert alert-info alert-hover">
