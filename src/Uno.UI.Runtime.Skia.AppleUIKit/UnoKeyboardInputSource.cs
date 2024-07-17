@@ -2,6 +2,15 @@
 using UIKit;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using System;
+
+#if __MACCATALYST__
+using Windows.System;
+using Uno.Foundation.Logging;
+#endif
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
@@ -17,7 +26,7 @@ internal sealed class UnoKeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 #pragma warning restore CS0067
 
-	public bool TryHandlePresses(NSSet<UIPress> presses, UIPressesEvent evt)
+	public bool TryHandlePresses(NSSet<UIPress> presses, UIPressesEvent evt, AppleUIKitWindow window)
 	{
 		var handled = false;
 
@@ -49,9 +58,9 @@ internal sealed class UnoKeyboardInputSource : IUnoKeyboardInputSource
 
 			try
 			{
-				if (_ownerEvents is { })
+				if (window.OwnerEvents is { } ownerEvents)
 				{
-					_ownerEvents.RaiseKeyUp(args);
+					ownerEvents.RaiseKeyUp(args);
 
 					var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
 					{
