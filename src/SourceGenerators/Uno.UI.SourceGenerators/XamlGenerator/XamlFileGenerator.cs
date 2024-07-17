@@ -3742,7 +3742,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// creation of a WeakReference.
 						//
 						var thatEventSource = eventSource != "__that" ? "__that." + eventSource : eventSource;
-			writer.AppendLineIndented($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({thatEventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+						writer.AppendLineIndented($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({thatEventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
 						writer.AppendLineIndented($"/* second level */ {closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{sanitizedMemberValue}_That.Target as {_xClassName})?.{member.Value}({parms});");
 					}
