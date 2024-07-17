@@ -43,11 +43,18 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
 
 void uno_native_arrange(NSView *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
 {
+    NSRect clip = NSMakeRect(clipLeft, clipTop, clipWidth, clipHeight);
+    element.hidden = NSIsEmptyRect(clip);
+    // TODO handle partial case with element special layers
+
+    NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeWidth);
+    element.frame = arrange;
 #if DEBUG
-    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g)", element, arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight, clipLeft, clipTop, clipWidth, clipHeight);
+    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g) %s", element,
+          arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight,
+          clipLeft, clipTop, clipWidth, clipHeight,
+          element.hidden ? "EMPTY" : (clipWidth < arrangeWidth) || (clipHeight < arrangeHeight) ? "partial" : "");
 #endif
-    element.frame = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeWidth);
-    // TODO
 }
 
 void uno_native_attach(NSView* element)

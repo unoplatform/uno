@@ -606,6 +606,32 @@ void* uno_window_get_metal_context(UNOWindow* window)
     return gr_direct_context_make_metal(device, queue);
 }
 
+CGFloat readNextCoord(const char *svg, int *position, long length)
+{
+    CGFloat result = NAN;
+    if (*position >= length) {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg readNextCoord position:%d >= length:%ld", *position, length);
+#endif
+        return result;
+    }
+    for (int i=*position; i < length; i++) {
+        if (isdigit(svg[i])) {
+            if (isnan(result)) {
+                result = svg[i] - '0';
+            } else {
+                result *= 10;
+                result += svg[i] - '0';
+            }
+            *position = i;
+        } else if (!isnan(result)) {
+            *position = i - 1;
+            break;
+        }
+    }
+    return result;
+}
+
 void uno_window_clip_svg(UNOWindow* window, const char* svg)
 {
     UNOMetalFlippedView* v = window.contentView;
@@ -613,31 +639,49 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #if DEBUG
         NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
 #endif
-        // FIXME: convert SVG string into a CGMutablePathRef, what's below is hardcoded to the initiall values
         CGMutablePathRef path = CGPathCreateMutable();
-        // M613 246L776 246L776 261L613 261L613 246Z
-        CGPathMoveToPoint(path, nil, 613, 246);
-        CGPathAddLineToPoint(path, nil, 776, 246);
-        CGPathAddLineToPoint(path, nil, 776, 261);
-        CGPathAddLineToPoint(path, nil, 613, 261);
-        CGPathAddLineToPoint(path, nil, 613, 246);
-        CGPathCloseSubpath(path);
-        // M22 323L32 323L32 338L22 338L22 323Z
-        CGPathMoveToPoint(path, nil, 22, 323);
-        CGPathAddLineToPoint(path, nil, 32, 323);
-        CGPathAddLineToPoint(path, nil, 32, 338);
-        CGPathAddLineToPoint(path, nil, 22, 338);
-        CGPathAddLineToPoint(path, nil, 22, 323);
-        CGPathCloseSubpath(path);
-        // M34 523L22 523L22 538L34 538L34 523Z
-        CGPathMoveToPoint(path, nil, 34, 523);
-        CGPathAddLineToPoint(path, nil, 22, 523);
-        CGPathAddLineToPoint(path, nil, 22, 538);
-        CGPathAddLineToPoint(path, nil, 34, 538);
-        CGPathAddLineToPoint(path, nil, 34, 523);
-        CGPathCloseSubpath(path);
+        // small subset of an SVG path parser handling trusted input of integer-based points
+        long length = strlen(svg);
+        for (int i=0; i < length; i++) {
+            CGFloat x, y;
+            char op = svg[i];
+            switch (op) {
+                case 'M':
+                    x = readNextCoord(svg, &i, length);
+                    i++; // skip separator
+                    y = readNextCoord(svg, &i, length);
+                    // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                    NSLog(@"uno_window_clip_svg parsing CGPathMoveToPoint %g %g - position %d", x, y, i);
+#endif
+                    CGPathMoveToPoint(path, nil, x, y);
+                    break;
+                case 'L':
+                    x = readNextCoord(svg, &i, length);
+                    i++; // skip separator
+                    y = readNextCoord(svg, &i, length);
+                    // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                    NSLog(@"uno_window_clip_svg parsing CGPathAddLineToPoint %g %g - position %d", x, y, i);
+#endif
+                    CGPathAddLineToPoint(path, nil, x, y);
+                    break;
+                case 'Z':
+#if DEBUG_PARSER
+                    NSLog(@"uno_window_clip_svg parsing CGPathCloseSubpath - position %d", i);
+#endif
+                    CGPathCloseSubpath(path);
+                    break;
+#if DEBUG
+                default:
+                    if (op != ' ') {
+                        NSLog(@"uno_window_clip_svg parsing unknown op %c at position %d", op, i - 1);
+                    }
+                    break;
+#endif
+            }
+        }
 
-        // TODO set the CAShapeLayer path to the given SVG
         // note: we already have a CAMetalLayer present as the _main_ layer
         if (!window.contentView.layer.sublayers) {
             UNOMetalFlippedView* v = window.contentView;
