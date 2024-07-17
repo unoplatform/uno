@@ -340,8 +340,6 @@ for($i = 0; $i -lt $projects.Length; $i++)
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
         dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
- 
-        dotnet clean $release "$projectPath"
     }
     else
     {
@@ -356,8 +354,10 @@ for($i = 0; $i -lt $projects.Length; $i++)
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
             & $msbuild $release /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
-
-            & $msbuild $release /r /t:Clean "$projectPath"
         }
     }
+
+    pushd "$projectPath"
+    git clean -fdx
+    popd
 }
