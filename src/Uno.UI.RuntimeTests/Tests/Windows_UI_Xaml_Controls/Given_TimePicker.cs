@@ -15,7 +15,7 @@ using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 #endif
 
