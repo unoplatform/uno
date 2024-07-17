@@ -31,7 +31,7 @@ namespace Uno.UI.Runtime.Skia {
 				nativeElementHost.style.overflow = "hidden";
 				nativeElementHost.style.clipPath = "url(#unoNativeElementHostClipPath)";
 				let unoBody = document.getElementById("uno-body");
-				unoBody.insertBefore(nativeElementHost, unoBody.firstChild);
+				unoBody.appendChild(nativeElementHost);
 			}
 
 			return nativeElementHost;
