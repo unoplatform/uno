@@ -65,15 +65,3 @@ This is not needed to generate an App Bundle as this will always be provided and
 Coming Soon
 
 ---
-
-To build your app from the CLI, on Windows, Linux, or macOS:
-
-- Open a terminal, command line, or powershell
-- Navigate to your `csproj` folder
-- Publish the app using:
-
-  ```shell
-  dotnet publish -f net8.0-desktop -c Release -o ./publish
-  ```
-
-
