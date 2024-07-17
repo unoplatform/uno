@@ -120,22 +120,22 @@
 	<local:NullStringToCollapsedConverter x:Key="NullStringToCollapsed" />
 
 	<DataTemplate x:Key="OperationTemplate">
-		<Grid>
+		<Grid HorizontalAlignment="Stretch">
 			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="28" />
 				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
 			<ContentControl ContentTemplate="{Binding Icon, Converter={StaticResource EntryIconToContentTemplate}}"
-							Grid.Column="1"
-							HorizontalAlignment="Center"
+							Grid.Column="0"
+							HorizontalAlignment="Left"
 							VerticalAlignment="Center"
 							Margin="0,0,8,4" />
 
-			<StackPanel Width="270"
+			<StackPanel MinWidth="100"
 						VerticalAlignment="Center"
-						Grid.Column="2">
+						Grid.Column="1">
 				<TextBlock VerticalAlignment="Center"
 						   TextWrapping="WrapWholeWords"
 						   Text="{Binding Title}" />
@@ -149,7 +149,7 @@
 			</StackPanel>
 
 			<TextBlock Text="{Binding TimeInfo}"
-					   Grid.Column="3"
+					   Grid.Column="2"
 					   VerticalAlignment="Center"
 					   HorizontalAlignment="Right"
 					   TextAlignment="Right"
