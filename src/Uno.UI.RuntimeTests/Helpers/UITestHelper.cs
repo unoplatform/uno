@@ -233,6 +233,8 @@ public static class UITestHelper
 
 		await popup.ShowAsync(ContentDialogPlacement.Popup);
 	}
+
+	public static void CloseAllPopups() => VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 }
 
 public class DynamicDataTemplate : IDisposable
