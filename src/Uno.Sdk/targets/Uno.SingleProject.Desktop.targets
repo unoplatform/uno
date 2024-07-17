@@ -17,7 +17,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<SkiaInfoPlist Include="$(_DefaultInfoPlist)" Condition="$(_DefaultInfoPlist) == ''" IsDefaultItem="true" />
+		<SkiaInfoPlist Include="$(_DefaultInfoPlist)" Condition="$(_DefaultInfoPlist) != ''" IsDefaultItem="true" />
 		<SkiaEntitlementsPlist Include="$(_DefaultEntitlementsPlist)" Condition="$(_DefaultEntitlementsPlist) != ''" IsDefaultItem="true" />
 	</ItemGroup>
 
