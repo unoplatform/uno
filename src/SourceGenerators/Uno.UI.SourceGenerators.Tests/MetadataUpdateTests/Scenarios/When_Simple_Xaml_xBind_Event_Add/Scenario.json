@@ -15,13 +15,8 @@
 			"IsMono": true,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(132,3): error ENC0100: Adding auto-property requires restarting the application.
-						{ "Id": "ENC0100" },
-						{ "Id": "ENC0100" },
-						{ "Id": "ENC0100" }
-					]
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				}
 			]
 		}

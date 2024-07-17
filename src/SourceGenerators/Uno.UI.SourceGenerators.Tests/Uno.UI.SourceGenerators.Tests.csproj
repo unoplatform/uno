@@ -41,10 +41,10 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23578.3" Condition="'$(UNO_UWP_BUILD)'=='false'" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.10.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.10.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.10.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" Condition="'$(UNO_UWP_BUILD)'=='false'" />
