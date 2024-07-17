@@ -63,6 +63,11 @@ public class Given_HotReloadService
 			var scenarioName = Path.GetFileName(scenarioFolder);
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
 
+			//if (!path.Contains("When_Simple_Xaml_Add_xBind_Function_Property_Update"))
+			//{
+			//	continue;
+			//}
+
 			if (File.Exists(path))
 			{
 				var scenariosDescriptor = ReadScenarioConfig(path);
