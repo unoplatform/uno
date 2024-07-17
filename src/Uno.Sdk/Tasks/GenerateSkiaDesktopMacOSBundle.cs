@@ -62,11 +62,14 @@ public class GenerateSkiaDesktopMacOSBundle_v0 : SdkTask
 		var appxManifest = new AppxManifestReader(packageAppxManifestItem.ItemSpec, this);
 
 		var appIconSetItem = AppIconSets.SingleOrDefault(x => Path.GetFileName(x.ItemSpec) == "Contents.json") ?? throw new FileNotFoundException("Could not locate appiconst.");
-		var iconAppSet = new DirectoryInfo(appIconSetItem.ItemSpec);
+		var iconAppSet = new FileInfo(appIconSetItem.ItemSpec).Directory;
+		var resourcesDirectory = new DirectoryInfo(Path.Combine(AppBundleDirectory, "Resources", iconAppSet.Name));
+		LogMessage("Creating Directory -> {0}", resourcesDirectory.FullName);
+		resourcesDirectory.Create();
 
 		foreach (var fi in iconAppSet.EnumerateFiles())
 		{
-			fi.CopyTo(Path.Combine(AppBundleDirectory, "Resources", iconAppSet.Name, fi.Name), true);
+			fi.CopyTo(Path.Combine(resourcesDirectory.FullName, fi.Name), true);
 			LogMessage($"Copying Icon: {fi.Name}");
 		}
 
