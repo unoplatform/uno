@@ -18,12 +18,12 @@ When publishing your desktop application you should be using Uno.Sdk 5.4 or late
 > [!NOTE]
 > For the purposes of the documented commands we are using `net8.0-desktop` if you are using a later version of .NET such as .NET 9.0 be sure to update to use the appropriate version such as `net9.0-desktop`.
 
-# [**Windows**](#tab/windows)
+### [**Windows**](#tab/windows)
 
 - [ClickOnce](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=vs-2022) on Windows
 - Using a Zip file, then running the app using `dotnet [yourapp].dll`
 
-# [**MacOS**](#tab/macos)
+### [**MacOS**](#tab/macos)
 
 The Uno.Sdk supports publishing your app for MacOS in one of 3 ways.
 
@@ -33,7 +33,6 @@ The Uno.Sdk supports publishing your app for MacOS in one of 3 ways.
 
 > [!NOTE]
 > At this time we do not support publishing an app that can install on either Intel or Apple Silicon. By default the published app will produce an artifact for the runtime of the host you publish on. You may optionally specify the the desired runtime to produce an artifact that can be installed on a different target runtime than the host operating system.
-
 > [!NOTE]
 > When publishing your app, the Uno.Sdk will enable a Self Contained publish. This will result in your app being ready to run on your users Mac without any additional steps like installing .NET.
 
@@ -61,7 +60,7 @@ dotnet publish ./pathTo/Project.csproj -f net8.0-desktop /p:PackageFormat=dmg
 
 This is not needed to generate an App Bundle as this will always be provided and will be available in the publish folder.
 
-# [**Linux**](#tab/linux)
+### [**Linux**](#tab/linux)
 
 Coming Soon
 
