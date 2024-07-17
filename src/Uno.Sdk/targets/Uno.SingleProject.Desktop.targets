@@ -3,7 +3,7 @@
 		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('$(DesktopProjectFolder)app.manifest')">$(DesktopProjectFolder)app.manifest</ApplicationManifest>
 		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('app.manifest')">app.manifest</ApplicationManifest>
 		<_DefaultInfoPlist Condition="Exists('$(DesktopProjectFolder)Info.plist')">$(DesktopProjectFolder)Info.plist</_DefaultInfoPlist>
-		<_DefaultEntitlementsPlist Condition="Exist('$(DesktopProjectFolder)Entitlements.plist')">$(DesktopProjectFolder)Entitlements.plist</_DefaultEntitlementsPlist>
+		<_DefaultEntitlementsPlist Condition="Exists('$(DesktopProjectFolder)Entitlements.plist')">$(DesktopProjectFolder)Entitlements.plist</_DefaultEntitlementsPlist>
 
 		<!-- Follow the Android, iOS, & MacCatalyst SDK's -->
 		<!-- Default to 1, if blank -->
