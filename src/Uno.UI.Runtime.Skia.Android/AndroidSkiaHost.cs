@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
@@ -35,6 +36,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 			ApiExtensibility.Register(typeof(IUnoKeyboardInputSource), o => AndroidKeyboardInputSource.Instance);
 			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new AndroidInvisibleTextBoxViewExtension(o));
 			ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new AndroidSkiaNativeElementHostingExtension(o));
+			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new AndroidNativeWebViewProvider(o));
 
 			Application.Start(_ => _appBuilder());
 		}

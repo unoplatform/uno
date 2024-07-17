@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable disable
+
+using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Uno.UI;
@@ -18,7 +20,10 @@ namespace Uno.UI
 	///  An invisible (Transparent) Activity that starts an Intent and returns the parameters of the  OnActivityResult
 	/// </summary>
 	[Activity(
+#if !ANDROID_SKIA
+		// TODO: Should we have Styles.xml file that defines this style, as with native Android?
 		Theme = "@style/Theme.AppCompat.Translucent",
+#endif
 		// This prevents the Activity from being destroyed when the orientation and/or screen size changes.
 		// This is important because OnDestroy would otherwise return Result.Canceled before OnActivityResult can return the actual result.
 		// Common example: Capture an image in landscape from an app locked to portrait (using MediaPickerService).

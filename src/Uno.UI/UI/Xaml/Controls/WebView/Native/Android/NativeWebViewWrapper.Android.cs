@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,6 +58,7 @@ internal class NativeWebViewWrapper : INativeWebView
 			ViewGroup.LayoutParams.MatchParent,
 			ViewGroup.LayoutParams.MatchParent);
 
+#if !ANDROID_SKIA // We only have the flag for Android native. We can add it to Skia if needed.
 		if (FeatureConfiguration.WebView.ForceSoftwareRendering)
 		{
 			//SetLayerType disables hardware acceleration for a single view.
@@ -64,6 +67,7 @@ internal class NativeWebViewWrapper : INativeWebView
 			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
 			_webView.SetLayerType(LayerType.Software, null);
 		}
+#endif
 	}
 
 	internal WebView WebView => _webView;

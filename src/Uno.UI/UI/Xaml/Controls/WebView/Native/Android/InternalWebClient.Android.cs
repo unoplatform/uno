@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Globalization;
 using Android.Graphics;
 using Android.Runtime;
@@ -56,7 +58,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 		_coreWebViewSuccess = true;
 	}
 
-#pragma warning disable 0672, 618
+#pragma warning disable 0672, 618, CA1422
 	public override void OnReceivedError(Android.Webkit.WebView view, [GeneratedEnum] ClientError errorCode, string description, string failingUrl)
 	{
 		_coreWebViewSuccess = false;
@@ -64,7 +66,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 
 		base.OnReceivedError(view, errorCode, description, failingUrl);
 	}
-#pragma warning restore 0672, 618
+#pragma warning restore 0672, 618, CA1422
 
 	public override void OnPageFinished(Android.Webkit.WebView view, string url)
 	{

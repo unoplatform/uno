@@ -19,6 +19,7 @@
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Android</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<DefineConstants>$(DefineConstants);ANDROID_SKIA</DefineConstants>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
@@ -31,6 +32,12 @@
 
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" />
+		<Compile Include="..\Uno.UI\DelegateActivity.Android.cs" />
+		<Compile Include="..\Uno.UI\OnActivityResultArgs.Android.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
