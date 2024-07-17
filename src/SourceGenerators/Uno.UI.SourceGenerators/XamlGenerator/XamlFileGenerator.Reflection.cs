@@ -178,19 +178,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, Generation.FrameworkElementSymbol.Value);
 		}
 
-		private bool IsAndroidView(XamlType xamlType)
+		private bool IsAndroidView(INamedTypeSymbol? type)
 		{
-			return IsType(xamlType, Generation.AndroidViewSymbol.Value);
+			return IsType(type, Generation.AndroidViewSymbol.Value);
 		}
 
-		private bool IsIOSUIView(XamlType xamlType)
+		private bool IsIOSUIView(INamedTypeSymbol? type)
 		{
-			return IsType(xamlType, Generation.IOSViewSymbol.Value);
+			return IsType(type, Generation.IOSViewSymbol.Value);
 		}
 
-		private bool IsMacOSNSView(XamlType xamlType)
+		private bool IsMacOSNSView(INamedTypeSymbol? type)
 		{
-			return IsType(xamlType, Generation.AppKitViewSymbol.Value);
+			return IsType(type, Generation.AppKitViewSymbol.Value);
 		}
 
 		private bool IsDependencyObject(XamlObjectDefinition component)
@@ -205,7 +205,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Is the type derived from the native view type on a Xamarin platform?
 		/// </summary>
-		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType) || IsMacOSNSView(xamlType);
+		private bool IsNativeView(XamlType xamlType) => IsNativeView(FindType(xamlType));
+
+		private bool IsNativeView(INamedTypeSymbol? type) => IsAndroidView(type) || IsIOSUIView(type) || IsMacOSNSView(type);
 
 		/// <summary>
 		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but

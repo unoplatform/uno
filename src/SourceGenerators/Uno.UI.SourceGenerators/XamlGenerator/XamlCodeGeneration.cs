@@ -143,6 +143,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		internal ImmutableArray<ITypeProvider> TypeProviders { get; }
 
+		internal bool IsSkia { get; }
+
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
 			// To easily debug XAML code generation:
@@ -260,6 +262,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
+			IsSkia = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__SKIA__") ?? false;
 			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 
 			StringSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_String);
@@ -686,9 +689,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented("/// Contains all the static resources defined for the application");
 				writer.AppendLineIndented("/// </summary>");
 
-				if (_isDebug)
+				if (_isDebug && !IsSkia)
 				{
-					//writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+					// On Skia, we don't use CreateNewOnMetadataUpdate at all.
+					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 				}
 
 				AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
