@@ -214,28 +214,29 @@ $sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolki
 
 $projects =
 @(
-    #
-    # 5.1 Blank
-    #
-    @("5.1/uno51blank/uno51blank.Mobile/uno51blank.Mobile.csproj", "", $true, $true),
-    @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", "", $true, $true),
-    @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
-    @("5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", "", $true, $false),
-    @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", $true, $false),
-    @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", $false, $false),
+    # Disabled for disk space reason, still active on master.
+    # #
+    # # 5.1 Blank
+    # #
+    # @("5.1/uno51blank/uno51blank.Mobile/uno51blank.Mobile.csproj", "", $true, $true),
+    # @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", "", $true, $true),
+    # @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
+    # @("5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", "", $true, $false),
+    # @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", $true, $false),
+    # @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", $false, $false),
 
-    #
-    # 5.1 Recommended
-    #
-    @("5.1/uno51recommended/uno51recommended.Mobile/uno51recommended.Mobile.csproj", "", $true, $true),
-    @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", $false, $false),
-    @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", "", $true, $true),
-    @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
-    @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", $true, $false),
-    @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", $true, $false),
-    @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", "", $true, $false),
-    @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", "", $true, $true),
-    @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", $true, $true),
+    # #
+    # # 5.1 Recommended
+    # #
+    # @("5.1/uno51recommended/uno51recommended.Mobile/uno51recommended.Mobile.csproj", "", $true, $true),
+    # @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", $false, $false),
+    # @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", "", $true, $true),
+    # @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
+    # @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", $true, $false),
+    # @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", $true, $false),
+    # @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", "", $true, $false),
+    # @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", "", $true, $true),
+    # @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", $true, $true),
 
     #
     # 5.2 Blank
