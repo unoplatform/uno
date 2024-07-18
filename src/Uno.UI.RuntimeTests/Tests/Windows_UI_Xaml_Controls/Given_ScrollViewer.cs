@@ -5,23 +5,20 @@ using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Input;
-using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
-using Uno.Disposables;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -90,6 +87,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Count();
 
 			Assert.IsTrue(buttons == 0);
+		}
+
+		[TestMethod]
+		public async Task When_ScrollViewer_Pointer_Released_Should_Not_Focus()
+		{
+			var scrollViewer = new ScrollViewer();
+			var stackPanel = new StackPanel();
+			stackPanel.Children.Add(new Button() { Content = "First button" });
+			stackPanel.Children.Add(new Button() { Content = "Second button" });
+			stackPanel.Children.Add(new Rectangle() { Fill = new SolidColorBrush() { Color = Colors.Red }, Width = 100, Height = 100 });
+
+			scrollViewer.Content = stackPanel;
+
+			WindowHelper.WindowContent = scrollViewer;
+			await WindowHelper.WaitForLoaded(scrollViewer);
+
+			// Focus second button
+			var secondButton = stackPanel.Children[1] as Button;
+			secondButton.Focus(FocusState.Programmatic);
+
+			// Tap the rectangle center
+			var rectangle = stackPanel.Children[2] as Rectangle;
+			InputHelper.Tap(rectangle);
+
+			await WindowHelper.WaitForIdle();
+
+			// Second button should still be focused
+			Assert.AreEqual(secondButton, FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot));
 		}
 
 		[TestMethod]
