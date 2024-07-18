@@ -13,6 +13,12 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Frame
 {
+	private enum NavigationStateOperation
+	{
+		Get,
+		Set
+	}
+
 	private bool m_isInNavigate;
 
 	private bool m_isNavigationStackEnabledForPage = true;

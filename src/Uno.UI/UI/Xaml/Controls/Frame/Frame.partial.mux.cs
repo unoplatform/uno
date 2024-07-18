@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
-using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -531,4 +530,170 @@ partial class Frame
 
 		ErrorHelper.RaiseUnhandledExceptionEvent(hrToReport, strMessage, &fIsHandled);
 	}
+
+	private string GetNavigationStateImpl()
+	{
+		NotifyGetOrSetNavigationState(NavigationStateOperation.Get);
+
+		IFCPTR(m_tpNavigationHistory);
+		m_tpNavigationHistory.Cast<NavigationHistory>().GetNavigationState(pNavigationState);
+	}
+
+	private void SetNavigationStateImpl(string navigationState) => SetNavigationStateWithNavigationControlImpl(navigationState, false);
+
+	private void SetNavigationStateWithNavigationControlImpl(string navigationState, bool suppressNavigate)
+	{
+		m_tpNavigationHistory.Cast<NavigationHistory>().SetNavigationState(navigationState, suppressNavigate);
+
+		if (suppressNavigate)
+		{
+			put_Content(null);
+		}
+		else
+		{
+			object spContentobject;
+			PageStackEntry* pPageStackEntry = null;
+
+			// Create or get page corresponding to current navigation entry and set it as
+			// frame's content. NavigationCache.GetContent will create the current page.
+			m_tpNavigationHistory.Cast<NavigationHistory>().GetCurrentPageStackEntry(&pPageStackEntry);
+			if (pPageStackEntry)
+			{
+				m_isNavigationFromMethod = true;
+
+				m_upNavigationCache.GetContent(pPageStackEntry, &spContentobject);
+				put_Content(spContentobject);
+			}
+
+			// Commit SetNavigationState of navigation history
+			m_tpNavigationHistory.Cast<NavigationHistory>().CommitSetNavigationState(m_upNavigationCache);
+		}
+
+		NotifyGetOrSetNavigationState(NavigationStateOperation.Set);
+	}
+
+	private void ClickHandler(object sender, RoutedEventArgs e)
+	{
+		var spSenderIButtonBase = sender as ButtonBase;
+
+		if (m_tpNext is not null && m_tpNext == spSenderIButtonBase)
+		{
+			GoForward();
+		}
+		else if (m_tpPrevious is not null && m_tpPrevious == spSenderIButtonBase)
+		{
+			GoBack();
+		}
+	}
+
+	private void RaiseNavigated(
+		object pContentobject,
+		object pParameterobject,
+		NavigationTransitionInfo pTransitionInfo,
+		string descriptor,
+		NavigationMode navigationMode)
+	{
+		NavigatedEventSourceType* pEventSource = null;
+		INavigationEventArgs spINavigationEventArgs;
+
+		IFCPTR(descriptor);
+		IFCPTR(pContentobject);
+
+		NavigationHelpers.CreateINavigationEventArgs(pContentobject, pParameterobject, pTransitionInfo, descriptor, navigationMode, &spINavigationEventArgs);
+		IFCPTR(spINavigationEventArgs);
+
+		GetNavigatedEventSourceNoRef(&pEventSource);
+		pEventSource.Raise(ctl.as_iinspectable(this), spINavigationEventArgs);
+
+		TraceFrameNavigatedInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
+	}
+
+	private void RaiseNavigating(
+		object pParameterobject,
+		NavigationTransitionInfo pTransitionInfo,
+		string descriptor,
+		NavigationMode navigationMode)
+	{
+		NavigatingEventSourceType* pEventSource = null;
+		INavigatingCancelEventArgs spINavigatingCancelEventArgs;
+
+		IFCPTR(pIsCanceled);
+		*pIsCanceled = null;
+
+		IFCPTR(descriptor);
+
+		NavigationHelpers.CreateINavigatingCancelEventArgs(pParameterobject, pTransitionInfo, descriptor, navigationMode, &spINavigatingCancelEventArgs);
+		IFCPTR(spINavigatingCancelEventArgs);
+
+		GetNavigatingEventSourceNoRef(&pEventSource);
+		pEventSource.Raise(ctl.as_iinspectable(this), spINavigatingCancelEventArgs);
+
+		spINavigatingCancelEventArgs.get_Cancel(pIsCanceled);
+
+		TraceFrameNavigatingInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
+	}
+
+	private void RaiseNavigationFailed(string descriptor, Exception errorResult, out bool isCanceled) 
+	{
+		NavigationFailedEventSourceType* pEventSource = null;
+		NavigationFailedEventArgs spNavigationFailedEventArgs;
+		wxaml_interop.TypeName sourcePageType = default;
+
+		IFCPTR(pIsCanceled);
+		*pIsCanceled = null;
+
+		IFCPTR(descriptor);
+
+		spNavigationFailedEventArgs = new NavigationFailedEventArgs();
+		IFCPTR(spNavigationFailedEventArgs);
+
+		MetadataAPI.GetTypeNameByFullName(XSTRING_PTR_EPHEMERAL_FROM_string(descriptor), &sourcePageType);
+		spNavigationFailedEventArgs.SourcePageType = sourcePageType;
+		spNavigationFailedEventArgs.Exception = errorResult;
+
+		GetNavigationFailedEventSourceNoRef(&pEventSource);
+
+		pEventSource.Raise(ctl.as_iinspectable(this), spNavigationFailedEventArgs);
+
+		spNavigationFailedEventArgs.get_Handled(pIsCanceled);
+
+	Cleanup:
+		DELETE_STRING(sourcePageType.Name);
+	}
+
+	private void RaiseNavigationStopped(
+		object pContentobject,
+		object pParameterobject,
+		NavigationTransitionInfo pTransitionInfo,
+		string descriptor,
+		NavigationMode navigationMode)
+	{
+		NavigationStoppedEventSourceType* pEventSource = null;
+		INavigationEventArgs spINavigationEventArgs;
+
+		IFCPTR(descriptor);
+
+		NavigationHelpers.CreateINavigationEventArgs(pContentobject, pParameterobject, pTransitionInfo, descriptor, navigationMode, &spINavigationEventArgs);
+		IFCPTR(spINavigationEventArgs);
+
+		GetNavigationStoppedEventSourceNoRef(&pEventSource);
+		pEventSource.Raise(ctl.as_iinspectable(this), spINavigationEventArgs);
+	}
+
+	//private void OnReferenceTrackerWalk(INT walkType) // override
+	//{
+	//	// Walk field references
+
+	//	// TODO: Change this into a TrackerPtr
+	//	if (m_upNavigationCache)
+	//	{
+	//		m_upNavigationCache.ReferenceTrackerWalk((EReferenceTrackerWalkType)(walkType));
+	//	}
+
+	//	// Walk remaining references
+
+	//	FrameGenerated.OnReferenceTrackerWalk(walkType);
+	//}
+
+	private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode(pNavigationMode);
 }

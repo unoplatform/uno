@@ -88,5 +88,5 @@ public partial class Frame : ContentControl
 	/// </summary>
 	/// <param name="navigationState">The serialization string that supplies the restore point for navigation history.</param>
 	/// <param name="suppressNavigate">True to restore navigation history without navigating to the current page; otherwise, false.</param>
-	public void SetNavigationState(string navigationState, bool suppressNavigate) => SetNavigationStateImpl(navigationState, suppressNavigate);
+	public void SetNavigationState(string navigationState, bool suppressNavigate) => SetNavigationStateWithNavigationControlImpl(navigationState, suppressNavigate);
 }
