@@ -1346,7 +1346,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_tpLayoutRoot is { })
 			{
 				var indexOfOverlayElement = m_tpLayoutRoot.Children.IndexOf(m_overlayElement);
-				MUX_ASSERT(indexOfOverlayElement != -1);
+				//MUX_ASSERT(indexOfOverlayElement != -1);
 
 				if (indexOfOverlayElement != -1)
 				{

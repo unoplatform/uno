@@ -47,6 +47,7 @@ namespace Windows.UI.Tests.Enterprise
 		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
+			Application.Current.DebugSettings.LayoutCycleTracingLevel = LayoutCycleTracingLevel.High;
 		}
 
 		[ClassCleanup]
