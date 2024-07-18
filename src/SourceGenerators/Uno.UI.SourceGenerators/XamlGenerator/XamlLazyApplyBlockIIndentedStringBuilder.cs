@@ -81,15 +81,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				_applyDisposable = new DisposableAction(() =>
 				{
-					if (!_exposeContext)
+					if (_applyPrefix != null || !_exposeContext)
 					{
 						_source.Append(_inner.ToString());
 						blockDisposable.Dispose();
 					}
-					else
+					else if (_exposeContext)
 					{
 						blockDisposable.Dispose();
-						_onRegisterApplyMethodBody(_inner.ToString());
+						_onRegisterApplyMethodBody("/* registration */" + _inner.ToString());
 					}
 
 					_source.AppendLineIndented("))");
