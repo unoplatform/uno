@@ -1,0 +1,162 @@
+﻿using System;
+using System.Runtime.InteropServices;
+using CoreGraphics;
+using Foundation;
+using ObjCRuntime;
+using UIKit;
+using Uno.Extensions;
+using Uno.UI.Controls;
+using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
+using Windows.UI;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.Xaml;
+using static Uno.UI.FeatureConfiguration;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+
+namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
+
+public partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTextBoxView
+{
+	private SinglelineInvisibleTextBoxDelegate _delegate;
+	private readonly WeakReference<TextBoxView> _textBoxView;
+	private Action _foregroundChanged;
+
+	public SinglelineInvisibleTextBoxView(TextBoxView textBoxView)
+	{
+		if (textBoxView is null)
+		{
+			throw new ArgumentNullException(nameof(textBoxView));
+		}
+
+		_textBoxView = new WeakReference<TextBoxView>(textBoxView);
+
+		Initialize();
+	}
+
+	public override void Paste(NSObject sender) => HandlePaste(() => base.Paste(sender));
+
+	public override void PasteAndGo(NSObject sender) => HandlePaste(() => base.PasteAndGo(sender));
+
+	public override void PasteAndMatchStyle(NSObject sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
+
+	public override void PasteAndSearch(NSObject sender) => HandlePaste(() => base.PasteAndSearch(sender));
+
+	public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+
+	private void HandlePaste(Action baseAction)
+	{
+		var args = new TextControlPasteEventArgs();
+		TextBox?.RaisePaste(args);
+		if (!args.Handled)
+		{
+			baseAction.Invoke();
+		}
+	}
+
+	internal TextBoxView TextBox => _textBoxView.GetTarget();
+
+	public override string? Text
+	{
+		get => base.Text;
+		set
+		{
+			// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
+			value ??= string.Empty;
+			if (base.Text != value)
+			{
+				base.Text = value;
+				OnTextChanged();
+			}
+		}
+	}
+
+	private void OnEditingChanged(object sender, EventArgs e)
+	{
+		OnTextChanged();
+	}
+
+	private void OnTextChanged()
+	{
+		var textBoxView = _textBoxView?.GetTarget();
+		if (textBoxView != null)
+		{
+			var text = textBoxView.ProcessTextInput(Text);
+			SetTextNative(text);
+		}
+	}
+
+	public void SetTextNative(string text) => Text = text;
+
+	private void Initialize()
+	{
+		//Set native VerticalAlignment to top-aligned (default is center) to match Windows text placement
+		base.VerticalAlignment = UIControlContentVerticalAlignment.Top;
+
+		Delegate = _delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxView)
+		{
+			IsKeyboardHiddenOnEnter = true
+		};
+	}
+
+	partial void OnLoadedPartial()
+	{
+		this.EditingChanged += OnEditingChanged;
+		this.EditingDidEnd += OnEditingChanged;
+	}
+
+	partial void OnUnloadedPartial()
+	{
+		this.EditingChanged -= OnEditingChanged;
+		this.EditingDidEnd -= OnEditingChanged;
+	}
+
+	//Forces the secure UITextField to maintain its current value upon regaining focus
+	public override bool BecomeFirstResponder()
+	{
+		var result = base.BecomeFirstResponder();
+
+		if (SecureTextEntry)
+		{
+			var text = Text;
+			Text = string.Empty;
+			InsertText(text ?? "");
+		}
+
+		return result;
+	}
+
+	public void Select(int start, int length)
+		=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+
+	/// <summary>
+	/// Workaround for https://github.com/unoplatform/uno/issues/9430
+	/// </summary>
+	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+	static internal extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
+
+	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+	static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+	[Export("selectedTextRange")]
+	public new IntPtr SelectedTextRange
+	{
+		get
+		{
+			return IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
+		}
+		set
+		{
+			var textBox = TextBox;
+
+			if (textBox != null && SelectedTextRange != value)
+			{
+				void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
+				textBox.OnSelectionChanged();
+			}
+		}
+	}
+}
