@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -36,7 +37,7 @@ partial class Frame
 
 	protected override void OnApplyTemplate()
 	{
-		//CheckThread();
+		//// CheckThread();
 
 		base.OnApplyTemplate();
 
@@ -113,7 +114,7 @@ partial class Frame
 		if (m_tpNavigationHistory is not null)
 		{
 			wrl.ComPtr<IVector<Navigation.PageStackEntry*>> backstack;
-			m_tpNavigationHistory.Cast<NavigationHistory>().GetBackStack(&backstack);
+			m_tpNavigationHistory.GetBackStack(&backstack);
 			uint count = 0;
 			if (backstack)
 			{
@@ -125,15 +126,13 @@ partial class Frame
 
 	private void SetNavigationTransitionInfoOverride(NavigationTransitionInfo definitionOverride)
 	{
-		PageStackEntry* pPageStackEntry = null;
+		var pageStackEntry = m_tpNavigationHistory.GetCurrentPageStackEntry();
+		if (pageStackEntry is null)
+		{
+			throw new InvalidOperationException("Current page stack entry is null");
+		}
 
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetCurrentPageStackEntry(&pPageStackEntry);
-		IFCPTR(pPageStackEntry);
-		pPageStackEntry.NavigationTransitionInfo = definitionOverride;
-
-	Cleanup:
-		pPageStackEntry = null;
-		RRETURN(hr);
+		pageStackEntry.NavigationTransitionInfo = definitionOverride;
 	}
 
 	private IList<PageStackEntry> GetBackStack() => m_tpNavigationHistory.GetBackStack();
@@ -146,7 +145,7 @@ partial class Frame
 	{
 		bool reentrancyDetected = false;
 
-		CheckThread();
+		// // CheckThread();
 
 		// Prevent reentrancy caused by app navigating while being
 		// notified of a previous navigate
@@ -162,18 +161,18 @@ partial class Frame
 		m_isNavigationFromMethod = true;
 
 		// Update the NavigationTransitionInfo
-		if (transitionDefinition)
+		if (transitionDefinition is not null)
 		{
-			m_tpNavigationTransitionInfo.Clear();
-			SetPtrValueWithQI(m_tpNavigationTransitionInfo, transitionDefinition);
-			SetNavigationTransitionInfoOverrideImpl(transitionDefinition);
+			m_tpNavigationTransitionInfo = null;
+			m_tpNavigationTransitionInfo = transitionDefinition;
+			SetNavigationTransitionInfoOverride(transitionDefinition);
 		}
 
-		m_tpNavigationHistory.Cast<NavigationHistory>().NavigatePrevious();
+		m_tpNavigationHistory.NavigatePrevious();
 
 		StartNavigation();
 
-		DirectUI.ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind_GoBack, this);
+		ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.GoBack, this);
 
 	Cleanup:
 		if (!reentrancyDetected)
@@ -187,7 +186,7 @@ partial class Frame
 	{
 		bool reentrancyDetected = false;
 
-		CheckThread();
+		// CheckThread();
 
 		// Prevent reentrancy caused by app navigating while being
 		// notified of a previous navigate
@@ -202,7 +201,7 @@ partial class Frame
 
 		m_isNavigationFromMethod = true;
 
-		m_tpNavigationHistory.Cast<NavigationHistory>().NavigateNext();
+		m_tpNavigationHistory.NavigateNext();
 
 		StartNavigation();
 
@@ -224,7 +223,7 @@ partial class Frame
 		bool reentrancyDetected = false;
 		CClassInfo* pType = null;
 
-		CheckThread();
+		// CheckThread();
 
 		IFCPTR(pCanNavigate);
 		*pCanNavigate = false;
@@ -247,7 +246,7 @@ partial class Frame
 		pType.GetFullName().Promote(&strDescriptor);
 
 		SetPtrValueWithQI(m_tpNavigationTransitionInfo, navigationTransitionInfo);
-		m_tpNavigationHistory.Cast<NavigationHistory>().NavigateNew(strDescriptor.Getstring(), pobject, navigationTransitionInfo);
+		m_tpNavigationHistory.NavigateNew(strDescriptor.Getstring(), pobject, navigationTransitionInfo);
 		hr = StartNavigation();
 		*pCanNavigate = ((SUCCEEDED(hr)) ? true : false);
 
@@ -298,8 +297,8 @@ partial class Frame
 
 		IFCPTR(m_tpNavigationHistory);
 
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetPendingNavigationMode(&navigationMode);
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetPendingPageStackEntry(&pPageStackEntry);
+		m_tpNavigationHistory.GetPendingNavigationMode(&navigationMode);
+		m_tpNavigationHistory.GetPendingPageStackEntry(&pPageStackEntry);
 		IFCPTR(pPageStackEntry);
 		pPageStackEntry.GetDescriptor(strDescriptor.GetAddressOf());
 		IFCPTR(strDescriptor);
@@ -347,7 +346,7 @@ partial class Frame
 
 		IFCPTR(m_tpNavigationHistory);
 
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetPendingPageStackEntry(&pPageStackEntry);
+		m_tpNavigationHistory.GetPendingPageStackEntry(&pPageStackEntry);
 		IFCPTR(pPageStackEntry);
 
 		get_Content(&spOldobject);
@@ -404,7 +403,7 @@ partial class Frame
 		{
 			goto Cleanup;
 		}
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetCurrentPageStackEntry(&pPageStackEntry);
+		m_tpNavigationHistory.GetCurrentPageStackEntry(&pPageStackEntry);
 		if (!pPageStackEntry)
 		{
 			goto Cleanup;
@@ -439,24 +438,23 @@ partial class Frame
 
 	private void ChangeContent(object oldContent, object newContent, object parameter, INavigationTransitionInfo transitionInfo)
 	{
-		IPage spOldIPage;
-		IPage spNewIPage;
+		Page spOldIPage;
+		Page spNewIPage;
 		string strDescriptor;
 		bool isHandled = false;
 		bool wasContentChanged = false;
-		PageStackEntry* pPageStackEntry = null;
-		Navigation.NavigationMode navigationMode = Navigation.NavigationMode_New;
+		PageStackEntry pPageStackEntry = null;
+		NavigationMode navigationMode = Navigation.NavigationMode_New;
 
-		bool isNavigationStackEnabled = false;
-		get_IsNavigationStackEnabled(&isNavigationStackEnabled);
+		bool isNavigationStackEnabled = IsNavigationStackEnabled;
 
 		IFCPTR(pNewobject);
 		IFCPTR(m_tpNavigationHistory);
 
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetPendingNavigationMode(&navigationMode);
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetPendingPageStackEntry(&pPageStackEntry);
+		navigationMode = m_tpNavigationHistory.GetPendingNavigationMode();
+		pPageStackEntry = m_tpNavigationHistory.GetPendingPageStackEntry();
 		IFCPTR(pPageStackEntry);
-		pPageStackEntry.GetDescriptor(strDescriptor.GetAddressOf());
+		strDescriptor = pPageStackEntry.GetDescriptor();
 		IFCPTR(strDescriptor);
 
 		// If this is a back navigation, cache the navigation mode
@@ -468,7 +466,7 @@ partial class Frame
 			PageStackEntry* pCurrentPageStackEntry = null;
 			xaml_animation.INavigationTransitionInfo spNavigationTransitionInfo;
 
-			m_tpNavigationHistory.Cast<NavigationHistory>().GetCurrentPageStackEntry(&pCurrentPageStackEntry);
+			m_tpNavigationHistory.GetCurrentPageStackEntry(&pCurrentPageStackEntry);
 
 			if (pCurrentPageStackEntry)
 			{
@@ -488,7 +486,7 @@ partial class Frame
 
 		if (isNavigationStackEnabled && m_isNavigationStackEnabledForPage)
 		{
-			m_tpNavigationHistory.Cast<NavigationHistory>().CommitNavigation();
+			m_tpNavigationHistory.CommitNavigation();
 		}
 
 		RaiseNavigated(spNewIPage, pParameterobject, pTransitionInfo, strDescriptor, navigationMode);
@@ -534,18 +532,18 @@ partial class Frame
 		NotifyGetOrSetNavigationState(NavigationStateOperation.Get);
 
 		IFCPTR(m_tpNavigationHistory);
-		m_tpNavigationHistory.Cast<NavigationHistory>().GetNavigationState(pNavigationState);
+		m_tpNavigationHistory.GetNavigationState(pNavigationState);
 	}
 
 	private void SetNavigationStateImpl(string navigationState) => SetNavigationStateWithNavigationControlImpl(navigationState, false);
 
 	private void SetNavigationStateWithNavigationControlImpl(string navigationState, bool suppressNavigate)
 	{
-		m_tpNavigationHistory.Cast<NavigationHistory>().SetNavigationState(navigationState, suppressNavigate);
+		m_tpNavigationHistory.SetNavigationState(navigationState, suppressNavigate);
 
 		if (suppressNavigate)
 		{
-			put_Content(null);
+			Content = null;
 		}
 		else
 		{
@@ -554,7 +552,7 @@ partial class Frame
 
 			// Create or get page corresponding to current navigation entry and set it as
 			// frame's content. NavigationCache.GetContent will create the current page.
-			m_tpNavigationHistory.Cast<NavigationHistory>().GetCurrentPageStackEntry(&pPageStackEntry);
+			m_tpNavigationHistory.GetCurrentPageStackEntry(&pPageStackEntry);
 			if (pPageStackEntry)
 			{
 				m_isNavigationFromMethod = true;
@@ -564,7 +562,7 @@ partial class Frame
 			}
 
 			// Commit SetNavigationState of navigation history
-			m_tpNavigationHistory.Cast<NavigationHistory>().CommitSetNavigationState(m_upNavigationCache);
+			m_tpNavigationHistory.CommitSetNavigationState(m_upNavigationCache);
 		}
 
 		NotifyGetOrSetNavigationState(NavigationStateOperation.Set);
@@ -610,7 +608,8 @@ partial class Frame
 		object pParameterobject,
 		NavigationTransitionInfo pTransitionInfo,
 		string descriptor,
-		NavigationMode navigationMode)
+		NavigationMode navigationMode,
+		out bool isCanceled)
 	{
 		NavigatingEventSourceType* pEventSource = null;
 		INavigatingCancelEventArgs spINavigatingCancelEventArgs;
@@ -631,7 +630,7 @@ partial class Frame
 		TraceFrameNavigatingInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
 	}
 
-	private void RaiseNavigationFailed(string descriptor, Exception errorResult, out bool isCanceled) 
+	private void RaiseNavigationFailed(string descriptor, Exception errorResult, out bool isCanceled)
 	{
 		NavigationFailedEventSourceType* pEventSource = null;
 		NavigationFailedEventArgs spNavigationFailedEventArgs;

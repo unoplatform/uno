@@ -6,7 +6,7 @@ using Windows.Foundation.Collections;
 
 namespace DirectUI;
 
-internal class NavigationHistory
+internal partial class NavigationHistory
 {
 	static uint c_versionNumber = 1;
 
@@ -156,9 +156,7 @@ internal class NavigationHistory
 		RRETURN(hr);
 	}
 
-	private void
-	GetBackStack(
-		out IVector<Navigation.PageStackEntry*>** pValue)
+	private void GetBackStack(		out IVector<Navigation.PageStackEntry*>** pValue)
 	{
 
 
@@ -186,51 +184,28 @@ internal class NavigationHistory
 		RRETURN(hr);
 	}
 
-	private void
-	GetCurrentPageStackEntry(
-		out result_maybenull_ PageStackEntry **ppPageStackEntry)
+	internal PageStackEntry GetCurrentPageStackEntry() => m_tpCurrentPageStackEntry;
+
+	private PageStackEntry GetPendingPageStackEntry()
 	{
-		*ppPageStackEntry = m_tpCurrentPageStackEntry.Cast<PageStackEntry>();
-
-		RRETURN(S_OK);
-	}
-
-	private void
-	GetPendingPageStackEntry(
-		out PageStackEntry** ppPageStackEntry)
-	{
-
-
-		*ppPageStackEntry = null;
+		PageStackEntry ppPageStackEntry = null;
 
 		IFCEXPECT(m_isNavigationPending);
 		IFCPTR(m_tpPendingPageStackEntry);
 
 		*ppPageStackEntry = (PageStackEntry*)(m_tpPendingPageStackEntry);
-
-	Cleanup:
-		RRETURN(hr);
 	}
 
-	private void
-	GetPendingNavigationMode(
-		out Navigation.NavigationMode* pNavigationMode)
+	private NavigationMode GetPendingNavigationMode()
 	{
-
-
 		*pNavigationMode = NavigationMode.New;
 
 		IFCEXPECT(m_isNavigationPending);
 
 		*pNavigationMode = m_navigationMode;
-
-	Cleanup:
-		RRETURN(hr);
 	}
 
-	private void
-	GetCurrentNavigationMode(
-	out Navigation.NavigationMode* pNavigationMode)
+	private NavigationMode GetCurrentNavigationMode()
 	{
 		*pNavigationMode = m_navigationMode;
 		RRETURN(S_OK);
@@ -804,7 +779,7 @@ internal class NavigationHistory
 	//
 	//------------------------------------------------------------------------
 
-	private void SetNavigationState(string navigationState, bool suppressNavigate)
+	internal void SetNavigationState(string navigationState, bool suppressNavigate)
 	{
 		uint versionNumber = 0;
 		uint contentCount = 0;

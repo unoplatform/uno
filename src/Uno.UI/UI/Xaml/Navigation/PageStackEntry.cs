@@ -91,7 +91,7 @@ public sealed partial class PageStackEntry : DependencyObject
 		page.SetDescriptor(m_descriptor);
 	}
 
-	private string GetDescriptor() => m_descriptor;
+	internal string GetDescriptor() => m_descriptor;
 
 	private void SetDescriptor(string descriptor) => m_descriptor = descriptor;
 

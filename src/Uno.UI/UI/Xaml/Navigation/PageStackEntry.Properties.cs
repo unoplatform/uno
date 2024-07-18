@@ -13,7 +13,7 @@ partial class PageStackEntry
 	/// <summary>
 	/// Gets a value that indicates the animated transition associated with the navigation entry.
 	/// </summary>
-	public NavigationTransitionInfo NavigationTransitionInfo { get; private set; }
+	public NavigationTransitionInfo NavigationTransitionInfo { get; internal set; }
 
 	/// <summary>
 	/// Gets the navigation parameter associated with this navigation entry.
