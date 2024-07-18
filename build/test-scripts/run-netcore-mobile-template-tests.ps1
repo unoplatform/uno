@@ -188,11 +188,11 @@ CleanupTree
 ## Tests Per versions of uno
 if ($IsWindows)
 {
-    $default = @('-v:m', '-p:EnableWindowsTargeting=true')
+    $default = @('-v:m', '-p:EnableWindowsTargeting=true', '/nr:false')
 }
 else
 {
-    $default = @('-v:m', '-p:AotAssemblies=false')
+    $default = @('-v:m', '-p:AotAssemblies=false', '/nr:false')
 }
 
 $debug = $default + '-p:Configuration=Debug'

@@ -10,7 +10,7 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-$default = @('-v', 'n', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
+$default = @('-v', 'n', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true', '/nr:false')
 
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
