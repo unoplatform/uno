@@ -10,6 +10,8 @@ using Uno.Helpers.Theming;
 using Uno.UI.Controls;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
+using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -52,12 +54,12 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 	public void Initialize()
 	{
-		View = new UIView();
 		_skCanvasView = new SKCanvasView();
-		View.AddSubview(_skCanvasView);
 		_skCanvasView.BackgroundColor = UIColor.Red;
-
+		_skCanvasView.Frame = View!.Bounds;
+		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
 		_skCanvasView.PaintSurface += OnPaintSurface;
+		View!.AddSubview(_skCanvasView);
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
