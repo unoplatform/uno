@@ -130,8 +130,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (args.NewValue is IDependencyObjectStoreProvider binder)
 				{
-					// todo@xy: review
-					//binder.Store.SetValue(binder.Store.TemplatedParentProperty, flyout.TemplatedParent, DependencyPropertyValuePrecedences.Local);
 					binder.Store.SetValue(binder.Store.DataContextProperty, flyout.DataContext, DependencyPropertyValuePrecedences.Local);
 				}
 

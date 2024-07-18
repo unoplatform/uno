@@ -236,21 +236,9 @@ public override void WillMoveToSuperview(UIKit.UIView newsuper)
 	base.WillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	//SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(UIKit.UIView newsuper);
-
-#if false // fixme@xy: should we discard this? should TP ever be also managed by native, or strictly uno-only?
-private void SyncBinder(UIKit.UIView superview, UIKit.UIWindow window)
-{
-	if(superview == null && window == null)
-	{
-		//TemplatedParent = null;
-	}
-}
-#endif
 					");
 				}
 				else
@@ -276,21 +264,9 @@ public override void ViewWillMoveToSuperview(AppKit.NSView newsuper)
 	base.ViewWillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	//SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(AppKit.NSView newsuper);
-
-#if false // fixme@xy: should we discard this? should TP ever be also managed by native, or strictly uno-only?
-private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
-{
-	if(superview == null && window == null)
-	{
-		//TemplatedParent = null;
-	}
-}
-#endif
 					");
 				}
 				else
