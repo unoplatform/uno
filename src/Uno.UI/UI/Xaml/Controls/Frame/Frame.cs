@@ -76,4 +76,17 @@ public partial class Frame : ContentControl
 	/// <returns></returns>
 	public bool NavigateToType(Type sourcePageType, object parameter, FrameNavigationOptions navigationOptions) =>
 		NavigateToTypeImpl(sourcePageType, parameter, navigationOptions);
+
+	/// <summary>
+	/// Reads and restores the navigation history of a Frame from a provided serialization string.
+	/// </summary>
+	/// <param name="navigationState">The serialization string that supplies the restore point for navigation history.</param>
+	public void SetNavigationState(string navigationState) => SetNavigationStateImpl(navigationState);
+
+	/// <summary>
+	/// Reads and restores the navigation history of a Frame from a provided serialization string.
+	/// </summary>
+	/// <param name="navigationState">The serialization string that supplies the restore point for navigation history.</param>
+	/// <param name="suppressNavigate">True to restore navigation history without navigating to the current page; otherwise, false.</param>
+	public void SetNavigationState(string navigationState, bool suppressNavigate) => SetNavigationStateImpl(navigationState, suppressNavigate);
 }
